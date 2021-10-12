@@ -6,6 +6,7 @@ import {
   getValueStreamStageRecords,
   getValueStreamStageCounts,
 } from '~/api/analytics_api';
+import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import { DEFAULT_VALUE_STREAM, I18N_VSA_ERROR_STAGE_MEDIAN } from '../constants';
@@ -72,16 +73,21 @@ export const fetchCycleAnalyticsData = ({
     });
 };
 
-export const fetchStageData = ({ getters: { requestParams, filterParams }, commit }) => {
+export const fetchStageData = ({
+  getters: { requestParams, filterParams, paginationParams },
+  commit,
+}) => {
   commit(types.REQUEST_STAGE_DATA);
 
-  return getValueStreamStageRecords(requestParams, filterParams)
-    .then(({ data }) => {
+  return getValueStreamStageRecords(requestParams, { ...filterParams, ...paginationParams })
+    .then(({ data, headers }) => {
       // when there's a query timeout, the request succeeds but the error is encoded in the response data
       if (data?.error) {
         commit(types.RECEIVE_STAGE_DATA_ERROR, data.error);
       } else {
         commit(types.RECEIVE_STAGE_DATA_SUCCESS, data);
+        const { page = null, nextPage = null } = parseIntPagination(normalizeHeaders(headers));
+        commit(types.SET_PAGINATION, { ...paginationParams, page, hasNextPage: Boolean(nextPage) });
       }
     })
     .catch(() => commit(types.RECEIVE_STAGE_DATA_ERROR));
@@ -174,6 +180,14 @@ export const setFilters = ({ dispatch }) => refetchStageData(dispatch);
 export const setDateRange = ({ dispatch, commit }, { createdAfter, createdBefore }) => {
   commit(types.SET_DATE_RANGE, { createdAfter, createdBefore });
   return refetchStageData(dispatch);
+};
+
+export const updateStageTablePagination = (
+  { commit, dispatch, state: { selectedStage } },
+  paginationParams,
+) => {
+  commit(types.SET_PAGINATION, paginationParams);
+  return dispatch('fetchStageData', selectedStage.id);
 };
 
 export const initializeVsa = ({ commit, dispatch }, initialData = {}) => {

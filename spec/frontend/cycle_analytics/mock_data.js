@@ -1,6 +1,12 @@
 import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
-import { DEFAULT_VALUE_STREAM, DEFAULT_DAYS_IN_PAST } from '~/cycle_analytics/constants';
+import {
+  DEFAULT_VALUE_STREAM,
+  DEFAULT_DAYS_IN_PAST,
+  PAGINATION_TYPE,
+  PAGINATION_SORT_DIRECTION_DESC,
+  PAGINATION_SORT_FIELD_END_EVENT,
+} from '~/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 
@@ -256,3 +262,22 @@ export const rawValueStreamStages = customizableStagesAndEvents.stages;
 export const valueStreamStages = rawValueStreamStages.map((s) =>
   convertObjectPropsToCamelCase(s, { deep: true }),
 );
+
+export const initialPaginationQuery = {
+  page: 15,
+  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  direction: PAGINATION_SORT_DIRECTION_DESC,
+};
+
+export const initialPaginationState = {
+  ...initialPaginationQuery,
+  page: null,
+  hasNextPage: false,
+};
+
+export const basePaginationResult = {
+  pagination: PAGINATION_TYPE,
+  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  direction: PAGINATION_SORT_DIRECTION_DESC,
+  page: null,
+};

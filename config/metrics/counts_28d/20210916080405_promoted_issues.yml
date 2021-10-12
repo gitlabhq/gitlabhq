@@ -7,7 +7,7 @@ product_stage: growth
 product_group: group::product intelligence
 product_category: collection
 value_type: number
-status: active
+status: deprecated
 milestone: "14.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70485
 time_frame: 28d

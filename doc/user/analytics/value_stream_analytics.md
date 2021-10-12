@@ -68,6 +68,34 @@ To filter analytics results based on a date range,
 select different **From** and **To** days
 from the date picker (default: last 30 days).
 
+### Stage table
+
+> Sorting the stage table [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335974) in GitLab 14.4.
+
+![Value Stream Analytics Stage table](img/project_vsa_stage_table_v14_4.png "Project VSA stage table")
+
+The stage table shows a list of related workflow items for the selected stage. This can include:
+
+- CI/CD jobs
+- Issues
+- Merge requests
+- Pipelines
+
+A little badge next to the workflow items table header shows the number of workflow items that
+completed the selected stage.
+
+The stage table also includes the **Time** column, which shows how long it takes each item to pass
+through the selected value stream stage.
+
+To sort the stage table by a table column, select the table header.
+You can sort in ascending or descending order. To find items that spent the most time in a stage,
+potentially causing bottlenecks in your value stream, sort the table by the **Time** column.
+From there, select individual items to drill in and investigate how delays are happening.
+To see which items most recently exited the stage, sort by the work item column on the left.
+
+The table displays 20 items per page. If there are more than 20 items, you can use the
+**Prev** and **Next** buttons to navigate through the pages.
+
 ## How Time metrics are measured
 
 The **Time** metrics near the top of the page are measured as follows:

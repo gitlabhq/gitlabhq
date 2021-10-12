@@ -194,6 +194,9 @@ export default {
           ><formatted-stage-count :stage-count="stageCount"
         /></gl-badge>
       </template>
+      <template #head(duration)="data">
+        <span data-testid="vsa-stage-header-duration">{{ data.label }}</span>
+      </template>
       <template #cell(end_event)="{ item }">
         <div data-testid="vsa-stage-event">
           <div v-if="item.id" data-testid="vsa-stage-content">

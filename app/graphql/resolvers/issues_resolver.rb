@@ -47,7 +47,8 @@ module Resolvers
         alert_management_alert: [:alert_management_alert],
         labels: [:labels],
         assignees: [:assignees],
-        timelogs: [:timelogs]
+        timelogs: [:timelogs],
+        customer_relations_contacts: { customer_relations_contacts: [:group] }
       }
     end
 

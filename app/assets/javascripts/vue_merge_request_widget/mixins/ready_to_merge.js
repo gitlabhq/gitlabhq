@@ -32,7 +32,7 @@ export default {
     isMergeImmediatelyDangerous() {
       return false;
     },
-    shouldRenderMergeTrainHelperText() {
+    shouldRenderMergeTrainHelperIcon() {
       return false;
     },
     pipelineId() {

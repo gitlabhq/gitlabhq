@@ -325,7 +325,13 @@ projects on `gitlab.com`:
 After you're confident the latest template can be moved to stable:
 
 1. Update the stable template with the content of the latest version.
+1. Remove the migration template from `Gitlab::Template::GitlabCiYmlTemplate::TEMPLATES_WITH_LATEST_VERSION` const.
 1. Remove the corresponding feature flag.
+
+NOTE:
+Feature flags are enabled by default in RSpec, so all tests are performed
+against the latest templates. You should also test the stable templates
+with `stub_feature_flags(redirect_to_latest_template_<name>: false)`.
 
 ### Further reading
 

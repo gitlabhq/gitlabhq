@@ -11,6 +11,8 @@ import {
   currentGroup,
   createdAfter,
   createdBefore,
+  initialPaginationState,
+  reviewEvents,
 } from '../mock_data';
 
 const { id: groupId, path: groupPath } = currentGroup;
@@ -31,7 +33,13 @@ const mockSetDateActionCommit = {
   type: 'SET_DATE_RANGE',
 };
 
-const defaultState = { ...getters, selectedValueStream, createdAfter, createdBefore };
+const defaultState = {
+  ...getters,
+  selectedValueStream,
+  createdAfter,
+  createdBefore,
+  pagination: initialPaginationState,
+};
 
 describe('Project Value Stream Analytics actions', () => {
   let state;
@@ -112,6 +120,21 @@ describe('Project Value Stream Analytics actions', () => {
     });
   });
 
+  describe('updateStageTablePagination', () => {
+    beforeEach(() => {
+      state = { ...state, selectedStage };
+    });
+
+    it(`will dispatch the "fetchStageData" action and commit the 'SET_PAGINATION' mutation`, () => {
+      return testAction({
+        action: actions.updateStageTablePagination,
+        state,
+        expectedMutations: [{ type: 'SET_PAGINATION' }],
+        expectedActions: [{ type: 'fetchStageData', payload: selectedStage.id }],
+      });
+    });
+  });
+
   describe('fetchCycleAnalyticsData', () => {
     beforeEach(() => {
       state = { ...defaultState, endpoints: mockEndpoints };
@@ -154,6 +177,10 @@ describe('Project Value Stream Analytics actions', () => {
 
   describe('fetchStageData', () => {
     const mockStagePath = /value_streams\/\w+\/stages\/\w+\/records/;
+    const headers = {
+      'X-Next-Page': 2,
+      'X-Page': 1,
+    };
 
     beforeEach(() => {
       state = {
@@ -162,7 +189,7 @@ describe('Project Value Stream Analytics actions', () => {
         selectedStage,
       };
       mock = new MockAdapter(axios);
-      mock.onGet(mockStagePath).reply(httpStatusCodes.OK);
+      mock.onGet(mockStagePath).reply(httpStatusCodes.OK, reviewEvents, headers);
     });
 
     it(`commits the 'RECEIVE_STAGE_DATA_SUCCESS' mutation`, () =>
@@ -170,7 +197,11 @@ describe('Project Value Stream Analytics actions', () => {
         action: actions.fetchStageData,
         state,
         payload: {},
-        expectedMutations: [{ type: 'REQUEST_STAGE_DATA' }, { type: 'RECEIVE_STAGE_DATA_SUCCESS' }],
+        expectedMutations: [
+          { type: 'REQUEST_STAGE_DATA' },
+          { type: 'RECEIVE_STAGE_DATA_SUCCESS', payload: reviewEvents },
+          { type: 'SET_PAGINATION', payload: { hasNextPage: true, page: 1 } },
+        ],
         expectedActions: [],
       }));
 

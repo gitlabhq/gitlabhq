@@ -20,8 +20,6 @@ class ProductAnalyticsEvent < ApplicationRecord
     where('collector_tstamp BETWEEN ? AND ? ', today - duration + 1, today + 1)
   }
 
-  scope :by_category_and_action, ->(category, action) { where(se_category: category, se_action: action) }
-
   def self.count_by_graph(graph, days)
     group(graph).timerange(days).count
   end

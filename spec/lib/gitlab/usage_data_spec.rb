@@ -724,7 +724,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
-      expect(counts_monthly[:promoted_issues]).to eq(1)
+      expect(counts_monthly[:promoted_issues]).to eq(Gitlab::UsageData::DEPRECATED_VALUE)
     end
   end
 
@@ -1416,50 +1416,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         }
 
         expect(subject).to eq(expected_data)
-      end
-    end
-  end
-
-  describe '.snowplow_event_counts' do
-    let_it_be(:time_period) { { collector_tstamp: 8.days.ago..1.day.ago } }
-
-    context 'when self-monitoring project exists' do
-      let_it_be(:project) { create(:project) }
-
-      before do
-        stub_application_setting(self_monitoring_project: project)
-      end
-
-      context 'and product_analytics FF is enabled for it' do
-        before do
-          stub_feature_flags(product_analytics_tracking: true)
-
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 2.days.ago)
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 9.days.ago)
-
-          create(:product_analytics_event, project: project, se_category: 'foo', se_action: 'bar', collector_tstamp: 2.days.ago)
-        end
-
-        it 'returns promoted_issues for the time period' do
-          expect(described_class.snowplow_event_counts(time_period)[:promoted_issues]).to eq(1)
-        end
-      end
-
-      context 'and product_analytics FF is disabled' do
-        before do
-          stub_feature_flags(product_analytics_tracking: false)
-        end
-
-        it 'returns an empty hash' do
-          expect(described_class.snowplow_event_counts(time_period)).to eq({})
-        end
-      end
-    end
-
-    context 'when self-monitoring project does not exist' do
-      it 'returns an empty hash' do
-        expect(described_class.snowplow_event_counts(time_period)).to eq({})
       end
     end
   end

@@ -19,6 +19,7 @@ import {
   createdAfter,
   currentGroup,
   stageCounts,
+  initialPaginationState as pagination,
 } from './mock_data';
 
 const selectedStageEvents = issueEvents.events;
@@ -81,6 +82,7 @@ const findOverviewMetrics = () => wrapper.findComponent(ValueStreamMetrics);
 const findStageTable = () => wrapper.findComponent(StageTable);
 const findStageEvents = () => findStageTable().props('stageEvents');
 const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
+const findPagination = () => wrapper.findByTestId('vsa-stage-pagination');
 
 const hasMetricsRequests = (reqs) => {
   const foundReqs = findOverviewMetrics().props('requests');
@@ -90,7 +92,7 @@ const hasMetricsRequests = (reqs) => {
 
 describe('Value stream analytics component', () => {
   beforeEach(() => {
-    wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents } });
+    wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents, pagination } });
   });
 
   afterEach(() => {
@@ -151,6 +153,10 @@ describe('Value stream analytics component', () => {
 
   it('does not render the loading icon', () => {
     expect(findLoadingIcon().exists()).toBe(false);
+  });
+
+  it('renders pagination', () => {
+    expect(findPagination().exists()).toBe(true);
   });
 
   describe('with `cycleAnalyticsForGroups=true` license', () => {

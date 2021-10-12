@@ -255,14 +255,14 @@ requirements.
 1. The change is tested in a review app where possible and if appropriate.
 1. The new feature does not degrade the user experience of the product.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
-1. An agreed-upon rollout plan.  
+1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans).  
 1. Merged by a project maintainer.
 
 ### Production use
 
 1. Confirmed to be working in staging before implementing the change in production, where possible.
 1. Confirmed to be working in the production with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors after the contribution is deployed.
-1. Confirmed that the rollout plan has been completed.
+1. Confirmed that the [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans) has been completed.
 1. If there is a performance risk in the change, I have analyzed the performance of the system before and after the change.
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
    - Confirmed to be working on GitLab projects.

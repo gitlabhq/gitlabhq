@@ -4715,13 +4715,13 @@ Input type: `VulnerabilityCreateInput`
 | <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
 | <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
 | <a id="mutationvulnerabilitycreatemessage"></a>`message` | [`String`](#string) | Additional information about the vulnerability. |
+| <a id="mutationvulnerabilitycreatename"></a>`name` | [`String!`](#string) | Name of the vulnerability. |
 | <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
 | <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
-| <a id="mutationvulnerabilitycreatescannername"></a>`scannerName` | [`String!`](#string) | Name of the security scanner used to discover the vulnerability. |
+| <a id="mutationvulnerabilitycreatescanner"></a>`scanner` | [`VulnerabilityScannerInput!`](#vulnerabilityscannerinput) | Information about the scanner used to discover the vulnerability. |
 | <a id="mutationvulnerabilitycreateseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (defaults to `unknown`). |
 | <a id="mutationvulnerabilitycreatesolution"></a>`solution` | [`String`](#string) | How to fix this vulnerability. |
 | <a id="mutationvulnerabilitycreatestate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (defaults to `detected`). |
-| <a id="mutationvulnerabilitycreatetitle"></a>`title` | [`String!`](#string) | Title of the vulnerability. |
 
 #### Fields
 
@@ -9816,6 +9816,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="epicissuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="epicissuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
+| <a id="epicissuecustomerrelationscontacts"></a>`customerRelationsContacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Customer relations contacts of the issue. (see [Connections](#connections)) |
 | <a id="epicissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="epicissuedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="epicissuedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with this issue. |
@@ -10979,6 +10980,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="issueconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the issue is confidential. |
 | <a id="issuecreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the issue. |
 | <a id="issuecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the issue was created. |
+| <a id="issuecustomerrelationscontacts"></a>`customerRelationsContacts` | [`CustomerRelationsContactConnection`](#customerrelationscontactconnection) | Customer relations contacts of the issue. (see [Connections](#connections)) |
 | <a id="issuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="issuedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
 | <a id="issuedesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with this issue. |
@@ -18311,3 +18313,23 @@ A time-frame defined as a closed inclusive range of two dates.
 | <a id="vulnerabilityidentifierinputexternaltype"></a>`externalType` | [`String`](#string) | External type of the vulnerability identifier. |
 | <a id="vulnerabilityidentifierinputname"></a>`name` | [`String!`](#string) | Name of the vulnerability identifier. |
 | <a id="vulnerabilityidentifierinputurl"></a>`url` | [`String!`](#string) | URL of the vulnerability identifier. |
+
+### `VulnerabilityScannerInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityscannerinputid"></a>`id` | [`String!`](#string) | Unique ID that identifies the scanner. |
+| <a id="vulnerabilityscannerinputname"></a>`name` | [`String!`](#string) | Human readable value that identifies the analyzer, not required to be unique. |
+| <a id="vulnerabilityscannerinputurl"></a>`url` | [`String!`](#string) | Link to more information about the analyzer. |
+| <a id="vulnerabilityscannerinputvendor"></a>`vendor` | [`VulnerabilityScannerVendorInput`](#vulnerabilityscannervendorinput) | Information about vendor/maintainer of the scanner. |
+| <a id="vulnerabilityscannerinputversion"></a>`version` | [`String!`](#string) | Version of the scanner. |
+
+### `VulnerabilityScannerVendorInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityscannervendorinputname"></a>`name` | [`String!`](#string) | Name of the vendor/maintainer. |

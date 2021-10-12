@@ -51,6 +51,7 @@ export default {
       'features',
       'createdBefore',
       'createdAfter',
+      'pagination',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
     displayStageEvents() {
@@ -99,7 +100,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchStageData', 'setSelectedStage', 'setDateRange']),
+    ...mapActions([
+      'fetchStageData',
+      'setSelectedStage',
+      'setDateRange',
+      'updateStageTablePagination',
+    ]),
     onSetDateRange({ startDate, endDate }) {
       this.setDateRange({
         createdAfter: new Date(startDate),
@@ -108,6 +114,7 @@ export default {
     },
     onSelectStage(stage) {
       this.setSelectedStage(stage);
+      this.updateStageTablePagination({ ...this.pagination, page: 1 });
     },
     dismissOverviewDialog() {
       this.isOverviewDialogDismissed = true;
@@ -116,6 +123,9 @@ export default {
     isUserAllowed(id) {
       const { permissions } = this;
       return Boolean(permissions?.[id]);
+    },
+    onHandleUpdatePagination(data) {
+      this.updateStageTablePagination(data);
     },
   },
   dayRangeOptions: [7, 30, 90],
@@ -163,8 +173,8 @@ export default {
       :empty-state-title="emptyStageTitle"
       :empty-state-message="emptyStageText"
       :no-data-svg-path="noDataSvgPath"
-      :pagination="null"
-      :sortable="false"
+      :pagination="pagination"
+      @handleUpdatePagination="onHandleUpdatePagination"
     />
   </div>
 </template>

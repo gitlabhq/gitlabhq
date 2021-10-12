@@ -942,7 +942,6 @@ Aggregated metrics collected in `7d` and `28d` time frames are added into Servic
     :packages => 155,
     :personal_snippets => 2106,
     :project_snippets => 407,
-    :promoted_issues => 719,
     :aggregated_metrics => {
       :example_metrics_union => 7,
       :example_metrics_intersection => 2

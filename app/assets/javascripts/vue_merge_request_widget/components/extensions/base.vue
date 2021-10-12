@@ -6,6 +6,7 @@ import {
   GlBadge,
   GlSafeHtmlDirective,
   GlTooltipDirective,
+  GlIntersectionObserver,
 } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
@@ -25,6 +26,7 @@ export default {
     GlLoadingIcon,
     GlLink,
     GlBadge,
+    GlIntersectionObserver,
     SmartVirtualList,
     StatusIcon,
     Actions,
@@ -39,6 +41,7 @@ export default {
       collapsedData: null,
       fullData: null,
       isCollapsed: true,
+      showFade: false,
     };
   },
   computed: {
@@ -117,6 +120,16 @@ export default {
           throw e;
         });
     },
+    appear(index) {
+      if (index === this.fullData.length - 1) {
+        this.showFade = false;
+      }
+    },
+    disappear(index) {
+      if (index === this.fullData.length - 1) {
+        this.showFade = true;
+      }
+    },
   },
   EXTENSION_ICON_CLASS,
 };
@@ -154,7 +167,7 @@ export default {
     </div>
     <div
       v-if="!isCollapsed"
-      class="mr-widget-grouped-section"
+      class="mr-widget-grouped-section gl-relative"
       data-testid="widget-extension-collapsed-section"
     >
       <div v-if="isLoadingExpanded" class="report-block-container">
@@ -167,16 +180,24 @@ export default {
         :size="32"
         wtag="ul"
         wclass="report-block-list"
-        class="report-block-container"
+        class="report-block-container gl-px-5 gl-py-0"
       >
         <li
-          v-for="data in fullData"
+          v-for="(data, index) in fullData"
           :key="data.id"
-          class="gl-display-flex gl-align-items-center"
+          :class="{
+            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
+          }"
+          class="gl-display-flex gl-align-items-center gl-py-3 gl-pl-7"
           data-testid="extension-list-item"
         >
           <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
-          <div class="gl-mt-2 gl-mb-2 gl-flex-wrap gl-align-self-center gl-display-flex">
+          <gl-intersection-observer
+            :options="{ rootMargin: '100px', thresholds: 0.1 }"
+            class="gl-flex-wrap gl-align-self-center gl-display-flex"
+            @appear="appear(index)"
+            @disappear="disappear(index)"
+          >
             <div v-safe-html="data.text" class="gl-mr-4"></div>
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
@@ -184,9 +205,13 @@ export default {
             <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
               {{ data.badge.text }}
             </gl-badge>
-          </div>
+          </gl-intersection-observer>
         </li>
       </smart-virtual-list>
+      <div
+        :class="{ show: showFade }"
+        class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7"
+      ></div>
     </div>
   </section>
 </template>

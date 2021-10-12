@@ -203,19 +203,6 @@ module Gitlab
         }
       end
 
-      def snowplow_event_counts(time_period)
-        return {} unless report_snowplow_events?
-
-        {
-          promoted_issues: count(
-            self_monitoring_project
-              .product_analytics_events
-              .by_category_and_action('epics', 'promote')
-              .where(time_period)
-          )
-        }
-      end
-
       def system_usage_data_monthly
         {
           counts_monthly: {
@@ -228,10 +215,9 @@ module Gitlab
             packages: count(::Packages::Package.where(monthly_time_range_db_params)),
             personal_snippets: count(PersonalSnippet.where(monthly_time_range_db_params)),
             project_snippets: count(ProjectSnippet.where(monthly_time_range_db_params)),
-            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id)
-          }.merge(
-            snowplow_event_counts(monthly_time_range_db_params(column: :collector_tstamp))
-          ).tap do |data|
+            projects_with_alerts_created: distinct_count(::AlertManagement::Alert.where(monthly_time_range_db_params), :project_id),
+            promoted_issues: DEPRECATED_VALUE
+          }.tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
         }
@@ -786,10 +772,6 @@ module Gitlab
         }
       end
 
-      def report_snowplow_events?
-        self_monitoring_project && Feature.enabled?(:product_analytics_tracking, type: :ops)
-      end
-
       def distinct_count_service_desk_enabled_projects(time_period)
         project_creator_id_start = minimum_id(User)
         project_creator_id_finish = maximum_id(User)
@@ -848,10 +830,6 @@ module Gitlab
         add count(Issue.with_alert_management_alerts, start: minimum_id(Issue), finish: maximum_id(Issue)),
           count(::Issue.with_self_managed_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue)),
           count(::Issue.with_prometheus_alert_events, start: minimum_id(Issue), finish: maximum_id(Issue))
-      end
-
-      def self_monitoring_project
-        Gitlab::CurrentSettings.self_monitoring_project
       end
 
       def clear_memoized

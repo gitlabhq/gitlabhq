@@ -36,17 +36,6 @@ RSpec.describe ProductAnalyticsEvent, type: :model do
     it { expect(described_class.count_by_graph('platform', 30.days)).to eq({ 'app' => 1, 'mobile' => 1, 'web' => 2 }) }
   end
 
-  describe '.by_category_and_action' do
-    let_it_be(:event) { create(:product_analytics_event, se_category: 'catA', se_action: 'actA') }
-
-    before do
-      create(:product_analytics_event, se_category: 'catA', se_action: 'actB')
-      create(:product_analytics_event, se_category: 'catB', se_action: 'actA')
-    end
-
-    it { expect(described_class.by_category_and_action('catA', 'actA')).to match_array([event]) }
-  end
-
   describe '.count_collector_tstamp_by_day' do
     let_it_be(:time_now) { Time.zone.now }
     let_it_be(:time_ago) { Time.zone.now - 5.days }

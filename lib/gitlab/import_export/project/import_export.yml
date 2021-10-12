@@ -225,6 +225,53 @@ included_attributes:
     - :updated_at
     - :start_date
     - :state
+  protected_branches:
+    - :project_id
+    - :name
+    - :created_at
+    - :updated_at
+    - :code_owner_approval_required
+    - :allow_force_push
+  protected_tags:
+    - :project_id
+    - :name
+    - :created_at
+    - :updated_at
+  create_access_levels:
+    - :access_level
+    - :created_at
+    - :updated_at
+    - :user_id
+    - :group_id
+  merge_access_levels:
+    - :access_level
+    - :created_at
+    - :updated_at
+    - :user_id
+    - :group_id
+  push_access_levels:
+    - :access_level
+    - :created_at
+    - :updated_at
+    - :user_id
+    - :group_id
+  releases:
+    - :tag
+    - :description
+    - :project_id
+    - :author_id
+    - :created_at
+    - :updated_at
+    - :name
+    - :sha
+    - :released_at
+  links:
+    - :url
+    - :name
+    - :created_at
+    - :updated_at
+    - :filepath
+    - :link_type
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -593,3 +640,20 @@ ee:
       - :reject_unsigned_commits
       - :commit_committer_check
       - :regexp_uses_re2
+    unprotect_access_levels:
+      - :access_level
+      - :user_id
+      - :group_id
+    deploy_access_levels:
+      - :created_at
+      - :updated_at
+      - :access_level
+      - :user_id
+      - :group_id
+    protected_environments:
+      - :project_id
+      - :group_id
+      - :name
+      - :created_at
+      - :updated_at
+

@@ -103,8 +103,8 @@ export default {
     GlDropdownItem,
     GlFormCheckbox,
     GlSkeletonLoader,
-    MergeTrainHelperText: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_helper_text.vue'),
+    MergeTrainHelperIcon: () =>
+      import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -238,7 +238,7 @@ export default {
       return CONFIRM;
     },
     iconClass() {
-      if (this.shouldRenderMergeTrainHelperText && !this.mr.preventMerge) {
+      if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
         return PIPELINE_RUNNING_STATE;
       }
 
@@ -504,7 +504,7 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div class="mr-widget-body media" :class="{ 'gl-pb-3': shouldRenderMergeTrainHelperText }">
+      <div class="mr-widget-body media">
         <status-icon :status="iconClass" />
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center">
@@ -575,6 +575,13 @@ export default {
                 :is-disabled="isSquashReadOnly"
                 class="gl-mx-3"
               />
+
+              <merge-train-helper-icon
+                v-if="shouldRenderMergeTrainHelperIcon"
+                :merge-train-when-pipeline-succeeds-docs-path="
+                  mr.mergeTrainWhenPipelineSucceedsDocsPath
+                "
+              />
             </div>
             <template v-else>
               <div class="bold js-resolve-mr-widget-items-message gl-ml-3">
@@ -605,13 +612,6 @@ export default {
           </div>
         </div>
       </div>
-      <merge-train-helper-text
-        v-if="shouldRenderMergeTrainHelperText"
-        :pipeline-id="pipelineId"
-        :pipeline-link="pipeline.path"
-        :merge-train-length="stateData.mergeTrainsCount"
-        :merge-train-when-pipeline-succeeds-docs-path="mr.mergeTrainWhenPipelineSucceedsDocsPath"
-      />
       <template v-if="shouldShowMergeControls">
         <div
           v-if="!shouldShowMergeEdit"

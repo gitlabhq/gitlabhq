@@ -2,6 +2,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
 import getProjects from '~/analytics/shared/graphql/projects.query.graphql';
 
@@ -65,7 +66,7 @@ describe('ProjectsDropdownFilter component', () => {
 
   const createWithMockDropdown = (props) => {
     createComponent(props, { GlDropdown: MockGlDropdown });
-    return wrapper.vm.$nextTick();
+    return waitForPromises();
   };
 
   afterEach(() => {
@@ -73,6 +74,7 @@ describe('ProjectsDropdownFilter component', () => {
   });
 
   const findHighlightedItems = () => wrapper.findByTestId('vsa-highlighted-items');
+  const findUnhighlightedItems = () => wrapper.findByTestId('vsa-default-items');
   const findHighlightedItemsTitle = () => wrapper.findByText('Selected');
   const findClearAllButton = () => wrapper.findByText('Clear all');
 
@@ -194,6 +196,24 @@ describe('ProjectsDropdownFilter component', () => {
         expect(wrapper.text()).not.toContain('2 projects selected');
         expect(wrapper.text()).toContain('Select projects');
       });
+    });
+  });
+
+  describe('with a selected project and search term', () => {
+    beforeEach(async () => {
+      await createWithMockDropdown({ multiSelect: true });
+
+      selectDropdownItemAtIndex(0);
+      wrapper.setData({ searchTerm: 'this is a very long search string' });
+    });
+
+    it('renders the highlighted items', async () => {
+      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
+    });
+
+    it('hides the unhighlighted items that do not match the string', async () => {
+      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
+      expect(findUnhighlightedItems().text()).toContain('No matching results');
     });
   });
 

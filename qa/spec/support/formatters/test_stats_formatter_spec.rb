@@ -25,7 +25,6 @@ describe QA::Support::Formatters::TestStatsFormatter do
     {
       bucket: 'e2e-test-stats',
       org: 'gitlab-qa',
-      use_ssl: false,
       precision: InfluxDB2::WritePrecision::NANOSECOND
     }
   end

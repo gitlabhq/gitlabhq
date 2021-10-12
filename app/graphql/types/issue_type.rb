@@ -136,6 +136,9 @@ module Types
     field :project_id, GraphQL::Types::Int, null: false, method: :project_id,
           description: 'ID of the issue project.'
 
+    field :customer_relations_contacts, Types::CustomerRelations::ContactType.connection_type, null: true,
+          description: 'Customer relations contacts of the issue.'
+
     def author
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
     end

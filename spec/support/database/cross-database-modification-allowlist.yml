@@ -1228,6 +1228,7 @@
 - "./spec/requests/api/commit_statuses_spec.rb"
 - "./spec/requests/api/graphql/ci/runner_spec.rb"
 - "./spec/requests/api/graphql/mutations/ci/pipeline_destroy_spec.rb"
+- "./spec/requests/api/graphql/project/issues_spec.rb"
 - "./spec/requests/api/graphql/project/merge_request_spec.rb"
 - "./spec/requests/api/graphql/project_query_spec.rb"
 - "./spec/requests/api/issues/issues_spec.rb"

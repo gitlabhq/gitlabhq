@@ -260,10 +260,9 @@ class Environment < ApplicationRecord
   end
 
   def cancel_deployment_jobs!
-    jobs = active_deployments.with_deployable
-    jobs.each do |deployment|
-      Gitlab::OptimisticLocking.retry_lock(deployment.deployable, name: 'environment_cancel_deployment_jobs') do |deployable|
-        deployable.cancel! if deployable&.cancelable?
+    active_deployments.builds.each do |build|
+      Gitlab::OptimisticLocking.retry_lock(build, name: 'environment_cancel_deployment_jobs') do |build|
+        build.cancel! if build&.cancelable?
       end
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, environment_id: id, deployment_id: deployment.id)

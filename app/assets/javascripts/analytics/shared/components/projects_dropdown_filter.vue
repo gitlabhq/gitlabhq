@@ -101,9 +101,7 @@ export default {
       return !loading && !availableProjects.length;
     },
     selectedItems() {
-      return sortByProjectName(
-        this.availableProjects.filter(({ id }) => this.selectedProjectIds.includes(id)),
-      );
+      return sortByProjectName(this.selectedProjects);
     },
     unselectedItems() {
       return this.availableProjects.filter(({ id }) => !this.selectedProjectIds.includes(id));

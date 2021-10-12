@@ -92,6 +92,13 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
       :boards                 | true
       :custom_attributes      | true
       :labels                 | true
+      :protected_branches     | true
+      :protected_tags         | true
+      :create_access_levels   | true
+      :merge_access_levels    | true
+      :push_access_levels     | true
+      :releases               | true
+      :links                  | true
     end
 
     with_them do

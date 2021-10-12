@@ -125,17 +125,7 @@ NOTE:
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
-Example request:
-
-```shell
-curl --request POST \
-  --data '{"title": "Incident title"}' \
-  --header "Authorization: Bearer <authorization_key>" \
-  --header "Content-Type: application/json" \
-  <url>
-```
-
-The `<authorization_key>` and `<url>` values can be found when configuring an alert integration.
+### Example request body
 
 Example payload:
 
@@ -156,6 +146,55 @@ Example payload:
   }
 }
 ```
+
+## Authorization
+
+The following authorization methods are accepted:
+
+- Bearer authorization header
+- Basic authentication
+
+The `<authorization_key>` and `<url>` values can be found when configuring an alert integration.
+
+### Bearer authorization header
+
+The authorization key can be used as the Bearer token:
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Authorization: Bearer <authorization_key>" \
+  --header "Content-Type: application/json" \
+  <url>
+```
+
+### Basic authentication
+
+The authorization key can be used as the `password`. The `username` is left blank:
+
+- username: <blank>
+- pasword: authorization_key
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Authorization: Basic <base_64_encoded_credentials>" \
+  --header "Content-Type: application/json" \
+  <url>
+```
+
+Basic authentication can also be used with credentials directly in the URL:
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Content-Type: application/json" \
+  <username:password@url>
+```
+
+WARNING:
+Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
+using one of the above header options if your tooling supports it.
 
 ## Triggering test alerts
 

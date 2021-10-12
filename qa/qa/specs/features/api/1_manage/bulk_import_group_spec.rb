@@ -143,7 +143,10 @@ module QA
           member.remove_via_api!
         end
 
-        it 'adds members for imported group' do
+        it(
+          'adds members for imported group',
+          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2310'
+        ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
           imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }

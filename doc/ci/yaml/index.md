@@ -794,7 +794,7 @@ job:
 Scripts you specify in `after_script` execute in a new shell, separate from any
 `before_script` or `script` commands. As a result, they:
 
-- Have a current working directory set back to the default.
+- Have the current working directory set back to the default (according to the [variables which define how the runner processes Git requests](#configure-runner-behavior-with-variables)).
 - Don't have access to changes done by commands defined in the `before_script` or `script`,
   including:
   - Command aliases and variables exported in `script` scripts.

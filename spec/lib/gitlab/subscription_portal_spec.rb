@@ -9,6 +9,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
   before do
     stub_env('CUSTOMER_PORTAL_URL', env_value)
+    stub_feature_flags(new_customersdot_staging_url: false)
   end
 
   describe '.default_subscriptions_url' do

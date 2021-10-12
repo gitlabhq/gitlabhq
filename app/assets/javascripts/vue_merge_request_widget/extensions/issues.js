@@ -57,10 +57,10 @@ export default {
               name: issue.state === 'closed' ? EXTENSION_ICONS.error : EXTENSION_ICONS.success,
             },
             // Badges get rendered next to the text on each row
-            badge: issue.state === 'closed' && {
-              text: 'Closed', // Required: Text to be used inside of the badge
-              // variant: 'info', // Optional: The variant of the badge, maps to GitLab UI variants
-            },
+            // badge: issue.state === 'closed' && {
+            //   text: 'Closed', // Required: Text to be used inside of the badge
+            //   // variant: 'info', // Optional: The variant of the badge, maps to GitLab UI variants
+            // },
             // Each row can have its own link that will take the user elsewhere
             // link: {
             //   href: 'https://google.com', // Required: href for the link

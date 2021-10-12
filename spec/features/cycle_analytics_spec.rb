@@ -7,10 +7,13 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:guest) { create(:user) }
   let_it_be(:stage_table_selector) { '[data-testid="vsa-stage-table"]' }
   let_it_be(:stage_table_event_selector) { '[data-testid="vsa-stage-event"]' }
+  let_it_be(:stage_table_event_title_selector) { '[data-testid="vsa-stage-event-title"]' }
+  let_it_be(:stage_table_pagination_selector) { '[data-testid="vsa-stage-pagination"]' }
+  let_it_be(:stage_table_duration_column_header_selector) { '[data-testid="vsa-stage-header-duration"]' }
   let_it_be(:metrics_selector) { "[data-testid='vsa-time-metrics']" }
   let_it_be(:metric_value_selector) { "[data-testid='displayValue']" }
 
-  let(:stage_table) { page.find(stage_table_selector) }
+  let(:stage_table) { find(stage_table_selector) }
   let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
@@ -53,6 +56,7 @@ RSpec.describe 'Value Stream Analytics', :js do
       # So setting the date range to be the last 2 days should skip past the existing data
       from = 2.days.ago.strftime("%Y-%m-%d")
       to = 1.day.ago.strftime("%Y-%m-%d")
+      max_items_per_page = 20
 
       around do |example|
         travel_to(5.days.ago) { example.run }
@@ -60,9 +64,8 @@ RSpec.describe 'Value Stream Analytics', :js do
 
       before do
         project.add_maintainer(user)
-        create_list(:issue, 2, project: project, created_at: 2.weeks.ago, milestone: milestone)
-
         create_cycle(user, project, issue, mr, milestone, pipeline)
+        create_list(:issue, max_items_per_page, project: project, created_at: 2.weeks.ago, milestone: milestone)
         deploy_master(user, project)
 
         issue.metrics.update!(first_mentioned_in_commit_at: issue.metrics.first_associated_with_milestone_at + 1.hour)
@@ -80,6 +83,8 @@ RSpec.describe 'Value Stream Analytics', :js do
 
         wait_for_requests
       end
+
+      let(:stage_table_events) { stage_table.all(stage_table_event_selector) }
 
       it 'displays metrics' do
         metrics_tiles = page.find(metrics_selector)
@@ -112,19 +117,61 @@ RSpec.describe 'Value Stream Analytics', :js do
       end
 
       it 'can filter the issues by date' do
-        expect(stage_table.all(stage_table_event_selector).length).to eq(3)
+        expect(page).to have_selector(stage_table_event_selector)
 
         set_daterange(from, to)
 
-        expect(stage_table.all(stage_table_event_selector).length).to eq(0)
+        expect(page).not_to have_selector(stage_table_event_selector)
+        expect(page).not_to have_selector(stage_table_pagination_selector)
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to eq(["3.0", "2.0", "1.0", "0.0"])
+        expect(metrics_values).to match_array(["21.0", "2.0", "1.0", "0.0"])
 
         set_daterange(from, to)
 
         expect(metrics_values).to eq(['-'] * 4)
+      end
+
+      it 'can sort records' do
+        # NOTE: checking that the string changes should suffice
+        # depending on the order the tests are run we might run into problems with hard coded strings
+        original_first_title = first_stage_title
+        stage_time_column.click
+
+        expect_to_be_sorted "descending"
+        expect(first_stage_title).not_to have_text(original_first_title, exact: true)
+
+        stage_time_column.click
+
+        expect_to_be_sorted "ascending"
+        expect(first_stage_title).to have_text(original_first_title, exact: true)
+      end
+
+      it 'paginates the results' do
+        original_first_title = first_stage_title
+
+        expect(page).to have_selector(stage_table_pagination_selector)
+
+        go_to_next_page
+
+        expect(page).not_to have_text(original_first_title, exact: true)
+      end
+
+      def stage_time_column
+        stage_table.find(stage_table_duration_column_header_selector).ancestor("th")
+      end
+
+      def first_stage_title
+        stage_table.all(stage_table_event_title_selector).first.text
+      end
+
+      def expect_to_be_sorted(direction)
+        expect(stage_time_column['aria-sort']).to eq(direction)
+      end
+
+      def go_to_next_page
+        page.find(stage_table_pagination_selector).find_link("Next").click
       end
     end
   end

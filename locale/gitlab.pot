@@ -40607,6 +40607,9 @@ msgstr ""
 msgid "mrWidget|%{prefixToLinkStart}No pipeline%{prefixToLinkEnd} %{addPipelineLinkStart}Add the .gitlab-ci.yml file%{addPipelineLinkEnd} to create one."
 msgstr ""
 
+msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
+msgstr ""
+
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr ""
 
@@ -40700,6 +40703,9 @@ msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccura
 msgstr ""
 
 msgid "mrWidget|Jump to first unresolved thread"
+msgstr ""
+
+msgid "mrWidget|Learn more"
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"
@@ -40851,12 +40857,6 @@ msgstr ""
 msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
-msgid "mrWidget|This action will add the merge request to the merge train when pipeline %{pipelineLink} succeeds."
-msgstr ""
-
-msgid "mrWidget|This action will start a merge train when pipeline %{pipelineLink} succeeds."
-msgstr ""
-
 msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr ""
 
@@ -40870,6 +40870,9 @@ msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or des
 msgstr ""
 
 msgid "mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simply adding a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust."
+msgstr ""
+
+msgid "mrWidget|What is a merge train?"
 msgstr ""
 
 msgid "mrWidget|You can merge after removing denied licenses"

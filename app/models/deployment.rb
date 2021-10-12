@@ -46,7 +46,6 @@ class Deployment < ApplicationRecord
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
-  scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
   scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
@@ -146,6 +145,16 @@ class Deployment < ApplicationRecord
 
   def self.find_successful_deployment!(iid)
     success.find_by!(iid: iid)
+  end
+
+  # It should be used with caution especially on chaining.
+  # Fetching any unbounded or large intermediate dataset could lead to loading too many IDs into memory.
+  # See: https://docs.gitlab.com/ee/development/database/multiple_databases.html#use-disable_joins-for-has_one-or-has_many-through-relations
+  # For safety we default limit to fetch not more than 1000 records.
+  def self.builds(limit = 1000)
+    deployable_ids = where.not(deployable_id: nil).limit(limit).pluck(:deployable_id)
+
+    Ci::Build.where(id: deployable_ids)
   end
 
   class << self

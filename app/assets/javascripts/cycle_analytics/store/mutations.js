@@ -1,13 +1,24 @@
+import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { PAGINATION_SORT_FIELD_END_EVENT, PAGINATION_SORT_DIRECTION_DESC } from '../constants';
 import { formatMedianValues } from '../utils';
 import * as types from './mutation_types';
 
 export default {
-  [types.INITIALIZE_VSA](state, { endpoints, features, createdBefore, createdAfter }) {
+  [types.INITIALIZE_VSA](
+    state,
+    { endpoints, features, createdBefore, createdAfter, pagination = {} },
+  ) {
     state.endpoints = endpoints;
     state.createdBefore = createdBefore;
     state.createdAfter = createdAfter;
     state.features = features;
+
+    Vue.set(state, 'pagination', {
+      page: pagination.page ?? state.pagination.page,
+      sort: pagination.sort ?? state.pagination.sort,
+      direction: pagination.direction ?? state.pagination.direction,
+    });
   },
   [types.SET_LOADING](state, loadingState) {
     state.isLoading = loadingState;
@@ -21,6 +32,14 @@ export default {
   [types.SET_DATE_RANGE](state, { createdAfter, createdBefore }) {
     state.createdBefore = createdBefore;
     state.createdAfter = createdAfter;
+  },
+  [types.SET_PAGINATION](state, { page, hasNextPage, sort, direction }) {
+    Vue.set(state, 'pagination', {
+      page,
+      hasNextPage,
+      sort: sort || PAGINATION_SORT_FIELD_END_EVENT,
+      direction: direction || PAGINATION_SORT_DIRECTION_DESC,
+    });
   },
   [types.REQUEST_VALUE_STREAMS](state) {
     state.valueStreams = [];

@@ -284,9 +284,9 @@ To sort the stage table by a table column, select the table header.
 You can sort in ascending or descending order. To find items that spent the most time in a stage,
 potentially causing bottlenecks in your value stream, sort the table by the **Time** column.
 From there, select individual items to drill in and investigate how delays are happening.
-To see which items the stage most recently, sort by the work item column on the left.
+To see which items most recently exited the stage, sort by the work item column on the left.
 
-The table displays up to 20 items at a time. If there are more than 20 items, you can use the
+The table displays 20 items per page. If there are more than 20 items, you can use the
 **Prev** and **Next** buttons to navigate through the pages.
 
 ### Creating a value stream

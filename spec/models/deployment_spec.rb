@@ -456,18 +456,6 @@ RSpec.describe Deployment do
       end
     end
 
-    describe 'with_deployable' do
-      subject { described_class.with_deployable }
-
-      it 'retrieves deployments with deployable builds' do
-        with_deployable = create(:deployment)
-        create(:deployment, deployable: nil)
-        create(:deployment, deployable_type: 'CommitStatus', deployable_id: non_existing_record_id)
-
-        is_expected.to contain_exactly(with_deployable)
-      end
-    end
-
     describe 'visible' do
       subject { described_class.visible }
 
@@ -610,6 +598,26 @@ RSpec.describe Deployment do
     it 'raises when no deployment is found' do
       expect { described_class.find_successful_deployment!(-1) }
         .to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '.builds' do
+    let!(:deployment1) { create(:deployment) }
+    let!(:deployment2) { create(:deployment) }
+    let!(:deployment3) { create(:deployment) }
+
+    subject { described_class.builds }
+
+    it 'retrieves builds for the deployments' do
+      is_expected.to match_array(
+        [deployment1.deployable, deployment2.deployable, deployment3.deployable])
+    end
+
+    it 'does not fetch the null deployable_ids' do
+      deployment3.update!(deployable_id: nil, deployable_type: nil)
+
+      is_expected.to match_array(
+        [deployment1.deployable, deployment2.deployable])
     end
   end
 

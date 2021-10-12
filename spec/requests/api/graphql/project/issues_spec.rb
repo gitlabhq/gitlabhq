@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'getting an issue list for a project' do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:issue_a, reload: true) { create(:issue, project: project, discussion_locked: true) }
   let_it_be(:issue_b, reload: true) { create(:issue, :with_alert, project: project) }
@@ -406,6 +407,35 @@ RSpec.describe 'getting an issue list for a project' do
       expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
 
       expect(alert_titles).to contain_exactly(*expected_titles)
+    end
+  end
+
+  context 'when fetching customer_relations_contacts' do
+    let(:fields) do
+      <<~QUERY
+      nodes {
+        id
+        customerRelationsContacts {
+          nodes {
+            firstName
+          }
+        }
+      }
+      QUERY
+    end
+
+    def clean_state_query
+      run_with_clean_state(query, context: { current_user: current_user })
+    end
+
+    it 'avoids N+1 queries' do
+      create(:contact, group_id: group.id, issues: [issue_a])
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { clean_state_query }
+
+      create(:contact, group_id: group.id, issues: [issue_a])
+
+      expect { clean_state_query }.not_to exceed_all_query_limit(control)
     end
   end
 
