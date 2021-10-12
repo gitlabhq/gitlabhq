@@ -39,6 +39,7 @@ module Types
     mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
     mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji
     mount_mutation Mutations::CustomerRelations::Contacts::Create
+    mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create
     mount_mutation Mutations::CustomerRelations::Organizations::Update
     mount_mutation Mutations::Discussions::ToggleResolve

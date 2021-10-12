@@ -7,13 +7,18 @@ module QA
 
       attr_reader :unique_id
       attr_writer :username, :password
-      attr_accessor :admin, :provider, :extern_uid, :expect_fabrication_success, :hard_delete_on_api_removal
+      attr_accessor :admin,
+                    :provider,
+                    :extern_uid,
+                    :expect_fabrication_success,
+                    :hard_delete_on_api_removal,
+                    :access_level
 
-      attribute :id
-      attribute :name
-      attribute :first_name
-      attribute :last_name
-      attribute :email
+      attributes :id,
+                 :name,
+                 :first_name,
+                 :last_name,
+                 :email
 
       def initialize
         @admin = false

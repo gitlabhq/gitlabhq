@@ -181,13 +181,14 @@ export default {
     </template>
     <template #right-action>
       <gl-dropdown
-        v-if="!isDeleteDisabled"
+        :disabled="isDeleteDisabled"
         icon="ellipsis_v"
         :text="$options.i18n.MORE_ACTIONS_TEXT"
         :text-sr-only="true"
         category="tertiary"
         no-caret
         right
+        :class="{ 'gl-opacity-0 gl-pointer-events-none': isDeleteDisabled }"
         data-testid="additional-actions"
         data-qa-selector="more_actions_menu"
       >

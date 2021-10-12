@@ -2,20 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::CustomerRelations::Organizations::Update do
+RSpec.describe Mutations::CustomerRelations::Contacts::Update do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
-  let(:name) { 'GitLab' }
-  let(:default_rate) { 1000.to_f }
+  let(:first_name) { 'Lionel' }
+  let(:last_name) { 'Smith' }
+  let(:email) { 'ls@gitlab.com' }
   let(:description) { 'VIP' }
   let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
-  let(:organization) { create(:organization, group: group) }
+  let(:contact) { create(:contact, group: group) }
   let(:attributes) do
     {
-      id: organization.to_global_id,
-      name: name,
-      default_rate: default_rate,
+      id: contact.to_global_id,
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
       description: description
     }
   end
@@ -27,7 +29,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
       )
     end
 
-    context 'when the user does not have permission to update an organization' do
+    context 'when the user does not have permission to update a contact' do
       before do
         group.add_reporter(user)
       end
@@ -38,22 +40,22 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
       end
     end
 
-    context 'when the organization does not exist' do
+    context 'when the contact does not exist' do
       it 'raises an error' do
-        attributes[:id] = "gid://gitlab/CustomerRelations::Organization/#{non_existing_record_id}"
+        attributes[:id] = "gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"
 
         expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
           .with_message(does_not_exist_or_no_permission)
       end
     end
 
-    context 'when the user has permission to update an organization' do
+    context 'when the user has permission to update a contact' do
       before_all do
         group.add_developer(user)
       end
 
       it 'updates the organization with correct values' do
-        expect(resolve_mutation[:organization]).to have_attributes(attributes)
+        expect(resolve_mutation[:contact]).to have_attributes(attributes)
       end
 
       context 'when the feature is disabled' do
@@ -69,5 +71,5 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_organization) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_contact) }
 end

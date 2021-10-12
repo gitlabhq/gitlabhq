@@ -283,18 +283,20 @@ describe('tags list row', () => {
     });
 
     it.each`
-      canDelete | digest   | disabled | visible
-      ${true}   | ${null}  | ${true}  | ${false}
-      ${false}  | ${'foo'} | ${true}  | ${false}
-      ${false}  | ${null}  | ${true}  | ${false}
-      ${true}   | ${'foo'} | ${true}  | ${false}
-      ${true}   | ${'foo'} | ${false} | ${true}
+      canDelete | digest   | disabled | buttonDisabled
+      ${true}   | ${null}  | ${true}  | ${true}
+      ${false}  | ${'foo'} | ${true}  | ${true}
+      ${false}  | ${null}  | ${true}  | ${true}
+      ${true}   | ${'foo'} | ${true}  | ${true}
+      ${true}   | ${'foo'} | ${false} | ${false}
     `(
       'is $visible that is visible when canDelete is $canDelete and digest is $digest and disabled is $disabled',
-      ({ canDelete, digest, disabled, visible }) => {
+      ({ canDelete, digest, disabled, buttonDisabled }) => {
         mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest }, disabled });
 
-        expect(findAdditionalActionsMenu().exists()).toBe(visible);
+        expect(findAdditionalActionsMenu().props('disabled')).toBe(buttonDisabled);
+        expect(findAdditionalActionsMenu().classes('gl-opacity-0')).toBe(buttonDisabled);
+        expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(buttonDisabled);
       },
     );
 

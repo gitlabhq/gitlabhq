@@ -271,7 +271,7 @@ RSpec.describe Ci::Runner do
         expect(subject).to be_truthy
 
         expect(runner).to be_project_type
-        expect(runner.projects).to eq([project])
+        expect(runner.runner_projects.pluck(:project_id)).to match_array([project.id])
         expect(runner.only_for?(project)).to be_truthy
       end
     end
@@ -735,7 +735,7 @@ RSpec.describe Ci::Runner do
 
       context 'with invalid runner' do
         before do
-          runner.projects = []
+          runner.runner_projects.delete_all
         end
 
         it 'still updates redis cache and database' do

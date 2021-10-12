@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Contacts::Create do
   let_it_be(:user) { create(:user) }
-  let_it_be(:not_found_or_does_not_belong) { 'The specified organization was not found or does not belong to this group' }
+  let_it_be(:group) { create(:group) }
 
+  let(:not_found_or_does_not_belong) { 'The specified organization was not found or does not belong to this group' }
   let(:valid_params) do
     attributes_for(:contact,
       group: group,
@@ -22,8 +23,6 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
     end
 
     context 'when the user does not have permission' do
-      let_it_be(:group) { create(:group) }
-
       before do
         group.add_reporter(user)
       end
@@ -35,8 +34,6 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
     end
 
     context 'when the user has permission' do
-      let_it_be(:group) { create(:group) }
-
       before_all do
         group.add_developer(user)
       end

@@ -169,6 +169,56 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
     end
   end
 
+  describe '#user_merge_branch' do
+    let(:target_branch) { 'master' }
+    let(:source_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+    let(:message) { 'Merge a branch' }
+
+    subject { client.user_merge_branch(user, source_sha, target_branch, message) {} }
+
+    it 'sends a user_merge_branch message' do
+      expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      expect(subject.newrev).to be_present
+      expect(subject.repo_created).to be(false)
+      expect(subject.branch_created).to be(false)
+    end
+
+    context 'with an exception with the UserMergeBranchError' do
+      let(:permission_error) do
+        GRPC::PermissionDenied.new(
+          "GitLab: You are not allowed to push code to this project.",
+          { "grpc-status-details-bin" =>
+           "\b\a\x129GitLab: You are not allowed to push code to this project.\x1A\xDE\x01\n/type.googleapis.com/gitaly.UserMergeBranchError\x12\xAA\x01\n\xA7\x01\n1You are not allowed to push code to this project.\x12\x03web\x1A\auser-15\"df15b32277d2c55c6c595845a87109b09c913c556 5d6e0f935ad9240655f64e883cd98fad6f9a17ee refs/heads/master\n" }
+        )
+      end
+
+      it 'raises PreRecieveError with the error message' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
+          .and_raise(permission_error)
+
+        expect { subject }.to raise_error do |error|
+          expect(error).to be_a(Gitlab::Git::PreReceiveError)
+          expect(error.message).to eq("You are not allowed to push code to this project.")
+        end
+      end
+    end
+
+    context 'with an exception without the detailed error' do
+      let(:permission_error) do
+        GRPC::PermissionDenied.new
+      end
+
+      it 'raises PermissionDenied' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
+          .and_raise(permission_error)
+
+        expect { subject }.to raise_error(GRPC::PermissionDenied)
+      end
+    end
+  end
+
   describe '#user_ff_branch' do
     let(:target_branch) { 'my-branch' }
     let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }

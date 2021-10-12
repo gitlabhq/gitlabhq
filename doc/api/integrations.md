@@ -467,6 +467,40 @@ Get Custom Issue Tracker integration settings for a project.
 GET /projects/:id/integrations/custom-issue-tracker
 ```
 
+## Discord
+
+Send notifications about project events to a Discord channel.
+
+### Create/Edit Discord integration
+
+Set Discord integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/discord
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | Discord webhook. For example, `https://discord.com/api/webhooks/…` |
+
+### Delete Discord integration
+
+Delete Discord integration for a project.
+
+```plaintext
+DELETE /projects/:id/integrations/discord
+```
+
+### Get Discord integration settings
+
+Get Discord integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/discord
+```
+
 ## Drone CI
 
 Drone is a Continuous Integration platform built on Docker, written in Go

@@ -162,6 +162,14 @@ module Gitlab
         raise Gitlab::Git::CommitError, 'failed to apply merge to branch' unless branch_update.commit_id.present?
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+
+      rescue GRPC::BadStatus => e
+        decoded_error = decode_detailed_error(e)
+
+        raise unless decoded_error.present?
+
+        raise decoded_error
+
       ensure
         request_enum.close
       end
@@ -469,6 +477,31 @@ module Gitlab
         )
       rescue RangeError
         raise ArgumentError, "Unknown action '#{action[:action]}'"
+      end
+
+      def decode_detailed_error(err)
+        # details could have more than one in theory, but we only have one to worry about for now.
+        detailed_error = err.to_rpc_status&.details&.first
+
+        return unless detailed_error.present?
+
+        prefix = %r{type\.googleapis\.com\/gitaly\.(?<error_type>.+)}
+        error_type = prefix.match(detailed_error.type_url)[:error_type]
+
+        detailed_error = Gitaly.const_get(error_type, false).decode(detailed_error.value)
+
+        case detailed_error.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        else
+          # We're handling access_check only for now, but we'll add more detailed error types
+          nil
+        end
+      rescue NameError, NoMethodError
+        # Error Class might not be known to ruby yet
+        nil
       end
     end
   end

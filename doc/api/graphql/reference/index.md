@@ -1425,7 +1425,7 @@ Input type: `CustomerRelationsContactCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcustomerrelationscontactcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcustomerrelationscontactcreatedescription"></a>`description` | [`String`](#string) | Description or notes for the contact. |
+| <a id="mutationcustomerrelationscontactcreatedescription"></a>`description` | [`String`](#string) | Description of or notes for the contact. |
 | <a id="mutationcustomerrelationscontactcreateemail"></a>`email` | [`String`](#string) | Email address of the contact. |
 | <a id="mutationcustomerrelationscontactcreatefirstname"></a>`firstName` | [`String!`](#string) | First name of the contact. |
 | <a id="mutationcustomerrelationscontactcreategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the contact. |
@@ -1441,6 +1441,31 @@ Input type: `CustomerRelationsContactCreateInput`
 | <a id="mutationcustomerrelationscontactcreatecontact"></a>`contact` | [`CustomerRelationsContact`](#customerrelationscontact) | Contact after the mutation. |
 | <a id="mutationcustomerrelationscontactcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.customerRelationsContactUpdate`
+
+Input type: `CustomerRelationsContactUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationscontactupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationscontactupdatedescription"></a>`description` | [`String`](#string) | Description of or notes for the contact. |
+| <a id="mutationcustomerrelationscontactupdateemail"></a>`email` | [`String`](#string) | Email address of the contact. |
+| <a id="mutationcustomerrelationscontactupdatefirstname"></a>`firstName` | [`String`](#string) | First name of the contact. |
+| <a id="mutationcustomerrelationscontactupdateid"></a>`id` | [`CustomerRelationsContactID!`](#customerrelationscontactid) | Global ID of the contact. |
+| <a id="mutationcustomerrelationscontactupdatelastname"></a>`lastName` | [`String`](#string) | Last name of the contact. |
+| <a id="mutationcustomerrelationscontactupdateorganizationid"></a>`organizationId` | [`CustomerRelationsOrganizationID`](#customerrelationsorganizationid) | Organization of the contact. |
+| <a id="mutationcustomerrelationscontactupdatephone"></a>`phone` | [`String`](#string) | Phone number of the contact. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcustomerrelationscontactupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcustomerrelationscontactupdatecontact"></a>`contact` | [`CustomerRelationsContact`](#customerrelationscontact) | Contact after the mutation. |
+| <a id="mutationcustomerrelationscontactupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.customerRelationsOrganizationCreate`
 
 Input type: `CustomerRelationsOrganizationCreateInput`
@@ -1451,7 +1476,7 @@ Input type: `CustomerRelationsOrganizationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcustomerrelationsorganizationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomerrelationsorganizationcreatedefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
-| <a id="mutationcustomerrelationsorganizationcreatedescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="mutationcustomerrelationsorganizationcreatedescription"></a>`description` | [`String`](#string) | Description of or notes for the organization. |
 | <a id="mutationcustomerrelationsorganizationcreategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the organization. |
 | <a id="mutationcustomerrelationsorganizationcreatename"></a>`name` | [`String!`](#string) | Name of the organization. |
 
@@ -1473,7 +1498,7 @@ Input type: `CustomerRelationsOrganizationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcustomerrelationsorganizationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcustomerrelationsorganizationupdatedefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
-| <a id="mutationcustomerrelationsorganizationupdatedescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="mutationcustomerrelationsorganizationupdatedescription"></a>`description` | [`String`](#string) | Description of or notes for the organization. |
 | <a id="mutationcustomerrelationsorganizationupdateid"></a>`id` | [`CustomerRelationsOrganizationID!`](#customerrelationsorganizationid) | Global ID of the organization. |
 | <a id="mutationcustomerrelationsorganizationupdatename"></a>`name` | [`String`](#string) | Name of the organization. |
 
@@ -8881,7 +8906,7 @@ A custom emoji uploaded by user.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="customerrelationscontactcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the contact was created. |
-| <a id="customerrelationscontactdescription"></a>`description` | [`String`](#string) | Description or notes for the contact. |
+| <a id="customerrelationscontactdescription"></a>`description` | [`String`](#string) | Description of or notes for the contact. |
 | <a id="customerrelationscontactemail"></a>`email` | [`String`](#string) | Email address of the contact. |
 | <a id="customerrelationscontactfirstname"></a>`firstName` | [`String!`](#string) | First name of the contact. |
 | <a id="customerrelationscontactid"></a>`id` | [`ID!`](#id) | Internal ID of the contact. |
@@ -8898,7 +8923,7 @@ A custom emoji uploaded by user.
 | ---- | ---- | ----------- |
 | <a id="customerrelationsorganizationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the organization was created. |
 | <a id="customerrelationsorganizationdefaultrate"></a>`defaultRate` | [`Float`](#float) | Standard billing rate for the organization. |
-| <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description or notes for the organization. |
+| <a id="customerrelationsorganizationdescription"></a>`description` | [`String`](#string) | Description of or notes for the organization. |
 | <a id="customerrelationsorganizationid"></a>`id` | [`ID!`](#id) | Internal ID of the organization. |
 | <a id="customerrelationsorganizationname"></a>`name` | [`String!`](#string) | Name of the organization. |
 | <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the organization was last updated. |
@@ -16940,6 +16965,12 @@ An example `ContainerRepositoryID` is: `"gid://gitlab/ContainerRepository/1"`.
 A `CustomEmojiID` is a global ID. It is encoded as a string.
 
 An example `CustomEmojiID` is: `"gid://gitlab/CustomEmoji/1"`.
+
+### `CustomerRelationsContactID`
+
+A `CustomerRelationsContactID` is a global ID. It is encoded as a string.
+
+An example `CustomerRelationsContactID` is: `"gid://gitlab/CustomerRelations::Contact/1"`.
 
 ### `CustomerRelationsOrganizationID`
 

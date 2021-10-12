@@ -45,9 +45,18 @@ module Gitlab
               cte.issue_id = issue_metrics.issue_id
           UPDATE_METRICS
         end
+
+        mark_job_as_succeeded(start_id, end_id)
       end
 
       private
+
+      def mark_job_as_succeeded(*arguments)
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+          'FixFirstMentionedInCommitAt',
+          arguments
+        )
+      end
 
       def scope(start_id, end_id)
         TmpIssueMetrics.from_2020.where(issue_id: start_id..end_id)

@@ -78,6 +78,22 @@ module QA
         end
       end
 
+      # Get group members
+      #
+      # @return [Array<QA::Resource::User>]
+      def members
+        parse_body(api_get_from("#{api_get_path}/members")).map do |member|
+          User.init do |resource|
+            resource.api_client = api_client
+            resource.id = member[:id]
+            resource.name = member[:name]
+            resource.username = member[:username]
+            resource.email = member[:email]
+            resource.access_level = member[:access_level]
+          end
+        end
+      end
+
       # API get path
       #
       # @return [String]

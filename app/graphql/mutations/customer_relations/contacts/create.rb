@@ -40,7 +40,7 @@ module Mutations
 
         argument :description, GraphQL::Types::String,
                  required: false,
-                 description: 'Description or notes for the contact.'
+                 description: 'Description of or notes for the contact.'
 
         authorize :admin_contact
 

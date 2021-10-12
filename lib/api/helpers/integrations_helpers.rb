@@ -340,7 +340,7 @@ module API
               required: true,
               name: :webhook,
               type: String,
-              desc: 'Discord webhook. e.g. https://discordapp.com/api/webhooks/…'
+              desc: 'Discord webhook. For example, https://discord.com/api/webhooks/…'
             }
           ],
           'drone-ci' => [

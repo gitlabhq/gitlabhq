@@ -122,7 +122,7 @@ export default {
     fullPath: {
       default: '',
     },
-    groupEpicsPath: {
+    groupPath: {
       default: '',
     },
     hasAnyIssues: {
@@ -371,16 +371,18 @@ export default {
         });
       }
 
-      if (this.groupEpicsPath) {
+      if (this.groupPath) {
         tokens.push({
           type: TOKEN_TYPE_EPIC,
           title: TOKEN_TITLE_EPIC,
           icon: 'epic',
           token: EpicToken,
           unique: true,
+          symbol: '&',
           idProperty: 'id',
           useIdValue: true,
-          fetchEpics: this.fetchEpics,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-epic_id`,
+          fullPath: this.groupPath,
         });
       }
 
@@ -449,16 +451,6 @@ export default {
     },
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
-    },
-    async fetchEpics({ search }) {
-      const epics = await this.fetchWithCache(this.groupEpicsPath, 'epics');
-      if (!search) {
-        return epics.slice(0, MAX_LIST_SIZE);
-      }
-      const number = Number(search);
-      return Number.isNaN(number)
-        ? fuzzaldrinPlus.filter(epics, search, { key: 'title' })
-        : epics.filter((epic) => epic.id === number);
     },
     fetchLabels(search) {
       return this.$apollo

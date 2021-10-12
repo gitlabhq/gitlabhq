@@ -72,7 +72,7 @@ module Clusters
         if cluster.group_type?
           attributes[:groups] = [group]
         elsif cluster.project_type?
-          attributes[:projects] = [project]
+          attributes[:runner_projects] = [::Ci::RunnerProject.new(project: project)]
         end
 
         attributes

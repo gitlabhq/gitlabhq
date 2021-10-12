@@ -39,7 +39,7 @@ module Types
       field :description,
             GraphQL::Types::String,
             null: true,
-            description: 'Description or notes for the contact.'
+            description: 'Description of or notes for the contact.'
 
       field :created_at,
             Types::TimeType,

@@ -39,7 +39,7 @@
       - if runner.group_type?
         = _('n/a')
       - else
-        = runner.projects.count(:all)
+        = runner.runner_projects.count(:all)
 
   .table-section.section-5
     .table-mobile-header{ role: 'rowheader' }= _('Jobs')

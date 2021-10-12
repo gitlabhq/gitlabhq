@@ -1014,12 +1014,15 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 
 #### Schedule an on-demand scan
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user,
-ask an administrator to [disable the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md).
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an
+administrator to [disable the feature flag](../../../administration/feature_flags.md) named
+`dast_on_demand_scans_scheduler`.
+On GitLab.com, this feature is available.
 
 To schedule a scan:
 

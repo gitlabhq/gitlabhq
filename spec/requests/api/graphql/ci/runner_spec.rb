@@ -250,7 +250,7 @@ RSpec.describe 'Query.runner(id)' do
       end
 
       before do
-        project_runner2.projects.clear
+        project_runner2.runner_projects.clear
 
         post_graphql(query, current_user: user)
       end

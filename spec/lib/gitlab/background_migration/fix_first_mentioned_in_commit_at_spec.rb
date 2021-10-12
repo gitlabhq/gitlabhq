@@ -99,6 +99,15 @@ RSpec.describe Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt, :migrat
       .perform(issue_metrics.minimum(:issue_id), issue_metrics.maximum(:issue_id))
   end
 
+  it "marks successful slices as completed" do
+    min_issue_id = issue_metrics.minimum(:issue_id)
+    max_issue_id = issue_metrics.maximum(:issue_id)
+
+    expect(subject).to receive(:mark_job_as_succeeded).with(min_issue_id, max_issue_id)
+
+    subject.perform(min_issue_id, max_issue_id)
+  end
+
   context 'when the persisted first_mentioned_in_commit_at is later than the first commit authored_date' do
     it 'updates the issue_metrics record' do
       record1 = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: Time.current)

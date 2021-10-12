@@ -520,7 +520,7 @@ describe('IssuesListApp component', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           provide: {
-            groupEpicsPath: '',
+            groupPath: '',
           },
         });
       });
@@ -536,7 +536,7 @@ describe('IssuesListApp component', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           provide: {
-            groupEpicsPath: '',
+            groupPath: '',
           },
         });
       });
@@ -564,7 +564,7 @@ describe('IssuesListApp component', () => {
           provide: {
             isSignedIn: true,
             projectIterationsPath: 'project/iterations/path',
-            groupEpicsPath: 'group/epics/path',
+            groupPath: 'group/path',
             hasIssueWeightsFeature: true,
           },
         });

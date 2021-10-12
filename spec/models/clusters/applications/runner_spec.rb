@@ -96,8 +96,9 @@ RSpec.describe Clusters::Applications::Runner do
         it 'creates a project runner' do
           subject
 
+          runner_projects = Project.where(id: runner.runner_projects.pluck(:project_id))
           expect(runner).to be_project_type
-          expect(runner.projects).to eq [project]
+          expect(runner_projects).to match_array [project]
         end
       end
 
