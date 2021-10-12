@@ -765,7 +765,7 @@ RSpec.describe Deployment do
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
       expect(Deployments::HooksWorker).to receive(:perform_async)
 
-      deploy.update_status('success')
+      expect(deploy.update_status('success')).to eq(true)
     end
 
     it 'updates finished_at when transitioning to a finished status' do
@@ -773,6 +773,139 @@ RSpec.describe Deployment do
         deploy.update_status('success')
 
         expect(deploy.read_attribute(:finished_at)).to eq(Time.current)
+      end
+    end
+
+    it 'tracks an exception if an invalid status transition is detected' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
+
+      expect(deploy.update_status('running')).to eq(false)
+    end
+
+    it 'tracks an exception if an invalid argument' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
+
+      expect(deploy.update_status('created')).to eq(false)
+    end
+  end
+
+  describe '#sync_status_with' do
+    subject { deployment.sync_status_with(ci_build) }
+
+    let_it_be(:project) { create(:project, :repository) }
+
+    let(:deployment) { create(:deployment, project: project, status: deployment_status) }
+    let(:ci_build) { create(:ci_build, project: project, status: build_status) }
+
+    shared_examples_for 'synchronizing deployment' do
+      it 'changes deployment status' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        is_expected.to eq(true)
+
+        expect(deployment.status).to eq(build_status.to_s)
+        expect(deployment.errors).to be_empty
+      end
+    end
+
+    shared_examples_for 'gracefully handling error' do
+      it 'tracks an exception' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          instance_of(described_class::StatusSyncError),
+          deployment_id: deployment.id,
+          build_id: ci_build.id)
+
+        is_expected.to eq(false)
+
+        expect(deployment.status).to eq(deployment_status.to_s)
+        expect(deployment.errors.full_messages).to include(error_message)
+      end
+    end
+
+    shared_examples_for 'ignoring build' do
+      it 'does not change deployment status' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        is_expected.to eq(false)
+
+        expect(deployment.status).to eq(deployment_status.to_s)
+        expect(deployment.errors).to be_empty
+      end
+    end
+
+    context 'with created deployment' do
+      let(:deployment_status) { :created }
+
+      context 'with running build' do
+        let(:build_status) { :running }
+
+        it_behaves_like 'synchronizing deployment'
+      end
+
+      context 'with finished build' do
+        let(:build_status) { :success }
+
+        it_behaves_like 'synchronizing deployment'
+      end
+
+      context 'with unrelated build' do
+        let(:build_status) { :waiting_for_resource }
+
+        it_behaves_like 'ignoring build'
+      end
+    end
+
+    context 'with running deployment' do
+      let(:deployment_status) { :running }
+
+      context 'with running build' do
+        let(:build_status) { :running }
+
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %Q{Status cannot transition via \"run\"} }
+        end
+      end
+
+      context 'with finished build' do
+        let(:build_status) { :success }
+
+        it_behaves_like 'synchronizing deployment'
+      end
+
+      context 'with unrelated build' do
+        let(:build_status) { :waiting_for_resource }
+
+        it_behaves_like 'ignoring build'
+      end
+    end
+
+    context 'with finished deployment' do
+      let(:deployment_status) { :success }
+
+      context 'with running build' do
+        let(:build_status) { :running }
+
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %Q{Status cannot transition via \"run\"} }
+        end
+      end
+
+      context 'with finished build' do
+        let(:build_status) { :success }
+
+        it_behaves_like 'gracefully handling error' do
+          let(:error_message) { %Q{Status cannot transition via \"succeed\"} }
+        end
+      end
+
+      context 'with unrelated build' do
+        let(:build_status) { :waiting_for_resource }
+
+        it_behaves_like 'ignoring build'
       end
     end
   end

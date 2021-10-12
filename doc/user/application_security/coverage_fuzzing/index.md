@@ -16,6 +16,18 @@ We recommend that you use fuzz testing in addition to the other security scanner
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz tests as part your CI/CD workflow.
 
+## Coverage-guided fuzz testing process
+
+The fuzz testing process:
+
+1. Compiles the target application.
+1. Runs the instrumented application, using the `gitlab-cov-fuzz` tool.
+1. Parses and analyzes the exception information output by the fuzzer.
+1. Downloads the [corpus](../terminology/index.md#corpus) and crash events from previous pipelines.
+1. Outputs the parsed crash events and data to the `gl-coverage-fuzzing-report.json` file.
+
+The results of the coverage-guided fuzz testing are available in the CI/CD pipeline.
+
 ## Supported fuzzing engines and languages
 
 GitLab supports these languages through the fuzzing engine listed for each. We currently provide a

@@ -2,7 +2,6 @@
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PipelineEditorFileNav from '~/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -17,15 +16,9 @@ export default {
     ),
     btnText: __('Create new CI/CD pipeline'),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     emptyStateIllustrationPath: {
       default: '',
-    },
-  },
-  computed: {
-    showCTAButton() {
-      return this.glFeatures.pipelineEditorEmptyStateAction;
     },
   },
   methods: {
@@ -48,12 +41,7 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-      <gl-button
-        v-if="showCTAButton"
-        variant="confirm"
-        class="gl-mt-3"
-        @click="createEmptyConfigFile"
-      >
+      <gl-button variant="confirm" class="gl-mt-3" @click="createEmptyConfigFile">
         {{ $options.i18n.btnText }}
       </gl-button>
     </div>

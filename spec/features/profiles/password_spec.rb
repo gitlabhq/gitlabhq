@@ -89,7 +89,7 @@ RSpec.describe 'Profile > Password' do
     shared_examples 'user enters an incorrect current password' do
       subject do
         page.within '.update-password' do
-          fill_in 'user_current_password', with: user_current_password
+          fill_in 'user_password', with: user_current_password
           fill_passwords(new_password, new_password)
         end
       end
@@ -131,7 +131,7 @@ RSpec.describe 'Profile > Password' do
     end
 
     context 'when current password is incorrect' do
-      let(:user_current_password) {'invalid' }
+      let(:user_current_password) { 'invalid' }
 
       it_behaves_like 'user enters an incorrect current password'
     end
@@ -139,7 +139,7 @@ RSpec.describe 'Profile > Password' do
     context 'when the password reset is successful' do
       subject do
         page.within '.update-password' do
-          fill_in "user_current_password", with: user.password
+          fill_in "user_password", with: user.password
           fill_passwords(new_password, new_password)
         end
       end
@@ -169,8 +169,8 @@ RSpec.describe 'Profile > Password' do
 
       expect(current_path).to eq new_profile_password_path
 
-      fill_in :user_current_password,      with: user.password
-      fill_in :user_password,              with: '12345678'
+      fill_in :user_password,      with: user.password
+      fill_in :user_new_password,  with: '12345678'
       fill_in :user_password_confirmation, with: '12345678'
       click_button 'Set new password'
 

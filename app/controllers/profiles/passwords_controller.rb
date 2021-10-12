@@ -15,16 +15,10 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   end
 
   def create
-    unless @user.password_automatically_set || @user.valid_password?(user_params[:current_password])
+    unless @user.password_automatically_set || @user.valid_password?(user_params[:password])
       redirect_to new_profile_password_path, alert: _('You must provide a valid current password')
       return
     end
-
-    password_attributes = {
-      password: user_params[:password],
-      password_confirmation: user_params[:password_confirmation],
-      password_automatically_set: false
-    }
 
     result = Users::UpdateService.new(current_user, password_attributes.merge(user: @user)).execute
 
@@ -41,12 +35,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   end
 
   def update
-    password_attributes = user_params.select do |key, value|
-      %w(password password_confirmation).include?(key.to_s)
-    end
-    password_attributes[:password_automatically_set] = false
-
-    unless @user.password_automatically_set || @user.valid_password?(user_params[:current_password])
+    unless @user.password_automatically_set || @user.valid_password?(user_params[:password])
       handle_invalid_current_password_attempt!
 
       redirect_to edit_profile_password_path, alert: _('You must provide a valid current password')
@@ -94,6 +83,14 @@ class Profiles::PasswordsController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:current_password, :password, :password_confirmation)
+    params.require(:user).permit(:password, :new_password, :password_confirmation)
+  end
+
+  def password_attributes
+    {
+      password: user_params[:new_password],
+      password_confirmation: user_params[:password_confirmation],
+      password_automatically_set: false
+    }
   end
 end

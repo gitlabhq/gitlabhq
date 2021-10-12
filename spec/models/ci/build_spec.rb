@@ -1290,7 +1290,7 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe 'state transition as a deployable' do
+  shared_examples_for 'state transition as a deployable' do
     subject { build.send(event) }
 
     let!(:build) { create(:ci_build, :with_deployment, :start_review_app, project: project, pipeline: pipeline) }
@@ -1397,6 +1397,36 @@ RSpec.describe Ci::Build do
         expect(deployment).to be_canceled
       end
     end
+  end
+
+  it_behaves_like 'state transition as a deployable' do
+    context 'when transits to running' do
+      let(:event) { :run! }
+
+      context 'when deployment is already running state' do
+        before do
+          build.deployment.success!
+        end
+
+        it 'does not change deployment status and tracks an error' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception).with(
+              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: build.id)
+
+          with_cross_database_modification_prevented do
+            expect { subject }.not_to change { deployment.reload.status }
+          end
+        end
+      end
+    end
+  end
+
+  context 'when update_deployment_after_transaction_commit feature flag is disabled' do
+    before do
+      stub_feature_flags(update_deployment_after_transaction_commit: false)
+    end
+
+    it_behaves_like 'state transition as a deployable'
   end
 
   describe '#on_stop' do
@@ -3948,7 +3978,7 @@ RSpec.describe Ci::Build do
       end
 
       it 'can drop the build' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
         expect { build.drop! }.not_to raise_error
 

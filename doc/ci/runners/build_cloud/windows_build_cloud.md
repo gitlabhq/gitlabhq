@@ -19,7 +19,7 @@ the Google Cloud Platform. This solution uses an
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
 Windows runners execute your CI/CD jobs on `n1-standard-2` instances with
 2 vCPUs and 7.5 GB RAM. You can find a full list of available Windows packages in
-the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/master/cookbooks/preinstalled-software/README.md).
+the [package documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
 
 We want to keep iterating to get Windows runners in a stable state and
 [generally available](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga).

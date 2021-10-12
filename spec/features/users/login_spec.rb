@@ -866,8 +866,8 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
 
         expect(current_path).to eq(new_profile_password_path)
 
-        fill_in 'user_current_password', with: '12345678'
-        fill_in 'user_password', with: 'new password'
+        fill_in 'user_password', with: '12345678'
+        fill_in 'user_new_password', with: 'new password'
         fill_in 'user_password_confirmation', with: 'new password'
         click_button 'Set new password'
 

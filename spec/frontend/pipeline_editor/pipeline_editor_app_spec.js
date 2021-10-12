@@ -22,7 +22,6 @@ import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
   mockBlobContentQueryResponse,
-  mockBlobContentQueryResponseEmptyCiFile,
   mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
   mockCommitSha,
@@ -43,9 +42,6 @@ const MockSourceEditor = {
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
-  glFeatures: {
-    pipelineEditorEmptyStateAction: false,
-  },
   projectFullPath: mockProjectFullPath,
 };
 
@@ -221,37 +217,12 @@ describe('Pipeline editor app component', () => {
       });
     });
 
-    describe('with an empty CI config file', () => {
-      describe('with empty state feature flag on', () => {
-        it('does not show the empty screen state', async () => {
-          mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseEmptyCiFile);
-
-          await createComponentWithApollo({
-            provide: {
-              glFeatures: {
-                pipelineEditorEmptyStateAction: true,
-              },
-            },
-          });
-
-          expect(findEmptyState().exists()).toBe(false);
-          expect(findTextEditor().exists()).toBe(true);
-        });
-      });
-    });
-
-    describe('when landing on the empty state with feature flag on', () => {
-      it('user can click on CTA button and see an empty editor', async () => {
+    describe('with no CI config setup', () => {
+      it('user can click on CTA button to get started', async () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
         mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
 
-        await createComponentWithApollo({
-          provide: {
-            glFeatures: {
-              pipelineEditorEmptyStateAction: true,
-            },
-          },
-        });
+        await createComponentWithApollo();
 
         expect(findEmptyState().exists()).toBe(true);
         expect(findTextEditor().exists()).toBe(false);

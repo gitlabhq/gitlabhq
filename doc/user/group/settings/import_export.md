@@ -4,6 +4,7 @@ stage: Manage
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
+
 # Group import/export **(FREE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
@@ -23,9 +24,9 @@ Users with the [Owner role](../../permissions.md) for a group can enable
 import and export for that group:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General > Visibility and access controls**.
-1. Scroll to **Import sources**.
-1. Enable the desired **Import sources**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. In the **Import sources** section, select the checkboxes for the sources you want.
 
 ## Important Notes
 
@@ -72,16 +73,16 @@ in GitLab 14.6 and replaced by [GitLab Migration](../import/).
 Users with the [Owner role](../../permissions.md) for a group can export the
 contents of that group:
 
-1. On the top bar, select **Menu >** **Groups** and find your group.
-1. On the left sidebar, select **Settings**.
-1. Scroll to the **Advanced** section, and select **Export Group**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. In the **Advanced** section, select **Export Group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)
    in a compressed tar archive, with contents in NDJSON format.
 1. Alternatively, you can download the export from the UI:
 
    1. Return to your group's **Settings > General** page.
-   1. Scroll to the **Advanced** section, and select **Download export**.
-      You can also generate a new file by clicking **Regenerate export**.
+   1. In the **Advanced** section, select **Download export**.
+      You can also generate a new file by selecting **Regenerate export**.
 
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
@@ -95,24 +96,18 @@ The Enterprise Edition retains some group data that isn't part of the Community 
 
 ## Importing the group
 
-1. Navigate to the New Group page, either via the `+` button in the top navigation bar, or the **New subgroup** button
-on an existing group's page.
+1. Create a new group:
+   - On the top bar, select **New** (**{plus}**) and then **New group**.
+   - On an existing group's page, select the **New subgroup** button.
 
-   ![Navigation paths to create a new group](img/new_group_navigation_v13_1.png)
-
-1. On the New Group page, select the **Import group**.
-
-   ![Fill in group details](img/import_panel_v14_1.png)
-
+1. Select **Import group**.
 1. Enter your group name.
-
 1. Accept or modify the associated group URL.
-
-1. Click **Choose file**
-
+1. Select **Choose file**.
 1. Select the file that you exported in the [Export a group](#export-a-group) section.
+1. To begin importing, select **Import group**.
 
-1. Click **Import group** to begin importing. Your newly imported group page appears after the operation completes.
+Your newly imported group page appears after the operation completes.
 
 ## Version history
 

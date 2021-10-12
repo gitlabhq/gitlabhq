@@ -10,6 +10,9 @@ class Deployment < ApplicationRecord
   include FastDestroyAll
   include IgnorableColumns
 
+  StatusUpdateError = Class.new(StandardError)
+  StatusSyncError = Class.new(StandardError)
+
   belongs_to :project, required: true
   belongs_to :environment, required: true
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
@@ -312,20 +315,23 @@ class Deployment < ApplicationRecord
   # Changes the status of a deployment and triggers the corresponding state
   # machine events.
   def update_status(status)
-    case status
-    when 'running'
-      run
-    when 'success'
-      succeed
-    when 'failed'
-      drop
-    when 'canceled'
-      cancel
-    when 'skipped'
-      skip
-    else
-      raise ArgumentError, "The status #{status.inspect} is invalid"
-    end
+    update_status!(status)
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(
+      StatusUpdateError.new(e.message), deployment_id: self.id)
+
+    false
+  end
+
+  def sync_status_with(build)
+    return false unless ::Deployment.statuses.include?(build.status)
+
+    update_status!(build.status)
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(
+      StatusSyncError.new(e.message), deployment_id: self.id, build_id: build.id)
+
+    false
   end
 
   def valid_sha
@@ -352,6 +358,23 @@ class Deployment < ApplicationRecord
   end
 
   private
+
+  def update_status!(status)
+    case status
+    when 'running'
+      run!
+    when 'success'
+      succeed!
+    when 'failed'
+      drop!
+    when 'canceled'
+      cancel!
+    when 'skipped'
+      skip!
+    else
+      raise ArgumentError, "The status #{status.inspect} is invalid"
+    end
+  end
 
   def legacy_finished_at
     self.created_at if success? && !read_attribute(:finished_at)
