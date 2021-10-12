@@ -6,14 +6,18 @@
 
 **Be sure to link this MR to the relevant deprecation issue(s).**
 
-**By the 10th**: Assign these team members as Reviewer and for Approval (optional unless noted as required):
+**By the 10th**: Assign this MR to these team members as Reviewer and for Approval (optional unless noted as required):
 
 - Product Marketing: `@PMM`
 - Product Designer(s): `@ProductDesigners`
 - Group Manager or Director: `@manager`
 - Engineering Manager: `@EM` - Required
 
+**By 8:00 AM PDT 15th**: PM will assign this MR to the TW reviewer: `@PM`
+
 **By 11:59 PM PDT 15th**: TW Reviewer will perform final review and merge this MR to Master: `@TW`
+
+---
 
 Please review the [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations),
 as well as the process for [creating a deprecation entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
@@ -28,13 +32,13 @@ They are frequently updated, and everyone should make sure they are aware of the
 
 - [ ] Set yourself as the Assignee.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
-- [ ] Add reviewers.
-- [ ] When ready to be merged, add the ~ready label and @ message the TW for final review and merge.
+- [ ] Add reviewers by the 10th
+- [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
 
 ## Reviewers
 
-When the content is ready for review, it must be reviewed by Tech Writing and Engineering Manager, but can also be reviewed by
-Product Marketing, Product Design, and the Product Leader for this area. Please use the
+When the content is ready for review, it must be reviewed by Technical Writer and Engineering Manager, but can also be reviewed by
+Product Marketing, Product Design, and the Product Leaders for this area. Please use the
 [Reviewers for Merge Requests](https://docs.gitlab.com/ee/user/project/merge_requests/getting_started#reviewer)
 feature for all reviews. Reviewers will then `approve` the MR and remove themselves from Reviewers when their review is complete.
 
@@ -74,5 +78,5 @@ yourself as a reviewer if it's not ready for merge yet.
 
 </details>
 
-When the PM indicates it is ready for merge, all issues have been addressed, and
-the doc has been properly regenerated with the [Rake task](https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc), merge the MR.
+When the PM indicates it is ready for merge, all issues have been addressed merge this MR. 
+     - You must merge this MR by the 15th so the Release Post TW lead can run the [deprecations in Docs rake task](https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc) on the 16th

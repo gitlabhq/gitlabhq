@@ -32,4 +32,7 @@ any commits to the source branch.
 - **Prevent editing approval rules in projects and merge requests**. Prevents users from
 modifying the approvers list in project settings or in individual merge requests.
 
-Also read the [project level merge request approval rules](../project/merge_requests/approvals/index.md), which are affected by instance level rules.
+See also the following, which are affected by instance-level rules:
+
+- [Project-level merge request approval rules](../project/merge_requests/approvals/index.md).
+- [Group-level merge request approval rules](../group/index.md#group-approval-rules) available in GitLab 13.9 and later.

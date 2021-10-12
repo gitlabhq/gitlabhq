@@ -18,6 +18,7 @@ for adding a new Redis instance that handles existing data, based on
 prior examples:
 
 - [Dedicated Redis instance for Trace Chunk storage](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/462).
+- [Create dedicated Redis instance for Rate Limiting data](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/526).
 
 This document does not cover the operational side of preparing and configuring
 the new Redis instance in detail, but the example epics do contain information

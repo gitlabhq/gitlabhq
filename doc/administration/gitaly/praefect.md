@@ -1591,3 +1591,26 @@ because of:
 - An in-flight RPC call targeting the repository.
 
 If this occurs, run `remove-repository` again.
+
+### Manually list untracked repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3926) in GitLab 14.4.
+
+The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
+
+- Exist for at least one Gitaly storage.
+- Aren't tracked in the Praefect database.
+
+The command outputs:
+
+- Result to `STDOUT` and the command's logs.
+- Errors to `STDERR`.
+
+Each entry is a complete JSON string with a newline at the end (configurable using the
+`-delimiter` flag). For example:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories
+{"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567890.git"}
+{"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567891.git"}
+```
