@@ -299,6 +299,15 @@ RSpec.describe Namespace do
         expect(described_class.sorted_by_similarity_and_parent_id_desc('Namespace')).to eq([namespace2, namespace1, namespace2sub, namespace1sub, namespace])
       end
     end
+
+    describe '.without_project_namespaces' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+      let_it_be(:project_namespace) { create(:project_namespace) }
+
+      it 'excludes project namespaces' do
+        expect(described_class.without_project_namespaces).to match_array([namespace, namespace1, namespace2, namespace1sub, namespace2sub, user_namespace, project_namespace.parent])
+      end
+    end
   end
 
   describe 'delegate' do

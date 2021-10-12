@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Sessions (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
-  before(:all) do
-    clean_frontend_fixtures('sessions/')
-  end
-
   describe SessionsController, '(JavaScript fixtures)', type: :controller do
     include DeviseHelpers
 

@@ -6,10 +6,6 @@ RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
 
   let_it_be(:value_stream_id) { 'default' }
 
-  before(:all) do
-    clean_frontend_fixtures('projects/analytics/value_stream_analytics/')
-  end
-
   before do
     update_metrics
     create_deployment

@@ -11,10 +11,6 @@ RSpec.describe ::AutocompleteController, '(JavaScript fixtures)', type: :control
   let(:project) { create(:project, namespace: group, path: 'autocomplete-project') }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }
 
-  before(:all) do
-    clean_frontend_fixtures('autocomplete/')
-  end
-
   before do
     group.add_owner(user)
     sign_in(user)

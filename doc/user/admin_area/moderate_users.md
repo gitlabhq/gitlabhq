@@ -73,7 +73,7 @@ In order to completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
 
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
-or directly from the Admin Area. To do this:
+by removing them in LDAP, or directly from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.

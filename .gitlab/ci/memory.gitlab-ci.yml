@@ -4,6 +4,12 @@
     - .rails-cache
     - .default-before_script
     - .memory:rules
+  variables:
+    METRICS_FILE: "metrics.txt"
+  artifacts:
+    reports:
+      metrics: "${METRICS_FILE}"
+    expire_in: 31d
 
 memory-static:
   extends: .only-code-memory-job-base
@@ -11,24 +17,25 @@ memory-static:
   needs: ["setup-test-env"]
   variables:
     SETUP_DB: "false"
+    MEMORY_BUNDLE_MEM_FILE: "tmp/memory_bundle_mem.txt"
+    MEMORY_BUNDLE_OBJECTS_FILE: "tmp/memory_bundle_objects.txt"
   script:
     # Uses two different reports from the 'derailed_benchmars' gem.
 
     # Loads each of gems in the Gemfile and checks how much memory they consume when they are required.
     # 'derailed_benchmarks' internally uses 'get_process_mem'
-    - bundle exec derailed bundle:mem > tmp/memory_bundle_mem.txt
-    - scripts/generate-gems-size-metrics-static tmp/memory_bundle_mem.txt >> 'tmp/memory_metrics.txt'
+    - bundle exec derailed bundle:mem > "${MEMORY_BUNDLE_MEM_FILE}"
+    - scripts/generate-gems-size-metrics-static "${MEMORY_BUNDLE_MEM_FILE}" >> "${METRICS_FILE}"
 
     # Outputs detailed information about objects created while gems are loaded.
     # 'derailed_benchmarks' internally uses 'memory_profiler'
-    - bundle exec derailed bundle:objects > tmp/memory_bundle_objects.txt
-    - scripts/generate-gems-memory-metrics-static tmp/memory_bundle_objects.txt >> 'tmp/memory_metrics.txt'
+    - bundle exec derailed bundle:objects > "${MEMORY_BUNDLE_OBJECTS_FILE}"
+    - scripts/generate-gems-memory-metrics-static "${MEMORY_BUNDLE_OBJECTS_FILE}" >> "${METRICS_FILE}"
   artifacts:
     paths:
-      - tmp/memory_*.txt
-    reports:
-      metrics: tmp/memory_metrics.txt
-    expire_in: 31d
+      - "${METRICS_FILE}"
+      - "${MEMORY_BUNDLE_MEM_FILE}"
+      - "${MEMORY_BUNDLE_OBJECTS_FILE}"
 
 # Show memory usage caused by invoking require per gem.
 # Unlike `memory-static`, it hits the app with one request to ensure that any last minute require-s have been called.
@@ -44,12 +51,11 @@ memory-on-boot:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "true"
+    MEMORY_ON_BOOT_FILE: "tmp/memory_on_boot.txt"
   script:
-    - PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> 'tmp/memory_on_boot.txt'
-    - scripts/generate-memory-metrics-on-boot tmp/memory_on_boot.txt >> 'tmp/memory_on_boot_metrics.txt'
+    - PATH_TO_HIT="/users/sign_in" CUT_OFF=0.3 bundle exec derailed exec perf:mem >> "${MEMORY_ON_BOOT_FILE}"
+    - scripts/generate-memory-metrics-on-boot "${MEMORY_ON_BOOT_FILE}" >> "${METRICS_FILE}"
   artifacts:
     paths:
-      - tmp/memory_*.txt
-    reports:
-      metrics: tmp/memory_on_boot_metrics.txt
-    expire_in: 31d
+      - "${METRICS_FILE}"
+      - "${MEMORY_ON_BOOT_FILE}"

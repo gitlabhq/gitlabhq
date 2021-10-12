@@ -116,10 +116,6 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
   end
 
   describe API::Releases, type: :request do
-    before(:all) do
-      clean_frontend_fixtures('api/releases/')
-    end
-
     it 'api/releases/release.json' do
       get api("/projects/#{project.id}/releases/#{release.tag}", admin)
 
@@ -133,10 +129,6 @@ RSpec.describe 'Releases (JavaScript fixtures)' do
     all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
     one_release_query_path = 'releases/graphql/queries/one_release.query.graphql'
     one_release_for_editing_query_path = 'releases/graphql/queries/one_release_for_editing.query.graphql'
-
-    before(:all) do
-      clean_frontend_fixtures('graphql/releases/')
-    end
 
     it "graphql/#{all_releases_query_path}.json" do
       query = get_graphql_query_as_string(all_releases_query_path)

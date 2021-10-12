@@ -13,10 +13,6 @@ RSpec.describe 'Todos (JavaScript fixtures)' do
   let(:issue_2) { create(:issue, title: 'issue_2', project: project) }
   let!(:todo_2) { create(:todo, :done, user: user, project: project, target: issue_2, created_at: 50.hours.ago) }
 
-  before(:all) do
-    clean_frontend_fixtures('todos/')
-  end
-
   after do
     remove_repository(project)
   end

@@ -23,10 +23,6 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
   let!(:build_test) { create(:ci_build, pipeline: pipeline, stage: 'test') }
   let!(:build_deploy_failed) { create(:ci_build, status: :failed, pipeline: pipeline, stage: 'deploy') }
 
-  before(:all) do
-    clean_frontend_fixtures('pipelines/')
-  end
-
   before do
     sign_in(user)
   end

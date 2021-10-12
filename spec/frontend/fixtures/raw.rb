@@ -9,14 +9,6 @@ RSpec.describe 'Raw files', '(JavaScript fixtures)' do
   let(:project) { create(:project, :repository, namespace: namespace, path: 'raw-project') }
   let(:response) { @blob.data.force_encoding('UTF-8') }
 
-  before(:all) do
-    clean_frontend_fixtures('blob/notebook/')
-    clean_frontend_fixtures('blob/pdf/')
-    clean_frontend_fixtures('blob/text/')
-    clean_frontend_fixtures('blob/binary/')
-    clean_frontend_fixtures('blob/images/')
-  end
-
   after do
     remove_repository(project)
   end

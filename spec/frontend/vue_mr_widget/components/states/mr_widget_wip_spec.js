@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import createFlash from '~/flash';
 import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
-jest.mock('~/flash');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 const createComponent = () => {
   const Component = Vue.extend(WorkInProgress);
@@ -63,10 +63,7 @@ describe('Wip', () => {
         setImmediate(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-          expect(createFlash).toHaveBeenCalledWith({
-            message: 'Marked as ready. Merging is now allowed.',
-            type: 'notice',
-          });
+          expect(toast).toHaveBeenCalledWith('Marked as ready. Merging is now allowed.');
           done();
         });
       });

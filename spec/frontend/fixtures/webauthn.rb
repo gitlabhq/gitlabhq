@@ -7,10 +7,6 @@ RSpec.context 'WebAuthn' do
 
   let(:user) { create(:user, :two_factor_via_webauthn, otp_secret: 'otpsecret:coolkids') }
 
-  before(:all) do
-    clean_frontend_fixtures('webauthn/')
-  end
-
   describe SessionsController, '(JavaScript fixtures)', type: :controller do
     include DeviseHelpers
 

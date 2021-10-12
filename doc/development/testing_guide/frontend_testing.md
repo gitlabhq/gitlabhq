@@ -848,10 +848,6 @@ describe GraphQL::Query, type: :request do
 
   all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
 
-  before(:all) do
-    clean_frontend_fixtures('graphql/releases/')
-  end
-
   it "graphql/#{all_releases_query_path}.json" do
     query = get_graphql_query_as_string(all_releases_query_path)
 

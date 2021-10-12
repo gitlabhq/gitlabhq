@@ -13,10 +13,6 @@ RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :c
   let(:project3) { create(:project, :internal)}
   let(:project4) { create(:project, :internal)}
 
-  before(:all) do
-    clean_frontend_fixtures('deploy_keys/')
-  end
-
   before do
     # Using an admin for these fixtures because they are used for verifying a frontend
     # component that would normally get its data from `Admin::DeployKeysController`

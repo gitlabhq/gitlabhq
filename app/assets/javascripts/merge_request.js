@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import createFlash from '~/flash';
+import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import axios from './lib/utils/axios_utils';
@@ -136,10 +137,9 @@ MergeRequest.hideCloseButton = function () {
 
 MergeRequest.toggleDraftStatus = function (title, isReady) {
   if (isReady) {
-    createFlash({
-      message: __('Marked as ready. Merging is now allowed.'),
-      type: 'notice',
-    });
+    toast(__('Marked as ready. Merging is now allowed.'));
+  } else {
+    toast(__('Marked as draft. Can only be merged when marked as ready.'));
   }
   const titleEl = document.querySelector('.merge-request .detail-page-description .title');
 

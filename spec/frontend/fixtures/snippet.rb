@@ -12,10 +12,6 @@ RSpec.describe SnippetsController, '(JavaScript fixtures)', type: :controller do
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('snippets/')
-  end
-
   before do
     sign_in(user)
     allow(Discussion).to receive(:build_discussion_id).and_return(['discussionid:ceterumcenseo'])

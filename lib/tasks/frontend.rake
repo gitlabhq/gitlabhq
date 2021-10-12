@@ -1,10 +1,14 @@
 # frozen_string_literal: true
-require 'yaml'
 
 unless Rails.env.production?
   namespace :frontend do
     desc 'GitLab | Frontend | Generate fixtures for JavaScript tests'
     RSpec::Core::RakeTask.new(:fixtures, [:pattern]) do |t, args|
+      require 'fileutils'
+      require_relative '../../spec/support/helpers/javascript_fixtures_helpers'
+
+      FileUtils.rm_r(JavaScriptFixturesHelpers.fixture_root_path, force: true)
+
       directories = %w[spec]
       directories << 'ee/spec' if Gitlab.ee?
       directory_glob = "{#{directories.join(',')}}"
@@ -16,6 +20,8 @@ unless Rails.env.production?
 
     desc 'GitLab | Frontend | Generate fixtures for JavaScript integration tests'
     RSpec::Core::RakeTask.new(:mock_server_rspec_fixtures) do |t, args|
+      require 'yaml'
+
       base_path = Pathname.new('spec/frontend_integration/fixture_generators.yml')
       ee_path = Pathname.new('ee') + base_path
 

@@ -12,10 +12,6 @@ RSpec.describe Projects::ServicesController, '(JavaScript fixtures)', type: :con
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('services/')
-  end
-
   before do
     sign_in(user)
   end

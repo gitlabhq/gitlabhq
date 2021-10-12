@@ -17,10 +17,6 @@ RSpec.describe 'Labels (JavaScript fixtures)' do
   let!(:groub_label_space) { create(:group_label, group: group, title: 'some space', color: '#FFFFFF') }
   let!(:groub_label_violets) { create(:group_label, group: group, title: 'violets', color: '#0000FF') }
 
-  before(:all) do
-    clean_frontend_fixtures('labels/')
-  end
-
   after do
     remove_repository(project)
   end

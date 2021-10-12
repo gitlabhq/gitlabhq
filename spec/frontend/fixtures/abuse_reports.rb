@@ -13,10 +13,6 @@ RSpec.describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :co
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('abuse_reports/')
-  end
-
   before do
     sign_in(admin)
     enable_admin_mode!(admin)

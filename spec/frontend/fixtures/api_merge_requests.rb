@@ -11,10 +11,6 @@ RSpec.describe API::MergeRequests, '(JavaScript fixtures)', type: :request do
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
   let_it_be(:mr) { create(:merge_request, source_project: project) }
 
-  before(:all) do
-    clean_frontend_fixtures('api/merge_requests')
-  end
-
   it 'api/merge_requests/get.json' do
     4.times { |i| create(:merge_request, source_project: project, source_branch: "branch-#{i}") }
 

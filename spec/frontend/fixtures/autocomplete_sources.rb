@@ -10,10 +10,6 @@ RSpec.describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)',
   let_it_be(:project) { create(:project, namespace: group, path: 'autocomplete-sources-project') }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  before(:all) do
-    clean_frontend_fixtures('autocomplete_sources/')
-  end
-
   before do
     group.add_owner(user)
     sign_in(user)

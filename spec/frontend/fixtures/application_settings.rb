@@ -19,10 +19,6 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('application_settings/')
-  end
-
   after do
     remove_repository(project)
   end

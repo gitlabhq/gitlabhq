@@ -39,7 +39,9 @@ the LDAP server, or share email addresses.
 ### User deletion
 
 Users deleted from the LDAP server are immediately blocked from signing in
-to GitLab. However, there's an LDAP check cache time of one hour (which is
+to GitLab and [no longer consumes a 
+license](../../../user/admin_area/moderate_users.md). 
+However, there's an LDAP check cache time of one hour (which is
 [configurable](#adjust-ldap-user-sync-schedule) for GitLab Premium users).
 This means users already signed-in or who are using Git over SSH can access
 GitLab for up to one hour. Manually block the user in the GitLab Admin Area
