@@ -24,7 +24,7 @@ The Admin Area is made up of the following sections:
 
 | Section                                        | Description |
 |:-----------------------------------------------|:------------|
-| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
+| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [topics](#administering-topics), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
 | **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events). |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
@@ -236,6 +236,26 @@ To search for groups by name, enter your criteria in the search field. The group
 insensitive, and applies partial matching.
 
 To [Create a new group](../group/index.md#create-a-group) click **New group**.
+
+### Administering Topics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+
+You can administer all topics in the GitLab instance from the Admin Area's Topics page.
+
+To access the Topics page:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Topics**.
+
+For each topic, the page displays their name and number of projects labeled with the topic.
+
+To create a new topic, select **New topic**.
+
+To edit a topic, select **Edit** in that topic's row.
+
+To search for topics by name, enter your criteria in the search box. The topic search is case
+insensitive, and applies partial matching.
 
 ### Administering Jobs
 

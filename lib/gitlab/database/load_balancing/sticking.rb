@@ -74,7 +74,7 @@ module Gitlab
         def unstick_or_continue_sticking(namespace, id)
           return if all_caught_up?(namespace, id)
 
-          Session.current.use_primary!
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
         end
 
         # Select a replica that has caught up with the primary. If one has not been
@@ -83,14 +83,14 @@ module Gitlab
           replica_selected =
             select_caught_up_replicas(namespace, id)
 
-          Session.current.use_primary! unless replica_selected
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary! unless replica_selected
         end
 
         # Starts sticking to the primary for the given namespace and id, using
         # the latest WAL pointer from the primary.
         def stick(namespace, id)
           mark_primary_write_location(namespace, id)
-          Session.current.use_primary!
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
         end
 
         def bulk_stick(namespace, ids)
@@ -100,7 +100,7 @@ module Gitlab
             end
           end
 
-          Session.current.use_primary!
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
         end
 
         def with_primary_write_location

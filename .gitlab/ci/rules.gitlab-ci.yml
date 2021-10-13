@@ -1265,15 +1265,6 @@
         - '**/*.rb'
         - '**/Gemfile'
 
-.reports:rules:nodejs-scan-sast:
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
-      when: never
-    - changes:
-        - '**/package.json'
-
 .reports:rules:gosec-sast:
   rules:
     - if: $SAST_DISABLED

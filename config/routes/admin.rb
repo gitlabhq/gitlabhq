@@ -61,6 +61,13 @@ namespace :admin do
     end
   end
 
+  resources :topics, only: [:index, :new, :create, :edit, :update] do
+    resource :avatar, controller: 'topics/avatars', only: [:destroy]
+    collection do
+      post :preview_markdown
+    end
+  end
+
   resources :deploy_keys, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do

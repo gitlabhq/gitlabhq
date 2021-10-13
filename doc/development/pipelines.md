@@ -231,7 +231,6 @@ graph RL;
     1-16["brakeman-sast"];
     1-17["eslint-sast"];
     1-18["kubesec-sast"];
-    1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
     1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
@@ -333,7 +332,6 @@ graph RL;
     1-16["brakeman-sast"];
     1-17["eslint-sast"];
     1-18["kubesec-sast"];
-    1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
     1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"
@@ -459,7 +457,6 @@ graph RL;
     1-16["brakeman-sast"];
     1-17["eslint-sast"];
     1-18["kubesec-sast"];
-    1-19["nodejs-scan-sast"];
     1-20["secrets-sast"];
     1-21["static-analysis (14 minutes)"];
     click 1-21 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914471&udv=0"

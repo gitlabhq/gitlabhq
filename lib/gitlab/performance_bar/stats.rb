@@ -9,6 +9,7 @@ module Gitlab
         ee/lib/ee/peek
         lib/peek
         lib/gitlab/database
+        lib/gitlab/gitaly_client.rb
         lib/gitlab/gitaly_client/call.rb
         lib/gitlab/instrumentation/redis_interceptor.rb
       ].freeze

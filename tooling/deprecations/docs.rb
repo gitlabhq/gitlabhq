@@ -20,7 +20,7 @@ module Deprecations
         YAML.load_file(file)
       end
 
-      deprecations = VersionSorter.rsort(deprecations) { |d| d["removal_milestone"] }
+      deprecations = VersionSorter.sort(deprecations) { |d| d["removal_milestone"] }
 
       milestones = deprecations.map { |d| d["removal_milestone"] }.uniq
 

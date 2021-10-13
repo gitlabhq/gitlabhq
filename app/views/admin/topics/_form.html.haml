@@ -1,0 +1,40 @@
+= gitlab_ui_form_for @topic, url: url, html: { multipart: true, class: 'js-project-topic-form gl-show-field-errors common-note-form js-quick-submit js-requires-input' }, authenticity_token: true do |f|
+  = form_errors(@topic)
+
+  .form-group
+    = f.label :name do
+      = _("Topic name")
+    = f.text_field :name, placeholder: _('My topic'), class: 'form-control input-lg', data: { qa_selector: 'topic_name_field' },
+      required: true,
+      title: _('Please fill in a name for your topic.'),
+      autofocus: true
+
+  .form-group
+    = f.label :description, _("Description")
+    = render layout: 'shared/md_preview', locals: { url: preview_markdown_admin_topics_path, referenced_users: false } do
+      = render 'shared/zen', f: f, attr: :description,
+                               classes: 'note-textarea',
+                               placeholder: _('Write a description…'),
+                               supports_quick_actions: false,
+                               supports_autocomplete: false,
+                               qa_selector: 'topic_form_description'
+      = render 'shared/notes/hints', supports_file_upload: false
+
+  .form-group.gl-mt-3.gl-mb-3
+    = f.label :avatar, _('Topic avatar'), class: 'gl-display-block'
+    - if @topic.avatar?
+      .avatar-container.rect-avatar.s90
+        = topic_icon(@topic, alt: _('Topic avatar'), class: 'avatar topic-avatar s90')
+    = render 'shared/choose_avatar_button', f: f
+    - if @topic.avatar?
+      = link_to _('Remove avatar'), admin_topic_avatar_path(@topic), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'gl-button btn btn-danger-secondary gl-mt-2'
+
+  - if @topic.new_record?
+    .form-actions
+      = f.submit _('Create topic'), class: "gl-button btn btn-confirm"
+      = link_to  _('Cancel'), admin_topics_path, class: "gl-button btn btn-default btn-cancel"
+
+  - else
+    .form-actions
+      = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+      = link_to  _('Cancel'), admin_topics_path, class: "gl-button btn btn-cancel"

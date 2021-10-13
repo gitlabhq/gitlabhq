@@ -34,10 +34,6 @@ brakeman-sast:
   rules: !reference [".reports:rules:brakeman-sast", rules]
   allow_failure: true
 
-nodejs-scan-sast:
-  rules: !reference [".reports:rules:nodejs-scan-sast", rules]
-  allow_failure: true
-
 semgrep-sast:
   rules: !reference [".reports:rules:semgrep-sast", rules]
   allow_failure: true

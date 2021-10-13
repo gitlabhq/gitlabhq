@@ -28,6 +28,8 @@ There are many places where file uploading is used, according to contexts:
   - LFS Objects
   - Merge request diffs
   - Design Management design thumbnails
+- Topic
+  - Topic avatars
 
 ## Disk storage
 
@@ -42,6 +44,7 @@ they are still not 100% standardized. You can see them below:
 | User avatars                          | yes    | `uploads/-/system/user/avatar/:id/:filename`                  | `AvatarUploader`       | User       |
 | User snippet attachments              | yes    | `uploads/-/system/personal_snippet/:id/:random_hex/:filename` | `PersonalFileUploader` | Snippet    |
 | Project avatars                       | yes    | `uploads/-/system/project/avatar/:id/:filename`               | `AvatarUploader`       | Project    |
+| Topic avatars                         | yes    | `uploads/-/system/projects/topic/avatar/:id/:filename`        | `AvatarUploader`       | Topic      |
 | Issues/MR/Notes Markdown attachments  | yes    | `uploads/:project_path_with_namespace/:random_hex/:filename`  | `FileUploader`         | Project    |
 | Issues/MR/Notes Legacy Markdown attachments | no | `uploads/-/system/note/attachment/:id/:filename`            | `AttachmentUploader`   | Note       |
 | Design Management design thumbnails   | yes | `uploads/-/system/design_management/action/image_v432x230/:id/:filename` | `DesignManagement::DesignV432x230Uploader` | DesignManagement::Action |

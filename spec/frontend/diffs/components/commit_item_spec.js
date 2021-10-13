@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
+import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import Component from '~/diffs/components/commit_item.vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
-import getDiffWithCommit from '../mock_data/diff_with_commit';
 
 jest.mock('~/user_popovers');
 
@@ -18,7 +18,7 @@ describe('diffs/components/commit_item', () => {
   let wrapper;
 
   const timeago = getTimeago();
-  const { commit } = getDiffWithCommit();
+  const { commit } = getDiffWithCommit;
 
   const getTitleElement = () => wrapper.find('.commit-row-message.item-title');
   const getDescElement = () => wrapper.find('pre.commit-row-description');

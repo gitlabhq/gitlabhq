@@ -13,6 +13,7 @@ class UploadsController < ApplicationController
     "group"            => Group,
     "appearance"       => Appearance,
     "personal_snippet" => PersonalSnippet,
+    "projects/topic"   => Projects::Topic,
     nil                => PersonalSnippet
   }.freeze
 
@@ -54,6 +55,8 @@ class UploadsController < ApplicationController
         !secret? || can?(current_user, :update_user, model)
       when Appearance
         true
+      when Projects::Topic
+        true
       else
         permission = "read_#{model.class.underscore}".to_sym
 
@@ -85,7 +88,7 @@ class UploadsController < ApplicationController
 
   def cache_settings
     case model
-    when User, Appearance
+    when User, Appearance, Projects::Topic
       [5.minutes, { public: true, must_revalidate: false }]
     when Project, Group
       [5.minutes, { private: true, must_revalidate: true }]

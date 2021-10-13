@@ -534,7 +534,11 @@ Plan.default.actual_limits.update!(pages_file_entries: 100)
 
 ### Number of registered runners per scope
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12. Disabled by default.
+> - Enabled on GitLab.com in GitLab 14.3.
+> - Enabled on self-managed in GitLab 14.4.
+> - Feature flag `ci_runner_limits` removed in GitLab 14.4. You can still use `ci_runner_limits_override`
+    to remove limits for a given scope.
 
 The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 3 months.

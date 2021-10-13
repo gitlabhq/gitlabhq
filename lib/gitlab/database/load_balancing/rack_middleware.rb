@@ -73,7 +73,7 @@ module Gitlab
             # To prevent this from happening, we scope sticking to all the
             # models that support load balancing. In the future (if we
             # determined this to be OK) we may be able to relax this.
-            LoadBalancing.base_models.map do |model|
+            ::Gitlab::Database::LoadBalancing.base_models.map do |model|
               [model, :user, warden.user.id]
             end
           elsif env[STICK_OBJECT].present?

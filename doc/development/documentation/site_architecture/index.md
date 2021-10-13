@@ -230,7 +230,7 @@ reports.
 ## Monthly release process (versions)
 
 The docs website supports versions and each month we add the latest one to the list.
-For more information, read about the [monthly release process](https://about.gitlab.com/handbook/engineering/ux/technical-writing/workflow/#monthly-documentation-releases).
+For more information, read about the [monthly release process](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md).
 
 ## Review Apps for documentation merge requests
 

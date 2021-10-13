@@ -58,6 +58,15 @@ RSpec.describe 'layouts/nav/sidebar/_admin' do
     it_behaves_like 'page has active sub tab', 'Users'
   end
 
+  context 'on topics' do
+    before do
+      allow(controller).to receive(:controller_name).and_return('admin/topics')
+    end
+
+    it_behaves_like 'page has active tab', 'Overview'
+    it_behaves_like 'page has active sub tab', 'Topics'
+  end
+
   context 'on messages' do
     before do
       allow(controller).to receive(:controller_name).and_return('broadcast_messages')

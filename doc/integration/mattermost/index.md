@@ -338,6 +338,7 @@ Below is a list of Mattermost versions for GitLab 11.10 and later:
 | 14.1 | 5.36 |
 | 14.2 | 5.37 |
 | 14.3 | 5.38 |
+| 14.4 | 5.39 |
 
 NOTE:
 When upgrading the Mattermost version, it is essential to check the

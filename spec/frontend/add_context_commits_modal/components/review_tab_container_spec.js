@@ -1,12 +1,12 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import CommitItem from '~/diffs/components/commit_item.vue';
-import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';
 
 describe('ReviewTabContainer', () => {
   let wrapper;
-  const { commit } = getDiffWithCommit();
+  const { commit } = getDiffWithCommit;
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMount(ReviewTabContainer, {

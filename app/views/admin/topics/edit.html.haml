@@ -1,0 +1,4 @@
+- page_title _("Edit"), @topic.name, _("Topics")
+%h3.page-title= _('Edit topic: %{topic_name}') % { topic_name: @topic.name }
+%hr
+= render 'form', url: admin_topic_path(@topic)

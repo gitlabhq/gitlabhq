@@ -33,6 +33,10 @@ RSpec.describe Gitlab::PerformanceBar::Stats do
                   method_path: 'lib/gitlab/gitaly_client/commit_service.rb:each',
                   count: 1, request_id: 'foo', query_type: 'gitaly' })
         expect(logger).to receive(:info)
+          .with({ duration_ms: 6.678, filename: 'lib/gitlab/gitaly_client/commit_service.rb',
+                  method_path: 'lib/gitlab/gitaly_client/commit_service.rb:call_find_commit',
+                  count: 1, request_id: 'foo', query_type: 'gitaly' })
+        expect(logger).to receive(:info)
           .with({ duration_ms: 0.155, filename: 'lib/feature.rb',
                   method_path: 'lib/feature.rb:enabled?',
                   count: 1, request_id: 'foo', query_type: 'redis' })

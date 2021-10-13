@@ -2108,6 +2108,9 @@ msgstr ""
 msgid "Add to tree"
 msgstr ""
 
+msgid "Add topics to projects to help users find them."
+msgstr ""
+
 msgid "Add trigger"
 msgstr ""
 
@@ -9708,6 +9711,9 @@ msgstr ""
 msgid "Create tag %{tagName}"
 msgstr ""
 
+msgid "Create topic"
+msgstr ""
+
 msgid "Create user"
 msgstr ""
 
@@ -12367,6 +12373,9 @@ msgid "Edit this release"
 msgstr ""
 
 msgid "Edit title and description"
+msgstr ""
+
+msgid "Edit topic: %{topic_name}"
 msgstr ""
 
 msgid "Edit user: %{user_name}"
@@ -22390,6 +22399,9 @@ msgstr ""
 msgid "My company or team"
 msgstr ""
 
+msgid "My topic"
+msgstr ""
+
 msgid "My-Reaction"
 msgstr ""
 
@@ -22881,6 +22893,9 @@ msgid "New tag"
 msgstr ""
 
 msgid "New test case"
+msgstr ""
+
+msgid "New topic"
 msgstr ""
 
 msgid "New users set to external"
@@ -25569,6 +25584,9 @@ msgid "Please enter or upload a valid license."
 msgstr ""
 
 msgid "Please fill in a descriptive name for your group."
+msgstr ""
+
+msgid "Please fill in a name for your topic."
 msgstr ""
 
 msgid "Please fill out this field."
@@ -34347,6 +34365,9 @@ msgstr ""
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
+msgid "There are no topics to show."
+msgstr ""
+
 msgid "There are no variables yet."
 msgstr ""
 
@@ -35837,6 +35858,21 @@ msgid "Too many projects enabled. You will need to manage them via the console o
 msgstr ""
 
 msgid "TopNav|Go back"
+msgstr ""
+
+msgid "Topic %{topic_name} was successfully created."
+msgstr ""
+
+msgid "Topic avatar"
+msgstr ""
+
+msgid "Topic name"
+msgstr ""
+
+msgid "Topic was successfully updated."
+msgstr ""
+
+msgid "Topics"
 msgstr ""
 
 msgid "Topics (optional)"
@@ -38705,6 +38741,9 @@ msgstr ""
 msgid "Write a description or drag your files here…"
 msgstr ""
 
+msgid "Write a description…"
+msgstr ""
+
 msgid "Write milestone description..."
 msgstr ""
 
@@ -39617,6 +39656,21 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Your username is %{username}."
+msgstr ""
+
+msgid "ZenTaoIntegration|Failed to load ZenTao issue. View the issue in ZenTao, or reload the page."
+msgstr ""
+
+msgid "ZenTaoIntegration|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}ZenTao%{linkEnd}."
+msgstr ""
+
+msgid "ZenTaoIntegration|This is a ZenTao user."
+msgstr ""
+
+msgid "ZenTaoIntegration|This issue is synchronized with ZenTao"
+msgstr ""
+
+msgid "ZenTaoIntegration|ZenTao user"
 msgstr ""
 
 msgid "ZentaoIntegration|Base URL of the Zentao instance."

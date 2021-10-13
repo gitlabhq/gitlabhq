@@ -18,6 +18,7 @@ module Avatarable
     prepend ShadowMethods
     include ObjectStorage::BackgroundMove
     include Gitlab::Utils::StrongMemoize
+    include ApplicationHelper
 
     validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
     validates :avatar, file_size: { maximum: MAXIMUM_FILE_SIZE }, if: :avatar_changed?

@@ -7,7 +7,7 @@ RSpec.describe AvatarsHelper do
 
   let_it_be(:user) { create(:user) }
 
-  describe '#project_icon & #group_icon' do
+  describe '#project_icon, #group_icon, #topic_icon' do
     shared_examples 'resource with a default avatar' do |source_type|
       it 'returns a default avatar div' do
         expect(public_send("#{source_type}_icon", *helper_args))
@@ -68,6 +68,18 @@ RSpec.describe AvatarsHelper do
 
       it_behaves_like 'resource with a custom avatar', 'group' do
         let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+        let(:helper_args) { [resource] }
+      end
+    end
+
+    context 'when providing a topic' do
+      it_behaves_like 'resource with a default avatar', 'topic' do
+        let(:resource) { create(:topic, name: 'foo') }
+        let(:helper_args) { [resource] }
+      end
+
+      it_behaves_like 'resource with a custom avatar', 'topic' do
+        let(:resource) { create(:topic, avatar: File.open(uploaded_image_temp_path)) }
         let(:helper_args) { [resource] }
       end
     end

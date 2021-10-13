@@ -7,7 +7,7 @@
         %span.sidebar-context-title
           = _('Admin Area')
     %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }
-      = nav_link(controller: %w(dashboard admin admin/projects users groups jobs runners gitaly_servers cohorts), html_options: {class: 'home'}) do
+      = nav_link(controller: %w(dashboard admin admin/projects users groups admin/topics jobs runners gitaly_servers cohorts), html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'has-sub-items' do
           .nav-icon-container
             = sprite_icon('overview')
@@ -35,6 +35,10 @@
             = link_to admin_groups_path, title: _('Groups'), data: { qa_selector: 'groups_overview_link' } do
               %span
                 = _('Groups')
+          = nav_link(controller: [:admin, 'admin/topics']) do
+            = link_to admin_topics_path, title: _('Topics'), data: { qa_selector: 'topics_overview_link' } do
+              %span
+                = _('Topics')
           = nav_link path: 'jobs#index' do
             = link_to admin_jobs_path, title: _('Jobs') do
               %span

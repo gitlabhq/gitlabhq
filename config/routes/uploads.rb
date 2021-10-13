@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 scope path: :uploads do
-  # Note attachments and User/Group/Project avatars
+  # Note attachments and User/Group/Project/Topic avatars
   get "-/system/:model/:mounted_as/:id/:filename",
       to:           "uploads#show",
-      constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: %r{[^/]+} }
+      constraints:  { model: %r{note|user|group|project|projects\/topic}, mounted_as: /avatar|attachment/, filename: %r{[^/]+} }
 
   # show uploads for models, snippets (notes) available for now
   get '-/system/:model/:id/:secret/:filename',

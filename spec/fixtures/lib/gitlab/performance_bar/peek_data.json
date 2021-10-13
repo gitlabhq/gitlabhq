@@ -110,6 +110,42 @@
             "lib/gitlab/jira/middleware.rb:19:in `call'"
           ],
           "warnings": []
+        }, {
+          "start": 9081.502219885,
+          "feature": "commit_service#find_commit",
+          "duration": 6.678,
+          "request": "{:repository=>\n  {:storage_name=>\"nfs-file-cny01\",\n   :relative_path=>\n    \"@hashed/a6/80/a68072e80f075e89bc74a300101a9e71e8363bdb542182580162553462480a52.git\",\n   :git_object_directory=>\"\",\n   :git_alternate_object_directories=>[],\n   :gl_repository=>\"project-278964\",\n   :gl_project_path=>\"gitlab-org/gitlab\"},\n :revision=>\"master\"}\n",
+          "rpc": "find_commit",
+          "backtrace": [
+            "lib/gitlab/gitaly_client/call.rb:30:in `call'",
+            "lib/gitlab/gitaly_client.rb:167:in `call'",
+            "lib/gitlab/gitaly_client/commit_service.rb:520:in `call_find_commit'",
+            "lib/gitlab/gitaly_client/commit_service.rb:354:in `find_commit'",
+            "lib/gitlab/git/commit.rb:74:in `block in find_commit'",
+            "lib/gitlab/git/wraps_gitaly_errors.rb:7:in `wrapped_gitaly_errors'",
+            "lib/gitlab/git/commit.rb:73:in `find_commit'",
+            "lib/gitlab/git/rugged_impl/commit.rb:41:in `find_commit'",
+            "lib/gitlab/git/commit.rb:65:in `find'",
+            "lib/gitlab/git/repository.rb:789:in `commit'",
+            "app/services/branches/diverging_commit_counts_service.rb:21:in `diverging_commit_counts'",
+            "app/services/branches/diverging_commit_counts_service.rb:11:in `call'",
+            "app/controllers/projects/branches_controller.rb:57:in `block (4 levels) in diverging_commit_counts'",
+            "app/controllers/projects/branches_controller.rb:57:in `to_h'",
+            "app/controllers/projects/branches_controller.rb:57:in `block (3 levels) in diverging_commit_counts'",
+            "lib/gitlab/gitaly_client.rb:325:in `allow_n_plus_1_calls'",
+            "app/controllers/projects/branches_controller.rb:56:in `block (2 levels) in diverging_commit_counts'",
+            "app/controllers/projects/branches_controller.rb:51:in `diverging_commit_counts'",
+            "ee/lib/gitlab/ip_address_state.rb:10:in `with'",
+            "ee/app/controllers/ee/application_controller.rb:44:in `set_current_ip_address'",
+            "app/controllers/application_controller.rb:497:in `set_current_admin'",
+            "lib/gitlab/session.rb:11:in `with_session'",
+            "app/controllers/application_controller.rb:488:in `set_session_storage'",
+            "app/controllers/application_controller.rb:482:in `set_locale'",
+            "app/controllers/application_controller.rb:476:in `set_current_context'",
+            "ee/lib/omni_auth/strategies/group_saml.rb:41:in `other_phase'",
+            "lib/gitlab/jira/middleware.rb:19:in `call'"
+          ],
+          "warnings": []
         }
       ],
       "warnings": []
