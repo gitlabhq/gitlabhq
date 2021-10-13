@@ -166,6 +166,8 @@ class Issue < ApplicationRecord
   scope :by_project_id_and_iid, ->(composites) do
     where_composite(%i[project_id iid], composites)
   end
+  scope :with_null_relative_position, -> { where(relative_position: nil) }
+  scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
 
   after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?

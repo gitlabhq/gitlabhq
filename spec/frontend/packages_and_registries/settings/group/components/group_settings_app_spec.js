@@ -5,16 +5,12 @@ import { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
+import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
 
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 
-import {
-  ERROR_UPDATING_SETTINGS,
-  SUCCESS_UPDATING_SETTINGS,
-} from '~/packages_and_registries/settings/group/constants';
-
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
-import { groupPackageSettingsMock, packageSettings } from '../mock_data';
+import { groupPackageSettingsMock, packageSettings, dependencyProxySettings } from '../mock_data';
 
 jest.mock('~/flash');
 
@@ -28,10 +24,12 @@ describe('Group Settings App', () => {
   const defaultProvide = {
     defaultExpanded: false,
     groupPath: 'foo_group_path',
+    dependencyProxyAvailable: true,
   };
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(groupPackageSettingsMock),
+    provide = defaultProvide,
   } = {}) => {
     localVue.use(VueApollo);
 
@@ -42,7 +40,7 @@ describe('Group Settings App', () => {
     wrapper = shallowMount(component, {
       localVue,
       apolloProvider,
-      provide: defaultProvide,
+      provide,
       mocks: {
         $toast: {
           show,
@@ -61,6 +59,7 @@ describe('Group Settings App', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findPackageSettings = () => wrapper.findComponent(PackagesSettings);
+  const findDependencyProxySettings = () => wrapper.findComponent(DependencyProxySettings);
 
   const waitForApolloQueryAndRender = async () => {
     await waitForPromises();
@@ -68,9 +67,10 @@ describe('Group Settings App', () => {
   };
 
   describe.each`
-    finder                 | entityProp           | entityValue
-    ${findPackageSettings} | ${'packageSettings'} | ${packageSettings()}
-  `('settings blocks', ({ finder, entityProp, entityValue }) => {
+    finder                         | entityProp                   | entityValue                  | successMessage                   | errorMessage
+    ${findPackageSettings}         | ${'packageSettings'}         | ${packageSettings()}         | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
+    ${findDependencyProxySettings} | ${'dependencyProxySettings'} | ${dependencyProxySettings()} | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
+  `('settings blocks', ({ finder, entityProp, entityValue, successMessage, errorMessage }) => {
     beforeEach(() => {
       mountComponent();
       return waitForApolloQueryAndRender();
@@ -90,7 +90,7 @@ describe('Group Settings App', () => {
     describe('success event', () => {
       it('shows a success toast', () => {
         finder().vm.$emit('success');
-        expect(show).toHaveBeenCalledWith(SUCCESS_UPDATING_SETTINGS);
+        expect(show).toHaveBeenCalledWith(successMessage);
       });
 
       it('hides the error alert', async () => {
@@ -117,7 +117,7 @@ describe('Group Settings App', () => {
       });
 
       it('alert has the right text', () => {
-        expect(findAlert().text()).toBe(ERROR_UPDATING_SETTINGS);
+        expect(findAlert().text()).toBe(errorMessage);
       });
 
       it('dismissing the alert removes it', async () => {
@@ -129,6 +129,17 @@ describe('Group Settings App', () => {
 
         expect(findAlert().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when the dependency proxy is not available', () => {
+    beforeEach(() => {
+      mountComponent({ provide: { ...defaultProvide, dependencyProxyAvailable: false } });
+      return waitForApolloQueryAndRender();
+    });
+
+    it('the setting block is hidden', () => {
+      expect(findDependencyProxySettings().exists()).toBe(false);
     });
   });
 });

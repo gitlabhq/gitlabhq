@@ -3,7 +3,7 @@
 RSpec.shared_context 'relation tree restorer shared context' do
   include ImportExport::CommonUtil
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:shared) { Gitlab::ImportExport::Shared.new(importable) }
   let(:attributes) { relation_reader.consume_attributes(importable_name) }
 

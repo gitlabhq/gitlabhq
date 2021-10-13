@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_shared_state do
-  let_it_be(:project, reload: true) { create(:project) }
+  let_it_be(:project, reload: true) { create(:project, :repository_disabled, skip_disk_validation: true) }
   let_it_be(:user) { project.creator }
   let_it_be(:start) { RelativePositioning::START_POSITION }
   let_it_be(:max_pos) { RelativePositioning::MAX_POSITION }
@@ -28,12 +28,18 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
     end
   end
 
+  let_it_be(:nil_clump, reload: true) do
+    (1..100).to_a.map do |i|
+      create(:issue, project: project, author: user, relative_position: nil)
+    end
+  end
+
   before do
     stub_feature_flags(issue_rebalancing_with_retry: false)
   end
 
   def issues_in_position_order
-    project.reload.issues.reorder(relative_position: :asc).to_a
+    project.reload.issues.order_by_relative_position.to_a
   end
 
   subject(:service) { described_class.new(Project.id_in(project)) }
@@ -44,16 +50,19 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
 
       expect { service.execute }.not_to change { issues_in_position_order.map(&:id) }
 
+      caching = service.send(:caching)
       all_issues.each(&:reset)
 
       gaps = all_issues.take(all_issues.count - 1).zip(all_issues.drop(1)).map do |a, b|
         b.relative_position - a.relative_position
       end
 
+      expect(caching.issue_count).to eq(900)
       expect(gaps).to all(be > RelativePositioning::MIN_GAP)
       expect(all_issues.first.relative_position).to be > (RelativePositioning::MIN_POSITION * 0.9999)
       expect(all_issues.last.relative_position).to be < (RelativePositioning::MAX_POSITION * 0.9999)
       expect(project.root_namespace.issue_repositioning_disabled?).to be false
+      expect(project.issues.with_null_relative_position.count).to eq(100)
     end
 
     it 'is idempotent' do
@@ -111,7 +120,7 @@ RSpec.describe Issues::RelativePositionRebalancingService, :clean_gitlab_redis_s
       allow(caching).to receive(:concurrent_running_rebalances_count).and_return(10)
       allow(service).to receive(:caching).and_return(caching)
 
-      expect { service.execute }.not_to raise_error(Issues::RelativePositionRebalancingService::TooManyConcurrentRebalances)
+      expect { service.execute }.not_to raise_error
     end
 
     context 're-balancing is retried on statement timeout exceptions' do

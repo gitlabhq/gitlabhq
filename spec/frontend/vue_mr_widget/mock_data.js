@@ -280,7 +280,7 @@ export default {
   merge_train_index: 1,
   security_reports_docs_path: 'security-reports-docs-path',
   sast_comparison_path: '/sast_comparison_path',
-  secret_scanning_comparison_path: '/secret_scanning_comparison_path',
+  secret_detection_comparison_path: '/secret_detection_comparison_path',
   gitpod_enabled: true,
   show_gitpod_button: true,
   gitpod_url: 'http://gitpod.localhost',

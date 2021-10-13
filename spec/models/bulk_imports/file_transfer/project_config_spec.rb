@@ -23,10 +23,8 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
   end
 
   describe '#export_path' do
-    it 'returns correct export path' do
-      expect(::Gitlab::ImportExport).to receive(:storage_path).and_return('storage_path')
-
-      expect(subject.export_path).to eq("storage_path/#{exportable.disk_path}/#{hex}")
+    it 'returns tmpdir location' do
+      expect(subject.export_path).to include(File.join(Dir.tmpdir, 'bulk_imports'))
     end
   end
 
@@ -49,6 +47,48 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
   describe '#relation_excluded_keys' do
     it 'returns excluded keys for relation' do
       expect(subject.relation_excluded_keys('project')).to include('creator_id')
+    end
+  end
+
+  describe '#tree_relation?' do
+    context 'when it is a tree relation' do
+      it 'returns true' do
+        expect(subject.tree_relation?('labels')).to eq(true)
+      end
+    end
+
+    context 'when it is not a tree relation' do
+      it 'returns false' do
+        expect(subject.tree_relation?('example')).to eq(false)
+      end
+    end
+  end
+
+  describe '#file_relation?' do
+    context 'when it is a file relation' do
+      it 'returns true' do
+        expect(subject.file_relation?('uploads')).to eq(true)
+      end
+    end
+
+    context 'when it is not a file relation' do
+      it 'returns false' do
+        expect(subject.file_relation?('example')).to eq(false)
+      end
+    end
+  end
+
+  describe '#tree_relation_definition_for' do
+    it 'returns relation definition' do
+      expected = { service_desk_setting: { except: [:outgoing_name, :file_template_project_id], include: [] } }
+
+      expect(subject.tree_relation_definition_for('service_desk_setting')).to eq(expected)
+    end
+
+    context 'when relation is not tree relation' do
+      it 'returns' do
+        expect(subject.tree_relation_definition_for('example')).to be_nil
+      end
     end
   end
 end

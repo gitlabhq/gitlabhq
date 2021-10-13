@@ -28,7 +28,10 @@ class Namespace < ApplicationRecord
   # Android repo (15) + some extra backup.
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
-  SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
+  SR_DISABLED_AND_UNOVERRIDABLE = 'disabled_and_unoverridable'
+  SR_DISABLED_WITH_OVERRIDE = 'disabled_with_override'
+  SR_ENABLED = 'enabled'
+  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
   cache_markdown_field :description, pipeline: :description
@@ -431,7 +434,7 @@ class Namespace < ApplicationRecord
   def changing_shared_runners_enabled_is_allowed
     return unless new_record? || changes.has_key?(:shared_runners_enabled)
 
-    if shared_runners_enabled && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+    if shared_runners_enabled && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE
       errors.add(:shared_runners_enabled, _('cannot be enabled because parent group has shared Runners disabled'))
     end
   end
@@ -443,30 +446,30 @@ class Namespace < ApplicationRecord
       errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be changed if shared runners are enabled'))
     end
 
-    if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+    if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE
       errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be enabled because parent group does not allow it'))
     end
   end
 
   def shared_runners_setting
     if shared_runners_enabled
-      'enabled'
+      SR_ENABLED
     else
       if allow_descendants_override_disabled_shared_runners
-        'disabled_with_override'
+        SR_DISABLED_WITH_OVERRIDE
       else
-        'disabled_and_unoverridable'
+        SR_DISABLED_AND_UNOVERRIDABLE
       end
     end
   end
 
   def shared_runners_setting_higher_than?(other_setting)
-    if other_setting == 'enabled'
+    if other_setting == SR_ENABLED
       false
-    elsif other_setting == 'disabled_with_override'
-      shared_runners_setting == 'enabled'
-    elsif other_setting == 'disabled_and_unoverridable'
-      shared_runners_setting == 'enabled' || shared_runners_setting == 'disabled_with_override'
+    elsif other_setting == SR_DISABLED_WITH_OVERRIDE
+      shared_runners_setting == SR_ENABLED
+    elsif other_setting == SR_DISABLED_AND_UNOVERRIDABLE
+      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError
     end

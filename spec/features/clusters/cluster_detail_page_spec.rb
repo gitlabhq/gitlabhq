@@ -34,7 +34,7 @@ RSpec.describe 'Clusterable > Show page' do
     it 'does not show the environments tab' do
       visit cluster_path
 
-      expect(page).not_to have_selector('.js-cluster-nav-environments', text: 'Environments')
+      expect(page).not_to have_selector('[data-testid="cluster-environments-tab"]')
     end
   end
 

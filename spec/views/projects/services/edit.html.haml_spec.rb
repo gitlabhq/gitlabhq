@@ -14,7 +14,7 @@ RSpec.describe 'projects/services/edit' do
   it do
     render
 
-    expect(rendered).not_to have_text('Recent Deliveries')
+    expect(rendered).not_to have_text('Recent events')
   end
 
   context 'integration using WebHooks' do
@@ -25,7 +25,7 @@ RSpec.describe 'projects/services/edit' do
     it do
       render
 
-      expect(rendered).to have_text('Recent Deliveries')
+      expect(rendered).to have_text('Recent events')
     end
   end
 end

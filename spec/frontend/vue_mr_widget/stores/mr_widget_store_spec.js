@@ -162,7 +162,7 @@ describe('MergeRequestStore', () => {
       expect(store.securityReportsDocsPath).toBe('security-reports-docs-path');
     });
 
-    it.each(['sast_comparison_path', 'secret_scanning_comparison_path'])(
+    it.each(['sast_comparison_path', 'secret_detection_comparison_path'])(
       'should set %s path',
       (property) => {
         // Ensure something is set in the mock data

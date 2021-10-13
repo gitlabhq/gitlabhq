@@ -2370,7 +2370,7 @@ RSpec.describe Group do
       let_it_be(:project) { create(:project, group: group, shared_runners_enabled: true) }
       let_it_be(:project_2) { create(:project, group: sub_group_2, shared_runners_enabled: true) }
 
-      subject { group.update_shared_runners_setting!('disabled_and_unoverridable') }
+      subject { group.update_shared_runners_setting!(Namespace::SR_DISABLED_AND_UNOVERRIDABLE) }
 
       it 'disables shared Runners for all descendant groups and projects' do
         expect { subject_and_reload(group, sub_group, sub_group_2, project, project_2) }
@@ -2396,7 +2396,7 @@ RSpec.describe Group do
     end
 
     context 'disabled_with_override' do
-      subject { group.update_shared_runners_setting!('disabled_with_override') }
+      subject { group.update_shared_runners_setting!(Namespace::SR_DISABLED_WITH_OVERRIDE) }
 
       context 'top level group' do
         let_it_be(:group) { create(:group, :shared_runners_disabled) }

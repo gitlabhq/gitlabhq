@@ -1,10 +1,8 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import {
-  ERROR_UPDATING_SETTINGS,
-  SUCCESS_UPDATING_SETTINGS,
-} from '~/packages_and_registries/settings/group/constants';
+import { n__ } from '~/locale';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
+import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
 
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
 
@@ -13,8 +11,9 @@ export default {
   components: {
     GlAlert,
     PackagesSettings,
+    DependencyProxySettings,
   },
-  inject: ['groupPath'],
+  inject: ['groupPath', 'dependencyProxyAvailable'],
   apollo: {
     group: {
       query: getGroupPackagesSettingsQuery,
@@ -35,6 +34,9 @@ export default {
     packageSettings() {
       return this.group?.packageSettings || {};
     },
+    dependencyProxySettings() {
+      return this.group?.dependencyProxySetting || {};
+    },
     isLoading() {
       return this.$apollo.queries.group.loading;
     },
@@ -43,12 +45,22 @@ export default {
     dismissAlert() {
       this.alertMessage = null;
     },
-    handleSuccess() {
-      this.$toast.show(SUCCESS_UPDATING_SETTINGS);
+    handleSuccess(amount = 1) {
+      const successMessage = n__(
+        'Setting saved successfully',
+        'Settings saved successfully',
+        amount,
+      );
+      this.$toast.show(successMessage);
       this.dismissAlert();
     },
-    handleError() {
-      this.alertMessage = ERROR_UPDATING_SETTINGS;
+    handleError(amount = 1) {
+      const errorMessage = n__(
+        'An error occurred while saving the setting',
+        'An error occurred while saving the settings',
+        amount,
+      );
+      this.alertMessage = errorMessage;
     },
   },
 };
@@ -62,6 +74,14 @@ export default {
 
     <packages-settings
       :package-settings="packageSettings"
+      :is-loading="isLoading"
+      @success="handleSuccess(2)"
+      @error="handleError(2)"
+    />
+
+    <dependency-proxy-settings
+      v-if="dependencyProxyAvailable"
+      :dependency-proxy-settings="dependencyProxySettings"
       :is-loading="isLoading"
       @success="handleSuccess"
       @error="handleError"

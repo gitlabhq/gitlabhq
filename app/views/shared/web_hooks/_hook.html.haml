@@ -5,12 +5,12 @@
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)
-            %span.gl-badge.gl-bg-gray-10.gl-mt-2.rounded.deploy-project-label= trigger.to_s.titleize
-        %span.gl-badge.gl-bg-gray-10.gl-mt-2.rounded
+            %span.gl-badge.badge-muted.badge-pill.sm.gl-mt-2.deploy-project-label= trigger.to_s.titleize
+        %span.gl-badge.badge-muted.badge-pill.sm.gl-mt-2
           = _('SSL Verification:')
           = hook.enable_ssl_verification ? _('enabled') : _('disabled')
 
     .col-md-4.col-lg-5.text-right-md.gl-mt-2
       %span>= render 'shared/web_hooks/test_button', hook: hook, button_class: 'btn-sm btn-default gl-mr-3'
       %span>= link_to _('Edit'), edit_hook_path(hook), class: 'btn gl-button btn-default btn-sm gl-mr-3'
-      = link_to _('Delete'), destroy_hook_path(hook), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn gl-button btn-default btn-sm'
+      = link_to _('Delete'), destroy_hook_path(hook), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn gl-button btn-secondary btn-danger-secondary btn-sm'

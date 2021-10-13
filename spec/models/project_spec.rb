@@ -6287,23 +6287,17 @@ RSpec.describe Project, factory_default: :keep do
 
   describe 'validation #changing_shared_runners_enabled_is_allowed' do
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
-      'enabled'                    | true  | true
-      'enabled'                    | false | true
-      'disabled_with_override'     | true  | true
-      'disabled_with_override'     | false | true
-      'disabled_and_unoverridable' | true  | false
-      'disabled_and_unoverridable' | false | true
+      :shared_runners_enabled     | true  | true
+      :shared_runners_enabled     | false | true
+      :disabled_with_override     | true  | true
+      :disabled_with_override     | false | true
+      :disabled_and_unoverridable | true  | false
+      :disabled_and_unoverridable | false | true
     end
 
     with_them do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, shared_runners_setting) }
       let(:project) { build(:project, namespace: group, shared_runners_enabled: project_shared_runners_enabled) }
-
-      before do
-        allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
-      end
 
       it 'validates the configuration' do
         expect(project.valid?).to eq(valid_record)

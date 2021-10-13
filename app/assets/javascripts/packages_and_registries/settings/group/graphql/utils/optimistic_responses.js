@@ -9,3 +9,15 @@ export const updateGroupPackagesSettingsOptimisticResponse = (changes) => ({
     },
   },
 });
+
+export const updateGroupDependencyProxySettingsOptimisticResponse = (changes) => ({
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  __typename: 'Mutation',
+  updateDependencyProxySettings: {
+    __typename: 'UpdateDependencyProxySettingsPayload',
+    errors: [],
+    dependencyProxySetting: {
+      ...changes,
+    },
+  },
+});

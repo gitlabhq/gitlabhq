@@ -458,28 +458,23 @@ RSpec.describe Projects::TransferService do
     using RSpec::Parameterized::TableSyntax
 
     where(:project_shared_runners_enabled, :shared_runners_setting, :expected_shared_runners_enabled) do
-      true  | 'disabled_and_unoverridable' | false
-      false | 'disabled_and_unoverridable' | false
-      true  | 'disabled_with_override'     | true
-      false | 'disabled_with_override'     | false
-      true  | 'enabled'                    | true
-      false | 'enabled'                    | false
+      true  | :disabled_and_unoverridable | false
+      false | :disabled_and_unoverridable | false
+      true  | :disabled_with_override     | true
+      false | :disabled_with_override     | false
+      true  | :shared_runners_enabled     | true
+      false | :shared_runners_enabled     | false
     end
 
     with_them do
       let(:project) { create(:project, :public, :repository, namespace: user.namespace, shared_runners_enabled: project_shared_runners_enabled) }
-      let(:group) { create(:group) }
-
-      before do
-        group.add_owner(user)
-        expect_next_found_instance_of(Group) do |group|
-          expect(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
-
-        execute_transfer
-      end
+      let(:group) { create(:group, shared_runners_setting) }
 
       it 'updates shared runners based on the parent group' do
+        group.add_owner(user)
+
+        expect(execute_transfer).to eq(true)
+
         expect(project.shared_runners_enabled).to eq(expected_shared_runners_enabled)
       end
     end

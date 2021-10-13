@@ -1,22 +1,20 @@
-- if hook_logs.present?
-  %table.table
-    %thead
-      %tr
-        %th= _('Status')
-        %th.d-none.d-sm-table-cell= _('Trigger')
-        %th= _('URL')
-        %th= _('Elapsed time')
-        %th= _('Request time')
-        %th
+%table.gl-table.gl-w-full
+  %thead
+    %tr
+      %th= _('Status')
+      %th.d-none.d-sm-table-cell= _('Trigger')
+      %th= _('Elapsed time')
+      %th= _('Request time')
+      %th
+
+  - if hook_logs.present?
     - hook_logs.each do |hook_log|
       %tr
         %td
           = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
         %td.d-none.d-sm-table-cell
-          %span.badge.badge-gray.deploy-project-label
+          %span.badge.badge-pill.gl-badge.badge-muted.sm
             = hook_log.trigger.singularize.titleize
-        %td
-          = truncate(hook_log.url, length: 50)
         %td
           #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
         %td
@@ -24,8 +22,13 @@
         %td
           = link_to _('View details'), hook_log_path(hook, hook_log)
 
-  = paginate hook_logs, theme: 'gitlab'
 
+- if hook_logs.present?
+  = paginate hook_logs, theme: 'gitlab'
 - else
-  .settings-message.text-center
-    = _("You don't have any webhooks deliveries")
+  .gl-text-center.gl-mt-7
+    %h4= _('No webhook events')
+    %p
+      %span.gl-display-block= _('Webhook events will be displayed here.')
+      %span= _('Use the %{strongStart}Test%{strongEnd} option above to create an event.').html_safe % { strongStart: '<strong>'.html_safe, strongEnd: '</strong>'.html_safe }
+

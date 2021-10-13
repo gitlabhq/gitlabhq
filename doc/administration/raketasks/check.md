@@ -207,7 +207,7 @@ above.
 
 ### Dangling objects
 
-The `gitlab:git:fsck` task can find dangling objects such as:
+The `gitlab-rake gitlab:git:fsck` task can find dangling objects such as:
 
 ```plaintext
 dangling blob a12...

@@ -77,7 +77,7 @@ module Ci
     def toggle_shared_runners_settings_data(project)
       {
         is_enabled: "#{project.shared_runners_enabled?}",
-        is_disabled_and_unoverridable: "#{project.group&.shared_runners_setting == 'disabled_and_unoverridable'}",
+        is_disabled_and_unoverridable: "#{project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE}",
         update_path: toggle_shared_runners_project_runners_path(project)
       }
     end

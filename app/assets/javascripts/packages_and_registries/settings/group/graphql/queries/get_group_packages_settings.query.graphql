@@ -1,5 +1,8 @@
 query getGroupPackagesSettings($fullPath: ID!) {
   group(fullPath: $fullPath) {
+    dependencyProxySetting {
+      enabled
+    }
     packageSettings {
       mavenDuplicatesAllowed
       mavenDuplicateExceptionRegex

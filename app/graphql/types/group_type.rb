@@ -234,6 +234,10 @@ module Types
       )
     end
 
+    def dependency_proxy_setting
+      group.dependency_proxy_setting || group.create_dependency_proxy_setting
+    end
+
     private
 
     def group

@@ -12,7 +12,7 @@ import {
   securityReportMergeRequestDownloadPathsQueryNoArtifactsResponse,
   securityReportMergeRequestDownloadPathsQueryResponse,
   sastDiffSuccessMock,
-  secretScanningDiffSuccessMock,
+  secretDetectionDiffSuccessMock,
 } from 'jest/vue_shared/security_reports/mock_data';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -31,7 +31,7 @@ Vue.use(VueApollo);
 Vue.use(Vuex);
 
 const SAST_COMPARISON_PATH = '/sast.json';
-const SECRET_SCANNING_COMPARISON_PATH = '/secret_detection.json';
+const SECRET_DETECTION_COMPARISON_PATH = '/secret_detection.json';
 
 describe('Security reports app', () => {
   let wrapper;
@@ -175,12 +175,12 @@ describe('Security reports app', () => {
 
     const SAST_SUCCESS_MESSAGE =
       'Security scanning detected 1 potential vulnerability 1 Critical 0 High and 0 Others';
-    const SECRET_SCANNING_SUCCESS_MESSAGE =
+    const SECRET_DETECTION_SUCCESS_MESSAGE =
       'Security scanning detected 2 potential vulnerabilities 1 Critical 1 High and 0 Others';
     describe.each`
-      reportType                      | pathProp                          | path                               | successResponse                  | successMessage
-      ${REPORT_TYPE_SAST}             | ${'sastComparisonPath'}           | ${SAST_COMPARISON_PATH}            | ${sastDiffSuccessMock}           | ${SAST_SUCCESS_MESSAGE}
-      ${REPORT_TYPE_SECRET_DETECTION} | ${'secretScanningComparisonPath'} | ${SECRET_SCANNING_COMPARISON_PATH} | ${secretScanningDiffSuccessMock} | ${SECRET_SCANNING_SUCCESS_MESSAGE}
+      reportType                      | pathProp                           | path                                | successResponse                   | successMessage
+      ${REPORT_TYPE_SAST}             | ${'sastComparisonPath'}            | ${SAST_COMPARISON_PATH}             | ${sastDiffSuccessMock}            | ${SAST_SUCCESS_MESSAGE}
+      ${REPORT_TYPE_SECRET_DETECTION} | ${'secretDetectionComparisonPath'} | ${SECRET_DETECTION_COMPARISON_PATH} | ${secretDetectionDiffSuccessMock} | ${SECRET_DETECTION_SUCCESS_MESSAGE}
     `(
       'given a $pathProp and $reportType artifact',
       ({ pathProp, path, successResponse, successMessage }) => {

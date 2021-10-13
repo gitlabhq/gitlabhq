@@ -74,7 +74,6 @@ RSpec.describe Gitlab::Pagination::Keyset::Iterator do
 
         expect(loaded_records).to eq(project.issues.order(custom_reorder).take(2))
 
-        # continuing the iteration
         new_iterator = described_class.new(**iterator_params.merge(cursor: cursor))
         new_iterator.each_batch(of: 2) do |relation|
           loaded_records.concat(relation.to_a)

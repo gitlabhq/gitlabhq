@@ -839,25 +839,23 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:user) { create :user }
 
     context 'when parent group is present' do
-      let_it_be(:group) do
+      let_it_be(:group, reload: true) do
         create(:group) do |group|
           group.add_owner(user)
         end
       end
 
       before do
-        allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
+        group.update_shared_runners_setting!(shared_runners_setting)
 
         user.refresh_authorized_projects # Ensure cache is warm
       end
 
       context 'default value based on parent group setting' do
         where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
-          'enabled'                    | nil | true
-          'disabled_with_override'     | nil | false
-          'disabled_and_unoverridable' | nil | false
+          Namespace::SR_ENABLED                    | nil | true
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | nil | false
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | nil | false
         end
 
         with_them do
@@ -874,11 +872,11 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       context 'parent group is present and allows desired config' do
         where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
-          'enabled'                    | true  | true
-          'enabled'                    | false | false
-          'disabled_with_override'     | false | false
-          'disabled_with_override'     | true  | true
-          'disabled_and_unoverridable' | false | false
+          Namespace::SR_ENABLED                    | true  | true
+          Namespace::SR_ENABLED                    | false | false
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | false | false
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | true  | true
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false | false
         end
 
         with_them do
@@ -894,7 +892,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       context 'parent group is present and disallows desired config' do
         where(:shared_runners_setting, :desired_config_for_new_project) do
-          'disabled_and_unoverridable' | true
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
         end
 
         with_them do

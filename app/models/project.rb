@@ -1309,8 +1309,18 @@ class Project < ApplicationRecord
   def changing_shared_runners_enabled_is_allowed
     return unless new_record? || changes.has_key?(:shared_runners_enabled)
 
-    if shared_runners_enabled && group && group.shared_runners_setting == 'disabled_and_unoverridable'
+    if shared_runners_setting_conflicting_with_group?
       errors.add(:shared_runners_enabled, _('cannot be enabled because parent group does not allow it'))
+    end
+  end
+
+  def shared_runners_setting_conflicting_with_group?
+    shared_runners_enabled && group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE
+  end
+
+  def reconcile_shared_runners_setting!
+    if shared_runners_setting_conflicting_with_group?
+      self.shared_runners_enabled = false
     end
   end
 

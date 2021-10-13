@@ -1793,26 +1793,26 @@ For example, for triggering `Push Events` your project should have at least one 
 
 ## Troubleshoot webhooks
 
-GitLab stores each perform of the webhook.
-You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
+GitLab records the history of each webhook request.
+The **Recent events** table lists requests made within the last 2 days. The table is located on the **Edit** page for each webhook.
+
+The table includes the following details about each request:
+
+- HTTP status code (green for `200`-`299` codes, red for the others, and `internal error` for failed deliveries)
+- Triggered event
+- Elapsed time of the request
+- Relative time for when the request was made
 
 ![Recent deliveries](img/webhook_logs.png)
 
-In this section you can see:
-
-- HTTP status code (green for `200-299` codes, red for the others, `internal error` for failed deliveries).
-- Triggered event.
-- A time when the event was called.
-- Elapsed time of the request.
-
-If you need more information about execution, you can click `View details` link.
-On this page, you can see data that GitLab sends (request headers and body) and data that it received (response headers and body).
-
-From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
-
 NOTE:
-This history is unavailable for Group-level webhooks. For more information, read
+The **Recent events** table is unavailable for group-level webhooks. For more information, read
 [issue #325642](https://gitlab.com/gitlab-org/gitlab/-/issues/325642).
+
+Each webhook event has a corresponding **Details** page. This page details the data that GitLab sent (request headers and body) and received (response headers and body).
+To view the **Details** page, select **View details** for the webhook event.
+
+To repeat the delivery with the same data, select **Resend Request**.
 
 NOTE:
 If URL or secret token of the webhook were updated, data is delivered to the new address.

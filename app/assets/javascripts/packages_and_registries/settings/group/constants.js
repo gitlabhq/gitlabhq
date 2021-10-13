@@ -18,11 +18,6 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
   'PackageRegistry|Publish packages if their name or version matches this regex.',
 );
 
-export const SUCCESS_UPDATING_SETTINGS = s__('PackageRegistry|Settings saved successfully');
-export const ERROR_UPDATING_SETTINGS = s__(
-  'PackageRegistry|An error occurred while saving the settings',
-);
-
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
 export const DEPENDENCY_PROXY_SETTINGS_DESCRIPTION = s__(
   'DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies.',

@@ -37,7 +37,7 @@ module Gitlab
           ActiveRecord::Base.no_touching do
             update_params!
 
-            BulkInsertableAssociations.with_bulk_insert(enabled: @importable.instance_of?(::Project)) do
+            BulkInsertableAssociations.with_bulk_insert(enabled: project?) do
               fix_ci_pipelines_not_sorted_on_legacy_project_json!
               create_relations!
             end
@@ -54,6 +54,10 @@ module Gitlab
       end
 
       private
+
+      def project?
+        @importable.instance_of?(::Project)
+      end
 
       # Loops through the tree of models defined in import_export.yml and
       # finds them in the imported JSON so they can be instantiated and saved
@@ -75,7 +79,7 @@ module Gitlab
       def process_relation_item!(relation_key, relation_definition, relation_index, data_hash)
         relation_object = build_relation(relation_key, relation_definition, relation_index, data_hash)
         return unless relation_object
-        return if importable_class == ::Project && group_model?(relation_object)
+        return if project? && group_model?(relation_object)
 
         relation_object.assign_attributes(importable_class_sym => @importable)
 
@@ -114,7 +118,8 @@ module Gitlab
           excluded_keys:  excluded_keys_for_relation(importable_class_sym))
 
         @importable.assign_attributes(params)
-        @importable.drop_visibility_level! if importable_class == ::Project
+
+        modify_attributes
 
         Gitlab::Timeless.timeless(@importable) do
           @importable.save!
@@ -139,6 +144,13 @@ module Gitlab
         else
           {}
         end
+      end
+
+      def modify_attributes
+        return unless project?
+
+        @importable.reconcile_shared_runners_setting!
+        @importable.drop_visibility_level!
       end
 
       def build_relations(relation_key, relation_definition, relation_index, data_hashes)

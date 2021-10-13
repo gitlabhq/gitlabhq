@@ -5,11 +5,16 @@ export const packageSettings = () => ({
   genericDuplicateExceptionRegex: '',
 });
 
+export const dependencyProxySettings = () => ({
+  enabled: true,
+});
+
 export const groupPackageSettingsMock = {
   data: {
     group: {
       fullPath: 'foo_group_path',
       packageSettings: packageSettings(),
+      dependencyProxySetting: dependencyProxySettings(),
     },
   },
 };
@@ -23,6 +28,16 @@ export const groupPackageSettingsMutationMock = (override) => ({
         genericDuplicatesAllowed: true,
         genericDuplicateExceptionRegex: 'latest[main]somethingGeneric',
       },
+      errors: [],
+      ...override,
+    },
+  },
+});
+
+export const dependencyProxySettingMutationMock = (override) => ({
+  data: {
+    updateDependencyProxySettings: {
+      dependencyProxySetting: dependencyProxySettings(),
       errors: [],
       ...override,
     },
@@ -47,6 +62,26 @@ export const groupPackageSettingsMutationErrorMock = {
               'latest[main]somethingj)) is an invalid regexp: unexpected ): latest[main]something))',
             message:
               'latest[main]somethingj)) is an invalid regexp: unexpected ): latest[main]something))',
+          },
+        ],
+      },
+    },
+  ],
+};
+export const dependencyProxySettingMutationErrorMock = {
+  errors: [
+    {
+      message: 'Some error',
+      locations: [{ line: 1, column: 41 }],
+      extensions: {
+        value: {
+          enabled: 'gitlab-org',
+        },
+        problems: [
+          {
+            path: ['enabled'],
+            explanation: 'explaination',
+            message: 'message',
           },
         ],
       },

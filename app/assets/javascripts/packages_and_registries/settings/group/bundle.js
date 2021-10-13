@@ -19,6 +19,7 @@ export default () => {
     apolloProvider,
     provide: {
       defaultExpanded: parseBoolean(el.dataset.defaultExpanded),
+      dependencyProxyAvailable: parseBoolean(el.dataset.dependencyProxyAvailable),
       groupPath: el.dataset.groupPath,
     },
     render(createElement) {

@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe 'Group Dependency Proxy' do
-  let(:developer) { create(:user) }
+  let(:owner) { create(:user) }
   let(:reporter) { create(:user) }
   let(:group) { create(:group) }
   let(:path) { group_dependency_proxy_path(group) }
+  let(:settings_path) { group_settings_packages_and_registries_path(group) }
 
   before do
-    group.add_developer(developer)
+    group.add_owner(owner)
     group.add_reporter(reporter)
 
     enable_feature
@@ -22,42 +23,46 @@ RSpec.describe 'Group Dependency Proxy' do
 
         visit path
 
-        expect(page).not_to have_css('.js-dependency-proxy-toggle-area')
         expect(page).not_to have_css('.js-dependency-proxy-url')
       end
     end
 
     context 'feature is available', :js do
-      context 'when logged in as group developer' do
+      context 'when logged in as group owner' do
         before do
-          sign_in(developer)
-          visit path
+          sign_in(owner)
         end
 
         it 'sidebar menu is open' do
+          visit path
+
           sidebar = find('.nav-sidebar')
           expect(sidebar).to have_link _('Dependency Proxy')
         end
 
         it 'toggles defaults to enabled' do
-          page.within('.js-dependency-proxy-toggle-area') do
-            expect(find('.js-project-feature-toggle-input', visible: false).value).to eq('true')
-          end
+          visit path
+
+          expect(page).to have_css('.js-dependency-proxy-url')
         end
 
         it 'shows the proxy URL' do
-          page.within('.edit_dependency_proxy_group_setting') do
-            expect(find('.js-dependency-proxy-url').value).to have_content('/dependency_proxy/containers')
-          end
+          visit path
+
+          expect(find('.js-dependency-proxy-url').value).to have_content('/dependency_proxy/containers')
         end
 
         it 'hides the proxy URL when feature is disabled' do
-          page.within('.edit_dependency_proxy_group_setting') do
-            find('.js-project-feature-toggle').click
-          end
+          visit settings_path
+          wait_for_requests
+
+          click_button 'Enable Proxy'
+
+          expect(page).to have_button 'Enable Proxy', class: '!is-checked'
+
+          visit path
 
           expect(page).not_to have_css('.js-dependency-proxy-url')
-          expect(find('.js-project-feature-toggle-input', visible: false).value).to eq('false')
         end
       end
 
@@ -68,7 +73,6 @@ RSpec.describe 'Group Dependency Proxy' do
         end
 
         it 'does not show the feature toggle but shows the proxy URL' do
-          expect(page).not_to have_css('.js-dependency-proxy-toggle-area')
           expect(find('.js-dependency-proxy-url').value).to have_content('/dependency_proxy/containers')
         end
       end
@@ -76,7 +80,7 @@ RSpec.describe 'Group Dependency Proxy' do
 
     context 'feature is not avaible' do
       before do
-        sign_in(developer)
+        sign_in(owner)
       end
 
       context 'feature flag is disabled' do

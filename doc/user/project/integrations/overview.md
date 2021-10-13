@@ -83,22 +83,7 @@ Read more about [Project integration management](../../admin_area/settings/proje
 
 ## Troubleshooting integrations
 
-Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. GitLab stores details of service hook requests made within the last 2 days. To view details of the requests, go to that integration's configuration page.
-
-The **Recent Deliveries** section lists the details of each request made within the last 2 days:
-
-- HTTP status code (green for 200-299 codes, red for the others, `internal error` for failed deliveries)
-- Triggered event
-- URL to which the request was sent
-- Elapsed time of the request
-- Relative time in which the request was made
-
-To view more information about the request's execution, click the respective **View details** link.
-On the details page, you can see the request headers and body sent and received by GitLab.
-
-To repeat a delivery using the same data, click **Resend Request**.
-
-![Recent deliveries](img/webhook_logs.png)
+Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. Learn more about [troubleshooting service hooks](webhooks.md#troubleshoot-webhooks).
 
 ### Uninitialized repositories
 

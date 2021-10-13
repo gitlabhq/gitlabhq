@@ -86,6 +86,7 @@ export default {
         :label="$options.i18n.DUPLICATES_TOGGLE_LABEL"
         label-position="hidden"
         :value="duplicatesAllowed"
+        :disabled="loading"
         @change="update(modelNames.allowed, $event)"
       />
       <div class="gl-ml-5">
@@ -108,6 +109,7 @@ export default {
         >
           <gl-form-input
             id="maven-duplicated-settings-regex-input"
+            :disabled="loading"
             :value="duplicateExceptionRegex"
             @change="update(modelNames.exception, $event)"
           />

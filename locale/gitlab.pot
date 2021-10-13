@@ -3827,6 +3827,11 @@ msgstr ""
 msgid "An error occurred while saving changes: %{error}"
 msgstr ""
 
+msgid "An error occurred while saving the setting"
+msgid_plural "An error occurred while saving the settings"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "An error occurred while subscribing to notifications."
 msgstr ""
 
@@ -11217,7 +11222,7 @@ msgstr ""
 msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
-msgid "DependencyProxy|Toggle Dependency Proxy"
+msgid "DependencyProxy|Enable Proxy"
 msgstr ""
 
 msgid "Depends on %d merge request being merged"
@@ -12712,9 +12717,6 @@ msgid "Enable or disable version check and Service Ping."
 msgstr ""
 
 msgid "Enable protected paths rate limit"
-msgstr ""
-
-msgid "Enable proxy"
 msgstr ""
 
 msgid "Enable reCAPTCHA"
@@ -15564,6 +15566,9 @@ msgid "GitLab account request rejected"
 msgstr ""
 
 msgid "GitLab commit"
+msgstr ""
+
+msgid "GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}"
 msgstr ""
 
 msgid "GitLab export"
@@ -23234,6 +23239,9 @@ msgstr ""
 msgid "No vulnerabilities present"
 msgstr ""
 
+msgid "No webhook events"
+msgstr ""
+
 msgid "No webhooks found, add one in the form above."
 msgstr ""
 
@@ -24230,9 +24238,6 @@ msgstr ""
 msgid "PackageRegistry|Allow duplicates"
 msgstr ""
 
-msgid "PackageRegistry|An error occurred while saving the settings"
-msgstr ""
-
 msgid "PackageRegistry|App group: %{group}"
 msgstr ""
 
@@ -24462,9 +24467,6 @@ msgid "PackageRegistry|Settings for Generic packages"
 msgstr ""
 
 msgid "PackageRegistry|Settings for Maven packages"
-msgstr ""
-
-msgid "PackageRegistry|Settings saved successfully"
 msgstr ""
 
 msgid "PackageRegistry|Show Composer commands"
@@ -28112,13 +28114,13 @@ msgstr ""
 msgid "Recent"
 msgstr ""
 
-msgid "Recent Deliveries"
-msgstr ""
-
 msgid "Recent Project Activity"
 msgstr ""
 
 msgid "Recent Searches Service is unavailable"
+msgstr ""
+
+msgid "Recent events"
 msgstr ""
 
 msgid "Recent jobs served by this runner"
@@ -31324,6 +31326,11 @@ msgstr ""
 
 msgid "Setting enforced"
 msgstr ""
+
+msgid "Setting saved successfully"
+msgid_plural "Settings saved successfully"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Setting this to 0 means using the system default timeout value."
 msgstr ""
@@ -37071,6 +37078,9 @@ msgstr ""
 msgid "Use template"
 msgstr ""
 
+msgid "Use the %{strongStart}Test%{strongEnd} option above to create an event."
+msgstr ""
+
 msgid "Use the link below to confirm your email address (%{email})"
 msgstr ""
 
@@ -38217,6 +38227,9 @@ msgstr ""
 msgid "Webhook Settings"
 msgstr ""
 
+msgid "Webhook events will be displayed here."
+msgstr ""
+
 msgid "Webhook:"
 msgstr ""
 
@@ -38419,9 +38432,6 @@ msgid "When a deployment job is successful, skip older deployment jobs that are 
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"
-msgstr ""
-
-msgid "When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong."
 msgstr ""
 
 msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."
@@ -39117,9 +39127,6 @@ msgid "You don't have any projects available."
 msgstr ""
 
 msgid "You don't have any recent searches"
-msgstr ""
-
-msgid "You don't have any webhooks deliveries"
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."
@@ -40089,10 +40096,10 @@ msgstr ""
 msgid "ciReport|Secret Detection"
 msgstr ""
 
-msgid "ciReport|Secret scanning"
+msgid "ciReport|Secret Detection detects secrets and credentials vulnerabilities in your source code."
 msgstr ""
 
-msgid "ciReport|Secret scanning detects secrets and credentials vulnerabilities in your source code."
+msgid "ciReport|Secret detection"
 msgstr ""
 
 msgid "ciReport|Security scanning"

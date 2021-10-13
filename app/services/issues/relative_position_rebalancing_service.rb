@@ -82,7 +82,7 @@ module Issues
       collection.each do |project|
         caching.cache_current_project_id(project.id)
         index += 1
-        scope = Issue.in_projects(project).order_by_relative_position.select(:id, :relative_position)
+        scope = Issue.in_projects(project).order_by_relative_position.with_non_null_relative_position.select(:id, :relative_position)
 
         with_retry(PREFETCH_ISSUES_BATCH_SIZE, 100) do |batch_size|
           Gitlab::Pagination::Keyset::Iterator.new(scope: scope).each_batch(of: batch_size) do |batch|

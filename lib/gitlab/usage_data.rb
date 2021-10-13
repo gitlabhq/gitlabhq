@@ -76,7 +76,7 @@ module Gitlab
           hostname: add_metric('HostnameMetric'),
           version: alt_usage_data { Gitlab::VERSION },
           installation_type: alt_usage_data { installation_type },
-          active_user_count: count(User.active),
+          active_user_count: add_metric('ActiveUserCountMetric'),
           edition: 'CE'
         }
       end

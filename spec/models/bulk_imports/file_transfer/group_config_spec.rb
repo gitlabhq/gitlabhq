@@ -23,10 +23,8 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig do
   end
 
   describe '#export_path' do
-    it 'returns correct export path' do
-      expect(::Gitlab::ImportExport).to receive(:storage_path).and_return('storage_path')
-
-      expect(subject.export_path).to eq("storage_path/#{exportable.full_path}/#{hex}")
+    it 'returns tmpdir location' do
+      expect(subject.export_path).to include(File.join(Dir.tmpdir, 'bulk_imports'))
     end
   end
 

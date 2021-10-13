@@ -325,7 +325,7 @@ Note the following:
 - For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
   are not supported.
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
-  [`historic`](../secret_detection/index.md#full-history-secret-scan)
+  [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
 - A container scanning and cluster image scanning scans configured for the `pipeline` rule type will ignore the cluster defined in the `clusters` object.
   They will use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.

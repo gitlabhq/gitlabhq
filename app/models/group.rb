@@ -707,9 +707,9 @@ class Group < Namespace
     raise ArgumentError unless SHARED_RUNNERS_SETTINGS.include?(state)
 
     case state
-    when 'disabled_and_unoverridable' then disable_shared_runners! # also disallows override
-    when 'disabled_with_override' then disable_shared_runners_and_allow_override!
-    when 'enabled' then enable_shared_runners! # set both to true
+    when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
+    when SR_DISABLED_WITH_OVERRIDE then disable_shared_runners_and_allow_override!
+    when SR_ENABLED then enable_shared_runners! # set both to true
     end
   end
 

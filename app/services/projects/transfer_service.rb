@@ -81,7 +81,7 @@ module Projects
 
         # Apply changes to the project
         update_namespace_and_visibility(@new_namespace)
-        update_shared_runners_settings
+        project.reconcile_shared_runners_setting!
         project.save!
 
         # Notifications
@@ -237,14 +237,6 @@ module Projects
 
     def new_design_repo_path
       "#{new_path}#{::Gitlab::GlRepository::DESIGN.path_suffix}"
-    end
-
-    def update_shared_runners_settings
-      # If a project is being transferred to another group it means it can already
-      # have shared runners enabled but we need to check whether the new group allows that.
-      if project.group && project.group.shared_runners_setting == 'disabled_and_unoverridable'
-        project.shared_runners_enabled = false
-      end
     end
 
     def update_integrations

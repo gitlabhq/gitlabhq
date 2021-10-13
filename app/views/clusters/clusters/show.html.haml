@@ -41,12 +41,12 @@
 
   - if cluster_created?(@cluster)
     .js-toggle-container
-      %ul.nav-links.mobile-separator.nav.nav-tabs{ role: 'tablist' }
-        = render 'details_tab'
+      = gl_tabs_nav do
+        = render 'clusters/clusters/details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/health_tab'
-        = render 'integrations_tab'
-        = render 'advanced_settings_tab'
+        = render 'clusters/clusters/integrations_tab'
+        = render 'clusters/clusters/advanced_settings_tab'
 
       .tab-content.py-3
         .tab-pane.active{ role: 'tabpanel' }

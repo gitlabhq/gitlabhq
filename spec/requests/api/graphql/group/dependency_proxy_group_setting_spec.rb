@@ -33,46 +33,59 @@ RSpec.describe 'getting dependency proxy settings for a group' do
 
   before do
     stub_config(dependency_proxy: { enabled: true })
-    group.create_dependency_proxy_setting!(enabled: true)
   end
 
   subject { post_graphql(query, current_user: user, variables: variables) }
 
-  it_behaves_like 'a working graphql query' do
-    before do
-      subject
-    end
-  end
-
-  context 'with different permissions' do
-    where(:group_visibility, :role, :access_granted) do
-      :private | :maintainer | true
-      :private | :developer  | true
-      :private | :reporter   | true
-      :private | :guest      | true
-      :private | :anonymous  | false
-      :public  | :maintainer | true
-      :public  | :developer  | true
-      :public  | :reporter   | true
-      :public  | :guest      | true
-      :public  | :anonymous  | false
-    end
-
-    with_them do
+  shared_examples 'dependency proxy group setting query' do
+    it_behaves_like 'a working graphql query' do
       before do
-        group.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(group_visibility.to_s.upcase, false))
-        group.add_user(user, role) unless role == :anonymous
+        subject
+      end
+    end
+
+    context 'with different permissions' do
+      where(:group_visibility, :role, :access_granted) do
+        :private | :maintainer | true
+        :private | :developer  | true
+        :private | :reporter   | true
+        :private | :guest      | true
+        :private | :anonymous  | false
+        :public  | :maintainer | true
+        :public  | :developer  | true
+        :public  | :reporter   | true
+        :public  | :guest      | true
+        :public  | :anonymous  | false
       end
 
-      it 'return the proper response' do
-        subject
+      with_them do
+        before do
+          group.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(group_visibility.to_s.upcase, false))
+          group.add_user(user, role) unless role == :anonymous
+        end
 
-        if access_granted
-          expect(dependency_proxy_group_setting_response).to eq('enabled' => true)
-        else
-          expect(dependency_proxy_group_setting_response).to be_blank
+        it 'return the proper response' do
+          subject
+
+          if access_granted
+            expect(dependency_proxy_group_setting_response).to eq('enabled' => true)
+          else
+            expect(dependency_proxy_group_setting_response).to be_blank
+          end
         end
       end
     end
+  end
+
+  context 'with the settings model created' do
+    before do
+      group.create_dependency_proxy_setting!(enabled: true)
+    end
+
+    it_behaves_like 'dependency proxy group setting query'
+  end
+
+  context 'without the settings model created' do
+    it_behaves_like 'dependency proxy group setting query'
   end
 end
