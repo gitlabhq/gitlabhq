@@ -1,5 +1,13 @@
-import { SNOWPLOW_JS_SOURCE } from '~/tracking/constants';
+import { SNOWPLOW_JS_SOURCE, GOOGLE_ANALYTICS_ID_COOKIE_NAME } from '~/tracking/constants';
 import getStandardContext from '~/tracking/get_standard_context';
+import { setCookie, removeCookie } from '~/lib/utils/common_utils';
+
+const TEST_GA_ID = 'GA1.2.345678901.234567891';
+const TEST_BASE_DATA = {
+  source: SNOWPLOW_JS_SOURCE,
+  google_analytics_id: '',
+  extra: {},
+};
 
 describe('~/tracking/get_standard_context', () => {
   beforeEach(() => {
@@ -10,10 +18,7 @@ describe('~/tracking/get_standard_context', () => {
   it('returns default object if called without server context', () => {
     expect(getStandardContext()).toStrictEqual({
       schema: undefined,
-      data: {
-        source: SNOWPLOW_JS_SOURCE,
-        extra: {},
-      },
+      data: TEST_BASE_DATA,
     });
   });
 
@@ -28,9 +33,8 @@ describe('~/tracking/get_standard_context', () => {
     expect(getStandardContext()).toStrictEqual({
       schema: 'iglu:com.gitlab/gitlab_standard',
       data: {
+        ...TEST_BASE_DATA,
         environment: 'testing',
-        source: SNOWPLOW_JS_SOURCE,
-        extra: {},
       },
     });
   });
@@ -49,5 +53,16 @@ describe('~/tracking/get_standard_context', () => {
     const extra = { foo: 'bar' };
 
     expect(getStandardContext({ extra }).data.extra).toBe(extra);
+  });
+
+  describe('with Google Analytics cookie present', () => {
+    afterEach(() => {
+      removeCookie(GOOGLE_ANALYTICS_ID_COOKIE_NAME);
+    });
+
+    it('appends Google Analytics ID', () => {
+      setCookie(GOOGLE_ANALYTICS_ID_COOKIE_NAME, TEST_GA_ID);
+      expect(getStandardContext().data.google_analytics_id).toBe(TEST_GA_ID);
+    });
   });
 });

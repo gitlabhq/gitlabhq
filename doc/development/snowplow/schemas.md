@@ -21,6 +21,7 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 | `environment`  | **{check-circle}**  | string (max 32 chars) | Name of the source environment, such as `production` or `staging`             |
 | `source`       | **{check-circle}**  | string (max 32 chars) | Name of the source application, such as  `gitlab-rails` or `gitlab-javascript` |
 | `plan`         | **{dotted-circle}**  | string (max 32 chars) | Name of the plan for the namespace, such as `free`, `premium`, or `ultimate`. Automatically picked from the `namespace`. |
+| `google_analytics_id` | **{dotted-circle}**  | string (max 32 chars) | Google Analytics ID, present when set from our marketing sites. |
 | `extra`        | **{dotted-circle}**  | JSON                  | Any additional data associated with the event, in the form of key-value pairs |
 
 ## Default Schema

@@ -255,11 +255,15 @@ versions are pulled, there are certain cases where it can be beneficial to pin
 an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
 in the job template directly.
 
-In the example below, we are pinning to a specific patch version of the `spotbugs` analyzer:
+In the example below, we pin to a specific patch version of the `spotbugs` analyzer and minor version of the `semgrep` analyzer:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
+
+semgrep-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "2.12"
 
 spotbugs-sast:
   variables:

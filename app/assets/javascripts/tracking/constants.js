@@ -25,3 +25,5 @@ export const LOAD_ACTION_ATTR_SELECTOR = '[data-track-action="render"]';
 export const URLS_CACHE_STORAGE_KEY = 'gl-snowplow-pseudonymized-urls';
 
 export const REFERRER_TTL = 24 * 60 * 60 * 1000;
+
+export const GOOGLE_ANALYTICS_ID_COOKIE_NAME = '_ga';
