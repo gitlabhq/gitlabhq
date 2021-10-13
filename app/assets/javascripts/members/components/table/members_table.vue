@@ -5,7 +5,13 @@ import MembersTableCell from 'ee_else_ce/members/components/table/members_table_
 import { canOverride, canRemove, canResend, canUpdate } from 'ee_else_ce/members/utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import initUserPopovers from '~/user_popovers';
-import { FIELDS, ACTIVE_TAB_QUERY_PARAM_NAME } from '../../constants';
+import {
+  FIELDS,
+  ACTIVE_TAB_QUERY_PARAM_NAME,
+  MEMBER_STATE_AWAITING,
+  USER_STATE_BLOCKED_PENDING_APPROVAL,
+  BADGE_LABELS_PENDING_OWNER_APPROVAL,
+} from '../../constants';
 import RemoveGroupLinkModal from '../modals/remove_group_link_modal.vue';
 import RemoveMemberModal from '../modals/remove_member_modal.vue';
 import CreatedAt from './created_at.vue';
@@ -129,6 +135,74 @@ export default {
         window.location.href,
       );
     },
+    /**
+     * Returns whether it's a new or existing user
+     *
+     * If memberInviteMetadata doesn't exist, it means we're adding an existing user
+     * to the Group/Project, so `isNewUser` should be false.
+     * If memberInviteMetadata exists but `userState` has content,
+     * the user has registered but is awaiting root approval
+     *
+     * @param {object} memberInviteMetadata - MemberEntity.invite
+     * @see {@link ~/app/serializers/member_entity.rb}
+     * @returns {boolean}
+     */
+    isNewUser(memberInviteMetadata) {
+      return memberInviteMetadata && !memberInviteMetadata.userState;
+    },
+    /**
+     * Returns whether the user is awaiting root approval
+     *
+     * This checks User.state exposed via MemberEntity
+     *
+     * @param {object} memberInviteMetadata - MemberEntity.invite
+     * @see {@link ~/app/serializers/member_entity.rb}
+     * @returns {boolean}
+     */
+    isUserPendingRootApproval(memberInviteMetadata) {
+      return memberInviteMetadata?.userState === USER_STATE_BLOCKED_PENDING_APPROVAL;
+    },
+    /**
+     * Returns whether the member is awaiting owner approval
+     *
+     * This checks Member.state exposed via MemberEntity
+     *
+     * @param {Number} memberState - Member.state exposed via MemberEntity.state
+     * @see {@link ~/ee/app/models/ee/member.rb}
+     * @see {@link ~/app/serializers/member_entity.rb}
+     * @returns {boolean}
+     */
+    isMemberPendingOwnerApproval(memberState) {
+      return memberState === MEMBER_STATE_AWAITING;
+    },
+    isUserAwaiting(memberInviteMetadata, memberState) {
+      return (
+        this.isUserPendingRootApproval(memberInviteMetadata) ||
+        this.isMemberPendingOwnerApproval(memberState)
+      );
+    },
+    shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState) {
+      return (
+        this.isUserAwaiting(memberInviteMetadata, memberState) &&
+        !this.isNewUser(memberInviteMetadata)
+      );
+    },
+    /**
+     * Returns the string to be used in the invite badge
+     *
+     * @param {object} memberInviteMetadata - MemberEntity.invite
+     * @see {@link ~/app/serializers/member_entity.rb}
+     * @param {Number} memberState - Member.state exposed via MemberEntity.state
+     * @see {@link ~/ee/app/models/ee/member.rb}
+     * @returns {string}
+     */
+    inviteBadge(memberInviteMetadata, memberState) {
+      if (this.shouldAddPendingOwnerApprovalBadge(memberInviteMetadata, memberState)) {
+        return BADGE_LABELS_PENDING_OWNER_APPROVAL;
+      }
+
+      return '';
+    },
   },
 };
 </script>
@@ -172,8 +246,11 @@ export default {
         <created-at :date="createdAt" :created-by="createdBy" />
       </template>
 
-      <template #cell(invited)="{ item: { createdAt, createdBy } }">
+      <template #cell(invited)="{ item: { createdAt, createdBy, invite, state } }">
         <created-at :date="createdAt" :created-by="createdBy" />
+        <gl-badge v-if="inviteBadge(invite, state)" data-testid="invited-badge">{{
+          inviteBadge(invite, state)
+        }}</gl-badge>
       </template>
 
       <template #cell(requested)="{ item: { createdAt } }">

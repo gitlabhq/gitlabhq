@@ -27,6 +27,7 @@ describe('sidebar labels', () => {
     labelsManagePath: '/gitlab-org/gitlab-test/-/labels',
     projectIssuesPath: '/gitlab-org/gitlab-test/-/issues',
     projectPath: 'gitlab-org/gitlab-test',
+    fullPath: 'gitlab-org/gitlab-test',
   };
 
   const $apollo = {

@@ -6,10 +6,10 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import mockData from '../mock_data';
 
 describe('Issuable suggestions suggestion component', () => {
-  let vm;
+  let wrapper;
 
   function createComponent(suggestion = {}) {
-    vm = shallowMount(Suggestion, {
+    wrapper = shallowMount(Suggestion, {
       propsData: {
         suggestion: {
           ...mockData(),
@@ -19,37 +19,40 @@ describe('Issuable suggestions suggestion component', () => {
     });
   }
 
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findAuthorLink = () => wrapper.findAll(GlLink).at(1);
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
+  const findUserAvatar = () => wrapper.findComponent(UserAvatarImage);
+
   afterEach(() => {
-    vm.destroy();
+    wrapper.destroy();
   });
 
   it('renders title', () => {
     createComponent();
 
-    expect(vm.text()).toContain('Test issue');
+    expect(wrapper.text()).toContain('Test issue');
   });
 
   it('renders issue link', () => {
     createComponent();
 
-    const link = vm.find(GlLink);
-
-    expect(link.attributes('href')).toBe(`${TEST_HOST}/test/issue/1`);
+    expect(findLink().attributes('href')).toBe(`${TEST_HOST}/test/issue/1`);
   });
 
   it('renders IID', () => {
     createComponent();
 
-    expect(vm.text()).toContain('#1');
+    expect(wrapper.text()).toContain('#1');
   });
 
   describe('opened state', () => {
     it('renders icon', () => {
       createComponent();
 
-      const icon = vm.find(GlIcon);
-
-      expect(icon.props('name')).toBe('issue-open-m');
+      expect(findIcon().props('name')).toBe('issue-open-m');
+      expect(findIcon().attributes('class')).toMatch('gl-text-green-500');
     });
 
     it('renders created timeago', () => {
@@ -57,10 +60,8 @@ describe('Issuable suggestions suggestion component', () => {
         closedAt: '',
       });
 
-      const tooltip = vm.find(GlTooltip);
-
-      expect(tooltip.find('.d-block').text()).toContain('Opened');
-      expect(tooltip.text()).toContain('3 days ago');
+      expect(findTooltip().text()).toContain('Opened');
+      expect(findTooltip().text()).toContain('3 days ago');
     });
   });
 
@@ -70,18 +71,15 @@ describe('Issuable suggestions suggestion component', () => {
         state: 'closed',
       });
 
-      const icon = vm.find(GlIcon);
-
-      expect(icon.props('name')).toBe('issue-close');
+      expect(findIcon().props('name')).toBe('issue-close');
+      expect(findIcon().attributes('class')).toMatch('gl-text-blue-500');
     });
 
     it('renders closed timeago', () => {
       createComponent();
 
-      const tooltip = vm.find(GlTooltip);
-
-      expect(tooltip.find('.d-block').text()).toContain('Opened');
-      expect(tooltip.text()).toContain('1 day ago');
+      expect(findTooltip().text()).toContain('Opened');
+      expect(findTooltip().text()).toContain('1 day ago');
     });
   });
 
@@ -89,18 +87,14 @@ describe('Issuable suggestions suggestion component', () => {
     it('renders author info', () => {
       createComponent();
 
-      const link = vm.findAll(GlLink).at(1);
-
-      expect(link.text()).toContain('Author Name');
-      expect(link.text()).toContain('@author.username');
+      expect(findAuthorLink().text()).toContain('Author Name');
+      expect(findAuthorLink().text()).toContain('@author.username');
     });
 
     it('renders author image', () => {
       createComponent();
 
-      const image = vm.find(UserAvatarImage);
-
-      expect(image.props('imgSrc')).toBe(`${TEST_HOST}/avatar`);
+      expect(findUserAvatar().props('imgSrc')).toBe(`${TEST_HOST}/avatar`);
     });
   });
 
@@ -108,7 +102,7 @@ describe('Issuable suggestions suggestion component', () => {
     it('renders upvotes count', () => {
       createComponent();
 
-      const count = vm.findAll('.suggestion-counts span').at(0);
+      const count = wrapper.findAll('.suggestion-counts span').at(0);
 
       expect(count.text()).toContain('1');
       expect(count.find(GlIcon).props('name')).toBe('thumb-up');
@@ -117,7 +111,7 @@ describe('Issuable suggestions suggestion component', () => {
     it('renders notes count', () => {
       createComponent();
 
-      const count = vm.findAll('.suggestion-counts span').at(1);
+      const count = wrapper.findAll('.suggestion-counts span').at(1);
 
       expect(count.text()).toContain('2');
       expect(count.find(GlIcon).props('name')).toBe('comment');
@@ -130,10 +124,9 @@ describe('Issuable suggestions suggestion component', () => {
         confidential: true,
       });
 
-      const icon = vm.find(GlIcon);
-
-      expect(icon.props('name')).toBe('eye-slash');
-      expect(icon.attributes('title')).toBe('Confidential');
+      expect(findIcon().props('name')).toBe('eye-slash');
+      expect(findIcon().attributes('class')).toMatch('gl-text-orange-500');
+      expect(findIcon().attributes('title')).toBe('Confidential');
     });
   });
 });

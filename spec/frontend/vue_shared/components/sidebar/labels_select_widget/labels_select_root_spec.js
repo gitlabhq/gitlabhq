@@ -46,8 +46,6 @@ describe('LabelsSelectRoot', () => {
         SidebarEditableItem,
       },
       provide: {
-        iid: '1',
-        fullPath: 'test',
         canUpdate: true,
         allowLabelEdit: true,
         allowLabelCreate: true,

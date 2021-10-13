@@ -3,6 +3,8 @@
 module BulkImports
   module Clients
     class HTTP
+      include Gitlab::Utils::StrongMemoize
+
       API_VERSION = 'v4'
       DEFAULT_PAGE = 1
       DEFAULT_PER_PAGE = 30
@@ -52,23 +54,31 @@ module BulkImports
         Gitlab::Utils.append_path(api_url, resource)
       end
 
+      def instance_version
+        strong_memoize(:instance_version) do
+          response = with_error_handling do
+            Gitlab::HTTP.get(resource_url(:version), default_options)
+          end
+
+          Gitlab::VersionInfo.parse(response.parsed_response['version'])
+        end
+      end
+
+      def compatible_for_project_migration?
+        instance_version >= BulkImport.min_gl_version_for_project_migration
+      end
+
+      private
+
       def validate_instance_version!
         return if @compatible_instance_version
 
-        response = with_error_handling do
-          Gitlab::HTTP.get(resource_url(:version), default_options)
-        end
-
-        version = Gitlab::VersionInfo.parse(response.parsed_response['version'])
-
-        if version.major < BulkImport::MINIMUM_GITLAB_MAJOR_VERSION
+        if instance_version.major < BulkImport::MIN_MAJOR_VERSION
           raise ::BulkImports::Error.unsupported_gitlab_version
         else
           @compatible_instance_version = true
         end
       end
-
-      private
 
       # rubocop:disable GitlabSecurity/PublicSend
       def request(method, resource, options = {}, &block)

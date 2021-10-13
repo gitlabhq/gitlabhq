@@ -657,6 +657,7 @@ RSpec.describe Gitlab::Regex do
     it { is_expected.to match('my_repo42') }
     it { is_expected.to match('1.2.3') }
     it { is_expected.to match('v1.2.3-beta-12') }
+    it { is_expected.to match('renovate_https-github.com-operator-framework-operator-lifecycle-manager.git-0.x') }
 
     # Do not allow empty
     it { is_expected.not_to match('') }

@@ -19,15 +19,19 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: {
-    fullPath: {
-      default: '',
-    },
-  },
   props: {
     issuableType: {
       type: String,
       required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -46,11 +50,19 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      return this.issuableType === IssuableType.Epic
+      if (this.issuableType === IssuableType.Epic) {
+        return {
+          title: this.labelTitle,
+          color: this.selectedColor,
+          groupPath: this.fullPath,
+        };
+      }
+
+      return this.attrWorkspacePath !== undefined
         ? {
             title: this.labelTitle,
             color: this.selectedColor,
-            groupPath: this.fullPath,
+            groupPath: this.attrWorkspacePath,
           }
         : {
             title: this.labelTitle,

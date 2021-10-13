@@ -34,7 +34,7 @@ export default {
     :loading="isLoadingItems"
     :has-errors="Boolean(loadingItemsError)"
     :loading-text="s__('ClusterIntegration|Loading subnetworks')"
-    :placeholder="s__('ClusterIntergation|Select a subnetwork')"
+    :placeholder="s__('ClusterIntegration|Select a subnetwork')"
     :search-field-placeholder="s__('ClusterIntegration|Search subnetworks')"
     :empty-text="s__('ClusterIntegration|No subnetworks found')"
     :error-message="s__('ClusterIntegration|Could not load subnetworks')"

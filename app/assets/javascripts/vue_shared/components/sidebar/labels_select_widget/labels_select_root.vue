@@ -21,15 +21,20 @@ export default {
     SidebarEditableItem,
   },
   inject: {
-    iid: {
-      default: '',
-    },
     allowLabelEdit: {
       default: false,
     },
-    fullPath: {},
   },
   props: {
+    iid: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     allowLabelRemove: {
       type: Boolean,
       required: false,
@@ -98,6 +103,11 @@ export default {
     issuableType: {
       type: String,
       required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -206,6 +216,8 @@ export default {
             :variant="variant"
             :issuable-type="issuableType"
             :is-visible="edit"
+            :full-path="fullPath"
+            :attr-workspace-path="attrWorkspacePath"
             @setLabels="handleDropdownClose"
             @closeDropdown="collapseEditableItem"
           />
@@ -224,6 +236,7 @@ export default {
       :selected-labels="selectedLabels"
       :variant="variant"
       :issuable-type="issuableType"
+      :full-path="fullPath"
       @setLabels="handleDropdownClose"
     />
   </div>

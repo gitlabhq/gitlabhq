@@ -1,5 +1,5 @@
 .user_new
-  = form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
+  = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
     = form_errors(@user)
 
     %fieldset

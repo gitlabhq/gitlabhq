@@ -169,6 +169,8 @@ RSpec.describe Member do
   describe 'Scopes & finders' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:group) { create(:group) }
+    let_it_be(:blocked_pending_approval_user) { create(:user, :blocked_pending_approval ) }
+    let_it_be(:blocked_pending_approval_project_member) { create(:project_member, :invited, :developer, project: project, invite_email: blocked_pending_approval_user.email) }
 
     before_all do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
@@ -536,6 +538,25 @@ RSpec.describe Member do
         end
 
         it { is_expected.to eq [example_member] }
+      end
+    end
+
+    describe '.with_invited_user_state' do
+      subject(:with_invited_user_state) { described_class.with_invited_user_state }
+
+      it { is_expected.to include @owner }
+      it { is_expected.to include @maintainer }
+      it { is_expected.to include @invited_member }
+      it { is_expected.to include @accepted_invite_member }
+      it { is_expected.to include @requested_member }
+      it { is_expected.to include @accepted_request_member }
+
+      context 'with invited pending members' do
+        it 'includes invited user state' do
+          invited_pending_members = with_invited_user_state.select { |m| m.invited_user_state.present? }
+          expect(invited_pending_members.count).to eq 1
+          expect(invited_pending_members).to include blocked_pending_approval_project_member
+        end
       end
     end
   end

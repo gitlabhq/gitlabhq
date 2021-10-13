@@ -67,9 +67,8 @@ the user details need to be passed to GitLab as SAML assertions.
 
 At a minimum, the user's email address *must* be specified as an assertion named `email` or `mail`.
 See [the assertions list](../../../integration/saml.md#assertions) for other available claims.
-
-NOTE:
-The `username` assertion is not supported for GitLab.com SaaS integrations.
+In addition to the attributes in the linked assertions list, GitLab.com supports `username`
+and `nickname` attributes.
 
 ### Metadata configuration
 
@@ -267,6 +266,9 @@ convert the information to XML. An example SAML response is shown here.
    <saml2:AttributeStatement>
       <saml2:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
          <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.email</saml2:AttributeValue>
+      </saml2:Attribute>
+      <saml2:Attribute Name="username" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+        <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.nickName</saml2:AttributeValue>
       </saml2:Attribute>
       <saml2:Attribute Name="first_name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
          <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">user.firstName</saml2:AttributeValue>

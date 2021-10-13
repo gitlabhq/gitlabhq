@@ -31,8 +31,8 @@ RSpec.describe Packages::Helm::FileMetadatum, type: :model do
       it 'validates #channel', :aggregate_failures do
         is_expected.to validate_presence_of(:channel)
 
-        is_expected.to allow_value('a' * 63).for(:channel)
-        is_expected.not_to allow_value('a' * 64).for(:channel)
+        is_expected.to allow_value('a' * 255).for(:channel)
+        is_expected.not_to allow_value('a' * 256).for(:channel)
 
         is_expected.to allow_value('release').for(:channel)
         is_expected.to allow_value('my-repo').for(:channel)

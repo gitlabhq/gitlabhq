@@ -12,7 +12,7 @@ module Packages
 
       validates :channel,
         presence: true,
-        length: { maximum: 63 },
+        length: { maximum: 255 },
         format: { with: Gitlab::Regex.helm_channel_regex }
 
       validates :metadata,

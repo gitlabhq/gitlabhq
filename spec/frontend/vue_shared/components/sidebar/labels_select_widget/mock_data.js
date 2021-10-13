@@ -34,6 +34,8 @@ export const mockLabels = [
 ];
 
 export const mockConfig = {
+  iid: '1',
+  fullPath: 'test',
   allowMultiselect: true,
   labelsListTitle: 'Assign labels',
   labelsCreateTitle: 'Create label',

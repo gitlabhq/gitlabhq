@@ -1,4 +1,4 @@
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBER_TYPES, MEMBER_STATE_CREATED } from '~/members/constants';
 
 export const member = {
   requestedAt: null,
@@ -14,6 +14,7 @@ export const member = {
     webUrl: 'https://gitlab.com/groups/foo-bar',
   },
   type: 'GroupMember',
+  state: MEMBER_STATE_CREATED,
   user: {
     id: 123,
     name: 'Administrator',
@@ -70,6 +71,7 @@ export const modalData = {
 const { user, ...memberNoUser } = member;
 export const invite = {
   ...memberNoUser,
+  state: MEMBER_STATE_CREATED,
   invite: {
     email: 'jewel@hudsonwalter.biz',
     avatarUrl: 'https://www.gravatar.com/avatar/cbab7510da7eec2f60f638261b05436d?s=80&d=identicon',

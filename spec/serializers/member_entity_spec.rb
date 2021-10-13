@@ -39,6 +39,10 @@ RSpec.describe MemberEntity do
 
       expect(entity_hash[:invite][:can_resend]).to be(true)
     end
+
+    it 'exposes `invite.user_state` as empty string' do
+      expect(entity_hash[:invite][:user_state]).to eq('')
+    end
   end
 
   shared_examples 'is_direct_member' do
@@ -56,6 +60,12 @@ RSpec.describe MemberEntity do
       it 'exposes `is_direct_member` as `false`' do
         expect(entity_hash[:is_direct_member]).to be(false)
       end
+    end
+  end
+
+  shared_examples 'user state is blocked_pending_approval' do
+    it 'displays proper user state' do
+      expect(entity_hash[:invite][:user_state]).to eq('blocked_pending_approval')
     end
   end
 
@@ -79,6 +89,14 @@ RSpec.describe MemberEntity do
 
       it_behaves_like 'is_direct_member'
     end
+
+    context 'new member user state is blocked_pending_approval' do
+      let(:user) { create(:user, :blocked_pending_approval) }
+      let(:group_member) { create(:group_member, :invited, group: group, invite_email: user.email) }
+      let(:member) { GroupMemberPresenter.new(GroupMember.with_invited_user_state.find(group_member.id), current_user: current_user) }
+
+      it_behaves_like 'user state is blocked_pending_approval'
+    end
   end
 
   context 'project member' do
@@ -101,6 +119,14 @@ RSpec.describe MemberEntity do
       let(:inherited_member_source) { group }
 
       it_behaves_like 'is_direct_member'
+    end
+
+    context 'new members user state is blocked_pending_approval' do
+      let(:user) { create(:user, :blocked_pending_approval) }
+      let(:project_member) { create(:project_member, :invited, project: project, invite_email: user.email) }
+      let(:member) { ProjectMemberPresenter.new(ProjectMember.with_invited_user_state.find(project_member.id), current_user: current_user) }
+
+      it_behaves_like 'user state is blocked_pending_approval'
     end
   end
 end

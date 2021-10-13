@@ -35,7 +35,7 @@ your own `Dockerfile`, you must either:
 
 ### Auto Build using Cloud Native Buildpacks
 
-> - Introduced in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165) in GitLab 12.10.
 > - Auto Build using Cloud Native Buildpacks by default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) in GitLab 14.0.
 
 Auto Build builds an application using a project's `Dockerfile` if present. If no
@@ -147,7 +147,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
@@ -174,8 +174,8 @@ see the documentation.
 
 ## Auto Secret Detection
 
-> - Introduced in GitLab Ultimate 13.1.
-> - [Select functionality made available in all tiers](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in 13.3
+> - Introduced in GitLab 13.1.
+> - Select functionality [made available](../../user/application_security/secret_detection/#making-secret-detection-available-to-all-gitlab-tiers) in all tiers in GitLab 13.3
 
 Secret Detection uses the
 [Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. Auto Secret Detection requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
@@ -202,7 +202,7 @@ see the documentation.
 
 ## Auto License Compliance **(ULTIMATE)**
 
-> Introduced in GitLab Ultimate 11.0.
+> Introduced in GitLab 11.0.
 
 License Compliance uses the
 [License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/license-finder)
@@ -310,7 +310,7 @@ You can disable DAST:
 
 ## Auto Browser Performance Testing **(PREMIUM)**
 
-> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
+> Introduced in GitLab 10.4.
 
 Auto [Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md)
 measures the browser performance of a web page with the
@@ -331,7 +331,7 @@ Any browser performance differences between the source and target branches are a
 
 ## Auto Load Performance Testing **(PREMIUM)**
 
-> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> Introduced in GitLab 13.2.
 
 Auto [Load Performance Testing](../../user/project/merge_requests/load_performance_testing.md)
 measures the server performance of an application with the
@@ -348,7 +348,7 @@ Any load performance test result differences between the source and target branc
 
 ## Auto Deploy
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6, you have the choice to deploy to [Amazon Elastic Compute Cloud (Amazon EC2)](https://aws.amazon.com/ec2/) in addition to a Kubernetes cluster.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6, you have the choice to deploy to [Amazon Elastic Compute Cloud (Amazon EC2)](https://aws.amazon.com/ec2/) in addition to a Kubernetes cluster.
 
 Auto Deploy is an optional step for Auto DevOps. If the [requirements](requirements.md) are not met, the job is skipped.
 

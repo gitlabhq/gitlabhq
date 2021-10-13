@@ -247,20 +247,47 @@ export const mockEmptySearchBranches = {
 export const mockBranchPaginationLimit = 10;
 export const mockTotalBranches = 20; // must be greater than mockBranchPaginationLimit to test pagination
 
-export const mockProjectPipeline = {
-  pipeline: {
-    commitPath: '/-/commit/aabbccdd',
-    id: 'gid://gitlab/Ci::Pipeline/118',
-    iid: '28',
-    shortSha: mockCommitSha,
-    status: 'SUCCESS',
-    detailedStatus: {
-      detailsPath: '/root/sample-ci-project/-/pipelines/118"',
-      group: 'success',
-      icon: 'status_success',
-      text: 'passed',
+export const mockProjectPipeline = ({ hasStages = true } = {}) => {
+  const stages = hasStages
+    ? {
+        edges: [
+          {
+            node: {
+              id: 'gid://gitlab/Ci::Stage/605',
+              name: 'prepare',
+              status: 'success',
+              detailedStatus: {
+                detailsPath: '/root/sample-ci-project/-/pipelines/268#prepare',
+                group: 'success',
+                hasDetails: true,
+                icon: 'status_success',
+                id: 'success-605-605',
+                label: 'passed',
+                text: 'passed',
+                tooltip: 'passed',
+              },
+            },
+          },
+        ],
+      }
+    : null;
+
+  return {
+    pipeline: {
+      commitPath: '/-/commit/aabbccdd',
+      id: 'gid://gitlab/Ci::Pipeline/118',
+      iid: '28',
+      shortSha: mockCommitSha,
+      status: 'SUCCESS',
+      detailedStatus: {
+        detailsPath: '/root/sample-ci-project/-/pipelines/118',
+        group: 'success',
+        icon: 'status_success',
+        text: 'passed',
+      },
+      stages,
     },
-  },
+  };
 };
 
 export const mockLintResponse = {

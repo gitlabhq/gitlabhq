@@ -1,13 +1,8 @@
 import { GlBadge, GlPagination, GlTable } from '@gitlab/ui';
-import {
-  getByText as getByTextHelper,
-  getByTestId as getByTestIdHelper,
-  within,
-} from '@testing-library/dom';
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
 import MemberActionButtons from '~/members/components/table/member_action_buttons.vue';
@@ -15,7 +10,15 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import MemberSource from '~/members/components/table/member_source.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';
-import { MEMBER_TYPES, TAB_QUERY_PARAM_VALUES } from '~/members/constants';
+import {
+  MEMBER_TYPES,
+  MEMBER_STATE_CREATED,
+  MEMBER_STATE_AWAITING,
+  MEMBER_STATE_ACTIVE,
+  USER_STATE_BLOCKED_PENDING_APPROVAL,
+  BADGE_LABELS_PENDING_OWNER_APPROVAL,
+  TAB_QUERY_PARAM_VALUES,
+} from '~/members/constants';
 import * as initUserPopovers from '~/user_popovers';
 import {
   member as memberMock,
@@ -52,7 +55,7 @@ describe('MembersTable', () => {
   };
 
   const createComponent = (state, provide = {}) => {
-    wrapper = mount(MembersTable, {
+    wrapper = mountExtended(MembersTable, {
       localVue,
       propsData: {
         tabQueryParamValue: TAB_QUERY_PARAM_VALUES.invite,
@@ -79,17 +82,11 @@ describe('MembersTable', () => {
 
   const url = 'https://localhost/foo-bar/-/project_members?tab=invited';
 
-  const getByText = (text, options) =>
-    createWrapper(getByTextHelper(wrapper.element, text, options));
-
-  const getByTestId = (id, options) =>
-    createWrapper(getByTestIdHelper(wrapper.element, id, options));
-
   const findTable = () => wrapper.find(GlTable);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
-    getByTestId(`members-table-row-${memberId}`).find(
-      `[data-label="${tableCellLabel}"][role="cell"]`,
-    );
+    wrapper
+      .findByTestId(`members-table-row-${memberId}`)
+      .find(`[data-label="${tableCellLabel}"][role="cell"]`);
 
   const findPagination = () => extendedWrapper(wrapper.find(GlPagination));
 
@@ -101,7 +98,6 @@ describe('MembersTable', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('fields', () => {
@@ -125,7 +121,7 @@ describe('MembersTable', () => {
         tableFields: [field],
       });
 
-      expect(getByText(label, { selector: '[role="columnheader"]' }).exists()).toBe(true);
+      expect(wrapper.findByText(label, { selector: '[role="columnheader"]' }).exists()).toBe(true);
 
       if (expectedComponent) {
         expect(
@@ -134,11 +130,50 @@ describe('MembersTable', () => {
       }
     });
 
+    describe('Invited column', () => {
+      describe.each`
+        state                    | userState                              | expectedBadgeLabel
+        ${MEMBER_STATE_CREATED}  | ${null}                                | ${''}
+        ${MEMBER_STATE_CREATED}  | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
+        ${MEMBER_STATE_AWAITING} | ${''}                                  | ${''}
+        ${MEMBER_STATE_AWAITING} | ${USER_STATE_BLOCKED_PENDING_APPROVAL} | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
+        ${MEMBER_STATE_AWAITING} | ${'something_else'}                    | ${BADGE_LABELS_PENDING_OWNER_APPROVAL}
+        ${MEMBER_STATE_ACTIVE}   | ${null}                                | ${''}
+        ${MEMBER_STATE_ACTIVE}   | ${'something_else'}                    | ${''}
+      `('Invited Badge', ({ state, userState, expectedBadgeLabel }) => {
+        it(`${
+          expectedBadgeLabel ? 'shows' : 'hides'
+        } invited badge if user status: '${userState}' and member state: '${state}'`, () => {
+          createComponent({
+            members: [
+              {
+                ...invite,
+                state,
+                invite: {
+                  ...invite.invite,
+                  userState,
+                },
+              },
+            ],
+            tableFields: ['invited'],
+          });
+
+          const invitedTab = wrapper.findByTestId('invited-badge');
+
+          if (expectedBadgeLabel) {
+            expect(invitedTab.text()).toBe(expectedBadgeLabel);
+          } else {
+            expect(invitedTab.exists()).toBe(false);
+          }
+        });
+      });
+    });
+
     describe('"Actions" field', () => {
       it('renders "Actions" field for screen readers', () => {
         createComponent({ members: [memberCanUpdate], tableFields: ['actions'] });
 
-        const actionField = getByTestId('col-actions');
+        const actionField = wrapper.findByTestId('col-actions');
 
         expect(actionField.exists()).toBe(true);
         expect(actionField.classes('gl-sr-only')).toBe(true);
@@ -151,7 +186,7 @@ describe('MembersTable', () => {
         it('does not render the "Actions" field', () => {
           createComponent({ tableFields: ['actions'] }, { currentUserId: null });
 
-          expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
+          expect(wrapper.findByTestId('col-actions').exists()).toBe(false);
         });
       });
 
@@ -174,7 +209,7 @@ describe('MembersTable', () => {
         it('renders the "Actions" field', () => {
           createComponent({ members, tableFields: ['actions'] });
 
-          expect(getByTestId('col-actions').exists()).toBe(true);
+          expect(wrapper.findByTestId('col-actions').exists()).toBe(true);
 
           expect(findTableCellByMemberId('Actions', members[0].id).classes()).toStrictEqual([
             'col-actions',
@@ -196,7 +231,7 @@ describe('MembersTable', () => {
         it('does not render the "Actions" field', () => {
           createComponent({ members, tableFields: ['actions'] });
 
-          expect(within(wrapper.element).queryByTestId('col-actions')).toBe(null);
+          expect(wrapper.findByTestId('col-actions').exists()).toBe(false);
         });
       });
     });
@@ -206,7 +241,7 @@ describe('MembersTable', () => {
     it('displays a "No members found" message', () => {
       createComponent();
 
-      expect(getByText('No members found').exists()).toBe(true);
+      expect(wrapper.findByText('No members found').exists()).toBe(true);
     });
   });
 

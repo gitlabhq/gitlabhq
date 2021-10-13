@@ -19,22 +19,20 @@
     .col-sm-10
       - editing_current_user = (current_user == @user)
 
-      = f.radio_button :access_level, :regular, disabled: editing_current_user
-      = f.label :access_level_regular, class: 'font-weight-bold' do
-        = s_('AdminUsers|Regular')
-      %p.light
-        = s_('AdminUsers|Regular users have access to their groups and projects')
+      = f.gitlab_ui_radio_component :access_level, :regular,
+          s_('AdminUsers|Regular'),
+          radio_options: { disabled: editing_current_user },
+          help_text: s_('AdminUsers|Regular users have access to their groups and projects.')
 
       = render_if_exists 'admin/users/auditor_access_level_radio', f: f, disabled: editing_current_user
 
-      = f.radio_button :access_level, :admin, disabled: editing_current_user
-      = f.label :access_level_admin, class: 'font-weight-bold' do
-        = s_('AdminUsers|Admin')
-      %p.light
-        = s_('AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation')
-      - if editing_current_user
-        %p.light
-          = s_('AdminUsers|You cannot remove your own admin rights.')
+      - help_text = s_('AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation.')
+      - help_text += ' ' + s_('AdminUsers|You cannot remove your own admin rights.') if editing_current_user
+      = f.gitlab_ui_radio_component :access_level, :admin,
+          s_('AdminUsers|Admin'),
+          radio_options: { disabled: editing_current_user },
+          help_text: help_text
+
 
   .form-group.row
     .col-sm-2.col-form-label.gl-pt-0

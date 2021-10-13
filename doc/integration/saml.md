@@ -197,15 +197,13 @@ For example configurations, see the [notes on specific providers](#providers).
 | Field           | Supported keys |
 |-----------------|----------------|
 | Email (required)| `email`, `mail` |
-| Username        | `username`, `nickname` |
 | Full Name       | `name` |
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName` |
 
-If a username is not specified, the email address is used to generate the GitLab username.
-
-See [`attribute_statements`](#attribute_statements) for examples on how the
-assertions are configured.
+See [`attribute_statements`](#attribute_statements) for examples on how custom
+assertions are configured. This section also describes how to configure custom
+username attributes.
 
 Please refer to [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for a full list of supported assertions.
@@ -444,7 +442,7 @@ SAML users has an administrator role.
 You may also bypass the auto sign-in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
-### `attribute_statements`
+### `attribute_statements` **(FREE SELF)**
 
 NOTE:
 This setting should be used only to map attributes that are part of the OmniAuth
@@ -476,11 +474,10 @@ args: {
 
 #### Set a username
 
-By default, the email in the SAML response is used to automatically generate the
-user's GitLab username. 
+By default, the local part of the email address in the SAML response is used to
+generate the user's GitLab username.
 
-If you'd like to set another attribute as the username, assign it to the `nickname` OmniAuth `info`
-hash attribute, and add the following setting to your configuration file:
+Configure `nickname` in `attribute_statements` to specify one or more attributes that contain a user's desired username:
 
 ```yaml
 args: {

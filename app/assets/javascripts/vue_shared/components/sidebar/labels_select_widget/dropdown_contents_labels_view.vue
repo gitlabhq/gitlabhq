@@ -24,7 +24,6 @@ export default {
     GlIntersectionObserver,
     LabelItem,
   },
-  inject: ['fullPath'],
   model: {
     prop: 'localSelectedLabels',
   },
@@ -43,6 +42,10 @@ export default {
     },
     localSelectedLabels: {
       type: Array,
+      required: true,
+    },
+    fullPath: {
+      type: String,
       required: true,
     },
   },
@@ -84,7 +87,7 @@ export default {
       return this.$apollo.queries.labels.loading;
     },
     localSelectedLabelsIds() {
-      return this.localSelectedLabels.map((label) => label.id);
+      return this.localSelectedLabels.map((label) => getIdFromGraphQLId(label.id));
     },
     visibleLabels() {
       if (this.searchKey) {
@@ -130,7 +133,9 @@ export default {
     updateSelectedLabels(label) {
       let labels;
       if (this.isLabelSelected(label)) {
-        labels = this.localSelectedLabels.filter(({ id }) => id !== getIdFromGraphQLId(label.id));
+        labels = this.localSelectedLabels.filter(
+          ({ id }) => id !== getIdFromGraphQLId(label.id) && id !== label.id,
+        );
       } else {
         labels = [
           ...this.localSelectedLabels,

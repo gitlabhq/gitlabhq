@@ -44,6 +44,8 @@ class MemberEntity < Grape::Entity
     MemberUserEntity.represent(member.user, source: options[:source])
   end
 
+  expose :state
+
   expose :invite, if: -> (member) { member.invite? } do
     expose :email do |member|
       member.invite_email
@@ -55,6 +57,10 @@ class MemberEntity < Grape::Entity
 
     expose :can_resend do |member|
       member.can_resend_invite?
+    end
+
+    expose :user_state do |member|
+      member.respond_to?(:invited_user_state) ? member.invited_user_state : ""
     end
   end
 end

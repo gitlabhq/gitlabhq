@@ -50,8 +50,6 @@ describe('DropdownContentsLabelsView', () => {
       localVue,
       apolloProvider: mockApollo,
       provide: {
-        fullPath: 'test',
-        iid: 1,
         variant: DropdownVariant.Sidebar,
         ...injected,
       },

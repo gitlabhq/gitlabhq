@@ -12,6 +12,7 @@ export default () => ({
   listsFlags: {},
   boardItemsByListId: {},
   backupItemsList: [],
+  isSettingLabels: false,
   isSettingAssignees: false,
   pageInfoByListId: {},
   boardItems: {},

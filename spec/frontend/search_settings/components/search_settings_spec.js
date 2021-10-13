@@ -11,6 +11,7 @@ describe('search_settings/components/search_settings.vue', () => {
   const GENERAL_SETTINGS_ID = 'js-general-settings';
   const ADVANCED_SETTINGS_ID = 'js-advanced-settings';
   const EXTRA_SETTINGS_ID = 'js-extra-settings';
+  const TEXT_CONTAIN_SEARCH_TERM = `This text contain ${SEARCH_TERM} and <script>alert("111")</script> others.`;
 
   let wrapper;
 
@@ -33,6 +34,21 @@ describe('search_settings/components/search_settings.vue', () => {
   const visibleSectionsCount = () =>
     document.querySelectorAll(`${SECTION_SELECTOR}:not(.${HIDE_CLASS})`).length;
   const highlightedElementsCount = () => document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).length;
+
+  const highlightedTextNodes = () => {
+    const highlightedList = Array.from(document.querySelectorAll(`.${HIGHLIGHT_CLASS}`));
+    return highlightedList.every((element) => {
+      return element.textContent.toLowerCase() === SEARCH_TERM.toLowerCase();
+    });
+  };
+
+  const matchParentElement = () => {
+    const highlightedList = Array.from(document.querySelectorAll(`.${HIGHLIGHT_CLASS}`));
+    return highlightedList.map((element) => {
+      return element.parentNode;
+    });
+  };
+
   const findSearchBox = () => wrapper.find(GlSearchBoxByType);
   const search = (term) => {
     findSearchBox().vm.$emit('input', term);
@@ -52,6 +68,7 @@ describe('search_settings/components/search_settings.vue', () => {
         </section>
         <section id="${EXTRA_SETTINGS_ID}" class="settings">
           <span>${SEARCH_TERM}</span>
+          <span>${TEXT_CONTAIN_SEARCH_TERM}</span>
         </section>
       </div>
     </div>
@@ -82,7 +99,23 @@ describe('search_settings/components/search_settings.vue', () => {
   it('highlight elements that match the search term', () => {
     search(SEARCH_TERM);
 
-    expect(highlightedElementsCount()).toBe(1);
+    expect(highlightedElementsCount()).toBe(2);
+  });
+
+  it('highlight only search term and not the whole line', () => {
+    search(SEARCH_TERM);
+
+    expect(highlightedTextNodes()).toBe(true);
+  });
+
+  it('prevents search xss', () => {
+    search(SEARCH_TERM);
+
+    const parentNodeList = matchParentElement();
+    parentNodeList.forEach((element) => {
+      const scriptElement = element.getElementsByTagName('script');
+      expect(scriptElement.length).toBe(0);
+    });
   });
 
   describe('default', () => {

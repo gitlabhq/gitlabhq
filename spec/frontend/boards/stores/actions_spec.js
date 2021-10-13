@@ -1577,7 +1577,7 @@ describe('setActiveIssueLabels', () => {
     projectPath: 'h/b',
   };
 
-  it('should assign labels on success', (done) => {
+  it('should assign labels on success, and sets loading state for labels', (done) => {
     jest
       .spyOn(gqlClient, 'mutate')
       .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
@@ -1593,6 +1593,14 @@ describe('setActiveIssueLabels', () => {
       input,
       { ...state, ...getters },
       [
+        {
+          type: types.SET_LABELS_LOADING,
+          payload: true,
+        },
+        {
+          type: types.SET_LABELS_LOADING,
+          payload: false,
+        },
         {
           type: types.UPDATE_BOARD_ITEM_BY_ID,
           payload,

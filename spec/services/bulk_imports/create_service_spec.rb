@@ -31,8 +31,25 @@ RSpec.describe BulkImports::CreateService do
   subject { described_class.new(user, params, credentials) }
 
   describe '#execute' do
+    let_it_be(:source_version) do
+      Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
+                              ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
+    end
+
+    before do
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+        allow(instance).to receive(:instance_version).and_return(source_version)
+      end
+    end
+
     it 'creates bulk import' do
       expect { subject.execute }.to change { BulkImport.count }.by(1)
+
+      last_bulk_import = BulkImport.last
+
+      expect(last_bulk_import.user).to eq(user)
+      expect(last_bulk_import.source_version).to eq(source_version.to_s)
+      expect(last_bulk_import.user).to eq(user)
     end
 
     it 'creates bulk import entities' do

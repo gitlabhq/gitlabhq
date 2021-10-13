@@ -20,7 +20,7 @@ Please make sure the spec files pass in AS-IF-FOSS mode either:
 
 1. Locally with `FOSS_ONLY=1 bin/rspec -- %<spec_files>s`.
 1. In the MR pipeline by verifying that the `rspec foss-impact` job has passed.
-1. In the MR pipelines by including `RUN AS-IF-FOSS` in the MR title (you can do it with the ``/title %<mr_title>s [RUN AS-IF-FOSS]`` quick action) and start a new MR pipeline.
+1. In the MR pipelines by setting the ~"pipeline:run-as-if-foss" label on the MR (you can do it with the `/label ~"pipeline:run-as-if-foss"` quick action) and start a new MR pipeline.
 
 MSG
 
@@ -46,7 +46,7 @@ end
 
 # The only changes outside `ee/` are in `spec/`
 if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_changes)
-  warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" "), mr_title: gitlab.mr_json['title']), sticky: false
+  warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" ")), sticky: false
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`

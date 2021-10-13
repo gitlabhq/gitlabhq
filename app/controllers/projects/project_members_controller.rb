@@ -58,7 +58,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def invited_members
-    members.invite
+    members.invite.with_invited_user_state
   end
 
   def non_invited_members

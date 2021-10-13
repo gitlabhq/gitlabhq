@@ -656,6 +656,7 @@ export default {
   },
 
   setActiveIssueLabels: async ({ commit, getters }, input) => {
+    commit(types.SET_LABELS_LOADING, true);
     const { activeBoardItem } = getters;
     const { data } = await gqlClient.mutate({
       mutation: issueSetLabelsMutation,
@@ -668,6 +669,8 @@ export default {
         },
       },
     });
+
+    commit(types.SET_LABELS_LOADING, false);
 
     if (data.updateIssue?.errors?.length > 0) {
       throw new Error(data.updateIssue.errors);

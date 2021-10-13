@@ -13,9 +13,15 @@ RSpec.describe BulkImports::Projects::Stage do
     ]
   end
 
-  describe '.pipelines' do
+  subject do
+    bulk_import = build(:bulk_import)
+
+    described_class.new(bulk_import)
+  end
+
+  describe '#pipelines' do
     it 'list all the pipelines with their stage number, ordered by stage' do
-      expect(described_class.pipelines).to eq(pipelines)
+      expect(subject.pipelines).to eq(pipelines)
     end
   end
 end

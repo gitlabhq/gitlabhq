@@ -52,7 +52,11 @@ module BulkImports
 
     def create_bulk_import
       BulkImport.transaction do
-        bulk_import = BulkImport.create!(user: current_user, source_type: 'gitlab')
+        bulk_import = BulkImport.create!(
+          user: current_user,
+          source_type: 'gitlab',
+          source_version: client.instance_version
+        )
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 
         params.each do |entity|
@@ -67,6 +71,13 @@ module BulkImports
 
         bulk_import
       end
+    end
+
+    def client
+      @client ||= BulkImports::Clients::HTTP.new(
+        url: @credentials[:url],
+        token: @credentials[:access_token]
+      )
     end
   end
 end

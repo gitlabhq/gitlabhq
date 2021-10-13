@@ -51,62 +51,87 @@ RSpec.describe Import::BulkImportsController do
       end
 
       describe 'GET status' do
+        def get_status(params_override = {})
+          params = { page: 1, per_page: 20, filter: '' }.merge(params_override)
+
+          get :status,
+              params: params,
+              format: :json,
+              session: {
+                bulk_import_gitlab_url: 'https://gitlab.example.com',
+                bulk_import_gitlab_access_token: 'demo-pat'
+              }
+        end
+
+        include_context 'bulk imports requests context', 'https://gitlab.example.com'
+
         let(:client) { BulkImports::Clients::HTTP.new(url: 'http://gitlab.example', token: 'token') }
+        let(:version) { "#{BulkImport::MIN_MAJOR_VERSION}.#{BulkImport::MIN_MINOR_VERSION_FOR_PROJECT}.0" }
+        let(:version_response) { double(code: 200, success?: true, parsed_response: { 'version' => version }) }
 
         describe 'serialized group data' do
-          let(:client_response) do
+          let(:expected_response) do
             double(
               parsed_response: [
-                { 'id' => 1, 'full_name' => 'group1', 'full_path' => 'full/path/group1', 'web_url' => 'http://demo.host/full/path/group1' },
-                { 'id' => 2, 'full_name' => 'group2', 'full_path' => 'full/path/group2', 'web_url' => 'http://demo.host/full/path/group1' }
+                {
+                  "full_name" => "Stub",
+                  "full_path" => "stub-group",
+                  "id" => 2595438,
+                  "web_url" => "https://gitlab.com/groups/auto-breakfast"
+                }
               ],
               headers: {
                 'x-next-page' => '2',
                 'x-page' => '1',
                 'x-per-page' => '20',
-                'x-total' => '37',
+                'x-total' => '42',
                 'x-total-pages' => '2'
               }
             )
           end
 
-          let(:client_params) do
-            {
-              top_level_only: true,
-              min_access_level: Gitlab::Access::OWNER
-            }
-          end
-
-          before do
-            allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).with('groups', client_params).and_return(client_response)
-          end
-
           it 'returns serialized group data' do
-            get :status, format: :json
+            get_status
 
-            expect(json_response).to eq({ importable_data: client_response.parsed_response }.as_json)
+            version_validation = {
+              "features" => {
+                "project_migration" => {
+                  "available" => true,
+                  "min_version" => BulkImport.min_gl_version_for_project_migration.to_s
+                },
+                "source_instance_version" => version
+              }
+            }
+
+            expect(json_response).to include("importable_data" => expected_response.parsed_response, "version_validation" => hash_including(version_validation))
           end
 
           it 'forwards pagination headers' do
-            get :status, format: :json
+            get_status
 
-            expect(response.headers['x-per-page']).to eq client_response.headers['x-per-page']
-            expect(response.headers['x-page']).to eq client_response.headers['x-page']
-            expect(response.headers['x-next-page']).to eq client_response.headers['x-next-page']
-            expect(response.headers['x-prev-page']).to eq client_response.headers['x-prev-page']
-            expect(response.headers['x-total']).to eq client_response.headers['x-total']
-            expect(response.headers['x-total-pages']).to eq client_response.headers['x-total-pages']
+            expect(response.headers['x-per-page']).to eq expected_response.headers['x-per-page']
+            expect(response.headers['x-page']).to eq expected_response.headers['x-page']
+            expect(response.headers['x-next-page']).to eq expected_response.headers['x-next-page']
+            expect(response.headers['x-prev-page']).to eq expected_response.headers['x-prev-page']
+            expect(response.headers['x-total']).to eq expected_response.headers['x-total']
+            expect(response.headers['x-total-pages']).to eq expected_response.headers['x-total-pages']
           end
 
           context 'when filtering' do
+            let_it_be(:filter) { 'test' }
+
+            let(:client_params) do
+              {
+                top_level_only: true,
+                min_access_level: Gitlab::Access::OWNER,
+                search: filter
+              }
+            end
+
             it 'returns filtered result' do
-              filter = 'test'
-              search_params = client_params.merge(search: filter)
+              get_status(filter: filter)
 
-              expect(client).to receive(:get).with('groups', search_params).and_return(client_response)
-
-              get :status, format: :json, params: { filter: filter }
+              expect(json_response['importable_data'].first['full_name']).to eq('Test')
             end
           end
         end
@@ -148,18 +173,19 @@ RSpec.describe Import::BulkImportsController do
 
         context 'when connection error occurs' do
           before do
-            allow(controller).to receive(:client).and_return(client)
-            allow(client).to receive(:get).and_raise(BulkImports::Error)
+            allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+              allow(instance).to receive(:get).and_raise(BulkImports::Error)
+            end
           end
 
           it 'returns 422' do
-            get :status, format: :json
+            get_status
 
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
 
           it 'clears session' do
-            get :status, format: :json
+            get_status
 
             expect(session[:gitlab_url]).to be_nil
             expect(session[:gitlab_access_token]).to be_nil

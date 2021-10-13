@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlLink, GlTooltip, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
@@ -26,12 +25,6 @@ export default {
     },
   },
   computed: {
-    isOpen() {
-      return this.suggestion.state === 'opened';
-    },
-    isClosed() {
-      return this.suggestion.state === 'closed';
-    },
     counts() {
       return [
         {
@@ -48,7 +41,13 @@ export default {
         },
       ].filter(({ count }) => count);
     },
-    stateIcon() {
+    isClosed() {
+      return this.suggestion.state === 'closed';
+    },
+    stateIconClass() {
+      return this.isClosed ? 'gl-text-blue-500' : 'gl-text-green-500';
+    },
+    stateIconName() {
       return this.isClosed ? 'issue-close' : 'issue-open-m';
     },
     stateTitle() {
@@ -72,7 +71,7 @@ export default {
         v-gl-tooltip.bottom
         :title="__('Confidential')"
         name="eye-slash"
-        class="suggestion-help-hover mr-1 suggestion-confidential"
+        class="gl-cursor-help gl-mr-2 gl-text-orange-500"
       />
       <gl-link
         :href="suggestion.webUrl"
@@ -83,15 +82,7 @@ export default {
       </gl-link>
     </div>
     <div class="text-secondary suggestion-footer">
-      <gl-icon
-        ref="state"
-        :name="stateIcon"
-        :class="{
-          'suggestion-state-open': isOpen,
-          'suggestion-state-closed': isClosed,
-        }"
-        class="suggestion-help-hover"
-      />
+      <gl-icon ref="state" :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
       <gl-tooltip :target="() => $refs.state" placement="bottom">
         <span class="d-block">
           <span class="bold"> {{ stateTitle }} </span> {{ timeFormatted(closedOrCreatedDate) }}
@@ -102,9 +93,9 @@ export default {
       <timeago-tooltip
         :time="suggestion.createdAt"
         tooltip-placement="bottom"
-        class="suggestion-help-hover"
+        class="gl-cursor-help"
       />
-      by
+      {{ __('by') }}
       <gl-link :href="suggestion.author.webUrl">
         <user-avatar-image
           :img-src="suggestion.author.avatarUrl"
@@ -122,7 +113,7 @@ export default {
         <timeago-tooltip
           :time="suggestion.updatedAt"
           tooltip-placement="bottom"
-          class="suggestion-help-hover"
+          class="gl-cursor-help"
         />
       </template>
       <span class="suggestion-counts">
@@ -131,7 +122,7 @@ export default {
           :key="id"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="suggestion-help-hover gl-ml-3 text-tertiary"
+          class="gl-cursor-help gl-ml-3 text-tertiary"
         >
           <gl-icon :name="icon" /> {{ count }}
         </span>

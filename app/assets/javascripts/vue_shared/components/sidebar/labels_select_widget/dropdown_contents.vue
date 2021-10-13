@@ -57,6 +57,15 @@ export default {
       required: false,
       default: false,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -182,6 +191,8 @@ export default {
         :selected-labels="selectedLabels"
         :allow-multiselect="allowMultiselect"
         :issuable-type="issuableType"
+        :full-path="fullPath"
+        :attr-workspace-path="attrWorkspacePath"
         @hideCreateView="toggleDropdownContentsCreateView"
       />
     </template>

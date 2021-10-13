@@ -22,9 +22,10 @@ RSpec.describe BulkImports::PipelineWorker do
   before do
     stub_const('FakePipeline', pipeline_class)
 
-    allow(BulkImports::Groups::Stage)
-      .to receive(:pipelines)
-      .and_return([[0, pipeline_class]])
+    allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
+      allow(instance).to receive(:pipelines)
+        .and_return([[0, pipeline_class]])
+    end
   end
 
   shared_examples 'successfully runs the pipeline' do
@@ -206,9 +207,10 @@ RSpec.describe BulkImports::PipelineWorker do
     before do
       stub_const('NdjsonPipeline', ndjson_pipeline)
 
-      allow(BulkImports::Groups::Stage)
-        .to receive(:pipelines)
-        .and_return([[0, ndjson_pipeline]])
+      allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
+        allow(instance).to receive(:pipelines)
+                             .and_return([[0, ndjson_pipeline]])
+      end
     end
 
     it 'runs the pipeline successfully' do

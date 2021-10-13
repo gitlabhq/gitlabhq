@@ -2567,7 +2567,7 @@ msgstr ""
 msgid "AdminUsers|Admin"
 msgstr ""
 
-msgid "AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation"
+msgid "AdminUsers|Administrators have access to all groups, projects and users and can manage all features in this installation."
 msgstr ""
 
 msgid "AdminUsers|Admins"
@@ -2580,6 +2580,12 @@ msgid "AdminUsers|Approve user %{username}?"
 msgstr ""
 
 msgid "AdminUsers|Approved users can:"
+msgstr ""
+
+msgid "AdminUsers|Auditor"
+msgstr ""
+
+msgid "AdminUsers|Auditors have read-only access to all groups, projects, and users."
 msgstr ""
 
 msgid "AdminUsers|Automatically marked as default internal user"
@@ -2717,7 +2723,7 @@ msgstr ""
 msgid "AdminUsers|Regular"
 msgstr ""
 
-msgid "AdminUsers|Regular users have access to their groups and projects"
+msgid "AdminUsers|Regular users have access to their groups and projects."
 msgstr ""
 
 msgid "AdminUsers|Reject"
@@ -7942,6 +7948,9 @@ msgstr ""
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Select a VPC"
+msgstr ""
+
 msgid "ClusterIntegration|Select a VPC to choose a security group"
 msgstr ""
 
@@ -7949,6 +7958,9 @@ msgid "ClusterIntegration|Select a VPC to choose a subnet"
 msgstr ""
 
 msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{linkStart}Amazon Web Services %{linkEnd}."
+msgstr ""
+
+msgid "ClusterIntegration|Select a network"
 msgstr ""
 
 msgid "ClusterIntegration|Select a network to choose a subnetwork"
@@ -7960,7 +7972,22 @@ msgstr ""
 msgid "ClusterIntegration|Select a region to choose a VPC"
 msgstr ""
 
+msgid "ClusterIntegration|Select a security group"
+msgstr ""
+
+msgid "ClusterIntegration|Select a subnet"
+msgstr ""
+
+msgid "ClusterIntegration|Select a subnetwork"
+msgstr ""
+
 msgid "ClusterIntegration|Select a zone to choose a network"
+msgstr ""
+
+msgid "ClusterIntegration|Select an instance type"
+msgstr ""
+
+msgid "ClusterIntegration|Select key pair"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -7973,6 +8000,9 @@ msgid "ClusterIntegration|Select project and zone to choose machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Select project to choose zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select service role"
 msgstr ""
 
 msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{linkStart}Amazon Web Services%{linkEnd}."
@@ -8123,30 +8153,6 @@ msgid "ClusterIntegration|meets the requirements"
 msgstr ""
 
 msgid "ClusterIntegration|sign up"
-msgstr ""
-
-msgid "ClusterIntergation|Select a VPC"
-msgstr ""
-
-msgid "ClusterIntergation|Select a network"
-msgstr ""
-
-msgid "ClusterIntergation|Select a security group"
-msgstr ""
-
-msgid "ClusterIntergation|Select a subnet"
-msgstr ""
-
-msgid "ClusterIntergation|Select a subnetwork"
-msgstr ""
-
-msgid "ClusterIntergation|Select an instance type"
-msgstr ""
-
-msgid "ClusterIntergation|Select key pair"
-msgstr ""
-
-msgid "ClusterIntergation|Select service role"
 msgstr ""
 
 msgid "Clusters|An error occurred while loading clusters"
@@ -9544,6 +9550,9 @@ msgid "Create %{humanized_resource_name}"
 msgstr ""
 
 msgid "Create %{type}"
+msgstr ""
+
+msgid "Create %{workspace} label"
 msgstr ""
 
 msgid "Create New Directory"
@@ -12829,9 +12838,6 @@ msgid "Enter a number"
 msgstr ""
 
 msgid "Enter an integer number between 0 and 100"
-msgstr ""
-
-msgid "Enter an integer number number between 0 and 100"
 msgstr ""
 
 msgid "Enter any color or choose one of the suggested colors below."
@@ -20769,6 +20775,9 @@ msgstr ""
 msgid "Makes this issue confidential."
 msgstr ""
 
+msgid "Manage %{workspace} labels"
+msgstr ""
+
 msgid "Manage Web IDE features."
 msgstr ""
 
@@ -23799,7 +23808,7 @@ msgstr ""
 msgid "OnDemandScans|On-demand scans"
 msgstr ""
 
-msgid "OnDemandScans|On-demand scans run outside of DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Lean more%{learnMoreLinkEnd}."
+msgid "OnDemandScans|On-demand scans run outside of DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
 msgstr ""
 
 msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
@@ -24735,6 +24744,9 @@ msgid "Pending"
 msgstr ""
 
 msgid "Pending comments"
+msgstr ""
+
+msgid "Pending owner approval"
 msgstr ""
 
 msgid "Pending sync…"

@@ -67,6 +67,7 @@ describe('DropdownContentsCreateView', () => {
       apolloProvider: mockApollo,
       propsData: {
         issuableType,
+        fullPath: '',
       },
     });
   };

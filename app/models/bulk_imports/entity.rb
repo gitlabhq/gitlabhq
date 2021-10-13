@@ -83,9 +83,9 @@ class BulkImports::Entity < ApplicationRecord
   def pipelines
     @pipelines ||= case source_type
                    when 'group_entity'
-                     BulkImports::Groups::Stage.pipelines
+                     BulkImports::Groups::Stage.new(bulk_import).pipelines
                    when 'project_entity'
-                     BulkImports::Projects::Stage.pipelines
+                     BulkImports::Projects::Stage.new(bulk_import).pipelines
                    end
   end
 

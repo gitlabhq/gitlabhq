@@ -43,7 +43,7 @@ export default {
     :loading="isLoadingItems"
     :has-errors="Boolean(loadingItemsError)"
     :loading-text="s__('ClusterIntegration|Loading networks')"
-    :placeholder="s__('ClusterIntergation|Select a network')"
+    :placeholder="s__('ClusterIntegration|Select a network')"
     :search-field-placeholder="s__('ClusterIntegration|Search networks')"
     :empty-text="s__('ClusterIntegration|No networks found')"
     :error-message="s__('ClusterIntegration|Could not load networks')"

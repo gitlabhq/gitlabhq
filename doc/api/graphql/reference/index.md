@@ -12148,10 +12148,10 @@ Nuget metadata.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="nugetmetadataiconurl"></a>`iconUrl` | [`String!`](#string) | Icon URL of the Nuget package. |
+| <a id="nugetmetadataiconurl"></a>`iconUrl` | [`String`](#string) | Icon URL of the Nuget package. |
 | <a id="nugetmetadataid"></a>`id` | [`PackagesNugetMetadatumID!`](#packagesnugetmetadatumid) | ID of the metadatum. |
-| <a id="nugetmetadatalicenseurl"></a>`licenseUrl` | [`String!`](#string) | License URL of the Nuget package. |
-| <a id="nugetmetadataprojecturl"></a>`projectUrl` | [`String!`](#string) | Project URL of the Nuget package. |
+| <a id="nugetmetadatalicenseurl"></a>`licenseUrl` | [`String`](#string) | License URL of the Nuget package. |
+| <a id="nugetmetadataprojecturl"></a>`projectUrl` | [`String`](#string) | Project URL of the Nuget package. |
 
 ### `OncallParticipantType`
 

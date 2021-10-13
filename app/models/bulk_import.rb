@@ -4,7 +4,8 @@
 # projects to a GitLab instance. It associates the import with the responsible
 # user.
 class BulkImport < ApplicationRecord
-  MINIMUM_GITLAB_MAJOR_VERSION = 14
+  MIN_MAJOR_VERSION = 14
+  MIN_MINOR_VERSION_FOR_PROJECT = 4
 
   belongs_to :user, optional: false
 
@@ -32,6 +33,14 @@ class BulkImport < ApplicationRecord
     event :fail_op do
       transition any => :failed
     end
+  end
+
+  def source_version_info
+    Gitlab::VersionInfo.parse(source_version)
+  end
+
+  def self.min_gl_version_for_project_migration
+    Gitlab::VersionInfo.new(MIN_MAJOR_VERSION, MIN_MINOR_VERSION_FOR_PROJECT)
   end
 
   def self.all_human_statuses

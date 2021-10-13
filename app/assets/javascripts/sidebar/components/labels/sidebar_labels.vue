@@ -36,6 +36,7 @@ export default {
     'allowLabelEdit',
     'allowScopedLabels',
     'iid',
+    'fullPath',
     'initiallySelectedLabels',
     'issuableType',
     'labelsFetchPath',
@@ -145,6 +146,8 @@ export default {
   <labels-select-widget
     v-if="glFeatures.labelsWidget"
     class="block labels js-labels-block"
+    :iid="iid"
+    :full-path="fullPath"
     :allow-label-remove="allowLabelEdit"
     :allow-multiselect="true"
     :footer-create-label-title="__('Create project label')"

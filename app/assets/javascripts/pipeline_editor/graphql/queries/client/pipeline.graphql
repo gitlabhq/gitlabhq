@@ -11,6 +11,25 @@ query getPipeline($fullPath: ID!, $sha: String!) {
         group
         text
       }
+      stages {
+        edges {
+          node {
+            id
+            name
+            status
+            detailedStatus {
+              detailsPath
+              group
+              hasDetails
+              icon
+              id
+              label
+              text
+              tooltip
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -29,12 +29,11 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
   end
 
   context 'labels' do
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/322725
-    xit 'shows current labels when editing' do
+    it 'shows current labels when editing' do
       click_card(card)
 
       page.within('.labels') do
-        click_link 'Edit'
+        click_button 'Edit'
 
         wait_for_requests
 
@@ -54,9 +53,9 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
 
         wait_for_requests
 
-        click_link bug.title
+        click_on bug.title
 
-        find('[data-testid="close-icon"]').click
+        click_button 'Close'
 
         wait_for_requests
 
@@ -79,11 +78,11 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
 
         wait_for_requests
 
-        click_link bug.title
+        click_on bug.title
 
-        click_link regression.title
+        click_on regression.title
 
-        find('[data-testid="close-icon"]').click
+        click_button 'Close'
 
         wait_for_requests
 
@@ -108,9 +107,9 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
 
         wait_for_requests
 
-        click_link stretch.title
+        click_button stretch.title
 
-        find('[data-testid="close-icon"]').click
+        click_button 'Close'
 
         wait_for_requests
 
@@ -125,43 +124,22 @@ RSpec.describe 'Project issue boards sidebar labels', :js do
       expect(card).not_to have_content(stretch.title)
     end
 
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/324290
-    xit 'creates project label' do
+    it 'creates project label' do
       click_card(card)
 
       page.within('.labels') do
-        click_link 'Edit'
+        click_button 'Edit'
         wait_for_requests
 
-        click_link 'Create project label'
-        fill_in 'new_label_name', with: 'test label'
+        click_on 'Create project label'
+        fill_in 'Name new label', with: 'test label'
         first('.suggest-colors-dropdown a').click
         click_button 'Create'
         wait_for_requests
 
-        expect(page).to have_link 'test label'
+        expect(page).to have_button 'test label'
       end
       expect(page).to have_selector('.board', count: 3)
-    end
-
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/324290
-    xit 'creates project label and list' do
-      click_card(card)
-
-      page.within('.labels') do
-        click_link 'Edit'
-        wait_for_requests
-
-        click_link 'Create project label'
-        fill_in 'new_label_name', with: 'test label'
-        first('.suggest-colors-dropdown a').click
-        first('.js-add-list').click
-        click_button 'Create'
-        wait_for_requests
-
-        expect(page).to have_link 'test label'
-      end
-      expect(page).to have_selector('.board', count: 4)
     end
   end
 end

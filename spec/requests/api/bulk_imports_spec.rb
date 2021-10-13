@@ -21,6 +21,15 @@ RSpec.describe API::BulkImports do
   end
 
   describe 'POST /bulk_imports' do
+    before do
+      allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
+        allow(instance)
+          .to receive(:instance_version)
+          .and_return(
+            Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT))
+      end
+    end
+
     it 'starts a new migration' do
       post api('/bulk_imports', user), params: {
         configuration: {

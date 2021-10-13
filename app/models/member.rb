@@ -50,6 +50,11 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
 
+  scope :with_invited_user_state, -> do
+    joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
+    .select('members.*', 'invited_user.state as invited_user_state')
+  end
+
   scope :in_hierarchy, ->(source) do
     groups = source.root_ancestor.self_and_descendants
     group_members = Member.default_scoped.where(source: groups)

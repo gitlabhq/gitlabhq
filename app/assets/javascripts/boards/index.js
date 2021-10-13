@@ -87,6 +87,9 @@ function mountBoardApp(el) {
       iterationListsAvailable: parseBoolean(el.dataset.iterationListsAvailable),
       issuableType: issuableTypes.issue,
       emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
+      allowLabelCreate: parseBoolean(el.dataset.canUpdate),
+      allowLabelEdit: parseBoolean(el.dataset.canUpdate),
+      allowScopedLabels: parseBoolean(el.dataset.scopedLabels),
     },
     render: (createComponent) => createComponent(BoardApp),
   });

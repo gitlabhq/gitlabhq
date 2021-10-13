@@ -8,7 +8,7 @@ RSpec.describe BulkImports::Clients::HTTP do
   let(:url) { 'http://gitlab.example' }
   let(:token) { 'token' }
   let(:resource) { 'resource' }
-  let(:version) { "#{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}.0.0" }
+  let(:version) { "#{BulkImport::MIN_MAJOR_VERSION}.0.0" }
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
   let(:version_response) { double(code: 200, success?: true, parsed_response: { 'version' => version }) }
 
@@ -176,6 +176,28 @@ RSpec.describe BulkImports::Clients::HTTP do
     end
   end
 
+  describe '#instance_version' do
+    it 'returns version as an instance of Gitlab::VersionInfo' do
+      expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
+    end
+  end
+
+  describe '#compatible_for_project_migration?' do
+    context 'when instance version is lower the the expected minimum' do
+      it 'returns false' do
+        expect(subject.compatible_for_project_migration?).to be false
+      end
+    end
+
+    context 'when instance version is at least the expected minimum' do
+      let(:version) { "14.4.4" }
+
+      it 'returns true' do
+        expect(subject.compatible_for_project_migration?).to be true
+      end
+    end
+  end
+
   context 'when source instance is incompatible' do
     let(:version) { '13.0.0' }
 
@@ -183,7 +205,7 @@ RSpec.describe BulkImports::Clients::HTTP do
       expect { subject.get(resource) }
         .to raise_error(
           ::BulkImports::Error,
-          "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MINIMUM_GITLAB_MAJOR_VERSION}."
+          "Unsupported GitLab Version. Minimum Supported Gitlab Version #{BulkImport::MIN_MAJOR_VERSION}."
         )
     end
   end

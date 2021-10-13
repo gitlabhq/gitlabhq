@@ -38,6 +38,7 @@ describe('DropdownContent', () => {
         dropdownButtonText: 'Labels',
         variant: 'sidebar',
         issuableType: 'issue',
+        fullPath: 'test',
         ...props,
       },
       data() {

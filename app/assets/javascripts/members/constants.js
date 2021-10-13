@@ -89,6 +89,22 @@ export const TAB_QUERY_PARAM_VALUES = {
   accessRequest: 'access_requests',
 };
 
+/**
+ * This user state value comes from the User model
+ * see the state machine in app/models/user.rb
+ */
+export const USER_STATE_BLOCKED_PENDING_APPROVAL = 'blocked_pending_approval';
+
+/**
+ * This and following member state constants' values
+ * come from ee/app/models/ee/member.rb
+ */
+export const MEMBER_STATE_CREATED = 0;
+export const MEMBER_STATE_AWAITING = 1;
+export const MEMBER_STATE_ACTIVE = 2;
+
+export const BADGE_LABELS_PENDING_OWNER_APPROVAL = __('Pending owner approval');
+
 export const DAYS_TO_EXPIRE_SOON = 7;
 
 export const LEAVE_MODAL_ID = 'member-leave-modal';

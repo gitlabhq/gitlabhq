@@ -54,7 +54,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def invited_members
-    group_members.invite
+    group_members.invite.with_invited_user_state
   end
 
   def non_invited_members

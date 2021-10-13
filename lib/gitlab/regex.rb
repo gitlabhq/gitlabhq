@@ -131,7 +131,7 @@ module Gitlab
       end
 
       def helm_channel_regex
-        @helm_channel_regex ||= %r{\A([a-zA-Z0-9](\.|-|_)?){1,63}(?<!\.|-|_)\z}.freeze
+        @helm_channel_regex ||= %r{\A([a-zA-Z0-9](\.|-|_)?){1,255}(?<!\.|-|_)\z}.freeze
       end
 
       def helm_package_regex
