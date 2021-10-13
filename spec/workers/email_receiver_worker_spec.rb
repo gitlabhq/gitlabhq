@@ -80,6 +80,21 @@ RSpec.describe EmailReceiverWorker, :mailer do
           expect(email).to be_nil
         end
       end
+
+      context 'when the error is RateLimitedService::RateLimitedError' do
+        let(:error) { RateLimitedService::RateLimitedError.new(key: :issues_create, rate_limiter: Gitlab::ApplicationRateLimiter) }
+
+        it 'does not report the error to the sender' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error).and_call_original
+
+          perform_enqueued_jobs do
+            described_class.new.perform(raw_message)
+          end
+
+          email = ActionMailer::Base.deliveries.last
+          expect(email).to be_nil
+        end
+      end
     end
   end
 

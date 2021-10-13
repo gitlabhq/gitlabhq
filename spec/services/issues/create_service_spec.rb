@@ -10,6 +10,25 @@ RSpec.describe Issues::CreateService do
 
   let(:spam_params) { double }
 
+  describe '.rate_limiter_scoped_and_keyed' do
+    it 'is set via the rate_limit call' do
+      expect(described_class.rate_limiter_scoped_and_keyed).to be_a(RateLimitedService::RateLimiterScopedAndKeyed)
+
+      expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
+      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user])
+      expect(described_class.rate_limiter_scoped_and_keyed.opts[:users_allowlist].call).to eq(%w[support-bot])
+      expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter_klass).to eq(Gitlab::ApplicationRateLimiter)
+    end
+  end
+
+  describe '#rate_limiter_bypassed' do
+    let(:subject) { described_class.new(project: project, spam_params: {}) }
+
+    it 'is nil by default' do
+      expect(subject.rate_limiter_bypassed).to be_nil
+    end
+  end
+
   describe '#execute' do
     let_it_be(:assignee) { create(:user) }
     let_it_be(:milestone) { create(:milestone, project: project) }

@@ -399,16 +399,15 @@ RSpec.describe API::Issues do
     end
 
     context 'when request exceeds the rate limit' do
-      before do
-        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
-      end
-
       it 'prevents users from creating more issues' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
         post api("/projects/#{project.id}/issues", user),
         params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
 
-        expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

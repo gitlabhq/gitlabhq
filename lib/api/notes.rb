@@ -4,7 +4,6 @@ module API
   class Notes < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
-    helpers Helpers::RateLimiter
 
     before { authenticate! }
 

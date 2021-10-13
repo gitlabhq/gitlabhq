@@ -243,6 +243,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
           end
         end
       end
+
+      context 'when rate limiting is in effect' do
+        it 'allows unlimited new issue creation' do
+          stub_application_setting(issues_create_limit: 1)
+          setup_attachment
+
+          expect { 2.times { receiver.execute } }.to change { Issue.count }.by(2)
+        end
+      end
     end
 
     describe '#can_handle?' do

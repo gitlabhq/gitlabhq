@@ -245,7 +245,11 @@ end
 
 ## Prefer `aggregate_failures` when there are back-to-back expectations
 
-In cases where there must be multiple (back-to-back) expectations within a test case, it is preferable to use `aggregate_failures`.
+See [Prefer aggregate failures when there are multiple expectations](#prefer-aggregate_failures-when-there-are-multiple-expectations)
+
+## Prefer `aggregate_failures` when there are multiple expectations
+
+In cases where there must be multiple expectations within a test case, it is preferable to use `aggregate_failures`.
 
 This allows you to group a set of expectations and see all the failures altogether, rather than having the test being aborted on the first failure.
 
@@ -267,6 +271,32 @@ Page::Search::Results.perform do |search|
   search.switch_to_code
   expect(search).to have_file_in_project(template[:file_name], project.name)
   expect(search).to have_file_with_content(template[:file_name], content[0..33])
+end
+```
+
+Attach the `:aggregate_failures` metadata to the example if multiple expectations are separated by statements.
+
+```ruby
+#=> Good
+it 'searches', :aggregate_failures do
+  Page::Search::Results.perform do |search|
+    expect(search).to have_file_in_project(template[:file_name], project.name)
+    
+    search.switch_to_code
+    
+    expect(search).to have_file_with_content(template[:file_name], content[0..33])
+  end
+end
+
+#=> Bad
+it 'searches' do
+  Page::Search::Results.perform do |search|
+    expect(search).to have_file_in_project(template[:file_name], project.name)
+
+    search.switch_to_code
+
+    expect(search).to have_file_with_content(template[:file_name], content[0..33])
+  end
 end
 ```
 

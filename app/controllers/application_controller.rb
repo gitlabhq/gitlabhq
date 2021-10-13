@@ -108,6 +108,12 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
+  rescue_from RateLimitedService::RateLimitedError do |e|
+    e.log_request(request, current_user)
+    response.headers.merge!(e.headers)
+    render plain: e.message, status: :too_many_requests
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end

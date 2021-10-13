@@ -73,51 +73,41 @@ subgroups, the behavior is the same as when performing these actions at the
 
 ## Creating a subgroup
 
-To create a subgroup you must either be an Owner or a Maintainer of the
-group, depending on the group's setting.
-
-By default, groups created in:
-
-- GitLab 12.2 or later allow both Owners and Maintainers to create subgroups.
-- GitLab 12.1 or earlier only allow Owners to create subgroups.
-
-The setting can be changed for any group by:
-
-- A group owner:
-  1. Select the group.
-  1. On the left sidebar, select **Settings > General**.
-  1. Expand the **Permissions, LFS, 2FA** section.
-- An administrator:
-  1. On the top bar, select **Menu > Admin**.
-  1. On the left sidebar, select **Overview > Groups**.
-  1. Select the group, and select **Edit**.
-
-For:
-
-- More information, check the [permissions table](../../permissions.md#group-members-permissions).
-- A list of words that are not allowed to be used as group names, see the
-  [reserved names](../../reserved_names.md).
-
-Users can always create subgroups if they are explicitly added as an Owner (or
+Users can create subgroups if they are explicitly added as an Owner (or
 Maintainer, if that setting is enabled) to an immediate parent group, even if group
 creation is disabled by an administrator in their settings.
 
 To create a subgroup:
 
-1. In the group's dashboard click the **New subgroup** button.
+1. On the top bar, select **Menu > Groups** and find the parent group.
+1. In the top right, select **New subgroup**.
+1. Select **Create group**.
+1. Fill in the fields. View a list of [reserved names](../../reserved_names.md)
+   that cannot be used as group names.
+1. Select **Create group**.
 
-   ![Subgroups page](img/create_subgroup_button_v13_6.png)
+### Change who can create subgroups
 
-1. Create a new group like you would normally do. Notice that the immediate parent group
-   namespace is fixed under **Group path**. The visibility level can differ from
-   the immediate parent group.
+To create a subgroup you must either be an Owner or a Maintainer of the
+group, depending on the group's setting.
 
-   ![Subgroups page](img/create_new_group.png)
+By default:
 
-1. Click the **Create group** button to be redirected to the new group's
-   dashboard page.
+- In GitLab 12.2 or later, both Owners and Maintainers can create subgroups.
+- In GitLab 12.1 or earlier, only Owners can create subgroups.
 
-Follow the same process to create any subsequent groups.
+You can change this setting:
+
+- As group owner:
+  1. Select the group.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Permissions, LFS, 2FA**.
+- As an administrator:
+  1. On the top bar, select **Menu > Admin**.
+  1. On the left sidebar, select **Overview > Groups**.
+  1. Select the group, and select **Edit**.
+
+For more information, view the [permissions table](../../permissions.md#group-members-permissions).
 
 ## Membership
 

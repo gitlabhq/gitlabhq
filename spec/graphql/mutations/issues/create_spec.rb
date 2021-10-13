@@ -53,11 +53,24 @@ RSpec.describe Mutations::Issues::Create do
       stub_spam_services
     end
 
-    subject { mutation.resolve(**mutation_params) }
+    def resolve
+      mutation.resolve(**mutation_params)
+    end
+
+    subject { resolve }
 
     context 'when the user does not have permission to create an issue' do
       it 'raises an error' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+      end
+    end
+
+    context 'when the user has exceeded the rate limit' do
+      it 'raises an error' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        project.add_developer(user)
+
+        expect { resolve }.to raise_error(RateLimitedService::RateLimitedError, _('This endpoint has been requested too many times. Try again later.'))
       end
     end
 

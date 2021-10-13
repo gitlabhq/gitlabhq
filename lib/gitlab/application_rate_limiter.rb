@@ -11,6 +11,23 @@ module Gitlab
   #   redirect_to(edit_project_path(@project), status: :too_many_requests)
   # end
   class ApplicationRateLimiter
+    def initialize(key, **options)
+      @key = key
+      @options = options
+    end
+
+    def throttled?
+      self.class.throttled?(key, **options)
+    end
+
+    def threshold_value
+      options[:threshold] || self.class.threshold(key)
+    end
+
+    def interval_value
+      self.class.interval(key)
+    end
+
     class << self
       # Application rate limits
       #
@@ -154,5 +171,9 @@ module Gitlab
         scoped_user.username.downcase.in?(options[:users_allowlist])
       end
     end
+
+    private
+
+    attr_reader :key, :options
   end
 end

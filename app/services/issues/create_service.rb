@@ -3,6 +3,10 @@
 module Issues
   class CreateService < Issues::BaseService
     include ResolveDiscussions
+    prepend RateLimitedService
+
+    rate_limit key: :issues_create,
+               opts: { scope: [:project, :current_user], users_allowlist: -> { [User.support_bot.username] } }
 
     # NOTE: For Issues::CreateService, we require the spam_params and do not default it to nil, because
     # spam_checking is likely to be necessary.  However, if there is not a request available in scope

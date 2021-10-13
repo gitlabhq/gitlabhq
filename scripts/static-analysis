@@ -66,7 +66,9 @@ class StaticAnalysis
   ].compact.freeze
 
   def run_tasks!(options = {})
-    node_assignment = tasks_to_run((ENV['CI_NODE_TOTAL'] || 1).to_i)[(ENV['CI_NODE_INDEX'] || 1).to_i - 1]
+    total_nodes = (ENV['CI_NODE_TOTAL'] || 1).to_i
+    current_node_number = (ENV['CI_NODE_INDEX'] || 1).to_i
+    node_assignment = tasks_to_run(total_nodes)[current_node_number - 1]
 
     if options[:dry_run]
       puts "Dry-run mode!"

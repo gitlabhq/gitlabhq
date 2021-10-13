@@ -4,7 +4,6 @@ module API
   class Issues < ::API::Base
     include PaginationParams
     helpers Helpers::IssuesHelpers
-    helpers Helpers::RateLimiter
 
     before { authenticate_non_get! }
 
@@ -263,7 +262,7 @@ module API
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 
-        check_rate_limit! :issues_create, [current_user]
+        check_rate_limit! :issues_create, [current_user] if Feature.disabled?("rate_limited_service_issues_create", user_project, default_enabled: :yaml)
 
         authorize! :create_issue, user_project
 

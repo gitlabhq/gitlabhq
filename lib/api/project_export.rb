@@ -2,8 +2,6 @@
 
 module API
   class ProjectExport < ::API::Base
-    helpers Helpers::RateLimiter
-
     feature_category :importers
 
     before do

@@ -2,8 +2,6 @@
 
 module API
   class GroupExport < ::API::Base
-    helpers Helpers::RateLimiter
-
     before do
       not_found! unless Feature.enabled?(:group_import_export, user_group, default_enabled: true)
 

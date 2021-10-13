@@ -6,7 +6,6 @@ module API
 
     helpers Helpers::ProjectsHelpers
     helpers Helpers::FileUploadHelpers
-    helpers Helpers::RateLimiter
 
     feature_category :importers
 

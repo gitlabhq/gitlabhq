@@ -124,6 +124,11 @@ module API
       handle_api_exception(exception)
     end
 
+    rescue_from RateLimitedService::RateLimitedError do |exception|
+      exception.log_request(context.request, context.current_user)
+      rack_response({ 'message' => { 'error' => exception.message } }.to_json, 429, exception.headers)
+    end
+
     format :json
     formatter :json, Gitlab::Json::GrapeFormatter
     content_type :json, 'application/json'
@@ -132,6 +137,7 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
     helpers ::API::Helpers::PerformanceBarHelpers
+    helpers ::API::Helpers::RateLimiter
 
     namespace do
       after do
