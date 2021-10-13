@@ -142,7 +142,7 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 ## Delete a wiki page
 
-You need at least the [Maintainer role](../../permissions.md) to delete a wiki page:
+You need at least the [Developer role](../../permissions.md) to delete a wiki page:
 
 1. Go to your project or group and select **Wiki**.
 1. Go to the page you want to delete.

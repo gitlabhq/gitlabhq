@@ -42,8 +42,8 @@ can be a great resource.
 ## Manage organizational transition
 
 An important part of transitioning from Jenkins to GitLab is the cultural and organizational
-changes that comes with the move, and successfully managing them. There are a few
-things we have found that helps this:
+changes that come with the move, and successfully managing them. There are a few
+things we have found that help this:
 
 - Setting and communicating a clear vision of what your migration goals are helps
   your users understand why the effort is worth it. The value is clear when

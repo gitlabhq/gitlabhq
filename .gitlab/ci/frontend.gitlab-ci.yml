@@ -71,6 +71,12 @@ compile-test-assets as-if-foss:
     - .frontend:rules:compile-test-assets-as-if-foss
     - .as-if-foss
 
+compile-test-assets as-if-jh:
+  extends:
+    - compile-test-assets
+    - .frontend:rules:compile-test-assets-as-if-jh
+  needs: ["add-jh-folder"]
+
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
@@ -112,7 +118,7 @@ update-storybook-yarn-cache:
     - .rails-cache
     - .use-pg12
   stage: fixtures
-  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets"]
+  needs: ["setup-test-env", "retrieve-tests-metadata"]
   variables:
     WEBPACK_VENDOR_DLL: "true"
   script:
@@ -128,19 +134,38 @@ update-storybook-yarn-cache:
       - tmp/tests/frontend/
       - knapsack/
 
-# In gitlab-foss, generates FOSS fixtures. In gitlab, generates FOSS & EE fixtures.
-# That way, we don't need to have two separate jobs.
+# Builds FOSS, and EE fixtures in the EE project.
+# Builds FOSS fixtures in the FOSS project.
 rspec-all frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs
+  needs:
+    - !reference [.frontend-fixtures-base, needs]
+    - "compile-test-assets"
   parallel: 5
 
-rspec frontend_fixture as-if-foss:
+# Builds FOSS fixtures in the EE project, with the `ee/` folder removed (due to `as-if-foss`).
+rspec-all frontend_fixture as-if-foss:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
+  needs:
+    - !reference [.frontend-fixtures-base, needs]
+    - "compile-test-assets as-if-foss"
+
+# Builds FOSS, EE, and JH fixtures in the EE project, with the `jh/` folder added (due to `as-if-jh`).
+rspec-all frontend_fixture as-if-jh:
+  extends:
+    - .frontend-fixtures-base
+    - .frontend:rules:default-frontend-jobs-as-if-jh
+  needs:
+    - !reference [.frontend-fixtures-base, needs]
+    - "compile-test-assets as-if-jh"
+    - "add-jh-folder"
+  script:
+    - echo "This job is currently doing nothing since there's no specific JH fixtures yet. To enable this job, remove this line."
 
 graphql-schema-dump:
   variables:
@@ -168,7 +193,9 @@ graphql-schema-dump:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    SETUP_DB: "false"
   before_script:
+    - !reference [.default-before_script, before_script]
     - *yarn-install
   stage: test
 
@@ -190,9 +217,7 @@ jest:
   extends:
     - .jest-base
     - .frontend:rules:jest
-  needs:
-    - job: "detect-tests"
-    - job: "rspec-all frontend_fixture"
+  needs: ["rspec-all frontend_fixture"]
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -209,6 +234,9 @@ jest minimal:
   extends:
     - jest
     - .frontend:rules:jest:minimal
+  needs:
+    - !reference [jest, needs]
+    - "detect-tests"
   script:
     - run_timed_command "yarn jest:ci:minimal"
 
@@ -227,8 +255,16 @@ jest-as-if-foss:
     - .jest-base
     - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
-  needs: ["rspec frontend_fixture as-if-foss"]
+  needs: ["rspec-all frontend_fixture as-if-foss"]
   parallel: 2
+
+jest-as-if-jh:
+  extends:
+    - .jest-base
+    - .frontend:rules:default-frontend-jobs-as-if-jh
+  needs: ["rspec-all frontend_fixture as-if-jh", "add-jh-folder"]
+  script:
+    - echo "This job is currently doing nothing since there's no specific JH Jest tests yet. To enable this job, remove this line."
 
 coverage-frontend:
   extends:
@@ -342,7 +378,7 @@ startup-css-check as-if-foss:
     - .frontend:rules:default-frontend-jobs-as-if-foss
   needs:
     - job: "compile-test-assets as-if-foss"
-    - job: "rspec frontend_fixture as-if-foss"
+    - job: "rspec-all frontend_fixture as-if-foss"
 
 .compile-storybook-base:
   extends:
@@ -351,14 +387,15 @@ startup-css-check as-if-foss:
   script:
     - *storybook-yarn-install
     - yarn run storybook:build
+  needs: ["graphql-schema-dump"]
 
 compile-storybook:
   extends:
     - .compile-storybook-base
     - .frontend:rules:default-frontend-jobs
   needs:
+    - !reference [.compile-storybook-base, needs]
     - job: "rspec-all frontend_fixture"
-    - job: "graphql-schema-dump"
   artifacts:
     name: storybook
     expire_in: 31d
@@ -372,5 +409,5 @@ compile-storybook as-if-foss:
     - .as-if-foss
     - .frontend:rules:default-frontend-jobs-as-if-foss
   needs:
-    - job: "graphql-schema-dump"
-    - job: "rspec frontend_fixture as-if-foss"
+    - !reference [.compile-storybook-base, needs]
+    - job: "rspec-all frontend_fixture as-if-foss"

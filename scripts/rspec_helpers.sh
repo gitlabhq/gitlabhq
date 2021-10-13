@@ -120,7 +120,7 @@ function rspec_paralellized_job() {
   fi
 
   if [[ "${test_tool}" =~ "-all" ]]; then
-    spec_folder_prefixes="['', 'ee/']"
+    spec_folder_prefixes="['', 'ee/', 'jh/']"
   fi
 
   export KNAPSACK_LOG_LEVEL="debug"

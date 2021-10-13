@@ -187,7 +187,7 @@ If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab
 NOTE:
 From GitLab 12.7, Rugged is not automatically enabled if Puma thread count is greater than `1`.
 
-If you want to use Rugged with Puma, [set Puma thread count to `1`](https://docs.gitlab.com/omnibus/settings/puma.html#puma-settings).
+If you want to use Rugged with Puma, [set Puma thread count to `1`](../install/requirements.md#puma-settings).
 
 If you want to use Rugged with Puma thread count more than `1`, Rugged can be enabled using the [feature flag](../development/gitaly.md#legacy-rugged-code).
 

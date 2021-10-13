@@ -40,6 +40,9 @@
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
+.if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
+
 .if-merge-request-labels-update-caches: &if-merge-request-labels-update-caches
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
@@ -491,8 +494,19 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-qa-patterns
+    - changes: *startup-css-patterns
+
+.frontend:rules:compile-test-assets-as-if-jh:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-as-if-jh
+    - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-qa-patterns
+    - changes: *startup-css-patterns
 
 .frontend:rules:default-frontend-jobs:
   rules:
@@ -506,6 +520,19 @@
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-as-if-foss
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *startup-css-patterns
+    - <<: *if-merge-request
+      changes: *ci-patterns
+
+.frontend:rules:default-frontend-jobs-as-if-jh:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *startup-css-patterns
@@ -552,6 +579,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    # We already have `static-analysis as-if-foss` which already runs `lint:eslint:all` if the `pipeline:run-as-if-foss` label is set.
     - <<: *if-merge-request-labels-as-if-foss
       when: never
     - <<: *if-merge-request
@@ -1564,6 +1592,15 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
       when: on_success
+
+.setup:rules:add-jh-folder:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-as-if-jh
+    - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-qa-patterns
+    - changes: *startup-css-patterns
 
 #######################
 # Test metadata rules #

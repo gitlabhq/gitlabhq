@@ -47,7 +47,7 @@ contains some settings that are common for all providers.
 | [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
 | [Salesforce](salesforce.md)                                         | `salesforce`               |
 | [SAML](saml.md)                                                     | `saml`                     |
-| [Shibboleth](shibboleth.md)                                         | `shibboleth`               |
+| [Shibboleth](saml.md)                                         | `shibboleth`               |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Initial OmniAuth Configuration

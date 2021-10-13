@@ -26,6 +26,18 @@ export default class Emoji extends Node {
             moji: el.textContent,
           }),
         },
+        {
+          tag: 'img.emoji',
+          getAttrs: (el) => {
+            const name = el.getAttribute('title').replace(/^:|:$/g, '');
+
+            return {
+              name,
+              title: name,
+              moji: name,
+            };
+          },
+        },
       ],
       toDOM: (node) => [
         'gl-emoji',

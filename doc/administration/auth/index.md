@@ -31,7 +31,7 @@ providers:
 - [Salesforce](../../integration/salesforce.md)
 - [SAML](../../integration/saml.md)
 - [SAML for GitLab.com groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
-- [Shibboleth](../../integration/shibboleth.md)
+- [Shibboleth](../../integration/saml.md)
 - [Smartcard](smartcard.md) **(PREMIUM SELF)**
 - [Twitter](../../integration/twitter.md)
 

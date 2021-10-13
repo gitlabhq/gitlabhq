@@ -30,7 +30,7 @@ To enable the dependency proxy feature:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
-1. Enable the [Puma web server](https://docs.gitlab.com/omnibus/settings/puma.html).
+1. Enable the [Puma web server](../operations/puma.md).
 
 **Helm chart installations**
 

@@ -101,3 +101,19 @@ detect-tests as-if-foss:
     MATCHED_TESTS_FILE: tmp/matching_foss_tests.txt
   before_script:
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
+
+add-jh-folder:
+  extends: .setup:rules:add-jh-folder
+  image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+  stage: prepare
+  before_script:
+    - apk add --no-cache --update curl bash
+  script:
+    - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/main-jh/gitlab-main-jh.tar.gz?path=jh"
+    - tar -xf "jh-folder.tar.gz"
+    - mv gitlab-main-jh-jh/jh/ ./
+    - ls -l jh/
+  artifacts:
+    expire_in: 2d
+    paths:
+      - jh/
