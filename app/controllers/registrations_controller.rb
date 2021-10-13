@@ -5,6 +5,7 @@ class RegistrationsController < Devise::RegistrationsController
   include AcceptsPendingInvitations
   include RecaptchaHelper
   include InvisibleCaptchaOnSignup
+  include OneTrustCSP
 
   layout 'devise'
 

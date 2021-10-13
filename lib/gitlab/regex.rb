@@ -409,7 +409,7 @@ module Gitlab
     end
 
     def merge_request_draft
-      /\A(?i)(\[draft\]|\(draft\)|draft:|draft\s\-\s|draft\z)/
+      /\A(?i)(\[draft\]|\(draft\)|draft:)/
     end
 
     def issue

@@ -815,3 +815,55 @@ This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, 
 ### Semgrep slowness, unexpected results, or other errors
 
 If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/gitlab-sast/).
+
+### SAST job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
+
+Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
+
+- Disabled by default in GitLab 13.0 and later.
+- Unsupported from GitLab 13.4 and later.
+
+Several workarounds are available. From GitLab version 13.0 and later, you must not use
+Docker-in-Docker.
+
+#### Workaround 1: Pin analyzer versions (GitLab 12.1 and earlier)
+
+Set the following variables for the SAST job. This pins the analyzer versions to the last known
+working version, allowing SAST with Docker-in-Docker to complete as it did previously:
+
+```yaml
+sast:
+  variables:
+    SAST_DEFAULT_ANALYZERS: ""
+    SAST_ANALYZER_IMAGES: "registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2.9.6, registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2.10.0, registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2.11.1, registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2.14.0, registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2.9.1, registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2.9.0, registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3.12.0, registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2.13.0, registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2.8.0, registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2.13.6, registry.gitlab.com/gitlab-org/security-products/analyzers/tslint:2.4.0"
+```
+
+Remove any analyzers you don't need from the `SAST_ANALYZER_IMAGES` list. Keep
+`SAST_DEFAULT_ANALYZERS` set to an empty string `""`.
+
+#### Workaround 2: Disable Docker-in-Docker for SAST and Dependency Scanning (GitLab 12.3 and later)
+
+Disable Docker-in-Docker for SAST. Individual `<analyzer-name>-sast` jobs are created for each
+analyzer that runs in your CI/CD pipeline.
+
+```yaml
+include:
+  - template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
+```
+
+#### Workaround 3: Upgrade to GitLab 13.x and use the defaults
+
+From GitLab 13.0, SAST defaults to not using Docker-in-Docker. In GitLab 13.4 and later, SAST using
+Docker-in-Docker is [no longer supported](https://gitlab.com/gitlab-org/gitlab/-/issues/220540).
+If you have this problem on GitLab 13.x and later, you have customized your SAST job to
+use Docker-in-Docker. To resolve this, comment out any customizations you've made to
+your SAST CI job definition and [follow the documentation](index.md#configuration)
+to reconfigure, using the new and improved job definition default values.
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+```

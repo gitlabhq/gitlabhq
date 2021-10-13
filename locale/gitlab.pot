@@ -9272,9 +9272,6 @@ msgstr ""
 msgid "Copy %{protocol} clone URL"
 msgstr ""
 
-msgid "Copy %{proxy_url}"
-msgstr ""
-
 msgid "Copy %{type}"
 msgstr ""
 
@@ -9570,9 +9567,6 @@ msgid "Create a GitLab account first, and then connect it to your %{label} accou
 msgstr ""
 
 msgid "Create a Mattermost team for this group"
-msgstr ""
-
-msgid "Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies."
 msgstr ""
 
 msgid "Create a merge request"
@@ -11204,16 +11198,16 @@ msgstr ""
 msgid "Dependency Proxy"
 msgstr ""
 
+msgid "Dependency Proxy disabled. To enable it, contact the group owner."
+msgstr ""
+
+msgid "Dependency Proxy feature is limited to public groups for now."
+msgstr ""
+
+msgid "Dependency Proxy image prefix"
+msgstr ""
+
 msgid "Dependency Scanning"
-msgstr ""
-
-msgid "Dependency proxy"
-msgstr ""
-
-msgid "Dependency proxy feature is limited to public groups for now."
-msgstr ""
-
-msgid "Dependency proxy image prefix"
 msgstr ""
 
 msgid "DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."

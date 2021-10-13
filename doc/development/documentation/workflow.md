@@ -132,7 +132,7 @@ and link to it from the merged merge request that introduced the documentation c
 
 Circumstances, where a regular pre-merge Technical Writer review might be skipped, include:
 
-- There is a short amount of time left before the milestone release. If less than three 
+- There is a short amount of time left before the milestone release. If less than three
  days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
   completed as soon as possible.
 - The size of the change is small and you have a high degree of confidence

@@ -1295,6 +1295,9 @@ production: &base
     ## Google tag manager
     # google_tag_manager_id: '_your_tracking_id'
 
+    ## OneTrust
+    # one_trust_id: '_your_one_trust_id'
+
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'
     # matomo_site_id: '_your_matomo_site_id'

@@ -83,7 +83,7 @@ Kubernetes version to any supported version at any time:
 
 [Adding support to other versions of Kubernetes is managed under this epic](https://gitlab.com/groups/gitlab-org/-/epics/4827).
 
-Some GitLab features may support versions outside the range provided here. 
+Some GitLab features may support versions outside the range provided here.
 
 ## Cluster levels
 

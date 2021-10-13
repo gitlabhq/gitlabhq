@@ -927,3 +927,22 @@ gemnasium-maven-dependency_scanning:
     - for i in `ls cert*`; do keytool -v -importcert -alias "custom-cert-$i" -file $i -trustcacerts -noprompt -storepass changeit -keystore /opt/asdf/installs/java/adoptopenjdk-11.0.7+10.1/lib/security/cacerts 1>/dev/null 2>&1 || true; done # import each certificate using keytool (note the keystore location is related to the Java version being used and should be changed accordingly for other versions)
     - unset ADDITIONAL_CA_CERT_BUNDLE # unset the variable so that the analyzer doesn't duplicate the import
 ```
+
+### Dependency Scanning job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
+
+Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
+
+- Disabled by default in GitLab 13.0 and later.
+- Unsupported from GitLab 13.4 and later.
+
+To fix this error, disable Docker-in-Docker for dependency scanning. Individual
+`<analyzer-name>-dependency_scanning` jobs are created for each analyzer that runs in your CI/CD
+pipeline.
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+variables:
+  DS_DISABLE_DIND: "true"
+```

@@ -316,6 +316,26 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
         expect(bridge.reload).to be_pending
       end
     end
+
+    context 'when there are skipped jobs in later stages' do
+      before do
+        create_build('build 1', :success, 0)
+        create_build('test 2', :failed, 1)
+        create_build('report 3', :skipped, 2)
+        create_bridge('deploy 4', :skipped, 2)
+      end
+
+      it 'retries failed jobs and processes skipped jobs' do
+        service.execute(pipeline)
+
+        expect(build('build 1')).to be_success
+        expect(build('test 2')).to be_pending
+        expect(build('report 3')).to be_created
+        expect(build('deploy 4')).to be_created
+
+        expect(pipeline.reload).to be_running
+      end
+    end
   end
 
   context 'when user is not allowed to retry pipeline' do
@@ -390,16 +410,25 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
     pipeline.reload.statuses
   end
 
+  # The method name can be confusing because this can actually return both Ci::Build and Ci::Bridge
   def build(name)
     statuses.latest.find_by(name: name)
   end
 
   def create_build(name, status, stage_num, **opts)
-    create(:ci_build, name: name,
-                      status: status,
-                      stage: "stage_#{stage_num}",
-                      stage_idx: stage_num,
-                      pipeline: pipeline, **opts) do |build|
+    create_processable(:ci_build, name, status, stage_num, **opts)
+  end
+
+  def create_bridge(name, status, stage_num, **opts)
+    create_processable(:ci_bridge, name, status, stage_num, **opts)
+  end
+
+  def create_processable(type, name, status, stage_num, **opts)
+    create(type, name: name,
+                 status: status,
+                 stage: "stage_#{stage_num}",
+                 stage_idx: stage_num,
+                 pipeline: pipeline, **opts) do |_job|
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end
   end

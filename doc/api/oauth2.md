@@ -415,7 +415,7 @@ Don't rely on these fields as they are slated for removal in a later release.
 ## Revoke a token
 
 To revoke a token, use the `revoke` endpoint. The API returns a 200 response code and an empty
-JSON hash to indicate success. 
+JSON hash to indicate success.
 
 ```ruby
 parameters = 'client_id=APP_ID&client_secret=APP_SECRET&token=TOKEN'

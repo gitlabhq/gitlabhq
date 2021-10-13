@@ -171,6 +171,18 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe 'with OneTrust authentication' do
+    before do
+      stub_config(extra: { one_trust_id: SecureRandom.uuid })
+    end
+
+    it 'has proper Content-Security-Policy headers' do
+      visit root_path
+
+      expect(response_headers['Content-Security-Policy']).to include('https://cdn.cookielaw.org https://*.onetrust.com')
+    end
+  end
+
   describe 'with two-factor authentication', :js do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code

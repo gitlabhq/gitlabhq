@@ -1,16 +1,21 @@
 export const proxyData = () => ({
-  name: 'Gitlab Org',
   dependencyProxyBlobCount: 2,
   dependencyProxyTotalSize: '1024 Bytes',
-  dependencyProxyImagePrefix: 'gdk.test:3000/groups/gitlab-org/dependency_proxy/containers',
-  dependencyProxyManifests: { nodes: [], __typename: 'DependencyProxyManifestConnection' },
-  dependencyProxyBlobs: { nodes: [], __typename: 'DependencyProxyBlobConnection' },
+  dependencyProxyImagePrefix: 'gdk.test:3000/private-group/dependency_proxy/containers',
+  dependencyProxySetting: { enabled: true, __typename: 'DependencyProxySetting' },
 });
-export const proxyDetailsQuery = () => ({
+
+export const proxySettings = (extend = {}) => ({ enabled: true, ...extend });
+
+export const proxyDetailsQuery = ({ extendSettings = {} } = {}) => ({
   data: {
     group: {
       ...proxyData(),
       __typename: 'Group',
+      dependencyProxySetting: {
+        ...proxySettings(extendSettings),
+        __typename: 'DependencyProxySetting',
+      },
     },
   },
 });

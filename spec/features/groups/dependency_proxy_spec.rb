@@ -23,7 +23,7 @@ RSpec.describe 'Group Dependency Proxy' do
 
         visit path
 
-        expect(page).not_to have_css('.js-dependency-proxy-url')
+        expect(page).not_to have_css('[data-testid="proxy-url"]')
       end
     end
 
@@ -43,13 +43,13 @@ RSpec.describe 'Group Dependency Proxy' do
         it 'toggles defaults to enabled' do
           visit path
 
-          expect(page).to have_css('.js-dependency-proxy-url')
+          expect(page).to have_css('[data-testid="proxy-url"]')
         end
 
         it 'shows the proxy URL' do
           visit path
 
-          expect(find('.js-dependency-proxy-url').value).to have_content('/dependency_proxy/containers')
+          expect(find('input[data-testid="proxy-url"]').value).to have_content('/dependency_proxy/containers')
         end
 
         it 'hides the proxy URL when feature is disabled' do
@@ -62,7 +62,7 @@ RSpec.describe 'Group Dependency Proxy' do
 
           visit path
 
-          expect(page).not_to have_css('.js-dependency-proxy-url')
+          expect(page).not_to have_css('input[data-testid="proxy-url"]')
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe 'Group Dependency Proxy' do
         end
 
         it 'does not show the feature toggle but shows the proxy URL' do
-          expect(find('.js-dependency-proxy-url').value).to have_content('/dependency_proxy/containers')
+          expect(find('input[data-testid="proxy-url"]').value).to have_content('/dependency_proxy/containers')
         end
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe 'Group Dependency Proxy' do
         sign_in(owner)
       end
 
-      context 'feature flag is disabled' do
+      context 'feature flag is disabled', :js do
         before do
           stub_feature_flags(dependency_proxy_for_private_groups: false)
         end
@@ -94,7 +94,7 @@ RSpec.describe 'Group Dependency Proxy' do
           it 'informs user that feature is only available for public groups' do
             visit path
 
-            expect(page).to have_content('Dependency proxy feature is limited to public groups for now.')
+            expect(page).to have_content('Dependency Proxy feature is limited to public groups for now.')
           end
         end
       end

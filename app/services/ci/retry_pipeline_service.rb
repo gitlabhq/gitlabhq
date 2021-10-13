@@ -17,7 +17,7 @@ module Ci
         Ci::RetryBuildService.new(project, current_user).clone!(build)
       end
 
-      pipeline.builds.latest.skipped.find_each do |skipped|
+      pipeline.processables.latest.skipped.find_each do |skipped|
         retry_optimistic_lock(skipped, name: 'ci_retry_pipeline') { |build| build.process(current_user) }
       end
 

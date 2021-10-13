@@ -159,7 +159,7 @@ Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more 
 
 ## As-if-FOSS jobs
 
-The `* as-if-foss` jobs run the GitLab test suite "as-if-FOSS", meaning as if the jobs would run in the context
+The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context
 of the `gitlab-org/gitlab-foss` project. These jobs are only created in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
@@ -167,10 +167,25 @@ of the `gitlab-org/gitlab-foss` project. These jobs are only created in the foll
 - when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
 The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
-set and get their EE-specific folders removed before the tests start running.
+set and get the `ee/` folder removed before the tests start running.
 
 The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
 the `gitlab-org/gitlab-foss` project.
+
+## As-if-JH jobs
+
+The `* as-if-jh` jobs run the GitLab test suite "as if JiHu", meaning as if the jobs would run in the context
+of [the `gitlab-jh/gitlab` project](jh_features_review.md). These jobs are only created in the following cases:
+
+- when the `pipeline:run-as-if-jh` label is set on the merge request
+- when the `pipeline:run-all-rspec` label is set on the merge request
+- when any code or backstage file is changed
+- when any startup CSS file is changed
+
+The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `jh/` folder is added before the tests start running.
+
+The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
+the `gitlab-jh/gitlab` project.
 
 ## PostgreSQL versions testing
 

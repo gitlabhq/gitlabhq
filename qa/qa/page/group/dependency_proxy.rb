@@ -4,7 +4,7 @@ module QA
   module Page
     module Group
       class DependencyProxy < QA::Page::Base
-        view 'app/views/groups/dependency_proxies/_url.html.haml' do
+        view 'app/assets/javascripts/packages_and_registries/dependency_proxy/app.vue' do
           element :dependency_proxy_count
         end
 

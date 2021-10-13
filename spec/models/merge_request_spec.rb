@@ -1348,7 +1348,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     [
       'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
-      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
     ].each do |wip_prefix|
       it "detects the '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
@@ -1359,7 +1359,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     [
       "WIP ", "(WIP)",
-      "draft", "Draft"
+      "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
     ].each do |draft_prefix|
       it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
         subject.title = "#{draft_prefix}#{subject.title}"
@@ -1374,10 +1374,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(subject.work_in_progress?).to eq true
     end
 
-    it "detects merge request title just saying 'draft'" do
+    it "does not detect merge request title just saying 'draft'" do
       subject.title = "draft"
 
-      expect(subject.work_in_progress?).to eq true
+      expect(subject.work_in_progress?).to eq false
     end
 
     it 'does not detect WIP in the middle of the title' do
@@ -1439,7 +1439,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     [
       'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP: [WIP] WIP:',
-      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
     ].each do |wip_prefix|
       it "removes the '#{wip_prefix}' prefix" do
         wipless_title = subject.title

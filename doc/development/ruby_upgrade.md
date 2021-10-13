@@ -50,7 +50,7 @@ To help you estimate the scope of future upgrades, see the efforts required for 
 Before any upgrade, consider all audiences and targets, ordered by how immediately they are affected by Ruby upgrades:
 
 1. **Developers.** We have many contributors to GitLab and related projects both inside and outside the company. Changing files such as `.ruby-version` affects everyone using tooling that interprets these files.
-The developers are affected as soon as they pull from the repository containing the merged changes. 
+The developers are affected as soon as they pull from the repository containing the merged changes.
 1. **GitLab CI/CD.** We heavily lean on CI/CD for code integration and testing. CI/CD jobs do not interpret files such as `.ruby-version`.
 Instead, they use the Ruby installed in the Docker container they execute in, which is defined in `.gitlab-ci.yml`.
 The container images used in these jobs are maintained in the [`gitlab-build-images`](https://gitlab.com/gitlab-org/gitlab-build-images) repository.
@@ -58,8 +58,8 @@ When we merge an update to an image, CI/CD jobs are affected as soon as the [ima
 1. **GitLab SaaS**. GitLab.com is deployed from customized Helm charts that use Docker images from [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG).
 Just like CI/CD, `.ruby-version` is meaningless in this environment. Instead, those Docker images must be patched to upgrade Ruby.
 GitLab SaaS is affected with the next deployment.
-1. **Self-managed GitLab.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above. 
-Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus. 
+1. **Self-managed GitLab.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
+Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
 Self-managed customers are affected as soon as they upgrade to the release containing this change.
 
 ## Ruby upgrade approach
@@ -115,7 +115,7 @@ All projects building against the same minor release automatically download the 
    - For [major and minor updates](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/320), create a new set of Docker images that can be used side-by-side with existing images during the upgrade process. **Important:** Make sure to copy over all Ruby patch files
 in the `/patches` directory to a new folder matching the Ruby version you upgrade to, or they aren't applied.
 1. **[GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).**
-Update GDK to add the new Ruby as an additional option for 
+Update GDK to add the new Ruby as an additional option for
 developers to choose from. This typically only requires it to be appended to `.tool-versions` so `asdf`
 users will benefit from this. Other users will have to install it manually
 ([example](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2136).)
@@ -166,7 +166,7 @@ we are certain that the main application test suite would catch regressions unde
 NOTE:
 Consult with the respective code owners whether it is acceptable to merge these changes ahead
 of updating the GitLab application. It might be best to get the necessary approvals
-but wait to merge the change until everything is ready. 
+but wait to merge the change until everything is ready.
 
 ### Prepare the GitLab application MR
 
@@ -227,7 +227,7 @@ in the rollout plan.
 
 ### Create patch releases and backports for security patches
 
-If the upgrade was a patch release and contains important security fixes, it should be released as a 
+If the upgrade was a patch release and contains important security fixes, it should be released as a
 GitLab patch release to self-managed customers. Consult our [release managers](https://about.gitlab.com/community/release-managers/)
 for how to proceed.
 
@@ -252,7 +252,7 @@ We also log Ruby and Rails deprecation warnings to a dedicated log file, `log/de
 (see [GitLab Developers Guide to Logging](logging.md) for where to find GitLab log files),
 which can provide clues when there is code that is not adequately covered by tests and hence would slip past `DeprecationToolkitEnv`.
 
-For GitLab SaaS, GitLab team members can inspect these log events in Kibana 
+For GitLab SaaS, GitLab team members can inspect these log events in Kibana
 (`https://log.gprd.gitlab.net/goto/f7cebf1ff05038d901ba2c45925c7e01`).
 
 ## Recommendations

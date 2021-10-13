@@ -33,6 +33,14 @@ The following images and packages are supported.
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
+## Enable or disable the Dependency Proxy for a group
+
+To enable or disable the Dependency Proxy for a group:
+
+1. Go to your group's **Settings > Packages & Registries**.
+1. Expand the **Dependency Proxy** section.
+1. To enable the proxy, turn on **Enable Proxy**. To disable it, turn the toggle off.
+
 ## View the Dependency Proxy
 
 To view the Dependency Proxy:

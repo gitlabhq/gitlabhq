@@ -23,7 +23,7 @@ Tracking implementations must have an `action` and a `category`. You can provide
 ### Usage recommendations
 
 - Use [data attributes](#implement-data-attribute-tracking) on HTML elements that emit `click`, `show.bs.dropdown`, or `hide.bs.dropdown` events.
-- Use the [Vue mixin](#implement-vue-component-tracking) for tracking custom events, or if the supported events for data attributes are not propagating. 
+- Use the [Vue mixin](#implement-vue-component-tracking) for tracking custom events, or if the supported events for data attributes are not propagating.
 - Use the [tracking class](#implement-raw-javascript-tracking) when tracking raw JavaScript files.
 
 ### Implement data attribute tracking
@@ -86,13 +86,13 @@ Be careful, as this behavior can be confused with the `ActionView` helper method
 
 ### Implement Vue component tracking
 
-For custom event tracking, use a Vue `mixin` in components. Vue `mixin` exposes the `Tracking.event` static method and the `track` method called from components or templates. You can specify tracking options in `data` or `computed`. These options override any defaults and allow the values to be dynamic from props or based on state. 
+For custom event tracking, use a Vue `mixin` in components. Vue `mixin` exposes the `Tracking.event` static method and the `track` method called from components or templates. You can specify tracking options in `data` or `computed`. These options override any defaults and allow the values to be dynamic from props or based on state.
 
-Default options are passed when an event is tracked from the component. If you don't specify an option, the default `document.body.dataset.page` is used. The default options are: 
+Default options are passed when an event is tracked from the component. If you don't specify an option, the default `document.body.dataset.page` is used. The default options are:
 
 - `category`
 - `label`
-- `property` 
+- `property`
 - `value`
 
 To implement Vue component tracking:
@@ -128,7 +128,7 @@ To implement Vue component tracking:
     };
     ```
 
-1. To receive event data as a tracking object or computed property: 
+1. To receive event data as a tracking object or computed property:
    - Declare it in the `data` function. Use a `tracking` object when default event properties are dynamic or provided at runtime:
 
       ```javascript
@@ -223,7 +223,7 @@ describe('RightSidebar.vue', () => {
 
 ### Implement raw JavaScript tracking
 
-To call custom event tracking and instrumentation directly from the JavaScript file, call the `Tracking.event` static function. 
+To call custom event tracking and instrumentation directly from the JavaScript file, call the `Tracking.event` static function.
 
 The following example demonstrates tracking a click on a button by manually calling `Tracking.event`.
 

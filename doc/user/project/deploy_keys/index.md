@@ -192,6 +192,6 @@ branch](../protected_branches.md).
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
 - **No one** is selected in [the "Allowed to push" section](../protected_branches.md#configure-a-protected-branch) of the protected branch.
 
-All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch. 
+All deploy keys are associated to an account. Since the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 
 We recommend you create a service account, and associate a deploy key to the service account, for projects using deploy keys.

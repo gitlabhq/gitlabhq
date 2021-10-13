@@ -65,7 +65,7 @@ From left to right, the performance bar displays:
   can be added by its full URL (authenticated as the current user), or by the value of
   its `X-Request-Id` header.
 - **Download**: a link to download the raw JSON used to generate the Performance Bar reports.
-- **Flamegraph** with mode: a link to generate a [flamegraph](../../../development/profiling.md#speedscope-flamegraphs) 
+- **Flamegraph** with mode: a link to generate a [flamegraph](../../../development/profiling.md#speedscope-flamegraphs)
   of the current URL with the selected [Stackprof mode](https://github.com/tmm1/stackprof#sampling):
   - The **Wall** mode samples every *interval* of the time on a clock on a wall. The interval is set to `10100` microseconds.
   - The **CPU** mode samples every *interval* of CPU activity. The interval is set to `10100` microseconds.

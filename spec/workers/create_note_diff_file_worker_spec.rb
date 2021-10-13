@@ -23,5 +23,14 @@ RSpec.describe CreateNoteDiffFileWorker do
         described_class.new.perform(non_existing_record_id)
       end
     end
+
+    context "when called with a missing diff_note id" do
+      it "returns nil without creating diff file" do
+        expect_any_instance_of(DiffNote).not_to receive(:create_diff_file)
+        .and_call_original
+
+        described_class.new.perform(nil)
+      end
+    end
   end
 end

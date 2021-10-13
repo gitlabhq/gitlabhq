@@ -20,7 +20,7 @@ file system performance, see
 
 ## Gitaly and NFS deprecation
 
-Starting with GitLab version 14.0, support for NFS to store Git repository data will be deprecated. Technical customer support and engineering support will be available for the 14.x releases. Engineering will fix bugs and security vulnerabilities consistent with our [release and maintenance policy](../policy/maintenance.md#security-releases). 
+Starting with GitLab version 14.0, support for NFS to store Git repository data will be deprecated. Technical customer support and engineering support will be available for the 14.x releases. Engineering will fix bugs and security vulnerabilities consistent with our [release and maintenance policy](../policy/maintenance.md#security-releases).
 
 At the end of the 14.12 milestone (tenatively June 22nd, 2022) technical and engineering support for using NFS to store Git repository data will be officially at end-of-life. There will be no product changes or troubleshooting provided via Engineering, Security or Paid Support channels.
 

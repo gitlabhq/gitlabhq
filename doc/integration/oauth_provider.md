@@ -102,7 +102,7 @@ When creating new applications, you can opt-out of expiry for backward compatibi
 Existing:
 
 - Applications can have expiring access tokens. Edit the application and select
-  **Expire access tokens** to enable them. 
+  **Expire access tokens** to enable them.
 - Tokens must be [revoked](../api/oauth2.md#revoke-a-token) or they don't expire.
 
 ## Authorized applications

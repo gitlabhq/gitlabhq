@@ -144,7 +144,7 @@ module BulkInsertSafe
         when nil
           false
         else
-          raise ArgumentError, "returns needs to be :ids or nil"
+          returns
         end
 
       # Handle insertions for tables with a composite primary key
@@ -161,7 +161,7 @@ module BulkInsertSafe
           ActiveRecord::InsertAll
               .new(insert_all_proxy_class, attributes, on_duplicate: on_duplicate, returning: returning, unique_by: unique_by)
               .execute
-              .pluck(primary_key)
+              .cast_values(insert_all_proxy_class.attribute_types).to_a
         end
       end
     end

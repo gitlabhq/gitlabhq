@@ -14,8 +14,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 The Go package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/3043) details the remaining 
-work and timelines to make it production ready. 
+limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/3043) details the remaining
+work and timelines to make it production ready.
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).

@@ -52,7 +52,7 @@ in your SAML IdP:
 
    sudo -u git -H editor config/gitlab.yml
    ```
-   
+
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 1. To allow your users to use SAML to sign up without having to manually create
    an account first, add the following values to your configuration:

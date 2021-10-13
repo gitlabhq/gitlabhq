@@ -180,29 +180,26 @@ RSpec.describe BulkInsertSafe do
       end
 
       context 'with returns option set' do
-        context 'when is set to :ids' do
-          it 'return an array with the primary key values for all inserted records' do
-            items = bulk_insert_item_class.valid_list(1)
+        let(:items) { bulk_insert_item_class.valid_list(1) }
 
-            expect(bulk_insert_item_class.bulk_insert!(items, returns: :ids)).to contain_exactly(a_kind_of(Integer))
-          end
+        subject(:bulk_insert) { bulk_insert_item_class.bulk_insert!(items, returns: returns) }
+
+        context 'when is set to :ids' do
+          let(:returns) { :ids }
+
+          it { is_expected.to contain_exactly(a_kind_of(Integer)) }
         end
 
         context 'when is set to nil' do
-          it 'returns an empty array' do
-            items = bulk_insert_item_class.valid_list(1)
+          let(:returns) { nil }
 
-            expect(bulk_insert_item_class.bulk_insert!(items, returns: nil)).to eq([])
-          end
+          it { is_expected.to eq([]) }
         end
 
-        context 'when is set to anything else' do
-          it 'raises an error' do
-            items = bulk_insert_item_class.valid_list(1)
+        context 'when is set to a list of attributes' do
+          let(:returns) { [:id, :sha_value] }
 
-            expect { bulk_insert_item_class.bulk_insert!([items], returns: [:id, :name]) }
-              .to raise_error(ArgumentError, "returns needs to be :ids or nil")
-          end
+          it { is_expected.to contain_exactly([a_kind_of(Integer), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12']) }
         end
       end
     end

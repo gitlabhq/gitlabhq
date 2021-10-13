@@ -72,7 +72,7 @@ during the time period (including projects in any subgroups of the given group).
 
 ## Adoption over time
 
-The **Adoption over time** chart in the **Overview** tab displays DevOps Adoption over time. The chart displays the total number of adopted features from the previous twelve months, 
+The **Adoption over time** chart in the **Overview** tab displays DevOps Adoption over time. The chart displays the total number of adopted features from the previous twelve months,
 from when you enabled DevOps Adoption for the group.
 
 The tooltip displays information about the features tracked for individual months.

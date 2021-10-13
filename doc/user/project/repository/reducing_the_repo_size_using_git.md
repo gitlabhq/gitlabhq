@@ -18,7 +18,7 @@ Such problems can be detected with [git-sizer](https://github.com/github/git-siz
 Rewriting a repository can remove unwanted history to make the repository smaller.
 We **recommend [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/README.md)**
 over [`git filter-branch`](https://git-scm.com/docs/git-filter-branch) and
-[BFG](https://rtyley.github.io/bfg-repo-cleaner/). 
+[BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 WARNING:
 Rewriting repository history is a destructive operation. Make sure to back up your repository before

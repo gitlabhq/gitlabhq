@@ -184,7 +184,7 @@ in the pipeline:
 - Fetches these source files from all test jobs.
 - Generates and uploads the report to the `GCS` bucket `gitlab-qa-allure-report` under the project `gitlab-qa-resources`.
 
-A common CI template for report uploading is stored in 
+A common CI template for report uploading is stored in
 [`allure-report.yml`](https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/master/ci/allure-report.yml).
 
 #### Merge requests

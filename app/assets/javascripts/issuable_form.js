@@ -50,20 +50,16 @@ export default class IssuableForm {
     this.renderWipExplanation = this.renderWipExplanation.bind(this);
     this.resetAutosave = this.resetAutosave.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    /* eslint-disable @gitlab/require-i18n-strings */
     // prettier-ignore
     this.draftRegex = new RegExp(
       '^\\s*(' + // Line start, then any amount of leading whitespace
-        'draft\\s-\\s' + // Draft_-_ where "_" are *exactly* one whitespace
         '|\\[draft\\]\\s*' + // [Draft] and any following whitespace
         '|draft:\\s*' + // Draft: and any following whitespace
-        '|draft\\s+' + // Draft_ where "_" is at least one whitespace
         '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
       ')+' + // At least one repeated match of the preceding parenthetical
       '\\s*', // Any amount of trailing whitespace
       'i', // Match any case(s)
     );
-    /* eslint-enable @gitlab/require-i18n-strings */
 
     this.gfmAutoComplete = new GfmAutoComplete(
       gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,

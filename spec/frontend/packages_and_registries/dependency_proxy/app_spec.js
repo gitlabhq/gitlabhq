@@ -1,4 +1,4 @@
-import { GlAlert, GlFormInputGroup, GlFormGroup, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormGroup, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -45,7 +45,8 @@ describe('DependencyProxyApp', () => {
     });
   }
 
-  const findProxyNotAvailableAlert = () => wrapper.findComponent(GlAlert);
+  const findProxyNotAvailableAlert = () => wrapper.findByTestId('proxy-not-available');
+  const findProxyDisabledAlert = () => wrapper.findByTestId('proxy-disabled');
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
@@ -108,38 +109,64 @@ describe('DependencyProxyApp', () => {
     });
 
     describe('when the app is loaded', () => {
-      beforeEach(() => {
-        createComponent();
-        return waitForPromises();
-      });
+      describe('when the dependency proxy is enabled', () => {
+        beforeEach(() => {
+          createComponent();
+          return waitForPromises();
+        });
 
-      it('does not render the info alert', () => {
-        expect(findProxyNotAvailableAlert().exists()).toBe(false);
-      });
+        it('does not render the info alert', () => {
+          expect(findProxyNotAvailableAlert().exists()).toBe(false);
+        });
 
-      it('renders the main area', () => {
-        expect(findMainArea().exists()).toBe(true);
-      });
+        it('renders the main area', () => {
+          expect(findMainArea().exists()).toBe(true);
+        });
 
-      it('renders a form group with a label', () => {
-        expect(findFormGroup().attributes('label')).toBe(DependencyProxyApp.i18n.proxyImagePrefix);
-      });
+        it('renders a form group with a label', () => {
+          expect(findFormGroup().attributes('label')).toBe(
+            DependencyProxyApp.i18n.proxyImagePrefix,
+          );
+        });
 
-      it('renders a form input group', () => {
-        expect(findFormInputGroup().exists()).toBe(true);
-        expect(findFormInputGroup().props('value')).toBe(proxyData().dependencyProxyImagePrefix);
-      });
+        it('renders a form input group', () => {
+          expect(findFormInputGroup().exists()).toBe(true);
+          expect(findFormInputGroup().props('value')).toBe(proxyData().dependencyProxyImagePrefix);
+        });
 
-      it('form input group has a clipboard button', () => {
-        expect(findClipBoardButton().exists()).toBe(true);
-        expect(findClipBoardButton().props()).toMatchObject({
-          text: proxyData().dependencyProxyImagePrefix,
-          title: DependencyProxyApp.i18n.copyImagePrefixText,
+        it('form input group has a clipboard button', () => {
+          expect(findClipBoardButton().exists()).toBe(true);
+          expect(findClipBoardButton().props()).toMatchObject({
+            text: proxyData().dependencyProxyImagePrefix,
+            title: DependencyProxyApp.i18n.copyImagePrefixText,
+          });
+        });
+
+        it('from group has a description with proxy count', () => {
+          expect(findProxyCountText().text()).toBe('Contains 2 blobs of images (1024 Bytes)');
         });
       });
+      describe('when the dependency proxy is disabled', () => {
+        beforeEach(() => {
+          createComponent({
+            resolver: jest
+              .fn()
+              .mockResolvedValue(proxyDetailsQuery({ extendSettings: { enabled: false } })),
+          });
+          return waitForPromises();
+        });
 
-      it('from group has a description with proxy count', () => {
-        expect(findProxyCountText().text()).toBe('Contains 2 blobs of images (1024 Bytes)');
+        it('does not show the main area', () => {
+          expect(findMainArea().exists()).toBe(false);
+        });
+
+        it('does not show the loader', () => {
+          expect(findSkeletonLoader().exists()).toBe(false);
+        });
+
+        it('shows a proxy disabled alert', () => {
+          expect(findProxyDisabledAlert().text()).toBe(DependencyProxyApp.i18n.proxyDisabledText);
+        });
       });
     });
   });

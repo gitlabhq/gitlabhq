@@ -25,7 +25,7 @@ Amazon provides a managed Kubernetes service offering known as [Amazon Elastic K
 
 \*Cost calculations for actual implementations are a rough guideline with the following considerations:
 
-- Actual choices about instance types should be based on GPT testing of your configuration. 
+- Actual choices about instance types should be based on GPT testing of your configuration.
 - The first year of actual usage will reveal potential savings due to lower than expected usage, especially for ramping migrations where the full loading takes months, so be careful not to commit to savings plans too early or for too long.
 - The cost estimates assume full scale of the Kubernetes cluster nodes 24 x 7 x 365. Savings due to 'idling scale-in' are not considered because they are highly dependent on the usage patterns of the specific implementation.
 - Costs such as GitLab Runners, data egress and storage costs are not included as they are very dependent on the configuration of a specific implementation and on development behaviors (for example, frequency of committing or frequency of builds).

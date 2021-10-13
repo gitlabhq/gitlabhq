@@ -22,8 +22,9 @@ export default {
   },
   inject: ['groupPath', 'dependencyProxyAvailable'],
   i18n: {
-    proxyNotAvailableText: __('Dependency proxy feature is limited to public groups for now.'),
-    proxyImagePrefix: __('Dependency proxy image prefix'),
+    proxyNotAvailableText: __('Dependency Proxy feature is limited to public groups for now.'),
+    proxyDisabledText: __('Dependency Proxy disabled. To enable it, contact the group owner.'),
+    proxyImagePrefix: __('Dependency Proxy image prefix'),
     copyImagePrefixText: __('Copy prefix'),
     blobCountAndSize: __('Contains %{count} blobs of images (%{size})'),
   },
@@ -52,6 +53,9 @@ export default {
         },
       ];
     },
+    dependencyProxyEnabled() {
+      return this.group?.dependencyProxySetting?.enabled;
+    },
   },
 };
 </script>
@@ -59,18 +63,23 @@ export default {
 <template>
   <div>
     <title-area :title="__('Dependency Proxy')" :info-messages="infoMessages" />
-    <gl-alert v-if="!dependencyProxyAvailable" :dismissible="false">
+    <gl-alert
+      v-if="!dependencyProxyAvailable"
+      :dismissible="false"
+      data-testid="proxy-not-available"
+    >
       {{ $options.i18n.proxyNotAvailableText }}
     </gl-alert>
 
     <gl-skeleton-loader v-else-if="$apollo.queries.group.loading" />
 
-    <div v-else data-testid="main-area">
+    <div v-else-if="dependencyProxyEnabled" data-testid="main-area">
       <gl-form-group :label="$options.i18n.proxyImagePrefix">
         <gl-form-input-group
           readonly
           :value="group.dependencyProxyImagePrefix"
           class="gl-layout-w-limited"
+          data-testid="proxy-url"
         >
           <template #append>
             <clipboard-button
@@ -89,5 +98,8 @@ export default {
         </template>
       </gl-form-group>
     </div>
+    <gl-alert v-else :dismissible="false" data-testid="proxy-disabled">
+      {{ $options.i18n.proxyDisabledText }}
+    </gl-alert>
   </div>
 </template>
