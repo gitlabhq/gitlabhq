@@ -147,6 +147,19 @@ RSpec.describe Packages::GroupPackagesFinder do
         end
       end
 
+      context 'with exact package_name' do
+        let_it_be(:named_package) { create(:maven_package, project: project, name: 'maven') }
+        let_it_be(:other_package) { create(:maven_package, project: project, name: 'maventoo') }
+
+        let(:params) { { exact_name: true, package_name: package_name } }
+
+        context 'as complete name' do
+          let(:package_name) { 'maven' }
+
+          it { is_expected.to match_array([named_package]) }
+        end
+      end
+
       it_behaves_like 'concerning versionless param'
       it_behaves_like 'concerning package statuses'
     end

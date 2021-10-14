@@ -100,39 +100,105 @@ RSpec.describe API::API do
     end
   end
 
-  context 'application context' do
-    let_it_be(:project) { create(:project) }
+  describe 'logging', :aggregate_failures do
+    let_it_be(:project) { create(:project, :public) }
     let_it_be(:user) { project.owner }
 
-    it 'logs all application context fields' do
-      allow_any_instance_of(Gitlab::GrapeLogging::Loggers::ContextLogger).to receive(:parameters) do
-        Gitlab::ApplicationContext.current.tap do |log_context|
-          expect(log_context).to match('correlation_id' => an_instance_of(String),
-                                       'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
-                                       'meta.remote_ip' => an_instance_of(String),
-                                       'meta.project' => project.full_path,
-                                       'meta.root_namespace' => project.namespace.full_path,
-                                       'meta.user' => user.username,
-                                       'meta.client_id' => an_instance_of(String),
-                                       'meta.feature_category' => 'issue_tracking')
+    context 'when the endpoint is handled by the application' do
+      context 'when the endpoint supports all possible fields' do
+        it 'logs all application context fields and the route' do
+          expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+            expect(data.stringify_keys)
+              .to include('correlation_id' => an_instance_of(String),
+                          'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
+                          'meta.remote_ip' => an_instance_of(String),
+                          'meta.project' => project.full_path,
+                          'meta.root_namespace' => project.namespace.full_path,
+                          'meta.user' => user.username,
+                          'meta.client_id' => a_string_matching(%r{\Auser/.+}),
+                          'meta.feature_category' => 'issue_tracking',
+                          'route' => '/api/:version/projects/:id/issues')
+          end
+
+          get(api("/projects/#{project.id}/issues", user))
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
-      get(api("/projects/#{project.id}/issues", user))
+      it 'skips context fields that do not apply' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys)
+            .to include('correlation_id' => an_instance_of(String),
+                        'meta.caller_id' => 'GET /api/:version/broadcast_messages',
+                        'meta.remote_ip' => an_instance_of(String),
+                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+                        'meta.feature_category' => 'navigation',
+                        'route' => '/api/:version/broadcast_messages')
+
+          expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
+        end
+
+        get(api('/broadcast_messages'))
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
-    it 'skips fields that do not apply' do
-      allow_any_instance_of(Gitlab::GrapeLogging::Loggers::ContextLogger).to receive(:parameters) do
-        Gitlab::ApplicationContext.current.tap do |log_context|
-          expect(log_context).to match('correlation_id' => an_instance_of(String),
-                                       'meta.caller_id' => 'GET /api/:version/users',
-                                       'meta.remote_ip' => an_instance_of(String),
-                                       'meta.client_id' => an_instance_of(String),
-                                       'meta.feature_category' => 'users')
-        end
-      end
+    context 'when there is an unsupported media type' do
+      it 'logs the route and context metadata for the client' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys)
+            .to include('correlation_id' => an_instance_of(String),
+                        'meta.remote_ip' => an_instance_of(String),
+                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+                        'route' => '/api/:version/users/:id')
 
-      get(api('/users'))
+          expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.feature_category', 'meta.user')
+        end
+
+        put(api("/users/#{user.id}", user), params: { 'name' => 'Test' }, headers: { 'Content-Type' => 'image/png' })
+
+        expect(response).to have_gitlab_http_status(:unsupported_media_type)
+      end
+    end
+
+    context 'when there is an OPTIONS request' do
+      it 'logs the route and context metadata for the client' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys)
+            .to include('correlation_id' => an_instance_of(String),
+                        'meta.remote_ip' => an_instance_of(String),
+                        'meta.client_id' => a_string_matching(%r{\Auser/.+}),
+                        'meta.user' => user.username,
+                        'meta.feature_category' => 'users',
+                        'route' => '/api/:version/users')
+
+          expect(data.stringify_keys).not_to include('meta.caller_id')
+        end
+
+        options(api('/users', user))
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when the API version is not matched' do
+      it 'logs the route and context metadata for the client' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys)
+            .to include('correlation_id' => an_instance_of(String),
+                        'meta.remote_ip' => an_instance_of(String),
+                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+                        'route' => '/api/:version/*path')
+
+          expect(data.stringify_keys).not_to include('meta.caller_id', 'meta.user')
+        end
+
+        get('/api/v4_or_is_it')
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 

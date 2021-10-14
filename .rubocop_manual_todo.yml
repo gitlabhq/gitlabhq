@@ -741,7 +741,6 @@ RSpec/AnyInstanceOf:
     - 'spec/policies/ci/pipeline_policy_spec.rb'
     - 'spec/presenters/gitlab/blame_presenter_spec.rb'
     - 'spec/presenters/merge_request_presenter_spec.rb'
-    - 'spec/requests/api/api_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_put_spec.rb'
     - 'spec/requests/api/ci/runner/jobs_request_post_spec.rb'

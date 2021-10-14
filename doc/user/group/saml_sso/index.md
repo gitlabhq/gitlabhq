@@ -361,7 +361,14 @@ To link the SAML groups from the `saml:AttributeStatement` example above:
 If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest access level from the groups. For example, if one group
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
-access.
+access. 
+
+Users granted:
+
+- A higher role with Group Sync are displayed as having
+  [direct membership](../../project/members/#display-direct-members) of the group.
+- A lower or the same role with Group Sync are displayed as having
+  [inherited membership](../../project/members/#display-inherited-members) of the group.
 
 ### Automatic member removal
 

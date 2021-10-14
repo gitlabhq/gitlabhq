@@ -13,8 +13,14 @@ in each GitLab project. Every wiki is a separate Git repository, so you can crea
 wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
 
 To access the wiki for a project or group, go to the page for your project or group
-and, in the left sidebar, select **Wiki**. If **Wiki** is not listed in the
-left sidebar, a project administrator has [disabled it](#enable-or-disable-a-project-wiki).
+and either:
+
+- In the left sidebar, select **Wiki**.
+- On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
+  [wiki keyboard shortcut](../../shortcuts.md).
+
+If **Wiki** is not listed in the left sidebar of your project, a project administrator
+has [disabled it](#enable-or-disable-a-project-wiki).
 
 GitLab wikis support Markdown, RDoc, AsciiDoc, and Org for content.
 Wiki pages written in Markdown support all [Markdown features](../../markdown.md),
@@ -130,8 +136,9 @@ may not be able to check out the wiki locally afterward.
 You need at least the [Developer role](../../permissions.md) to edit a wiki page:
 
 1. Go to your project or group and select **Wiki**.
-1. Go to the page you want to edit.
-1. Select the edit icon (**{pencil}**).
+1. Go to the page you want to edit, and either:
+   - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
+   - Select the edit icon (**{pencil}**).
 1. Edit the content.
 1. Select **Save changes**.
 
@@ -355,3 +362,4 @@ For the status of the ongoing development for CommonMark and GitLab Flavored Mar
 - [Project wikis API](../../../api/wikis.md)
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)
 - [Group wikis API](../../../api/group_wikis.md)
+- [Wiki keyboard shortcuts](../../shortcuts.md#wiki-pages)

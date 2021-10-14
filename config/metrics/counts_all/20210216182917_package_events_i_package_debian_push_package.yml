@@ -7,7 +7,8 @@ product_stage: package
 product_group: group::package
 product_category: package registry
 value_type: number
-status: deprecated
+status: removed
+milestone_removed: "14.4"
 time_frame: all
 data_source: redis
 distribution:

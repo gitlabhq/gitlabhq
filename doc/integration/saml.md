@@ -801,11 +801,12 @@ If you only require a SAML provider for testing, a [quick start guide to start a
 ### 500 error after login
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
-sign-in page, this likely indicates that GitLab couldn't get the email address
-for the SAML user.
+sign-in page, this could indicate that:
 
-Ensure the IdP provides a claim containing the user's email address, using the
-claim name `email` or `mail`.
+- GitLab couldn't get the email address for the SAML user. Ensure the IdP provides a claim containing the user's
+  email address using the claim name `email` or `mail`.
+- The certificate set your `gitlab.rb` file for `idp_cert_fingerprint` or `idp_cert` file is incorrect.
+- Your `gitlab.rb` file is set to enable `idp_cert_fingerprint`, and `idp_cert` is being provided, or the reverse.
 
 ### 422 error after login
 

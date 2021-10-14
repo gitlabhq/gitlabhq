@@ -11,11 +11,12 @@ module API
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
+    LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
 
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
                   logger: Logger.new(LOG_FILENAME),
-                  formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
+                  formatter: LOG_FORMATTER,
                   include: [
                     GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
                     Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
@@ -49,16 +50,19 @@ module API
     before do
       coerce_nil_params_to_array!
 
-      api_endpoint = env['api.endpoint']
+      api_endpoint = request.env[Grape::Env::API_ENDPOINT]
       feature_category = api_endpoint.options[:for].try(:feature_category_for_app, api_endpoint).to_s
 
+      # remote_ip is added here and the ContextLogger so that the
+      # client_id field is set correctly, as the user object does not
+      # survive between multiple context pushes.
       Gitlab::ApplicationContext.push(
         user: -> { @current_user },
         project: -> { @project },
         namespace: -> { @group },
         runner: -> { @current_runner || @runner },
-        caller_id: api_endpoint.endpoint_id,
         remote_ip: request.ip,
+        caller_id: api_endpoint.endpoint_id,
         feature_category: feature_category
       )
     end

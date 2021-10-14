@@ -2591,7 +2591,7 @@ RSpec.describe API::Projects do
       end
     end
 
-    it_behaves_like 'storing arguments in the application context' do
+    it_behaves_like 'storing arguments in the application context for the API' do
       let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project, :public) }
       let(:expected_params) { { user: user.username, project: project.full_path } }

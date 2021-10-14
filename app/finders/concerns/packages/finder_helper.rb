@@ -54,6 +54,12 @@ module Packages
       packages.search_by_name(params[:package_name])
     end
 
+    def filter_by_exact_package_name(packages)
+      return packages unless params[:package_name].present?
+
+      packages.with_name(params[:package_name])
+    end
+
     def filter_by_package_version(packages)
       return packages unless params[:package_version].present?
 
