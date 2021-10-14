@@ -1,3 +1,5 @@
+/* eslint-disable import/no-deprecated */
+
 import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import {

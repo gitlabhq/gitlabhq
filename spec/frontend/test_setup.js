@@ -6,7 +6,7 @@ import { setGlobalDateToFakeDate } from 'helpers/fake_date';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import Translate from '~/vue_shared/translate';
-import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
+import { loadHTMLFixture, setHTMLFixture } from './__helpers__/fixtures';
 import { initializeTestTimeout } from './__helpers__/timeout';
 import customMatchers from './matchers';
 import { setupManualMocks } from './mocks/mocks_helper';
@@ -43,7 +43,6 @@ Vue.use(Translate);
 
 // convenience wrapper for migration from Karma
 Object.assign(global, {
-  getJSONFixture,
   loadFixtures: loadHTMLFixture,
   setFixtures: setHTMLFixture,
 });

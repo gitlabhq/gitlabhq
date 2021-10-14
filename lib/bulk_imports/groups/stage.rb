@@ -36,7 +36,7 @@ module BulkImports
             stage: 1
           },
           boards: {
-            pipeline: BulkImports::Groups::Pipelines::BoardsPipeline,
+            pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 2
           },
           finisher: {

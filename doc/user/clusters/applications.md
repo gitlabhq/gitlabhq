@@ -485,7 +485,7 @@ config:
 
 agent:
   monitor:
-    eventTypes: ["drop"]
+    eventTypes: ["drop"] # Note: possible values are documented at https://docs.cilium.io/en/stable/cmdref/cilium_monitor/
 ```
 
 The Cilium monitor log for traffic is logged out by the

@@ -34065,6 +34065,9 @@ msgstr ""
 msgid "The license was successfully uploaded and will be active from %{starts_at}. You can see the details below."
 msgstr ""
 
+msgid "The list creation wizard is already open"
+msgstr ""
+
 msgid "The maximum file size allowed is %{size}."
 msgstr ""
 

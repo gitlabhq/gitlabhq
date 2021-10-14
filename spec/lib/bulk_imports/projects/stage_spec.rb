@@ -9,7 +9,8 @@ RSpec.describe BulkImports::Projects::Stage do
       [1, BulkImports::Projects::Pipelines::RepositoryPipeline],
       [2, BulkImports::Common::Pipelines::LabelsPipeline],
       [3, BulkImports::Projects::Pipelines::IssuesPipeline],
-      [4, BulkImports::Common::Pipelines::EntityFinisher]
+      [4, BulkImports::Common::Pipelines::BoardsPipeline],
+      [5, BulkImports::Common::Pipelines::EntityFinisher]
     ]
   end
 

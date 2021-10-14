@@ -11,14 +11,15 @@
 module Gitlab
   class SidekiqEnq
     def enqueue_jobs(now = Time.now.to_f.to_s, sorted_sets = Sidekiq::Scheduled::SETS)
-      start_time = ::Gitlab::Metrics::System.monotonic_time
-      jobs = redundant_jobs = 0
-      Sidekiq.logger.info(message: 'Enqueuing scheduled jobs', status: 'start')
-
       # A job's "score" in Redis is the time at which it should be processed.
       # Just check Redis for the set of jobs with a timestamp before now.
       Sidekiq.redis do |conn|
         sorted_sets.each do |sorted_set|
+          start_time = ::Gitlab::Metrics::System.monotonic_time
+          jobs = redundant_jobs = 0
+
+          Sidekiq.logger.info(message: 'Enqueuing scheduled jobs', status: 'start', sorted_set: sorted_set)
+
           # Get the next item in the queue if it's score (time to execute) is <= now.
           # We need to go through the list one at a time to reduce the risk of something
           # going wrong between the time jobs are popped from the scheduled queue and when
@@ -35,11 +36,16 @@ module Gitlab
               redundant_jobs += 1
             end
           end
+
+          end_time = ::Gitlab::Metrics::System.monotonic_time
+          Sidekiq.logger.info(message: 'Enqueuing scheduled jobs',
+                              status: 'done',
+                              sorted_set: sorted_set,
+                              jobs_count: jobs,
+                              redundant_jobs_count: redundant_jobs,
+                              duration_s: end_time - start_time)
         end
       end
-
-      end_time = ::Gitlab::Metrics::System.monotonic_time
-      Sidekiq.logger.info(message: 'Enqueuing scheduled jobs', status: 'done', jobs_count: jobs, redundant_jobs_count: redundant_jobs, duration_s: end_time - start_time)
     end
   end
 end

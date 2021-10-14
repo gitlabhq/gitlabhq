@@ -12,7 +12,6 @@ settings:
     jest:
       jestConfigFile: 'jest.config.js'
 globals:
-  getJSONFixture: false
   loadFixtures: false
   setFixtures: false
 rules:
