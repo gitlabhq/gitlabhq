@@ -68,13 +68,6 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
-import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
-import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
-import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
-import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
-import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
-import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchIterationsQuery from '../queries/search_iterations.query.graphql';
@@ -83,6 +76,20 @@ import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
+
+const AuthorToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/author_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const EpicToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue');
+const IterationToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue');
+const LabelToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
+const WeightToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue');
 
 export default {
   i18n,

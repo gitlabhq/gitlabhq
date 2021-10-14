@@ -27,6 +27,7 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Reference from '../extensions/reference';
@@ -85,6 +86,11 @@ const defaultSerializerConfig = {
           ? '>'
           : `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
       },
+    },
+    [MathInline.name]: {
+      open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
+      close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
+      escape: false,
     },
     [Strike.name]: {
       open: '~~',

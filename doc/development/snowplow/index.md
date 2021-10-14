@@ -153,6 +153,24 @@ ORDER BY collector_tstamp DESC
 LIMIT 20
 ```
 
+#### Last 100 page view events
+
+```sql
+SELECT
+  -- page_url,
+  -- page_title,
+  -- referer_url,
+  -- marketing_medium,
+  -- marketing_source,
+  -- marketing_campaign,
+  -- browser_window_width,
+  -- device_is_mobile
+  *
+FROM legacy.snowplow_page_views_30
+ORDER BY page_view_start DESC
+LIMIT 100
+```
+
 ### Web-specific parameters
 
 Snowplow JS adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.

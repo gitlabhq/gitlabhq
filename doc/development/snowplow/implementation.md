@@ -379,6 +379,9 @@ To test frontend events in development:
 - Turn off any ad blockers that would prevent Snowplow JS from loading in your environment.
 - Turn off "Do Not Track" (DNT) in your browser.
 
+All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
+information (PII). PII includes usernames, group, and project names.
+
 #### Snowplow Analytics Debugger Chrome Extension
 
 Snowplow Analytics Debugger is a browser extension for testing frontend events. This works on production, staging, and local development environments.

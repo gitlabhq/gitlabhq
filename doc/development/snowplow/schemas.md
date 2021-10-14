@@ -26,6 +26,10 @@ The [`StandardContext`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/g
 
 ## Default Schema
 
+Frontend events include a [web-specific schema](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/#Web-specific_fields) provided by Snowplow.
+All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
+information (PII). PII includes usernames, group, and project names.
+
 | Field Name               | Required            | Type      | Description                                                                                                                      |
 |--------------------------|---------------------|-----------|----------------------------------------------------------------------------------------------------------------------------------|
 | `app_id`                   | **{check-circle}**  | string    | Unique identifier for website / application                                                                                      |

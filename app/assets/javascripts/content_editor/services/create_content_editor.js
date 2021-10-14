@@ -32,6 +32,7 @@ import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
 import Loading from '../extensions/loading';
+import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Reference from '../extensions/reference';
@@ -106,6 +107,7 @@ export const createContentEditor = ({
     Link,
     ListItem,
     Loading,
+    MathInline,
     OrderedList,
     Paragraph,
     Reference,

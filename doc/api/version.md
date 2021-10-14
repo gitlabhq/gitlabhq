@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Version API **(FREE)**
 
-> Introduced in GitLab 8.13.
-
 Retrieve version information for this GitLab instance. Responds `200 OK` for
 authenticated users.
 

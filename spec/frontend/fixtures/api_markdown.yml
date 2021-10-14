@@ -278,3 +278,12 @@
     - `RGBA(0,255,0,0.3)`
     - `HSL(540,70%,50%)`
     - `HSLA(540,70%,50%,0.3)`
+- name: math
+  markdown: |-
+    This math is inline $`a^2+b^2=c^2`$.
+
+    This is on a separate line:
+
+    ```math
+    a^2+b^2=c^2
+    ```
