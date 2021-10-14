@@ -27,7 +27,7 @@
             = link_to deployment_path(deployment), class: 'build-link' do
               #{deployment.deployable.name} (##{deployment.deployable.id})
     - else
-      .badge.badge-info.suggestion-help-hover{ title: s_('Deployment|This deployment was created using the API') }
+      .badge.badge-info.gl-cursor-help{ title: s_('Deployment|This deployment was created using the API') }
         = s_('Deployment|API')
 
   .table-section.section-10{ role: 'gridcell' }

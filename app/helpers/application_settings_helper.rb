@@ -471,10 +471,6 @@ module ApplicationSettingsHelper
     }
   end
 
-  def show_documentation_base_url_field?
-    Feature.enabled?(:help_page_documentation_redirect)
-  end
-
   def valid_runner_registrars
     Gitlab::CurrentSettings.valid_runner_registrars
   end

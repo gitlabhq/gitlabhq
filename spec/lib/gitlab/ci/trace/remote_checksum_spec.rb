@@ -43,18 +43,30 @@ RSpec.describe Gitlab::Ci::Trace::RemoteChecksum do
         end
 
         context 'with Google as provider' do
-          let(:metadata) {{ content_md5: base64checksum }}
-
           before do
+            spy_file = spy(:file)
             expect(fetcher).to receive(:provider_google?) { true }
             expect(fetcher).not_to receive(:provider_aws?) { false }
+            allow(spy_file).to receive(:attributes).and_return(metadata)
 
-            allow(trace_artifact.file.file)
-              .to receive(:attributes)
-              .and_return(metadata)
+            allow_next_found_instance_of(Ci::JobArtifact) do |trace_artifact|
+              allow(trace_artifact.file).to receive(:file) { spy_file }
+            end
           end
 
-          it { is_expected.to eq(checksum) }
+          context 'when the response does not include :content_md5' do
+            let(:metadata) {{}}
+
+            it 'raises an exception' do
+              expect { subject }.to raise_error KeyError, /content_md5/
+            end
+          end
+
+          context 'when the response include :content_md5' do
+            let(:metadata) {{ content_md5: base64checksum }}
+
+            it { is_expected.to eq(checksum) }
+          end
         end
 
         context 'with unsupported providers' do

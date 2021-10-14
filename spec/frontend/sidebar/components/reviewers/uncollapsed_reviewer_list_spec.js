@@ -26,9 +26,9 @@ describe('UncollapsedReviewerList component', () => {
   });
 
   describe('single reviewer', () => {
-    beforeEach(() => {
-      const user = userDataMock();
+    const user = userDataMock();
 
+    beforeEach(() => {
       createComponent({
         users: [user],
       });
@@ -39,6 +39,7 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('shows one user with avatar, username and author name', () => {
+      expect(wrapper.text()).toContain(user.name);
       expect(wrapper.text()).toContain(`@root`);
     });
 
@@ -56,11 +57,18 @@ describe('UncollapsedReviewerList component', () => {
   });
 
   describe('multiple reviewers', () => {
-    beforeEach(() => {
-      const user = userDataMock();
+    const user = userDataMock();
+    const user2 = {
+      ...user,
+      id: 2,
+      name: 'nonrooty-nonrootersen',
+      username: 'hello-world',
+      approved: true,
+    };
 
+    beforeEach(() => {
       createComponent({
-        users: [user, { ...user, id: 2, username: 'hello-world', approved: true }],
+        users: [user, user2],
       });
     });
 
@@ -69,7 +77,9 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('shows both users with avatar, username and author name', () => {
+      expect(wrapper.text()).toContain(user.name);
       expect(wrapper.text()).toContain(`@root`);
+      expect(wrapper.text()).toContain(user2.name);
       expect(wrapper.text()).toContain(`@hello-world`);
     });
 

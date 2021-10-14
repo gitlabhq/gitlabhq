@@ -4,7 +4,7 @@ class UserDetail < ApplicationRecord
   extend ::Gitlab::Utils::Override
   include IgnorableColumns
 
-  ignore_columns %i[bio_html cached_markdown_version], remove_with: '13.6', remove_after: '2021-10-22'
+  ignore_columns %i[bio_html cached_markdown_version], remove_with: '14.5', remove_after: '2021-10-22'
 
   REGISTRATION_OBJECTIVE_PAIRS = { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5, joining_team: 6 }.freeze
 

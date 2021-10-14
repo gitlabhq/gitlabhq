@@ -661,8 +661,6 @@ RSpec.describe 'Admin updates settings' do
       end
 
       it 'change Help page' do
-        stub_feature_flags(help_page_documentation_redirect: true)
-
         new_support_url = 'http://example.com/help'
         new_documentation_url = 'https://docs.gitlab.com'
 

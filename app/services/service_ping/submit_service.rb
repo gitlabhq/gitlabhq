@@ -78,7 +78,7 @@ module ServicePing
     def store_metrics(response)
       metrics = response['conv_index'] || response['dev_ops_score'] # leaving dev_ops_score here, as the response data comes from the gitlab-version-com
 
-      return unless metrics.present?
+      return unless metrics.except('usage_data_id').present?
 
       DevOpsReport::Metric.create!(
         metrics.slice(*METRICS)

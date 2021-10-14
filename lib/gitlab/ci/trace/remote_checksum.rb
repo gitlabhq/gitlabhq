@@ -50,16 +50,23 @@ module Gitlab
         end
 
         def checksum_from_google
-          Base64.decode64(upload_attributes[:content_md5].to_s).unpack1('H*')
+          content_md5 = upload_attributes.fetch(:content_md5)
+
+          Base64
+            .decode64(content_md5)
+            .unpack1('H*')
         end
 
         def checksum_from_aws
-          upload_attributes[:etag]
+          upload_attributes.fetch(:etag)
         end
 
+        # Carrierwave caches attributes for the local file and does not replace
+        # them with the ones from object store after the upload completes.
+        # We need to force it to fetch them directly from the object store.
         def upload_attributes
           strong_memoize(:upload_attributes) do
-            trace_artifact.file.file.attributes
+            ::Ci::JobArtifact.find(trace_artifact.id).file.file.attributes
           end
         end
       end
