@@ -86,6 +86,9 @@ msgstr ""
 msgid "\"el\" parameter is required for createInstance()"
 msgstr ""
 
+msgid "#%{issueIid} (closed)"
+msgstr ""
+
 msgid "#general, #development"
 msgstr ""
 

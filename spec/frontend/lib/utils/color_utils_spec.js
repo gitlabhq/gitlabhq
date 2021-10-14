@@ -1,4 +1,5 @@
 import {
+  isValidColorExpression,
   textColorForBackground,
   hexToRgb,
   validateHexColor,
@@ -71,5 +72,22 @@ describe('Color utils', () => {
         expect(darkModeEnabled()).toBe(expected);
       },
     );
+  });
+
+  describe('isValidColorExpression', () => {
+    it.each`
+      colorExpression       | valid    | desc
+      ${'#F00'}             | ${true}  | ${'valid'}
+      ${'rgba(0,0,0,0)'}    | ${true}  | ${'valid'}
+      ${'hsl(540,70%,50%)'} | ${true}  | ${'valid'}
+      ${'red'}              | ${true}  | ${'valid'}
+      ${'F00'}              | ${false} | ${'invalid'}
+      ${'F00'}              | ${false} | ${'invalid'}
+      ${'gba(0,0,0,0)'}     | ${false} | ${'invalid'}
+      ${'hls(540,70%,50%)'} | ${false} | ${'invalid'}
+      ${'hello'}            | ${false} | ${'invalid'}
+    `('color expression $colorExpression is $desc', ({ colorExpression, valid }) => {
+      expect(isValidColorExpression(colorExpression)).toBe(valid);
+    });
   });
 });

@@ -9,14 +9,14 @@ type: howto
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17867) in GitLab 10.8.
 
-GitLab lists all devices that have logged into your account. This allows you to
+GitLab lists all devices that have logged into your account. You can
 review the sessions, and revoke any you don't recognize.
 
 ## Listing all active sessions
 
 To list all active sessions:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Active Sessions**.
 
@@ -33,7 +33,7 @@ exceeds 100, the oldest ones are deleted.
 
 To revoke an active session:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Active Sessions**.
 1. Select **Revoke** next to a session. The current session cannot be revoked, as this would sign you out of GitLab.

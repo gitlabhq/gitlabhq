@@ -1,3 +1,22 @@
+const colorValidatorEl = document.createElement('div');
+
+/**
+ * Validates whether the specified color expression
+ * is supported by the browser’s DOM API and has a valid form.
+ *
+ * This utility assigns the color expression to a detached DOM
+ * element’s color property. If the color expression is valid,
+ * the DOM API will accept the value.
+ *
+ * @param {String} color color expression rgba, hex, hsla, etc.
+ */
+export const isValidColorExpression = (colorExpression) => {
+  colorValidatorEl.style.color = '';
+  colorValidatorEl.style.color = colorExpression;
+
+  return colorValidatorEl.style.color.length > 0;
+};
+
 /**
  * Convert hex color to rgb array
  *

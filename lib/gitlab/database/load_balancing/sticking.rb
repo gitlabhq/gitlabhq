@@ -33,7 +33,7 @@ module Gitlab
 
         # Sticks to the primary if a write was performed.
         def stick_if_necessary(namespace, id)
-          stick(namespace, id) if Session.current.performed_write?
+          stick(namespace, id) if ::Gitlab::Database::LoadBalancing::Session.current.performed_write?
         end
 
         def all_caught_up?(namespace, id)
