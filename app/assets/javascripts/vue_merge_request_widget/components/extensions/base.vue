@@ -138,18 +138,21 @@ export default {
 <template>
   <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon :name="widgetLabel" :is-loading="isLoadingSummary" :icon-name="statusIconName" />
-      <div
-        class="media-body gl-display-flex gl-align-self-center gl-align-items-center gl-flex-direction-row!"
-      >
+      <status-icon
+        :name="$options.label || $options.name"
+        :is-loading="isLoadingSummary"
+        :icon-name="statusIconName"
+      />
+      <div class="media-body gl-display-flex gl-flex-direction-row!">
         <div class="gl-flex-grow-1">
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
-        <actions :widget="widgetLabel" :tertiary-buttons="tertiaryActionsButtons" />
-        <div
-          class="gl-float-right gl-align-self-center gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3"
-        >
+        <actions
+          :widget="$options.label || $options.name"
+          :tertiary-buttons="tertiaryActionsButtons"
+        />
+        <div class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6">
           <gl-button
             v-if="isCollapsible"
             v-gl-tooltip

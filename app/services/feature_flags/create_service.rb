@@ -10,8 +10,6 @@ module FeatureFlags
         feature_flag = project.operations_feature_flags.new(params)
 
         if feature_flag.save
-          save_audit_event(audit_event(feature_flag))
-
           success(feature_flag: feature_flag)
         else
           error(feature_flag.errors.full_messages, 400)

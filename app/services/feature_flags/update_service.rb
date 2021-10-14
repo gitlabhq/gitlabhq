@@ -7,6 +7,11 @@ module FeatureFlags
       'parameters' => 'parameters'
     }.freeze
 
+    def success(**args)
+      execute_hooks_after_commit(args[:feature_flag])
+      super
+    end
+
     def execute(feature_flag)
       return error('Access Denied', 403) unless can_update?(feature_flag)
       return error('Not Found', 404) unless valid_user_list_ids?(feature_flag, user_list_ids(params))
@@ -20,16 +25,11 @@ module FeatureFlags
           end
         end
 
+        # We generate the audit event before the feature flag is saved as #changed_strategies_messages depends on the strategies' states before save
         audit_event = audit_event(feature_flag)
 
-        if feature_flag.active_changed?
-          feature_flag.execute_hooks(current_user)
-        end
-
         if feature_flag.save
-          save_audit_event(audit_event)
-
-          success(feature_flag: feature_flag)
+          success(feature_flag: feature_flag, audit_event: audit_event)
         else
           error(feature_flag.errors.full_messages, :bad_request)
         end
@@ -37,6 +37,16 @@ module FeatureFlags
     end
 
     private
+
+    def execute_hooks_after_commit(feature_flag)
+      return unless feature_flag.active_previously_changed?
+
+      # The `current_user` method (defined in `BaseService`) is not available within the `run_after_commit` block
+      user = current_user
+      feature_flag.run_after_commit do
+        HookService.new(feature_flag, user).execute
+      end
+    end
 
     def audit_message(feature_flag)
       changes = changed_attributes_messages(feature_flag)

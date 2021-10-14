@@ -47,7 +47,7 @@ export default {
       { 'mr-widget-extension-icon': !isLoading && size === 16 },
       { 'gl-p-2': isLoading || size === 16 },
     ]"
-    class="align-self-center gl-rounded-full gl-mr-3 gl-relative"
+    class="gl-rounded-full gl-mr-3 gl-relative gl-p-2"
   >
     <gl-loading-icon v-if="isLoading" size="md" inline class="gl-display-block" />
     <gl-icon

@@ -19,7 +19,7 @@ export default {
     // Small summary text to be displayed in the collapsed state
     // Receives the collapsed data as an argument
     summary(count) {
-      return 'Summary text';
+      return 'Summary text<br/>Second line';
     },
     // Status icon to be used next to the summary text
     // Receives the collapsed data as an argument

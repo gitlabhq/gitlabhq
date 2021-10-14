@@ -4,47 +4,72 @@ require 'spec_helper'
 RSpec.describe DependencyProxy::AuthTokenService do
   include DependencyProxyHelpers
 
-  describe '.decoded_token_payload' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:token) { build_jwt(user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:deploy_token) { create(:deploy_token) }
 
-    subject { described_class.decoded_token_payload(token.encoded) }
+  describe '.user_or_deploy_token_from_jwt' do
+    subject { described_class.user_or_deploy_token_from_jwt(token.encoded) }
 
-    it 'returns the user' do
-      result = subject
+    shared_examples 'handling token errors' do
+      context 'with a decoding error' do
+        before do
+          allow(JWT).to receive(:decode).and_raise(JWT::DecodeError)
+        end
 
-      expect(result['user_id']).to eq(user.id)
-      expect(result['deploy_token']).to be_nil
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with an immature signature error' do
+        before do
+          allow(JWT).to receive(:decode).and_raise(JWT::ImmatureSignature)
+        end
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with an expired signature error' do
+        it 'returns nil' do
+          travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
+            expect(subject).to eq(nil)
+          end
+        end
+      end
+    end
+
+    context 'with a user' do
+      let_it_be(:token) { build_jwt(user) }
+
+      it { is_expected.to eq(user) }
+
+      context 'with an invalid user id' do
+        let_it_be(:token) { build_jwt { |jwt| jwt['user_id'] = 'this_is_not_a_user_id' } }
+
+        it 'raises an not found error' do
+          expect { subject }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      it_behaves_like 'handling token errors'
     end
 
     context 'with a deploy token' do
-      let_it_be(:deploy_token) { create(:deploy_token) }
       let_it_be(:token) { build_jwt(deploy_token) }
 
-      it 'returns the deploy token' do
-        result = subject
+      it { is_expected.to eq(deploy_token) }
 
-        expect(result['deploy_token']).to eq(deploy_token.token)
-        expect(result['user_id']).to be_nil
+      context 'with an invalid token' do
+        let_it_be(:token) { build_jwt { |jwt| jwt['deploy_token'] = 'this_is_not_a_token' } }
+
+        it { is_expected.to eq(nil) }
       end
+
+      it_behaves_like 'handling token errors'
     end
 
-    it 'raises an error if the token is expired' do
-      travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
-        expect { subject }.to raise_error(JWT::ExpiredSignature)
-      end
-    end
+    context 'with an empty token payload' do
+      let_it_be(:token) { build_jwt(nil) }
 
-    it 'raises an error if decoding fails' do
-      allow(JWT).to receive(:decode).and_raise(JWT::DecodeError)
-
-      expect { subject }.to raise_error(JWT::DecodeError)
-    end
-
-    it 'raises an error if signature is immature' do
-      allow(JWT).to receive(:decode).and_raise(JWT::ImmatureSignature)
-
-      expect { subject }.to raise_error(JWT::ImmatureSignature)
+      it { is_expected.to eq(nil) }
     end
   end
 end

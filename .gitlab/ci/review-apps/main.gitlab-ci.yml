@@ -1,0 +1,106 @@
+stages:
+  - prepare
+  - deploy
+  - qa
+  - post-qa
+  - dast
+
+include:
+  - local: .gitlab/ci/global.gitlab-ci.yml
+  - local: .gitlab/ci/rules.gitlab-ci.yml
+  - local: .gitlab/ci/review-apps/qa.gitlab-ci.yml
+  - local: .gitlab/ci/review-apps/dast.gitlab-ci.yml
+
+.base-before_script: &base-before_script
+  - source ./scripts/utils.sh
+  - source ./scripts/review_apps/review-apps.sh
+  - install_api_client_dependencies_with_apk
+
+review-build-cng:
+  extends:
+    - .default-retry
+    - .review:rules:review-build-cng
+  image: ${GITLAB_DEPENDENCY_PROXY}ruby:2.7-alpine3.13
+  stage: prepare
+  variables:
+    CNG_PROJECT_ACCESS_TOKEN: "${CNG_MIRROR_PROJECT_ACCESS_TOKEN}"  # "Multi-pipeline (from 'gitlab-org/gitlab' 'review-build-cng' job)" at https://gitlab.com/gitlab-org/build/CNG-mirror/-/settings/access_tokens
+    CNG_PROJECT_PATH: "gitlab-org/build/CNG-mirror"
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - ./scripts/trigger-build cng
+
+.review-workflow-base:
+  extends:
+    - .default-retry
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  variables:
+    HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
+    DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
+    GITLAB_HELM_CHART_REF: "v5.2.1"
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+    on_stop: review-stop
+    auto_stop_in: 48 hours
+
+review-deploy:
+  extends:
+    - .review-workflow-base
+    - .review:rules:review-deploy
+  stage: deploy
+  needs: ["review-build-cng"]
+  resource_group: "review/${CI_COMMIT_REF_NAME}"
+  before_script:
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - echo "${CI_ENVIRONMENT_URL}" > environment_url.txt
+    - *base-before_script
+  script:
+    - check_kube_domain
+    - download_chart
+    - date
+    - deploy || (display_deployment_debug && exit 1)
+    - verify_deploy || exit 1
+    - disable_sign_ups || (delete_release && exit 1)
+  after_script:
+    # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
+    # Set DAST_RUN to true when jobs are manually scheduled.
+    - if [ "$DAST_RUN" == "true" ]; then source scripts/review_apps/seed-dast-test-data.sh; TRACE=1 trigger_proj_user_creation; fi
+  artifacts:
+    paths:
+      - environment_url.txt
+      - curl_output.txt
+    expire_in: 7 days
+    when: always
+
+.review-stop-base:
+  extends: .review-workflow-base
+  environment:
+    action: stop
+  dependencies: []
+  variables:
+    # We're cloning the repo instead of downloading the script for now
+    # because some repos are private and CI_JOB_TOKEN cannot access files.
+    # See https://gitlab.com/gitlab-org/gitlab/issues/191273
+    GIT_DEPTH: 1
+  before_script:
+    - *base-before_script
+
+review-delete-deployment:
+  extends:
+    - .review-stop-base
+    - .review:rules:review-delete-deployment
+  stage: prepare
+  script:
+    - delete_release
+
+review-stop:
+  extends:
+    - .review-stop-base
+    - .review:rules:review-stop
+  stage: post-qa
+  script:
+    - delete_k8s_release_namespace

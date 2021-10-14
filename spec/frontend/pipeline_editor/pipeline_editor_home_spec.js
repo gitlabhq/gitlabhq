@@ -25,7 +25,6 @@ describe('Pipeline editor home wrapper', () => {
       },
       provide: {
         glFeatures: {
-          pipelineEditorDrawer: true,
           ...glFeatures,
         },
       },
@@ -92,14 +91,6 @@ describe('Pipeline editor home wrapper', () => {
       findPipelineEditorTabs().vm.$emit('set-current-tab', VISUALIZE_TAB);
       await nextTick();
       expect(findCommitSection().exists()).toBe(true);
-    });
-  });
-
-  describe('Pipeline drawer', () => {
-    it('hides the drawer when the feature flag is off', () => {
-      createComponent({ glFeatures: { pipelineEditorDrawer: false } });
-
-      expect(findPipelineEditorDrawer().exists()).toBe(false);
     });
   });
 });

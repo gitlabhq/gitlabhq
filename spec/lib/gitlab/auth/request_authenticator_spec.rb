@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::RequestAuthenticator do
+  include DependencyProxyHelpers
+
   let(:env) do
     {
       'rack.input' => '',
@@ -15,8 +17,8 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
   subject { described_class.new(request) }
 
   describe '#user' do
-    let!(:sessionless_user) { build(:user) }
-    let!(:session_user) { build(:user) }
+    let_it_be(:sessionless_user) { build(:user) }
+    let_it_be(:session_user) { build(:user) }
 
     it 'returns sessionless user first' do
       allow_any_instance_of(described_class).to receive(:find_sessionless_user).and_return(sessionless_user)
@@ -41,15 +43,25 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
   end
 
   describe '#find_sessionless_user' do
-    let!(:access_token_user) { build(:user) }
-    let!(:feed_token_user) { build(:user) }
-    let!(:static_object_token_user) { build(:user) }
-    let!(:job_token_user) { build(:user) }
-    let!(:lfs_token_user) { build(:user) }
-    let!(:basic_auth_access_token_user) { build(:user) }
-    let!(:basic_auth_password_user) { build(:user) }
+    let_it_be(:dependency_proxy_user) { build(:user) }
+    let_it_be(:access_token_user) { build(:user) }
+    let_it_be(:feed_token_user) { build(:user) }
+    let_it_be(:static_object_token_user) { build(:user) }
+    let_it_be(:job_token_user) { build(:user) }
+    let_it_be(:lfs_token_user) { build(:user) }
+    let_it_be(:basic_auth_access_token_user) { build(:user) }
+    let_it_be(:basic_auth_password_user) { build(:user) }
 
-    it 'returns access_token user first' do
+    it 'returns dependency_proxy user first' do
+      allow_any_instance_of(described_class).to receive(:find_user_from_dependency_proxy_token)
+                                                  .and_return(dependency_proxy_user)
+
+      allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token).and_return(access_token_user)
+
+      expect(subject.find_sessionless_user(:api)).to eq dependency_proxy_user
+    end
+
+    it 'returns access_token user if no dependency_proxy user found' do
       allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token)
                                                   .with(anything, scopes: [:api, :read_api])
                                                   .and_return(access_token_user)
@@ -154,6 +166,75 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
 
       expect(subject.find_sessionless_user(:api)).to be_blank
     end
+
+    context 'dependency proxy' do
+      let_it_be(:dependency_proxy_user) { create(:user) }
+
+      let(:token) { build_jwt(dependency_proxy_user).encoded }
+      let(:authenticator) { described_class.new(request) }
+
+      subject { authenticator.find_sessionless_user(:api) }
+
+      before do
+        env['SCRIPT_NAME'] = accessed_path
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
+      end
+
+      shared_examples 'identifying dependency proxy urls properly with' do |user_type|
+        context 'with pulling a manifest' do
+          let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to eq(nil) } if user_type == :no_user
+        end
+
+        context 'with pulling a blob' do
+          let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e' }
+
+          it { is_expected.to eq(dependency_proxy_user) } if user_type == :user
+          it { is_expected.to eq(nil) } if user_type == :no_user
+        end
+
+        context 'with any other path' do
+          let(:accessed_path) { '/foo/bar' }
+
+          it { is_expected.to eq(nil) }
+        end
+      end
+
+      context 'with a user' do
+        it_behaves_like 'identifying dependency proxy urls properly with', :user
+
+        context 'with an invalid id' do
+          let(:token) { build_jwt { |jwt| jwt['user_id'] = 'this_is_not_a_user' } }
+
+          it_behaves_like 'identifying dependency proxy urls properly with', :no_user
+        end
+      end
+
+      context 'with a deploy token' do
+        let_it_be(:dependency_proxy_user) { create(:deploy_token) }
+
+        it_behaves_like 'identifying dependency proxy urls properly with', :no_user
+      end
+
+      context 'with no jwt token' do
+        let(:token) { nil }
+
+        it_behaves_like 'identifying dependency proxy urls properly with', :no_user
+      end
+
+      context 'with an expired jwt token' do
+        let(:token) { build_jwt(dependency_proxy_user).encoded }
+        let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
+
+        it 'returns nil' do
+          travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
+            expect(subject).to eq(nil)
+          end
+        end
+      end
+    end
   end
 
   describe '#find_personal_access_token_from_http_basic_auth' do
@@ -201,8 +282,8 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
   end
 
   describe '#find_user_from_job_token' do
-    let!(:user) { build(:user) }
-    let!(:job) { build(:ci_build, user: user, status: :running) }
+    let_it_be(:user) { build(:user) }
+    let_it_be(:job) { build(:ci_build, user: user, status: :running) }
 
     before do
       env[Gitlab::Auth::AuthFinders::JOB_TOKEN_HEADER] = 'token'
@@ -239,7 +320,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
   end
 
   describe '#runner' do
-    let!(:runner) { build(:ci_runner) }
+    let_it_be(:runner) { build(:ci_runner) }
 
     it 'returns the runner using #find_runner_from_token' do
       expect_any_instance_of(described_class)

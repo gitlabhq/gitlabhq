@@ -5,9 +5,7 @@ stages:
   - fixtures
   - test
   - post-test
-  - review-prepare
   - review
-  - dast
   - qa
   - post-qa
   - pages

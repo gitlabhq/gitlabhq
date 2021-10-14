@@ -6,12 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Review Apps
 
-Review Apps are automatically deployed by [the
-pipeline](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6665).
+Review Apps are deployed using the `start-review-app-pipeline` job. This job triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a Review App.
 
-## When are Review Apps automatically deployed?
+![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
 
-A Review App is automatically deployed for:
+For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started:
 
 - for merge requests with CI config changes
 - for merge requests with frontend changes

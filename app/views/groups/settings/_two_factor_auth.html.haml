@@ -11,8 +11,8 @@
       _('Require all users in this group to set up two-factor authentication'),
       checkbox_options: { data: { qa_selector: 'require_2fa_checkbox' } }
 .form-group
-  = f.label :two_factor_grace_period, _('Time before enforced'), class: 'label-bold'
-  = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto'
+  = f.label :two_factor_grace_period, _('Time before enforced')
+  = f.text_field :two_factor_grace_period, class: 'form-control form-control-sm w-auto gl-form-input gl-mb-3'
   .form-text.text-muted= _('Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.')
 - unless group.has_parent?
   .form-group

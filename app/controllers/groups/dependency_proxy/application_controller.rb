@@ -21,8 +21,14 @@ module Groups
         authenticate_with_http_token do |token, _|
           @authentication_result = EMPTY_AUTH_RESULT
 
-          found_user = user_from_token(token)
-          sign_in(found_user) if found_user.is_a?(User)
+          user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+
+          if user_or_deploy_token.is_a?(User)
+            @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :user, [])
+            sign_in(user_or_deploy_token)
+          elsif user_or_deploy_token.is_a?(DeployToken)
+            @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :deploy_token, [])
+          end
         end
 
         request_bearer_token! unless authenticated_user
@@ -38,28 +44,6 @@ module Groups
         # unfortunately, we cannot use https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token.html#method-i-authentication_request
         response.headers['WWW-Authenticate'] = ::DependencyProxy::Registry.authenticate_header
         render plain: '', status: :unauthorized
-      end
-
-      def user_from_token(token)
-        token_payload = ::DependencyProxy::AuthTokenService.decoded_token_payload(token)
-
-        if token_payload['user_id']
-          token_user = User.find(token_payload['user_id'])
-          return unless token_user
-
-          @authentication_result = Gitlab::Auth::Result.new(token_user, nil, :user, [])
-          return token_user
-        elsif token_payload['deploy_token']
-          deploy_token = DeployToken.active.find_by_token(token_payload['deploy_token'])
-          return unless deploy_token
-
-          @authentication_result = Gitlab::Auth::Result.new(deploy_token, nil, :deploy_token, [])
-          return deploy_token
-        end
-
-        nil
-      rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
-        nil
       end
     end
   end
