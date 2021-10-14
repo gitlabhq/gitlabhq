@@ -269,7 +269,7 @@ image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
 - Only update fixes by pinning to a minor version (such as `1.6`).
 - Prevent all updates by pinning to a specific version (such as `1.6.4`).
 
-Find the latest DAST versions on the [Releases](https://gitlab.com/security-products/dast/-/releases)
+Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases)
 page.
 
 #### Configure DAST using the UI

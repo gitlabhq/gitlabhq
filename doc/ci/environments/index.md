@@ -825,8 +825,29 @@ FLAG:
 On self-managed GitLab, by default this bug fix is not available. To make it available per project or for your entire instance, ask an administrator to [enable the `surface_environment_creation_failure` flag](../../administration/feature_flags.md). On GitLab.com, this bug fix is not available, but will be rolled out shortly.
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
-such as a [Review App](../review_apps/index.md), you might encounter this error
-because the dynamically generated parameter is invalid for the system.
+you might encounter this error because the dynamically generated parameter can't be used for creating an environment.
+
+For example, your project has the following `.gitlab-ci.yml`:
+
+```yaml
+deploy:
+  script: echo
+  environment: production/$ENVIRONMENT
+```
+
+Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
+create an environment with a name `production/`, which is invalid in
+[the environment name constraint](../yaml/index.md).
+
+To fix this, use one of the following solutions:
+
+- Remove `environment` keyword from the deployment job. GitLab has already been
+  ignoring the invalid keyword, therefore your deployment pipelines stay intact
+  even after the keyword removal.
+- Ensure the variable exists in the pipeline. Please note that there is
+  [a limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+#### If you get this error on Review Apps
 
 For example, if you have the following in your `.gitlab-ci.yml`:
 
@@ -841,7 +862,7 @@ the `review` job tries to create an environment with `review/bug-fix!`.
 However, the `!` is an invalid character for environments, so the
 deployment job fails since it was about to run without an environment.
 
-To fix this, you can:
+To fix this, use one of the following solutions:
 
 - Re-create your feature branch without the invalid characters,
   such as `bug-fix`.

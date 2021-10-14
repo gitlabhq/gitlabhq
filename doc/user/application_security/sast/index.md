@@ -189,25 +189,59 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 
-### Configure SAST in the UI **(ULTIMATE)**
+### Configure SAST in the UI
+
+You can enable and configure SAST in the UI, either with default settings, or with customizations.
+Use the method that best meets your needs.
+
+- [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings)
+- [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations)
+
+### Configure SAST in the UI with default settings **(FREE)**
+
+> [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
+
+To enable and configure SAST with default settings:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance** > **Configuration**.
+1. In the SAST section, select `Enable via MR`.
+1. Review the draft MR that enables SAST with the default recommended settings in the
+   `.gitlab-ci.yml` file.
+1. Merge the MR to enable SAST. You should see SAST jobs run in that MR's pipeline.
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
+
+### Configure SAST in the UI with customizations **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab Ultimate 13.4.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab Ultimate 13.5.
 
-You can enable and configure SAST with a basic configuration using the **SAST Configuration**
-page:
+To enable and configure SAST with customizations:
 
-1. From the project's home page, go to **Security & Compliance** > **Configuration** in the
-   left sidebar.
-1. If the project does not have a `.gitlab-ci.yml` file, click **Enable** in the Static Application Security Testing (SAST) row, otherwise click **Configure**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. If the project does not have a `.gitlab-ci.yml` file, select **Enable** in the Static Application
+   Security Testing (SAST) row, otherwise select **Configure**.
 1. Enter the custom SAST values.
 
-   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST Configuration page, their values are left unchanged. Default values are inherited from the GitLab SAST template.
+   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
+   Configuration page, their values are left unchanged. Default values are inherited from the GitLab
+   SAST template.
 
-1. Optionally, expand the **SAST analyzers** section, select individual [SAST analyzers](analyzers.md) and enter custom analyzer values.
-1. Click **Create Merge Request**.
+1. Optionally, expand the **SAST analyzers** section, select individual
+   [SAST analyzers](analyzers.md) and enter custom analyzer values.
+1. Select **Create Merge Request**.
 1. Review and merge the merge request.
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
 
 ### Customizing the SAST settings
 

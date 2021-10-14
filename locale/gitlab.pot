@@ -16522,7 +16522,13 @@ msgstr ""
 msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
+msgid "GroupSettings|Select a project with the %{code_start}.gitlab/insights.yml%{code_end} file"
+msgstr ""
+
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
+msgstr ""
+
+msgid "GroupSettings|Select the project that contains your custom Insights file."
 msgstr ""
 
 msgid "GroupSettings|Set the maximum size of GitLab Pages for this group. %{link_start}Learn more.%{link_end}"
@@ -30706,13 +30712,7 @@ msgstr ""
 msgid "Select a project"
 msgstr ""
 
-msgid "Select a project to read Insights configuration file"
-msgstr ""
-
 msgid "Select a reason"
-msgstr ""
-
-msgid "Select a repository"
 msgstr ""
 
 msgid "Select a repository containing templates for common files."

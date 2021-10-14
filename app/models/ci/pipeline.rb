@@ -925,9 +925,22 @@ module Ci
     end
 
     def environments_in_self_and_descendants
-      environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
+      if ::Feature.enabled?(:avoid_cross_joins_environments_in_self_and_descendants, default_enabled: :yaml)
+        # We limit to 100 unique environments for application safety.
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
+        expanded_environment_names =
+          builds_in_self_and_descendants.joins(:metadata)
+                                        .where.not('ci_builds_metadata.expanded_environment_name' => nil)
+                                        .distinct('ci_builds_metadata.expanded_environment_name')
+                                        .limit(100)
+                                        .pluck(:expanded_environment_name)
 
-      Environment.where(id: environment_ids)
+        Environment.where(project: project, name: expanded_environment_names)
+      else
+        environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
+
+        Environment.where(id: environment_ids)
+      end
     end
 
     # With multi-project and parent-child pipelines

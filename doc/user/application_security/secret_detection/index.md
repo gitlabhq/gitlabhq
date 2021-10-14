@@ -138,7 +138,7 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
-### Enable Secret Detection via an automatic merge request **(ULTIMATE SELF)**
+### Enable Secret Detection via an automatic merge request **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
@@ -151,7 +151,12 @@ from the Security Configuration page.
 1. In the **Secret Detection** row, select **Configure via Merge Request**.
 
 This automatically creates a merge request with the changes necessary to enable Secret Detection
-that you can review and merge to complete the configuration.
+that you can review and merge to complete the configuration. 
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
 
 ### Customizing settings
 
