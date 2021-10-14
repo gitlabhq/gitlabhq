@@ -40,24 +40,11 @@ msgstr ""
 msgid " You need to do this before %{grace_period_deadline}."
 msgstr ""
 
-msgid " and"
-msgstr ""
-
 msgid " and "
 msgstr ""
 
 msgid " and %{sliced}"
 msgstr ""
-
-msgid " degraded on %d point"
-msgid_plural " degraded on %d points"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid " improved on %d point"
-msgid_plural " improved on %d points"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid " or "
 msgstr ""
@@ -196,9 +183,6 @@ msgid "%d commit,"
 msgid_plural "%d commits,"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "%d commits"
-msgstr ""
 
 msgid "%d completed issue"
 msgid_plural "%d completed issues"
@@ -39986,7 +39970,13 @@ msgstr ""
 msgid "ciReport|Cluster Image Scanning"
 msgstr ""
 
-msgid "ciReport|Code quality"
+msgid "ciReport|Code quality degraded"
+msgstr ""
+
+msgid "ciReport|Code quality improved"
+msgstr ""
+
+msgid "ciReport|Code quality scanning detected %{issueCount} changes in merged results"
 msgstr ""
 
 msgid "ciReport|Container Scanning"

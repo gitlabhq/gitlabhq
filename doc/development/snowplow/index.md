@@ -4,40 +4,28 @@ group: Product Intelligence
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Snowplow Guide
+# Snowplow
 
-This guide provides an overview of how Snowplow works.
-
-For more information about Product Intelligence, see:
-
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Service Ping Guide](../service_ping/index.md)
-
-More useful links:
-
-- [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
-- [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)
+This page provides an overview of how Snowplow works and how to enable it.
 
 ## What is Snowplow
 
-Snowplow is an enterprise-grade marketing and Product Intelligence platform which helps track the way users engage with our website and application.
+Snowplow is an enterprise-grade marketing and Product Intelligence platform that tracks how users engage with our website and application.
 
 [Snowplow](https://snowplowanalytics.com) consists of several loosely-coupled sub-systems:
 
 - **Trackers** fire Snowplow events. Snowplow has twelve trackers that cover web, mobile, desktop, server, and IoT.
-- **Collectors** receive Snowplow events from trackers. We have three different event collectors that synchronize events to Amazon S3, Apache Kafka, or Amazon Kinesis.
-- **Enrich** cleans up raw Snowplow events, enriches them, and puts them into storage. There is a Hadoop-based enrichment process, and a Kinesis-based or Kafka-based process.
-- **Storage** is where the Snowplow events live. We store the Snowplow events in a flat file structure on S3, and in the Redshift and PostgreSQL databases.
-- **Data modeling** is where event-level data joins other data sets and aggregates into smaller data sets, and business logic is applied. This produces a clean set of tables for data analysis. We have data models for Redshift and Looker.
+- **Collectors** receive Snowplow events from trackers. We use different event collectors that synchronize events to Amazon S3, Apache Kafka, or Amazon Kinesis.
+- **Enrich** cleans raw Snowplow events, enriches them, and puts them into storage. There is a Hadoop-based enrichment process, and a Kinesis-based or Kafka-based process.
+- **Storage** stores Snowplow events. We store the Snowplow events in a flat file structure on S3, and in the Redshift and PostgreSQL databases.
+- **Data modeling** joins event-level data with other data sets, aggregates them into smaller data sets, and applies business logic. This produces a clean set of tables for data analysis. We use data models for Redshift and Looker.
 - **Analytics** are performed on Snowplow events or on aggregate tables.
 
 ![snowplow_flow](../img/snowplow_flow.png)
 
 ### Useful links
 
-- [Understanding the structure of Snowplow data](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)
+- [Snowplow data structure](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)
 - [Our Iglu schema registry](https://gitlab.com/gitlab-org/iglu)
 - [List of events used in our codebase (Event Dictionary)](https://metrics.gitlab.com/snowplow.html)
 
@@ -46,7 +34,7 @@ Snowplow is an enterprise-grade marketing and Product Intelligence platform whic
 Tracking can be enabled at:
 
 - The instance level, which enables tracking on both the frontend and backend layers.
-- The user level, though user tracking can be disabled on a per-user basis.
+- The user level. User tracking can be disabled on a per user basis.
   GitLab respects the [Do Not Track](https://www.eff.org/issues/do-not-track) standard, so any user who has enabled the Do Not Track option in their browser is not tracked at a user level.
 
 Snowplow tracking is enabled on GitLab.com, and we use it for most of our tracking strategy.
@@ -116,7 +104,7 @@ Each click event provides attributes that describe the event.
 
 ### Examples
 
-| category* | label            | action                | property** | value |
+| Category* | Label            | Action                | Property** | Value |
 |-------------|------------------|-----------------------|----------|:-----:|
 | `[root:index]` | `main_navigation`            | `click_navigation_link` | `[link_label]`   | - |
 | `[groups:boards:show]` | `toggle_swimlanes` | `click_toggle_button` | - | `[is_active]` |
@@ -126,8 +114,8 @@ Each click event provides attributes that describe the event.
 | `[projects:clusters:new]` | `chart_options` | `generate_link` | `[chart_link]` | - |
 | `[projects:clusters:new]` | `chart_options` | `click_add_label_button` | `[label_id]` | - |
 
-_* It's ok to omit the category, and use the default._<br>
-_** Property is usually the best place for variable strings._
+_* If you choose to omit the category you can use the default._<br>
+_** Use property for variable strings._
 
 ### Reference SQL
 
@@ -173,4 +161,13 @@ LIMIT 100
 
 ### Web-specific parameters
 
-Snowplow JS adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
+Snowplow JavaScript adds [web-specific parameters](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/snowplow-tracker-protocol/#Web-specific_parameters) to all web events by default.
+
+## Related topics
+
+- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+- [Service Ping Guide](../service_ping/index.md)
+- [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
+- [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

@@ -163,7 +163,6 @@ class GroupPolicy < BasePolicy
     enable :admin_cluster
     enable :read_deploy_token
     enable :create_jira_connect_subscription
-    enable :update_runners_registration_token
     enable :maintainer_access
   end
 
@@ -180,6 +179,7 @@ class GroupPolicy < BasePolicy
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
+    enable :update_runners_registration_token
     enable :owner_access
   end
 

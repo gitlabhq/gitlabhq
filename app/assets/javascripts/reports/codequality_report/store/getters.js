@@ -1,5 +1,5 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
-import { sprintf, __, s__, n__ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { LOADING, ERROR, SUCCESS, STATUS_NOT_FOUND } from '../../constants';
 
 export const hasCodequalityIssues = (state) =>
@@ -18,27 +18,23 @@ export const codequalityStatus = (state) => {
 
 export const codequalityText = (state) => {
   const { newIssues, resolvedIssues } = state;
-  const text = [];
-
+  let text;
   if (!newIssues.length && !resolvedIssues.length) {
-    text.push(s__('ciReport|No changes to code quality'));
-  } else {
-    text.push(s__('ciReport|Code quality'));
-
-    if (resolvedIssues.length) {
-      text.push(n__(' improved on %d point', ' improved on %d points', resolvedIssues.length));
-    }
-
-    if (newIssues.length && resolvedIssues.length) {
-      text.push(__(' and'));
-    }
-
-    if (newIssues.length) {
-      text.push(n__(' degraded on %d point', ' degraded on %d points', newIssues.length));
-    }
+    text = s__('ciReport|No changes to code quality');
+  } else if (newIssues.length && resolvedIssues.length) {
+    text = sprintf(
+      s__(`ciReport|Code quality scanning detected %{issueCount} changes in merged results`),
+      {
+        issueCount: newIssues.length + resolvedIssues.length,
+      },
+    );
+  } else if (resolvedIssues.length) {
+    text = s__(`ciReport|Code quality improved`);
+  } else if (newIssues.length) {
+    text = s__(`ciReport|Code quality degraded`);
   }
 
-  return text.join('');
+  return text;
 };
 
 export const codequalityPopover = (state) => {

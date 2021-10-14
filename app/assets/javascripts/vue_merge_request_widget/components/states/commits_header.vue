@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { __, n__, s__ } from '~/locale';
@@ -41,7 +40,7 @@ export default {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
     commitsCountMessage() {
-      return n__(__('%d commit'), __('%d commits'), this.isSquashEnabled ? 1 : this.commitsCount);
+      return n__('%d commit', '%d commits', this.isSquashEnabled ? 1 : this.commitsCount);
     },
     modifyLinkMessage() {
       if (this.isFastForwardEnabled) return __('Modify commit message');
