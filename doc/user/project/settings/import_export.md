@@ -226,6 +226,15 @@ GitLab.com may have [different settings](../../gitlab_com/index.md#importexport)
 
 ## Troubleshooting
 
+### Project fails to import due to mismatch
+
+If the [shared runners enablement](../../../ci/runners/runners_scope.md#enable-shared-runners)
+does not match between the exported project, and the project import, the project fails to import.
+Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and either:
+
+- Ensure shared runners are enabled in both the source and destination projects.
+- Disable shared runners on the parent group when you import the project. 
+
 ### Import workaround for large repositories
 
 [Maximum import size limitations](#import-the-project)
