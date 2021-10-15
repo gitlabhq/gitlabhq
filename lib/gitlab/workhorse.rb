@@ -170,6 +170,18 @@ module Gitlab
         ]
       end
 
+      def send_dependency(token, url)
+        params = {
+          'Header' => { Authorization: ["Bearer #{token}"] },
+          'Url' => url
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "send-dependency:#{encode(params)}"
+        ]
+      end
+
       def channel_websocket(channel)
         details = {
           'Channel' => {

@@ -20,7 +20,8 @@ class Admin::DashboardController < Admin::ApplicationController
       Gitlab::Redis::SharedState,
       Gitlab::Redis::Cache,
       Gitlab::Redis::TraceChunks,
-      Gitlab::Redis::RateLimiting
+      Gitlab::Redis::RateLimiting,
+      Gitlab::Redis::Sessions
     ].map(&:version).uniq
   end
   # rubocop: enable CodeReuse/ActiveRecord

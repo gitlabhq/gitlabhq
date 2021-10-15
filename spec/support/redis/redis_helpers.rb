@@ -27,4 +27,9 @@ module RedisHelpers
   def redis_rate_limiting_cleanup!
     Gitlab::Redis::RateLimiting.with(&:flushdb)
   end
+
+  # Usage: session state
+  def redis_sessions_cleanup!
+    Gitlab::Redis::Sessions.with(&:flushdb)
+  end
 end

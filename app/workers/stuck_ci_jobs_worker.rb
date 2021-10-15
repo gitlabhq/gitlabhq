@@ -13,7 +13,6 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   data_consistency :always
 
   feature_category :continuous_integration
-  worker_resource_boundary :cpu
 
   def perform
     Ci::StuckBuilds::DropRunningWorker.perform_in(20.minutes)

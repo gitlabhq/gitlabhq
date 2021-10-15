@@ -16,6 +16,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
@@ -171,7 +172,7 @@ func (ro *routeEntry) isMatch(cleanedPath string, req *http.Request) bool {
 	return ok
 }
 
-func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config) http.Handler {
+func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector) http.Handler {
 	proxier := proxypkg.NewProxy(backend, version, rt)
 
 	return senddata.SendData(
@@ -184,6 +185,7 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 		artifacts.SendEntry,
 		sendurl.SendURL,
 		imageresizer.NewResizer(cfg),
+		dependencyProxyInjector,
 	)
 }
 
@@ -194,7 +196,8 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude}
-	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config)
+	dependencyProxyInjector := dependencyproxy.NewInjector()
+	proxy := buildProxy(u.Backend, u.Version, u.RoundTripper, u.Config, dependencyProxyInjector)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
 	assetsNotFoundHandler := NotFoundUnless(u.DevelopmentMode, proxy)
@@ -208,13 +211,15 @@ func configureRoutes(u *upstream) {
 	}
 
 	signingTripper := secret.NewRoundTripper(u.RoundTripper, u.Version)
-	signingProxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config)
+	signingProxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector)
 
 	preparers := createUploadPreparers(u.Config)
 	uploadPath := path.Join(u.DocumentRoot, "uploads/tmp")
 	uploadAccelerateProxy := upload.Accelerate(&upload.SkipRailsAuthorizer{TempPath: uploadPath}, proxy, preparers.uploads)
 	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", uploadAccelerateProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, redis.WatchKey, u.APICILongPollingDuration)
+
+	dependencyProxyInjector.SetUploadHandler(upload.BodyUploader(api, signingProxy, preparers.packages))
 
 	// Serve static files or forward the requests
 	defaultUpstream := static.ServeExisting(

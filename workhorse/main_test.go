@@ -950,3 +950,72 @@ func TestHealthChecksUnreachable(t *testing.T) {
 		})
 	}
 }
+
+func TestDependencyProxyInjector(t *testing.T) {
+	token := "token"
+	bodyLength := 4096
+	expectedBody := strings.Repeat("p", bodyLength)
+
+	testCases := []struct {
+		desc           string
+		finalizeStatus int
+	}{
+		{
+			desc:           "user downloads the file when the request is successfully finalized",
+			finalizeStatus: 200,
+		}, {
+			desc:           "user downloads the file even when the request fails to be finalized",
+			finalizeStatus: 500,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			originResource := "/origin_resource"
+
+			originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				require.Equal(t, originResource, r.URL.String())
+
+				w.Header().Set("Content-Length", strconv.Itoa(bodyLength))
+
+				io.WriteString(w, expectedBody)
+			}))
+			defer originResourceServer.Close()
+
+			originResourceUrl := originResourceServer.URL + originResource
+
+			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.String() {
+				case "/base":
+					params := `{"Url": "` + originResourceUrl + `", "Token": "` + token + `"}`
+					w.Header().Set("Gitlab-Workhorse-Send-Data", `send-dependency:`+base64.URLEncoding.EncodeToString([]byte(params)))
+				case "/base/upload/authorize":
+					w.Header().Set("Content-Type", api.ResponseContentType)
+					_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+					require.NoError(t, err)
+				case "/base/upload":
+					w.WriteHeader(tc.finalizeStatus)
+				default:
+					t.Fatalf("unexpected request: %s", r.URL)
+				}
+			})
+			defer ts.Close()
+
+			ws := startWorkhorseServer(ts.URL)
+			defer ws.Close()
+
+			resp, err := http.DefaultClient.Get(ws.URL + "/base")
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+
+			require.NoError(t, resp.Body.Close()) // Client closes connection
+			ws.Close()                            // Wait for server handler to return
+
+			require.Equal(t, 200, resp.StatusCode, "status code")
+			require.Equal(t, expectedBody, string(body), "response body")
+		})
+	}
+}

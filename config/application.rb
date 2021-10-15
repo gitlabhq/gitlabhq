@@ -25,6 +25,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/redis/trace_chunks')
     require_dependency Rails.root.join('lib/gitlab/redis/rate_limiting')
+    require_dependency Rails.root.join('lib/gitlab/redis/sessions')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')

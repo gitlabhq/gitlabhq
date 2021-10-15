@@ -5,10 +5,14 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   include DependencyProxy::GroupAccess
   include SendFileUpload
   include ::PackagesHelper # for event tracking
+  include WorkhorseRequest
 
   before_action :ensure_group
-  before_action :ensure_token_granted!
+  before_action :ensure_token_granted!, only: [:blob, :manifest]
   before_action :ensure_feature_enabled!
+
+  before_action :verify_workhorse_api!, only: [:authorize_upload_blob, :upload_blob]
+  skip_before_action :verify_authenticity_token, only: [:authorize_upload_blob, :upload_blob]
 
   attr_reader :token
 
@@ -38,6 +42,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def blob
+    return blob_via_workhorse if Feature.enabled?(:dependency_proxy_workhorse, group, default_enabled: :yaml)
+
     result = DependencyProxy::FindOrCreateBlobService
       .new(group, image, token, params[:sha]).execute
 
@@ -50,11 +56,47 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     end
   end
 
+  def authorize_upload_blob
+    set_workhorse_internal_api_content_type
+
+    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false)
+  end
+
+  def upload_blob
+    @group.dependency_proxy_blobs.create!(
+      file_name: blob_file_name,
+      file: params[:file],
+      size: params[:file].size
+    )
+
+    event_name = tracking_event_name(object_type: :blob, from_cache: false)
+    track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+
+    head :ok
+  end
+
   private
+
+  def blob_via_workhorse
+    blob = @group.dependency_proxy_blobs.find_by_file_name(blob_file_name)
+
+    if blob.present?
+      event_name = tracking_event_name(object_type: :blob, from_cache: true)
+      track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
+
+      send_upload(blob.file)
+    else
+      send_dependency(token, DependencyProxy::Registry.blob_url(image, params[:sha]), blob_file_name)
+    end
+  end
+
+  def blob_file_name
+    @blob_file_name ||= params[:sha].sub('sha256:', '') + '.gz'
+  end
 
   def group
     strong_memoize(:group) do
-      Group.find_by_full_path(params[:group_id], follow_redirects: request.get?)
+      Group.find_by_full_path(params[:group_id], follow_redirects: true)
     end
   end
 

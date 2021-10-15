@@ -199,3 +199,18 @@ NOTE:
 The special handling for the `gitlab-deploy-token` deploy token is not
 implemented for group deploy tokens. To make the group-level deploy token available for
 CI/CD jobs, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` variables should be set under **Settings** to the name and token of the group deploy token respectively.
+
+## Troubleshooting
+
+### Group deploy tokens and LFS
+
+A bug
+[prevents Group Deploy Tokens from cloning LFS objects](https://gitlab.com/gitlab-org/gitlab/-/issues/235398).
+If you receive `404 Not Found` errors and this error,
+use a Project Deploy Token to work around the bug:
+
+```plaintext
+api error: Repository or object not found:
+https://<URL-with-token>.git/info/lfs/objects/batch
+Check that it exists and that you have proper access to it
+```

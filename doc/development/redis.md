@@ -16,6 +16,7 @@ GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 - To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.
 - Rate limiting state storage.
+- Sessions.
 
 In most environments (including the GDK), all of these point to the same
 Redis instance.

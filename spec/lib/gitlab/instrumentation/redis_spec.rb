@@ -77,7 +77,8 @@ RSpec.describe Gitlab::Instrumentation::Redis do
                             details_row.merge(storage: 'Queues'),
                             details_row.merge(storage: 'SharedState'),
                             details_row.merge(storage: 'TraceChunks'),
-                            details_row.merge(storage: 'RateLimiting'))
+                            details_row.merge(storage: 'RateLimiting'),
+                            details_row.merge(storage: 'Sessions'))
     end
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DependencyProxy::FileUploader < GitlabUploader
+  extend Workhorse::UploadPath
   include ObjectStorage::Concern
 
   before :cache, :set_content_type

@@ -46,4 +46,12 @@ RSpec.configure do |config|
 
     redis_rate_limiting_cleanup!
   end
+
+  config.around(:each, :clean_gitlab_redis_sessions) do |example|
+    redis_sessions_cleanup!
+
+    example.run
+
+    redis_sessions_cleanup!
+  end
 end
