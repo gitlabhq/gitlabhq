@@ -24417,6 +24417,11 @@ msgstr ""
 msgid "PackageRegistry|Package has %{number} archived updates"
 msgstr ""
 
+msgid "PackageRegistry|Package has %{updatesCount} archived update"
+msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
 msgstr ""
 

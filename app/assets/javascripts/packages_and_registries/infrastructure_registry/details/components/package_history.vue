@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { first } from 'lodash';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -20,8 +19,6 @@ export default {
     combinedUpdateText: s__(
       'PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}',
     ),
-    archivedPipelineMessageSingular: s__('PackageRegistry|Package has %{number} archived update'),
-    archivedPipelineMessagePlural: s__('PackageRegistry|Package has %{number} archived updates'),
   },
   components: {
     GlLink,
@@ -57,14 +54,14 @@ export default {
     showPipelinesInfo() {
       return Boolean(this.firstPipeline?.id);
     },
-    archiviedLines() {
+    archivedLines() {
       return Math.max(this.pipelines.length - HISTORY_PIPELINES_LIMIT - 1, 0);
     },
     archivedPipelineMessage() {
       return n__(
-        this.$options.i18n.archivedPipelineMessageSingular,
-        this.$options.i18n.archivedPipelineMessagePlural,
-        this.archiviedLines,
+        'PackageRegistry|Package has %{updatesCount} archived update',
+        'PackageRegistry|Package has %{updatesCount} archived updates',
+        this.archivedLines,
       );
     },
   },
@@ -133,10 +130,10 @@ export default {
         </gl-sprintf>
       </history-item>
 
-      <history-item v-if="archiviedLines" icon="history" data-testid="archived">
+      <history-item v-if="archivedLines" icon="history" data-testid="archived">
         <gl-sprintf :message="archivedPipelineMessage">
-          <template #number>
-            <strong>{{ archiviedLines }}</strong>
+          <template #updatesCount>
+            <strong>{{ archivedLines }}</strong>
           </template>
         </gl-sprintf>
       </history-item>
