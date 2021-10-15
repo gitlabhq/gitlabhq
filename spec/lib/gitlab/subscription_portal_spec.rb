@@ -45,6 +45,14 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     end
   end
 
+  describe '.subscriptions_comparison_url' do
+    subject { described_class.subscriptions_comparison_url }
+
+    link_match = %r{\Ahttps://about\.gitlab\.((cn/pricing/saas)|(com/pricing/gitlab-com))/feature-comparison\z}
+
+    it { is_expected.to match(link_match) }
+  end
+
   context 'url methods' do
     where(:method_name, :result) do
       :default_subscriptions_url         | 'https://customers.stg.gitlab.com'
@@ -56,7 +64,6 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
       :subscriptions_plans_url           | 'https://customers.stg.gitlab.com/plans'
       :subscriptions_instance_review_url | 'https://customers.stg.gitlab.com/instance_review'
       :subscriptions_gitlab_plans_url    | 'https://customers.stg.gitlab.com/gitlab_plans'
-      :subscriptions_comparison_url      | 'https://about.gitlab.com/pricing/gitlab-com/feature-comparison'
     end
 
     with_them do

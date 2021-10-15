@@ -36,6 +36,14 @@ module Gitlab
     def self.gitlab_com_status_url
       'https://status.gitlab.com'
     end
+
+    def self.about_pricing_url
+      "https://about.gitlab.com/pricing"
+    end
+
+    def self.about_pricing_faq_url
+      "https://about.gitlab.com/gitlab-com/#faq"
+    end
   end
 end
 
