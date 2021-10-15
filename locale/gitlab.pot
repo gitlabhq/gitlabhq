@@ -24411,12 +24411,6 @@ msgstr ""
 msgid "PackageRegistry|Package file deleted successfully"
 msgstr ""
 
-msgid "PackageRegistry|Package has %{number} archived update"
-msgstr ""
-
-msgid "PackageRegistry|Package has %{number} archived updates"
-msgstr ""
-
 msgid "PackageRegistry|Package has %{updatesCount} archived update"
 msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
