@@ -7,16 +7,15 @@ type: reference
 
 # File hooks **(FREE SELF)**
 
-> - Introduced in GitLab 10.6.
-> - Until GitLab 12.8, the feature name was Plugins.
+> Renamed feature from Plugins to File hooks in GitLab 12.8.
 
 With custom file hooks, GitLab administrators can introduce custom integrations
 without modifying the GitLab source code.
 
-NOTE:
-Instead of writing and supporting your own file hook you can make changes
-directly to the GitLab source code and contribute back upstream. This way we can
-ensure functionality is preserved across versions and covered by tests.
+A file hook runs on each event. You can filter events or projects
+in a file hook's code, and create many file hooks as you need. Each file hook is
+triggered by GitLab asynchronously in case of an event. For a list of events
+see the [system hooks](../system_hooks/system_hooks.md) documentation.
 
 NOTE:
 File hooks must be configured on the file system of the GitLab server. Only GitLab
@@ -24,10 +23,9 @@ server administrators can complete these tasks. Explore
 [system hooks](../system_hooks/system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
 as an option if you do not have file system access.
 
-A file hook runs on each event. You can filter events or projects
-in a file hook's code, and create many file hooks as you need. Each file hook is
-triggered by GitLab asynchronously in case of an event. For a list of events
-see the [system hooks](../system_hooks/system_hooks.md) documentation.
+Instead of writing and supporting your own file hook, you can also make changes
+directly to the GitLab source code and contribute back upstream. In this way, we can
+ensure functionality is preserved across versions and covered by tests.
 
 ## Setup
 
@@ -67,7 +65,7 @@ message is logged to:
 - `log/file_hook.log` in a source installation.
 
 NOTE:
-Before 14.0 release, the filename was `plugin.log`
+In GitLab 13.12 and earlier, the filename was `plugin.log`
 
 ## Creating file hooks
 
