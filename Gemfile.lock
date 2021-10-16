@@ -907,7 +907,7 @@ GEM
     peek (1.1.0)
       railties (>= 4.0.0)
     pg (1.2.3)
-    pg_query (2.1.0)
+    pg_query (2.1.1)
       google-protobuf (>= 3.17.1)
     plist (3.6.0)
     png_quantizator (0.2.1)
