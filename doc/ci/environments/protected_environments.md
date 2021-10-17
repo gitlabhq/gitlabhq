@@ -2,26 +2,22 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: concepts, howto
 ---
 
 # Protected environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6303) in GitLab 11.3.
+[Environments](../environments/index.md) can be used for both testing and
+production reasons.
 
-[Environments](../environments/index.md) can be used for different reasons:
+Because deploy jobs can be raised by different users with different roles, it's
+important to be able to protect specific environments from the effects of
+unauthorized users.
 
-- Some of them are just for testing.
-- Others are for production.
-
-Since deploy jobs can be raised by different users with different roles, it is important that
-specific environments are "protected" to prevent unauthorized people from affecting them.
-
-By default, a protected environment does one thing: it ensures that only people
-with the right privileges can deploy to it, thus keeping it safe.
+By default, a protected environment ensures that only people with the
+appropriate privileges can deploy to it, keeping the environment safe.
 
 NOTE:
-A GitLab admin is always allowed to use environments, even if they are protected.
+GitLab administrators can use all environments, including protected environments.
 
 To protect, update, or unprotect an environment, you need to have at least the
 [Maintainer role](../../user/permissions.md).
@@ -157,9 +153,9 @@ For more information, see [Deployment safety](deployment_safety.md).
 
 ## Group-level protected environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.0. [Deployed behind the `group_level_protected_environments` flag](../../administration/feature_flags.md), disabled by default.
-> - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
-> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) on GitLab and on GitLab.com in 14.3.
+> - Introduced in GitLab 14.0 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) named `group_level_protected_environments`. Disabled by default.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) in GitLab 14.3.
 
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).
@@ -210,8 +206,8 @@ configured:
   (or above) to the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,
-  [group-level runners](../runners/runners_scope.md#group-runners),
-  [group-level clusters](../../user/group/clusters/index.md), etc. Those
+  [group-level runners](../runners/runners_scope.md#group-runners), and
+  [group-level clusters](../../user/group/clusters/index.md). Those
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
@@ -246,11 +242,11 @@ To protect a group-level environment:
 1. Make sure your environments have the correct
    [`deployment_tier`](index.md#deployment-tier-of-environments) defined in
    `.gitlab-ci.yml`.
-1. Configure the group-level protected environments via the
+1. Configure the group-level protected environments by using the
    [REST API](../../api/group_protected_environments.md).
 
 NOTE:
-Configuration [via the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
+Configuration [with the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/325249)
 is scheduled for a later release.
 
 <!-- ## Troubleshooting
