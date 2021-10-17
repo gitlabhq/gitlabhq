@@ -98,7 +98,7 @@ If you haven't, choose one of the following methods:
 1. [Rollback and upgrade](#roll-back-and-follow-the-required-upgrade-path) through one of the required
 versions before updating to 14.2+.
 1. [Roll forward](#roll-forward-and-finish-the-migrations-on-the-upgraded-version), staying on the current
-version and manually and ensure that the batched migrations complete successfully.
+version and manually ensuring that the batched migrations complete successfully.
 
 #### Roll back and follow the required upgrade path
 
