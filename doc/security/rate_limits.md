@@ -53,7 +53,7 @@ The **rate limit** is 5 requests per minute per user.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/35bc85c3ca093fee58d60dacdc9ed1fd9a15adec) in GitLab 13.4.
 
-There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#testing-webhooks), which prevents abuse of the webhook functionality.
+There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#test-a-webhook), which prevents abuse of the webhook functionality.
 
 The **rate limit** is 5 requests per minute per user.
 

@@ -207,7 +207,7 @@ apply more than one:
      ```shell
      omnibus_gitconfig['system'] = {
        # Set the http.postBuffer size, in bytes
-       "http" => ["postBuffer" => 524288000]
+       "http" => ["postBuffer => 524288000"]
      }
      ```
 

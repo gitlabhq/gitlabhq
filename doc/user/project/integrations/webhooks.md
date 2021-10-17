@@ -23,7 +23,7 @@ you can use webhooks to:
 
 You can configure webhook settings in GitLab for a [project](#project-webhooks-in-gitlab)
 or a [group](#group-webhooks).
-Usually, you set up your own [webhook receiver](#example-webhook-receiver)
+Usually, you set up your own [webhook receiver](#create-an-example-webhook-receiver)
 to receive information from GitLab and send it to another app, according to your requirements.
 We have a [built-in receiver](slack.md)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications per project.
@@ -71,20 +71,50 @@ in the [webhook settings](#configure-a-webhook) in your project.
 You can configure a webhook for a group to ensure all projects in the group
 receive the same webhook settings.
 
-## Webhook endpoint tips
+## HTTP responses for your endpoint
 
 If you are writing your own endpoint (web server) to receive
 GitLab webhooks, keep in mind the following:
 
-- Your endpoint should send its HTTP response as fast as possible. If the response takes longer than
-  the configured timeout, GitLab decides the hook failed and retries it. For information on
-  customizing this timeout, see
+- Your endpoint should send its HTTP response as fast as possible. If the response
+  takes longer than the configured timeout, GitLab assumes the hook failed and retries it.
+  To customize the timeout, see
   [Webhook fails or multiple webhook requests are triggered](#webhook-fails-or-multiple-webhook-requests-are-triggered).
-- Your endpoint should ALWAYS return a valid HTTP response. If you do
-  not do this then GitLab thinks the hook failed and retries it.
-  Most HTTP libraries take care of this for you automatically but if
-  you are writing a low-level hook this is important to remember.
+- Your endpoint should ALWAYS return a valid HTTP response. If not,
+  GitLab assumes the hook failed and retries it.
+  Most HTTP libraries take care of the response for you automatically but if
+  you are writing a low-level hook, this is important to remember.
 - GitLab ignores the HTTP status code returned by your endpoint.
+
+## How image URLs are displayed in the webhook body
+
+> Introduced in GitLab 11.2.
+
+Relative image references are rewritten to use an absolute URL
+in the body of a webhook.
+For example, if an image, merge request, comment, or wiki page includes the
+following image reference:
+
+```markdown
+![image](/uploads/$sha/image.png)
+```
+
+If:
+
+- GitLab is installed at `gitlab.example.com`.
+- The project is at `example-group/example-project`.
+
+The reference is rewritten in the webhook body as follows:
+
+```markdown
+![image](https://gitlab.example.com/example-group/example-project/uploads/$sha/image.png)
+```
+
+Image URLs are not rewritten if:
+
+- They already point to HTTP, HTTPS, or
+  protocol-relative URLs.
+- They use advanced Markdown features like link labels.
 
 ## Configure a webhook
 
@@ -97,6 +127,62 @@ You can configure a webhook for a group or a project.
 1. In the **Trigger** section, select the [events](#events) to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](#verify-an-ssl-certificate).
 1. Select **Add webhook**.
+
+## Test a webhook
+
+You can trigger a webhook manually, to ensure it's working properly.
+ 
+For example, to test `push events`, your project should have at least one commit. The webhook uses this commit in the webhook.
+
+To test a webhook:
+
+1. In your project, on the left sidebar, select **Settings > Webhooks**.
+1. Scroll down to the list of configured webhooks.
+1. From the **Test** dropdown list, select the type of event to test.
+
+![Webhook testing](img/webhook_testing.png)
+
+## Create an example webhook receiver
+
+To test how GitLab webhooks work, you can use
+an echo script running in a console session. For the following script to
+work you must have Ruby installed.
+
+1. Save the following file as `print_http_body.rb`:
+
+   ```ruby
+   require 'webrick'
+
+   server = WEBrick::HTTPServer.new(:Port => ARGV.first)
+   server.mount_proc '/' do |req, res|
+     puts req.body
+   end
+
+   trap 'INT' do
+     server.shutdown
+   end
+   server.start
+   ```
+
+1. Choose an unused port (for example, `8000`) and start the script:
+
+   ```shell
+   ruby print_http_body.rb 8000
+   ```
+
+1. In GitLab, add your webhook receiver as `http://my.host:8000/`.
+
+1. Select **Test**. You should see something like this in the console:
+
+   ```plaintext
+   {"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
+   example.com - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
+   - -> /
+   ```
+
+NOTE:
+You may need to [allow requests to the local network](../../../security/webhooks.md) for this
+receiver to be added.
 
 ## Events
 
@@ -1761,40 +1847,16 @@ X-Gitlab-Event: Release Hook
 }
 ```
 
-## Image URL rewriting
-
-From GitLab 11.2, simple image references are rewritten to use an absolute URL
-in webhooks. So if an image, merge request, comment, or wiki page has this in
-its description:
-
-```markdown
-![image](/uploads/$sha/image.png)
-```
-
-It appears in the webhook body as follows assuming that:
-
-- GitLab is installed at `gitlab.example.com`.
-- The project is at `example-group/example-project`.
-
-```markdown
-![image](https://gitlab.example.com/example-group/example-project/uploads/$sha/image.png)
-```
-
-This doesn't rewrite URLs that already are pointing to HTTP, HTTPS, or
-protocol-relative URLs. It also doesn't rewrite image URLs using advanced
-Markdown features, like link labels.
-
-## Testing webhooks
-
-You can trigger the webhook manually. Sample data from the project is used.
-For example, for triggering `Push Events` your project should have at least one commit.
-
-![Webhook testing](img/webhook_testing.png)
-
 ## Troubleshoot webhooks
 
 GitLab records the history of each webhook request.
-The **Recent events** table lists requests made within the last 2 days. The table is located on the **Edit** page for each webhook.
+You can view requests made in the last 2 days in the **Recent events** table.
+
+To view the table:
+
+1. In your project, on the left sidebar, select **Settings > Webhooks**.
+1. Scroll down to the webhooks.
+1. Select **Edit** for the webhook you want to view.
 
 The table includes the following details about each request:
 
@@ -1815,17 +1877,17 @@ To view the **Details** page, select **View details** for the webhook event.
 To repeat the delivery with the same data, select **Resend Request**.
 
 NOTE:
-If URL or secret token of the webhook were updated, data is delivered to the new address.
+If you update the URL or secret token of the webhook, data is delivered to the new address.
 
 ### Webhook fails or multiple webhook requests are triggered
 
-When GitLab sends a webhook, it expects a response in 10 seconds by default. If it does not receive
-one, it retries the webhook. If the endpoint doesn't send its HTTP response within those 10 seconds,
-GitLab may decide the hook failed and retry it.
+When GitLab sends a webhook, it expects a response in 10 seconds by default.
+If the endpoint doesn't send an HTTP response in those 10 seconds,
+GitLab may assume the webhook failed and retry it.
 
-If your webhooks are failing or you are receiving multiple requests, you can try changing the
-default value. You can do this by uncommenting or adding the following setting to your
-`/etc/gitlab/gitlab.rb` file:
+If your webhooks are failing or you are receiving multiple requests,
+you can try changing the default timeout value.
+In your `/etc/gitlab/gitlab.rb` file, uncomment or add the following setting:
 
 ```ruby
 gitlab_rails['webhook_timeout'] = 10
@@ -1833,48 +1895,11 @@ gitlab_rails['webhook_timeout'] = 10
 
 ### Unable to get local issuer certificate
 
-When SSL verification is enabled, this error indicates that GitLab isn't able to verify the SSL certificate of the webhook endpoint.
-Typically, this is because the root certificate isn't issued by a trusted certification authority as
+When SSL verification is enabled, you might get an error that GitLab cannot
+verify the SSL certificate of the webhook endpoint.
+Typically, this error occurs because the root certificate isn't
+issued by a trusted certification authority as
 determined by [CAcert.org](http://www.cacert.org/).
 
-Should that not be the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
-Missing intermediate certificates are a common point of verification failure.
-
-## Example webhook receiver
-
-If you want to see GitLab webhooks in action for testing purposes you can use
-a simple echo script running in a console session. For the following script to
-work you need to have Ruby installed.
-
-Save the following file as `print_http_body.rb`:
-
-```ruby
-require 'webrick'
-
-server = WEBrick::HTTPServer.new(:Port => ARGV.first)
-server.mount_proc '/' do |req, res|
-  puts req.body
-end
-
-trap 'INT' do
-  server.shutdown
-end
-server.start
-```
-
-Pick an unused port (for example, `8000`) and start the script: `ruby print_http_body.rb
-8000`. Then add your server as a webhook receiver in GitLab as
-`http://my.host:8000/`.
-
-When you press 'Test' in GitLab, you should see something like this in the
-console:
-
-```plaintext
-{"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
-example.com - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
-- -> /
-```
-
-NOTE:
-You may need to [allow requests to the local network](../../../security/webhooks.md) for this
-receiver to be added.
+If that is not the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
+Missing intermediate certificates are common causes of verification failure.
