@@ -152,8 +152,8 @@
 /doc/api/invitations.md @kpaizee
 /doc/api/experiments.md @kpaizee
 /doc/development/experiment_guide/ @kpaizee
-/doc/development/snowplow/ @kpaizee
-/doc/development/service_ping/ @kpaizee
+/doc/development/snowplow/ @fneill
+/doc/development/service_ping/ @fneill
 /doc/user/admin_area/license.md @kpaizee
 
 [Frontend]

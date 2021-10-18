@@ -303,7 +303,7 @@ We automatically add the ~"Accepting merge requests" label to issues
 that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
 We recommend people that have never contributed to any open source project to
-look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 

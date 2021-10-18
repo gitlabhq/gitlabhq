@@ -115,7 +115,7 @@ component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-
 You may also have a look at our troubleshooting guides for:
 
 - [GitLab](../index.md#troubleshooting)
-- [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html#troubleshooting)
+- [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
 
 To run `gitlab:check`, run:
 
