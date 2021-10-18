@@ -10,9 +10,9 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import eventHub from '~/pages/projects/new/event_hub';
-import NewProjectUrlSelect from '~/pages/projects/new/components/new_project_url_select.vue';
-import searchQuery from '~/pages/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import eventHub from '~/projects/new/event_hub';
+import NewProjectUrlSelect from '~/projects/new/components/new_project_url_select.vue';
+import searchQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
 
 describe('NewProjectUrlSelect component', () => {
   let wrapper;

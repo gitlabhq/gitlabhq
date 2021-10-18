@@ -776,7 +776,7 @@ than the specified limit, hooks won't be executed.
 
 More information can be found in these docs:
 
-- [Webhooks push events](../user/project/integrations/webhooks.md#push-events)
+- [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
 - [Project services push hooks limit](../user/project/integrations/overview.md#push-hooks-limit)
 
 ### Activities

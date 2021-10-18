@@ -1,6 +1,6 @@
 import { GlPopover, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import NewProjectPushTipPopover from '~/pages/projects/new/components/new_project_push_tip_popover.vue';
+import NewProjectPushTipPopover from '~/projects/new/components/new_project_push_tip_popover.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 describe('New project push tip popover', () => {

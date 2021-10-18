@@ -10171,7 +10171,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.uploadRegistries`
 
-Find Upload registries on this Geo node Available only when feature flag `geo_upload_replication` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+Find Upload registries on this Geo node.
 
 Returns [`UploadRegistryConnection`](#uploadregistryconnection).
 

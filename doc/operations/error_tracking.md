@@ -143,7 +143,7 @@ Sentry integration.
 
 ### Project settings
 
-The feature should be enabled on the project level via the GitLab API. Once configured, users can setup their Error Tracking and DSN in the UI under Settings.
+You can find the feature configuration at **Settings > Monitor > Error Tracking**.
 
 #### How to enable
 

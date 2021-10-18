@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import App from '~/pages/projects/new/components/app.vue';
+import App from '~/projects/new/components/app.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 
 describe('Experimental new project creation app', () => {

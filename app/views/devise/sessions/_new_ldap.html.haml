@@ -8,7 +8,7 @@
     = text_field_tag :username, nil, { class: "form-control gl-form-input top", title: _("This field is required."), autofocus: "autofocus", data: { qa_selector: 'username_field' }, required: true }
   .form-group
     = label_tag :password
-    = password_field_tag :password, nil, { class: "form-control gl-form-input bottom", title: _("This field is required."), data: { qa_selector: 'password_field' }, required: true }
+    = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control gl-form-input bottom", title: _("This field is required."), data: { qa_selector: 'password_field' }, required: true }
   - if !hide_remember_me && devise_mapping.rememberable?
     .remember-me
       %label{ for: "remember_me" }

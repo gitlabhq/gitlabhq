@@ -50,7 +50,7 @@
           - if current_password_required?
             .form-group
               = label_tag :current_password, _('Current password'), class: 'label-bold'
-              = password_field_tag :current_password, nil, required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
+              = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { qa_selector: 'current_password_field' }
               %p.form-text.text-muted
                 = _('Your current password is required to register a two-factor authenticator app.')
           .gl-mt-3

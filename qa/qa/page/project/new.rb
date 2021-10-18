@@ -26,7 +26,7 @@ module QA
           element :template_option_row
         end
 
-        view 'app/assets/javascripts/pages/projects/new/components/new_project_url_select.vue' do
+        view 'app/assets/javascripts/projects/new/components/new_project_url_select.vue' do
           element :select_namespace_dropdown
           element :select_namespace_dropdown_search_field
         end
