@@ -45,4 +45,18 @@ describe('IssuableForm', () => {
       expect(instance.titleField.val()).toBe("Draft: The Issuable's Title Value");
     });
   });
+
+  describe('workInProgress', () => {
+    it.each`
+      title                                 | expected
+      ${'draFT: something is happening'}    | ${true}
+      ${'draft something is happening'}     | ${false}
+      ${'something is happening to drafts'} | ${false}
+      ${'something is happening'}           | ${false}
+    `('returns $expected with "$title"', ({ title, expected }) => {
+      instance.titleField.val(title);
+
+      expect(instance.workInProgress()).toBe(expected);
+    });
+  });
 });

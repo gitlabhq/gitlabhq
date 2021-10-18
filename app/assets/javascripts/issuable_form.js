@@ -53,7 +53,7 @@ export default class IssuableForm {
     // prettier-ignore
     this.draftRegex = new RegExp(
       '^\\s*(' + // Line start, then any amount of leading whitespace
-        '|\\[draft\\]\\s*' + // [Draft] and any following whitespace
+        '\\[draft\\]\\s*' + // [Draft] and any following whitespace
         '|draft:\\s*' + // Draft: and any following whitespace
         '|\\(draft\\)\\s*' + // (Draft) and any following whitespace
       ')+' + // At least one repeated match of the preceding parenthetical
