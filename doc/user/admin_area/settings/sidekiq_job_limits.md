@@ -13,7 +13,6 @@ type: reference
 Redis. To avoid excessive memory for Redis, we:
 
 - Compress job arguments before storing them in Redis.
-arguments before storing them in Redis, and rejecting jobs that exceed
 - Reject jobs that exceed the specified threshold limit after compression.
 
 To access Sidekiq job size limits:
@@ -30,7 +29,6 @@ To access Sidekiq job size limits:
 |-------------------------------------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Limiting mode                             | Compress         | This mode compresses the jobs at the specified threshold and rejects them if they exceed the specified limit after compression.                                               |
 | Sidekiq job compression threshold (bytes) | 100 000 (100 KB) | When the size of arguments exceeds this threshold, they are compressed before being stored in Redis.                                                                          |
-| Sidekiq job size limit (bytes)            | 0                | The jobs exceeding this size after compression are rejected. This avoids excessive memory usage in Redis leading to instability. Setting it to 0 prevents rejecting jobs. |
+| Sidekiq job size limit (bytes)            | 0                | The jobs exceeding this size after compression are rejected. This avoids excessive memory usage in Redis leading to instability. Setting it to 0 prevents rejecting jobs.     |
 
-After changing these values, [restart
-Sidekiq](../../../administration/restart_gitlab.md).
+After changing these values, [restart Sidekiq](../../../administration/restart_gitlab.md).

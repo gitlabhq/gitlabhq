@@ -20,7 +20,7 @@ in your GitLab project with any of your projects in Jira.
 ### Jira integration
 
 This integration connects one or more GitLab projects to a Jira instance. The Jira instance
-can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud).
+can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud).
 The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

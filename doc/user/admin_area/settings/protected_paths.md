@@ -41,7 +41,7 @@ try again.
 
 ## Configure using GitLab UI
 
-> Introduced in [GitLab 12.4](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31246).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31246) in GitLab 12.4.
 
 Throttling of protected paths is enabled by default and can be disabled or
 customized on **Admin > Network > Protected Paths**, along with these options:

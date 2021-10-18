@@ -188,7 +188,7 @@ class Member < ApplicationRecord
   end
 
   after_commit on: [:destroy], unless: :importing? do
-    refresh_member_authorized_projects(blocking: Feature.disabled?(:member_destroy_async_auth_refresh, type: :ops))
+    refresh_member_authorized_projects(blocking: false)
   end
 
   default_value_for :notification_level, NotificationSetting.levels[:global]

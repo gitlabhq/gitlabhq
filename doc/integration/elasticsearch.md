@@ -91,7 +91,7 @@ The former Ruby-based indexer was removed in [GitLab 12.3](https://gitlab.com/gi
 First, we need to install some dependencies, then we build and install
 the indexer itself.
 
-This project relies on [International Components for Unicode](http://site.icu-project.org/) (ICU) for text encoding,
+This project relies on [International Components for Unicode](https://icu.unicode.org/) (ICU) for text encoding,
 therefore we must ensure the development packages for your platform are
 installed before running `make`.
 

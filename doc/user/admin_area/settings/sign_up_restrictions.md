@@ -62,7 +62,7 @@ To enforce confirmation of the email address used for new sign ups:
 1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
 1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
 
-## User cap **(FREE SELF)**
+## User cap
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.

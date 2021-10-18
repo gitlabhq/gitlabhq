@@ -1,8 +1,0 @@
----
-name: member_destroy_async_auth_refresh
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66424
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/342120
-milestone: '14.4'
-type: ops
-group: group::access
-default_enabled: false

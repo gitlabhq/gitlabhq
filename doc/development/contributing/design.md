@@ -12,7 +12,7 @@ Follow these guidelines when contributing or reviewing design and user interface
 advice and best practices for code review in general.
 
 The basis for most of these guidelines is [Pajamas](https://design.gitlab.com/),
-GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contribute)
+GitLab design system. We encourage you to [contribute to Pajamas](https://design.gitlab.com/get-started/contribute/)
 with additions and improvements.
 
 ## Merge request reviews
@@ -32,9 +32,9 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 - Follow [Pajamas](https://design.gitlab.com/content/punctuation/) as the primary
   guidelines for UI text and [documentation style guide](../documentation/styleguide/index.md)
   as the secondary.
-- Use clear and consistent [terminology](https://design.gitlab.com/content/terminology).
+- Use clear and consistent [terminology](https://design.gitlab.com/content/terminology/).
 - Check grammar and spelling.
-- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/helping-users).
+- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/helping-users/).
 - Request review from the [appropriate Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
@@ -43,20 +43,20 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
 - Consider similar patterns used in the product and justify in the issue when diverging
   from them.
-- Use appropriate [components](https://design.gitlab.com/components/overview)
-  and [data visualizations](https://design.gitlab.com/data-visualization/overview).
+- Use appropriate [components](https://design.gitlab.com/components/overview/)
+  and [data visualizations](https://design.gitlab.com/data-visualization/overview/).
 
 ### Visual design
 
 Check visual design properties using your browser's _elements inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/css/),
 [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Page_Inspector/How_to/Open_the_Inspector)).
 
-- Use recommended [colors](https://design.gitlab.com/product-foundations/colors)
-  and [typography](https://design.gitlab.com/product-foundations/type-fundamentals).
-- Follow [layout guidelines](https://design.gitlab.com/layout/grid).
-- Use existing [icons](http://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](http://gitlab-org.gitlab.io/gitlab-svgs/illustrations)
-  or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography)
-  and [illustration](https://design.gitlab.com/product-foundations/illustration)
+- Use recommended [colors](https://design.gitlab.com/product-foundations/colors/)
+  and [typography](https://design.gitlab.com/product-foundations/type-fundamentals/).
+- Follow [layout guidelines](https://design.gitlab.com/layout/grid/).
+- Use existing [icons](http://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](http://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
+  or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
+  and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.
 - _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
 
@@ -73,7 +73,7 @@ like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/cs
 - Account for states dependent on data size ([empty](https://design.gitlab.com/regions/empty-states),
   some data, and lots of data).
 - Account for states dependent on user role, user preferences, and subscription.
-- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion).
+- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion/).
 
 ### Responsive
 
@@ -90,8 +90,8 @@ Check accessibility using your browser's _accessibility inspector_ ([Chrome](htt
 [Firefox](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector#accessing_the_accessibility_inspector)).
 
 - Conform to level AA of the World Wide Web Consortium (W3C) [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/),
-  according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y).
-- Follow accessibility [best practices](https://design.gitlab.com/accessibility/best-practices)
+  according to our [statement of compliance](https://design.gitlab.com/accessibility/a11y/).
+- Follow accessibility [best practices](https://design.gitlab.com/accessibility/best-practices/)
   and [checklist](../fe_guide/accessibility.md#quick-checklist).
 
 ### Handoff

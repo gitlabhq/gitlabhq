@@ -12,7 +12,7 @@ to perform various actions.
 
 All usage statistics are [opt-out](#enable-or-disable-usage-statistics).
 
-## Service Ping **(FREE SELF)**
+## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
 For more information, see the [Service Ping guide](../../../development/service_ping/index.md).
@@ -23,7 +23,7 @@ When Service Ping is enabled, GitLab gathers data from other instances and
 enables certain [instance-level analytics features](../analytics/index.md)
 that are dependent on Service Ping.
 
-## Version check **(FREE SELF)**
+## Version check
 
 If enabled, version check informs you if a new version is available and the
 importance of it through a status. The status displays on the help pages (`/help`)
