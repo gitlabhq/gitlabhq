@@ -73,11 +73,11 @@ module Ci
       ::Gitlab::Ci::Trace::Checksum.new(build).then do |checksum|
         unless checksum.valid?
           metrics.increment_trace_operation(operation: :invalid)
-          metrics.increment_error_counter(type: :chunks_invalid_checksum)
+          metrics.increment_error_counter(error_reason: :chunks_invalid_checksum)
 
           if checksum.corrupted?
             metrics.increment_trace_operation(operation: :corrupted)
-            metrics.increment_error_counter(type: :chunks_invalid_size)
+            metrics.increment_error_counter(error_reason: :chunks_invalid_size)
           end
 
           next unless log_invalid_chunks?

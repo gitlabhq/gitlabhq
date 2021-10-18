@@ -2,7 +2,6 @@
 stage: Manage
 group: Import
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
 ---
 
 # Project import/export **(FREE)**
@@ -159,7 +158,7 @@ To export a project and its data, follow these steps:
 
 1. Go to your project's homepage.
 
-1. Click **Settings** in the sidebar.
+1. Select **Settings** in the sidebar.
 
 1. Scroll down to find the **Export project** button:
 
@@ -178,12 +177,14 @@ To export a project and its data, follow these steps:
 
 ## Import the project
 
+> Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+
 WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
 may be possible for an attacker to steal your sensitive data.
 
 1. The GitLab project import feature is the first import option when creating a
-   new project. Click on **GitLab export**:
+   new project. Select **GitLab export**:
 
    ![New project](img/import_export_new_project.png)
 
@@ -191,7 +192,7 @@ may be possible for an attacker to steal your sensitive data.
 
    ![Select file](img/import_export_select_file.png)
 
-1. Click on **Import project** to begin importing. Your newly imported project
+1. Select **Import project** to begin importing. Your newly imported project
    page appears shortly.
 
 NOTE:
@@ -199,9 +200,8 @@ If use of the `Internal` visibility level
 [is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
-NOTE:
-The maximum import file size can be set by the Administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+The maximum import file size can be set by the Administrator, and the default is `0` (unlimited).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md).
 
 ### Project import status
 

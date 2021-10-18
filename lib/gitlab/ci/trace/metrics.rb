@@ -21,7 +21,7 @@ module Gitlab
           :corrupted  # malformed trace found after comparing CRC32 and size
         ].freeze
 
-        TRACE_ERROR_TYPES = [
+        TRACE_ERROR_REASONS = [
           :chunks_invalid_size,       # used to be :corrupted
           :chunks_invalid_checksum,   # used to be :invalid
           :archive_invalid_checksum   # malformed trace found into object store after comparing MD5
@@ -39,12 +39,12 @@ module Gitlab
           self.class.trace_bytes.increment({}, size.to_i)
         end
 
-        def increment_error_counter(type: :unknown)
-          unless TRACE_ERROR_TYPES.include?(type)
-            raise ArgumentError, "unknown error type: #{type}"
+        def increment_error_counter(error_reason: :unknown)
+          unless TRACE_ERROR_REASONS.include?(error_reason)
+            raise ArgumentError, "unknown error reason: #{error_reason}"
           end
 
-          self.class.trace_errors_counter.increment(type: type)
+          self.class.trace_errors_counter.increment(error_reason: error_reason)
         end
 
         def observe_migration_duration(seconds)

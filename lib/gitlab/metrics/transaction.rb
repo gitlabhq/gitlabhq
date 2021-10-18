@@ -6,34 +6,13 @@ module Gitlab
     class Transaction
       include Gitlab::Metrics::Methods
 
-      # base label keys shared among all transactions
-      BASE_LABEL_KEYS = %i(controller action feature_category).freeze
       # labels that potentially contain sensitive information and will be filtered
       FILTERED_LABEL_KEYS = %i(branch path).freeze
-
-      THREAD_KEY = :_gitlab_metrics_transaction
 
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'
 
       attr_reader :method
-
-      class << self
-        def current
-          Thread.current[THREAD_KEY]
-        end
-
-        def prometheus_metric(name, type, &block)
-          fetch_metric(type, name) do
-            # set default metric options
-            docstring "#{name.to_s.humanize} #{type}"
-
-            evaluate(&block)
-            # always filter sensitive labels and merge with base ones
-            label_keys BASE_LABEL_KEYS | (label_keys - FILTERED_LABEL_KEYS)
-          end
-        end
-      end
 
       def initialize
         @methods = {}
@@ -124,10 +103,6 @@ module Gitlab
         histogram = self.class.prometheus_metric(name, :histogram, &block)
 
         histogram.observe(filter_labels(labels), value)
-      end
-
-      def labels
-        BASE_LABEL_KEYS.product([nil]).to_h
       end
 
       def filter_labels(labels)

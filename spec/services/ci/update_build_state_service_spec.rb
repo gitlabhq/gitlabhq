@@ -118,7 +118,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
         expect(metrics)
           .not_to have_received(:increment_error_counter)
-          .with(type: :chunks_invalid_checksum)
+          .with(error_reason: :chunks_invalid_checksum)
       end
     end
 
@@ -188,7 +188,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
           expect(metrics)
             .to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_checksum)
+            .with(error_reason: :chunks_invalid_checksum)
         end
       end
 
@@ -210,11 +210,11 @@ RSpec.describe Ci::UpdateBuildStateService do
 
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_checksum)
+            .with(error_reason: :chunks_invalid_checksum)
 
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_size)
+            .with(error_reason: :chunks_invalid_size)
         end
 
         context 'when using deprecated parameters' do
@@ -235,11 +235,11 @@ RSpec.describe Ci::UpdateBuildStateService do
 
             expect(metrics)
               .not_to have_received(:increment_error_counter)
-              .with(type: :chunks_invalid_checksum)
+              .with(error_reason: :chunks_invalid_checksum)
 
             expect(metrics)
               .not_to have_received(:increment_error_counter)
-              .with(type: :chunks_invalid_size)
+              .with(error_reason: :chunks_invalid_size)
           end
         end
       end
@@ -262,11 +262,11 @@ RSpec.describe Ci::UpdateBuildStateService do
 
           expect(metrics)
             .to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_checksum)
+            .with(error_reason: :chunks_invalid_checksum)
 
           expect(metrics)
             .to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_size)
+            .with(error_reason: :chunks_invalid_size)
         end
       end
 
@@ -284,7 +284,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
           expect(metrics)
             .to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_checksum)
+            .with(error_reason: :chunks_invalid_checksum)
 
           expect(metrics)
             .not_to have_received(:increment_trace_operation)
@@ -292,7 +292,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :chunks_invalid_size)
+            .with(error_reason: :chunks_invalid_size)
         end
       end
 
@@ -376,7 +376,7 @@ RSpec.describe Ci::UpdateBuildStateService do
 
         expect(metrics)
           .not_to have_received(:increment_error_counter)
-          .with(type: :chunks_invalid_checksum)
+          .with(error_reason: :chunks_invalid_checksum)
       end
 
       context 'when build pending state is outdated' do

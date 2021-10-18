@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
           expect(trace_metadata.remote_checksum).to be_nil
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :archive_invalid_checksum)
+            .with(error_reason: :archive_invalid_checksum)
         end
       end
 
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
           expect(trace_metadata.remote_checksum).to be_nil
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :archive_invalid_checksum)
+            .with(error_reason: :archive_invalid_checksum)
         end
       end
 
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
           expect(trace_metadata.remote_checksum).to eq(src_checksum)
           expect(metrics)
             .not_to have_received(:increment_error_counter)
-            .with(type: :archive_invalid_checksum)
+            .with(error_reason: :archive_invalid_checksum)
         end
 
         context 'when the checksum does not match' do
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Ci::Trace::Archive do
             expect(trace_metadata.remote_checksum).to eq(invalid_remote_checksum)
             expect(metrics)
               .to have_received(:increment_error_counter)
-              .with(type: :archive_invalid_checksum)
+              .with(error_reason: :archive_invalid_checksum)
           end
         end
       end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store do
-  let(:transaction) { Gitlab::Metrics::Transaction.new }
+  let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
   let(:subscriber) { described_class.new }
 
   around do |example|

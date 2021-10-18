@@ -219,10 +219,13 @@ By default, every group inherits the branch protection set at the global level.
 
 To change this setting for a specific group:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
+1. Find the group and select it.
+1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Select the desired option in the **Default branch protection** dropdown list.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 To change this setting globally, see [Default branch protection](../admin_area/settings/visibility_and_access_controls.md#protect-default-branches).
 
@@ -247,10 +250,13 @@ By default, [Developers and Maintainers](../permissions.md#group-members-permiss
 
 To change this setting for a specific group:
 
-1. Go to the group's **Settings > General** page.
+1. On the top bar, select **Menu > Groups**.
+1. Select **Your Groups**.
+1. Find the group and select it.
+1. From the left menu, select **Settings > General**.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Select the desired option in the **Allowed to create projects** dropdown list.
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 

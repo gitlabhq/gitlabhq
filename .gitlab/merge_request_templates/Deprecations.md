@@ -31,6 +31,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## PM release post item checklist
 
 - [ ] Set yourself as the Assignee.
+- [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
 - [ ] Add reviewers by the 10th
 - [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
