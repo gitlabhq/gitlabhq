@@ -30,7 +30,7 @@ module Metrics
             options[:environment] = environment
             success(options)
           else
-            error(s_('Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected environment'))
+            error(s_('MetricsDashboardAnnotation|You are not authorized to create annotation for selected environment'))
           end
         end
 
@@ -39,7 +39,7 @@ module Metrics
             options[:cluster] = cluster
             success(options)
           else
-            error(s_('Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected cluster'))
+            error(s_('MetricsDashboardAnnotation|You are not authorized to create annotation for selected cluster'))
           end
         end
 
@@ -51,7 +51,7 @@ module Metrics
 
           success(options)
         rescue Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
-          error(s_('Metrics::Dashboard::Annotation|Dashboard with requested path can not be found'))
+          error(s_('MetricsDashboardAnnotation|Dashboard with requested path can not be found'))
         end
 
         def create(options)

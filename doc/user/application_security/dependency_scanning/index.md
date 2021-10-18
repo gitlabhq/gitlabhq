@@ -946,3 +946,18 @@ include:
 variables:
   DS_DISABLE_DIND: "true"
 ```
+
+### Message `<file> does not exist in <commit SHA>`
+
+When the `Location` of a dependency in a file is shown, the path in the link goes to a specific Git
+SHA.
+
+If the lock file that our dependency scanning tools reviewed was cached, however, selecting that
+link redirects you to the repository root, with the message:
+`<file> does not exist in <commit SHA>`.
+
+The lock file is cached during the build phase and passed to the dependency scanning job before the
+scan occurs. Because the cache is downloaded before the analyzer run occurs, the existence of a lock
+file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
+
+We recommend committing the lock files, which prevents this warning.

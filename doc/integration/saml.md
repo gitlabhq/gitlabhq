@@ -718,8 +718,8 @@ documentation on how to use SAML to sign in to GitLab.
 Examples:
 
 - [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/protocols/saml-protocol/configure-auth0-as-saml-identity-provider)
-- [PingOne by Ping Identity](https://docs.pingidentity.com/bundle/pingone/page/xsh1564020480660-1.html)
+- [Auth0](https://auth0.com/docs/configure/saml-configuration/configure-auth0-saml-identity-provider)
+- [PingOne by Ping Identity](http://docs.pingidentity.com/bundle/pingoneforenterprise/page/xsh1564020480660-1.html)
 
 GitLab provides the following setup notes for guidance only.
 If you have any questions on configuring the SAML app, please contact your provider's support.

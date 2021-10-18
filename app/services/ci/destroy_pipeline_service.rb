@@ -9,6 +9,9 @@ module Ci
 
       pipeline.cancel_running if pipeline.cancelable?
 
+      # Ci::Pipeline#destroy triggers `use_fast_destroy :job_artifacts` and
+      # ci_builds has ON DELETE CASCADE to ci_pipelines. The pipeline, the builds,
+      # job and pipeline artifacts all get destroyed here.
       pipeline.reset.destroy!
 
       ServiceResponse.success(message: 'Pipeline not found')

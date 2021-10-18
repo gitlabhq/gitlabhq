@@ -42,6 +42,10 @@ module Ci
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
 
+    # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
+    # before we delete builds. By doing this, the relation should be empty and not fire any
+    # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
+    # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id

@@ -21670,34 +21670,28 @@ msgstr ""
 msgid "Metrics and profiling"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|Annotation can't belong to both a cluster and an environment at the same time"
+msgid "MetricsDashboardAnnotation|Annotation can't belong to both a cluster and an environment at the same time"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|Annotation has not been deleted"
+msgid "MetricsDashboardAnnotation|Annotation has not been deleted"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|Annotation must belong to a cluster or an environment"
+msgid "MetricsDashboardAnnotation|Annotation must belong to a cluster or an environment"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|Dashboard with requested path can not be found"
+msgid "MetricsDashboardAnnotation|Dashboard with requested path can not be found"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected cluster"
+msgid "MetricsDashboardAnnotation|You are not authorized to create annotation for selected cluster"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|You are not authorized to create annotation for selected environment"
+msgid "MetricsDashboardAnnotation|You are not authorized to create annotation for selected environment"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|You are not authorized to delete this annotation"
+msgid "MetricsDashboardAnnotation|You are not authorized to delete this annotation"
 msgstr ""
 
-msgid "Metrics::Dashboard::Annotation|can't be before starting_at time"
-msgstr ""
-
-msgid "Metrics::UsersStarredDashboards|Dashboard with requested path can not be found"
-msgstr ""
-
-msgid "Metrics::UsersStarredDashboards|You are not authorized to add star to this dashboard"
+msgid "MetricsDashboardAnnotation|can't be before starting_at time"
 msgstr ""
 
 msgid "MetricsSettings|Add a button to the metrics dashboard linking directly to your existing external dashboard."
@@ -21722,6 +21716,12 @@ msgid "MetricsSettings|UTC (Coordinated Universal Time)"
 msgstr ""
 
 msgid "MetricsSettings|User's local timezone"
+msgstr ""
+
+msgid "MetricsUsersStarredDashboards|Dashboard with requested path can not be found"
+msgstr ""
+
+msgid "MetricsUsersStarredDashboards|You are not authorized to add star to this dashboard"
 msgstr ""
 
 msgid "Metrics|1. Define and preview panel"

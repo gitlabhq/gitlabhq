@@ -42,10 +42,20 @@ To enable container scanning in your pipeline, you need the following:
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
 - [Build and push](../../packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
-  the Docker image to your project's container registry. If using a third-party container
-  registry, you might need to provide authentication credentials using the `DOCKER_USER` and
-  `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
+  the Docker image to your project's container registry.
 - The name of the Docker image to scan, in the `DOCKER_IMAGE` [configuration variable](#available-cicd-variables).
+- If you're using a third-party container registry, you might need to provide authentication
+  credentials through the `DOCKER_USER` and `DOCKER_PASSWORD` [configuration variables](#available-cicd-variables).
+  For example, if you are connecting to AWS ECR, you might use the following:
+
+```yaml
+export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
+
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+    DOCKER_USER: AWS
+    DOCKER_PASSWORD: "$AWS_ECR_PASSWORD"
+```
 
 ## Configuration
 

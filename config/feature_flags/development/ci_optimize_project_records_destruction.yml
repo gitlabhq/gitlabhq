@@ -1,0 +1,8 @@
+---
+name: ci_optimize_project_records_destruction
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71342
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341936
+milestone: '14.4'
+type: development
+group: group::pipeline execution
+default_enabled: false

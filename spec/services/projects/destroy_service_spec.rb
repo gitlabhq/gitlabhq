@@ -39,12 +39,15 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
       let!(:job_variables) { create(:ci_job_variable, job: build) }
       let!(:report_result) { create(:ci_build_report_result, build: build) }
       let!(:pending_state) { create(:ci_build_pending_state, build: build) }
+      let!(:pipeline_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline) }
 
-      it 'deletes build related records' do
+      it 'deletes build and pipeline related records' do
         expect { destroy_project(project, user, {}) }
           .to  change { Ci::Build.count }.by(-1)
           .and change { Ci::BuildTraceChunk.count }.by(-1)
           .and change { Ci::JobArtifact.count }.by(-2)
+          .and change { Ci::DeletedObject.count }.by(2)
+          .and change { Ci::PipelineArtifact.count }.by(-1)
           .and change { Ci::JobVariable.count }.by(-1)
           .and change { Ci::BuildPendingState.count }.by(-1)
           .and change { Ci::BuildReportResult.count }.by(-1)
@@ -52,15 +55,48 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
           .and change { Ci::Pipeline.count }.by(-1)
       end
 
-      it 'avoids N+1 queries', skip: 'skipped until fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/24644' do
-        recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
+      context 'with abort_deleted_project_pipelines disabled' do
+        stub_feature_flags(abort_deleted_project_pipelines: false)
 
-        project = create(:project, :repository, namespace: user.namespace)
-        pipeline = create(:ci_pipeline, project: project)
-        builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
-        create_list(:ci_build_trace_chunk, 3, build: builds[0])
+        it 'avoids N+1 queries' do
+          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
 
-        expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
+          project = create(:project, :repository, namespace: user.namespace)
+          pipeline = create(:ci_pipeline, project: project)
+          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
+          create(:ci_pipeline_artifact, pipeline: pipeline)
+          create_list(:ci_build_trace_chunk, 3, build: builds[0])
+
+          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
+        end
+      end
+
+      context 'with ci_optimize_project_records_destruction disabled' do
+        stub_feature_flags(ci_optimize_project_records_destruction: false)
+
+        it 'avoids N+1 queries' do
+          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
+
+          project = create(:project, :repository, namespace: user.namespace)
+          pipeline = create(:ci_pipeline, project: project)
+          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
+          create_list(:ci_build_trace_chunk, 3, build: builds[0])
+
+          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
+        end
+      end
+
+      context 'with ci_optimize_project_records_destruction and abort_deleted_project_pipelines enabled' do
+        it 'avoids N+1 queries' do
+          recorder = ActiveRecord::QueryRecorder.new { destroy_project(project, user, {}) }
+
+          project = create(:project, :repository, namespace: user.namespace)
+          pipeline = create(:ci_pipeline, project: project)
+          builds = create_list(:ci_build, 3, :artifacts, pipeline: pipeline)
+          create_list(:ci_build_trace_chunk, 3, build: builds[0])
+
+          expect { destroy_project(project, project.owner, {}) }.not_to exceed_query_limit(recorder)
+        end
       end
 
       it_behaves_like 'deleting the project'
@@ -97,24 +133,63 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
   end
 
   context 'with abort_deleted_project_pipelines feature disabled' do
-    it 'does not cancel project ci pipelines' do
+    before do
       stub_feature_flags(abort_deleted_project_pipelines: false)
+    end
 
+    it 'does not bulk-fail project ci pipelines' do
       expect(::Ci::AbortPipelinesService).not_to receive(:new)
+
+      destroy_project(project, user, {})
+    end
+
+    it 'does not destroy CI records via DestroyPipelineService' do
+      expect(::Ci::DestroyPipelineService).not_to receive(:new)
 
       destroy_project(project, user, {})
     end
   end
 
   context 'with abort_deleted_project_pipelines feature enabled' do
-    it 'performs cancel for project ci pipelines' do
-      stub_feature_flags(abort_deleted_project_pipelines: true)
-      pipelines = build_list(:ci_pipeline, 3, :running)
-      allow(project).to receive(:all_pipelines).and_return(pipelines)
+    let!(:pipelines)               { create_list(:ci_pipeline, 3, :running, project: project) }
+    let(:destroy_pipeline_service) { double('DestroyPipelineService', execute: nil) }
 
-      expect(::Ci::AbortPipelinesService).to receive_message_chain(:new, :execute).with(pipelines, :project_deleted)
+    context 'with ci_optimize_project_records_destruction disabled' do
+      before do
+        stub_feature_flags(ci_optimize_project_records_destruction: false)
+      end
 
-      destroy_project(project, user, {})
+      it 'bulk-fails project ci pipelines' do
+        expect(::Ci::AbortPipelinesService)
+          .to receive_message_chain(:new, :execute)
+          .with(project.all_pipelines, :project_deleted)
+
+        destroy_project(project, user, {})
+      end
+
+      it 'does not destroy CI records via DestroyPipelineService' do
+        expect(::Ci::DestroyPipelineService).not_to receive(:new)
+
+        destroy_project(project, user, {})
+      end
+    end
+
+    context 'with ci_optimize_project_records_destruction enabled' do
+      it 'executes DestroyPipelineService for project ci pipelines' do
+        allow(::Ci::DestroyPipelineService).to receive(:new).and_return(destroy_pipeline_service)
+
+        expect(::Ci::AbortPipelinesService)
+          .to receive_message_chain(:new, :execute)
+          .with(project.all_pipelines, :project_deleted)
+
+        pipelines.each do |pipeline|
+          expect(destroy_pipeline_service)
+            .to receive(:execute)
+            .with(pipeline)
+        end
+
+        destroy_project(project, user, {})
+      end
     end
   end
 

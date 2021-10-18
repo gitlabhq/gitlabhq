@@ -85,7 +85,18 @@ RSpec.shared_examples 'Composer package creation' do |user_type, status, add_mem
 
       expect(response).to have_gitlab_http_status(status)
     end
+
     it_behaves_like 'a package tracking event', described_class.name, 'push_package'
+
+    context 'when package creation fails' do
+      before do
+        allow_next_instance_of(::Packages::Composer::CreatePackageService) do |create_package_service|
+          allow(create_package_service).to receive(:execute).and_raise(StandardError)
+        end
+      end
+
+      it_behaves_like 'not a package tracking event'
+    end
   end
 end
 

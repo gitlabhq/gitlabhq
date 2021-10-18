@@ -27,7 +27,7 @@ module Metrics
           if Ability.allowed?(user, :delete_metrics_dashboard_annotation, annotation)
             success
           else
-            error(s_('Metrics::Dashboard::Annotation|You are not authorized to delete this annotation'))
+            error(s_('MetricsDashboardAnnotation|You are not authorized to delete this annotation'))
           end
         end
 
@@ -35,7 +35,7 @@ module Metrics
           if annotation.destroy
             success
           else
-            error(s_('Metrics::Dashboard::Annotation|Annotation has not been deleted'))
+            error(s_('MetricsDashboardAnnotation|Annotation has not been deleted'))
           end
         end
       end

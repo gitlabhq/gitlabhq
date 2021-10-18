@@ -8,16 +8,16 @@ import getStandardContext from '~/tracking/get_standard_context';
 
 jest.mock('~/experimentation/utils', () => ({
   getExperimentData: jest.fn(),
-  getAllExperimentContexts: jest.fn(),
+  getAllExperimentContexts: jest.fn().mockReturnValue([]),
 }));
+
+const TEST_CATEGORY = 'root:index';
+const TEST_ACTION = 'generic';
+const TEST_LABEL = 'button';
 
 describe('Tracking', () => {
   let standardContext;
   let snowplowSpy;
-  let bindDocumentSpy;
-  let trackLoadEventsSpy;
-  let enableFormTracking;
-  let setAnonymousUrlsSpy;
 
   beforeAll(() => {
     window.gl = window.gl || {};
@@ -30,115 +30,28 @@ describe('Tracking', () => {
         extra: {},
       },
     };
+    window.snowplowOptions = {
+      namespace: 'gl_test',
+      hostname: 'app.test.com',
+      cookieDomain: '.test.com',
+      formTracking: true,
+      linkClickTracking: true,
+      formTrackingConfig: { forms: { allow: ['foo'] }, fields: { allow: ['bar'] } },
+    };
 
     standardContext = getStandardContext();
+    window.snowplow = window.snowplow || (() => {});
+    document.body.dataset.page = TEST_CATEGORY;
+
+    initUserTracking();
+    initDefaultTrackers();
   });
 
   beforeEach(() => {
     getExperimentData.mockReturnValue(undefined);
     getAllExperimentContexts.mockReturnValue([]);
 
-    window.snowplow = window.snowplow || (() => {});
-    window.snowplowOptions = {
-      namespace: '_namespace_',
-      hostname: 'app.gitfoo.com',
-      cookieDomain: '.gitfoo.com',
-    };
     snowplowSpy = jest.spyOn(window, 'snowplow');
-  });
-
-  describe('initUserTracking', () => {
-    it('calls through to get a new tracker with the expected options', () => {
-      initUserTracking();
-      expect(snowplowSpy).toHaveBeenCalledWith('newTracker', '_namespace_', 'app.gitfoo.com', {
-        namespace: '_namespace_',
-        hostname: 'app.gitfoo.com',
-        cookieDomain: '.gitfoo.com',
-        appId: '',
-        userFingerprint: false,
-        respectDoNotTrack: true,
-        forceSecureTracker: true,
-        eventMethod: 'post',
-        contexts: { webPage: true, performanceTiming: true },
-        formTracking: false,
-        linkClickTracking: false,
-        pageUnloadTimer: 10,
-        formTrackingConfig: {
-          fields: { allow: [] },
-          forms: { allow: [] },
-        },
-      });
-    });
-  });
-
-  describe('initDefaultTrackers', () => {
-    beforeEach(() => {
-      bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
-      trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
-      enableFormTracking = jest
-        .spyOn(Tracking, 'enableFormTracking')
-        .mockImplementation(() => null);
-      setAnonymousUrlsSpy = jest.spyOn(Tracking, 'setAnonymousUrls').mockImplementation(() => null);
-    });
-
-    it('should activate features based on what has been enabled', () => {
-      initDefaultTrackers();
-      expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [standardContext]);
-      expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
-      expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
-
-      window.snowplowOptions = {
-        ...window.snowplowOptions,
-        formTracking: true,
-        linkClickTracking: true,
-        formTrackingConfig: { forms: { whitelist: ['foo'] }, fields: { whitelist: ['bar'] } },
-      };
-
-      initDefaultTrackers();
-      expect(enableFormTracking).toHaveBeenCalledWith(window.snowplowOptions.formTrackingConfig);
-      expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
-    });
-
-    it('binds the document event handling', () => {
-      initDefaultTrackers();
-      expect(bindDocumentSpy).toHaveBeenCalled();
-    });
-
-    it('tracks page loaded events', () => {
-      initDefaultTrackers();
-      expect(trackLoadEventsSpy).toHaveBeenCalled();
-    });
-
-    it('calls the anonymized URLs method', () => {
-      initDefaultTrackers();
-      expect(setAnonymousUrlsSpy).toHaveBeenCalled();
-    });
-
-    describe('when there are experiment contexts', () => {
-      const experimentContexts = [
-        {
-          schema: TRACKING_CONTEXT_SCHEMA,
-          data: { experiment: 'experiment1', variant: 'control' },
-        },
-        {
-          schema: TRACKING_CONTEXT_SCHEMA,
-          data: { experiment: 'experiment_two', variant: 'candidate' },
-        },
-      ];
-
-      beforeEach(() => {
-        getAllExperimentContexts.mockReturnValue(experimentContexts);
-      });
-
-      it('includes those contexts alongside the standard context', () => {
-        initDefaultTrackers();
-        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', null, [
-          standardContext,
-          ...experimentContexts,
-        ]);
-      });
-    });
   });
 
   describe('.event', () => {
@@ -146,16 +59,17 @@ describe('Tracking', () => {
       window.doNotTrack = undefined;
       navigator.doNotTrack = undefined;
       navigator.msDoNotTrack = undefined;
+      jest.clearAllMocks();
     });
 
     it('tracks to snowplow (our current tracking system)', () => {
-      Tracking.event('_category_', '_eventName_', { label: '_label_' });
+      Tracking.event(TEST_CATEGORY, TEST_ACTION, { label: TEST_LABEL });
 
       expect(snowplowSpy).toHaveBeenCalledWith(
         'trackStructEvent',
-        '_category_',
-        '_eventName_',
-        '_label_',
+        TEST_CATEGORY,
+        TEST_ACTION,
+        TEST_LABEL,
         undefined,
         undefined,
         [standardContext],
@@ -165,12 +79,12 @@ describe('Tracking', () => {
     it('allows adding extra data to the default context', () => {
       const extra = { foo: 'bar' };
 
-      Tracking.event('_category_', '_eventName_', { extra });
+      Tracking.event(TEST_CATEGORY, TEST_ACTION, { extra });
 
       expect(snowplowSpy).toHaveBeenCalledWith(
         'trackStructEvent',
-        '_category_',
-        '_eventName_',
+        TEST_CATEGORY,
+        TEST_ACTION,
         undefined,
         undefined,
         undefined,
@@ -188,28 +102,28 @@ describe('Tracking', () => {
 
     it('skips tracking if snowplow is unavailable', () => {
       window.snowplow = false;
-      Tracking.event('_category_', '_eventName_');
+      Tracking.event(TEST_CATEGORY, TEST_ACTION);
 
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
 
     it('skips tracking if the user does not want to be tracked (general spec)', () => {
       window.doNotTrack = '1';
-      Tracking.event('_category_', '_eventName_');
+      Tracking.event(TEST_CATEGORY, TEST_ACTION);
 
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
 
     it('skips tracking if the user does not want to be tracked (firefox legacy)', () => {
       navigator.doNotTrack = 'yes';
-      Tracking.event('_category_', '_eventName_');
+      Tracking.event(TEST_CATEGORY, TEST_ACTION);
 
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
 
     it('skips tracking if the user does not want to be tracked (IE legacy)', () => {
       navigator.msDoNotTrack = '1';
-      Tracking.event('_category_', '_eventName_');
+      Tracking.event(TEST_CATEGORY, TEST_ACTION);
 
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
@@ -237,7 +151,7 @@ describe('Tracking', () => {
       );
     });
 
-    it('does not add empty form whitelist rules', () => {
+    it('does not add empty form allow rules', () => {
       Tracking.enableFormTracking({ fields: { allow: ['input-class1'] } });
 
       expect(snowplowSpy).toHaveBeenCalledWith(
@@ -287,7 +201,7 @@ describe('Tracking', () => {
   describe('.flushPendingEvents', () => {
     it('flushes any pending events', () => {
       Tracking.initialized = false;
-      Tracking.event('_category_', '_eventName_', { label: '_label_' });
+      Tracking.event(TEST_CATEGORY, TEST_ACTION, { label: TEST_LABEL });
 
       expect(snowplowSpy).not.toHaveBeenCalled();
 
@@ -295,9 +209,9 @@ describe('Tracking', () => {
 
       expect(snowplowSpy).toHaveBeenCalledWith(
         'trackStructEvent',
-        '_category_',
-        '_eventName_',
-        '_label_',
+        TEST_CATEGORY,
+        TEST_ACTION,
+        TEST_LABEL,
         undefined,
         undefined,
         [standardContext],
@@ -413,15 +327,14 @@ describe('Tracking', () => {
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
-      Tracking.bindDocument('_category_'); // only happens once
       setHTMLFixture(`
-        <input data-track-action="click_input1" data-track-label="_label_" value=0 />
-        <input data-track-action="click_input2" data-track-value=0 value=0/>
-        <input type="checkbox" data-track-action="toggle_checkbox" value=1 checked/>
+        <input data-track-action="click_input1" data-track-label="button" value="0" />
+        <input data-track-action="click_input2" data-track-value="0" value="0" />
+        <input type="checkbox" data-track-action="toggle_checkbox" value=1 checked />
         <input class="dropdown" data-track-action="toggle_dropdown"/>
         <div data-track-action="nested_event"><span class="nested"></span></div>
-        <input data-track-bogus="click_bogusinput" data-track-label="_label_" value="_value_"/>
-        <input data-track-action="click_input3" data-track-experiment="example" value="_value_"/>
+        <input data-track-bogus="click_bogusinput" data-track-label="button" value="1" />
+        <input data-track-action="click_input3" data-track-experiment="example" value="1" />
         <input data-track-action="event_with_extra" data-track-extra='{ "foo": "bar" }' />
         <input data-track-action="event_with_invalid_extra" data-track-extra="invalid_json" />
       `);
@@ -430,8 +343,8 @@ describe('Tracking', () => {
     it(`binds to clicks on elements matching [data-track-action]`, () => {
       document.querySelector(`[data-track-action="click_input1"]`).click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input1', {
-        label: '_label_',
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input1', {
+        label: TEST_LABEL,
         value: '0',
       });
     });
@@ -445,7 +358,7 @@ describe('Tracking', () => {
     it('allows value override with the data-track-value attribute', () => {
       document.querySelector(`[data-track-action="click_input2"]`).click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input2', {
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input2', {
         value: '0',
       });
     });
@@ -455,13 +368,13 @@ describe('Tracking', () => {
 
       checkbox.click(); // unchecking
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'toggle_checkbox', {
         value: 0,
       });
 
       checkbox.click(); // checking
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'toggle_checkbox', {
         value: '1',
       });
     });
@@ -471,17 +384,17 @@ describe('Tracking', () => {
 
       dropdown.dispatchEvent(new Event('show.bs.dropdown', { bubbles: true }));
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_show', {});
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'toggle_dropdown_show', {});
 
       dropdown.dispatchEvent(new Event('hide.bs.dropdown', { bubbles: true }));
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_hide', {});
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'toggle_dropdown_hide', {});
     });
 
     it('handles nested elements inside an element with tracking', () => {
       document.querySelector('span.nested').click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'nested_event', {});
     });
 
     it('includes experiment data if linked to an experiment', () => {
@@ -494,8 +407,8 @@ describe('Tracking', () => {
 
       document.querySelector(`[data-track-action="click_input3"]`).click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input3', {
-        value: '_value_',
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'click_input3', {
+        value: '1',
         context: { schema: TRACKING_CONTEXT_SCHEMA, data: mockExperimentData },
       });
     });
@@ -503,7 +416,7 @@ describe('Tracking', () => {
     it('supports extra data as JSON', () => {
       document.querySelector(`[data-track-action="event_with_extra"]`).click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_extra', {
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'event_with_extra', {
         extra: { foo: 'bar' },
       });
     });
@@ -511,7 +424,7 @@ describe('Tracking', () => {
     it('ignores extra if provided JSON is invalid', () => {
       document.querySelector(`[data-track-action="event_with_invalid_extra"]`).click();
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'event_with_invalid_extra', {});
+      expect(eventSpy).toHaveBeenCalledWith(TEST_CATEGORY, 'event_with_invalid_extra', {});
     });
   });
 
@@ -522,20 +435,20 @@ describe('Tracking', () => {
       eventSpy = jest.spyOn(Tracking, 'event');
       setHTMLFixture(`
         <div data-track-action="click_link" data-track-label="all_nested_links">
-          <input data-track-action="render" data-track-label="label1" value=1 data-track-property="_property_"/>
-          <span data-track-action="render" data-track-label="label2" data-track-value=1>
+          <input data-track-action="render" data-track-label="label1" value=1 data-track-property="_property_" />
+          <span data-track-action="render" data-track-label="label2" data-track-value="1">
             <a href="#" id="link">Something</a>
           </span>
-          <input data-track-action="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_"/>
+          <input data-track-action="_render_bogus_" data-track-label="label3" value="_value_" data-track-property="_property_" />
         </div>
       `);
-      Tracking.trackLoadEvents('_category_'); // only happens once
+      Tracking.trackLoadEvents(TEST_CATEGORY);
     });
 
     it(`sends tracking events when [data-track-action="render"] is on an element`, () => {
       expect(eventSpy.mock.calls).toEqual([
         [
-          '_category_',
+          TEST_CATEGORY,
           'render',
           {
             label: 'label1',
@@ -544,7 +457,7 @@ describe('Tracking', () => {
           },
         ],
         [
-          '_category_',
+          TEST_CATEGORY,
           'render',
           {
             label: 'label2',
@@ -571,12 +484,12 @@ describe('Tracking', () => {
         link.dispatchEvent(new Event(event, { bubbles: true }));
 
         expect(eventSpy).not.toHaveBeenCalledWith(
-          '_category_',
+          TEST_CATEGORY,
           `render${actionSuffix}`,
           expect.any(Object),
         );
         expect(eventSpy).toHaveBeenCalledWith(
-          '_category_',
+          TEST_CATEGORY,
           `click_link${actionSuffix}`,
           expect.objectContaining({ label: 'all_nested_links' }),
         );
