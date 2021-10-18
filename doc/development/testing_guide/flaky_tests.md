@@ -37,9 +37,9 @@ bin/rspec --tag quarantine
 
 Once a test is in quarantine, there are 3 choices:
 
-- Should the test be fixed (i.e. get rid of its flakiness)?
+- Should the test be fixed (that is, get rid of its flakiness)?
 - Should the test be moved to a lower level of testing?
-- Should the test be removed entirely (e.g. because there's already a
+- Should the test be removed entirely (for example, because there's already a
   lower-level test, or it's duplicating another same-level test, or it's testing
   too much etc.)?
 

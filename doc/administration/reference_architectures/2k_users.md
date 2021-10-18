@@ -303,8 +303,8 @@ further configuration steps.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Note the PostgreSQL node's IP address or hostname, port, and
-   plain text password. These will be necessary when configuring the [GitLab
-   application server](#configure-gitlab-rails) later.
+   plain text password. These will be necessary when configuring the
+   [GitLab application server](#configure-gitlab-rails) later.
 
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
 are supported and can be added if needed.
@@ -386,8 +386,8 @@ Omnibus:
 1. [Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 1. Note the Redis node's IP address or hostname, port, and
-   Redis password. These will be necessary when [configuring the GitLab
-   application servers](#configure-gitlab-rails) later.
+   Redis password. These will be necessary when
+   [configuring the GitLab application servers](#configure-gitlab-rails) later.
 
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 are supported and can be added if needed.

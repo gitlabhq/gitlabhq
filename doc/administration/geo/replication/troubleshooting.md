@@ -292,9 +292,8 @@ be set on the **primary** database. In GitLab 9.4, we have made this setting
 default to 1. You may need to increase this value if you have more
 **secondary** nodes.
 
-Be sure to restart PostgreSQL for this to take
-effect. See the [PostgreSQL replication
-setup](../setup/database.md#postgresql-replication) guide for more details.
+Be sure to restart PostgreSQL for this to take effect. See the
+[PostgreSQL replication setup](../setup/database.md#postgresql-replication) guide for more details.
 
 ### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
 

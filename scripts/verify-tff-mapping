@@ -102,14 +102,14 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20191023152913_add_default_and_free_plans.rb',
-    expected: ['spec/migrations/add_default_and_free_plans_spec.rb']
+    source: 'db/migrate/20200116175538_update_timestamp_softwarelicensespolicy.rb',
+    expected: ['spec/migrations/update_timestamp_softwarelicensespolicy_spec.rb']
   },
 
   {
     explanation: 'Migration should map to its timestamped spec',
-    source: 'db/post_migrate/20190924152703_migrate_issue_trackers_data.rb',
-    expected: ['spec/migrations/20190924152703_migrate_issue_trackers_data_spec.rb']
+    source: 'db/post_migrate/20210915022415_cleanup_bigint_conversion_for_ci_builds.rb',
+    expected: ['spec/migrations/20210915022415_cleanup_bigint_conversion_for_ci_builds_spec.rb']
   },
 
   {

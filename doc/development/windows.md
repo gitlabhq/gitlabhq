@@ -136,7 +136,7 @@ PowerShell has aliases for all of the following commands so you don't have to le
 - `/` ---> `\` (path separator)
 - `cat` ---> `type`
 - `mv` ---> `move`
-- Redirection works the same (i.e. `>` and `2>&1`)
+- Redirection works the same (for example, `>` and `2>&1`)
 - `.\some.exe` to call a local executable
 - curl is available
 - `..` and `.` are available

@@ -22,7 +22,7 @@ RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
       sign_in(user)
     end
 
-    it 'projects/analytics/value_stream_analytics/stages' do
+    it 'projects/analytics/value_stream_analytics/stages.json' do
       get(:index, params: params, format: :json)
 
       expect(response).to be_successful
@@ -40,7 +40,7 @@ RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
     end
 
     Gitlab::Analytics::CycleAnalytics::DefaultStages.all.each do |stage|
-      it "projects/analytics/value_stream_analytics/events/#{stage[:name]}" do
+      it "projects/analytics/value_stream_analytics/events/#{stage[:name]}.json" do
         get(stage[:name], params: params, format: :json)
 
         expect(response).to be_successful
@@ -58,7 +58,7 @@ RSpec.describe 'Analytics (JavaScript fixtures)', :sidekiq_inline do
       sign_in(user)
     end
 
-    it "projects/analytics/value_stream_analytics/summary" do
+    it "projects/analytics/value_stream_analytics/summary.json" do
       get(:show, params: params, format: :json)
 
       expect(response).to be_successful

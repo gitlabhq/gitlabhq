@@ -150,8 +150,8 @@ need to do for this:
 1. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
 For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/index.md#stages)
-`confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker
-image](../../docker/using_docker_images.md). However, WebdriverIO fires up actual browsers
+`confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest`
+[Docker image](../../docker/using_docker_images.md). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
 Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
 so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images

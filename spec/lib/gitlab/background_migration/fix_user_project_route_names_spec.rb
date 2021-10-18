@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20190620112608 do
+RSpec.describe Gitlab::BackgroundMigration::FixUserProjectRouteNames, schema: 20181228175414 do
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }
   let(:routes) { table(:routes) }

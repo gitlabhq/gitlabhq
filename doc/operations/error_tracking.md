@@ -129,7 +129,7 @@ If another event occurs, the error reverts to unresolved.
 
 ## Integrated error tracking
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.4.
 
 Integrated error tracking is a lightweight alternative to Sentry backend.
 You still use Sentry SDK with your application. But you don't need to deploy Sentry
@@ -143,8 +143,7 @@ Sentry integration.
 
 ### Project settings
 
-The feature should be enabled on the project level. However, there is no UI to enable this feature yet.
-You must use the GitLab API to enable it.
+The feature should be enabled on the project level via the GitLab API. Once configured, users can setup their Error Tracking and DSN in the UI under Settings.
 
 #### How to enable
 

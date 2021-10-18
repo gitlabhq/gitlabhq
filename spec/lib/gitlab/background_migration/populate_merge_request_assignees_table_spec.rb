@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, schema: 20190315191339 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, schema: 20181228175414 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

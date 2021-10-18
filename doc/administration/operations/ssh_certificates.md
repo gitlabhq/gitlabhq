@@ -21,8 +21,7 @@ upload the new keys to GitLab.
 WARNING:
 OpenSSH version 6.9+ is required because that version
 introduced the `AuthorizedPrincipalsCommand` configuration option. If
-using CentOS 6, you can [follow these
-instructions](fast_ssh_key_lookup.html#compiling-a-custom-version-of-openssh-for-centos-6)
+using CentOS 6, you can [follow these instructions](fast_ssh_key_lookup.md#compiling-a-custom-version-of-openssh-for-centos-6)
 to compile an up-to-date version.
 
 ## Why use OpenSSH certificates?

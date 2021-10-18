@@ -29,7 +29,7 @@ To enable the dependency proxy feature:
    gitlab_rails['dependency_proxy_enabled'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 1. Enable the [Puma web server](../operations/puma.md).
 
 **Helm chart installations**
@@ -88,7 +88,7 @@ To change the local storage path:
    gitlab_rails['dependency_proxy_storage_path'] = "/mnt/dependency_proxy"
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Installations from source**
 
@@ -145,7 +145,7 @@ This section describes the earlier configuration format.
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Installations from source**
 

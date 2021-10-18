@@ -1,8 +1,0 @@
----
-name: use_cte_for_any_project_with_shared_runners_enabled
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71452
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/342024
-milestone: '14.4'
-type: development
-group: group::optimize
-default_enabled: true

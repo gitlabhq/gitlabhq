@@ -68,7 +68,7 @@ To enable the Packages feature:
    gitlab_rails['packages_enabled'] = true
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Installations from source**
 
@@ -80,7 +80,7 @@ To enable the Packages feature:
      enabled: true
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab") for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Helm Chart installations**
 
@@ -92,7 +92,7 @@ To enable the Packages feature:
      enabled: true
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#helm-chart-installations "How to reconfigure Helm GitLab") for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#helm-chart-installations) for the changes to take effect.
 
 ## Rate limits
 
