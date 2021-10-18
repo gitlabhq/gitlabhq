@@ -255,7 +255,7 @@ requirements.
 1. The change is tested in a review app where possible and if appropriate.
 1. The new feature does not degrade the user experience of the product.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
-1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans).  
+1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).  
 1. Merged by a project maintainer.
 
 ### Production use

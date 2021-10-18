@@ -571,10 +571,11 @@ To restrict group access by IP address:
 
 ## Restrict group access by domain **(PREMIUM)**
 
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
->- Support for specifying multiple email domains [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) added in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
+> - Support for restricting access to projects within the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 
-You can prevent users with email addresses in specific domains from being added to a group.
+You can prevent users with email addresses in specific domains from being added to a group and its projects.
 
 To restrict group access by domain:
 
@@ -592,9 +593,6 @@ Some domains cannot be restricted. These are the most popular public email domai
 - `gmail.com`, `yahoo.com`, `aol.com`, `icloud.com`
 - `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
 - `msn.com`, `live.com`, `outlook.com`
-
-NOTE:
-Domain restrictions apply to groups only. They do not prevent users from being added as members of projects owned by the restricted group.
 
 ## Group file templates **(PREMIUM)**
 

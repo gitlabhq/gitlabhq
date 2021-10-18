@@ -16,7 +16,7 @@ separately configured [Mattermost Notifications Service](mattermost.md).
 
 ## Prerequisites
 
-Mattermost [3.4 or later](https://mattermost.com/blog/category/releases/) is required.
+Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/) is required.
 GitLab provides different methods of configuring Mattermost slash commands, depending
 on your configuration:
 

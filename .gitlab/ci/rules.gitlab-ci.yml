@@ -73,14 +73,23 @@
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
+.if-dot-com-gitlab-org-schedule-child-pipeline: &if-dot-com-gitlab-org-schedule-child-pipeline
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY'
+
 .if-dot-com-ee-schedule: &if-dot-com-ee-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
+
+.if-dot-com-ee-schedule-child-pipeline: &if-dot-com-ee-schedule-child-pipeline
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline"'
 
 .if-dot-com-ee-2-hourly-schedule: &if-dot-com-ee-2-hourly-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "2-hourly"'
 
 .if-dot-com-ee-nightly-schedule: &if-dot-com-ee-nightly-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $FREQUENCY == "nightly"'
+
+.if-dot-com-ee-nightly-schedule-child-pipeline: &if-dot-com-ee-nightly-schedule-child-pipeline
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY == "nightly"'
 
 .if-cache-credentials-schedule: &if-cache-credentials-schedule
   if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
@@ -1365,7 +1374,7 @@
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
-    - <<: *if-dot-com-ee-nightly-schedule
+    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
 
 .reports:rules:package_hunter-yarn:
   rules:
@@ -1423,7 +1432,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
 
 .review:rules:review-deploy:
   rules:
@@ -1440,7 +1449,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
       allow_failure: true
 
 .review:rules:review-performance:
@@ -1457,7 +1466,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
       allow_failure: true
 
 .review:rules:review-delete-deployment:
@@ -1479,7 +1488,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-ee-schedule-child-pipeline
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1507,9 +1516,9 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       when: on_failure
-    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-ee-schedule-child-pipeline
       when: on_success
-    - <<: *if-dot-com-ee-schedule
+    - <<: *if-dot-com-ee-schedule-child-pipeline
       when: on_failure
 
 .review:rules:review-qa-all:
@@ -1523,7 +1532,7 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule
+    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1545,10 +1554,10 @@
       changes: *qa-patterns
       when: on_failure
       allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule
+    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
       when: on_success
       allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule
+    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
       when: on_failure
       allow_failure: true
 
@@ -1560,7 +1569,7 @@
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
       allow_failure: true
 
 .review:rules:review-stop:

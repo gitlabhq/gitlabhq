@@ -508,7 +508,7 @@ end
 ```
 
 Don't hesitate to reach out to the
-[sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding)
+[sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/)
 for advice.
 
 ## `config/database.yml`

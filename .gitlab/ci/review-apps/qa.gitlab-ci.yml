@@ -33,13 +33,15 @@
 
 .allure-report-base:
   image:
-    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.4
+    name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.3.6
     entrypoint: [""]
   stage: post-qa
   variables:
     GIT_STRATEGY: none
     STORAGE_CREDENTIALS: $QA_ALLURE_REPORT_GCS_CREDENTIALS
     GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
+    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
+    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
   allow_failure: true
   script:
     - |
