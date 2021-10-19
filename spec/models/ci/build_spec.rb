@@ -3411,6 +3411,31 @@ RSpec.describe Ci::Build do
 
       it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
     end
+
+    describe 'kubernetes variables' do
+      let(:service) { double(execute: template) }
+      let(:template) { double(to_yaml: 'example-kubeconfig', valid?: template_valid) }
+      let(:template_valid) { true }
+
+      before do
+        allow(Ci::GenerateKubeconfigService).to receive(:new).with(build).and_return(service)
+      end
+
+      it { is_expected.to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+
+      context 'job is deploying to a cluster' do
+        let(:deployment) { create(:deployment, deployment_cluster: create(:deployment_cluster)) }
+        let(:build) { create(:ci_build, pipeline: pipeline, deployment: deployment) }
+
+        it { is_expected.not_to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+      end
+
+      context 'generated config is invalid' do
+        let(:template_valid) { false }
+
+        it { is_expected.not_to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+      end
+    end
   end
 
   describe '#scoped_variables' do

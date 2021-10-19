@@ -17,7 +17,7 @@ class DirectUploadsValidator
 
     raise ValidationError, "No provider configured for '#{uploader_type}'. #{supported_provider_text}" if provider.blank?
 
-    return if provider_loaded?(provider)
+    return if provider_supported?(provider)
 
     raise ValidationError, "Object storage provider '#{provider}' is not supported " \
                            "when 'direct_upload' is used for '#{uploader_type}'. #{supported_provider_text}"
@@ -25,12 +25,8 @@ class DirectUploadsValidator
 
   private
 
-  def provider_loaded?(provider)
-    return false unless SUPPORTED_DIRECT_UPLOAD_PROVIDERS.include?(provider)
-
-    require 'fog/azurerm' if provider == ObjectStorage::Config::AZURE_PROVIDER
-
-    true
+  def provider_supported?(provider)
+    SUPPORTED_DIRECT_UPLOAD_PROVIDERS.include?(provider)
   end
 
   def supported_provider_text

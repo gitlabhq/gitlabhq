@@ -14,7 +14,7 @@ module AwardEmojis
     private
 
     def normalize_name(name)
-      Gitlab::Emoji.normalize_emoji_name(name)
+      TanukiEmoji.find_by_alpha_code(name)&.name || name
     end
 
     # Provide more error state data than what BaseService allows.

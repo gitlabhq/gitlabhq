@@ -15,9 +15,6 @@ RSpec.describe 'CarrierWave::Storage::Fog::File' do
   subject { CarrierWave::Storage::Fog::File.new(uploader, storage, test_filename) }
 
   before do
-    require 'fog/azurerm'
-    require 'fog/aws'
-
     stub_object_storage(connection_params: connection_options, remote_directory: bucket_name)
 
     allow(uploader).to receive(:fog_directory).and_return(bucket_name)

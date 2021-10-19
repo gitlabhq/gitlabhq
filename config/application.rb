@@ -199,7 +199,7 @@ module Gitlab
     config.assets.enabled = true
 
     # Support legacy unicode file named img emojis, `1F939.png`
-    config.assets.paths << Gemojione.images_path
+    config.assets.paths << TanukiEmoji.images_path
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "application_utilities.css"

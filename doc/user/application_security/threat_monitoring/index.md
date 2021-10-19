@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Threat Monitoring **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14707) in GitLab 12.9.
 
 The **Threat Monitoring** page provides alerts and metrics
 for the GitLab application runtime security features. You can access
@@ -20,7 +20,7 @@ GitLab supports statistics for the following security features:
 
 ## Container Network Policy Alert list
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) in GitLab 13.9.
 
 The policy alert list displays your policy's alert activity. You can sort the list by these columns:
 

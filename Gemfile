@@ -129,7 +129,7 @@ gem 'fog-local', '~> 0.6'
 gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.3'
-gem 'gitlab-fog-azure-rm', '~> 1.2.0', require: false
+gem 'gitlab-fog-azure-rm', '~> 1.2.0', require: 'fog/azurerm'
 
 # for Google storage
 gem 'google-api-client', '~> 0.33'
@@ -290,7 +290,7 @@ gem 'autoprefixer-rails', '10.2.5.1'
 gem 'terser', '1.0.2'
 
 gem 'addressable', '~> 2.8'
-gem 'gemojione', '~> 3.3'
+gem 'tanuki_emoji', '~> 0.5'
 gem 'gon', '~> 6.4.0'
 gem 'request_store', '~> 1.5'
 gem 'base32', '~> 0.3.0'
@@ -348,6 +348,8 @@ group :development do
 
   # thin instead webrick
   gem 'thin', '~> 1.8.0'
+
+  gem 'sprite-factory', '~> 1.7'
 end
 
 group :development, :test do

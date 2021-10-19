@@ -201,10 +201,6 @@ RSpec.describe ObjectStorage::DirectUpload do
     end
 
     shared_examples 'a valid AzureRM upload' do
-      before do
-        require 'fog/azurerm'
-      end
-
       it_behaves_like 'a valid upload'
 
       it 'enables the Workhorse client' do

@@ -28,9 +28,9 @@ RSpec.describe Banzai::Filter::EmojiFilter do
   it 'replaces name versions of trademark, copyright, and registered trademark' do
     doc = filter('<p>:tm: :copyright: :registered:</p>')
 
-    expect(doc.css('gl-emoji')[0].text).to eq '™'
-    expect(doc.css('gl-emoji')[1].text).to eq '©'
-    expect(doc.css('gl-emoji')[2].text).to eq '®'
+    expect(doc.css('gl-emoji')[0].text).to eq '™️'
+    expect(doc.css('gl-emoji')[1].text).to eq '©️'
+    expect(doc.css('gl-emoji')[2].text).to eq '®️'
   end
 
   it 'correctly encodes the URL' do

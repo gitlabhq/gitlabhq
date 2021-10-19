@@ -40,7 +40,7 @@ class AwardEmojisFinder
   def validate_name_param
     return unless params[:name]
 
-    raise ArgumentError, 'Invalid name param' unless params[:name].to_s.in?(Gitlab::Emoji.emojis_names)
+    raise ArgumentError, 'Invalid name param' unless TanukiEmoji.find_by_alpha_code(params[:name].to_s)
   end
 
   def validate_awarded_by_param

@@ -210,9 +210,7 @@ module Backup
 
     def object_storage_config
       @object_storage_config ||= begin
-        config = ObjectStorage::Config.new(Gitlab.config.backup.upload)
-        config.load_provider
-        config
+        ObjectStorage::Config.new(Gitlab.config.backup.upload)
       end
     end
 

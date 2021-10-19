@@ -1264,6 +1264,16 @@ module Ci
       end
     end
 
+    def authorized_cluster_agents
+      strong_memoize(:authorized_cluster_agents) do
+        if ::Feature.enabled?(:group_authorized_agents, project, default_enabled: :yaml)
+          ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)
+        else
+          ::Clusters::DeployableAgentsFinder.new(project).execute
+        end
+      end
+    end
+
     private
 
     def add_message(severity, content)

@@ -53,7 +53,7 @@ RSpec.describe Users::UpdateService do
       result = update_user(user, status: { emoji: "Moo!" })
 
       expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq("Emoji is not included in the list")
+      expect(result[:message]).to eq("Emoji is not a valid emoji name")
     end
 
     it 'updates user detail with provided attributes' do

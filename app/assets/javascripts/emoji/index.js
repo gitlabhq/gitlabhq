@@ -9,6 +9,7 @@ let emojiMap = null;
 let validEmojiNames = null;
 export const FALLBACK_EMOJI_KEY = 'grey_question';
 
+// Keep the version in sync with `lib/gitlab/emoji.rb`
 export const EMOJI_VERSION = '1';
 
 const isLocalStorageAvailable = AccessorUtilities.canUseLocalStorage();

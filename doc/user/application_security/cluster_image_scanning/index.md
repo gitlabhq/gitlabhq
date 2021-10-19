@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Cluster Image Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 14.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 14.1.
 
 WARNING:
 This analyzer is in [Alpha](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha)
@@ -208,7 +208,7 @@ The cluster image scanning tool emits a JSON report file. For more information, 
 Here's an example cluster image scanning report:
 
 ```json-doc
-{{
+{
   "version": "14.0.2",
   "scan": {
     "scanner": {

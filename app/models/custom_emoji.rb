@@ -31,7 +31,7 @@ class CustomEmoji < ApplicationRecord
   private
 
   def valid_emoji_name
-    if Gitlab::Emoji.emoji_exists?(name)
+    if TanukiEmoji.find_by_alpha_code(name)
       errors.add(:name, _('%{name} is already being used for another emoji') % { name: self.name })
     end
   end

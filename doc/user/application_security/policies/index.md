@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Policies **(ULTIMATE)**
 
-> - Introduced in GitLab Ultimate 13.10 [with a flag](https://gitlab.com/groups/gitlab-org/-/epics/5329) named `security_orchestration_policies_configuration`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab Ultimate 14.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5329) in GitLab 13.10 with a flag named `security_orchestration_policies_configuration`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.3.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4.
 
 Policies in GitLab provide security teams a way to require scans of their choice to be run
@@ -49,7 +49,7 @@ users must make changes by following the
 
 ## Policy editor
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab Ultimate 13.4.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab 13.4.
 
 You can use the policy editor to create, edit, and delete policies:
 
@@ -79,7 +79,7 @@ mode to fix your policy before Rule mode is available again.
 
 ## Container Network Policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in GitLab Ultimate 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in GitLab 12.9.
 
 The **Container Network Policy** section provides packet flow metrics for
 your application's Kubernetes namespace. This section has the following
@@ -154,7 +154,7 @@ at the bottom of the editor.
 
 ### Configure a Network Policy Alert
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab Ultimate 13.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab 13.9.
 > - The feature flag was removed and the Threat Monitoring Alerts Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab 14.0.
 
 You can use policy alerts to track your policy's impact. Alerts are only available if you've

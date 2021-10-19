@@ -1214,7 +1214,19 @@ module Ci
     end
 
     def kubernetes_variables
-      [] # Overridden in EE
+      ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
+        # A cluster deployemnt may also define a KUBECONFIG variable, so to keep existing
+        # configurations working we shouldn't overwrite it here.
+        # This check will be removed when Cluster and Agent configurations are
+        # merged in https://gitlab.com/gitlab-org/gitlab/-/issues/335089
+        break collection if deployment&.deployment_cluster
+
+        template = ::Ci::GenerateKubeconfigService.new(self).execute # rubocop: disable CodeReuse/ServiceClass
+
+        if template.valid?
+          collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
+        end
+      end
     end
 
     def conditionally_allow_failure!(exit_code)
