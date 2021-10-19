@@ -1,17 +1,17 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Zero downtime upgrades **(FREE SELF)**
 
-Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or
-patch version of GitLab without having to take your GitLab instance offline.
-However, for this to work there are the following requirements:
+It's possible to upgrade to a newer major, minor, or patch version of GitLab
+without having to take your GitLab instance offline. However, for this to work
+there are the following requirements:
 
-- You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
-   9.3. If you skip releases, database modifications may be run in the wrong
+- You can only upgrade one minor release at a time. So from 13.1 to 13.2, not to
+   13.3. If you skip releases, database modifications may be run in the wrong
    sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/post_deployment_migrations.md).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
@@ -36,10 +36,10 @@ to re-read any database changes that have been made by post-deployment migration
 
 Most of the time you can safely upgrade from a patch release to the next minor
 release if the patch release is not the latest. For example, upgrading from
-9.1.1 to 9.2.0 should be safe even if 9.1.2 has been released. We do recommend
+14.1.1 to 14.2.0 should be safe even if 14.1.2 has been released. We do recommend
 you check the release posts of any releases between your current and target
 version just in case they include any migrations that may require you to upgrade
-1 release at a time.
+one release at a time.
 
 Some releases may also include so called "background migrations". These
 migrations are performed in the background by Sidekiq and are often used for
@@ -63,21 +63,21 @@ the migrations that are being performed.
 
 To help explain this, let's look at some examples:
 
-**Example 1:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. When GitLab 9.5.0 is released this
-installation can be safely upgraded to 9.5.0 without requiring downtime if the
-requirements mentioned above are met. You can also skip 9.5.0 and upgrade to
-9.5.1 after it's released, but you **can not** upgrade straight to 9.6.0; you
-_have_ to first upgrade to a 9.5.Z release.
+**Example 1:** You are running a large GitLab installation using version 13.4.2,
+which is the latest patch release of 13.4. When GitLab 13.5.0 is released this
+installation can be safely upgraded to 13.5.0 without requiring downtime if the
+requirements mentioned above are met. You can also skip 13.5.0 and upgrade to
+13.5.1 after it's released, but you **can not** upgrade straight to 13.6.0; you
+_have_ to first upgrade to a 13.5.Z release.
 
-**Example 2:** You are running a large GitLab installation using version 9.4.2,
-which is the latest patch release of 9.4. GitLab 9.5 includes some background
-migrations, and 10.0 requires these to be completed (processing any
-remaining jobs for you). Skipping 9.5 is not possible without downtime, and due
+**Example 2:** You are running a large GitLab installation using version 13.4.2,
+which is the latest patch release of 13.4. GitLab 13.5 includes some background
+migrations, and 14.0 requires these to be completed (processing any
+remaining jobs for you). Skipping 13.5 is not possible without downtime, and due
 to the background migrations would require potentially hours of downtime
 depending on how long it takes for the background migrations to complete. To
-work around this you have to upgrade to 9.5.Z first, then wait at least a
-week before upgrading to 10.0.
+work around this you have to upgrade to 13.5.Z first, then wait at least a
+week before upgrading to 14.0.
 
 **Example 3:** You use MySQL as the database for GitLab. Any upgrade to a new
 major/minor release requires downtime. If a release includes any background
@@ -89,7 +89,7 @@ meet the other online upgrade requirements mentioned above.
 
 Before following these instructions, note the following **important** information:
 
-- You can only upgrade 1 minor release at a time. So from 13.6 to 13.7, not to 13.8.
+- You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
   If you attempt more than one minor release, the upgrade may fail.
 - On single-node Omnibus deployments, updates with no downtime are not possible when
   using Puma because Puma always requires a complete restart. This is because the
@@ -156,7 +156,7 @@ you've completed these steps.
 
 ## Multi-node / HA deployment
 
-You can only upgrade 1 minor release at a time. So from 13.6 to 13.7, not to 13.8.
+You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
 If you attempt more than one minor release, the upgrade may fail.
 
 ### Use a load balancer in front of web (Puma) nodes

@@ -2,11 +2,17 @@
 
 # rubocop: disable Style/Documentation
 class Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindings
-  DELETE_BATCH_SIZE = 100
+  DELETE_BATCH_SIZE = 50
 
   # rubocop:disable Gitlab/NamespacedClass
   class VulnerabilitiesFinding < ActiveRecord::Base
     self.table_name = "vulnerability_occurrences"
+  end
+  # rubocop:enable Gitlab/NamespacedClass
+
+  # rubocop:disable Gitlab/NamespacedClass
+  class Vulnerability < ActiveRecord::Base
+    self.table_name = "vulnerabilities"
   end
   # rubocop:enable Gitlab/NamespacedClass
 
@@ -40,11 +46,19 @@ class Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindings
       ids_to_delete.concat(duplicate_ids)
 
       if ids_to_delete.size == DELETE_BATCH_SIZE
-        VulnerabilitiesFinding.where(id: ids_to_delete).delete_all
+        delete_findings_and_vulnerabilities(ids_to_delete)
         ids_to_delete.clear
       end
     end
 
-    VulnerabilitiesFinding.where(id: ids_to_delete).delete_all if ids_to_delete.any?
+    delete_findings_and_vulnerabilities(ids_to_delete) if ids_to_delete.any?
+  end
+
+  private
+
+  def delete_findings_and_vulnerabilities(ids)
+    vulnerability_ids = VulnerabilitiesFinding.where(id: ids).pluck(:vulnerability_id).compact
+    VulnerabilitiesFinding.where(id: ids).delete_all
+    Vulnerability.where(id: vulnerability_ids).delete_all
   end
 end

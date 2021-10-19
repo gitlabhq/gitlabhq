@@ -26,7 +26,7 @@
 /doc/administration/troubleshooting @marcel.amirault @marcia @eread
 /doc/api/graphql/ @msedlakjakubowski @kpaizee
 /doc/api/graphql/reference/ @kpaizee
-/doc/api/group_activity_analytics.md @msedlakjakubowski
+/doc/api/group_activity_analytics.md @fneill
 /doc/ci/ @marcel.amirault @sselhorn
 /doc/ci/environments/ @rdickenson
 /doc/ci/services/ @sselhorn
@@ -34,7 +34,7 @@
 /doc/development/ @marcia
 /doc/development/documentation/ @cnorris @dianalogan
 /doc/development/i18n/ @ngaskill
-/doc/development/value_stream_analytics.md @msedlakjakubowski
+/doc/development/value_stream_analytics.md @fneill
 /doc/gitlab-basics/ @aqualls
 /doc/install/ @marcel.amirault
 /doc/operations/ @ngaskill @rdickenson
@@ -45,19 +45,19 @@
 /doc/topics/autodevops/ @marcia
 /doc/topics/git/ @aqualls
 /doc/update/ @marcel.amirault @marcia
-/doc/user/analytics/ @msedlakjakubowski @ngaskill
+/doc/user/analytics/ @fneill @ngaskill
 /doc/user/application_security/ @rdickenson
 /doc/user/application_security/container_scanning/ @ngaskill
 /doc/user/application_security/cluster_image_scanning/ @ngaskill
 /doc/user/clusters/ @marcia
 /doc/user/compliance/ @rdickenson @eread
 /doc/user/group/ @msedlakjakubowski
-/doc/user/group/devops_adoption/ @msedlakjakubowski
+/doc/user/group/devops_adoption/ @fneill
 /doc/user/group/epics/ @msedlakjakubowski
-/doc/user/group/insights/ @msedlakjakubowski
+/doc/user/group/insights/ @fneill
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/roadmap/ @msedlakjakubowski
-/doc/user/group/value_stream_analytics/ @msedlakjakubowski
+/doc/user/group/value_stream_analytics/ @fneill
 /doc/user/infrastructure/ @marcia
 /doc/user/packages/ @ngaskill
 /doc/user/packages/infrastructure_registry/ @marcia

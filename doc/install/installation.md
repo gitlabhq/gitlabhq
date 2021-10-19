@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 # Installation from source **(FREE SELF)**
@@ -838,7 +837,9 @@ Validate your `gitlab` or `gitlab-ssl` NGINX configuration file with the followi
 sudo nginx -t
 ```
 
-You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` NGINX configuration file for typos, etc. as indicated in the error message given.
+You should receive `syntax is okay` and `test is successful` messages. If you
+receive error messages, check your `gitlab` or `gitlab-ssl` NGINX configuration
+file for typos, as indicated in the provided error message.
 
 Verify that the installed version is greater than 1.12.1:
 

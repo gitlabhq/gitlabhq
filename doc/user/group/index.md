@@ -508,6 +508,9 @@ To prevent a project from being shared with other groups:
 1. Select **Prevent sharing a project within `<group_name>` with other groups**.
 1. Select **Save changes**.
 
+This setting applies to all subgroups unless overridden by a group owner. Groups already
+added to a project lose access when the setting is enabled.
+
 ## Prevent members from being added to a group **(PREMIUM)**
 
 As a group owner, you can prevent any new project membership for all

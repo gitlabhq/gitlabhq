@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Object storage **(FREE SELF)**
@@ -123,8 +122,8 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     gitlab_rails['object_store']['objects']['pages']['bucket'] = '<pages>'
     ```
 
-   For GitLab 9.4 or later, if you're using AWS IAM profiles, be sure to omit the
-   AWS access key and secret access key/value pairs. For example:
+   If you're using AWS IAM profiles, omit the AWS access key and secret access
+   key/value pairs. For example:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {

@@ -81,10 +81,11 @@ help you access a repository, but there are some notables differences between th
 [Project maintainers and owners](../../permissions.md#project-members-permissions)
 can add or enable a deploy key for a project repository:
 
-1. Navigate to the project's **Settings > Repository** page.
-1. Expand the **Deploy keys** section.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Deploy keys**.
 1. Specify a title for the new deploy key and paste your public SSH key.
-1. (Optional) Check **Grant write permissions to this key** to allow `read-write` access. Leave it unchecked for `read-only` access.
+1. Optional. To allow `read-write` access, select the **Grant write permissions to this key** checkbox. Leave it unchecked for `read-only` access.
 
 There are three lists of project deploy keys:
 
@@ -164,9 +165,10 @@ configuration.
 [Project maintainers and owners](../../permissions.md#project-members-permissions)
 can remove or disable a deploy key for a project repository:
 
-1. Navigate to the project's **Settings > Repository** page.
-1. Expand the **Deploy keys** section.
-1. Select the **{remove}** or **{cancel}** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Deploy keys**.
+1. Select **Disable** (**{cancel}**).
 
 NOTE:
 Any service that relies on a deploy key stops working after that key is removed.

@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 {::options parse_block_html="true" /}
@@ -410,7 +409,10 @@ persistence and is used to store session data, temporary cache information, and 
 
 ## Setting up Bastion Hosts
 
-Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
+Because our GitLab instances are in private subnets, we need a way to connect
+to these instances with SSH for actions that include making configuration changes
+and performing upgrades. One way of doing this is by using a [bastion host](https://en.wikipedia.org/wiki/Bastion_host),
+sometimes also referred to as a jump box.
 
 NOTE:
 If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.

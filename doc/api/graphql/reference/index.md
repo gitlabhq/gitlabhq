@@ -10580,6 +10580,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="groupmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="groupmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="groupmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="groupmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="groupmergerequestsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include merge requests belonging to subgroups. |
 | <a id="groupmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
@@ -11494,6 +11496,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestassigneeassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestassigneeassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneeassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestassigneeassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -11523,6 +11527,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestassigneeauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestassigneeauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneeauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestassigneeauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -11570,6 +11576,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneereviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestassigneereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneereviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -11740,6 +11748,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestreviewerassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestreviewerassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestreviewerassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -11769,6 +11779,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mergerequestreviewerauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestreviewerauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestreviewerauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -11816,6 +11828,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -13118,6 +13132,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="projectmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="projectmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="projectmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="projectmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="projectmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="projectmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -14688,6 +14704,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercoreassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="usercoreassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="usercoreassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="usercoreassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercoreassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="usercoreassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -14717,6 +14735,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercoreauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="usercoreauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="usercoreauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="usercoreauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercoreauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="usercoreauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -14764,6 +14784,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercorereviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="usercorereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="usercorereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="usercorereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="usercorereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercorereviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="usercorereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -17734,6 +17756,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="userassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="userassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="userassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="userassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -17763,6 +17787,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="userauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="userauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="userauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="userauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
@@ -17810,6 +17836,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="userreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="userreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="userreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
+| <a id="userreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
 | <a id="userreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
 | <a id="userreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
