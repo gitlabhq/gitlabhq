@@ -38,7 +38,6 @@
 - "./spec/models/user_spec.rb"
 - "./spec/presenters/packages/detail/package_presenter_spec.rb"
 - "./spec/requests/api/ci/runner/runners_post_spec.rb"
-- "./spec/requests/api/ci/runners_spec.rb"
 - "./spec/requests/api/graphql/ci/runner_spec.rb"
 - "./spec/requests/api/graphql/group_query_spec.rb"
 - "./spec/requests/api/graphql/packages/composer_spec.rb"

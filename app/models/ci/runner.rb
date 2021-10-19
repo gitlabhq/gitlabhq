@@ -82,7 +82,9 @@ module Ci
         groups = Gitlab::ObjectHierarchy.new(groups).base_and_ancestors
       end
 
-      joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: groups })
+      joins(:runner_namespaces)
+        .where(ci_runner_namespaces: { namespace_id: groups })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :belonging_to_group_or_project, -> (group_id, project_id) {
@@ -111,7 +113,7 @@ module Ci
           instance_type
         ],
         remove_duplicates: false
-      )
+      ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     end
 
     scope :assignable_for, ->(project) do

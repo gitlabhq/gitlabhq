@@ -359,17 +359,15 @@ being upgraded to, we do the following:
 
 ### Prometheus
 
-GitLab exports [Prometheus
-metrics](../administration/monitoring/prometheus/gitlab_metrics.md) relating to
-the number of requests and timing for all web/API requests and Sidekiq jobs,
+GitLab exports [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
+relating to the number of requests and timing for all web/API requests and Sidekiq jobs,
 which can help diagnose performance trends and compare how Elasticsearch timing
 is impacting overall performance relative to the time spent doing other things.
 
 #### Indexing queues
 
-GitLab also exports [Prometheus
-metrics](../administration/monitoring/prometheus/gitlab_metrics.md) for
-indexing queues, which can help diagnose performance bottlenecks and determine
+GitLab also exports [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
+for indexing queues, which can help diagnose performance bottlenecks and determine
 whether or not your GitLab instance or Elasticsearch server can keep up with
 the volume of updates.
 

@@ -1409,7 +1409,19 @@ class MergeRequest < ApplicationRecord
   def environments
     return Environment.none unless actual_head_pipeline&.merge_request?
 
-    actual_head_pipeline.environments
+    if ::Feature.enabled?(:avoid_cross_joins_environments_merge_request, default_enabled: :yaml)
+      build_for_actual_head_pipeline = Ci::Build.latest.where(pipeline: actual_head_pipeline)
+
+      environments = build_for_actual_head_pipeline.joins(:metadata)
+                                                  .where.not('ci_builds_metadata.expanded_environment_name' => nil)
+                                                  .distinct('ci_builds_metadata.expanded_environment_name')
+                                                  .limit(100)
+                                                  .pluck(:expanded_environment_name)
+
+      Environment.where(project: project, name: environments)
+    else
+      actual_head_pipeline.environments
+    end
   end
 
   def fetch_ref!

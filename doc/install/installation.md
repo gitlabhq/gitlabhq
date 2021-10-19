@@ -1027,7 +1027,7 @@ misconfigured GitLab Workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed GitLab Workhorse](#install-gitlab-workhorse),
 and correctly [configured NGINX](#site-configuration).
 
-### `google-protobuf` "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
+### `google-protobuf` "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version 'GLIBC_2.14' not found"
 
 This can happen on some platforms for some versions of the
 `google-protobuf` gem. The workaround is to install a source-only

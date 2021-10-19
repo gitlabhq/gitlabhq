@@ -181,9 +181,9 @@ The daily job provides **only** the following information to the Customers Porta
 - Instance ID
 - MD5 hash of license
 
-<details>
-<summary>Click here to view an example of a cloud licensing sync request.</summary>
-<pre><code>
+Example of a cloud licensing sync request:
+
+```json
 {
   "gitlab_version": "14.1.0-pre",
   "timestamp": "2021-06-14T12:00:09Z",
@@ -231,8 +231,7 @@ The daily job provides **only** the following information to the Customers Porta
   "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
   "license_md5": "002f02470fe45ef6a333a4282aca6222"
 }
-</code></pre>
-</details>
+```
 
 #### Sync subscription details
 

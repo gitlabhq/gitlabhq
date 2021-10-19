@@ -12,13 +12,15 @@ Pipelines are normally run based on certain conditions being met. For example, w
 
 Pipeline schedules can be used to also run [pipelines](index.md) at specific intervals. For example:
 
-- Every month on the 22nd for a certain branch.
-- Once every day.
+- Every month on the 22nd (cron example: `0 0 22 * *`) for a certain branch.
+- Every month on the 2nd Monday (cron example: `0 0 * * 1#2`).
+- Every other Sunday at 0900 hours (cron example: `0 9 * * sun%2`).
+- Once every day (cron example: `0 0 * * *`).
+
+Schedule timing is configured with cron notation, parsed by [Fugit](https://github.com/floraison/fugit).
 
 In addition to using the GitLab UI, pipeline schedules can be maintained using the
 [Pipeline schedules API](../../api/pipeline_schedules.md).
-
-Schedule timing is configured with cron notation, parsed by [Fugit](https://github.com/floraison/fugit).
 
 ## Prerequisites
 

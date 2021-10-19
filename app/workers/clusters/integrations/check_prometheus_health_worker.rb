@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Clusters
-  module Applications
+  module Integrations
     class CheckPrometheusHealthWorker
       include ApplicationWorker
 
@@ -22,11 +22,11 @@ module Clusters
       def perform
         demo_project_ids = Gitlab::Monitor::DemoProjects.primary_keys
 
-        clusters = Clusters::Cluster.with_application_prometheus
+        clusters = Clusters::Cluster.with_integration_prometheus
           .with_project_http_integrations(demo_project_ids)
 
         # Move to a seperate worker with scoped context if expanded to do work on customer projects
-        clusters.each { |cluster| Clusters::Applications::PrometheusHealthCheckService.new(cluster).execute }
+        clusters.each { |cluster| Clusters::Integrations::PrometheusHealthCheckService.new(cluster).execute }
       end
     end
   end

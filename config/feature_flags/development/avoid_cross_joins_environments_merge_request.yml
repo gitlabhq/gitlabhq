@@ -1,0 +1,8 @@
+---
+name: avoid_cross_joins_environments_merge_request
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71591
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343236
+milestone: '14.5'
+type: development
+group: group::sharding
+default_enabled: false

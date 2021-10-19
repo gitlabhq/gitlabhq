@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Clusters
-  module Applications
+  module Integrations
     class PrometheusHealthCheckService
       include Gitlab::Utils::StrongMemoize
       include Gitlab::Routing
@@ -14,7 +14,7 @@ module Clusters
       def execute
         raise 'Invalid cluster type. Only project types are allowed.' unless @cluster.project_type?
 
-        return unless prometheus_application.installed?
+        return unless prometheus_integration.enabled
 
         project = @cluster.clusterable
 
@@ -28,32 +28,46 @@ module Clusters
 
         send_notification(project) if became_unhealthy?
 
-        prometheus_application.update_columns(healthy: currently_healthy?) if health_changed?
+        prometheus_integration.update_columns(health_status: current_health_status) if health_changed?
       end
 
       private
 
-      def prometheus_application
-        strong_memoize(:prometheus_application) do
-          @cluster.application_prometheus
+      def prometheus_integration
+        strong_memoize(:prometheus_integration) do
+          @cluster.integration_prometheus
+        end
+      end
+
+      def current_health_status
+        if currently_healthy?
+          :healthy
+        else
+          :unhealthy
         end
       end
 
       def currently_healthy?
         strong_memoize(:currently_healthy) do
-          prometheus_application.prometheus_client.healthy?
+          prometheus_integration.prometheus_client.healthy?
         end
       end
 
       def became_unhealthy?
         strong_memoize(:became_unhealthy) do
-          (was_healthy? || was_healthy?.nil?) && !currently_healthy?
+          (was_healthy? || was_unknown?) && !currently_healthy?
         end
       end
 
       def was_healthy?
         strong_memoize(:was_healthy) do
-          prometheus_application.healthy
+          prometheus_integration.healthy?
+        end
+      end
+
+      def was_unknown?
+        strong_memoize(:was_unknown) do
+          prometheus_integration.unknown?
         end
       end
 

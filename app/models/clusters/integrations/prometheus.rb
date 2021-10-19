@@ -14,6 +14,13 @@ module Clusters
       validates :cluster, presence: true
       validates :enabled, inclusion: { in: [true, false] }
 
+      # Periodically checked and kept up to date for Monitor demo projects
+      enum health_status: {
+        unknown: 0,
+        healthy: 1,
+        unhealthy: 2
+      }
+
       attr_encrypted :alert_manager_token,
         mode: :per_attribute_iv,
         key: Settings.attr_encrypted_db_key_base_32,

@@ -740,8 +740,7 @@ We use the following approach to determine whether a worker is CPU-bound:
 
 ## Feature category
 
-All Sidekiq workers must define a known [feature
-category](feature_categorization/index.md#sidekiq-workers).
+All Sidekiq workers must define a known [feature category](feature_categorization/index.md#sidekiq-workers).
 
 ## Job weights
 

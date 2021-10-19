@@ -34,8 +34,7 @@ configuration for the Pages site to generate properly.
    If you don't find a corresponding template, you can view the
    [GitLab Pages group of sample projects](https://gitlab.com/pages).
    These projects contain `.gitlab-ci.yml` files that you can modify for your needs.
-   You can also [learn how to write your own `.gitlab-ci.yml`
-   file for GitLab Pages](pages_from_scratch.md).
+   You can also [learn how to write your own `.gitlab-ci.yml` file for GitLab Pages](pages_from_scratch.md).
 
 1. Save and commit the `.gitlab-ci.yml` file.
 

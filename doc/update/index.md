@@ -163,12 +163,10 @@ To address the above two scenario's, it is advised to do the following prior to 
 
 ## Checking for pending Advanced Search migrations
 
-This section is only applicable if you have enabled the [Elasticsearch
-integration](../integration/elasticsearch.md).
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/elasticsearch.md).
 
-Major releases require all [Advanced Search
-migrations](../integration/elasticsearch.md#advanced-search-migrations) to
-be finished from the most recent minor release in your current version
+Major releases require all [Advanced Search migrations](../integration/elasticsearch.md#advanced-search-migrations)
+to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
 running the following command:
 
@@ -187,8 +185,7 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 
 ### What do I do if my Advanced Search migrations are stuck?
 
-See [how to retry a halted
-migration](../integration/elasticsearch.md#retry-a-halted-migration).
+See [how to retry a halted migration](../integration/elasticsearch.md#retry-a-halted-migration).
 
 ## Upgrade paths
 
@@ -234,12 +231,11 @@ It's also important to ensure that any background migrations have been fully com
 before upgrading to a new major version. To see the current size of the `background_migration` queue,
 [Check for background migrations before upgrading](#checking-for-background-migrations-before-upgrading).
 
-If you have enabled the [Elasticsearch
-integration](../integration/elasticsearch.md), then ensure
+If you have enabled the [Elasticsearch integration](../integration/elasticsearch.md), then ensure
 all Advanced Search migrations are completed in the last minor version within
-your current version. Be sure to [check for pending Advanced Search
-migrations](#checking-for-pending-advanced-search-migrations) before proceeding
-with the major version upgrade.
+your current version. Be sure to
+[check for pending Advanced Search migrations](#checking-for-pending-advanced-search-migrations)
+before proceeding with the major version upgrade.
 
 If your GitLab instance has any runners associated with it, it is very
 important to upgrade GitLab Runner to match the GitLab minor version that was
@@ -314,7 +310,7 @@ Git 2.33.x and later is required. We recommend you use the
 
 ### 14.3.0
 
-Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../install/installation.md#2-ruby)
+- Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../install/installation.md#2-ruby)
 for how to proceed.
 
 - GitLab 14.3.0 contains post-deployment migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
@@ -366,25 +362,25 @@ for how to proceed.
 
 ### 14.1.0
 
-- Due to an issue where `BatchedBackgroundMigrationWorkers` were
-  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
-  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
-  to update to at least 14.1.0 that contains the same fix before you update to
-  a later version.
+Due to an issue where `BatchedBackgroundMigrationWorkers` were
+[not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
+for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
+and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
+to update to at least 14.1.0 that contains the same fix before you update to
+a later version.
 
-  After you update to 14.1.0,
-  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
-  before you update to a later version.
+After you update to 14.1.0,
+[batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+before you update to a later version.
 
-  If the migrations are not finished and you try to update to a later version,
-  you'll see an error like:
+If the migrations are not finished and you try to update to a later version,
+you'll see an error like:
 
-  ```plaintext
-  Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
-  ```
+```plaintext
+Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+```
 
-  See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
 
 ### 14.0.0
 

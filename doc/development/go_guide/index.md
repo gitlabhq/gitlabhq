@@ -364,8 +364,7 @@ JSON format, as all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
 logging simply by using the build in [JSON
 formatter](https://github.com/sirupsen/logrus#formatters). This follows the
-same logging type we use in our [Ruby
-applications](../logging.md#use-structured-json-logging).
+same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus
 

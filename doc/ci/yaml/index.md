@@ -558,6 +558,9 @@ include:
 All [nested includes](#nested-includes) are executed in the scope of the target project.
 You can use local (relative to target project), project, remote, or template includes.
 
+NOTE:
+When including a YAML file from another private project, the user running the pipeline must be a member of both projects and have the appropriate permissions to run pipelines. A `not found or access denied` error may be shown if the user does not have access to any of the included files.
+
 ##### Multiple files from a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6.

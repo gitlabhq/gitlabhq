@@ -178,13 +178,13 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '.with_application_prometheus' do
-    subject { described_class.with_application_prometheus }
+  describe '.with_integration_prometheus' do
+    subject { described_class.with_integration_prometheus }
 
     let!(:cluster) { create(:cluster) }
 
     context 'cluster has prometheus application' do
-      let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+      let!(:application) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
       it { is_expected.to include(cluster) }
     end

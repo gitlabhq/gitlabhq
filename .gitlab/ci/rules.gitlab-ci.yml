@@ -1429,7 +1429,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
 .review:rules:review-build-cng:
@@ -1445,7 +1444,6 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
 
 .review:rules:review-deploy:
@@ -1456,13 +1454,11 @@
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
       allow_failure: true
 

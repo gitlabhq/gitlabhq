@@ -12619,7 +12619,8 @@ CREATE TABLE clusters_integration_prometheus (
     cluster_id bigint NOT NULL,
     enabled boolean DEFAULT false NOT NULL,
     encrypted_alert_manager_token text,
-    encrypted_alert_manager_token_iv text
+    encrypted_alert_manager_token_iv text,
+    health_status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE clusters_kubernetes_namespaces (

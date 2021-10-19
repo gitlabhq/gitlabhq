@@ -77,8 +77,7 @@ To manually configure a GitLab Terraform Report artifact:
          terraform: $PLAN_JSON
    ```
 
-   For a full example using the pre-built image, see [Example `.gitlab-ci.yml`
-   file](#example-gitlab-ciyml-file).
+   For a full example using the pre-built image, see [Example `.gitlab-ci.yml` file](#example-gitlab-ciyml-file).
 
    For an example displaying multiple reports, see [`.gitlab-ci.yml` multiple reports file](#multiple-terraform-plan-reports).
 

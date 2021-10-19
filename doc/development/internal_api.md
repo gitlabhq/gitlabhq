@@ -300,7 +300,7 @@ personal access token.
 | `scopes` | string array | yes | The authorization scopes for the new token, these must be valid token scopes |
 | `expires_at` | string | no | The expiry date for the new token |
 | `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
-| `user_id` | integer | no | User\_id for which to generate the new token |
+| `user_id` | integer | no | User ID for which to generate the new token |
 
 ```plaintext
 POST /internal/personal_access_token

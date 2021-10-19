@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' do
+RSpec.describe Clusters::Integrations::PrometheusHealthCheckService, '#execute' do
   let(:service) { described_class.new(cluster) }
 
   subject { service.execute }
@@ -26,10 +26,10 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
   end
 
   RSpec.shared_examples 'correct health stored' do
-    it 'stores the correct health of prometheus app' do
+    it 'stores the correct health of prometheus' do
       subject
 
-      expect(prometheus.healthy).to eq(client_healthy)
+      expect(prometheus.healthy?).to eq(client_healthy)
     end
   end
 
@@ -43,19 +43,19 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
     let_it_be(:project) { create(:project) }
     let_it_be(:integration) { create(:alert_management_http_integration, project: project) }
 
-    let(:applications_prometheus_healthy) { true }
-    let(:prometheus) { create(:clusters_applications_prometheus, status: prometheus_status_value, healthy: applications_prometheus_healthy) }
-    let(:cluster) { create(:cluster, :project, application_prometheus: prometheus, projects: [project]) }
+    let(:previous_health_status) { :healthy }
+    let(:prometheus) { create(:clusters_integrations_prometheus, enabled: prometheus_enabled, health_status: previous_health_status) }
+    let(:cluster) { create(:cluster, :project, integration_prometheus: prometheus, projects: [project]) }
 
-    context 'when prometheus not installed' do
-      let(:prometheus_status_value) { Clusters::Applications::Prometheus.state_machine.states[:installing].value }
+    context 'when prometheus not enabled' do
+      let(:prometheus_enabled) { false }
 
       it { expect(subject).to eq(nil) }
       include_examples 'no alert'
     end
 
-    context 'when prometheus installed' do
-      let(:prometheus_status_value) { Clusters::Applications::Prometheus.state_machine.states[:installed].value }
+    context 'when prometheus enabled' do
+      let(:prometheus_enabled) { true }
 
       before do
         client = instance_double('PrometheusClient', healthy?: client_healthy)
@@ -63,7 +63,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when newly unhealthy' do
-        let(:applications_prometheus_healthy) { true }
+        let(:previous_health_status) { :healthy }
         let(:client_healthy) { false }
 
         include_examples 'sends alert'
@@ -71,7 +71,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when newly healthy' do
-        let(:applications_prometheus_healthy) { false }
+        let(:previous_health_status) { :unhealthy }
         let(:client_healthy) { true }
 
         include_examples 'no alert'
@@ -79,7 +79,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when continuously unhealthy' do
-        let(:applications_prometheus_healthy) { false }
+        let(:previous_health_status) { :unhealthy }
         let(:client_healthy) { false }
 
         include_examples 'no alert'
@@ -87,7 +87,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when continuously healthy' do
-        let(:applications_prometheus_healthy) { true }
+        let(:previous_health_status) { :healthy }
         let(:client_healthy) { true }
 
         include_examples 'no alert'
@@ -95,7 +95,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when first health check and healthy' do
-        let(:applications_prometheus_healthy) { nil }
+        let(:previous_health_status) { :unknown }
         let(:client_healthy) { true }
 
         include_examples 'no alert'
@@ -103,7 +103,7 @@ RSpec.describe Clusters::Applications::PrometheusHealthCheckService, '#execute' 
       end
 
       context 'when first health check and not healthy' do
-        let(:applications_prometheus_healthy) { nil }
+        let(:previous_health_status) { :unknown }
         let(:client_healthy) { false }
 
         include_examples 'sends alert'

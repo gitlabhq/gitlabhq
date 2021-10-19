@@ -1069,8 +1069,8 @@
   :idempotent:
   :tags:
   - :needs_own_queue
-- :name: incident_management:clusters_applications_check_prometheus_health
-  :worker_name: Clusters::Applications::CheckPrometheusHealthWorker
+- :name: incident_management:clusters_integrations_check_prometheus_health
+  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
   :feature_category: :incident_management
   :has_external_dependencies: true
   :urgency: :low

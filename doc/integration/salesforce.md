@@ -79,7 +79,9 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    ![Salesforce App Secret Details](img/salesforce_app_secret_details.png)
 
 1. Save the configuration file.
-1. [Reconfigure GitLab]( ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure ) or [restart GitLab]( ../administration/restart_gitlab.md#installations-from-source ) for the changes to take effect if you installed GitLab via Omnibus or from source respectively.
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure) or
+   [restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes
+   to take effect if you installed GitLab via Omnibus or from source respectively.
 
 On the sign in page, there should now be a Salesforce icon below the regular sign in form.
 Click the icon to begin the authentication process. Salesforce asks the user to sign in and authorize the GitLab application.
