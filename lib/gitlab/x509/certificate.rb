@@ -33,6 +33,26 @@ module Gitlab
         from_strings(File.read(key_path), File.read(cert_path), ca_certs_string)
       end
 
+      # Returns all top-level, readable files in the default CA cert directory
+      def self.ca_certs_paths
+        cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"].select do |path|
+          !File.directory?(path) && File.readable?(path)
+        end
+        cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+        cert_paths
+      end
+
+      # Returns a concatenated array of Strings, each being a PEM-coded CA certificate.
+      def self.ca_certs_bundle
+        return @certs if @certs
+
+        @certs = ca_certs_paths.flat_map do |cert_file|
+          load_ca_certs_bundle(File.read(cert_file))
+        rescue OpenSSL::OpenSSLError => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, cert_file: cert_file)
+        end.uniq.join("\n")
+      end
+
       # Returns an array of OpenSSL::X509::Certificate objects, empty array if none found
       #
       # Ruby OpenSSL::X509::Certificate.new will only load the first

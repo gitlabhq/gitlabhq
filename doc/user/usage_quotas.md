@@ -36,9 +36,8 @@ namespace to recalculate the storage.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68898) project-level graph in GitLab 14.4 [with a flag](../administration/feature_flags.md) named `project_storage_ui`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 14.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `project_storage_ui`. On GitLab.com, this feature is available.
+> - Enabled on self-managed in GitLab 14.5.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71270) in GitLab 14.5.
 
 The following storage usage statistics are available to an owner:
 

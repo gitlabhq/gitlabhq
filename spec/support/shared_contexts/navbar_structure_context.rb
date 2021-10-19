@@ -119,7 +119,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Repository'),
           _('CI/CD'),
           _('Monitor'),
-          (s_('UsageQuota|Usage Quotas') if Feature.enabled?(:project_storage_ui, default_enabled: :yaml))
+          s_('UsageQuota|Usage Quotas')
         ]
       }
     ].compact

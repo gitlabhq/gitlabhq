@@ -240,6 +240,7 @@ requirements.
 1. Working and clean code that is commented where needed.
 1. [Unit, integration, and system tests](../testing_guide/index.md) that all pass
    on the CI server.
+1. Peer member testing is optional but recommended when the risk of a change is high. This includes when the changes are [far-reaching](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work) or are for [components critical for security](../code_review.md#security).
 1. Regressions and bugs are covered with tests that reduce the risk of the issue happening
    again.
 1. [Performance guidelines](../merge_request_performance_guidelines.md) have been followed.

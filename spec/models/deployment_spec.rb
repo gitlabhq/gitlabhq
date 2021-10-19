@@ -456,6 +456,17 @@ RSpec.describe Deployment do
       end
     end
 
+    describe '.ordered' do
+      let!(:deployment1) { create(:deployment, status: :running) }
+      let!(:deployment2) { create(:deployment, status: :success, finished_at: Time.current) }
+      let!(:deployment3) { create(:deployment, status: :canceled, finished_at: 1.day.ago) }
+      let!(:deployment4) { create(:deployment, status: :success, finished_at: 2.days.ago) }
+
+      it 'sorts by finished at' do
+        expect(described_class.ordered).to eq([deployment1, deployment2, deployment3, deployment4])
+      end
+    end
+
     describe 'visible' do
       subject { described_class.visible }
 

@@ -5,12 +5,20 @@ require 'spec_helper'
 RSpec.describe Gitlab::X509::Certificate do
   include SmimeHelper
 
+  let(:sample_ca_certs_path) { Rails.root.join('spec/fixtures/clusters').to_s }
+  let(:sample_cert) { Rails.root.join('spec/fixtures/x509_certificate.crt').to_s }
+
   # cert generation is an expensive operation and they are used read-only,
   # so we share them as instance variables in all tests
   before :context do
     @root_ca = generate_root
     @intermediate_ca = generate_intermediate(signer_ca: @root_ca)
     @cert = generate_cert(signer_ca: @intermediate_ca)
+  end
+
+  before do
+    stub_const("OpenSSL::X509::DEFAULT_CERT_DIR", sample_ca_certs_path)
+    stub_const("OpenSSL::X509::DEFAULT_CERT_FILE", sample_cert)
   end
 
   describe 'testing environment setup' do
@@ -100,6 +108,43 @@ RSpec.describe Gitlab::X509::Certificate do
       parsed_cert = described_class.from_files('a_key', 'a_cert')
 
       common_cert_tests(parsed_cert, cert, @root_ca)
+    end
+  end
+
+  describe '.ca_certs_paths' do
+    it 'returns all files specified by OpenSSL defaults' do
+      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+
+      expect(described_class.ca_certs_paths).to match_array(cert_paths + [sample_cert])
+    end
+  end
+
+  describe '.ca_certs_bundle' do
+    it 'skips certificates if OpenSSLError is raised and report it' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_and_raise_for_dev_exception)
+        .with(
+          a_kind_of(OpenSSL::X509::CertificateError),
+          cert_file: a_kind_of(String)).at_least(:once)
+
+      expect(OpenSSL::X509::Certificate)
+        .to receive(:new)
+        .and_raise(OpenSSL::X509::CertificateError).at_least(:once)
+
+      expect(described_class.ca_certs_bundle).to be_a(String)
+    end
+
+    it 'returns a list certificates as strings' do
+      expect(described_class.ca_certs_bundle).to be_a(String)
+    end
+  end
+
+  describe '.load_ca_certs_bundle' do
+    it 'loads a PEM-encoded certificate bundle into an OpenSSL::X509::Certificate array' do
+      ca_certs_string = described_class.ca_certs_bundle
+      ca_certs = described_class.load_ca_certs_bundle(ca_certs_string)
+
+      expect(ca_certs).to all(be_an(OpenSSL::X509::Certificate))
     end
   end
 

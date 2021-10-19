@@ -5,14 +5,6 @@ require 'spec_helper'
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
 RSpec.describe Gitlab::GitalyClient do
-  let(:sample_cert) { Rails.root.join('spec/fixtures/clusters/sample_cert.pem').to_s }
-
-  before do
-    allow(described_class)
-      .to receive(:stub_cert_paths)
-      .and_return([sample_cert])
-  end
-
   def stub_repos_storages(address)
     allow(Gitlab.config.repositories).to receive(:storages).and_return({
       'default' => { 'gitaly_address' => address }
@@ -142,21 +134,6 @@ RSpec.describe Gitlab::GitalyClient do
     end
   end
 
-  describe '.stub_certs' do
-    it 'skips certificates if OpenSSLError is raised and report it' do
-      expect(Gitlab::ErrorTracking)
-        .to receive(:track_and_raise_for_dev_exception)
-        .with(
-          a_kind_of(OpenSSL::X509::CertificateError),
-          cert_file: a_kind_of(String)).at_least(:once)
-
-      expect(OpenSSL::X509::Certificate)
-        .to receive(:new)
-        .and_raise(OpenSSL::X509::CertificateError).at_least(:once)
-
-      expect(described_class.stub_certs).to be_a(String)
-    end
-  end
   describe '.stub_creds' do
     it 'returns :this_channel_is_insecure if unix' do
       address = 'unix:/tmp/gitaly.sock'

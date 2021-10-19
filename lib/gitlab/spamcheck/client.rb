@@ -5,6 +5,7 @@ module Gitlab
   module Spamcheck
     class Client
       include ::Spam::SpamConstants
+
       DEFAULT_TIMEOUT_SECS = 2
 
       VERDICT_MAPPING = {
@@ -27,12 +28,7 @@ module Gitlab
         # connect with Spamcheck
         @endpoint_url = @endpoint_url.gsub(%r(^grpc:\/\/), '')
 
-        @creds =
-          if Rails.env.development? || Rails.env.test?
-            :this_channel_is_insecure
-          else
-            GRPC::Core::ChannelCredentials.new
-          end
+        @creds = stub_creds
       end
 
       def issue_spam?(spam_issue:, user:, context: {})
@@ -96,6 +92,14 @@ module Gitlab
       def convert_to_pb_timestamp(ar_timestamp)
         Google::Protobuf::Timestamp.new(seconds: ar_timestamp.to_time.to_i,
                                         nanos: ar_timestamp.to_time.nsec)
+      end
+
+      def stub_creds
+        if Rails.env.development? || Rails.env.test?
+          :this_channel_is_insecure
+        else
+          GRPC::Core::ChannelCredentials.new ::Gitlab::X509::Certificate.ca_certs_bundle
+        end
       end
 
       def grpc_client

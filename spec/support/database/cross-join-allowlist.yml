@@ -1,4 +1,3 @@
-- "./ee/spec/features/ci/ci_minutes_spec.rb"
 - "./ee/spec/features/merge_trains/two_merge_requests_on_train_spec.rb"
 - "./ee/spec/features/merge_trains/user_adds_merge_request_to_merge_train_spec.rb"
 - "./ee/spec/finders/ee/namespaces/projects_finder_spec.rb"

@@ -144,10 +144,6 @@ module Sidebars
         end
 
         def usage_quotas_menu_item
-          unless Feature.enabled?(:project_storage_ui, context.project&.group, default_enabled: :yaml)
-            return ::Sidebars::NilMenuItem.new(item_id: :usage_quotas)
-          end
-
           ::Sidebars::MenuItem.new(
             title: s_('UsageQuota|Usage Quotas'),
             link: project_usage_quotas_path(context.project),

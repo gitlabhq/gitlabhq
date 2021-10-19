@@ -54,6 +54,8 @@ class Deployment < ApplicationRecord
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
 
+  scope :ordered, -> { order(finished_at: :desc) }
+
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
   state_machine :status, initial: :created do
