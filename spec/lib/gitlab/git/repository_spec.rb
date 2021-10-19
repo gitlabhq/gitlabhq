@@ -1888,6 +1888,18 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#list_refs' do
+    it 'returns a list of branches with their head commit' do
+      refs = repository.list_refs
+      reference = refs.first
+
+      expect(refs).to be_an(Enumerable)
+      expect(reference).to be_a(Gitaly::ListRefsResponse::Reference)
+      expect(reference.name).to be_a(String)
+      expect(reference.target).to be_a(String)
+    end
+  end
+
   describe '#set_full_path' do
     before do
       repository_rugged.config["gitlab.fullpath"] = repository_path

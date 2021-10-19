@@ -784,6 +784,12 @@ module Gitlab
         end
       end
 
+      def list_refs
+        wrapped_gitaly_errors do
+          gitaly_ref_client.list_refs
+        end
+      end
+
       # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)

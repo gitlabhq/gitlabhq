@@ -17661,7 +17661,7 @@ CREATE VIEW postgres_indexes AS
    FROM ((((pg_index
      JOIN pg_class i ON ((i.oid = pg_index.indexrelid)))
      JOIN pg_namespace ON ((i.relnamespace = pg_namespace.oid)))
-     JOIN pg_indexes ON ((i.relname = pg_indexes.indexname)))
+     JOIN pg_indexes ON (((i.relname = pg_indexes.indexname) AND (pg_namespace.nspname = pg_indexes.schemaname))))
      JOIN pg_am a ON ((i.relam = a.oid)))
   WHERE ((pg_namespace.nspname <> 'pg_catalog'::name) AND (pg_namespace.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])));
 

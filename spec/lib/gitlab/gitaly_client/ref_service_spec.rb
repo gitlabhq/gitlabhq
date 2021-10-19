@@ -252,6 +252,26 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
+  describe '#list_refs' do
+    it 'sends a list_refs message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:list_refs)
+        .with(gitaly_request_with_params(patterns: ['refs/heads/']), kind_of(Hash))
+        .and_call_original
+
+      client.list_refs
+    end
+
+    it 'accepts a patterns argument' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:list_refs)
+        .with(gitaly_request_with_params(patterns: ['refs/tags/']), kind_of(Hash))
+        .and_call_original
+
+      client.list_refs([Gitlab::Git::TAG_REF_PREFIX])
+    end
+  end
+
   describe '#pack_refs' do
     it 'sends a pack_refs message' do
       expect_any_instance_of(Gitaly::RefService::Stub)

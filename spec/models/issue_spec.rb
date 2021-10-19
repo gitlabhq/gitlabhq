@@ -34,7 +34,8 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:issue_email_participants) }
     it { is_expected.to have_many(:timelogs).autosave(true) }
     it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
-    it { is_expected.to have_and_belong_to_many(:customer_relations_contacts) }
+    it { is_expected.to have_many(:issue_customer_relations_contacts) }
+    it { is_expected.to have_many(:customer_relations_contacts) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do

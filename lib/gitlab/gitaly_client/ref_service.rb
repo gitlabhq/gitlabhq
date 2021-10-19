@@ -194,6 +194,16 @@ module Gitlab
         raise ArgumentError, ex
       end
 
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
+        request = Gitaly::ListRefsRequest.new(
+          repository: @gitaly_repo,
+          patterns: patterns
+        )
+
+        response = GitalyClient.call(@storage, :ref_service, :list_refs, request, timeout: GitalyClient.fast_timeout)
+        consume_list_refs_response(response)
+      end
+
       def pack_refs
         request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
 
@@ -204,6 +214,10 @@ module Gitlab
 
       def consume_refs_response(response)
         response.flat_map { |message| message.names.map { |name| yield(name) } }
+      end
+
+      def consume_list_refs_response(response)
+        response.flat_map(&:references)
       end
 
       def sort_local_branches_by_param(sort_by)

@@ -400,11 +400,12 @@ Retrieve the job that generated a job token.
 GET /job
 ```
 
-Examples
+Examples (must run as part of the [`script`](../ci/yaml/index.md#script) section of a [CI/CD job](../ci/jobs/index.md)):
 
 ```shell
-curl --header "JOB-TOKEN: <your_job_token>" "https://gitlab.example.com/api/v4/job"
-curl "https://gitlab.example.com/api/v4/job?job_token=<your_job_token>"
+curl --header "Authorization: Bearer $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
+curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
+curl "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
 ```
 
 Example of response

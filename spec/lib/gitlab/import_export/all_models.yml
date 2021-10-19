@@ -60,6 +60,7 @@ issues:
 - incident_management_issuable_escalation_status
 - pending_escalations
 - customer_relations_contacts
+- issue_customer_relations_contacts
 work_item_type:
 - issues
 events:

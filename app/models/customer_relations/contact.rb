@@ -7,7 +7,8 @@ class CustomerRelations::Contact < ApplicationRecord
 
   belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'group_id'
   belongs_to :organization, optional: true
-  has_and_belongs_to_many :issues, join_table: :issue_customer_relations_contacts # rubocop: disable Rails/HasAndBelongsToMany
+  has_many :issue_contacts, inverse_of: :contact
+  has_many :issues, through: :issue_contacts, inverse_of: :customer_relations_contacts
 
   strip_attributes! :phone, :first_name, :last_name
 
