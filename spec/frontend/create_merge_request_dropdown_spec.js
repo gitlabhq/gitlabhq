@@ -46,7 +46,10 @@ describe('CreateMergeRequestDropdown', () => {
       dropdown
         .getRef('contains#hash')
         .then(() => {
-          expect(axios.get).toHaveBeenCalledWith(endpoint);
+          expect(axios.get).toHaveBeenCalledWith(
+            endpoint,
+            expect.objectContaining({ cancelToken: expect.anything() }),
+          );
         })
         .then(done)
         .catch(done.fail);

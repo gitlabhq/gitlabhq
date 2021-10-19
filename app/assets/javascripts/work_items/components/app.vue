@@ -1,9 +1,5 @@
-<script>
-export default {
-  name: 'WorkItemRoot',
-};
-</script>
-
 <template>
-  <div></div>
+  <div>
+    <router-view />
+  </div>
 </template>

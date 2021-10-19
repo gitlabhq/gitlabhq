@@ -94,9 +94,9 @@ Parameters:
 | `restrict_to_branch` | string | false | Comma-separated list of branches to be are automatically inspected. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Asana integration
+### Disable Asana integration
 
-Delete Asana integration for a project.
+Disable the Asana integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/asana
@@ -130,9 +130,9 @@ Parameters:
 | `subdomain` | string | false | The subdomain setting |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Assembla integration
+### Disable Assembla integration
 
-Delete Assembla integration for a project.
+Disable the Assembla integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/assembla
@@ -170,9 +170,9 @@ Parameters:
 | `password` | string | true | Password of the user |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Atlassian Bamboo CI integration
+### Disable Atlassian Bamboo CI integration
 
-Delete Atlassian Bamboo CI integration for a project.
+Disable the Atlassian Bamboo CI integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/bamboo
@@ -209,9 +209,9 @@ Parameters:
 | `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Bugzilla integration
+### Disable Bugzilla integration
 
-Delete Bugzilla integration for a project.
+Disable the Bugzilla integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/bugzilla
@@ -246,9 +246,9 @@ Parameters:
 | `enable_ssl_verification` | boolean | false | DEPRECATED: This parameter has no effect since SSL verification is always enabled |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Buildkite integration
+### Disable Buildkite integration
 
-Delete Buildkite integration for a project.
+Disable the Buildkite integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/buildkite
@@ -284,9 +284,9 @@ Parameters:
 | `room`        | string  | false    | Campfire room. The last part of the URL when you're in a room.                              |
 | `push_events` | boolean | false    | Enable notifications for push events.                                                       |
 
-### Delete Campfire integration
+### Disable Campfire integration
 
-Delete Campfire integration for a project.
+Disable the Campfire integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/campfire
@@ -322,9 +322,9 @@ Parameters:
 | `datadog_service` | string | false | Name of this GitLab instance that all data will be tagged with |
 | `datadog_env`     | string | false | The environment tag that traces will be tagged with |
 
-### Delete Datadog integration
+### Disable Datadog integration
 
-Delete Datadog integration for a project.
+Disable the Datadog integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/datadog
@@ -367,9 +367,9 @@ Parameters:
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Unify Circuit integration
+### Disable Unify Circuit integration
 
-Delete Unify Circuit integration for a project.
+Disable the Unify Circuit integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/unify-circuit
@@ -412,9 +412,9 @@ Parameters:
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Webex Teams integration
+### Disable Webex Teams integration
 
-Delete Webex Teams integration for a project.
+Disable the Webex Teams integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/webex-teams
@@ -451,9 +451,9 @@ Parameters:
 | `title` | string | false | Title |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Custom Issue Tracker integration
+### Disable Custom Issue Tracker integration
 
-Delete Custom Issue Tracker integration for a project.
+Disable the Custom Issue Tracker integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/custom-issue-tracker
@@ -485,9 +485,9 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `webhook` | string | true | Discord webhook. For example, `https://discord.com/api/webhooks/…` |
 
-### Delete Discord integration
+### Disable Discord integration
 
-Delete Discord integration for a project.
+Disable the Discord integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/discord
@@ -524,9 +524,9 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
-### Delete Drone CI integration
+### Disable Drone CI integration
 
-Delete Drone CI integration for a project.
+Disable the Drone CI integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/drone-ci
@@ -563,9 +563,9 @@ Parameters:
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 | `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are "all", "default", "protected", and "default_and_protected". Notifications are always fired for tag pushes. The default value is "all" |
 
-### Delete Emails on Push integration
+### Disable Emails on Push integration
 
-Delete Emails on Push integration for a project.
+Disable the Emails on Push integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/emails-on-push
@@ -599,9 +599,9 @@ Parameters:
 | `project_url`   | string | true | The URL to the project in EWM |
 | `issues_url`    | string | true | The URL to view an issue in EWM. Must contain `:id` |
 
-### Delete EWM integration
+### Disable EWM integration
 
-Delete EWM integration for a project.
+Disable the EWM integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/ewm
@@ -635,9 +635,9 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `confluence_url` | string | true | The URL of the Confluence Cloud Workspace hosted on atlassian.net.  |
 
-### Delete Confluence integration
+### Disable Confluence integration
 
-Delete Confluence integration for a project.
+Disable the Confluence integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/confluence
@@ -669,9 +669,9 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `external_wiki_url` | string | true | The URL of the external wiki |
 
-### Delete External wiki integration
+### Disable External wiki integration
 
-Delete External wiki integration for a project.
+Disable the External wiki integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/external-wiki
@@ -706,9 +706,9 @@ Parameters:
 | `token` | string | true | Flowdock Git source token |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Flowdock integration
+### Disable Flowdock integration
 
-Delete Flowdock integration for a project.
+Disable the Flowdock integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/flowdock
@@ -742,9 +742,9 @@ Parameters:
 | `repository_url` | string | true | GitHub repository URL |
 | `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static--dynamic-status-check-names) |
 
-### Delete GitHub integration
+### Disable GitHub integration
 
-Delete GitHub integration for a project.
+Disable the GitHub integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/github
@@ -788,9 +788,9 @@ Parameters:
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Hangouts Chat integration
+### Disable Hangouts Chat integration
 
-Delete Hangouts Chat integration for a project.
+Disable the Hangouts Chat integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/hangouts-chat
@@ -829,9 +829,9 @@ Parameters:
 | `colorize_messages` | boolean | false | Colorize messages |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Irker (IRC gateway) integration
+### Disable Irker (IRC gateway) integration
 
-Delete Irker (IRC gateway) integration for a project.
+Disable the Irker (IRC gateway) integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/irker
@@ -880,9 +880,9 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `comment_on_event_enabled` | boolean | false | Enable comments inside Jira issues on each GitLab event (commit / merge request) |
 
-### Delete Jira integration
+### Disable Jira integration
 
-Remove all previously Jira integrations from a project.
+Disable the Jira integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/jira
@@ -939,9 +939,9 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Slack token |
 
-### Delete Slack Slash Command integration
+### Disable Slack Slash Command integration
 
-Delete Slack Slash Command integration for a project.
+Disable the Slack Slash Command integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/slack-slash-commands
@@ -974,9 +974,9 @@ Parameters:
 | `token` | string | yes | The Mattermost token |
 | `username` | string | no | The username to use to post the message |
 
-### Delete Mattermost Slash Command integration
+### Disable Mattermost Slash Command integration
 
-Delete Mattermost Slash Command integration for a project.
+Disable the Mattermost Slash Command integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/mattermost-slash-commands
@@ -1005,9 +1005,9 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events |
 
-### Delete Packagist integration
+### Disable Packagist integration
 
-Delete Packagist integration for a project.
+Disable the Packagist integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/packagist
@@ -1044,9 +1044,9 @@ Parameters:
 | `notify_only_default_branch` | boolean | no | Send notifications only for the default branch ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28271)) |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 
-### Delete Pipeline-Emails integration
+### Disable Pipeline-Emails integration
 
-Delete Pipeline-Emails integration for a project.
+Disable the Pipeline-Emails integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/pipelines-email
@@ -1082,9 +1082,9 @@ Parameters:
 | `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Pivotal Tracker integration
+### Disable Pivotal Tracker integration
 
-Delete Pivotal Tracker integration for a project.
+Disable the Pivotal Tracker integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/pivotaltracker
@@ -1118,9 +1118,9 @@ Parameters:
 | `google_iap_audience_client_id` | string | false | Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com) |
 | `google_iap_service_account_json` | string | false | `credentials.json` file for your service account, like { "type": "service_account", "project_id": ... } |
 
-### Delete Prometheus integration
+### Disable Prometheus integration
 
-Delete Prometheus integration for a project.
+Disable the Prometheus integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/prometheus
@@ -1157,9 +1157,9 @@ Parameters:
 | `sound` | string | false | The sound of the notification |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Pushover integration
+### Disable Pushover integration
 
-Delete Pushover integration for a project.
+Disable the Pushover integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/pushover
@@ -1195,9 +1195,9 @@ Parameters:
 | `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete Redmine integration
+### Disable Redmine integration
 
-Delete Redmine integration for a project.
+Disable the Redmine integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/redmine
@@ -1256,9 +1256,9 @@ Parameters:
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Slack integration
+### Disable Slack integration
 
-Delete Slack integration for a project.
+Disable the Slack integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/slack
@@ -1302,9 +1302,9 @@ Parameters:
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
 
-### Delete Microsoft Teams integration
+### Disable Microsoft Teams integration
 
-Delete Microsoft Teams integration for a project.
+Disable the Microsoft Teams integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/microsoft-teams
@@ -1359,9 +1359,9 @@ Parameters:
 | `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
 | `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 
-### Delete Mattermost notifications integration
+### Disable Mattermost notifications integration
 
-Delete Mattermost notifications integration for a project.
+Disable the Mattermost notifications integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/mattermost
@@ -1399,9 +1399,9 @@ Parameters:
 | `password` | string | true | The password of the user |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete JetBrains TeamCity CI integration
+### Disable JetBrains TeamCity CI integration
 
-Delete JetBrains TeamCity CI integration for a project.
+Disable the JetBrains TeamCity CI integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/teamcity
@@ -1439,9 +1439,9 @@ Parameters:
 | `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | false | Enable notifications for tag push events. |
 
-### Delete Jenkins CI integration
+### Disable Jenkins CI integration
 
-Delete Jenkins CI integration for a project.
+Disable the Jenkins CI integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/jenkins
@@ -1476,9 +1476,9 @@ Parameters:
 - `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins GitLab Hook plugin
 - `pass_unstable` (optional) - Unstable builds are treated as passing
 
-### Delete Jenkins CI (Deprecated) integration
+### Disable Jenkins CI (Deprecated) integration
 
-Delete Jenkins CI (Deprecated) integration for a project.
+Disable the Jenkins CI (Deprecated) integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/jenkins-deprecated
@@ -1512,9 +1512,9 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `mock_service_url` | string | true | `http://localhost:4004` |
 
-### Delete MockCI integration
+### Disable MockCI integration
 
-Delete MockCI integration for a project.
+Disable the MockCI integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/mock-ci
@@ -1549,9 +1549,9 @@ Parameters:
 | `description` | string | false | Description |
 | `push_events` | boolean | false | Enable notifications for push events |
 
-### Delete YouTrack integration
+### Disable YouTrack integration
 
-Delete YouTrack integration for a project.
+Disable the YouTrack integration for a project. Integration settings are preserved.
 
 ```plaintext
 DELETE /projects/:id/integrations/youtrack

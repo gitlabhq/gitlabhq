@@ -56,10 +56,20 @@ module Gitlab
       end
 
       def download(url, upload_path)
-        File.open(upload_path, 'w') do |file|
-          # Download (stream) file from the uploader's location
-          IO.copy_stream(URI.parse(url).open, file)
+        File.open(upload_path, 'wb') do |file|
+          Gitlab::HTTP.get(url, stream_body: true) do |fragment|
+            if [301, 302, 307].include?(fragment.code)
+              Gitlab::Import::Logger.warn(message: "received redirect fragment", fragment_code: fragment.code)
+            elsif fragment.code == 200
+              file.write(fragment)
+            else
+              raise Gitlab::ImportExport::Error, "unsupported response downloading fragment #{fragment.code}"
+            end
+          end
         end
+      rescue StandardError => e
+        @shared.error(e) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        raise e
       end
 
       def tar_with_options(archive:, dir:, options:)

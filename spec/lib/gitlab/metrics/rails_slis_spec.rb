@@ -17,11 +17,13 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
       possible_labels = [
         {
           endpoint_id: "GET /api/:version/version",
-          feature_category: :not_owned
+          feature_category: :not_owned,
+          request_urgency: :default
         },
         {
           endpoint_id: "ProjectsController#show",
-          feature_category: :projects
+          feature_category: :projects,
+          request_urgency: :default
         }
       ]
 

@@ -4042,6 +4042,7 @@ Input type: `ScanExecutionPolicyCommitInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationscanexecutionpolicycommitclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String`](#string) | Name of the policy. If the name is null, the `name` field from `policy_yaml` is used. |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | Changes the operation mode. |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | YAML snippet of the policy. |
 | <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |

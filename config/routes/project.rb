@@ -358,7 +358,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'details', on: :member
         end
 
-        resources :work_items, only: [:index]
+        get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
 
         resource :tracing, only: [:show]
 

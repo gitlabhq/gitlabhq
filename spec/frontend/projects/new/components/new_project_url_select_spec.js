@@ -24,14 +24,23 @@ describe('NewProjectUrlSelect component', () => {
           {
             id: 'gid://gitlab/Group/26',
             fullPath: 'flightjs',
+            name: 'Flight JS',
+            visibility: 'public',
+            webUrl: 'http://127.0.0.1:3000/flightjs',
           },
           {
             id: 'gid://gitlab/Group/28',
             fullPath: 'h5bp',
+            name: 'H5BP',
+            visibility: 'public',
+            webUrl: 'http://127.0.0.1:3000/h5bp',
           },
           {
             id: 'gid://gitlab/Group/30',
             fullPath: 'h5bp/subgroup',
+            name: 'H5BP Subgroup',
+            visibility: 'private',
+            webUrl: 'http://127.0.0.1:3000/h5bp/subgroup',
           },
         ],
       },
@@ -79,6 +88,10 @@ describe('NewProjectUrlSelect component', () => {
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findHiddenInput = () => wrapper.find('input');
+  const clickDropdownItem = async () => {
+    wrapper.findComponent(GlDropdownItem).vm.$emit('click');
+    await wrapper.vm.$nextTick();
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -127,7 +140,6 @@ describe('NewProjectUrlSelect component', () => {
 
   it('focuses on the input when the dropdown is opened', async () => {
     wrapper = mountComponent({ mountFn: mount });
-
     jest.runOnlyPendingTimers();
     await wrapper.vm.$nextTick();
 
@@ -140,7 +152,6 @@ describe('NewProjectUrlSelect component', () => {
 
   it('renders expected dropdown items', async () => {
     wrapper = mountComponent({ mountFn: mount });
-
     jest.runOnlyPendingTimers();
     await wrapper.vm.$nextTick();
 
@@ -160,7 +171,6 @@ describe('NewProjectUrlSelect component', () => {
 
     beforeEach(async () => {
       wrapper = mountComponent({ mountFn: mount });
-
       jest.runOnlyPendingTimers();
       await wrapper.vm.$nextTick();
 
@@ -195,22 +205,37 @@ describe('NewProjectUrlSelect component', () => {
     };
 
     wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mount });
-
     jest.runOnlyPendingTimers();
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('li').text()).toBe('No matches found');
   });
 
-  it('updates hidden input with selected namespace', async () => {
+  it('emits `update-visibility` event to update the visibility radio options', async () => {
     wrapper = mountComponent();
-
     jest.runOnlyPendingTimers();
     await wrapper.vm.$nextTick();
 
-    wrapper.findComponent(GlDropdownItem).vm.$emit('click');
+    const spy = jest.spyOn(eventHub, '$emit');
 
+    await clickDropdownItem();
+
+    const namespace = data.currentUser.groups.nodes[0];
+
+    expect(spy).toHaveBeenCalledWith('update-visibility', {
+      name: namespace.name,
+      visibility: namespace.visibility,
+      showPath: namespace.webUrl,
+      editPath: `${namespace.webUrl}/-/edit`,
+    });
+  });
+
+  it('updates hidden input with selected namespace', async () => {
+    wrapper = mountComponent();
+    jest.runOnlyPendingTimers();
     await wrapper.vm.$nextTick();
+
+    await clickDropdownItem();
 
     expect(findHiddenInput().attributes()).toMatchObject({
       name: 'project[namespace_id]',

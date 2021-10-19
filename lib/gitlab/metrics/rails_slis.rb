@@ -30,10 +30,12 @@ module Gitlab
             endpoint_id = API::Base.endpoint_id_for_route(route)
             route_class = route.app.options[:for]
             feature_category = route_class.feature_category_for_app(route.app)
+            request_urgency = route_class.urgency_for_app(route.app)
 
             {
               endpoint_id: endpoint_id,
-              feature_category: feature_category
+              feature_category: feature_category,
+              request_urgency: request_urgency.name
             }
           end
         end
@@ -42,7 +44,8 @@ module Gitlab
           Gitlab::RequestEndpoints.all_controller_actions.map do |controller, action|
             {
               endpoint_id: controller.endpoint_id_for_action(action),
-              feature_category: controller.feature_category_for_action(action)
+              feature_category: controller.feature_category_for_action(action),
+              request_urgency: controller.urgency_for_action(action).name
             }
           end
         end

@@ -780,6 +780,10 @@ module Ci
       strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
 
+    def variables_builder
+      @variables_builder ||= ::Gitlab::Ci::Variables::Builder.new(self)
+    end
+
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted?
@@ -1252,6 +1256,12 @@ module Ci
 
     def build_matchers
       self.builds.latest.build_matchers(project)
+    end
+
+    def predefined_vars_in_builder_enabled?
+      strong_memoize(:predefined_vars_in_builder_enabled) do
+        Feature.enabled?(:ci_predefined_vars_in_builder, project, default_enabled: :yaml)
+      end
     end
 
     private

@@ -159,9 +159,8 @@ describe('LabelsSelect Mutations', () => {
       labels = [
         { id: 1, title: 'scoped' },
         { id: 2, title: 'scoped::one', set: false },
-        { id: 3, title: 'scoped::two', set: false },
-        { id: 4, title: 'scoped::three', set: true },
-        { id: 5, title: '' },
+        { id: 3, title: 'scoped::test', set: true },
+        { id: 4, title: '' },
       ];
     });
 
@@ -192,9 +191,8 @@ describe('LabelsSelect Mutations', () => {
         expect(state.labels).toEqual([
           { id: 1, title: 'scoped' },
           { id: 2, title: 'scoped::one', set: true, touched: true },
-          { id: 3, title: 'scoped::two', set: false },
-          { id: 4, title: 'scoped::three', set: false },
-          { id: 5, title: '' },
+          { id: 3, title: 'scoped::test', set: false },
+          { id: 4, title: '' },
         ]);
       });
     });

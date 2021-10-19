@@ -392,8 +392,6 @@ export default {
     diffsApp.instrument();
   },
   created() {
-    this.mergeRequestContainers = document.querySelectorAll('.merge-request-container');
-
     this.adjustView();
     this.subscribeToEvents();
 
@@ -520,13 +518,6 @@ export default {
         });
       } else {
         this.removeEventListeners();
-      }
-
-      if (!this.isFluidLayout && this.glFeatures.mrChangesFluidLayout) {
-        this.mergeRequestContainers.forEach((el) => {
-          el.classList.toggle('limit-container-width', !this.shouldShow);
-          el.classList.toggle('container-limited', !this.shouldShow);
-        });
       }
     },
     setEventListeners() {

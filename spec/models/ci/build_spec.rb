@@ -2759,7 +2759,10 @@ RSpec.describe Ci::Build do
           let(:job_dependency_var) { { key: 'job_dependency', value: 'value', public: true, masked: false } }
 
           before do
-            allow(build).to receive(:predefined_variables) { [build_pre_var] }
+            allow_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
+              allow(builder).to receive(:predefined_variables) { [build_pre_var] }
+            end
+
             allow(build).to receive(:yaml_variables) { [build_yaml_var] }
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
@@ -3411,75 +3414,122 @@ RSpec.describe Ci::Build do
   end
 
   describe '#scoped_variables' do
-    context 'when build has not been persisted yet' do
-      let(:build) do
-        described_class.new(
-          name: 'rspec',
-          stage: 'test',
-          ref: 'feature',
-          project: project,
-          pipeline: pipeline,
-          scheduling_type: :stage
-        )
-      end
+    before do
+      pipeline.clear_memoization(:predefined_vars_in_builder_enabled)
+    end
 
-      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
+    it 'records a prometheus metric' do
+      histogram = double(:histogram)
+      expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_builder_scoped_variables_histogram)
+        .and_return(histogram)
 
-      it 'does not persist the build' do
-        expect(build).to be_valid
-        expect(build).not_to be_persisted
+      expect(histogram).to receive(:observe)
+        .with({}, a_kind_of(ActiveSupport::Duration))
 
-        build.scoped_variables
+      build.scoped_variables
+    end
 
-        expect(build).not_to be_persisted
-      end
-
-      it 'returns static predefined variables' do
-        keys = %w[CI_JOB_NAME
-                  CI_COMMIT_SHA
-                  CI_COMMIT_SHORT_SHA
-                  CI_COMMIT_REF_NAME
-                  CI_COMMIT_REF_SLUG
-                  CI_JOB_STAGE]
-
-        variables = build.scoped_variables
-
-        variables.map { |env| env[:key] }.tap do |names|
-          expect(names).to include(*keys)
+    shared_examples 'calculates scoped_variables' do
+      context 'when build has not been persisted yet' do
+        let(:build) do
+          described_class.new(
+            name: 'rspec',
+            stage: 'test',
+            ref: 'feature',
+            project: project,
+            pipeline: pipeline,
+            scheduling_type: :stage
+          )
         end
 
-        expect(variables)
-          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+        let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
+
+        it 'does not persist the build' do
+          expect(build).to be_valid
+          expect(build).not_to be_persisted
+
+          build.scoped_variables
+
+          expect(build).not_to be_persisted
+        end
+
+        it 'returns static predefined variables' do
+          keys = %w[CI_JOB_NAME
+                    CI_COMMIT_SHA
+                    CI_COMMIT_SHORT_SHA
+                    CI_COMMIT_REF_NAME
+                    CI_COMMIT_REF_SLUG
+                    CI_JOB_STAGE]
+
+          variables = build.scoped_variables
+
+          variables.map { |env| env[:key] }.tap do |names|
+            expect(names).to include(*keys)
+          end
+
+          expect(variables)
+            .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+        end
+
+        it 'does not return prohibited variables' do
+          keys = %w[CI_JOB_ID
+                    CI_JOB_URL
+                    CI_JOB_TOKEN
+                    CI_BUILD_ID
+                    CI_BUILD_TOKEN
+                    CI_REGISTRY_USER
+                    CI_REGISTRY_PASSWORD
+                    CI_REPOSITORY_URL
+                    CI_ENVIRONMENT_URL
+                    CI_DEPLOY_USER
+                    CI_DEPLOY_PASSWORD]
+
+          build.scoped_variables.map { |env| env[:key] }.tap do |names|
+            expect(names).not_to include(*keys)
+          end
+        end
       end
 
-      it 'does not return prohibited variables' do
-        keys = %w[CI_JOB_ID
-                  CI_JOB_URL
-                  CI_JOB_TOKEN
-                  CI_BUILD_ID
-                  CI_BUILD_TOKEN
-                  CI_REGISTRY_USER
-                  CI_REGISTRY_PASSWORD
-                  CI_REPOSITORY_URL
-                  CI_ENVIRONMENT_URL
-                  CI_DEPLOY_USER
-                  CI_DEPLOY_PASSWORD]
+      context 'with dependency variables' do
+        let!(:prepare) { create(:ci_build, name: 'prepare', pipeline: pipeline, stage_idx: 0) }
+        let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare'] }) }
 
-        build.scoped_variables.map { |env| env[:key] }.tap do |names|
-          expect(names).not_to include(*keys)
+        let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
+
+        it 'inherits dependent variables' do
+          expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
         end
       end
     end
 
-    context 'with dependency variables' do
-      let!(:prepare) { create(:ci_build, name: 'prepare', pipeline: pipeline, stage_idx: 0) }
-      let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare'] }) }
+    it_behaves_like 'calculates scoped_variables'
 
-      let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
+    it 'delegates to the variable builders' do
+      expect_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
+        expect(builder)
+          .to receive(:scoped_variables).with(build, hash_including(:environment, :dependencies))
+          .and_call_original
 
-      it 'inherits dependent variables' do
-        expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
+        expect(builder).to receive(:predefined_variables).and_call_original
       end
+
+      build.scoped_variables
+    end
+
+    context 'when ci builder feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_predefined_vars_in_builder: false)
+      end
+
+      it 'does not delegate to the variable builders' do
+        expect_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
+          expect(builder).not_to receive(:predefined_variables)
+        end
+
+        build.scoped_variables
+      end
+
+      it_behaves_like 'calculates scoped_variables'
     end
   end
 

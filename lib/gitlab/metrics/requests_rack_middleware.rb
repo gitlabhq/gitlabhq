@@ -116,9 +116,11 @@ module Gitlab
       def record_apdex_if_needed(env, elapsed)
         return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
 
+        urgency = urgency_for_env(env)
+
         Gitlab::Metrics::RailsSlis.request_apdex.increment(
-          labels: labels_from_context,
-          success: satisfactory?(env, elapsed)
+          labels: labels_from_context.merge(request_urgency: urgency.name),
+          success: elapsed < urgency.duration
         )
       end
 
@@ -129,17 +131,15 @@ module Gitlab
         }
       end
 
-      def satisfactory?(env, elapsed)
-        target =
+      def urgency_for_env(env)
+        endpoint_urgency =
           if env['api.endpoint'].present?
             env['api.endpoint'].options[:for].try(:urgency_for_app, env['api.endpoint'])
           elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:urgency)
             env['action_controller.instance'].urgency
           end
 
-        target ||= Gitlab::EndpointAttributes::DEFAULT_URGENCY
-
-        elapsed < target.duration
+        endpoint_urgency || Gitlab::EndpointAttributes::DEFAULT_URGENCY
       end
     end
   end

@@ -81,7 +81,7 @@ module QA
           result = yield.tap do
             fabrication_time = Time.now - start
 
-            Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time * 1000)
+            Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
               msg << "Built a #{name}"

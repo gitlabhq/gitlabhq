@@ -14,16 +14,22 @@ module Gitlab
           end
 
           def successful?(result)
-            result == 'PONG'
+            result == true
           end
 
           def check
-            ::Gitlab::HealthChecks::Redis::CacheCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::QueuesCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::SharedStateCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::TraceChunksCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::RateLimitingCheck.check_up &&
-              ::Gitlab::HealthChecks::Redis::SessionsCheck.check_up
+            redis_health_checks.all?(&:check_up)
+          end
+
+          def redis_health_checks
+            [
+              Gitlab::HealthChecks::Redis::CacheCheck,
+              Gitlab::HealthChecks::Redis::QueuesCheck,
+              Gitlab::HealthChecks::Redis::SharedStateCheck,
+              Gitlab::HealthChecks::Redis::TraceChunksCheck,
+              Gitlab::HealthChecks::Redis::RateLimitingCheck,
+              Gitlab::HealthChecks::Redis::SessionsCheck
+            ]
           end
         end
       end

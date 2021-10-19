@@ -38,6 +38,6 @@ module WorkhorseAuthorization
   end
 
   def file_extension_whitelist
-    ImportExportUploader::EXTENSION_WHITELIST
+    ImportExportUploader::EXTENSION_ALLOWLIST
   end
 end

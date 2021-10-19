@@ -10,8 +10,10 @@ module Ci
     # Variables in the environment name scope.
     #
     def scoped_variables(environment: expanded_environment_name, dependencies: true)
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.concat(predefined_variables)
+      track_duration do
+        variables = pipeline.variables_builder.scoped_variables(self, environment: environment, dependencies: dependencies)
+
+        variables.concat(predefined_variables) unless pipeline.predefined_vars_in_builder_enabled?
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runnable? && runner
@@ -25,7 +27,21 @@ module Ci
         variables.concat(trigger_request.user_variables) if trigger_request
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+
+        variables
       end
+    end
+
+    def track_duration
+      start_time = ::Gitlab::Metrics::System.monotonic_time
+      result = yield
+      duration = ::Gitlab::Metrics::System.monotonic_time - start_time
+
+      ::Gitlab::Ci::Pipeline::Metrics
+        .pipeline_builder_scoped_variables_histogram
+        .observe({}, duration.seconds)
+
+      result
     end
 
     ##

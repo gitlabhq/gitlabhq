@@ -104,7 +104,10 @@ module QA
           source_issue # fabricate source group, project, issue
         end
 
-        it 'successfully imports issue' do
+        it(
+          'successfully imports issue',
+          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2325'
+        ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
           aggregate_failures do

@@ -27,7 +27,9 @@ module QA
                  :import_error
 
       attribute :group do
-        Group.fabricate!
+        Group.fabricate! do |group|
+          group.api_client = api_client
+        end
       end
 
       attribute :path_with_namespace do

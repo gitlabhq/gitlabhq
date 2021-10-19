@@ -17,6 +17,10 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
       def initialize
         @shared = Gitlab::ImportExport::Shared.new(nil)
       end
+
+      def download(url, upload_path)
+        super(url, upload_path)
+      end
     end.new
   end
 
@@ -98,6 +102,46 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil do
         end.new
 
         expect { klass.tar_cf(archive: 'test', dir: 'test') }.to raise_error(Gitlab::ImportExport::Error, 'System call failed')
+      end
+    end
+  end
+
+  describe '#download' do
+    before do
+      stub_request(:get, loc)
+        .to_return(
+          status: 200,
+          body: content
+        )
+    end
+
+    context 'a non-localhost uri' do
+      let(:loc) { 'https://gitlab.com' }
+      let(:content) { File.open('spec/fixtures/rails_sample.tif') }
+
+      it 'gets the contents' do
+        Tempfile.create("foo") do |f|
+          subject.download(loc, f.path)
+          expect(f.read).to eq(File.open('spec/fixtures/rails_sample.tif').read)
+        end
+      end
+
+      it 'streams the contents' do
+        expect(Gitlab::HTTP).to receive(:get).with(loc, hash_including(stream_body: true))
+        Tempfile.create("foo") do |f|
+          subject.download(loc, f.path)
+        end
+      end
+    end
+
+    context 'a localhost uri' do
+      let(:loc) { 'https://localhost:8081/foo/bar' }
+      let(:content) { 'foo' }
+
+      it 'throws a blocked url error' do
+        Tempfile.create("foo") do |f|
+          expect { subject.download(loc, f.path) }.to raise_error(Gitlab::HTTP::BlockedUrlError)
+        end
       end
     end
   end

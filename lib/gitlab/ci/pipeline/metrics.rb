@@ -51,6 +51,15 @@ module Gitlab
           ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
         end
 
+        def self.pipeline_builder_scoped_variables_histogram
+          name = :gitlab_ci_pipeline_builder_scoped_variables_duration
+          comment = 'Pipeline variables builder scoped_variables duration'
+          labels = {}
+          buckets = [0.01, 0.05, 0.1, 0.3, 0.5, 1, 2, 5, 10, 30, 60, 120]
+
+          ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+        end
+
         def self.pipeline_processing_events_counter
           name = :gitlab_ci_pipeline_processing_events_total
           comment = 'Total amount of pipeline processing events'

@@ -1,0 +1,38 @@
+enum WorkItemType {
+  FEATURE
+}
+
+enum WidgetType {
+  TITLE
+}
+
+interface WorkItemWidget {
+  type: WidgetType!
+}
+
+# Replicating Relay connection type for client schema
+type WorkItemWidgetEdge {
+  cursor: String!
+  node: WorkItemWidget
+}
+
+type WorkItemWidgetConnection {
+  edges: [WorkItemWidgetEdge]
+  nodes: [WorkItemWidget]
+  pageInfo: PageInfo!
+}
+
+type TitleWidget implements WorkItemWidget {
+  type: WidgetType!
+  contentText: String!
+}
+
+type WorkItem {
+  id: ID!
+  type: WorkItemType!
+  widgets: [WorkItemWidgetConnection]
+}
+
+extend type Query {
+  workItem(id: ID!): WorkItem!
+}

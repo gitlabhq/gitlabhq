@@ -702,23 +702,4 @@ describe('diffs/components/app', () => {
       );
     });
   });
-
-  describe('fluid layout', () => {
-    beforeEach(() => {
-      setFixtures(
-        '<div><div class="merge-request-container limit-container-width container-limited"></div></div>',
-      );
-    });
-
-    it('removes limited container classes when on diffs tab', () => {
-      createComponent({ isFluidLayout: false, shouldShow: true }, () => {}, {
-        glFeatures: { mrChangesFluidLayout: true },
-      });
-
-      const containerClassList = document.querySelector('.merge-request-container').classList;
-
-      expect(containerClassList).not.toContain('container-limited');
-      expect(containerClassList).not.toContain('limit-container-width');
-    });
-  });
 });
