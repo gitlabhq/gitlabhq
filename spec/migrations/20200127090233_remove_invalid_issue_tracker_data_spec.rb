@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_invalid_issue_tracker_data')
+require_migration!
 
 RSpec.describe RemoveInvalidIssueTrackerData do
   let(:issue_tracker_data) { table(:issue_tracker_data) }

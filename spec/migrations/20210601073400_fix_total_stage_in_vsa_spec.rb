@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('fix_total_stage_in_vsa')
+require_migration!
 
 RSpec.describe FixTotalStageInVsa, :migration, schema: 20210518001450 do
   let(:namespaces) { table(:namespaces) }

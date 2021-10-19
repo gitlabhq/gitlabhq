@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('reschedule_artifact_expiry_backfill_again')
+require_migration!
 
 RSpec.describe RescheduleArtifactExpiryBackfillAgain, :migration do
   let(:migration_class) { Gitlab::BackgroundMigration::BackfillArtifactExpiryDate }

@@ -9,16 +9,25 @@ module Integrations
     validates :api_token, presence: true, if: :activated?
     validates :zentao_product_xid, presence: true, if: :activated?
 
+    def self.feature_flag_enabled?(project)
+      Feature.enabled?(:zentao_issues_integration, project)
+    end
+
+    # License Level: EEP_FEATURES
+    def self.issues_license_available?(project)
+      project&.licensed_feature_available?(:zentao_issues_integration)
+    end
+
     def data_fields
       zentao_tracker_data || self.build_zentao_tracker_data
     end
 
     def title
-      self.class.name.demodulize
+      'ZenTao'
     end
 
     def description
-      s_("ZentaoIntegration|Use Zentao as this project's issue tracker.")
+      s_("ZentaoIntegration|Use ZenTao as this project's issue tracker.")
     end
 
     def self.to_param
@@ -42,28 +51,28 @@ module Integrations
         {
           type: 'text',
           name: 'url',
-          title: s_('ZentaoIntegration|Zentao Web URL'),
+          title: s_('ZentaoIntegration|ZenTao Web URL'),
           placeholder: 'https://www.zentao.net',
-          help: s_('ZentaoIntegration|Base URL of the Zentao instance.'),
+          help: s_('ZentaoIntegration|Base URL of the ZenTao instance.'),
           required: true
         },
         {
           type: 'text',
           name: 'api_url',
-          title: s_('ZentaoIntegration|Zentao API URL (optional)'),
+          title: s_('ZentaoIntegration|ZenTao API URL (optional)'),
           help: s_('ZentaoIntegration|If different from Web URL.')
         },
         {
           type: 'password',
           name: 'api_token',
-          title: s_('ZentaoIntegration|Zentao API token'),
+          title: s_('ZentaoIntegration|ZenTao API token'),
           non_empty_password_title: s_('ZentaoIntegration|Enter API token'),
           required: true
         },
         {
           type: 'text',
           name: 'zentao_product_xid',
-          title: s_('ZentaoIntegration|Zentao Product ID'),
+          title: s_('ZentaoIntegration|ZenTao Product ID'),
           required: true
         }
       ]

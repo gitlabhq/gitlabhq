@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('backfill_project_settings')
+require_migration!
 
 RSpec.describe BackfillProjectSettings, :sidekiq, schema: 20200114113341 do
   let(:projects) { table(:projects) }

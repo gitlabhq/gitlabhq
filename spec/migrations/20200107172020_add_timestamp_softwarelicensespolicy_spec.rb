@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('add_timestamp_softwarelicensespolicy')
+require_migration!
 
 RSpec.describe AddTimestampSoftwarelicensespolicy do
   let(:software_licenses_policy) { table(:software_license_policies) }

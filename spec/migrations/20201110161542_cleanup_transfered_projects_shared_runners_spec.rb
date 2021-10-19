@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('cleanup_transfered_projects_shared_runners')
+require_migration!
 
 RSpec.describe CleanupTransferedProjectsSharedRunners, :sidekiq, schema: 20201110161542 do
   let(:namespaces) { table(:namespaces) }

@@ -40,6 +40,7 @@ module Quality
         replicators
         routing
         rubocop
+        scripts
         serializers
         services
         sidekiq

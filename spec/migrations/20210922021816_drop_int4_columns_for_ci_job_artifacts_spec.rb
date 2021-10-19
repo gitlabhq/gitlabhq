@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_int4_columns_for_ci_job_artifacts')
+require_migration!
 
 RSpec.describe DropInt4ColumnsForCiJobArtifacts do
   let(:ci_job_artifacts) { table(:ci_job_artifacts) }

@@ -6,7 +6,23 @@ RSpec.describe Gitlab::Zentao::Client do
   subject(:integration) { described_class.new(zentao_integration) }
 
   let(:zentao_integration) { create(:zentao_integration) }
-  let(:mock_get_products_url) { integration.send(:url, "products/#{zentao_integration.zentao_product_xid}") }
+
+  def mock_get_products_url
+    integration.send(:url, "products/#{zentao_integration.zentao_product_xid}")
+  end
+
+  def mock_fetch_issue_url(issue_id)
+    integration.send(:url, "issues/#{issue_id}")
+  end
+
+  let(:mock_headers) do
+    {
+      headers: {
+        'Content-Type' => 'application/json',
+        'Token' => zentao_integration.api_token
+      }
+    }
+  end
 
   describe '#new' do
     context 'if integration is nil' do
@@ -25,15 +41,6 @@ RSpec.describe Gitlab::Zentao::Client do
   end
 
   describe '#fetch_product' do
-    let(:mock_headers) do
-      {
-        headers: {
-          'Content-Type' => 'application/json',
-          'Token' => zentao_integration.api_token
-        }
-      }
-    end
-
     context 'with valid product' do
       let(:mock_response) { { 'id' => zentao_integration.zentao_product_xid } }
 
@@ -54,7 +61,9 @@ RSpec.describe Gitlab::Zentao::Client do
       end
 
       it 'fetches the empty product' do
-        expect(integration.fetch_product(zentao_integration.zentao_product_xid)).to eq({})
+        expect do
+          integration.fetch_product(zentao_integration.zentao_product_xid)
+        end.to raise_error(Gitlab::Zentao::Client::Error)
       end
     end
 
@@ -65,21 +74,14 @@ RSpec.describe Gitlab::Zentao::Client do
       end
 
       it 'fetches the empty product' do
-        expect(integration.fetch_product(zentao_integration.zentao_product_xid)).to eq({})
+        expect do
+          integration.fetch_product(zentao_integration.zentao_product_xid)
+        end.to raise_error(Gitlab::Zentao::Client::Error)
       end
     end
   end
 
   describe '#ping' do
-    let(:mock_headers) do
-      {
-        headers: {
-          'Content-Type' => 'application/json',
-          'Token' => zentao_integration.api_token
-        }
-      }
-    end
-
     context 'with valid resource' do
       before do
         WebMock.stub_request(:get, mock_get_products_url)
@@ -99,6 +101,31 @@ RSpec.describe Gitlab::Zentao::Client do
 
       it 'responds with unsuccess' do
         expect(integration.ping[:success]).to eq false
+      end
+    end
+  end
+
+  describe '#fetch_issue' do
+    context 'with invalid id' do
+      let(:invalid_ids) { ['story', 'story-', '-', '123', ''] }
+
+      it 'returns empty object' do
+        invalid_ids.each do |id|
+          expect { integration.fetch_issue(id) }.to raise_error(Gitlab::Zentao::Client::Error)
+        end
+      end
+    end
+
+    context 'with valid id' do
+      let(:valid_ids) { %w[story-1 bug-23] }
+
+      it 'fetches current issue' do
+        valid_ids.each do |id|
+          WebMock.stub_request(:get, mock_fetch_issue_url(id))
+                 .with(mock_headers).to_return(status: 200, body: { issue: { id: id } }.to_json)
+
+          expect(integration.fetch_issue(id).dig('issue', 'id')).to eq id
+        end
       end
     end
   end

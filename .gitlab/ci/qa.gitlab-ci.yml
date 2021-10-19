@@ -57,12 +57,7 @@ update-qa-cache:
     - install_gitlab_gem
   script:
     - ./scripts/trigger-build omnibus
-
-package-and-qa:
-  extends:
-    - .package-and-qa-base
-    - .qa:rules:package-and-qa
-  # This job often times out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
+  # These jobs often time out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
   tags:
     - prm
   timeout: 4h
@@ -71,3 +66,34 @@ package-and-qa:
       artifacts: false
     - job: build-assets-image
       artifacts: false
+
+.package-and-qa-ff-base:
+  needs:
+    - detect-tests
+  variables:
+    CHANGED_FILES: tmp/changed_files.txt
+  script:
+    - export GITLAB_QA_OPTIONS="--set-feature-flags $(scripts/changed-feature-flags --files $(cat $CHANGED_FILES | tr ' ' ',') --state $QA_FF_STATE)"
+    - echo $GITLAB_QA_OPTIONS
+    - ./scripts/trigger-build omnibus
+
+package-and-qa:
+  extends:
+    - .package-and-qa-base
+    - .qa:rules:package-and-qa
+
+package-and-qa-ff-enabled:
+  extends:
+    - .package-and-qa-base
+    - .package-and-qa-ff-base
+    - .qa:rules:package-and-qa:feature-flags
+  variables:
+    QA_FF_STATE: "enable"
+
+package-and-qa-ff-disabled:
+  extends:
+    - .package-and-qa-base
+    - .package-and-qa-ff-base
+    - .qa:rules:package-and-qa:feature-flags
+  variables:
+    QA_FF_STATE: "disable"

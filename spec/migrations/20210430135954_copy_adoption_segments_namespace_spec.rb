@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('copy_adoption_segments_namespace')
+require_migration!
 
 RSpec.describe CopyAdoptionSegmentsNamespace, :migration do
   let(:namespaces_table) { table(:namespaces) }

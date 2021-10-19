@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('add_o_auth_paths_to_protected_paths')
+require_migration!
 
 RSpec.describe AddOAuthPathsToProtectedPaths do
   subject(:migration) { described_class.new }

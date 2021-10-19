@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('finalize_ci_builds_bigint_conversion')
+require_migration!
 
 RSpec.describe FinalizeCiBuildsBigintConversion, :migration, schema: 20210907182359 do
   context 'with an unexpected FK fk_3f0c88d7dc' do

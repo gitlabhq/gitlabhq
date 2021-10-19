@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_backfill_jira_tracker_deployment_type_jobs')
+require_migration!
 
 RSpec.describe DropBackfillJiraTrackerDeploymentTypeJobs, :sidekiq, :redis, schema: 2020_10_14_205300 do
   subject(:migration) { described_class.new }

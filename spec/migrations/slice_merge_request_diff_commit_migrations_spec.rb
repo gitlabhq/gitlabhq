@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'slice_merge_request_diff_commit_migrations'
+require_migration!
 
 RSpec.describe SliceMergeRequestDiffCommitMigrations, :migration do
   let(:migration) { described_class.new }

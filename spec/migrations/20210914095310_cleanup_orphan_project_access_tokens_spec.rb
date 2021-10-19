@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('cleanup_orphan_project_access_tokens')
+require_migration!
 
 RSpec.describe CleanupOrphanProjectAccessTokens, :migration do
   def create_user(**extra_options)

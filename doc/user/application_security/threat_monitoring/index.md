@@ -44,5 +44,3 @@ Clicking an alert's row opens the alert drawer, which shows more information abo
 can also create an incident from the alert and update the alert status in the alert drawer.
 
 Clicking an alert's name takes the user to the [alert details page](../../../operations/incident_management/alerts.md#alert-details-page).
-
-For information on work in progress for the alerts dashboard, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5041).

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('backfill_deployment_clusters_from_deployments')
+require_migration!
 
 RSpec.describe BackfillDeploymentClustersFromDeployments, :migration, :sidekiq, schema: 20200227140242 do
   describe '#up' do

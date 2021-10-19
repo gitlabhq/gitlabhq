@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_duplicate_services2')
+require_migration!
 
 RSpec.describe RemoveDuplicateServices2 do
   let_it_be(:namespaces) { table(:namespaces) }

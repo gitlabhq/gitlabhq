@@ -61,14 +61,35 @@ Since the migration files are not autoloaded by Rails, you must manually
 load the migration file. To do so, you can use the `require_migration!` helper method
 which can automatically load the correct migration file based on the spec filename.
 
-For example, if your spec file is named as `populate_foo_column_spec.rb` then the
-helper method tries to load `${schema_version}_populate_foo_column.rb` migration file.
-
-In case there is no pattern between your spec file and the actual migration file,
-you can provide the migration filename without the schema version, like so:
+In GitLab 14.4 and later, you can use `require_migration!` to load migration files from spec files
+that contain the schema version in the filename (for example,
+`2021101412150000_populate_foo_column_spec.rb`).
 
 ```ruby
-require_migration!('populate_foo_column')
+# frozen_string_literal: true
+
+require 'spec_helper'
+require_migration!
+
+RSpec.describe PopulateFooColumn do
+  ...
+end
+```
+
+In some cases, you must require multiple migration files to use them in your specs. Here, there's no
+pattern between your spec file and the other migration file. You can provide the migration filename
+like so:
+
+```ruby
+# frozen_string_literal: true
+
+require 'spec_helper'
+require_migration!
+require_migration!('populate_bar_column')
+
+RSpec.describe PopulateFooColumn do
+  ...
+end
 ```
 
 #### `table`

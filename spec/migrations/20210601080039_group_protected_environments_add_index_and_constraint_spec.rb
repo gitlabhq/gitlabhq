@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('group_protected_environments_add_index_and_constraint')
+require_migration!
 
 RSpec.describe GroupProtectedEnvironmentsAddIndexAndConstraint do
   let(:migration) { described_class.new }

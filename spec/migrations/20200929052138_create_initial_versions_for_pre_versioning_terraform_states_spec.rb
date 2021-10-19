@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('create_initial_versions_for_pre_versioning_terraform_states')
+require_migration!
 
 RSpec.describe CreateInitialVersionsForPreVersioningTerraformStates do
   let(:namespace) { table(:namespaces).create!(name: 'terraform', path: 'terraform') }

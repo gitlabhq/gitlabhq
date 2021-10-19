@@ -175,6 +175,20 @@ RSpec.describe QA::Runtime::Feature do
         expect(described_class.enabled?(feature_flag)).to be_truthy
       end
 
+      it 'raises an error when the scope is unknown' do
+        expect(QA::Runtime::API::Request)
+          .to receive(:new)
+          .with(api_client, "/features")
+          .and_return(request)
+        expect(described_class)
+          .to receive(:get)
+          .and_return(
+            Struct.new(:code, :body)
+                  .new(200, %([{ "name": "a_flag", "state": "conditional", "gates": { "key": "groups", "value": ["foo"] } }])))
+
+        expect { described_class.enabled?(feature_flag, scope: 'foo') }.to raise_error(QA::Runtime::Feature::UnknownScopeError)
+      end
+
       context 'when a project scope is provided' do
         it_behaves_like 'checks a feature flag' do
           let(:scope) { :project }
@@ -210,6 +224,40 @@ RSpec.describe QA::Runtime::Feature do
           let(:gates) { %q([{"key": "groups", "value": ["foo"]}]) }
         end
       end
+    end
+  end
+
+  describe '.set' do
+    let(:scope) { { scope: 'actor' } }
+
+    it 'raises an error when the flag state is unknown' do
+      expect(described_class).not_to receive(:enable)
+      expect(described_class).not_to receive(:disable)
+
+      expect { described_class.set({ foo: 'bar' }, **scope) }.to raise_error(QA::Runtime::Feature::UnknownStateError, 'Unknown feature flag state: bar')
+    end
+
+    it 'enables feature flags' do
+      expect(described_class).to receive(:enable).with(:flag1, scope)
+      expect(described_class).to receive(:enable).with(:flag2, scope)
+      expect(described_class).not_to receive(:disable)
+
+      described_class.set({ flag1: 'enabled', flag2: 'enable' }, **scope)
+    end
+
+    it 'disables feature flags' do
+      expect(described_class).to receive(:disable).with(:flag1, scope)
+      expect(described_class).to receive(:disable).with(:flag2, scope)
+      expect(described_class).not_to receive(:enable)
+
+      described_class.set({ flag1: 'disable', flag2: 'disable' }, **scope)
+    end
+
+    it 'enables and disables feature flags' do
+      expect(described_class).to receive(:enable).with(:flag1, scope)
+      expect(described_class).to receive(:disable).with(:flag2, scope)
+
+      described_class.set({ flag1: 'enabled', flag2: 'disabled' }, **scope)
     end
   end
 end

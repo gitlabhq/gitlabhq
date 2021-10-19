@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_int4_column_for_push_event_payloads')
+require_migration!
 
 RSpec.describe DropInt4ColumnForPushEventPayloads do
   let(:push_event_payloads) { table(:push_event_payloads) }

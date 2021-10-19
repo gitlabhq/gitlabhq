@@ -16578,6 +16578,7 @@ State of a Sentry error.
 | <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
 | <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
 | <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | YoutrackService type. |
+| <a id="servicetypezentao_service"></a>`ZENTAO_SERVICE` | ZentaoService type. |
 
 ### `SharedRunnersSetting`
 

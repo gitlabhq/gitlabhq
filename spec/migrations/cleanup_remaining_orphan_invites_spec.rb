@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'cleanup_remaining_orphan_invites'
+require_migration!
 
 RSpec.describe CleanupRemainingOrphanInvites, :migration do
   def create_member(**extra_attributes)

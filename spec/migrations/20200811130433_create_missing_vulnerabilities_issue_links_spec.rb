@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'spec_helper'
-require_migration!('create_missing_vulnerabilities_issue_links')
+require_migration!
 
 RSpec.describe CreateMissingVulnerabilitiesIssueLinks, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

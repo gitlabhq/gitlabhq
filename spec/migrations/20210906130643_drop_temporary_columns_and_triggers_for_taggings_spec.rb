@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_temporary_columns_and_triggers_for_taggings')
+require_migration!
 
 RSpec.describe DropTemporaryColumnsAndTriggersForTaggings do
   let(:taggings_table) { table(:taggings) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('cleanup_bigint_conversion_for_ci_builds')
+require_migration!
 
 RSpec.describe CleanupBigintConversionForCiBuilds do
   let(:ci_builds) { table(:ci_builds) }

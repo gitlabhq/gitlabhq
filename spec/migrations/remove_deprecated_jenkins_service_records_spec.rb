@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!
 
+require_migration!
 require_migration!('ensure_deprecated_jenkins_service_records_removal')
 
 RSpec.shared_examples 'remove DeprecatedJenkinsService records' do

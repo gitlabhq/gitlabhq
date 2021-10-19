@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_duplicate_labels_from_group')
+require_migration!
 
 RSpec.describe RemoveDuplicateLabelsFromGroup do
   let(:labels_table) { table(:labels) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('cleanup_optimistic_locking_nulls')
+require_migration!
 
 RSpec.describe CleanupOptimisticLockingNulls do
   let(:epics) { table(:epics) }

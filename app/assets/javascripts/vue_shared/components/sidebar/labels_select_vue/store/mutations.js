@@ -69,7 +69,8 @@ export default {
     if (isScopedLabel(candidateLabel)) {
       const scopedKeyWithDelimiter = `${scopedLabelKey(candidateLabel)}${SCOPED_LABEL_DELIMITER}`;
       const currentActiveScopedLabel = state.labels.find(
-        ({ title }) => title.startsWith(scopedKeyWithDelimiter) && title !== candidateLabel.title,
+        ({ set, title }) =>
+          set && title.startsWith(scopedKeyWithDelimiter) && title !== candidateLabel.title,
       );
 
       if (currentActiveScopedLabel) {

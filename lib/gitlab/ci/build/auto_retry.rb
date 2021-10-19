@@ -10,7 +10,8 @@ class Gitlab::Ci::Build::AutoRetry
   RETRY_OVERRIDES = {
     ci_quota_exceeded: 0,
     no_matching_runner: 0,
-    missing_dependency_failure: 0
+    missing_dependency_failure: 0,
+    forward_deployment_failure: 0
   }.freeze
 
   def initialize(build)

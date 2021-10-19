@@ -2,7 +2,7 @@
 #
 require 'spec_helper'
 
-require_migration!('copy_adoption_snapshot_namespace')
+require_migration!
 
 RSpec.describe CopyAdoptionSnapshotNamespace, :migration, schema: 20210430124630 do
   let(:namespaces_table) { table(:namespaces) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('update_report_type_for_existing_approval_project_rules')
+require_migration!
 
 RSpec.describe UpdateReportTypeForExistingApprovalProjectRules, :migration do
   using RSpec::Parameterized::TableSyntax

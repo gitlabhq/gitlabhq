@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('update_index_approval_rule_name_for_code_owners_rule_type')
+require_migration!
 
 RSpec.describe UpdateIndexApprovalRuleNameForCodeOwnersRuleType do
   let(:migration) { described_class.new }

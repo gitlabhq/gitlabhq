@@ -15,10 +15,8 @@ module Gitlab
       end
 
       def ping
-        response = fetch_product(zentao_product_xid)
-
+        response = fetch_product(zentao_product_xid) rescue {}
         active = response.fetch('deleted') == '0' rescue false
-
         if active
           { success: true }
         else
@@ -31,25 +29,30 @@ module Gitlab
       end
 
       def fetch_issues(params = {})
-        get("products/#{zentao_product_xid}/issues",
-            params.reverse_merge(page: 1, limit: 20))
+        get("products/#{zentao_product_xid}/issues", params)
       end
 
       def fetch_issue(issue_id)
+        raise Gitlab::Zentao::Client::Error unless issue_id_pattern.match(issue_id)
+
         get("issues/#{issue_id}")
       end
 
       private
 
+      def issue_id_pattern
+        /\A\S+-\d+\z/
+      end
+
       def get(path, params = {})
         options = { headers: headers, query: params }
         response = Gitlab::HTTP.get(url(path), options)
 
-        return {} unless response.success?
+        raise Gitlab::Zentao::Client::Error unless response.success?
 
         Gitlab::Json.parse(response.body)
       rescue JSON::ParserError
-        {}
+        raise Gitlab::Zentao::Client::Error
       end
 
       def url(path)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('cleanup_move_container_registry_enabled_to_project_feature')
+require_migration!
 
 RSpec.describe CleanupMoveContainerRegistryEnabledToProjectFeature, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }

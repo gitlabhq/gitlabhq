@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('schedule_drop_invalid_vulnerabilities2')
+require_migration!
 
 RSpec.describe ScheduleDropInvalidVulnerabilities2, :migration do
   let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }

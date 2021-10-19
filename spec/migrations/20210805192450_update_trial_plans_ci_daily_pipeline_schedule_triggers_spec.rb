@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('update_trial_plans_ci_daily_pipeline_schedule_triggers')
+require_migration!
 
 RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
   let!(:plans) { table(:plans) }

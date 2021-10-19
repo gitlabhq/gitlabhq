@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_invalid_jira_data')
+require_migration!
 
 RSpec.describe RemoveInvalidJiraData do
   let(:jira_tracker_data) { table(:jira_tracker_data) }

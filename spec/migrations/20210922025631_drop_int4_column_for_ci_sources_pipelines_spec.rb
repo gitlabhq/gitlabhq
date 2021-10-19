@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_int4_column_for_ci_sources_pipelines')
+require_migration!
 
 RSpec.describe DropInt4ColumnForCiSourcesPipelines do
   let(:ci_sources_pipelines) { table(:ci_sources_pipelines) }

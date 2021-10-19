@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('add_project_value_stream_id_to_project_stages')
+require_migration!
 
 RSpec.describe AddProjectValueStreamIdToProjectStages, schema: 20210503105022 do
   let(:stages) { table(:analytics_cycle_analytics_project_stages) }

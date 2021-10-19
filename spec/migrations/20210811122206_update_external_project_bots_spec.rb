@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('update_external_project_bots')
+require_migration!
 
 RSpec.describe UpdateExternalProjectBots, :migration do
   def create_user(**extra_options)

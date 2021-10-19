@@ -79,11 +79,21 @@ for details.
 
 End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
 
-If a test enables a feature flag as describe above, it is sufficient to run the `package-and-qa` job in a merge request containing the relevant changes.
-Or, if the feature flag and relevant changes have already been merged, you can confirm that the tests
-pass on `main`. The end-to-end tests run on `main` every two hours, and the results are posted to a [Test
-Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amaster).
+### Automatic test execution when a feature flag definition changes
 
-If the relevant tests do not enable the feature flag themselves, you can check if the tests will need
-to be updated by opening a draft merge request that enables the flag by default and then running the `package-and-qa` job.
+If a merge request adds or edits a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation),
+two `package-and-qa` jobs will be included automatically in the merge request pipeline. One job will enable the defined
+feature flag and the other will disable it. The jobs execute the same suite of tests to confirm that they pass with if
+the feature flag is either enabled or disabled.
+
+### Test execution during feature development
+
+If an end-to-end test enables a feature flag, the end-to-end test suite can be used to test changes in a merge request
+by running the `package-and-qa` job in the merge request pipeline. If the feature flag and relevant changes have already been merged, you can confirm that the tests
+pass on the default branch. The end-to-end tests run on the default branch every two hours, and the results are posted to a [Test
+Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amain).
+
+If the relevant tests do not enable the feature flag themselves, you can check if the tests will need to be updated by opening
+a draft merge request that enables the flag by default via a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation).
+That will [automatically execute the end-to-end test suite](#automatic-test-execution-when-a-feature-flag-definition-changes).
 The merge request can be closed once the tests pass. If you need assistance to update the tests, please contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.

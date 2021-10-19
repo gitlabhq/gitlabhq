@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('dedup_issue_metrics')
+require_migration!
 
 RSpec.describe DedupIssueMetrics, :migration, schema: 20210205104425 do
   let(:namespaces) { table(:namespaces) }

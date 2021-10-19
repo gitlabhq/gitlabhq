@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('schedule_migration_to_hashed_storage')
+require_migration!
 
 RSpec.describe ScheduleMigrationToHashedStorage, :sidekiq do
   describe '#up' do

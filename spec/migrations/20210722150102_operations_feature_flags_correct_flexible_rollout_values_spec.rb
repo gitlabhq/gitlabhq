@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('operations_feature_flags_correct_flexible_rollout_values')
+require_migration!
 
 RSpec.describe OperationsFeatureFlagsCorrectFlexibleRolloutValues, :migration do
   let_it_be(:strategies) { table(:operations_strategies) }

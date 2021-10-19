@@ -254,7 +254,7 @@ module API
               type: Boolean,
               desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
             }
-        ],
+          ],
           'campfire' => [
             {
               required: true,
@@ -768,7 +768,33 @@ module API
               desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
             },
             chat_notification_events
-          ].flatten
+          ].flatten,
+          'zentao' => [
+            {
+              required: true,
+              name: :url,
+              type: String,
+              desc: 'The base URL to the ZenTao instance web interface which is being linked to this GitLab project. For example, https://www.zentao.net'
+            },
+            {
+              required: false,
+              name: :api_url,
+              type: String,
+              desc: 'The base URL to the ZenTao instance API. Web URL value will be used if not set. For example, https://www.zentao.net'
+            },
+            {
+              required: true,
+              name: :api_token,
+              type: String,
+              desc: 'The API token created from ZenTao dashboard'
+            },
+            {
+              required: true,
+              name: :zentao_product_xid,
+              type: String,
+              desc: 'The product ID of ZenTao project'
+            }
+          ]
         }
       end
 
@@ -805,7 +831,8 @@ module API
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
           ::Integrations::Teamcity,
-          ::Integrations::Youtrack
+          ::Integrations::Youtrack,
+          ::Integrations::Zentao
         ]
       end
 

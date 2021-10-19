@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-require_migration!('add_projects_foreign_key_to_namespaces')
 require_migration!
+require_migration!('add_projects_foreign_key_to_namespaces')
 
 # In order to test the CleanupProjectsWithMissingNamespace migration, we need
 #  to first create an orphaned project (one with an invalid namespace_id)

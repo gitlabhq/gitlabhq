@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'spec_helper'
-require_migration!('schedule_remove_duplicate_vulnerabilities_findings')
+require_migration!
 
 RSpec.describe ScheduleRemoveDuplicateVulnerabilitiesFindings, :migration do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

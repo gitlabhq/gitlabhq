@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_bad_dependency_proxy_manifests')
+require_migration!
 
 RSpec.describe RemoveBadDependencyProxyManifests, schema: 20210128140157 do
   let_it_be(:namespaces) { table(:namespaces) }

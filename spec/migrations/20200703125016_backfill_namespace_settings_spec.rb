@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('backfill_namespace_settings')
+require_migration!
 
 RSpec.describe BackfillNamespaceSettings, :sidekiq, schema: 20200703124823 do
   let(:namespaces) { table(:namespaces) }

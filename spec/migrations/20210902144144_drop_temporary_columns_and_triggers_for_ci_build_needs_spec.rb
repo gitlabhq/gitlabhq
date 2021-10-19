@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_temporary_columns_and_triggers_for_ci_build_needs')
+require_migration!
 
 RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildNeeds do
   let(:ci_build_needs_table) { table(:ci_build_needs) }

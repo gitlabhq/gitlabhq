@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('backfill_updated_at_after_repository_storage_move')
+require_migration!
 
 RSpec.describe BackfillUpdatedAtAfterRepositoryStorageMove, :sidekiq do
   let_it_be(:projects) { table(:projects) }

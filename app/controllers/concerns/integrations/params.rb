@@ -9,6 +9,7 @@ module Integrations
       :add_pusher,
       :alert_events,
       :api_key,
+      :api_token,
       :api_url,
       :bamboo_url,
       :branches_to_be_notified,
@@ -74,7 +75,8 @@ module Integrations
       :url,
       :user_key,
       :username,
-      :webhook
+      :webhook,
+      :zentao_product_xid
     ].freeze
 
     def integration_params

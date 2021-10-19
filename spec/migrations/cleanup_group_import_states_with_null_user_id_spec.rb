@@ -12,8 +12,8 @@
 # To solve this problem, use SchemaVersionFinder to set schema one version prior to AddNotNullConstraintToUserOnGroupImportStates
 
 require 'spec_helper'
-require_migration!('add_not_null_constraint_to_user_on_group_import_states')
 require_migration!
+require_migration!('add_not_null_constraint_to_user_on_group_import_states')
 
 RSpec.describe CleanupGroupImportStatesWithNullUserId, :migration,
                schema: MigrationHelpers::SchemaVersionFinder.migration_prior(AddNotNullConstraintToUserOnGroupImportStates) do

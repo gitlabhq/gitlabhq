@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('reschedule_migrate_issue_trackers_data')
+require_migration!
 
 RSpec.describe RescheduleMigrateIssueTrackersData do
   let(:services) { table(:services) }

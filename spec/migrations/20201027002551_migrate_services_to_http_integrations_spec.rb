@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('migrate_services_to_http_integrations')
+require_migration!
 
 RSpec.describe MigrateServicesToHttpIntegrations do
   let!(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }

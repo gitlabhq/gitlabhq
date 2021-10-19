@@ -18,7 +18,7 @@ class Namespace < ApplicationRecord
 
   ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
 
-  # Tells ActiveRecord not to store the full class name, in order to space some space
+  # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
   self.store_full_sti_class = false
   self.store_full_class_name = false

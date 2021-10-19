@@ -57,6 +57,8 @@ module QA
         # @return [Hash]
         def test_stats(example)
           file_path = example.metadata[:file_path].gsub('./qa/specs/features', '')
+          api_fabrication = ((example.metadata[:api_fabrication] || 0) * 1000).round
+          ui_fabrication = ((example.metadata[:browser_ui_fabrication] || 0) * 1000).round
 
           {
             name: 'test-stats',
@@ -76,6 +78,9 @@ module QA
             fields: {
               id: example.id,
               run_time: (example.execution_result.run_time * 1000).round,
+              api_fabrication: api_fabrication,
+              ui_fabrication: ui_fabrication,
+              total_fabrication: api_fabrication + ui_fabrication,
               retry_attempts: example.metadata[:retry_attempts] || 0,
               job_url: QA::Runtime::Env.ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
@@ -98,14 +103,18 @@ module QA
         #
         # @return [String]
         def job_name
-          @job_name ||= QA::Runtime::Env.ci_job_name.gsub(%r{ \d{1,2}/\d{1,2}}, '')
+          @job_name ||= QA::Runtime::Env.ci_job_name&.gsub(%r{ \d{1,2}/\d{1,2}}, '')
         end
 
         # Single common timestamp for all exported example metrics to keep data points consistently grouped
         #
         # @return [Time]
         def time
-          @time ||= DateTime.strptime(env('CI_PIPELINE_CREATED_AT')).to_time
+          @time ||= begin
+            return Time.now unless env('CI_PIPELINE_CREATED_AT')
+
+            DateTime.strptime(env('CI_PIPELINE_CREATED_AT')).to_time
+          end
         end
 
         # Is a merge request execution

@@ -44,6 +44,10 @@ module QA
         end
       end
 
+      let(:imported_projects) do
+        imported_group.reload!.projects
+      end
+
       before do
         Runtime::Feature.enable(:bulk_import_projects)
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
@@ -67,10 +71,45 @@ module QA
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
 
-          imported_projects = imported_group.reload!.projects
           aggregate_failures do
             expect(imported_projects.count).to eq(1)
             expect(imported_projects.first).to eq(source_project)
+          end
+        end
+      end
+
+      context 'with project issues' do
+        let(:source_issue) do
+          Resource::Issue.fabricate_via_api! do |issue|
+            issue.api_client = api_client
+            issue.project = source_project
+            issue.labels = %w[label_one label_two]
+          end
+        end
+
+        let(:imported_issues) do
+          imported_projects.first.issues
+        end
+
+        let(:imported_issue) do
+          issue = imported_issues.first
+          Resource::Issue.init do |resource|
+            resource.api_client = api_client
+            resource.project = imported_projects.first
+            resource.iid = issue[:iid]
+          end
+        end
+
+        before do
+          source_issue # fabricate source group, project, issue
+        end
+
+        it 'successfully imports issue' do
+          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+
+          aggregate_failures do
+            expect(imported_issues.count).to eq(1)
+            expect(imported_issue.reload!).to eq(source_issue)
           end
         end
       end

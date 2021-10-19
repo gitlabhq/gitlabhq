@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('remove_orphaned_chat_names')
+require_migration!
 
 RSpec.describe RemoveOrphanedChatNames, schema: 20200313202430 do
   let(:projects) { table(:projects) }

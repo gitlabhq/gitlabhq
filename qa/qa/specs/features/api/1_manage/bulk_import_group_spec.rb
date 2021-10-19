@@ -43,6 +43,12 @@ module QA
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
       end
 
+      after do
+        user.remove_via_api!
+      ensure
+        Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
+      end
+
       context 'with subgroups and labels' do
         let(:subgroup) do
           Resource::Group.fabricate_via_api! do |group|
@@ -154,12 +160,6 @@ module QA
           expect(imported_member).not_to be_nil
           expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
         end
-      end
-
-      after do
-        user.remove_via_api!
-      ensure
-        Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
     end
   end

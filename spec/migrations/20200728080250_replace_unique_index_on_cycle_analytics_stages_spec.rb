@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('replace_unique_index_on_cycle_analytics_stages')
+require_migration!
 
 RSpec.describe ReplaceUniqueIndexOnCycleAnalyticsStages, :migration, schema: 20200727142337 do
   let(:namespaces) { table(:namespaces) }

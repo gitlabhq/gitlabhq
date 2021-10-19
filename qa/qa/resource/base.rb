@@ -77,17 +77,24 @@ module QA
         def log_fabrication(method, resource, parents, args)
           start = Time.now
 
-          yield.tap do
+          Support::FabricationTracker.start_fabrication
+          result = yield.tap do
+            fabrication_time = Time.now - start
+
+            Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time * 1000)
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
               msg << "Built a #{name}"
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{method}"
-              msg << "in #{Time.now - start} seconds"
+              msg << "in #{fabrication_time} seconds"
 
               msg.join(' ')
             end
           end
+          Support::FabricationTracker.finish_fabrication
+
+          result
         end
 
         # Define custom attribute

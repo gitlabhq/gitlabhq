@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('schedule_cleanup_orphaned_lfs_objects_projects')
+require_migration!
 
 RSpec.describe ScheduleCleanupOrphanedLfsObjectsProjects, schema: 20210511165250 do
   let(:lfs_objects_projects) { table(:lfs_objects_projects) }

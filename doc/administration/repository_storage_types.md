@@ -101,8 +101,12 @@ To look up a project's hash path using a Rails console:
 
 #### From hashed path to project name
 
-Administrators can look up a project's name from its hashed storage path using a Rails console. To
-look up a project's name from its hashed storage path:
+Administrators can look up a project's name from its hashed storage path using: 
+
+- A Rails console.
+- The `config` file in the `*.git` directory. 
+
+To look up a project's name using the Rails console:
 
 1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
 1. Run a command similar to this example:
@@ -120,6 +124,14 @@ The output includes the project ID and the project name. For example:
 ```plaintext
 => #<Project id:16 it/supportteam/ticketsystem>
 ```
+
+To look up a project's name using the `config` file in the `*.git` directory:
+
+1. Navigate to the to the `*.git` directory. This directory is located in `/var/opt/gitlab/git-data/repositories/@hashed/`, where the first four
+   characters of the hash are the first two directories in the path under `@hashed/`. For example, on a default Omnibus GitLab installation the
+   `*.git` directory of the hash `b17eb17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9` would be
+   `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`.
+1. Open the `config` file and locate the `fullpath=` key under `[gitlab]`.
 
 ### Hashed object pools
 

@@ -39678,7 +39678,13 @@ msgstr ""
 msgid "ZenTaoIntegration|ZenTao user"
 msgstr ""
 
-msgid "ZentaoIntegration|Base URL of the Zentao instance."
+msgid "Zentao issues"
+msgstr ""
+
+msgid "ZentaoIntegration|An error occurred while requesting data from the ZenTao service."
+msgstr ""
+
+msgid "ZentaoIntegration|Base URL of the ZenTao instance."
 msgstr ""
 
 msgid "ZentaoIntegration|Enter API token"
@@ -39687,19 +39693,31 @@ msgstr ""
 msgid "ZentaoIntegration|If different from Web URL."
 msgstr ""
 
-msgid "ZentaoIntegration|Use Zentao as this project's issue tracker."
+msgid "ZentaoIntegration|Issue list"
 msgstr ""
 
-msgid "ZentaoIntegration|Zentao API URL (optional)"
+msgid "ZentaoIntegration|Open ZenTao"
 msgstr ""
 
-msgid "ZentaoIntegration|Zentao API token"
+msgid "ZentaoIntegration|Use ZenTao as this project's issue tracker."
 msgstr ""
 
-msgid "ZentaoIntegration|Zentao Product ID"
+msgid "ZentaoIntegration|ZenTao API URL (optional)"
 msgstr ""
 
-msgid "ZentaoIntegration|Zentao Web URL"
+msgid "ZentaoIntegration|ZenTao API token"
+msgstr ""
+
+msgid "ZentaoIntegration|ZenTao Product ID"
+msgstr ""
+
+msgid "ZentaoIntegration|ZenTao Web URL"
+msgstr ""
+
+msgid "ZentaoIntegration|ZenTao issues"
+msgstr ""
+
+msgid "ZentaoIntegration|Zentao issues"
 msgstr ""
 
 msgid "Zoom meeting added"
