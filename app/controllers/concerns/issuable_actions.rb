@@ -159,9 +159,9 @@ module IssuableActions
     discussions = Discussion.build_collection(notes, issuable)
 
     if issuable.is_a?(MergeRequest)
-      cache_context = [current_user&.cache_key, project.team.human_max_access(current_user&.id)].join(':')
-
-      render_cached(discussions, with: discussion_serializer, cache_context: -> (_) { cache_context }, context: self)
+      render_cached(discussions, with: discussion_serializer, cache_context: -> (_) { discussion_cache_context }, context: self)
+    elsif issuable.is_a?(Issue) && Feature.enabled?(:issue_discussions_http_cache, default_enabled: :yaml)
+      render json: discussion_serializer.represent(discussions, context: self) if stale?(etag: [discussion_cache_context, discussions])
     else
       render json: discussion_serializer.represent(discussions, context: self)
     end
@@ -195,6 +195,10 @@ module IssuableActions
 
   def notes_filter_updated?
     current_user&.user_preference&.previous_changes&.any?
+  end
+
+  def discussion_cache_context
+    [current_user&.cache_key, project.team.human_max_access(current_user&.id)].join(':')
   end
 
   def discussion_serializer

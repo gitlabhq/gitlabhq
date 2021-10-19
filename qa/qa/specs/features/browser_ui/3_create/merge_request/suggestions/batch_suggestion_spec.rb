@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Add batch suggestions to a Merge Request', :transient do
+    context 'Add batch suggestions to a Merge Request' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'suggestions_project'
@@ -46,7 +46,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1838', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342131', type: :stale } do
+      it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1838' do
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           4.times { merge_request.add_suggestion_to_batch }

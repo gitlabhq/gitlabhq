@@ -16215,12 +16215,6 @@ msgstr ""
 msgid "GroupRoadmap|No start date – %{dateWord}"
 msgstr ""
 
-msgid "GroupRoadmap|Roadmaps can display up to 1,000 epics. These appear in your selected sort order."
-msgstr ""
-
-msgid "GroupRoadmap|Some of your epics might not be visible"
-msgstr ""
-
 msgid "GroupRoadmap|Something went wrong while fetching epics"
 msgstr ""
 

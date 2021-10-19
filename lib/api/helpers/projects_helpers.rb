@@ -177,6 +177,17 @@ module API
 
       def filter_attributes_using_license!(attrs)
       end
+
+      def validate_git_import_url!(import_url, import_enabled: true)
+        return if import_url.blank?
+        return unless import_enabled
+
+        result = Import::ValidateRemoteGitEndpointService.new(url: import_url).execute # network call
+
+        if result.error?
+          render_api_error!(result.message, 422)
+        end
+      end
     end
   end
 end

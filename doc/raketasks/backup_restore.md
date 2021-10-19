@@ -22,7 +22,7 @@ backups with your object storage provider, if desired.
 
 ## Requirements
 
-To be able to backup and restore, ensure that Rsync is installed on your
+To be able to back up and restore, ensure that Rsync is installed on your
 system. If you installed GitLab:
 
 - _Using the Omnibus package_, you're all set.
@@ -74,7 +74,7 @@ GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
 WARNING:
-The backup command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+The backup command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Depending on your version of GitLab, use the following command if you installed
@@ -168,7 +168,7 @@ as its key defeats the purpose of using encryption in the first place.
 WARNING:
 The secrets file is essential to preserve your database encryption key.
 
-At the very **minimum**, you must backup:
+At the very **minimum**, you must back up:
 
 For Omnibus:
 
@@ -187,7 +187,7 @@ the GitLab container according to the documentation, it should be in the
 
 For [GitLab Helm chart installations](https://gitlab.com/gitlab-org/charts/gitlab)
 on a Kubernetes cluster, you must follow the
-[Backup the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
+[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
 instructions.
 
 You may also want to back up any TLS keys and certificates, and your
@@ -787,7 +787,7 @@ For installations from source:
 #### Configuring cron to make daily backups
 
 WARNING:
-The following cron jobs do not [backup your GitLab configuration files](#storing-configuration-files)
+The following cron jobs do not [back up your GitLab configuration files](#storing-configuration-files)
 or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 You can schedule a cron job that backs up your repositories and GitLab metadata.
@@ -974,7 +974,7 @@ message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab
 and then try again.
 
 WARNING:
-The restore command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+The restore command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
@@ -1215,9 +1215,9 @@ There are a few possible downsides to this:
 There is an **experimental** script that attempts to automate this process in
 [the Geo team Runbooks project](https://gitlab.com/gitlab-org/geo-team/runbooks/-/tree/main/experimental-online-backup-through-rsync).
 
-## Backup and restore for installations using PgBouncer
+## Back up and restore for installations using PgBouncer
 
-Do NOT backup or restore GitLab through a PgBouncer connection. These
+Do NOT back up or restore GitLab through a PgBouncer connection. These
 tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
 or they cause a GitLab outage.
 

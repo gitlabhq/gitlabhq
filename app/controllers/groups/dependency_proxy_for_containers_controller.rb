@@ -59,7 +59,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   def authorize_upload_blob
     set_workhorse_internal_api_content_type
 
-    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false)
+    render json: DependencyProxy::FileUploader.workhorse_authorize(has_length: false, maximum_size: 5.gigabytes)
   end
 
   def upload_blob

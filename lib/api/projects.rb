@@ -91,7 +91,7 @@ module API
       end
 
       def check_import_by_url_is_enabled
-        forbidden! unless Gitlab::CurrentSettings.import_sources&.include?('git')
+        Gitlab::CurrentSettings.import_sources&.include?('git') || forbidden!
       end
     end
 
@@ -269,7 +269,9 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
-        check_import_by_url_is_enabled if params[:import_url].present?
+
+        validate_git_import_url!(params[:import_url], import_enabled: check_import_by_url_is_enabled)
+
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -307,6 +309,8 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
+        validate_git_import_url!(params[:import_url])
+
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?

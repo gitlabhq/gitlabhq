@@ -10,7 +10,7 @@ The Kubernetes Agent Server (KAS) is a GitLab backend service dedicated to
 managing [Kubernetes Agents](../../user/clusters/agent/index.md).
 
 The KAS is already installed and available in GitLab.com under `wss://kas.gitlab.com`.
-See [how to use GitLab.com's KAS](../../user/clusters/agent/index.md#set-up-the-kubernetes-agent-server).
+See [how to use GitLab.com's KAS](../../user/clusters/agent/install/index.md#set-up-the-kubernetes-agent-server).
 This document describes how to install a KAS for GitLab self-managed instances.
 
 ## Installation options

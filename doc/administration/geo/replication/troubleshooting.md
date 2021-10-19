@@ -455,7 +455,7 @@ To solve this:
 
 1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
 
-1. Optional: [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem))
+1. Optional: [Spot-check](../../troubleshooting/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
    a few of those IDs whether they indeed correspond
    to a project with known Geo replication failures.
    Use `fatal: 'geo'` as the `grep` term and the following API call:

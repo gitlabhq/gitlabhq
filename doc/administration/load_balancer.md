@@ -7,7 +7,7 @@ type: reference
 
 # Load Balancer for multi-node GitLab **(FREE SELF)**
 
-In an multi-node GitLab configuration, you need a load balancer to route
+In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of

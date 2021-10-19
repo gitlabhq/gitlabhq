@@ -27,9 +27,13 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 4
           },
+          uploads: {
+            pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
+            stage: 5
+          },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
-            stage: 5
+            stage: 6
           }
         }
       end

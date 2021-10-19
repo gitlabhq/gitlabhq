@@ -397,11 +397,24 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         group.add_guest(user)
       end
 
-      it 'sends Workhorse file upload instructions', :aggregate_failures do
+      it 'sends Workhorse local file instructions', :aggregate_failures do
         authorize_upload_blob
 
         expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
         expect(json_response['TempPath']).to eq(DependencyProxy::FileUploader.workhorse_local_upload_path)
+        expect(json_response['RemoteObject']).to be_nil
+        expect(json_response['MaximumSize']).to eq(5.gigabytes)
+      end
+
+      it 'sends Workhorse remote object instructions', :aggregate_failures do
+        stub_dependency_proxy_object_storage(direct_upload: true)
+
+        authorize_upload_blob
+
+        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to be_nil
+        expect(json_response['RemoteObject']).not_to be_nil
+        expect(json_response['MaximumSize']).to eq(5.gigabytes)
       end
     end
   end

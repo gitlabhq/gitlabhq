@@ -19,7 +19,7 @@ module Gitlab
           'font_src' => "'self'",
           'form_action' => "'self' https: http:",
           'frame_ancestors' => "'self'",
-          'frame_src' => "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
+          'frame_src' => "#{framed_gitlab_paths.join(' ')} https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
           'img_src' => "'self' data: blob: http: https:",
           'manifest_src' => "'self'",
           'media_src' => "'self'",
@@ -30,11 +30,6 @@ module Gitlab
           'report_uri' => nil
         }
 
-        # frame-src was deprecated in CSP level 2 in favor of child-src
-        # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
-        # However Safari seems to read child-src first so we'll just keep both equal
-        directives['child_src'] = directives['frame_src']
-
         # connect_src with 'self' includes https/wss variations of the origin,
         # however, safari hasn't covered this yet and we need to explicitly add
         # support for websocket origins until Safari catches up with the specs
@@ -43,6 +38,11 @@ module Gitlab
         allow_cdn(directives, Settings.gitlab.cdn_host) if Settings.gitlab.cdn_host.present?
         allow_customersdot(directives) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
         allow_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
+
+        # frame-src was deprecated in CSP level 2 in favor of child-src
+        # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
+        # However Safari seems to read child-src first so we'll just keep both equal
+        directives['child_src'] = directives['frame_src']
 
         directives
       end
@@ -118,6 +118,14 @@ module Gitlab
         sentry_uri.user = nil
 
         append_to_directive(directives, 'connect_src', sentry_uri.to_s)
+      end
+
+      # Using 'self' in the CSP introduces several CSP bypass opportunities
+      # for this reason we list the URLs where GitLab frames itself instead
+      def self.framed_gitlab_paths
+        ['/admin/sidekiq', '/-/speedscope/index.html'].map do |path|
+          Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path)
+        end
       end
     end
   end

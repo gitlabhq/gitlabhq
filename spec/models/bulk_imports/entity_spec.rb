@@ -243,4 +243,13 @@ RSpec.describe BulkImports::Entity, type: :model do
       end
     end
   end
+
+  describe '#relation_download_url_path' do
+    it 'returns export relations url with download query string' do
+      entity = build(:bulk_import_entity)
+
+      expect(entity.relation_download_url_path('test'))
+        .to eq("/groups/#{entity.encoded_source_full_path}/export_relations/download?relation=test")
+    end
+  end
 end

@@ -97,20 +97,13 @@ mechanics of what is required is [documented below](#data-file) but, in principl
 
 The global nav has five levels:
 
-- **Section**
+- Section
   - Category
     - Doc
       - Doc
         - Doc
 
-The majority of the links available on the nav were added according to the UI.
-The match is not perfect, as for some UI nav items the documentation doesn't
-apply, and there are also other links to help the new users to discover the
-documentation. The docs under **Administration** are ordered alphabetically
-for clarity.
-
-To see the improvements planned, check the
-[global nav epic](https://gitlab.com/groups/gitlab-org/-/epics/1599).
+You can view this structure in [the navigation.yml file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
 
 **Do not** [add items](#add-a-navigation-entry) to the global nav without
 the consent of one of the technical writers.

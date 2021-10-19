@@ -187,35 +187,49 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
 
       context 'when size limit is 0' do
         let(:size_limit) { 0 }
+        let(:job) { job_payload(a: 'a' * 300) }
 
         it 'does not track jobs' do
           expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-          validate.call(TestSizeLimiterWorker, job_payload(a: 'a' * 300))
+          validate.call(TestSizeLimiterWorker, job)
         end
 
         it 'does not raise exception' do
           expect do
-            validate.call(TestSizeLimiterWorker, job_payload(a: 'a' * 300))
+            validate.call(TestSizeLimiterWorker, job)
           end.not_to raise_error
+        end
+
+        it 'marks the job as validated' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('validated')
         end
       end
 
       context 'when job size is bigger than size limit' do
         let(:size_limit) { 50 }
+        let(:job) { job_payload(a: 'a' * 300) }
 
         it 'tracks job' do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
             be_a(Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError)
           )
 
-          validate.call(TestSizeLimiterWorker, job_payload(a: 'a' * 100))
+          validate.call(TestSizeLimiterWorker, job)
         end
 
         it 'does not raise an exception' do
           expect do
-            validate.call(TestSizeLimiterWorker, job_payload(a: 'a' * 300))
+            validate.call(TestSizeLimiterWorker, job)
           end.not_to raise_error
+        end
+
+        it 'marks the job as tracked' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('tracked')
         end
 
         context 'when the worker has big_payload attribute' do
@@ -238,20 +252,33 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
               validate.call('TestSizeLimiterWorker', job_payload(a: 'a' * 300))
             end.not_to raise_error
           end
+
+          it 'marks the job as validated' do
+            validate.call(TestSizeLimiterWorker, job)
+
+            expect(job['size_limiter']).to eq('validated')
+          end
         end
       end
 
       context 'when job size is less than size limit' do
         let(:size_limit) { 50 }
+        let(:job) { job_payload(a: 'a') }
 
         it 'does not track job' do
           expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-          validate.call(TestSizeLimiterWorker, job_payload(a: 'a'))
+          validate.call(TestSizeLimiterWorker, job)
         end
 
         it 'does not raise an exception' do
-          expect { validate.call(TestSizeLimiterWorker, job_payload(a: 'a')) }.not_to raise_error
+          expect { validate.call(TestSizeLimiterWorker, job) }.not_to raise_error
+        end
+
+        it 'marks the job as validated' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('validated')
         end
       end
     end
@@ -266,7 +293,13 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
 
         it 'does not raise an exception' do
           expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).not_to receive(:compress)
-          expect { validate.call(TestSizeLimiterWorker, job_payload(a: 'a')) }.not_to raise_error
+          expect { validate.call(TestSizeLimiterWorker, job) }.not_to raise_error
+        end
+
+        it 'marks the job as validated' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('validated')
         end
       end
 
@@ -283,6 +316,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
             validate.call(TestSizeLimiterWorker, job)
           end.not_to raise_error
         end
+
+        it 'marks the job as validated' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('validated')
+        end
       end
 
       context 'when job size is bigger than compression threshold and size limit is 0' do
@@ -298,6 +337,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
           expect do
             validate.call(TestSizeLimiterWorker, job)
           end.not_to raise_error
+        end
+
+        it 'marks the job as validated' do
+          validate.call(TestSizeLimiterWorker, job)
+
+          expect(job['size_limiter']).to eq('validated')
         end
       end
 
@@ -326,6 +371,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
           expect do
             validate.call(TestSizeLimiterWorker, job)
           end.to raise_error(Gitlab::SidekiqMiddleware::SizeLimiter::ExceedLimitError)
+
+          expect(job['size_limiter']).to eq(nil)
         end
 
         it 'does not raise an exception when the worker allows big payloads' do
@@ -338,6 +385,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
           expect do
             validate.call(TestSizeLimiterWorker, job)
           end.not_to raise_error
+
+          expect(job['size_limiter']).to eq('validated')
         end
       end
     end
@@ -362,6 +411,29 @@ RSpec.describe Gitlab::SidekiqMiddleware::SizeLimiter::Validator, :aggregate_fai
       described_class::EXEMPT_WORKER_NAMES.each do |class_name|
         validate.call(class_name.constantize, job_payload)
       end
+    end
+
+    it "skips jobs that are already validated" do
+      expect(described_class).to receive(:new).once.and_call_original
+
+      job = job_payload
+
+      described_class.validate!(TestSizeLimiterWorker, job)
+      described_class.validate!(TestSizeLimiterWorker, job)
+    end
+  end
+
+  describe '.validated?' do
+    let(:job) { job_payload }
+
+    it 'returns true when the job is already validated' do
+      described_class.validate!(TestSizeLimiterWorker, job)
+
+      expect(described_class.validated?(job)).to eq(true)
+    end
+
+    it 'returns false when job is not yet validated' do
+      expect(described_class.validated?(job)).to eq(false)
     end
   end
 

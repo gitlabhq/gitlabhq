@@ -354,7 +354,7 @@ module QA
         end
 
         def apply_suggestion_with_message(message)
-          click_element(:apply_suggestion_dropdown)
+          all_elements(:apply_suggestion_dropdown, minimum: 1).first.click
           fill_element(:commit_message_field, message)
           click_element(:commit_with_custom_message_button)
         end

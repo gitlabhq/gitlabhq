@@ -48,6 +48,7 @@ end
 
 RSpec.describe API::Projects do
   include ProjectForksHelper
+  include StubRequests
 
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -1157,6 +1158,34 @@ RSpec.describe API::Projects do
         .not_to change {  Project.count }
 
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'disallows creating a project with an import_url that is not reachable', :aggregate_failures do
+      url = 'http://example.com'
+      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
+      stub_full_request(endpoint_url, method: :get).to_return({ status: 301, body: '', headers: nil })
+      project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
+
+      expect { post api('/projects', user), params: project_params }.not_to change { Project.count }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq("#{url} is not a valid HTTP Git repository")
+    end
+
+    it 'creates a project with an import_url that is valid', :aggregate_failures do
+      url = 'http://example.com'
+      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
+      git_response = {
+        status: 200,
+        body: '001e# service=git-upload-pack',
+        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' }
+      }
+      stub_full_request(endpoint_url, method: :get).to_return(git_response)
+      project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
+
+      expect { post api('/projects', user), params: project_params }.to change { Project.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:created)
     end
 
     it 'sets a project as public' do
