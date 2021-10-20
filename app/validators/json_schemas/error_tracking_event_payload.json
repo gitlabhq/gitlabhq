@@ -28,12 +28,6 @@
               "value": {
                 "type": "string"
               },
-              "module": {
-                "type": "string"
-              },
-              "thread_id": {
-                "type": "number"
-              },
               "stacktrace": {
                 "type": "object",
                 "required": [],
@@ -44,9 +38,6 @@
                       "type": "object",
                       "required": [],
                       "properties": {
-                        "project_root": {
-                          "type": "string"
-                        },
                         "abs_path": {
                           "type": "string"
                         },

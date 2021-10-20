@@ -18,7 +18,15 @@ RSpec.describe Atlassian::JiraConnect::Client do
     end
   end
 
-  describe '.generate_update_sequence_id' do
+  around do |example|
+    if example.metadata[:skip_freeze_time]
+      example.run
+    else
+      freeze_time { example.run }
+    end
+  end
+
+  describe '.generate_update_sequence_id', :skip_freeze_time do
     it 'returns unix time in microseconds as integer', :aggregate_failures do
       travel_to(Time.utc(1970, 1, 1, 0, 0, 1)) do
         expect(described_class.generate_update_sequence_id).to eq(1000)

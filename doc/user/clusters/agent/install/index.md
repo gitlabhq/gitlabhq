@@ -219,7 +219,7 @@ spec:
       containers:
       - name: agent
         # Make sure to specify a matching version for production
-        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:vX.Y.Z
+        image: "registry.gitlab.com/gitlab-org/cluster-integration/gitlab-agent/agentk:vX.Y.Z"
         args:
         - --token-file=/config/token
         - --kas-address

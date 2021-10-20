@@ -10789,6 +10789,9 @@ msgstr ""
 msgid "Date range"
 msgstr ""
 
+msgid "Date range limited to %{number} days"
+msgstr ""
+
 msgid "Date range must be shorter than %{max_range} days."
 msgstr ""
 
@@ -15736,6 +15739,9 @@ msgid "Gitea Import"
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
+msgstr ""
+
+msgid "GithubIntegration|Enable static status check names"
 msgstr ""
 
 msgid "GithubIntegration|Obtain statuses for commits and pull requests."
@@ -21398,6 +21404,9 @@ msgid "Merge automatically (%{strategy})"
 msgstr ""
 
 msgid "Merge blocked: new changes were just added."
+msgstr ""
+
+msgid "Merge blocked: pipeline must succeed. It's waiting for a manual job to continue."
 msgstr ""
 
 msgid "Merge blocked: the source branch must be rebased onto the target branch."

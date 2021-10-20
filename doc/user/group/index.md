@@ -527,10 +527,8 @@ API requests to add a new user to a project are not possible.
 
 ## Export members as CSV **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the :ff_group_membership_export flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
 
 You can export a list of members in a group as a CSV.
 

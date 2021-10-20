@@ -25,95 +25,155 @@ RSpec.describe ::Routing::PseudonymizationHelper do
 
   describe 'when url has params to mask' do
     context 'with controller for MR' do
-      let(:masked_url) { "http://test.host/namespace:#{group.id}/project:#{project.id}/-/merge_requests/#{merge_request.id}" }
+      let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/merge_requests/#{merge_request.id}" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: "projects/merge_requests",
+                action: "show",
+                namespace_id: group.name,
+                project_id: project.name,
+                id: merge_request.id.to_s
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: '')
+      end
 
       before do
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-         controller: "projects/merge_requests",
-         action: "show",
-         namespace_id: group.name,
-         project_id: project.name,
-         id: merge_request.id.to_s
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
     end
 
     context 'with controller for issue' do
-      let(:masked_url) { "http://test.host/namespace:#{group.id}/project:#{project.id}/-/issues/#{issue.id}" }
+      let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/issues/#{issue.id}" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: "projects/issues",
+                action: "show",
+                namespace_id: group.name,
+                project_id: project.name,
+                id: issue.id.to_s
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: '')
+      end
 
       before do
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-         controller: "projects/issues",
-         action: "show",
-         namespace_id: group.name,
-         project_id: project.name,
-         id: issue.id.to_s
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
     end
 
     context 'with controller for groups with subgroups and project' do
-      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}/project:#{subproject.id}"}
+      let(:masked_url) { "http://localhost/namespace#{subgroup.id}/project#{subproject.id}"}
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'projects',
+                action: 'show',
+                namespace_id: subgroup.name,
+                id: subproject.name
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: '')
+      end
 
       before do
         allow(helper).to receive(:group).and_return(subgroup)
         allow(helper).to receive(:project).and_return(subproject)
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-          controller: 'projects',
-          action: 'show',
-          namespace_id: subgroup.name,
-          id: subproject.name
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
     end
 
     context 'with controller for groups and subgroups' do
-      let(:masked_url) { "http://test.host/namespace:#{subgroup.id}"}
+      let(:masked_url) { "http://localhost/groups/namespace#{subgroup.id}/-/shared"}
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'groups',
+                action: 'show',
+                id: subgroup.name
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: '')
+      end
 
       before do
         allow(helper).to receive(:group).and_return(subgroup)
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-          controller: 'groups',
-          action: 'show',
-          id: subgroup.name
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
     end
 
     context 'with controller for blob with file path' do
-      let(:masked_url) { "http://test.host/namespace:#{group.id}/project:#{project.id}/-/blob/:repository_path" }
+      let(:masked_url) { "http://localhost/namespace#{group.id}/project#{project.id}/-/blob/:repository_path" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'projects/blob',
+                action: 'show',
+                namespace_id: group.name,
+                project_id: project.name,
+                id: 'master/README.md'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: '')
+      end
 
       before do
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-          controller: 'projects/blob',
-          action: 'show',
-          namespace_id: group.name,
-          project_id: project.name,
-          id: 'master/README.md'
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
     end
 
-    context 'with non identifiable controller' do
-      let(:masked_url) { "http://test.host/dashboard/issues?assignee_username=root" }
+    context 'when assignee_username is present' do
+      let(:masked_url) { "http://localhost/dashboard/issues?assignee_username=masked_assignee_username" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'dashboard',
+                action: 'issues'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: 'assignee_username=root')
+      end
 
       before do
-        controller.request.path = '/dashboard/issues'
-        controller.request.query_string = 'assignee_username=root'
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-          controller: 'dashboard',
-          action: 'issues'
-        })
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
+
+    context 'when author_username is present' do
+      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=opened" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'dashboard',
+                action: 'issues'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: 'author_username=root&scope=all&state=opened')
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it_behaves_like 'masked url'
@@ -121,9 +181,13 @@ RSpec.describe ::Routing::PseudonymizationHelper do
   end
 
   describe 'when url has no params to mask' do
-    let(:root_url) { 'http://test.host' }
+    let(:root_url) { 'http://localhost/some/path' }
 
     context 'returns root url' do
+      before do
+        controller.request.path = 'some/path'
+      end
+
       it 'masked_page_url' do
         expect(helper.masked_page_url).to eq(root_url)
       end
@@ -132,17 +196,26 @@ RSpec.describe ::Routing::PseudonymizationHelper do
 
   describe 'when it raises exception' do
     context 'calls error tracking' do
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'dashboard',
+                action: 'issues'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: 'assignee_username=root',
+               original_fullpath: '/dashboard/issues?assignee_username=root')
+      end
+
       before do
-        controller.request.path = '/dashboard/issues'
-        controller.request.query_string = 'assignee_username=root'
-        allow(Rails.application.routes).to receive(:recognize_path).and_return({
-          controller: 'dashboard',
-          action: 'issues'
-        })
+        allow(helper).to receive(:request).and_return(request)
       end
 
       it 'sends error to sentry and returns nil' do
-        allow(helper).to receive(:mask_params).with(anything).and_raise(ActionController::RoutingError, 'Some routing error')
+        allow_next_instance_of(Routing::PseudonymizationHelper::MaskHelper) do |mask_helper|
+          allow(mask_helper).to receive(:mask_params).and_raise(ActionController::RoutingError, 'Some routing error')
+        end
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           ActionController::RoutingError,

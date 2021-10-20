@@ -26,10 +26,18 @@ GitLab provides integration with open-source tools for vulnerability analysis in
 To integrate GitLab with security scanners other than those listed here, see
 [Security scanner integration](../../../development/integrations/secure.md).
 
-You can enable cluster image scanning by [including the CI job](#configuration)
+You can use cluster image scanning through the following methods:
+
+- [The cluster image scanning analyzer](#use-the-cluster-image-scanning-analyzer)
+- [The GitLab Kubernetes agent](#cluster-image-scanning-with-the-gitlab-kubernetes-agent)
+
+## Use the cluster image scanning analyzer
+
+You can use the cluster image scanning analyzer to run cluster image scanning with [GitLab CI/CD](../../../ci/index.md).
+To enable the cluster image scanning analyzer, [include the CI job](#configuration)
 in your existing `.gitlab-ci.yml` file.
 
-## Prerequisites
+### Prerequisites
 
 To enable cluster image scanning in your pipeline, you need the following:
 
@@ -45,7 +53,7 @@ To enable cluster image scanning in your pipeline, you need the following:
   [configuration variable](#cicd-variables-for-cluster-image-scanning)
   with the type set to `File` (see [Configuring the cluster](#configuring-the-cluster)).
 
-## Configuring the cluster
+### Configuring the cluster
 
 1. Create a new service account.
 
@@ -128,7 +136,7 @@ only. You can apply additional protection to your cluster by
 and [configuring Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/configuration/#install-modes)
 to install in restricted mode.
 
-## Configuration
+### Configuration
 
 To include the `Cluster-Image-Scanning.gitlab-ci.yml` template (GitLab 14.1 and later), add the
 following to your `.gitlab-ci.yml` file:
@@ -149,7 +157,7 @@ GitLab saves the results as a
 that you can download and analyze later. When downloading, you always receive the most recent
 artifact.
 
-### Customize the cluster image scanning settings
+#### Customize the cluster image scanning settings
 
 You can customize how GitLab scans your cluster. For example, to restrict the analyzer to get
 results for only a certain workload, use the [`variables`](../../../ci/yaml/index.md#variables)
@@ -157,7 +165,7 @@ parameter in your `.gitlab-ci.yml` to set [CI/CD variables](#cicd-variables-for-
 The variables you set in your `.gitlab-ci.yml` overwrite those in
 `Cluster-Image-Scanning.gitlab-ci.yml`.
 
-#### CI/CD variables for cluster image scanning
+##### CI/CD variables for cluster image scanning
 
 You can [configure](#customize-the-cluster-image-scanning-settings) analyzers by using the following CI/CD variables:
 
@@ -169,7 +177,7 @@ You can [configure](#customize-the-cluster-image-scanning-settings) analyzers by
 | `CIS_RESOURCE_NAMESPACE` | `""` | Namespace of the Kubernetes resource you want to filter vulnerabilities for. For example, `production`.   |
 | `CIS_RESOURCE_KIND` | `""` | Kind of the Kubernetes resource you want to filter vulnerabilities for. For example, `deployment`.  |
 
-### Override the cluster image scanning template
+#### Override the cluster image scanning template
 
 If you want to override the job definition (for example, to change properties like `variables`), you
 must declare and override a job after the template inclusion, and then
@@ -186,7 +194,7 @@ cluster_image_scanning:
     CIS_RESOURCE_NAME: nginx
 ```
 
-### Connect with Kubernetes cluster associated to the project
+#### Connect with Kubernetes cluster associated to the project
 
 If you want to connect to the Kubernetes cluster associated with the project and run Cluster Image Scanning jobs without
 configuring the `CIS_KUBECONFIG` variable, you must extend `cluster_image_scanning` and specify the environment you want to scan.
@@ -200,7 +208,7 @@ cluster_image_scanning:
     action: prepare
 ```
 
-## Reports JSON format
+### Reports JSON format
 
 The cluster image scanning tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
@@ -264,6 +272,27 @@ Here's an example cluster image scanning report:
   ]
 }
 ```
+
+## Cluster image scanning with the GitLab Kubernetes Agent
+
+You can use the [GitLab Kubernetes Agent](../../clusters/agent/index.md) to
+scan images from within your Kubernetes cluster and record the vulnerabilities in GitLab.
+
+### Prerequisites
+
+- [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/installation/kubectl/)
+  installed and configured in your cluster.
+- [GitLab Kubernetes Agent](../../clusters/agent/install/index.md)
+  set up in GitLab, installed in your cluster, and configured using a configuration repository.
+
+### Configuration
+
+The GitLab Kubernetes agent begins to run cluster image scanning once the `cluster_image_scanning`
+directive is added to your Kubernetes Agent configuration repository.
+
+See the [Kubernetes agent configuration repository](../../clusters/agent/repository.md#scan-your-container-images-for-vulnerabilities)
+reference to learn more about the cluster image scanning configuration options for the
+GitLab Kubernetes agent.
 
 ## Security Dashboard
 

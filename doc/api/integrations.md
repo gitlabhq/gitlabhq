@@ -740,7 +740,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | GitHub API token with `repo:status` OAuth scope |
 | `repository_url` | string | true | GitHub repository URL |
-| `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static--dynamic-status-check-names) |
+| `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names) |
 
 ### Disable GitHub integration
 

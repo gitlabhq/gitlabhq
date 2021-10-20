@@ -25,6 +25,13 @@ or [Enable Elastic Stack integration for your cluster](#enable-elastic-stack-int
 depending on which application you are installing. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/326565)
 to automate this step.
 
+Prometheus and Elastic Stack cluster integrations can only be enabled for clusters [connected through cluster certificates](../project/clusters/add_existing_cluster.md).
+
+To enable Prometheus for your cluster connected through the [GitLab Kubernetes Agent](agent/index.md), you can [integrate it manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
+
+There is no option to enable Elastic Stack for your cluster if it is connected with the GitLab Kubernetes Agent.
+Follow this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300230) for updates.
+
 ## Prometheus cluster integration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55244) in GitLab 13.11.

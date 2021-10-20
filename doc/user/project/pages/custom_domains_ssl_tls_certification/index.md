@@ -27,6 +27,17 @@ and steps below.
 - Access to your domain's server control panel to set up DNS records:
   - A DNS A or CNAME record pointing your domain to GitLab Pages server.
   - A DNS `TXT` record to verify your domain's ownership.
+- Set either `external_http` or `external_https` in `/etc/gitlab/gitlab.rb` to the IP and port of
+  your [Pages Daemon](../../../../administration/pages/index.md#overview).
+  If you don't have IPv6, you can omit the IPv6 address.
+
+  Example:
+
+  ```ruby
+  # Redirect pages from HTTP to HTTPS
+  gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
+  gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
+  ```
 
 ### Steps
 

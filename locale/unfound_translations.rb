@@ -1,3 +1,4 @@
+# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 # Dynamic translations which needs to be marked by `N_` so they can be found by `rake gettext:find`, see:
@@ -22,3 +23,5 @@ N_('NotificationEvent|Failed pipeline')
 N_('NotificationEvent|Fixed pipeline')
 N_('NotificationEvent|Moved project')
 N_('NotificationEvent|Merge when pipeline succeeds')
+
+# rubocop:enable Naming/FileName

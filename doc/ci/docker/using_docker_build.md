@@ -841,6 +841,8 @@ This issue occurs because Docker starts on TLS automatically.
 - If you are upgrading from v18.09 or earlier, read our
   [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
 
+This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has had time to fully start up. For a more detailed explanation, see [this issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
+
 ### Docker `no such host` error
 
 You may get an error that says

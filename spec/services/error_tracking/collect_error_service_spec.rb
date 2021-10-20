@@ -41,6 +41,14 @@ RSpec.describe ErrorTracking::CollectErrorService do
       expect(event.payload).to eq parsed_event
     end
 
+    context 'python sdk event' do
+      let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/python_event.json')) }
+
+      it 'creates a valid event' do
+        expect { subject.execute }.to change { ErrorTracking::ErrorEvent.count }.by(1)
+      end
+    end
+
     context 'unusual payload' do
       let(:modified_event) { parsed_event }
 
