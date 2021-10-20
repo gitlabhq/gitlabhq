@@ -271,6 +271,7 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'label_name[]',
         [SPECIAL_FILTER]: 'label_name[]',
+        [ALTERNATIVE_FILTER]: 'label_name',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
@@ -280,12 +281,13 @@ export const filters = {
   [TOKEN_TYPE_TYPE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'types',
-      [SPECIAL_FILTER]: 'types',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'type[]',
-        [SPECIAL_FILTER]: 'type[]',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[type][]',
       },
     },
   },
@@ -298,6 +300,9 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[my_reaction_emoji]',
       },
     },
   },

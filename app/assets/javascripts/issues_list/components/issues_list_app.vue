@@ -288,6 +288,7 @@ export default {
           avatar_url: gon.current_user_avatar_url,
         });
       }
+
       const tokens = [
         {
           type: TOKEN_TYPE_AUTHOR,
@@ -297,7 +298,6 @@ export default {
           dataType: 'user',
           unique: true,
           defaultAuthors: [],
-          operators: OPERATOR_IS_ONLY,
           fetchAuthors: this.fetchUsers,
           preloadedAuthors,
         },
@@ -333,7 +333,6 @@ export default {
           title: TOKEN_TITLE_TYPE,
           icon: 'issues',
           token: GlFilteredSearchToken,
-          operators: OPERATOR_IS_ONLY,
           options: [
             { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
             { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
@@ -349,7 +348,6 @@ export default {
           icon: 'thumb-up',
           token: EmojiToken,
           unique: true,
-          operators: OPERATOR_IS_ONLY,
           fetchEmojis: this.fetchEmojis,
         });
 

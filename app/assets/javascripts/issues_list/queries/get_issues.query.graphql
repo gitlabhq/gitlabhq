@@ -11,9 +11,11 @@ query getIssues(
   $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
+  $confidential: Boolean
   $labelName: [String]
   $milestoneTitle: [String]
   $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
   $types: [IssueType!]
   $not: NegatedIssueFilterInput
   $beforeCursor: String
@@ -30,9 +32,11 @@ query getIssues(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       types: $types
       not: $not
       before: $beforeCursor
@@ -57,9 +61,11 @@ query getIssues(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       types: $types
       not: $not
       before: $beforeCursor

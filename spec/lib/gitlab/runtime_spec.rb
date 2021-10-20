@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Runtime do
       allow(sidekiq_type).to receive(:options).and_return(concurrency: 2)
     end
 
-    it_behaves_like "valid runtime", :sidekiq, 4
+    it_behaves_like "valid runtime", :sidekiq, 5
   end
 
   context "console" do

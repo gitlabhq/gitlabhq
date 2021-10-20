@@ -22,6 +22,7 @@ import {
   SPECIAL_FILTER,
   SPECIAL_FILTER_VALUES,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_TYPE,
@@ -200,10 +201,15 @@ const isWildcardValue = (tokenType, value) =>
 const requiresUpperCaseValue = (tokenType, value) =>
   tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
 
-const formatData = (token) =>
-  requiresUpperCaseValue(token.type, token.value.data)
-    ? token.value.data.toUpperCase()
-    : token.value.data;
+const formatData = (token) => {
+  if (requiresUpperCaseValue(token.type, token.value.data)) {
+    return token.value.data.toUpperCase();
+  }
+  if (token.type === TOKEN_TYPE_CONFIDENTIAL) {
+    return token.value.data === 'yes';
+  }
+  return token.value.data;
+};
 
 export const convertToApiParams = (filterTokens) => {
   const params = {};
