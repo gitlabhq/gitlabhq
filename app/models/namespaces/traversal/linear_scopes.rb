@@ -40,18 +40,24 @@ module Namespaces
         def self_and_descendants(include_self: true)
           return super unless use_traversal_ids?
 
-          records = self_and_descendants_with_duplicates(include_self: include_self)
-
-          distinct = records.select('DISTINCT on(namespaces.id) namespaces.*')
-
-          distinct.normal_select
+          if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
+            self_and_descendants_with_comparison_operators(include_self: include_self)
+          else
+            records = self_and_descendants_with_duplicates_with_array_operator(include_self: include_self)
+            distinct = records.select('DISTINCT on(namespaces.id) namespaces.*')
+            distinct.normal_select
+          end
         end
 
         def self_and_descendant_ids(include_self: true)
           return super unless use_traversal_ids?
 
-          self_and_descendants_with_duplicates(include_self: include_self)
-            .select('DISTINCT namespaces.id')
+          if Feature.enabled?(:traversal_ids_btree, default_enabled: :yaml)
+            self_and_descendants_with_comparison_operators(include_self: include_self).as_ids
+          else
+            self_and_descendants_with_duplicates_with_array_operator(include_self: include_self)
+              .select('DISTINCT namespaces.id')
+          end
         end
 
         # Make sure we drop the STI `type = 'Group'` condition for better performance.
@@ -89,7 +95,40 @@ module Namespaces
           use_traversal_ids?
         end
 
-        def self_and_descendants_with_duplicates(include_self: true)
+        def self_and_descendants_with_comparison_operators(include_self: true)
+          base = all.select(
+            :traversal_ids,
+            'LEAD (namespaces.traversal_ids, 1) OVER (ORDER BY namespaces.traversal_ids ASC) next_traversal_ids'
+          )
+          cte = Gitlab::SQL::CTE.new(:base_cte, base)
+
+          namespaces = Arel::Table.new(:namespaces)
+          records = unscoped
+            .without_sti_condition
+            .with(cte.to_arel)
+            .from([cte.table, namespaces])
+
+          # Bound the search space to ourselves (optional) and descendants.
+          #
+          # WHERE (base_cte.next_traversal_ids IS NULL OR base_cte.next_traversal_ids > namespaces.traversal_ids)
+          #   AND next_traversal_ids_sibling(base_cte.traversal_ids) > namespaces.traversal_ids
+          records = records
+            .where(cte.table[:next_traversal_ids].eq(nil).or(cte.table[:next_traversal_ids].gt(namespaces[:traversal_ids])))
+            .where(next_sibling_func(cte.table[:traversal_ids]).gt(namespaces[:traversal_ids]))
+
+          #   AND base_cte.traversal_ids <= namespaces.traversal_ids
+          if include_self
+            records.where(cte.table[:traversal_ids].lteq(namespaces[:traversal_ids]))
+          else
+            records.where(cte.table[:traversal_ids].lt(namespaces[:traversal_ids]))
+          end
+        end
+
+        def next_sibling_func(*args)
+          Arel::Nodes::NamedFunction.new('next_traversal_ids_sibling', args)
+        end
+
+        def self_and_descendants_with_duplicates_with_array_operator(include_self: true)
           base_ids = select(:id)
 
           records = unscoped

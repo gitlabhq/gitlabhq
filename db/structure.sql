@@ -46,6 +46,15 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION next_traversal_ids_sibling(traversal_ids integer[]) RETURNS integer[]
+    LANGUAGE plpgsql IMMUTABLE STRICT
+    AS $$
+BEGIN
+  return traversal_ids[1:array_length(traversal_ids, 1)-1] ||
+  ARRAY[traversal_ids[array_length(traversal_ids, 1)]+1];
+END;
+$$;
+
 CREATE FUNCTION set_has_external_issue_tracker() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -24511,6 +24520,8 @@ CREATE INDEX index_boards_on_milestone_id ON boards USING btree (milestone_id);
 CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
+
+CREATE INDEX index_btree_namespaces_traversal_ids ON namespaces USING btree (traversal_ids);
 
 CREATE INDEX index_bulk_import_configurations_on_bulk_import_id ON bulk_import_configurations USING btree (bulk_import_id);
 

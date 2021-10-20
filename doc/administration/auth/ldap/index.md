@@ -19,50 +19,57 @@ This integration works with most LDAP-compliant directory servers, including:
 - Open LDAP.
 - 389 Server.
 
-Users added through LDAP take a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
+Users added through LDAP:
 
-## Security
+- Take a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
+- Can authenticate with Git using either their GitLab username or their email and LDAP password,
+  even if password authentication for Git 
+  [is disabled](../../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
 
-GitLab assumes that LDAP users:
+The LDAP DN is associated with existing GitLab users when:
 
-- Are not able to change their LDAP `mail`, `email`, or `userPrincipalName` attributes.
-  An LDAP user allowed to change their email on the LDAP server can potentially
-  [take over any account](#enable-ldap-sign-in-for-existing-gitlab-users)
-  on your GitLab server.
-- Have unique email addresses. If not, it's possible for LDAP users with the same
-  email address to share the same GitLab account.
+- The existing user signs in to GitLab with LDAP for the first time.
+- The LDAP email address is the primary email address of an existing GitLab user. If the LDAP email
+  attribute isn't found in the GitLab user database, a new user is created.
 
-We recommend against using LDAP integration if your LDAP users are
-allowed to change their `mail`, `email` or `userPrincipalName` attributes on
-the LDAP server, or share email addresses.
+If an existing GitLab user wants to enable LDAP sign-in for themselves, they should:
 
-### User deletion
+1. Check that their GitLab email address matches their LDAP email address.
+1. Sign in to GitLab by using their LDAP credentials.
 
-Users deleted from the LDAP server are immediately blocked from signing in
-to GitLab and [no longer consumes a
-license](../../../user/admin_area/moderate_users.md).
-However, there's an LDAP check cache time of one hour (which is
-[configurable](#adjust-ldap-user-sync-schedule) for GitLab Premium users).
-This means users already signed-in or who are using Git over SSH can access
-GitLab for up to one hour. Manually block the user in the GitLab Admin Area
-to immediately block all access.
+## Security risks
 
-## Git password authentication
+You should only use LDAP integration if your LDAP users cannot:
 
-LDAP-enabled users can authenticate with Git using their GitLab username or
-email and LDAP password, even if password authentication for Git is disabled
-in the application settings.
+- Change their `mail`, `email` or `userPrincipalName` attributes on the LDAP server. These
+  users can potentially take over any account on your GitLab server.
+- Share email addresses. LDAP users with the same email address can share the same GitLab
+  account.
 
-## Enable LDAP sign-in for existing GitLab users
+## Disable anonymous LDAP authentication
 
-When a user signs in to GitLab with LDAP for the first time and their LDAP
-email address is the primary email address of an existing GitLab user, the
-LDAP DN is associated with the existing user. If the LDAP email attribute
-isn't found in the GitLab user database, a new user is created.
+GitLab doesn't support TLS client authentication. Complete these steps on your LDAP server.
 
-In other words, if an existing GitLab user wants to enable LDAP sign-in for
-themselves, they should check that their GitLab email address matches their
-LDAP email address, and then sign into GitLab by using their LDAP credentials.
+1. Disable anonymous authentication.
+1. Enable one of the following authentication types:
+   - Simple authentication.
+   - Simple Authentication and Security Layer (SASL) authentication.
+
+The TLS client authentication setting in your LDAP server cannot be mandatory and clients cannot be
+authenticated with the TLS protocol.
+
+## Deleting users
+
+Users deleted from the LDAP server:
+
+- Are immediately blocked from signing in to GitLab.
+- [No longer consume a license](../../../user/admin_area/moderate_users.md).
+
+However, these users can continue to use Git with SSH until the next time the
+[LDAP check cache runs](#adjust-ldap-user-sync-schedule).
+
+To delete the account immediately, you can manually
+[block the user](../../../user/admin_area/moderate_users.md#block-a-user).
 
 ## Google Secure LDAP
 
@@ -170,7 +177,7 @@ These configuration settings are available:
 | `bind_dn`          | The full DN of the user you bind with. | **{dotted-circle}** No | `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
 | `password`         | The password of the bind user. | **{dotted-circle}** No | `'your_great_password'` |
 | `encryption`       | Encryption method. The `method` key is deprecated in favor of `encryption`. | **{check-circle}** Yes | `'start_tls'` or `'simple_tls'` or `'plain'` |
-| `verify_certificates` | Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. Defaults to true. | **{dotted-circle}** No | boolean |
+| `verify_certificates` | Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to false, no validation of the LDAP server's SSL certificate is performed. Defaults to true. | **{dotted-circle}** No | boolean |
 | `timeout`          | Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. (default: `10`) | **{dotted-circle}** No | `10` or `30` |
 | `active_directory` | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. | **{dotted-circle}** No | boolean |
 | `allow_username_or_email_login` | If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. | **{dotted-circle}** No | boolean |
@@ -347,7 +354,7 @@ sync, while also allowing your SAML identity provider to handle additional
 checks like custom 2FA.
 
 When LDAP web sign in is disabled, users don't see an **LDAP** tab on the sign-in page.
-This does not disable [using LDAP credentials for Git access](#git-password-authentication).
+This does not disable using LDAP credentials for Git access.
 
 **Omnibus configuration**
 
@@ -457,26 +464,6 @@ If initially your LDAP configuration looked like:
 1. Edit `config/gitlab.yaml` and remove the settings for `user_bn` and `password`.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
-
-## Encryption
-
-### TLS server authentication
-
-`simple_tls` and `start_tls` are the two available encryption methods.
-
-For either encryption method, if setting `verify_certificates: false`, TLS
-encryption is established with the LDAP server before any LDAP-protocol data is
-exchanged but no validation of the LDAP server's SSL certificate is performed.
-
-### Limitations
-
-#### TLS client authentication
-
-Not implemented by `Net::LDAP`.
-
-You should disable anonymous LDAP authentication and enable simple or Simple Authentication
-and Security Layer (SASL) authentication. The TLS client authentication setting in your LDAP server
-cannot be mandatory and clients cannot be authenticated with the TLS protocol.
 
 ## Multiple LDAP servers **(PREMIUM SELF)**
 
