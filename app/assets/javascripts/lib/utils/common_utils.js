@@ -6,6 +6,7 @@ import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/util
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { isFunction, defer } from 'lodash';
+import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
 import { isObject } from './type_utility';
 import { getLocationHash } from './url_utility';
@@ -685,7 +686,7 @@ export const searchBy = (query = '', searchSpace = {}) => {
  * @param {Object} label
  * @returns Boolean
  */
-export const isScopedLabel = ({ title = '' } = {}) => title.indexOf('::') !== -1;
+export const isScopedLabel = ({ title = '' } = {}) => title.includes(SCOPED_LABEL_DELIMITER);
 
 /**
  * Returns the base value of the scoped label
@@ -696,7 +697,8 @@ export const isScopedLabel = ({ title = '' } = {}) => title.indexOf('::') !== -1
  * @param {Object} label
  * @returns String
  */
-export const scopedLabelKey = ({ title = '' }) => isScopedLabel({ title }) && title.split('::')[0];
+export const scopedLabelKey = ({ title = '' }) =>
+  isScopedLabel({ title }) && title.split(SCOPED_LABEL_DELIMITER)[0];
 
 // Methods to set and get Cookie
 export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });

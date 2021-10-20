@@ -52,6 +52,8 @@ export default {
     },
 
     setSelectedItem(selectedId) {
+      this.selectedId = selectedId;
+
       const label = this.labels.find(({ id }) => id === selectedId);
       if (!selectedId || !label) {
         this.selectedLabel = null;
@@ -87,8 +89,8 @@ export default {
     <template #items>
       <gl-form-radio-group
         v-if="labels.length > 0"
-        v-model="selectedId"
         class="gl-overflow-y-auto gl-px-5 gl-pt-3"
+        :checked="selectedId"
         @change="setSelectedItem"
       >
         <label

@@ -26,6 +26,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:ldap_no_tls`    | The test requires a GitLab instance to be configured to use an external LDAP server with TLS not enabled. |
 | `:ldap_tls`       | The test requires a GitLab instance to be configured to use an external LDAP server with TLS enabled. |
 | `:mattermost`     | The test requires a GitLab Mattermost service on the GitLab instance. |
+| `:mixed_env`      | The test should only be executed in environments that have a paired canary version available through traffic routing based on the existence of the `gitlab_canary=true` cookie. Tests in this category are switching the cookie mid-test to validate mixed deployment environments. |
 | `:object_storage` | The test requires a GitLab instance to be configured to use multiple [object storage types](../../../administration/object_storage.md). Uses MinIO as the object storage server. |
 | `:only`           | The test is only to be run in specific execution contexts. See [test execution context selection](execution_context_selection.md) for more information. |
 | `:orchestrated`   | The GitLab instance under test may be [configured by `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#orchestrated-tests) to be different to the default GitLab configuration, or `gitlab-qa` may launch additional services in separate Docker containers, or both. Tests tagged with `:orchestrated` are excluded when testing environments where we can't dynamically modify the GitLab configuration (for example, Staging). |
@@ -34,7 +35,7 @@ This is a partial list of the [RSpec metadata](https://relishapp.com/rspec/rspec
 | `:relative_url`   | The test requires a GitLab instance to be installed under a [relative URL](../../../install/relative_url.md). |
 | `:reliable`       | The test has been [promoted to a reliable test](https://about.gitlab.com/handbook/engineering/quality/guidelines/reliable-tests/#promoting-an-existing-test-to-reliable) meaning it passes consistently in all pipelines, including merge requests. |
 | `:repository_storage` |  The test requires a GitLab instance to be configured to use multiple [repository storage paths](../../../administration/repository_storage_paths.md). Paired with the `:orchestrated` tag. |
-| `:requires_admin` | The test requires an admin account. Tests with the tag are excluded when run against Canary and Production environments. |
+| `:requires_admin` | The test requires an administrator account. Tests with the tag are excluded when run against Canary and Production environments. |
 | `:requires_git_protocol_v2`   | The test requires that Git protocol version 2 is enabled on the server. It's assumed to be enabled by default but if not the test can be skipped by setting `QA_CAN_TEST_GIT_PROTOCOL_V2` to `false`. |
 | `:requires_praefect`   | The test requires that the GitLab instance uses [Gitaly Cluster](../../../administration/gitaly/praefect.md) (a.k.a. Praefect) as the repository storage . It's assumed to be used by default but if not the test can be skipped by setting `QA_CAN_TEST_PRAEFECT` to `false`. |
 | `:runner`         | The test depends on and sets up a GitLab Runner instance, typically to run a pipeline. |

@@ -7,6 +7,8 @@ module FeatureFlags
     AUDITABLE_ATTRIBUTES = %w(name description active).freeze
 
     def success(**args)
+      audit_event = args.fetch(:audit_event) { audit_event(args[:feature_flag]) }
+      save_audit_event(audit_event)
       sync_to_jira(args[:feature_flag])
       super
     end
@@ -65,6 +67,12 @@ module FeatureFlags
       strong_memoize(:feature_flag_scope_by_environment_scope) do
         feature_flag_by_name.scopes.find_by_environment_scope(params[:environment_scope])
       end
+    end
+
+    private
+
+    def audit_message(feature_flag)
+      raise NotImplementedError, "This method should be overriden by subclasses"
     end
   end
 end

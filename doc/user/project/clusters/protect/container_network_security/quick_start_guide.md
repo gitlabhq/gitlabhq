@@ -57,7 +57,7 @@ to install Cilium in your Kubernetes cluster.
     ```
 
 1. Merge or push these changes to the default branch of your cluster management project,
-and [GitLab CI/CD](../../../../../ci/README.md) will automatically install Cilium.
+and [GitLab CI/CD](../../../../../ci/index.md) will automatically install Cilium.
 
 WARNING:
 Installation and removal of the Cilium requires a **manual**

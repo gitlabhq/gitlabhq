@@ -631,7 +631,7 @@ export const submitSuggestion = (
     });
 };
 
-export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContainer }) => {
+export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, flashContainer }) => {
   const suggestionIds = state.batchSuggestionsInfo.map(({ suggestionId }) => suggestionId);
 
   const resolveAllDiscussions = () =>
@@ -644,7 +644,7 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { flashContai
   commit(types.SET_RESOLVING_DISCUSSION, true);
   dispatch('stopPolling');
 
-  return Api.applySuggestionBatch(suggestionIds)
+  return Api.applySuggestionBatch(suggestionIds, message)
     .then(() => Promise.all(resolveAllDiscussions()))
     .then(() => commit(types.CLEAR_SUGGESTION_BATCH))
     .catch((err) => {

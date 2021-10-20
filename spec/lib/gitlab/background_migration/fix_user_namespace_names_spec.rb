@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::FixUserNamespaceNames, schema: 20190620112608 do
+RSpec.describe Gitlab::BackgroundMigration::FixUserNamespaceNames, schema: 20181228175414 do
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }
   let(:user) { users.create!(name: "The user's full name", projects_limit: 10, username: 'not-null', email: '1') }

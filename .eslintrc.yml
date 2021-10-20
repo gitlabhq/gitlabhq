@@ -88,7 +88,7 @@ rules:
         - pattern: test_fixtures/**
           group: internal
       alphabetize:
-        order: asc
+        order: ignore
 overrides:
   - files:
       - '**/spec/**/*'
@@ -100,6 +100,8 @@ overrides:
       - 'scripts/**/*'
       - '*.config.js'
       - '*.config.*.js'
+      - 'jest_resolver.js'
+      - storybook/config/*.js
     rules:
       '@gitlab/require-i18n-strings': off
       import/no-extraneous-dependencies: off

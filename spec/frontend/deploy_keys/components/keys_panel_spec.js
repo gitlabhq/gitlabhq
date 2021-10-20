@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils';
+import data from 'test_fixtures/deploy_keys/keys.json';
 import deployKeysPanel from '~/deploy_keys/components/keys_panel.vue';
 import DeployKeysStore from '~/deploy_keys/store';
 
 describe('Deploy keys panel', () => {
-  const data = getJSONFixture('deploy_keys/keys.json');
   let wrapper;
 
   const findTableRowHeader = () => wrapper.find('.table-row-header');

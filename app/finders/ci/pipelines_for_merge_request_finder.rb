@@ -5,6 +5,8 @@ module Ci
   class PipelinesForMergeRequestFinder
     include Gitlab::Utils::StrongMemoize
 
+    COMMITS_LIMIT = 100
+
     def initialize(merge_request, current_user)
       @merge_request = merge_request
       @current_user = current_user
@@ -12,7 +14,7 @@ module Ci
 
     attr_reader :merge_request, :current_user
 
-    delegate :commit_shas, :target_project, :source_project, :source_branch, to: :merge_request
+    delegate :recent_diff_head_shas, :commit_shas, :target_project, :source_project, :source_branch, to: :merge_request
 
     # Fetch all pipelines that the user can read.
     def execute
@@ -35,7 +37,7 @@ module Ci
 
           pipelines =
             if merge_request.persisted?
-              pipelines_using_cte
+              all_pipelines_for_merge_request
             else
               triggered_for_branch.for_sha(commit_shas)
             end
@@ -77,6 +79,17 @@ module Ci
           .join_sources
 
       pipelines.joins(shas_table) # rubocop: disable CodeReuse/ActiveRecord
+    end
+
+    def all_pipelines_for_merge_request
+      if Feature.enabled?(:decomposed_ci_query_in_pipelines_for_merge_request_finder, target_project, default_enabled: :yaml)
+        pipelines_for_merge_request = triggered_by_merge_request
+        pipelines_for_branch = triggered_for_branch.for_sha(recent_diff_head_shas(COMMITS_LIMIT))
+
+        Ci::Pipeline.from_union([pipelines_for_merge_request, pipelines_for_branch])
+      else
+        pipelines_using_cte
+      end
     end
 
     # NOTE: this method returns only parent merge request pipelines.

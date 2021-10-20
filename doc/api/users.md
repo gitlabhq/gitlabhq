@@ -987,7 +987,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 ## Add SSH key for user
 
-Create new key owned by specified user. Available only for admin
+Create new key owned by specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/keys
@@ -1018,7 +1018,7 @@ Parameters:
 
 ## Delete SSH key for given user
 
-Deletes key owned by a specified user. Available only for admin.
+Deletes key owned by a specified user. Available only for administrator.
 
 ```plaintext
 DELETE /users/:id/keys/:key_id
@@ -1165,7 +1165,7 @@ Example response:
 ## Get a specific GPG key for a given user
 
 Get a specific GPG key for a given user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43693)
-in GitLab 13.5, this endpoint can be accessed without admin authentication.
+in GitLab 13.5, this endpoint can be accessed without administrator authentication.
 
 ```plaintext
 GET /users/:id/gpg_keys/:key_id
@@ -1194,7 +1194,7 @@ Example response:
 
 ## Add a GPG key for a given user
 
-Create new GPG key owned by the specified user. Available only for admins.
+Create new GPG key owned by the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/gpg_keys
@@ -1226,7 +1226,7 @@ Example response:
 
 ## Delete a GPG key for a given user
 
-Delete a GPG key owned by a specified user. Available only for admins.
+Delete a GPG key owned by a specified user. Available only for administrator.
 
 ```plaintext
 DELETE /users/:id/gpg_keys/:key_id
@@ -1276,7 +1276,7 @@ Parameters:
 
 ## List emails for user
 
-Get a list of a specified user's emails. Available only for admin
+Get a list of a specified user's emails. Available only for administrator
 
 NOTE:
 Due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/25077) this endpoint currently
@@ -1345,7 +1345,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 ## Add email for user
 
-Create new email owned by specified user. Available only for admin
+Create new email owned by specified user. Available only for administrator
 
 ```plaintext
 POST /users/:id/emails
@@ -1372,7 +1372,7 @@ Parameters:
 
 ## Delete email for given user
 
-Deletes email owned by a specified user. Available only for admin.
+Deletes email owned by a specified user. Available only for administrator.
 
 ```plaintext
 DELETE /users/:id/emails/:email_id
@@ -1385,7 +1385,7 @@ Parameters:
 
 ## Block user
 
-Blocks the specified user. Available only for admin.
+Blocks the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/block
@@ -1405,7 +1405,7 @@ Returns:
 
 ## Unblock user
 
-Unblocks the specified user. Available only for admin.
+Unblocks the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/unblock
@@ -1422,7 +1422,7 @@ Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-Deactivates the specified user. Available only for admin.
+Deactivates the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/deactivate
@@ -1437,7 +1437,7 @@ Returns:
 - `201 OK` on success.
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to deactivate a user:
-  - Blocked by admin or by LDAP synchronization.
+  - Blocked by administrator or by LDAP synchronization.
   - That has any activity in past 90 days. These users cannot be deactivated.
   - That is internal.
 
@@ -1445,7 +1445,7 @@ Returns:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
-Activates the specified user. Available only for admin.
+Activates the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/activate
@@ -1465,7 +1465,7 @@ Returns:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
-Bans the specified user. Available only for admin.
+Bans the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/ban
@@ -1485,7 +1485,7 @@ Returns:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
-Unbans the specified user. Available only for admin.
+Unbans the specified user. Available only for administrator.
 
 ```plaintext
 POST /users/:id/unban
@@ -1507,7 +1507,7 @@ Please refer to the [Events API documentation](events.md#get-user-contribution-e
 
 ## Get all impersonation tokens of a user
 
-> Requires admin permissions.
+> Requires administrator permissions.
 
 It retrieves every impersonation token of the user. Use the pagination
 parameters `page` and `per_page` to restrict the list of impersonation tokens.
@@ -1639,7 +1639,7 @@ Example Responses:
 
 ## Get an impersonation token of a user
 
-> Requires admin permissions.
+> Requires administrators permissions.
 
 It shows a user's impersonation token.
 
@@ -1678,7 +1678,7 @@ Example response:
 
 ## Create an impersonation token
 
-> Requires admin permissions.
+> Requires administrator permissions.
 > Token values are returned once. Make sure you save it - you can't access it again.
 
 It creates a new impersonation token. Only administrators can do this.
@@ -1723,7 +1723,7 @@ Example response:
 
 ## Revoke an impersonation token
 
-> Requires admin permissions.
+> Requires administrator permissions.
 
 It revokes an impersonation token.
 
@@ -1845,7 +1845,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
-Lists all projects and groups a user is a member of. This endpoint is available for admins only.
+Lists all projects and groups a user is a member of. This endpoint is available for administrators only.
 It returns the `source_id`, `source_name`, `source_type` and `access_level` of a membership.
 Source can be of type `Namespace` (representing a group) or `Project`. The response represents only direct memberships. Inherited memberships, for example in subgroups, are not included.
 Access levels are represented by an integer value. For more details, read about the meaning of [access level values](access_requests.md#valid-access-levels).
@@ -1865,7 +1865,7 @@ Returns:
 
 - `200 OK` on success.
 - `404 User Not Found` if user can't be found.
-- `403 Forbidden` when not requested by an admin.
+- `403 Forbidden` when not requested by an administrator.
 - `400 Bad Request` when requested type is not supported.
 
 ```shell

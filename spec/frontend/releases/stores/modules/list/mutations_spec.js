@@ -1,16 +1,12 @@
-import { getJSONFixture } from 'helpers/fixtures';
+import originalRelease from 'test_fixtures/api/releases/release.json';
+import graphqlReleasesResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import * as types from '~/releases/stores/modules/index/mutation_types';
 import mutations from '~/releases/stores/modules/index/mutations';
 import createState from '~/releases/stores/modules/index/state';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 
-const originalRelease = getJSONFixture('api/releases/release.json');
 const originalReleases = [originalRelease];
-
-const graphqlReleasesResponse = getJSONFixture(
-  'graphql/releases/graphql/queries/all_releases.query.graphql.json',
-);
 
 describe('Releases Store Mutations', () => {
   let stateCopy;

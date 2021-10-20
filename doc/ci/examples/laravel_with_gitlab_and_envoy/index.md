@@ -17,7 +17,7 @@ date: 2017-08-31
 
 GitLab features our applications with Continuous Integration, and it is possible to easily deploy the new code changes to the production server whenever we want.
 
-In this tutorial, we'll show you how to initialize a [Laravel](https://laravel.com) application and set up our [Envoy](https://laravel.com/docs/master/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI/CD](../README.md) via [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
+In this tutorial, we'll show you how to initialize a [Laravel](https://laravel.com) application and set up our [Envoy](https://laravel.com/docs/master/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI/CD](../index.md) via [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
 
 We assume you have a basic experience with Laravel, Linux servers,
 and you know how to use GitLab.
@@ -394,7 +394,7 @@ We have our app ready on GitLab, and we also can deploy it manually.
 But let's take a step forward to do it automatically with [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) method.
 We need to check every commit with a set of automated tests to become aware of issues at the earliest, and then, we can deploy to the target environment if we are happy with the result of the tests.
 
-[GitLab CI/CD](../../README.md) allows us to use [Docker](https://www.docker.com) engine to handle the process of testing and deploying our app.
+[GitLab CI/CD](../../index.md) allows us to use [Docker](https://www.docker.com) engine to handle the process of testing and deploying our app.
 In case you're not familiar with Docker, refer to [Set up automated builds](https://docs.docker.com/get-started/).
 
 To be able to build, test, and deploy our app with GitLab CI/CD, we need to prepare our work environment.

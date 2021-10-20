@@ -14,6 +14,12 @@ module Ci
 
     before_create :ensure_resource
 
+    enum process_mode: {
+      unordered: 0,
+      oldest_first: 1,
+      newest_first: 2
+    }
+
     ##
     # NOTE: This is concurrency-safe method that the subquery in the `UPDATE`
     # works as explicit locking.
@@ -25,7 +31,33 @@ module Ci
       resources.retained_by(processable).update_all(build_id: nil) > 0
     end
 
+    def upcoming_processables
+      if unordered?
+        processables.waiting_for_resource
+      elsif oldest_first?
+        processables.waiting_for_resource_or_upcoming
+          .order(Arel.sql("commit_id ASC, #{sort_by_job_status}"))
+      elsif newest_first?
+        processables.waiting_for_resource_or_upcoming
+          .order(Arel.sql("commit_id DESC, #{sort_by_job_status}"))
+      else
+        Ci::Processable.none
+      end
+    end
+
     private
+
+    # In order to avoid deadlock, we do NOT specify the job execution order in the same pipeline.
+    # The system processes wherever ready to transition to `pending` status from `waiting_for_resource`.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/202186 for more information.
+    def sort_by_job_status
+      <<~SQL
+        CASE status
+          WHEN 'waiting_for_resource' THEN 0
+          ELSE 1
+        END ASC
+      SQL
+    end
 
     def ensure_resource
       # Currently we only support one resource per group, which means

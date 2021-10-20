@@ -16,10 +16,6 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('projects/')
-  end
-
   before do
     project_with_repo.add_maintainer(user)
     sign_in(user)
@@ -55,10 +51,6 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
     context 'access token projects query' do
       before do
         project_variable_populated.add_maintainer(user)
-      end
-
-      before(:all) do
-        clean_frontend_fixtures('graphql/projects/access_tokens')
       end
 
       base_input_path = 'access_tokens/graphql/queries/'

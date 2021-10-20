@@ -8,6 +8,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public) }
+  let_it_be(:expiration_date) { 5.days.from_now.to_date }
 
   let(:additional_link_attrs) { {} }
   let!(:group_link) { create(:project_group_link, project: project, group: group, **additional_link_attrs) }
@@ -37,27 +38,27 @@ RSpec.describe 'Projects > Members > Groups with access list', :js do
 
   it 'updates expiry date' do
     page.within find_group_row(group) do
-      fill_in 'Expiration date', with: 5.days.from_now.to_date
+      fill_in 'Expiration date', with: expiration_date
       find_field('Expiration date').native.send_keys :enter
 
       wait_for_requests
 
-      expect(page).to have_content(/in \d days/)
+      expect(page).to have_field('Expiration date', with: expiration_date)
     end
   end
 
   context 'when link has expiry date set' do
-    let(:additional_link_attrs) { { expires_at: 5.days.from_now.to_date } }
+    let(:additional_link_attrs) { { expires_at: expiration_date } }
 
     it 'clears expiry date' do
       page.within find_group_row(group) do
-        expect(page).to have_content(/in \d days/)
+        expect(page).to have_field('Expiration date', with: expiration_date)
 
         find('[data-testid="clear-button"]').click
 
         wait_for_requests
 
-        expect(page).to have_content('No expiration set')
+        expect(page).to have_field('Expiration date', with: '')
       end
     end
   end

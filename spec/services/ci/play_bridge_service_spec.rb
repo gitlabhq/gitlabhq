@@ -23,16 +23,16 @@ RSpec.describe Ci::PlayBridgeService, '#execute' do
       expect(bridge.reload).to be_pending
     end
 
-    it 'enqueues Ci::CreateCrossProjectPipelineWorker' do
-      expect(::Ci::CreateCrossProjectPipelineWorker).to receive(:perform_async).with(bridge.id)
-
-      execute_service
-    end
-
     it "updates bridge's user" do
       execute_service
 
       expect(bridge.reload.user).to eq(user)
+    end
+
+    it 'enqueues Ci::CreateDownstreamPipelineWorker' do
+      expect(::Ci::CreateDownstreamPipelineWorker).to receive(:perform_async).with(bridge.id)
+
+      execute_service
     end
 
     context 'when a subsequent job is skipped' do

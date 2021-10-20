@@ -62,12 +62,10 @@ panel_groups:
             query_range: 'http_requests_total'
             label: '# of Requests'
             unit: 'count'
-        metrics:
           - id: anomaly_requests_upper_limit
             query_range: 10000
             label: 'Max # of requests'
             unit: 'count'
-        metrics:
           - id: anomaly_requests_lower_limit
             query_range: 2000
             label: 'Min # of requests'

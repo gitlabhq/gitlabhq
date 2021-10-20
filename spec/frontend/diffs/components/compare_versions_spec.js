@@ -1,11 +1,11 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import { createStore } from '~/mr_notes/stores';
-import getDiffWithCommit from '../mock_data/diff_with_commit';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const localVue = createLocalVue();
@@ -22,7 +22,7 @@ describe('CompareVersions', () => {
   let wrapper;
   let store;
   const targetBranchName = 'tmp-wine-dev';
-  const { commit } = getDiffWithCommit();
+  const { commit } = getDiffWithCommit;
 
   const createWrapper = (props = {}, commitArgs = {}, createCommit = true) => {
     if (createCommit) {
@@ -150,7 +150,7 @@ describe('CompareVersions', () => {
 
   describe('commit', () => {
     beforeEach(() => {
-      store.state.diffs.commit = getDiffWithCommit().commit;
+      store.state.diffs.commit = getDiffWithCommit.commit;
       createWrapper();
     });
 

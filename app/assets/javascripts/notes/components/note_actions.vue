@@ -257,7 +257,7 @@ export default {
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mx-3 d-none d-md-inline-block"
+      class="gl-mr-3 d-none d-md-inline-block"
       :title="displayAuthorBadgeText"
     >
       {{ __('Author') }}
@@ -265,7 +265,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mx-3"
+      class="gl-mr-3"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -273,7 +273,7 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mx-3"
+      class="gl-mr-3"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}

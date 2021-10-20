@@ -3,7 +3,7 @@
 class MembersPresenter < Gitlab::View::Presenter::Delegated
   include Enumerable
 
-  presents :members
+  presents nil, as: :members
 
   def to_ary
     to_a

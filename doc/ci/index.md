@@ -32,10 +32,10 @@ For a complete overview of these methodologies and GitLab CI/CD,
 read the [Introduction to CI/CD with GitLab](introduction/index.md).
 
 <div class="video-fallback">
-  Video demonstration of GitLab CI/CD: <a href="https://www.youtube.com/watch?v=1iXFbchozdY">Demo: CI/CD with GitLab</a>.
+  Video demonstration of continuous integration with GitLab CI/CD: <a href="https://www.youtube.com/watch?v=ljth1Q5oJoo">Continuous Integration with GitLab (overview demo)</a>.
 </div>
 <figure class="video-container">
-  <iframe src="https://www.youtube.com/embed/1iXFbchozdY" frameborder="0" allowfullscreen="true"> </iframe>
+  <iframe src="https://www.youtube.com/embed/ljth1Q5oJoo" frameborder="0" allowfullscreen="true"> </iframe>
 </figure>
 
 ## GitLab CI/CD concepts
@@ -46,7 +46,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 |:--------------------------------------------------------|:-------------------------------------------------------------------------------|
 | [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                |
 | [CI/CD variables](variables/index.md)                  | Reuse values based on a variable/value key pair.                               |
-| [Environments](environments/index.md)                   | Deploy your application to different environments (e.g., staging, production). |
+| [Environments](environments/index.md)                   | Deploy your application to different environments (for example, staging, production). |
 | [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                          |
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                |
 | [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                            |
@@ -65,7 +65,7 @@ GitLab CI/CD supports numerous configuration options:
 | [SSH keys for CI/CD](ssh_keys/index.md)                                                 | Using SSH keys in your CI pipelines.                                                      |
 | [Pipeline triggers](triggers/index.md)                                                  | Trigger pipelines through the API.                                                        |
 | [Pipelines for Merge Requests](pipelines/merge_request_pipelines.md)                    | Design a pipeline structure for running a pipeline in merge requests.                     |
-| [Integrate with Kubernetes clusters](../user/project/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
+| [Integrate with Kubernetes clusters](../user/infrastructure/clusters/index.md)                 | Connect your project to Google Kubernetes Engine (GKE) or an existing Kubernetes cluster. |
 | [Optimize GitLab and GitLab Runner for large repositories](large_repositories/index.md) | Recommended strategies for handling large repositories.                                   |
 | [`.gitlab-ci.yml` full reference](yaml/index.md)                                        | All the attributes you can use with GitLab CI/CD.                                         |
 
@@ -97,7 +97,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Building Docker images](docker/using_docker_build.md)                                          | Maintain Docker-based projects using GitLab CI/CD.                                                                             |
 | [Canary Deployments](../user/project/canary_deployments.md)                                     | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [Deploy boards](../user/project/deploy_boards.md)                                               | Check the current health and status of each CI/CD environment running on Kubernetes.                                           |
-| [Feature Flags](../operations/feature_flags.md) **(PREMIUM)**                                   | Deploy your features behind Feature Flags.                                                                                     |
+| [Feature Flags](../operations/feature_flags.md)                                                 | Deploy your features behind Feature Flags.                                                                                     |
 | [GitLab Pages](../user/project/pages/index.md)                                                  | Deploy static websites.                                                                                                        |
 | [GitLab Releases](../user/project/releases/index.md)                                            | Add release notes to Git tags.                                                                                                 |
 | [Review Apps](review_apps/index.md)                                                             | Configure GitLab CI/CD to preview code changes.                                                                                |
@@ -111,7 +111,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 
 ## GitLab CI/CD examples
 
-See the [CI/CD examples](examples/README.md) page for example project code and tutorials for
+See the [CI/CD examples](examples/index.md) page for example project code and tutorials for
 using GitLab CI/CD with various:
 
 - App frameworks

@@ -1,6 +1,5 @@
-import Api from '~/api';
+import ciSchemaPath from '~/editor/schema/ci.json';
 import { registerSchema } from '~/ide/utils';
-import { EXTENSION_CI_SCHEMA_FILE_NAME_MATCH } from '../constants';
 import { SourceEditorExtension } from './source_editor_extension_base';
 
 export class CiSchemaExtension extends SourceEditorExtension {
@@ -16,12 +15,7 @@ export class CiSchemaExtension extends SourceEditorExtension {
    * @param {String} opts.projectPath
    * @param {String?} opts.ref - Current ref. Defaults to main
    */
-  registerCiSchema({ projectNamespace, projectPath, ref } = {}) {
-    const ciSchemaPath = Api.buildUrl(Api.projectFileSchemaPath)
-      .replace(':namespace_path', projectNamespace)
-      .replace(':project_path', projectPath)
-      .replace(':ref', ref)
-      .replace(':filename', EXTENSION_CI_SCHEMA_FILE_NAME_MATCH);
+  registerCiSchema() {
     // In order for workers loaded from `data://` as the
     // ones loaded by monaco editor, we use absolute URLs
     // to fetch schema files, hence the `gon.gitlab_url`

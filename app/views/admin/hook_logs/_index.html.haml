@@ -1,37 +1,11 @@
+- docs_link_url = help_page_path('user/project/integrations/webhooks', anchor: 'troubleshoot-webhooks')
+- link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
+- link_end = '</a>'.html_safe
+
 .row.gl-mt-3.gl-mb-3
   .col-lg-3
     %h4.gl-mt-0
-      = _('Recent Deliveries')
-    %p= _('When an event in GitLab triggers a webhook, you can use the request details to figure out if something went wrong.')
+      = _('Recent events')
+    %p= _('GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}').html_safe % { link_start: link_start, link_end: link_end }
   .col-lg-9
-    - if hook_logs.present?
-      %table.table
-        %thead
-          %tr
-            %th= _('Status')
-            %th= _('Trigger')
-            %th= _('URL')
-            %th= _('Elapsed time')
-            %th= _('Request time')
-            %th
-        - hook_logs.each do |hook_log|
-          %tr
-            %td
-              = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
-            %td.d-none.d-sm-block
-              %span.badge.badge-gray.deploy-project-label
-                = hook_log.trigger.singularize.titleize
-            %td
-              = truncate(hook_log.url, length: 50)
-            %td.light
-              #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
-            %td.light
-              = time_ago_with_tooltip(hook_log.created_at)
-            %td
-              = link_to _('View details'), admin_hook_hook_log_path(hook, hook_log)
-
-      = paginate hook_logs, theme: 'gitlab'
-
-    - else
-      .settings-message.text-center
-        = _("You don't have any webhooks deliveries")
+    = render partial: 'shared/hook_logs/recent_deliveries_table', locals: { hook: hook, hook_logs: hook_logs }

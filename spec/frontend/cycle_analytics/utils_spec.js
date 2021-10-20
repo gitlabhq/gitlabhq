@@ -1,7 +1,6 @@
 import { useFakeDate } from 'helpers/fake_date';
 import {
   transformStagesForPathNavigation,
-  timeSummaryForPathNavigation,
   medianTimeToParsedSeconds,
   formatMedianValues,
   filterStagesByHiddenStatus,
@@ -44,21 +43,6 @@ describe('Value stream analytics utils', () => {
 
         expect(issue.metric).toBe(pathNavIssueMetric);
       });
-    });
-  });
-
-  describe('timeSummaryForPathNavigation', () => {
-    it.each`
-      unit         | value   | result
-      ${'months'}  | ${1.5}  | ${'1.5M'}
-      ${'weeks'}   | ${1.25} | ${'1.5w'}
-      ${'days'}    | ${2}    | ${'2d'}
-      ${'hours'}   | ${10}   | ${'10h'}
-      ${'minutes'} | ${20}   | ${'20m'}
-      ${'seconds'} | ${10}   | ${'<1m'}
-      ${'seconds'} | ${0}    | ${'-'}
-    `('will format $value $unit to $result', ({ unit, value, result }) => {
-      expect(timeSummaryForPathNavigation({ [unit]: value })).toBe(result);
     });
   });
 

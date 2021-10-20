@@ -14,8 +14,9 @@
 
     .row.gl-mt-3
       .form-group.col-md-9
-        = f.label :description, _('Group description (optional)'), class: 'label-bold'
+        = f.label :description, _('Group description'), class: 'label-bold'
         = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
+        .form-text.text-muted= _('Optional.')
 
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 

@@ -50,7 +50,7 @@ export default {
       required: false,
       default: '',
     },
-    secretScanningComparisonPath: {
+    secretDetectionComparisonPath: {
       type: String,
       required: false,
       default: '',
@@ -149,8 +149,8 @@ export default {
         this.canShowCounts = true;
       }
 
-      if (this.secretScanningComparisonPath && this.hasSecretDetectionReports) {
-        this.setSecretDetectionDiffEndpoint(this.secretScanningComparisonPath);
+      if (this.secretDetectionComparisonPath && this.hasSecretDetectionReports) {
+        this.setSecretDetectionDiffEndpoint(this.secretDetectionComparisonPath);
         this.fetchSecretDetectionDiff();
         this.canShowCounts = true;
       }

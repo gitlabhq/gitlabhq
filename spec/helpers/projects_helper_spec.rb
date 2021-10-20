@@ -314,13 +314,13 @@ RSpec.describe ProjectsHelper do
     end
 
     it 'returns image tag for member avatar' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16], alt: "", "data-src" => anything })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16], alt: "" })
 
       helper.link_to_member_avatar(user)
     end
 
     it 'returns image tag with avatar class' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16 any-avatar-class], alt: "", "data-src" => anything })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: %w[avatar avatar-inline s16 any-avatar-class], alt: "" })
 
       helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
     end
@@ -900,6 +900,14 @@ RSpec.describe ProjectsHelper do
       context 'the project already has a terraform state' do
         before do
           create(:terraform_state, project: project)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'the :show_terraform_banner feature flag is disabled' do
+        before do
+          stub_feature_flags(show_terraform_banner: false)
         end
 
         it { is_expected.to be_falsey }

@@ -8,6 +8,7 @@ module Projects
       @current_user = user
       @params = params.dup
       @skip_wiki = @params.delete(:skip_wiki)
+      @initialize_with_sast = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_sast))
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
@@ -118,6 +119,7 @@ module Projects
       Projects::PostCreationWorker.perform_async(@project.id)
 
       create_readme if @initialize_with_readme
+      create_sast_commit if @initialize_with_sast
     end
 
     # Add an authorization for the current user authorizations inline
@@ -158,6 +160,10 @@ module Projects
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
+    end
+
+    def create_sast_commit
+      ::Security::CiConfiguration::SastCreateService.new(@project, current_user, {}, commit_on_default: true).execute
     end
 
     def readme_content

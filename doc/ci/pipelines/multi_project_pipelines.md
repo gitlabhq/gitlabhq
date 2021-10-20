@@ -88,7 +88,7 @@ The keywords available for use in trigger jobs are:
 - [`only` and `except`](../yaml/index.md#only--except)
 - [`when`](../yaml/index.md#when) (only with a value of `on_success`, `on_failure`, or `always`)
 - [`extends`](../yaml/index.md#extends)
-- [`needs`](../yaml/index.md#needs)
+- [`needs`](../yaml/index.md#needs), but not [cross project artifact downloads with `needs`](../yaml/index.md#cross-project-artifact-downloads-with-needs)
 
 #### Specify a downstream pipeline branch
 
@@ -112,7 +112,7 @@ Use:
 
 - The `project` keyword to specify the full path to a downstream project.
 - The `branch` keyword to specify the name of a branch in the project specified by `project`.
-  [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/10126) and later, variable expansion is
+  In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/10126), variable expansion is
   supported.
 
 Pipelines triggered on a protected branch in a downstream project use the [role](../../user/permissions.md)
@@ -290,7 +290,7 @@ When using:
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab Premium 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.
@@ -321,7 +321,7 @@ downstream projects. On self-managed instances, an administrator can change this
 When you configure GitLab CI/CD for your project, you can visualize the stages of your
 [jobs](index.md#configure-a-pipeline) on a [pipeline graph](index.md#visualize-pipelines).
 
-![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
+![Multi-project pipeline graph](img/multi_project_pipeline_graph_v14_3.png)
 
 In the merge request, on the **Pipelines** tab, multi-project pipeline mini-graphs are displayed.
 They expand and are shown adjacent to each other when hovering (or tapping on touchscreen devices).

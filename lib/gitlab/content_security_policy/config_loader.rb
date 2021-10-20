@@ -35,6 +35,10 @@ module Gitlab
         # However Safari seems to read child-src first so we'll just keep both equal
         directives['child_src'] = directives['frame_src']
 
+        # connect_src with 'self' includes https/wss variations of the origin,
+        # however, safari hasn't covered this yet and we need to explicitly add
+        # support for websocket origins until Safari catches up with the specs
+        allow_websocket_connections(directives)
         allow_webpack_dev_server(directives) if Rails.env.development?
         allow_cdn(directives, Settings.gitlab.cdn_host) if Settings.gitlab.cdn_host.present?
         allow_customersdot(directives) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
@@ -65,6 +69,22 @@ module Gitlab
         return unless arguments.present? && arguments.is_a?(String)
 
         arguments.strip.split(' ').map(&:strip)
+      end
+
+      def self.allow_websocket_connections(directives)
+        http_ports = [80, 443]
+        host = Gitlab.config.gitlab.host
+        port = Gitlab.config.gitlab.port
+        secure = Gitlab.config.gitlab.https
+        protocol = secure ? 'wss' : 'ws'
+
+        ws_url = "#{protocol}://#{host}"
+
+        unless http_ports.include?(port)
+          ws_url = "#{ws_url}:#{port}"
+        end
+
+        append_to_directive(directives, 'connect_src', ws_url)
       end
 
       def self.allow_webpack_dev_server(directives)

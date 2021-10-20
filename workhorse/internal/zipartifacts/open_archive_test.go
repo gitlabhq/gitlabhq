@@ -2,56 +2,124 @@ package zipartifacts
 
 import (
 	"archive/zip"
+	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestOpenHTTPArchive(t *testing.T) {
-	const (
-		zipFile   = "test.zip"
-		entryName = "hello.txt"
-		contents  = "world"
-		testRoot  = "testdata/public"
-	)
-
-	require.NoError(t, os.MkdirAll(testRoot, 0755))
-	f, err := os.Create(filepath.Join(testRoot, zipFile))
-	require.NoError(t, err, "create file")
+func createArchive(t *testing.T, dir string) (map[string][]byte, int64) {
+	f, err := os.Create(filepath.Join(dir, "test.zip"))
+	require.NoError(t, err)
 	defer f.Close()
-
 	zw := zip.NewWriter(f)
-	w, err := zw.Create(entryName)
-	require.NoError(t, err, "create zip entry")
-	_, err = fmt.Fprint(w, contents)
-	require.NoError(t, err, "write zip entry contents")
-	require.NoError(t, zw.Close(), "close zip writer")
-	require.NoError(t, f.Close(), "close file")
 
-	srv := httptest.NewServer(http.FileServer(http.Dir(testRoot)))
+	entries := make(map[string][]byte)
+	for _, size := range []int{0, 32 * 1024, 128 * 1024, 5 * 1024 * 1024} {
+		entryName := fmt.Sprintf("file_%d", size)
+		entries[entryName] = bytes.Repeat([]byte{'z'}, size)
+
+		w, err := zw.Create(entryName)
+		require.NoError(t, err)
+
+		_, err = w.Write(entries[entryName])
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, zw.Close())
+	fi, err := f.Stat()
+	require.NoError(t, err)
+	require.NoError(t, f.Close())
+
+	return entries, fi.Size()
+}
+
+func TestOpenHTTPArchive(t *testing.T) {
+	dir := t.TempDir()
+	entries, _ := createArchive(t, dir)
+
+	srv := httptest.NewServer(http.FileServer(http.Dir(dir)))
 	defer srv.Close()
 
-	zr, err := OpenArchive(context.Background(), srv.URL+"/"+zipFile)
-	require.NoError(t, err, "call OpenArchive")
-	require.Len(t, zr.File, 1)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	zf := zr.File[0]
-	require.Equal(t, entryName, zf.Name, "zip entry name")
+	zr, err := OpenArchive(ctx, srv.URL+"/test.zip")
+	require.NoError(t, err)
+	require.Len(t, zr.File, len(entries))
 
-	entry, err := zf.Open()
-	require.NoError(t, err, "get zip entry reader")
-	defer entry.Close()
+	for _, zf := range zr.File {
+		entry, ok := entries[zf.Name]
+		require.True(t, ok)
 
-	actualContents, err := ioutil.ReadAll(entry)
-	require.NoError(t, err, "read zip entry contents")
-	require.Equal(t, contents, string(actualContents), "compare zip entry contents")
+		r, err := zf.Open()
+		require.NoError(t, err)
+
+		contents, err := io.ReadAll(r)
+		require.NoError(t, err)
+		require.Equal(t, entry, contents)
+
+		require.NoError(t, r.Close())
+	}
+}
+
+func TestMinimalRangeRequests(t *testing.T) {
+	if strings.HasPrefix(runtime.Version(), "go1.17") {
+		t.Skipf("skipped for go1.17: https://gitlab.com/gitlab-org/gitlab/-/issues/340778")
+	}
+
+	dir := t.TempDir()
+	entries, archiveSize := createArchive(t, dir)
+
+	mux := http.NewServeMux()
+
+	var ranges []string
+	mux.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		rangeHdr := r.Header.Get("Range")
+		if rangeHdr == "" {
+			rw.Header().Add("Content-Length", fmt.Sprintf("%d", archiveSize))
+			return
+		}
+
+		ranges = append(ranges, rangeHdr)
+		http.FileServer(http.Dir(dir)).ServeHTTP(rw, r)
+	})
+
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	zr, err := OpenArchive(ctx, srv.URL+"/test.zip")
+	require.NoError(t, err)
+	require.Len(t, zr.File, len(entries))
+
+	require.Len(t, ranges, 2, "range requests should be minimal")
+	require.NotContains(t, ranges, "bytes=0-", "range request should not request from zero")
+
+	for _, zf := range zr.File {
+		r, err := zf.Open()
+		require.NoError(t, err)
+
+		_, err = io.Copy(io.Discard, r)
+		require.NoError(t, err)
+
+		require.NoError(t, r.Close())
+	}
+
+	// ensure minimal requests: https://gitlab.com/gitlab-org/gitlab/-/issues/340778
+	require.Len(t, ranges, 3, "range requests should be minimal")
+	require.Contains(t, ranges, "bytes=0-")
 }
 
 func TestOpenHTTPArchiveNotSendingAcceptEncodingHeader(t *testing.T) {
@@ -64,5 +132,8 @@ func TestOpenHTTPArchiveNotSendingAcceptEncodingHeader(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(requestHandler))
 	defer srv.Close()
 
-	OpenArchive(context.Background(), srv.URL)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	OpenArchive(ctx, srv.URL)
 }

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Moderate users
+# Moderate users **(FREE SELF)**
 
 GitLab administrators can moderate user access by approving, blocking, banning, or deactivating
 users.
@@ -73,7 +73,7 @@ In order to completely prevent access of a user to the GitLab instance,
 administrators can choose to block the user.
 
 Users can be blocked [via an abuse report](review_abuse_reports.md#blocking-users),
-or directly from the Admin Area. To do this:
+by removing them in LDAP, or directly from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.

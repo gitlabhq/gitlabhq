@@ -17,7 +17,6 @@ describe('CsvImportModal', () => {
         ...props,
       },
       provide: {
-        issuableType: 'issues',
         ...injectedProperties,
       },
       stubs: {
@@ -43,9 +42,9 @@ describe('CsvImportModal', () => {
   const findAuthenticityToken = () => new FormData(findForm().element).get('authenticity_token');
 
   describe('template', () => {
-    it('displays modal title', () => {
+    it('passes correct title props to modal', () => {
       wrapper = createComponent();
-      expect(findModal().text()).toContain('Import issues');
+      expect(findModal().props('title')).toContain('Import issues');
     });
 
     it('displays a note about the maximum allowed file size', () => {
@@ -73,7 +72,7 @@ describe('CsvImportModal', () => {
       });
 
       it('submits the form when the primary action is clicked', () => {
-        findPrimaryButton().trigger('click');
+        findModal().vm.$emit('primary');
 
         expect(formSubmitSpy).toHaveBeenCalled();
       });

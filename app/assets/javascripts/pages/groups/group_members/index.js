@@ -11,7 +11,7 @@ import { MEMBER_TYPES } from '~/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import UsersSelect from '~/users_select';
 
-const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
+const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 
 initMembersApp(document.querySelector('.js-group-members-list-app'), {
   [MEMBER_TYPES.user]: {

@@ -9,7 +9,7 @@ module Ci
 
         free_resources = resource_group.resources.free.count
 
-        resource_group.processables.waiting_for_resource.take(free_resources).each do |processable|
+        resource_group.upcoming_processables.take(free_resources).each do |processable|
           processable.enqueue_waiting_for_resource
         end
       end

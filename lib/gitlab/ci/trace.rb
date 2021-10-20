@@ -25,7 +25,7 @@ module Gitlab
 
       delegate :old_trace, to: :job
       delegate :can_attempt_archival_now?, :increment_archival_attempts!,
-        :archival_attempts_message, to: :trace_metadata
+        :archival_attempts_message, :archival_attempts_available?, to: :trace_metadata
 
       def initialize(job)
         @job = job
@@ -122,6 +122,10 @@ module Gitlab
         end
       end
 
+      def attempt_archive_cleanup!
+        destroy_any_orphan_trace_data!
+      end
+
       def update_interval
         if being_watched?
           UPDATE_FREQUENCY_WHEN_BEING_WATCHED
@@ -191,7 +195,10 @@ module Gitlab
       def unsafe_archive!
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        unsafe_trace_conditionally_cleanup_before_retry!
+        already_archived?.tap do |archived|
+          destroy_any_orphan_trace_data!
+          raise AlreadyArchivedError, 'Could not archive again' if archived
+        end
 
         if job.trace_chunks.any?
           Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
@@ -214,16 +221,15 @@ module Gitlab
       def already_archived?
         # TODO check checksum to ensure archive completed successfully
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
-        trace_artifact.archived_trace_exists?
+        trace_artifact&.archived_trace_exists?
       end
 
-      def unsafe_trace_conditionally_cleanup_before_retry!
+      def destroy_any_orphan_trace_data!
         return unless trace_artifact
 
         if already_archived?
           # An archive already exists, so make sure to remove the trace chunks
           erase_trace_chunks!
-          raise AlreadyArchivedError, 'Could not archive again'
         else
           # An archive already exists, but its associated file does not, so remove it
           trace_artifact.destroy!
@@ -236,35 +242,7 @@ module Gitlab
       end
 
       def archive_stream!(stream)
-        clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
-          create_build_trace!(job, clone_path)
-        end
-      end
-
-      def clone_file!(src_stream, temp_dir)
-        FileUtils.mkdir_p(temp_dir)
-        Dir.mktmpdir("tmp-trace-#{job.id}", temp_dir) do |dir_path|
-          temp_path = File.join(dir_path, "job.log")
-          FileUtils.touch(temp_path)
-          size = IO.copy_stream(src_stream, temp_path)
-          raise ArchiveError, 'Failed to copy stream' unless size == src_stream.size
-
-          yield(temp_path)
-        end
-      end
-
-      def create_build_trace!(job, path)
-        File.open(path) do |stream|
-          # TODO: Set `file_format: :raw` after we've cleaned up legacy traces migration
-          # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20307
-          trace_artifact = job.create_job_artifacts_trace!(
-            project: job.project,
-            file_type: :trace,
-            file: stream,
-            file_sha256: self.class.hexdigest(path))
-
-          trace_metadata.track_archival!(trace_artifact.id)
-        end
+        ::Gitlab::Ci::Trace::Archive.new(job, trace_metadata).execute!(stream)
       end
 
       def trace_metadata
@@ -314,7 +292,8 @@ module Gitlab
 
       def destroy_stream(build)
         if consistent_archived_trace?(build)
-          ::Gitlab::Database::LoadBalancing::Sticking
+          ::Ci::Build
+            .sticking
             .stick(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
         end
 
@@ -323,7 +302,8 @@ module Gitlab
 
       def read_trace_artifact(build)
         if consistent_archived_trace?(build)
-          ::Gitlab::Database::LoadBalancing::Sticking
+          ::Ci::Build
+            .sticking
             .unstick_or_continue_sticking(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
         end
 

@@ -12,7 +12,7 @@ common administration and operational processes.
 
 You can perform GitLab Rake tasks by using:
 
-- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/README.html)
+- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html)
   installations.
 - `bundle exec rake <raketask>` for [source](../install/installation.md)
   installations.
@@ -51,3 +51,14 @@ The following Rake tasks are available for use with GitLab:
 | [User management](user_management.md)                 | Perform user management tasks. |
 | [Webhooks administration](web_hooks.md)               | Maintain project webhooks. |
 | [X.509 signatures](x509_signatures.md)                | Update X.509 commit signatures, which can be useful if the certificate store changed. |
+
+To list all available Rake tasks:
+
+```shell
+# Omnibus GitLab
+sudo gitlab-rake -vT
+
+# Installations from source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake -vT RAILS_ENV=production
+```

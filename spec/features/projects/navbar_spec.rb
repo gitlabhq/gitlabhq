@@ -18,6 +18,7 @@ RSpec.describe 'Project navbar' do
     stub_config(registry: { enabled: false })
     insert_package_nav(_('Infrastructure'))
     insert_infrastructure_registry_nav
+    insert_infrastructure_google_cloud_nav
   end
 
   it_behaves_like 'verified navigation bar' do

@@ -52,6 +52,7 @@ RSpec.describe API::ProjectContainerRepositories do
     test_repository
 
     stub_container_registry_config(enabled: true)
+    stub_container_registry_info
   end
 
   shared_context 'using API user' do
@@ -105,6 +106,9 @@ RSpec.describe API::ProjectContainerRepositories do
         it_behaves_like 'rejected container repository access', :guest, :forbidden unless context == 'using job token'
         it_behaves_like 'rejected container repository access', :anonymous, :not_found
         it_behaves_like 'a package tracking event', described_class.name, 'list_repositories'
+        it_behaves_like 'handling network errors with the container registry' do
+          let(:params) { { tags: true } }
+        end
 
         it_behaves_like 'returns repositories for allowed users', :reporter, 'project' do
           let(:object) { project }
@@ -154,6 +158,7 @@ RSpec.describe API::ProjectContainerRepositories do
 
         it_behaves_like 'rejected container repository access', :guest, :forbidden unless context == 'using job token'
         it_behaves_like 'rejected container repository access', :anonymous, :not_found
+        it_behaves_like 'handling network errors with the container registry'
 
         context 'for reporter' do
           let(:api_user) { reporter }

@@ -91,6 +91,12 @@ class IssuesFinder < IssuableFinder
     by_issue_types(issues)
   end
 
+  # Negates all params found in `negatable_params`
+  def filter_negated_items(items)
+    issues = super
+    by_negated_issue_types(issues)
+  end
+
   def by_confidential(items)
     return items if params[:confidential].nil?
 
@@ -121,6 +127,13 @@ class IssuesFinder < IssuableFinder
     return Issue.none unless (WorkItem::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
 
     items.with_issue_type(params[:issue_types])
+  end
+
+  def by_negated_issue_types(items)
+    issue_type_params = Array(not_params[:issue_types]).map(&:to_s) & WorkItem::Type.base_types.keys
+    return items if issue_type_params.blank?
+
+    items.without_issue_type(issue_type_params)
   end
 end
 

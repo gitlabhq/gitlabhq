@@ -1,0 +1,9 @@
+mutation createClusterAgentToken($input: ClusterAgentTokenCreateInput!) {
+  clusterAgentTokenCreate(input: $input) {
+    secret
+    token {
+      id
+    }
+    errors
+  }
+}

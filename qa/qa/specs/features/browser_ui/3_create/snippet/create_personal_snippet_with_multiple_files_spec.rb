@@ -3,17 +3,11 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Multiple file snippet' do
-      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1654' do
-        Flow::Login.sign_in
-
-        Page::Main::Menu.perform do |menu|
-          menu.go_to_menu_dropdown_option(:snippets_link)
-        end
-
+      let(:snippet) do
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Personal snippet with multiple files'
           snippet.description = 'Snippet description'
-          snippet.visibility = 'Public'
+          snippet.visibility = 'Private'
           snippet.file_name = 'First file name'
           snippet.file_content = 'First file content'
 
@@ -22,11 +16,23 @@ module QA
             files.append(name: 'Third file name', content: 'Third file content')
           end
         end
+      end
+
+      before do
+        Flow::Login.sign_in
+      end
+
+      after do
+        snippet.remove_via_api!
+      end
+
+      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1654' do
+        snippet.visit!
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Personal snippet with multiple files')
           expect(snippet).to have_snippet_description('Snippet description')
-          expect(snippet).to have_visibility_type(/public/i)
+          expect(snippet).to have_visibility_type(/private/i)
           expect(snippet).to have_file_name('First file name', 1)
           expect(snippet).to have_file_content('First file content', 1)
           expect(snippet).to have_file_name('Second file name', 2)

@@ -75,20 +75,20 @@ module Gitlab
             current_timeout_s = nil
           else
             mode = ENV['STACKPROF_MODE']&.to_sym || DEFAULT_MODE
-            interval = ENV['STACKPROF_INTERVAL']&.to_i
-            interval ||= (mode == :object ? DEFAULT_INTERVAL_EVENTS : DEFAULT_INTERVAL_US)
+            stackprof_interval = ENV['STACKPROF_INTERVAL']&.to_i
+            stackprof_interval ||= interval(mode)
 
             log_event(
               'starting profile',
               profile_mode: mode,
-              profile_interval: interval,
+              profile_interval: stackprof_interval,
               profile_timeout: timeout_s
             )
 
             ::StackProf.start(
               mode: mode,
               raw: Gitlab::Utils.to_boolean(ENV['STACKPROF_RAW'] || 'true'),
-              interval: interval
+              interval: stackprof_interval
             )
             current_timeout_s = timeout_s
           end
@@ -130,6 +130,10 @@ module Gitlab
         message: event,
         pid: Process.pid
       }.merge(labels.compact))
+    end
+
+    def self.interval(mode)
+      mode == :object ? DEFAULT_INTERVAL_EVENTS : DEFAULT_INTERVAL_US
     end
   end
 end

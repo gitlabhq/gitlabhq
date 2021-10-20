@@ -37,10 +37,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:core_security_mr_widget_counts, @project)
     push_frontend_feature_flag(:paginated_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:usage_data_i_testing_summary_widget_total, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:improved_emoji_picker, project, default_enabled: :yaml)
     push_frontend_feature_flag(:diffs_virtual_scrolling, project, default_enabled: :yaml)
     push_frontend_feature_flag(:restructured_mr_widget, project, default_enabled: :yaml)
+    push_frontend_feature_flag(:mr_changes_fluid_layout, project, default_enabled: :yaml)
 
     # Usage data feature flags
     push_frontend_feature_flag(:users_expanding_widgets_usage_data, @project, default_enabled: :yaml)
@@ -192,15 +192,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    render json: {
-      pipelines: PipelineSerializer
-        .new(project: @project, current_user: @current_user)
-        .with_pagination(request, response)
-        .represent(@pipelines),
-      count: {
-        all: @pipelines.count
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891') do
+      render json: {
+        pipelines: PipelineSerializer
+          .new(project: @project, current_user: @current_user)
+          .with_pagination(request, response)
+          .represent(@pipelines),
+        count: {
+            all: @pipelines.count
+          }
       }
-    }
+    end
   end
 
   def sast_reports

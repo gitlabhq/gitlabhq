@@ -1,7 +1,8 @@
-import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+import { GlFormRadioGroup, GlFormRadio, GlFormInputGroup } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ErrorTrackingSettings from '~/error_tracking_settings/components/app.vue';
@@ -11,6 +12,8 @@ import createStore from '~/error_tracking_settings/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+const TEST_GITLAB_DSN = 'https://gitlab.example.com/123456';
 
 describe('error tracking settings app', () => {
   let store;
@@ -29,6 +32,10 @@ describe('error tracking settings app', () => {
           initialProject: null,
           listProjectsEndpoint: TEST_HOST,
           operationsSettingsEndpoint: TEST_HOST,
+          gitlabDsn: TEST_GITLAB_DSN,
+        },
+        stubs: {
+          GlFormInputGroup, // we need this non-shallow to query for a component within a slot
         },
       }),
     );
@@ -41,6 +48,12 @@ describe('error tracking settings app', () => {
     findBackendSettingsRadioGroup().findAllComponents(GlFormRadio);
   const findElementWithText = (wrappers, text) => wrappers.filter((item) => item.text() === text);
   const findSentrySettings = () => wrapper.findByTestId('sentry-setting-form');
+  const findDsnSettings = () => wrapper.findByTestId('gitlab-dsn-setting-form');
+
+  const enableGitLabErrorTracking = async () => {
+    findBackendSettingsRadioGroup().vm.$emit('change', true);
+    await nextTick();
+  };
 
   beforeEach(() => {
     store = createStore();
@@ -93,15 +106,33 @@ describe('error tracking settings app', () => {
       expect(findElementWithText(findBackendSettingsRadioButtons(), 'GitLab')).toHaveLength(1);
     });
 
-    it('toggles the sentry-settings section when sentry is selected as a tracking-backend', async () => {
+    it('hides the Sentry settings when GitLab is selected as a tracking-backend', async () => {
       expect(findSentrySettings().exists()).toBe(true);
 
-      // set the "integrated" setting to "true"
-      findBackendSettingsRadioGroup().vm.$emit('change', true);
-
-      await nextTick();
+      await enableGitLabErrorTracking();
 
       expect(findSentrySettings().exists()).toBe(false);
+    });
+
+    describe('GitLab DSN section', () => {
+      it('is visible when GitLab is selected as a tracking-backend and DSN is present', async () => {
+        expect(findDsnSettings().exists()).toBe(false);
+
+        await enableGitLabErrorTracking();
+
+        expect(findDsnSettings().exists()).toBe(true);
+      });
+
+      it('contains copy-to-clipboard functionality for the GitLab DSN string', async () => {
+        await enableGitLabErrorTracking();
+
+        const clipBoardInput = findDsnSettings().findComponent(GlFormInputGroup);
+        const clipBoardButton = findDsnSettings().findComponent(ClipboardButton);
+
+        expect(clipBoardInput.props('value')).toBe(TEST_GITLAB_DSN);
+        expect(clipBoardInput.attributes('readonly')).toBeTruthy();
+        expect(clipBoardButton.props('text')).toBe(TEST_GITLAB_DSN);
+      });
     });
 
     it.each([true, false])(

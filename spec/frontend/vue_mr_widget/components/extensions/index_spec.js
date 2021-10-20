@@ -1,4 +1,7 @@
-import { registerExtension, extensions } from '~/vue_merge_request_widget/components/extensions';
+import {
+  registerExtension,
+  registeredExtensions,
+} from '~/vue_merge_request_widget/components/extensions';
 import ExtensionBase from '~/vue_merge_request_widget/components/extensions/base.vue';
 
 describe('MR widget extension registering', () => {
@@ -14,7 +17,7 @@ describe('MR widget extension registering', () => {
       },
     });
 
-    expect(extensions[0]).toEqual(
+    expect(registeredExtensions.extensions[0]).toEqual(
       expect.objectContaining({
         extends: ExtensionBase,
         name: 'Test',

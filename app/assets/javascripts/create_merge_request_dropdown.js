@@ -5,8 +5,8 @@ import {
   canCreateConfidentialMergeRequest,
 } from './confidential_merge_request';
 import confidentialMergeRequestState from './confidential_merge_request/state';
-import DropLab from './droplab/drop_lab';
-import ISetter from './droplab/plugins/input_setter';
+import DropLab from './filtered_search/droplab/drop_lab_deprecated';
+import ISetter from './filtered_search/droplab/plugins/input_setter';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { __, sprintf } from './locale';

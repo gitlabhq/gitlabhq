@@ -11,10 +11,6 @@ RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request do
   let(:project) { create(:project, :repository, namespace: namespace, path: 'lorem-ipsum') }
   let(:project_empty) { create(:project_empty_repo, namespace: namespace, path: 'lorem-ipsum-empty') }
 
-  before(:all) do
-    clean_frontend_fixtures('api/projects')
-  end
-
   it 'api/projects/get.json' do
     get api("/projects/#{project.id}", admin)
 

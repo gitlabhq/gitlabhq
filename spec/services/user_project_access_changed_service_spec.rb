@@ -47,15 +47,13 @@ RSpec.describe UserProjectAccessChangedService do
     let(:service) { UserProjectAccessChangedService.new([1, 2]) }
 
     before do
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-
       expect(AuthorizedProjectsWorker).to receive(:bulk_perform_and_wait)
                                             .with([[1], [2]])
                                             .and_return(10)
     end
 
     it 'sticks all the updated users and returns the original result', :aggregate_failures do
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:bulk_stick).with(:user, [1, 2])
+      expect(ApplicationRecord.sticking).to receive(:bulk_stick).with(:user, [1, 2])
 
       expect(service.execute).to eq(10)
     end

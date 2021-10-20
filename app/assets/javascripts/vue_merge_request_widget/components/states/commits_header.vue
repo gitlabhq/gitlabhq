@@ -1,12 +1,15 @@
 <script>
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 import { escape } from 'lodash';
-import { __, n__, sprintf, s__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
+
+const mergeCommitCount = s__('mrWidgetCommitsAdded|1 merge commit');
 
 export default {
+  mergeCommitCount,
   components: {
     GlButton,
+    GlSprintf,
   },
   props: {
     isSquashEnabled: {
@@ -37,7 +40,7 @@ export default {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
     commitsCountMessage() {
-      return n__(__('%d commit'), __('%d commits'), this.isSquashEnabled ? 1 : this.commitsCount);
+      return n__('%d commit', '%d commits', this.isSquashEnabled ? 1 : this.commitsCount);
     },
     modifyLinkMessage() {
       if (this.isFastForwardEnabled) return __('Modify commit message');
@@ -47,22 +50,15 @@ export default {
     ariaLabel() {
       return this.expanded ? __('Collapse') : __('Expand');
     },
+    targetBranchEscaped() {
+      return escape(this.targetBranch);
+    },
     message() {
-      const message = this.isFastForwardEnabled
+      return this.isFastForwardEnabled
         ? s__('mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}.')
         : s__(
             'mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}.',
           );
-
-      return sprintf(
-        message,
-        {
-          commitCount: `<strong class="commits-count-message">${this.commitsCountMessage}</strong>`,
-          mergeCommitCount: `<strong>${s__('mrWidgetCommitsAdded|1 merge commit')}</strong>`,
-          targetBranch: `<span class="label-branch">${escape(this.targetBranch)}</span>`,
-        },
-        false,
-      );
     },
   },
   methods: {
@@ -89,10 +85,19 @@ export default {
       />
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
-        <span
-          class="vertical-align-middle"
-          v-html="message /* eslint-disable-line vue/no-v-html */"
-        ></span>
+        <span class="vertical-align-middle">
+          <gl-sprintf :message="message">
+            <template #commitCount>
+              <strong class="commits-count-message">{{ commitsCountMessage }}</strong>
+            </template>
+            <template #mergeCommitCount>
+              <strong>{{ $options.mergeCommitCount }}</strong>
+            </template>
+            <template #targetBranch>
+              <span class="label-branch">{{ targetBranchEscaped }}</span>
+            </template>
+          </gl-sprintf>
+        </span>
         <gl-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}
         </gl-button>

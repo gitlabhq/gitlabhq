@@ -198,7 +198,7 @@ module IssuablesHelper
     if count != -1
       html << " " << content_tag(:span,
         format_count(issuable_type, count, Gitlab::IssuablesCountForState::THRESHOLD),
-        class: 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm'
+        class: 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex'
       )
     end
 

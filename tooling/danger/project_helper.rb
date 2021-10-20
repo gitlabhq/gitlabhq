@@ -113,6 +113,7 @@ module Tooling
           generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :product_intelligence],
         %r{\A((ee|jh)/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A((ee|jh)/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
+        %r{\A((ee|jh)/)?spec/migrations} => :database,
         %r{\A((ee|jh)/)?spec/} => :backend,
         %r{\A((ee|jh)/)?vendor/} => :backend,
         %r{\A(Gemfile|Gemfile.lock|Rakefile)\z} => :backend,
@@ -174,7 +175,15 @@ module Tooling
         ee? ? 'gitlab' : 'gitlab-foss'
       end
 
+      def file_lines(filename)
+        read_file(filename).lines(chomp: true)
+      end
+
       private
+
+      def read_file(filename)
+        File.read(filename)
+      end
 
       def ee?
         # Support former project name for `dev` and support local Danger run

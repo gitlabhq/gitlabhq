@@ -503,6 +503,53 @@ describe('ErrorDetails', () => {
         });
       });
     });
+
+    describe('Release links', () => {
+      const firstReleaseVersion = '7975be01';
+      const firstCommitLink = '/gitlab/-/commit/7975be01';
+      const firstReleaseLink = '/sentry/releases/7975be01';
+      const findFirstCommitLink = () => wrapper.find(`[href$="${firstCommitLink}"]`);
+      const findFirstReleaseLink = () => wrapper.find(`[href$="${firstReleaseLink}"]`);
+
+      const lastReleaseVersion = '6ca5a5c1';
+      const lastCommitLink = '/gitlab/-/commit/6ca5a5c1';
+      const lastReleaseLink = '/sentry/releases/6ca5a5c1';
+      const findLastCommitLink = () => wrapper.find(`[href$="${lastCommitLink}"]`);
+      const findLastReleaseLink = () => wrapper.find(`[href$="${lastReleaseLink}"]`);
+
+      it('should display links to Sentry', async () => {
+        mocks.$apollo.queries.error.loading = false;
+        await wrapper.setData({
+          error: {
+            firstReleaseVersion,
+            lastReleaseVersion,
+            externalBaseUrl: '/sentry',
+          },
+        });
+
+        expect(findFirstReleaseLink().exists()).toBe(true);
+        expect(findLastReleaseLink().exists()).toBe(true);
+        expect(findFirstCommitLink().exists()).toBe(false);
+        expect(findLastCommitLink().exists()).toBe(false);
+      });
+
+      it('should display links to GitLab when integrated', async () => {
+        mocks.$apollo.queries.error.loading = false;
+        await wrapper.setData({
+          error: {
+            firstReleaseVersion,
+            lastReleaseVersion,
+            integrated: true,
+            externalBaseUrl: '/gitlab',
+          },
+        });
+
+        expect(findFirstCommitLink().exists()).toBe(true);
+        expect(findLastCommitLink().exists()).toBe(true);
+        expect(findFirstReleaseLink().exists()).toBe(false);
+        expect(findLastReleaseLink().exists()).toBe(false);
+      });
+    });
   });
 
   describe('Snowplow tracking', () => {

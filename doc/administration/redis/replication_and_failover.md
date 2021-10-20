@@ -647,6 +647,7 @@ persistence classes.
 | `shared_state` | Store session-related and other persistent data. |
 | `actioncable`  | Pub/Sub queue backend for ActionCable.           |
 | `trace_chunks` | Store [CI trace chunks](../job_logs.md#enable-or-disable-incremental-logging) data. |
+| `rate_limiting` | Store [rate limiting](../../user/admin_area/settings/user_and_ip_rate_limits.md) state. |
 
 To make this work with Sentinel:
 
@@ -659,6 +660,7 @@ To make this work with Sentinel:
    gitlab_rails['redis_shared_state_instance'] = REDIS_SHARED_STATE_URL
    gitlab_rails['redis_actioncable_instance'] = REDIS_ACTIONCABLE_URL
    gitlab_rails['redis_trace_chunks_instance'] = REDIS_TRACE_CHUNKS_URL
+   gitlab_rails['redis_rate_limiting_instance'] = REDIS_RATE_LIMITING_URL
 
    # Configure the Sentinels
    gitlab_rails['redis_cache_sentinels'] = [
@@ -680,6 +682,10 @@ To make this work with Sentinel:
    gitlab_rails['redis_trace_chunks_sentinels'] = [
      { host: TRACE_CHUNKS_SENTINEL_HOST, port: 26379 },
      { host: TRACE_CHUNKS_SENTINEL_HOST2, port: 26379 }
+   ]
+   gitlab_rails['redis_rate_limiting_sentinels'] = [
+     { host: RATE_LIMITING_SENTINEL_HOST, port: 26379 },
+     { host: RATE_LIMITING_SENTINEL_HOST2, port: 26379 }
    ]
    ```
 

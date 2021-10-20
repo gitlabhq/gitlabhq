@@ -44,7 +44,7 @@ class Projects::JobsController < Projects::ApplicationController
 
         render json: BuildSerializer
           .new(project: @project, current_user: @current_user)
-          .represent(@build, {}, BuildDetailsEntity)
+          .represent(@build.present(current_user: current_user), {}, BuildDetailsEntity)
       end
     end
   end
@@ -120,7 +120,7 @@ class Projects::JobsController < Projects::ApplicationController
   def status
     render json: BuildSerializer
       .new(project: @project, current_user: @current_user)
-      .represent_status(@build)
+      .represent_status(@build.present(current_user: current_user))
   end
 
   def erase
@@ -225,7 +225,6 @@ class Projects::JobsController < Projects::ApplicationController
 
   def find_job_as_build
     @build = project.builds.find(params[:id])
-      .present(current_user: current_user)
   end
 
   def find_job_as_processable

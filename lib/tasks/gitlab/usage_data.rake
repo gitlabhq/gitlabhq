@@ -41,20 +41,32 @@ namespace :gitlab do
       repository_includes = ci_template_includes_hash(:repository_source)
       auto_devops_jobs_includes = ci_template_includes_hash(:auto_devops_source, 'Jobs')
       auto_devops_security_includes = ci_template_includes_hash(:auto_devops_source, 'Security')
-      all_includes = [*repository_includes, *auto_devops_jobs_includes, *auto_devops_security_includes]
+      all_includes = [
+        *repository_includes,
+        ci_template_event('p_ci_templates_implicit_auto_devops'),
+        *auto_devops_jobs_includes,
+        *auto_devops_security_includes
+      ]
 
       File.write(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH, banner + YAML.dump(all_includes).gsub(/ *$/m, ''))
     end
 
     def ci_template_includes_hash(source, template_directory = nil)
       Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_templates("lib/gitlab/ci/templates/#{template_directory}").map do |template|
-        {
-          'name' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name("#{template_directory}/#{template}", source),
-          'category' => 'ci_templates',
-          'redis_slot' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter::REDIS_SLOT,
-          'aggregation' => 'weekly'
-        }
+        expanded_template_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.expand_template_name("#{template_directory}/#{template}")
+        event_name = Gitlab::UsageDataCounters::CiTemplateUniqueCounter.ci_template_event_name(expanded_template_name, source)
+
+        ci_template_event(event_name)
       end
+    end
+
+    def ci_template_event(event_name)
+      {
+        'name' => event_name,
+        'category' => 'ci_templates',
+        'redis_slot' => Gitlab::UsageDataCounters::CiTemplateUniqueCounter::REDIS_SLOT,
+        'aggregation' => 'weekly'
+      }
     end
   end
 end

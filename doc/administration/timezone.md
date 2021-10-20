@@ -14,22 +14,22 @@ The global time zone configuration parameter can be changed in `config/gitlab.ym
 
 Uncomment and customize if you want to change the default time zone of the GitLab application.
 
-## Viewing available timezones
+## Viewing available time zones
 
 To see all available time zones, run `bundle exec rake time:zones:all`.
 
 For Omnibus installations, run `gitlab-rake time:zones:all`.
 
 NOTE:
-This Rake task does not list timezones in TZInfo format required by Omnibus GitLab during a reconfigure: [#27209](https://gitlab.com/gitlab-org/gitlab/-/issues/27209).
+This Rake task does not list time zones in TZInfo format required by Omnibus GitLab during a reconfigure: [#27209](https://gitlab.com/gitlab-org/gitlab/-/issues/27209).
 
 ## Changing time zone in Omnibus installations
 
-GitLab defaults its time zone to UTC. It has a global timezone configuration parameter in `/etc/gitlab/gitlab.rb`.
+GitLab defaults its time zone to UTC. It has a global time zone configuration parameter in `/etc/gitlab/gitlab.rb`.
 
-To obtain a list of timezones, log in to your GitLab application server and run a command that generates a list of timezones in TZInfo format for the server. For example, install `timedatectl` and run `timedatectl list-timezones`.
+To obtain a list of time zones, log in to your GitLab application server and run a command that generates a list of time zones in TZInfo format for the server. For example, install `timedatectl` and run `timedatectl list-timezones`.
 
-To update, add the timezone that best applies to your location. For example:
+To update, add the time zone that best applies to your location. For example:
 
 ```ruby
 gitlab_rails['time_zone'] = 'America/New_York'
@@ -48,8 +48,12 @@ gitlab-ctl restart
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/29669) in GitLab 14.1.
 
-A user can set their time zone in their profile. If a user has not set their time zone, it defaults
-to the time zone [configured at the instance level](#changing-your-time-zone). On GitLab.com, the
-default time zone is UTC.
+Users can set their time zone in their profile. On GitLab.com, the default time zone is UTC.
+
+New users do not have a default time zone in [GitLab 14.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340795). New users must
+explicitly set their time zone before it displays on their profile.
+
+In GitLab 14.3 and earlier, users with no configured time zone default to the time zone
+[configured at the instance level](#changing-your-time-zone).
 
 For more information, see [Set your time zone](../user/profile/index.md#set-your-time-zone).

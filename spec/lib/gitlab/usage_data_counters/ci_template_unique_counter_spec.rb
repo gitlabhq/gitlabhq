@@ -6,97 +6,62 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
   describe '.track_unique_project_event' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:template, :config_source, :expected_event) do
-      # Implicit Auto DevOps usage
-      'Auto-DevOps.gitlab-ci.yml'                     | :auto_devops_source | 'p_ci_templates_implicit_auto_devops'
-      'Jobs/Build.gitlab-ci.yml'                      | :auto_devops_source | 'p_ci_templates_implicit_auto_devops_build'
-      'Jobs/Deploy.gitlab-ci.yml'                     | :auto_devops_source | 'p_ci_templates_implicit_auto_devops_deploy'
-      'Security/SAST.gitlab-ci.yml'                   | :auto_devops_source | 'p_ci_templates_implicit_security_sast'
-      'Security/Secret-Detection.gitlab-ci.yml'       | :auto_devops_source | 'p_ci_templates_implicit_security_secret_detection'
-      # Explicit include:template usage
-      '5-Minute-Production-App.gitlab-ci.yml'         | :repository_source  | 'p_ci_templates_5_min_production_app'
-      'Auto-DevOps.gitlab-ci.yml'                     | :repository_source  | 'p_ci_templates_auto_devops'
-      'AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.yml' | :repository_source  | 'p_ci_templates_aws_cf_deploy_ec2'
-      'AWS/Deploy-ECS.gitlab-ci.yml'                  | :repository_source  | 'p_ci_templates_aws_deploy_ecs'
-      'Jobs/Build.gitlab-ci.yml'                      | :repository_source  | 'p_ci_templates_auto_devops_build'
-      'Jobs/Deploy.gitlab-ci.yml'                     | :repository_source  | 'p_ci_templates_auto_devops_deploy'
-      'Jobs/Deploy.latest.gitlab-ci.yml'              | :repository_source  | 'p_ci_templates_auto_devops_deploy_latest'
-      'Security/SAST.gitlab-ci.yml'                   | :repository_source  | 'p_ci_templates_security_sast'
-      'Security/Secret-Detection.gitlab-ci.yml'       | :repository_source  | 'p_ci_templates_security_secret_detection'
-      'Terraform/Base.latest.gitlab-ci.yml'           | :repository_source  | 'p_ci_templates_terraform_base_latest'
-    end
+    let(:project_id) { 1 }
 
-    with_them do
-      it_behaves_like 'tracking unique hll events' do
-        subject(:request) { described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source) }
+    shared_examples 'tracks template' do
+      it "has an event defined for template" do
+        expect do
+          described_class.track_unique_project_event(
+            project_id: project_id,
+            template: template_path,
+            config_source: config_source
+          )
+        end.not_to raise_error
+      end
 
-        let(:project_id) { 1 }
-        let(:target_id) { expected_event }
-        let(:expected_type) { instance_of(Integer) }
+      it "tracks template" do
+        expanded_template_name = described_class.expand_template_name(template_path)
+        expected_template_event_name = described_class.ci_template_event_name(expanded_template_name, config_source)
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
+
+        described_class.track_unique_project_event(project_id: project_id, template: template_path, config_source: config_source)
       end
     end
 
-    context 'known_events coverage tests' do
-      let(:project_id) { 1 }
+    context 'with explicit includes' do
       let(:config_source) { :repository_source }
 
-      # These tests help guard against missing "explicit" events in known_events/ci_templates.yml
-      context 'explicit include:template events' do
-        described_class::TEMPLATE_TO_EVENT.keys.each do |template|
-          it "does not raise error for #{template}" do
-            expect do
-              described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
-            end.not_to raise_error
+      (described_class.ci_templates - ['Verify/Browser-Performance.latest.gitlab-ci.yml', 'Verify/Browser-Performance.gitlab-ci.yml']).each do |template|
+        context "for #{template}" do
+          let(:template_path) { template }
+
+          include_examples 'tracks template'
+        end
+      end
+    end
+
+    context 'with implicit includes' do
+      let(:config_source) { :auto_devops_source }
+
+      [
+        ['', ['Auto-DevOps.gitlab-ci.yml']],
+        ['Jobs', described_class.ci_templates('lib/gitlab/ci/templates/Jobs')],
+        ['Security', described_class.ci_templates('lib/gitlab/ci/templates/Security')]
+      ].each do |directory, templates|
+        templates.each do |template|
+          context "for #{template}" do
+            let(:template_path) { File.join(directory, template) }
+
+            include_examples 'tracks template'
           end
         end
       end
-
-      # This test is to help guard against missing "implicit" events in known_events/ci_templates.yml
-      it 'does not raise error for any template in an implicit Auto DevOps pipeline' do
-        project = create(:project, :auto_devops)
-        pipeline = double(project: project)
-        command = double
-        result = Gitlab::Ci::YamlProcessor.new(
-          Gitlab::Ci::Pipeline::Chain::Config::Content::AutoDevops.new(pipeline, command).content,
-          project: project,
-          user: double,
-          sha: 'd310cc759caaa20cd05a9e0983d6017896d9c34c'
-        ).execute
-
-        config_source = :auto_devops_source
-
-        result.included_templates.each do |template|
-          expect do
-            described_class.track_unique_project_event(project_id: project.id, template: template, config_source: config_source)
-          end.not_to raise_error
-        end
-      end
     end
 
-    context 'templates outside of TEMPLATE_TO_EVENT' do
-      let(:project_id) { 1 }
-      let(:config_source) { :repository_source }
-
-      described_class.ci_templates.each do |template|
-        next if described_class::TEMPLATE_TO_EVENT.key?(template)
-
-        it "has an event defined for #{template}" do
-          expect do
-            described_class.track_unique_project_event(
-              project_id: project_id,
-              template: template,
-              config_source: config_source
-            )
-          end.not_to raise_error
-        end
-
-        it "tracks #{template}" do
-          expected_template_event_name = described_class.ci_template_event_name(template, :repository_source)
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(receive(:track_event)).with(expected_template_event_name, values: project_id)
-
-          described_class.track_unique_project_event(project_id: project_id, template: template, config_source: config_source)
-        end
-      end
+    it 'expands short template names' do
+      expect do
+        described_class.track_unique_project_event(project_id: 1, template: 'Dependency-Scanning.gitlab-ci.yml', config_source: :repository_source)
+      end.not_to raise_error
     end
   end
 end

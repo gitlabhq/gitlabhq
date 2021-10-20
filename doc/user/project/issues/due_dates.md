@@ -15,7 +15,7 @@ the issue can view the due date.
 
 When creating an issue, select the **Due date** field to make a calendar
 appear for choosing the date. To remove the date, select the date
-text and delete it. The date is related to the server's timezone, not the timezone of
+text and delete it. The date is related to the server's time zone, not the time zone of
 the user setting the due date.
 
 ![Create a due date](img/due_dates_create.png)
@@ -45,7 +45,7 @@ Due dates also appear in your [to-do list](../../todos.md).
 
 The day before an open issue is due, an email is sent to all participants
 of the issue. Like the due date, the "day before the due date" is determined by the
-server's timezone.
+server's time zone.
 
 Issues with due dates can also be exported as an iCalendar feed. The URL of the
 feed can be added to calendar applications. The feed is accessible by selecting

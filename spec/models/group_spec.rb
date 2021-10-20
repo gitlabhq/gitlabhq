@@ -36,6 +36,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
+    it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -2369,7 +2370,7 @@ RSpec.describe Group do
       let_it_be(:project) { create(:project, group: group, shared_runners_enabled: true) }
       let_it_be(:project_2) { create(:project, group: sub_group_2, shared_runners_enabled: true) }
 
-      subject { group.update_shared_runners_setting!('disabled_and_unoverridable') }
+      subject { group.update_shared_runners_setting!(Namespace::SR_DISABLED_AND_UNOVERRIDABLE) }
 
       it 'disables shared Runners for all descendant groups and projects' do
         expect { subject_and_reload(group, sub_group, sub_group_2, project, project_2) }
@@ -2395,7 +2396,7 @@ RSpec.describe Group do
     end
 
     context 'disabled_with_override' do
-      subject { group.update_shared_runners_setting!('disabled_with_override') }
+      subject { group.update_shared_runners_setting!(Namespace::SR_DISABLED_WITH_OVERRIDE) }
 
       context 'top level group' do
         let_it_be(:group) { create(:group, :shared_runners_disabled) }
@@ -2607,17 +2608,29 @@ RSpec.describe Group do
   end
 
   describe '.ids_with_disabled_email' do
-    let!(:parent_1) { create(:group, emails_disabled: true) }
-    let!(:child_1) { create(:group, parent: parent_1) }
+    let_it_be(:parent_1) { create(:group, emails_disabled: true) }
+    let_it_be(:child_1) { create(:group, parent: parent_1) }
 
-    let!(:parent_2) { create(:group, emails_disabled: false) }
-    let!(:child_2) { create(:group, parent: parent_2) }
+    let_it_be(:parent_2) { create(:group, emails_disabled: false) }
+    let_it_be(:child_2) { create(:group, parent: parent_2) }
 
-    let!(:other_group) { create(:group, emails_disabled: false) }
+    let_it_be(:other_group) { create(:group, emails_disabled: false) }
 
-    subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
+    shared_examples 'returns namespaces with disabled email' do
+      subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-    it { is_expected.to eq(Set.new([child_1.id])) }
+      it { is_expected.to eq(Set.new([child_1.id])) }
+    end
+
+    it_behaves_like 'returns namespaces with disabled email'
+
+    context 'when feature flag :linear_group_ancestor_scopes is disabled' do
+      before do
+        stub_feature_flags(linear_group_ancestor_scopes: false)
+      end
+
+      it_behaves_like 'returns namespaces with disabled email'
+    end
   end
 
   describe '.timelogs' do

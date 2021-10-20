@@ -58,7 +58,7 @@ If your goal is to use only a single custom buildpack, you should provide the pr
 
 ## Custom `Dockerfile`
 
-> Support for `DOCKERFILE_PATH` was [added in GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662)
+> Support for `DOCKERFILE_PATH` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2
 
 If your project has a `Dockerfile` in the root of the project repository, Auto DevOps
 builds a Docker image based on the Dockerfile, rather than using buildpacks.
@@ -715,7 +715,7 @@ The banner can be disabled for:
     Feature.enable(:auto_devops_banner_disabled)
     ```
 
-  - Through the REST API with an admin access token:
+  - Through the REST API with an administrator access token:
 
     ```shell
     curl --data "value=true" --header "PRIVATE-TOKEN: <personal_access_token>" "https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled"

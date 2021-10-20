@@ -4,14 +4,16 @@ import { updateGroupPackageSettings } from '~/packages_and_registries/settings/g
 describe('Package and Registries settings group cache updates', () => {
   let client;
 
-  const payload = {
-    data: {
-      updateNamespacePackageSettings: {
-        packageSettings: {
-          mavenDuplicatesAllowed: false,
-          mavenDuplicateExceptionRegex: 'latest[main]something',
-        },
-      },
+  const updateNamespacePackageSettingsPayload = {
+    packageSettings: {
+      mavenDuplicatesAllowed: false,
+      mavenDuplicateExceptionRegex: 'latest[main]something',
+    },
+  };
+
+  const updateDependencyProxySettingsPayload = {
+    dependencyProxySetting: {
+      enabled: false,
     },
   };
 
@@ -20,6 +22,9 @@ describe('Package and Registries settings group cache updates', () => {
       packageSettings: {
         mavenDuplicatesAllowed: true,
         mavenDuplicateExceptionRegex: '',
+      },
+      dependencyProxySetting: {
+        enabled: true,
       },
     },
   };
@@ -35,22 +40,35 @@ describe('Package and Registries settings group cache updates', () => {
       writeQuery: jest.fn(),
     };
   });
-  describe('updateGroupPackageSettings', () => {
-    it('calls readQuery', () => {
-      updateGroupPackageSettings('foo')(client, payload);
-      expect(client.readQuery).toHaveBeenCalledWith(queryAndVariables);
-    });
 
-    it('writes the correct result in the cache', () => {
-      updateGroupPackageSettings('foo')(client, payload);
-      expect(client.writeQuery).toHaveBeenCalledWith({
-        ...queryAndVariables,
-        data: {
-          group: {
-            ...payload.data.updateNamespacePackageSettings,
-          },
-        },
+  describe.each`
+    updateNamespacePackageSettings           | updateDependencyProxySettings
+    ${updateNamespacePackageSettingsPayload} | ${updateDependencyProxySettingsPayload}
+    ${undefined}                             | ${updateDependencyProxySettingsPayload}
+    ${updateNamespacePackageSettingsPayload} | ${undefined}
+    ${undefined}                             | ${undefined}
+  `(
+    'updateGroupPackageSettings',
+    ({ updateNamespacePackageSettings, updateDependencyProxySettings }) => {
+      const payload = { data: { updateNamespacePackageSettings, updateDependencyProxySettings } };
+      it('calls readQuery', () => {
+        updateGroupPackageSettings('foo')(client, payload);
+        expect(client.readQuery).toHaveBeenCalledWith(queryAndVariables);
       });
-    });
-  });
+
+      it('writes the correct result in the cache', () => {
+        updateGroupPackageSettings('foo')(client, payload);
+        expect(client.writeQuery).toHaveBeenCalledWith({
+          ...queryAndVariables,
+          data: {
+            group: {
+              ...cacheMock.group,
+              ...payload.data.updateNamespacePackageSettings,
+              ...payload.data.updateDependencyProxySettings,
+            },
+          },
+        });
+      });
+    },
+  );
 });

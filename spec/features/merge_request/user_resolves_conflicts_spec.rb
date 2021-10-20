@@ -9,7 +9,7 @@ RSpec.describe 'Merge request > User resolves conflicts', :js do
   let(:user) { project.creator }
 
   def create_merge_request(source_branch)
-    create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project, merge_status: :unchecked) do |mr|
+    create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project, merge_status: :unchecked, reviewers: [user]) do |mr|
       mr.mark_as_unmergeable
     end
   end
@@ -174,6 +174,23 @@ RSpec.describe 'Merge request > User resolves conflicts', :js do
 
       it "renders bad name without xss issues" do
         expect(find('[data-testid="resolve-info"]')).to have_content(bad_branch_name)
+      end
+    end
+  end
+
+  context 'sidebar' do
+    let(:merge_request) { create_merge_request('conflict-resolvable') }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+
+      visit conflicts_project_merge_request_path(project, merge_request)
+    end
+
+    it 'displays reviewers' do
+      page.within '.issuable-sidebar' do
+        expect(page).to have_selector('[data-testid="reviewer"]', count: 1)
       end
     end
   end

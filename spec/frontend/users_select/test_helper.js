@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { memoize, cloneDeep } from 'lodash';
-import { getFixture, getJSONFixture } from 'helpers/fixtures';
+import usersFixture from 'test_fixtures/autocomplete/users.json';
+import { getFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import UsersSelect from '~/users_select';
@@ -15,7 +16,7 @@ const getUserSearchHTML = memoize((fixturePath) => {
   return el.outerHTML;
 });
 
-const getUsersFixture = memoize(() => getJSONFixture('autocomplete/users.json'));
+const getUsersFixture = () => usersFixture;
 
 export const getUsersFixtureAt = (idx) => getUsersFixture()[idx];
 

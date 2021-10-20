@@ -6,6 +6,7 @@ module Types
       '7d': 'SEVEN_DAYS',
       '14d': 'FOURTEEN_DAYS',
       '30d': 'THIRTY_DAYS',
+      '60d': 'SIXTY_DAYS',
       '90d': 'NINETY_DAYS'
     }.freeze
 

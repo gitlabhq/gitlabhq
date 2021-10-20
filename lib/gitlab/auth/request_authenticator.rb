@@ -30,7 +30,8 @@ module Gitlab
       end
 
       def find_sessionless_user(request_format)
-        find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
+        find_user_from_dependency_proxy_token ||
+          find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
           find_user_from_basic_auth_job ||
@@ -81,6 +82,28 @@ module Gitlab
           job_token_allowed: api_request?,
           basic_auth_personal_access_token: api_request? || git_request?
         }
+      end
+
+      def find_user_from_dependency_proxy_token
+        return unless dependency_proxy_request?
+
+        token, _ = ActionController::HttpAuthentication::Token.token_and_options(current_request)
+
+        return unless token
+
+        user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+
+        # Do not return deploy tokens
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/342481
+        return unless user_or_deploy_token.is_a?(::User)
+
+        user_or_deploy_token
+      rescue ActiveRecord::RecordNotFound
+        nil # invalid id used return no user
+      end
+
+      def dependency_proxy_request?
+        Gitlab::PathRegex.dependency_proxy_route_regex.match?(current_request.path)
       end
     end
   end

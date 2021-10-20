@@ -14,6 +14,22 @@ module QA
                  :name,
                  :full_path
 
+      # Get group projects
+      #
+      # @return [Array<QA::Resource::Project>]
+      def projects
+        parse_body(api_get_from("#{api_get_path}/projects")).map do |project|
+          Project.init do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = project[:id]
+            resource.name = project[:name]
+            resource.description = project[:description]
+            resource.path_with_namespace = project[:path_with_namespace]
+          end
+        end
+      end
+
       # Get group labels
       #
       # @return [Array<QA::Resource::GroupLabel>]
@@ -42,6 +58,38 @@ module QA
             resource.iid = milestone[:iid]
             resource.title = milestone[:title]
             resource.description = milestone[:description]
+          end
+        end
+      end
+
+      # Get group badges
+      #
+      # @return [Array<QA::Resource::GroupBadge>]
+      def badges
+        parse_body(api_get_from("#{api_get_path}/badges")).map do |badge|
+          GroupBadge.init do |resource|
+            resource.api_client = api_client
+            resource.group = self
+            resource.id = badge[:id]
+            resource.name = badge[:name]
+            resource.link_url = badge[:link_url]
+            resource.image_url = badge[:image_url]
+          end
+        end
+      end
+
+      # Get group members
+      #
+      # @return [Array<QA::Resource::User>]
+      def members
+        parse_body(api_get_from("#{api_get_path}/members")).map do |member|
+          User.init do |resource|
+            resource.api_client = api_client
+            resource.id = member[:id]
+            resource.name = member[:name]
+            resource.username = member[:username]
+            resource.email = member[:email]
+            resource.access_level = member[:access_level]
           end
         end
       end

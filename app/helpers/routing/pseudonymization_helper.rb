@@ -6,7 +6,8 @@ module Routing
       return unless Feature.enabled?(:mask_page_urls, type: :ops)
 
       mask_params(Rails.application.routes.recognize_path(request.original_fullpath))
-    rescue ActionController::RoutingError, URI::InvalidURIError
+    rescue ActionController::RoutingError, URI::InvalidURIError => e
+      Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
       nil
     end
 
@@ -27,7 +28,7 @@ module Routing
                     when 'groups'
                       "/namespace:#{group.id}"
                     when 'projects'
-                      "/namespace:#{project.namespace.id}/project:#{project.id}"
+                      "/namespace:#{project.namespace_id}/project:#{project.id}"
                     when 'root'
                       ''
                     else
@@ -43,7 +44,7 @@ module Routing
       masked_url = "#{request.protocol}#{request.host_with_port}"
 
       if request_params.has_key?(:project_id)
-        masked_url += "/namespace:#{project.namespace.id}/project:#{project.id}/-/#{namespace_type}"
+        masked_url += "/namespace:#{project.namespace_id}/project:#{project.id}/-/#{namespace_type}"
       end
 
       if request_params.has_key?(:id)

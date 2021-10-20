@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
+import IssueToken from '~/related_issues/components/issue_token.vue';
 import { issuableTypesMap, linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
 
 const issuable1 = {
@@ -22,7 +23,7 @@ const issuable2 = {
 
 const pathIdSeparator = PathIdSeparator.Issue;
 
-const findFormInput = (wrapper) => wrapper.find('.js-add-issuable-form-input').element;
+const findFormInput = (wrapper) => wrapper.find('input').element;
 
 const findRadioInput = (inputs, value) =>
   inputs.filter((input) => input.element.value === value)[0];
@@ -105,11 +106,11 @@ describe('AddIssuableForm', () => {
       });
 
       it('should put input value in place', () => {
-        expect(findFormInput(wrapper).value).toEqual(inputValue);
+        expect(findFormInput(wrapper).value).toBe(inputValue);
       });
 
       it('should render pending issuables items', () => {
-        expect(wrapper.findAll('.js-add-issuable-form-token-list-item').length).toEqual(2);
+        expect(wrapper.findAllComponents(IssueToken)).toHaveLength(2);
       });
 
       it('should not have disabled submit button', () => {

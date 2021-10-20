@@ -25,6 +25,18 @@ describe('Codequality report store utils', () => {
       });
     });
 
+    describe('when an issue has a non-nested path', () => {
+      const issue = { description: 'Insecure Dependency', path: 'Gemfile.lock' };
+
+      beforeEach(() => {
+        [result] = parseCodeclimateMetrics([issue], 'path');
+      });
+
+      it('is parsed', () => {
+        expect(result.name).toEqual(issue.description);
+      });
+    });
+
     describe('when an issue has a path but no line', () => {
       const issue = { description: 'Insecure Dependency', location: { path: 'Gemfile.lock' } };
 

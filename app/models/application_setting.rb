@@ -9,8 +9,6 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
-  ignore_column :seat_link_enabled, remove_with: '14.4', remove_after: '2021-09-22'
-  ignore_column :cloud_license_enabled, remove_with: '14.4', remove_after: '2021-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -366,6 +364,10 @@ class ApplicationSetting < ApplicationRecord
   validates :container_registry_expiration_policies_worker_capacity,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :dependency_proxy_ttl_group_policy_worker_capacity,
+            allow_nil: false,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :invisible_captcha_enabled,
             inclusion: { in: [true, false], message: _('must be a boolean value') }
 
@@ -481,6 +483,8 @@ class ApplicationSetting < ApplicationRecord
     validates :throttle_unauthenticated_packages_api_period_in_seconds
     validates :throttle_unauthenticated_files_api_requests_per_period
     validates :throttle_unauthenticated_files_api_period_in_seconds
+    validates :throttle_unauthenticated_deprecated_api_requests_per_period
+    validates :throttle_unauthenticated_deprecated_api_period_in_seconds
     validates :throttle_authenticated_api_requests_per_period
     validates :throttle_authenticated_api_period_in_seconds
     validates :throttle_authenticated_git_lfs_requests_per_period
@@ -491,6 +495,8 @@ class ApplicationSetting < ApplicationRecord
     validates :throttle_authenticated_packages_api_period_in_seconds
     validates :throttle_authenticated_files_api_requests_per_period
     validates :throttle_authenticated_files_api_period_in_seconds
+    validates :throttle_authenticated_deprecated_api_requests_per_period
+    validates :throttle_authenticated_deprecated_api_period_in_seconds
     validates :throttle_protected_paths_requests_per_period
     validates :throttle_protected_paths_period_in_seconds
   end

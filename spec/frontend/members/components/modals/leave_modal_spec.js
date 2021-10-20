@@ -6,7 +6,8 @@ import { nextTick } from 'vue';
 import Vuex from 'vuex';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import { LEAVE_MODAL_ID, MEMBER_TYPES } from '~/members/constants';
-import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
+import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { member } from '../../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -51,7 +52,7 @@ describe('LeaveModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => findModal().findComponent(GlForm);
-  const findOncallSchedulesList = () => findModal().findComponent(OncallSchedulesList);
+  const findUserDeletionObstaclesList = () => findModal().findComponent(UserDeletionObstaclesList);
 
   const getByText = (text, options) =>
     createWrapper(within(findModal().element).getByText(text, options));
@@ -89,25 +90,27 @@ describe('LeaveModal', () => {
     );
   });
 
-  describe('On-call schedules list', () => {
-    it("displays oncall schedules list when member's user is part of on-call schedules ", () => {
-      const schedulesList = findOncallSchedulesList();
-      expect(schedulesList.exists()).toBe(true);
-      expect(schedulesList.props()).toMatchObject({
+  describe('User deletion obstacles list', () => {
+    it("displays obstacles list when member's user is part of on-call management", () => {
+      const obstaclesList = findUserDeletionObstaclesList();
+      expect(obstaclesList.exists()).toBe(true);
+      expect(obstaclesList.props()).toMatchObject({
         isCurrentUser: true,
-        schedules: member.user.oncallSchedules,
+        obstacles: parseUserDeletionObstacles(member.user),
       });
     });
 
-    it("does NOT display oncall schedules list when member's user is NOT a part of on-call schedules ", async () => {
+    it("does NOT display obstacles list when member's user is NOT a part of on-call management", async () => {
       wrapper.destroy();
 
-      const memberWithoutOncallSchedules = cloneDeep(member);
-      delete memberWithoutOncallSchedules.user.oncallSchedules;
-      createComponent({ member: memberWithoutOncallSchedules });
+      const memberWithoutOncall = cloneDeep(member);
+      delete memberWithoutOncall.user.oncallSchedules;
+      delete memberWithoutOncall.user.escalationPolicies;
+
+      createComponent({ member: memberWithoutOncall });
       await nextTick();
 
-      expect(findOncallSchedulesList().exists()).toBe(false);
+      expect(findUserDeletionObstaclesList().exists()).toBe(false);
     });
   });
 

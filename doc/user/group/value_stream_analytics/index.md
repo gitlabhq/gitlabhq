@@ -284,9 +284,9 @@ To sort the stage table by a table column, select the table header.
 You can sort in ascending or descending order. To find items that spent the most time in a stage,
 potentially causing bottlenecks in your value stream, sort the table by the **Time** column.
 From there, select individual items to drill in and investigate how delays are happening.
-To see which items the stage most recently, sort by the work item column on the left.
+To see which items most recently exited the stage, sort by the work item column on the left.
 
-The table displays up to 20 items at a time. If there are more than 20 items, you can use the
+The table displays 20 items per page. If there are more than 20 items, you can use the
 **Prev** and **Next** buttons to navigate through the pages.
 
 ### Creating a value stream
@@ -302,11 +302,12 @@ best practices. You can customize this flow by adding, hiding or re-ordering sta
 
 To create a value stream:
 
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the Value stream dropdown and select **Create new Value Stream**
-1. Fill in a name for the new Value Stream
-   - You can [customize the stages](#creating-a-value-stream-with-stages)
-1. Click the **Create Value Stream** button.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value Stream**.
+1. In the top right, select the dropdown list and then **Create new Value Stream**.
+1. Enter a name for the new Value Stream.
+   - You can [customize the stages](#creating-a-value-stream-with-stages).
+1. Select **Create Value Stream**.
 
 ![New value stream](img/new_value_stream_v13_12.png "Creating a new value stream")
 
@@ -324,18 +325,19 @@ add stages as desired.
 
 To create a value stream with stages:
 
-1. Go to your group and select **Analytics > Value Stream**.
-1. Select the Value Stream dropdown and select **Create new Value Stream**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value Stream**.
+1. In the top right, select the dropdown list and then **Create new Value Stream**.
 1. Select either **Create from default template** or **Create from no template**.
-   - Default stages in the value stream can be hidden or re-ordered.
+   - You can hide or re-order default stages in the value stream.
 
      ![Default stage actions](img/vsa_default_stage_v13_10.png "Default stage actions")
 
-   - New stages can be added by clicking the 'Add another stage' button.
-   - The name, start and end events for the stage can be selected
+   - You can add new stages by selecting **Add another stage**.
+   - You can select the name and start and end events for the stage.
 
      ![Custom stage actions](img/vsa_custom_stage_v13_10.png "Custom stage actions")
-1. Select the **Create Value Stream** button to save the value stream.
+1. Select **Create Value Stream**.
 
 #### Label-based stages
 
@@ -358,8 +360,9 @@ In this example, we'd like to measure times for deployment from a staging enviro
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
-1. Go to your group and select **Analytics > Value Stream**.
-1. Find and select the relevant value stream from the value stream dropdown.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value Stream**.
+1. In the top right, select the dropdown list and then select the relevant value stream.
 1. Next to the value stream dropdown, select **Edit**.
    The edit form is populated with the value stream details.
 1. Optional:
@@ -377,10 +380,11 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 To delete a custom value stream:
 
-1. Navigate to your group's **Analytics > Value Stream**.
-1. Click the Value stream dropdown and select the value stream you would like to delete.
-1. Click the **Delete (name of value stream)**.
-1. Click the **Delete** button to confirm.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value Stream**.
+1. In the top right, select the dropdown list and then select the value stream you would like to delete.
+1. Select **Delete (name of value stream)**.
+1. To confirm, select **Delete**.
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
@@ -398,15 +402,6 @@ from the chart itself.
 
 The chart data is limited to the last 500 items.
 
-### Disabling chart
-
-This chart is enabled by default. If you have a self-managed instance, an
-administrator can open a Rails console and disable it with the following command:
-
-```ruby
-Feature.disable(:cycle_analytics_scatterplot_enabled)
-```
-
 ## Type of work - Tasks by type chart
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
@@ -422,7 +417,7 @@ select up to a total of 15 labels.
 
 ## Permissions
 
-To access Group-level Value Stream Analytics, users must have Reporter access or above.
+To access Group-level Value Stream Analytics, users must have at least the Reporter role.
 
 You can [read more about permissions](../../permissions.md) in general.
 

@@ -28,7 +28,7 @@ module Mutations
         def authenticate_delete_runner!(runner)
           return if current_user.can_admin_all_resources?
 
-          "Runner #{runner.to_global_id} associated with more than one project" if runner.projects.count > 1
+          "Runner #{runner.to_global_id} associated with more than one project" if runner.runner_projects.count > 1
         end
 
         def find_object(id)

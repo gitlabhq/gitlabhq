@@ -63,6 +63,12 @@ To purge files from a GitLab repository:
    git clone --bare --mirror /path/to/project.bundle
    ```
 
+1. Navigate to the `project.git` directory:
+
+   ```shell
+   cd project.git
+   ```
+
 1. Using `git filter-repo`, purge any files from the history of your repository. Because we are
    trying to remove internal refs, we rely on the `commit-map` produced by each run to tell us
    which internal refs to remove.

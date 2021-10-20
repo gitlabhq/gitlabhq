@@ -7,7 +7,7 @@ product_stage: verify
 product_group: group::runner
 product_category: runner
 value_type: number
-status: active
+status: removed
 time_frame: 28d
 data_source: database
 distribution:
@@ -19,3 +19,4 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+milestone_removed: "14.4"

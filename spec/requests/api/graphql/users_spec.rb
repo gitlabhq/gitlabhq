@@ -114,17 +114,17 @@ RSpec.describe 'Users' do
 
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :CREATED_ASC }
-          let(:first_param)      { 1 }
-          let(:expected_results) { ascending_users }
+          let(:sort_param) { :CREATED_ASC }
+          let(:first_param) { 1 }
+          let(:all_records) { ascending_users }
         end
       end
 
       context 'when descending' do
         it_behaves_like 'sorted paginated query' do
-          let(:sort_param)       { :CREATED_DESC }
-          let(:first_param)      { 1 }
-          let(:expected_results) { ascending_users.reverse }
+          let(:sort_param) { :CREATED_DESC }
+          let(:first_param) { 1 }
+          let(:all_records) { ascending_users.reverse }
         end
       end
     end

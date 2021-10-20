@@ -12,10 +12,16 @@ module DependencyProxy
       JSONWebToken::HMACToken.decode(token, ::Auth::DependencyProxyAuthenticationService.secret).first
     end
 
-    class << self
-      def decoded_token_payload(token)
-        self.new(token).execute
+    def self.user_or_deploy_token_from_jwt(raw_jwt)
+      token_payload = self.new(raw_jwt).execute
+
+      if token_payload['user_id']
+        User.find(token_payload['user_id'])
+      elsif token_payload['deploy_token']
+        DeployToken.active.find_by_token(token_payload['deploy_token'])
       end
+    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
+      nil
     end
   end
 end

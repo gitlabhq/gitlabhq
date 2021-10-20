@@ -12,22 +12,26 @@ module Gitlab
 
         REPLICA_SUFFIX = '_replica'
 
-        attr_reader :host_list, :configuration
+        attr_reader :name, :host_list, :configuration
 
         # configuration - An instance of `LoadBalancing::Configuration` that
         #                 contains the configuration details (such as the hosts)
         #                 for this load balancer.
-        # primary_only - If set, the replicas are ignored and the primary is
-        #                always used.
-        def initialize(configuration, primary_only: false)
+        def initialize(configuration)
           @configuration = configuration
-          @primary_only = primary_only
+          @primary_only = !configuration.load_balancing_enabled?
           @host_list =
-            if primary_only
+            if @primary_only
               HostList.new([PrimaryHost.new(self)])
             else
               HostList.new(configuration.hosts.map { |addr| Host.new(addr, self) })
             end
+
+          @name = @configuration.model.connection_db_config.name.to_sym
+        end
+
+        def primary_only?
+          @primary_only
         end
 
         def disconnect!(timeout: 120)
@@ -151,6 +155,17 @@ module Gitlab
 
         # Yields a block, retrying it upon error using an exponential backoff.
         def retry_with_backoff(retries = 3, time = 2)
+          # In CI we only use the primary, but databases may not always be
+          # available (or take a few seconds to become available). Retrying in
+          # this case can slow down CI jobs. In addition, retrying with _only_
+          # a primary being present isn't all that helpful.
+          #
+          # To prevent this from happening, we don't make any attempt at
+          # retrying unless one or more replicas are used. This matches the
+          # behaviour from before we enabled load balancing code even if no
+          # replicas were configured.
+          return yield if primary_only?
+
           retried = 0
           last_error = nil
 
@@ -176,6 +191,11 @@ module Gitlab
 
         def connection_error?(error)
           case error
+          when ActiveRecord::NoDatabaseError
+            # Retrying this error isn't going to magically make the database
+            # appear. It also slows down CI jobs that are meant to create the
+            # database in the first place.
+            false
           when ActiveRecord::StatementInvalid, ActionView::Template::Error
             # After connecting to the DB Rails will wrap query errors using this
             # class.
@@ -235,7 +255,7 @@ module Gitlab
             @configuration.model.connection_specification_name,
             role: ActiveRecord::Base.writing_role,
             shard: ActiveRecord::Base.default_shard
-          )
+          ) || raise(::ActiveRecord::ConnectionNotEstablished)
         end
 
         private

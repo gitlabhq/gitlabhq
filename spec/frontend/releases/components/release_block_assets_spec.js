@@ -1,12 +1,10 @@
 import { GlCollapse } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { getJSONFixture } from 'helpers/fixtures';
+import { assets } from 'test_fixtures/api/releases/release.json';
 import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockAssets from '~/releases/components/release_block_assets.vue';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
-
-const { assets } = getJSONFixture('api/releases/release.json');
 
 describe('Release block assets', () => {
   let wrapper;

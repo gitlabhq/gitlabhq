@@ -18,7 +18,7 @@ RSpec.describe Mutations::Groups::Update do
     RSpec.shared_examples 'updating the group shared runners setting' do
       it 'updates the group shared runners setting' do
         expect { subject }
-          .to change { group.reload.shared_runners_setting }.from('enabled').to('disabled_and_unoverridable')
+          .to change { group.reload.shared_runners_setting }.from('enabled').to(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
       end
 
       it 'returns no errors' do
@@ -51,7 +51,7 @@ RSpec.describe Mutations::Groups::Update do
     context 'changing shared runners setting' do
       let_it_be(:params) do
         { full_path: group.full_path,
-          shared_runners_setting: 'disabled_and_unoverridable' }
+          shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE }
       end
 
       where(:user_role, :shared_examples_name) do

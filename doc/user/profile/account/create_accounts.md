@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can create users:
 
-- Manually through the sign in page or Admin Area.
+- Manually through the sign in page or Administrator Area.
 - Automatically through user authentication integrations.
 
 ## Create users on sign in page
@@ -24,17 +24,17 @@ their own accounts by either:
 
 ## Create users in Admin Area
 
-As an Admin user, you can manually create users:
+As an Administrator user, you can manually create users:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users** (`/admin/users`).
 1. Select **New user**.
 
-You can also [create users through the API](../../../api/users.md) as an admin.
+You can also [create users through the API](../../../api/users.md) as an administrator.
 
-![Admin User Button](img/admin_user_button.png)
+![Administrator User Button](img/admin_user_button.png)
 
-![Admin User Form](img/admin_user_form.png)
+![Administrator User Form](img/admin_user_form.png)
 
 ## Create users through authentication integrations
 

@@ -16,6 +16,9 @@ RSpec.describe Gitlab::HealthChecks::Probes::Collection do
           Gitlab::HealthChecks::Redis::CacheCheck,
           Gitlab::HealthChecks::Redis::QueuesCheck,
           Gitlab::HealthChecks::Redis::SharedStateCheck,
+          Gitlab::HealthChecks::Redis::TraceChunksCheck,
+          Gitlab::HealthChecks::Redis::RateLimitingCheck,
+          Gitlab::HealthChecks::Redis::SessionsCheck,
           Gitlab::HealthChecks::GitalyCheck
         ]
       end

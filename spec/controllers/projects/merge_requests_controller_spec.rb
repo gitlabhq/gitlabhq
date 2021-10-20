@@ -1876,8 +1876,7 @@ RSpec.describe Projects::MergeRequestsController do
       let(:sha)         { forked.commit.sha }
       let(:environment) { create(:environment, project: forked) }
       let(:pipeline)    { create(:ci_pipeline, sha: sha, project: forked) }
-      let(:build)       { create(:ci_build, pipeline: pipeline) }
-      let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: 'master', deployable: build) }
+      let!(:build) { create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline) }
 
       let(:merge_request) do
         create(:merge_request, source_project: forked, target_project: project, target_branch: 'master', head_pipeline: pipeline)
@@ -1901,8 +1900,7 @@ RSpec.describe Projects::MergeRequestsController do
           let(:source_environment)  { create(:environment, project: project) }
           let(:merge_commit_sha)    { project.repository.merge(user, forked.commit.id, merge_request, "merged in test") }
           let(:post_merge_pipeline) { create(:ci_pipeline, sha: merge_commit_sha, project: project) }
-          let(:post_merge_build)    { create(:ci_build, pipeline: post_merge_pipeline) }
-          let!(:source_deployment)  { create(:deployment, :succeed, environment: source_environment, sha: merge_commit_sha, ref: 'master', deployable: post_merge_build) }
+          let!(:post_merge_build)   { create(:ci_build, :with_deployment, environment: source_environment.name, pipeline: post_merge_pipeline) }
 
           before do
             merge_request.update!(merge_commit_sha: merge_commit_sha)
@@ -1944,9 +1942,6 @@ RSpec.describe Projects::MergeRequestsController do
 
     context 'when a merge request has multiple environments with deployments' do
       let(:sha) { merge_request.diff_head_sha }
-      let(:ref) { merge_request.source_branch }
-
-      let!(:build) { create(:ci_build, pipeline: pipeline) }
       let!(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
       let!(:environment) { create(:environment, name: 'env_a', project: project) }
       let!(:another_environment) { create(:environment, name: 'env_b', project: project) }
@@ -1954,8 +1949,8 @@ RSpec.describe Projects::MergeRequestsController do
       before do
         merge_request.update_head_pipeline
 
-        create(:deployment, :succeed, environment: environment, sha: sha, ref: ref, deployable: build)
-        create(:deployment, :succeed, environment: another_environment, sha: sha, ref: ref, deployable: build)
+        create(:ci_build, :with_deployment, environment: environment.name, pipeline: pipeline)
+        create(:ci_build, :with_deployment, environment: another_environment.name, pipeline: pipeline)
       end
 
       it 'exposes multiple environment statuses' do

@@ -10,20 +10,21 @@ const mockFilenames = (n) =>
 
 describe('Error message', () => {
   describe('designDeletionError', () => {
-    const singularMsg = 'Could not archive a design. Please try again.';
-    const pluralMsg = 'Could not archive designs. Please try again.';
+    const singularMsg = 'Failed to archive a design. Please try again.';
+    const pluralMsg = 'Failed to archive designs. Please try again.';
 
-    describe('when [singular=true]', () => {
-      it.each([[undefined], [true]])('uses singular grammar', (singularOption) => {
-        expect(designDeletionError({ singular: singularOption })).toEqual(singularMsg);
-      });
-    });
-
-    describe('when [singular=false]', () => {
-      it('uses plural grammar', () => {
-        expect(designDeletionError({ singular: false })).toEqual(pluralMsg);
-      });
-    });
+    it.each`
+      designsLength | expectedText
+      ${undefined}  | ${singularMsg}
+      ${0}          | ${pluralMsg}
+      ${1}          | ${singularMsg}
+      ${2}          | ${pluralMsg}
+    `(
+      'returns "$expectedText" when designsLength is $designsLength',
+      ({ designsLength, expectedText }) => {
+        expect(designDeletionError(designsLength)).toBe(expectedText);
+      },
+    );
   });
 
   describe.each([
@@ -47,12 +48,12 @@ describe('Error message', () => {
     [
       mockFilenames(7),
       mockFilenames(6),
-      'Upload skipped. Some of the designs you tried uploading did not change: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg, and 1 more.',
+      'Upload skipped. Some of the designs you tried uploading did not change: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg and 1 more.',
     ],
     [
       mockFilenames(8),
       mockFilenames(7),
-      'Upload skipped. Some of the designs you tried uploading did not change: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg, and 2 more.',
+      'Upload skipped. Some of the designs you tried uploading did not change: 1.jpg, 2.jpg, 3.jpg, 4.jpg, 5.jpg and 2 more.',
     ],
   ])('designUploadSkippedWarning', (uploadedFiles, skippedFiles, expected) => {
     it('returns expected warning message', () => {

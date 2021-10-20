@@ -14,7 +14,7 @@ class PipelineProcessWorker
   loggable_arguments 1
 
   idempotent!
-  deduplicate :until_executing, feature_flag: :ci_idempotent_pipeline_process_worker
+  deduplicate :until_executing
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)

@@ -38,6 +38,14 @@ RSpec.describe GraphqlController do
         sign_in(user)
       end
 
+      it 'sets feature category in ApplicationContext from request' do
+        request.headers["HTTP_X_GITLAB_FEATURE_CATEGORY"] = "web_ide"
+
+        post :execute
+
+        expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('web_ide')
+      end
+
       it 'returns 200 when user can access API' do
         post :execute
 

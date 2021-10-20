@@ -42,6 +42,10 @@ module Ci
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id, inverse_of: :build
     has_many :report_results, class_name: 'Ci::BuildReportResult', inverse_of: :build
 
+    # Projects::DestroyService destroys Ci::Pipelines, which use_fast_destroy on :job_artifacts
+    # before we delete builds. By doing this, the relation should be empty and not fire any
+    # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
+    # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
     has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
@@ -55,6 +59,8 @@ module Ci
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
     has_one :trace_metadata, class_name: 'Ci::BuildTraceMetadata', inverse_of: :build
 
+    has_many :terraform_state_versions, class_name: 'Terraform::StateVersion', dependent: :nullify, inverse_of: :build, foreign_key: :ci_build_id # rubocop:disable Cop/ActiveRecordDependent
+
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
 
@@ -64,8 +70,8 @@ module Ci
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
-    ignore_columns :id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
-    ignore_columns :stage_id_convert_to_bigint, remove_with: '14.1', remove_after: '2021-07-22'
+    ignore_columns :id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
+    ignore_columns :stage_id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after
@@ -192,7 +198,6 @@ module Ci
     add_authentication_token_field :token, encrypted: :required
 
     before_save :ensure_token
-    before_destroy { unscoped_project }
 
     after_save :stick_build_if_status_changed
 
@@ -308,8 +313,10 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-          build.deployment&.run
+        unless build.update_deployment_after_transaction_commit?
+          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+            build.deployment&.run
+          end
         end
 
         build.run_after_commit do
@@ -332,8 +339,10 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-          build.deployment&.succeed
+        unless build.update_deployment_after_transaction_commit?
+          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+            build.deployment&.succeed
+          end
         end
 
         build.run_after_commit do
@@ -346,12 +355,14 @@ module Ci
         next unless build.project
         next unless build.deployment
 
-        begin
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            build.deployment.drop!
+        unless build.update_deployment_after_transaction_commit?
+          begin
+            Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+              build.deployment.drop!
+            end
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
           end
-        rescue StandardError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
         end
 
         true
@@ -370,12 +381,27 @@ module Ci
       end
 
       after_transition any => [:skipped, :canceled] do |build, transition|
-        Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-          if transition.to_name == :skipped
-            build.deployment&.skip
-          else
-            build.deployment&.cancel
+        unless build.update_deployment_after_transaction_commit?
+          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
+            if transition.to_name == :skipped
+              build.deployment&.skip
+            else
+              build.deployment&.cancel
+            end
           end
+        end
+      end
+
+      # Synchronize Deployment Status
+      # Please note that the data integirty is not assured because we can't use
+      # a database transaction due to DB decomposition.
+      after_transition do |build, transition|
+        next if transition.loopback?
+        next unless build.project
+        next unless build.update_deployment_after_transaction_commit?
+
+        build.run_after_commit do
+          build.deployment&.sync_status_with(build)
         end
       end
     end
@@ -1094,6 +1120,12 @@ module Ci
       runner&.instance_type?
     end
 
+    def update_deployment_after_transaction_commit?
+      strong_memoize(:update_deployment_after_transaction_commit) do
+        Feature.enabled?(:update_deployment_after_transaction_commit, project, default_enabled: :yaml)
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1108,7 +1140,7 @@ module Ci
       return unless saved_change_to_status?
       return unless running?
 
-      ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
+      self.class.sticking.stick(:build, id)
     end
 
     def status_commit_hooks
@@ -1152,10 +1184,6 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.current, artifacts_expire_at: nil)
-    end
-
-    def unscoped_project
-      @unscoped_project ||= Project.unscoped.find_by(id: project_id)
     end
 
     def environment_url

@@ -96,17 +96,17 @@ a chart corresponding to the query can be included if these requirements are met
 
 ## Embedding cluster health charts
 
-> - [Introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/40997>) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
-> - [Moved](<https://gitlab.com/gitlab-org/gitlab/-/issues/208224>) to GitLab core in 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/40997) in GitLab 12.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/208224) from GitLab Ultimate to GitLab Free in 13.2.
 
-[Cluster Health Metrics](../../user/project/clusters/index.md#visualizing-cluster-health)
+[Cluster Health Metrics](../../user/infrastructure/clusters/manage/clusters_health.md)
 can also be embedded in [GitLab-flavored Markdown](../../user/markdown.md).
 
 To embed a metric chart, include a link to that chart in the form
 `https://<root_url>/<project>/-/cluster/<cluster_id>?<query_params>` anywhere that
 GitLab-flavored Markdown is supported. To generate and copy a link to the chart,
 follow the instructions in the
-[Cluster Health Metric documentation](../../user/project/clusters/index.md#visualizing-cluster-health).
+[Cluster Health Metric documentation](../../user/infrastructure/clusters/manage/clusters_health.md).
 
 The following requirements must be met for the metric to unfurl:
 
@@ -114,7 +114,7 @@ The following requirements must be met for the metric to unfurl:
 - Prometheus must be monitoring the cluster.
 - The user must be allowed access to the project cluster metrics.
 - The dashboards must be reporting data on the
-  [Cluster Health Page](../../user/project/clusters/index.md#visualizing-cluster-health)
+  [Cluster Health Page](../../user/infrastructure/clusters/manage/clusters_health.md)
 
  If the above requirements are met, then the metric unfurls as seen below.
 

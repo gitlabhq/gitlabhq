@@ -9,10 +9,6 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
   let_it_be(:project) { create(:project, :repository, path: 'freeze-periods-project') }
   let_it_be(:user) { project.owner }
 
-  before(:all) do
-    clean_frontend_fixtures('api/freeze-periods/')
-  end
-
   after(:all) do
     remove_repository(project)
   end

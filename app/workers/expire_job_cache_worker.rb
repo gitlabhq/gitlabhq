@@ -10,11 +10,9 @@ class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
 
   queue_namespace :pipeline_cache
   urgency :high
-  # This worker should be idempotent, but we're switching to data_consistency
-  # :sticky and there is an ongoing incompatibility, so it needs to be disabled for
-  # now. The following line can be uncommented and this comment removed once
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/325291 is resolved.
-  # idempotent!
+
+  deduplicate :until_executing, including_scheduled: true
+  idempotent!
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)

@@ -550,6 +550,39 @@ entry.
 - [Remove the FF ci_reset_bridge_with_subsequent_jobs](gitlab-org/gitlab@a4a75095b9b0250d0b1bdadea90c8a4cd24449b2) ([merge request](gitlab-org/gitlab!68295))
 - [Removes ci_same_stage_job_needs ff](gitlab-org/gitlab@5e509cf7aa90041a541b19dda563120a359f0bf9) ([merge request](gitlab-org/gitlab!68041))
 
+## 14.2.5 (2021-09-30)
+
+### Security (28 changes)
+
+- [Require password param for 2FA changes](gitlab-org/security/gitlab@5693760a3edf82774a4e19b9bb561be87316be54) ([merge request](gitlab-org/security/gitlab!1815))
+- [Fix permissions check on project members import](gitlab-org/security/gitlab@f9b4200427833e370638aa63851d6801a40c404c) ([merge request](gitlab-org/security/gitlab!1859))
+- [Respect disabled import sources when initiating import via API](gitlab-org/security/gitlab@3c9af055ece281fcaab0b8dcc277e0ce9133ad31) ([merge request](gitlab-org/security/gitlab!1847))
+- [Return 404 if model id wasn't passed to UploadsController](gitlab-org/security/gitlab@dd4616362040d2b812d69ff2ecf78e70ff4b9ae3) ([merge request](gitlab-org/security/gitlab!1844))
+- [Scrub artifacts signed URL in SendEntry logs](gitlab-org/security/gitlab@41d275bb73943ba6f970d6678b49c9336194af35) ([merge request](gitlab-org/security/gitlab!1841))
+- [Prevent double-impersonation and impersonation breakout](gitlab-org/security/gitlab@c0ab498adda057f4d87969d74c32a3ea95df297c) ([merge request](gitlab-org/security/gitlab!1835))
+- [Clear session access tokens when starting/stopping impersonation](gitlab-org/security/gitlab@fd39d88b348d525818820d2496afe08612420023) ([merge request](gitlab-org/security/gitlab!1832))
+- [Use validated URL when sending request to Gitea Importer](gitlab-org/security/gitlab@328e3c726c693b32666e0fb32eda0b7a6f22d8ad) ([merge request](gitlab-org/security/gitlab!1821))
+- [Fix XSS in Jira link](gitlab-org/security/gitlab@868d8b9c4a1e9e9019a7ff51da11f75051e452c3) ([merge request](gitlab-org/security/gitlab!1817)) **GitLab Enterprise Edition**
+- [Fix fogbugz importer DNS Rebind SSRF](gitlab-org/security/gitlab@4f4b5a15a3508084f921442b3a7f42ba0448f1bb) ([merge request](gitlab-org/security/gitlab!1681))
+- [Remove related project access tokens when a project is deleted](gitlab-org/security/gitlab@282e81198f80f1fda912da5bc6f671d778b19ca9) ([merge request](gitlab-org/security/gitlab!1811))
+- [Require group admin access to list pending invites](gitlab-org/security/gitlab@1ce85345787025222c915fe5fa314bad8994b6ba) ([merge request](gitlab-org/security/gitlab!1720))
+- [Do not export and import repository_size_limit](gitlab-org/security/gitlab@359f14e41dfc355a13041cdf1dbcd082c254200c) ([merge request](gitlab-org/security/gitlab!1769))
+- [Escapes MR approval rule names correctly](gitlab-org/security/gitlab@d84739982599197ff337d69d818634544270e142) ([merge request](gitlab-org/security/gitlab!1808))
+- [Filter shared groups autocomplete by permitted](gitlab-org/security/gitlab@3a2b4c7ff1eb2ba3e84840ba2800c13d6491d726) ([merge request](gitlab-org/security/gitlab!1805)) **GitLab Enterprise Edition**
+- [Require access token for git when 2fa is required](gitlab-org/security/gitlab@deb4e7e5f941c82450d382c1b85f6325e367394f) ([merge request](gitlab-org/security/gitlab!1795))
+- [Disable exporting pipeline triggers on project export](gitlab-org/security/gitlab@417761bb2f67f03bfe803163bad97da7b9fa088b) ([merge request](gitlab-org/security/gitlab!1789))
+- [Add pagination to dependencies API](gitlab-org/security/gitlab@2f84755ba54580df126054a561d8cc4731f936d3) ([merge request](gitlab-org/security/gitlab!1724)) **GitLab Enterprise Edition**
+- [Permission check issuable template API data](gitlab-org/security/gitlab@a90614e2efc813ca5f13a9aa9b51f13f0e8934aa) ([merge request](gitlab-org/security/gitlab!1786)) **GitLab Enterprise Edition**
+- [Apply account locking to password reset page](gitlab-org/security/gitlab@6bbd77c0748e59eacff51edb6264d6099ee14a38) ([merge request](gitlab-org/security/gitlab!1783))
+- [Enforce configured scopes for Oauth applications](gitlab-org/security/gitlab@a9f44bb19cbfc460cd05627a80ef17c39cdde86b) ([merge request](gitlab-org/security/gitlab!1780))
+- [Verify state before using errors from OAuth2 OmniAuth providers](gitlab-org/security/gitlab@6f70292d0fa3efbe99c44748a463df189830cc35) ([merge request](gitlab-org/security/gitlab!1777))
+- [Prevent moving epic issues to different group hierarchy](gitlab-org/security/gitlab@979d40003794014d5930709a257e9a5c75df10e6) ([merge request](gitlab-org/security/gitlab!1773)) **GitLab Enterprise Edition**
+- [Prevent showing not allowed subgroup epics](gitlab-org/security/gitlab@2f72e4062f6cd7256ffff31172b00c012a5910e1) ([merge request](gitlab-org/security/gitlab!1765)) **GitLab Enterprise Edition**
+- [Do not allow status checks to exist with external protected branches](gitlab-org/security/gitlab@dd08837d054c574f94f80e806cc7b49de342cc57) ([merge request](gitlab-org/security/gitlab!1762)) **GitLab Enterprise Edition**
+- [Fix GFM autocomplete xss](gitlab-org/security/gitlab@5afba618ef89fdce544f498a30e7366e3f6cb788) ([merge request](gitlab-org/security/gitlab!1747))
+- [Prohibit anonymous access for specific user API endpoint](gitlab-org/security/gitlab@a813bd8a8f07ffa0477efd3a3936b436e5ec6b17) ([merge request](gitlab-org/security/gitlab!1736))
+- [Fix denial-of-service attack in Markdown parser](gitlab-org/security/gitlab@f618ad9c104882ac5f707b162e8119805252019e) ([merge request](gitlab-org/security/gitlab!1729))
+
 ## 14.2.4 (2021-09-17)
 
 ### Fixed (2 changes)
@@ -1140,6 +1173,45 @@ entry.
 - [Refactor polling interval multiplier configuration UI and docs](gitlab-org/gitlab@b8ef9101f45759b19d982f3f6ae74cf92e2a31d1) ([merge request](gitlab-org/gitlab!66342))
 - [Add helpful text to URL group validation and limit text](gitlab-org/gitlab@59a5a6266cb0d5434596170ffa36e4e74b8d2c2c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65369)) **GitLab Enterprise Edition**
 - [Refactor external storage admin area configuration UI and docs](gitlab-org/gitlab@497ba4fc8f4ec1d234c9f5f1ec5c69712b8c7cb3) ([merge request](gitlab-org/gitlab!66219))
+
+## 14.1.7 (2021-09-30)
+
+### Security (28 changes)
+
+- [Require password param for 2FA changes](gitlab-org/security/gitlab@4e16401a77264ef3127f0bb314fa0abab11216c7) ([merge request](gitlab-org/security/gitlab!1816))
+- [Fix permissions check on project members import](gitlab-org/security/gitlab@be54b3f4890fa89d58cb02be79c65025f606bd6c) ([merge request](gitlab-org/security/gitlab!1860))
+- [Respect disabled import sources when initiating import via API](gitlab-org/security/gitlab@b76b6229c93447954efc5719e6dd61eb601afdc4) ([merge request](gitlab-org/security/gitlab!1848))
+- [Return 404 if model id wasn't passed to UploadsController](gitlab-org/security/gitlab@8ab1cfaafba21a9e90ef41677993af2afdcd920a) ([merge request](gitlab-org/security/gitlab!1845))
+- [Scrub artifacts signed URL in SendEntry logs](gitlab-org/security/gitlab@5bae93b2f085d5dac58e411bffb5ca518fe7df98) ([merge request](gitlab-org/security/gitlab!1842))
+- [Prevent double-impersonation and impersonation breakout](gitlab-org/security/gitlab@7c82d0f2a1dbfb0a23d6a5cdaee448307ffc6972) ([merge request](gitlab-org/security/gitlab!1836))
+- [Clear session access tokens when starting/stopping impersonation](gitlab-org/security/gitlab@a4d529eb7c8eeb3e9c42ae3d81514d79a905cdb7) ([merge request](gitlab-org/security/gitlab!1833))
+- [Use validated URL when sending request to Gitea Importer](gitlab-org/security/gitlab@b30536e6c9aa969c76bcd167f00db5a0e07ace7a) ([merge request](gitlab-org/security/gitlab!1820))
+- [Fix XSS in Jira link](gitlab-org/security/gitlab@9ace10c46744ee220c649d2da0eeb3e99216ee7d) ([merge request](gitlab-org/security/gitlab!1625)) **GitLab Enterprise Edition**
+- [Fix fogbugz importer DNS Rebind SSRF](gitlab-org/security/gitlab@9d7107665d6ed931ef4b2feeb0287bc71b89232c) ([merge request](gitlab-org/security/gitlab!1682))
+- [Remove related project access tokens when a project is deleted](gitlab-org/security/gitlab@b86096865949f07f6a2020603959117d9c84877b) ([merge request](gitlab-org/security/gitlab!1812))
+- [Require group admin access to list pending invites](gitlab-org/security/gitlab@404b344edd61b2f13c3498cd545c2b40165ee536) ([merge request](gitlab-org/security/gitlab!1721))
+- [Do not export and import repository_size_limit](gitlab-org/security/gitlab@56f563980f944f1a5e3935ad82070e6719cd5a0c) ([merge request](gitlab-org/security/gitlab!1768))
+- [Escapes MR approval rule names correctly](gitlab-org/security/gitlab@ea64f981ce70a0e1e6ee58e64a6007e82f48e071) ([merge request](gitlab-org/security/gitlab!1809))
+- [Filter shared groups autocomplete by permitted](gitlab-org/security/gitlab@59999ab27cba402589b27d204cf29678100e948b) ([merge request](gitlab-org/security/gitlab!1806)) **GitLab Enterprise Edition**
+- [Require access token for git when 2fa is required](gitlab-org/security/gitlab@6a4a75efd7685a69ffa7cc4c027c7058013cca45) ([merge request](gitlab-org/security/gitlab!1796))
+- [Disable exporting pipeline triggers on project export](gitlab-org/security/gitlab@8a8c78ed054def210013a849195939d7888fcf65) ([merge request](gitlab-org/security/gitlab!1790))
+- [Add pagination to dependencies API](gitlab-org/security/gitlab@2a963ad670c60d1f3078fdf446ea755c5862fa26) ([merge request](gitlab-org/security/gitlab!1725)) **GitLab Enterprise Edition**
+- [Permission check issuable template API data](gitlab-org/security/gitlab@9d95d13bc714e46b5e3697288c4b398cb5aee88b) ([merge request](gitlab-org/security/gitlab!1787)) **GitLab Enterprise Edition**
+- [Apply account locking to password reset page](gitlab-org/security/gitlab@47ee79b1983de886f5ebe04b2975c2e37aa938ce) ([merge request](gitlab-org/security/gitlab!1784))
+- [Enforce configured scopes for Oauth applications](gitlab-org/security/gitlab@acf2d894c91aa7fb72ea32b10e50e94441885399) ([merge request](gitlab-org/security/gitlab!1781))
+- [Verify state before using errors from OAuth2 OmniAuth providers](gitlab-org/security/gitlab@20073576508aa239e52d8ff911c1dfd3df8af670) ([merge request](gitlab-org/security/gitlab!1778))
+- [Prevent moving epic issues to different group hierarchy](gitlab-org/security/gitlab@93c6ec69b7bc6c9124a2a5350cebebb57f63a28f) ([merge request](gitlab-org/security/gitlab!1774)) **GitLab Enterprise Edition**
+- [Prevent showing not allowed subgroup epics](gitlab-org/security/gitlab@72a11e72425a033f3464d6ff12b4d06e12ec9faf) ([merge request](gitlab-org/security/gitlab!1766)) **GitLab Enterprise Edition**
+- [Do not allow status checks to exist with external protected branches](gitlab-org/security/gitlab@8f96c013ccbbe9c52b3f03fb0d247debb1b157a8) ([merge request](gitlab-org/security/gitlab!1763)) **GitLab Enterprise Edition**
+- [Fix GFM autocomplete xss](gitlab-org/security/gitlab@fd92dabddff5ae5d67a98aef5d858438520a2f06) ([merge request](gitlab-org/security/gitlab!1748))
+- [Prohibit anonymous access for specific user API endpoint](gitlab-org/security/gitlab@2e8a386430309a931dbbd47fba7540a53399ad64) ([merge request](gitlab-org/security/gitlab!1737))
+- [Fix denial-of-service attack in Markdown parser](gitlab-org/security/gitlab@5b6ed5212f880e2397dbea9ffc74cf0a35bd4411) ([merge request](gitlab-org/security/gitlab!1728))
+
+## 14.1.6 (2021-09-27)
+
+### Fixed (1 change)
+
+- [Fix Elastic::MigrationWorker current_migration (2nd attempt)](gitlab-org/gitlab@f07c7a5f173a2fc053247664f21c03d29df543a4) ([merge request](gitlab-org/gitlab!71187)) **GitLab Enterprise Edition**
 
 ## 14.1.5 (2021-09-02)
 
@@ -1777,6 +1849,12 @@ entry.
 - [Add more logging to track encoding errors appending CI traces](gitlab-org/gitlab@6f240a53fe0d56910347a0615d575ac8c3e7215e) ([merge request](gitlab-org/gitlab!63920))
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
+
+## 14.0.11 (2021-09-23)
+
+### Fixed (1 change)
+
+- [Fix Elastic::MigrationWorker current_migration](gitlab-org/gitlab@0b72aace30bff0fda7a114862ec1e389ddaa5ead) ([merge request](gitlab-org/gitlab!71101)) **GitLab Enterprise Edition**
 
 ## 14.0.10 (2021-09-02)
 
@@ -2542,6 +2620,10 @@ No changes.
 - [Track usage of the resolve UI](gitlab-org/gitlab@83519fa35b9b2ab17dbd181a1786be8e78d3efb1) ([merge request](gitlab-org/gitlab!61654))
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
+
+## 13.12.12 (2021-09-21)
+
+No changes.
 
 ## 13.12.11 (2021-09-02)
 

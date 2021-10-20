@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::ApplicationRateLimiter do
   let(:redis) { double('redis') }
   let(:user) { create(:user) }
   let(:project) { create(:project) }
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_cache do
   subject { described_class }
 
   before do
-    allow(Gitlab::Redis::Cache).to receive(:with).and_yield(redis)
+    allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(redis)
     allow(described_class).to receive(:rate_limits).and_return(rate_limits)
   end
 
@@ -106,9 +106,9 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_cache do
 
       let(:attributes) do
         base_attributes.merge({
-          user_id: current_user.id,
-          username: current_user.username
-        })
+                                user_id: current_user.id,
+                                username: current_user.username
+                              })
       end
 
       it 'logs information to auth.log' do

@@ -7,6 +7,14 @@ RSpec.describe Gitlab::Database::Consistency do
     Gitlab::Database::LoadBalancing::Session.current
   end
 
+  before do
+    Gitlab::Database::LoadBalancing::Session.clear_session
+  end
+
+  after do
+    Gitlab::Database::LoadBalancing::Session.clear_session
+  end
+
   describe '.with_read_consistency' do
     it 'sticks to primary database' do
       expect(session).not_to be_using_primary

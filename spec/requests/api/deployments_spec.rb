@@ -376,6 +376,16 @@ RSpec.describe API::Deployments do
         expect(json_response['status']).to eq('success')
       end
 
+      it 'returns an error when an invalid status transition is detected' do
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", user),
+          params: { status: 'running' }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['status']).to include(%Q{cannot transition via \"run\"})
+      end
+
       it 'links merge requests when the deployment status changes to success', :sidekiq_inline do
         mr = create(
           :merge_request,

@@ -199,7 +199,7 @@ then make the following modifications:
 
    ## `application_role` already enables this. You only need this line if
    ## you selectively enable individual services that depend on Rails, like
-   ## `puma`, `sidekiq`, `geo-logcursor`, etc.
+   ## `puma`, `sidekiq`, `geo-logcursor`, and so on.
    gitlab_rails['enable'] = true
 
    ##

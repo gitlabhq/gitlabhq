@@ -53,7 +53,7 @@ module BulkImports
     end
 
     def relation_definition
-      config.portable_tree[:include].find { |include| include[relation.to_sym] }
+      config.relation_definition_for(relation)
     end
 
     def config

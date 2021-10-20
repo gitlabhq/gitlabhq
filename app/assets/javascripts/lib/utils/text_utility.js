@@ -4,6 +4,7 @@ import {
   TRUNCATE_WIDTH_DEFAULT_WIDTH,
   TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
 } from '~/lib/utils/constants';
+import { allSingleQuotes } from '~/lib/utils/regexp';
 
 /**
  * Adds a , to a string composed by numbers, at every 3 chars.
@@ -479,3 +480,17 @@ export const markdownConfig = {
   ALLOWED_ATTR: ['class', 'style', 'href', 'src'],
   ALLOW_DATA_ATTR: false,
 };
+
+/**
+ * Escapes a string into a shell string, for example
+ * when you want to give a user the command to checkout
+ * a branch.
+ *
+ * It replaces all single-quotes with an escaped "'\''"
+ * that is interpreted by shell as a single-quote. It also
+ * encapsulates the string in single-quotes.
+ *
+ * If the branch is `fix-'bug-behavior'`, that should be
+ * escaped to `'fix-'\''bug-behavior'\'''`.
+ */
+export const escapeShellString = (str) => `'${str.replace(allSingleQuotes, () => "'\\''")}'`;

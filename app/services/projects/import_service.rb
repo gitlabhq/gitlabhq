@@ -16,6 +16,8 @@ module Projects
     end
 
     def execute
+      track_start_import
+
       add_repository_to_project
 
       download_lfs_objects
@@ -25,16 +27,17 @@ module Projects
       after_execute_hook
 
       success
-    rescue Gitlab::UrlBlocker::BlockedUrlError => e
-      Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path, importer: project.import_type)
+    rescue Gitlab::UrlBlocker::BlockedUrlError, StandardError => e
+      Gitlab::Import::ImportFailureService.track(
+        project_id: project.id,
+        error_source: self.class.name,
+        exception: e,
+        metrics: true
+      )
 
-      error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") % { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: e.message })
-    rescue StandardError => e
       message = Projects::ImportErrorFilter.filter_message(e.message)
-
-      Gitlab::ErrorTracking.track_exception(e, project_path: project.full_path, importer: project.import_type)
-
-      error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") % { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: message })
+      error(s_("ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}") %
+              { project_safe_import_url: project.safe_import_url, project_full_path: project.full_path, message: message })
     end
 
     protected
@@ -52,6 +55,10 @@ module Projects
 
     def after_execute_hook
       # Defined in EE::Projects::ImportService
+    end
+
+    def track_start_import
+      has_importer? && importer_class.try(:track_start_import, project)
     end
 
     def add_repository_to_project

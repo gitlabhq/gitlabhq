@@ -3,6 +3,8 @@
 require 'action_dispatch/testing/test_request'
 require 'fileutils'
 
+require_relative '../../../lib/gitlab/popen'
+
 module JavaScriptFixturesHelpers
   extend ActiveSupport::Concern
   include Gitlab::Popen
@@ -23,17 +25,6 @@ module JavaScriptFixturesHelpers
 
   def fixture_root_path
     'tmp/tests/frontend/fixtures' + (Gitlab.ee? ? '-ee' : '')
-  end
-
-  # Public: Removes all fixture files from given directory
-  #
-  # directory_name - directory of the fixtures (relative to .fixture_root_path)
-  #
-  def clean_frontend_fixtures(directory_name)
-    full_directory_name = File.expand_path(directory_name, fixture_root_path)
-    Dir[File.expand_path('*.{html,json,md}', full_directory_name)].each do |file_name|
-      FileUtils.rm(file_name)
-    end
   end
 
   def remove_repository(project)

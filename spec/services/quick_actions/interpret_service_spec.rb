@@ -1935,6 +1935,21 @@ RSpec.describe QuickActions::InterpretService do
           it_behaves_like 'relate command'
         end
 
+        context 'when quick action target is unpersisted' do
+          let(:issue) { build(:issue, project: project) }
+          let(:other_issue) { create(:issue, project: project) }
+          let(:issues_related) { [other_issue] }
+          let(:content) { "/relate #{other_issue.to_reference}" }
+
+          it 'relates the issues after the issue is persisted' do
+            service.execute(content, issue)
+
+            issue.save!
+
+            expect(IssueLink.where(source: issue).map(&:target)).to match_array(issues_related)
+          end
+        end
+
         context 'empty relate command' do
           let(:issues_related) { [] }
           let(:content) { '/relate' }

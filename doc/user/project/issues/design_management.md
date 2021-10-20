@@ -1,21 +1,21 @@
 ---
 stage: Plan
 group: Product Planning
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Design Management **(FREE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-> - Support for SVGs was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
-> - Design Management was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in GitLab Premium 12.2.
+> - Support for SVGs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in GitLab Premium 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
 
-Design Management allows you to upload design assets (wireframes, mockups, etc.)
-to GitLab issues and keep them stored in one single place, accessed by the Design
+Design Management allows you to upload design assets (including wireframes and mockups)
+to GitLab issues and keep them stored in a single place, accessed by the Design
 Management's page within an issue, giving product designers, product managers, and engineers a
-way to collaborate on designs over one single source of truth.
+way to collaborate on designs over a single source of truth.
 
-You can easily share mock-ups of designs with your team, or visual regressions can be easily
+You can share mock-ups of designs with your team, or visual regressions can be
 viewed and addressed.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -36,10 +36,11 @@ to be enabled:
   and enable **Git Large File Storage**.
 
 Design Management also requires that projects are using
-[hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage). Since
- GitLab 10.0, newly created projects use hashed storage by default. A GitLab administrator can verify the storage type of a
-project by navigating to **Admin Area > Projects** and then selecting the project in question.
-A project can be identified as hashed-stored if its *Gitaly relative path* contains `@hashed`.
+[hashed storage](../../../administration/raketasks/storage.md#migrate-to-hashed-storage).
+Newly created projects use hashed storage by default. A GitLab administrator
+can verify the storage type of a project by going to **Admin Area > Projects**
+and then selecting the project in question. A project can be identified as
+hashed-stored if its *Gitaly relative path* contains `@hashed`.
 
 If the requirements are not met, the **Designs** tab displays a message to the user.
 
@@ -74,8 +75,8 @@ and connect to GitLab through a personal access token. The details are explained
 
 ## The Design Management section
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2, Designs are displayed directly on the issue description rather than on a separate tab.
-> - New display's feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/223197) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223193) in GitLab 13.2. Designs are displayed directly in the issue description instead of a separate tab.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/223197) for new displays in GitLab 13.4.
 
 You can find to the **Design Management** section in the issue description:
 
@@ -83,22 +84,26 @@ You can find to the **Design Management** section in the issue description:
 
 ## Adding designs
 
+> - Drag and drop uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.9.
+> - New version creation on upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.9.
+> - Copy and paste uploads [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634) in GitLab 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+
 To upload Design images, drag files from your computer and drop them in the Design Management section,
-or click **upload** to select images from your file browser:
+or select **click to upload** to select images from your file browser:
 
 ![Designs empty state](img/design_management_upload_v13.3.png)
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9,
-you can drag and drop designs onto the dedicated drop zone to upload them.
+You can drag and drop designs onto the dedicated drop zone to upload them.
 
 ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v13_2.png)
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202634)
-in GitLab 12.10, you can also copy images from your file system and
-paste them directly on the GitLab Design page as a new design.
+You can also copy images from your file system and paste them directly on the
+GitLab Design page as a new design.
 
-On macOS you can also take a screenshot and immediately copy it to
-the clipboard by simultaneously clicking <kbd>Control</kbd> + <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd>, and then paste it as a design.
+On macOS, you can take a screenshot and immediately copy it to the clipboard
+by simultaneously pressing <kbd>Control</kbd> + <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd>,
+and then paste it as a design.
 
 Copy-and-pasting has some limitations:
 
@@ -108,24 +113,24 @@ Copy-and-pasting has some limitations:
 - Copy/pasting designs is not supported on Internet Explorer.
 
 Designs with the same filename as an existing uploaded design create a new version
-of the design, and replaces the previous version. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9, dropping a design on an existing uploaded design also creates a new version,
-provided the filenames are the same.
+of the design, and replaces the previous version. Dropping a design on an
+existing uploaded design creates a new version if the filenames are the same.
 
 ### Skipped designs
 
 Designs with the same filename as an existing uploaded design _and_ whose content has not changed are skipped.
-This means that no new version of the design is created. When designs are skipped, you are made aware via a warning
+This means that no new version of the design is created. When designs are skipped, you are made aware by a warning
 message on the Issue.
 
 ## Viewing designs
 
-Images on the Design Management page can be enlarged by clicking on them.
-You can navigate through designs by clicking on the navigation buttons on the
+Images on the Design Management page can be enlarged by selecting them.
+You can navigate through designs by selecting the navigation buttons on the
 top-right corner or with <kbd>Left</kbd>/<kbd>Right</kbd> keyboard buttons.
 
 The number of discussions on a design — if any — is listed to the right
-of the design filename. Clicking on this number enlarges the design
-just like clicking anywhere else on the design.
+of the design filename. Selecting this number enlarges the design,
+similar to clicking or tapping anywhere else in the design.
 When a design is added or modified, an icon is displayed on the item
 to help summarize changes between versions.
 
@@ -137,27 +142,29 @@ to help summarize changes between versions.
 
 ### Exploring designs by zooming
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13217) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13217) in GitLab Premium 12.7.
+> - Drag to move a zoomed image [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197324) in GitLab 12.10.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
 
 Designs can be explored in greater detail by zooming in and out of the image.
 Control the amount of zoom with the `+` and `-` buttons at the bottom of the image.
 While zoomed, you can still [start new discussions](#starting-discussions-on-designs) on the image, and see any existing ones.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197324) in GitLab 12.10, while zoomed in,
-you can click-and-drag on the image to move around it.
+While zoomed in, you can drag the image to move around it.
 
 ![Design zooming](img/design_zooming_v12_7.png)
 
 ## Deleting designs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11089) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11089) in GitLab Premium 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
 
 There are two ways to delete designs: manually delete them
 individually, or select a few of them to delete at once,
 as shown below.
 
-To delete a single design, click it to view it enlarged,
-then click the trash icon on the top right corner and confirm
-the deletion by clicking the **Delete** button on the modal window:
+To delete a single design, select it to view it enlarged,
+then select the trash icon on the top right corner and confirm
+the deletion by selecting **Delete** in the window:
 
 ![Confirm design deletion](img/confirm_design_deletion_v12_4.png)
 
@@ -166,7 +173,7 @@ first select the designs you want to delete:
 
 ![Select designs](img/select_designs_v12_4.png)
 
-Once selected, click the **Delete selected** button to confirm the deletion:
+Select **Delete selected** to confirm the deletion:
 
 ![Delete multiple designs](img/delete_multiple_designs_v12_4.png)
 
@@ -183,14 +190,16 @@ You can change the order of designs by dragging them to a new position.
 
 ## Starting discussions on designs
 
-When a design is uploaded, you can start a discussion by clicking on
+> - Adjusting a pin's position [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in GitLab Premium 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212566) to GitLab Free in 13.0.
+
+When a design is uploaded, you can start a discussion by selecting
 the image on the exact location you would like the discussion to be focused on.
 A pin is added to the image, identifying the discussion's location.
 
 ![Starting a new discussion on design](img/adding_note_to_design_1.png)
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34353) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.8,
-you can adjust a pin's position by dragging it around the image. This is useful
+You can adjust a pin's position by dragging it around the image. This is useful
 for when your design layout has changed between revisions, or if you need to move an
 existing pin to add a new one in its place.
 
@@ -198,7 +207,7 @@ Different discussions have different pin numbers:
 
 ![Discussions on designs](img/adding_note_to_design_2.png)
 
-From GitLab 12.5 on, new discussions are outputted to the issue activity,
+In GitLab 12.5 and later, new discussions are output to the issue activity,
 so that everyone involved can participate in the discussion.
 
 ## Resolve Design threads
@@ -209,20 +218,20 @@ Discussion threads can be resolved on Designs.
 
 There are two ways to resolve/unresolve a Design thread:
 
-1. You can mark a thread as resolved or unresolved by clicking the checkmark icon for **Resolve thread** in the top-right corner of the first comment of the discussion:
+1. You can mark a thread as resolved or unresolved by selecting the checkmark icon for **Resolve thread** in the top-right corner of the first comment of the discussion:
 
-  ![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
+   ![Resolve thread icon](img/resolve_design-discussion_icon_v13_1.png)
 
 1. Design threads can also be resolved or unresolved in their threads by using a checkbox.
-  When replying to a comment, there is a checkbox that you can click in order to resolve or unresolve
-  the thread once published:
+   When replying to a comment, you can select or clear a checkbox to resolve or unresolve
+   the thread after publishing:
 
-  ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
+   ![Resolve checkbox](img/resolve_design-discussion_checkbox_v13_1.png)
 
 Resolving a discussion thread also marks any pending to-do items related to notes
 inside the thread as done. This is applicable only for to-do items owned by the user triggering the action.
 
-Note that your resolved comment pins disappear from the Design to free up space for new discussions.
+Your resolved comment pins disappear from the Design to free up space for new discussions.
 However, if you need to revisit or find a resolved discussion, all of your resolved threads are
 available in the **Resolved Comment** area at the bottom of the right sidebar.
 
@@ -231,19 +240,19 @@ available in the **Resolved Comment** area at the bottom of the right sidebar.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198439) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/245074) in GitLab 13.5.
 
-Add a to-do item for a design by clicking **Add a to do** on the design sidebar:
+Add a to-do item for a design by selecting **Add a to do** on the design sidebar:
 
 ![To-do button](img/design_todo_button_v13_5.png)
 
 ## Referring to designs in Markdown
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in **GitLab 13.1**.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258662) in **GitLab 13.5**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217160) in GitLab 13.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/258662) in GitLab 13.5.
 
 We support referring to designs in [Markdown](../../markdown.md), which is available
 throughout the application, including in merge request and issue descriptions, in discussions and comments, and in wiki pages.
 
-At present, full URL references are supported. For example, if we refer to a design
+Full URL references are supported. For example, if we refer to a design
 somewhere with:
 
 ```markdown

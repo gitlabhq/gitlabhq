@@ -4,6 +4,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
 import { nextTick } from 'vue';
+import mockPipelinesResponse from 'test_fixtures/pipelines/pipelines.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -33,7 +34,6 @@ jest.mock('~/experimentation/utils', () => ({
 const mockProjectPath = 'twitter/flight';
 const mockProjectId = '21';
 const mockPipelinesEndpoint = `/${mockProjectPath}/pipelines.json`;
-const mockPipelinesResponse = getJSONFixture('pipelines/pipelines.json');
 const mockPipelinesIds = mockPipelinesResponse.pipelines.map(({ id }) => id);
 const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
   (p) => p.details.stages && p.details.stages.length,

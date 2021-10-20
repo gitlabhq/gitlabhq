@@ -8,10 +8,6 @@ RSpec.describe 'Tags (JavaScript fixtures)' do
   let_it_be(:project) { create(:project, :repository, path: 'tags-project') }
   let_it_be(:user) { project.owner }
 
-  before(:all) do
-    clean_frontend_fixtures('api/tags/')
-  end
-
   after(:all) do
     remove_repository(project)
   end

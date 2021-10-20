@@ -48,7 +48,7 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
 
     Gitlab::Metrics.gauge(:deployments, 'GitLab Version', {}, :max).set({ version: Gitlab::VERSION, revision: Gitlab.revision }, 1)
 
-    unless Gitlab::Runtime.sidekiq?
+    if Gitlab::Runtime.web_server?
       Gitlab::Metrics::RequestsRackMiddleware.initialize_metrics
     end
 

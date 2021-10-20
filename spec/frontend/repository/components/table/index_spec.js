@@ -34,16 +34,44 @@ const MOCK_BLOBS = [
   },
 ];
 
-function factory({ path, isLoading = false, hasMore = true, entries = {} }) {
+const MOCK_COMMITS = [
+  {
+    fileName: 'blob.md',
+    type: 'blob',
+    commit: {
+      message: 'Updated blob.md',
+    },
+  },
+  {
+    fileName: 'blob2.md',
+    type: 'blob',
+    commit: {
+      message: 'Updated blob2.md',
+    },
+  },
+  {
+    fileName: 'blob3.md',
+    type: 'blob',
+    commit: {
+      message: 'Updated blob3.md',
+    },
+  },
+];
+
+function factory({ path, isLoading = false, hasMore = true, entries = {}, commits = [] }) {
   vm = shallowMount(Table, {
     propsData: {
       path,
       isLoading,
       entries,
       hasMore,
+      commits,
     },
     mocks: {
       $apollo,
+    },
+    provide: {
+      glFeatures: { lazyLoadCommits: true },
     },
   });
 }
@@ -82,12 +110,15 @@ describe('Repository table component', () => {
       entries: {
         blobs: MOCK_BLOBS,
       },
+      commits: MOCK_COMMITS,
     });
 
     const rows = vm.findAll(TableRow);
 
     expect(rows.length).toEqual(3);
     expect(rows.at(2).attributes().mode).toEqual('120000');
+    expect(rows.at(2).props().rowNumber).toBe(2);
+    expect(rows.at(2).props().commitInfo).toEqual(MOCK_COMMITS[2]);
   });
 
   describe('Show more button', () => {

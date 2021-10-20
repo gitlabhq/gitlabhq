@@ -728,16 +728,16 @@ RSpec.describe API::Groups do
       end
 
       it 'avoids N+1 queries with project links' do
-        get api("/groups/#{group1.id}", admin)
+        get api("/groups/#{group1.id}", user1)
 
         control_count = ActiveRecord::QueryRecorder.new do
-          get api("/groups/#{group1.id}", admin)
+          get api("/groups/#{group1.id}", user1)
         end.count
 
         create(:project, namespace: group1)
 
         expect do
-          get api("/groups/#{group1.id}", admin)
+          get api("/groups/#{group1.id}", user1)
         end.not_to exceed_query_limit(control_count)
       end
 
@@ -746,7 +746,7 @@ RSpec.describe API::Groups do
         create(:group_group_link, shared_group: group1, shared_with_group: create(:group))
 
         control_count = ActiveRecord::QueryRecorder.new do
-          get api("/groups/#{group1.id}", admin)
+          get api("/groups/#{group1.id}", user1)
         end.count
 
         # setup "n" more shared groups
@@ -755,7 +755,7 @@ RSpec.describe API::Groups do
 
         # test that no of queries for 1 shared group is same as for n shared groups
         expect do
-          get api("/groups/#{group1.id}", admin)
+          get api("/groups/#{group1.id}", user1)
         end.not_to exceed_query_limit(control_count)
       end
     end
@@ -1179,6 +1179,20 @@ RSpec.describe API::Groups do
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(project1.name)
       end
+
+      it 'avoids N+1 queries' do
+        get api("/groups/#{group1.id}/projects", user1)
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/groups/#{group1.id}/projects", user1)
+        end.count
+
+        create(:project, namespace: group1)
+
+        expect do
+          get api("/groups/#{group1.id}/projects", user1)
+        end.not_to exceed_query_limit(control_count)
+      end
     end
 
     context "when authenticated as admin" do
@@ -1195,20 +1209,6 @@ RSpec.describe API::Groups do
         get api("/groups/#{non_existing_record_id}/projects", admin)
 
         expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'avoids N+1 queries' do
-        get api("/groups/#{group1.id}/projects", admin)
-
-        control_count = ActiveRecord::QueryRecorder.new do
-          get api("/groups/#{group1.id}/projects", admin)
-        end.count
-
-        create(:project, namespace: group1)
-
-        expect do
-          get api("/groups/#{group1.id}/projects", admin)
-        end.not_to exceed_query_limit(control_count)
       end
     end
 

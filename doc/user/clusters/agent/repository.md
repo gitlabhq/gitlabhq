@@ -152,6 +152,11 @@ gitops:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the `group_authorized_agents` flag](../../../administration/feature_flags.md).
+On GitLab.com, this feature is available.
+
 If you use the same cluster across multiple projects, you can set up the CI/CD Tunnel
 to grant the Agent access to one or more groups. This way, all the projects that belong
 to the authorized groups can access the same Agent. This enables you to save resources and
@@ -168,8 +173,8 @@ An Agent can only authorize groups in the same group hierarchy as the Agent's co
 
 To authorize a group:
 
-1. Edit your `.config.yaml` file under the `.gitlab/agents/<agent name>` directory.
-1. Add the `ci_access` attribute.
+1. Edit your `config.yaml` file under the `.gitlab/agents/<agent name>` directory.
+1. Add the `ci_access` root attribute.
 1. Add the `groups` attribute into `ci_access`.
 1. Add the group `id` into `groups`, identifying the authorized group through its path.
 

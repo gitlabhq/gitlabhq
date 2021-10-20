@@ -115,8 +115,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         hook_log
         visit edit_project_hook_path(project, hook)
 
-        expect(page).to have_content('Recent Deliveries')
-        expect(page).to have_content(hook_log.url)
+        expect(page).to have_content('Recent events')
+        expect(page).to have_link('View details', href: hook_log.present.details_path)
       end
 
       it 'show hook log details' do

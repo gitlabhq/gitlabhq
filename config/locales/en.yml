@@ -10,6 +10,9 @@ en:
         target: Target issue
       group:
         path: Group URL
+      member:
+        user: "The member's email address"
+        invite_email: "The member's email address"
       project/error_tracking_setting:
         token: "Auth Token"
         project: "Project"

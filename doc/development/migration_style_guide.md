@@ -879,7 +879,7 @@ See the [text data type](database/strings_and_the_text_data_type.md) style guide
 ## Timestamp column type
 
 By default, Rails uses the `timestamp` data type that stores timestamp data
-without timezone information. The `timestamp` data type is used by calling
+without time zone information. The `timestamp` data type is used by calling
 either the `add_timestamps` or the `timestamps` method.
 
 Also, Rails converts the `:datetime` data type to the `timestamp` one.
@@ -904,15 +904,15 @@ end
 ```
 
 Instead of using these methods, one should use the following methods to store
-timestamps with timezones:
+timestamps with time zones:
 
 - `add_timestamps_with_timezone`
 - `timestamps_with_timezone`
 - `datetime_with_timezone`
 
 This ensures all timestamps have a time zone specified. This, in turn, means
-existing timestamps don't suddenly use a different timezone when the system's
-timezone changes. It also makes it very clear which timezone was used in the
+existing timestamps don't suddenly use a different time zone when the system's
+time zone changes. It also makes it very clear which time zone was used in the
 first place.
 
 ## Storing JSON in database

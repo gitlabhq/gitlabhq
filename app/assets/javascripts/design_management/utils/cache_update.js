@@ -250,7 +250,7 @@ export const hasErrors = ({ errors = [] }) => errors?.length;
  */
 export const updateStoreAfterDesignsDelete = (store, data, query, designs) => {
   if (hasErrors(data)) {
-    onError(data, designDeletionError({ singular: designs.length === 1 }));
+    onError(data, designDeletionError(designs.length));
   } else {
     deleteDesignsFromStore(store, query, designs);
     addNewVersionToStore(store, query, data.version);

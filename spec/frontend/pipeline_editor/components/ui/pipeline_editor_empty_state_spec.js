@@ -6,9 +6,6 @@ import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_e
 describe('Pipeline editor empty state', () => {
   let wrapper;
   const defaultProvide = {
-    glFeatures: {
-      pipelineEditorEmptyStateAction: false,
-    },
     emptyStateIllustrationPath: 'my/svg/path',
   };
 
@@ -49,24 +46,6 @@ describe('Pipeline editor empty state', () => {
 
     it('renders the file nav', () => {
       expect(findFileNav().exists()).toBe(true);
-    });
-
-    describe('with feature flag off', () => {
-      it('does not renders a CTA button', () => {
-        expect(findConfirmButton().exists()).toBe(false);
-      });
-    });
-  });
-
-  describe('with feature flag on', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            pipelineEditorEmptyStateAction: true,
-          },
-        },
-      });
     });
 
     it('renders a CTA button', () => {

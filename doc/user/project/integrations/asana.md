@@ -4,9 +4,9 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Asana service **(FREE)**
+# Asana integration **(FREE)**
 
-This service adds commit messages as comments to Asana tasks.
+This integration adds commit messages as comments to Asana tasks.
 Once enabled, commit messages are checked for Asana task URLs (for example,
 `https://app.asana.com/0/123456/987654`) or task IDs starting with `#`
 (for example, `#987654`). Every task ID found gets the commit comment added to it.
@@ -23,7 +23,7 @@ You can use either of these words:
 - `closed`
 - `closing`
 
-See also the [Asana service API documentation](../../../api/services.md#asana).
+See also the [Asana integration API documentation](../../../api/integrations.md#asana).
 
 ## Setup
 

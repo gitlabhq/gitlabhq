@@ -17,10 +17,6 @@ module Packages
           })
         end
 
-        unless Feature.enabled?(:remove_composer_v1_cache_code, project)
-          ::Packages::Composer::CacheUpdateWorker.perform_async(created_package.project_id, created_package.name, nil)
-        end
-
         created_package
       end
 

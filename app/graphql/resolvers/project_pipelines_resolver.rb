@@ -26,3 +26,5 @@ module Resolvers
   end
 end
 # rubocop: enable Graphql/ResolverType
+
+Resolvers::ProjectPipelinesResolver.prepend_mod

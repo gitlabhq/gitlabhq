@@ -49,7 +49,7 @@ This process allows you to lock single files or file extensions and it is
 done through the command line. It doesn't require GitLab paid subscriptions.
 
 Git LFS is well known for tracking files to reduce the storage of
-Git repositories, but it can also be user for [locking files](https://github.com/git-lfs/git-lfs/wiki/File-Locking).
+Git repositories, but it can also be used for [locking files](https://github.com/git-lfs/git-lfs/wiki/File-Locking).
 This is the method used for Exclusive File Locks.
 
 ### Install Git LFS

@@ -14,19 +14,7 @@ module Packages
       idempotent!
 
       def perform
-        ::Packages::Composer::CacheFile.without_namespace.find_in_batches do |cache_files|
-          cache_files.each(&:destroy)
-        rescue ActiveRecord::RecordNotFound
-          # ignore. likely due to object already being deleted.
-        end
-
-        ::Packages::Composer::CacheFile.expired.find_in_batches do |cache_files|
-          cache_files.each(&:destroy)
-        rescue ActiveRecord::RecordNotFound
-          # ignore. likely due to object already being deleted.
-        end
-      rescue StandardError => e
-        Gitlab::ErrorTracking.log_exception(e)
+        # no-op: to be removed after 14.5 https://gitlab.com/gitlab-org/gitlab/-/issues/333694
       end
     end
   end

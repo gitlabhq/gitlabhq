@@ -5,7 +5,7 @@ module API
     module Clusters
       class AgentAuthorization < Grape::Entity
         expose :agent_id, as: :id
-        expose :project, with: Entities::ProjectIdentity, as: :config_project
+        expose :config_project, with: Entities::ProjectIdentity
         expose :config, as: :configuration
       end
     end

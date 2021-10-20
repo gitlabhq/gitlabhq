@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Slack slash commands **(FREE SELF)**
 
-> Introduced in GitLab 8.15.
-
 If you want to control and view GitLab content while you're
 working in Slack, you can use Slack slash commands.
 To use Slack slash commands, you must configure both Slack and GitLab.

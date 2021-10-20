@@ -1,12 +1,13 @@
-import { shallowMount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TerminalComponent from '~/environments/components/environment_terminal_button.vue';
+import { __ } from '~/locale';
 
-describe('Stop Component', () => {
+describe('Terminal Component', () => {
   let wrapper;
   const terminalPath = '/path';
 
   const mountWithProps = (props) => {
-    wrapper = shallowMount(TerminalComponent, {
+    wrapper = mountExtended(TerminalComponent, {
       propsData: props,
     });
   };
@@ -15,17 +16,9 @@ describe('Stop Component', () => {
     mountWithProps({ terminalPath });
   });
 
-  describe('computed', () => {
-    it('title', () => {
-      expect(wrapper.vm.title).toEqual('Terminal');
-    });
-  });
-
   it('should render a link to open a web terminal with the provided path', () => {
-    expect(wrapper.element.tagName).toBe('A');
-    expect(wrapper.attributes('title')).toBe('Terminal');
-    expect(wrapper.attributes('aria-label')).toBe('Terminal');
-    expect(wrapper.attributes('href')).toBe(terminalPath);
+    const link = wrapper.findByRole('menuitem', { name: __('Terminal') });
+    expect(link.attributes('href')).toBe(terminalPath);
   });
 
   it('should render a non-disabled button', () => {

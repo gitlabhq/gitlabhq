@@ -67,6 +67,11 @@ export default {
       required: false,
       default: 'id',
     },
+    searchBy: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -112,16 +117,18 @@ export default {
           );
     },
     showDefaultSuggestions() {
-      return this.availableDefaultSuggestions.length;
+      return this.availableDefaultSuggestions.length > 0;
     },
     showRecentSuggestions() {
-      return this.isRecentSuggestionsEnabled && this.recentSuggestions.length && !this.searchKey;
+      return (
+        this.isRecentSuggestionsEnabled && this.recentSuggestions.length > 0 && !this.searchKey
+      );
     },
     showPreloadedSuggestions() {
-      return this.preloadedSuggestions.length && !this.searchKey;
+      return this.preloadedSuggestions.length > 0 && !this.searchKey;
     },
     showAvailableSuggestions() {
-      return this.availableSuggestions.length;
+      return this.availableSuggestions.length > 0;
     },
     showSuggestions() {
       // These conditions must match the template under `#suggestions` slot
@@ -134,13 +141,19 @@ export default {
         this.showAvailableSuggestions
       );
     },
+    searchTerm() {
+      return this.searchBy && this.activeTokenValue
+        ? this.activeTokenValue[this.searchBy]
+        : undefined;
+    },
   },
   watch: {
     active: {
       immediate: true,
       handler(newValue) {
         if (!newValue && !this.suggestions.length) {
-          this.$emit('fetch-suggestions', this.value.data);
+          const search = this.searchTerm ? this.searchTerm : this.value.data;
+          this.$emit('fetch-suggestions', search);
         }
       },
     },
@@ -148,8 +161,10 @@ export default {
   methods: {
     handleInput: debounce(function debouncedSearch({ data }) {
       this.searchKey = data;
-      if (!this.suggestionsLoading) {
-        this.$emit('fetch-suggestions', data);
+
+      if (!this.suggestionsLoading && !this.activeTokenValue) {
+        const search = this.searchTerm ? this.searchTerm : data;
+        this.$emit('fetch-suggestions', search);
       }
     }, DEBOUNCE_DELAY),
     handleTokenValueSelected(activeTokenValue) {

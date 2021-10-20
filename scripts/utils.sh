@@ -60,7 +60,7 @@ function setup_db_user_only() {
 
 function setup_db() {
   run_timed_command "setup_db_user_only"
-  run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee"
+  run_timed_command_with_metric "bundle exec rake db:drop db:create db:structure:load db:migrate gitlab:db:setup_ee" "setup_db"
 }
 
 function install_api_client_dependencies_with_apk() {
@@ -78,20 +78,52 @@ function install_tff_gem() {
 
 function run_timed_command() {
   local cmd="${1}"
+  local metric_name="${2}"
+  local timed_metric_file
   local start=$(date +%s)
+
   echosuccess "\$ ${cmd}"
   eval "${cmd}"
+
   local ret=$?
   local end=$(date +%s)
   local runtime=$((end-start))
 
   if [[ $ret -eq 0 ]]; then
     echosuccess "==> '${cmd}' succeeded in ${runtime} seconds."
+
+    if [[ -n "${metric_name}" ]]; then
+      timed_metric_file=$(timed_metric_file $metric_name)
+      echo "# TYPE ${metric_name} gauge" > "${timed_metric_file}"
+      echo "# UNIT ${metric_name} seconds" >> "${timed_metric_file}"
+      echo "${metric_name} ${runtime}" >> "${timed_metric_file}"
+    fi
+
     return 0
   else
     echoerr "==> '${cmd}' failed (${ret}) in ${runtime} seconds."
     return $ret
   fi
+}
+
+function run_timed_command_with_metric() {
+  local cmd="${1}"
+  local metric_name="${2}"
+  local metrics_file=${METRICS_FILE:-metrics.txt}
+
+  run_timed_command "${cmd}" "${metric_name}"
+
+  local ret=$?
+
+  cat $(timed_metric_file $metric_name) >> "${metrics_file}"
+
+  return $ret
+}
+
+function timed_metric_file() {
+  local metric_name="${1}"
+
+  echo "$(pwd)/tmp/duration_${metric_name}.txt"
 }
 
 function echoerr() {

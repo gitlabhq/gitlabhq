@@ -22,6 +22,7 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
+> - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 > - **[Latest 3k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
 
@@ -33,8 +34,8 @@ For a full list of reference architectures, see
 | PostgreSQL<sup>1</sup>                     | 3           | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | PgBouncer<sup>1</sup>                      | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Internal load balancing node<sup>3</sup>   | 1           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Gitaly                                     | 3           | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| Praefect                                   | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Gitaly<sup>5</sup>                         | 3           | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| Praefect<sup>5</sup>                       | 3           | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Praefect PostgreSQL<sup>1</sup>            | 1+          | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Sidekiq                                    | 4           | 2 vCPU, 7.5 GB memory | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | GitLab Rails                               | 3           | 8 vCPU, 7.2 GB memory | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
@@ -48,6 +49,7 @@ For a full list of reference architectures, see
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:
@@ -1065,6 +1067,10 @@ The following IPs will be used as an example:
 [Gitaly Cluster](../gitaly/praefect.md) is a GitLab provided and recommended fault tolerant solution for storing Git repositories.
 In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being designated the primary, and failover occurs automatically if the primary node goes down.
 
+NOTE:
+Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster).
+For implementations with Gitaly Sharded, the same Gitaly specs should be used. Follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md) instead of this section.
+
 The recommended cluster setup includes the following components:
 
 - 3 Gitaly nodes: Replicated storage of Git repositories.
@@ -1230,7 +1236,7 @@ the details of each Gitaly node that makes up the cluster. Each storage is also 
 and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you may need to use a different name.
-Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more info.
+Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more information.
 
 The following IPs will be used as an example:
 
@@ -1559,7 +1565,7 @@ To configure the Sidekiq nodes, one each one:
 1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
-1. Open `/etc/gitlab/gitlab.rb` with your editor:
+1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
    ```ruby
    # Avoid running unnecessary services on the Sidekiq server
@@ -1573,6 +1579,10 @@ To configure the Sidekiq nodes, one each one:
    grafana['enable'] = false
    gitlab_exporter['enable'] = false
    nginx['enable'] = false
+
+   # External URL
+   ## This should match the URL of the external load balancer
+   external_url 'https://gitlab.example.com'
 
    # Redis
    redis['master_name'] = 'gitlab-redis'
@@ -2011,6 +2021,9 @@ There are two ways of specifying object storage configuration in GitLab:
 
 Starting with GitLab 13.2, consolidated object storage configuration is available. It simplifies your GitLab configuration since the connection details are shared across object types. Refer to [Consolidated object storage configuration](../object_storage.md#consolidated-object-storage-configuration) guide for instructions on how to set it up.
 
+GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared via NFS on any GitLab Rails and Sidekiq nodes.
+In GitLab 13.6 and later, it's recommended to switch to [Incremental logging](../job_logs.md#incremental-logging-architecture), which uses Redis instead of disk space for temporary caching of job logs.
+
 For configuring object storage in GitLab 13.1 and earlier, or for storage types not
 supported by consolidated configuration form, refer to the following guides based
 on what features you intend to use:
@@ -2071,7 +2084,7 @@ unavailable from GitLab 15.0. No further enhancements are planned for this featu
 
 Read:
 
-- The [Gitaly and NFS deprecation notice](../gitaly/index.md#nfs-deprecation-notice).
+- [Gitaly and NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation).
 - About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Supported modifications for lower user counts (HA)
@@ -2150,8 +2163,8 @@ services where applicable):
 | PostgreSQL<sup>1</sup>                     | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2`  |
 | PgBouncer<sup>1</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Internal load balancing node<sup>3</sup>   | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
-| Gitaly                                     | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
-| Praefect                                   | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
+| Gitaly<sup>5</sup>                         | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  |
+| Praefect<sup>5</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Praefect PostgreSQL<sup>1</sup>            | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   |
 | Object storage<sup>4</sup>                 | n/a   | n/a                     | n/a              |
 
@@ -2161,6 +2174,7 @@ services where applicable):
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. Google Memorystore and AWS Elasticache are known to work.
 3. Can be optionally run on reputable third-party load balancing services (LB PaaS). AWS ELB is known to work.
 4. Should be run on reputable third-party object storage (storage PaaS) for cloud implementations. Google Cloud Storage and AWS S3 are known to work.
+5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management. Please [review the existing technical limitations and considerations prior to deploying Gitaly Cluster](../gitaly/index.md#guidance-regarding-gitaly-cluster). If Gitaly Sharded is desired, the same specs listed above for `Gitaly` should be used.
 <!-- markdownlint-enable MD029 -->
 
 NOTE:

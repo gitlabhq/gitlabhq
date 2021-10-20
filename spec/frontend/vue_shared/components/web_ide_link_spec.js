@@ -160,4 +160,26 @@ describe('Web IDE link component', () => {
       expect(findLocalStorageSync().props('value')).toBe(ACTION_GITPOD.key);
     });
   });
+
+  describe('edit actions', () => {
+    it.each([
+      {
+        props: { showWebIdeButton: true, showEditButton: false },
+        expectedEventPayload: 'ide',
+      },
+      {
+        props: { showWebIdeButton: false, showEditButton: true },
+        expectedEventPayload: 'simple',
+      },
+    ])(
+      'emits the correct event when an action handler is called',
+      async ({ props, expectedEventPayload }) => {
+        createComponent({ ...props, needsToFork: true });
+
+        findActionsButton().props('actions')[0].handle();
+
+        expect(wrapper.emitted('edit')).toEqual([[expectedEventPayload]]);
+      },
+    );
+  });
 });

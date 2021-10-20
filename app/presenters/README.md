@@ -66,14 +66,15 @@ we gain the following benefits:
 
 ### Presenter definition
 
-Every presenter should inherit from `Gitlab::View::Presenter::Simple`, which
-provides a `.presents` the method which allows you to define an accessor for the
+If you need a presenter class that has only necessary interfaces for the view-related context,
+inherit from `Gitlab::View::Presenter::Simple`.
+It provides a `.presents` the method which allows you to define an accessor for the
 presented object. It also includes common helpers like `Gitlab::Routing` and
 `Gitlab::Allowable`.
 
 ```ruby
 class LabelPresenter < Gitlab::View::Presenter::Simple
-  presents :label
+  presents ::Label, as: :label
 
   def text_color
     label.color.to_s
@@ -85,13 +86,14 @@ class LabelPresenter < Gitlab::View::Presenter::Simple
 end
 ```
 
-In some cases, it can be more practical to transparently delegate all missing
-method calls to the presented object, in these cases, you can make your
-presenter inherit from `Gitlab::View::Presenter::Delegated`:
+If you need a presenter class that delegates missing method calls to the presented object,
+inherit from `Gitlab::View::Presenter::Delegated`.
+This is more like an "extension" in the sense that the produced object is going to have
+all of interfaces of the presented object **AND** all of the interfaces in the presenter class:
 
 ```ruby
 class LabelPresenter < Gitlab::View::Presenter::Delegated
-  presents :label
+  presents ::Label, as: :label
 
   def text_color
     # color is delegated to label
@@ -152,3 +154,82 @@ You can also present the model in the view:
 %div{ class: label.text_color }
   = render partial: label, label: label
 ```
+
+### Validate accidental overrides
+
+We use presenters in many places, such as Controller, Haml, GraphQL/Rest API,
+it's very handy to extend the core/backend logic of Active Record models,
+however, there is a risk that it accidentally overrides important logic.
+
+For example, [this production incident](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/5498)
+was caused by [including `ActionView::Helpers::UrlHelper` in a presenter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69537/diffs#4b581cff00ef3cc9780efd23682af383de302e7d_3_3).
+The `tag` accesor in `Ci::Build` was accidentally overridden by `ActionView::Helpers::TagHelper#tag`,
+and as a conseuqence, a wrong `tag` value was persited into database.
+
+Starting from GitLab 14.4, we validate the presenters (specifically all of the subclasses of `Gitlab::View::Presenter::Delegated`)
+that they do not accidentally override core/backend logic. In such case, a pipeline in merge requests fails with an error message,
+here is an example:
+
+```plaintext
+We've detected that a presetner is overriding a specific method(s) on a subject model.
+There is a risk that it accidentally modifies the backend/core logic that leads to production incident.
+Please follow https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/presenters/README.md#validate-accidental-overrides
+to resolve this error with caution.
+
+Here are the conflict details.
+
+- Ci::PipelinePresenter#tag is overriding Ci::Pipeline#tag. delegator_location: /devkitkat/services/rails/cache/ruby/2.7.0/gems/actionview-6.1.3.2/lib/action_view/helpers/tag_helper.rb:271 original_location: /devkitkat/services/rails/cache/ruby/2.7.0/gems/activemodel-6.1.3.2/lib/active_model/attribute_methods.rb:254
+```
+
+Here are the potential solutions:
+
+- If the conflict happens on an instance method in the presenter:
+  - If you intend to override the core/backend logic, define `delegator_override <method-name>` on top of the conflicted method.
+    This explicitly adds the method to an allowlist.
+  - If you do NOT intend to override the core/backend logic, rename the method name in the presenter.
+- If the conflict happens on an included module in the presenter, remove the module from the presenter and find a workaround.
+
+### How to use the `Gitlab::Utils::DelegatorOverride` validator
+
+If a presenter class inhertis from `Gitlab::View::Presenter::Delegated`,
+you should define what object class is presented:
+
+```ruby
+class WebHookLogPresenter < Gitlab::View::Presenter::Delegated
+  presents ::WebHookLog, as: :web_hook_log            # This defines that the presenter presents `WebHookLog` Active Record model.
+```
+
+These presenters are validated not to accidentaly override the methods in the presented object.
+You can run the validation locally with:
+
+```shell
+bundle exec rake lint:static_verification
+```
+
+To add a method to an allowlist, use `delegator_override`. For example:
+
+```ruby
+class VulnerabilityPresenter < Gitlab::View::Presenter::Delegated
+  presents ::Vulnerability, as: :vulnerability
+
+  delegator_override :description                 # This adds the `description` method to an allowlist that the override is intentional.
+  def description
+    vulnerability.description || finding.description
+  end
+```
+
+To add methods of a module to an allowlist, use `delegator_override_with`. For example:
+
+```ruby
+module Ci
+  class PipelinePresenter < Gitlab::View::Presenter::Delegated
+    include Gitlab::Utils::StrongMemoize
+    include ActionView::Helpers::UrlHelper
+
+    delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+    delegator_override_with ActionView::Helpers::TagHelper # TODO: Remove `ActionView::Helpers::UrlHelper` inclusion as it overrides `Ci::Pipeline#tag`
+```
+
+Keep in mind that if you use `delegator_override_with`,
+there is a high chance that you're doing **something wrong**.
+Read the [Validate Accidental Overrides](#validate-accidental-overrides) for more information.

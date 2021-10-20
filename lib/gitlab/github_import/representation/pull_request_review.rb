@@ -9,7 +9,7 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :author, :note, :review_type, :submitted_at, :github_id, :merge_request_id
+        expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :review_id
 
         def self.from_api_response(review)
           user = Representation::User.from_api_response(review.user) if review.user
@@ -20,7 +20,7 @@ module Gitlab
             note: review.body,
             review_type: review.state,
             submitted_at: review.submitted_at,
-            github_id: review.id
+            review_id: review.id
           )
         end
 
@@ -42,6 +42,13 @@ module Gitlab
 
         def approval?
           review_type == 'APPROVED'
+        end
+
+        def github_identifiers
+          {
+            review_id: review_id,
+            merge_request_id: merge_request_id
+          }
         end
       end
     end

@@ -99,11 +99,6 @@
       padding: 0;
       border: 0;
       background: none;
-      margin-bottom: $gl-padding;
-    }
-
-    .omniauth-btn {
-      width: 100%;
     }
   }
 
@@ -205,6 +200,12 @@
   margin: 0;
   padding: 0;
   height: 100%;
+
+  &.with-system-header {
+    .login-page-broadcast {
+      margin-top: $system-header-height + $header-height;
+    }
+  }
 
   // Fixes footer container to bottom of viewport
   body {

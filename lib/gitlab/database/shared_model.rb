@@ -2,6 +2,7 @@
 
 module Gitlab
   module Database
+    # This abstract class is used for models which need to exist in multiple de-composed databases.
     class SharedModel < ActiveRecord::Base
       self.abstract_class = true
 

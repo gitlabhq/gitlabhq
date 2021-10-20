@@ -1091,47 +1091,51 @@ However, they should be used sparingly because:
 - They are difficult and expensive to localize.
 - They cannot be read by screen readers.
 
-If you do include an image in the documentation, ensure it provides value.
-Don't use `lorem ipsum` text. Try to replicate how the feature would be
-used in a real-world scenario, and [use realistic text](#fake-user-information).
+When needed, use images to help the reader understand:
+
+- Where they are in a complicated process.
+- How they should interact with the application.
 
 ### Capture the image
 
-Use images to help the reader understand where they are in a process, or how
-they need to interact with the application.
-
 When you take screenshots:
 
-- **Capture the most relevant area of the page.** Don't include unnecessary white
-  space or areas of the page that don't help illustrate the point. The left
-  sidebar of the GitLab user interface can change, so don't include the sidebar
-  if it's not necessary.
+- **Ensure it provides value.** Don't use `lorem ipsum` text.
+  Try to replicate how the feature would be used in a real-world scenario, and
+  [use realistic text](#fake-user-information).
+- **Capture only the relevant UI.** Don't include unnecessary white
+  space or areas of the UI that don't help illustrate the point. The
+  sidebars in GitLab can change, so don't include
+  them in screenshots unless absolutely necessary.
 - **Keep it small.** If you don't need to show the full width of the screen, don't.
-  A value of 1000 pixels is a good maximum width for your screenshot image.
+  Reduce the size of your browser window as much as possible to keep elements close
+  together and reduce empty space. Try to keep the screenshot dimensions as small as possible.
+- **Review how the image renders on the page.** Preview the image locally or use the
+review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
-  a documentation page. For example, if other screenshots include the left
-  sidebar, include the sidebar in all screenshots.
+  a documentation page for a consistent reading experience.
 
 ### Save the image
 
+- Resize any wide or tall screenshots if needed, but make sure the screenshot is
+  still clear after being resized and compressed.
+- All images **must** be [compressed](#compress-images) to 100KB or less.
+  In many cases, 25-50KB or less is often possible without reducing image quality.
 - Save the image with a lowercase filename that's descriptive of the feature
-  or concept in the image. If the image is of the GitLab interface, append the
-  GitLab version to the filename, based on this format:
-  `image_name_vX_Y.png`. For example, for a screenshot taken from the pipelines
-  page of GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're adding an
-  illustration that doesn't include parts of the user interface, add the release
-  number corresponding to the release the image was added to; for an MR added to
-  11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
+  or concept in the image:
+  - If the image is of the GitLab interface, append the GitLab version to the filename,
+    based on this format: `image_name_vX_Y.png`. For example, for a screenshot taken
+    from the pipelines page of GitLab 11.1, a valid name is `pipelines_v11_1.png`.
+  - If you're adding an illustration that doesn't include parts of the user interface,
+    add the release number corresponding to the release the image was added to.
+    For an MR added to 11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
 - Consider using PNG images instead of JPEG.
-- [Compress all PNG images](#compress-images).
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to illustrate the description
   of a process, not to replace it.
-- Max image size: 100KB (GIFs included).
-- See also how to link and embed [videos](#videos) to illustrate the
-  documentation.
+- See also how to link and embed [videos](#videos) to illustrate the documentation.
 
 ### Add the image link to content
 
@@ -1152,8 +1156,11 @@ known tool is [`pngquant`](https://pngquant.org/), which is cross-platform and
 open source. Install it by visiting the official website and following the
 instructions for your OS.
 
+If you use macOS and want all screenshots to be compressed automatically, read
+[One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/2020/01/30/simple-trick-for-smaller-screenshots/).
+
 GitLab has a [Ruby script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant)
-that you can use to automate the process. In the root directory of your local
+that you can use to simplify the manual process. In the root directory of your local
 copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 
 - Before compressing, if you want, check that all documentation PNG images have
@@ -1360,13 +1367,15 @@ Do not use words to describe the icon:
 
 ## Alert boxes
 
-Use alert boxes to call attention to information.
+Use alert boxes to call attention to information. Use them sparingly, and never have an alert box immediately follow another alert box.
 
 Alert boxes are generated when one of these words is followed by a line break:
 
 - `FLAG:`
 - `NOTE:`
 - `WARNING:`
+- `INFO:` (Marketing only)
+- `DISCLAIMER:`
 
 For example:
 
@@ -1422,6 +1431,58 @@ It renders on the GitLab documentation site as:
 
 WARNING:
 This is something to be warned about.
+
+### Info
+
+The Marketing team uses the `INFO` alert to add information relating
+to sales and marketing efforts.
+
+The text in an `INFO:` alert always renders in a floating text box to the right of the text around it.
+To view the rendered GitLab docs site, check the review app in the MR. You might need to move the text up or down
+in the surrounding text, depending on where you'd like to floating box to appear.
+
+For example, if your page has text like this:
+
+```markdown
+This is an introductory paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+INFO:
+Here is some information. This information is an important addition to how you
+work with GitLab and you might want to consider it.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+```
+
+It renders on the GitLab documentation site as:
+
+This is an introductory paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+INFO:
+Here is some information. This information is an important addition to how you
+work with GitLab and you might want to consider it.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+And here is another paragraph. GitLab uses the SSH protocol to securely communicate with Git.
+When you use SSH keys to authenticate to the GitLab remote server,
+you don't need to supply your username and password each time.
+
+### Disclaimer
+
+Use to describe future functionality only.
+For more information, see [Legal disclaimer for future features](#legal-disclaimer-for-future-features).
 
 ## Blockquotes
 
@@ -1615,6 +1676,34 @@ For example:
 - You cannot do this thing, but `[an issue exists](LINK)` to change this behavior.
 
 You can say that we plan to remove a feature.
+
+#### Legal disclaimer for future features
+
+If you **must** write about features we have not yet delivered, put this exact disclaimer near the content it applies to.
+
+```markdown
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+```
+
+It renders on the GitLab documentation site as:
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
+If all of the content on the page is not available, use the disclaimer once at the top of the page.
+
+If the content in a topic is not ready, use the disclaimer in the topic.
 
 ### Removing versions after each major release
 

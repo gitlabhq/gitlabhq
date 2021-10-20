@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Tracking::StandardContext do
   let_it_be(:project) { create(:project) }
   let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:user) { create(:user) }
 
   let(:snowplow_context) { subject.to_context }
 
@@ -87,8 +88,8 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       end
     end
 
-    it 'does not contain user id' do
-      expect(snowplow_context.to_json[:data].keys).not_to include(:user_id)
+    it 'contains user id' do
+      expect(snowplow_context.to_json[:data].keys).to include(:user_id)
     end
 
     it 'contains namespace and project ids' do
@@ -104,8 +105,18 @@ RSpec.describe Gitlab::Tracking::StandardContext do
         stub_feature_flags(add_namespace_and_project_to_snowplow_tracking: false)
       end
 
-      it 'does not contain any ids' do
-        expect(snowplow_context.to_json[:data].keys).not_to include(:user_id, :project_id, :namespace_id)
+      it 'does not contain project or namespace ids' do
+        expect(snowplow_context.to_json[:data].keys).not_to include(:project_id, :namespace_id)
+      end
+    end
+
+    context 'without add_actor_based_user_to_snowplow_tracking feature' do
+      before do
+        stub_feature_flags(add_actor_based_user_to_snowplow_tracking: false)
+      end
+
+      it 'does not contain user_id' do
+        expect(snowplow_context.to_json[:data].keys).not_to include(:user_id)
       end
     end
   end

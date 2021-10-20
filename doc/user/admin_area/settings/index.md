@@ -98,6 +98,8 @@ To access the default page for Admin Area settings:
 | [User and IP rate limits](user_and_ip_rate_limits.md) | Configure limits for web and API requests. |
 | [Package Registry Rate Limits](package_registry_rate_limits.md) | Configure specific limits for Packages API requests that supersede the user and IP rate limits. |
 | [Git LFS Rate Limits](git_lfs_rate_limits.md) | Configure specific limits for Git LFS requests that supersede the user and IP rate limits. |
+| [Files API Rate Limits](files_api_rate_limits.md) | Configure specific limits for Files API requests that supersede the user and IP rate limits. |
+| [Deprecated API Rate Limits](deprecated_api_rate_limits.md) | Configure specific limits for deprecated API requests that supersede the user and IP rate limits. |
 | [Outbound requests](../../../security/webhooks.md) | Allow requests to the local network from hooks and services. |
 | [Protected Paths](protected_paths.md) | Configure paths to be protected by Rack Attack. |
 | [Incident Management](../../../operations/incident_management/index.md) Limits | Limit the number of inbound alerts that can be sent to a project. |

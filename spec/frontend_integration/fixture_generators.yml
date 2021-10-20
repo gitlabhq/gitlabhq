@@ -1,0 +1,5 @@
+- spec/frontend/fixtures/api_projects.rb
+- spec/frontend/fixtures/api_merge_requests.rb
+- spec/frontend/fixtures/projects_json.rb
+- spec/frontend/fixtures/merge_requests_diffs.rb
+- spec/frontend/fixtures/raw.rb

@@ -165,6 +165,8 @@ RSpec.describe 'Project > Members > Invite group', :js do
     let(:project) { create(:project) }
     let!(:group) { create(:group) }
 
+    let_it_be(:expiration_date) { 5.days.from_now.to_date }
+
     around do |example|
       freeze_time { example.run }
     end
@@ -176,15 +178,14 @@ RSpec.describe 'Project > Members > Invite group', :js do
 
       visit project_project_members_path(project)
 
-      invite_group(group.name, role: 'Guest', expires_at: 5.days.from_now)
+      invite_group(group.name, role: 'Guest', expires_at: expiration_date)
     end
 
     it 'the group link shows the expiration time with a warning class' do
       setup
       click_link 'Groups'
 
-      expect(find_group_row(group)).to have_content(/in \d days/)
-      expect(find_group_row(group)).to have_selector('.gl-text-orange-500')
+      expect(page).to have_field('Expiration date', with: expiration_date)
     end
   end
 

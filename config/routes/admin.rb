@@ -38,14 +38,6 @@ namespace :admin do
   resources :abuse_reports, only: [:index, :destroy]
   resources :gitaly_servers, only: [:index]
 
-  namespace :serverless do
-    resources :domains, only: [:index, :create, :update, :destroy] do
-      member do
-        post '/verify', to: 'domains#verify'
-      end
-    end
-  end
-
   resources :spam_logs, only: [:index, :destroy] do
     member do
       post :mark_as_ham
@@ -66,6 +58,13 @@ namespace :admin do
       patch '/', action: :update
       put '/', action: :update
       delete '/', action: :destroy
+    end
+  end
+
+  resources :topics, only: [:index, :new, :create, :edit, :update] do
+    resource :avatar, controller: 'topics/avatars', only: [:destroy]
+    collection do
+      post :preview_markdown
     end
   end
 

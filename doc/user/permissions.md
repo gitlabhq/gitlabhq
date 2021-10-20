@@ -33,8 +33,6 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-> The Master role was renamed to Maintainer in GitLab 11.0.
-
 The Owner role is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
 While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
 For more information, see [projects members documentation](project/members/index.md).
@@ -59,23 +57,23 @@ The following table lists project permissions available for each role:
 | [Application security](application_security/index.md):<br>View [threats list](application_security/threat_monitoring/index.md#threat-monitoring) **(ULTIMATE)**    |    |    | ✓   | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md) **(FREE SAAS)**                        |    |    |     | ✓   | ✓   |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md) **(ULTIMATE)**        |    |    |     |     | ✓   |
-| [CI/CD](../ci/README.md):<br>Download and browse job artifacts                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View a job log                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View list of jobs                                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View [environments](../ci/environments/index.md)                                           |          | ✓        | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Cancel and retry jobs                                                                      |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Create new [environments](../ci/environments/index.md)                                     |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Run CI/CD pipeline against a protected branch                                              |          |          | ✓ (*5*)   | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Stop [environments](../ci/environments/index.md)                                           |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                    |          |          | ✓         | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage CI/CD variables                                                                     |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/README.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
-| [Clusters](project/clusters/index.md):<br>View pod logs                                                                 |          |          | ✓         | ✓          | ✓     |
-| [Clusters](project/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Download and browse job artifacts                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View a job log                                                                             | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View list of jobs                                                                          | ✓ (*3*)  | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View [environments](../ci/environments/index.md)                                           |          | ✓        | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Cancel and retry jobs                                                                      |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Create new [environments](../ci/environments/index.md)                                     |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Run CI/CD pipeline against a protected branch                                              |          |          | ✓ (*5*)   | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Stop [environments](../ci/environments/index.md)                                           |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>View a job with [debug logging](../ci/variables/index.md#debug-logging)                    |          |          | ✓         | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage CI/CD variables                                                                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
+| [Clusters](infrastructure/clusters/index.md):<br>View [pod logs](project/clusters/kubernetes_pod_logs.md)                                                                 |          |          | ✓         | ✓          | ✓     |
+| [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete cleanup policies                    |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a container registry image                        |          |          | ✓         | ✓          | ✓     |
 | [Container Registry](packages/container_registry/index.md):<br>Update container registry                                |          |          | ✓         | ✓          | ✓     |
@@ -132,7 +130,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View [wiki](project/wiki/index.md) pages                                               | ✓        | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create [snippets](snippets.md)                                                         |          | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Manage labels                                                                          |          | ✓        | ✓         | ✓          | ✓     |
-| [Projects](project/index.md):<br>View project statistics                                                                |          | ✓        | ✓         | ✓          | ✓     |
+| [Projects](project/index.md):<br>View [project traffic statistics](../api/project_statistics.md)                        |          | ✓        | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create, edit, delete [milestones](project/milestones/index.md).                        |          |          | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Create, edit, delete [releases](project/releases/index.md)                             |          |          | ✓ (*13*)  | ✓ (*13*)   | ✓ (*13*) |
 | [Projects](project/index.md):<br>Create, edit [wiki](project/wiki/index.md) pages                                       |          |          | ✓         | ✓          | ✓     |
@@ -268,9 +266,6 @@ Find the visibility permissions for the Container Registry, as described in the
 [related documentation](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Group members permissions
-
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
 
 Any user can remove themselves from a group, unless they are the last Owner of
 the group.
@@ -434,15 +429,13 @@ mentioned in the [permissions table above](#project-members-permissions) (they
 are unable to browse the project's repository, for example).
 
 NOTE:
-To prevent a guest user from creating projects, as an admin, you can edit the
+To prevent a guest user from creating projects, as an administrator, you can edit the
 user's profile to mark the user as [external](#external-users).
 Beware though that even if a user is external, if they already have Reporter or
 higher permissions in any project or group, they are **not** counted as a
 free guest user.
 
 ## Auditor users **(PREMIUM SELF)**
-
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/998) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.17.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
@@ -454,7 +447,7 @@ with the permissions described on the documentation on [auditor users permission
 
 ## Users with minimal access **(PREMIUM)**
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 
 Owners can add members with a "minimal access" role to a parent group. Such users don't
 automatically have access to projects and subgroups underneath. To support such access, owners must explicitly add these "minimal access" users to the specific subgroups/projects.
@@ -479,9 +472,6 @@ which visibility level you select on project settings.
 - Everyone: enabled for everyone (only available for GitLab Pages)
 
 ## GitLab CI/CD permissions
-
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 roles:
@@ -513,13 +503,10 @@ instance and project.
 
 ### Job permissions
 
-NOTE:
-In GitLab 11.0, the Master role was renamed to Maintainer.
-
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
-| Action                                      | Guest, Reporter | Developer   |Maintainer| Admin   |
+| Action                                      | Guest, Reporter | Developer   |Maintainer| Administrator   |
 |---------------------------------------------|-----------------|-------------|----------|---------|
 | Run CI job                                  |                 | ✓           | ✓        | ✓       |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓       |
@@ -534,8 +521,8 @@ users:
 | Push container images to other projects     |                 |             |          |         |
 | Push source and LFS                         |                 |             |          |         |
 
-1. Only if the user is not an external one
-1. Only if the user is a member of the project
+1. Only if the triggering user is not an external one
+1. Only if the triggering user is a member of the project
 
 ## Running pipelines on protected branches
 
@@ -555,7 +542,7 @@ for more information.
 
 ## LDAP users permissions
 
-In GitLab 8.15 and later, LDAP user permissions can now be manually overridden by an admin user.
+LDAP user permissions can be manually overridden by an administrator.
 Read through the documentation on [LDAP users permissions](group/index.md#manage-group-memberships-via-ldap) to learn more.
 
 ## Project aliases

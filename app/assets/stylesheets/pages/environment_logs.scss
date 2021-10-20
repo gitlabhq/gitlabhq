@@ -40,8 +40,8 @@
     height: 100%;
   }
 
-  .build-trace {
-    @include build-trace($black);
+  .build-log {
+    @include build-log($black);
   }
 
   .gl-infinite-scroll-legend {

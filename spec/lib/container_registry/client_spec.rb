@@ -111,6 +111,49 @@ RSpec.describe ContainerRegistry::Client do
     it_behaves_like 'handling timeouts'
   end
 
+  shared_examples 'handling repository info' do
+    context 'when the check is successful' do
+      context 'when using the GitLab container registry' do
+        before do
+          stub_registry_info(headers: {
+            'GitLab-Container-Registry-Version' => '2.9.1-gitlab',
+            'GitLab-Container-Registry-Features' => 'a,b,c'
+          })
+        end
+
+        it 'identifies the vendor as "gitlab"' do
+          expect(subject).to include(vendor: 'gitlab')
+        end
+
+        it 'identifies version and features' do
+          expect(subject).to include(version: '2.9.1-gitlab', features: %w[a b c])
+        end
+      end
+
+      context 'when using a third-party container registry' do
+        before do
+          stub_registry_info
+        end
+
+        it 'identifies the vendor as "other"' do
+          expect(subject).to include(vendor: 'other')
+        end
+
+        it 'does not identify version or features' do
+          expect(subject).to include(version: nil, features: [])
+        end
+      end
+    end
+
+    context 'when the check is not successful' do
+      it 'does not identify vendor, version or features' do
+        stub_registry_info(status: 500)
+
+        expect(subject).to eq({})
+      end
+    end
+  end
+
   describe '#repository_manifest' do
     subject { client.repository_manifest('group/test', 'mytag') }
 
@@ -316,46 +359,7 @@ RSpec.describe ContainerRegistry::Client do
   describe '#registry_info' do
     subject { client.registry_info }
 
-    context 'when the check is successful' do
-      context 'when using the GitLab container registry' do
-        before do
-          stub_registry_info(headers: {
-            'GitLab-Container-Registry-Version' => '2.9.1-gitlab',
-            'GitLab-Container-Registry-Features' => 'a,b,c'
-          })
-        end
-
-        it 'identifies the vendor as "gitlab"' do
-          expect(subject).to include(vendor: 'gitlab')
-        end
-
-        it 'identifies version and features' do
-          expect(subject).to include(version: '2.9.1-gitlab', features: %w[a b c])
-        end
-      end
-
-      context 'when using a third-party container registry' do
-        before do
-          stub_registry_info
-        end
-
-        it 'identifies the vendor as "other"' do
-          expect(subject).to include(vendor: 'other')
-        end
-
-        it 'does not identify version or features' do
-          expect(subject).to include(version: nil, features: [])
-        end
-      end
-    end
-
-    context 'when the check is not successful' do
-      it 'does not identify vendor, version or features' do
-        stub_registry_info(status: 500)
-
-        expect(subject).to eq({})
-      end
-    end
+    it_behaves_like 'handling repository info'
   end
 
   describe '.supports_tag_delete?' do
@@ -416,6 +420,16 @@ RSpec.describe ContainerRegistry::Client do
         expect(subject).to be expected_result
       end
     end
+  end
+
+  describe '.registry_info' do
+    subject { described_class.registry_info }
+
+    before do
+      stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+    end
+
+    it_behaves_like 'handling repository info'
   end
 
   def stub_upload(path, content, digest, status = 200)

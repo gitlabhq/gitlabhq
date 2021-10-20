@@ -91,9 +91,9 @@ RSpec.describe Users::ActivityService do
     context 'when last activity is in the past' do
       let(:user) { create(:user, last_activity_on: Date.today - 1.week) }
 
-      context 'database load balancing is configured', :db_load_balancing do
+      context 'database load balancing is configured' do
         before do
-          allow(ActiveRecord::Base).to receive(:connection).and_return(::Gitlab::Database::LoadBalancing.proxy)
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 
         let(:service) do

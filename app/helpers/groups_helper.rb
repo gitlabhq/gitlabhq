@@ -109,7 +109,7 @@ module GroupsHelper
   end
 
   def prevent_sharing_groups_outside_hierarchy_help_text(group)
-    s_("GroupSettings|This setting is only available on the top-level group and it applies to all subgroups. Groups that have already been shared with a group outside %{group} will still be shared, and this access will have to be revoked manually.").html_safe % { group: link_to_group(group) }
+    s_("GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually.").html_safe % { group: link_to_group(group) }
   end
 
   def parent_group_options(current_group)
@@ -178,7 +178,7 @@ module GroupsHelper
   end
 
   def default_help
-    s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually.")
+    s_("GroupSettings|Applied to all subgroups unless overridden by a group owner. Groups already added to the project lose access.")
   end
 
   def ancestor_locked_but_you_can_override(group)

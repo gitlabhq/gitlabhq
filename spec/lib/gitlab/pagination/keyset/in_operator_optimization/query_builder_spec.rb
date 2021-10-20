@@ -41,13 +41,39 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       )
     end
 
-    it 'returns records in correct order' do
+    let(:all_records) do
       all_records = []
       iterator.each_batch(of: batch_size) do |records|
         all_records.concat(records)
       end
+      all_records
+    end
 
+    it 'returns records in correct order' do
       expect(all_records).to eq(expected_order)
+    end
+
+    context 'when not passing the finder query' do
+      before do
+        in_operator_optimization_options.delete(:finder_query)
+      end
+
+      it 'returns records in correct order' do
+        expect(all_records).to eq(expected_order)
+      end
+
+      it 'loads only the order by column' do
+        order_by_attribute_names = iterator
+          .send(:order)
+          .column_definitions
+          .map(&:attribute_name)
+          .map(&:to_s)
+
+        record = all_records.first
+        loaded_attributes = record.attributes.keys - ['time_estimate'] # time_estimate is always present (has default value)
+
+        expect(loaded_attributes).to eq(order_by_attribute_names)
+      end
     end
   end
 

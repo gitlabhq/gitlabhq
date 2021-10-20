@@ -333,6 +333,9 @@ module ApplicationSettingsHelper
       :throttle_authenticated_files_api_enabled,
       :throttle_authenticated_files_api_period_in_seconds,
       :throttle_authenticated_files_api_requests_per_period,
+      :throttle_authenticated_deprecated_api_enabled,
+      :throttle_authenticated_deprecated_api_period_in_seconds,
+      :throttle_authenticated_deprecated_api_requests_per_period,
       :throttle_unauthenticated_api_enabled,
       :throttle_unauthenticated_api_period_in_seconds,
       :throttle_unauthenticated_api_requests_per_period,
@@ -345,6 +348,9 @@ module ApplicationSettingsHelper
       :throttle_unauthenticated_files_api_enabled,
       :throttle_unauthenticated_files_api_period_in_seconds,
       :throttle_unauthenticated_files_api_requests_per_period,
+      :throttle_unauthenticated_deprecated_api_enabled,
+      :throttle_unauthenticated_deprecated_api_period_in_seconds,
+      :throttle_unauthenticated_deprecated_api_requests_per_period,
       :throttle_protected_paths_enabled,
       :throttle_protected_paths_period_in_seconds,
       :throttle_protected_paths_requests_per_period,
@@ -400,7 +406,8 @@ module ApplicationSettingsHelper
       :user_deactivation_emails_enabled,
       :sidekiq_job_limiter_mode,
       :sidekiq_job_limiter_compression_threshold_bytes,
-      :sidekiq_job_limiter_limit_bytes
+      :sidekiq_job_limiter_limit_bytes,
+      :suggest_pipeline_enabled
     ].tap do |settings|
       settings << :deactivate_dormant_users unless Gitlab.com?
     end
@@ -464,10 +471,6 @@ module ApplicationSettingsHelper
     }
   end
 
-  def show_documentation_base_url_field?
-    Feature.enabled?(:help_page_documentation_redirect)
-  end
-
   def valid_runner_registrars
     Gitlab::CurrentSettings.valid_runner_registrars
   end
@@ -477,8 +480,6 @@ module ApplicationSettingsHelper
   end
 
   def pending_user_count
-    return 0 if Gitlab::CurrentSettings.new_user_signups_cap.blank?
-
     User.blocked_pending_approval.count
   end
 end

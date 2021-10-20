@@ -1069,6 +1069,14 @@ For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect
 
 GitLab also tracks [Prometheus metrics for Praefect](gitaly/#monitor-gitaly-cluster).
 
+## Backup log
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
+
+For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
+
+This log is populated when a [GitLab backup is created](../raketasks/backup_restore.md). You can use this log to understand how the backup process performed.
+
 ## Performance bar stats
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
@@ -1082,7 +1090,7 @@ Performance bar statistics (currently only duration of SQL queries) are recorded
 in that file. For example:
 
 ```json
-{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"type": "sql"}
+{"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"query_type": "active-record"}
 ```
 
 These statistics are logged on .com only, disabled on self-deployments.

@@ -203,17 +203,13 @@ When visiting a board, issues appear ordered in any list. You're able to change
 that order by dragging the issues. The changed order is saved, so that anybody who visits the same
 board later sees the reordering, with some exceptions.
 
-The first time an issue appears in any board (that is, the first time a user
-loads a board containing that issue), it is ordered in relation to other issues in that list.
-The order is done according to [label priority](labels.md#label-priority).
+When an issue is created, the system assigns a relative order value that is greater than the maximum value
+of that issue's project or root group. This means the issue will be at the bottom of any issue list that
+it appears in.
 
-At this point, that issue is assigned a relative order value by the system,
-with respect to the other issues in the list. Any time
-you drag and reorder the issue, its relative order value changes accordingly.
-
-Also, any time that issue appears in any board, the ordering is done according to
-the updated relative order value. It's only the first
-time an issue appears that it takes from the priority order mentioned above. If a user in your GitLab instance
+Any time you drag and reorder the issue, its relative order value changes accordingly.
+Then, any time that issue appears in any board, the ordering is done according to
+the updated relative order value. If a user in your GitLab instance
 drags issue `A` above issue `B`, the ordering is maintained when these two issues are subsequently
 loaded in any board in the same instance. This could be a different project board or a different group
 board, for example.

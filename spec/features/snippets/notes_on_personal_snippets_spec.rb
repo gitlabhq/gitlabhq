@@ -70,8 +70,8 @@ RSpec.describe 'Comments on personal snippets', :js do
   context 'when submitting a note' do
     it 'shows a valid form' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value)
-        .to eq('Comment')
+      expect(find('.js-main-target-form .js-comment-button button', match: :first))
+        .to have_content('Comment')
 
       page.within('.js-main-target-form') do
         expect(page).not_to have_link('Cancel')

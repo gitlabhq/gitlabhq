@@ -55,10 +55,12 @@ export default {
     ...mapActions(['fetchReports', 'setPaths']),
   },
   loadingText: sprintf(s__('ciReport|Loading %{reportName} report'), {
-    reportName: 'codeclimate',
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    reportName: 'Code quality',
   }),
   errorText: sprintf(s__('ciReport|Failed to load %{reportName} report'), {
-    reportName: 'codeclimate',
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    reportName: 'Code quality',
   }),
 };
 </script>

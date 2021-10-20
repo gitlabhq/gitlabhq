@@ -10,6 +10,8 @@ import {
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
 export const i18n = {
@@ -30,7 +32,9 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSprintf,
+    PipelineEditorMiniGraph,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['projectFullPath'],
   props: {
     commitSha: {
@@ -55,12 +59,15 @@ export default {
         };
       },
       update(data) {
-        const { id, commitPath = '', detailedStatus = {} } = data.project?.pipeline || {};
+        const { id, commitPath = '', detailedStatus = {}, stages, status } =
+          data.project?.pipeline || {};
 
         return {
           id,
           commitPath,
           detailedStatus,
+          stages,
+          status,
         };
       },
       result(res) {
@@ -111,9 +118,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-white-space-nowrap gl-max-w-full"
-  >
+  <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-wrap">
     <template v-if="showLoadingState">
       <div>
         <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
@@ -129,19 +134,12 @@ export default {
     <template v-else>
       <div>
         <a :href="status.detailsPath" class="gl-mr-auto">
-          <ci-icon :status="status" :size="16" />
+          <ci-icon :status="status" :size="16" data-testid="pipeline-status-icon" />
         </a>
         <span class="gl-font-weight-bold">
           <gl-sprintf :message="$options.i18n.pipelineInfo">
             <template #id="{ content }">
-              <gl-link
-                :href="status.detailsPath"
-                class="pipeline-id gl-font-weight-normal pipeline-number"
-                target="_blank"
-                data-testid="pipeline-id"
-              >
-                {{ content }}{{ pipelineId }}</gl-link
-              >
+              <span data-testid="pipeline-id"> {{ content }}{{ pipelineId }} </span>
             </template>
             <template #status>{{ status.text }}</template>
             <template #commit>
@@ -157,8 +155,13 @@ export default {
           </gl-sprintf>
         </span>
       </div>
-      <div>
+      <div class="gl-display-flex gl-flex-wrap">
+        <pipeline-editor-mini-graph
+          v-if="glFeatures.pipelineEditorMiniGraph"
+          :pipeline="pipeline"
+        />
         <gl-button
+          class="gl-mt-2 gl-md-mt-0"
           target="_blank"
           category="secondary"
           variant="confirm"

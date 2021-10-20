@@ -24,7 +24,7 @@ View pipeline duration history:
 ## DevOps Research and Assessment (DORA) key metrics **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
-> - Added support for [lead time for changes](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
+> - [Added support](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) for lead time for changes in GitLab 13.10.
 
 Customer experience is a key metric. Users want to measure platform stability and other
 post-deployment performance KPIs, and set targets for customer behavior, experience, and financial
@@ -56,7 +56,7 @@ The following table shows the supported metrics, at which level they are support
 | `change_failure_rate`     | Project/Group-level |  To be supported                     | To be supported                       | |
 | `time_to_restore_service` | Project/Group-level |  To be supported                     | To be supported                       | |
 
-### Deployment frequency charts **(ULTIMATE)**
+### Deployment frequency charts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
 
@@ -69,7 +69,7 @@ for its deployment information to appear on the graphs.
 
 These charts are available for both groups and projects.
 
-### Lead time charts **(ULTIMATE)**
+### Lead time charts
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250329) in GitLab 13.11.
 

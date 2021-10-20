@@ -214,7 +214,7 @@ Look for the `[runners.docker]` section:
 The image and services defined this way are added to all jobs run by
 that runner.
 
-## Define an image from a private Container Registry
+## Access an image from a private Container Registry
 
 To access private container registries, the GitLab Runner process can use:
 
@@ -224,18 +224,11 @@ To access private container registries, the GitLab Runner process can use:
 
 To define which option should be used, the runner process reads the configuration in this order:
 
-- A `DOCKER_AUTH_CONFIG` variable provided as either:
-  - A [CI/CD variable](../variables/index.md) in the `.gitlab-ci.yml` file.
-  - A project's variables stored on the project's **Settings > CI/CD** page.
-- A `DOCKER_AUTH_CONFIG` variable provided as environment variable in the runner's `config.toml` file.
+- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/index.md).
+- A `DOCKER_AUTH_CONFIG` environment variable set in the runner's `config.toml` file.
 - A `config.json` file in `$HOME/.docker` directory of the user running the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,
   the home directory of the main runner process user is used.
-
-The runner reads this configuration **only** from the `config.toml` file and ignores it if
-it's provided as a CI/CD variable. This is because the runner uses **only**
-`config.toml` configuration and does not interpolate **any** CI/CD variables at
-runtime.
 
 ### Requirements and limitations
 
@@ -253,9 +246,9 @@ private registry. Both require setting the CI/CD variable
 `DOCKER_AUTH_CONFIG` with appropriate authentication information.
 
 1. Per-job: To configure one job to access a private registry, add
-   `DOCKER_AUTH_CONFIG` as a job variable.
+   `DOCKER_AUTH_CONFIG` as a [CI/CD variable](../variables/index.md).
 1. Per-runner: To configure a runner so all its jobs can access a
-   private registry, add `DOCKER_AUTH_CONFIG` to the environment in the
+   private registry, add `DOCKER_AUTH_CONFIG` as an environment variable in the
    runner's configuration.
 
 See below for examples of each.
@@ -274,7 +267,7 @@ Let's also assume that these are the sign-in credentials:
 | username | `my_username`               |
 | password | `my_password`               |
 
-Use one of the following methods to determine the value of `DOCKER_AUTH_CONFIG`:
+Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`:
 
 - Do a `docker login` on your local machine:
 

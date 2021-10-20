@@ -154,17 +154,6 @@
   }
 }
 
-.token-token-container {
-  #impersonation-token-token {
-    width: 80%;
-    display: inline;
-  }
-
-  .btn-clipboard {
-    margin-left: 5px;
-  }
-}
-
 .visibility-level-setting {
   .form-check {
     margin-bottom: 10px;
@@ -199,22 +188,6 @@
       .option-disabled-reason {
         display: block;
       }
-    }
-  }
-}
-
-.initialize-with-readme-setting {
-  .form-check {
-    margin-bottom: 10px;
-
-    .option-title {
-      font-weight: $gl-font-weight-normal;
-      display: inline-block;
-      color: $gl-text-color;
-    }
-
-    .option-description {
-      color: $project-option-descr-color;
     }
   }
 }
@@ -324,10 +297,6 @@
   .modal-body {
     padding: $gl-padding;
   }
-}
-
-.personal-access-tokens-never-expires-label {
-  color: $note-disabled-comment-color;
 }
 
 .created-deploy-token-container {

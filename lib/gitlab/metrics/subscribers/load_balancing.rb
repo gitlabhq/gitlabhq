@@ -10,7 +10,7 @@ module Gitlab
         LOG_COUNTERS = { true => :caught_up_replica_pick_ok, false => :caught_up_replica_pick_fail }.freeze
 
         def caught_up_replica_pick(event)
-          return unless Gitlab::SafeRequestStore.active? && ::Gitlab::Database::LoadBalancing.enable?
+          return unless Gitlab::SafeRequestStore.active?
 
           result = event.payload[:result]
           counter_name = counter(result)
@@ -20,13 +20,13 @@ module Gitlab
 
         # we want to update Prometheus counter after the controller/action are set
         def web_transaction_completed(_event)
-          return unless Gitlab::SafeRequestStore.active? && ::Gitlab::Database::LoadBalancing.enable?
+          return unless Gitlab::SafeRequestStore.active?
 
           LOG_COUNTERS.keys.each { |result| increment_prometheus_for_result_label(result) }
         end
 
         def self.load_balancing_payload
-          return {} unless Gitlab::SafeRequestStore.active? && ::Gitlab::Database::LoadBalancing.enable?
+          return {} unless Gitlab::SafeRequestStore.active?
 
           {}.tap do |payload|
             LOG_COUNTERS.values.each do |counter|

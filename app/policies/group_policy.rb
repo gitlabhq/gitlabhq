@@ -134,6 +134,8 @@ class GroupPolicy < BasePolicy
     enable :create_package
     enable :create_package_settings
     enable :developer_access
+    enable :admin_organization
+    enable :admin_contact
   end
 
   rule { reporter }.policy do
@@ -147,7 +149,6 @@ class GroupPolicy < BasePolicy
     enable :read_prometheus
     enable :read_package
     enable :read_package_settings
-    enable :admin_organization
   end
 
   rule { maintainer }.policy do
@@ -162,7 +163,6 @@ class GroupPolicy < BasePolicy
     enable :admin_cluster
     enable :read_deploy_token
     enable :create_jira_connect_subscription
-    enable :update_runners_registration_token
     enable :maintainer_access
   end
 
@@ -179,6 +179,7 @@ class GroupPolicy < BasePolicy
     enable :update_default_branch_protection
     enable :create_deploy_token
     enable :destroy_deploy_token
+    enable :update_runners_registration_token
     enable :owner_access
   end
 

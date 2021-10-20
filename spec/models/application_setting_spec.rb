@@ -77,6 +77,9 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to validate_numericality_of(:container_registry_cleanup_tags_service_max_list_size).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:container_registry_expiration_policies_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
 
+    it { is_expected.to validate_numericality_of(:dependency_proxy_ttl_group_policy_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:dependency_proxy_ttl_group_policy_worker_capacity) }
+
     it { is_expected.to validate_numericality_of(:snippet_size_limit).only_integer.is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:wiki_page_max_content_bytes).only_integer.is_greater_than_or_equal_to(1024) }
     it { is_expected.to validate_presence_of(:max_artifacts_size) }
@@ -946,6 +949,10 @@ RSpec.describe ApplicationSetting do
           throttle_unauthenticated_files_api_period_in_seconds
           throttle_authenticated_files_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds
+          throttle_unauthenticated_deprecated_api_requests_per_period
+          throttle_unauthenticated_deprecated_api_period_in_seconds
+          throttle_authenticated_deprecated_api_requests_per_period
+          throttle_authenticated_deprecated_api_period_in_seconds
           throttle_authenticated_git_lfs_requests_per_period
           throttle_authenticated_git_lfs_period_in_seconds
         ]

@@ -82,6 +82,19 @@ AND (EXISTS (
 While this worked without schema changes, and did improve readability somewhat,
 it did not improve query performance.
 
+### Attempt A2: use label IDs in the WHERE EXISTS clause
+
+In [merge request #34503](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34503), we followed a similar approach to A1. But this time, we
+did a separate query to fetch the IDs of the labels used in the filter so that we avoid the `JOIN` in the `EXISTS` clause and filter directly by
+`label_links.label_id`. We also added a new index on `label_links` for the `target_id`, `label_id`, and `target_type` columns to speed up this query.
+
+Finding the label IDs wasn't straightforward because there could be multiple labels with the same title within a single root namespace. We solved
+this by grouping the label IDs by title and then using the array of IDs in the `EXISTS` clauses.
+
+This resulted in a significant performance improvement. However, this optimization could not be applied to the dashboard pages
+where we do not have a project or group context. We could not easily search for the label IDs here because that would mean searching across all
+projects and groups that the user has access to.
+
 ## Attempt B: Denormalize using an array column
 
 Having [removed MySQL support in GitLab 12.1](https://about.gitlab.com/blog/2019/06/27/removing-mysql-support/),
@@ -159,9 +172,8 @@ However, at present, the disadvantages outweigh the advantages.
 
 ## Conclusion
 
-We have yet to find a method that is demonstrably better than the current
-method, when considering:
+We found a method A2 that does not need denormalization and improves the query performance significantly. This
+did not apply to all cases, but we were able to apply method A1 to the rest of the cases so that we remove the
+`GROUP BY` and `HAVING` clauses in all scenarios.
 
-1. Query performance.
-1. Readability.
-1. Ease of maintaining schema consistency.
+This simplified the query and improved the performance in the most common cases.

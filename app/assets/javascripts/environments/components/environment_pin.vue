@@ -3,17 +3,13 @@
  * Renders a prevent auto-stop button.
  * Used in environments table.
  */
-import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
   components: {
-    GlIcon,
-    GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlDropdownItem,
   },
   props: {
     autoStopUrl: {
@@ -26,11 +22,11 @@ export default {
       eventHub.$emit('cancelAutoStop', this.autoStopUrl);
     },
   },
-  title: __('Prevent environment from auto-stopping'),
+  title: __('Prevent auto-stopping'),
 };
 </script>
 <template>
-  <gl-button v-gl-tooltip :title="$options.title" :aria-label="$options.title" @click="onPinClick">
-    <gl-icon name="thumbtack" />
-  </gl-button>
+  <gl-dropdown-item @click="onPinClick">
+    {{ $options.title }}
+  </gl-dropdown-item>
 </template>

@@ -3,9 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Multiple file snippet' do
-      it 'creates a project snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1648' do
-        Flow::Login.sign_in
-
+      let(:snippet) do
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Project snippet with multiple files'
           snippet.description = 'Snippet description'
@@ -20,6 +18,18 @@ module QA
             end
           end
         end
+      end
+
+      before do
+        Flow::Login.sign_in
+      end
+
+      after do
+        snippet.remove_via_api!
+      end
+
+      it 'creates a project snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1648' do
+        snippet.visit!
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           aggregate_failures 'file content verification' do

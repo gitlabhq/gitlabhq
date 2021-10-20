@@ -1,6 +1,14 @@
+/* eslint-disable import/no-deprecated */
+
 import { getJSONFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
-import { DEFAULT_VALUE_STREAM, DEFAULT_DAYS_IN_PAST } from '~/cycle_analytics/constants';
+import {
+  DEFAULT_VALUE_STREAM,
+  DEFAULT_DAYS_IN_PAST,
+  PAGINATION_TYPE,
+  PAGINATION_SORT_DIRECTION_DESC,
+  PAGINATION_SORT_FIELD_END_EVENT,
+} from '~/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 
@@ -13,9 +21,10 @@ export const getStageByTitle = (stages, title) =>
   stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
 
 const fixtureEndpoints = {
-  customizableCycleAnalyticsStagesAndEvents: 'projects/analytics/value_stream_analytics/stages',
-  stageEvents: (stage) => `projects/analytics/value_stream_analytics/events/${stage}`,
-  metricsData: 'projects/analytics/value_stream_analytics/summary',
+  customizableCycleAnalyticsStagesAndEvents:
+    'projects/analytics/value_stream_analytics/stages.json',
+  stageEvents: (stage) => `projects/analytics/value_stream_analytics/events/${stage}.json`,
+  metricsData: 'projects/analytics/value_stream_analytics/summary.json',
 };
 
 export const metricsData = getJSONFixture(fixtureEndpoints.metricsData);
@@ -256,3 +265,22 @@ export const rawValueStreamStages = customizableStagesAndEvents.stages;
 export const valueStreamStages = rawValueStreamStages.map((s) =>
   convertObjectPropsToCamelCase(s, { deep: true }),
 );
+
+export const initialPaginationQuery = {
+  page: 15,
+  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  direction: PAGINATION_SORT_DIRECTION_DESC,
+};
+
+export const initialPaginationState = {
+  ...initialPaginationQuery,
+  page: null,
+  hasNextPage: false,
+};
+
+export const basePaginationResult = {
+  pagination: PAGINATION_TYPE,
+  sort: PAGINATION_SORT_FIELD_END_EVENT,
+  direction: PAGINATION_SORT_DIRECTION_DESC,
+  page: null,
+};

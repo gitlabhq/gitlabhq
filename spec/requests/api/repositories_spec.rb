@@ -305,6 +305,18 @@ RSpec.describe API::Repositories do
         end
       end
 
+      it 'returns only a part of the repository with path set' do
+        path = 'bar'
+        get api("#{route}?path=#{path}", current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        type, params = workhorse_send_data
+
+        expect(type).to eq('git-archive')
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\-#{path}\.tar.gz/)
+      end
+
       it 'rate limits user when thresholds hit' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 

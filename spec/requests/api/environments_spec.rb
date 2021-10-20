@@ -18,6 +18,7 @@ RSpec.describe API::Environments do
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environments')
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -167,6 +168,7 @@ RSpec.describe API::Environments do
         post api("/projects/#{project.id}/environments", user), params: { name: "mepmep" }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('public_api/v4/environment')
         expect(json_response['name']).to eq('mepmep')
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['external']).to be nil
@@ -212,6 +214,7 @@ RSpec.describe API::Environments do
           params: { name: 'Mepmep', external_url: url }
 
       expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to match_response_schema('public_api/v4/environment')
       expect(json_response['name']).to eq('Mepmep')
       expect(json_response['external_url']).to eq(url)
     end
@@ -250,7 +253,7 @@ RSpec.describe API::Environments do
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
-      it 'returns a 200 for stopped environment' do
+      it 'returns a 204 for stopped environment' do
         environment.stop
 
         delete api("/projects/#{project.id}/environments/#{environment.id}", user)
@@ -294,6 +297,7 @@ RSpec.describe API::Environments do
 
         it 'returns a 200' do
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
         end
 
         it 'actually stops the environment' do
@@ -327,6 +331,7 @@ RSpec.describe API::Environments do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['last_deployment']).to be_present
       end
     end
 

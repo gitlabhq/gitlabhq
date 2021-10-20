@@ -1,4 +1,4 @@
-import { GlLink, GlLabel, GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import { GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import IssuableItem from '~/issuable_list/components/issuable_item.vue';
@@ -16,6 +16,9 @@ const createComponent = ({ issuableSymbol = '#', issuable = mockIssuable, slots 
       showCheckbox: false,
     },
     slots,
+    stubs: {
+      GlSprintf,
+    },
   });
 
 const MOCK_GITLAB_URL = 'http://0.0.0.0:3000';
@@ -132,13 +135,6 @@ describe('IssuableItem', () => {
     describe('assignees', () => {
       it('returns `issuable.assignees` reference when it is available', () => {
         expect(wrapper.vm.assignees).toBe(mockIssuable.assignees);
-      });
-    });
-
-    describe('createdAt', () => {
-      it('returns string containing timeago string based on `issuable.createdAt`', () => {
-        expect(wrapper.vm.createdAt).toContain('created');
-        expect(wrapper.vm.createdAt).toContain('ago');
       });
     });
 
@@ -449,8 +445,7 @@ describe('IssuableItem', () => {
     it('renders issuable updatedAt info', () => {
       const updatedAtEl = wrapper.find('[data-testid="issuable-updated-at"]');
 
-      expect(updatedAtEl.exists()).toBe(true);
-      expect(updatedAtEl.find('span').attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
+      expect(updatedAtEl.attributes('title')).toBe('Sep 10, 2020 11:41am UTC');
       expect(updatedAtEl.text()).toBe(wrapper.vm.updatedAt);
     });
 

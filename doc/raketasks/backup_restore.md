@@ -61,7 +61,7 @@ including:
 - Container Registry images
 - GitLab Pages content
 - Snippets
-- Group wikis **(PREMIUM)**
+- [Group wikis](../user/project/wiki/index.md#group-wikis)
 
 Backups do not include:
 
@@ -1129,14 +1129,14 @@ GitLab backup script to be too slow. If your GitLab instance has a lot of forked
 projects, the regular backup task also duplicates the Git data for all of them.
 In these cases, consider using file system snapshots as part of your backup strategy.
 
-Example: Amazon EBS
+Example: Amazon Elastic Block Store (EBS)
 
 > A GitLab server using Omnibus GitLab hosted on Amazon AWS.
 > An EBS drive containing an ext4 file system is mounted at `/var/opt/gitlab`.
 > In this case you could make an application backup by taking an EBS snapshot.
 > The backup includes all repositories, uploads and PostgreSQL data.
 
-Example: LVM snapshots + rsync
+Example: Logical Volume Manager (LVM) snapshots + rsync
 
 > A GitLab server using Omnibus GitLab, with an LVM logical volume mounted at `/var/opt/gitlab`.
 > Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.
@@ -1172,7 +1172,7 @@ For manually backing up the Git repository data on disk, there are multiple poss
 
 Git repositories must be copied in a consistent way. They should not be copied during concurrent write
 operations, as this can lead to inconsistencies or corruption issues. For more details,
-[issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422 "Provide documentation on preferred method of migrating Gitaly servers")
+[issue #270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422 "Provide documentation on preferred method of migrating Gitaly servers")
 has a longer discussion explaining the potential problems.
 
 To prevent writes to the Git repository data, there are two possible approaches:
@@ -1335,11 +1335,11 @@ that contain required, sensitive information. If the key is lost, GitLab can't
 decrypt those columns, preventing access to the following items:
 
 - [CI/CD variables](../ci/variables/index.md)
-- [Kubernetes / GCP integration](../user/project/clusters/index.md)
+- [Kubernetes / GCP integration](../user/infrastructure/clusters/index.md)
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../operations/error_tracking.md)
 - [Runner authentication](../ci/runners/index.md)
-- [Project mirroring](../user/project/repository/repository_mirroring.md)
+- [Project mirroring](../user/project/repository/mirror/index.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and runner authentication, you can experience
@@ -1517,7 +1517,7 @@ err.message="unknown error"
 
 This issue is caused by the restore running as the unprivileged user `git`,
 which is unable to assign the correct ownership to the registry files during
-the restore process ([issue 62759](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759 "Incorrect permissions on registry filesystem after restore")).
+the restore process ([issue #62759](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62759 "Incorrect permissions on registry filesystem after restore")).
 
 To get your registry working again:
 
@@ -1548,7 +1548,7 @@ If this happens, examine the following:
 - If NFS is being used, check if the mount option `timeout` is set. The
   default is `600`, and changing this to smaller values results in this error.
 
-### `gitaly-backup` for repository backup and restore **(FREE SELF)**
+### `gitaly-backup` for repository backup and restore
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333034) in GitLab 14.2.
 > - [Deployed behind a feature flag](../user/feature_flags.md), enabled by default.

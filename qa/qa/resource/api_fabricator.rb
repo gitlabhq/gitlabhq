@@ -96,31 +96,35 @@ module QA
       end
 
       def api_post
-        if api_post_path == "/graphql"
-          graphql_response = post(
-            Runtime::API::Request.new(api_client, api_post_path).url,
-            query: api_post_body)
+        process_api_response(api_post_to(api_post_path, api_post_body))
+      end
 
-          flattened_response = flatten_hash(parse_body(graphql_response))
+      def api_post_to(post_path, post_body)
+        if post_path == "/graphql"
+          graphql_response = post(Runtime::API::Request.new(api_client, post_path).url, query: post_body)
 
-          unless graphql_response.code == HTTP_STATUS_OK && flattened_response[:errors].empty?
-            raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`."
+          body = flatten_hash(parse_body(graphql_response))
+
+          unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
+            raise(ResourceFabricationFailedError, <<~MSG)
+              Fabrication of #{self.class.name} using the API failed (#{graphql_response.code}) with `#{graphql_response}`.
+            MSG
           end
 
-          flattened_response[:web_url] = flattened_response.delete(:webUrl)
-          flattened_response[:id] = flattened_response.fetch(:id).split('/')[-1]
+          body[:id] = body.fetch(:id).split('/').last
 
-          process_api_response(flattened_response)
+          body.transform_keys { |key| key.to_s.underscore.to_sym }
         else
-          response = post(
-            Runtime::API::Request.new(api_client, api_post_path).url,
-            api_post_body)
+          response = post(Runtime::API::Request.new(api_client, post_path).url, post_body)
 
           unless response.code == HTTP_STATUS_CREATED
-            raise ResourceFabricationFailedError, "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+            raise(
+              ResourceFabricationFailedError,
+              "Fabrication of #{self.class.name} using the API failed (#{response.code}) with `#{response}`."
+            )
           end
 
-          process_api_response(parse_body(response))
+          parse_body(response)
         end
       end
 

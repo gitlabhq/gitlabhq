@@ -19,7 +19,7 @@ GitLab:
 - Tracks your deployments, so you always know what is deployed on your
   servers.
 
-If you have a deployment service like [Kubernetes](../../user/project/clusters/index.md)
+If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
 associated with your project, you can use it to assist with your deployments.
 You can even access a [web terminal](#web-terminals) for your environment from within GitLab.
 
@@ -35,7 +35,7 @@ To view a list of environments and deployments:
 1. On the left sidebar, select **Deployments > Environments**.
    The environments are displayed.
 
-   ![Environments list](img/environments_list.png)
+   ![Environments list](img/environments_list_v14_3.png)
 
 1. To view a list of deployments for an environment, select the environment name,
    for example, `staging`.
@@ -175,13 +175,13 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
-If you are deploying to a [Kubernetes cluster](../../user/project/clusters/index.md)
+If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/index.md)
 associated with your project, you can configure these deployments from your
 `.gitlab-ci.yml` file.
 
 NOTE:
 Kubernetes configuration isn't supported for Kubernetes clusters that are
-[managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
+[managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
 To follow progress on support for GitLab-managed clusters, see the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
@@ -634,7 +634,7 @@ Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metric
 ### Web terminals
 
 If you deploy to your environments with the help of a deployment service (for example,
-the [Kubernetes integration](../../user/project/clusters/index.md)), GitLab can open
+the [Kubernetes integration](../../user/infrastructure/clusters/index.md)), GitLab can open
 a terminal session to your environment. You can then debug issues without leaving your web browser.
 
 The Web terminal is a container-based deployment, which often lack basic tools (like an editor),
@@ -646,9 +646,9 @@ Web terminals:
 - Are available to project Maintainers and Owners only.
 - Must [be enabled](../../administration/integration/terminal.md).
 
-In the UI, you can view the Web terminal by selecting a **Terminal** button:
+In the UI, you can view the Web terminal by selecting **Terminal** from the actions menu:
 
-![Terminal button on environment index](img/environments_terminal_button_on_index_v13_10.png)
+![Terminal button on environment index](img/environments_terminal_button_on_index_v14_3.png)
 
 You can also access the terminal button from the page for a specific environment:
 
@@ -815,4 +815,63 @@ To ensure the `action: stop` can always run when needed, you can:
       name: review/$CI_COMMIT_REF_SLUG
       action: stop
     when: manual
+  ```
+
+### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
+
+FLAG:
+On self-managed GitLab, by default this bug fix is not available. To make it available per project or for your entire instance, ask an administrator to [enable the `surface_environment_creation_failure` flag](../../administration/feature_flags.md). On GitLab.com, this bug fix is not available, but will be rolled out shortly.
+
+If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
+you might encounter this error because the dynamically generated parameter can't be used for creating an environment.
+
+For example, your project has the following `.gitlab-ci.yml`:
+
+```yaml
+deploy:
+  script: echo
+  environment: production/$ENVIRONMENT
+```
+
+Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
+create an environment with a name `production/`, which is invalid in
+[the environment name constraint](../yaml/index.md).
+
+To fix this, use one of the following solutions:
+
+- Remove `environment` keyword from the deployment job. GitLab has already been
+  ignoring the invalid keyword, therefore your deployment pipelines stay intact
+  even after the keyword removal.
+- Ensure the variable exists in the pipeline. Please note that there is
+  [a limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+#### If you get this error on Review Apps
+
+For example, if you have the following in your `.gitlab-ci.yml`:
+
+```yaml
+review:
+  script: deploy review app
+  environment: review/$CI_COMMIT_REF_NAME
+```
+
+When you create a new merge request with a branch name `bug-fix!`,
+the `review` job tries to create an environment with `review/bug-fix!`.
+However, the `!` is an invalid character for environments, so the
+deployment job fails since it was about to run without an environment.
+
+To fix this, use one of the following solutions:
+
+- Re-create your feature branch without the invalid characters,
+  such as `bug-fix`.
+- Replace the `CI_COMMIT_REF_NAME`
+  [predefined variable](../variables/predefined_variables.md) with
+  `CI_COMMIT_REF_SLUG` which strips any invalid characters:
+
+  ```yaml
+  review:
+    script: deploy review app
+    environment: review/$CI_COMMIT_REF_SLUG
   ```

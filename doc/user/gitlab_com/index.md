@@ -139,7 +139,7 @@ the related documentation.
 | [Max pipelines per schedule](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) | `24` for Free tier, `288` for all paid tiers | Unlimited |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
-| [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | `50` per-project and per-group for Free tier,<br/>`1_000` per-group for all paid tiers / `1_000` per-project for all paid tiers | `1_000` per-group / `1_000` per-project |
+| [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | Free tier: `50` per-group / `50` per-project <br/> All paid tiers: `1_000` per-group  / `1_000` per-project | `1_000` per-group / `1_000` per-project |
 
 ## Account and limit settings
 
@@ -270,7 +270,7 @@ for `shared_buffers` is quite high, and we are
 
 ## Puma
 
-GitLab.com uses the default of 60 seconds for [Puma request timeouts](https://docs.gitlab.com/omnibus/settings/puma.html#worker-timeout).
+GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../administration/operations/puma.md#worker-timeout).
 
 ## GitLab.com-specific rate limits
 

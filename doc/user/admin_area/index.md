@@ -8,7 +8,7 @@ type: reference
 # GitLab Admin Area **(FREE SELF)**
 
 The Admin Area provides a web UI to manage and configure some features of GitLab
-self-managed instances. If you are an Admin user, you can access the Admin Area
+self-managed instances. If you are an administrator, you can access the Admin Area
 by visiting `/admin` on your self-managed instance. You can also access it through
 the UI:
 
@@ -16,7 +16,7 @@ the UI:
 - GitLab versions 13.12 and earlier: on the top bar, select the Admin Area icon (**{admin}**).
 
 NOTE:
-Only admin users can access the Admin Area.
+Only administrators can access the Admin Area.
 
 ## Admin Area sections
 
@@ -24,7 +24,7 @@ The Admin Area is made up of the following sections:
 
 | Section                                        | Description |
 |:-----------------------------------------------|:------------|
-| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
+| **{overview}** [Overview](#overview-section)   | View your GitLab [Dashboard](#admin-area-dashboard), and administer [projects](#administering-projects), [users](#administering-users), [groups](#administering-groups), [topics](#administering-topics), [jobs](#administering-jobs), [runners](#administering-runners), and [Gitaly servers](#administering-gitaly-servers). |
 | **{monitor}** Monitoring                       | View GitLab [system information](#system-information), and information on [background jobs](#background-jobs), [logs](#logs), [health checks](monitoring/health_check.md), [requests profiles](#requests-profiles), and [audit events](#audit-events). |
 | **{messages}** Messages                        | Send and manage [broadcast messages](broadcast_messages.md) for your users. |
 | **{hook}** System Hooks                        | Configure [system hooks](../../system_hooks/system_hooks.md) for many events. |
@@ -41,7 +41,7 @@ The Admin Area is made up of the following sections:
 | **{appearance}** Appearance                    | Customize [GitLab appearance](appearance.md). |
 | **{settings}** Settings                        | Modify the [settings](settings/index.md) for your GitLab instance. |
 
-## Admin Dashboard
+## Admin Area dashboard
 
 The Dashboard provides statistics and system information about the GitLab instance.
 
@@ -151,7 +151,7 @@ you must provide the complete email address.
 
 #### User impersonation
 
-An administrator can "impersonate" any other user, including other administrator users.
+An administrator can "impersonate" any other user, including other administrators.
 This allows the administrator to "see what the user sees," and take actions on behalf of the user.
 You can impersonate a user in the following ways:
 
@@ -236,6 +236,26 @@ To search for groups by name, enter your criteria in the search field. The group
 insensitive, and applies partial matching.
 
 To [Create a new group](../group/index.md#create-a-group) click **New group**.
+
+### Administering Topics
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+
+You can administer all topics in the GitLab instance from the Admin Area's Topics page.
+
+To access the Topics page:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview > Topics**.
+
+For each topic, the page displays their name and number of projects labeled with the topic.
+
+To create a new topic, select **New topic**.
+
+To edit a topic, select **Edit** in that topic's row.
+
+To search for topics by name, enter your criteria in the search box. The topic search is case
+insensitive, and applies partial matching.
 
 ### Administering Jobs
 
@@ -369,7 +389,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-Since GitLab 13.0, **Log** view has been removed from the admin dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+Since GitLab 13.0, **Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 

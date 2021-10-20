@@ -1,17 +1,22 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerTypeBadge from '~/runner/components/runner_type_badge.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
 
 describe('RunnerTypeBadge', () => {
   let wrapper;
 
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const getTooltip = () => getBinding(findBadge().element, 'gl-tooltip');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(RunnerTypeBadge, {
       propsData: {
         ...props,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
     });
   };
@@ -20,16 +25,24 @@ describe('RunnerTypeBadge', () => {
     wrapper.destroy();
   });
 
-  it.each`
+  describe.each`
     type             | text          | variant
     ${INSTANCE_TYPE} | ${'shared'}   | ${'success'}
     ${GROUP_TYPE}    | ${'group'}    | ${'success'}
     ${PROJECT_TYPE}  | ${'specific'} | ${'info'}
-  `('displays $type runner with as "$text" with a $variant variant ', ({ type, text, variant }) => {
-    createComponent({ props: { type } });
+  `('displays $type runner', ({ type, text, variant }) => {
+    beforeEach(() => {
+      createComponent({ props: { type } });
+    });
 
-    expect(findBadge().text()).toBe(text);
-    expect(findBadge().props('variant')).toBe(variant);
+    it(`as "${text}" with a ${variant} variant`, () => {
+      expect(findBadge().text()).toBe(text);
+      expect(findBadge().props('variant')).toBe(variant);
+    });
+
+    it('with a tooltip', () => {
+      expect(getTooltip().value).toBeDefined();
+    });
   });
 
   it('validation fails for an incorrect type', () => {

@@ -161,42 +161,54 @@ RSpec.describe MembersFinder, '#execute' do
   end
 
   context 'when :invited_groups is passed' do
-    subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups]) }
+    shared_examples 'with invited_groups param' do
+      subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups]) }
 
-    let_it_be(:linked_group) { create(:group, :public) }
-    let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
-    let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
-    let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
+      let_it_be(:linked_group) { create(:group, :public) }
+      let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
+      let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
+      let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
 
-    it 'includes all the invited_groups members including members inherited from ancestor groups' do
-      create(:project_group_link, project: project, group: nested_linked_group)
+      it 'includes all the invited_groups members including members inherited from ancestor groups' do
+        create(:project_group_link, project: project, group: nested_linked_group)
 
-      expect(subject).to contain_exactly(linked_group_member, nested_linked_group_member)
-    end
-
-    it 'includes all the invited_groups members' do
-      create(:project_group_link, project: project, group: linked_group)
-
-      expect(subject).to contain_exactly(linked_group_member)
-    end
-
-    it 'excludes group_members not visible to the user' do
-      create(:project_group_link, project: project, group: linked_group)
-      private_linked_group = create(:group, :private)
-      private_linked_group.add_developer(user3)
-      create(:project_group_link, project: project, group: private_linked_group)
-
-      expect(subject).to contain_exactly(linked_group_member)
-    end
-
-    context 'when the user is a member of invited group and ancestor groups' do
-      it 'returns the highest access_level for the user limited by project_group_link.group_access', :nested_groups do
-        create(:project_group_link, project: project, group: nested_linked_group, group_access: Gitlab::Access::REPORTER)
-        nested_linked_group.add_developer(user1)
-
-        expect(subject.map(&:user)).to contain_exactly(user1, user2)
-        expect(subject.max_by(&:access_level).access_level).to eq(Gitlab::Access::REPORTER)
+        expect(subject).to contain_exactly(linked_group_member, nested_linked_group_member)
       end
+
+      it 'includes all the invited_groups members' do
+        create(:project_group_link, project: project, group: linked_group)
+
+        expect(subject).to contain_exactly(linked_group_member)
+      end
+
+      it 'excludes group_members not visible to the user' do
+        create(:project_group_link, project: project, group: linked_group)
+        private_linked_group = create(:group, :private)
+        private_linked_group.add_developer(user3)
+        create(:project_group_link, project: project, group: private_linked_group)
+
+        expect(subject).to contain_exactly(linked_group_member)
+      end
+
+      context 'when the user is a member of invited group and ancestor groups' do
+        it 'returns the highest access_level for the user limited by project_group_link.group_access', :nested_groups do
+          create(:project_group_link, project: project, group: nested_linked_group, group_access: Gitlab::Access::REPORTER)
+          nested_linked_group.add_developer(user1)
+
+          expect(subject.map(&:user)).to contain_exactly(user1, user2)
+          expect(subject.max_by(&:access_level).access_level).to eq(Gitlab::Access::REPORTER)
+        end
+      end
+    end
+
+    it_behaves_like 'with invited_groups param'
+
+    context 'when feature flag :linear_members_finder_ancestor_scopes is disabled' do
+      before do
+        stub_feature_flags(linear_members_finder_ancestor_scopes: false)
+      end
+
+      it_behaves_like 'with invited_groups param'
     end
   end
 end

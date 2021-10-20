@@ -1,6 +1,12 @@
 <script>
 import '~/commons/bootstrap';
-import { GlIcon, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlTooltip,
+  GlTooltipDirective,
+  GlButton,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { sprintf } from '~/locale';
 import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
@@ -22,6 +28,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [relatedIssuableMixin],
   props: {
@@ -84,7 +91,7 @@ export default {
           />
         </div>
         <gl-tooltip :target="() => $refs.iconElementXL">
-          <span v-html="stateTitle /* eslint-disable-line vue/no-v-html */"></span>
+          <span v-safe-html="stateTitle"></span>
         </gl-tooltip>
         <gl-icon
           v-if="confidential"
@@ -110,7 +117,7 @@ export default {
             class="item-path-area item-path-id d-flex align-items-center mr-2 mt-2 mt-xl-0 ml-xl-2"
           >
             <gl-tooltip :target="() => this.$refs.iconElement">
-              <span v-html="stateTitle /* eslint-disable-line vue/no-v-html */"></span>
+              <span v-safe-html="stateTitle"></span>
             </gl-tooltip>
             <span v-gl-tooltip :title="itemPath" class="path-id-text d-inline-block">{{
               itemPath

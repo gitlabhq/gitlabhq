@@ -255,6 +255,28 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe '#db' do
+    let(:rails_env) { 'development' }
+
+    subject { described_class.new(rails_env).db }
+
+    context 'with old format' do
+      let(:config_file_name) { config_old_format_host }
+
+      it 'returns the correct db' do
+        expect(subject).to eq(redis_database)
+      end
+    end
+
+    context 'with new format' do
+      let(:config_file_name) { config_new_format_host }
+
+      it 'returns the correct db' do
+        expect(subject).to eq(redis_database)
+      end
+    end
+  end
+
   describe '#sentinels' do
     subject { described_class.new(rails_env).sentinels }
 
@@ -326,6 +348,12 @@ RSpec.shared_examples "redis_shared_examples" do
       allow(described_class).to receive(:_raw_config) { "# development: true" }
 
       expect(subject.send(:fetch_config)).to eq false
+    end
+
+    it 'has a value for the legacy default URL' do
+      allow(subject).to receive(:fetch_config) { false }
+
+      expect(subject.send(:raw_config_hash)).to include(url: a_string_matching(%r{\Aredis://localhost:638[012]\Z}))
     end
   end
 

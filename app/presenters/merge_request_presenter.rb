@@ -8,9 +8,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
+  delegator_override_with Gitlab::Utils::StrongMemoize # TODO: Remove `Gitlab::Utils::StrongMemoize` inclusion as it's duplicate
+
   APPROVALS_WIDGET_BASE_TYPE = 'base'
 
-  presents :merge_request
+  presents ::MergeRequest, as: :merge_request
 
   def ci_status
     if pipeline
@@ -183,6 +185,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
+  delegator_override :can_remove_source_branch?
   def can_remove_source_branch?
     source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
   end
@@ -202,6 +205,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  delegator_override :subscribed?
   def subscribed?
     merge_request.subscribed?(current_user, merge_request.target_project)
   end

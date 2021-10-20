@@ -149,7 +149,7 @@ class Note < ApplicationRecord
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
 
   before_validation :nullify_blank_type, :nullify_blank_line_code
-  after_save :keep_around_commit, if: :for_project_noteable?, unless: :importing?
+  after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
   after_save :expire_etag_cache, unless: :importing?
   after_save :touch_noteable, unless: :importing?
   after_destroy :expire_etag_cache
@@ -355,8 +355,6 @@ class Note < ApplicationRecord
   end
 
   def noteable_author?(noteable)
-    return false unless ::Feature.enabled?(:show_author_on_note, project)
-
     noteable.author == self.author
   end
 

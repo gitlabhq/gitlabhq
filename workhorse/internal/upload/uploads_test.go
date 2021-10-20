@@ -271,19 +271,19 @@ func TestUploadProcessingFile(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		preauth api.Response
+		preauth *api.Response
 	}{
 		{
 			name:    "FileStore Upload",
-			preauth: api.Response{TempPath: tempPath},
+			preauth: &api.Response{TempPath: tempPath},
 		},
 		{
 			name:    "ObjectStore Upload",
-			preauth: api.Response{RemoteObject: api.RemoteObject{StoreURL: storeUrl}},
+			preauth: &api.Response{RemoteObject: api.RemoteObject{StoreURL: storeUrl}},
 		},
 		{
 			name: "ObjectStore and FileStore Upload",
-			preauth: api.Response{
+			preauth: &api.Response{
 				TempPath:     tempPath,
 				RemoteObject: api.RemoteObject{StoreURL: storeUrl},
 			},

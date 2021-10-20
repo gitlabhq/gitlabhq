@@ -18,6 +18,7 @@ module Avatarable
     prepend ShadowMethods
     include ObjectStorage::BackgroundMove
     include Gitlab::Utils::StrongMemoize
+    include ApplicationHelper
 
     validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
     validates :avatar, file_size: { maximum: MAXIMUM_FILE_SIZE }, if: :avatar_changed?
@@ -110,7 +111,7 @@ module Avatarable
 
   def retrieve_upload_from_batch(identifier)
     BatchLoader.for(identifier: identifier, model: self)
-               .batch(key: self.class, cache: true, replace_methods: false) do |upload_params, loader, args|
+               .batch(key: self.class) do |upload_params, loader, args|
       model_class = args[:key]
       paths = upload_params.flat_map do |params|
         params[:model].upload_paths(params[:identifier])

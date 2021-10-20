@@ -19,11 +19,10 @@ module AuthorizedProjectUpdate
     feature_category :authentication_and_authorization
     urgency :low
     queue_namespace :authorized_project_update
-    # This job will not be deduplicated since it is marked with
-    # `data_consistency :delayed` and not `idempotent!`
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/325291
+
     deduplicate :until_executing, including_scheduled: true
     data_consistency :delayed
+    idempotent!
 
     def perform(start_user_id, end_user_id)
       User.where(id: start_user_id..end_user_id).find_each do |user| # rubocop: disable CodeReuse/ActiveRecord

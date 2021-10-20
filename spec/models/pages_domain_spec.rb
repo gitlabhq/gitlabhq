@@ -94,7 +94,7 @@ RSpec.describe PagesDomain do
 
       with_them do
         it "is adds the expected errors" do
-          expect(pages_domain.errors.keys).to eq errors_on
+          expect(pages_domain.errors.attribute_names).to eq errors_on
         end
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe PagesDomain do
         it "adds error to certificate" do
           domain.valid?
 
-          expect(domain.errors.keys).to contain_exactly(:key, :certificate)
+          expect(domain.errors.attribute_names).to contain_exactly(:key, :certificate)
         end
       end
 
@@ -165,7 +165,7 @@ RSpec.describe PagesDomain do
 
           domain.valid?
 
-          expect(domain.errors.keys).to contain_exactly(:key)
+          expect(domain.errors.attribute_names).to contain_exactly(:key)
         end
       end
     end
@@ -284,6 +284,19 @@ RSpec.describe PagesDomain do
       # It will be if ca-certificates is installed on Debian/Ubuntu/Alpine
 
       let(:domain) { build(:pages_domain, :with_trusted_chain) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    # The LetsEncrypt DST Root CA X3 expired on 2021-09-30, but the
+    # cross-sign in ISRG Root X1 enables it to function provided a chain
+    # of trust can be established with the system store. See:
+    #
+    # 1. https://community.letsencrypt.org/t/production-chain-changes/150739
+    # 2. https://letsencrypt.org/2020/12/21/extending-android-compatibility.html
+    # 3. https://www.openssl.org/blog/blog/2021/09/13/LetsEncryptRootCertExpire/
+    context 'with a LetsEncrypt bundle with an expired DST Root CA X3' do
+      let(:domain) { build(:pages_domain, :letsencrypt_expired_x3_root) }
 
       it { is_expected.to be_truthy }
     end

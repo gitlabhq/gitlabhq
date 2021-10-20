@@ -21,10 +21,6 @@ RSpec.describe Projects::JobsController, '(JavaScript fixtures)', type: :control
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('jobs/')
-  end
-
   before do
     sign_in(user)
   end

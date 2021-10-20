@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
   let(:env) { {} }
   let(:subscriber) { described_class.new }
-  let(:connection) { ActiveRecord::Base.connection }
+  let(:connection) { ActiveRecord::Base.retrieve_connection }
   let(:db_config_name) { ::Gitlab::Database.db_config_name(connection) }
 
   describe '#transaction' do
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         end
 
         it_behaves_like 'record ActiveRecord metrics'
-        it_behaves_like 'store ActiveRecord info in RequestStore'
+        it_behaves_like 'store ActiveRecord info in RequestStore', :primary
       end
     end
 
@@ -194,10 +194,6 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
       with_them do
         let(:payload) { { name: name, sql: sql(sql_query, comments: comments), connection: connection } }
-
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-        end
 
         context 'query using a connection to a replica' do
           before do

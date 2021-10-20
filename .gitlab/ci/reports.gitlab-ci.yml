@@ -1,7 +1,7 @@
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/License-Scanning.gitlab-ci.yml
 
@@ -13,6 +13,7 @@ code_quality:
     paths:
       - gl-code-quality-report.json  # GitLab-specific
   rules: !reference [".reports:rules:code_quality", rules]
+  allow_failure: true
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
@@ -27,16 +28,13 @@ code_quality:
   variables:
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
     SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
-    SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint
+    SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan
 
 brakeman-sast:
-  rules: !reference [".reports:rules:sast", rules]
-
-nodejs-scan-sast:
-  rules: !reference [".reports:rules:sast", rules]
+  rules: !reference [".reports:rules:brakeman-sast", rules]
 
 semgrep-sast:
-  rules: !reference [".reports:rules:sast", rules]
+  rules: !reference [".reports:rules:semgrep-sast", rules]
 
 gosec-sast:
   variables:
@@ -52,7 +50,7 @@ gosec-sast:
   cache:
     paths:
       - vendor/go
-  rules: !reference [".reports:rules:sast", rules]
+  rules: !reference [".reports:rules:gosec-sast", rules]
 
 .secret-analyzer:
   extends: .default-retry
@@ -73,6 +71,7 @@ secret_detection:
   needs: []
   variables:
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp"  # GitLab-specific
+    DS_EXCLUDED_ANALYZERS: "gemnasium-maven"
   artifacts:
     paths:
       - gl-dependency-scanning-report.json  # GitLab-specific
@@ -82,11 +81,6 @@ gemnasium-dependency_scanning:
   before_script:
     # git-lfs is needed for auto-remediation
     - apk add git-lfs
-  after_script:
-    # Post-processing
-    - apk add jq
-    # Lower execa severity based on https://gitlab.com/gitlab-org/gitlab/-/issues/223859#note_452922390
-    - jq '(.vulnerabilities[] | select (.cve == "yarn.lock:execa:gemnasium:05cfa2e8-2d0c-42c1-8894-638e2f12ff3d")).severity = "Medium"' gl-dependency-scanning-report.json > temp.json && mv temp.json gl-dependency-scanning-report.json
   rules: !reference [".reports:rules:gemnasium-dependency_scanning", rules]
 
 bundler-audit-dependency_scanning:
@@ -101,8 +95,7 @@ gemnasium-python-dependency_scanning:
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
 .package_hunter-base:
-  extends:
-    - .default-retry
+  extends: .default-retry
   stage: test
   image:
     name: registry.gitlab.com/gitlab-com/gl-security/security-research/package-hunter-cli:1.1.0
@@ -116,6 +109,8 @@ gemnasium-python-dependency_scanning:
   before_script:
     - rm -r spec locale .git app/assets/images doc/
     - cd .. && tar -I "gzip --best" -cf gitlab.tgz gitlab/
+  script:
+    - node /usr/src/app/cli.js analyze --format gitlab --manager ${PACKAGE_MANAGER} gitlab.tgz | tee ${CI_PROJECT_DIR}/gl-dependency-scanning-report.json
   artifacts:
     paths:
       - gl-dependency-scanning-report.json
@@ -127,15 +122,15 @@ package_hunter-yarn:
   extends:
     - .package_hunter-base
     - .reports:rules:package_hunter-yarn
-  script:
-    - node /usr/src/app/cli.js analyze --format gitlab --manager yarn gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
+  variables:
+    PACKAGE_MANAGER: yarn
 
 package_hunter-bundler:
   extends:
     - .package_hunter-base
     - .reports:rules:package_hunter-bundler
-  script:
-    - node /usr/src/app/cli.js analyze --format gitlab --manager bundler gitlab.tgz | tee $CI_PROJECT_DIR/gl-dependency-scanning-report.json
+  variables:
+    PACKAGE_MANAGER: bundler
 
 license_scanning:
   extends: .default-retry

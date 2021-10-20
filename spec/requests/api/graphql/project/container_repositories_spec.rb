@@ -12,11 +12,12 @@ RSpec.describe 'getting container repositories in a project' do
   let_it_be(:container_repositories) { [container_repository, container_repositories_delete_scheduled, container_repositories_delete_failed].flatten }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
+  let(:excluded_fields) { %w[pipeline jobs] }
   let(:container_repositories_fields) do
     <<~GQL
       edges {
         node {
-          #{all_graphql_fields_for('container_repositories'.classify, excluded: %w(pipeline jobs))}
+          #{all_graphql_fields_for('container_repositories'.classify, excluded: excluded_fields)}
         }
       }
     GQL
@@ -151,6 +152,12 @@ RSpec.describe 'getting container repositories in a project' do
     end
   end
 
+  it_behaves_like 'handling graphql network errors with the container registry'
+
+  it_behaves_like 'not hitting graphql network errors with the container registry' do
+    let(:excluded_fields) { %w[pipeline jobs tags tagsCount] }
+  end
+
   it 'returns the total count of container repositories' do
     subject
 
@@ -190,7 +197,7 @@ RSpec.describe 'getting container repositories in a project' do
         it_behaves_like 'sorted paginated query' do
           let(:sort_param) { :NAME_ASC }
           let(:first_param) { 2 }
-          let(:expected_results) { [container_repository2.name, container_repository1.name, container_repository4.name, container_repository3.name, container_repository5.name] }
+          let(:all_records) { [container_repository2.name, container_repository1.name, container_repository4.name, container_repository3.name, container_repository5.name] }
         end
       end
 
@@ -198,7 +205,7 @@ RSpec.describe 'getting container repositories in a project' do
         it_behaves_like 'sorted paginated query' do
           let(:sort_param) { :NAME_DESC }
           let(:first_param) { 2 }
-          let(:expected_results) { [container_repository5.name, container_repository3.name, container_repository4.name, container_repository1.name, container_repository2.name] }
+          let(:all_records) { [container_repository5.name, container_repository3.name, container_repository4.name, container_repository1.name, container_repository2.name] }
         end
       end
     end

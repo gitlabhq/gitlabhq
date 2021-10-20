@@ -30,7 +30,7 @@ module Gitlab
           # Returns a class which inherits from the BaseService
           # class that can be used to obtain a dashboard for
           # the provided params.
-          # @return [Gitlab::Metrics::Dashboard::Services::BaseService]
+          # @return [Metrics::Dashboard::BaseService]
           def call(params)
             service = services.find do |service_class|
               service_class.valid_params?(params)

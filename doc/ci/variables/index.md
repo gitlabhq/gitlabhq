@@ -191,7 +191,7 @@ The output is:
 
 ### Add a CI/CD variable to a group
 
-> Support for [environment scopes](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) added to GitLab Premium in 13.11
+> Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
 
 To make a CI/CD variable available to all projects in a group, define a group CI/CD variable.
 
@@ -244,7 +244,7 @@ To add an instance variable:
 1. Select the **Add variable** button, and fill in the details:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
-   - **Value**: [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),
+   - **Value**: In [GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),
      10,000 characters is allowed. This is also bounded by the limits of the selected
      runner operating system. In GitLab 13.0 to 13.2, 700 characters is allowed.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
@@ -301,7 +301,7 @@ An alternative to `File` type variables is to:
 
 ```shell
 # Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
-echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
+cat "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
 # Pass the newly created file to kubectl
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
 ```
@@ -346,9 +346,9 @@ The value of the variable must:
 - Be a single line.
 - Be 8 characters or longer, consisting only of:
   - Characters from the Base64 alphabet (RFC4648).
-  - The `@` and `:` characters ([In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043) and later).
-  - The `.` character ([In GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022) and later).
-  - The `~` character ([In GitLab 13.12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517) and later).
+  - The `@` and `:` characters (In [GitLab 12.2 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043)).
+  - The `.` character (In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022)).
+  - The `~` character (In [GitLab 13.12 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517)).
 - Not match the name of an existing predefined or custom CI/CD variable.
 
 NOTE:

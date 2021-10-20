@@ -34,15 +34,16 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
     let(:identifier) { html[/.*fnref1-(\d+).*/, 1] }
     let(:footnote_markdown) do
       <<~EOF
-        first[^1] and second[^second]
+        first[^1] and second[^second] and twenty[^twenty]
         [^1]: one
         [^second]: two
+        [^twenty]: twenty
       EOF
     end
 
     let(:filtered_footnote) do
       <<~EOF
-        <p dir="auto">first<sup class="footnote-ref"><a href="#fn1-#{identifier}" id="fnref1-#{identifier}">1</a></sup> and second<sup class="footnote-ref"><a href="#fn2-#{identifier}" id="fnref2-#{identifier}">2</a></sup></p>
+        <p dir="auto">first<sup class="footnote-ref"><a href="#fn1-#{identifier}" id="fnref1-#{identifier}">1</a></sup> and second<sup class="footnote-ref"><a href="#fn2-#{identifier}" id="fnref2-#{identifier}">2</a></sup> and twenty<sup class="footnote-ref"><a href="#fn3-#{identifier}" id="fnref3-#{identifier}">3</a></sup></p>
 
         <section class="footnotes"><ol>
         <li id="fn1-#{identifier}">
@@ -50,6 +51,9 @@ RSpec.describe Banzai::Pipeline::FullPipeline do
         </li>
         <li id="fn2-#{identifier}">
         <p>two <a href="#fnref2-#{identifier}" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+        </li>
+        <li id="fn3-#{identifier}">
+        <p>twenty <a href="#fnref3-#{identifier}" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
         </li>
         </ol></section>
       EOF

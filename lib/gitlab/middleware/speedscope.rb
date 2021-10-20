@@ -19,11 +19,12 @@ module Gitlab
         require 'stackprof'
 
         begin
+          mode = stackprof_mode(request)
           flamegraph = ::StackProf.run(
-            mode: :wall,
+            mode: mode,
             raw: true,
             aggregate: false,
-            interval: ::Gitlab::StackProf::DEFAULT_INTERVAL_US
+            interval: ::Gitlab::StackProf.interval(mode)
           ) do
             _, _, body = @app.call(env)
           end
@@ -64,7 +65,7 @@ module Gitlab
                 var iframe = document.createElement('IFRAME');
                 iframe.setAttribute('id', 'speedscope-iframe');
                 document.body.appendChild(iframe);
-                var iframeUrl = '#{speedscope_path}#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)}';
+                var iframeUrl = '#{speedscope_path}#profileURL=' + objUrl + '&title=' + 'Flamegraph for #{CGI.escape(path)} in #{stackprof_mode(request)} mode';
                 iframe.setAttribute('src', iframeUrl);
               </script>
             </body>
@@ -72,6 +73,17 @@ module Gitlab
         HTML
 
         [200, headers, [html]]
+      end
+
+      def stackprof_mode(request)
+        case request.params['stackprof_mode']&.to_sym
+        when :cpu
+          :cpu
+        when :object
+          :object
+        else
+          :wall
+        end
       end
     end
   end

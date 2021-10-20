@@ -4,12 +4,12 @@ exports[`SplitButton renders actionItems 1`] = `
 <gl-dropdown-stub
   category="primary"
   clearalltext="Clear all"
+  clearalltextclass="gl-px-5"
   headertext=""
   hideheaderborder="true"
   highlighteditemstitle="Selected"
   highlighteditemstitleclass="gl-px-5"
   menu-class=""
-  showhighlighteditemstitle="true"
   size="medium"
   split="true"
   text="professor"

@@ -1,10 +1,10 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import data from 'test_fixtures/deploy_keys/keys.json';
 import actionBtn from '~/deploy_keys/components/action_btn.vue';
 import eventHub from '~/deploy_keys/eventhub';
 
 describe('Deploy keys action btn', () => {
-  const data = getJSONFixture('deploy_keys/keys.json');
   const deployKey = data.enabled_keys[0];
   let wrapper;
 

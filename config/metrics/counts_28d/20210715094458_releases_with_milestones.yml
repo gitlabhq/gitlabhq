@@ -1,0 +1,23 @@
+---
+key_path: usage_activity_by_stage_monthly.release.releases_with_milestones
+description: Unique users creating releases with milestones associated
+performance_indicator_type: [smau]
+product_section: ops
+product_stage: release
+product_group: 'group::release'
+product_category: Release Orchestration
+value_type: number
+status: active
+milestone: "14.4"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71287'
+time_frame: 28d
+data_source: database
+instrumentation_class: 'CountUsersAssociatingMilestonesToReleasesMetric'
+data_category: Optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

@@ -51,7 +51,7 @@ module API
         end
       end
       post do
-        response = BulkImportService.new(
+        response = ::BulkImports::CreateService.new(
           current_user,
           params[:entities],
           url: params[:configuration][:url],

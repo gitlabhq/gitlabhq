@@ -20,7 +20,7 @@ module Gitlab
             @description = description
           end
 
-          def to_hash
+          def to_h
             {
               flag_type: flag_type,
               origin: origin,

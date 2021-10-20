@@ -9,6 +9,7 @@ RSpec.describe Groups::Registry::RepositoriesController do
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
+    stub_container_registry_info
     group.add_reporter(user)
     login_as(user)
   end

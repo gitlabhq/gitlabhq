@@ -101,11 +101,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     it 'includes accurate usage_activity_by_stage data' do
       for_defined_days_back do
         user = create(:user)
-        cluster = create(:cluster, user: user)
-        create(:clusters_applications_cert_manager, :installed, cluster: cluster)
-        create(:clusters_applications_helm, :installed, cluster: cluster)
-        create(:clusters_applications_ingress, :installed, cluster: cluster)
-        create(:clusters_applications_knative, :installed, cluster: cluster)
+        create(:cluster, user: user)
         create(:cluster, :disabled, user: user)
         create(:cluster_provider_gcp, :created)
         create(:cluster_provider_aws, :created)
@@ -118,10 +114,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       expect(described_class.usage_activity_by_stage_configure({})).to include(
-        clusters_applications_cert_managers: 2,
-        clusters_applications_helm: 2,
-        clusters_applications_ingress: 2,
-        clusters_applications_knative: 2,
         clusters_management_project: 2,
         clusters_disabled: 4,
         clusters_enabled: 12,
@@ -136,10 +128,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         project_clusters_enabled: 10
       )
       expect(described_class.usage_activity_by_stage_configure(described_class.monthly_time_range_db_params)).to include(
-        clusters_applications_cert_managers: 1,
-        clusters_applications_helm: 1,
-        clusters_applications_ingress: 1,
-        clusters_applications_knative: 1,
         clusters_management_project: 1,
         clusters_disabled: 2,
         clusters_enabled: 6,
@@ -392,7 +380,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         user = create(:user, dashboard: 'operations')
         cluster = create(:cluster, user: user)
         project = create(:project, creator: user)
-        create(:clusters_applications_prometheus, :installed, cluster: cluster)
+        create(:clusters_integrations_prometheus, cluster: cluster)
         create(:project_tracing_setting)
         create(:project_error_tracking_setting)
         create(:incident)
@@ -402,7 +390,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       expect(described_class.usage_activity_by_stage_monitor({})).to include(
         clusters: 2,
-        clusters_applications_prometheus: 2,
+        clusters_integrations_prometheus: 2,
         operations_dashboard_default_dashboard: 2,
         projects_with_tracing_enabled: 2,
         projects_with_error_tracking_enabled: 2,
@@ -414,7 +402,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       data_28_days = described_class.usage_activity_by_stage_monitor(described_class.monthly_time_range_db_params)
       expect(data_28_days).to include(
         clusters: 1,
-        clusters_applications_prometheus: 1,
+        clusters_integrations_prometheus: 1,
         operations_dashboard_default_dashboard: 1,
         projects_with_tracing_enabled: 1,
         projects_with_error_tracking_enabled: 1,
@@ -469,7 +457,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       for_defined_days_back do
         user = create(:user)
         create(:deployment, :failed, user: user)
-        create(:release, author: user)
+        release = create(:release, author: user)
+        create(:milestone, project: release.project, releases: [release])
         create(:deployment, :success, user: user)
       end
 
@@ -477,13 +466,15 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         deployments: 2,
         failed_deployments: 2,
         releases: 2,
-        successful_deployments: 2
+        successful_deployments: 2,
+        releases_with_milestones: 2
       )
       expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(
         deployments: 1,
         failed_deployments: 1,
         releases: 1,
-        successful_deployments: 1
+        successful_deployments: 1,
+        releases_with_milestones: 1
       )
     end
   end
@@ -499,7 +490,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         create(:ci_pipeline, :repository_source, user: user)
         create(:ci_pipeline_schedule, owner: user)
         create(:ci_trigger, owner: user)
-        create(:clusters_applications_runner, :installed)
       end
 
       expect(described_class.usage_activity_by_stage_verify({})).to include(
@@ -510,8 +500,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         ci_pipeline_config_repository: 2,
         ci_pipeline_schedules: 2,
         ci_pipelines: 2,
-        ci_triggers: 2,
-        clusters_applications_runner: 2
+        ci_triggers: 2
       )
       expect(described_class.usage_activity_by_stage_verify(described_class.monthly_time_range_db_params)).to include(
         ci_builds: 1,
@@ -521,8 +510,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         ci_pipeline_config_repository: 1,
         ci_pipeline_schedules: 1,
         ci_pipelines: 1,
-        ci_triggers: 1,
-        clusters_applications_runner: 1
+        ci_triggers: 1
       )
     end
   end
@@ -604,17 +592,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(count_data[:clusters_platforms_eks]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
-      expect(count_data[:clusters_applications_helm]).to eq(1)
-      expect(count_data[:clusters_applications_ingress]).to eq(1)
-      expect(count_data[:clusters_applications_cert_managers]).to eq(1)
-      expect(count_data[:clusters_applications_crossplane]).to eq(1)
-      expect(count_data[:clusters_applications_prometheus]).to eq(1)
-      expect(count_data[:clusters_applications_runner]).to eq(1)
-      expect(count_data[:clusters_applications_knative]).to eq(1)
-      expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
+      expect(count_data[:clusters_integrations_elastic_stack]).to eq(1)
+      expect(count_data[:clusters_integrations_prometheus]).to eq(1)
       expect(count_data[:grafana_integrated_projects]).to eq(2)
-      expect(count_data[:clusters_applications_jupyter]).to eq(1)
-      expect(count_data[:clusters_applications_cilium]).to eq(1)
       expect(count_data[:clusters_management_project]).to eq(1)
       expect(count_data[:kubernetes_agents]).to eq(2)
       expect(count_data[:kubernetes_agents_with_token]).to eq(1)
@@ -662,13 +642,13 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       subject { described_class.data[:counts] }
 
       it 'gathers usage data' do
-        expect(subject[:projects_with_expiration_policy_enabled]).to eq 18
+        expect(subject[:projects_with_expiration_policy_enabled]).to eq 19
         expect(subject[:projects_with_expiration_policy_disabled]).to eq 5
 
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_unset]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_1]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_5]).to eq 1
-        expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 12
+        expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_10]).to eq 13
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_25]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_keep_n_set_to_50]).to eq 1
 
@@ -676,9 +656,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_7d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_14d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_30d]).to eq 1
+        expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_60d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_older_than_set_to_90d]).to eq 14
 
-        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 14
+        expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1d]).to eq 15
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_7d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_14d]).to eq 1
         expect(subject[:projects_with_expiration_policy_enabled_with_cadence_set_to_1month]).to eq 1
@@ -743,7 +724,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       expect(counts_monthly[:projects_with_alerts_created]).to eq(1)
       expect(counts_monthly[:projects]).to eq(1)
       expect(counts_monthly[:packages]).to eq(1)
-      expect(counts_monthly[:promoted_issues]).to eq(1)
+      expect(counts_monthly[:promoted_issues]).to eq(Gitlab::UsageData::DEPRECATED_VALUE)
     end
   end
 
@@ -1093,6 +1074,10 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       it 'gathers service_ping_features_enabled' do
         expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
       end
+
+      it 'gathers user_cap_feature_enabled' do
+        expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
+      end
     end
   end
 
@@ -1435,50 +1420,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         }
 
         expect(subject).to eq(expected_data)
-      end
-    end
-  end
-
-  describe '.snowplow_event_counts' do
-    let_it_be(:time_period) { { collector_tstamp: 8.days.ago..1.day.ago } }
-
-    context 'when self-monitoring project exists' do
-      let_it_be(:project) { create(:project) }
-
-      before do
-        stub_application_setting(self_monitoring_project: project)
-      end
-
-      context 'and product_analytics FF is enabled for it' do
-        before do
-          stub_feature_flags(product_analytics_tracking: true)
-
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 2.days.ago)
-          create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote', collector_tstamp: 9.days.ago)
-
-          create(:product_analytics_event, project: project, se_category: 'foo', se_action: 'bar', collector_tstamp: 2.days.ago)
-        end
-
-        it 'returns promoted_issues for the time period' do
-          expect(described_class.snowplow_event_counts(time_period)[:promoted_issues]).to eq(1)
-        end
-      end
-
-      context 'and product_analytics FF is disabled' do
-        before do
-          stub_feature_flags(product_analytics_tracking: false)
-        end
-
-        it 'returns an empty hash' do
-          expect(described_class.snowplow_event_counts(time_period)).to eq({})
-        end
-      end
-    end
-
-    context 'when self-monitoring project does not exist' do
-      it 'returns an empty hash' do
-        expect(described_class.snowplow_event_counts(time_period)).to eq({})
       end
     end
   end

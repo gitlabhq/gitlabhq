@@ -1,9 +1,3 @@
-.centered-light-block {
-  text-align: center;
-  color: $gl-text-color;
-  margin: 20px;
-}
-
 .nothing-here-block {
   text-align: center;
   padding: 16px;
@@ -83,22 +77,6 @@
   > p:last-child {
     margin-bottom: 0;
   }
-
-  .block-controls {
-    display: flex;
-    justify-content: flex-end;
-    flex: 1;
-
-    .control {
-      float: left;
-      margin-left: 10px;
-    }
-  }
-
-  &.build-content {
-    background-color: $white;
-    border-top: 0;
-  }
 }
 
 .sub-header-block {
@@ -169,31 +147,6 @@
     }
   }
 
-  &.groups-cover-block {
-    background: $white;
-    border-bottom: 1px solid $border-color;
-    text-align: left;
-    padding: 24px 0;
-
-    .group-info {
-      .cover-title {
-        margin-top: 9px;
-      }
-
-      p {
-        margin-bottom: 0;
-      }
-    }
-
-    @include media-breakpoint-down(xs) {
-      text-align: center;
-
-      .avatar {
-        float: none;
-      }
-    }
-  }
-
   &.user-cover-block {
     padding: 24px 0 0;
 
@@ -214,19 +167,6 @@
       margin-right: auto;
     }
   }
-
-  .group-info {
-    h1 {
-      display: inline;
-      font-weight: $gl-font-weight-normal;
-      font-size: 24px;
-      color: $gl-text-color;
-    }
-  }
-}
-
-.block-connector {
-  margin-top: -1px;
 }
 
 .content-block {
@@ -322,7 +262,7 @@
     display: inline-block;
   }
 
-  .btn {
+  .btn:not(.split-content-button):not(.dropdown-toggle-split) {
     margin: $gl-padding-8 $gl-padding-4;
 
     @include media-breakpoint-down(xs) {
@@ -330,10 +270,6 @@
       margin: $gl-padding-8 0;
     }
   }
-}
-
-.flex-right {
-  margin-left: auto;
 }
 
 .code-block {

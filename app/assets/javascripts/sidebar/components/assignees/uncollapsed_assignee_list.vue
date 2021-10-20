@@ -82,8 +82,12 @@ export default {
     </div>
   </assignee-avatar-link>
   <div v-else>
-    <div class="user-list">
-      <div v-for="user in uncollapsedUsers" :key="user.id" class="user-item">
+    <div class="gl-display-flex gl-flex-wrap">
+      <div
+        v-for="user in uncollapsedUsers"
+        :key="user.id"
+        class="user-item gl-display-inline-block"
+      >
         <assignee-avatar-link :user="user" :issuable-type="issuableType" />
       </div>
     </div>

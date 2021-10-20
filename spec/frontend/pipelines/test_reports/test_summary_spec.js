@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { getJSONFixture } from 'helpers/fixtures';
+import testReports from 'test_fixtures/pipelines/test_report.json';
 import Summary from '~/pipelines/components/test_reports/test_summary.vue';
 import { formattedTime } from '~/pipelines/stores/test_reports/utils';
 
@@ -8,7 +8,7 @@ describe('Test reports summary', () => {
 
   const {
     test_suites: [testSuite],
-  } = getJSONFixture('pipelines/test_report.json');
+  } = testReports;
 
   const backButton = () => wrapper.find('.js-back-button');
   const totalTests = () => wrapper.find('.js-total-tests');

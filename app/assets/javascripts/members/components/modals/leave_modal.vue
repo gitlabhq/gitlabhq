@@ -3,7 +3,8 @@ import { GlModal, GlForm, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
-import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
+import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
 import { LEAVE_MODAL_ID } from '../../constants';
 
 export default {
@@ -20,7 +21,7 @@ export default {
   csrf,
   modalId: LEAVE_MODAL_ID,
   modalContent: s__('Members|Are you sure you want to leave "%{source}"?'),
-  components: { GlModal, GlForm, GlSprintf, OncallSchedulesList },
+  components: { GlModal, GlForm, GlSprintf, UserDeletionObstaclesList },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -43,11 +44,11 @@ export default {
     modalTitle() {
       return sprintf(s__('Members|Leave "%{source}"'), { source: this.member.source.fullName });
     },
-    schedules() {
-      return this.member.user?.oncallSchedules;
+    obstacles() {
+      return parseUserDeletionObstacles(this.member.user);
     },
-    isPartOfOnCallSchedules() {
-      return this.schedules?.length;
+    hasObstaclesToUserDeletion() {
+      return this.obstacles?.length;
     },
   },
   methods: {
@@ -74,9 +75,9 @@ export default {
         </gl-sprintf>
       </p>
 
-      <oncall-schedules-list
-        v-if="isPartOfOnCallSchedules"
-        :schedules="schedules"
+      <user-deletion-obstacles-list
+        v-if="hasObstaclesToUserDeletion"
+        :obstacles="obstacles"
         :is-current-user="true"
       />
 

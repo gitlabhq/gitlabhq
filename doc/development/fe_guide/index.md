@@ -133,9 +133,13 @@ Best practices for monitoring and maximizing frontend performance.
 
 Frontend security practices.
 
-## [Accessibility](accessibility.md)
+## Accessibility
 
-Our accessibility standards and resources.
+Our [accessibility standards and resources](accessibility.md).
+
+## Logging
+
+Best practices for [client-side logging](logging.md) for GitLab frontend development.
 
 ## [Internationalization (i18n) and Translations](../i18n/externalization.md)
 

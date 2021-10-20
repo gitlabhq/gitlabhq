@@ -1,7 +1,7 @@
 import { GlButton, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import DeleteUserModal from '~/admin/users/components/modals/delete_user_modal.vue';
-import OncallSchedulesList from '~/vue_shared/components/oncall_schedules_list.vue';
+import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
 import ModalStub from './stubs/modal_stub';
 
 const TEST_DELETE_USER_URL = 'delete-url';
@@ -25,7 +25,7 @@ describe('User Operation confirmation modal', () => {
   const getUsername = () => findUsernameInput().attributes('value');
   const getMethodParam = () => new FormData(findForm().element).get('_method');
   const getFormAction = () => findForm().attributes('action');
-  const findOnCallSchedulesList = () => wrapper.findComponent(OncallSchedulesList);
+  const findUserDeletionObstaclesList = () => wrapper.findComponent(UserDeletionObstaclesList);
 
   const setUsername = (username) => {
     findUsernameInput().vm.$emit('input', username);
@@ -33,7 +33,7 @@ describe('User Operation confirmation modal', () => {
 
   const username = 'username';
   const badUsername = 'bad_username';
-  const oncallSchedules = '["schedule1", "schedule2"]';
+  const userDeletionObstacles = '["schedule1", "policy1"]';
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DeleteUserModal, {
@@ -46,7 +46,7 @@ describe('User Operation confirmation modal', () => {
         deleteUserUrl: TEST_DELETE_USER_URL,
         blockUserUrl: TEST_BLOCK_USER_URL,
         csrfToken: TEST_CSRF,
-        oncallSchedules,
+        userDeletionObstacles,
         ...props,
       },
       stubs: {
@@ -150,18 +150,18 @@ describe('User Operation confirmation modal', () => {
     });
   });
 
-  describe('Related oncall-schedules list', () => {
-    it('does NOT render the list when user has no related schedules', () => {
-      createComponent({ oncallSchedules: '[]' });
-      expect(findOnCallSchedulesList().exists()).toBe(false);
+  describe('Related user-deletion-obstacles list', () => {
+    it('does NOT render the list when user has no related obstacles', () => {
+      createComponent({ userDeletionObstacles: '[]' });
+      expect(findUserDeletionObstaclesList().exists()).toBe(false);
     });
 
-    it('renders the list when user has related schedules', () => {
+    it('renders the list when user has related obstalces', () => {
       createComponent();
 
-      const schedules = findOnCallSchedulesList();
-      expect(schedules.exists()).toBe(true);
-      expect(schedules.props('schedules')).toEqual(JSON.parse(oncallSchedules));
+      const obstacles = findUserDeletionObstaclesList();
+      expect(obstacles.exists()).toBe(true);
+      expect(obstacles.props('obstacles')).toEqual(JSON.parse(userDeletionObstacles));
     });
   });
 });

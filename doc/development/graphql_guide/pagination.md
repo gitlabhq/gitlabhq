@@ -338,9 +338,9 @@ describe 'sorting and pagination' do
       let(:ordered_issues) { issues.sort_by(&:weight) }
 
       it_behaves_like 'sorted paginated query' do
-        let(:sort_param)       { :WEIGHT_ASC }
-        let(:first_param)      { 2 }
-        let(:expected_results) { ordered_issues.map(&:iid) }
+        let(:sort_param) { :WEIGHT_ASC }
+        let(:first_param) { 2 }
+        let(:all_records) { ordered_issues.map(&:iid) }
       end
     end
   end

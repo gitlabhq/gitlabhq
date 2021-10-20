@@ -8,7 +8,7 @@ import {
   summaryCounts,
 } from '~/vue_shared/security_reports/store/getters';
 import createSastState from '~/vue_shared/security_reports/store/modules/sast/state';
-import createSecretScanningState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
+import createSecretDetectionState from '~/vue_shared/security_reports/store/modules/secret_detection/state';
 import createState from '~/vue_shared/security_reports/store/state';
 import { groupedTextBuilder } from '~/vue_shared/security_reports/store/utils';
 import { CRITICAL, HIGH, LOW } from '~/vulnerabilities/constants';
@@ -21,7 +21,7 @@ describe('Security reports getters', () => {
   beforeEach(() => {
     state = createState();
     state.sast = createSastState();
-    state.secretDetection = createSecretScanningState();
+    state.secretDetection = createSecretDetectionState();
   });
 
   describe('summaryCounts', () => {

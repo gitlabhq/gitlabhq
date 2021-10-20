@@ -26,7 +26,7 @@ RSpec.describe Projects::MoveAccessService do
 
   describe '#execute' do
     shared_examples 'move the accesses' do
-      it do
+      it 'moves the accesses', :sidekiq_inline do
         expect(project_with_access.project_members.count).to eq 4
         expect(project_with_access.project_group_links.count).to eq 3
         expect(project_with_access.authorized_users.count).to eq 4

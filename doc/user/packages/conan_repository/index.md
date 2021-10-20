@@ -9,6 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in GitLab Premium 12.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
 
+WARNING:
+The Conan package registry for GitLab is under development and isn't ready for production use due to
+limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
+work and timelines to make it production ready.
+
 Publish Conan packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
 
@@ -358,7 +363,7 @@ There are two ways to remove a Conan package from the GitLab Package Registry.
 - From the GitLab user interface:
 
   Go to your project's **Packages & Registries > Package Registry**. Remove the
-  package by clicking the red trash icon.
+  package by selecting **Remove repository** (**{remove}**).
 
 ## Search for Conan packages in the Package Registry
 

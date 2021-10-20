@@ -1,12 +1,10 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalRelease from 'test_fixtures/api/releases/release.json';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import EvidenceBlock from '~/releases/components/evidence_block.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-
-const originalRelease = getJSONFixture('api/releases/release.json');
 
 describe('Evidence Block', () => {
   let wrapper;

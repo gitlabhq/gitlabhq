@@ -11,14 +11,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 With Contribution Analytics you can get an overview of the [contribution actions](../../../api/events.md#action-types) in your
 group.
 
-To view the Contribution Analytics, go to your group and select **Analytics > Contribution**.
-
-## Use cases
-
 - Analyze your team's contributions over a period of time, and offer a bonus for the top
   contributors.
 - Identify opportunities for improvement with group members who may benefit from additional
   support.
+
+## View Contribution Analytics
+
+To view Contribution Analytics:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Contribution**.
 
 ## Using Contribution Analytics
 

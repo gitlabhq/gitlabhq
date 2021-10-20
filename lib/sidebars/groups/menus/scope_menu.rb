@@ -21,7 +21,11 @@ module Sidebars
 
         override :extra_nav_link_html_options
         def extra_nav_link_html_options
-          { class: 'context-header' }
+          {
+            class: 'context-header has-tooltip',
+            title: context.group.name,
+            data: { container: 'body', placement: 'right' }
+          }
         end
 
         override :render?

@@ -98,12 +98,14 @@ RSpec.describe 'Projects > Files > User creates a directory', :js do
       expect(page).to have_content(fork_message)
 
       find('.add-to-tree').click
+      wait_for_requests
       click_link('New directory')
       fill_in(:dir_name, with: 'new_directory')
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Create directory')
 
       fork = user.fork_of(project2.reload)
+      wait_for_requests
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
     end

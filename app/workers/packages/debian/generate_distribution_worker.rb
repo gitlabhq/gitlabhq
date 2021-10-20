@@ -2,7 +2,7 @@
 
 module Packages
   module Debian
-    class GenerateDistributionWorker # rubocop:disable Scalability/IdempotentWorker
+    class GenerateDistributionWorker
       include ApplicationWorker
 
       data_consistency :always

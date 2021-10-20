@@ -220,6 +220,7 @@ export default {
         class="gl-h-200! gl-mb-4"
         single-file-selection
         :valid-file-mimetypes="$options.validFileMimetypes"
+        :is-file-valid="() => true"
         @change="setFile"
       >
         <div

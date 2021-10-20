@@ -11,10 +11,6 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('issues/')
-  end
-
   before do
     project.add_maintainer(user)
     sign_in(user)

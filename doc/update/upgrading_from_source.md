@@ -258,6 +258,10 @@ sudo systemctl daemon-reload
 
 ### 10. Install libraries, migrations, etc
 
+Make sure you have the required
+[PostgreSQL extensions](../install/requirements.md#postgresql-requirements),
+then proceed to install the needed libraries:
+
 ```shell
 cd /home/git/gitlab
 
@@ -304,15 +308,18 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
+NOTE:
+If you get any errors concerning Rack attack, see the [13.0](#1301) specific
+upgrade instructions.
+
 ### 13. Update Gitaly
 
 #### Compile Gitaly
 
 ```shell
-cd /home/git/gitaly
-sudo -u git -H git fetch --all --tags --prune
-sudo -u git -H git checkout v$(</home/git/gitlab/GITALY_SERVER_VERSION)
-sudo -u git -H make
+# Fetch Gitaly source with Git and compile with Go
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
 ### 14. Update GitLab Pages
@@ -375,14 +382,13 @@ Additional instructions here.
 
 ### 13.0.1
 
-As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), Rack Attack initializer on GitLab
+As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), the Rack Attack initializer on GitLab
 was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
 If this file exists on your installation, consider creating a backup before updating:
 
 ```shell
 cd /home/git/gitlab
-
-cp config/initializers/rack_attack.rb config/initializers/rack_attack_backup.rb
+cp config/initializers/rack_attack.rb ~/config/initializers/rack_attack_backup.rb
 ```
 
 ## Troubleshooting

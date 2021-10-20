@@ -6,7 +6,6 @@ module Gitlab
     class DummyWorker
       ATTRIBUTE_METHODS = {
         name: :name,
-        feature_category: :get_feature_category,
         has_external_dependencies: :worker_has_external_dependencies?,
         urgency: :get_urgency,
         resource_boundary: :get_worker_resource_boundary,
@@ -24,6 +23,24 @@ module Gitlab
       end
 
       def queue_namespace
+        nil
+      end
+
+      # All dummy workers are unowned; get the feature category from the
+      # context if available.
+      def get_feature_category
+        Gitlab::ApplicationContext.current_context_attribute('meta.feature_category') || :not_owned
+      end
+
+      def feature_category_not_owned?
+        true
+      end
+
+      def get_worker_context
+        nil
+      end
+
+      def context_for_arguments(*)
         nil
       end
 

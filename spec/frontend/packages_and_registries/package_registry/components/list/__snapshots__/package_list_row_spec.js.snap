@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`packages_list_row renders 1`] = `
+<div
+  class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1 gl-border-t-transparent gl-border-b-gray-100"
+  data-qa-selector="package_row"
+>
+  <div
+    class="gl-display-flex gl-align-items-center gl-py-3 gl-px-5"
+  >
+    <!---->
+     
+    <div
+      class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-grow-1"
+    >
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-xs-mb-3 gl-min-w-0 gl-flex-grow-1"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-bold gl-min-h-6 gl-min-w-0"
+        >
+          <div
+            class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0"
+          >
+            <gl-link-stub
+              class="gl-text-body gl-min-w-0"
+              data-qa-selector="package_link"
+              href="http://gdk.test:3000/gitlab-org/gitlab-test/-/packages/111"
+            >
+              <gl-truncate-stub
+                position="end"
+                text="@gitlab-org/package-15"
+              />
+            </gl-link-stub>
+             
+            <!---->
+             
+            <!---->
+          </div>
+           
+          <!---->
+        </div>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1"
+        >
+          <div
+            class="gl-display-flex"
+            data-testid="left-secondary-infos"
+          >
+            <span>
+              1.0.0
+            </span>
+             
+            <!---->
+             
+            <package-icon-and-name-stub>
+              
+        npm
+      
+            </package-icon-and-name-stub>
+             
+            <!---->
+          </div>
+        </div>
+      </div>
+       
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
+      >
+        <div
+          class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-bold gl-min-h-6"
+        >
+          <publish-method-stub />
+        </div>
+         
+        <div
+          class="gl-display-flex gl-align-items-center gl-min-h-6"
+        >
+          <span>
+            Created 
+            <timeago-tooltip-stub
+              cssclass=""
+              time="2020-08-17T14:23:32Z"
+              tooltipplacement="top"
+            />
+          </span>
+        </div>
+      </div>
+    </div>
+     
+    <div
+      class="gl-w-9 gl-display-none gl-sm-display-flex gl-justify-content-end gl-pr-1"
+    >
+      <gl-button-stub
+        aria-label="Remove package"
+        buttontextclasses=""
+        category="secondary"
+        data-testid="action-delete"
+        icon="remove"
+        size="medium"
+        title="Remove package"
+        variant="danger"
+      />
+    </div>
+  </div>
+   
+  <div
+    class="gl-display-flex"
+  >
+    <div
+      class="gl-w-7"
+    />
+     
+    <!---->
+     
+    <div
+      class="gl-w-9"
+    />
+  </div>
+</div>
+`;

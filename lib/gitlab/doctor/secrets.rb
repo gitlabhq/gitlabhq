@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def valid_attribute?(data, attr)
-        data.public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
+        data.send(attr) # rubocop:disable GitlabSecurity/PublicSend
 
         true
       rescue OpenSSL::Cipher::CipherError, TypeError

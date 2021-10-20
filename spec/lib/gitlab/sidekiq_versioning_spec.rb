@@ -29,12 +29,6 @@ RSpec.describe Gitlab::SidekiqVersioning, :redis do
   end
 
   describe '.install!' do
-    it 'prepends SidekiqVersioning::Manager into Sidekiq::Manager' do
-      described_class.install!
-
-      expect(Sidekiq::Manager).to include(Gitlab::SidekiqVersioning::Manager)
-    end
-
     it 'registers all versionless and versioned queues with Redis' do
       described_class.install!
 

@@ -15,6 +15,13 @@ RSpec.describe Gitlab::Database do
     end
   end
 
+  describe '.databases' do
+    it 'stores connections as a HashWithIndifferentAccess' do
+      expect(described_class.databases.has_key?('main')).to be true
+      expect(described_class.databases.has_key?(:main)).to be true
+    end
+  end
+
   describe '.default_pool_size' do
     before do
       allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
@@ -185,10 +192,23 @@ RSpec.describe Gitlab::Database do
 
   describe '.db_config_name' do
     it 'returns the db_config name for the connection' do
-      connection = ActiveRecord::Base.connection
+      model = ActiveRecord::Base
 
-      expect(described_class.db_config_name(connection)).to be_a(String)
-      expect(described_class.db_config_name(connection)).to eq(connection.pool.db_config.name)
+      # This is a ConnectionProxy
+      expect(described_class.db_config_name(model.connection))
+        .to eq('unknown')
+
+      # This is an actual connection
+      expect(described_class.db_config_name(model.retrieve_connection))
+        .to eq('main')
+    end
+
+    context 'when replicas are configured', :database_replica do
+      it 'returns the name for a replica' do
+        replica = ActiveRecord::Base.connection.load_balancer.host
+
+        expect(described_class.db_config_name(replica)).to eq('main_replica')
+      end
     end
   end
 
@@ -279,7 +299,7 @@ RSpec.describe Gitlab::Database do
         expect(event).not_to be_nil
         expect(event.duration).to be > 0.0
         expect(event.payload).to a_hash_including(
-          connection: be_a(ActiveRecord::ConnectionAdapters::AbstractAdapter)
+          connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
         )
       end
     end
@@ -296,7 +316,7 @@ RSpec.describe Gitlab::Database do
         expect(event).not_to be_nil
         expect(event.duration).to be > 0.0
         expect(event.payload).to a_hash_including(
-          connection: be_a(ActiveRecord::ConnectionAdapters::AbstractAdapter)
+          connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
         )
       end
     end
@@ -319,7 +339,7 @@ RSpec.describe Gitlab::Database do
           expect(event).not_to be_nil
           expect(event.duration).to be > 0.0
           expect(event.payload).to a_hash_including(
-            connection: be_a(ActiveRecord::ConnectionAdapters::AbstractAdapter)
+            connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
           )
         end
       end
@@ -340,7 +360,7 @@ RSpec.describe Gitlab::Database do
         expect(event).not_to be_nil
         expect(event.duration).to be > 0.0
         expect(event.payload).to a_hash_including(
-          connection: be_a(ActiveRecord::ConnectionAdapters::AbstractAdapter)
+          connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
         )
       end
     end

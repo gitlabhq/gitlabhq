@@ -58,9 +58,6 @@ module Gitlab
           end
 
           def verify_rules(location)
-            # Behaves like there is no `rules`
-            return location unless ::Feature.enabled?(:ci_include_rules, context.project, default_enabled: :yaml)
-
             return unless Rules.new(location[:rules]).evaluate(context).pass?
 
             location

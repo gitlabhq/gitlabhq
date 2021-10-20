@@ -24,14 +24,16 @@ If you find that you have to add the same badges to several projects, you may wa
 
 To add a new badge to a project:
 
-1. Navigate to your project's **Settings > General > Badges**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Badges**.
 1. Under "Link", enter the URL that the badges should point to and under
    "Badge image URL" the URL of the image that should be displayed.
-1. Submit the badge by clicking the **Add badge** button.
+1. Select **Add badge**.
 
 After adding a badge to a project, you can see it in the list below the form.
-You can edit it by clicking on the pen icon next to it or to delete it by
-clicking on the trash icon.
+You can edit the badge by selecting **Edit** (**{pencil}**) next to it or delete it by
+selecting **Delete** (**{remove}**).
 
 Badges associated with a group can only be edited or deleted on the
 [group level](#group-badges).
@@ -42,13 +44,15 @@ A common project badge presents the GitLab CI pipeline status.
 
 To add this badge to a project:
 
-1. Navigate to your project's **Settings > General > Badges**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Badges**.
 1. Under **Name**, enter _Pipeline Status_.
 1. Under **Link**, enter the following URL:
    `https://gitlab.com/%{project_path}/-/commits/%{default_branch}`
 1. Under **Badge image URL**, enter the following URL:
    `https://gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg`
-1. Submit the badge by clicking the **Add badge** button.
+1. Select **Add badge**.
 
 ## Group badges
 
@@ -60,14 +64,16 @@ project, consider adding them on the [project level](#project-badges) or use
 
 To add a new badge to a group:
 
-1. Navigate to your group's **Settings > General > Badges**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Badges**.
 1. Under "Link", enter the URL that the badges should point to and under
    "Badge image URL" the URL of the image that should be displayed.
-1. Submit the badge by clicking the **Add badge** button.
+1. Select **Add badge**.
 
 After adding a badge to a group, you can see it in the list below the form.
-You can edit the badge by clicking on the pen icon next to it or to delete it
-by clicking on the trash icon.
+You can edit the badge by selecting **Edit** (**{pencil}**) next to it or delete it by
+selecting **Delete** (**{remove}**).
 
 Badges directly associated with a project can be configured on the
 [project level](#project-badges).
@@ -108,7 +114,8 @@ https://gitlab.example.com/<project_path>/-/raw/<default_branch>/my-image.svg
 
 To add a new badge to a group or project with a custom image:
 
-1. Go to your group or project and select **Settings > General**.
+1. On the top bar, select **Menu** and find your group or project.
+1. On the left sidebar, select **Settings > General**.
 1. Expand **Badges**.
 1. Under **Name**, enter the name for the badge.
 1. Under **Link**, enter the URL that the badge should point to.

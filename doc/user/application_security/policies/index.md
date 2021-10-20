@@ -1,18 +1,14 @@
 ---
 stage: Protect
 group: Container Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Policies **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5329) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10. Deployed behind a feature flag, disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the `security_orchestration_policies_configuration` flag](../../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+> - Introduced in GitLab Ultimate 13.10 [with a flag](https://gitlab.com/groups/gitlab-org/-/epics/5329) named `security_orchestration_policies_configuration`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab Ultimate 14.3.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4.
 
 Policies in GitLab provide security teams a way to require scans of their choice to be run
 whenever a project pipeline runs according to the configuration specified. Security teams can
@@ -28,8 +24,8 @@ GitLab supports the following security policies:
 
 The Policies page displays deployed
 policies for all available environments. You can check a
-policy's information (for example description, enforcement
-status, etc.), and create and edit deployed policies:
+policy's information (for example, description or enforcement
+status), and create and edit deployed policies:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Policies**.
@@ -53,7 +49,7 @@ users must make changes by following the
 
 ## Policy editor
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab Ultimate 13.4.
 
 You can use the policy editor to create, edit, and delete policies:
 
@@ -83,7 +79,7 @@ mode to fix your policy before Rule mode is available again.
 
 ## Container Network Policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32365) in GitLab Ultimate 12.9.
 
 The **Container Network Policy** section provides packet flow metrics for
 your application's Kubernetes namespace. This section has the following
@@ -158,7 +154,7 @@ at the bottom of the editor.
 
 ### Configure a Network Policy Alert
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3438) and [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab Ultimate 13.9.
 > - The feature flag was removed and the Threat Monitoring Alerts Project was [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/287676) in GitLab 14.0.
 
 You can use policy alerts to track your policy's impact. Alerts are only available if you've
@@ -255,6 +251,10 @@ The policy editor currently only supports the YAML mode. The Rule mode is tracke
 
 The YAML file with Scan Execution Policies consists of an array of objects matching Scan Execution Policy Schema nested under the `scan_execution_policy` key. You can configure a maximum of 5 policies under the `scan_execution_policy` key.
 
+When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
+If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
+the following sections and tables provide an alternative.
+
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan_execution_policy` | `array` of Scan Execution Policy |  | List of scan execution policies (maximum 5) |
@@ -291,6 +291,8 @@ This rule enforces the defined actions and schedules a scan on the provided date
 
 #### `cluster` schema
 
+Use this schema to define `clusters` objects in the [`schedule` rule type](#schedule-rule-type).
+
 | Field        | Type                | Possible values          | Description |
 |--------------|---------------------|--------------------------|-------------|
 | `containers` | `array` of `string` | | The container name that will be scanned (only the first value is currently supported). |
@@ -323,13 +325,16 @@ Note the following:
 - For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
   are not supported.
 - A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
-  [`historic`](../secret_detection/index.md#full-history-secret-scan)
+  [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
 - A container scanning and cluster image scanning scans configured for the `pipeline` rule type will ignore the cluster defined in the `clusters` object.
   They will use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
   Cluster with name provided in `clusters` object must be created and configured for the project. To be able to successfully perform the `container_scanning`/`cluster_image_scanning` scans for the cluster you must follow instructions for the [Cluster Image Scanning feature](../cluster_image_scanning/index.md#prerequisites).
 
-Here's an example:
+### Example security policies project
+
+You can use this example in a `.gitlab/security-policies/policy.yml`, as described in
+[Security policies project](#security-policies-project).
 
 ```yaml
 ---
@@ -397,6 +402,24 @@ In this example:
 - Secret detection and container scanning scans run for every pipeline executed on the `main` branch.
 - Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
   from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
+
+### Example for scan execution policy editor
+
+You can use this example in the YAML mode of the [Scan Execution Policy editor](#scan-execution-policy-editor).
+It corresponds to a single object from the previous example.
+
+```yaml
+name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+enabled: true
+rules:
+  - type: pipeline
+    branches:
+      - main
+actions:
+  - scan: secret_detection
+  - scan: container_scanning
+```
 
 ## Roadmap
 

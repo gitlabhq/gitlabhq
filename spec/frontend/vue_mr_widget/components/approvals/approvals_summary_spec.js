@@ -61,9 +61,7 @@ describe('MRWidget approvals summary', () => {
     it('render message', () => {
       const names = toNounSeriesText(testRulesLeft());
 
-      expect(wrapper.text()).toContain(
-        `Requires ${TEST_APPROVALS_LEFT} more approvals from ${names}.`,
-      );
+      expect(wrapper.text()).toContain(`Requires ${TEST_APPROVALS_LEFT} approvals from ${names}.`);
     });
   });
 
@@ -75,7 +73,9 @@ describe('MRWidget approvals summary', () => {
     });
 
     it('renders message', () => {
-      expect(wrapper.text()).toContain(`Requires ${TEST_APPROVALS_LEFT} more approvals.`);
+      expect(wrapper.text()).toContain(
+        `Requires ${TEST_APPROVALS_LEFT} approvals from eligible users`,
+      );
     });
   });
 

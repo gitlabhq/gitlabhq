@@ -53,6 +53,7 @@
       = f.password_field :password,
         class: 'form-control gl-form-input bottom',
         data: { qa_selector: 'new_user_password_field' },
+        autocomplete: 'new-password',
         required: true,
         pattern: ".{#{@minimum_password_length},}",
         title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }

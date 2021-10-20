@@ -24,7 +24,13 @@ export default {
 
 <template>
   <div>
-    <details-row icon="project" padding="gl-p-4" dashed data-testid="nuget-source">
+    <details-row
+      v-if="packageEntity.metadata.projectUrl"
+      icon="project"
+      padding="gl-p-4"
+      dashed
+      data-testid="nuget-source"
+    >
       <gl-sprintf :message="$options.i18n.sourceText">
         <template #link>
           <gl-link :href="packageEntity.metadata.projectUrl" target="_blank">{{
@@ -33,7 +39,12 @@ export default {
         </template>
       </gl-sprintf>
     </details-row>
-    <details-row icon="license" padding="gl-p-4" data-testid="nuget-license">
+    <details-row
+      v-if="packageEntity.metadata.licenseUrl"
+      icon="license"
+      padding="gl-p-4"
+      data-testid="nuget-license"
+    >
       <gl-sprintf :message="$options.i18n.licenseText">
         <template #link>
           <gl-link :href="packageEntity.metadata.licenseUrl" target="_blank">{{

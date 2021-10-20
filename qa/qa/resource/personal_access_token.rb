@@ -8,7 +8,7 @@ module QA
       attr_accessor :name
 
       # The user for which the personal access token is to be created
-      # This *could* be different than the api_client.user or the api_user provided by the QA::Resource::ApiFabricator module
+      # This *could* be different than the api_client.user or the api_user provided by the QA::Resource::ApiFabricator
       attr_writer :user
 
       attribute :token
@@ -17,7 +17,9 @@ module QA
       # If Runtime::Env.admin_personal_access_token is provided, fabricate via the API,
       # else, fabricate via the browser.
       def fabricate_via_api!
-        @token = QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username)
+        QA::Resource::PersonalAccessTokenCache.get_token_for_username(user.username).tap do |cached_token|
+          @token = cached_token if cached_token
+        end
         return if @token
 
         resource = if Runtime::Env.admin_personal_access_token && !@user.nil?
@@ -28,7 +30,7 @@ module QA
                      fabricate!
                    end
 
-        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, self.token)
+        QA::Resource::PersonalAccessTokenCache.set_token_for_username(user.username, token)
         resource
       end
 

@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlModal } from '@gitlab/ui';
+import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -13,6 +13,7 @@ export default {
   components: {
     GlModal,
     GlLink,
+    GlSprintf,
     CiIcon,
   },
   props: {
@@ -33,13 +34,7 @@ export default {
       );
     },
     modalText() {
-      return sprintf(
-        s__(`Pipeline|You’re about to stop pipeline %{pipelineId}.`),
-        {
-          pipelineId: `<strong>#${this.pipeline.id}</strong>`,
-        },
-        false,
-      );
+      return s__(`Pipeline|You’re about to stop pipeline #%{pipelineId}.`);
     },
     hasRef() {
       return !isEmpty(this.pipeline.ref);
@@ -71,7 +66,13 @@ export default {
     :action-cancel="cancelProps"
     @primary="emitSubmit($event)"
   >
-    <p v-html="modalText /* eslint-disable-line vue/no-v-html */"></p>
+    <p>
+      <gl-sprintf :message="modalText">
+        <template #pipelineId>
+          <strong>{{ pipeline.id }}</strong>
+        </template>
+      </gl-sprintf>
+    </p>
 
     <p v-if="pipeline">
       <ci-icon

@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::SidekiqMiddleware::WorkerContext
 
         def call(worker, job, _queue, &block)
-          worker_class = worker.class
+          worker_class = find_worker(worker.class, job)
 
           # This is not a worker we know about, perhaps from a gem
           return yield unless worker_class.respond_to?(:get_worker_context)

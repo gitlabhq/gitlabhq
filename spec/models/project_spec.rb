@@ -140,6 +140,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:error_tracking_client_keys).class_name('ErrorTracking::ClientKey') }
     it { is_expected.to have_many(:pending_builds).class_name('Ci::PendingBuild') }
     it { is_expected.to have_many(:ci_feature_usages).class_name('Projects::CiFeatureUsage') }
+    it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -490,23 +491,6 @@ RSpec.describe Project, factory_default: :keep do
         project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
-      end
-    end
-  end
-
-  describe '#merge_requests_author_approval' do
-    where(:attribute_value, :return_value) do
-      true  | true
-      false | false
-      nil   | false
-    end
-
-    with_them do
-      let(:project) { create(:project, merge_requests_author_approval: attribute_value) }
-
-      it 'returns expected value' do
-        expect(project.merge_requests_author_approval).to eq(return_value)
-        expect(project.merge_requests_author_approval?).to eq(return_value)
       end
     end
   end
@@ -3066,7 +3050,7 @@ RSpec.describe Project, factory_default: :keep do
     let(:project) { create(:project) }
 
     it 'marks the location with project ID' do
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:mark_primary_write_location).with(:project, project.id)
+      expect(ApplicationRecord.sticking).to receive(:mark_primary_write_location).with(:project, project.id)
 
       project.mark_primary_write_location
     end
@@ -6303,23 +6287,17 @@ RSpec.describe Project, factory_default: :keep do
 
   describe 'validation #changing_shared_runners_enabled_is_allowed' do
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
-      'enabled'                    | true  | true
-      'enabled'                    | false | true
-      'disabled_with_override'     | true  | true
-      'disabled_with_override'     | false | true
-      'disabled_and_unoverridable' | true  | false
-      'disabled_and_unoverridable' | false | true
+      :shared_runners_enabled     | true  | true
+      :shared_runners_enabled     | false | true
+      :disabled_with_override     | true  | true
+      :disabled_with_override     | false | true
+      :disabled_and_unoverridable | true  | false
+      :disabled_and_unoverridable | false | true
     end
 
     with_them do
-      let(:group) { create(:group) }
+      let(:group) { create(:group, shared_runners_setting) }
       let(:project) { build(:project, namespace: group, shared_runners_enabled: project_shared_runners_enabled) }
-
-      before do
-        allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
-      end
 
       it 'validates the configuration' do
         expect(project.valid?).to eq(valid_record)
@@ -7237,35 +7215,6 @@ RSpec.describe Project, factory_default: :keep do
 
         expect(project.save).to be_falsy
         expect(project.reload.topics.map(&:name)).to eq(%w[topic1 topic2 topic3])
-      end
-    end
-
-    context 'during ExtractProjectTopicsIntoSeparateTable migration' do
-      before do
-        topic_a = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicA')
-        topic_b = ActsAsTaggableOn::Tag.find_or_create_by!(name: 'topicB')
-
-        project.reload.topics_acts_as_taggable = [topic_a, topic_b]
-        project.save!
-        project.reload
-      end
-
-      it 'topic_list returns correct string array' do
-        expect(project.topic_list).to eq(%w[topicA topicB topic1 topic2 topic3])
-      end
-
-      it 'topics returns correct topic records' do
-        expect(project.topics.map(&:class)).to eq([ActsAsTaggableOn::Tag, ActsAsTaggableOn::Tag, Projects::Topic, Projects::Topic, Projects::Topic])
-        expect(project.topics.map(&:name)).to eq(%w[topicA topicB topic1 topic2 topic3])
-      end
-
-      it 'topic_list= sets new topics and removes old topics' do
-        project.topic_list = 'new-topic1, new-topic2'
-        project.save!
-        project.reload
-
-        expect(project.topics.map(&:class)).to eq([Projects::Topic, Projects::Topic])
-        expect(project.topics.map(&:name)).to eq(%w[new-topic1 new-topic2])
       end
     end
   end

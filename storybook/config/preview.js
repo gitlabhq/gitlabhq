@@ -1,6 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { withServer } from 'storybook-mirage'; // eslint-disable-line import/no-unresolved
 import Vue from 'vue';
-import translateMixin from '../../app/assets/javascripts/vue_shared/translate';
+import { createMockServer } from 'test_helpers/mock_server';
+import translateMixin from '~/vue_shared/translate';
 
 const stylesheetsRequireCtx = require.context(
   '../../app/assets/stylesheets',
@@ -13,3 +14,5 @@ translateMixin(Vue);
 
 stylesheetsRequireCtx('./application.scss');
 stylesheetsRequireCtx('./application_utilities.scss');
+
+export const decorators = [withServer(createMockServer)];

@@ -9,7 +9,7 @@
 # data_path: the keys necessary to dig into the return GraphQL data to get the
 #   returned results
 # first_param: number of items expected (like a page size)
-# expected_results: array of comparison data of all items sorted correctly
+# all_records: array of comparison data of all items sorted correctly
 # pagination_query: method that specifies the GraphQL query
 # pagination_results_data: method that extracts the sorted data used to compare against
 #   the expected results
@@ -38,9 +38,9 @@
 #         let(:ordered_issues) { issues.sort_by(&:weight) }
 #
 #         it_behaves_like 'sorted paginated query' do
-#           let(:sort_param)       { :WEIGHT_ASC }
-#           let(:first_param)      { 2 }
-#           let(:expected_results) { ordered_issues.map(&:iid) }
+#           let(:sort_param) { :WEIGHT_ASC }
+#           let(:first_param) { 2 }
+#           let(:all_records) { ordered_issues.map(&:iid) }
 #         end
 #       end
 #
@@ -51,7 +51,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
   let(:node_path) { ['id'] }
 
   it_behaves_like 'requires variables' do
-    let(:required_variables) { [:sort_param, :first_param, :expected_results, :data_path, :current_user] }
+    let(:required_variables) { [:sort_param, :first_param, :all_records, :data_path, :current_user] }
   end
 
   describe do
@@ -101,13 +101,13 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
 
     context 'when sorting' do
       it 'sorts correctly' do
-        expect(results).to eq expected_results
+        expect(results).to eq all_records
       end
 
       context 'when paginating' do
         let(:params) { sort_argument.merge(first: first_param) }
-        let(:first_page) { expected_results.first(first_param) }
-        let(:rest) { expected_results.drop(first_param) }
+        let(:first_page) { all_records.first(first_param) }
+        let(:rest) { all_records.drop(first_param) }
 
         it 'paginates correctly' do
           expect(results).to eq first_page
@@ -130,7 +130,7 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
         it 'fetches last elements without error' do
           post_graphql(pagination_query(params), current_user: current_user)
 
-          expect(results.first).to eq(expected_results.last)
+          expect(results.first).to eq(all_records.last)
         end
       end
     end

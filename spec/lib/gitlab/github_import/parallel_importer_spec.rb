@@ -9,6 +9,18 @@ RSpec.describe Gitlab::GithubImport::ParallelImporter do
     end
   end
 
+  describe '.track_start_import' do
+    it 'tracks the start of import' do
+      project = double(:project)
+      metrics = double(:metrics)
+
+      expect(Gitlab::Import::Metrics).to receive(:new).with(:github_importer, project).and_return(metrics)
+      expect(metrics).to receive(:track_start_import)
+
+      described_class.track_start_import(project)
+    end
+  end
+
   describe '#execute', :clean_gitlab_redis_shared_state do
     let(:project) { create(:project) }
     let(:importer) { described_class.new(project) }

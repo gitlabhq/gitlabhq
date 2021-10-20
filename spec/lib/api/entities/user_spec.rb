@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe API::Entities::User do
-  let(:user) { create(:user) }
-  let(:current_user) { create(:user) }
+  let_it_be(:timezone) { 'America/Los_Angeles' }
 
-  subject { described_class.new(user, current_user: current_user).as_json }
+  let(:user) { create(:user, timezone: timezone) }
+  let(:current_user) { create(:user) }
+  let(:entity) { described_class.new(user, current_user: current_user) }
+
+  subject { entity.as_json }
 
   it 'exposes correct attributes' do
     expect(subject).to include(:bio, :location, :public_email, :skype, :linkedin, :twitter, :website_url, :organization, :job_title, :work_information, :pronouns)
@@ -34,5 +37,11 @@ RSpec.describe API::Entities::User do
     it 'exposes user as a bot' do
       expect(subject[:bot]).to eq(true)
     end
+  end
+
+  it 'exposes local_time' do
+    local_time = '2:30 PM'
+    expect(entity).to receive(:local_time).with(timezone).and_return(local_time)
+    expect(subject[:local_time]).to eq(local_time)
   end
 end

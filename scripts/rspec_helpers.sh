@@ -98,7 +98,7 @@ function rspec_simple_job() {
 }
 
 function rspec_db_library_code() {
-  local db_files="spec/lib/gitlab/database/ spec/support/helpers/database/"
+  local db_files="spec/lib/gitlab/database/"
 
   rspec_simple_job "-- ${db_files}"
 }
@@ -109,14 +109,18 @@ function rspec_paralellized_job() {
   local test_level="${job_name[1]}"
   local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg12 1/24' would become 'rspec_unit_pg12_1_24'
   local rspec_opts="${1}"
-  local spec_folder_prefix=""
+  local spec_folder_prefixes=""
 
   if [[ "${test_tool}" =~ "-ee" ]]; then
-    spec_folder_prefix="ee/"
+    spec_folder_prefixes="'ee/'"
   fi
 
   if [[ "${test_tool}" =~ "-jh" ]]; then
-    spec_folder_prefix="jh/"
+    spec_folder_prefixes="'jh/'"
+  fi
+
+  if [[ "${test_tool}" =~ "-all" ]]; then
+    spec_folder_prefixes="['', 'ee/', 'jh/']"
   fi
 
   export KNAPSACK_LOG_LEVEL="debug"
@@ -131,7 +135,7 @@ function rspec_paralellized_job() {
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
   if [[ -z "${KNAPSACK_TEST_FILE_PATTERN}" ]]; then
-    pattern=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(%(${spec_folder_prefix})).pattern(:${test_level})")
+    pattern=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
     export KNAPSACK_TEST_FILE_PATTERN="${pattern}"
   fi
 

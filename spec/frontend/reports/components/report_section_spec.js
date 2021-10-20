@@ -23,7 +23,7 @@ describe('Report section', () => {
   const defaultProps = {
     component: '',
     status: 'SUCCESS',
-    loadingText: 'Loading codeclimate report',
+    loadingText: 'Loading Code Quality report',
     errorText: 'foo',
     successText: 'Code quality improved on 1 point and degraded on 1 point',
     resolvedIssues,
@@ -117,13 +117,13 @@ describe('Report section', () => {
       vm = mountComponent(ReportSection, {
         component: '',
         status: 'LOADING',
-        loadingText: 'Loading codeclimate report',
+        loadingText: 'Loading Code Quality report',
         errorText: 'foo',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report');
+      expect(vm.$el.textContent.trim()).toEqual('Loading Code Quality report');
     });
   });
 
@@ -229,13 +229,13 @@ describe('Report section', () => {
       vm = mountComponent(ReportSection, {
         component: '',
         status: 'ERROR',
-        loadingText: 'Loading codeclimate report',
-        errorText: 'Failed to load codeclimate report',
+        loadingText: 'Loading Code Quality report',
+        errorText: 'Failed to load Code Quality report',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
 
-      expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
+      expect(vm.$el.textContent.trim()).toEqual('Failed to load Code Quality report');
     });
   });
 

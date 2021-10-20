@@ -6,7 +6,7 @@ module API
       expose :id, :name, :path, :kind, :full_path, :parent_id, :avatar_url
 
       expose :web_url do |namespace|
-        if namespace.user?
+        if namespace.user_namespace?
           Gitlab::Routing.url_helpers.user_url(namespace.owner)
         else
           namespace.web_url

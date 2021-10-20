@@ -5,6 +5,7 @@ module Projects
     include Gitlab::ShellAdapter
 
     DestroyError = Class.new(StandardError)
+    BATCH_SIZE = 100
 
     def async_execute
       project.update_attribute(:pending_delete, true)
@@ -119,6 +120,12 @@ module Projects
       destroy_web_hooks!
       destroy_project_bots!
 
+      if ::Feature.enabled?(:ci_optimize_project_records_destruction, project, default_enabled: :yaml) &&
+        Feature.enabled?(:abort_deleted_project_pipelines, default_enabled: :yaml)
+
+        destroy_ci_records!
+      end
+
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
@@ -131,6 +138,23 @@ module Projects
 
     def log_destroy_event
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
+    end
+
+    def destroy_ci_records!
+      project.all_pipelines.find_each(batch_size: BATCH_SIZE) do |pipeline| # rubocop: disable CodeReuse/ActiveRecord
+        # Destroy artifacts, then builds, then pipelines
+        # All builds have already been dropped by Ci::AbortPipelinesService,
+        # so no Ci::Build-instantiating cancellations happen here.
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71342#note_691523196
+
+        ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
+      end
+
+      deleted_count = project.commit_statuses.delete_all
+
+      if deleted_count > 0
+        Gitlab::AppLogger.info "Projects::DestroyService - Project #{project.id} - #{deleted_count} leftover commit statuses"
+      end
     end
 
     # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.

@@ -1,33 +1,24 @@
 - page_title _('Projects')
 - params[:visibility_level] ||= []
-- active_tab_classes = 'active gl-tab-nav-item-active gl-tab-nav-item-active-indigo'
 
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  %ul.nav.gl-tabs-nav.gl-overflow-x-auto.gl-display-flex.gl-flex-grow-1.gl-flex-shrink-1.gl-border-b-0.gl-flex-nowrap.gl-webkit-scrollbar-display-none
-    = nav_link(html_options: { class: "nav-item" } ) do
-      = link_to _('All'), admin_projects_path, class: "nav-link gl-tab-nav-item #{active_tab_classes if params[:visibility_level].empty?}"
-    = nav_link(html_options: { class: "nav-item" } ) do
-      = link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE), class: "nav-link gl-tab-nav-item #{active_tab_classes if params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s}"
-    = nav_link(html_options: { class: "nav-item" } ) do
-      = link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL), class: "nav-link gl-tab-nav-item #{active_tab_classes if params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s}"
-    = nav_link(html_options: { class: "nav-item" } ) do
-      = link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC), class: "nav-link gl-tab-nav-item #{active_tab_classes if params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s}"
+  = gl_tabs_nav({ class: 'gl-border-b-0 gl-overflow-x-auto gl-flex-grow-1 gl-flex-nowrap gl-webkit-scrollbar-display-none' }) do
+    = gl_tab_link_to _('All'), admin_projects_path(visibility_level: nil), { item_active: params[:visibility_level].empty? }
+    = gl_tab_link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    = gl_tab_link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    = gl_tab_link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
   .nav-controls
     .search-holder
       = render 'shared/projects/search_form', autofocus: true, admin_view: true
-      .dropdown
-        - toggle_text = _('Namespace')
-        - if params[:namespace_id].present?
-          = hidden_field_tag :namespace_id, params[:namespace_id]
-          - namespace = Namespace.find(params[:namespace_id])
-          - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
-        = dropdown_toggle(toggle_text, { toggle: 'dropdown', is_filter: 'true' }, { toggle_class: 'js-namespace-select large' })
-        .dropdown-menu.dropdown-select.dropdown-menu-right
-          = dropdown_title(_('Namespaces'))
-          = dropdown_filter(_("Search for Namespace"))
-          = dropdown_content
-          = dropdown_loading
+      - current_namespace = _('Namespace')
+      - if params[:namespace_id].present?
+        - namespace = Namespace.find(params[:namespace_id])
+        - current_namespace = "#{namespace.kind}: #{namespace.full_path}"
+      %button.dropdown-menu-toggle.btn.btn-default.btn-md.gl-button.js-namespace-select{ data: { show_any: 'true', field_name: 'namespace_id', placeholder: current_namespace, update_location: 'true' }, type: 'button' }
+        %span.gl-new-dropdown-button-text
+          = current_namespace
+
       = render 'shared/projects/dropdown'
       = link_to new_project_path, class: 'gl-button btn btn-confirm' do
         = _('New Project')

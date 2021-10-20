@@ -30,7 +30,8 @@ module Quality
               labels: labels.join(',')
             }
             params[:closed_at] = params[:created_at] + rand(35).days if params[:state] == 'closed'
-            issue = ::Issues::CreateService.new(project: project, current_user: team.sample, params: params, spam_params: nil).execute
+
+            issue = ::Issues::CreateService.new(project: project, current_user: team.sample, params: params, spam_params: nil).execute_without_rate_limiting
 
             if issue.persisted?
               created_issues_count += 1

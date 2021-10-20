@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['SentryDetailedError'] do
   it 'exposes the expected fields' do
     expected_fields = %i[
       id
+      integrated
       sentryId
       title
       type

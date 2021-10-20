@@ -39,7 +39,9 @@ module Gitlab
       # created manually. Ignore failures so we get the merge request itself if
       # the commits are missing.
       def create_source_branch
-        @project.repository.create_branch(@merge_request.source_branch, @diff_head_sha)
+        if @merge_request.open?
+          @project.repository.create_branch(@merge_request.source_branch, @diff_head_sha)
+        end
       rescue StandardError => err
         Gitlab::Import::Logger.warn(
           message: 'Import warning: Failed to create source branch',

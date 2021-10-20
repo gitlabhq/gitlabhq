@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Productivity Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12079) in GitLab 12.3.
 
 Track development velocity with Productivity Analytics.
 
@@ -60,5 +60,5 @@ You can filter analytics based on a date range. To filter results:
 
 The **Productivity Analytics** dashboard can be accessed only:
 
-- On the [Premium tier](https://about.gitlab.com/pricing/) and above.
+- On [GitLab Premium](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.

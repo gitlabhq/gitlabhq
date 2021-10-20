@@ -9,6 +9,7 @@ type: index, concepts, howto
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in GitLab Ultimate 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to GitLab Free in 11.9.
+> - `CHAT_USER_ID` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341798) in GitLab 14.4.
 
 GitLab ChatOps provides a method to interact with CI/CD jobs through chat services
 like Slack. Many organizations' discussion, collaboration, and troubleshooting takes
@@ -17,7 +18,7 @@ posted back to the channel can significantly augment your team's workflow.
 
 ## How GitLab ChatOps works
 
-GitLab ChatOps is built upon [GitLab CI/CD](../README.md) and
+GitLab ChatOps is built upon [GitLab CI/CD](../index.md) and
 [Slack Slash Commands](../../user/project/integrations/slack_slash_commands.md).
 ChatOps provides a `run` action for [slash commands](../../integration/slash_commands.md)
 with the following arguments:
@@ -30,6 +31,7 @@ to the job:
 
 - `CHAT_INPUT` contains any additional arguments.
 - `CHAT_CHANNEL` is set to the name of channel the action was triggered in.
+- `CHAT_USER_ID` is set to the chat service's user ID of the user who triggered the slash command.
 
 When executed, ChatOps looks up the specified job name and attempts to match it
 to a corresponding job in [`.gitlab-ci.yml`](../yaml/index.md). If a matching job

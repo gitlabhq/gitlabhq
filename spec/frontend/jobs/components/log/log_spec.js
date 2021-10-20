@@ -31,8 +31,8 @@ describe('Job Log', () => {
     window.gon = { features: { infinitelyCollapsibleSections: false } };
 
     state = {
-      trace: logLinesParserLegacy(jobLog),
-      traceEndpoint: 'jobs/id',
+      jobLog: logLinesParserLegacy(jobLog),
+      jobLogEndpoint: 'jobs/id',
     };
 
     store = new Vuex.Store({
@@ -59,7 +59,7 @@ describe('Job Log', () => {
     });
 
     it('links to the provided path and correct line number', () => {
-      expect(wrapper.find('#L1').attributes('href')).toBe(`${state.traceEndpoint}#L1`);
+      expect(wrapper.find('#L1').attributes('href')).toBe(`${state.jobLogEndpoint}#L1`);
     });
   });
 
@@ -111,8 +111,8 @@ describe('Job Log, infinitelyCollapsibleSections feature flag enabled', () => {
     window.gon = { features: { infinitelyCollapsibleSections: true } };
 
     state = {
-      trace: logLinesParser(jobLog).parsedLines,
-      traceEndpoint: 'jobs/id',
+      jobLog: logLinesParser(jobLog).parsedLines,
+      jobLogEndpoint: 'jobs/id',
     };
 
     store = new Vuex.Store({
@@ -139,7 +139,7 @@ describe('Job Log, infinitelyCollapsibleSections feature flag enabled', () => {
     });
 
     it('links to the provided path and correct line number', () => {
-      expect(wrapper.find('#L1').attributes('href')).toBe(`${state.traceEndpoint}#L1`);
+      expect(wrapper.find('#L1').attributes('href')).toBe(`${state.jobLogEndpoint}#L1`);
     });
   });
 

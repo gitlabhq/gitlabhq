@@ -33,6 +33,14 @@ The following images and packages are supported.
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
 
+## Enable or disable the Dependency Proxy for a group
+
+To enable or disable the Dependency Proxy for a group:
+
+1. Go to your group's **Settings > Packages & Registries**.
+1. Expand the **Dependency Proxy** section.
+1. To enable the proxy, turn on **Enable Proxy**. To disable it, turn the toggle off.
+
 ## View the Dependency Proxy
 
 To view the Dependency Proxy:
@@ -66,7 +74,7 @@ has disrupted your existing Dependency Proxy usage.
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
 
-Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#define-an-image-from-a-private-container-registry),
+Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry),
 but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
 
 For example, to manually log in:
@@ -171,8 +179,53 @@ from the GitLab server.
 Blobs are kept forever on the GitLab server, and there is no hard limit on how much data can be
 stored.
 
+### Using the API to clear the cache
+
 To reclaim disk space used by image blobs that are no longer needed, use
-the [Dependency Proxy API](../../../api/dependency_proxy.md).
+the [Dependency Proxy API](../../../api/dependency_proxy.md) to clear the entire
+cache.
+
+If you clear the cache, the next time a pipeline runs it must pull an image or tag from Docker Hub.
+
+### Cleanup policies
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294187) in GitLab Free 14.4.
+
+The cleanup policy is a scheduled job you can use to clear cached images that are no longer used,
+freeing up additional storage space. The policies use time-to-live (TTL) logic:
+
+- The number of days is configured.
+- All cached dependency proxy files that have not been pulled in that many days are deleted.
+
+Use the [GraphQL API](../../../api/graphql/reference/index.md#mutationupdatedependencyproxyimagettlgrouppolicy)
+to enable and configure cleanup policies:
+
+```graphql
+mutation {
+  updateDependencyProxyImageTtlGroupPolicy(input:
+    {
+      groupPath: "<your-full-group-path>",
+      enabled: true,
+      ttl: 90
+    }
+  ) {
+    dependencyProxyImageTtlPolicy {
+      enabled
+      ttl
+    }
+    errors
+  }
+}
+```
+
+See the [Getting started with GraphQL](../../../api/graphql/getting_started.md)
+guide to learn how to make GraphQL queries. Support for enabling and configuring cleanup policies in
+the UI is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340777).
+
+When the policy is initially enabled, the default TTL setting is 90 days. Once enabled, stale
+dependency proxy files are queued for deletion each day. Deletion may not occur right away due to
+processing time. If the image is pulled after the cached files are marked as expired, the expired
+files are ignored and new files are downloaded and cached from the external registry.
 
 ## Docker Hub rate limits and the Dependency Proxy
 
@@ -227,7 +280,7 @@ script:
 
 ```shell
 # Note, you must have jq installed to run this command
-TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1 | grep RateLimit
+TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1 | grep --ignore-case RateLimit
 ...
 ```
 
@@ -255,10 +308,6 @@ hub_docker_quota_check:
       - |
         TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
 ```
-
-## Use the NPM Dependency Proxy for NPM packages
-
-For information on this, see [Dependency Proxy](../npm_registry/#dependency-proxy).
 
 ## Troubleshooting
 

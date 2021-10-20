@@ -8,7 +8,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
   let_it_be(:user) { create(:user) }
 
   context 'tag refs' do
-    let_it_be(:tags) { TagsFinder.new(project.repository, {}).execute }
+    let_it_be(:tags) { project.repository.tags }
 
     let(:subject) { described_class.new(project, project.repository, user, tags).execute }
 
@@ -131,7 +131,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
   end
 
   context 'CI pipelines visible to' do
-    let_it_be(:tags) { TagsFinder.new(project.repository, {}).execute }
+    let_it_be(:tags) { project.repository.tags }
 
     let(:subject) { described_class.new(project, project.repository, user, tags).execute }
 
@@ -161,7 +161,7 @@ RSpec.describe Ci::CommitStatusesFinder, '#execute' do
 
     context 'when not a member of a private project' do
       let(:private_project) { create(:project, :private, :repository) }
-      let(:private_tags) { TagsFinder.new(private_tags.repository, {}).execute }
+      let(:private_tags) { private_tags.repository.tags }
       let(:private_subject) { described_class.new(private_project, private_project.repository, user, tags).execute }
 
       before do

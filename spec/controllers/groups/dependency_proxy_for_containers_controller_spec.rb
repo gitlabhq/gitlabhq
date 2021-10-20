@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Groups::DependencyProxyForContainersController do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
+  include WorkhorseHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group, :private) }
@@ -242,16 +243,9 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #blob' do
-    let_it_be(:blob) { create(:dependency_proxy_blob) }
+    let(:blob) { create(:dependency_proxy_blob, group: group) }
 
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
-    let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
-
-    before do
-      allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
-        allow(instance).to receive(:execute).and_return(blob_response)
-      end
-    end
 
     subject { get_blob }
 
@@ -264,40 +258,31 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       it_behaves_like 'without permission'
       it_behaves_like 'feature flag disabled with private group'
 
-      context 'remote blob request fails' do
-        let(:blob_response) do
-          {
-            status: :error,
-            http_status: 400,
-            message: ''
-          }
-        end
-
-        before do
-          group.add_guest(user)
-        end
-
-        it 'proxies status from the remote blob request', :aggregate_failures do
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to be_empty
-        end
-      end
-
       context 'a valid user' do
         before do
           group.add_guest(user)
         end
 
         it_behaves_like 'a successful blob pull'
-        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+        it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
 
-        context 'with a cache entry' do
-          let(:blob_response) { { status: :success, blob: blob, from_cache: true } }
+        context 'when cache entry does not exist' do
+          let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
 
-          it_behaves_like 'returning response status', :success
-          it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
+          it 'returns Workhorse send-dependency instructions' do
+            subject
+
+            send_data_type, send_data = workhorse_send_data
+            header, url = send_data.values_at('Header', 'Url')
+
+            expect(send_data_type).to eq('send-dependency')
+            expect(header).to eq("Authorization" => ["Bearer abcd1234"])
+            expect(url).to eq(DependencyProxy::Registry.blob_url('alpine', blob_sha))
+            expect(response.headers['Content-Type']).to eq('application/gzip')
+            expect(response.headers['Content-Disposition']).to eq(
+              ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: blob.file_name)
+            )
+          end
         end
       end
 
@@ -319,12 +304,135 @@ RSpec.describe Groups::DependencyProxyForContainersController do
           it_behaves_like 'a successful blob pull'
         end
       end
+
+      context 'when dependency_proxy_workhorse disabled' do
+        let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
+
+        before do
+          stub_feature_flags(dependency_proxy_workhorse: false)
+
+          allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
+            allow(instance).to receive(:execute).and_return(blob_response)
+          end
+        end
+
+        context 'remote blob request fails' do
+          let(:blob_response) do
+            {
+              status: :error,
+              http_status: 400,
+              message: ''
+            }
+          end
+
+          before do
+            group.add_guest(user)
+          end
+
+          it 'proxies status from the remote blob request', :aggregate_failures do
+            subject
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to be_empty
+          end
+        end
+
+        context 'a valid user' do
+          before do
+            group.add_guest(user)
+          end
+
+          it_behaves_like 'a successful blob pull'
+          it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+
+          context 'with a cache entry' do
+            let(:blob_response) { { status: :success, blob: blob, from_cache: true } }
+
+            it_behaves_like 'returning response status', :success
+            it_behaves_like 'a package tracking event', described_class.name, 'pull_blob_from_cache'
+          end
+        end
+
+        context 'a valid deploy token' do
+          let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+          let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+          it_behaves_like 'a successful blob pull'
+
+          context 'pulling from a subgroup' do
+            let_it_be_with_reload(:parent_group) { create(:group) }
+            let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+            before do
+              parent_group.create_dependency_proxy_setting!(enabled: true)
+              group_deploy_token.update_column(:group_id, parent_group.id)
+            end
+
+            it_behaves_like 'a successful blob pull'
+          end
+        end
+      end
     end
 
     it_behaves_like 'not found when disabled'
 
     def get_blob
       get :blob, params: { group_id: group.to_param, image: 'alpine', sha: blob_sha }
+    end
+  end
+
+  describe 'GET #authorize_upload_blob' do
+    let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
+
+    subject(:authorize_upload_blob) do
+      request.headers.merge!(workhorse_internal_api_request_header)
+
+      get :authorize_upload_blob, params: { group_id: group.to_param, image: 'alpine', sha: blob_sha }
+    end
+
+    it_behaves_like 'without permission'
+
+    context 'with a valid user' do
+      before do
+        group.add_guest(user)
+      end
+
+      it 'sends Workhorse file upload instructions', :aggregate_failures do
+        authorize_upload_blob
+
+        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to eq(DependencyProxy::FileUploader.workhorse_local_upload_path)
+      end
+    end
+  end
+
+  describe 'GET #upload_blob' do
+    let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
+    let(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/#{blob_sha}.gz", 'application/gzip') }
+
+    subject do
+      request.headers.merge!(workhorse_internal_api_request_header)
+
+      get :upload_blob, params: {
+        group_id: group.to_param,
+        image: 'alpine',
+        sha: blob_sha,
+        file: file
+      }
+    end
+
+    it_behaves_like 'without permission'
+
+    context 'with a valid user' do
+      before do
+        group.add_guest(user)
+
+        expect_next_found_instance_of(Group) do |instance|
+          expect(instance).to receive_message_chain(:dependency_proxy_blobs, :create!)
+        end
+      end
+
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
     end
   end
 

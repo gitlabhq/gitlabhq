@@ -1,5 +1,5 @@
 import { sortTree } from '~/ide/stores/utils';
-import { generateTreeList } from '../utils/workers';
+import { generateTreeList } from '../utils/tree_worker_utils';
 
 // eslint-disable-next-line no-restricted-globals
 self.addEventListener('message', (e) => {

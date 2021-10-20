@@ -24,6 +24,7 @@ import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
 import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
+import NewIssueDropdown from '~/issues_list/components/new_issue_dropdown.vue';
 import {
   CREATED_DESC,
   DUE_DATE_OVERDUE,
@@ -65,6 +66,7 @@ describe('IssuesListApp component', () => {
     exportCsvPath: 'export/csv/path',
     fullPath: 'path/to/project',
     hasAnyIssues: true,
+    hasAnyProjects: true,
     hasBlockedIssuesFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
@@ -93,6 +95,7 @@ describe('IssuesListApp component', () => {
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
+  const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
   const mountComponent = ({
     provide = {},
@@ -190,10 +193,7 @@ describe('IssuesListApp component', () => {
         beforeEach(() => {
           setWindowLocation(search);
 
-          wrapper = mountComponent({
-            provide: { isSignedIn: true },
-            mountFn: mount,
-          });
+          wrapper = mountComponent({ provide: { isSignedIn: true }, mountFn: mount });
 
           jest.runOnlyPendingTimers();
         });
@@ -208,7 +208,7 @@ describe('IssuesListApp component', () => {
 
       describe('when user is not signed in', () => {
         it('does not render', () => {
-          wrapper = mountComponent({ provide: { isSignedIn: false } });
+          wrapper = mountComponent({ provide: { isSignedIn: false }, mountFn: mount });
 
           expect(findCsvImportExportButtons().exists()).toBe(false);
         });
@@ -216,7 +216,7 @@ describe('IssuesListApp component', () => {
 
       describe('when in a group context', () => {
         it('does not render', () => {
-          wrapper = mountComponent({ provide: { isProject: false } });
+          wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
 
           expect(findCsvImportExportButtons().exists()).toBe(false);
         });
@@ -231,7 +231,7 @@ describe('IssuesListApp component', () => {
       });
 
       it('does not render when user does not have permissions', () => {
-        wrapper = mountComponent({ provide: { canBulkUpdate: false } });
+        wrapper = mountComponent({ provide: { canBulkUpdate: false }, mountFn: mount });
 
         expect(findGlButtons().filter((button) => button.text() === 'Edit issues')).toHaveLength(0);
       });
@@ -258,9 +258,23 @@ describe('IssuesListApp component', () => {
       });
 
       it('does not render when user does not have permissions', () => {
-        wrapper = mountComponent({ provide: { showNewIssueLink: false } });
+        wrapper = mountComponent({ provide: { showNewIssueLink: false }, mountFn: mount });
 
         expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
+      });
+    });
+
+    describe('new issue split dropdown', () => {
+      it('does not render in a project context', () => {
+        wrapper = mountComponent({ provide: { isProject: true }, mountFn: mount });
+
+        expect(findNewIssueDropdown().exists()).toBe(false);
+      });
+
+      it('renders in a group context', () => {
+        wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
+
+        expect(findNewIssueDropdown().exists()).toBe(true);
       });
     });
   });
@@ -506,7 +520,7 @@ describe('IssuesListApp component', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           provide: {
-            groupEpicsPath: '',
+            groupPath: '',
           },
         });
       });
@@ -522,7 +536,7 @@ describe('IssuesListApp component', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           provide: {
-            groupEpicsPath: '',
+            groupPath: '',
           },
         });
       });
@@ -550,7 +564,7 @@ describe('IssuesListApp component', () => {
           provide: {
             isSignedIn: true,
             projectIterationsPath: 'project/iterations/path',
-            groupEpicsPath: 'group/epics/path',
+            groupPath: 'group/path',
             hasIssueWeightsFeature: true,
           },
         });

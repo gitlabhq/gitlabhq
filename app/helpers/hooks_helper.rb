@@ -36,6 +36,15 @@ module HooksHelper
       admin_hook_path(hook)
     end
   end
+
+  def hook_log_path(hook, hook_log)
+    case hook
+    when ProjectHook
+      hook_log.present.details_path
+    when SystemHook
+      admin_hook_hook_log_path(hook, hook_log)
+    end
+  end
 end
 
 HooksHelper.prepend_mod_with('HooksHelper')

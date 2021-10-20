@@ -15,3 +15,11 @@ export const MSG_IN_ALL_GITLAB = __('in all GitLab');
 export const MSG_IN_GROUP = __('in group');
 
 export const MSG_IN_PROJECT = __('in project');
+
+export const GROUPS_CATEGORY = 'Groups';
+
+export const PROJECTS_CATEGORY = 'Projects';
+
+export const LARGE_AVATAR_PX = 32;
+
+export const SMALL_AVATAR_PX = 16;

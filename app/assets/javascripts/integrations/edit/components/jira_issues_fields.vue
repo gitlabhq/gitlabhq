@@ -1,6 +1,10 @@
 <script>
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
+import {
+  VALIDATE_INTEGRATION_FORM_EVENT,
+  GET_JIRA_ISSUE_TYPES_EVENT,
+} from '~/integrations/constants';
 import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
@@ -77,17 +81,17 @@ export default {
     },
   },
   created() {
-    eventHub.$on('validateForm', this.validateForm);
+    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   beforeDestroy() {
-    eventHub.$off('validateForm', this.validateForm);
+    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   methods: {
     validateForm() {
       this.validated = true;
     },
     getJiraIssueTypes() {
-      eventHub.$emit('getJiraIssueTypes');
+      eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
     },
   },
 };

@@ -73,7 +73,7 @@ job:on-schedule:
 
 job:
   rules:
-    - if: $CI_PIPELINE_SOURCE = "push"
+    - if: $CI_PIPELINE_SOURCE == "push"
   script:
     - make build
 ```

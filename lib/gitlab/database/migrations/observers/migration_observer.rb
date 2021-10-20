@@ -5,11 +5,12 @@ module Gitlab
     module Migrations
       module Observers
         class MigrationObserver
-          attr_reader :connection, :observation
+          attr_reader :connection, :observation, :output_dir
 
-          def initialize(observation)
+          def initialize(observation, output_dir)
             @connection = ActiveRecord::Base.connection
             @observation = observation
+            @output_dir = output_dir
           end
 
           def before

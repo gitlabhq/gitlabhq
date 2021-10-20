@@ -1,6 +1,7 @@
 import dateFormat from 'dateformat';
 import { dateFormats } from '~/analytics/shared/constants';
 import { filterToQueryObject } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
+import { PAGINATION_TYPE } from '../constants';
 import { transformStagesForPathNavigation, filterStagesByHiddenStatus } from '../utils';
 
 export const pathNavigationData = ({ stages, medians, stageCounts, selectedStage }) => {
@@ -20,6 +21,13 @@ export const requestParams = (state) => {
   } = state;
   return { requestPath: fullPath, valueStreamId, stageId };
 };
+
+export const paginationParams = ({ pagination: { page, sort, direction } }) => ({
+  pagination: PAGINATION_TYPE,
+  sort,
+  direction,
+  page,
+});
 
 const filterBarParams = ({ filters }) => {
   const {

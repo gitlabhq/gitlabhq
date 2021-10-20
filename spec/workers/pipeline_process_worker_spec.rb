@@ -29,16 +29,6 @@ RSpec.describe PipelineProcessWorker do
     end
   end
 
-  context 'when the FF ci_idempotent_pipeline_process_worker is disabled' do
-    before do
-      stub_feature_flags(ci_idempotent_pipeline_process_worker: false)
-    end
-
-    it 'is not deduplicated' do
-      expect(described_class).not_to be_deduplication_enabled
-    end
-  end
-
   describe '#perform' do
     context 'when pipeline exists' do
       it 'processes pipeline' do

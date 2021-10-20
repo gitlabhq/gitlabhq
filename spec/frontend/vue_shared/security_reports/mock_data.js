@@ -314,7 +314,7 @@ export const sastDiffSuccessMock = {
   head_report_created_at: '2020-01-10T10:00:00.000Z',
 };
 
-export const secretScanningDiffSuccessMock = {
+export const secretDetectionDiffSuccessMock = {
   added: [mockFindings[0], mockFindings[1]],
   fixed: [mockFindings[2]],
   base_report_created_at: '2020-01-01T10:00:00.000Z',

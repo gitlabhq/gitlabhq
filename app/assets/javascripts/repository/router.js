@@ -1,7 +1,7 @@
 import { escapeRegExp } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { joinPaths } from '../lib/utils/url_utility';
+import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import BlobPage from './pages/blob.vue';
 import IndexPage from './pages/index.vue';
 import TreePage from './pages/tree.vue';
@@ -24,7 +24,7 @@ export default function createRouter(base, baseRef) {
     }),
   };
 
-  return new VueRouter({
+  const router = new VueRouter({
     mode: 'history',
     base: joinPaths(gon.relative_url_root || '', base),
     routes: [
@@ -59,4 +59,21 @@ export default function createRouter(base, baseRef) {
       },
     ],
   });
+
+  router.afterEach((to) => {
+    const needsClosingSlash = !to.name.includes('blobPath');
+    window.gl.webIDEPath = webIDEUrl(
+      joinPaths(
+        '/',
+        base,
+        'edit',
+        decodeURI(baseRef),
+        '-',
+        to.params.path || '',
+        needsClosingSlash && '/',
+      ),
+    );
+  });
+
+  return router;
 }

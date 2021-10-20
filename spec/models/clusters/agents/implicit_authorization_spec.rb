@@ -9,6 +9,6 @@ RSpec.describe Clusters::Agents::ImplicitAuthorization do
 
   it { expect(subject.agent).to eq(agent) }
   it { expect(subject.agent_id).to eq(agent.id) }
-  it { expect(subject.project).to eq(agent.project) }
+  it { expect(subject.config_project).to eq(agent.project) }
   it { expect(subject.config).to be_nil }
 end

@@ -7,8 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # To-Do List **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2817) in GitLab 8.5.
-
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
 
@@ -66,8 +64,6 @@ You can manually add an item to your To-Do List.
    ![Adding a to-do item from the issuable sidebar](img/todos_add_todo_sidebar_v14_1.png)
 
 ## Create a to-do item by directly addressing someone
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7926) in GitLab 9.0.
 
 You can create a to-do item by directly addressing someone at the start of a line.
 For example, in the following comment:

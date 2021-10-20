@@ -19,6 +19,8 @@ export const MOCK_MR_PATH = '/dashboard/merge_requests';
 
 export const MOCK_ALL_PATH = '/';
 
+export const MOCK_AUTOCOMPLETE_PATH = '/autocomplete';
+
 export const MOCK_PROJECT = {
   id: 123,
   name: 'MockProject',
@@ -79,5 +81,72 @@ export const MOCK_SCOPED_SEARCH_OPTIONS = [
   {
     description: MSG_IN_ALL_GITLAB,
     url: MOCK_ALL_PATH,
+  },
+];
+
+export const MOCK_AUTOCOMPLETE_OPTIONS = [
+  {
+    category: 'Projects',
+    id: 1,
+    label: 'MockProject1',
+    url: 'project/1',
+  },
+  {
+    category: 'Projects',
+    id: 2,
+    label: 'MockProject2',
+    url: 'project/2',
+  },
+  {
+    category: 'Groups',
+    id: 1,
+    label: 'MockGroup1',
+    url: 'group/1',
+  },
+  {
+    category: 'Help',
+    label: 'GitLab Help',
+    url: 'help/gitlab',
+  },
+];
+
+export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
+  {
+    category: 'Projects',
+    data: [
+      {
+        category: 'Projects',
+        id: 1,
+        label: 'MockProject1',
+        url: 'project/1',
+      },
+      {
+        category: 'Projects',
+        id: 2,
+        label: 'MockProject2',
+        url: 'project/2',
+      },
+    ],
+  },
+  {
+    category: 'Groups',
+    data: [
+      {
+        category: 'Groups',
+        id: 1,
+        label: 'MockGroup1',
+        url: 'group/1',
+      },
+    ],
+  },
+  {
+    category: 'Help',
+    data: [
+      {
+        category: 'Help',
+        label: 'GitLab Help',
+        url: 'help/gitlab',
+      },
+    ],
   },
 ];

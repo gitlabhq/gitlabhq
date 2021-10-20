@@ -38,12 +38,23 @@ migration only.
 
 ### Required
 
-The following artifacts are required prior to submitting for a ~database review.
+You must provide the following artifacts when you request a ~database review.
 If your merge request description does not include these items, the review will be reassigned back to the author.
+
+#### Migrations
 
 If new migrations are introduced, in the MR **you are required to provide**:
 
 - The output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations.
+
+Note that we have automated tooling for
+[GitLab](https://gitlab.com/gitlab-org/gitlab) (provided by the
+`db:check-migrations` pipeline job) that provides this output for migrations on
+~database merge requests. You do not need to provide this information manually
+if the bot can do it for you. The bot also checks that migrations are correctly
+reversible.
+
+#### Queries
 
 If new queries have been introduced or existing queries have been updated, **you are required to provide**:
 

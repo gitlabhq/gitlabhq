@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Observers::TotalDatabaseSizeChange do
-  subject { described_class.new(observation) }
+  subject { described_class.new(observation, double('unused path')) }
 
   let(:observation) { Gitlab::Database::Migrations::Observation.new }
   let(:connection) { ActiveRecord::Base.connection }

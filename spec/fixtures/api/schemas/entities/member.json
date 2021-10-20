@@ -56,13 +56,15 @@
         { "$ref": "member_user.json" }
       ]
     },
+    "state": { "type": "integer" },
     "invite": {
       "type": "object",
-      "required": ["email", "avatar_url", "can_resend"],
+      "required": ["email", "avatar_url", "can_resend", "user_state"],
       "properties": {
         "email": { "type": "string" },
         "avatar_url": { "type": "string" },
-        "can_resend": { "type": "boolean" }
+        "can_resend": { "type": "boolean" },
+        "user_state": { "type": "string" }
       },
       "additionalProperties": false
     }

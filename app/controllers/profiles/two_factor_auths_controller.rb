@@ -237,8 +237,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def ensure_verified_primary_email
-    return unless Feature.enabled?(:ensure_verified_primary_email_for_2fa, default_enabled: :yaml)
-
     unless current_user.two_factor_enabled? || current_user.primary_email_verified?
       redirect_to profile_emails_path, notice: s_('You need to verify your primary email first before enabling Two-Factor Authentication.')
     end

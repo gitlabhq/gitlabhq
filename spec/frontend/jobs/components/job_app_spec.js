@@ -2,7 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
-import { getJSONFixture } from 'helpers/fixtures';
+import delayedJobFixture from 'test_fixtures/jobs/delayed.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmptyState from '~/jobs/components/empty_state.vue';
 import EnvironmentsBlock from '~/jobs/components/environments_block.vue';
@@ -18,8 +18,6 @@ import job from '../mock_data';
 describe('Job App', () => {
   const localVue = createLocalVue();
   localVue.use(Vuex);
-
-  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
 
   let store;
   let wrapper;
@@ -47,9 +45,9 @@ describe('Job App', () => {
     wrapper = mount(JobApp, { propsData: { ...props }, store });
   };
 
-  const setupAndMount = ({ jobData = {}, traceData = {} } = {}) => {
+  const setupAndMount = ({ jobData = {}, jobLogData = {} } = {}) => {
     mock.onGet(initSettings.endpoint).replyOnce(200, { ...job, ...jobData });
-    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, traceData);
+    mock.onGet(`${initSettings.pagePath}/trace.json`).reply(200, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 
@@ -77,11 +75,10 @@ describe('Job App', () => {
   const findEmptyState = () => wrapper.find(EmptyState);
   const findJobNewIssueLink = () => wrapper.find('[data-testid="job-new-issue"]');
   const findJobEmptyStateTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
-  const findJobTraceScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
-  const findJobTraceScrollBottom = () =>
-    wrapper.find('[data-testid="job-controller-scroll-bottom"]');
-  const findJobTraceController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
-  const findJobTraceEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
+  const findJobLogScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
+  const findJobLogScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
+  const findJobLogController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
+  const findJobLogEraseLink = () => wrapper.find('[data-testid="job-log-erase-link"]');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -315,7 +312,7 @@ describe('Job App', () => {
     });
 
     describe('empty states block', () => {
-      it('renders empty state when job does not have trace and is not running', () =>
+      it('renders empty state when job does not have log and is not running', () =>
         setupAndMount({
           jobData: {
             has_trace: false,
@@ -342,7 +339,7 @@ describe('Job App', () => {
           expect(findEmptyState().exists()).toBe(true);
         }));
 
-      it('does not render empty state when job does not have trace but it is running', () =>
+      it('does not render empty state when job does not have log but it is running', () =>
         setupAndMount({
           jobData: {
             has_trace: false,
@@ -358,7 +355,7 @@ describe('Job App', () => {
           expect(findEmptyState().exists()).toBe(false);
         }));
 
-      it('does not render empty state when job has trace but it is not running', () =>
+      it('does not render empty state when job has log but it is not running', () =>
         setupAndMount({ jobData: { has_trace: true } }).then(() => {
           expect(findEmptyState().exists()).toBe(false);
         }));
@@ -424,10 +421,10 @@ describe('Job App', () => {
     });
   });
 
-  describe('trace controls', () => {
+  describe('job log controls', () => {
     beforeEach(() =>
       setupAndMount({
-        traceData: {
+        jobLogData: {
           html: '<span>Update</span>',
           status: 'success',
           append: false,
@@ -439,16 +436,16 @@ describe('Job App', () => {
     );
 
     it('should render scroll buttons', () => {
-      expect(findJobTraceScrollTop().exists()).toBe(true);
-      expect(findJobTraceScrollBottom().exists()).toBe(true);
+      expect(findJobLogScrollTop().exists()).toBe(true);
+      expect(findJobLogScrollBottom().exists()).toBe(true);
     });
 
     it('should render link to raw ouput', () => {
-      expect(findJobTraceController().exists()).toBe(true);
+      expect(findJobLogController().exists()).toBe(true);
     });
 
     it('should render link to erase job', () => {
-      expect(findJobTraceEraseLink().exists()).toBe(true);
+      expect(findJobLogEraseLink().exists()).toBe(true);
     });
   });
 });

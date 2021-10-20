@@ -19,13 +19,10 @@ module Operations
     default_value_for :active, true
     default_value_for :version, :new_version_flag
 
-    # scopes exists only for the first version
-    has_many :scopes, class_name: 'Operations::FeatureFlagScope'
     # strategies exists only for the second version
     has_many :strategies, class_name: 'Operations::FeatureFlags::Strategy'
     has_many :feature_flag_issues
     has_many :issues, through: :feature_flag_issues
-    has_one :default_scope, -> { where(environment_scope: '*') }, class_name: 'Operations::FeatureFlagScope'
 
     validates :project, presence: true
     validates :name,
@@ -37,10 +34,7 @@ module Operations
       }
     validates :name, uniqueness: { scope: :project_id }
     validates :description, allow_blank: true, length: 0..255
-    validate :first_default_scope, on: :create, if: :has_scopes?
-    validate :version_associations
 
-    accepts_nested_attributes_for :scopes, allow_destroy: true
     accepts_nested_attributes_for :strategies, allow_destroy: true
 
     scope :ordered, -> { order(:name) }
@@ -56,7 +50,7 @@ module Operations
 
     class << self
       def preload_relations
-        preload(:scopes, strategies: :scopes)
+        preload(strategies: :scopes)
       end
 
       def for_unleash_client(project, environment)
@@ -104,13 +98,6 @@ module Operations
       Ability.issues_readable_by_user(issues, current_user)
     end
 
-    def execute_hooks(current_user)
-      run_after_commit do
-        feature_flag_data = Gitlab::DataBuilder::FeatureFlag.build(self, current_user)
-        project.execute_hooks(feature_flag_data, :feature_flag_hooks)
-      end
-    end
-
     def hook_attrs
       {
         id: id,
@@ -118,28 +105,6 @@ module Operations
         description: description,
         active: active
       }
-    end
-
-    private
-
-    def version_associations
-      if new_version_flag? && scopes.any?
-        errors.add(:version_associations, 'version 2 feature flags may not have scopes')
-      end
-    end
-
-    def first_default_scope
-      unless scopes.first.environment_scope == '*'
-        errors.add(:default_scope, 'has to be the first element')
-      end
-    end
-
-    def build_default_scope
-      scopes.build(environment_scope: '*', active: self.active)
-    end
-
-    def has_scopes?
-      scopes.any?
     end
   end
 end

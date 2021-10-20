@@ -201,6 +201,15 @@ RSpec.describe 'Copy as GFM', :js do
         GFM
       )
 
+      aggregate_failures('CustomEmojiFilter') do
+        gfm = ':custom_emoji:'
+
+        html = '<img class="emoji" src="custom_emoji.svg" title=":custom_emoji:" height="20" width="20">'
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
       aggregate_failures('MathFilter: math as transformed from HTML to KaTeX') do
         gfm = '$`c = \pm\sqrt{a^2 + b^2}`$'
 

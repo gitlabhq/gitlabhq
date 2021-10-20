@@ -21,6 +21,15 @@ exports[`NpmInstallation renders all the messages 1`] = `
     Registry setup
   </h3>
    
+  <gl-form-radio-group-stub
+    checked="instance"
+    disabledfield="disabled"
+    htmlfield="html"
+    options="[object Object],[object Object]"
+    textfield="text"
+    valuefield="value"
+  />
+   
   <code-instruction-stub
     copytext="Copy npm setup command"
     instruction="echo @gitlab-org:registry=npmPath/ >> .npmrc"

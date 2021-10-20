@@ -20,6 +20,7 @@ RSpec.describe 'Container Registry', :js do
     sign_in(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
+    stub_container_registry_info
     stub_container_registry_tags(repository: :any, tags: [])
   end
 
@@ -96,6 +97,7 @@ RSpec.describe 'Container Registry', :js do
         expect(service).to receive(:execute).with(container_repository) { { status: :success } }
         expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['1']) { service }
 
+        first('[data-testid="additional-actions"]').click
         first('[data-testid="single-delete-button"]').click
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
         find('.modal .modal-footer .btn-danger').click
@@ -119,6 +121,16 @@ RSpec.describe 'Container Registry', :js do
         expect(page).to have_content('latest')
         expect(page).to have_content('stable')
         expect(page).to have_content('Digest: N/A')
+      end
+    end
+
+    [ContainerRegistry::Path::InvalidRegistryPathError, Faraday::Error].each do |error_class|
+      context "when there is a #{error_class}" do
+        before do
+          expect(::ContainerRegistry::Client).to receive(:registry_info).and_raise(error_class, nil, nil)
+        end
+
+        it_behaves_like 'handling feature network errors with the container registry'
       end
     end
   end

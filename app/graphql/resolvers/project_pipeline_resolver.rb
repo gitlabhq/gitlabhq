@@ -2,6 +2,8 @@
 
 module Resolvers
   class ProjectPipelineResolver < BaseResolver
+    include LooksAhead
+
     type ::Types::Ci::PipelineType, null: true
 
     alias_method :project, :object
@@ -14,7 +16,7 @@ module Resolvers
              required: false,
              description: 'SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b".'
 
-    def ready?(iid: nil, sha: nil)
+    def ready?(iid: nil, sha: nil, **args)
       unless iid.present? ^ sha.present?
         raise Gitlab::Graphql::Errors::ArgumentError, 'Provide one of an IID or SHA'
       end
@@ -22,18 +24,21 @@ module Resolvers
       super
     end
 
-    def resolve(iid: nil, sha: nil)
+    # the preloads are defined on ee/app/graphql/ee/resolvers/project_pipeline_resolver.rb
+    def resolve(iid: nil, sha: nil, **args)
+      self.lookahead = args.delete(:lookahead)
+
       if iid
-        BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader, args|
+        BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader|
           finder = ::Ci::PipelinesFinder.new(project, current_user, iids: iids)
 
-          finder.execute.each { |pipeline| loader.call(pipeline.iid.to_s, pipeline) }
+          apply_lookahead(finder.execute).each { |pipeline| loader.call(pipeline.iid.to_s, pipeline) }
         end
       else
-        BatchLoader::GraphQL.for(sha).batch(key: project) do |shas, loader, args|
+        BatchLoader::GraphQL.for(sha).batch(key: project) do |shas, loader|
           finder = ::Ci::PipelinesFinder.new(project, current_user, sha: shas)
 
-          finder.execute.each { |pipeline| loader.call(pipeline.sha.to_s, pipeline) }
+          apply_lookahead(finder.execute).each { |pipeline| loader.call(pipeline.sha.to_s, pipeline) }
         end
       end
     end

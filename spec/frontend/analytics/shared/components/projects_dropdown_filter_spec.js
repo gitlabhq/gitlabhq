@@ -1,6 +1,8 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
 import getProjects from '~/analytics/shared/graphql/projects.query.graphql';
 
@@ -25,6 +27,17 @@ const projects = [
   },
 ];
 
+const MockGlDropdown = stubComponent(GlDropdown, {
+  template: `
+  <div>
+    <div data-testid="vsa-highlighted-items">
+      <slot name="highlighted-items"></slot>
+    </div>
+    <div data-testid="vsa-default-items"><slot></slot></div>
+  </div>
+  `,
+});
+
 const defaultMocks = {
   $apollo: {
     query: jest.fn().mockResolvedValue({
@@ -38,21 +51,32 @@ let spyQuery;
 describe('ProjectsDropdownFilter component', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, stubs = {}) => {
     spyQuery = defaultMocks.$apollo.query;
-    wrapper = mount(ProjectsDropdownFilter, {
+    wrapper = mountExtended(ProjectsDropdownFilter, {
       mocks: { ...defaultMocks },
       propsData: {
         groupId: 1,
         groupNamespace: 'gitlab-org',
         ...props,
       },
+      stubs,
     });
+  };
+
+  const createWithMockDropdown = (props) => {
+    createComponent(props, { GlDropdown: MockGlDropdown });
+    return waitForPromises();
   };
 
   afterEach(() => {
     wrapper.destroy();
   });
+
+  const findHighlightedItems = () => wrapper.findByTestId('vsa-highlighted-items');
+  const findUnhighlightedItems = () => wrapper.findByTestId('vsa-default-items');
+  const findHighlightedItemsTitle = () => wrapper.findByText('Selected');
+  const findClearAllButton = () => wrapper.findByText('Clear all');
 
   const findDropdown = () => wrapper.find(GlDropdown);
 
@@ -75,8 +99,19 @@ describe('ProjectsDropdownFilter component', () => {
   const findDropdownFullPathAtIndex = (index) =>
     findDropdownAtIndex(index).find('[data-testid="project-full-path"]');
 
-  const selectDropdownItemAtIndex = (index) =>
+  const selectDropdownItemAtIndex = (index) => {
     findDropdownAtIndex(index).find('button').trigger('click');
+    return wrapper.vm.$nextTick();
+  };
+
+  // NOTE: Selected items are now visually separated from unselected items
+  const findSelectedDropdownItems = () => findHighlightedItems().findAll(GlDropdownItem);
+
+  const findSelectedDropdownAtIndex = (index) => findSelectedDropdownItems().at(index);
+  const findSelectedButtonIdentIconAtIndex = (index) =>
+    findSelectedDropdownAtIndex(index).find('div.gl-avatar-identicon');
+  const findSelectedButtonAvatarItemAtIndex = (index) =>
+    findSelectedDropdownAtIndex(index).find('img.gl-avatar');
 
   const selectedIds = () => wrapper.vm.selectedProjects.map(({ id }) => id);
 
@@ -109,7 +144,80 @@ describe('ProjectsDropdownFilter component', () => {
     });
   });
 
-  describe('when passed a an array of defaultProject as prop', () => {
+  describe('highlighted items', () => {
+    const blockDefaultProps = { multiSelect: true };
+    beforeEach(() => {
+      createComponent(blockDefaultProps);
+    });
+
+    describe('with no project selected', () => {
+      it('does not render the highlighted items', async () => {
+        await createWithMockDropdown(blockDefaultProps);
+        expect(findSelectedDropdownItems().length).toBe(0);
+      });
+
+      it('does not render the highlighted items title', () => {
+        expect(findHighlightedItemsTitle().exists()).toBe(false);
+      });
+
+      it('does not render the clear all button', () => {
+        expect(findClearAllButton().exists()).toBe(false);
+      });
+    });
+
+    describe('with a selected project', () => {
+      beforeEach(async () => {
+        await selectDropdownItemAtIndex(0);
+      });
+
+      it('renders the highlighted items', async () => {
+        await createWithMockDropdown(blockDefaultProps);
+        await selectDropdownItemAtIndex(0);
+
+        expect(findSelectedDropdownItems().length).toBe(1);
+      });
+
+      it('renders the highlighted items title', () => {
+        expect(findHighlightedItemsTitle().exists()).toBe(true);
+      });
+
+      it('renders the clear all button', () => {
+        expect(findClearAllButton().exists()).toBe(true);
+      });
+
+      it('clears all selected items when the clear all button is clicked', async () => {
+        await selectDropdownItemAtIndex(1);
+
+        expect(wrapper.text()).toContain('2 projects selected');
+
+        findClearAllButton().trigger('click');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.text()).not.toContain('2 projects selected');
+        expect(wrapper.text()).toContain('Select projects');
+      });
+    });
+  });
+
+  describe('with a selected project and search term', () => {
+    beforeEach(async () => {
+      await createWithMockDropdown({ multiSelect: true });
+
+      selectDropdownItemAtIndex(0);
+      wrapper.setData({ searchTerm: 'this is a very long search string' });
+    });
+
+    it('renders the highlighted items', async () => {
+      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
+    });
+
+    it('hides the unhighlighted items that do not match the string', async () => {
+      expect(findUnhighlightedItems().findAll('li').length).toBe(1);
+      expect(findUnhighlightedItems().text()).toContain('No matching results');
+    });
+  });
+
+  describe('when passed an array of defaultProject as prop', () => {
     beforeEach(() => {
       createComponent({
         defaultProjects: [projects[0]],
@@ -130,8 +238,9 @@ describe('ProjectsDropdownFilter component', () => {
   });
 
   describe('when multiSelect is false', () => {
+    const blockDefaultProps = { multiSelect: false };
     beforeEach(() => {
-      createComponent({ multiSelect: false });
+      createComponent(blockDefaultProps);
     });
 
     describe('displays the correct information', () => {
@@ -183,21 +292,19 @@ describe('ProjectsDropdownFilter component', () => {
       });
 
       it('renders an avatar in the dropdown button when the project has an avatarUrl', async () => {
-        selectDropdownItemAtIndex(0);
+        await createWithMockDropdown(blockDefaultProps);
+        await selectDropdownItemAtIndex(0);
 
-        await wrapper.vm.$nextTick().then(() => {
-          expect(findDropdownButtonAvatarAtIndex(0).exists()).toBe(true);
-          expect(findDropdownButtonIdentIconAtIndex(0).exists()).toBe(false);
-        });
+        expect(findSelectedButtonAvatarItemAtIndex(0).exists()).toBe(true);
+        expect(findSelectedButtonIdentIconAtIndex(0).exists()).toBe(false);
       });
 
       it("renders an identicon in the dropdown button when the project doesn't have an avatarUrl", async () => {
-        selectDropdownItemAtIndex(1);
+        await createWithMockDropdown(blockDefaultProps);
+        await selectDropdownItemAtIndex(1);
 
-        await wrapper.vm.$nextTick().then(() => {
-          expect(findDropdownButtonAvatarAtIndex(1).exists()).toBe(false);
-          expect(findDropdownButtonIdentIconAtIndex(1).exists()).toBe(true);
-        });
+        expect(findSelectedButtonAvatarItemAtIndex(0).exists()).toBe(false);
+        expect(findSelectedButtonIdentIconAtIndex(0).exists()).toBe(true);
       });
     });
   });

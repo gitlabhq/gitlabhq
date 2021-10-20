@@ -10,4 +10,10 @@ RSpec.describe GitlabSchema.types['NugetMetadata'] do
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
+
+  %w[projectUrl licenseUrl iconUrl].each do |optional_field|
+    it "#{optional_field} can be null" do
+      expect(described_class.fields[optional_field].type).to be_nullable
+    end
+  end
 end

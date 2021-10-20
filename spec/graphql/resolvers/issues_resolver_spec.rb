@@ -26,7 +26,14 @@ RSpec.describe Resolvers::IssuesResolver do
     expect(described_class).to have_nullable_graphql_type(Types::IssueType.connection_type)
   end
 
+  shared_context 'filtering for confidential issues' do
+    let_it_be(:confidential_issue1) { create(:issue, project: project, confidential: true) }
+    let_it_be(:confidential_issue2) { create(:issue, project: other_project, confidential: true) }
+  end
+
   context "with a project" do
+    let(:obj) { project }
+
     before_all do
       project.add_developer(current_user)
       project.add_reporter(reporter)
@@ -222,6 +229,42 @@ RSpec.describe Resolvers::IssuesResolver do
         end
       end
 
+      context 'confidential issues' do
+        include_context 'filtering for confidential issues'
+
+        context "when user is allowed to view confidential issues" do
+          it 'returns all viewable issues by default' do
+            expect(resolve_issues).to contain_exactly(issue1, issue2, confidential_issue1)
+          end
+
+          it 'returns only the non-confidential issues for the project when filter is set to false' do
+            expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2)
+          end
+
+          it "returns only the confidential issues for the project when filter is set to true" do
+            expect(resolve_issues({ confidential: true })).to contain_exactly(confidential_issue1)
+          end
+        end
+
+        context "when user is not allowed to see confidential issues" do
+          before do
+            project.add_guest(current_user)
+          end
+
+          it 'returns all viewable issues by default' do
+            expect(resolve_issues).to contain_exactly(issue1, issue2)
+          end
+
+          it 'does not return the confidential issues when filter is set to false' do
+            expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2)
+          end
+
+          it 'does not return the confidential issues when filter is set to true' do
+            expect(resolve_issues({ confidential: true })).to be_empty
+          end
+        end
+      end
+
       context 'when searching issues' do
         it 'returns correct issues' do
           expect(resolve_issues(search: 'foo')).to contain_exactly(issue2)
@@ -235,6 +278,36 @@ RSpec.describe Resolvers::IssuesResolver do
           expect(IssuesFinder).to receive(:new).with(anything, expected_arguments).and_call_original
 
           resolve_issues(search: 'foo')
+        end
+
+        context 'with anonymous user' do
+          let_it_be(:public_project) { create(:project, :public) }
+          let_it_be(:public_issue) { create(:issue, project: public_project, title: 'Test issue') }
+
+          context 'with disable_anonymous_search enabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: true)
+            end
+
+            it 'returns an error' do
+              error_message = "User must be authenticated to include the `search` argument."
+
+              expect { resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil }) }
+                .to raise_error(Gitlab::Graphql::Errors::ArgumentError, error_message)
+            end
+          end
+
+          context 'with disable_anonymous_search disabled' do
+            before do
+              stub_feature_flags(disable_anonymous_search: false)
+            end
+
+            it 'returns correct issues' do
+              expect(
+                resolve(described_class, obj: public_project, args: { search: 'test' }, ctx: { current_user: nil })
+              ).to contain_exactly(public_issue)
+            end
+          end
         end
       end
 
@@ -258,6 +331,10 @@ RSpec.describe Resolvers::IssuesResolver do
 
         it 'returns issues without the specified assignee_id' do
           expect(resolve_issues(not: { assignee_id: [assignee.id] })).to contain_exactly(issue1)
+        end
+
+        it 'returns issues without the specified issue_type' do
+          expect(resolve_issues(not: { types: ['issue'] })).to contain_exactly(issue1)
         end
 
         context 'when filtering by negated author' do
@@ -304,7 +381,7 @@ RSpec.describe Resolvers::IssuesResolver do
           let_it_be(:relative_issue4) { create(:issue, project: project, relative_position: nil) }
 
           it 'sorts issues ascending' do
-            expect(resolve_issues(sort: :relative_position_asc).to_a).to eq [relative_issue3, relative_issue1, relative_issue4, relative_issue2]
+            expect(resolve_issues(sort: :relative_position_asc).to_a).to eq [relative_issue3, relative_issue1, relative_issue2, relative_issue4]
           end
         end
 
@@ -485,25 +562,71 @@ RSpec.describe Resolvers::IssuesResolver do
   end
 
   context "with a group" do
+    let(:obj) { group }
+
     before do
       group.add_developer(current_user)
     end
 
     describe '#resolve' do
       it 'finds all group issues' do
-        result = resolve(described_class, obj: group, ctx: { current_user: current_user })
+        expect(resolve_issues).to contain_exactly(issue1, issue2, issue3)
+      end
 
-        expect(result).to contain_exactly(issue1, issue2, issue3)
+      it 'returns issues without the specified issue_type' do
+        expect(resolve_issues({ not: { types: ['issue'] } })).to contain_exactly(issue1)
+      end
+
+      context "confidential issues" do
+        include_context 'filtering for confidential issues'
+
+        context "when user is allowed to view confidential issues" do
+          it 'returns all viewable issues by default' do
+            expect(resolve_issues).to contain_exactly(issue1, issue2, issue3, confidential_issue1, confidential_issue2)
+          end
+
+          context 'filtering for confidential issues' do
+            it 'returns only the non-confidential issues for the group when filter is set to false' do
+              expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2, issue3)
+            end
+
+            it "returns only the confidential issues for the group when filter is set to true" do
+              expect(resolve_issues({ confidential: true })).to contain_exactly(confidential_issue1, confidential_issue2)
+            end
+          end
+        end
+
+        context "when user is not allowed to see confidential issues" do
+          before do
+            group.add_guest(current_user)
+          end
+
+          it 'returns all viewable issues by default' do
+            expect(resolve_issues).to contain_exactly(issue1, issue2, issue3)
+          end
+
+          context 'filtering for confidential issues' do
+            it 'does not return the confidential issues when filter is set to false' do
+              expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2, issue3)
+            end
+
+            it 'does not return the confidential issues when filter is set to true' do
+              expect(resolve_issues({ confidential: true })).to be_empty
+            end
+          end
+        end
       end
     end
   end
 
   context "when passing a non existent, batch loaded project" do
-    let(:project) do
+    let!(:project) do
       BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
         loader.call("non-existent-path", nil)
       end
     end
+
+    let(:obj) { project }
 
     it "returns nil without breaking" do
       expect(resolve_issues(iids: ["don't", "break"])).to be_empty
@@ -525,6 +648,6 @@ RSpec.describe Resolvers::IssuesResolver do
   end
 
   def resolve_issues(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: project, args: args, ctx: context)
+    resolve(described_class, obj: obj, args: args, ctx: context)
   end
 end

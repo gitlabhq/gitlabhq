@@ -1,4 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+// eslint-disable-next-line import/no-deprecated
+import { getJSONFixture } from 'helpers/fixtures';
 import { trimText } from 'helpers/text_helper';
 import ProjectAvatar from '~/vue_shared/components/deprecated_project_avatar/default.vue';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
@@ -11,6 +13,7 @@ describe('ProjectListItem component', () => {
   let vm;
   let options;
 
+  // eslint-disable-next-line import/no-deprecated
   const project = getJSONFixture('static/projects.json')[0];
 
   beforeEach(() => {

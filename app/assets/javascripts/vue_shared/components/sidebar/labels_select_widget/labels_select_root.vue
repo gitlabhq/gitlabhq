@@ -1,20 +1,17 @@
 <script>
-import Vue from 'vue';
-import Vuex from 'vuex';
+import createFlash from '~/flash';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
+import { labelsQueries } from '~/sidebar/constants';
 import { DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
-import issueLabelsQuery from './graphql/issue_labels.query.graphql';
 import {
   isDropdownVariantSidebar,
   isDropdownVariantStandalone,
   isDropdownVariantEmbedded,
 } from './utils';
-
-Vue.use(Vuex);
 
 export default {
   components: {
@@ -23,8 +20,21 @@ export default {
     DropdownValueCollapsed,
     SidebarEditableItem,
   },
-  inject: ['iid', 'projectPath', 'allowLabelEdit'],
+  inject: {
+    allowLabelEdit: {
+      default: false,
+    },
+  },
   props: {
+    iid: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     allowLabelRemove: {
       type: Boolean,
       required: false,
@@ -90,42 +100,59 @@ export default {
       required: false,
       default: false,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
       contentIsOnViewport: true,
-      issueLabels: [],
+      issuableLabels: [],
     };
   },
+  computed: {
+    isLoading() {
+      return this.labelsSelectInProgress || this.$apollo.queries.issuableLabels.loading;
+    },
+  },
   apollo: {
-    issueLabels: {
-      query: issueLabelsQuery,
+    issuableLabels: {
+      query() {
+        return labelsQueries[this.issuableType].issuableQuery;
+      },
+      skip() {
+        return !isDropdownVariantSidebar(this.variant);
+      },
       variables() {
         return {
           iid: this.iid,
-          fullPath: this.projectPath,
+          fullPath: this.fullPath,
         };
       },
       update(data) {
         return data.workspace?.issuable?.labels.nodes || [];
       },
+      error() {
+        createFlash({ message: __('Error fetching labels.') });
+      },
     },
   },
   methods: {
     handleDropdownClose(labels) {
-      if (labels.length) this.$emit('updateSelectedLabels', labels);
-      this.$emit('onDropdownClose');
+      this.$emit('updateSelectedLabels', labels);
+      this.collapseEditableItem();
     },
-    collapseDropdown() {
-      this.$refs.editable.collapse();
+    collapseEditableItem() {
+      this.$refs.editable?.collapse();
     },
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
-    },
-    showDropdown() {
-      this.$nextTick(() => {
-        this.$refs.dropdownContents.showDropdown();
-      });
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -145,20 +172,19 @@ export default {
     <template v-if="isDropdownVariantSidebar(variant)">
       <dropdown-value-collapsed
         ref="dropdownButtonCollapsed"
-        :labels="issueLabels"
+        :labels="issuableLabels"
         @onValueClick="handleCollapsedValueClick"
       />
       <sidebar-editable-item
         ref="editable"
         :title="__('Labels')"
-        :loading="labelsSelectInProgress"
+        :loading="isLoading"
         :can-edit="allowLabelEdit"
-        @open="showDropdown"
       >
         <template #collapsed>
           <dropdown-value
             :disable-labels="labelsSelectInProgress"
-            :selected-labels="issueLabels"
+            :selected-labels="issuableLabels"
             :allow-label-remove="allowLabelRemove"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
@@ -170,7 +196,7 @@ export default {
         <template #default="{ edit }">
           <dropdown-value
             :disable-labels="labelsSelectInProgress"
-            :selected-labels="issueLabels"
+            :selected-labels="issuableLabels"
             :allow-label-remove="allowLabelRemove"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
@@ -180,8 +206,6 @@ export default {
             <slot></slot>
           </dropdown-value>
           <dropdown-contents
-            v-if="edit"
-            ref="dropdownContents"
             :dropdown-button-text="dropdownButtonText"
             :allow-multiselect="allowMultiselect"
             :labels-list-title="labelsListTitle"
@@ -190,11 +214,30 @@ export default {
             :labels-create-title="labelsCreateTitle"
             :selected-labels="selectedLabels"
             :variant="variant"
-            @closeDropdown="collapseDropdown"
+            :issuable-type="issuableType"
+            :is-visible="edit"
+            :full-path="fullPath"
+            :attr-workspace-path="attrWorkspacePath"
             @setLabels="handleDropdownClose"
+            @closeDropdown="collapseEditableItem"
           />
         </template>
       </sidebar-editable-item>
     </template>
+    <dropdown-contents
+      v-else
+      ref="dropdownContents"
+      :allow-multiselect="allowMultiselect"
+      :dropdown-button-text="dropdownButtonText"
+      :labels-list-title="labelsListTitle"
+      :footer-create-label-title="footerCreateLabelTitle"
+      :footer-manage-label-title="footerManageLabelTitle"
+      :labels-create-title="labelsCreateTitle"
+      :selected-labels="selectedLabels"
+      :variant="variant"
+      :issuable-type="issuableType"
+      :full-path="fullPath"
+      @setLabels="handleDropdownClose"
+    />
   </div>
 </template>

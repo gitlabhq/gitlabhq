@@ -1,3 +1,4 @@
+import fixture from 'test_fixtures/metrics_dashboard/environment_metrics_dashboard.json';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { metricStates } from '~/monitoring/constants';
 import { mapToDashboardViewModel } from '~/monitoring/stores/utils';
@@ -5,10 +6,7 @@ import { stateAndPropsFromDataset } from '~/monitoring/utils';
 
 import { metricsResult } from './mock_data';
 
-// Use globally available `getJSONFixture` so this file can be imported by both karma and jest specs
-export const metricsDashboardResponse = getJSONFixture(
-  'metrics_dashboard/environment_metrics_dashboard.json',
-);
+export const metricsDashboardResponse = fixture;
 
 export const metricsDashboardPayload = metricsDashboardResponse.dashboard;
 

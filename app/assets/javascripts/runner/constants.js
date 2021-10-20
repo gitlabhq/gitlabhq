@@ -7,6 +7,14 @@ export const GROUP_RUNNER_COUNT_LIMIT = 1000;
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
+export const I18N_INSTANCE_RUNNER_DESCRIPTION = s__('Runners|Available to all projects');
+export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
+  'Runners|Available to all projects and subgroups in the group',
+);
+export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
+export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
+export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
+
 export const RUNNER_TAG_BADGE_VARIANT = 'info';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 

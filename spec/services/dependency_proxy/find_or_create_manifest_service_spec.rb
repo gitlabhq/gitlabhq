@@ -21,18 +21,18 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
   describe '#execute' do
     subject { described_class.new(group, image, tag, token).execute }
 
+    shared_examples 'downloading the manifest' do
+      it 'downloads manifest from remote registry if there is no cached one', :aggregate_failures do
+        expect { subject }.to change { group.dependency_proxy_manifests.count }.by(1)
+        expect(subject[:status]).to eq(:success)
+        expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
+        expect(subject[:manifest]).to be_persisted
+        expect(subject[:from_cache]).to eq false
+      end
+    end
+
     context 'when no manifest exists' do
       let_it_be(:image) { 'new-image' }
-
-      shared_examples 'downloading the manifest' do
-        it 'downloads manifest from remote registry if there is no cached one', :aggregate_failures do
-          expect { subject }.to change { group.dependency_proxy_manifests.count }.by(1)
-          expect(subject[:status]).to eq(:success)
-          expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
-          expect(subject[:manifest]).to be_persisted
-          expect(subject[:from_cache]).to eq false
-        end
-      end
 
       context 'successful head request' do
         before do
@@ -60,6 +60,8 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
 
       shared_examples 'using the cached manifest' do
         it 'uses cached manifest instead of downloading one', :aggregate_failures do
+          expect { subject }.to change { dependency_proxy_manifest.reload.updated_at }
+
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
           expect(subject[:manifest]).to eq(dependency_proxy_manifest)
@@ -85,6 +87,16 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           expect(subject[:manifest].digest).to eq(digest)
           expect(subject[:from_cache]).to eq false
         end
+      end
+
+      context 'when the cached manifest is expired' do
+        before do
+          dependency_proxy_manifest.update_column(:status, DependencyProxy::Manifest.statuses[:expired])
+          stub_manifest_head(image, tag, headers: headers)
+          stub_manifest_download(image, tag, headers: headers)
+        end
+
+        it_behaves_like 'downloading the manifest'
       end
 
       context 'failed connection' do

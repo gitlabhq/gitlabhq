@@ -7,7 +7,7 @@ type: reference
 
 # Custom instance-level project templates **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
 GitLab administrators can set a group to be the source of project templates that are
 selectable when a new project is created on the instance. These templates can be selected

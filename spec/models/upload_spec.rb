@@ -242,4 +242,28 @@ RSpec.describe Upload do
 
     it { expect(subject.uploader_context).to match(a_hash_including(secret: 'secret', identifier: 'file.txt')) }
   end
+
+  describe '#update_project_statistics' do
+    let_it_be(:project) { create(:project) }
+
+    subject do
+      create(:upload, model: project)
+    end
+
+    it 'updates project statistics when upload is added' do
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(project.id, [], [:uploads_size])
+
+      subject.save!
+    end
+
+    it 'updates project statistics when upload is removed' do
+      subject.save!
+
+      expect(ProjectCacheWorker).to receive(:perform_async)
+        .with(project.id, [], [:uploads_size])
+
+      subject.destroy!
+    end
+  end
 end

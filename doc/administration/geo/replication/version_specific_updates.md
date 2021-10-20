@@ -13,6 +13,8 @@ for updating Geo nodes.
 
 ## Updating to 14.1, 14.2, 14.3
 
+### Multi-arch images
+
 We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture (for example `amd64`) would be replicated to the secondary node. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
 
 You can check if you are affected by running:
@@ -46,17 +48,27 @@ Otherwise, on all your **secondary** nodes, in a [Rails console](../../operation
 
 If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry, we recommend [upgrading](updating_the_geo_sites.md) to at least GitLab 14.1.
 
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+
 ## Updating to GitLab 14.0/14.1
+
+### Primary sites can not be removed from the UI
 
 We found an issue where [Primary sites can not be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 
 This bug only exists in the UI and does not block the removal of Primary sites using any other method.
 
-### If you have already updated to an affected version and need to remove your Primary site
+If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site by using the [Geo Nodes API](../../../api/geo_nodes.md#delete-a-geo-node).
 
-You can manually remove the Primary site by using the [Geo Nodes API](../../../api/geo_nodes.md#delete-a-geo-node).
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
 ## Updating to GitLab 13.12
+
+### Secondary nodes re-download all LFS files upon update
 
 We found an issue where [secondary nodes re-download all LFS files](https://gitlab.com/gitlab-org/gitlab/-/issues/334550) upon update. This bug:
 
@@ -68,7 +80,7 @@ We found an issue where [secondary nodes re-download all LFS files](https://gitl
 If you don't have many LFS objects or can stand a bit of churn, then it is safe to let the secondary sites re-download LFS objects.
 If you do have many LFS objects, or many Geo secondary sites, or limited bandwidth, or a combination of them all, then we recommend you skip GitLab 13.12.0 through 13.12.6 and update to GitLab 13.12.7 or newer.
 
-### If you have already updated to an affected version, and the re-sync is ongoing
+#### If you have already updated to an affected version, and the re-sync is ongoing
 
 You can manually migrate the legacy sync state to the new state column by running the following command in a [Rails console](../../operations/rails_console.md). It should take under a minute:
 
@@ -76,15 +88,31 @@ You can manually migrate the legacy sync state to the new state column by runnin
 Geo::LfsObjectRegistry.where(state: 0, success: true).update_all(state: 2)
 ```
 
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+
 ## Updating to GitLab 13.11
 
 We found an [issue with Git clone/pull through HTTP(s)](https://gitlab.com/gitlab-org/gitlab/-/issues/330787) on Geo secondaries and on any GitLab instance if maintenance mode is enabled. This was caused by a regression in GitLab Workhorse. This is fixed in the [GitLab 13.11.4 patch release](https://about.gitlab.com/releases/2021/05/14/gitlab-13-11-4-released/). To avoid this issue, upgrade to GitLab 13.11.4 or later.
 
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+
+## Updating to GitLab 13.10
+
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+
 ## Updating to GitLab 13.9
+
+### Error during zero-downtime update: "cannot drop column asset_proxy_whitelist"
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
 that will prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
-to perform the following additional steps for the zero-downtime upgrade:
+to perform the following additional steps for the zero-downtime update:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
    execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
@@ -117,6 +145,10 @@ DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on co
 
 To work around this bug, follow the previous steps to complete the update.
 More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
+
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) will cause Geo secondary site statuses to appear to stop updating and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
 ## Updating to GitLab 13.7
 

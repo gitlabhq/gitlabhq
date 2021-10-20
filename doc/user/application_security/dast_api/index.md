@@ -635,7 +635,7 @@ can be added, removed, and modified by creating a custom configuration.
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
-|[`FUZZAPI_EXCLUDE_PATHS`](#exclude-paths)              | Exclude API URL paths from testing. |
+|[`DAST_API_EXCLUDE_PATHS`](#exclude-paths)              | Exclude API URL paths from testing. |
 |[`DAST_API_OPENAPI`](#openapi-specification)           | OpenAPI specification file or URL. |
 |[`DAST_API_HAR`](#http-archive-har)                    | HTTP Archive (HAR) file. |
 |[`DAST_API_POSTMAN_COLLECTION`](#postman-collection)   | Postman Collection file. |
@@ -899,7 +899,7 @@ variables:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211892) in GitLab 14.0.
 
-When testing an API it can be useful to exclude certain paths. For example, you might exclude testing of an authentication service or an older version of the API. To exclude paths, use the `FUZZAPI_EXCLUDE_PATHS` CI/CD variable . This variable is specified in your `.gitlab-ci.yml` file. To exclude multiple paths, separate entries using the `;` character. In the provided paths you can use a single character wildcard `?` and `*` for a multiple character wildcard.
+When testing an API it can be useful to exclude certain paths. For example, you might exclude testing of an authentication service or an older version of the API. To exclude paths, use the `DAST_API_EXCLUDE_PATHS` CI/CD variable . This variable is specified in your `.gitlab-ci.yml` file. To exclude multiple paths, separate entries using the `;` character. In the provided paths you can use a single character wildcard `?` and `*` for a multiple character wildcard.
 
 To verify the paths are excluded, review the `Tested Operations` and `Excluded Operations` portion of the job output. You should not see any excluded paths listed under `Tested Operations`.
 

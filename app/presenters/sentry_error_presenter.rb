@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SentryErrorPresenter < Gitlab::View::Presenter::Delegated
-  presents :error
+  presents nil, as: :error
 
   FrequencyStruct = Struct.new(:time, :count, keyword_init: true)
 

@@ -61,9 +61,9 @@ describe('Codequality reports store getters', () => {
     it.each`
       resolvedIssues | newIssues | expectedText
       ${0}           | ${0}      | ${'No changes to code quality'}
-      ${0}           | ${1}      | ${'Code quality degraded on 1 point'}
-      ${2}           | ${0}      | ${'Code quality improved on 2 points'}
-      ${1}           | ${2}      | ${'Code quality improved on 1 point and degraded on 2 points'}
+      ${0}           | ${1}      | ${'Code quality degraded'}
+      ${2}           | ${0}      | ${'Code quality improved'}
+      ${1}           | ${2}      | ${'Code quality scanning detected 3 changes in merged results'}
     `(
       'returns a summary containing $resolvedIssues resolved issues and $newIssues new issues',
       ({ newIssues, resolvedIssues, expectedText }) => {

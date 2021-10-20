@@ -30,9 +30,9 @@ The existing database model requires the following:
 
 ### API endpoints
 
-Package systems work with GitLab via API. For example `lib/api/npm_packages.rb`
+Package systems work with GitLab via API. For example `lib/api/npm_project_packages.rb`
 implements API endpoints to work with npm clients. So, the first thing to do is to
-add a new `lib/api/your_name_packages.rb` file with API endpoints that are
+add a new `lib/api/your_name_project_packages.rb` file with API endpoints that are
 necessary to make the package system client to work. Usually that means having
 endpoints like:
 
@@ -48,7 +48,7 @@ GET https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 PUT https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/
 ```
 
-Group-level and instance-level endpoints are good to have but are optional.
+Group-level and instance-level endpoints should only be considered after the project-level endpoint is available in production.
 
 #### Remote hierarchy
 
@@ -168,7 +168,7 @@ The implementation of the different Merge Requests varies between different pack
 
 The MVC must support [Personal Access Tokens](../user/profile/personal_access_tokens.md) right from the start. We currently support two options for these tokens: OAuth and Basic Access.
 
-OAuth authentication is already supported. You can see an example in the [npm API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/npm_packages.rb).
+OAuth authentication is already supported. You can see an example in the [npm API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/npm_project_packages.rb).
 
 [Basic Access authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
 support is done by overriding a specific function in the API helpers, like

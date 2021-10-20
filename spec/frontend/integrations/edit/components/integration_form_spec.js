@@ -11,7 +11,7 @@ import JiraTriggerFields from '~/integrations/edit/components/jira_trigger_field
 import OverrideDropdown from '~/integrations/edit/components/override_dropdown.vue';
 import ResetConfirmationModal from '~/integrations/edit/components/reset_confirmation_modal.vue';
 import TriggerFields from '~/integrations/edit/components/trigger_fields.vue';
-import { integrationLevels } from '~/integrations/edit/constants';
+import { integrationLevels } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
 
 describe('IntegrationForm', () => {

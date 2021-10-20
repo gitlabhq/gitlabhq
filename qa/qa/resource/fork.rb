@@ -14,6 +14,7 @@ module QA
           resource.add_name_uuid = false
           resource.name = name
           resource.path_with_namespace = "#{user.username}/#{name}"
+          resource.api_client = @api_client
         end
       end
 
@@ -67,6 +68,12 @@ module QA
         wait_until_forked
 
         populate(:project)
+      end
+
+      def remove_via_api!
+        project.remove_via_api!
+        upstream.remove_via_api!
+        user.remove_via_api! unless Specs::Helpers::ContextSelector.dot_com?
       end
 
       def api_get_path

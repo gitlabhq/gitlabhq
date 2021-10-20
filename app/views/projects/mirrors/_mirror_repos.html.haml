@@ -10,7 +10,7 @@
       = expanded ? _('Collapse') : _('Expand')
     %p
       = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
-      = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/repository_mirroring'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index.md'), target: '_blank', rel: 'noopener noreferrer'
 
   .settings-content
     - if mirror_settings_enabled
@@ -32,7 +32,7 @@
               = label_tag :only_protected_branches, _('Mirror only protected branches'), class: 'form-check-label'
               .form-text.text-muted
                 = _('If enabled, only protected branches will be mirrored.')
-                = link_to _('Learn more.'), help_page_path('user/project/repository/repository_mirroring', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
+                = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index.md', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
           .panel-footer
             = f.submit _('Mirror repository'), class: 'gl-button btn btn-confirm js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror

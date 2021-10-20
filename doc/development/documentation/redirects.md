@@ -15,13 +15,26 @@ description: Learn how to contribute to GitLab Documentation.
 
 # Redirects in GitLab documentation
 
-Moving or renaming a document is the same as changing its location. Be sure
-to assign a technical writer to any merge request that renames or moves a page.
-Technical Writers can help with any questions and can review your change.
+When you move, rename, or delete a page, you must add a redirect. Redirects reduce
+how often users get 404s when visiting the documentation site from out-of-date links, like:
 
-When moving or renaming a page, you must redirect browsers to the new page.
-This ensures users find the new page, and have the opportunity to update their
-bookmarks.
+- Bookmarks
+- Links from external sites
+- Links from old blog posts
+- Links in the documentation site global navigation
+
+Add a redirect to ensure:
+
+- Users see the new page and can update or delete their bookmark.
+- External sites can update their links, especially sites that have automation that
+  check for redirecting links.
+- The documentation site global navigation does not link to a missing page.
+
+  The links in the global navigation are already tested in the `gitlab-docs` project.
+  If the redirect is missing, the `gitlab-docs` project's `main` branch might break.
+
+Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
+Technical Writers can help with any questions and can review your change.
 
 There are two types of redirects:
 

@@ -363,6 +363,18 @@ RSpec.describe Ci::HasStatus do
         it_behaves_like 'not containing the job', status
       end
     end
+
+    describe '.waiting_for_resource_or_upcoming' do
+      subject { CommitStatus.waiting_for_resource_or_upcoming }
+
+      %i[created scheduled waiting_for_resource].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[running failed success canceled].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
   end
 
   describe '::DEFAULT_STATUS' do

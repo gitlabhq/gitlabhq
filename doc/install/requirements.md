@@ -114,7 +114,7 @@ MySQL/MariaDB are advised to [migrate to PostgreSQL](../update/mysql_to_postgres
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
 available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
 
-We highly recommend using the minimum PostgreSQL versions (as specified in
+We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:
 
 | GitLab version | Minimum PostgreSQL version |
@@ -169,7 +169,7 @@ of GitLab Support or other GitLab engineers.
   operations to manage partitioned tables.
 
 - You should not modify the GitLab schema (for example, adding triggers or modifying tables).
-  Database migrations are tested against the schema definition in the GitLab code base. GitLab
+  Database migrations are tested against the schema definition in the GitLab codebase. GitLab
   version upgrades may fail if the schema is modified.
 
 ## Puma settings

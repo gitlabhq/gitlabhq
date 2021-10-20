@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Manage
+group: Workspace
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 ---
 
@@ -165,7 +165,7 @@ To push a new project:
    As project creation permissions can have many factors, contact your
    GitLab administrator if you're unsure.
 
-1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/README.md) and
+1. If you want to push using SSH, ensure you have [created a SSH key](../../ssh/index.md) and
    [added it to your GitLab account](../../ssh/index.md#add-an-ssh-key-to-your-gitlab-account).
 1. Push with one of the following methods. Replace `gitlab.example.com` with the
    domain name of the machine that hosts your Git repository, `namespace` with the name of
@@ -186,6 +186,12 @@ To push a new project:
 You can view your new project at `https://gitlab.example.com/namespace/myproject`.
 Your project's visibility is set to **Private** by default, but you can change it
 in your [project's settings](../../public_access/public_access.md#change-project-visibility)).
+
+This feature does not work for project paths that have previously been in use and
+[renamed](settings/index.md#renaming-a-repository). A redirect exists over the previous project path
+that causes push attempts to redirect requests to the renamed project location, instead of creating
+a new project. To create a new project, use the [Web UI](#create-a-project) or the
+[Projects API](../../api/projects.md#create-project).
 
 ## Fork a project
 

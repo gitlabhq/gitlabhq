@@ -33,6 +33,7 @@ class Release < ApplicationRecord
     includes(:author, :evidences, :milestones, :links, :sorted_links,
              project: [:project_feature, :route, { namespace: :route }])
   }
+  scope :with_milestones, -> { joins(:milestone_releases) }
   scope :recent, -> { sorted.limit(MAX_NUMBER_TO_DISPLAY) }
   scope :without_evidence, -> { left_joins(:evidences).where(::Releases::Evidence.arel_table[:id].eq(nil)) }
   scope :released_within_2hrs, -> { where(released_at: Time.zone.now - 1.hour..Time.zone.now + 1.hour) }

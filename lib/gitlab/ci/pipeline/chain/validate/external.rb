@@ -91,7 +91,8 @@ module Gitlab
                   email: current_user.email,
                   created_at: current_user.created_at&.iso8601,
                   current_sign_in_ip: current_user.current_sign_in_ip,
-                  last_sign_in_ip: current_user.last_sign_in_ip
+                  last_sign_in_ip: current_user.last_sign_in_ip,
+                  sign_in_count: current_user.sign_in_count
                 },
                 pipeline: {
                   sha: pipeline.sha,

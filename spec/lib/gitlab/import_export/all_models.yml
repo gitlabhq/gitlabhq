@@ -59,6 +59,7 @@ issues:
 - requirement
 - incident_management_issuable_escalation_status
 - pending_escalations
+- customer_relations_contacts
 work_item_type:
 - issues
 events:
@@ -272,6 +273,8 @@ ci_pipelines:
 - dast_profiles_pipeline
 - dast_site_profile
 - dast_site_profiles_pipeline
+- package_build_infos
+- package_file_build_infos
 ci_refs:
 - project
 - ci_pipelines
@@ -322,7 +325,6 @@ integrations:
 - jira_tracker_data
 - zentao_tracker_data
 - issue_tracker_data
-- open_project_tracker_data
 hooks:
 - project
 - web_hook_logs
@@ -354,10 +356,7 @@ container_repositories:
 - name
 project:
 - external_status_checks
-- taggings
 - base_tags
-- topic_taggings
-- topics_acts_as_taggable
 - project_topics
 - topics
 - chat_services
@@ -593,6 +592,7 @@ project:
 - pending_builds
 - security_scans
 - ci_feature_usages
+- bulk_import_exports
 award_emoji:
 - awardable
 - user

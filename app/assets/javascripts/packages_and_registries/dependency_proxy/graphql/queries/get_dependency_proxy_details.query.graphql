@@ -1,0 +1,10 @@
+query getDependencyProxyDetails($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    dependencyProxyBlobCount
+    dependencyProxyTotalSize
+    dependencyProxyImagePrefix
+    dependencyProxySetting {
+      enabled
+    }
+  }
+}

@@ -44,7 +44,7 @@
     background-color: var(--ide-background, $badge-bg);
   }
 
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar) a,
+  .nav-links li:not(.md-header-toolbar) a,
   .gl-tabs-nav li a,
   .dropdown-menu-inner-content,
   .file-row .file-row-icon svg,
@@ -52,7 +52,7 @@
     color: var(--ide-text-color-secondary, $gl-text-color-secondary);
   }
 
-  .nav-links:not(.quick-links) li:not(.md-header-toolbar),
+  .nav-links li:not(.md-header-toolbar),
   .gl-tabs-nav li {
     &:hover a,
     &.active a,
@@ -148,7 +148,7 @@
   .md blockquote,
   .md table:not(.code) tbody td,
   .md table:not(.code) tr th,
-  .nav-links:not(.quick-links),
+  .nav-links,
   .gl-tabs-nav,
   .common-note-form .md-area.is-focused .nav-links {
     border-color: var(--ide-border-color-alt, $white-dark);
@@ -259,6 +259,7 @@
 
   .dropdown-menu-toggle {
     border-color: var(--ide-btn-default-border, $gray-darkest);
+    background-color: var(--ide-input-background, transparent);
 
     &:hover,
     &:focus {
@@ -310,7 +311,7 @@
     border-color: var(--ide-background, $border-color);
     background-color: var(--ide-dropdown-background, $white);
 
-    .nav-links:not(.quick-links) {
+    .nav-links {
       background-color: var(--ide-dropdown-hover-background, $white);
       border-color: var(--ide-dropdown-hover-background, $border-color);
     }

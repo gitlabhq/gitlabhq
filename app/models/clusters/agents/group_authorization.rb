@@ -10,7 +10,9 @@ module Clusters
 
       validates :config, json_schema: { filename: 'cluster_agent_authorization_configuration' }
 
-      delegate :project, to: :agent
+      def config_project
+        agent.project
+      end
     end
   end
 end

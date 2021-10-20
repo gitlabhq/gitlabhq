@@ -63,16 +63,6 @@ You can also use the [certificate-based method](../../../project/clusters/multip
 but, for [security implications](#security-implications-for-clusters-connected-with-certificates),
 we don't recommend using this method.
 
-## Cluster levels
-
-Choose your cluster's level according to its purpose:
-
-| Level | Purpose |
-|--|--|
-| [Project level](../../../project/clusters/index.md) | Use your cluster for a single project. |
-| [Group level](../../../group/clusters/index.md) | Use the same cluster across multiple projects within your group. |
-| [Instance level](../../../instance/clusters/index.md) **(FREE SELF)** | Use the same cluster across groups and projects within your instance. |
-
 ## Supported cluster versions
 
 GitLab is committed to support at least two production-ready Kubernetes minor
@@ -86,29 +76,42 @@ version. The range of supported versions is based on the evaluation of:
 GitLab supports the following Kubernetes versions, and you can upgrade your
 Kubernetes version to any supported version at any time:
 
+- 1.20 (support ends on July 22, 2022)
 - 1.19 (support ends on February 22, 2022)
 - 1.18 (support ends on November 22, 2021)
 - 1.17 (support ends on September 22, 2021)
 
+[Adding support to other versions of Kubernetes is managed under this epic](https://gitlab.com/groups/gitlab-org/-/epics/4827).
+
 Some GitLab features may support versions outside the range provided here.
 
-## View your clusters
+## Cluster levels
+
+Choose your cluster's level according to its purpose:
+
+| Level | Purpose |
+|--|--|
+| [Project level](../../../project/clusters/index.md) | Use your cluster for a single project. |
+| [Group level](../../../group/clusters/index.md) | Use the same cluster across multiple projects within your group. |
+| [Instance level](../../../instance/clusters/index.md) | Use the same cluster across groups and projects within your instance. |
+
+### View your clusters
 
 To view the Kubernetes clusters connected to your project,
-group, or instance, open the cluster's page according to the
-[level](#cluster-levels) of your cluster.
+group, or instance, open the cluster's page according to
+your cluster's level.
 
 **Project-level clusters:**
 
-1. Go to your project's homepage.
+1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Infrastructure > Kubernetes clusters**.
 
 **Group-level clusters:**
 
-1. Go to your group's homepage.
+1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Kubernetes**.
 
-**Instance-level clusters:** **(FREE SELF)**
+**Instance-level clusters:**
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Kubernetes**.

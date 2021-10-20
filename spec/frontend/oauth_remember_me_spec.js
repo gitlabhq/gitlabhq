@@ -3,7 +3,7 @@ import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
   const findFormAction = (selector) => {
-    return $(`#oauth-container .oauth-login${selector}`).parent('form').attr('action');
+    return $(`#oauth-container .js-oauth-login${selector}`).parent('form').attr('action');
   };
 
   beforeEach(() => {

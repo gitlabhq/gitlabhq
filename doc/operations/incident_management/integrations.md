@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrations **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab Ultimate 12.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab 12.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.
 
 GitLab can accept alerts from any source via a webhook receiver. This can be configured
 generically or, in GitLab versions 13.1 and greater, you can configure
@@ -16,9 +16,9 @@ to use this endpoint.
 
 ## Integrations list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab Free 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab 13.5.
 
-With at least the [Maintainer role](../../user/permissions.md), you can view the list of configured
+With at least the Maintainer [role](../../user/permissions.md), you can view the list of configured
 alerts integrations by navigating to **Settings > Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
@@ -30,13 +30,13 @@ the integration name, type, and status (enabled or disabled):
 GitLab can receive alerts via a HTTP endpoint that you configure,
 or the [Prometheus integration](#external-prometheus-integration).
 
-### Single HTTP Endpoint **(FREE)**
+### Single HTTP Endpoint
 
 Enabling the HTTP Endpoint in a GitLab projects activates it to
 receive alert payloads in JSON format. You can always
 [customize the payload](#customize-the-alert-payload-outside-of-gitlab) to your liking.
 
-1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
+1. Sign in to GitLab as a user with the Maintainer [role](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown menu,
@@ -47,13 +47,13 @@ receive alert payloads in JSON format. You can always
 
 ### HTTP Endpoints **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab Premium 13.6.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab 13.6.
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
 and you can [customize the payload](#customize-the-alert-payload-outside-of-gitlab).
 
-1. Sign in to GitLab as a user with maintainer [permissions](../../user/permissions.md)
+1. Sign in to GitLab as a user with the Maintainer [role](../../user/permissions.md)
    for a project.
 1. Navigate to **Settings > Monitor** in your project.
 1. Expand the **Alerts** section.
@@ -80,7 +80,7 @@ side of the integrations list.
 
 #### Map fields in custom alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in GitLab 13.10.
 
 You can integrate your monitoring tool's alert format with GitLab alerts. To show the
 correct information in the [Alert list](alerts.md) and the
@@ -125,17 +125,7 @@ NOTE:
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
 
-Example request:
-
-```shell
-curl --request POST \
-  --data '{"title": "Incident title"}' \
-  --header "Authorization: Bearer <authorization_key>" \
-  --header "Content-Type: application/json" \
-  <url>
-```
-
-The `<authorization_key>` and `<url>` values can be found when configuring an alert integration.
+### Example request body
 
 Example payload:
 
@@ -157,15 +147,64 @@ Example payload:
 }
 ```
 
+## Authorization
+
+The following authorization methods are accepted:
+
+- Bearer authorization header
+- Basic authentication
+
+The `<authorization_key>` and `<url>` values can be found when configuring an alert integration.
+
+### Bearer authorization header
+
+The authorization key can be used as the Bearer token:
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Authorization: Bearer <authorization_key>" \
+  --header "Content-Type: application/json" \
+  <url>
+```
+
+### Basic authentication
+
+The authorization key can be used as the `password`. The `username` is left blank:
+
+- username: `<blank>`
+- pasword: authorization_key
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Authorization: Basic <base_64_encoded_credentials>" \
+  --header "Content-Type: application/json" \
+  <url>
+```
+
+Basic authentication can also be used with credentials directly in the URL:
+
+```shell
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Content-Type: application/json" \
+  <username:password@url>
+```
+
+WARNING:
+Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
+using one of the above header options if your tooling supports it.
+
 ## Triggering test alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab Free in 13.2.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab in 13.2.
 
 After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
-1. Sign in as a user with Developer or greater [permissions](../../user/permissions.md).
+1. Sign in as a user with at least the Developer [role](../../user/permissions.md).
 1. Navigate to **Settings > Monitor** in your project.
 1. Click **Alerts** to expand the section.
 1. Click the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
@@ -177,7 +216,7 @@ GitLab displays an error or success message, depending on the outcome of your te
 
 ## Automatic grouping of identical alerts **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab Premium 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab 13.2.
 
 In GitLab versions 13.2 and greater, GitLab groups alerts based on their
 payload. When an incoming alert contains the same payload as another alert
@@ -200,9 +239,9 @@ field is `end_time`. With custom mappings, you can select the expected field.
 
 You can also configure the associated [incident to be closed automatically](../incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
-## Link to your Opsgenie Alerts
+## Link to your Opsgenie Alerts **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab Premium 13.2.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
 
 WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through
@@ -219,7 +258,7 @@ active at the same time.
 
 To enable Opsgenie integration:
 
-1. Sign in as a user with the [Maintainer or Owner role](../../user/permissions.md).
+1. Sign in as a user with the Maintainer or Owner [role](../../user/permissions.md).
 1. Navigate to **Monitor > Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.

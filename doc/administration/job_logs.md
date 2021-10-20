@@ -146,9 +146,9 @@ a background job archives the job log. The log is moved to `/var/opt/gitlab/gitl
 by default, or to object storage if configured.
 
 In a [scaled-out architecture](reference_architectures/index.md) with Rails and Sidekiq running on more than one
-server, these two locations on the filesystem have to be shared using NFS.
+server, these two locations on the file system have to be shared using NFS.
 
-To eliminate both filesystem requirements:
+To eliminate both file system requirements:
 
 - [Enable the incremental logging feature](#enable-or-disable-incremental-logging), which uses Redis instead of disk space for temporary caching of job logs.
 - Configure [object storage](job_artifacts.md#object-storage-settings) for storing archived job logs.

@@ -43,7 +43,9 @@ export function formatListIssues(listIssues) {
     let sortedIssues = list.issues.edges.map((issueNode) => ({
       ...issueNode.node,
     }));
-    sortedIssues = sortBy(sortedIssues, 'relativePosition');
+    if (list.listType !== ListType.closed) {
+      sortedIssues = sortBy(sortedIssues, 'relativePosition');
+    }
 
     return {
       ...map,
@@ -146,7 +148,8 @@ export function getMoveData(state, params) {
 }
 
 export function moveItemListHelper(item, fromList, toList) {
-  const updatedItem = item;
+  const updatedItem = cloneDeep(item);
+
   if (
     toList.listType === ListType.label &&
     !updatedItem.labels.find((label) => label.id === toList.label.id)

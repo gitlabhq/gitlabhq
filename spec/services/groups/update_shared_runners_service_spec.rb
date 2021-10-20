@@ -85,10 +85,10 @@ RSpec.describe Groups::UpdateSharedRunnersService do
       context 'disable shared Runners' do
         let_it_be(:group) { create(:group) }
 
-        let(:params) { { shared_runners_setting: 'disabled_and_unoverridable' } }
+        let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE } }
 
         it 'receives correct method and succeeds' do
-          expect(group).to receive(:update_shared_runners_setting!).with('disabled_and_unoverridable')
+          expect(group).to receive(:update_shared_runners_setting!).with(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
 
           expect(subject[:status]).to eq(:success)
         end
@@ -108,13 +108,13 @@ RSpec.describe Groups::UpdateSharedRunnersService do
       end
 
       context 'allow descendants to override' do
-        let(:params) { { shared_runners_setting: 'disabled_with_override' } }
+        let(:params) { { shared_runners_setting: Namespace::SR_DISABLED_WITH_OVERRIDE } }
 
         context 'top level group' do
           let_it_be(:group) { create(:group, :shared_runners_disabled) }
 
           it 'receives correct method and succeeds' do
-            expect(group).to receive(:update_shared_runners_setting!).with('disabled_with_override')
+            expect(group).to receive(:update_shared_runners_setting!).with(Namespace::SR_DISABLED_WITH_OVERRIDE)
 
             expect(subject[:status]).to eq(:success)
           end

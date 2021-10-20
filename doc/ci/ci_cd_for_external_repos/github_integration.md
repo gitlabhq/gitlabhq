@@ -45,7 +45,7 @@ repositories:
 GitLab:
 
 1. Imports the project.
-1. Enables [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository).
+1. Enables [Pull Mirroring](../../user/project/repository/mirror/pull.md).
 1. Enables [GitHub project integration](../../user/project/integrations/github.md).
 1. Creates a web hook on GitHub to notify GitLab of new commits.
 

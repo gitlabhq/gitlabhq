@@ -317,6 +317,7 @@ export default {
               :key="discussion.id"
               :discussion="discussion"
               :render-diff-file="true"
+              is-overview-tab
               :help-page-path="helpPagePath"
             />
           </template>

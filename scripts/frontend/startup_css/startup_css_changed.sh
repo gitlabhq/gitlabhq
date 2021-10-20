@@ -7,7 +7,13 @@ echo ""
 echo "https://gitlab.com/gitlab-org/gitlab/-/issues/331812"
 echo "-----------------------------------------------------------"
 
-startup_glob="*stylesheets/startup*"
+startup_glob="app/assets/stylesheets/startup*"
+
+if ! [ "$FOSS_ONLY" ]
+then
+  startup_glob="*${startup_glob}"
+fi
+
 
 echo "Staging changes to '${startup_glob}' so we can check for untracked files..."
 git add "${startup_glob}"

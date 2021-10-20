@@ -1,19 +1,12 @@
 - page_title _('Branches')
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 
-.top-area.adjust
-  %ul.nav-links.issues-state-filters.nav.nav-tabs
-    %li{ class: active_when(@mode == 'overview') }>
-      = link_to s_('Branches|Overview'), project_branches_path(@project), title: s_('Branches|Show overview of the branches')
-
-    %li{ class: active_when(@mode == 'active') }>
-      = link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), title: s_('Branches|Show active branches')
-
-    %li{ class: active_when(@mode == 'stale') }>
-      = link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), title: s_('Branches|Show stale branches')
-
-    %li{ class: active_when(!%w[overview active stale].include?(@mode)) }>
-      = link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), title: s_('Branches|Show all branches')
+.top-area.gl-border-0
+  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-b-0' }) do
+    = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
+    = gl_tab_link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), { title: s_('Branches|Show active branches') }
+    = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { title: s_('Branches|Show stale branches') }
+    = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: !%w[overview active stale].include?(@mode), title: s_('Branches|Show all branches') }
 
   .nav-controls
     #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
@@ -38,7 +31,10 @@
     %h5
       = s_('Branches|Protected branches can be managed in %{project_settings_link}.').html_safe % { project_settings_link: project_settings_link }
 
-- if @mode == 'overview' && (@active_branches.any? || @stale_branches.any?)
+- if @gitaly_unavailable
+  = render 'shared/errors/gitaly_unavailable', reason: s_('Branches|Unable to load branches')
+
+- elsif @mode == 'overview' && (@active_branches.any? || @stale_branches.any?)
   = render "projects/branches/panel", branches: @active_branches, state: 'active', panel_title: s_('Branches|Active branches'), show_more_text: s_('Branches|Show more active branches'), project: @project, overview_max_branches: @overview_max_branches
   = render "projects/branches/panel", branches: @stale_branches, state: 'stale', panel_title: s_('Branches|Stale branches'), show_more_text: s_('Branches|Show more stale branches'), project: @project, overview_max_branches: @overview_max_branches
 

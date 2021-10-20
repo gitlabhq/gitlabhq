@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe UserDetail do
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to define_enum_for(:registration_objective).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other, :joining_team]).with_suffix }
 
   describe 'validations' do
     describe '#job_title' do

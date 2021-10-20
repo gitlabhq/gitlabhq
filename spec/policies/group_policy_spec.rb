@@ -1005,7 +1005,7 @@ RSpec.describe GroupPolicy do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_allowed(:update_runners_registration_token) }
+      it { is_expected.to be_disallowed(:update_runners_registration_token) }
     end
 
     context 'with reporter' do

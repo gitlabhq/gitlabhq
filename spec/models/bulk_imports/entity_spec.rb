@@ -179,7 +179,7 @@ RSpec.describe BulkImports::Entity, type: :model do
         entity = create(:bulk_import_entity, :group_entity)
         entity.create_pipeline_trackers!
 
-        expect(entity.trackers.count).to eq(BulkImports::Groups::Stage.pipelines.count)
+        expect(entity.trackers.count).to eq(BulkImports::Groups::Stage.new(entity.bulk_import).pipelines.count)
         expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Groups::Pipelines::GroupPipeline.to_s)
       end
     end
@@ -189,7 +189,7 @@ RSpec.describe BulkImports::Entity, type: :model do
         entity = create(:bulk_import_entity, :project_entity)
         entity.create_pipeline_trackers!
 
-        expect(entity.trackers.count).to eq(BulkImports::Projects::Stage.pipelines.count)
+        expect(entity.trackers.count).to eq(BulkImports::Projects::Stage.new(entity.bulk_import).pipelines.count)
         expect(entity.trackers.map(&:pipeline_name)).to include(BulkImports::Projects::Pipelines::ProjectPipeline.to_s)
       end
     end
@@ -205,6 +205,42 @@ RSpec.describe BulkImports::Entity, type: :model do
 
     it 'returns false when the given pipeline name exists in the pipelines list' do
       expect(entity.pipeline_exists?('BulkImports::Groups::Pipelines::InexistentPipeline')).to eq(false)
+    end
+  end
+
+  describe '#pluralized_name' do
+    context 'when entity is group' do
+      it 'returns groups' do
+        entity = build(:bulk_import_entity, :group_entity)
+
+        expect(entity.pluralized_name).to eq('groups')
+      end
+    end
+
+    context 'when entity is project' do
+      it 'returns projects' do
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity.pluralized_name).to eq('projects')
+      end
+    end
+  end
+
+  describe '#export_relations_url_path' do
+    context 'when entity is group' do
+      it 'returns group export relations url' do
+        entity = build(:bulk_import_entity, :group_entity)
+
+        expect(entity.export_relations_url_path).to eq("/groups/#{entity.encoded_source_full_path}/export_relations")
+      end
+    end
+
+    context 'when entity is project' do
+      it 'returns project export relations url' do
+        entity = build(:bulk_import_entity, :project_entity)
+
+        expect(entity.export_relations_url_path).to eq("/projects/#{entity.encoded_source_full_path}/export_relations")
+      end
     end
   end
 end

@@ -156,8 +156,6 @@ to the project:
 
 ## Scoped labels **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
-
 Scoped labels allow teams to use the label feature to annotate issues, merge requests
 and epics with mutually exclusive labels. This can enable more complicated workflows
 by preventing certain labels from being used together.
@@ -179,6 +177,19 @@ For example:
    added.
 1. GitLab automatically removes the `priority::low` label, as an issue should not
    have two priority labels at the same time.
+
+### Filter by scoped labels
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12285) in GitLab 14.4.
+
+To filter issue, merge request, or epic lists for ones with labels that belong to a given scope, enter
+`<scope>::*` in the searched label name.
+
+For example, filtering by the `platform::*` label returns issues that have `platform::iOS`,
+`platform::Android`, or `platform::Linux` labels.
+
+NOTE:
+This is not available on the [issues or merge requests dashboard pages](../search/index.md#issues-and-merge-requests).
 
 ### Workflows with scoped labels
 
@@ -228,13 +239,13 @@ to label notifications for the project only, or the whole group.
 
 ## Label priority
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14189) in GitLab 8.9.
-> - Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
-
 Labels can have relative priorities, which are used in the **Label priority** and
 **Priority** sort orders of issues and merge request list pages. Prioritization
 for both group and project labels happens at the project level, and cannot be done
 from the group label list.
+
+NOTE:
+Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
 
 From the project label list page, star a label to indicate that it has a priority.
 

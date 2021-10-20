@@ -1004,4 +1004,39 @@ describe('URL utility', () => {
       expect(urlUtils.isSameOriginUrl(url)).toBe(expected);
     });
   });
+
+  describe('constructWebIDEPath', () => {
+    let originalGl;
+    const projectIDEPath = '/foo/bar';
+    const sourceProj = 'my_-fancy-proj/boo';
+    const targetProj = 'boo/another-fancy-proj';
+    const mrIid = '7';
+
+    beforeEach(() => {
+      originalGl = window.gl;
+      window.gl = { webIDEPath: projectIDEPath };
+    });
+
+    afterEach(() => {
+      window.gl = originalGl;
+    });
+
+    it.each`
+      sourceProjectFullPath | targetProjectFullPath | iid          | expectedPath
+      ${undefined}          | ${undefined}          | ${undefined} | ${projectIDEPath}
+      ${undefined}          | ${undefined}          | ${mrIid}     | ${projectIDEPath}
+      ${undefined}          | ${targetProj}         | ${undefined} | ${projectIDEPath}
+      ${undefined}          | ${targetProj}         | ${mrIid}     | ${projectIDEPath}
+      ${sourceProj}         | ${undefined}          | ${undefined} | ${projectIDEPath}
+      ${sourceProj}         | ${targetProj}         | ${undefined} | ${projectIDEPath}
+      ${sourceProj}         | ${undefined}          | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=`}
+      ${sourceProj}         | ${sourceProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=`}
+      ${sourceProj}         | ${targetProj}         | ${mrIid}     | ${`/-/ide/project/${sourceProj}/merge_requests/${mrIid}?target_project=${encodeURIComponent(targetProj)}`}
+    `(
+      'returns $expectedPath for "$sourceProjectFullPath + $targetProjectFullPath + $iid"',
+      ({ expectedPath, ...args } = {}) => {
+        expect(urlUtils.constructWebIDEPath(args)).toBe(expectedPath);
+      },
+    );
+  });
 });

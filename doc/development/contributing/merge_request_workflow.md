@@ -18,8 +18,8 @@ in order to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled, it is best to first create
 an issue (if there isn't one already) and leave a comment asking for it
-to be marked as `Accepting Merge Requests`. Please include screenshots or
-wireframes of the proposed feature if it will also change the UI.
+to be marked as `Accepting merge requests`. See the [feature proposals](issue_workflow.md#feature-proposals)
+section.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
 [GitLab](https://gitlab.com/gitlab-org/gitlab/-/merge_requests),
@@ -255,14 +255,14 @@ requirements.
 1. The change is tested in a review app where possible and if appropriate.
 1. The new feature does not degrade the user experience of the product.
 1. The change is evaluated to [limit the impact of far-reaching work](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work).
-1. An agreed-upon rollout plan.  
+1. An agreed-upon [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans/).  
 1. Merged by a project maintainer.
 
 ### Production use
 
 1. Confirmed to be working in staging before implementing the change in production, where possible.
 1. Confirmed to be working in the production with no new [Sentry](https://about.gitlab.com/handbook/engineering/#sentry) errors after the contribution is deployed.
-1. Confirmed that the rollout plan has been completed.
+1. Confirmed that the [rollout plan](https://about.gitlab.com/handbook/engineering/development/processes/rollout-plans) has been completed.
 1. If there is a performance risk in the change, I have analyzed the performance of the system before and after the change.
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
    - Confirmed to be working on GitLab projects.

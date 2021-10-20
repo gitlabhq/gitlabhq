@@ -1,8 +1,0 @@
----
-name: track_epic_boards_activity
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60357
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338038
-milestone: '13.12'
-type: development
-group: group::product planning
-default_enabled: true

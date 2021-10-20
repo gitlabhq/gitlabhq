@@ -17,15 +17,14 @@ This documentation is not for clusters for deployment of GitLab itself, but inst
 
 Information on deploying GitLab onto EKS can be found in [Provisioning GitLab Cloud Native Hybrid on AWS EKS](gitlab_hybrid_on_aws.md).
 
-## Use AWS EKS quick start or `eksctl`
+## Use `eksctl`
 
-Using the EKS Quick Start or `eksctl` enables the following when building an EKS Cluster:
+Using `eksctl` enables the following when building an EKS Cluster:
 
-- It can be part of CloudFormation IaC or [CLI (`eksctl`)](https://eksctl.io/) automation
 - You have various cluster configuration options:
   - Selection of operating system: Amazon Linux 2, Windows, Bottlerocket
   - Selection of Hardware Architecture: x86, ARM, GPU
-  - Selection of Fargate backend
+  - Selection of Kubernetes version (the GitLab-managed clusters for your project's applications have [specific Kubernetes version requirements](../../user/infrastructure/clusters/connect/index.md#supported-cluster-versions))
 - It can deploy high value-add items to the cluster, including:
   - A bastion host to keep the cluster endpoint private and possible perform performance testing.
   - Prometheus and Grafana for monitoring.

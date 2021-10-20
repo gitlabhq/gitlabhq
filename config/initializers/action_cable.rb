@@ -19,4 +19,4 @@ ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install
-Gitlab::Database::LoadBalancing::ActionCableCallbacks.install if Gitlab::Database::LoadBalancing.enable?
+Gitlab::Database::LoadBalancing::ActionCableCallbacks.install

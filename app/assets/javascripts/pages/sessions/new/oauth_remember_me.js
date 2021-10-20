@@ -20,7 +20,7 @@ export default class OAuthRememberMe {
   toggleRememberMe(event) {
     const rememberMe = $(event.target).is(':checked');
 
-    $('.oauth-login', this.container).each((i, element) => {
+    $('.js-oauth-login', this.container).each((i, element) => {
       const $form = $(element).parent('form');
       const href = $form.attr('action');
 

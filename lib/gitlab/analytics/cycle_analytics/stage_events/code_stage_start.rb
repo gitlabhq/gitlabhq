@@ -53,6 +53,10 @@ module Gitlab
               .on(mr_metrics_table[:merge_request_id].eq(mr_table[:id]))
               .join_sources
           end
+
+          def include_in(query)
+            query.left_joins(merge_requests_closing_issues: { issue: [:metrics] }, metrics: [])
+          end
         end
       end
     end

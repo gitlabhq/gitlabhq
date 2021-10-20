@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -15,6 +15,7 @@ export default {
     GlIcon,
     GlLabel,
     GlFormCheckbox,
+    GlSprintf,
     IssuableAssignees,
   },
   directives: {
@@ -82,9 +83,7 @@ export default {
       return this.issuable.assignees?.nodes || this.issuable.assignees || [];
     },
     createdAt() {
-      return sprintf(__('created %{timeAgo}'), {
-        timeAgo: getTimeago().format(this.issuable.createdAt),
-      });
+      return getTimeago().format(this.issuable.createdAt);
     },
     updatedAt() {
       return sprintf(__('updated %{timeAgo}'), {
@@ -164,132 +163,132 @@ export default {
 <template>
   <li
     :id="`issuable_${issuableId}`"
-    class="issue gl-px-5!"
+    class="issue gl-display-flex! gl-px-5!"
     :class="{ closed: issuable.closedAt, today: createdInPastDay }"
     :data-labels="labelIdsString"
   >
-    <div class="issuable-info-container">
-      <div v-if="showCheckbox" class="issue-check">
-        <gl-form-checkbox
-          class="gl-mr-0"
-          :checked="checked"
-          :data-id="issuableId"
-          @input="$emit('checked-input', $event)"
+    <gl-form-checkbox
+      v-if="showCheckbox"
+      class="issue-check gl-mr-0"
+      :checked="checked"
+      :data-id="issuableId"
+      @input="$emit('checked-input', $event)"
+    >
+      <span class="gl-sr-only">{{ issuable.title }}</span>
+    </gl-form-checkbox>
+    <div class="issuable-main-info">
+      <div data-testid="issuable-title" class="issue-title title">
+        <gl-icon
+          v-if="issuable.confidential"
+          v-gl-tooltip
+          name="eye-slash"
+          :title="__('Confidential')"
+          :aria-label="__('Confidential')"
+        />
+        <gl-link class="issue-title-text" dir="auto" :href="webUrl" v-bind="issuableTitleProps">
+          {{ issuable.title }}
+          <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
+        </gl-link>
+        <span
+          v-if="taskStatus"
+          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-3"
+          data-testid="task-status"
         >
-          <span class="gl-sr-only">{{ issuable.title }}</span>
-        </gl-form-checkbox>
+          {{ taskStatus }}
+        </span>
       </div>
-      <div class="issuable-main-info">
-        <div data-testid="issuable-title" class="issue-title title">
-          <span class="issue-title-text" dir="auto">
-            <gl-icon
-              v-if="issuable.confidential"
-              v-gl-tooltip
-              name="eye-slash"
-              :title="__('Confidential')"
-              :aria-label="__('Confidential')"
-            />
-            <gl-link :href="webUrl" v-bind="issuableTitleProps">
-              {{ issuable.title
-              }}<gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2"
-            /></gl-link>
-          </span>
-          <span
-            v-if="taskStatus"
-            class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-3"
-            data-testid="task-status"
-          >
-            {{ taskStatus }}
-          </span>
-        </div>
-        <div class="issuable-info">
-          <slot v-if="hasSlotContents('reference')" name="reference"></slot>
-          <span v-else data-testid="issuable-reference" class="issuable-reference">
-            {{ reference }}
-          </span>
-          <span class="issuable-authored gl-display-none gl-sm-display-inline-block! gl-mr-3">
-            <span aria-hidden="true">&middot;</span>
-            <span
-              v-gl-tooltip:tooltipcontainer.bottom
-              data-testid="issuable-created-at"
-              :title="tooltipTitle(issuable.createdAt)"
-              >{{ createdAt }}</span
-            >
-            {{ __('by') }}
-            <slot v-if="hasSlotContents('author')" name="author"></slot>
-            <gl-link
-              v-else
-              :data-user-id="authorId"
-              :data-username="author.username"
-              :data-name="author.name"
-              :data-avatar-url="author.avatarUrl"
-              :href="author.webUrl"
-              data-testid="issuable-author"
-              class="author-link js-user-link"
-            >
-              <span class="author">{{ author.name }}</span>
-            </gl-link>
+      <div class="issuable-info">
+        <slot v-if="hasSlotContents('reference')" name="reference"></slot>
+        <span v-else data-testid="issuable-reference" class="issuable-reference">
+          {{ reference }}
+        </span>
+        <span class="gl-display-none gl-sm-display-inline-block">
+          <span aria-hidden="true">&middot;</span>
+          <span class="issuable-authored gl-mr-3">
+            <gl-sprintf :message="__('created %{timeAgo} by %{author}')">
+              <template #timeAgo>
+                <span
+                  v-gl-tooltip.bottom
+                  :title="tooltipTitle(issuable.createdAt)"
+                  data-testid="issuable-created-at"
+                >
+                  {{ createdAt }}
+                </span>
+              </template>
+              <template #author>
+                <slot v-if="hasSlotContents('author')" name="author"></slot>
+                <gl-link
+                  v-else
+                  :data-user-id="authorId"
+                  :data-username="author.username"
+                  :data-name="author.name"
+                  :data-avatar-url="author.avatarUrl"
+                  :href="author.webUrl"
+                  data-testid="issuable-author"
+                  class="author-link js-user-link"
+                >
+                  <span class="author">{{ author.name }}</span>
+                </gl-link>
+              </template>
+            </gl-sprintf>
           </span>
           <slot name="timeframe"></slot>
-          &nbsp;
-          <span v-if="labels.length" role="group" :aria-label="__('Labels')">
-            <gl-label
-              v-for="(label, index) in labels"
-              :key="index"
-              :background-color="label.color"
-              :title="labelTitle(label)"
-              :description="label.description"
-              :scoped="scopedLabel(label)"
-              :target="labelTarget(label)"
-              :class="{ 'gl-ml-2': index }"
-              size="sm"
-            />
-          </span>
-        </div>
+        </span>
+        &nbsp;
+        <span v-if="labels.length" role="group" :aria-label="__('Labels')">
+          <gl-label
+            v-for="(label, index) in labels"
+            :key="index"
+            :background-color="label.color"
+            :title="labelTitle(label)"
+            :description="label.description"
+            :scoped="scopedLabel(label)"
+            :target="labelTarget(label)"
+            :class="{ 'gl-ml-2': index }"
+            size="sm"
+          />
+        </span>
       </div>
-      <div class="issuable-meta">
-        <ul v-if="showIssuableMeta" class="controls">
-          <li v-if="hasSlotContents('status')" class="issuable-status">
-            <slot name="status"></slot>
-          </li>
-          <li v-if="assignees.length" class="gl-display-flex">
-            <issuable-assignees
-              :assignees="assignees"
-              :icon-size="16"
-              :max-visible="4"
-              img-css-classes="gl-mr-2!"
-              class="gl-align-items-center gl-display-flex gl-ml-3"
-            />
-          </li>
-          <slot name="statistics"></slot>
-          <li
-            v-if="showDiscussions"
-            data-testid="issuable-discussions"
-            class="issuable-comments gl-display-none gl-sm-display-block"
-          >
-            <gl-link
-              v-gl-tooltip:tooltipcontainer.top
-              :title="__('Comments')"
-              :href="issuableNotesLink"
-              :class="{ 'no-comments': !notesCount }"
-              class="gl-reset-color!"
-            >
-              <gl-icon name="comments" />
-              {{ notesCount }}
-            </gl-link>
-          </li>
-        </ul>
-        <div
-          data-testid="issuable-updated-at"
-          class="float-right issuable-updated-at gl-display-none gl-sm-display-inline-block"
+    </div>
+    <div class="issuable-meta">
+      <ul v-if="showIssuableMeta" class="controls">
+        <li v-if="hasSlotContents('status')" class="issuable-status">
+          <slot name="status"></slot>
+        </li>
+        <li v-if="assignees.length">
+          <issuable-assignees
+            :assignees="assignees"
+            :icon-size="16"
+            :max-visible="4"
+            img-css-classes="gl-mr-2!"
+            class="gl-align-items-center gl-display-flex gl-ml-3"
+          />
+        </li>
+        <slot name="statistics"></slot>
+        <li
+          v-if="showDiscussions"
+          data-testid="issuable-discussions"
+          class="issuable-comments gl-display-none gl-sm-display-block"
         >
-          <span
-            v-gl-tooltip:tooltipcontainer.bottom
-            :title="tooltipTitle(issuable.updatedAt)"
-            class="issuable-updated-at"
-            >{{ updatedAt }}</span
+          <gl-link
+            v-gl-tooltip.top
+            :title="__('Comments')"
+            :href="issuableNotesLink"
+            :class="{ 'no-comments': !notesCount }"
+            class="gl-reset-color!"
           >
-        </div>
+            <gl-icon name="comments" />
+            {{ notesCount }}
+          </gl-link>
+        </li>
+      </ul>
+      <div
+        v-gl-tooltip.bottom
+        class="gl-text-gray-500 gl-display-none gl-sm-display-inline-block"
+        :title="tooltipTitle(issuable.updatedAt)"
+        data-testid="issuable-updated-at"
+      >
+        {{ updatedAt }}
       </div>
     </div>
   </li>

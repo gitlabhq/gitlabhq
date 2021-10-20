@@ -9,7 +9,6 @@ module Types
     DEFAULT_COMPLEXITY = 1
 
     attr_reader :deprecation, :doc_reference
-    attr_writer :max_page_size # Can be removed with :performance_roadmap feature flag: https://gitlab.com/gitlab-org/gitlab/-/issues/337198
 
     def initialize(**kwargs, &block)
       @calls_gitaly = !!kwargs.delete(:calls_gitaly)
@@ -21,6 +20,7 @@ module Types
       @feature_flag = kwargs[:feature_flag]
       kwargs = check_feature_flag(kwargs)
       @deprecation = gitlab_deprecation(kwargs)
+      after_connection_extensions = kwargs.delete(:late_extensions) || []
 
       super(**kwargs, &block)
 
@@ -28,6 +28,8 @@ module Types
       extension ::Gitlab::Graphql::CallsGitaly::FieldExtension if Gitlab.dev_or_test_env?
       extension ::Gitlab::Graphql::Present::FieldExtension
       extension ::Gitlab::Graphql::Authorize::ConnectionFilterExtension
+
+      after_connection_extensions.each { extension _1 } if after_connection_extensions.any?
     end
 
     def may_call_gitaly?

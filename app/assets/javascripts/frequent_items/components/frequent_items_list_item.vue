@@ -1,6 +1,6 @@
 <script>
 /* eslint-disable vue/require-default-prop */
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { mapVuexModuleState } from '~/lib/utils/vuex_module_mappers';
@@ -13,6 +13,9 @@ export default {
   components: {
     GlButton,
     ProjectAvatar,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [trackingMixin],
   inject: ['vuexModule'],
@@ -73,9 +76,9 @@ export default {
       <div ref="frequentItemsItemMetadataContainer" class="frequent-items-item-metadata-container">
         <div
           ref="frequentItemsItemTitle"
+          v-safe-html="highlightedItemName"
           :title="itemName"
           class="frequent-items-item-title"
-          v-html="highlightedItemName /* eslint-disable-line vue/no-v-html */"
         ></div>
         <div
           v-if="namespace"

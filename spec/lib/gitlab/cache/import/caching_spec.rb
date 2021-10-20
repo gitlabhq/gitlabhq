@@ -58,6 +58,16 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_cache do
     end
   end
 
+  describe '.increment' do
+    it 'increment a key and returns the current value' do
+      expect(described_class.increment('foo')).to eq(1)
+
+      value = Gitlab::Redis::Cache.with { |r| r.get(described_class.cache_key_for('foo')) }
+
+      expect(value.to_i).to eq(1)
+    end
+  end
+
   describe '.set_add' do
     it 'adds a value to a set' do
       described_class.set_add('foo', 10)

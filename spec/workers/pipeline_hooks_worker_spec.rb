@@ -8,8 +8,10 @@ RSpec.describe PipelineHooksWorker do
       let(:pipeline) { create(:ci_pipeline) }
 
       it 'executes hooks for the pipeline' do
-        expect_any_instance_of(Ci::Pipeline)
-          .to receive(:execute_hooks)
+        hook_service = double
+
+        expect(Ci::Pipelines::HookService).to receive(:new).and_return(hook_service)
+        expect(hook_service).to receive(:execute)
 
         described_class.new.perform(pipeline.id)
       end
@@ -17,6 +19,8 @@ RSpec.describe PipelineHooksWorker do
 
     context 'when pipeline does not exist' do
       it 'does not raise exception' do
+        expect(Ci::Pipelines::HookService).not_to receive(:new)
+
         expect { described_class.new.perform(123) }
           .not_to raise_error
       end

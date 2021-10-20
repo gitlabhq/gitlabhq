@@ -52,7 +52,7 @@ of the fork must manually change the visibility. Issue
 
 ## Repository mirroring
 
-You can use [repository mirroring](repository_mirroring.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.
+You can use [repository mirroring](mirror/index.md) to keep your fork synced with the original repository. You can also use `git remote add upstream` to achieve the same result.
 
 The main difference is that with repository mirroring, your remote fork is automatically kept up-to-date.
 

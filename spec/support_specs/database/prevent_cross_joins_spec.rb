@@ -22,6 +22,12 @@ RSpec.describe Database::PreventCrossJoins do
           described_class::CrossJoinAcrossUnsupportedTablesError)
       end
 
+      context 'when annotation is used' do
+        it 'does not raise exception' do
+          expect { main_and_ci_allowed_via_annotate }.not_to raise_error
+        end
+      end
+
       context 'when allow_cross_joins_across_databases is used' do
         it 'does not raise exception' do
           expect { main_and_ci_query_allowlisted }.not_to raise_error
@@ -52,6 +58,12 @@ RSpec.describe Database::PreventCrossJoins do
     end
   end
 
+  def main_and_ci_allowed_via_annotate
+    main_and_ci_query do |relation|
+      relation.allow_cross_joins_across_databases(url: 'http://issue-url')
+    end
+  end
+
   def main_only_query
     Issue.joins(:project).last
   end
@@ -61,6 +73,8 @@ RSpec.describe Database::PreventCrossJoins do
   end
 
   def main_and_ci_query
-    Ci::Build.joins(:project).last
+    relation = Ci::Build.joins(:project)
+    relation = yield(relation) if block_given?
+    relation.last
   end
 end

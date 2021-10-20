@@ -830,7 +830,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Transfer project to group
 
-Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator access. Transferring projects may fail when tagged packages exist in the project's repository.
+Transfer a project to the Group namespace. Available only to instance administrators, although an [alternative API endpoint](projects.md#transfer-a-project-to-a-new-namespace) is available which does not require instance administrator role. Transferring projects may fail when tagged packages exist in the project's repository.
 
 ```plaintext
 POST  /groups/:id/projects/:project_id

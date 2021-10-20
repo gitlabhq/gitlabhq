@@ -1,6 +1,9 @@
 import { mount } from '@vue/test-utils';
 import katex from 'katex';
 import Vue from 'vue';
+import markdownTableJson from 'test_fixtures/blob/notebook/markdown-table.json';
+import basicJson from 'test_fixtures/blob/notebook/basic.json';
+import mathJson from 'test_fixtures/blob/notebook/math.json';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
 
 const Component = Vue.extend(MarkdownComponent);
@@ -35,7 +38,7 @@ describe('Markdown component', () => {
   let json;
 
   beforeEach(() => {
-    json = getJSONFixture('blob/notebook/basic.json');
+    json = basicJson;
 
     // eslint-disable-next-line prefer-destructuring
     cell = json.cells[1];
@@ -104,7 +107,7 @@ describe('Markdown component', () => {
 
   describe('tables', () => {
     beforeEach(() => {
-      json = getJSONFixture('blob/notebook/markdown-table.json');
+      json = markdownTableJson;
     });
 
     it('renders images and text', () => {
@@ -135,7 +138,7 @@ describe('Markdown component', () => {
 
   describe('katex', () => {
     beforeEach(() => {
-      json = getJSONFixture('blob/notebook/math.json');
+      json = mathJson;
     });
 
     it('renders multi-line katex', async () => {

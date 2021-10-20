@@ -1,10 +1,10 @@
+import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as types from '~/add_context_commits_modal/store/mutation_types';
 import mutations from '~/add_context_commits_modal/store/mutations';
-import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';
 
 describe('AddContextCommitsModalStoreMutations', () => {
-  const { commit } = getDiffWithCommit();
+  const { commit } = getDiffWithCommit;
   describe('SET_BASE_CONFIG', () => {
     it('should set contextCommitsPath, mergeRequestIid and projectId', () => {
       const state = {};

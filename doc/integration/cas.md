@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# CAS OmniAuth Provider **(FREE)**
+# CAS OmniAuth Provider **(FREE SELF)**
 
 To enable the CAS OmniAuth provider you must register your application with your
 CAS instance. This requires the service URL GitLab supplies to CAS. It should be

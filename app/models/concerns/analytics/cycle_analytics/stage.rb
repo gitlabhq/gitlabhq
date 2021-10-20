@@ -27,7 +27,8 @@ module Analytics
         alias_attribute :custom_stage?, :custom
         scope :default_stages, -> { where(custom: false) }
         scope :ordered, -> { order(:relative_position, :id) }
-        scope :for_list, -> { includes(:start_event_label, :end_event_label).ordered }
+        scope :with_preloaded_labels, -> { includes(:start_event_label, :end_event_label) }
+        scope :for_list, -> { with_preloaded_labels.ordered }
         scope :by_value_stream, -> (value_stream) { where(value_stream_id: value_stream.id) }
 
         before_save :ensure_stage_event_hash_id

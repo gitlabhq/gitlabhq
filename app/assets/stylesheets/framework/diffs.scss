@@ -1007,6 +1007,27 @@ table.code {
   }
 }
 
+// Notes tweaks for the Changes tab ONLY
+.diff-tr {
+  .timeline-discussion-body {
+    clear: left;
+
+    .note-body {
+      margin-top: 0 !important;
+    }
+  }
+
+  .timeline-entry img.avatar {
+    margin-top: -2px;
+    margin-right: $gl-padding-8;
+  }
+
+  // tiny adjustment to vertical align with the note header text
+  .discussion-collapsible .timeline-icon {
+    padding-top: 2px;
+  }
+}
+
 .files:not([data-can-create-note]) .frame {
   cursor: auto;
 }
@@ -1125,7 +1146,7 @@ table.code {
 }
 
 .discussion-collapsible {
-  margin: 0 $gl-padding $gl-padding 71px;
+  margin: 0 $gl-padding $gl-padding;
 
   .notes {
     border-radius: $border-radius-default;

@@ -54,8 +54,8 @@ export default {
     applySuggestion(callback, message) {
       this.$emit('apply', { suggestionId: this.suggestion.id, callback, message });
     },
-    applySuggestionBatch() {
-      this.$emit('applyBatch');
+    applySuggestionBatch(message) {
+      this.$emit('applyBatch', message);
     },
     addSuggestionToBatch() {
       this.$emit('addToBatch', this.suggestion.id);

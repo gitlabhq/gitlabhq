@@ -1,12 +1,12 @@
 import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
+import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import AddReviewItemsModal from '~/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue';
 
 import * as actions from '~/add_context_commits_modal/store/actions';
 import mutations from '~/add_context_commits_modal/store/mutations';
 import defaultState from '~/add_context_commits_modal/store/state';
-import getDiffWithCommit from '../../diffs/mock_data/diff_with_commit';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -18,7 +18,7 @@ describe('AddContextCommitsModal', () => {
   const removeContextCommits = jest.fn();
   const resetModalState = jest.fn();
   const searchCommits = jest.fn();
-  const { commit } = getDiffWithCommit();
+  const { commit } = getDiffWithCommit;
 
   const createWrapper = (props = {}) => {
     store = new Vuex.Store({

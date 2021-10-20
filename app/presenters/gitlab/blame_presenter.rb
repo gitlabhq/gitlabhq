@@ -12,7 +12,7 @@ module Gitlab
     include TreeHelper
     include IconsHelper
 
-    presents :blame
+    presents nil, as: :blame
 
     CommitData = Struct.new(
       :author_avatar,

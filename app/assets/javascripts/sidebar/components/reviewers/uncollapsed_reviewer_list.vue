@@ -91,7 +91,10 @@ export default {
       data-testid="reviewer"
     >
       <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType">
-        <div class="gl-ml-3">@{{ user.username }}</div>
+        <div class="gl-ml-3 gl-line-height-normal gl-display-grid">
+          <span>{{ user.name }}</span>
+          <span>@{{ user.username }}</span>
+        </div>
       </reviewer-avatar-link>
       <gl-icon
         v-if="user.approved"

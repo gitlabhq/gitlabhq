@@ -98,6 +98,14 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter do
     end
   end
 
+  context "when sourcepos metadata is available" do
+    it "includes it in the highlighted code block" do
+      result = filter('<pre data-sourcepos="1:1-3:3"><code lang="plaintext">This is a test</code></pre>')
+
+      expect(result.to_html).to eq('<pre data-sourcepos="1:1-3:3" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">This is a test</span></code></pre>')
+    end
+  end
+
   context "when Rouge lexing fails" do
     before do
       allow_next_instance_of(Rouge::Lexers::Ruby) do |instance|

@@ -16,15 +16,7 @@ module Ci
       def execute!(job, &block)
         assign_pipeline_attributes(job)
 
-        if Feature.enabled?(:ci_pipeline_add_job_with_lock, pipeline.project, default_enabled: :yaml)
-          in_lock("ci:pipelines:#{pipeline.id}:add-job", ttl: LOCK_TIMEOUT, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRIES) do
-            Ci::Pipeline.transaction do
-              yield(job)
-
-              job.update_older_statuses_retried!
-            end
-          end
-        else
+        in_lock("ci:pipelines:#{pipeline.id}:add-job", ttl: LOCK_TIMEOUT, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRIES) do
           Ci::Pipeline.transaction do
             yield(job)
 

@@ -74,7 +74,7 @@ export default {
         :title="$options.helpText"
         :aria-label="$options.helpText"
         name="question-o"
-        class="text-secondary suggestion-help-hover"
+        class="text-secondary gl-cursor-help"
       />
     </div>
     <div class="col-sm-10">

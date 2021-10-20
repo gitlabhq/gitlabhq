@@ -68,13 +68,6 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
-import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
-import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
-import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
-import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
-import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
-import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchIterationsQuery from '../queries/search_iterations.query.graphql';
@@ -82,6 +75,21 @@ import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
 import IssueCardTimeInfo from './issue_card_time_info.vue';
+import NewIssueDropdown from './new_issue_dropdown.vue';
+
+const AuthorToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/author_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const EpicToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue');
+const IterationToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue');
+const LabelToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
+const WeightToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue');
 
 export default {
   i18n,
@@ -96,6 +104,7 @@ export default {
     IssuableByEmail,
     IssuableList,
     IssueCardTimeInfo,
+    NewIssueDropdown,
     BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
   },
   directives: {
@@ -120,10 +129,13 @@ export default {
     fullPath: {
       default: '',
     },
-    groupEpicsPath: {
+    groupPath: {
       default: '',
     },
     hasAnyIssues: {
+      default: false,
+    },
+    hasAnyProjects: {
       default: false,
     },
     hasBlockedIssuesFeature: {
@@ -253,6 +265,9 @@ export default {
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
     },
+    showNewIssueDropdown() {
+      return !this.isProject && this.hasAnyProjects;
+    },
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
     },
@@ -363,16 +378,18 @@ export default {
         });
       }
 
-      if (this.groupEpicsPath) {
+      if (this.groupPath) {
         tokens.push({
           type: TOKEN_TYPE_EPIC,
           title: TOKEN_TITLE_EPIC,
           icon: 'epic',
           token: EpicToken,
           unique: true,
+          symbol: '&',
           idProperty: 'id',
           useIdValue: true,
-          fetchEpics: this.fetchEpics,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-epic_id`,
+          fullPath: this.groupPath,
         });
       }
 
@@ -441,16 +458,6 @@ export default {
     },
     fetchEmojis(search) {
       return this.fetchWithCache(this.autocompleteAwardEmojisPath, 'emojis', 'name', search);
-    },
-    async fetchEpics({ search }) {
-      const epics = await this.fetchWithCache(this.groupEpicsPath, 'epics');
-      if (!search) {
-        return epics.slice(0, MAX_LIST_SIZE);
-      }
-      const number = Number(search);
-      return Number.isNaN(number)
-        ? fuzzaldrinPlus.filter(epics, search, { key: 'title' })
-        : epics.filter((epic) => epic.id === number);
     },
     fetchLabels(search) {
       return this.$apollo
@@ -662,6 +669,7 @@ export default {
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
+        <new-issue-dropdown v-if="showNewIssueDropdown" />
       </template>
 
       <template #timeframe="{ issuable = {} }">
@@ -765,6 +773,7 @@ export default {
           :export-csv-path="exportCsvPathWithQuery"
           :issuable-count="currentTabCount"
         />
+        <new-issue-dropdown v-if="showNewIssueDropdown" />
       </template>
     </gl-empty-state>
     <hr />

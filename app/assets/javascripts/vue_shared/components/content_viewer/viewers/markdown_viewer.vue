@@ -97,7 +97,7 @@ export default {
             });
           })
           .catch(() => {
-            this.previewContent = __('An error occurred while fetching markdown preview');
+            this.previewContent = __('An error occurred while fetching Markdown preview');
             this.isLoading = false;
           });
       }

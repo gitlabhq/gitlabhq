@@ -18,6 +18,9 @@
 
   = render_if_exists 'projects/commits/mirror_status'
 
+  - if @tags_loading_error
+    = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tags')
+
   .tags
     - if @tags.any?
       %ul.flex-list.content-list

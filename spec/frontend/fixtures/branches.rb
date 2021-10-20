@@ -9,11 +9,6 @@ RSpec.describe 'Branches (JavaScript fixtures)' do
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'branches-project') }
   let_it_be(:user) { project.owner }
 
-  before(:all) do
-    clean_frontend_fixtures('branches/')
-    clean_frontend_fixtures('api/branches/')
-  end
-
   after(:all) do
     remove_repository(project)
   end

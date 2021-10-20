@@ -8,10 +8,6 @@ RSpec.describe 'Projects JSON endpoints (JavaScript fixtures)', type: :controlle
   let(:admin) { create(:admin, name: 'root') }
   let(:project) { create(:project, :repository) }
 
-  before(:all) do
-    clean_frontend_fixtures('projects_json/')
-  end
-
   before do
     project.add_maintainer(admin)
     sign_in(admin)

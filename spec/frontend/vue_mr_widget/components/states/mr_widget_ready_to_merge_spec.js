@@ -45,6 +45,8 @@ const createTestMr = (customConfig) => {
     preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY,
     availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
     mergeImmediatelyDocsPath: 'path/to/merge/immediately/docs',
+    transitionStateMachine: (transition) => eventHub.$emit('StateMachineValueChanged', transition),
+    translateStateToMachine: () => this.transitionStateMachine(),
   };
 
   Object.assign(mr, customConfig.mr);
@@ -304,6 +306,9 @@ describe('ReadyToMerge', () => {
         setImmediate(() => {
           expect(wrapper.vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+          expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
+            transition: 'start-auto-merge',
+          });
 
           const params = wrapper.vm.service.merge.mock.calls[0][0];
 
@@ -341,9 +346,14 @@ describe('ReadyToMerge', () => {
       it('should handle merge action accepted case', (done) => {
         createComponent();
 
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
         jest.spyOn(wrapper.vm.service, 'merge').mockReturnValue(returnPromise('success'));
         jest.spyOn(wrapper.vm, 'initiateMergePolling').mockImplementation(() => {});
         wrapper.vm.handleMergeButtonClick();
+
+        expect(eventHub.$emit).toHaveBeenCalledWith('StateMachineValueChanged', {
+          transition: 'start-merge',
+        });
 
         setImmediate(() => {
           expect(wrapper.vm.isMakingRequest).toBeTruthy();

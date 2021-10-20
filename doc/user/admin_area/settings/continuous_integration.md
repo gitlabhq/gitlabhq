@@ -47,7 +47,7 @@ details:
 
 ![Shared runner details example](img/continuous_integration_shared_runner_details_v14_0.png)
 
-## Maximum artifacts size **(FREE SELF)**
+## Maximum artifacts size
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
 can be set at:
@@ -216,6 +216,20 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
+## Enable or disable the pipeline suggestion banner
+
+By default, a banner displays in merge requests with no pipeline suggesting a
+walkthrough on how to add one.
+
+![Suggest pipeline banner](img/suggest_pipeline_banner.png)
+
+To enable or disable the banner:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Select or clear the **Enable pipeline suggestion banner** checkbox.
+1. Select **Save changes**.
+
 ## Required pipeline configuration **(PREMIUM SELF)**
 
 WARNING:
@@ -296,7 +310,7 @@ To set the maximum file size:
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 

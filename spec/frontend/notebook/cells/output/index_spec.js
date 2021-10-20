@@ -1,11 +1,11 @@
 import Vue from 'vue';
+import json from 'test_fixtures/blob/notebook/basic.json';
 import CodeComponent from '~/notebook/cells/output/index.vue';
 
 const Component = Vue.extend(CodeComponent);
 
 describe('Output component', () => {
   let vm;
-  let json;
 
   const createComponent = (output) => {
     vm = new Component({
@@ -16,11 +16,6 @@ describe('Output component', () => {
     });
     vm.$mount();
   };
-
-  beforeEach(() => {
-    // This is the output after rendering a jupyter notebook
-    json = getJSONFixture('blob/notebook/basic.json');
-  });
 
   describe('text output', () => {
     beforeEach((done) => {

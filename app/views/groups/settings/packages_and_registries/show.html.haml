@@ -1,5 +1,8 @@
 - breadcrumb_title _('Packages & Registries')
 - page_title _('Packages & Registries')
 - @content_class = 'limit-container-width' unless fluid_layout
+- dependency_proxy_available = Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true) || @group.public?
 
-%section#js-packages-and-registries-settings{ data: { default_expanded: expanded_by_default?.to_s, group_path: @group.full_path } }
+%section#js-packages-and-registries-settings{ data: { default_expanded: expanded_by_default?.to_s,
+  group_path: @group.full_path,
+  dependency_proxy_available: dependency_proxy_available.to_s } }

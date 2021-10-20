@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
@@ -71,10 +72,10 @@ func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 	defer rsDeferredClose()
 
 	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose := startWorkhorseServer(railsServer.URL, false)
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, false)
 	defer wsDeferredClose()
 
 	testCases := []testCase{
@@ -91,13 +92,15 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 	defer rsDeferredClose()
 
 	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose := startWorkhorseServer(railsServer.URL, true)
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is forwarded", "/anything", "Geo primary received request to path /anything"},
@@ -109,13 +112,14 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
 func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 	geoProxyEndpointResponseBody := "{}"
-	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose := startWorkhorseServer(railsServer.URL, false)
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, false)
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
@@ -126,13 +130,14 @@ func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 
 func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 	geoProxyEndpointResponseBody := "{}"
-	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose := startWorkhorseServer(railsServer.URL, true)
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
@@ -143,19 +148,66 @@ func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 
 func TestGeoProxyFeatureEnabledButWithAPIError(t *testing.T) {
 	geoProxyEndpointResponseBody := "Invalid response"
-	railsServer, deferredClose := startRailsServer("Local Rails server", geoProxyEndpointResponseBody)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
 	defer deferredClose()
 
-	ws, wsDeferredClose := startWorkhorseServer(railsServer.URL, true)
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
 	defer wsDeferredClose()
 
 	testCases := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
 		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
 		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
 	}
 
 	runTestCases(t, ws, testCases)
+}
+
+func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
+	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
+	defer rsDeferredClose()
+
+	geoProxyEndpointEnabledResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	geoProxyEndpointDisabledResponseBody := "{}"
+	geoProxyEndpointResponseBody := geoProxyEndpointEnabledResponseBody
+
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+	defer deferredClose()
+
+	ws, wsDeferredClose, waitForNextApiPoll := startWorkhorseServer(railsServer.URL, true)
+	defer wsDeferredClose()
+
+	testCasesLocal := []testCase{
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
+		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
+		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
+		{"unknown route is served locally", "/anything", "Local Rails server received request to path /anything"},
+	}
+
+	testCasesProxied := []testCase{
+		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
+		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
+		{"jobs request is forwarded", "/api/v4/jobs/request", "Geo primary received request to path /api/v4/jobs/request"},
+		{"health check is served locally", "/-/health", "Local Rails server received request to path /-/health"},
+		{"unknown route is forwarded", "/anything", "Geo primary received request to path /anything"},
+	}
+
+	// Enabled initially, run tests
+	runTestCases(t, ws, testCasesProxied)
+
+	// Disable proxying and run tests. It's safe to write to
+	// geoProxyEndpointResponseBody because the polling goroutine is blocked.
+	geoProxyEndpointResponseBody = geoProxyEndpointDisabledResponseBody
+	waitForNextApiPoll()
+
+	runTestCases(t, ws, testCasesLocal)
+
+	// Re-enable proxying and run tests
+	geoProxyEndpointResponseBody = geoProxyEndpointEnabledResponseBody
+	waitForNextApiPoll()
+
+	runTestCases(t, ws, testCasesProxied)
 }
 
 func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {
@@ -195,13 +247,13 @@ func startRemoteServer(serverName string) (*httptest.Server, func()) {
 	return ts, ts.Close
 }
 
-func startRailsServer(railsServerName string, geoProxyEndpointResponseBody string) (*httptest.Server, func()) {
+func startRailsServer(railsServerName string, geoProxyEndpointResponseBody *string) (*httptest.Server, func()) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var body string
 
 		if r.URL.Path == geoProxyEndpoint {
 			w.Header().Set("Content-Type", "application/vnd.gitlab-workhorse+json")
-			body = geoProxyEndpointResponseBody
+			body = *geoProxyEndpointResponseBody
 		} else {
 			body = railsServerName + " received request to path " + r.URL.Path
 		}
@@ -213,15 +265,19 @@ func startRailsServer(railsServerName string, geoProxyEndpointResponseBody strin
 	return ts, ts.Close
 }
 
-func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func()) {
-	geoProxyTestChannel := make(chan struct{})
+func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func(), func()) {
+	geoProxySleepC := make(chan struct{})
+	geoProxySleep := func(time.Duration) {
+		geoProxySleepC <- struct{}{}
+		<-geoProxySleepC
+	}
 
 	myConfigureRoutes := func(u *upstream) {
 		// Enable environment variable "feature flag"
 		u.enableGeoProxyFeature = enableGeoProxyFeature
 
-		// An empty message will be sent to this channel after every callGeoProxyAPI()
-		u.geoProxyTestChannel = geoProxyTestChannel
+		// Replace the time.Sleep function with geoProxySleep
+		u.geoProxyPollSleep = geoProxySleep
 
 		// call original
 		configureRoutes(u)
@@ -231,13 +287,20 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 	ws := httptest.NewServer(upstreamHandler)
 	testhelper.ConfigureSecret()
 
+	waitForNextApiPoll := func() {}
+
 	if enableGeoProxyFeature {
-		// Wait for an empty message from callGeoProxyAPI(). This should be done on
-		// all tests where enableGeoProxyFeature is true, including the ones where
-		// we expect geoProxyURL to be nil or error, to ensure the tests do not pass
-		// by coincidence.
-		<-geoProxyTestChannel
+		// Wait for geoProxySleep to be entered for the first time
+		<-geoProxySleepC
+
+		waitForNextApiPoll = func() {
+			// Cause geoProxySleep to return
+			geoProxySleepC <- struct{}{}
+
+			// Wait for geoProxySleep to be entered again
+			<-geoProxySleepC
+		}
 	}
 
-	return ws, ws.Close
+	return ws, ws.Close, waitForNextApiPoll
 }

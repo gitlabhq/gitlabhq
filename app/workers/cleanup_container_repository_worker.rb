@@ -28,8 +28,8 @@ class CleanupContainerRepositoryWorker
     end
 
     result = Projects::ContainerRepository::CleanupTagsService
-      .new(project, current_user, params)
-      .execute(container_repository)
+      .new(container_repository, current_user, params)
+      .execute
 
     if run_by_container_expiration_policy? && result[:status] == :success
       container_repository.reset_expiration_policy_started_at!

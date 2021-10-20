@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Web terminals **(FREE)**
 
-With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
+With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/index.md#web-terminals) for environments.
@@ -50,8 +50,8 @@ detail below.
 ## Enabling and disabling terminal support
 
 NOTE:
-AWS Elastic Load Balancers (ELBs) do not support web sockets.
-If you want web terminals to work, use AWS Application Load Balancers (ALBs).
+AWS Classic Load Balancers (CLBs) do not support web sockets.
+If you want web terminals to work, use AWS Network Load Balancers (NLBs).
 Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.
 

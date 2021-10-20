@@ -22,6 +22,10 @@ module QA
       end
 
       def fabricate!
+        Page::Main::Menu.perform do |menu|
+          menu.go_to_menu_dropdown_option(:snippets_link)
+        end
+
         Page::Dashboard::Snippet::Index.perform(&:go_to_new_snippet_page)
 
         Page::Dashboard::Snippet::New.perform do |new_page|
@@ -38,6 +42,8 @@ module QA
           end
           new_page.click_create_snippet_button
         end
+
+        @id = Page::Dashboard::Snippet::Show.perform(&:snippet_id)
       end
 
       def fabricate_via_api!

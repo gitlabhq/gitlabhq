@@ -2,15 +2,14 @@
 
 class DependencyProxy::Blob < ApplicationRecord
   include FileStoreMounter
+  include TtlExpirable
+  include EachBatch
 
   belongs_to :group
 
   validates :group, presence: true
   validates :file, presence: true
   validates :file_name, presence: true
-  validates :status, presence: true
-
-  enum status: { default: 0, expired: 1 }
 
   mount_file_store_uploader DependencyProxy::FileUploader
 

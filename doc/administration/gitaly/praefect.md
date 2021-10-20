@@ -265,8 +265,8 @@ praefect['database_direct_dbname'] = 'praefect_production'
 #praefect['database_direct_sslrootcert'] = '...'
 ```
 
-We recommend using PgBouncer with `session` pool mode instead. You can use the [bundled
-PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
+We recommend using PgBouncer with `session` pool mode instead. You can use the
+[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and [configure it
 manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools,
@@ -429,7 +429,7 @@ On the **Praefect** node:
    WARNING:
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](index.md#migrating-to-gitaly-cluster)
    afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
@@ -475,8 +475,8 @@ On the **Praefect** node:
 
 1. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2013) in GitLab 13.1 and later, enable [distribution of reads](index.md#distributed-reads).
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
@@ -499,16 +499,16 @@ On the **Praefect** node:
      running reconfigure automatically when running commands such as `apt-get update`. This way any
      additional configuration changes can be done and then reconfigure can be run manually.
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Praefect](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
 1. To ensure that Praefect [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734), [restart
-   Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
+   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+   [restart Praefect](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
    gitlab-ctl restart praefect
@@ -695,8 +695,8 @@ Particular attention should be shown to:
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
   `gitaly-2`, and `gitaly-3` as Gitaly storage names.
 
-For more information on Gitaly server configuration, see our [Gitaly
-documentation](configure_gitaly.md#configure-gitaly-servers).
+For more information on Gitaly server configuration, see our
+[Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).
 
 1. SSH into the **Gitaly** node and login as root:
 
@@ -803,16 +803,16 @@ documentation](configure_gitaly.md#configure-gitaly-servers).
    })
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure Gitaly](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
 1. To ensure that Gitaly [has updated its Prometheus listen
-   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734), [restart
-   Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
+   address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
+   [restart Gitaly](../restart_gitlab.md#omnibus-gitlab-restart):
 
    ```shell
    gitlab-ctl restart gitaly
@@ -893,7 +893,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data your Gitaly Cluster storage](index.md#migrating-to-gitaly-cluster)
    first.
 
    ```ruby
@@ -1044,8 +1044,8 @@ To get started quickly:
    grafana['disable_login_form'] = false
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure
-   GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and
+   [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1309,12 +1309,7 @@ To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
 new primary. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
 > - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
 
-In GitLab 13.0 to 14.0, when Gitaly Cluster switches to a new primary, repositories enter
-read-only mode if they are out of date. This can happen after failing over to an outdated
-secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
-with the unreplicated writes on other nodes.
-
-When Gitaly Cluster switches to a new primary In GitLab 13.0 to 14.0, repositories enter
+When Gitaly Cluster switches to a new primary in GitLab 13.0 to 14.0, repositories enter
 read-only mode if they are out of date. This can happen after failing over to an outdated
 secondary. Read-only mode eases data recovery efforts by preventing writes that may conflict
 with the unreplicated writes on other nodes.
@@ -1596,3 +1591,26 @@ because of:
 - An in-flight RPC call targeting the repository.
 
 If this occurs, run `remove-repository` again.
+
+### Manually list untracked repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3926) in GitLab 14.4.
+
+The `list-untracked-repositories` Praefect sub-command lists repositories of the Gitaly Cluster that both:
+
+- Exist for at least one Gitaly storage.
+- Aren't tracked in the Praefect database.
+
+The command outputs:
+
+- Result to `STDOUT` and the command's logs.
+- Errors to `STDERR`.
+
+Each entry is a complete JSON string with a newline at the end (configurable using the
+`-delimiter` flag). For example:
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories
+{"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567890.git"}
+{"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567891.git"}
+```

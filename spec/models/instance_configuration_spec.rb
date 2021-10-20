@@ -31,6 +31,23 @@ RSpec.describe InstanceConfiguration do
           expect(result.size).to eq(InstanceConfiguration::SSH_ALGORITHMS.size)
         end
 
+        it 'includes all algorithms' do
+          stub_pub_file(pub_file)
+
+          result = subject.settings[:ssh_algorithms_hashes]
+
+          expect(result.map { |a| a[:name] }).to match_array(%w(DSA ECDSA ED25519 RSA))
+        end
+
+        it 'does not include disabled algorithm' do
+          Gitlab::CurrentSettings.current_application_settings.update!(dsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
+          stub_pub_file(pub_file)
+
+          result = subject.settings[:ssh_algorithms_hashes]
+
+          expect(result.map { |a| a[:name] }).to match_array(%w(ECDSA ED25519 RSA))
+        end
+
         def pub_file(exist: true)
           path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
 
@@ -175,6 +192,9 @@ RSpec.describe InstanceConfiguration do
             throttle_authenticated_packages_api_enabled: true,
             throttle_authenticated_packages_api_requests_per_period: 1011,
             throttle_authenticated_packages_api_period_in_seconds: 1012,
+            throttle_authenticated_git_lfs_enabled: true,
+            throttle_authenticated_git_lfs_requests_per_period: 1022,
+            throttle_authenticated_git_lfs_period_in_seconds: 1023,
             issues_create_limit: 1013,
             notes_create_limit: 1014,
             project_export_limit: 1015,
@@ -196,6 +216,7 @@ RSpec.describe InstanceConfiguration do
           expect(rate_limits[:protected_paths]).to eq({ enabled: true, requests_per_period: 1007, period_in_seconds: 1008 })
           expect(rate_limits[:unauthenticated_packages_api]).to eq({ enabled: false, requests_per_period: 1009, period_in_seconds: 1010 })
           expect(rate_limits[:authenticated_packages_api]).to eq({ enabled: true, requests_per_period: 1011, period_in_seconds: 1012 })
+          expect(rate_limits[:authenticated_git_lfs_api]).to eq({ enabled: true, requests_per_period: 1022, period_in_seconds: 1023 })
           expect(rate_limits[:issue_creation]).to eq({ enabled: true, requests_per_period: 1013, period_in_seconds: 60 })
           expect(rate_limits[:note_creation]).to eq({ enabled: true, requests_per_period: 1014, period_in_seconds: 60 })
           expect(rate_limits[:project_export]).to eq({ enabled: true, requests_per_period: 1015, period_in_seconds: 60 })

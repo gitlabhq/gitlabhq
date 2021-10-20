@@ -340,6 +340,9 @@ WARNING:
 HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes some small error**. According to [Redis documentation](https://redis.io/commands/pfcount), data from
 used HLL implementation is "approximated with a standard error of 0.81%".
 
+NOTE:
+ A user's consent for usage_stats (`User.single_user&.requires_usage_stats_consent?`) is not checked during the data tracking stage due to performance reasons. Keys corresponding to those counters are present in Redis even if `usage_stats_consent` is still required. However, no metric is collected from Redis and reported back to GitLab as long as `usage_stats_consent` is required.
+
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
 Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PFCOUNT](https://redis.io/commands/pfcount).
@@ -939,7 +942,6 @@ Aggregated metrics collected in `7d` and `28d` time frames are added into Servic
     :packages => 155,
     :personal_snippets => 2106,
     :project_snippets => 407,
-    :promoted_issues => 719,
     :aggregated_metrics => {
       :example_metrics_union => 7,
       :example_metrics_intersection => 2
@@ -1028,9 +1030,9 @@ Example metrics persistence:
 class UsageData
   def count_secure_pipelines(time_period)
     ...
-    relation = ::Security::Scan.latest_successful_by_build.by_scan_types(scan_type).where(security_scans: time_period)
+    relation = ::Security::Scan.by_scan_types(scan_type).where(time_period)
 
-    pipelines_with_secure_jobs['dependency_scanning_pipeline'] = estimate_batch_distinct_count(relation, :commit_id, batch_size: 1000, start: start_id, finish: finish_id) do |result|
+    pipelines_with_secure_jobs['dependency_scanning_pipeline'] = estimate_batch_distinct_count(relation, :pipeline_id, batch_size: 1000, start: start_id, finish: finish_id) do |result|
       ::Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll
         .save_aggregated_metrics(metric_name: 'dependency_scanning_pipeline', recorded_at_timestamp: recorded_at, time_period: time_period, data: result)
     end

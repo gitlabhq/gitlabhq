@@ -31,8 +31,8 @@ The hard-coded rules only permit:
 
 Furthermore, configuration in Workhorse can lead to the image scaler rejecting a request if:
 
-- The image file is too large (controlled by [`max_filesize`](- we only rescale images that do not exceed a configured size in bytes (see [`max_filesize`](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/67ab3a2985d2097392f93523ae1cffe0dbf01b31/config.toml.example#L17)))).
-- Too many image scalers are already running (controlled by [`max_scaler_procs`](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/67ab3a2985d2097392f93523ae1cffe0dbf01b31/config.toml.example#L16)).
+- The image file is too large (controlled by [`max_filesize`](- we only rescale images that do not exceed a configured size in bytes (see [`max_filesize`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/config.toml.example#L22)))).
+- Too many image scalers are already running (controlled by [`max_scaler_procs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/config.toml.example#L21)).
 
 For instance, here are two different URLs that serve the GitLab project avatar both in its
 original size and scaled down to 64 pixels. Only the second request will trigger the image scaler:
@@ -73,7 +73,7 @@ we simply follow the path we take to serve any ordinary upload.
 ### Workhorse
 
 Assuming Rails decided the request to be valid, Workhorse will take over. Upon receiving the `send-scaled-image`
-instruction through the Rails response, a [special response injector](https://gitlab.com/gitlab-org/gitlab-workhorse/-/blob/master/internal/imageresizer/image_resizer.go)
+instruction through the Rails response, a [special response injector](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/internal/imageresizer/image_resizer.go)
 will be invoked that knows how to rescale images. The only inputs it requires are the location of the image
 (a path if the image resides in block storage, or a URL to remote storage otherwise) and the desired width.
 Workhorse will handle the location transparently so Rails does not need to be concerned with where the image

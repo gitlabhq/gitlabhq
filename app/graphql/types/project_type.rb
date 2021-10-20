@@ -208,6 +208,7 @@ module Types
           Types::Ci::PipelineType,
           null: true,
           description: 'Build pipeline of the project.',
+          extras: [:lookahead],
           resolver: Resolvers::ProjectPipelineResolver
 
     field :ci_cd_settings,
@@ -360,6 +361,25 @@ module Types
           extras: [:lookahead],
           complexity: 5,
           resolver: ::Resolvers::TimelogResolver
+
+    field :agent_configurations,
+          ::Types::Kas::AgentConfigurationType.connection_type,
+          null: true,
+          description: 'Agent configurations defined by the project',
+          resolver: ::Resolvers::Kas::AgentConfigurationsResolver
+
+    field :cluster_agent,
+          ::Types::Clusters::AgentType,
+          null: true,
+          description: 'Find a single cluster agent by name.',
+          resolver: ::Resolvers::Clusters::AgentsResolver.single
+
+    field :cluster_agents,
+          ::Types::Clusters::AgentType.connection_type,
+          extras: [:lookahead],
+          null: true,
+          description: 'Cluster agents associated with the project.',
+          resolver: ::Resolvers::Clusters::AgentsResolver
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|

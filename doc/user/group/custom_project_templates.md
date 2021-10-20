@@ -17,6 +17,12 @@ in the group and select the **Group** tab.
 Every project in the subgroup, but not nested subgroups, can be selected by members
 of the group when a new project is created.
 
+- Public projects can be selected by any signed-in user as a template for a new project,
+  if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
+  except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
+  The same applies to internal projects.
+- Private projects can be selected only by users who are members of the projects.
+
 Repository and database information that is copied over to each new project is identical to the
 data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).
 

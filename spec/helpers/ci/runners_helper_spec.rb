@@ -83,7 +83,7 @@ RSpec.describe Ci::RunnersHelper do
       data = group_shared_runners_settings_data(group)
 
       expect(data[:update_path]).to eq("/api/v4/groups/#{group.id}")
-      expect(data[:shared_runners_availability]).to eq('disabled_and_unoverridable')
+      expect(data[:shared_runners_availability]).to eq(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
       expect(data[:parent_shared_runners_availability]).to eq('enabled')
     end
   end
@@ -137,16 +137,15 @@ RSpec.describe Ci::RunnersHelper do
       using RSpec::Parameterized::TableSyntax
 
       where(:shared_runners_setting, :is_disabled_and_unoverridable) do
-        'enabled'                    | "false"
-        'disabled_with_override'     | "false"
-        'disabled_and_unoverridable' | "true"
+        :shared_runners_enabled     | "false"
+        :disabled_with_override     | "false"
+        :disabled_and_unoverridable | "true"
       end
 
       with_them do
         it 'returns the override runner status for project with group' do
-          group = create(:group)
-          project = create(:project, group: group)
-          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
+          group = create(:group, shared_runners_setting)
+          project = create(:project, group: group, shared_runners_enabled: false)
 
           data = helper.toggle_shared_runners_settings_data(project)
           expect(data[:is_disabled_and_unoverridable]).to eq(is_disabled_and_unoverridable)

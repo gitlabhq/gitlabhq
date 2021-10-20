@@ -57,8 +57,12 @@ GET /groups/:id/export/download
 | `id`      | integer/string | yes      | ID of the group owned by the authenticated user |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
-     --remote-name "https://gitlab.example.com/api/v4/groups/1/export/download"
+group=1
+token=secret
+curl --request GET\
+     --header "PRIVATE-TOKEN: ${token}" \
+     --output download_group_${group}.tar.gz \
+     "https://gitlab.example.com/api/v4/groups/${group}/export/download"
 ```
 
 ```shell

@@ -15,13 +15,13 @@ module Ci
 
     ARCHIVE_TRACES_IN = 2.minutes.freeze
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def perform(build_id)
-      Ci::Build.find_by(id: build_id).try do |build|
-        process_build(build)
-      end
+      return unless build = Ci::Build.find_by(id: build_id) # rubocop: disable CodeReuse/ActiveRecord
+      return unless build.project
+      return if build.project.pending_delete?
+
+      process_build(build)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

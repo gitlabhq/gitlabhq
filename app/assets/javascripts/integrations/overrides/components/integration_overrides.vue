@@ -1,8 +1,8 @@
 <script>
-import { GlLink, GlLoadingIcon, GlPagination, GlTable } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlPagination, GlTable, GlAlert } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 
 import { DEFAULT_PER_PAGE } from '~/api';
-import createFlash from '~/flash';
 import { fetchOverrides } from '~/integrations/overrides/api';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -16,6 +16,7 @@ export default {
     GlLoadingIcon,
     GlPagination,
     GlTable,
+    GlAlert,
     ProjectAvatar,
   },
   props: {
@@ -36,6 +37,7 @@ export default {
       overrides: [],
       page: 1,
       totalItems: 0,
+      errorMessage: null,
     };
   },
   computed: {
@@ -49,6 +51,7 @@ export default {
   methods: {
     loadOverrides(page = this.page) {
       this.isLoading = true;
+      this.errorMessage = null;
 
       fetchOverrides(this.overridesPath, {
         page,
@@ -61,11 +64,9 @@ export default {
           this.overrides = data;
         })
         .catch((error) => {
-          createFlash({
-            message: this.$options.i18n.defaultErrorMessage,
-            error,
-            captureError: true,
-          });
+          this.errorMessage = this.$options.i18n.defaultErrorMessage;
+
+          Sentry.captureException(error);
         })
         .finally(() => {
           this.isLoading = false;
@@ -85,7 +86,11 @@ export default {
 
 <template>
   <div>
+    <gl-alert v-if="errorMessage" variant="danger" :dismissible="false">
+      {{ errorMessage }}
+    </gl-alert>
     <gl-table
+      v-else
       :items="overrides"
       :fields="$options.fields"
       :busy="isLoading"

@@ -20,6 +20,8 @@
 class BulkImports::Entity < ApplicationRecord
   self.table_name = 'bulk_import_entities'
 
+  EXPORT_RELATIONS_URL = '/%{resource}/%{full_path}/export_relations'
+
   belongs_to :bulk_import, optional: false
   belongs_to :parent, class_name: 'BulkImports::Entity', optional: true
 
@@ -81,9 +83,9 @@ class BulkImports::Entity < ApplicationRecord
   def pipelines
     @pipelines ||= case source_type
                    when 'group_entity'
-                     BulkImports::Groups::Stage.pipelines
+                     BulkImports::Groups::Stage.new(bulk_import).pipelines
                    when 'project_entity'
-                     BulkImports::Projects::Stage.pipelines
+                     BulkImports::Projects::Stage.new(bulk_import).pipelines
                    end
   end
 
@@ -100,6 +102,14 @@ class BulkImports::Entity < ApplicationRecord
         )
       end
     end
+  end
+
+  def pluralized_name
+    source_type.gsub('_entity', '').pluralize
+  end
+
+  def export_relations_url_path
+    @export_relations_url_path ||= EXPORT_RELATIONS_URL % { resource: pluralized_name, full_path: encoded_source_full_path }
   end
 
   private

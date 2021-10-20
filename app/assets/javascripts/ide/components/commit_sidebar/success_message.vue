@@ -1,7 +1,11 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapState } from 'vuex';
 
 export default {
+  directives: {
+    SafeHtml,
+  },
   computed: {
     ...mapState(['lastCommitMsg', 'committedStateSvgPath']),
   },
@@ -16,7 +20,7 @@ export default {
     <div class="gl-mr-3 gl-ml-3">
       <div class="text-content text-center">
         <h4>{{ __('All changes are committed') }}</h4>
-        <p v-html="lastCommitMsg /* eslint-disable-line vue/no-v-html */"></p>
+        <p v-safe-html="lastCommitMsg"></p>
       </div>
     </div>
   </div>

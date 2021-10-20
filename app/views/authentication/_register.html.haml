@@ -1,8 +1,10 @@
 #js-register-token-2fa
 
+-# haml-lint:disable InlineJavaScript
 %script#js-register-2fa-message{ type: "text/template" }
   %p <%= message %>
 
+-# haml-lint:disable InlineJavaScript
 %script#js-register-token-2fa-setup{ type: "text/template" }
   - if current_user.two_factor_otp_enabled?
     .row.gl-mb-3
@@ -17,12 +19,14 @@
       .col-md-8
         %p= _("You need to register a two-factor authentication app before you can set up a device.")
 
+-# haml-lint:disable InlineJavaScript
 %script#js-register-token-2fa-error{ type: "text/template" }
   %div
     %p
       %span <%= error_message %> (<%= error_name %>)
     %a.btn.btn-default.gl-button#js-token-2fa-try-again= _("Try again?")
 
+-# haml-lint:disable InlineJavaScript
 %script#js-register-token-2fa-registered{ type: "text/template" }
   .row.gl-mb-3
     .col-md-12

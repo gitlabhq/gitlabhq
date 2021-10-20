@@ -64,6 +64,33 @@ RSpec.describe Projects::TransferService do
       expect(transfer_result).to be_truthy
       expect(project.namespace).to eq(group)
     end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        transfer_result = execute_transfer
+
+        expect(transfer_result).to be_truthy
+
+        project_namespace_in_sync(group)
+      end
+
+      context 'when project is transferred to a deeper nested group' do
+        let(:parent_group) { create(:group) }
+        let(:sub_group) { create(:group, parent: parent_group) }
+        let(:sub_sub_group) { create(:group, parent: sub_group) }
+        let(:group) { sub_sub_group }
+
+        it 'keeps project namespace in sync with project' do
+          transfer_result = execute_transfer
+
+          expect(transfer_result).to be_truthy
+
+          project_namespace_in_sync(sub_sub_group)
+        end
+      end
+    end
   end
 
   context 'when transfer succeeds' do
@@ -143,6 +170,28 @@ RSpec.describe Projects::TransferService do
         end
       end
     end
+
+    context 'when project has pending builds' do
+      let!(:other_project) { create(:project) }
+      let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
+      let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
+
+      before do
+        group.reload
+      end
+
+      it 'updates pending builds for the project', :aggregate_failures do
+        execute_transfer
+
+        pending_build.reload
+        unrelated_pending_build.reload
+
+        expect(pending_build.namespace_id).to eq(group.id)
+        expect(pending_build.namespace_traversal_ids).to eq(group.traversal_ids)
+        expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
+        expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+      end
+    end
   end
 
   context 'when transfer fails' do
@@ -203,6 +252,34 @@ RSpec.describe Projects::TransferService do
         shard_name: project.repository_storage
       )
     end
+
+    context 'when project has pending builds' do
+      let!(:other_project) { create(:project) }
+      let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
+      let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
+
+      it 'does not update pending builds for the project', :aggregate_failures do
+        attempt_project_transfer
+
+        pending_build.reload
+        unrelated_pending_build.reload
+
+        expect(pending_build.namespace_id).to eq(project.namespace_id)
+        expect(pending_build.namespace_traversal_ids).to eq(project.namespace.traversal_ids)
+        expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
+        expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+      end
+    end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        attempt_project_transfer
+
+        project_namespace_in_sync(user.namespace)
+      end
+    end
   end
 
   context 'namespace -> no namespace' do
@@ -214,6 +291,18 @@ RSpec.describe Projects::TransferService do
       expect(transfer_result).to eq false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
+    end
+
+    context 'when project has an associated project namespace' do
+      let!(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'keeps project namespace in sync with project' do
+        transfer_result = execute_transfer
+
+        expect(transfer_result).to be false
+
+        project_namespace_in_sync(user.namespace)
+      end
     end
   end
 
@@ -369,28 +458,23 @@ RSpec.describe Projects::TransferService do
     using RSpec::Parameterized::TableSyntax
 
     where(:project_shared_runners_enabled, :shared_runners_setting, :expected_shared_runners_enabled) do
-      true  | 'disabled_and_unoverridable' | false
-      false | 'disabled_and_unoverridable' | false
-      true  | 'disabled_with_override'     | true
-      false | 'disabled_with_override'     | false
-      true  | 'enabled'                    | true
-      false | 'enabled'                    | false
+      true  | :disabled_and_unoverridable | false
+      false | :disabled_and_unoverridable | false
+      true  | :disabled_with_override     | true
+      false | :disabled_with_override     | false
+      true  | :shared_runners_enabled     | true
+      false | :shared_runners_enabled     | false
     end
 
     with_them do
       let(:project) { create(:project, :public, :repository, namespace: user.namespace, shared_runners_enabled: project_shared_runners_enabled) }
-      let(:group) { create(:group) }
-
-      before do
-        group.add_owner(user)
-        expect_next_found_instance_of(Group) do |group|
-          expect(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
-
-        execute_transfer
-      end
+      let(:group) { create(:group, shared_runners_setting) }
 
       it 'updates shared runners based on the parent group' do
+        group.add_owner(user)
+
+        expect(execute_transfer).to eq(true)
+
         expect(project.shared_runners_enabled).to eq(expected_shared_runners_enabled)
       end
     end
@@ -478,58 +562,30 @@ RSpec.describe Projects::TransferService do
       group.add_owner(user)
     end
 
-    context 'when the feature flag `specialized_worker_for_project_transfer_auth_recalculation` is enabled' do
-      before do
-        stub_feature_flags(specialized_worker_for_project_transfer_auth_recalculation: true)
-      end
+    it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
+        .to receive(:perform_async).with(project.id)
 
-      it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
-        expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
-          .to receive(:perform_async).with(project.id)
-
-        execute_transfer
-      end
-
-      it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
-        user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
-
-        expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
-          receive(:bulk_perform_in)
-            .with(1.hour,
-                  user_ids,
-                  batch_delay: 30.seconds, batch_size: 100)
-        )
-
-        subject
-      end
-
-      it 'refreshes the permissions of the members of the old and new namespace', :sidekiq_inline do
-        expect { execute_transfer }
-          .to change { member_of_old_group.authorized_projects.include?(project) }.from(true).to(false)
-          .and change { member_of_new_group.authorized_projects.include?(project) }.from(false).to(true)
-      end
+      execute_transfer
     end
 
-    context 'when the feature flag `specialized_worker_for_project_transfer_auth_recalculation` is disabled' do
-      before do
-        stub_feature_flags(specialized_worker_for_project_transfer_auth_recalculation: false)
-      end
+    it 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations' do
+      user_ids = [user.id, member_of_old_group.id, member_of_new_group.id].map { |id| [id] }
 
-      it 'calls UserProjectAccessChangedService to update project authorizations' do
-        user_ids = [user.id, member_of_old_group.id, member_of_new_group.id]
+      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
+        receive(:bulk_perform_in)
+          .with(1.hour,
+                user_ids,
+                batch_delay: 30.seconds, batch_size: 100)
+      )
 
-        expect_next_instance_of(UserProjectAccessChangedService, user_ids) do |service|
-          expect(service).to receive(:execute)
-        end
+      subject
+    end
 
-        execute_transfer
-      end
-
-      it 'refreshes the permissions of the members of the old and new namespace' do
-        expect { execute_transfer }
-          .to change { member_of_old_group.authorized_projects.include?(project) }.from(true).to(false)
-          .and change { member_of_new_group.authorized_projects.include?(project) }.from(false).to(true)
-      end
+    it 'refreshes the permissions of the members of the old and new namespace', :sidekiq_inline do
+      expect { execute_transfer }
+        .to change { member_of_old_group.authorized_projects.include?(project) }.from(true).to(false)
+        .and change { member_of_new_group.authorized_projects.include?(project) }.from(false).to(true)
     end
   end
 
@@ -642,5 +698,14 @@ RSpec.describe Projects::TransferService do
 
   def rugged_config
     rugged_repo(project.repository).config
+  end
+
+  def project_namespace_in_sync(group)
+    project.reload
+    expect(project.namespace).to eq(group)
+    expect(project.project_namespace.visibility_level).to eq(project.visibility_level)
+    expect(project.project_namespace.path).to eq(project.path)
+    expect(project.project_namespace.parent).to eq(project.namespace)
+    expect(project.project_namespace.traversal_ids).to eq([*project.namespace.traversal_ids, project.project_namespace.id])
   end
 end

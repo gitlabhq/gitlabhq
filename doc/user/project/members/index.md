@@ -87,7 +87,7 @@ A success message is displayed and the new members are now displayed in the list
 When your project belongs to a group, group members inherit their role
 from the group.
 
-![Project members page](img/project_members_v13_9.png)
+![Project members page](img/project_members_v14_4.png)
 
 In this example:
 
@@ -140,7 +140,7 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Inherited`.
 1. Press Enter.
 
-![Project members filter inherited](img/project_members_filter_inherited_v13_9.png)
+![Project members filter inherited](img/project_members_filter_inherited_v14_4.png)
 
 ### Display direct members
 
@@ -148,19 +148,19 @@ You can filter and sort members in a project.
 1. In the **Filter members** box, select `Membership` `=` `Direct`.
 1. Press Enter.
 
-![Project members filter direct](img/project_members_filter_direct_v13_9.png)
+![Project members filter direct](img/project_members_filter_direct_v14_4.png)
 
 ### Search
 
 You can search for members by name, username, or email.
 
-![Project members search](img/project_members_search_v13_9.png)
+![Project members search](img/project_members_search_v14_4.png)
 
 ### Sort
 
 You can sort members by **Account**, **Access granted**, **Max role**, or **Last sign-in** in ascending or descending order.
 
-![Project members sort](img/project_members_sort_v13_9.png)
+![Project members sort](img/project_members_sort_v14_4.png)
 
 ## Request access to a project
 

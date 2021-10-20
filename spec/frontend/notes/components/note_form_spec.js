@@ -150,6 +150,16 @@ describe('issue_note_form component', () => {
 
           expect(handleFormUpdate.length).toBe(1);
         });
+
+        it('should disable textarea when ctrl+enter is pressed', async () => {
+          textarea.trigger('keydown.enter', { ctrlKey: true });
+
+          expect(textarea.attributes('disabled')).toBeUndefined();
+
+          await nextTick();
+
+          expect(textarea.attributes('disabled')).toBe('disabled');
+        });
       });
     });
 

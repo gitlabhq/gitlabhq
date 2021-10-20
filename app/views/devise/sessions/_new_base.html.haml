@@ -4,12 +4,12 @@
     = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input top', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field' }
   .form-group
     = f.label :password, class: 'label-bold'
-    = f.password_field :password, class: 'form-control gl-form-input bottom', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }
+    = f.password_field :password, class: 'form-control gl-form-input bottom', autocomplete: 'current-password', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }
   - if devise_mapping.rememberable?
-    .remember-me
+    %div
       %label{ for: 'user_remember_me' }
-        = f.check_box :remember_me, class: 'remember-me-checkbox'
-        %span Remember me
+        = f.check_box :remember_me
+        %span= _('Remember me')
       .float-right
         - if unconfirmed_email?
           = link_to _('Resend confirmation email'), new_user_confirmation_path

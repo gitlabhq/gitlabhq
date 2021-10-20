@@ -35,7 +35,17 @@ module Gitlab
       #
       # @param [Array]
       # @return [Hash] of Model -> count mapping
-      def self.approximate_counts(models, strategies: [TablesampleCountStrategy, ReltuplesCountStrategy, ExactCountStrategy])
+      def self.approximate_counts(models, strategies: [])
+        if strategies.empty?
+          # ExactCountStrategy is the only strategy working on read-only DBs, as others make
+          # use of tuple stats which use the primary DB to estimate tables size in a transaction.
+          strategies = if ::Gitlab::Database.read_write?
+                         [TablesampleCountStrategy, ReltuplesCountStrategy, ExactCountStrategy]
+                       else
+                         [ExactCountStrategy]
+                       end
+        end
+
         strategies.each_with_object({}) do |strategy, counts_by_model|
           models_with_missing_counts = models - counts_by_model.keys
 

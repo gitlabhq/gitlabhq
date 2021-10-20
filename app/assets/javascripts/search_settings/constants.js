@@ -7,5 +7,8 @@ export const HIDE_CLASS = 'gl-display-none';
 // used to highlight the text that matches the * search term
 export const HIGHLIGHT_CLASS = 'gl-bg-orange-100';
 
+// used to remove padding for text that matches the * search term
+export const NONE_PADDING_CLASS = 'gl-p-0';
+
 // How many seconds to wait until the user * stops typing
 export const TYPING_DELAY = 400;

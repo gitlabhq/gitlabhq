@@ -7,6 +7,7 @@
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 - add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
 - reviewers = local_assigns.fetch(:reviewers, nil)
+- in_group_context_with_iterations = @project.group.present? && issuable_sidebar[:supports_iterations]
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in }, issuable_type: issuable_type }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar
@@ -28,11 +29,11 @@
         = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:supports_milestone]
-        .block.milestone{ :class => ("gl-border-b-0!" if issuable_sidebar[:supports_iterations]), data: { qa_selector: 'milestone_block' } }
+        .block.milestone{ :class => ("gl-border-b-0!" if in_group_context_with_iterations), data: { qa_selector: 'milestone_block' } }
           .js-milestone-select{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
-      - if @project.group.present? && issuable_sidebar[:supports_iterations]
-        .block{ class: 'gl-pt-0!', data: { qa_selector: 'iteration_container' } }
+      - if in_group_context_with_iterations
+        .block{ class: 'gl-pt-0! gl-collapse-empty', data: { qa_selector: 'iteration_container', testid: 'iteration_container' } }<
           = render_if_exists 'shared/issuable/iteration_select', can_edit: can_edit_issuable.to_s, group_path: @project.group.full_path, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid], issuable_type: issuable_type
 
       - if issuable_sidebar[:supports_time_tracking]
@@ -55,11 +56,13 @@
         .js-sidebar-status-entry-point{ data: sidebar_status_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar.has_key?(:confidential)
+        -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
         = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
 
+      -# haml-lint:disable InlineJavaScript
       %script#js-lock-issue-data{ type: "application/json" }= { is_locked: !!issuable_sidebar[:discussion_locked], is_editable: can_edit_issuable }.to_json.html_safe
       #js-lock-entry-point
 
@@ -72,7 +75,7 @@
         #js-reference-entry-point
         - if issuable_type == 'merge_request'
           .sub-block.js-sidebar-source-branch
-            .sidebar-collapsed-icon.dont-change-state
+            .sidebar-collapsed-icon.js-dont-change-state
               = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport')
             .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
               %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap

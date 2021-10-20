@@ -1,6 +1,7 @@
 import { GlEmptyState, GlLoadingIcon, GlModal, GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
@@ -8,7 +9,6 @@ import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import axios from '~/lib/utils/axios_utils';
 
 describe('Pipelines table in Commits and Merge requests', () => {
-  const jsonFixtureName = 'pipelines/pipelines.json';
   let wrapper;
   let pipeline;
   let mock;
@@ -37,7 +37,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    const { pipelines } = getJSONFixture(jsonFixtureName);
+    const { pipelines } = fixture;
 
     pipeline = pipelines.find((p) => p.user !== null && p.commit !== null);
   });

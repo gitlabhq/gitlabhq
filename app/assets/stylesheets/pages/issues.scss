@@ -1,3 +1,51 @@
+.issue-token-link {
+  &[href] {
+    color: $blue-600;
+  }
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: none;
+  }
+}
+
+.issue-token-reference {
+  margin-right: 1px;
+  background-color: $gray-lighter;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: $gray-normal;
+    color: $blue-800;
+    text-decoration: none;
+  }
+}
+
+.issue-token-title {
+  background-color: $gray-normal;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  .issue-token:hover &,
+  .issue-token-link:focus > & {
+    background-color: $border-gray-normal;
+  }
+}
+
+.issue-token-remove-button {
+  background-color: $gray-normal;
+  transition: background $general-hover-transition-duration $general-hover-transition-curve;
+
+  &:hover,
+  &:focus,
+  .issue-token:hover &,
+  .issue-token-link:focus + & {
+    background-color: $border-gray-normal;
+    outline: none;
+  }
+}
+
 .issue-realtime-pre-pulse {
   opacity: 0;
 }
@@ -7,36 +55,8 @@
   opacity: 1;
 }
 
-.check-all-holder {
-  line-height: 36px;
-  float: left;
-  margin-right: 15px;
-}
-
-form.edit-issue {
-  margin: 0;
-}
-
-ul.related-merge-requests > li {
-  display: flex;
-  align-items: center;
-
-  .merge-request-id {
-    flex-shrink: 0;
-  }
-
-  .merge-request-info {
-    margin-left: 5px;
-  }
-
-  gl-emoji {
-    font-size: 1em;
-  }
-}
-
-.related-branches-title {
-  font-size: 16px;
-  font-weight: $gl-font-weight-bold;
+ul.related-merge-requests > li gl-emoji {
+  font-size: 1em;
 }
 
 .merge-request-status {
@@ -92,32 +112,9 @@ ul.related-merge-requests > li {
   }
 }
 
-.issues-footer {
-  padding-top: $gl-padding;
-  padding-bottom: 37px;
-}
-
-.issues-nav-controls,
-.new-branch-col {
-  font-size: 0;
-}
-
 .issues-nav-controls {
   .btn-group:empty {
     display: none;
-  }
-}
-
-.email-modal-input-group {
-  margin-bottom: 10px;
-
-  .form-control {
-    background-color: $white;
-  }
-
-  .btn {
-    background-color: $gray-light;
-    border: 1px solid $border-gray-normal;
   }
 }
 

@@ -151,7 +151,7 @@ From the handbook's
 page:
 
 > Categories are high-level capabilities that may be a standalone product at
-another company. e.g. Portfolio Management.
+another company, such as Portfolio Management, for example.
 
 It's highly recommended to add a category label, as it's used by our triage
 automation to
@@ -182,7 +182,7 @@ From the handbook's
 [Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
-> Features: Small, discrete functionalities. e.g. Issue weights. Some common
+> Features: Small, discrete functionalities, for example Issue weights. Some common
 features are listed within parentheses to facilitate finding responsible PMs by keyword.
 
 It's highly recommended to add a feature label if no category label applies, as
@@ -303,7 +303,7 @@ We automatically add the ~"Accepting merge requests" label to issues
 that match the [triage policy](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#accepting-merge-requests).
 
 We recommend people that have never contributed to any open source project to
-look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"Good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
+look for issues labeled `~"Accepting merge requests"` with a [weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1) or the `~"good for new contributors"` [label](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&label_name[]=good%20for%20new%20contributors&assignee_id=None) attached to it.
 More experienced contributors are very welcome to tackle
 [any of them](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None).
 
@@ -342,19 +342,22 @@ To create a feature proposal, open an issue on the
 [issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label. For the time being, users that are not members
-of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
-members to add the label ~feature to the issue or add the following
+[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label.
+For the time being, users that are not members of the project cannot add labels.
+You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
+members to add the label `~feature` to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
+Please submit feature proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) provided on the issue tracker.
 
-For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
-be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
-need to ask one of the [core team](https://about.gitlab.com/community/core-team/) members to add the label, if you do not have permissions to do it by yourself.
+For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
+and include a visual example (screenshot, wireframe, or mockup). Such issues should
+be given the `~UX"` label for the Product Design team to provide input and guidance.
+You may need to ask one of the [core team](https://about.gitlab.com/community/core-team/)
+members to add the label, if you do not have permissions to do it by yourself.
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.

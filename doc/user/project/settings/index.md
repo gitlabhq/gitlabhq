@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Source Code
+stage: Manage
+group: Workspace
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference, index, howto
 ---
@@ -39,17 +39,19 @@ You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#li
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
 
-You can create a framework label to identify that your project has certain compliance requirements
-or needs additional oversight.
+You can create a compliance framework label to identify that your project has certain compliance
+requirements or needs additional oversight. The label can optionally apply
+[compliance pipeline configuration](#compliance-pipeline-configuration).
 
 Group owners can create, edit, and delete compliance frameworks:
 
-1. Go to the group's **Settings** > **General**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 
-Compliance frameworks created can then be assigned to any number of projects using:
+Compliance frameworks created can then be assigned to projects within the group using:
 
-- The project settings page inside the group or subgroups.
+- The GitLab UI, using the project settings page.
 - In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) and later, using the
   [GraphQL API](../../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework).
 
@@ -64,24 +66,32 @@ read-only view to discourage this behavior.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
 
-Group owners can use the compliance pipeline configuration to define compliance requirements
-such as scans or tests, and enforce them in individual projects.
+Group owners can use compliance pipeline configuration to add additional pipeline configuration to
+projects to define compliance requirements such as scans or tests.
 
-The [custom compliance framework](#compliance-frameworks) feature allows group owners to specify the location
-of a compliance pipeline configuration stored and managed in a dedicated project, distinct from a developer's project.
+[Compliance frameworks](#compliance-frameworks) allow group owners to specify the location of
+compliance pipeline configuration stored and managed in dedicated projects, separate from regular
+projects.
 
-When you set up the compliance pipeline configuration field, use the
-`file@group/project` format. For example, you can configure
-`.compliance-gitlab-ci.yml@compliance-group/compliance-project`.
-This field is inherited by projects where the compliance framework label is applied. The result
-forces the project to run the compliance configurations.
+When you set up the compliance framework, use the **Compliance pipeline configuration** box to link
+the compliance framework to specific CI/CD configuration. Use the
+`path/file.y[a]ml@group-name/project-name` format. For example:
 
-When a project with a custom label executes a pipeline, it begins by evaluating the compliance pipeline configuration.
-The custom pipeline configuration can then execute any included individual project configuration.
+- `.compliance-ci.yml@gitlab-org/gitlab`.
+- `.compliance-ci.yaml@gitlab-org/gitlab`.
 
-The user running the pipeline in the project should at least have Reporter access to the compliance project.
+This configuration is inherited by projects where the compliance framework label is applied. The
+result forces projects with the label to run the compliance CI/CD configuration in addition to
+the project's own CI/CD configuration. When a project with a compliance framework label executes a
+pipeline, it evaluates configuration in the following order:
 
-Example `.compliance-gitlab-ci.yml`
+1. Compliance pipeline configuration.
+1. Project-specific pipeline configuration.
+
+The user running the pipeline in the project must at least have the Reporter role on the compliance
+project.
+
+Example `.compliance-gitlab-ci.yml`:
 
 ```yaml
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
@@ -94,10 +104,10 @@ stages:
   - deploy
   - post-compliance
 
-variables: # Can be overridden by setting a job-specific variable in project's local .gitlab-ci.yml
+variables:  # Can be overridden by setting a job-specific variable in project's local .gitlab-ci.yml
   FOO: sast
 
-sast: # None of these attributes can be overridden by a project's local .gitlab-ci.yml
+sast:  # None of these attributes can be overridden by a project's local .gitlab-ci.yml
   variables:
     FOO: sast
   image: ruby:2.6
@@ -144,10 +154,10 @@ audit trail:
   after_script:
     - "# No after scripts."
 
-include: # Execute individual project's configuration (if project contains .gitlab-ci.yml)
+include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch.
+  ref: '$CI_COMMIT_REF_NAME'  # Must be defined or MR pipelines always use the use default branch.
 ```
 
 ##### Ensure compliance jobs are always run
@@ -181,6 +191,20 @@ cannot change them:
 - Explicitly set any relevant GitLab pre-defined [job keywords](../../../ci/yaml/index.md#job-keywords).
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
+
+##### Avoid parent and child pipelines
+
+Compliance pipelines start on the run of _every_ pipeline in a relevant project. This means that if a pipeline in the relevant project
+triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
+
+Therefore, in projects with compliance frameworks, we recommend replacing
+[parent-child pipelines](../../../ci/pipelines/parent_child_pipelines.md) with the following:
+
+- Direct [`include`](../../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
+- Child pipelines placed in another project that are run using the [trigger API](../../../ci/triggers/) rather than the parent-child
+  pipeline feature.
+
+This alternative ensures the compliance pipeline does not re-start the parent pipeline.
 
 ### Sharing and permissions
 

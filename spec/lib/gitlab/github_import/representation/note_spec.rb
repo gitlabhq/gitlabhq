@@ -40,8 +40,8 @@ RSpec.describe Gitlab::GithubImport::Representation::Note do
         expect(note.updated_at).to eq(updated_at)
       end
 
-      it 'includes the GitHub ID' do
-        expect(note.github_id).to eq(1)
+      it 'includes the note ID' do
+        expect(note.note_id).to eq(1)
       end
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::GithubImport::Representation::Note do
           'note' => 'Hello world',
           'created_at' => created_at.to_s,
           'updated_at' => updated_at.to_s,
-          'github_id' => 1
+          'note_id' => 1
         }
       end
 
@@ -98,12 +98,26 @@ RSpec.describe Gitlab::GithubImport::Representation::Note do
         'note' => 'Hello world',
         'created_at' => created_at.to_s,
         'updated_at' => updated_at.to_s,
-        'github_id' => 1
+        'note_id' => 1
       }
 
       note = described_class.from_json_hash(hash)
 
       expect(note.author).to be_nil
+    end
+  end
+
+  describe '#github_identifiers' do
+    it 'returns a hash with needed identifiers' do
+      github_identifiers = {
+        noteable_id: 42,
+        noteable_type: 'Issue',
+        note_id: 1
+      }
+      other_attributes = { something_else: '_something_else_' }
+      note = described_class.new(github_identifiers.merge(other_attributes))
+
+      expect(note.github_identifiers).to eq(github_identifiers)
     end
   end
 end

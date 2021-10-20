@@ -105,7 +105,7 @@ module Projects
       end
 
       update_pages_config if changing_pages_related_config?
-      update_pending_builds if shared_runners_toggled?
+      update_pending_builds if runners_settings_toggled?
     end
 
     def after_rename_service(project)
@@ -181,13 +181,36 @@ module Projects
     end
 
     def update_pending_builds
-      update_params = { instance_runners_enabled: project.shared_runners_enabled }
+      update_params = {
+        instance_runners_enabled: project.shared_runners_enabled?,
+        namespace_traversal_ids: group_runner_traversal_ids
+      }
 
-      ::Ci::UpdatePendingBuildService.new(project, update_params).execute
+      ::Ci::UpdatePendingBuildService
+        .new(project, update_params)
+        .execute
     end
 
-    def shared_runners_toggled?
-      project.previous_changes.include?('shared_runners_enabled')
+    def shared_runners_settings_toggled?
+      project.previous_changes.include?(:shared_runners_enabled)
+    end
+
+    def group_runners_settings_toggled?
+      return false unless project.ci_cd_settings.present?
+
+      project.ci_cd_settings.previous_changes.include?(:group_runners_enabled)
+    end
+
+    def runners_settings_toggled?
+      shared_runners_settings_toggled? || group_runners_settings_toggled?
+    end
+
+    def group_runner_traversal_ids
+      if project.group_runners_enabled?
+        project.namespace.traversal_ids
+      else
+        []
+      end
     end
   end
 end

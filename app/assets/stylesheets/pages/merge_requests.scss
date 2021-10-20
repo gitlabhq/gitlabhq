@@ -474,31 +474,6 @@ $tabs-holder-z-index: 250;
       }
     }
   }
-
-  .merge-request-labels {
-    display: inline-block;
-  }
-}
-
-.merge-request-angle {
-  text-align: center;
-  margin: 0 auto;
-  font-size: 2em;
-  line-height: 1.1;
-}
-
-// hide mr close link for inline diff comment form
-.diff-file .close-mr-link,
-.diff-file .reopen-mr-link {
-  display: none;
-}
-
-.mr-links {
-  padding-left: $gl-padding-8 + $status-icon-size + $gl-btn-padding;
-
-  &:last-child {
-    padding-bottom: $gl-padding;
-  }
 }
 
 .mr-info-list {
@@ -649,10 +624,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.target-branch-select-dropdown-container {
-  position: relative;
-}
-
 .assign-to-me-link {
   padding-left: 12px;
   white-space: nowrap;
@@ -664,12 +635,6 @@ $tabs-holder-z-index: 250;
       background-color: $white;
       color: $gl-text-color-secondary;
     }
-  }
-}
-
-.merged-buttons {
-  .btn {
-    float: left;
   }
 }
 
@@ -1039,4 +1004,18 @@ $tabs-holder-z-index: 250;
   .gl-alert:not(:last-child) {
     margin-bottom: 1px;
   }
+}
+
+.mr-widget-extension-icon::before {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-left-0;
+  @include gl-top-0;
+  @include gl-opacity-3;
+  @include gl-border-solid;
+  @include gl-border-4;
+  @include gl-rounded-full;
+
+  width: 24px;
+  height: 24px;
 }

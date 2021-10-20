@@ -94,7 +94,7 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 ## Specify a custom CI/CD configuration file
 
-> [Support for external `.gitlab-ci.yml` locations](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) introduced in GitLab 12.6.
+> Support for external `.gitlab-ci.yml` locations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14376) in GitLab 12.6.
 
 GitLab expects to find the CI/CD configuration file (`.gitlab-ci.yml`) in the project's root
 directory. However, you can specify an alternate filename path, including locations outside the project.
@@ -241,7 +241,7 @@ Use this regex for commonly used test tools.
 ### View code coverage history
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
-> - [Graph introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
+> - Graph [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
 
 To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data.
@@ -357,6 +357,29 @@ in your `README.md`:
 ```markdown
 ![coverage](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage)
 ```
+
+#### Test coverage report badge colors and limits
+
+The default colors and limits for the badge are as follows:
+
+- 95 up to and including 100% - good (`#4c1`)
+- 90 up to 95% - acceptable (`#a3c51c`)
+- 75 up to 90% - medium (`#dfb317`)
+- 0 up to 75% - low (`#e05d44`)
+- no coverage - unknown (`#9f9f9f`)
+
+NOTE:
+*Up to* means up to, but not including, the upper bound.
+
+You can overwrite the limits by using the following additional parameters ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28317) in GitLab 14.4):
+
+- `min_good` (default 95, can use any value between 3 and 100)
+- `min_acceptable` (default 90, can use any value between 2 and min_good-1)
+- `min_medium` (default 75, can use any value between 1 and min_acceptable-1)
+
+If an invalid boundary is set, GitLab automatically adjusts it to be valid. For example,
+if `min_good` is set `80`, and `min_acceptable` is set to `85` (too high), GitLab automatically
+sets `min_acceptable` to `79` (`min_good` - `1`).
 
 ### Badge styles
 

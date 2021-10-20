@@ -83,7 +83,7 @@ Checking Geo ... Finished
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any
-**secondary** app node:
+node running Rails (Puma, Sidekiq, or Geo Log Cursor) on the Geo **secondary** site:
 
 ```shell
 sudo gitlab-rake geo:status
@@ -292,9 +292,8 @@ be set on the **primary** database. In GitLab 9.4, we have made this setting
 default to 1. You may need to increase this value if you have more
 **secondary** nodes.
 
-Be sure to restart PostgreSQL for this to take
-effect. See the [PostgreSQL replication
-setup](../setup/database.md#postgresql-replication) guide for more details.
+Be sure to restart PostgreSQL for this to take effect. See the
+[PostgreSQL replication setup](../setup/database.md#postgresql-replication) guide for more details.
 
 ### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
 
@@ -430,7 +429,7 @@ their resync may take a long time and cause significant load on your Geo nodes,
 storage and network systems.
 
 If you get the error `Synchronization failed - Error syncing repository` along with the following log messages, this indicates that the expected `geo` remote is not present in the `.git/config` file
-of a repository on the secondary Geo node's filesystem:
+of a repository on the secondary Geo node's file system:
 
 ```json
 {
@@ -803,7 +802,7 @@ get_ctl_options': invalid option: --skip-preflight-checks (OptionParser::Invalid
 get_ctl_options': invalid option: --force (OptionParser::InvalidOption)
 ```
 
-This can happen with XFS or filesystems that list files in lexical order, because the
+This can happen with XFS or file systems that list files in lexical order, because the
 load order of the Omnibus command files can be different than expected, and a global function would get redefined.
 More details can be found in [the related issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6076).
 
@@ -922,6 +921,14 @@ To resolve this issue:
 
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
 `/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
+
+### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
+
+In GitLab 13.9 through GitLab 14.3, when [GitLab Maintenance Mode](../../maintenance_mode/index.md) is enabled, the status of Geo secondary sites will stop getting updated. After 10 minutes, the status will become `Unhealthy`.
+
+Geo secondary sites will continue to replicate and verify data, and the secondary sites should still be usable. You can use the [Sync status Rake task](#sync-status-rake-task) to determine the actual status of a secondary site during Maintenance Mode.
+
+This bug was [fixed in GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/292983).
 
 ### GitLab Pages return 404 errors after promoting
 

@@ -106,7 +106,7 @@ module Gitlab
           final_delay = 0
           batch_counter = 0
 
-          model_class.each_batch(of: batch_size) do |relation, index|
+          model_class.each_batch(of: batch_size, column: primary_column_name) do |relation, index|
             max = relation.arel_table[primary_column_name].maximum
             min = relation.arel_table[primary_column_name].minimum
 

@@ -79,6 +79,10 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 Certain major/minor releases may require different migrations to be
 finished before you update to the newer version.
 
+Decrease the time required to complete these migrations by increasing the number of
+[Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
+that can process jobs in the `background_migration` queue.
+
 **For GitLab 14.0 and newer**
 
 To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):
@@ -87,6 +91,16 @@ To check the status of [batched background migrations](../user/admin_area/monito
 1. On the left sidebar, select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
+
+The status of batched background migrations can also be queried directly in the database.
+
+1. Log into a `psql` prompt according to the directions for your instance's installation method
+(for example, `sudo gitlab-psql` for Omnibus installations).
+1. Run the following query in the `psql` session to see details on incomplete batched background migrations:
+
+   ```sql
+   select job_class_name, table_name, column_name, job_arguments from batched_background_migrations where status <> 3;
+   ```
 
 **For Omnibus installations**
 
@@ -136,9 +150,9 @@ pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_cla
 
 ## Dealing with running CI/CD pipelines and jobs
 
-If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates will fail. Once GitLab is back online, then the trace updates should self-heal. However, depending on the error, the GitLab Runner will either retry or eventually terminate job handling.
+If you upgrade your GitLab instance while the GitLab Runner is processing jobs, the trace updates fail. When GitLab is back online, the trace updates should self-heal. However, depending on the error, the GitLab Runner either retries or eventually terminates job handling.
 
-As for the artifacts, the GitLab Runner will attempt to upload them three times, after which the job will eventually fail.
+As for the artifacts, the GitLab Runner attempts to upload them three times, after which the job eventually fails.
 
 To address the above two scenario's, it is advised to do the following prior to upgrading:
 
@@ -193,7 +207,7 @@ upgrade paths.
 
 | Target version | Your version | Supported upgrade path                                                                               | Note                                                                                                                              |
 | -------------- | ------------ | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `14.1.2`       | `13.9.2`     | `13.9.2` -> `13.12.9` -> `14.0.7` -> `14.1.2`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
+| `14.1.6`       | `13.9.2`     | `13.9.2` -> `13.12.12` -> `14.0.11` -> `14.1.6`                                                        | Two intermediate versions are required: `13.12` and `14.0`, then `14.1`.                                                          |
 | `13.12.10`     | `12.9.2`     | `12.9.2` -> `12.10.14` -> `13.0.14`  -> `13.1.11` -> `13.8.8` -> `13.12.10`                          | Four intermediate versions are required: `12.10`, `13.0`, `13.1` and `13.8.8`, then `13.12.10`.                               |
 | `13.2.10`      | `11.5.0`     | `11.5.0` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14` -> `13.0.14` -> `13.1.11` -> `13.2.10` | Six intermediate versions are required: `11.11`, `12.0`, `12.1`, `12.10`, `13.0` and `13.1`, then `13.2.10`.                      |
 | `12.10.14`     | `11.3.4`     | `11.3.4` -> `11.11.8` -> `12.0.12` -> `12.1.17` -> `12.10.14`                                        | Three intermediate versions are required: `11.11`, `12.0` and `12.1`, then `12.10.14`.                                            |
@@ -206,7 +220,7 @@ upgrade paths.
 Upgrading the *major* version requires more attention.
 Backward-incompatible changes and migrations are reserved for major versions.
 Follow the directions carefully as we
-cannot guarantee that upgrading between major versions will be seamless.
+cannot guarantee that upgrading between major versions is seamless.
 
 It is required to follow the following upgrade steps to ensure a successful *major* version upgrade:
 
@@ -292,6 +306,11 @@ installation-specific upgrade instructions, based on how you installed GitLab:
 NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
+
+### 14.4.0
+
+Git 2.33.x and later is required. We recommend you use the
+[Git version provided by Gitaly](../install/installation.md#git).
 
 ### 14.3.0
 
@@ -402,7 +421,7 @@ Git 2.31.x and later is required. We recommend you use the
 ### 13.9.0
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that will prevent upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary
+that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
 to perform the following additional steps for the zero-downtime upgrade:
 
 1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
@@ -423,7 +442,7 @@ to perform the following additional steps for the zero-downtime upgrade:
    ```
 
 If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you will
+encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
 see the following error:
 
 ```shell

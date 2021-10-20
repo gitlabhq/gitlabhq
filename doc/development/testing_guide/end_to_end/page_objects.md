@@ -105,7 +105,7 @@ code but **this is deprecated** in favor of the above method for two reasons:
 
 - Consistency: there is only one way to define an element
 - Separation of concerns: QA uses dedicated `data-qa-*` attributes instead of reusing code
-  or classes used by other components (e.g. `js-*` classes etc.)
+  or classes used by other components (for example, `js-*` classes etc.)
 
 ```ruby
 view 'app/views/my/view.html.haml' do

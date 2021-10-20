@@ -24,7 +24,7 @@ Incident, you have two options to do this manually.
 
 **From the Incidents List:**
 
-> [Moved](https://gitlab.com/gitlab-org/monitor/health/-/issues/24) to GitLab Free in 13.3.
+> [Moved](https://gitlab.com/gitlab-org/monitor/monitor/-/issues/24) to GitLab Free in 13.3.
 
 - Navigate to **Monitor > Incidents** and click **Create Incident**.
 - Create a new issue using the `incident` template available when creating it.
@@ -44,11 +44,11 @@ Incident, you have two options to do this manually.
 
 ![Incident List Create](img/new_incident_create_v13_4.png)
 
-### Create incidents automatically
+### Create incidents automatically **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab Ultimate 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4925) in GitLab 11.11.
 
-With Maintainer or higher [permissions](../../user/permissions.md), you can enable
+With at least the Maintainer [role](../../user/permissions.md), you can enable
  GitLab to create incident automatically whenever an alert is triggered:
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
@@ -56,9 +56,9 @@ With Maintainer or higher [permissions](../../user/permissions.md), you can enab
 1. To customize the incident, select an
    [issue template](../../user/project/description_templates.md#create-an-issue-template).
 1. To send [an email notification](paging.md#email-notifications) to users
-   with the [Developer role](../../user/permissions.md), select
+   with the Developer [role](../../user/permissions.md), select
    **Send a separate email notification to Developers**. Email notifications are
-   also sent to users with **Maintainer** and **Owner** permissions.
+   also sent to users with the **Maintainer** and **Owner** roles.
 1. Click **Save changes**.
 
 ### Create incidents via the PagerDuty webhook
@@ -69,7 +69,7 @@ You can set up a webhook with PagerDuty to automatically create a GitLab inciden
 for each PagerDuty incident. This configuration requires you to make changes
 in both PagerDuty and GitLab:
 
-1. Sign in as a user with the [Maintainer role](../../user/permissions.md).
+1. Sign in as a user with the Maintainer [role](../../user/permissions.md).
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.
 1. Select the **PagerDuty integration** tab:
 
@@ -114,14 +114,14 @@ in your project's sidebar. The list contains the following metrics:
   tooltip depending on the user's locale.
 - **Assignees** - The user assigned to the incident.
 - **Published** - Displays a green check mark (**{check-circle}**) if the incident is published
-  to a [Status Page](status_page.md). **(ULTIMATE)**
+  to a [Status Page](status_page.md).
 
 The Incident list displays incidents sorted by incident created date.
-([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229534) to GitLab Free in 13.3.)
+([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229534) in GitLab 13.3.)
 To see if a column is sortable, point your mouse at the header. Sortable columns
 display an arrow next to the column name.
 
-Incidents share the [Issues API](../../user/project/issues/index.md).
+Incidents share the [Issues API](../../api/issues.md).
 
 NOTE:
 For a live example of the incident list in action, visit this
@@ -165,9 +165,9 @@ Beneath the highlight bar, GitLab displays a summary that includes the following
 Comments are displayed in threads, but can be displayed chronologically
 [in a timeline view](#timeline-view).
 
-### Metrics
+### Metrics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235994) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235994) in GitLab 13.8.
 
 In many cases, incidents are associated to metrics. You can upload screenshots of metric
 charts in the **Metrics** tab:
@@ -189,7 +189,7 @@ field populated.
 
 ### Timeline view **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in GitLab 13.5.
 
 To quickly see the latest updates on an incident, click
 **{comments}** **Turn timeline view on** in the comment bar to display comments
@@ -199,7 +199,7 @@ un-threaded and ordered chronologically, newest to oldest:
 
 ### Service Level Agreement countdown timer **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in GitLab 13.5.
 
 You can enable the Service Level Agreement Countdown timer on incidents to track
 the Service Level Agreements (SLAs) you hold with your customers. The timer is
@@ -277,7 +277,7 @@ templates.
 > - [Introduced for Prometheus Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13401) in GitLab 12.5.
 > - [Introduced for HTTP Integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
-With Maintainer or higher [permissions](../../user/permissions.md), you can enable
+With at least the Maintainer [role](../../user/permissions.md), you can enable
  GitLab to close an incident automatically when a **Recovery Alert** is received:
 
 1. Navigate to **Settings > Monitor > Incidents** and expand **Incidents**.

@@ -3,8 +3,10 @@
 class ReleasePresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
 
-  presents :release
+  presents ::Release, as: :release
 
+  # TODO: Remove `delegate` as it's redundant due to SimpleDelegator.
+  delegator_override :tag, :project
   delegate :project, :tag, to: :release
 
   def commit_path
@@ -51,6 +53,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     edit_project_release_url(project, release)
   end
 
+  delegator_override :assets_count
   def assets_count
     if can_download_code?
       release.assets_count
@@ -59,6 +62,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  delegator_override :name
   def name
     can_download_code? ? release.name : "Release-#{release.id}"
   end

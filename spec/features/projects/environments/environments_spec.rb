@@ -226,6 +226,7 @@ RSpec.describe 'Environments page', :js do
         end
 
         it 'does not show terminal button' do
+          expect(page).not_to have_button(_('More actions'))
           expect(page).not_to have_terminal_button
         end
 
@@ -273,6 +274,7 @@ RSpec.describe 'Environments page', :js do
               let(:role) { :maintainer }
 
               it 'shows the terminal button' do
+                click_button(_('More actions'))
                 expect(page).to have_terminal_button
               end
             end
@@ -281,6 +283,7 @@ RSpec.describe 'Environments page', :js do
               let(:role) { :developer }
 
               it 'does not show terminal button' do
+                expect(page).not_to have_button(_('More actions'))
                 expect(page).not_to have_terminal_button
               end
             end
@@ -515,7 +518,7 @@ RSpec.describe 'Environments page', :js do
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_project_environment_path(project, environment))
+    have_link(_('Terminal'), href: terminal_project_environment_path(project, environment))
   end
 
   def visit_environments(project, **opts)

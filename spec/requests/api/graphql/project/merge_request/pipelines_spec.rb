@@ -39,7 +39,7 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
 
     before do
       merge_requests.each do |mr|
-        shas = mr.all_commits.limit(2).pluck(:sha)
+        shas = mr.recent_diff_head_shas
 
         shas.each do |sha|
           create(:ci_pipeline, :success, project: project, ref: mr.source_branch, sha: sha)
@@ -52,7 +52,7 @@ RSpec.describe 'Query.project.mergeRequests.pipelines' do
 
       p_nodes = graphql_data_at(:project, :merge_requests, :nodes)
 
-      expect(p_nodes).to all(match('iid' => be_present, 'pipelines' => match('count' => 2)))
+      expect(p_nodes).to all(match('iid' => be_present, 'pipelines' => match('count' => 1)))
     end
 
     it 'is scalable', :request_store, :use_clean_rails_memory_store_caching do

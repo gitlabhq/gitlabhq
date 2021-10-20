@@ -31,7 +31,7 @@ export const i18n = {
     title: __('Custom notification events'),
     bodyTitle: __('Notification events'),
     bodyMessage: __(
-      'Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart} notification emails%{notificationLinkEnd}.',
+      'Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart}notification emails%{notificationLinkEnd}.',
     ),
   },
   eventNames: {

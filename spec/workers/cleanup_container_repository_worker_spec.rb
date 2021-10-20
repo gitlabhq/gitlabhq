@@ -17,7 +17,7 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
 
       it 'executes the destroy service' do
         expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
-          .with(project, user, params.merge('container_expiration_policy' => false))
+          .with(repository, user, params.merge('container_expiration_policy' => false))
           .and_return(service)
         expect(service).to receive(:execute)
 
@@ -49,7 +49,7 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
         expect(repository).to receive(:start_expiration_policy!).and_call_original
         expect(repository).to receive(:reset_expiration_policy_started_at!).and_call_original
         expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
-          .with(project, nil, params.merge('container_expiration_policy' => true))
+          .with(repository, nil, params.merge('container_expiration_policy' => true))
           .and_return(service)
 
         expect(service).to receive(:execute).and_return(status: :success)
@@ -62,7 +62,7 @@ RSpec.describe CleanupContainerRepositoryWorker, :clean_gitlab_redis_shared_stat
         expect(repository).to receive(:start_expiration_policy!).and_call_original
         expect(repository).not_to receive(:reset_expiration_policy_started_at!)
         expect(Projects::ContainerRepository::CleanupTagsService).to receive(:new)
-          .with(project, nil, params.merge('container_expiration_policy' => true))
+          .with(repository, nil, params.merge('container_expiration_policy' => true))
           .and_return(service)
 
         expect(service).to receive(:execute).and_return(status: :error, message: 'timeout while deleting tags')

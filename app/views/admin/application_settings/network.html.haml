@@ -35,9 +35,10 @@
       = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/package_registry_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
-    = render 'package_registry_limits'
+    = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
+
 - if Feature.enabled?(:files_api_throttling, default_enabled: :yaml)
-  %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'files-limits-settings' } }
+  %section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?) }
     .settings-header
       %h4
         = _('Files API Rate Limits')
@@ -46,7 +47,19 @@
       %p
         = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
     .settings-content
-      = render 'files_limits'
+      = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
+
+%section.settings.as-deprecated-limits.no-animate#js-deprecated-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Deprecated API rate limits')
+    %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
+      = link_to _('Which API requests are affected?'), help_page_path('user/admin_area/settings/deprecated_api_rate_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
 %section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'git_lfs_limits_content' } }
   .settings-header

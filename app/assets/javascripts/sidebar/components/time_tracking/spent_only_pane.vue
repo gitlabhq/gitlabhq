@@ -1,30 +1,31 @@
 <script>
-import { sprintf, s__ } from '~/locale';
+import { GlSprintf } from '@gitlab/ui';
+import { s__ } from '~/locale';
+
+const timeSpent = s__('TimeTracking|%{spentStart}Spent: %{spentEnd}');
 
 export default {
   name: 'TimeTrackingSpentOnlyPane',
+  timeSpent,
+  components: {
+    GlSprintf,
+  },
   props: {
     timeSpentHumanReadable: {
       type: String,
       required: true,
     },
   },
-  computed: {
-    timeSpent() {
-      return sprintf(
-        s__('TimeTracking|%{startTag}Spent: %{endTag}%{timeSpentHumanReadable}'),
-        {
-          startTag: '<span class="gl-font-weight-bold">',
-          endTag: '</span>',
-          timeSpentHumanReadable: this.timeSpentHumanReadable,
-        },
-        false,
-      );
-    },
-  },
 };
 </script>
 
 <template>
-  <div data-testid="spentOnlyPane" v-html="timeSpent /* eslint-disable-line vue/no-v-html */"></div>
+  <div data-testid="spentOnlyPane">
+    <gl-sprintf :message="$options.timeSpent">
+      <template #spent="{ content }">
+        <span class="gl-font-weight-bold">{{ content }}</span
+        >{{ timeSpentHumanReadable }}
+      </template>
+    </gl-sprintf>
+  </div>
 </template>

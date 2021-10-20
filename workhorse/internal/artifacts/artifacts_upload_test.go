@@ -35,7 +35,7 @@ const (
 	Path                  = "/url/path"
 )
 
-func testArtifactsUploadServer(t *testing.T, authResponse api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
+func testArtifactsUploadServer(t *testing.T, authResponse *api.Response, bodyProcessor func(w http.ResponseWriter, r *http.Request)) *httptest.Server {
 	mux := http.NewServeMux()
 	mux.HandleFunc(Path+"/authorize", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
@@ -51,7 +51,7 @@ func testArtifactsUploadServer(t *testing.T, authResponse api.Response, bodyProc
 		w.Write(data)
 	})
 	mux.HandleFunc(Path, func(w http.ResponseWriter, r *http.Request) {
-		opts, err := filestore.GetOpts(&authResponse)
+		opts, err := filestore.GetOpts(authResponse)
 		require.NoError(t, err)
 
 		if r.Method != "POST" {
@@ -128,7 +128,7 @@ func setupWithTmpPath(t *testing.T, filename string, includeFormat bool, format 
 		authResponse = &api.Response{TempPath: tempPath}
 	}
 
-	ts := testArtifactsUploadServer(t, *authResponse, bodyProcessor)
+	ts := testArtifactsUploadServer(t, authResponse, bodyProcessor)
 
 	var buffer bytes.Buffer
 	writer := multipart.NewWriter(&buffer)

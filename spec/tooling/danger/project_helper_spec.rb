@@ -93,6 +93,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'ee/spec/foo'     | [:backend]
       'ee/spec/foo/bar' | [:backend]
 
+      'spec/migrations/foo'    | [:database]
+      'ee/spec/migrations/foo' | [:database]
+
       'spec/features/foo'                            | [:test]
       'ee/spec/features/foo'                         | [:test]
       'spec/support/shared_examples/features/foo'    | [:test]
@@ -275,6 +278,19 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       expect(project_helper).to receive(:ee?) { false }
 
       is_expected.to eq('gitlab-foss')
+    end
+  end
+
+  describe '#file_lines' do
+    let(:filename) { 'spec/foo_spec.rb' }
+    let(:file_spy) { spy }
+
+    it 'returns the chomped file lines' do
+      expect(project_helper).to receive(:read_file).with(filename).and_return(file_spy)
+
+      project_helper.file_lines(filename)
+
+      expect(file_spy).to have_received(:lines).with(chomp: true)
     end
   end
 end

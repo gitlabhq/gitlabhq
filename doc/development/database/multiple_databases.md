@@ -6,16 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Multiple Databases
 
-In order to scale GitLab, the GitLab application database
-will be [decomposed into multiple
-databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
+To scale GitLab, the we are
+[decomposing the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 
-## CI Database
+## CI/CD Database
 
-Support for configuring the GitLab Rails application to use a distinct
-database for CI tables was added in [GitLab
-14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289). This
-feature is still under development, and is not ready for production use.
+> Support for configuring the GitLab Rails application to use a distinct
+database for CI/CD tables was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64289)
+in GitLab 14.1. This feature is still under development, and is not ready for production use.
 
 By default, GitLab is configured to use only one main database. To
 opt-in to use a main database, and CI database, modify the
@@ -92,8 +90,8 @@ test: &test
 
 ### Migrations
 
-Any migrations that affect `Ci::CiDatabaseRecord` models
-and their tables must be placed in two directories for now:
+Place any migrations that affect `Ci::CiDatabaseRecord` models
+and their tables in two directories:
 
 - `db/migrate`
 - `db/ci_migrate`
@@ -394,7 +392,8 @@ You can see a real example of using this method for fixing a cross-join in
 #### Allowlist for existing cross-joins
 
 A cross-join across databases can be explicitly allowed by wrapping the code in the
-`::Gitlab::Database.allow_cross_joins_across_databases` helper method.
+`::Gitlab::Database.allow_cross_joins_across_databases` helper method. Alternative
+way is to mark a given relation as `relation.allow_cross_joins_across_databases`.
 
 This method should only be used:
 
@@ -405,8 +404,19 @@ This method should only be used:
 The `allow_cross_joins_across_databases` helper method can be used as follows:
 
 ```ruby
+# Scope the block executing a object from database
 ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336590') do
   subject.perform(1, 4)
+end
+```
+
+```ruby
+# Mark a relation as allowed to cross-join databases
+def find_actual_head_pipeline
+  all_pipelines
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
+    .for_sha_or_source_sha(diff_head_sha)
+    .first
 end
 ```
 
@@ -414,6 +424,92 @@ The `url` parameter should point to an issue with a milestone for when we intend
 to fix the cross-join. If the cross-join is being used in a migration, we do not
 need to fix the code. See <https://gitlab.com/gitlab-org/gitlab/-/issues/340017>
 for more details.
+
+### Removing cross-database transactions
+
+When dealing with multiple databases, it's important to pay close attention to data modification
+that affects more than one database.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339811) GitLab 14.4, an automated check
+prevents cross-database modifications.
+
+When at least two different databases are modified during a transaction initiated on any database
+server, the application triggers a cross-database modification error (only in test environment).
+
+Example:
+
+```ruby
+# Open transaction on Main DB
+ApplicationRecord.transaction do
+  ci_build.update!(updated_at: Time.current) # UPDATE on CI DB
+  ci_build.project.update!(updated_at: Time.current) # UPDATE on Main DB
+end
+# raises error: Cross-database data modification of 'main, ci' were detected within
+# a transaction modifying the 'ci_build, projects' tables
+```
+
+The code example above updates the timestamp for two records within a transaction. With the
+ongoing work on the CI database decomposition, we cannot ensure the schematics of a database
+transaction.
+If the second update query fails, the first update query will not be
+rolled back because the `ci_build` record is located on a different database server. For
+more information, look at the
+[transaction guidelines](transaction_guidelines.md#dangerous-example-third-party-api-calls)
+page.
+
+#### Fixing cross-database errors
+
+##### Removing the transaction block
+
+Without an open transaction, the cross-database modification check cannot raise an error.
+By making this change, we sacrifice consistency. In case of an application failure after the
+first `UPDATE` query, the second `UPDATE` query will never execute.
+
+The same code without the `transaction` block:
+
+```ruby
+ci_build.update!(updated_at: Time.current) # CI DB
+ci_build.project.update!(updated_at: Time.current) # Main DB
+```
+
+##### Async processing
+
+If we need more guarantee that an operation finishes the work consistently we can execute it
+within a background job. A background job is scheduled asynchronously and retried several times
+in case of an error. There is still a very small chance of introducing inconsistency.
+
+Example:
+
+```ruby
+current_time = Time.current
+
+MyAsyncConsistencyJob.perform_async(cu_build.id)
+
+ci_build.update!(updated_at: current_time)
+ci_build.project.update!(updated_at: current_time)
+```
+
+The `MyAsyncConsistencyJob` would also attempt to update the timestamp if they differ.
+
+##### Aiming for perfect consistency
+
+At this point, we don't have the tooling (we might not even need it) to ensure similar consistency
+characteristics as we had with one database. If you think that the code you're working on requires
+these properties, then you can disable the cross-database modification check by wrapping to
+offending database queries with a block and create a follow-up issue mentioning the sharding group
+(`gitlab-org/sharding-group`).
+
+```ruby
+Gitlab::Database.allow_cross_joins_across_databases(url: 'gitlab issue URL') do
+  ApplicationRecord.transaction do
+    ci_build.update!(updated_at: Time.current) # UPDATE on CI DB
+    ci_build.project.update!(updated_at: Time.current) # UPDATE on Main DB
+  end
+end
+```
+
+Don't hesitate to reach out to the
+[sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/)
+for advice.
 
 ## `config/database.yml`
 

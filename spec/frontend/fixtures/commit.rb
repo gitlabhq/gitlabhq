@@ -9,11 +9,6 @@ RSpec.describe 'Commit (JavaScript fixtures)' do
   let_it_be(:user)    { project.owner }
   let_it_be(:commit)  { project.commit("master") }
 
-  before(:all) do
-    clean_frontend_fixtures('commit/')
-    clean_frontend_fixtures('api/commits/')
-  end
-
   before do
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end

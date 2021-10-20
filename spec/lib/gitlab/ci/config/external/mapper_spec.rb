@@ -363,17 +363,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
           expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
                                              an_instance_of(Gitlab::Ci::Config::External::File::Local))
         end
-
-        context 'when the FF ci_include_rules is disabled' do
-          before do
-            stub_feature_flags(ci_include_rules: false)
-          end
-
-          it 'includes the file' do
-            expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
-                                               an_instance_of(Gitlab::Ci::Config::External::File::Local))
-          end
-        end
       end
 
       context 'when the rules does not match' do
@@ -381,17 +370,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
 
         it 'does not include the file' do
           expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote))
-        end
-
-        context 'when the FF ci_include_rules is disabled' do
-          before do
-            stub_feature_flags(ci_include_rules: false)
-          end
-
-          it 'includes the file' do
-            expect(subject).to contain_exactly(an_instance_of(Gitlab::Ci::Config::External::File::Remote),
-                                               an_instance_of(Gitlab::Ci::Config::External::File::Local))
-          end
         end
       end
     end

@@ -9,9 +9,8 @@ import { PACKAGE_TYPE_NUGET } from '~/packages_and_registries/package_registry/c
 
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
-const nugetPackage = { packageType: PACKAGE_TYPE_NUGET, metadata: nugetMetadata() };
-
 describe('Nuget Metadata', () => {
+  let nugetPackage = { packageType: PACKAGE_TYPE_NUGET, metadata: nugetMetadata() };
   let wrapper;
 
   const mountComponent = () => {
@@ -51,5 +50,31 @@ describe('Nuget Metadata', () => {
     expect(element.text()).toBe(text);
     expect(element.props('icon')).toBe(icon);
     expect(findElementLink(element).attributes('href')).toBe(nugetPackage.metadata[link]);
+  });
+
+  describe('without source', () => {
+    beforeAll(() => {
+      nugetPackage = {
+        packageType: PACKAGE_TYPE_NUGET,
+        metadata: { iconUrl: 'iconUrl', licenseUrl: 'licenseUrl' },
+      };
+    });
+
+    it('does not show additional metadata', () => {
+      expect(findNugetSource().exists()).toBe(false);
+    });
+  });
+
+  describe('without license', () => {
+    beforeAll(() => {
+      nugetPackage = {
+        packageType: PACKAGE_TYPE_NUGET,
+        metadata: { iconUrl: 'iconUrl', projectUrl: 'projectUrl' },
+      };
+    });
+
+    it('does not show additional metadata', () => {
+      expect(findNugetLicense().exists()).toBe(false);
+    });
   });
 });

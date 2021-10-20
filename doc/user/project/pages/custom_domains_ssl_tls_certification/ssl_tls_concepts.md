@@ -35,7 +35,7 @@ with financial transactions.
 
 <!-- vale gitlab.Spelling = NO -->
 
-Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [ISRG](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
+Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [Internet Security Research Group (ISRG)](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
 
 <!-- vale gitlab.rulename = YES -->
 

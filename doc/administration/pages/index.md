@@ -7,12 +7,6 @@ description: 'Learn how to administer GitLab Pages.'
 
 # GitLab Pages administration **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80) in GitLab EE 8.3.
-> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173) in GitLab EE 8.5.
-> - GitLab Pages [was ported](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14605) to Community Edition in GitLab 8.17.
-> - Support for subgroup project's websites was
->   [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30548) in GitLab 11.8.
-
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation](../../user/project/pages/index.md) is available.
 
@@ -23,10 +17,10 @@ GitLab from source, see
 
 ## Overview
 
-GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a simple HTTP server
+GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a basic HTTP server
 written in Go that can listen on an external IP address and provide support for
 custom domains and custom certificates. It supports dynamic certificates through
-SNI and exposes pages using HTTP2 by default.
+Server Name Indication (SNI) and exposes pages using HTTP2 by default.
 You are encouraged to read its [README](https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md) to fully understand how
 it works.
 
@@ -89,7 +83,7 @@ added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/infrastructure/-/issue
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider
-you need to add a [wildcard DNS A record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the
+add a [wildcard DNS A record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```plaintext
@@ -99,9 +93,9 @@ host that GitLab runs. For example, an entry would look like this:
 
 Where `example.io` is the domain GitLab Pages is served from,
 `192.0.2.1` is the IPv4 address of your GitLab instance, and `2001:db8::1` is the
-IPv6 address. If you don't have IPv6, you can omit the AAAA record.
+IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 
-#### Custom domains
+#### DNS configuration for custom domains
 
 If support for custom domains is needed, the Pages root domain and its subdomains should point to
 the secondary IP (which is dedicated for the Pages daemon). `<namespace>.<pages root domain>` should
@@ -131,7 +125,7 @@ Depending on your needs, you can set up GitLab Pages in 4 different ways.
 
 The following examples are listed from the easiest setup to the most
 advanced one. The absolute minimum requirement is to set up the wildcard DNS
-since that is needed in all configurations.
+because that is needed in all configurations.
 
 ### Wildcard domains
 
@@ -143,7 +137,7 @@ since that is needed in all configurations.
 
 URL scheme: `http://<namespace>.example.io/<project_slug>`
 
-This is the minimum setup that you can use Pages with. It is the base for all
+The following is the minimum setup that you can use Pages with. It is the base for all
 other setups as described below. NGINX proxies all requests to the daemon.
 The Pages daemon doesn't listen to the outside world.
 
@@ -180,8 +174,8 @@ outside world.
    pages_nginx['redirect_http_to_https'] = true
    ```
 
-1. If you haven't named your certificate and key `example.io.crt` and `example.io.key`
-then you'll need to also add the full paths as shown below:
+1. If you haven't named your certificate and key `example.io.crt` and `example.io.key`,
+you must also add the full paths as shown below:
 
    ```ruby
    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
@@ -201,7 +195,7 @@ Multiple wildcards for one instance is not supported. Only one wildcard per inst
 Below is a table of all configuration settings known to Pages in Omnibus GitLab,
 and what they do. These options can be adjusted in `/etc/gitlab/gitlab.rb`,
 and take effect after you [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-Most of these settings don't need to be configured manually unless you need more granular
+Most of these settings don't have to be configured manually unless you need more granular
 control over how the Pages daemon runs and serves content in your environment.
 
 | Setting                                 | Description |
@@ -382,8 +376,6 @@ To enable it:
 
 ### Access control
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33422) in GitLab 11.5.
-
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
 
@@ -444,7 +436,7 @@ You can enforce [Access Control](#access-control) for all GitLab Pages websites 
 on your GitLab instance. By doing so, only logged-in users have access to them.
 This setting overrides Access Control set by users in individual projects.
 
-This can be useful to preserve information published with Pages websites to the users
+This can be helpful to restrict information published with Pages websites to the users
 of your instance only.
 To do that:
 
@@ -491,7 +483,7 @@ For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https:/
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
 
 WARNING:
-These are advanced settings. The recommended default values are set inside GitLab Pages. You should
+These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
 change these settings only if absolutely necessary. Use extreme caution.
 
 GitLab Pages can serve content from ZIP archives through object storage (an
@@ -523,9 +515,6 @@ After an archive reaches `zip_cache_expiration`, it's marked as expired and remo
 ![ZIP cache configuration](img/zip_cache_configuration.png)
 
 ## Activate verbose logging for daemon
-
-Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in
-Omnibus GitLab 11.1.
 
 Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
@@ -602,8 +591,6 @@ the below steps to do a no downtime transfer to a new storage location.
 1. Verify Pages are still being served up as expected.
 
 ## Configure listener for reverse proxy requests
-
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2533) in Omnibus GitLab 11.1.
 
 Follow the steps below to configure the proxy listener of GitLab Pages.
 
@@ -775,7 +762,7 @@ WARNING:
 
 From [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/217912) to [GitLab 13.12](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages can either use `disk` or `gitlab` domain configuration source.
 
-We highly advise you to use `gitlab` configuration source as it will make transition to newer versions easier.
+We highly advise you to use `gitlab` configuration source as it makes transitions to newer versions easier.
 
 To explicitly enable API source:
 
@@ -1019,14 +1006,13 @@ Starting from GitLab 13.12, this setting also disables the [legacy storage](#mig
 In GitLab 14.0 a number of breaking changes were introduced which may require some user intervention.
 The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
 
-If you run GitLab on a single server, then most likely the upgrade process to 14.0 will go smoothly for you
-and you will not notice any problem after upgrading.
+A GitLab instance running on a single server typically upgrades to 14.0 smoothly, and there should be minimal issues after the upgrade is complete.
 Regardless, we recommend everyone follow the migration steps to ensure a successful upgrade.
 If at any point you run into issues, consult the [troubleshooting section](#troubleshooting).
 
-If your current GitLab version is lower than 13.12, then you first need to update to 13.12.
+If your current GitLab version is lower than 13.12, then you must first update to 13.12.
 Updating directly to 14.0 is [not supported](../../update/index.md#upgrade-paths)
-and may cause downtime for some web-sites hosted on GitLab Pages. Once you update to 13.12,
+and may cause downtime for some web-sites hosted on GitLab Pages. After you update to 13.12,
 migrate GitLab Pages to prepare them for GitLab 14.0:
 
 1. Set [`domain_config_source` to `gitlab`](#domain-source-configuration-before-140), which
@@ -1077,7 +1063,7 @@ This issue is fixed in GitLab 14.3 and above, try upgrading GitLab first.
 GitLab Pages runs inside a `chroot` jail, usually in a uniquely numbered directory like
 `/tmp/gitlab-pages-*`.
 
-Within the jail, a bundle of trusted certificates is
+In the jail, a bundle of trusted certificates is
 provided at `/etc/ssl/ca-bundle.pem`. It's
 [copied there](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/51)
 from `/opt/gitlab/embedded/ssl/certs/cacert.pem`
@@ -1206,26 +1192,10 @@ To stop `systemd` from cleaning the Pages related content:
    sudo gitlab-ctl restart gitlab-pages
    ```
 
-### 404 error after transferring the project to a different group or user, or changing project path
-
-If you encounter a `404 Not Found` error a Pages site after transferring a project to
-another group or user, or changing project path, you must trigger a domain configuration
-update for Pages. To do so, write something in the `.update` file. The Pages daemon
-monitors for changes to this file, and reloads the configuration when changes occur.
-
-Use this example to fix a `404 Not Found` error after transferring a project or changing
-a project path with Pages:
-
-```shell
-date > /var/opt/gitlab/gitlab-rails/shared/pages/.update
-```
-
-If you've customized the Pages storage path, adjust the command above to use your custom path.
-
 ### 404 error after promoting a Geo secondary to a primary node
 
-These are due to the Pages files not being among the
-[supported data types](../geo/replication/datatypes.md#limitations-on-replicationverification).
+Pages files are not among the
+[supported data types](../geo/replication/datatypes.md#limitations-on-replicationverification) for replication in Geo. After a secondary node is promoted to a primary node, attempts to access a Pages site result in a `404 Not Found` error.
 
 It is possible to copy the subfolders and files in the [Pages path](#change-storage-path)
 to the new primary node to resolve this.
@@ -1233,11 +1203,11 @@ For example, you can adapt the `rsync` strategy from the
 [moving repositories documentation](../operations/moving_repositories.md).
 Alternatively, run the CI pipelines of those projects that contain a `pages` job again.
 
-## 404 or 500 error when accessing GitLab Pages in a Geo setup
+### 404 or 500 error when accessing GitLab Pages in a Geo setup
 
 Pages sites are only available on the primary Geo site, while the codebase of the project is available on all sites.
 
-If you try to access a Pages page on a secondary site, you will get a 404 or 500 HTTP code depending on the access control.
+If you try to access a Pages page on a secondary site, a 404 or 500 HTTP code is returned depending on the access control.
 
 Read more which [features don't support Geo replication/verification](../geo/replication/datatypes.md#limitations-on-replicationverification).
 

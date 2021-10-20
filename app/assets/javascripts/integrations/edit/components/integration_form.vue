@@ -2,7 +2,11 @@
 import { GlButton, GlModalDirective, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { integrationLevels } from '../constants';
+import {
+  TEST_INTEGRATION_EVENT,
+  SAVE_INTEGRATION_EVENT,
+  integrationLevels,
+} from '~/integrations/constants';
 import eventHub from '../event_hub';
 
 import ActiveCheckbox from './active_checkbox.vue';
@@ -75,11 +79,11 @@ export default {
     ]),
     onSaveClick() {
       this.setIsSaving(true);
-      eventHub.$emit('saveIntegration');
+      eventHub.$emit(SAVE_INTEGRATION_EVENT);
     },
     onTestClick() {
       this.setIsTesting(true);
-      eventHub.$emit('testIntegration');
+      eventHub.$emit(TEST_INTEGRATION_EVENT);
     },
     onResetClick() {
       this.fetchResetIntegration();

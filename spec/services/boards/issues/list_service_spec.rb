@@ -56,12 +56,23 @@ RSpec.describe Boards::Issues::ListService do
         it_behaves_like 'issues list service'
       end
 
-      context 'when filtering by type' do
-        it 'only returns the specified type' do
-          issue = create(:labeled_issue, project: project, milestone: m1, labels: [development, p1], issue_type: 'incident')
-          params = { board_id: board.id, id: list1.id, issue_types: 'incident' }
+      context 'when filtering' do
+        let_it_be(:incident) { create(:labeled_issue, project: project, milestone: m1, labels: [development, p1], issue_type: 'incident') }
 
-          expect(described_class.new(parent, user, params).execute).to eq [issue]
+        context 'when filtering by type' do
+          it 'only returns the specified type' do
+            params = { board_id: board.id, id: list1.id, issue_types: 'incident' }
+
+            expect(described_class.new(parent, user, params).execute).to eq [incident]
+          end
+        end
+
+        context 'when filtering by negated type' do
+          it 'only returns the specified type' do
+            params = { board_id: board.id, id: list1.id, not: { issue_types: ['issue'] } }
+
+            expect(described_class.new(parent, user, params).execute).to contain_exactly(incident)
+          end
         end
       end
     end

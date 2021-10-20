@@ -69,16 +69,16 @@ The key needs to be readable by the GitLab system user (`git` by default).
 
 The key needs to be readable by the GitLab system user (`git` by default).
 
-### How to convert S/MIME PKCS#12 / PFX format to PEM encoding
+### How to convert S/MIME PKCS #12 format to PEM encoding
 
-Typically S/MIME certificates are handled in binary PKCS#12 format (`.pfx` or `.p12`
-extensions), which contain the following in a single encrypted file:
+Typically S/MIME certificates are handled in binary Public Key Cryptography Standards (PKCS) #12 format
+(`.pfx` or `.p12` extensions), which contain the following in a single encrypted file:
 
 - Public certificate
 - Intermediate certificates (if any)
 - Private key
 
-To export the required files in PEM encoding from the PKCS#12 file, the
+To export the required files in PEM encoding from the PKCS #12 file, the
 `openssl` command can be used:
 
 ```shell

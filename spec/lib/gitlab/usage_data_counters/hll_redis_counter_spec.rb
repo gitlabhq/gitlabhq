@@ -47,6 +47,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'epics_usage',
         'epic_boards_usage',
         'secure',
+        'importer',
         'network_policies'
       )
     end

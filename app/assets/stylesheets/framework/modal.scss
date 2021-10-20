@@ -1,13 +1,3 @@
-.modal-xl {
-  max-width: 98%;
-}
-
-.modal-1040 {
-  @include media-breakpoint-up(xl) {
-    max-width: 1040px;
-  }
-}
-
 .modal-header {
   background-color: $modal-body-bg;
 
@@ -108,33 +98,6 @@ body.modal-open {
     > :last-child {
       border-bottom-left-radius: $modal-border-radius;
       border-bottom-right-radius: $modal-border-radius;
-    }
-  }
-}
-
-.recaptcha-modal .recaptcha-form {
-  display: inline-block;
-
-  .recaptcha {
-    margin: 0;
-  }
-}
-
-.issues-import-modal,
-.issuable-export-modal {
-  .modal-body {
-    padding: 0;
-
-    .modal-subheader {
-      justify-content: flex-start;
-      align-items: center;
-      border-bottom: 1px solid $modal-border-color;
-      padding: 14px;
-    }
-
-    .modal-text {
-      padding: $gl-padding-24 $gl-padding;
-      min-height: $modal-body-height;
     }
   }
 }

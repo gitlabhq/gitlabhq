@@ -1,15 +1,12 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */
 export default {
   components: {
-    GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlDropdownItem,
   },
   props: {
     monitoringUrl: {
@@ -17,22 +14,11 @@ export default {
       required: true,
     },
   },
-  computed: {
-    title() {
-      return __('Monitoring');
-    },
-  },
+  title: __('Monitoring'),
 };
 </script>
 <template>
-  <gl-button
-    v-gl-tooltip
-    :href="monitoringUrl"
-    :title="title"
-    :aria-label="title"
-    class="monitoring-url gl-display-none gl-sm-display-none gl-md-display-block"
-    icon="chart"
-    rel="noopener noreferrer nofollow"
-    variant="default"
-  />
+  <gl-dropdown-item :href="monitoringUrl" rel="noopener noreferrer nofollow" target="_blank">
+    {{ $options.title }}
+  </gl-dropdown-item>
 </template>

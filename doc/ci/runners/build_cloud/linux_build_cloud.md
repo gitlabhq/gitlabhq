@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Build Cloud runners for Linux
+# Build Cloud runners for Linux **(FREE)**
 
 GitLab Build Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
 
@@ -15,13 +15,13 @@ GitLab offers Ultimate tier capabilities and included CI/CD minutes per group pe
 All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, CoreOS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
-Each instance is used only for one job, this ensures any sensitive data left on the system can't be accessed by other people their CI jobs.
+Each instance is used only for one job. This ensures that any sensitive data left on the system can't be accessed by other people's CI/CD jobs.
 
 The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They don't run untagged jobs and unlike the general fleet of shared runners, the instances are re-used up to 40 times.
 
 Jobs handled by the shared runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
 **time out after 3 hours**, regardless of the timeout configured in a
-project. Check the issues [4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
+project. Check the issues [#4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
 
 Below are the runners' settings.
 

@@ -5,16 +5,24 @@ module Projects
     class ProjectExportPresenter < Gitlab::View::Presenter::Delegated
       include ActiveModel::Serializers::JSON
 
-      presents :project
+      presents ::Project, as: :project
 
+      # TODO: Remove `ActiveModel::Serializers::JSON` inclusion as it's duplicate
+      delegator_override_with ActiveModel::Serializers::JSON
+      delegator_override_with ActiveModel::Naming
+      delegator_override :include_root_in_json, :include_root_in_json?
+
+      delegator_override :project_members
       def project_members
         super + converted_group_members
       end
 
+      delegator_override :description
       def description
         self.respond_to?(:override_description) ? override_description : super
       end
 
+      delegator_override :protected_branches
       def protected_branches
         project.exported_protected_branches
       end

@@ -4,7 +4,7 @@ module API
   module Entities
     class User < UserBasic
       include UsersHelper
-      include ActionView::Helpers::SanitizeHelper
+      include TimeZoneHelper
 
       expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :public_email, :skype, :linkedin, :twitter, :website_url, :organization, :job_title, :pronouns
@@ -18,11 +18,8 @@ module API
       expose :following, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) } do |user|
         user.followees.size
       end
-
-      # This is only for multi version compatibility reasons, as we removed user.bio_html
-      # to be removed in 14.4
-      expose :bio_html do |user|
-        strip_tags(user.bio)
+      expose :local_time do |user|
+        local_time(user.timezone)
       end
     end
   end

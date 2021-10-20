@@ -30,7 +30,7 @@ export const CONFIGURATION_DETAILS_ROW_TEST = s__(
   'ContainerRegistry|Configuration digest: %{digest}',
 );
 
-export const REMOVE_TAG_BUTTON_TITLE = s__('ContainerRegistry|Remove tag');
+export const REMOVE_TAG_BUTTON_TITLE = s__('ContainerRegistry|Delete tag');
 export const REMOVE_TAGS_BUTTON_TITLE = s__('ContainerRegistry|Delete selected tags');
 
 export const REMOVE_TAG_CONFIRMATION_TEXT = s__(
@@ -59,10 +59,6 @@ export const MISSING_OR_DELETED_IMAGE_BREADCRUMB = s__(
 
 export const ADMIN_GARBAGE_COLLECTION_TIP = s__(
   'ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage.',
-);
-
-export const REMOVE_TAG_BUTTON_DISABLE_TOOLTIP = s__(
-  'ContainerRegistry|Deletion disabled due to missing or insufficient permissions.',
 );
 
 export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(

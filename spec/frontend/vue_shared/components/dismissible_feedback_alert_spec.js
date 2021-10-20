@@ -1,4 +1,4 @@
-import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import Component from '~/vue_shared/components/dismissible_feedback_alert.vue';
@@ -8,20 +8,13 @@ describe('Dismissible Feedback Alert', () => {
 
   let wrapper;
 
-  const defaultProps = {
-    featureName: 'Dependency List',
-    feedbackLink: 'https://gitlab.link',
-  };
-
+  const featureName = 'Dependency List';
   const STORAGE_DISMISSAL_KEY = 'dependency_list_feedback_dismissed';
 
-  const createComponent = ({ props, shallow } = {}) => {
-    const mountFn = shallow ? shallowMount : mount;
-
+  const createComponent = ({ mountFn = shallowMount } = {}) => {
     wrapper = mountFn(Component, {
       propsData: {
-        ...defaultProps,
-        ...props,
+        featureName,
       },
       stubs: {
         GlSprintf,
@@ -34,8 +27,8 @@ describe('Dismissible Feedback Alert', () => {
     wrapper = null;
   });
 
-  const findAlert = () => wrapper.find(GlAlert);
-  const findLink = () => wrapper.find(GlLink);
+  const createFullComponent = () => createComponent({ mountFn: mount });
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('with default', () => {
     beforeEach(() => {
@@ -46,17 +39,6 @@ describe('Dismissible Feedback Alert', () => {
       expect(findAlert().exists()).toBe(true);
     });
 
-    it('contains feature name', () => {
-      expect(findAlert().text()).toContain(defaultProps.featureName);
-    });
-
-    it('contains provided link', () => {
-      const link = findLink();
-
-      expect(link.attributes('href')).toBe(defaultProps.feedbackLink);
-      expect(link.attributes('target')).toBe('_blank');
-    });
-
     it('should have the storage key set', () => {
       expect(wrapper.vm.storageKey).toBe(STORAGE_DISMISSAL_KEY);
     });
@@ -65,7 +47,7 @@ describe('Dismissible Feedback Alert', () => {
   describe('dismissible', () => {
     describe('after dismissal', () => {
       beforeEach(() => {
-        createComponent({ shallow: false });
+        createFullComponent();
         findAlert().vm.$emit('dismiss');
       });
 
@@ -81,7 +63,7 @@ describe('Dismissible Feedback Alert', () => {
     describe('already dismissed', () => {
       it('should not show the alert once dismissed', async () => {
         localStorage.setItem(STORAGE_DISMISSAL_KEY, 'true');
-        createComponent({ shallow: false });
+        createFullComponent();
         await wrapper.vm.$nextTick();
 
         expect(findAlert().exists()).toBe(false);

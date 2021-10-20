@@ -125,18 +125,17 @@ $system-note-svg-size: 16px;
     }
   }
 
+  .timeline-discussion-body {
+    margin-top: -$gl-padding-8;
+  }
+
   .discussion {
     display: block;
     position: relative;
 
     .timeline-discussion-body {
-      margin-top: -$gl-padding-8;
       overflow-x: auto;
       overflow-y: hidden;
-
-      .note-body {
-        margin-top: $gl-padding-8;
-      }
     }
 
     .diff-content {
@@ -586,15 +585,45 @@ $system-note-svg-size: 16px;
 .note-header {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+
+  > .note-header-info,
+  > .note-actions {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.note {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
+    .note-header {
+      .note-actions {
+        flex-wrap: wrap;
+        margin-bottom: $gl-padding-12;
+
+        > :first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .note-header-author-name {
+      display: block;
+    }
+  }
 }
 
 .note-header-info {
   min-width: 0;
-  padding-bottom: $gl-padding-8;
 
   &.discussion {
     padding-bottom: 0;
   }
+}
+
+.note-header-info,
+.note-actions {
+  padding-bottom: $gl-padding-8;
 }
 
 .system-note .note-header-info {
@@ -667,7 +696,8 @@ $system-note-svg-size: 16px;
 
 .note-actions {
   align-self: flex-start;
-  flex-shrink: 0;
+  justify-content: flex-end;
+  flex-shrink: 1;
   display: inline-flex;
   align-items: center;
   margin-left: 10px;

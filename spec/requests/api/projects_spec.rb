@@ -2591,7 +2591,7 @@ RSpec.describe API::Projects do
       end
     end
 
-    it_behaves_like 'storing arguments in the application context' do
+    it_behaves_like 'storing arguments in the application context for the API' do
       let_it_be(:user) { create(:user) }
       let_it_be(:project) { create(:project, :public) }
       let(:expected_params) { { user: user.username, project: project.full_path } }
@@ -2684,26 +2684,9 @@ RSpec.describe API::Projects do
 
     context 'when authenticated' do
       context 'valid request' do
-        context 'when sort_by_project_authorizations_user_id FF is off' do
-          before do
-            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: false)
-          end
-
-          it_behaves_like 'project users response' do
-            let(:project) { project4 }
-            let(:current_user) { user4 }
-          end
-        end
-
-        context 'when sort_by_project_authorizations_user_id FF is on' do
-          before do
-            stub_feature_flags(sort_by_project_users_by_project_authorizations_user_id: true)
-          end
-
-          it_behaves_like 'project users response' do
-            let(:project) { project4 }
-            let(:current_user) { user4 }
-          end
+        it_behaves_like 'project users response' do
+          let(:project) { project4 }
+          let(:current_user) { user4 }
         end
       end
 

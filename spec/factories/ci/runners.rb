@@ -10,6 +10,16 @@ FactoryBot.define do
 
     runner_type { :instance_type }
 
+    transient do
+      projects { [] }
+    end
+
+    after(:build) do |runner, evaluator|
+      evaluator.projects.each do |proj|
+        runner.runner_projects << build(:ci_runner_project, project: proj)
+      end
+    end
+
     trait :online do
       contacted_at { Time.now }
     end
@@ -30,7 +40,9 @@ FactoryBot.define do
       runner_type { :project_type }
 
       after(:build) do |runner, evaluator|
-        runner.projects << build(:project) if runner.projects.empty?
+        if runner.runner_projects.empty?
+          runner.runner_projects << build(:ci_runner_project)
+        end
       end
     end
 

@@ -8,12 +8,12 @@ type: reference, api
 # Project statistics API **(FREE)**
 
 Every API call to [project](../user/project/index.md) statistics must be authenticated.
+Retrieving these statistics requires write access to the repository.
+
+This API retrieves the number of times the project is either cloned or pulled
+with the HTTP method. SSH fetches are not included.
 
 ## Get the statistics of the last 30 days
-
-Retrieving the statistics requires write access to the repository.
-Currently only HTTP fetches statistics are returned.
-Fetches statistics includes both clones and pulls count and are HTTP only, SSH fetches are not included.
 
 ```plaintext
 GET /projects/:id/statistics

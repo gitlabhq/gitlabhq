@@ -68,5 +68,20 @@ RSpec.describe RunPipelineScheduleWorker do
         worker.perform(pipeline_schedule.id, user.id)
       end
     end
+
+    context 'when pipeline cannot be created' do
+      before do
+        allow(Ci::CreatePipelineService).to receive(:new) { raise Ci::CreatePipelineService::CreateError }
+      end
+
+      it 'logging a pipeline error' do
+        expect(worker)
+          .to receive(:log_extra_metadata_on_done)
+          .with(:pipeline_creation_error, an_instance_of(Ci::CreatePipelineService::CreateError))
+          .and_call_original
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+    end
   end
 end

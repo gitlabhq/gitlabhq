@@ -20,7 +20,8 @@
     "is_admin": current_user&.admin.to_s,
     "show_cleanup_policy_on_alert": show_cleanup_policy_on_alert(@project).to_s,
     "cleanup_policies_settings_path": project_settings_packages_and_registries_path(@project),
-    character_error: @character_error.to_s,
+    connection_error: (!!@connection_error).to_s,
+    invalid_path_error: (!!@invalid_path_error).to_s,
     user_callouts_path: user_callouts_path,
     user_callout_id: UserCalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
     show_unfinished_tag_cleanup_callout: show_unfinished_tag_cleanup_callout?.to_s, } }

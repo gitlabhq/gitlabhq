@@ -31,7 +31,7 @@ To disable sign ups:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4491) in GitLab 13.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/267568) in GitLab 13.6.
 
-When this setting is enabled, any user visiting your GitLab domain and signing up for a new account
+When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
 must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
 administrator before they can start using their account. In GitLab 13.6 and later, this setting is
 enabled by default for new GitLab instances. It is only applicable if sign ups are enabled.
@@ -45,6 +45,12 @@ To require administrator approval for new sign ups:
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/273258), if an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
 
+NOTE:
+This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
+signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
+[OmniAuth configuration](../../../integration/omniauth.md#initial-omniauth-configuration) or
+[LDAP configuration](../../../administration/auth/ldap/index.md#basic-configuration-settings).
+
 ## Require email confirmation
 
 You can send confirmation emails during sign up and require that users confirm
@@ -56,7 +62,7 @@ To enforce confirmation of the email address used for new sign ups:
 1. On the left sidebar, select **Settings > General**, and expand **Sign-up restrictions**.
 1. Select the **Enable email restrictions for sign ups** checkbox, then select **Save changes**.
 
-## User cap **(FREE SELF)**
+## User cap
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.7.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.
@@ -117,7 +123,7 @@ the minimum number of characters a user must have in their password using the Gi
 You can specify an inclusive or exclusive list of email domains which can be used for user sign up.
 
 These restrictions are only applied during sign up from an external user. An administrator can add a
-user through the admin panel with a disallowed domain. Also, note that the users can change their
+user through the administrator panel with a disallowed domain. Also, note that the users can change their
 email addresses to disallowed domains after sign up.
 
 ### Allowlist email domains

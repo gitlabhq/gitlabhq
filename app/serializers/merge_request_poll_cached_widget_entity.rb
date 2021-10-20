@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MergeRequestPollCachedWidgetEntity < IssuableEntity
+  include MergeRequestMetricsHelper
+
   expose :auto_merge_enabled
   expose :state
   expose :merged_commit_sha
@@ -157,29 +159,6 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
-  end
-
-  # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,
-  # we can remove this method and just serialize MergeRequest#metrics
-  # instead. See https://gitlab.com/gitlab-org/gitlab-foss/issues/41587
-  def build_metrics(merge_request)
-    # There's no need to query and serialize metrics data for merge requests that are not
-    # merged or closed.
-    return unless merge_request.merged? || merge_request.closed?
-    return merge_request.metrics if merge_request.merged? && merge_request.metrics&.merged_by_id
-    return merge_request.metrics if merge_request.closed? && merge_request.metrics&.latest_closed_by_id
-
-    build_metrics_from_events(merge_request)
-  end
-
-  def build_metrics_from_events(merge_request)
-    closed_event = merge_request.closed_event
-    merge_event = merge_request.merge_event
-
-    MergeRequest::Metrics.new(latest_closed_at: closed_event&.updated_at,
-                              latest_closed_by: closed_event&.author,
-                              merged_at: merge_event&.updated_at,
-                              merged_by: merge_event&.author)
   end
 end
 

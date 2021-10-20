@@ -1,24 +1,19 @@
-%ul.nav-links.mobile-separator.nav.nav-tabs
-  %li{ class: active_when(scope.nil?) }>
-    = link_to build_path_proc.call(nil) do
-      All
-      %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm.js-totalbuilds-count
-        = limited_counter_with_delimiter(all_builds)
+- count_badge_classes = 'badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex'
 
-  %li{ class: active_when(scope == 'pending') }>
-    = link_to build_path_proc.call('pending') do
-      Pending
-      %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-        = limited_counter_with_delimiter(all_builds.pending)
-
-  %li{ class: active_when(scope == 'running') }>
-    = link_to build_path_proc.call('running') do
-      Running
-      %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-        = limited_counter_with_delimiter(all_builds.running)
-
-  %li{ class: active_when(scope == 'finished') }>
-    = link_to build_path_proc.call('finished') do
-      Finished
-      %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-        = limited_counter_with_delimiter(all_builds.finished)
+= gl_tabs_nav( {class: 'gl-border-b-0 gl-flex-grow-1', data: { testid: 'jobs-tabs' } } ) do
+  = gl_tab_link_to build_path_proc.call(nil), { item_active: scope.nil? } do
+    = _('All')
+    %span{ class: count_badge_classes }
+      = limited_counter_with_delimiter(all_builds)
+  = gl_tab_link_to build_path_proc.call('pending'), { item_active: scope == 'pending' } do
+    = _('Pending')
+    %span{ class: count_badge_classes }
+      = limited_counter_with_delimiter(all_builds.pending)
+  = gl_tab_link_to build_path_proc.call('running'), { item_active: scope == 'running' } do
+    = _('Running')
+    %span{ class: count_badge_classes }
+      = limited_counter_with_delimiter(all_builds.running)
+  = gl_tab_link_to build_path_proc.call('finished'), { item_active: scope == 'finished' } do
+    = _('Finished')
+    %span{ class: count_badge_classes }
+      = limited_counter_with_delimiter(all_builds.finished)

@@ -175,7 +175,7 @@ sudo gitlab-psql -d mattermost_production
 
 ### Back up GitLab Mattermost
 
-GitLab Mattermost is not included in the regular [Omnibus GitLab backup](../../raketasks/backup_restore.md#back-up-gitlab) Rake task.
+GitLab Mattermost is not included in the regular [Omnibus GitLab backup](../../raketasks/backup_restore.md) Rake task.
 
 The general Mattermost [backup and disaster recovery](https://docs.mattermost.com/deploy/backup-disaster-recovery.html) documentation can be used as a guide
 on what needs to be backed up.
@@ -229,7 +229,7 @@ sudo gitlab-ctl start mattermost
 ### Mattermost Command Line Tools (CLI)
 
 NOTE:
-This CLI will be replaced in a future release with the new [`mmctl` Command Line Tool](https://docs.mattermost.com/administration/mmctl-cli-tool.html).
+This CLI will be replaced in a future release with the new [`mmctl` Command Line Tool](https://docs.mattermost.com/manage/mmctl-command-line-tool.html).
 
 To use the [Mattermost Command Line Tools (CLI)](https://docs.mattermost.com/administration/command-line-tools.html), ensure that you are in the `/opt/gitlab/embedded/service/mattermost` directory when you run the CLI commands and that you specify the location of the configuration file. The executable is `/opt/gitlab/embedded/bin/mattermost`.
 
@@ -338,6 +338,7 @@ Below is a list of Mattermost versions for GitLab 11.10 and later:
 | 14.1 | 5.36 |
 | 14.2 | 5.37 |
 | 14.3 | 5.38 |
+| 14.4 | 5.39 |
 
 NOTE:
 When upgrading the Mattermost version, it is essential to check the

@@ -158,6 +158,7 @@ module Gitlab
             ::Gitlab.config.uploads.storage_path,
             ::JobArtifactUploader.workhorse_upload_path,
             ::LfsObjectUploader.workhorse_upload_path,
+            ::DependencyProxy::FileUploader.workhorse_upload_path,
             File.join(Rails.root, 'public/uploads/tmp')
           ] + package_allowed_paths
         end

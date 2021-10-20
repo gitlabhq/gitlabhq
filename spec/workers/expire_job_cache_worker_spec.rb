@@ -13,6 +13,8 @@ RSpec.describe ExpireJobCacheWorker do
 
       let(:job_args) { job.id }
 
+      it_behaves_like 'an idempotent worker'
+
       it_behaves_like 'worker with data consistency',
         described_class,
         data_consistency: :delayed

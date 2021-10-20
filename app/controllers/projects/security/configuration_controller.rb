@@ -5,7 +5,7 @@ module Projects
     class ConfigurationController < Projects::ApplicationController
       include SecurityAndCompliancePermissions
 
-      feature_category :static_application_security_testing
+      feature_category :static_application_security_testing, [:show]
 
       def show
         render_403 unless can?(current_user, :read_security_configuration, project)

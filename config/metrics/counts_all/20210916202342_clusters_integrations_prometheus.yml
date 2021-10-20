@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: usage_activity_by_stage.monitor.clusters_integrations_prometheus
+description: Users creating clusters with Prometheus integration enabled in last 28 days.
+product_section: ops
+product_stage: monitor
+product_group: group::monitor
+product_category: metrics
+value_type: number
+status: active
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "14.4"

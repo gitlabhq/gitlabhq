@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
-  let(:project) { create(:project) }
-  let(:import_state) { create(:import_state, project: project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:import_state) { create(:import_state, project: project) }
+
   let(:worker) { described_class.new }
+  let(:importer) { double(:importer) }
+  let(:client) { double(:client) }
 
   describe '#import' do
     it 'imports all the pull requests' do
-      importer = double(:importer)
-      client = double(:client)
       waiter = Gitlab::JobWaiter.new(2, '123')
 
       expect(Gitlab::GithubImport::Importer::PullRequestsImporter)
@@ -31,5 +32,23 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
 
       worker.import(client, project)
     end
+  end
+
+  it 'raises an error' do
+    exception = StandardError.new('_some_error_')
+
+    expect_next_instance_of(Gitlab::GithubImport::Importer::PullRequestsImporter) do |importer|
+      expect(importer).to receive(:execute).and_raise(exception)
+    end
+    expect(Gitlab::Import::ImportFailureService).to receive(:track)
+                                                      .with(
+                                                        project_id: project.id,
+                                                        exception: exception,
+                                                        error_source: described_class.name,
+                                                        fail_import: true,
+                                                        metrics: true
+                                                      ).and_call_original
+
+    expect { worker.import(client, project) }.to raise_error(StandardError)
   end
 end

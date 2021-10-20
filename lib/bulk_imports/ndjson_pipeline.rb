@@ -14,7 +14,7 @@ module BulkImports
         relation_definition = import_export_config.top_relation_tree(relation)
 
         deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|
-          Gitlab::ImportExport::Group::RelationFactory.create(
+          relation_factory.create(
             relation_index: relation_index,
             relation_sym: key.to_sym,
             relation_hash: hash,
@@ -81,6 +81,10 @@ module BulkImports
 
       def object_builder
         "Gitlab::ImportExport::#{portable.class}::ObjectBuilder".constantize
+      end
+
+      def relation_factory
+        "Gitlab::ImportExport::#{portable.class}::RelationFactory".constantize
       end
 
       def relation

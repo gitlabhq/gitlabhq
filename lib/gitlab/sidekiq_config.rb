@@ -23,12 +23,12 @@ module Gitlab
     DEFAULT_WORKERS = {
       '_' => DummyWorker.new(
         queue: 'default',
-        weight: 1, tags: []
+        weight: 1,
+        tags: []
       ),
       'ActionMailer::MailDeliveryJob' => DummyWorker.new(
         name: 'ActionMailer::MailDeliveryJob',
         queue: 'mailers',
-        feature_category: :issue_tracking,
         urgency: 'low',
         weight: 2,
         tags: []

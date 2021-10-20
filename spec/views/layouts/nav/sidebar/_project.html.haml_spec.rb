@@ -580,6 +580,23 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         end
       end
     end
+
+    describe 'Google Cloud' do
+      it 'has a link to the google cloud page' do
+        render
+        expect(rendered).to have_link('Google Cloud', href: project_google_cloud_index_path(project))
+      end
+
+      describe 'when the user does not have access' do
+        let(:user) { nil }
+
+        it 'does not have a link to the google cloud page' do
+          render
+
+          expect(rendered).not_to have_link('Google Cloud')
+        end
+      end
+    end
   end
 
   describe 'Packages and Registries' do

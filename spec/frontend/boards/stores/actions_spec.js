@@ -21,9 +21,10 @@ import {
   getMoveData,
   updateListPosition,
 } from '~/boards/boards_util';
+import { gqlClient } from '~/boards/graphql';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';
-import actions, { gqlClient } from '~/boards/stores/actions';
+import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
 
@@ -1331,20 +1332,54 @@ describe('addListItem', () => {
       list: mockLists[0],
       item: mockIssue,
       position: 0,
+      inProgress: true,
     };
 
-    testAction(actions.addListItem, payload, {}, [
-      {
-        type: types.ADD_BOARD_ITEM_TO_LIST,
-        payload: {
-          listId: mockLists[0].id,
-          itemId: mockIssue.id,
-          atIndex: 0,
-          inProgress: false,
+    testAction(
+      actions.addListItem,
+      payload,
+      {},
+      [
+        {
+          type: types.ADD_BOARD_ITEM_TO_LIST,
+          payload: {
+            listId: mockLists[0].id,
+            itemId: mockIssue.id,
+            atIndex: 0,
+            inProgress: true,
+          },
         },
-      },
-      { type: types.UPDATE_BOARD_ITEM, payload: mockIssue },
-    ]);
+        { type: types.UPDATE_BOARD_ITEM, payload: mockIssue },
+      ],
+      [],
+    );
+  });
+
+  it('should commit ADD_BOARD_ITEM_TO_LIST and UPDATE_BOARD_ITEM mutations, dispatch setActiveId action when inProgress is false', () => {
+    const payload = {
+      list: mockLists[0],
+      item: mockIssue,
+      position: 0,
+    };
+
+    testAction(
+      actions.addListItem,
+      payload,
+      {},
+      [
+        {
+          type: types.ADD_BOARD_ITEM_TO_LIST,
+          payload: {
+            listId: mockLists[0].id,
+            itemId: mockIssue.id,
+            atIndex: 0,
+            inProgress: false,
+          },
+        },
+        { type: types.UPDATE_BOARD_ITEM, payload: mockIssue },
+      ],
+      [{ type: 'setActiveId', payload: { id: mockIssue.id, sidebarType: ISSUABLE } }],
+    );
   });
 });
 
@@ -1542,7 +1577,7 @@ describe('setActiveIssueLabels', () => {
     projectPath: 'h/b',
   };
 
-  it('should assign labels on success', (done) => {
+  it('should assign labels on success, and sets loading state for labels', (done) => {
     jest
       .spyOn(gqlClient, 'mutate')
       .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
@@ -1558,6 +1593,14 @@ describe('setActiveIssueLabels', () => {
       input,
       { ...state, ...getters },
       [
+        {
+          type: types.SET_LABELS_LOADING,
+          payload: true,
+        },
+        {
+          type: types.SET_LABELS_LOADING,
+          payload: false,
+        },
         {
           type: types.UPDATE_BOARD_ITEM_BY_ID,
           payload,

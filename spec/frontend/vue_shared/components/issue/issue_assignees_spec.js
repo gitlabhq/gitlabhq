@@ -94,10 +94,6 @@ describe('IssueAssigneesComponent', () => {
       expect(vm.avatarUrlTitle(mockAssigneesList[0])).toBe('Assigned to Terrell Graham');
     });
 
-    it('renders component root element with class `issue-assignees`', () => {
-      expect(wrapper.element.classList.contains('issue-assignees')).toBe(true);
-    });
-
     it('renders assignee', () => {
       const data = findAvatars().wrappers.map((x) => ({
         ...x.props(),

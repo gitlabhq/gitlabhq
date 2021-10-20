@@ -90,7 +90,7 @@ canary deployment is promoted to production.
 Here's an example setup flow from scratch:
 
 1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/index.md) project.
-1. Set up a [Kubernetes Cluster](../../user/project/clusters/index.md) in your project.
+1. Set up a [Kubernetes Cluster](../../user/infrastructure/clusters/index.md) in your project.
 1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx) in your cluster.
 1. Set up [the base domain](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) based on the Ingress
    Endpoint assigned above.

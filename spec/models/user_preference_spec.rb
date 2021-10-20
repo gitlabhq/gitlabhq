@@ -80,12 +80,6 @@ RSpec.describe UserPreference do
     end
   end
 
-  describe '#timezone' do
-    it 'returns server time as default' do
-      expect(user_preference.timezone).to eq(Time.zone.tzinfo.name)
-    end
-  end
-
   describe '#tab_width' do
     it 'is set to 8 by default' do
       # Intentionally not using factory here to test the constructor.

@@ -14,6 +14,10 @@ module Gitlab
         untar_with_options(archive: archive, dir: dir, options: 'zxf')
       end
 
+      def tar_cf(archive:, dir:)
+        tar_with_options(archive: archive, dir: dir, options: 'cf')
+      end
+
       def gzip(dir:, filename:)
         gzip_with_options(dir: dir, filename: filename)
       end
@@ -59,19 +63,29 @@ module Gitlab
       end
 
       def tar_with_options(archive:, dir:, options:)
-        execute(%W(tar -#{options} #{archive} -C #{dir} .))
+        execute_cmd(%W(tar -#{options} #{archive} -C #{dir} .))
       end
 
       def untar_with_options(archive:, dir:, options:)
-        execute(%W(tar -#{options} #{archive} -C #{dir}))
-        execute(%W(chmod -R #{UNTAR_MASK} #{dir}))
+        execute_cmd(%W(tar -#{options} #{archive} -C #{dir}))
+        execute_cmd(%W(chmod -R #{UNTAR_MASK} #{dir}))
       end
 
-      def execute(cmd)
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      def execute_cmd(cmd)
         output, status = Gitlab::Popen.popen(cmd)
-        @shared.error(Gitlab::ImportExport::Error.new(output.to_s)) unless status == 0 # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        status == 0
+
+        return true if status == 0
+
+        if @shared.respond_to?(:error)
+          @shared.error(Gitlab::ImportExport::Error.new(output.to_s))
+
+          false
+        else
+          raise Gitlab::ImportExport::Error, 'System call failed'
+        end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def git_bin_path
         Gitlab.config.git.bin_path

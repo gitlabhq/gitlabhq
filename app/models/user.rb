@@ -112,7 +112,14 @@ class User < ApplicationRecord
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  # TODO: change to `:namespace, -> { where(type: Namespaces::UserNamespace.sti_name}, class_name: 'Namespaces::UserNamespace'...`
+  #       when working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+  has_one :namespace,
+          -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) },
+          dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
+          foreign_key: :owner_id,
+          inverse_of: :owner,
+          autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -229,9 +236,9 @@ class User < ApplicationRecord
   validates :first_name, length: { maximum: 127 }
   validates :last_name, length: { maximum: 127 }
   validates :email, confirmation: true
-  validates :notification_email, devise_email: true, allow_blank: true, if: ->(user) { user.notification_email != user.email }
+  validates :notification_email, devise_email: true, allow_blank: true
   validates :public_email, uniqueness: true, devise_email: true, allow_blank: true
-  validates :commit_email, devise_email: true, allow_blank: true, if: ->(user) { user.commit_email != user.email && user.commit_email != Gitlab::PrivateCommitEmail::TOKEN }
+  validates :commit_email, devise_email: true, allow_blank: true, unless: ->(user) { user.commit_email == Gitlab::PrivateCommitEmail::TOKEN }
   validates :projects_limit,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
@@ -316,6 +323,7 @@ class User < ApplicationRecord
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
+  delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -449,11 +457,12 @@ class User < ApplicationRecord
   scope :dormant, -> { active.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
   scope :with_no_activity, -> { active.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
+  scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
 
   def preferred_language
     read_attribute('preferred_language') ||
       I18n.default_locale.to_s.presence_in(Gitlab::I18n.available_locales) ||
-      'en'
+      default_preferred_language
   end
 
   def active_for_authentication?
@@ -728,7 +737,7 @@ class User < ApplicationRecord
     end
 
     def find_by_full_path(path, follow_redirects: false)
-      namespace = Namespace.for_user.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace = Namespace.user_namespaces.find_by_full_path(path, follow_redirects: follow_redirects)
       namespace&.owner
     end
 
@@ -1434,7 +1443,10 @@ class User < ApplicationRecord
       namespace.path = username if username_changed?
       namespace.name = name if name_changed?
     else
-      namespace = build_namespace(path: username, name: name)
+      # TODO: we should no longer need the `type` parameter once we can make the
+      #       the `has_one :namespace` association use the correct class.
+      #       issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+      namespace = build_namespace(path: username, name: name, type: ::Namespaces::UserNamespace.sti_name)
       namespace.build_namespace_settings
     end
   end
@@ -2003,6 +2015,11 @@ class User < ApplicationRecord
 
   private
 
+  # To enable JiHu repository to modify the default language options
+  def default_preferred_language
+    'en'
+  end
+
   def notification_email_verified
     return if notification_email.blank? || temp_oauth_email?
 
@@ -2094,10 +2111,14 @@ class User < ApplicationRecord
     errors.add(:email, error) if error
   end
 
+  def signup_email_invalid_message
+    _('is not allowed for sign-up.')
+  end
+
   def check_username_format
     return if username.blank? || Mime::EXTENSION_LOOKUP.keys.none? { |type| username.end_with?(".#{type}") }
 
-    errors.add(:username, _('ending with a file extension is not allowed.'))
+    errors.add(:username, _('ending with a reserved file extension is not allowed.'))
   end
 
   def groups_with_developer_maintainer_project_access

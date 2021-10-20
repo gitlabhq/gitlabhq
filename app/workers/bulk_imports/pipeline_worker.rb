@@ -16,7 +16,7 @@ module BulkImports
 
     def perform(pipeline_tracker_id, stage, entity_id)
       pipeline_tracker = ::BulkImports::Tracker
-        .with_status(:created)
+        .with_status(:created, :started)
         .find_by_id(pipeline_tracker_id)
 
       if pipeline_tracker.present?
@@ -59,18 +59,35 @@ module BulkImports
       pipeline_tracker.pipeline_class.new(context).run
 
       pipeline_tracker.finish!
+    rescue BulkImports::NetworkError => e
+      if e.retriable?(pipeline_tracker)
+        logger.error(
+          worker: self.class.name,
+          entity_id: pipeline_tracker.entity.id,
+          pipeline_name: pipeline_tracker.pipeline_name,
+          message: "Retrying error: #{e.message}"
+        )
+
+        reenqueue(pipeline_tracker, delay: e.retry_delay)
+      else
+        fail_tracker(pipeline_tracker, e)
+      end
     rescue StandardError => e
+      fail_tracker(pipeline_tracker, e)
+    end
+
+    def fail_tracker(pipeline_tracker, exception)
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
 
       logger.error(
         worker: self.class.name,
         entity_id: pipeline_tracker.entity.id,
         pipeline_name: pipeline_tracker.pipeline_name,
-        message: e.message
+        message: exception.message
       )
 
       Gitlab::ErrorTracking.track_exception(
-        e,
+        exception,
         entity_id: pipeline_tracker.entity.id,
         pipeline_name: pipeline_tracker.pipeline_name
       )
@@ -88,8 +105,13 @@ module BulkImports
       (Time.zone.now - pipeline_tracker.entity.created_at) > Pipeline::NDJSON_EXPORT_TIMEOUT
     end
 
-    def reenqueue(pipeline_tracker)
-      self.class.perform_in(NDJSON_PIPELINE_PERFORM_DELAY, pipeline_tracker.id, pipeline_tracker.stage, pipeline_tracker.entity.id)
+    def reenqueue(pipeline_tracker, delay: NDJSON_PIPELINE_PERFORM_DELAY)
+      self.class.perform_in(
+        delay,
+        pipeline_tracker.id,
+        pipeline_tracker.stage,
+        pipeline_tracker.entity.id
+      )
     end
   end
 end

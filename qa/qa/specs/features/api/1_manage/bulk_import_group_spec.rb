@@ -89,7 +89,7 @@ module QA
         end
       end
 
-      context 'with milestones' do
+      context 'with milestones and badges' do
         let(:source_milestone) do
           Resource::GroupMilestone.fabricate_via_api! do |milestone|
             milestone.api_client = api_client
@@ -99,10 +99,17 @@ module QA
 
         before do
           source_milestone
+
+          Resource::GroupBadge.fabricate_via_api! do |badge|
+            badge.api_client = api_client
+            badge.group = source_group
+            badge.link_url = "http://example.com/badge"
+            badge.image_url = "http://shields.io/badge"
+          end
         end
 
         it(
-          'successfully imports group milestones',
+          'successfully imports group milestones and badges',
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2245'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
@@ -113,7 +120,39 @@ module QA
             expect(imported_milestone.iid).to eq(source_milestone.iid)
             expect(imported_milestone.created_at).to eq(source_milestone.created_at)
             expect(imported_milestone.updated_at).to eq(source_milestone.updated_at)
+
+            expect(imported_group.badges).to eq(source_group.badges)
           end
+        end
+      end
+
+      context 'with group members' do
+        let(:member) do
+          Resource::User.fabricate_via_api! do |usr|
+            usr.api_client = admin_api_client
+            usr.hard_delete_on_api_removal = true
+          end
+        end
+
+        before do
+          member.set_public_email
+          source_group.add_member(member, Resource::Members::AccessLevel::DEVELOPER)
+        end
+
+        after do
+          member.remove_via_api!
+        end
+
+        it(
+          'adds members for imported group',
+          testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2310'
+        ) do
+          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+
+          imported_member = imported_group.reload!.members.find { |usr| usr.username == member.username }
+
+          expect(imported_member).not_to be_nil
+          expect(imported_member.access_level).to eq(Resource::Members::AccessLevel::DEVELOPER)
         end
       end
 

@@ -10,6 +10,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Error Tracking allows developers to easily discover and view the errors that their application may be generating. By surfacing error information where the code is being developed, efficiency and awareness can be increased.
 
+## How error tracking works
+
+For error tracking to work, you need two pieces:
+
+- **Your application with Sentry SDK:** when the error happens, Sentry SDK captures information
+  about it and sends it over the network to the backend. The backend stores information about all
+  errors.
+
+- **Error tracking backend:** the backend can be either GitLab itself or Sentry. When it's GitLab,
+  we name it _integrated error tracking_ because you don't need to set up a separate backend. It's
+  already part of the product.
+
+  - To use the GitLab backend, see [integrated error tracking](#integrated-error-tracking).
+  - To use Sentry as the backend, see [Sentry error tracking](#sentry-error-tracking).
+
+  No matter what backend you choose, the [error tracking UI](#error-tracking-list)
+  is the same.
+
 ## Sentry error tracking
 
 [Sentry](https://sentry.io/) is an open source error tracking system. GitLab allows administrators to connect Sentry to GitLab, to allow users to view a list of Sentry errors in GitLab.
@@ -111,7 +129,7 @@ If another event occurs, the error reverts to unresolved.
 
 ## Integrated error tracking
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) in GitLab 14.4.
 
 Integrated error tracking is a lightweight alternative to Sentry backend.
 You still use Sentry SDK with your application. But you don't need to deploy Sentry
@@ -125,8 +143,7 @@ Sentry integration.
 
 ### Project settings
 
-The feature should be enabled on the project level. However, there is no UI to enable this feature yet.
-You must use the GitLab API to enable it.
+You can find the feature configuration at **Settings > Monitor > Error Tracking**.
 
 #### How to enable
 
@@ -134,26 +151,21 @@ You must use the GitLab API to enable it.
 
     ![Error Tracking Settings](img/error_tracking_setting_v14_3.png)
 
-1. Create a client key (DSN) to use with Sentry SDK in your application. Make sure to save the
-   response, as it contains a DSN:
+1. Select **Save changes**. After page reload you should see a text field with the DSN string. Copy it.
 
-   ```shell
-   curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-       "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/client_keys"
-   ```
+    ![Error Tracking Settings DSN](img/error_tracking_setting_dsn_v14_4.png)
 
 1. Take the DSN from the previous step and configure your Sentry SDK with it. Errors are now
    reported to the GitLab collector and are visible in the [GitLab UI](#error-tracking-list).
 
-#### How to disable
+#### Managing DSN
 
-To disable the feature, run this command. This is the same command as the one that enables the
-feature, but with a `false` value instead:
+When you enable the feature you receive a DSN. It includes a hash used for authentication. This hash
+is a client key. GitLab uses client keys to authenticate error tracking requests from your
+application to the GitLab backend.
 
-```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
-    "https://gitlab.example.com/api/v4/projects/PROJECT_ID/error_tracking/settings?active=false&integrated=false"
-```
+In some situations, you may want to create a new client key and remove an existing one.
+You can do so by managing client keys with the [error tracking API](../api/error_tracking.md).
 
 #### Limitations
 

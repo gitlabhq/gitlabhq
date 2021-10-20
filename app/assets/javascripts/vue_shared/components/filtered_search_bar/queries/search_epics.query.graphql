@@ -1,0 +1,16 @@
+#import "./epic.fragment.graphql"
+
+query searchEpics($fullPath: ID!, $search: String, $state: EpicState) {
+  group(fullPath: $fullPath) {
+    epics(
+      search: $search
+      state: $state
+      includeAncestorGroups: true
+      includeDescendantGroups: false
+    ) {
+      nodes {
+        ...EpicNode
+      }
+    }
+  }
+}

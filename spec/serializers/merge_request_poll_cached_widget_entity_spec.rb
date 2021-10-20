@@ -275,7 +275,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
       expect(subject[:merge_pipeline]).to be_nil
     end
 
-    context 'when is merged' do
+    context 'when is merged', :sidekiq_inline do
       let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
       let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
 

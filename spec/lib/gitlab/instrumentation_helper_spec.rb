@@ -107,75 +107,50 @@ RSpec.describe Gitlab::InstrumentationHelper do
       end
     end
 
-    context 'when load balancing is enabled' do
+    it 'includes DB counts' do
+      subject
+
+      expect(payload).to include(db_replica_count: 0,
+                                  db_replica_cached_count: 0,
+                                  db_primary_count: 0,
+                                  db_primary_cached_count: 0,
+                                  db_primary_wal_count: 0,
+                                  db_replica_wal_count: 0,
+                                  db_primary_wal_cached_count: 0,
+                                  db_replica_wal_cached_count: 0)
+    end
+
+    context 'when replica caught up search was made' do
       before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
+        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
+        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
       end
 
-      it 'includes DB counts' do
+      it 'includes related metrics' do
         subject
 
-        expect(payload).to include(db_replica_count: 0,
-                                   db_replica_cached_count: 0,
-                                   db_primary_count: 0,
-                                   db_primary_cached_count: 0,
-                                   db_primary_wal_count: 0,
-                                   db_replica_wal_count: 0,
-                                   db_primary_wal_cached_count: 0,
-                                   db_replica_wal_cached_count: 0)
-      end
-
-      context 'when replica caught up search was made' do
-        before do
-          Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
-          Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
-        end
-
-        it 'includes related metrics' do
-          subject
-
-          expect(payload).to include(caught_up_replica_pick_ok: 2)
-          expect(payload).to include(caught_up_replica_pick_fail: 1)
-        end
-      end
-
-      context 'when only a single counter was updated' do
-        before do
-          Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 1
-          Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = nil
-        end
-
-        it 'includes only that counter into logging' do
-          subject
-
-          expect(payload).to include(caught_up_replica_pick_ok: 1)
-          expect(payload).not_to include(:caught_up_replica_pick_fail)
-        end
+        expect(payload).to include(caught_up_replica_pick_ok: 2)
+        expect(payload).to include(caught_up_replica_pick_fail: 1)
       end
     end
 
-    context 'when load balancing is disabled' do
+    context 'when only a single counter was updated' do
       before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
+        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 1
+        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = nil
       end
 
-      it 'does not include DB counts' do
+      it 'includes only that counter into logging' do
         subject
 
-        expect(payload).not_to include(db_replica_count: 0,
-                                   db_replica_cached_count: 0,
-                                   db_primary_count: 0,
-                                   db_primary_cached_count: 0,
-                                   db_primary_wal_count: 0,
-                                   db_replica_wal_count: 0,
-                                   db_primary_wal_cached_count: 0,
-                                   db_replica_wal_cached_count: 0)
+        expect(payload).to include(caught_up_replica_pick_ok: 1)
+        expect(payload).not_to include(:caught_up_replica_pick_fail)
       end
     end
   end
 
-  describe '.queue_duration_for_job' do
-    where(:enqueued_at, :created_at, :time_now, :expected_duration) do
+  describe 'duration calculations' do
+    where(:end_time, :start_time, :time_now, :expected_duration) do
       "2019-06-01T00:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.000+0000" | 2.hours.to_f
       "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T02:00:00.001+0000" | 0.001
       "2019-06-01T02:00:00.000+0000" | "2019-05-01T02:00:00.000+0000" | "2019-06-01T02:00:01.000+0000" | 1
@@ -189,15 +164,29 @@ RSpec.describe Gitlab::InstrumentationHelper do
       0                              | nil                            | "2019-10-23T12:13:16.000+0200" | nil
       -1                             | nil                            | "2019-10-23T12:13:16.000+0200" | nil
       "2019-06-01T02:00:00.000+0000" | nil                            | "2019-06-01T00:00:00.000+0000" | 0
-      Time.at(1571999233)            | nil                            | "2019-10-25T12:29:16.000+0200" | 123
+      Time.at(1571999233).utc        | nil                            | "2019-10-25T12:29:16.000+0200" | 123
     end
 
-    with_them do
-      let(:job) { { 'enqueued_at' => enqueued_at, 'created_at' => created_at } }
+    describe '.queue_duration_for_job' do
+      with_them do
+        let(:job) { { 'enqueued_at' => end_time, 'created_at' => start_time } }
 
-      it "returns the correct duration" do
-        Timecop.freeze(Time.iso8601(time_now)) do
-          expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.queue_duration_for_job(job)).to eq(expected_duration)
+          end
+        end
+      end
+    end
+
+    describe '.enqueue_latency_for_scheduled_job' do
+      with_them do
+        let(:job) { { 'enqueued_at' => end_time, 'scheduled_at' => start_time } }
+
+        it "returns the correct duration" do
+          travel_to(Time.iso8601(time_now)) do
+            expect(described_class.enqueue_latency_for_scheduled_job(job)).to eq(expected_duration)
+          end
         end
       end
     end

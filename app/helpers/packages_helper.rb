@@ -41,6 +41,7 @@ module PackagesHelper
   def packages_list_data(type, resource)
     {
       resource_id: resource.id,
+      full_path: resource.full_path,
       page_type: type,
       empty_list_help_url: help_page_path('user/packages/package_registry/index'),
       empty_list_illustration: image_path('illustrations/no-packages.svg'),
@@ -70,6 +71,7 @@ module PackagesHelper
       can_delete: can?(current_user, :destroy_package, project).to_s,
       svg_path: image_path('illustrations/no-packages.svg'),
       npm_path: package_registry_instance_url(:npm),
+      npm_project_path: package_registry_project_url(project.id, :npm),
       npm_help_path: help_page_path('user/packages/npm_registry/index'),
       maven_path: package_registry_project_url(project.id, :maven),
       maven_help_path: help_page_path('user/packages/maven_repository/index'),

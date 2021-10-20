@@ -284,72 +284,70 @@ export default {
         <slot name="sidebar-items" :checked-issuables="bulkEditIssuables"></slot>
       </template>
     </issuable-bulk-edit-sidebar>
-    <div class="issuables-holder">
-      <ul v-if="issuablesLoading" class="content-list">
-        <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
-          <gl-skeleton-loading />
-        </li>
-      </ul>
-      <template v-else>
-        <component
-          :is="issuablesWrapper"
-          v-if="issuables.length > 0"
-          class="content-list issuable-list issues-list"
-          :class="{ 'manual-ordering': isManualOrdering }"
-          v-bind="$options.vueDraggableAttributes"
-          @update="handleVueDraggableUpdate"
+    <ul v-if="issuablesLoading" class="content-list">
+      <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
+        <gl-skeleton-loading />
+      </li>
+    </ul>
+    <template v-else>
+      <component
+        :is="issuablesWrapper"
+        v-if="issuables.length > 0"
+        class="content-list issuable-list issues-list"
+        :class="{ 'manual-ordering': isManualOrdering }"
+        v-bind="$options.vueDraggableAttributes"
+        @update="handleVueDraggableUpdate"
+      >
+        <issuable-item
+          v-for="issuable in issuables"
+          :key="issuableId(issuable)"
+          :class="{ 'gl-cursor-grab': isManualOrdering }"
+          :issuable-symbol="issuableSymbol"
+          :issuable="issuable"
+          :enable-label-permalinks="enableLabelPermalinks"
+          :label-filter-param="labelFilterParam"
+          :show-checkbox="showBulkEditSidebar"
+          :checked="issuableChecked(issuable)"
+          @checked-input="handleIssuableCheckedInput(issuable, $event)"
         >
-          <issuable-item
-            v-for="issuable in issuables"
-            :key="issuableId(issuable)"
-            :class="{ 'gl-cursor-grab': isManualOrdering }"
-            :issuable-symbol="issuableSymbol"
-            :issuable="issuable"
-            :enable-label-permalinks="enableLabelPermalinks"
-            :label-filter-param="labelFilterParam"
-            :show-checkbox="showBulkEditSidebar"
-            :checked="issuableChecked(issuable)"
-            @checked-input="handleIssuableCheckedInput(issuable, $event)"
-          >
-            <template #reference>
-              <slot name="reference" :issuable="issuable"></slot>
-            </template>
-            <template #author>
-              <slot name="author" :author="issuable.author"></slot>
-            </template>
-            <template #timeframe>
-              <slot name="timeframe" :issuable="issuable"></slot>
-            </template>
-            <template #status>
-              <slot name="status" :issuable="issuable"></slot>
-            </template>
-            <template #statistics>
-              <slot name="statistics" :issuable="issuable"></slot>
-            </template>
-          </issuable-item>
-        </component>
-        <slot v-else name="empty-state"></slot>
-      </template>
+          <template #reference>
+            <slot name="reference" :issuable="issuable"></slot>
+          </template>
+          <template #author>
+            <slot name="author" :author="issuable.author"></slot>
+          </template>
+          <template #timeframe>
+            <slot name="timeframe" :issuable="issuable"></slot>
+          </template>
+          <template #status>
+            <slot name="status" :issuable="issuable"></slot>
+          </template>
+          <template #statistics>
+            <slot name="statistics" :issuable="issuable"></slot>
+          </template>
+        </issuable-item>
+      </component>
+      <slot v-else name="empty-state"></slot>
+    </template>
 
-      <div v-if="showPaginationControls && useKeysetPagination" class="gl-text-center gl-mt-3">
-        <gl-keyset-pagination
-          :has-next-page="hasNextPage"
-          :has-previous-page="hasPreviousPage"
-          @next="$emit('next-page')"
-          @prev="$emit('previous-page')"
-        />
-      </div>
-      <gl-pagination
-        v-else-if="showPaginationControls"
-        :per-page="defaultPageSize"
-        :total-items="totalItems"
-        :value="currentPage"
-        :prev-page="previousPage"
-        :next-page="nextPage"
-        align="center"
-        class="gl-pagination gl-mt-3"
-        @input="$emit('page-change', $event)"
+    <div v-if="showPaginationControls && useKeysetPagination" class="gl-text-center gl-mt-3">
+      <gl-keyset-pagination
+        :has-next-page="hasNextPage"
+        :has-previous-page="hasPreviousPage"
+        @next="$emit('next-page')"
+        @prev="$emit('previous-page')"
       />
     </div>
+    <gl-pagination
+      v-else-if="showPaginationControls"
+      :per-page="defaultPageSize"
+      :total-items="totalItems"
+      :value="currentPage"
+      :prev-page="previousPage"
+      :next-page="nextPage"
+      align="center"
+      class="gl-pagination gl-mt-3"
+      @input="$emit('page-change', $event)"
+    />
   </div>
 </template>

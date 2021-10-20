@@ -106,10 +106,15 @@ module Gitlab
 
             environment = Seed::Environment.new(build).to_resource
 
-            # If there is a validation error on environment creation, such as
-            # the name contains invalid character, the build falls back to a
-            # non-environment job.
             unless environment.persisted?
+              if Feature.enabled?(:surface_environment_creation_failure, build.project, default_enabled: :yaml) &&
+                 Feature.disabled?(:surface_environment_creation_failure_override, build.project)
+                return { status: :failed, failure_reason: :environment_creation_failure }
+              end
+
+              # If there is a validation error on environment creation, such as
+              # the name contains invalid character, the build falls back to a
+              # non-environment job.
               Gitlab::ErrorTracking.track_exception(
                 EnvironmentCreationFailure.new,
                 project_id: build.project_id,

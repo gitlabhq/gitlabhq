@@ -88,6 +88,32 @@ RSpec.describe Ci::ArchiveTraceService, '#execute' do
 
         subject
       end
+
+      context 'job has archive and chunks' do
+        let(:job) { create(:ci_build, :success, :trace_artifact) }
+
+        before do
+          create(:ci_build_trace_chunk, build: job, chunk_index: 0)
+        end
+
+        context 'archive is not completed' do
+          before do
+            job.job_artifacts_trace.file.remove!
+          end
+
+          it 'cleanups any stale archive data' do
+            expect(job.job_artifacts_trace).to be_present
+
+            subject
+
+            expect(job.reload.job_artifacts_trace).to be_nil
+          end
+        end
+
+        it 'removes trace chunks' do
+          expect { subject }.to change { job.trace_chunks.count }.to(0)
+        end
+      end
     end
 
     context 'when the archival process is backed off' do

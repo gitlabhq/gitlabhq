@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # On-call Schedule Management **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.11.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in GitLab 13.11.
 
 Use on-call schedule management to create schedules for responders to rotate on-call
 responsibilities. Maintain the availability of your software services by putting your teams on-call.
@@ -31,7 +31,7 @@ To create an on-call schedule:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Monitor > On-call Schedules**.
 1. Select **Add a schedule**.
-1. Enter the schedule's name and description and select a timezone.
+1. Enter the schedule's name and description and select a time zone.
 1. Select **Add schedule**.
 
 You now have an empty schedule with no rotations. This renders as an empty state, prompting you to

@@ -34,6 +34,7 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:issue_email_participants) }
     it { is_expected.to have_many(:timelogs).autosave(true) }
     it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
+    it { is_expected.to have_and_belong_to_many(:customer_relations_contacts) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -222,17 +223,15 @@ RSpec.describe Issue do
     end
   end
 
-  describe '#order_by_position_and_priority' do
+  describe '#order_by_relative_position' do
     let(:project) { reusable_project }
-    let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
-    let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
-    let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
-    let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
+    let!(:issue1) { create(:issue, project: project) }
+    let!(:issue2) { create(:issue, project: project) }
     let!(:issue3) { create(:issue, project: project, relative_position: -200) }
     let!(:issue4) { create(:issue, project: project, relative_position: -100) }
 
     it 'returns ordered list' do
-      expect(project.issues.order_by_position_and_priority)
+      expect(project.issues.order_by_relative_position)
         .to match [issue3, issue4, issue1, issue2]
     end
   end
@@ -1501,6 +1500,26 @@ RSpec.describe Issue do
 
       it do
         expect(issue.supports_time_tracking?).to eq(supports_time_tracking)
+      end
+    end
+  end
+
+  describe '#supports_move_and_clone?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:issue) { create(:incident, project: project) }
+
+    where(:issue_type, :supports_move_and_clone) do
+      :issue | true
+      :incident | true
+    end
+
+    with_them do
+      before do
+        issue.update!(issue_type: issue_type)
+      end
+
+      it do
+        expect(issue.supports_move_and_clone?).to eq(supports_move_and_clone)
       end
     end
   end

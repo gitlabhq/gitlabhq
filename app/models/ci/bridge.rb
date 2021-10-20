@@ -31,7 +31,7 @@ module Ci
         next unless bridge.triggers_downstream_pipeline?
 
         bridge.run_after_commit do
-          ::Ci::CreateCrossProjectPipelineWorker.perform_async(bridge.id)
+          ::Ci::CreateDownstreamPipelineWorker.perform_async(bridge.id)
         end
       end
 

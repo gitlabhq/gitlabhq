@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts, reference, howto
 ---
@@ -74,7 +74,7 @@ allowlist:
 The allowed entries can be separated by semicolons, commas or whitespaces
 (including newlines) and be in different formats like hostnames, IP addresses and/or
 IP ranges. IPv6 is supported. Hostnames that contain Unicode characters should
-use IDNA encoding.
+use Internationalising Domain Names in Applications (IDNA) encoding.
 
 The allowlist can hold a maximum of 1000 entries. Each entry can be a maximum of
 255 characters.

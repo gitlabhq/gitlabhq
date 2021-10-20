@@ -85,4 +85,61 @@ RSpec.describe Ci::ResourceGroup do
       end
     end
   end
+
+  describe '#upcoming_processables' do
+    subject { resource_group.upcoming_processables }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline_1) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline_2) { create(:ci_pipeline, project: project) }
+
+    let!(:resource_group) { create(:ci_resource_group, process_mode: process_mode, project: project) }
+
+    Ci::HasStatus::STATUSES_ENUM.keys.each do |status|
+      let!("build_1_#{status}") { create(:ci_build, pipeline: pipeline_1, status: status, resource_group: resource_group) }
+      let!("build_2_#{status}") { create(:ci_build, pipeline: pipeline_2, status: status, resource_group: resource_group) }
+    end
+
+    context 'when process mode is unordered' do
+      let(:process_mode) { :unordered }
+
+      it 'returns correct jobs in an indeterministic order' do
+        expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
+      end
+    end
+
+    context 'when process mode is oldest_first' do
+      let(:process_mode) { :oldest_first }
+
+      it 'returns correct jobs in a specific order' do
+        expect(subject[0]).to eq(build_1_waiting_for_resource)
+        expect(subject[1..2]).to contain_exactly(build_1_created, build_1_scheduled)
+        expect(subject[3]).to eq(build_2_waiting_for_resource)
+        expect(subject[4..5]).to contain_exactly(build_2_created, build_2_scheduled)
+      end
+    end
+
+    context 'when process mode is newest_first' do
+      let(:process_mode) { :newest_first }
+
+      it 'returns correct jobs in a specific order' do
+        expect(subject[0]).to eq(build_2_waiting_for_resource)
+        expect(subject[1..2]).to contain_exactly(build_2_created, build_2_scheduled)
+        expect(subject[3]).to eq(build_1_waiting_for_resource)
+        expect(subject[4..5]).to contain_exactly(build_1_created, build_1_scheduled)
+      end
+    end
+
+    context 'when process mode is unknown' do
+      let(:process_mode) { :unordered }
+
+      before do
+        resource_group.update_column(:process_mode, 3)
+      end
+
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+    end
+  end
 end

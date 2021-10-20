@@ -15,7 +15,8 @@ module Gitlab
 
       HEALTH_ENDPOINT = %r{^/-/(liveness|readiness|health|metrics)/?$}.freeze
 
-      FEATURE_CATEGORY_DEFAULT = 'unknown'
+      FEATURE_CATEGORY_DEFAULT = ::Gitlab::FeatureCategories::FEATURE_CATEGORY_DEFAULT
+      ENDPOINT_MISSING = 'unknown'
 
       # These were the top 5 categories at a point in time, chosen as a
       # reasonable default. If we initialize every category we'll end up
@@ -77,6 +78,8 @@ module Gitlab
 
           if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
             self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
+
+            record_apdex_if_needed(env, elapsed)
           end
 
           [status, headers, body]
@@ -104,6 +107,39 @@ module Gitlab
 
       def feature_category
         ::Gitlab::ApplicationContext.current_context_attribute(:feature_category)
+      end
+
+      def endpoint_id
+        ::Gitlab::ApplicationContext.current_context_attribute(:caller_id)
+      end
+
+      def record_apdex_if_needed(env, elapsed)
+        return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
+
+        Gitlab::Metrics::RailsSlis.request_apdex.increment(
+          labels: labels_from_context,
+          success: satisfactory?(env, elapsed)
+        )
+      end
+
+      def labels_from_context
+        {
+          feature_category: feature_category.presence || FEATURE_CATEGORY_DEFAULT,
+          endpoint_id: endpoint_id.presence || ENDPOINT_MISSING
+        }
+      end
+
+      def satisfactory?(env, elapsed)
+        target =
+          if env['api.endpoint'].present?
+            env['api.endpoint'].options[:for].try(:urgency_for_app, env['api.endpoint'])
+          elsif env['action_controller.instance'].present? && env['action_controller.instance'].respond_to?(:urgency)
+            env['action_controller.instance'].urgency
+          end
+
+        target ||= Gitlab::EndpointAttributes::DEFAULT_URGENCY
+
+        elapsed < target.duration
       end
     end
   end

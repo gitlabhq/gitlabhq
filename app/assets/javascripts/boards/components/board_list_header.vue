@@ -365,7 +365,7 @@ export default {
       >
         <span class="gl-display-inline-flex">
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
-          <span ref="itemCount" class="issue-count-badge-count">
+          <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
             <gl-icon class="gl-mr-2" :name="countIcon" />
             <item-count :items-size="itemsCount" :max-issue-count="list.maxIssueCount" />
           </span>
@@ -388,7 +388,7 @@ export default {
           v-gl-tooltip.hover
           :aria-label="$options.i18n.newIssue"
           :title="$options.i18n.newIssue"
-          class="issue-count-badge-add-button no-drag"
+          class="no-drag"
           icon="plus"
           @click="showNewIssueForm"
         />

@@ -6,7 +6,7 @@ describe('Job Log Collapsible Section', () => {
   let wrapper;
   let origGon;
 
-  const traceEndpoint = 'jobs/335';
+  const jobLogEndpoint = 'jobs/335';
 
   const findCollapsibleLine = () => wrapper.find('.collapsible-line');
   const findCollapsibleLineSvg = () => wrapper.find('.collapsible-line svg');
@@ -35,7 +35,7 @@ describe('Job Log Collapsible Section', () => {
     beforeEach(() => {
       createComponent({
         section: collapsibleSectionClosed,
-        traceEndpoint,
+        jobLogEndpoint,
       });
     });
 
@@ -52,7 +52,7 @@ describe('Job Log Collapsible Section', () => {
     beforeEach(() => {
       createComponent({
         section: collapsibleSectionOpened,
-        traceEndpoint,
+        jobLogEndpoint,
       });
     });
 
@@ -72,7 +72,7 @@ describe('Job Log Collapsible Section', () => {
   it('emits onClickCollapsibleLine on click', () => {
     createComponent({
       section: collapsibleSectionOpened,
-      traceEndpoint,
+      jobLogEndpoint,
     });
 
     findCollapsibleLine().trigger('click');

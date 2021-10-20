@@ -29,6 +29,10 @@ module Types
       argument :my_reaction_emoji, GraphQL::Types::String,
                 required: false,
                 description: 'Filter by reaction emoji applied by the current user.'
+      argument :types, [Types::IssueTypeEnum],
+               as: :issue_types,
+               description: 'Filters out issues by the given issue types.',
+               required: false
     end
   end
 end

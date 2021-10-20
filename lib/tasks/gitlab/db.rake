@@ -211,37 +211,16 @@ namespace :gitlab do
       exit 0
     end
 
-    desc 'Run migrations with instrumentation'
-    task migration_testing: :environment do
-      result_dir = Gitlab::Database::Migrations::Instrumentation::RESULT_DIR
-      FileUtils.mkdir_p(result_dir)
-
-      verbose_was = ActiveRecord::Migration.verbose
-      ActiveRecord::Migration.verbose = true
-
-      ctx = ActiveRecord::Base.connection.migration_context
-      existing_versions = ctx.get_all_versions.to_set
-
-      pending_migrations = ctx.migrations.reject do |migration|
-        existing_versions.include?(migration.version)
+    namespace :migration_testing do
+      desc 'Run migrations with instrumentation'
+      task up: :environment do
+        Gitlab::Database::Migrations::Runner.up.run
       end
 
-      instrumentation = Gitlab::Database::Migrations::Instrumentation.new
-
-      pending_migrations.each do |migration|
-        instrumentation.observe(version: migration.version, name: migration.name) do
-          ActiveRecord::Migrator.new(:up, ctx.migrations, ctx.schema_migration, migration.version).run
-        end
+      desc 'Run down migrations in current branch with instrumentation'
+      task down: :environment do
+        Gitlab::Database::Migrations::Runner.down.run
       end
-    ensure
-      if instrumentation
-        File.open(File.join(result_dir, Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME), 'wb+') do |io|
-          io << instrumentation.observations.to_json
-        end
-      end
-
-      ActiveRecord::Base.clear_cache!
-      ActiveRecord::Migration.verbose = verbose_was
     end
 
     desc 'Run all pending batched migrations'

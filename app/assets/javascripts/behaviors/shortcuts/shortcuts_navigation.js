@@ -1,4 +1,5 @@
 import Mousetrap from 'mousetrap';
+import { visitUrl, constructWebIDEPath } from '~/lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
 import {
   keysFor,
@@ -18,6 +19,7 @@ import {
   GO_TO_PROJECT_KUBERNETES,
   GO_TO_PROJECT_ENVIRONMENTS,
   GO_TO_PROJECT_METRICS,
+  GO_TO_PROJECT_WEBIDE,
   NEW_ISSUE,
 } from './keybindings';
 import Shortcuts from './shortcuts';
@@ -58,6 +60,18 @@ export default class ShortcutsNavigation extends Shortcuts {
       findAndFollowLink('.shortcuts-environments'),
     );
     Mousetrap.bind(keysFor(GO_TO_PROJECT_METRICS), () => findAndFollowLink('.shortcuts-metrics'));
+    Mousetrap.bind(keysFor(GO_TO_PROJECT_WEBIDE), ShortcutsNavigation.navigateToWebIDE);
     Mousetrap.bind(keysFor(NEW_ISSUE), () => findAndFollowLink('.shortcuts-new-issue'));
+  }
+
+  static navigateToWebIDE() {
+    const path = constructWebIDEPath({
+      sourceProjectFullPath: window.gl.mrWidgetData?.source_project_full_path,
+      targetProjectFullPath: window.gl.mrWidgetData?.target_project_full_path,
+      iid: window.gl.mrWidgetData?.iid,
+    });
+    if (path) {
+      visitUrl(path);
+    }
   }
 }

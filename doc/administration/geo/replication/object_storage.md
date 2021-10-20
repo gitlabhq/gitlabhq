@@ -73,7 +73,7 @@ GitLab does not currently support the case where both:
 ## Third-party replication services
 
 When using Amazon S3, you can use
-[CRR](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html) to
+[Cross-Region Replication (CRR)](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html) to
 have automatic replication between the bucket used by the **primary** site and
 the bucket used by **secondary** sites.
 

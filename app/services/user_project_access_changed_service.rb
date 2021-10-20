@@ -30,7 +30,7 @@ class UserProjectAccessChangedService
         end
       end
 
-    ::Gitlab::Database::LoadBalancing::Sticking.bulk_stick(:user, @user_ids)
+    ::User.sticking.bulk_stick(:user, @user_ids)
 
     result
   end

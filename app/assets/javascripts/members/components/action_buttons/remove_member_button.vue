@@ -42,7 +42,7 @@ export default {
       required: false,
       default: false,
     },
-    oncallSchedules: {
+    userDeletionObstacles: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -61,7 +61,7 @@ export default {
         memberPath: this.memberPath.replace(':id', this.memberId),
         memberType: this.memberType,
         message: this.message,
-        oncallSchedules: this.oncallSchedules,
+        userDeletionObstacles: this.userDeletionObstacles,
       };
     },
   },

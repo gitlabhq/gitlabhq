@@ -154,6 +154,17 @@ RSpec.describe Types::BaseField do
     end
   end
 
+  describe '#resolve' do
+    context "late_extensions is given" do
+      it 'registers the late extensions after the regular extensions' do
+        extension_class = Class.new(GraphQL::Schema::Field::ConnectionExtension)
+        field = described_class.new(name: 'test', type: GraphQL::Types::String.connection_type, null: true, late_extensions: [extension_class])
+
+        expect(field.extensions.last.class).to be(extension_class)
+      end
+    end
+  end
+
   describe '#description' do
     context 'feature flag given' do
       let(:field) { described_class.new(name: 'test', type: GraphQL::Types::String, feature_flag: flag, null: false, description: 'Test description.') }

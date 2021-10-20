@@ -25,6 +25,11 @@ module Projects
             @project.triggers, current_user: current_user, project: @project
           ).to_json
         end
+
+        # @assignable_runners is using ci_owned_runners
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436') do
+          render
+        end
       end
 
       def update

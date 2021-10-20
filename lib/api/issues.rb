@@ -4,7 +4,6 @@ module API
   class Issues < ::API::Base
     include PaginationParams
     helpers Helpers::IssuesHelpers
-    helpers Helpers::RateLimiter
 
     before { authenticate_non_get! }
 
@@ -114,6 +113,7 @@ module API
     end
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
+      validate_anonymous_search_access! if params[:search].present?
 
       present issues_statistics, with: Grape::Presenters::Presenter
     end
@@ -131,6 +131,7 @@ module API
       end
       get do
         authenticate! unless params[:scope] == 'all'
+        validate_anonymous_search_access! if params[:search].present?
         issues = paginate(find_issues)
 
         options = {
@@ -169,6 +170,7 @@ module API
         optional :non_archived, type: Boolean, desc: 'Return issues from non archived projects', default: true
       end
       get ":id/issues" do
+        validate_anonymous_search_access! if declared_params[:search].present?
         issues = paginate(find_issues(group_id: user_group.id, include_subgroups: true))
 
         options = {
@@ -187,6 +189,8 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
+        validate_anonymous_search_access! if declared_params[:search].present?
+
         present issues_statistics(group_id: user_group.id, include_subgroups: true), with: Grape::Presenters::Presenter
       end
     end
@@ -204,6 +208,7 @@ module API
         use :issues_params
       end
       get ":id/issues" do
+        validate_anonymous_search_access! if declared_params[:search].present?
         issues = paginate(find_issues(project_id: user_project.id))
 
         options = {
@@ -222,6 +227,8 @@ module API
         use :issues_stats_params
       end
       get ":id/issues_statistics" do
+        validate_anonymous_search_access! if declared_params[:search].present?
+
         present issues_statistics(project_id: user_project.id), with: Grape::Presenters::Presenter
       end
 
@@ -255,7 +262,7 @@ module API
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 
-        check_rate_limit! :issues_create, [current_user]
+        check_rate_limit! :issues_create, [current_user] if Feature.disabled?("rate_limited_service_issues_create", user_project, default_enabled: :yaml)
 
         authorize! :create_issue, user_project
 
@@ -370,6 +377,34 @@ module API
           issue = ::Issues::MoveService.new(project: user_project, current_user: current_user).execute(issue, new_project)
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
         rescue ::Issues::MoveService::MoveError => error
+          render_api_error!(error.message, 400)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Clone an existing issue' do
+        success Entities::Issue
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+        requires :to_project_id, type: Integer, desc: 'The ID of the new project'
+        optional :with_notes, type: Boolean, desc: 'Clone issue with notes', default: false
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      post ':id/issues/:issue_iid/clone' do
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/340252')
+
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
+        not_found!('Issue') unless issue
+
+        target_project = Project.find_by(id: params[:to_project_id])
+        not_found!('Project') unless target_project
+
+        begin
+          issue = ::Issues::CloneService.new(project: user_project, current_user: current_user)
+            .execute(issue, target_project, with_notes: params[:with_notes])
+          present issue, with: Entities::Issue, current_user: current_user, project: target_project
+        rescue ::Issues::CloneService::CloneError => error
           render_api_error!(error.message, 400)
         end
       end

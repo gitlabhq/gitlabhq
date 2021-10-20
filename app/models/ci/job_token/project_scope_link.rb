@@ -5,7 +5,7 @@
 
 module Ci
   module JobToken
-    class ProjectScopeLink < ApplicationRecord
+    class ProjectScopeLink < Ci::ApplicationRecord
       self.table_name = 'ci_job_token_project_scope_links'
 
       belongs_to :source_project, class_name: 'Project'

@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-# Expects `subject` to be a job/worker instance
+# Expects `subject` to be a job/worker instance and
+# `job_args` to be arguments to #perform if it takes arguments
 RSpec.shared_examples 'reenqueuer' do
   before do
     allow(subject).to receive(:sleep) # faster tests
   end
+
+  let(:subject_perform) { defined?(job_args) ? subject.perform(job_args) : subject.perform }
 
   it 'implements lease_timeout' do
     expect(subject.lease_timeout).to be_a(ActiveSupport::Duration)
@@ -18,12 +21,13 @@ RSpec.shared_examples 'reenqueuer' do
     it 'tries to obtain a lease' do
       expect_to_obtain_exclusive_lease(subject.lease_key)
 
-      subject.perform
+      subject_perform
     end
   end
 end
 
-# Expects `subject` to be a job/worker instance
+# Expects `subject` to be a job/worker instance and
+# `job_args` to be arguments to #perform if it takes arguments
 RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_duration|
   before do
     # Allow Timecop freeze and travel without the block form
@@ -38,13 +42,15 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     Timecop.safe_mode = true
   end
 
+  let(:subject_perform) { defined?(job_args) ? subject.perform(job_args) : subject.perform }
+
   context 'when the work finishes in 0 seconds' do
     let(:actual_duration) { 0 }
 
     it 'sleeps exactly the minimum duration' do
       expect(subject).to receive(:sleep).with(a_value_within(0.01).of(minimum_duration))
 
-      subject.perform
+      subject_perform
     end
   end
 
@@ -54,7 +60,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     it 'sleeps 90% of minimum duration' do
       expect(subject).to receive(:sleep).with(a_value_within(0.01).of(0.9 * minimum_duration))
 
-      subject.perform
+      subject_perform
     end
   end
 
@@ -64,7 +70,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     it 'sleeps 10% of minimum duration' do
       expect(subject).to receive(:sleep).with(a_value_within(0.01).of(0.1 * minimum_duration))
 
-      subject.perform
+      subject_perform
     end
   end
 
@@ -74,7 +80,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     it 'does not sleep' do
       expect(subject).not_to receive(:sleep)
 
-      subject.perform
+      subject_perform
     end
   end
 
@@ -84,7 +90,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     it 'does not sleep' do
       expect(subject).not_to receive(:sleep)
 
-      subject.perform
+      subject_perform
     end
   end
 
@@ -94,7 +100,7 @@ RSpec.shared_examples '#perform is rate limited to 1 call per' do |minimum_durat
     it 'does not sleep' do
       expect(subject).not_to receive(:sleep)
 
-      subject.perform
+      subject_perform
     end
   end
 

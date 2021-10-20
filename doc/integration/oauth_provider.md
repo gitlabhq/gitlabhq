@@ -4,18 +4,16 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab as an OAuth 2.0 authentication service provider
+# Configure GitLab as an OAuth 2.0 authentication identity provider
 
-This document describes how you can use GitLab as an OAuth 2.0
-authentication service provider.
+This document describes how you can use GitLab as an OAuth 2.0 authentication identity provider.
 
-If you want to use:
-
-- The [OAuth 2.0](https://oauth.net/2/) protocol to access GitLab resources on
-  a user's behalf, see [OAuth 2.0 provider](../api/oauth2.md).
-- Other OAuth 2.0 authentication service providers to sign in to
-  GitLab, see the [OAuth 2.0 client documentation](omniauth.md).
-- The related API, see [Applications API](../api/applications.md).
+- OAuth 2 applications can be created and managed using the GitLab UI (described below)
+  or managed using the [Applications API](../api/applications.md).
+- After an application is created, external services can manage access tokens using the
+  [OAuth 2 API](../api/oauth2.md).
+- To allow users to sign in to GitLab using third-party OAuth 2 providers, see
+  [OmniAuth documentation](omniauth.md).
 
 ## Introduction to OAuth
 
@@ -87,6 +85,25 @@ To create an application for your GitLab instance:
 
 When creating application in the **Admin Area** , you can mark it as _trusted_.
 The user authorization step is automatically skipped for this application.
+
+## Expiring Access Tokens
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3.
+
+By default, all new applications expire access tokens after 2 hours. In GitLab 14.2 and
+earlier, OAuth access tokens had no expiration.
+
+All integrations should update to support access token refresh.
+
+When creating new applications, you can opt-out of expiry for backward compatibility by clearing
+**Expire access tokens** when creating them. The ability to opt-out
+[is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848).
+
+Existing:
+
+- Applications can have expiring access tokens. Edit the application and select
+  **Expire access tokens** to enable them.
+- Tokens must be [revoked](../api/oauth2.md#revoke-a-token) or they don't expire.
 
 ## Authorized applications
 

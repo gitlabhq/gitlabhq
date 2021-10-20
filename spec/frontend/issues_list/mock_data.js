@@ -221,3 +221,37 @@ export const urlParamsWithSpecialValues = {
   epic_id: 'None',
   weight: 'None',
 };
+
+export const project1 = {
+  id: 'gid://gitlab/Group/26',
+  name: 'Super Mario Project',
+  nameWithNamespace: 'Mushroom Kingdom / Super Mario Project',
+  webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/super-mario-project',
+};
+
+export const project2 = {
+  id: 'gid://gitlab/Group/59',
+  name: 'Mario Kart Project',
+  nameWithNamespace: 'Mushroom Kingdom / Mario Kart Project',
+  webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-kart-project',
+};
+
+export const searchProjectsQueryResponse = {
+  data: {
+    group: {
+      projects: {
+        nodes: [project1, project2],
+      },
+    },
+  },
+};
+
+export const emptySearchProjectsQueryResponse = {
+  data: {
+    group: {
+      projects: {
+        nodes: [],
+      },
+    },
+  },
+};

@@ -35,7 +35,7 @@ module Metrics
         if Ability.allowed?(user, :create_metrics_user_starred_dashboard, project)
           success(user: user, project: project)
         else
-          error(s_('Metrics::UsersStarredDashboards|You are not authorized to add star to this dashboard'))
+          error(s_('MetricsUsersStarredDashboards|You are not authorized to add star to this dashboard'))
         end
       end
 
@@ -44,7 +44,7 @@ module Metrics
           options[:dashboard_path] = dashboard_path
           success(options)
         else
-          error(s_('Metrics::UsersStarredDashboards|Dashboard with requested path can not be found'))
+          error(s_('MetricsUsersStarredDashboards|Dashboard with requested path can not be found'))
         end
       end
 

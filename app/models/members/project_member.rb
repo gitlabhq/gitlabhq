@@ -90,23 +90,27 @@ class ProjectMember < Member
     { project: project }
   end
 
+  private
+
   override :refresh_member_authorized_projects
-  def refresh_member_authorized_projects
+  def refresh_member_authorized_projects(blocking:)
     return super unless Feature.enabled?(:specialized_service_for_project_member_auth_refresh)
     return unless user
 
     # rubocop:disable CodeReuse/ServiceClass
-    AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
+    if blocking
+      AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
+    else
+      AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.perform_async(project.id, user.id)
+    end
 
     # Until we compare the inconsistency rates of the new, specialized service and
     # the old approach, we still run AuthorizedProjectsWorker
     # but with some delay and lower urgency as a safety net.
     UserProjectAccessChangedService.new(user_id)
-      .execute(blocking: false, priority: UserProjectAccessChangedService::LOW_PRIORITY)
+                                   .execute(blocking: false, priority: UserProjectAccessChangedService::LOW_PRIORITY)
     # rubocop:enable CodeReuse/ServiceClass
   end
-
-  private
 
   def send_invite
     run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }

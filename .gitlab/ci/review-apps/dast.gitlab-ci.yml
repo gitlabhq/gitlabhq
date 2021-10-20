@@ -1,0 +1,191 @@
+.dast_conf:
+  tags:
+    - prm
+  # For scheduling dast job
+  extends:
+    - .reports:rules:schedule-dast
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION"
+  resource_group: dast_scan
+  variables:
+    DAST_USERNAME_FIELD: "user[login]"
+    DAST_PASSWORD_FIELD: "user[password]"
+    DAST_SUBMIT_FIELD: "commit"
+    DAST_FULL_SCAN_ENABLED: "true"
+    DAST_VERSION: 2
+    GIT_STRATEGY: none
+    # -Xmx is used to set the JVM memory to 6GB to prevent DAST OutOfMemoryError.
+    DAST_ZAP_CLI_OPTIONS: "-Xmx6144m"
+  before_script:
+    - 'export DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"'
+    - 'export DAST_AUTH_URL="${DAST_WEBSITE}/users/sign_in"'
+    - 'export DAST_PASSWORD="${REVIEW_APPS_ROOT_PASSWORD}"'
+    # Help pages are excluded from scan as they are static pages.
+    # profile/two_factor_auth is excluded from scan to prevent 2FA from being turned on from user profile, which will reduce coverage.
+    - 'DAST_EXCLUDE_URLS="${DAST_WEBSITE}/help/.*,${DAST_WEBSITE}/-/profile/two_factor_auth,${DAST_WEBSITE}/users/sign_out"'
+    # Exclude the automatically generated monitoring project from being tested due to https://gitlab.com/gitlab-org/gitlab/-/issues/260362
+    - 'export DAST_EXCLUDE_URLS="${DAST_EXCLUDE_URLS},${DAST_WEBSITE}/gitlab-instance-.*"'
+  needs: ["review-deploy"]
+  stage: dast
+  # Default job timeout set to 90m and dast rules needs 2h to so that it won't timeout.
+  timeout: 2h
+  # Add retry because of intermittent connection problems. See https://gitlab.com/gitlab-org/gitlab/-/issues/244313
+  retry: 1
+  artifacts:
+    paths:
+      - gl-dast-report.json  # GitLab-specific
+    reports:
+      dast: gl-dast-report.json
+    expire_in: 1 week  # GitLab-specific
+  allow_failure: true
+
+# DAST scan with a subset of Release scan rules.
+# ZAP rule details can be found at https://www.zaproxy.org/docs/alerts/
+
+# 10019, 10021	Missing security headers
+# 10023, 10024, 10025, 10037 Information Disclosure
+# 10040	Secure Pages Include Mixed Content
+# 10055	CSP
+# 10056	X-Debug-Token Information Leak
+# Duration: 14 minutes 20 seconds
+
+dast:secureHeaders-csp-infoLeak:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user1"
+    DAST_ONLY_INCLUDE_RULES: "10019,10021,10023,10024,10025,10037,10040,10055,10056"
+  script:
+    - /analyze
+
+# 90023	XML External Entity Attack
+# Duration: 41 minutes 20 seconds
+# 90019	Server Side Code Injection
+# Duration: 34 minutes 31 seconds
+dast:XXE-SrvSideInj:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user2"
+    DAST_ONLY_INCLUDE_RULES: "90023,90019"
+  script:
+    - /analyze
+
+# 0	Directory Browsing
+# 2	Private IP Disclosure
+# 3	Session ID in URL Rewrite
+# 7	Remote File Inclusion
+# Duration: 63 minutes 43 seconds
+# 90034 Cloud Metadata Potentially Exposed
+# Duration: 13 minutes 48 seconds
+# 90022	Application Error Disclosure
+# Duration: 12 minutes 7 seconds
+dast:infoLeak-fileInc-DirBrowsing:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user3"
+    DAST_ONLY_INCLUDE_RULES: "0,2,3,7,90034,90022"
+  script:
+    - /analyze
+
+# 10010	Cookie No HttpOnly Flag
+# 10011	Cookie Without Secure Flag
+# 10017	Cross-Domain JavaScript Source File Inclusion
+# 10029	Cookie Poisoning
+# 90033	Loosely Scoped Cookie
+# 10054	Cookie Without SameSite Attribute
+# Duration: 13 minutes 23 seconds
+dast:insecureCookie:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user4"
+    DAST_ONLY_INCLUDE_RULES: "10010,10011,10017,10029,90033,10054"
+  script:
+    - /analyze
+
+
+# 20012	Anti-CSRF Tokens Check
+# 10202	Absence of Anti-CSRF Tokens
+# https://gitlab.com/gitlab-com/gl-security/appsec/appsec-team/-/issues/192
+
+# Commented because of lot of FP's
+# dast:csrfTokenCheck:
+#   extends:
+#     - .dast_conf
+#   variables:
+#     DAST_USERNAME: "user6"
+#     DAST_ONLY_INCLUDE_RULES: "20012,10202"
+#   script:
+#     - /analyze
+
+# 10098	Cross-Domain Misconfiguration
+# 10105	Weak Authentication Method
+# 40003	CRLF Injection
+# 40008	Parameter Tampering
+# Duration: 71 minutes 15 seconds
+dast:corsMisconfig-weakauth-crlfInj:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user5"
+    DAST_ONLY_INCLUDE_RULES: "10098,10105,40003,40008"
+  script:
+    - /analyze
+
+# 20019 External Redirect
+# 20014	HTTP Parameter Pollution
+# Duration: 46 minutes 12 seconds
+dast:extRedirect-paramPollution:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user6"
+    DAST_ONLY_INCLUDE_RULES: "20019,20014"
+  script:
+    - /analyze
+
+# 40022 SQL Injection - PostgreSQL
+# Duration: 53 minutes 59 seconds
+dast:sqlInjection:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user7"
+    DAST_ONLY_INCLUDE_RULES: "40022"
+  script:
+    - /analyze
+
+# 40014	Cross Site Scripting (Persistent)
+# Duration: 21 minutes 50 seconds
+dast:xss-persistent:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user8"
+    DAST_ONLY_INCLUDE_RULES: "40014"
+  script:
+    - /analyze
+
+# 40012 Cross Site Scripting (Reflected)
+# Duration: 73 minutes 15 seconds
+dast:xss-reflected:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user9"
+    DAST_ONLY_INCLUDE_RULES: "40012"
+  script:
+    - /analyze
+
+# 40013	Session Fixation
+# Duration: 44 minutes 25 seconds
+dast:sessionFixation:
+  extends:
+    - .dast_conf
+  variables:
+    DAST_USERNAME: "user10"
+    DAST_ONLY_INCLUDE_RULES: "40013"
+  script:
+    - /analyze

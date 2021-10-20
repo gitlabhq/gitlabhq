@@ -24,7 +24,7 @@ module BulkImports
             stage: 1
           },
           labels: {
-            pipeline: BulkImports::Groups::Pipelines::LabelsPipeline,
+            pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 1
           },
           milestones: {
@@ -36,7 +36,7 @@ module BulkImports
             stage: 1
           },
           boards: {
-            pipeline: BulkImports::Groups::Pipelines::BoardsPipeline,
+            pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 2
           },
           finisher: {
@@ -47,7 +47,7 @@ module BulkImports
       end
 
       def project_entities_pipeline
-        if ::Feature.enabled?(:bulk_import_projects, default_enabled: :yaml)
+        if project_pipeline_available? && ::Feature.enabled?(:bulk_import_projects, default_enabled: :yaml)
           {
             project_entities: {
               pipeline: BulkImports::Groups::Pipelines::ProjectEntitiesPipeline,
@@ -57,6 +57,10 @@ module BulkImports
         else
           {}
         end
+      end
+
+      def project_pipeline_available?
+        @bulk_import.source_version_info >= BulkImport.min_gl_version_for_project_migration
       end
     end
   end

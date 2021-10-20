@@ -1,3 +1,4 @@
+import { GlLink } from '@gitlab/ui';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -5,13 +6,13 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
-import RunnerTypeHelp from '~/runner/components/runner_type_help.vue';
 
 import {
   CREATED_ASC,
@@ -34,8 +35,7 @@ localVue.use(VueApollo);
 
 const mockGroupFullPath = 'group1';
 const mockRegistrationToken = 'AABBCC';
-const mockRunners = groupRunnersData.data.group.runners.nodes;
-const mockGroupRunnersLimitedCount = mockRunners.length;
+const mockGroupRunnersLimitedCount = groupRunnersData.data.group.runners.edges.length;
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -48,7 +48,6 @@ describe('GroupRunnersApp', () => {
   let wrapper;
   let mockGroupRunnersQuery;
 
-  const findRunnerTypeHelp = () => wrapper.findComponent(RunnerTypeHelp);
   const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
@@ -82,16 +81,27 @@ describe('GroupRunnersApp', () => {
     await waitForPromises();
   });
 
-  it('shows the runner type help', () => {
-    expect(findRunnerTypeHelp().exists()).toBe(true);
-  });
-
   it('shows the runner setup instructions', () => {
     expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
   });
 
   it('shows the runners list', () => {
-    expect(findRunnerList().props('runners')).toEqual(groupRunnersData.data.group.runners.nodes);
+    expect(findRunnerList().props('runners')).toEqual(
+      groupRunnersData.data.group.runners.edges.map(({ node }) => node),
+    );
+  });
+
+  it('runner item links to the runner group page', async () => {
+    const { webUrl, node } = groupRunnersData.data.group.runners.edges[0];
+    const { id, shortSha } = node;
+
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    const runnerLink = wrapper.find('tr [data-testid="td-summary"]').find(GlLink);
+    expect(runnerLink.text()).toBe(`#${getIdFromGraphQLId(id)} (${shortSha})`);
+    expect(runnerLink.attributes('href')).toBe(webUrl);
   });
 
   it('requests the runners with group path and no other filters', () => {

@@ -15,13 +15,8 @@ module Integrations
     end
 
     def help
-      'This service sends notifications about projects events to a Unify Circuit conversation.<br />
-      To set up this service:
-      <ol>
-        <li><a href="https://www.circuit.com/unifyportalfaqdetail?articleId=164448" target="_blank" rel="noopener noreferrer">Set up an incoming webhook for your conversation</a>. All notifications will come to this conversation.</li>
-        <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
-        <li>Select events below to enable notifications.</li>
-      </ol>'
+      docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/unify_circuit'), target: '_blank', rel: 'noopener noreferrer'
+      s_('Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
     end
 
     def event_field(event)
@@ -37,7 +32,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "e.g. https://circuit.com/rest/v2/webhooks/incoming/…", required: true },
+        { type: 'text', name: 'webhook', placeholder: "https://yourcircuit.com/rest/v2/webhooks/incoming/…", required: true },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
       ]

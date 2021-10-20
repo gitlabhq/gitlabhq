@@ -1,29 +1,7 @@
 # frozen_string_literal: true
 
-require 'gettext_i18n_rails/haml_parser'
 require 'gettext_i18n_rails_js/parser/javascript'
 require 'json'
-
-VUE_TRANSLATE_REGEX = /((%[\w.-]+)(?:\s))?{{ (N|n|s)?__\((.*)\) }}/.freeze
-
-module GettextI18nRails
-  class HamlParser
-    singleton_class.send(:alias_method, :old_convert_to_code, :convert_to_code)
-
-    # We need to convert text in Mustache format
-    # to a format that can be parsed by Gettext scripts.
-    # If we found a content like "{{ __('Stage') }}"
-    # in a HAML file we convert it to "= _('Stage')", that way
-    # it can be processed by the "rake gettext:find" script.
-    #
-    # Overwrites: https://github.com/grosser/gettext_i18n_rails/blob/8396387a431e0f8ead72fc1cd425cad2fa4992f2/lib/gettext_i18n_rails/haml_parser.rb#L9
-    def self.convert_to_code(text)
-      text.gsub!(VUE_TRANSLATE_REGEX, "\\2= \\3_(\\4)")
-
-      old_convert_to_code(text)
-    end
-  end
-end
 
 module GettextI18nRailsJs
   module Parser

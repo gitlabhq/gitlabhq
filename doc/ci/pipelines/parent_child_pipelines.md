@@ -23,7 +23,7 @@ Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The
 to choose to start sub-pipelines (or not) is a powerful ability, especially if the
 YAML is dynamically generated.
 
-![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v12_6.png)
+![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
 
 Similarly to [multi-project pipelines](multi_project_pipelines.md), a pipeline can trigger a
 set of concurrently running child pipelines, but within the same project:
@@ -72,7 +72,7 @@ microservice_a:
       - template: Security/SAST.gitlab-ci.yml
 ```
 
-In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) and later,
+In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/205157),
 you can use [`include:file`](../yaml/index.md#includefile) to trigger child pipelines
 with a configuration file in a different project:
 
@@ -169,7 +169,7 @@ runner for testing, the path separator for the trigger job would be `/`. Other C
 configuration for jobs, like scripts, that use the Windows runner would use `\`.
 
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
-This is [resolved in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/209070).
+This is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/209070) in GitLab 12.10.
 
 ## Nested child pipelines
 

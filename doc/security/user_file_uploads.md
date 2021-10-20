@@ -5,7 +5,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# User File Uploads
+# User File Uploads **(FREE)**
 
 Images that are attached to issues, merge requests, or comments
 do not require authentication to be viewed if they are accessed directly by URL.

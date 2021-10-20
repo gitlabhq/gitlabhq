@@ -4,7 +4,18 @@ module Gitlab
   module View
     module Presenter
       class Delegated < SimpleDelegator
+        extend ::Gitlab::Utils::DelegatorOverride
+
+        # TODO: Stop including auxiliary methods/modules in `Presenter::Base` as
+        # it overrides many methods in the Active Record models.
+        # See https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/presenters/README.md#validate-accidental-overrides
+        # for more information.
         include Gitlab::View::Presenter::Base
+        delegator_override_with Gitlab::Routing.url_helpers
+        delegator_override :can?
+        delegator_override :declarative_policy_delegate
+        delegator_override :present
+        delegator_override :web_url
 
         def initialize(subject, **attributes)
           @subject = subject

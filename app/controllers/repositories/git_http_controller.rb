@@ -11,6 +11,9 @@ module Repositories
     rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404_with_exception
     rescue_from Gitlab::GitAccessProject::CreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
+    rescue_from GRPC::Unavailable do |e|
+      render_503_with_exception(e, message: 'The git server, Gitaly, is not available at this time. Please contact your administrator.')
+    end
 
     # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
     # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -71,8 +74,8 @@ module Repositories
       render plain: exception.message, status: :unprocessable_entity
     end
 
-    def render_503_with_exception(exception)
-      render plain: exception.message, status: :service_unavailable
+    def render_503_with_exception(exception, message: nil)
+      render plain: message || exception.message, status: :service_unavailable
     end
 
     def update_fetch_statistics

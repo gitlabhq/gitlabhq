@@ -12,6 +12,120 @@ RSpec.describe 'test coverage badge' do
       sign_in(user)
     end
 
+    it 'user requests coverage badge image for pipeline with custom limits - 80% good' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 80, name: 'test:1')
+      end
+
+      show_test_coverage_badge(min_good: 75, min_acceptable: 50, min_medium: 25)
+
+      expect_coverage_badge_color(:good)
+      expect_coverage_badge('80.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 74% - bad config' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 74, name: 'test:1')
+      end
+      # User sets a minimum good value that is lower than min acceptable and min medium,
+      # in which case we force the min acceptable value to be min good -1 and min medium value to be min acceptable -1
+      show_test_coverage_badge(min_good: 75, min_acceptable: 76, min_medium: 77)
+
+      expect_coverage_badge_color(:acceptable)
+      expect_coverage_badge('74.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 73% - bad config' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 73, name: 'test:1')
+      end
+      # User sets a minimum good value that is lower than min acceptable and min medium,
+      # in which case we force the min acceptable value to be min good -1 and min medium value to be min acceptable -1
+      show_test_coverage_badge(min_good: 75, min_acceptable: 76, min_medium: 77)
+
+      expect_coverage_badge_color(:medium)
+      expect_coverage_badge('73.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 72% - partial config - low' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 72, name: 'test:1')
+      end
+      # User only sets good to 75 and leaves the others on the default settings,
+      # in which case we force the min acceptable value to be min good -1 and min medium value to be min acceptable -1
+      show_test_coverage_badge(min_good: 75)
+
+      expect_coverage_badge_color(:low)
+      expect_coverage_badge('72.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 72% - partial config - medium' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 72, name: 'test:1')
+      end
+      # User only sets good to 74 and leaves the others on the default settings,
+      # in which case we force the min acceptable value to be min good -1 and min medium value to be min acceptable -1
+      show_test_coverage_badge(min_good: 74)
+
+      expect_coverage_badge_color(:medium)
+      expect_coverage_badge('72.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 72% - partial config - medium v2' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 72, name: 'test:1')
+      end
+      # User only sets medium to 72 and leaves the others on the defaults good as 95 and acceptable as 90
+      show_test_coverage_badge(min_medium: 72)
+
+      expect_coverage_badge_color(:medium)
+      expect_coverage_badge('72.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 70% acceptable' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 70, name: 'test:1')
+      end
+
+      show_test_coverage_badge(min_good: 75, min_acceptable: 50, min_medium: 25)
+
+      expect_coverage_badge_color(:acceptable)
+      expect_coverage_badge('70.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 30% medium' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 30, name: 'test:1')
+      end
+
+      show_test_coverage_badge(min_good: 75, min_acceptable: 50, min_medium: 25)
+
+      expect_coverage_badge_color(:medium)
+      expect_coverage_badge('30.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - 20% low' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 20, name: 'test:1')
+      end
+
+      show_test_coverage_badge(min_good: 75, min_acceptable: 50, min_medium: 25)
+
+      expect_coverage_badge_color(:low)
+      expect_coverage_badge('20.00%')
+    end
+
+    it 'user requests coverage badge image for pipeline with custom limits - nonsense values which use the defaults' do
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 92, name: 'test:1')
+      end
+
+      show_test_coverage_badge(min_good: "nonsense", min_acceptable: "rubbish", min_medium: "NaN")
+
+      expect_coverage_badge_color(:acceptable)
+      expect_coverage_badge('92.00%')
+    end
+
     it 'user requests coverage badge image for pipeline' do
       create_pipeline do |pipeline|
         create_build(pipeline, coverage: 100, name: 'test:1')
@@ -20,6 +134,7 @@ RSpec.describe 'test coverage badge' do
 
       show_test_coverage_badge
 
+      expect_coverage_badge_color(:good)
       expect_coverage_badge('95.00%')
     end
 
@@ -32,6 +147,7 @@ RSpec.describe 'test coverage badge' do
 
       show_test_coverage_badge(job: 'coverage')
 
+      expect_coverage_badge_color(:medium)
       expect_coverage_badge('85.00%')
     end
 
@@ -73,13 +189,22 @@ RSpec.describe 'test coverage badge' do
     create(:ci_build, :success, opts)
   end
 
-  def show_test_coverage_badge(job: nil)
-    visit coverage_project_badges_path(project, ref: :master, job: job, format: :svg)
+  def show_test_coverage_badge(job: nil, min_good: nil, min_acceptable: nil, min_medium: nil)
+    visit coverage_project_badges_path(project, ref: :master, job: job, min_good: min_good,
+                                       min_acceptable: min_acceptable, min_medium: min_medium, format: :svg)
   end
 
   def expect_coverage_badge(coverage)
     svg = Nokogiri::XML.parse(page.body)
     expect(page.response_headers['Content-Type']).to include('image/svg+xml')
     expect(svg.at(%Q{text:contains("#{coverage}")})).to be_truthy
+  end
+
+  def expect_coverage_badge_color(color)
+    svg = Nokogiri::HTML(page.body)
+    expect(page.response_headers['Content-Type']).to include('image/svg+xml')
+    badge_color = svg.xpath("//path[starts-with(@d, 'M62')]")[0].attributes['fill'].to_s
+    expected_badge_color = Gitlab::Ci::Badge::Coverage::Template::STATUS_COLOR[color]
+    expect(badge_color).to eq(expected_badge_color)
   end
 end

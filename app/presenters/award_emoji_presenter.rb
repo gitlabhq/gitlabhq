@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AwardEmojiPresenter < Gitlab::View::Presenter::Delegated
-  presents :award_emoji
+  presents ::AwardEmoji, as: :award_emoji
 
   def description
     as_emoji['description']

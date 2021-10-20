@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="tree-list-holder d-flex flex-column">
+  <div class="tree-list-holder d-flex flex-column" data-qa-selector="file_tree_container">
     <div class="gl-mb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <gl-icon name="search" class="position-absolute tree-list-icon" />

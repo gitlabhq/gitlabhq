@@ -104,6 +104,16 @@ you want using steps 1 and 2 from the GitLab downloads page.
   
    You must also copy the `registry.key` file to each Sidekiq node.
 
+1. Define the `external_url`. To maintain uniformity of links across nodes, the
+   `external_url` on the Sidekiq server should point to the external URL that users
+   will use to access GitLab. This will either be the `external_url` set on your
+   application server or the URL of a external load balancer which will route traffic
+   to the GitLab application server:
+
+   ```ruby
+   external_url 'https://gitlab.example.com'
+   ```
+
 1. Run `gitlab-ctl reconfigure`.
 
 You will need to restart the Sidekiq nodes after an update has occurred and database
@@ -194,6 +204,9 @@ gitlab_rails['monitoring_whitelist'] = ['10.10.1.42', '127.0.0.1']
 # Container Registry URL for cleanup jobs
 registry_external_url 'https://registry.example.com'
 gitlab_rails['registry_api_url'] = "https://registry.example.com"
+
+# External URL (this should match the URL used to access your GitLab instance)
+external_url 'https://gitlab.example.com'
 ```
 
 ## Further reading

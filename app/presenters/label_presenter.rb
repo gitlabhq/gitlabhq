@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class LabelPresenter < Gitlab::View::Presenter::Delegated
-  presents :label
+  presents ::Label, as: :label
   delegate :name, :full_name, to: :label_subject, prefix: :subject
+
+  delegator_override :subject # TODO: Fix `Gitlab::View::Presenter::Delegated#subject` not to override `Label#subject`.
 
   def edit_path
     case label

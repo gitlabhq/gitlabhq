@@ -6,7 +6,7 @@ module QA
       attr_accessor :fork_branch
 
       attribute :fork do
-        Fork.fabricate_via_browser_ui!
+        Fork.fabricate_via_api!
       end
 
       attribute :push do
@@ -23,8 +23,15 @@ module QA
 
         fork.project.visit!
 
-        Page::Project::Show.perform(&:new_merge_request)
-        Page::MergeRequest::New.perform(&:create_merge_request)
+        mr_url = Flow::Login.while_signed_in(as: fork.user) do
+          Page::Project::Show.perform(&:new_merge_request)
+          Page::MergeRequest::New.perform(&:create_merge_request)
+
+          current_url
+        end
+
+        Flow::Login.sign_in
+        visit(mr_url)
       end
 
       def fabricate_via_api!

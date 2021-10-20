@@ -11,6 +11,7 @@ module Sidebars
           add_item(kubernetes_menu_item)
           add_item(serverless_menu_item)
           add_item(terraform_menu_item)
+          add_item(google_cloud_menu_item)
 
           true
         end
@@ -85,6 +86,22 @@ module Sidebars
             link: project_terraform_index_path(context.project),
             active_routes: { controller: :terraform },
             item_id: :terraform
+          )
+        end
+
+        def google_cloud_menu_item
+          feature_is_enabled = Feature.enabled?(:incubation_5mp_google_cloud)
+          user_has_permissions = can?(context.current_user, :manage_project_google_cloud, context.project)
+
+          unless feature_is_enabled && user_has_permissions
+            return ::Sidebars::NilMenuItem.new(item_id: :incubation_5mp_google_cloud)
+          end
+
+          ::Sidebars::MenuItem.new(
+            title: _('Google Cloud'),
+            link: project_google_cloud_index_path(context.project),
+            active_routes: {},
+            item_id: :google_cloud
           )
         end
       end

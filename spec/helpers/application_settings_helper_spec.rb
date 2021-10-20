@@ -158,26 +158,6 @@ RSpec.describe ApplicationSettingsHelper do
     end
   end
 
-  describe '.show_documentation_base_url_field?' do
-    subject { helper.show_documentation_base_url_field? }
-
-    before do
-      stub_feature_flags(help_page_documentation_redirect: feature_flag)
-    end
-
-    context 'when feature flag is enabled' do
-      let(:feature_flag) { true }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when feature flag is disabled' do
-      let(:feature_flag) { false }
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '.valid_runner_registrars' do
     subject { helper.valid_runner_registrars }
 
@@ -269,18 +249,6 @@ RSpec.describe ApplicationSettingsHelper do
         create(:user, state: :blocked_pending_approval)
 
         expect(pending_user_count).to eq 1
-      end
-    end
-
-    context 'when the new_user_signups_cap is not present' do
-      let(:user_cap) { nil }
-
-      it { is_expected.to eq 0 }
-
-      it 'does not query users unnecessarily' do
-        expect(User).not_to receive(:blocked_pending_approval)
-
-        pending_user_count
       end
     end
   end

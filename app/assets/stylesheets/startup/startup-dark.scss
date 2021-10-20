@@ -5,19 +5,16 @@
 body.gl-dark {
   --gray-50: #303030;
   --gray-100: #404040;
+  --gray-900: #fafafa;
   --gray-950: #fff;
   --green-100: #0d532a;
   --green-400: #108548;
   --green-700: #91d4a8;
   --blue-400: #1f75cb;
   --orange-400: #ab6100;
-  --purple-100: #2f2a6b;
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
-}
-.nav-sidebar li.active {
-  box-shadow: none;
 }
 :root {
   --white: #333;
@@ -198,22 +195,6 @@ h1 {
 .dropdown {
   position: relative;
 }
-.dropdown-menu-toggle {
-  white-space: nowrap;
-}
-.dropdown-menu-toggle::after {
-  display: inline-block;
-  margin-left: 0.255em;
-  vertical-align: 0.255em;
-  content: "";
-  border-top: 0.3em solid;
-  border-right: 0.3em solid transparent;
-  border-bottom: 0;
-  border-left: 0.3em solid transparent;
-}
-.dropdown-menu-toggle:empty::after {
-  margin-left: 0;
-}
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -331,6 +312,9 @@ h1 {
   padding-left: 0.6em;
   border-radius: 10rem;
 }
+.bg-transparent {
+  background-color: transparent !important;
+}
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -374,6 +358,20 @@ h1 {
 }
 .m-auto {
   margin: auto !important;
+}
+.gl-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.gl-button .gl-badge {
+  top: 0;
 }
 .gl-form-input,
 .gl-form-input.form-control {
@@ -466,9 +464,6 @@ a {
 .hide {
   display: none;
 }
-.dropdown-menu-toggle::after {
-  display: none;
-}
 .badge:not(.gl-badge) {
   padding: 4px 5px;
   font-size: 12px;
@@ -548,7 +543,7 @@ body {
   border-radius: 0.25rem;
   white-space: nowrap;
 }
-.no-outline.dropdown-menu-toggle {
+.dropdown-menu-toggle.no-outline {
   outline: 0;
 }
 .dropdown-menu-toggle.dropdown-menu-toggle {
@@ -874,6 +869,12 @@ input {
 .title-container .badge.badge-pill:not(.merge-request-badge).todos-count,
 .navbar-nav .badge.badge-pill:not(.merge-request-badge).todos-count {
   background-color: var(--blue-400, #1f75cb);
+}
+.title-container .canary-badge .badge,
+.navbar-nav .canary-badge .badge {
+  font-size: 12px;
+  line-height: 16px;
+  padding: 0 0.5rem;
 }
 @media (max-width: 575.98px) {
   .navbar-gitlab .container-fluid {
@@ -1280,6 +1281,7 @@ input {
   a
   .avatar-container.rect-avatar
   .avatar.s32 {
+  border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items {
@@ -1304,6 +1306,7 @@ input {
   a
   .avatar-container.rect-avatar
   .avatar.s32 {
+  border-radius: 4px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 .sidebar-top-level-items > li .badge.badge-pill {
@@ -1601,18 +1604,97 @@ svg.s16 {
 .rect-avatar.s16 {
   border-radius: 2px;
 }
-.rect-avatar.s32,
-.nav-sidebar-inner-scroll
-  > div.context-header
-  a
-  .avatar-container.rect-avatar
-  .avatar.s32,
-.sidebar-top-level-items
-  .context-header
-  a
-  .avatar-container.rect-avatar
-  .avatar.s32 {
+.rect-avatar.s32 {
   border-radius: 4px;
+}
+body.gl-dark {
+  --gray-10: #1f1f1f;
+  --gray-50: #303030;
+  --gray-100: #404040;
+  --gray-200: #525252;
+  --gray-300: #5e5e5e;
+  --gray-400: #868686;
+  --gray-500: #999;
+  --gray-600: #bfbfbf;
+  --gray-700: #dbdbdb;
+  --gray-800: #f0f0f0;
+  --gray-900: #fafafa;
+  --gray-950: #fff;
+  --green-50: #0a4020;
+  --green-100: #0d532a;
+  --green-200: #24663b;
+  --green-300: #217645;
+  --green-400: #108548;
+  --green-500: #2da160;
+  --green-600: #52b87a;
+  --green-700: #91d4a8;
+  --green-800: #c3e6cd;
+  --green-900: #ecf4ee;
+  --green-950: #f1fdf6;
+  --blue-50: #033464;
+  --blue-100: #064787;
+  --blue-200: #0b5cad;
+  --blue-300: #1068bf;
+  --blue-400: #1f75cb;
+  --blue-500: #428fdc;
+  --blue-600: #63a6e9;
+  --blue-700: #9dc7f1;
+  --blue-800: #cbe2f9;
+  --blue-900: #e9f3fc;
+  --blue-950: #f2f9ff;
+  --orange-50: #5c2900;
+  --orange-100: #703800;
+  --orange-200: #8f4700;
+  --orange-300: #9e5400;
+  --orange-400: #ab6100;
+  --orange-500: #c17d10;
+  --orange-600: #d99530;
+  --orange-700: #e9be74;
+  --orange-800: #f5d9a8;
+  --orange-900: #fdf1dd;
+  --orange-950: #fff4e1;
+  --red-50: #660e00;
+  --red-100: #8d1300;
+  --red-200: #ae1800;
+  --red-300: #c91c00;
+  --red-400: #dd2b0e;
+  --red-500: #ec5941;
+  --red-600: #f57f6c;
+  --red-700: #fcb5aa;
+  --red-800: #fdd4cd;
+  --red-900: #fcf1ef;
+  --red-950: #fff4f3;
+  --indigo-50: #1a1a40;
+  --indigo-100: #292961;
+  --indigo-200: #393982;
+  --indigo-300: #4b4ba3;
+  --indigo-400: #5b5bbd;
+  --indigo-500: #6666c4;
+  --indigo-600: #7c7ccc;
+  --indigo-700: #a6a6de;
+  --indigo-800: #d1d1f0;
+  --indigo-900: #ebebfa;
+  --indigo-950: #f7f7ff;
+  --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
+  --purple-50: #232150;
+  --purple-100: #2f2a6b;
+  --purple-200: #453894;
+  --purple-300: #5943b6;
+  --purple-400: #694cc0;
+  --purple-500: #7b58cf;
+  --purple-600: #9475db;
+  --purple-700: #ac93e6;
+  --purple-800: #cbbbf2;
+  --purple-900: #e1d8f9;
+  --purple-950: #f4f0ff;
+  --gl-text-color: #fafafa;
+  --border-color: #4f4f4f;
+  --white: #333;
+  --black: #fff;
+  --svg-status-bg: #333;
+}
+.nav-sidebar li.active {
+  box-shadow: none;
 }
 body.gl-dark .navbar-gitlab {
   background-color: #fafafa;
@@ -1703,8 +1785,8 @@ body.gl-dark .nav-sidebar li.active > a {
 body.gl-dark .nav-sidebar .fly-out-top-item a,
 body.gl-dark .nav-sidebar .fly-out-top-item.active a,
 body.gl-dark .nav-sidebar .fly-out-top-item .fly-out-top-item-container {
-  background-color: var(--purple-100, #e1d8f9);
-  color: var(--black, #333);
+  background-color: var(--gray-100, #303030);
+  color: var(--gray-900, #fafafa);
 }
 body.gl-dark .logo-text svg {
   fill: var(--gl-text-color);
@@ -1823,9 +1905,6 @@ body.gl-dark {
   --black: #fff;
   --svg-status-bg: #333;
 }
-.nav-sidebar li.active {
-  box-shadow: none;
-}
 .tab-width-8 {
   -moz-tab-size: 8;
   tab-size: 8;
@@ -1841,8 +1920,17 @@ body.gl-dark {
   white-space: nowrap;
   width: 1px;
 }
+.gl-bg-green-500 {
+  background-color: #2da160;
+}
 .gl-border-none\! {
   border-style: none !important;
+}
+.gl-rounded-pill {
+  border-radius: 0.75rem;
+}
+.gl-text-white {
+  color: #333;
 }
 .gl-display-none {
   display: none;
@@ -1861,6 +1949,10 @@ body.gl-dark {
 }
 .gl-pr-2 {
   padding-right: 0.25rem;
+}
+.gl-py-1 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
 }
 .gl-ml-3 {
   margin-left: 0.5rem;

@@ -1,4 +1,5 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -6,8 +7,8 @@ import { formatNumber, sprintf, __ } from '~/locale';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
+import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
-import RunnerTypeHelp from '../components/runner_type_help.vue';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { typeTokenConfig } from '../components/search_tokens/type_token_config';
@@ -23,10 +24,11 @@ import { captureException } from '../sentry_utils';
 export default {
   name: 'AdminRunnersApp',
   components: {
+    GlLink,
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerManualSetupHelp,
-    RunnerTypeHelp,
+    RunnerName,
     RunnerPagination,
   },
   props: {
@@ -124,17 +126,10 @@ export default {
 </script>
 <template>
   <div>
-    <div class="row">
-      <div class="col-sm-6">
-        <runner-type-help />
-      </div>
-      <div class="col-sm-6">
-        <runner-manual-setup-help
-          :registration-token="registrationToken"
-          :type="$options.INSTANCE_TYPE"
-        />
-      </div>
-    </div>
+    <runner-manual-setup-help
+      :registration-token="registrationToken"
+      :type="$options.INSTANCE_TYPE"
+    />
 
     <runner-filtered-search-bar
       v-model="search"
@@ -150,7 +145,13 @@ export default {
       {{ __('No runners found') }}
     </div>
     <template v-else>
-      <runner-list :runners="runners.items" :loading="runnersLoading" />
+      <runner-list :runners="runners.items" :loading="runnersLoading">
+        <template #runner-name="{ runner }">
+          <gl-link :href="runner.adminUrl">
+            <runner-name :runner="runner" />
+          </gl-link>
+        </template>
+      </runner-list>
       <runner-pagination v-model="search.pagination" :page-info="runners.pageInfo" />
     </template>
   </div>

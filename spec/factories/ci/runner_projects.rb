@@ -2,7 +2,14 @@
 
 FactoryBot.define do
   factory :ci_runner_project, class: 'Ci::RunnerProject' do
-    runner factory: [:ci_runner, :project]
     project
+
+    after(:build) do |runner_project, evaluator|
+      unless runner_project.runner.present?
+        runner_project.runner = build(
+          :ci_runner, :project, runner_projects: [runner_project]
+        )
+      end
+    end
   end
 end

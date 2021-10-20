@@ -13,6 +13,7 @@
       "./scripts/frontend/stylelint/stylelint-utility-classes.js",
    ],
    "rules":{
+      "at-rule-disallowed-list": ["extend"],
       "max-nesting-depth": [
          3,
          {

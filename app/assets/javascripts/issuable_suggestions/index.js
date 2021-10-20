@@ -10,7 +10,12 @@ export default function initIssuableSuggestions() {
   const issueTitle = document.getElementById('issue_title');
   const { projectPath } = el.dataset;
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient(
+      {},
+      {
+        assumeImmutableResults: true,
+      },
+    ),
   });
 
   return new Vue({

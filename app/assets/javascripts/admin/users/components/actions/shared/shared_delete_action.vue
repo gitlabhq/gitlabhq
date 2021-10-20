@@ -22,7 +22,7 @@ export default {
       type: String,
       required: true,
     },
-    oncallSchedules: {
+    userDeletionObstacles: {
       type: Array,
       required: true,
     },
@@ -34,7 +34,7 @@ export default {
         'data-delete-user-url': this.deletePath,
         'data-gl-modal-action': this.modalType,
         'data-username': this.username,
-        'data-oncall-schedules': JSON.stringify(this.oncallSchedules),
+        'data-user-deletion-obstacles': JSON.stringify(this.userDeletionObstacles),
       };
     },
   },

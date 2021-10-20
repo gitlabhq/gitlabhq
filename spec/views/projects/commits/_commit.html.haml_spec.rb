@@ -11,6 +11,24 @@ RSpec.describe 'projects/commits/_commit.html.haml' do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
   end
 
+  context 'with different committer' do
+    let(:ref) { 'master' }
+    let(:committer) { create(:user) }
+
+    it 'renders committed by user' do
+      allow(commit).to receive(:different_committer?).and_return(true)
+      allow(commit).to receive(:committer).and_return(committer)
+
+      render partial: template, locals: {
+        project: project,
+        ref: ref,
+        commit: commit
+      }
+
+      expect(rendered).to have_text("#{committer.name} committed")
+    end
+  end
+
   context 'with a signed commit' do
     let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
 

@@ -1,44 +1,8 @@
-# Implicit Auto DevOps pipeline events
-- name: p_ci_templates_implicit_auto_devops
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-# Explicit include:template pipeline events
-- name: p_ci_templates_5_min_production_app
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-- name: p_ci_templates_aws_cf_deploy_ec2
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-- name: p_ci_templates_auto_devops_build
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-- name: p_ci_templates_auto_devops_deploy
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-- name: p_ci_templates_auto_devops_deploy_latest
-  category: ci_templates
-  redis_slot: ci_templates
-  aggregation: weekly
-
-# This part of the file is generated automatically by
+# This file is generated automatically by
 #   bin/rake gitlab:usage_data:generate_ci_template_events
 #
 # Do not edit it manually!
-#
-# The section above this should be removed once we roll out tracking all ci
-# templates
-# https://gitlab.com/gitlab-org/gitlab/-/issues/339684
-
+---
 - name: p_ci_templates_terraform_base_latest
   category: ci_templates
   redis_slot: ci_templates
@@ -463,6 +427,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_implicit_auto_devops
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_implicit_jobs_dast_default_branch_deploy
   category: ci_templates
   redis_slot: ci_templates
@@ -499,11 +467,11 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-- name: p_ci_templates_implicit_auto_devops_deploy
+- name: p_ci_templates_implicit_jobs_deploy
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-- name: p_ci_templates_implicit_auto_devops_build
+- name: p_ci_templates_implicit_jobs_build
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
@@ -515,7 +483,7 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
-- name: p_ci_templates_implicit_auto_devops_deploy_latest
+- name: p_ci_templates_implicit_jobs_deploy_latest
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

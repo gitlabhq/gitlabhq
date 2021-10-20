@@ -48,7 +48,7 @@ testing promises, stubbing etc.
 What are flaky tests, the different kind of flaky tests we encountered, and what
 we do about them.
 
-## [GitLab tests in the Continuous Integration (CI) context](ci.md)
+## [GitLab pipelines](../pipelines.md)
 
 How GitLab test suite is run in the CI context: setup, caches, artifacts,
 parallelization, monitoring.

@@ -50,13 +50,14 @@ RSpec.describe Ci::DropPipelineService do
       end.count
 
       writes_per_build = 2
+      load_balancer_queries = 3
       expected_reads_count = control_count - writes_per_build
 
       create_list(:ci_build, 5, :running, pipeline: cancelable_pipeline)
 
       expect do
         drop_pipeline!(cancelable_pipeline)
-      end.not_to exceed_query_limit(expected_reads_count + (5 * writes_per_build))
+      end.not_to exceed_query_limit(expected_reads_count + (5 * writes_per_build) + load_balancer_queries)
     end
   end
 end

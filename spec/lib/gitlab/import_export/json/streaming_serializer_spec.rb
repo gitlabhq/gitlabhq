@@ -115,7 +115,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
         end
 
         it 'orders exported issues by custom column(relative_position)' do
-          expected_issues = exportable.issues.order_relative_position_desc.order(id: :desc).map(&:to_json)
+          expected_issues = exportable.issues.reorder(::Gitlab::Database.nulls_first_order('relative_position', 'DESC')).order(id: :desc).map(&:to_json)
 
           expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, expected_issues)
 
@@ -163,21 +163,10 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer do
           stub_feature_flags(load_balancing_for_export_workers: true)
         end
 
-        context 'when enabled', :db_load_balancing do
-          it 'reads from replica' do
-            expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
+        it 'reads from replica' do
+          expect(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_replicas_for_read_queries).and_call_original
 
-            subject.execute
-          end
-        end
-
-        context 'when disabled' do
-          it 'reads from primary' do
-            allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-            expect(Gitlab::Database::LoadBalancing::Session.current).not_to receive(:use_replicas_for_read_queries)
-
-            subject.execute
-          end
+          subject.execute
         end
       end
 

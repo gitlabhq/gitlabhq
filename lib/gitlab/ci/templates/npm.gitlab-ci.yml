@@ -11,7 +11,7 @@ publish:
       changes:
         - package.json
   script:
-    # If no .npmrc if included in the repo, generate a temporary one that is configured to publish to GitLab's NPM registry
+    # If no .npmrc is included in the repo, generate a temporary one that is configured to publish to GitLab's NPM registry
     - |
       if [[ ! -f .npmrc ]]; then
         echo 'No .npmrc found! Creating one now. Please review the following link for more information: https://docs.gitlab.com/ee/user/packages/npm_registry/index.html#project-level-npm-endpoint-1'

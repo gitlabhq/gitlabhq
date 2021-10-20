@@ -133,10 +133,8 @@ RSpec.describe ProjectFeatureUsage, type: :model do
 
       subject { project.feature_usage }
 
-      context 'database load balancing is configured', :db_load_balancing do
+      context 'database load balancing is configured' do
         before do
-          allow(ActiveRecord::Base).to receive(:connection).and_return(::Gitlab::Database::LoadBalancing.proxy)
-
           ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 

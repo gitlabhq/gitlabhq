@@ -84,6 +84,11 @@ export default {
       required: false,
       default: '',
     },
+    isOverviewTab: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -185,6 +190,14 @@ export default {
       }
 
       return fileResolvedFromAvailableSource || null;
+    },
+    avatarSize() {
+      // Use a different size if shown on a Merge Request Diff
+      if (this.line && !this.isOverviewTab) {
+        return 24;
+      }
+
+      return 40;
     },
   },
   created() {
@@ -391,7 +404,7 @@ export default {
         :link-href="author.path"
         :img-src="author.avatar_url"
         :img-alt="author.name"
-        :img-size="40"
+        :img-size="avatarSize"
         lazy
       >
         <template #avatar-badge>

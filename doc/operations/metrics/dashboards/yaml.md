@@ -14,7 +14,7 @@ Dashboards have several components:
 
 The following tables outline the details of expected properties.
 
-## **Dashboard (top-level) properties**
+## Dashboard (top-level) properties
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
@@ -23,7 +23,7 @@ The following tables outline the details of expected properties.
 | `templating` | hash | no | Top level key under which templating related options can be added. |
 | `links` | array | no | Add links to display on the dashboard. |
 
-## **Templating (`templating`) properties**
+## Templating (`templating`) properties
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
@@ -31,7 +31,7 @@ The following tables outline the details of expected properties.
 
 Read the documentation on [templating](templating_variables.md).
 
-## **Links (`links`) properties**
+## Links (`links`) properties
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
@@ -41,7 +41,7 @@ Read the documentation on [templating](templating_variables.md).
 
 Read the documentation on [links](index.md#add-related-links-to-custom-dashboards).
 
-## **Panel group (`panel_groups`) properties**
+## Panel group (`panel_groups`) properties
 
 Dashboards display panel groups in the order they are listed in the dashboard YAML file.
 
@@ -55,7 +55,7 @@ is no longer used.
 
 Panels in a panel group are laid out in rows consisting of two panels per row. An exception to this rule are single panels on a row: these panels take the full width of their containing row.
 
-## **Panel (`panels`) properties**
+## Panel (`panels`) properties
 
 Dashboards display panels in the order they are listed in the dashboard YAML file.
 
@@ -72,7 +72,7 @@ is no longer used.
 | `metrics` | array | yes | The metrics which should be displayed in the panel. Any number of metrics can be displayed when `type` is `area-chart` or `line-chart`, whereas only 3 can be displayed when `type` is `anomaly-chart`. |
 | `links` | array | no | Add links to display on the chart's [context menu](index.md#chart-context-menu). |
 
-## **Axis (`panels[].y_axis`) properties**
+## Axis (`panels[].y_axis`) properties
 
 | Property    | Type   | Required                      | Description                                                          |
 | ----------- | ------ | ----------------------------- | -------------------------------------------------------------------- |
@@ -80,7 +80,7 @@ is no longer used.
 | `format`    | string | no, defaults to `engineering` | Unit format used. See the [full list of units](yaml_number_format.md). |
 | `precision` | number | no, defaults to `2`           | Number of decimal places to display in the number.                                          |                        |
 
-## **Metrics (`metrics`) properties**
+## Metrics (`metrics`) properties
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |

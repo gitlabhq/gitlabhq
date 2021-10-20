@@ -15,8 +15,8 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'handles sticking of a build when a build ID is specified' do
       allow(helper).to receive(:params).and_return(id: build.id)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .to receive(:stick_or_unstick)
+      expect(ApplicationRecord.sticking)
+        .to receive(:stick_or_unstick_request)
         .with({}, :build, build.id)
 
       helper.current_job
@@ -25,8 +25,8 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'does not handle sticking if no build ID was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .not_to receive(:stick_or_unstick)
+      expect(ApplicationRecord.sticking)
+        .not_to receive(:stick_or_unstick_request)
 
       helper.current_job
     end
@@ -44,8 +44,8 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'handles sticking of a runner if a token is specified' do
       allow(helper).to receive(:params).and_return(token: runner.token)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .to receive(:stick_or_unstick)
+      expect(ApplicationRecord.sticking)
+        .to receive(:stick_or_unstick_request)
         .with({}, :runner, runner.token)
 
       helper.current_runner
@@ -54,8 +54,8 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'does not handle sticking if no token was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .not_to receive(:stick_or_unstick)
+      expect(ApplicationRecord.sticking)
+        .not_to receive(:stick_or_unstick_request)
 
       helper.current_runner
     end

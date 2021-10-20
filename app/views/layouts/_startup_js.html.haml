@@ -8,20 +8,30 @@
 
     if (gl.startup_calls && window.fetch) {
       Object.keys(gl.startup_calls).forEach(apiCall => {
-        // fetch won’t send cookies in older browsers, unless you set the credentials init option.
-        // We set to `same-origin` which is default value in modern browsers.
-        // See https://github.com/whatwg/fetch/pull/585 for more information.
-        gl.startup_calls[apiCall] = {
-          fetchCall: fetch(apiCall, { credentials: 'same-origin' })
+       gl.startup_calls[apiCall] = {
+          fetchCall: fetch(apiCall, {
+            // Emulate XHR for Rails AJAX request checks
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            // fetch won’t send cookies in older browsers, unless you set the credentials init option.
+            // We set to `same-origin` which is default value in modern browsers.
+            // See https://github.com/whatwg/fetch/pull/585 for more information.
+            credentials: 'same-origin'
+          })
         };
       });
     }
     if (gl.startup_graphql_calls && window.fetch) {
+      const headers = #{page_startup_graphql_headers.to_json};
       const url = `#{api_graphql_url}`
 
       const opts = {
         method: "POST",
-        headers: { "Content-Type": "application/json", 'X-CSRF-Token': "#{form_authenticity_token}" },
+        headers: {
+          "Content-Type": "application/json",
+          ...headers,
+        }
       };
 
       gl.startup_graphql_calls = gl.startup_graphql_calls.map(call => ({

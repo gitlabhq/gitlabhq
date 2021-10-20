@@ -71,7 +71,8 @@ module Gitlab
 
       def redis_config
         gitlab_redis_queues = Gitlab::Redis::Queues.new(rails_env)
-        config = { redis_url: gitlab_redis_queues.url }
+
+        config = { redis_url: gitlab_redis_queues.url, redis_db: gitlab_redis_queues.db }
 
         if gitlab_redis_queues.sentinels?
           config[:sentinels] = gitlab_redis_queues.sentinels

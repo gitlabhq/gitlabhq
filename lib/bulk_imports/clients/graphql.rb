@@ -17,6 +17,8 @@ module BulkImports
           )
 
           ::Gitlab::Json.parse(response.body)
+        rescue *Gitlab::HTTP::HTTP_ERRORS => e
+          raise ::BulkImports::NetworkError, e
         end
       end
       private_constant :HTTP
@@ -55,7 +57,7 @@ module BulkImports
         response = client.execute('{ metadata { version } }')
         version = Gitlab::VersionInfo.parse(response.data.metadata.version)
 
-        if version.major < BulkImport::MINIMUM_GITLAB_MAJOR_VERSION
+        if version.major < BulkImport::MIN_MAJOR_VERSION
           raise ::BulkImports::Error.unsupported_gitlab_version
         else
           @compatible_instance_version = true

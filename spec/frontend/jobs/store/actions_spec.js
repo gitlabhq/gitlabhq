@@ -3,7 +3,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import {
   setJobEndpoint,
-  setTraceOptions,
+  setJobLogOptions,
   clearEtagPoll,
   stopPolling,
   requestJob,
@@ -12,12 +12,12 @@ import {
   receiveJobError,
   scrollTop,
   scrollBottom,
-  requestTrace,
-  fetchTrace,
-  startPollingTrace,
-  stopPollingTrace,
-  receiveTraceSuccess,
-  receiveTraceError,
+  requestJobLog,
+  fetchJobLog,
+  startPollingJobLog,
+  stopPollingJobLog,
+  receiveJobLogSuccess,
+  receiveJobLogError,
   toggleCollapsibleLine,
   requestJobsForStage,
   fetchJobsForStage,
@@ -51,13 +51,13 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('setTraceOptions', () => {
-    it('should commit SET_TRACE_OPTIONS mutation', (done) => {
+  describe('setJobLogOptions', () => {
+    it('should commit SET_JOB_LOG_OPTIONS mutation', (done) => {
       testAction(
-        setTraceOptions,
+        setJobLogOptions,
         { pagePath: 'job/872324/trace.json' },
         mockedState,
-        [{ type: types.SET_TRACE_OPTIONS, payload: { pagePath: 'job/872324/trace.json' } }],
+        [{ type: types.SET_JOB_LOG_OPTIONS, payload: { pagePath: 'job/872324/trace.json' } }],
         [],
         done,
       );
@@ -191,17 +191,17 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('requestTrace', () => {
-    it('should commit REQUEST_TRACE mutation', (done) => {
-      testAction(requestTrace, null, mockedState, [{ type: types.REQUEST_TRACE }], [], done);
+  describe('requestJobLog', () => {
+    it('should commit REQUEST_JOB_LOG mutation', (done) => {
+      testAction(requestJobLog, null, mockedState, [{ type: types.REQUEST_JOB_LOG }], [], done);
     });
   });
 
-  describe('fetchTrace', () => {
+  describe('fetchJobLog', () => {
     let mock;
 
     beforeEach(() => {
-      mockedState.traceEndpoint = `${TEST_HOST}/endpoint`;
+      mockedState.jobLogEndpoint = `${TEST_HOST}/endpoint`;
       mock = new MockAdapter(axios);
     });
 
@@ -212,14 +212,14 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestTrace, receiveTraceSuccess and stopPollingTrace when job is complete', (done) => {
+      it('dispatches requestJobLog, receiveJobLogSuccess and stopPollingJobLog when job is complete', (done) => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, {
           html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
           complete: true,
         });
 
         testAction(
-          fetchTrace,
+          fetchJobLog,
           null,
           mockedState,
           [],
@@ -233,10 +233,10 @@ describe('Job State actions', () => {
                 html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
                 complete: true,
               },
-              type: 'receiveTraceSuccess',
+              type: 'receiveJobLogSuccess',
             },
             {
-              type: 'stopPollingTrace',
+              type: 'stopPollingJobLog',
             },
           ],
           done,
@@ -244,43 +244,43 @@ describe('Job State actions', () => {
       });
 
       describe('when job is incomplete', () => {
-        let tracePayload;
+        let jobLogPayload;
 
         beforeEach(() => {
-          tracePayload = {
+          jobLogPayload = {
             html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
             complete: false,
           };
 
-          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, tracePayload);
+          mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, jobLogPayload);
         });
 
-        it('dispatches startPollingTrace', (done) => {
+        it('dispatches startPollingJobLog', (done) => {
           testAction(
-            fetchTrace,
+            fetchJobLog,
             null,
             mockedState,
             [],
             [
               { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveTraceSuccess', payload: tracePayload },
-              { type: 'startPollingTrace' },
+              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
+              { type: 'startPollingJobLog' },
             ],
             done,
           );
         });
 
-        it('does not dispatch startPollingTrace when timeout is non-empty', (done) => {
-          mockedState.traceTimeout = 1;
+        it('does not dispatch startPollingJobLog when timeout is non-empty', (done) => {
+          mockedState.jobLogTimeout = 1;
 
           testAction(
-            fetchTrace,
+            fetchJobLog,
             null,
             mockedState,
             [],
             [
               { type: 'toggleScrollisInBottom', payload: true },
-              { type: 'receiveTraceSuccess', payload: tracePayload },
+              { type: 'receiveJobLogSuccess', payload: jobLogPayload },
             ],
             done,
           );
@@ -293,15 +293,15 @@ describe('Job State actions', () => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).reply(500);
       });
 
-      it('dispatches requestTrace and receiveTraceError ', (done) => {
+      it('dispatches requestJobLog and receiveJobLogError ', (done) => {
         testAction(
-          fetchTrace,
+          fetchJobLog,
           null,
           mockedState,
           [],
           [
             {
-              type: 'receiveTraceError',
+              type: 'receiveJobLogError',
             },
           ],
           done,
@@ -310,7 +310,7 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('startPollingTrace', () => {
+  describe('startPollingJobLog', () => {
     let dispatch;
     let commit;
 
@@ -318,18 +318,18 @@ describe('Job State actions', () => {
       dispatch = jest.fn();
       commit = jest.fn();
 
-      startPollingTrace({ dispatch, commit });
+      startPollingJobLog({ dispatch, commit });
     });
 
     afterEach(() => {
       jest.clearAllTimers();
     });
 
-    it('should save the timeout id but not call fetchTrace', () => {
-      expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, expect.any(Number));
+    it('should save the timeout id but not call fetchJobLog', () => {
+      expect(commit).toHaveBeenCalledWith(types.SET_JOB_LOG_TIMEOUT, expect.any(Number));
       expect(commit.mock.calls[0][1]).toBeGreaterThan(0);
 
-      expect(dispatch).not.toHaveBeenCalledWith('fetchTrace');
+      expect(dispatch).not.toHaveBeenCalledWith('fetchJobLog');
     });
 
     describe('after timeout has passed', () => {
@@ -337,14 +337,14 @@ describe('Job State actions', () => {
         jest.advanceTimersByTime(4000);
       });
 
-      it('should clear the timeout id and fetchTrace', () => {
-        expect(commit).toHaveBeenCalledWith(types.SET_TRACE_TIMEOUT, 0);
-        expect(dispatch).toHaveBeenCalledWith('fetchTrace');
+      it('should clear the timeout id and fetchJobLog', () => {
+        expect(commit).toHaveBeenCalledWith(types.SET_JOB_LOG_TIMEOUT, 0);
+        expect(dispatch).toHaveBeenCalledWith('fetchJobLog');
       });
     });
   });
 
-  describe('stopPollingTrace', () => {
+  describe('stopPollingJobLog', () => {
     let origTimeout;
 
     beforeEach(() => {
@@ -358,40 +358,40 @@ describe('Job State actions', () => {
       window.clearTimeout = origTimeout;
     });
 
-    it('should commit STOP_POLLING_TRACE mutation ', (done) => {
-      const traceTimeout = 7;
+    it('should commit STOP_POLLING_JOB_LOG mutation ', (done) => {
+      const jobLogTimeout = 7;
 
       testAction(
-        stopPollingTrace,
+        stopPollingJobLog,
         null,
-        { ...mockedState, traceTimeout },
-        [{ type: types.SET_TRACE_TIMEOUT, payload: 0 }, { type: types.STOP_POLLING_TRACE }],
+        { ...mockedState, jobLogTimeout },
+        [{ type: types.SET_JOB_LOG_TIMEOUT, payload: 0 }, { type: types.STOP_POLLING_JOB_LOG }],
         [],
       )
         .then(() => {
-          expect(window.clearTimeout).toHaveBeenCalledWith(traceTimeout);
+          expect(window.clearTimeout).toHaveBeenCalledWith(jobLogTimeout);
         })
         .then(done)
         .catch(done.fail);
     });
   });
 
-  describe('receiveTraceSuccess', () => {
-    it('should commit RECEIVE_TRACE_SUCCESS mutation ', (done) => {
+  describe('receiveJobLogSuccess', () => {
+    it('should commit RECEIVE_JOB_LOG_SUCCESS mutation ', (done) => {
       testAction(
-        receiveTraceSuccess,
+        receiveJobLogSuccess,
         'hello world',
         mockedState,
-        [{ type: types.RECEIVE_TRACE_SUCCESS, payload: 'hello world' }],
+        [{ type: types.RECEIVE_JOB_LOG_SUCCESS, payload: 'hello world' }],
         [],
         done,
       );
     });
   });
 
-  describe('receiveTraceError', () => {
-    it('should commit stop polling trace', (done) => {
-      testAction(receiveTraceError, null, mockedState, [], [{ type: 'stopPollingTrace' }], done);
+  describe('receiveJobLogError', () => {
+    it('should commit stop polling job log', (done) => {
+      testAction(receiveJobLogError, null, mockedState, [], [{ type: 'stopPollingJobLog' }], done);
     });
   });
 

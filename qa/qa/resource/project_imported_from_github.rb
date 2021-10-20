@@ -34,7 +34,7 @@ module QA
       def fabricate_via_api!
         super
       rescue ResourceURLMissingError
-        "#{Runtime::Scenario.gitlab_address}/#{group.full_path}/#{name}"
+        "#{Runtime::Scenario.gitlab_address}/#{full_path}"
       end
 
       def api_post_path
@@ -49,7 +49,7 @@ module QA
         {
           repo_id: github_repo_id,
           new_name: name,
-          target_namespace: group.full_path,
+          target_namespace: @personal_namespace || group.full_path,
           personal_access_token: github_personal_access_token,
           ci_cd_only: false
         }

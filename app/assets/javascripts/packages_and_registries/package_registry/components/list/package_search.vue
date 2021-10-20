@@ -1,10 +1,14 @@
 <script>
-import { mapState, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import { sortableFields } from '~/packages/list/utils';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
+import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import {
+  FILTERED_SEARCH_TERM,
+  FILTERED_SEARCH_TYPE,
+} from '~/packages_and_registries/shared/constants';
 import PackageTypeToken from './tokens/package_type_token.vue';
 
 export default {
@@ -19,21 +23,71 @@ export default {
     },
   ],
   components: { RegistrySearch, UrlSync },
+  inject: ['isGroupPage'],
+  data() {
+    return {
+      filters: [],
+      sorting: {
+        orderBy: 'name',
+        sort: 'desc',
+      },
+      mountRegistrySearch: false,
+    };
+  },
   computed: {
-    ...mapState({
-      isGroupPage: (state) => state.config.isGroupPage,
-      sorting: (state) => state.sorting,
-      filter: (state) => state.filter,
-    }),
     sortableFields() {
       return sortableFields(this.isGroupPage);
     },
+    parsedSorting() {
+      const cleanOrderBy = this.sorting?.orderBy.replace('_at', '');
+      return `${cleanOrderBy}_${this.sorting?.sort}`.toUpperCase();
+    },
+    parsedFilters() {
+      const parsed = {
+        packageName: '',
+        packageType: undefined,
+      };
+
+      return this.filters.reduce((acc, filter) => {
+        if (filter.type === FILTERED_SEARCH_TYPE && filter.value?.data) {
+          return {
+            ...acc,
+            packageType: filter.value.data.toUpperCase(),
+          };
+        }
+
+        if (filter.type === FILTERED_SEARCH_TERM) {
+          return {
+            ...acc,
+            packageName: `${acc.packageName} ${filter.value.data}`.trim(),
+          };
+        }
+
+        return acc;
+      }, parsed);
+    },
+  },
+  mounted() {
+    const queryParams = getQueryParams(window.document.location.search);
+    const { sorting, filters } = extractFilterAndSorting(queryParams);
+    this.updateSorting(sorting);
+    this.updateFilters(filters);
+    this.mountRegistrySearch = true;
+    this.emitUpdate();
   },
   methods: {
-    ...mapActions(['setSorting', 'setFilter']),
+    updateFilters(newValue) {
+      this.filters = newValue;
+    },
     updateSorting(newValue) {
-      this.setSorting(newValue);
-      this.$emit('update');
+      this.sorting = { ...this.sorting, ...newValue };
+    },
+    updateSortingAndEmitUpdate(newValue) {
+      this.updateSorting(newValue);
+      this.emitUpdate();
+    },
+    emitUpdate() {
+      this.$emit('update', { sort: this.parsedSorting, filters: this.parsedFilters });
     },
   },
 };
@@ -43,13 +97,14 @@ export default {
   <url-sync>
     <template #default="{ updateQuery }">
       <registry-search
-        :filter="filter"
+        v-if="mountRegistrySearch"
+        :filter="filters"
         :sorting="sorting"
         :tokens="$options.tokens"
         :sortable-fields="sortableFields"
-        @sorting:changed="updateSorting"
-        @filter:changed="setFilter"
-        @filter:submit="$emit('update')"
+        @sorting:changed="updateSortingAndEmitUpdate"
+        @filter:changed="updateFilters"
+        @filter:submit="emitUpdate"
         @query:changed="updateQuery"
       />
     </template>

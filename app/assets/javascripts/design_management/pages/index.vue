@@ -255,7 +255,7 @@ export default {
       if (this.$route.query.version) this.$router.push({ name: DESIGNS_ROUTE_NAME });
     },
     onDesignDeleteError() {
-      const errorMessage = designDeletionError({ singular: this.selectedDesigns.length === 1 });
+      const errorMessage = designDeletionError(this.selectedDesigns.length);
       createFlash({ message: errorMessage });
     },
     onDesignDropzoneError() {

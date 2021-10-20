@@ -1,6 +1,8 @@
 import dateFormat from 'dateformat';
-import { isString, mapValues, reduce, isDate } from 'lodash';
-import { s__, n__, __ } from '../../../locale';
+import { isString, mapValues, reduce, isDate, unescape } from 'lodash';
+import { roundToNearestHalf } from '~/lib/utils/common_utils';
+import { sanitize } from '~/lib/dompurify';
+import { s__, n__, __, sprintf } from '../../../locale';
 
 /**
  * Returns i18n month names array.
@@ -360,4 +362,27 @@ export const dateToTimeInputValue = (date) => {
     minute: '2-digit',
     hour12: false,
   });
+};
+
+export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, months }) => {
+  if (months) {
+    return sprintf(s__('ValueStreamAnalytics|%{value}M'), {
+      value: roundToNearestHalf(months),
+    });
+  } else if (weeks) {
+    return sprintf(s__('ValueStreamAnalytics|%{value}w'), {
+      value: roundToNearestHalf(weeks),
+    });
+  } else if (days) {
+    return sprintf(s__('ValueStreamAnalytics|%{value}d'), {
+      value: roundToNearestHalf(days),
+    });
+  } else if (hours) {
+    return sprintf(s__('ValueStreamAnalytics|%{value}h'), { value: hours });
+  } else if (minutes) {
+    return sprintf(s__('ValueStreamAnalytics|%{value}m'), { value: minutes });
+  } else if (seconds) {
+    return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
+  }
+  return '-';
 };

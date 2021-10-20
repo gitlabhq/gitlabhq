@@ -25,7 +25,7 @@ module Security
       rescue Gitlab::Git::PreReceiveError => e
         ServiceResponse.error(message: e.message)
       rescue StandardError
-        project.repository.rm_branch(current_user, branch_name) if project.repository.branch_exists?(branch_name)
+        remove_branch_on_exception
         raise
       end
 
@@ -48,6 +48,10 @@ module Security
       def successful_change_path
         merge_request_params = { source_branch: branch_name, description: description }
         Gitlab::Routing.url_helpers.project_new_merge_request_url(project, merge_request: merge_request_params)
+      end
+
+      def remove_branch_on_exception
+        project.repository.rm_branch(current_user, branch_name) if project.repository.branch_exists?(branch_name)
       end
 
       def track_event(attributes_for_commit)

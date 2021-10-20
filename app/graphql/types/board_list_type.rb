@@ -10,8 +10,10 @@ module Types
 
     alias_method :list, :object
 
-    field :id, GraphQL::Types::ID, null: false,
+    field :id, GraphQL::Types::ID,
+          null: false,
           description: 'ID (global ID) of the list.'
+
     field :title, GraphQL::Types::String, null: false,
           description: 'Title of the list.'
     field :list_type, GraphQL::Types::String, null: false,
@@ -27,6 +29,7 @@ module Types
 
     field :issues, ::Types::IssueType.connection_type, null: true,
           description: 'Board issues.',
+          late_extensions: [Gitlab::Graphql::Board::IssuesConnectionExtension],
           resolver: ::Resolvers::BoardListIssuesResolver
 
     def issues_count
@@ -44,6 +47,16 @@ module Types
         ::Boards::Issues::ListService
           .new(list.board.resource_parent, current_user, params)
           .metadata
+      end
+    end
+
+    # board lists have a data dependency on label - so we batch load them here
+    def title
+      BatchLoader::GraphQL.for(object).batch do |lists, callback|
+        ActiveRecord::Associations::Preloader.new.preload(lists, :label) # rubocop: disable CodeReuse/ActiveRecord
+
+        # all list titles are preloaded at this point
+        lists.each { |list| callback.call(list, list.title) }
       end
     end
   end

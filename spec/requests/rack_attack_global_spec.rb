@@ -30,7 +30,11 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       throttle_unauthenticated_files_api_requests_per_period: 100,
       throttle_unauthenticated_files_api_period_in_seconds: 1,
       throttle_authenticated_files_api_requests_per_period: 100,
-      throttle_authenticated_files_api_period_in_seconds: 1
+      throttle_authenticated_files_api_period_in_seconds: 1,
+      throttle_unauthenticated_deprecated_api_requests_per_period: 100,
+      throttle_unauthenticated_deprecated_api_period_in_seconds: 1,
+      throttle_authenticated_deprecated_api_requests_per_period: 100,
+      throttle_authenticated_deprecated_api_period_in_seconds: 1
     }
   end
 
@@ -479,6 +483,67 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
     end
   end
 
+  describe 'dependency proxy' do
+    include DependencyProxyHelpers
+
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:other_group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:other_user) { create(:user) }
+
+    let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
+    let(:jwt_token) { build_jwt(user) }
+    let(:other_jwt_token) { build_jwt(other_user) }
+    let(:request_args) { [path, headers: jwt_token_authorization_headers(jwt_token)] }
+    let(:other_user_request_args) { [other_path, headers: jwt_token_authorization_headers(other_jwt_token)] }
+
+    before do
+      group.add_owner(user)
+      group.create_dependency_proxy_setting!(enabled: true)
+      other_group.add_owner(other_user)
+      other_group.create_dependency_proxy_setting!(enabled: true)
+
+      allow(Gitlab.config.dependency_proxy)
+        .to receive(:enabled).and_return(true)
+      token_response = { status: :success, token: 'abcd1234' }
+      allow_next_instance_of(DependencyProxy::RequestTokenService) do |instance|
+        allow(instance).to receive(:execute).and_return(token_response)
+      end
+    end
+
+    context 'getting a manifest' do
+      let_it_be(:manifest) { create(:dependency_proxy_manifest) }
+
+      let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/manifests/latest" }
+      let(:other_path) { "/v2/#{other_group.path}/dependency_proxy/containers/alpine/manifests/latest" }
+      let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
+
+      before do
+        allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
+          allow(instance).to receive(:execute).and_return(pull_response)
+        end
+      end
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+
+    context 'getting a blob' do
+      let_it_be(:blob) { create(:dependency_proxy_blob) }
+
+      let(:path) { "/v2/#{group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
+      let(:other_path) { "/v2/#{other_group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
+      let(:blob_response) { { status: :success, blob: blob, from_cache: false } }
+
+      before do
+        allow_next_instance_of(DependencyProxy::FindOrCreateBlobService) do |instance|
+          allow(instance).to receive(:execute).and_return(blob_response)
+        end
+      end
+
+      it_behaves_like 'rate-limited token-authenticated requests'
+    end
+  end
+
   describe 'authenticated git lfs requests', :api do
     let_it_be(:project) { create(:project, :internal) }
     let_it_be(:user) { create(:user) }
@@ -766,6 +831,213 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
         context 'when authenticated files api throttle is disabled' do
           before do
             settings_to_set[:throttle_authenticated_files_api_enabled] = false
+          end
+
+          context 'when authenticated api throttle is enabled' do
+            before do
+              settings_to_set[:throttle_authenticated_api_requests_per_period] = requests_per_period
+              settings_to_set[:throttle_authenticated_api_period_in_seconds] = period_in_seconds
+              settings_to_set[:throttle_authenticated_api_enabled] = true
+              stub_application_setting(settings_to_set)
+            end
+
+            it 'rejects requests over the authenticated api rate limit' do
+              requests_per_period.times do
+                do_request
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+
+              expect_rejection { do_request }
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe 'Deprecated API', :api do
+    let_it_be(:group) { create(:group, :public) }
+
+    let(:request_method) { 'GET' }
+    let(:path) { "/groups/#{group.id}" }
+    let(:params) { {} }
+
+    context 'unauthenticated' do
+      let(:throttle_setting_prefix) { 'throttle_unauthenticated_deprecated_api' }
+
+      def do_request
+        get(api(path), params: params)
+      end
+
+      before do
+        settings_to_set[:throttle_unauthenticated_deprecated_api_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_unauthenticated_deprecated_api_period_in_seconds] = period_in_seconds
+      end
+
+      context 'when unauthenticated deprecated api throttle is disabled' do
+        before do
+          settings_to_set[:throttle_unauthenticated_deprecated_api_enabled] = false
+          stub_application_setting(settings_to_set)
+        end
+
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            do_request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when unauthenticated api throttle is enabled' do
+          before do
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'rejects requests over the unauthenticated api rate limit' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+
+        context 'when unauthenticated web throttle is enabled' do
+          before do
+            settings_to_set[:throttle_unauthenticated_web_requests_per_period] = requests_per_period
+            settings_to_set[:throttle_unauthenticated_web_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_web_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores unauthenticated web throttle' do
+            (1 + requests_per_period).times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
+
+      context 'when unauthenticated deprecated api throttle is enabled' do
+        before do
+          settings_to_set[:throttle_unauthenticated_deprecated_api_requests_per_period] = requests_per_period # 1
+          settings_to_set[:throttle_unauthenticated_deprecated_api_period_in_seconds] = period_in_seconds # 10_000
+          settings_to_set[:throttle_unauthenticated_deprecated_api_enabled] = true
+          stub_application_setting(settings_to_set)
+        end
+
+        context 'when group endpoint is given with_project=false' do
+          let(:params) { { with_projects: false } }
+
+          it 'permits requests over the rate limit' do
+            (1 + requests_per_period).times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        it 'rejects requests over the rate limit' do
+          requests_per_period.times do
+            do_request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          expect_rejection { do_request }
+        end
+
+        context 'when unauthenticated api throttle is lower' do
+          before do
+            settings_to_set[:throttle_unauthenticated_api_requests_per_period] = 0
+            settings_to_set[:throttle_unauthenticated_api_period_in_seconds] = period_in_seconds
+            settings_to_set[:throttle_unauthenticated_api_enabled] = true
+            stub_application_setting(settings_to_set)
+          end
+
+          it 'ignores unauthenticated api throttle' do
+            requests_per_period.times do
+              do_request
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+
+            expect_rejection { do_request }
+          end
+        end
+
+        it_behaves_like 'tracking when dry-run mode is set' do
+          let(:throttle_name) { 'throttle_unauthenticated_deprecated_api' }
+        end
+      end
+    end
+
+    context 'authenticated' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:member) { group.add_owner(user) }
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+      let_it_be(:other_user) { create(:user) }
+      let_it_be(:other_user_token) { create(:personal_access_token, user: other_user) }
+
+      let(:throttle_setting_prefix) { 'throttle_authenticated_deprecated_api' }
+
+      before do
+        stub_application_setting(settings_to_set)
+      end
+
+      context 'with the token in the query string' do
+        let(:request_args) { [api(path, personal_access_token: token), {}] }
+        let(:other_user_request_args) { [api(path, personal_access_token: other_user_token), {}] }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'with the token in the headers' do
+        let(:request_args) { api_get_args_with_token_headers(path, personal_access_token_headers(token)) }
+        let(:other_user_request_args) { api_get_args_with_token_headers(path, personal_access_token_headers(other_user_token)) }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'precedence over authenticated api throttle' do
+        before do
+          settings_to_set[:throttle_authenticated_deprecated_api_requests_per_period] = requests_per_period
+          settings_to_set[:throttle_authenticated_deprecated_api_period_in_seconds] = period_in_seconds
+        end
+
+        def do_request
+          get(api(path, personal_access_token: token), params: params)
+        end
+
+        context 'when authenticated deprecated api throttle is enabled' do
+          before do
+            settings_to_set[:throttle_authenticated_deprecated_api_enabled] = true
+          end
+
+          context 'when authenticated api throttle is lower' do
+            before do
+              settings_to_set[:throttle_authenticated_api_requests_per_period] = 0
+              settings_to_set[:throttle_authenticated_api_period_in_seconds] = period_in_seconds
+              settings_to_set[:throttle_authenticated_api_enabled] = true
+              stub_application_setting(settings_to_set)
+            end
+
+            it 'ignores authenticated api throttle' do
+              requests_per_period.times do
+                do_request
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+
+              expect_rejection { do_request }
+            end
+          end
+        end
+
+        context 'when authenticated deprecated api throttle is disabled' do
+          before do
+            settings_to_set[:throttle_authenticated_deprecated_api_enabled] = false
           end
 
           context 'when authenticated api throttle is enabled' do

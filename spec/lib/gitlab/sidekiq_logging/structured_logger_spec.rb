@@ -18,7 +18,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs start and end of job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(end_payload).ordered
           expect(subject).to receive(:log_job_start).and_call_original
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
           "wrapped" => "TestWorker"
         )
 
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(end_payload).ordered
           expect(subject).to receive(:log_job_start).and_call_original
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs an exception in job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
           expect(logger).to receive(:warn).with(include(exception_payload))
           expect(subject).to receive(:log_job_start).and_call_original
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs the root cause of an Sidekiq::JobRetry::Skip exception in the job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
           expect(logger).to receive(:warn).with(include(exception_payload))
           expect(subject).to receive(:log_job_start).and_call_original
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs the root cause of an Sidekiq::JobRetry::Handled exception in the job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
           expect(logger).to receive(:warn).with(include(exception_payload))
           expect(subject).to receive(:log_job_start).and_call_original
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'keeps Sidekiq::JobRetry::Handled exception if the cause does not exist' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
           expect(logger).to receive(:warn).with(
             include(
@@ -116,7 +116,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'does not modify the job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           job_copy = job.deep_dup
 
           allow(logger).to receive(:info)
@@ -130,7 +130,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'does not modify the wrapped job' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           wrapped_job = job.merge(
             "class" => "ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper",
             "wrapped" => "TestWorker"
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs start and end of job without args' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload.except('args')).ordered
           expect(logger).to receive(:info).with(end_payload.except('args')).ordered
           expect(subject).to receive(:log_job_start).and_call_original
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs without created_at and enqueued_at fields' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           excluded_fields = %w(created_at enqueued_at args scheduling_latency_s)
 
           expect(logger).to receive(:info).with(start_payload.except(*excluded_fields)).ordered
@@ -183,9 +183,38 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       let(:scheduling_latency_s) { 7200.0 }
 
       it 'logs with scheduling latency' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(end_payload).ordered
+          expect(subject).to receive(:log_job_start).and_call_original
+          expect(subject).to receive(:log_job_done).and_call_original
+
+          call_subject(job, 'test_queue') { }
+        end
+      end
+    end
+
+    context 'with enqueue latency' do
+      let(:expected_start_payload) do
+        start_payload.merge(
+          'scheduled_at' => job['scheduled_at'],
+          'enqueue_latency_s' => 1.hour.to_f
+        )
+      end
+
+      let(:expected_end_payload) do
+        end_payload.merge('enqueue_latency_s' => 1.hour.to_f)
+      end
+
+      before do
+        # enqueued_at is set to created_at
+        job['scheduled_at'] = created_at - 1.hour
+      end
+
+      it 'logs with scheduling latency' do
+        travel_to(timestamp) do
+          expect(logger).to receive(:info).with(expected_start_payload).ordered
+          expect(logger).to receive(:info).with(expected_end_payload).ordered
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
@@ -218,7 +247,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs with Gitaly and Rugged timing data', :aggregate_failures do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
@@ -243,8 +272,22 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         expected_end_payload.merge(
           'db_duration_s' => a_value >= 0.1,
           'db_count' => a_value >= 1,
-          'db_cached_count' => 0,
-          'db_write_count' => 0
+          "db_replica_#{db_config_name}_count" => 0,
+          'db_replica_duration_s' => a_value >= 0,
+          'db_primary_count' => a_value >= 1,
+          "db_primary_#{db_config_name}_count" => a_value >= 1,
+          'db_primary_duration_s' => a_value > 0,
+          "db_primary_#{db_config_name}_duration_s" => a_value > 0
+        )
+      end
+
+      let(:end_payload) do
+        start_payload.merge(db_payload_defaults).merge(
+          'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
+          'job_status' => 'done',
+          'duration_s' => 0.0,
+          'completed_at' => timestamp.to_f,
+          'cpu_s' => 1.111112
         )
       end
 
@@ -274,59 +317,9 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
 
-      context 'when load balancing is disabled' do
-        before do
-          allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
-        end
-
-        let(:expected_end_payload_with_db) do
-          expected_end_payload.merge(
-            'db_duration_s' => a_value >= 0.1,
-            'db_count' => a_value >= 1,
-            'db_cached_count' => 0,
-            'db_write_count' => 0
-          )
-        end
-
-        include_examples 'performs database queries'
-      end
-
-      context 'when load balancing is enabled', :db_load_balancing do
-        let(:db_config_name) { ::Gitlab::Database.db_config_name(ApplicationRecord.connection) }
-
-        let(:expected_db_payload_defaults) do
-          metrics =
-            ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_counter_keys +
-            ::Gitlab::Metrics::Subscribers::ActiveRecord.load_balancing_metric_duration_keys +
-            ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_keys +
-            [:db_duration_s]
-
-          metrics.each_with_object({}) do |key, result|
-            result[key.to_s] = 0
-          end
-        end
-
-        let(:expected_end_payload_with_db) do
-          expected_end_payload.merge(expected_db_payload_defaults).merge(
-            'db_duration_s' => a_value >= 0.1,
-            'db_count' => a_value >= 1,
-            "db_replica_#{db_config_name}_count" => 0,
-            'db_replica_duration_s' => a_value >= 0,
-            'db_primary_count' => a_value >= 1,
-            "db_primary_#{db_config_name}_count" => a_value >= 1,
-            'db_primary_duration_s' => a_value > 0,
-            "db_primary_#{db_config_name}_duration_s" => a_value > 0
-          )
-        end
-
-        let(:end_payload) do
-          start_payload.merge(expected_db_payload_defaults).merge(
-            'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
-            'job_status' => 'done',
-            'duration_s' => 0.0,
-            'completed_at' => timestamp.to_f,
-            'cpu_s' => 1.111112
-          )
+      context 'when load balancing is enabled' do
+        let(:db_config_name) do
+          ::Gitlab::Database.db_config_name(ApplicationRecord.retrieve_connection)
         end
 
         include_examples 'performs database queries'
@@ -359,7 +352,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs it in the done log' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(expected_start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
@@ -401,7 +394,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs it in the done log' do
-        Timecop.freeze(timestamp) do
+        travel_to(timestamp) do
           expect(logger).to receive(:info).with(expected_start_payload).ordered
           expect(logger).to receive(:info).with(expected_end_payload).ordered
 
@@ -426,13 +419,13 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'my-message',
         'job_status' => 'my-job-status',
         'duration_s' => 0.123123,
-        'completed_at' => current_utc_time.to_f }
+        'completed_at' => current_utc_time.to_i }
     end
 
     subject { described_class.new }
 
     it 'update payload correctly' do
-      Timecop.freeze(current_utc_time) do
+      travel_to(current_utc_time) do
         subject.send(:add_time_keys!, time, payload)
 
         expect(payload).to eq(payload_with_time_keys)

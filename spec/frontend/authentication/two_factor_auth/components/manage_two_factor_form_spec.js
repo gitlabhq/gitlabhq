@@ -1,5 +1,5 @@
-import { GlForm } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
+import { GlForm } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ManageTwoFactorForm, {

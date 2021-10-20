@@ -1,0 +1,27 @@
+#import "~/packages_and_registries/package_registry/graphql/fragments/package_data.fragment.graphql"
+
+query getPackages(
+  $fullPath: ID!
+  $isGroupPage: Boolean!
+  $sort: PackageSort
+  $groupSort: PackageGroupSort
+  $packageName: String
+  $packageType: PackageTypeEnum
+) {
+  project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    packages(sort: $sort, packageName: $packageName, packageType: $packageType) {
+      count
+      nodes {
+        ...PackageData
+      }
+    }
+  }
+  group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    packages(sort: $groupSort, packageName: $packageName, packageType: $packageType) {
+      count
+      nodes {
+        ...PackageData
+      }
+    }
+  }
+}

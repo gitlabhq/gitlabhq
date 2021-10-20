@@ -73,6 +73,7 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'SEVEN_DAYS', variable: 7, default: false },
   { key: 'FOURTEEN_DAYS', variable: 14, default: false },
   { key: 'THIRTY_DAYS', variable: 30, default: false },
+  { key: 'SIXTY_DAYS', variable: 60, default: false },
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
 

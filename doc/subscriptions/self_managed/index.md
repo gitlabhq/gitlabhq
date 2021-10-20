@@ -25,8 +25,8 @@ changes to their subscription.
 
 The cost of a GitLab self-managed subscription is determined by the following:
 
-- GitLab tier
-- Subscription seats
+- [GitLab tier](https://about.gitlab.com/pricing/)
+- [Subscription seats](#subscription-seats)
 
 ## Choose a GitLab tier
 
@@ -108,6 +108,7 @@ GitLab has several features which can help you manage the number of users:
 
 - Enable the [**Require administrator approval for new sign ups**](../../user/admin_area/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups)
   option.
+- Enable `block_auto_created_users` for new sign-ups via [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or [OmniAuth](../../integration/omniauth.md#initial-omniauth-configuration).
 - Enable the [User cap](../../user/admin_area/settings/sign_up_restrictions.md#user-cap)
   option. **Available in GitLab 13.7 and later**.
 - [Disable new sign-ups](../../user/admin_area/settings/sign_up_restrictions.md), and instead manage new

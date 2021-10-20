@@ -137,8 +137,6 @@ Project event queries are limited to a maximum of 30 days.
 
 ### Instance events **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2336) in GitLab 9.3.
-
 Server-wide audit events introduce the ability to observe user actions across
 the entire instance of your GitLab server, making it easy to understand who
 changed what and when for audit purposes.

@@ -192,9 +192,15 @@ class Group < Namespace
     # Returns the ids of the passed group models where the `emails_disabled`
     # column is set to true anywhere in the ancestor hierarchy.
     def ids_with_disabled_email(groups)
-      innner_query = Gitlab::ObjectHierarchy
-        .new(Group.where('id = namespaces_with_emails_disabled.id'))
-        .base_and_ancestors
+      inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
+
+      inner_ancestors = if Feature.enabled?(:linear_group_ancestor_scopes, default_enabled: :yaml)
+                          inner_groups.self_and_ancestors
+                        else
+                          Gitlab::ObjectHierarchy.new(inner_groups).base_and_ancestors
+                        end
+
+      inner_query = inner_ancestors
         .where(emails_disabled: true)
         .select('1')
         .limit(1)
@@ -202,7 +208,7 @@ class Group < Namespace
       group_ids = Namespace
         .from('(SELECT * FROM namespaces) as namespaces_with_emails_disabled')
         .where(namespaces_with_emails_disabled: { id: groups })
-        .where('EXISTS (?)', innner_query)
+        .where('EXISTS (?)', inner_query)
         .pluck(:id)
 
       Set.new(group_ids)
@@ -701,9 +707,9 @@ class Group < Namespace
     raise ArgumentError unless SHARED_RUNNERS_SETTINGS.include?(state)
 
     case state
-    when 'disabled_and_unoverridable' then disable_shared_runners! # also disallows override
-    when 'disabled_with_override' then disable_shared_runners_and_allow_override!
-    when 'enabled' then enable_shared_runners! # set both to true
+    when SR_DISABLED_AND_UNOVERRIDABLE then disable_shared_runners! # also disallows override
+    when SR_DISABLED_WITH_OVERRIDE then disable_shared_runners_and_allow_override!
+    when SR_ENABLED then enable_shared_runners! # set both to true
     end
   end
 

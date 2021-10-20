@@ -13,10 +13,10 @@ Welcome to GitLab! We're glad to have you here!
 As a GitLab user you have access to all the features
 your [subscription](https://about.gitlab.com/pricing/)
 includes, except [GitLab administrator](../administration/index.md)
-settings, unless you have admin privileges to install, configure,
+settings, unless you have administrator privileges to install, configure,
 and upgrade your GitLab instance.
 
-Admin privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
+Administrator privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
 
 For more information on configuring GitLab self-managed instances, see the [Administrator documentation](../administration/index.md).
 
@@ -63,7 +63,7 @@ With GitLab Enterprise Edition, you can also:
 - Use [Burndown Charts](project/milestones/burndown_and_burnup_charts.md) to track progress during a sprint or while working on a new version of their software.
 - Leverage [Elasticsearch](../integration/elasticsearch.md) with [Advanced Search](search/advanced_search.md) for faster, more advanced code search across your entire GitLab instance.
 - [Authenticate users with Kerberos](../integration/kerberos.md).
-- [Mirror a repository](project/repository/repository_mirroring.md) from elsewhere on your local server.
+- [Mirror a repository](project/repository/mirror/index.md) from elsewhere on your local server.
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](../ci/pipelines/multi_project_pipelines.md).
 - [Lock files](project/file_lock.md) to prevent conflicts.
 - View the current health and status of each CI environment running on Kubernetes with [deploy boards](project/deploy_boards.md).
@@ -78,7 +78,7 @@ There are several types of users in GitLab:
 
 - Regular users and GitLab.com users. <!-- Note: further description TBA -->
 - [Groups](group/index.md) of users.
-- GitLab [admin area](admin_area/index.md) user.
+- GitLab [administrator area](admin_area/index.md) user.
 - [GitLab Administrator](../administration/index.md) with full access to
   self-managed instances' features and settings.
 - [Internal users](../development/internal_users.md).

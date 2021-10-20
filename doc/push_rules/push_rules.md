@@ -49,7 +49,7 @@ branch name.
 Your developers may not remember that policy, so they might push to
 various branches, and CI pipelines might not work as expected. By restricting the
 branch names globally in Push Rules, such mistakes are prevented.
-Any branch name that doesn't match your push rule is rejected.
+All branch names that don't match your push rule are rejected.
 
 Note that the name of your default branch is always allowed, regardless of the branch naming
 regular expression (regex) specified. GitLab is configured this way
@@ -73,7 +73,7 @@ Some example regular expressions you can use in push rules:
 By default, GitLab restricts certain formats of branch names for security purposes.
 40-character hexadecimal names, similar to Git commit hashes, are prohibited.
 
-### Custom Push Rules **(FREE SELF)**
+### Custom Push Rules **(PREMIUM SELF)**
 
 It's possible to create custom push rules rather than the push rules available in
 **Admin Area > Push Rules** by using more advanced server hooks.
@@ -104,12 +104,12 @@ The following options are available:
 |---------------------------------|-------------|
 | Removal of tags with `git push` | Forbid users to remove Git tags with `git push`. Tags can be deleted through the web UI. |
 | Check whether the commit author is a GitLab user | Restrict commits to existing GitLab users (checked against their emails). |
-| Reject unverified users **(PREMIUM)** | GitLab rejects any commit that was not committed by an authenticated user. |
-| Check whether commit is signed through GPG **(PREMIUM)** | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
+| Reject unverified users | GitLab rejects any commit that was not committed by an authenticated user. |
+| Check whether commit is signed through GPG | Reject commit when it is not signed through GPG. Read [signing commits with GPG](../user/project/repository/gpg_signed_commits/index.md). |
 | Prevent pushing secret files | GitLab rejects any files that are likely to contain secrets. See the [forbidden file names](#prevent-pushing-secrets-to-the-repository). |
 | Require expression in commit messages | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Reject expression in commit messages | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
-| Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
+| Restrict by branch name | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow all branch names. |
 | Restrict by commit author's email | Only commit author's email that match this regular expression are allowed to be pushed. Leave empty to allow any email. |
 | Prohibited file names | Any committed filenames that match this regular expression and do not already exist in the repository are not allowed to be pushed. Leave empty to allow any filenames. See [common examples](#prohibited-file-names). |
 | Maximum file size | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. Files tracked by Git LFS are exempted. |
@@ -117,7 +117,7 @@ The following options are available:
 NOTE:
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in push rules, and you can test them at the [regex101 regex tester](https://regex101.com/).
 
-### Caveat to "Reject unsigned commits" push rule **(PREMIUM)**
+### Caveat to "Reject unsigned commits" push rule
 
 This push rule ignores commits that are authenticated and created by GitLab
 (either through the UI or API). When the **Reject unsigned commits** push rule is

@@ -125,15 +125,6 @@ module IntegrationsHelper
     !Gitlab.com?
   end
 
-  def integration_tabs(integration:)
-    [
-      { key: 'edit', text: _('Settings'), href: scoped_edit_integration_path(integration) },
-      (
-        { key: 'overrides', text: s_('Integrations|Projects using custom settings'), href: scoped_overrides_integration_path(integration) } if integration.instance_level?
-      )
-    ].compact
-  end
-
   def jira_issue_breadcrumb_link(issue_reference)
     link_to '', { class: 'gl-display-flex gl-align-items-center gl-white-space-nowrap' } do
       icon = image_tag image_path('illustrations/logos/jira.svg'), width: 15, height: 15, class: 'gl-mr-2'

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :smoke do
-    describe 'Project' do
+    describe 'Project', :requires_admin do
       shared_examples 'successful project creation' do
         it 'creates a new project' do
           Page::Project::Show.perform do |project|
@@ -17,6 +17,7 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable(:paginatable_namespace_drop_down_for_project_creation)
         Flow::Login.sign_in
         project
       end
@@ -39,7 +40,7 @@ module QA
           Resource::Project.fabricate_via_browser_ui! do |project|
             project.name = project_name
             project.description = 'create awesome project test'
-            project.personal_namespace = true
+            project.personal_namespace = Runtime::User.username
           end
         end
 

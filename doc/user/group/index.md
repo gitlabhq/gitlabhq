@@ -571,10 +571,11 @@ To restrict group access by IP address:
 
 ## Restrict group access by domain **(PREMIUM)**
 
->- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
->- Support for specifying multiple email domains [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) added in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
+> - Support for restricting access to projects within the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 
-You can prevent users with email addresses in specific domains from being added to a group.
+You can prevent users with email addresses in specific domains from being added to a group and its projects.
 
 To restrict group access by domain:
 
@@ -592,9 +593,6 @@ Some domains cannot be restricted. These are the most popular public email domai
 - `gmail.com`, `yahoo.com`, `aol.com`, `icloud.com`
 - `hotmail.com`, `hotmail.co.uk`, `hotmail.fr`
 - `msn.com`, `live.com`, `outlook.com`
-
-NOTE:
-Domain restrictions apply to groups only. They do not prevent users from being added as members of projects owned by the restricted group.
 
 ## Group file templates **(PREMIUM)**
 
@@ -732,6 +730,27 @@ The group's new subgroups have push rules set for them based on either:
 - The closest parent group with push rules defined.
 - Push rules set at the instance level, if no parent groups have push rules defined.
 
+## Group approval rules **(PREMIUM)**
+
+> Introduced in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+per group, ask an administrator to [enable the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md).
+The feature is not ready for production use.
+
+Group approval rules are an in-development feature that provides an interface for managing
+[project merge request approval rules](../project/merge_requests/approvals/index.md) at the
+top-level group level. When rules are configured [at the instance level](../admin_area/merge_requests_approvals.md),
+you can't edit locked rules.
+
+To view the merge request approval rules UI for a group:
+
+1. Go to the top-level group's **Settings > General** page.
+1. Expand the **Merge request approvals** section.
+1. Select the settings you want.
+1. Select **Save changes**.
+
 ## Related topics
 
 - [Group wikis](../project/wiki/index.md)
@@ -769,3 +788,22 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 
 In viewing the log entries, compare the `remote.ip` with the list of
 [allowed IPs](#restrict-group-access-by-ip-address) for the group.
+
+### Validation errors on namespaces and groups
+
+[GitLab 14.4 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70365) performs
+the following checks when creating or updating namespaces or groups:
+
+- Namespaces must not have parents.
+- Group parents must be groups and not namespaces.
+
+You can disable the validation if GitLab shows the following errors:
+
+- `A user namespace cannot have a parent`.
+- `A group cannot have a user namespace as its parent`.
+
+To disable the validation,
+[disable the `validate_namespace_parent_type` flag](../../administration/feature_flags.md).
+
+In the unlikely event that you had to disable this feature flag to prevent errors,
+[contact Support](https://about.gitlab.com/support/) so that we can improve this validation.

@@ -1,3 +1,4 @@
+#import "~/graphql_shared/fragments/milestone.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
 
 fragment IssueNode on Issue {
@@ -15,6 +16,9 @@ fragment IssueNode on Issue {
   hidden
   webUrl
   relativePosition
+  milestone {
+    ...MilestoneFragment
+  }
   assignees {
     nodes {
       ...User

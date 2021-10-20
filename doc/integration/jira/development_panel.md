@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Jira Development panel integration **(FREE)**
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) to GitLab Free in 13.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
 With the Jira Development panel integration, you can reference Jira issues in GitLab.
 When configured, activity (such as pipeline, deployment, and feature flags) displays in the Jira issue's
@@ -69,13 +69,13 @@ To simplify administration, we recommend that a GitLab group maintainer or group
 
 | Jira usage | GitLab.com customers need | GitLab self-managed customers need |
 |------------|---------------------------|------------------------------------|
-| [Atlassian cloud](https://www.atlassian.com/cloud) | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab.com and Jira. For more information, see the documentation for the [GitLab.com for Jira Cloud app](connect-app.md). | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab.com for Jira Cloud app for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
+| [Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud) | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview) installed from the [Atlassian Marketplace](https://marketplace.atlassian.com). This offers real-time sync between GitLab.com and Jira. For more information, see the documentation for the [GitLab.com for Jira Cloud app](connect-app.md). | The [GitLab.com for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?hosting=cloud&tab=overview), using a workaround process. See the documentation for [installing the GitLab.com for Jira Cloud app for self-managed instances](connect-app.md#install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances) for more information. |
 | Your own server | The [Jira DVCS (distributed version control system) connector](dvcs.md). This syncs data hourly. | The [Jira DVCS Connector](dvcs.md). |
 
 Each GitLab project can be configured to connect to an entire Jira instance. That means after
 configuration, one GitLab project can interact with all Jira projects in that instance. For:
 
-- The [view Jira issues](issues.md#view-jira-issues) feature **(PREMIUM)**, you must associate a GitLab project with a
+- The [view Jira issues](issues.md#view-jira-issues) feature, you must associate a GitLab project with a
   specific Jira project.
 - Other features, you do not have to explicitly associate a GitLab project with any single Jira
   project.

@@ -229,7 +229,7 @@ You can now visit GitLab with your browser at the new external URL.
 Use the domain name you set up earlier to visit your new GitLab instance
 in your browser. In this example, it's `https://gitlab-prod.eastus.cloudapp.azure.com`.
 
-The first thing that appears is the sign-in page. GitLab creates an admin user by default.
+The first thing that appears is the sign-in page. GitLab creates an administrator user by default.
 The credentials are:
 
 - Username: `root`

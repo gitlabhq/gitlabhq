@@ -5,15 +5,18 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue';
+import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import { runnerData } from '../../mock_data';
+import { runnersData, runnerData } from '../../mock_data';
 
-const mockRunner = runnerData.data.runner;
+const mockRunner = runnersData.data.runners.nodes[0];
+const mockRunnerDetails = runnerData.data.runner;
 
 const getRunnersQueryName = getRunnersQuery.definitions[0].name.value;
+const getGroupRunnersQueryName = getGroupRunnersQuery.definitions[0].name.value;
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -36,6 +39,7 @@ describe('RunnerTypeCell', () => {
         propsData: {
           runner: {
             id: mockRunner.id,
+            adminUrl: mockRunner.adminUrl,
             active,
           },
         },
@@ -61,7 +65,7 @@ describe('RunnerTypeCell', () => {
     runnerUpdateMutationHandler.mockResolvedValue({
       data: {
         runnerUpdate: {
-          runner: runnerData.data.runner,
+          runner: mockRunnerDetails,
           errors: [],
         },
       },
@@ -78,7 +82,7 @@ describe('RunnerTypeCell', () => {
   it('Displays the runner edit link with the correct href', () => {
     createComponent();
 
-    expect(findEditBtn().attributes('href')).toBe('/admin/runners/1');
+    expect(findEditBtn().attributes('href')).toBe(mockRunner.adminUrl);
   });
 
   describe.each`
@@ -231,7 +235,7 @@ describe('RunnerTypeCell', () => {
             },
           },
           awaitRefetchQueries: true,
-          refetchQueries: [getRunnersQueryName],
+          refetchQueries: [getRunnersQueryName, getGroupRunnersQueryName],
         });
       });
 

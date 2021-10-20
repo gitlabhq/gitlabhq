@@ -34,6 +34,8 @@ export const mockLabels = [
 ];
 
 export const mockConfig = {
+  iid: '1',
+  fullPath: 'test',
   allowMultiselect: true,
   labelsListTitle: 'Assign labels',
   labelsCreateTitle: 'Create label',
@@ -86,7 +88,7 @@ export const createLabelSuccessfulResponse = {
   },
 };
 
-export const labelsQueryResponse = {
+export const workspaceLabelsQueryResponse = {
   data: {
     workspace: {
       labels: {
@@ -104,6 +106,26 @@ export const labelsQueryResponse = {
             title: 'Label2',
           },
         ],
+      },
+    },
+  },
+};
+
+export const issuableLabelsQueryResponse = {
+  data: {
+    workspace: {
+      issuable: {
+        id: '1',
+        labels: {
+          nodes: [
+            {
+              color: '#330066',
+              description: null,
+              id: 'gid://gitlab/ProjectLabel/1',
+              title: 'Label1',
+            },
+          ],
+        },
       },
     },
   },

@@ -12,10 +12,6 @@ RSpec.describe MetricsDashboard, '(JavaScript fixtures)', type: :controller do
   let_it_be(:environment) { create(:environment, id: 1, project: project) }
   let_it_be(:params) { { environment: environment } }
 
-  before(:all) do
-    clean_frontend_fixtures('metrics_dashboard/')
-  end
-
   controller(::ApplicationController) do
     include MetricsDashboard
   end

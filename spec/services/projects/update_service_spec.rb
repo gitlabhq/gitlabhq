@@ -374,7 +374,7 @@ RSpec.describe Projects::UpdateService do
 
         expect(result).to eq({
           status: :error,
-          message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
+          message: "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'."
         })
       end
     end
@@ -441,26 +441,62 @@ RSpec.describe Projects::UpdateService do
       end
     end
 
-    context 'when updating #shared_runners', :https_pages_enabled do
-      let!(:pending_build) { create(:ci_pending_build, project: project, instance_runners_enabled: true) }
-
-      subject(:call_service) do
-        update_project(project, admin, shared_runners_enabled: shared_runners_enabled)
+    context 'when updating runners settings' do
+      let(:settings) do
+        { instance_runners_enabled: true, namespace_traversal_ids: [123] }
       end
 
-      context 'when shared runners is toggled' do
-        let(:shared_runners_enabled) { false }
+      let!(:pending_build) do
+        create(:ci_pending_build, project: project, **settings)
+      end
 
-        it 'updates ci pending builds' do
-          expect { call_service }.to change { pending_build.reload.instance_runners_enabled }.to(false)
+      context 'when project has shared runners enabled' do
+        let(:project) { create(:project, shared_runners_enabled: true) }
+
+        it 'updates builds queue when shared runners get disabled' do
+          expect { update_project(project, admin, shared_runners_enabled: false) }
+            .to change { pending_build.reload.instance_runners_enabled }.to(false)
+
+          expect(pending_build.reload.instance_runners_enabled).to be false
         end
       end
 
-      context 'when shared runners is not toggled' do
-        let(:shared_runners_enabled) { true }
+      context 'when project has shared runners disabled' do
+        let(:project) { create(:project, shared_runners_enabled: false) }
 
-        it 'updates ci pending builds' do
-          expect { call_service }.to not_change { pending_build.reload.instance_runners_enabled }
+        it 'updates builds queue when shared runners get enabled' do
+          expect { update_project(project, admin, shared_runners_enabled: true) }
+            .to not_change { pending_build.reload.instance_runners_enabled }
+
+          expect(pending_build.reload.instance_runners_enabled).to be true
+        end
+      end
+
+      context 'when project has group runners enabled' do
+        let(:project) { create(:project, group_runners_enabled: true) }
+
+        before do
+          project.ci_cd_settings.update!(group_runners_enabled: true)
+        end
+
+        it 'updates builds queue when group runners get disabled' do
+          update_project(project, admin, group_runners_enabled: false)
+
+          expect(pending_build.reload.namespace_traversal_ids).to be_empty
+        end
+      end
+
+      context 'when project has group runners disabled' do
+        let(:project) { create(:project, :in_subgroup, group_runners_enabled: false) }
+
+        before do
+          project.reload.ci_cd_settings.update!(group_runners_enabled: false)
+        end
+
+        it 'updates builds queue when group runners get enabled' do
+          update_project(project, admin, group_runners_enabled: true)
+
+          expect(pending_build.reload.namespace_traversal_ids).to include(project.namespace.id)
         end
       end
     end

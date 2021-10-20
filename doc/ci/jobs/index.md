@@ -45,8 +45,6 @@ Clicking an individual job shows you its job log, and allows you to:
 
 ## See why a job failed
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17782) in GitLab 10.7.
-
 When a pipeline fails or is allowed to fail, there are several places where you
 can find the reason:
 
@@ -58,8 +56,7 @@ In each place, if you hover over the failed job you can see the reason it failed
 
 ![Pipeline detail](img/job_failure_reason.png)
 
-In [GitLab 10.8 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17814),
-you can also see the reason it failed on the Job detail page.
+You can also see the reason it failed on the Job detail page.
 
 ## The order of jobs in a pipeline
 
@@ -86,8 +83,6 @@ For example:
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
 ## Group jobs in a pipeline
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6242) in GitLab 8.12.
 
 If you have many similar jobs, your [pipeline graph](../pipelines/index.md#visualize-pipelines) becomes long and hard
 to read.
@@ -163,8 +158,6 @@ for a single run of the manual job.
 ![Manual job variables](img/manual_job_variables_v13_10.png)
 
 ## Delay a job
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21767) in GitLab 11.4.
 
 When you do not want to run a job immediately, you can use the [`when:delayed`](../jobs/job_control.md#run-a-job-after-a-delay) keyword to
 delay a job's execution for a certain period.

@@ -1,4 +1,5 @@
 import { s__ } from '~/locale';
+import { stateToComponentMap as classStateMap, stateKey } from './stores/state_maps';
 
 export const SUCCESS = 'success';
 export const WARNING = 'warning';
@@ -52,3 +53,99 @@ export const MERGE_ACTIVE_STATUS_PHRASES = [
     emoji: 'heart_eyes',
   },
 ];
+
+const STATE_MACHINE = {
+  states: {
+    IDLE: 'IDLE',
+    MERGING: 'MERGING',
+    AUTO_MERGE: 'AUTO_MERGE',
+  },
+  transitions: {
+    MERGE: 'start-merge',
+    AUTO_MERGE: 'start-auto-merge',
+    MERGE_FAILURE: 'merge-failed',
+    MERGED: 'merge-done',
+  },
+};
+const { states, transitions } = STATE_MACHINE;
+
+STATE_MACHINE.definition = {
+  initial: states.IDLE,
+  states: {
+    [states.IDLE]: {
+      on: {
+        [transitions.MERGE]: states.MERGING,
+        [transitions.AUTO_MERGE]: states.AUTO_MERGE,
+      },
+    },
+    [states.MERGING]: {
+      on: {
+        [transitions.MERGED]: states.IDLE,
+        [transitions.MERGE_FAILURE]: states.IDLE,
+      },
+    },
+    [states.AUTO_MERGE]: {
+      on: {
+        [transitions.MERGED]: states.IDLE,
+        [transitions.MERGE_FAILURE]: states.IDLE,
+      },
+    },
+  },
+};
+
+export const stateToTransitionMap = {
+  [stateKey.merging]: transitions.MERGE,
+  [stateKey.merged]: transitions.MERGED,
+  [stateKey.autoMergeEnabled]: transitions.AUTO_MERGE,
+};
+export const stateToComponentMap = {
+  [states.MERGING]: classStateMap[stateKey.merging],
+  [states.AUTO_MERGE]: classStateMap[stateKey.autoMergeEnabled],
+};
+
+export const EXTENSION_ICONS = {
+  failed: 'failed',
+  warning: 'warning',
+  success: 'success',
+  neutral: 'neutral',
+  error: 'error',
+  notice: 'notice',
+  severityCritical: 'severityCritical',
+  severityHigh: 'severityHigh',
+  severityMedium: 'severityMedium',
+  severityLow: 'severityLow',
+  severityInfo: 'severityInfo',
+  severityUnknown: 'severityUnknown',
+};
+
+export const EXTENSION_ICON_NAMES = {
+  failed: 'status-failed',
+  warning: 'status-alert',
+  success: 'status-success',
+  neutral: 'status-neutral',
+  error: 'status-alert',
+  notice: 'status-alert',
+  severityCritical: 'severity-critical',
+  severityHigh: 'severity-high',
+  severityMedium: 'severity-medium',
+  severityLow: 'severity-low',
+  severityInfo: 'severity-info',
+  severityUnknown: 'severity-unknown',
+};
+
+export const EXTENSION_ICON_CLASS = {
+  failed: 'gl-text-red-500',
+  warning: 'gl-text-orange-500',
+  success: 'gl-text-green-500',
+  neutral: 'gl-text-gray-400',
+  error: 'gl-text-red-500',
+  notice: 'gl-text-gray-500',
+  severityCritical: 'gl-text-red-800',
+  severityHigh: 'gl-text-red-600',
+  severityMedium: 'gl-text-orange-400',
+  severityLow: 'gl-text-orange-300',
+  severityInfo: 'gl-text-blue-400',
+  severityUnknown: 'gl-text-gray-400',
+};
+
+export { STATE_MACHINE };

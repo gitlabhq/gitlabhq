@@ -1,7 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import { getJSONFixture } from 'helpers/fixtures';
+import testReports from 'test_fixtures/pipelines/test_report.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/pipelines/components/test_reports/empty_state.vue';
 import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
@@ -15,8 +15,6 @@ localVue.use(Vuex);
 describe('Test reports app', () => {
   let wrapper;
   let store;
-
-  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const loadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const testsDetail = () => wrapper.findByTestId('tests-detail');

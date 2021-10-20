@@ -60,7 +60,7 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('should render loading text', () => {
-      expect(findWidget().text()).toEqual('Loading codeclimate report');
+      expect(findWidget().text()).toEqual('Loading Code quality report');
     });
   });
 
@@ -84,7 +84,7 @@ describe('Grouped code quality reports app', () => {
         });
 
         it('renders summary text', () => {
-          expect(findWidget().text()).toContain('Code quality degraded on 1 point');
+          expect(findWidget().text()).toContain('Code quality degraded');
         });
 
         it('renders custom codequality issue body', () => {
@@ -99,7 +99,7 @@ describe('Grouped code quality reports app', () => {
         });
 
         it('renders summary text', () => {
-          expect(findWidget().text()).toContain('Code quality improved on 1 point');
+          expect(findWidget().text()).toContain('Code quality improved');
         });
 
         it('renders custom codequality issue body', () => {
@@ -115,7 +115,7 @@ describe('Grouped code quality reports app', () => {
 
         it('renders summary text', () => {
           expect(findWidget().text()).toContain(
-            'Code quality improved on 1 point and degraded on 1 point',
+            'Code quality scanning detected 2 changes in merged results',
           );
         });
 
@@ -132,7 +132,7 @@ describe('Grouped code quality reports app', () => {
     });
 
     it('renders error text', () => {
-      expect(findWidget().text()).toContain('Failed to load codeclimate report');
+      expect(findWidget().text()).toContain('Failed to load Code quality report');
     });
 
     it('does not render a help icon', () => {

@@ -95,7 +95,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
       end
     end
 
-    context 'when the user cannot see the target project' do
+    context 'when the user cannot see the target project', :sidekiq_inline do
       it 'returns not found' do
         message = "issue move #{issue.iid} #{other_project.full_path}"
         other_project.team.truncate

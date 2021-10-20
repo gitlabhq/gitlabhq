@@ -57,7 +57,7 @@ on non-Go GitLab subsystems.
 ## Enabling distributed tracing
 
 GitLab uses the `GITLAB_TRACING` environment variable to configure distributed tracing. The same
-configuration is used for all components (e.g., Workhorse, Rails, etc).
+configuration is used for all components (for example, Workhorse, Rails, etc).
 
 When `GITLAB_TRACING` is not set, the application isn't instrumented, meaning that there is
 no overhead at all.

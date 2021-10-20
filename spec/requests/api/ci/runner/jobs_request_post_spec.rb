@@ -816,7 +816,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
 
             subject { request_job(id: job.id) }
 
-            it_behaves_like 'storing arguments in the application context' do
+            it_behaves_like 'storing arguments in the application context for the API' do
               let(:expected_params) { { user: user.username, project: project.full_path, client_id: "user/#{user.id}" } }
             end
 
@@ -827,7 +827,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when the runner is of project type' do
-            it_behaves_like 'storing arguments in the application context' do
+            it_behaves_like 'storing arguments in the application context for the API' do
               let(:expected_params) { { project: project.full_path, client_id: "runner/#{runner.id}" } }
             end
 
@@ -841,7 +841,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
             let(:group) { create(:group) }
             let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
-            it_behaves_like 'storing arguments in the application context' do
+            it_behaves_like 'storing arguments in the application context for the API' do
               let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{runner.id}" } }
             end
 

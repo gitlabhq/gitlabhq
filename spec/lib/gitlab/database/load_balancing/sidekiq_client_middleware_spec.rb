@@ -5,14 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
   let(:middleware) { described_class.new }
 
-  let(:load_balancer) { double.as_null_object }
   let(:worker_class) { 'TestDataConsistencyWorker' }
   let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
 
   before do
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
-    allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
   end
 
   after do
@@ -23,7 +21,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
     middleware.call(worker_class, job, nil, nil) {}
   end
 
-  describe '#call' do
+  describe '#call', :database_replica do
     shared_context 'data consistency worker class' do |data_consistency, feature_flag|
       let(:expected_consistency) { data_consistency }
       let(:worker_class) do
@@ -85,9 +83,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         end
 
         it 'passes database_replica_location' do
-          expected_location = { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location }
+          expected_location = {}
 
-          expect(load_balancer).to receive_message_chain(:host, "database_replica_location").and_return(location)
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            expect(lb.host)
+              .to receive(:database_replica_location)
+              .and_return(location)
+
+            expected_location[lb.name] = location
+          end
 
           run_middleware
 
@@ -103,9 +107,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
         end
 
         it 'passes primary write location', :aggregate_failures do
-          expected_location = { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location }
+          expected_location = {}
 
-          expect(load_balancer).to receive(:primary_write_location).and_return(location)
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            expect(lb)
+              .to receive(:primary_write_location)
+              .and_return(location)
+
+            expected_location[lb.name] = location
+          end
 
           run_middleware
 
@@ -137,8 +147,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
       let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
 
       before do
-        allow(load_balancer).to receive(:primary_write_location).and_return(new_location)
-        allow(load_balancer).to receive(:database_replica_location).and_return(new_location)
+        Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+          allow(lb).to receive(:primary_write_location).and_return(new_location)
+          allow(lb).to receive(:database_replica_location).and_return(new_location)
+        end
       end
 
       shared_examples_for 'does not set database location again' do |use_primary|

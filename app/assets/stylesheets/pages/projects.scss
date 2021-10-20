@@ -622,12 +622,6 @@ pre.light-well {
     }
   }
 
-  .star-button {
-    .icon {
-      top: 0;
-    }
-  }
-
   .icon-container {
     @include media-breakpoint-down(xs) {
       margin-right: $gl-padding-8;
@@ -935,16 +929,6 @@ pre.light-well {
   hr {
     margin: 32px 0;
     border-color: $border-color;
-  }
-}
-
-.project-ci-linter {
-  .ci-editor {
-    height: 400px;
-  }
-
-  .ci-template pre {
-    white-space: pre-wrap;
   }
 }
 

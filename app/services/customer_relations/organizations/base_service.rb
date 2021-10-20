@@ -10,7 +10,7 @@ module CustomerRelations
       end
 
       def error(message)
-        ServiceResponse.error(message: message)
+        ServiceResponse.error(message: Array(message))
       end
     end
   end

@@ -81,8 +81,8 @@ export default {
     },
   },
   i18n: {
-    fullDescription: __('Choose any color. Or you can choose one of the suggested colors below'),
-    shortDescription: __('Choose any color'),
+    fullDescription: __('Enter any color or choose one of the suggested colors below.'),
+    shortDescription: __('Enter any color.'),
   },
 };
 </script>

@@ -17,6 +17,8 @@ RSpec.describe Ci::Bridge do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
+  it { is_expected.to respond_to(:runner_features) }
+
   it 'has many sourced pipelines' do
     expect(bridge).to have_many(:sourced_pipelines)
   end
@@ -76,7 +78,7 @@ RSpec.describe Ci::Bridge do
 
           bridge.enqueue!
 
-          expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+          expect(::Ci::CreateDownstreamPipelineWorker.jobs.last['args']).to eq([bridge.id])
         end
       end
 
@@ -85,7 +87,7 @@ RSpec.describe Ci::Bridge do
 
         bridge.enqueue_waiting_for_resource!
 
-        expect(::Ci::CreateCrossProjectPipelineWorker.jobs.last['args']).to eq([bridge.id])
+        expect(::Ci::CreateDownstreamPipelineWorker.jobs.last['args']).to match_array([bridge.id])
       end
 
       it 'raises error when the status is failed' do

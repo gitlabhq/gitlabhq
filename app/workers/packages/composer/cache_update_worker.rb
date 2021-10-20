@@ -7,20 +7,14 @@ module Packages
 
       data_consistency :always
 
-      sidekiq_options retry: 3
+      sidekiq_options retry: false
 
       feature_category :package_registry
 
       idempotent!
 
-      def perform(project_id, package_name, last_page_sha)
-        project = Project.find_by_id(project_id)
-
-        return unless project
-
-        Gitlab::Composer::Cache.new(project: project, name: package_name, last_page_sha: last_page_sha).execute
-      rescue StandardError => e
-        Gitlab::ErrorTracking.log_exception(e, project_id: project_id)
+      def perform(*args)
+        # no-op: to be removed after 14.5 https://gitlab.com/gitlab-org/gitlab/-/issues/333694
       end
     end
   end

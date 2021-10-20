@@ -1218,6 +1218,9 @@ production: &base
     # The URL to the internal KAS API (used by the GitLab backend)
     # internal_url: grpc://localhost:8153
 
+    # The URL to the Kubernetes API proxy (used by GitLab users)
+    # external_k8s_proxy_url: https://localhost:8154 # default: nil
+
   ## GitLab Elasticsearch settings
   elasticsearch:
     indexer_path: /home/git/gitlab-elasticsearch-indexer/
@@ -1291,6 +1294,9 @@ production: &base
 
     ## Google tag manager
     # google_tag_manager_id: '_your_tracking_id'
+
+    ## OneTrust
+    # one_trust_id: '_your_one_trust_id'
 
     ## Matomo analytics.
     # matomo_url: '_your_matomo_url'

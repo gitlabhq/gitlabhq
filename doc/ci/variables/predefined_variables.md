@@ -20,6 +20,7 @@ There are also [Kubernetes-specific deployment variables](../../user/project/clu
 |------------------------------------------|--------|--------|-------------|
 | `CHAT_CHANNEL`                           | 10.6   | all    | The Source chat channel that triggered the [ChatOps](../chatops/index.md) command. |
 | `CHAT_INPUT`                             | 10.6   | all    | The additional arguments passed with the [ChatOps](../chatops/index.md) command. |
+| `CHAT_USER_ID`                           | 14.4   | all    | The chat service's user ID of the user who triggered the [ChatOps](../chatops/index.md) command. |
 | `CI`                                     | all    | 0.4    | Available for all jobs executed in CI/CD. `true` when available. |
 | `CI_API_V4_URL`                          | 11.7   | all    | The GitLab API v4 root URL. |
 | `CI_BUILDS_DIR`                          | all    | 11.10  | The top-level directory where builds are executed. |

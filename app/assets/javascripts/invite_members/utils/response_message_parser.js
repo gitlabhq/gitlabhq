@@ -18,7 +18,10 @@ function responseMessageStringForMultiple(message) {
   return message.includes(':');
 }
 function responseMessageStringFirstPart(message) {
-  return message.split(' and ')[0];
+  const firstPart = message.split(':')[1];
+  const firstMsg = firstPart.split(/ and [\w-]*$/)[0].trim();
+
+  return firstMsg;
 }
 
 export function responseMessageFromError(response) {

@@ -183,7 +183,7 @@ module Gitlab
 
         def parsed_relation_hash
           strong_memoize(:parsed_relation_hash) do
-            if Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml) && attributes_permitter.permitted_attributes_defined?(@relation_sym)
+            if use_attributes_permitter? && attributes_permitter.permitted_attributes_defined?(@relation_sym)
               attributes_permitter.permit(@relation_sym, @relation_hash)
             else
               Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash, relation_class: relation_class)
@@ -193,6 +193,10 @@ module Gitlab
 
         def attributes_permitter
           @attributes_permitter ||= Gitlab::ImportExport::AttributesPermitter.new
+        end
+
+        def use_attributes_permitter?
+          Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml)
         end
 
         def existing_or_new_object

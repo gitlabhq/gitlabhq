@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import data from 'test_fixtures/deploy_keys/keys.json';
 import key from '~/deploy_keys/components/key.vue';
 import DeployKeysStore from '~/deploy_keys/store';
 import { getTimeago } from '~/lib/utils/datetime_utility';
@@ -6,8 +7,6 @@ import { getTimeago } from '~/lib/utils/datetime_utility';
 describe('Deploy keys key', () => {
   let wrapper;
   let store;
-
-  const data = getJSONFixture('deploy_keys/keys.json');
 
   const findTextAndTrim = (selector) => wrapper.find(selector).text().trim();
 

@@ -95,7 +95,7 @@ export default {
           <gl-sprintf
             :message="
               __(
-                'Save space and find images in the container Registry. remove unneeded tags and keep only the ones you want. %{linkStart}How does cleanup work?%{linkEnd}',
+                'Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}',
               )
             "
           >

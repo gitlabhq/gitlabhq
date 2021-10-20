@@ -17,7 +17,7 @@ module Ci
     def execute(build)
       build.ensure_scheduling_type!
 
-      reprocess!(build).tap do |new_build|
+      clone!(build).tap do |new_build|
         check_assignable_runners!(new_build)
         next if new_build.failed?
 
@@ -31,7 +31,12 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def reprocess!(build)
+    def clone!(build)
+      # Cloning a build requires a strict type check to ensure
+      # the attributes being used for the clone are taken straight
+      # from the model and not overridden by other abstractions.
+      raise TypeError unless build.instance_of?(Ci::Build)
+
       check_access!(build)
 
       new_build = clone_build(build)

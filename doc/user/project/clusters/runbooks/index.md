@@ -63,8 +63,9 @@ information.
 Follow this step-by-step guide to configure an executable runbook in GitLab using
 the components outlined above and the pre-loaded demo runbook.
 
-1. Create an [OAuth Application for JupyterHub](../../../../integration/oauth_provider.md#gitlab-as-an-oauth-20-authentication-service-provider).
-1. When [installing JupyterHub with Helm](https://zero-to-jupyterhub.readthedocs.io/en/latest/jupyterhub/installation.html), use the following values
+1. Create an [OAuth application for JupyterHub](../../../../integration/oauth_provider.md).
+1. When [installing JupyterHub with Helm](https://zero-to-jupyterhub.readthedocs.io/en/latest/jupyterhub/installation.html),
+   use the following values:
 
    ```yaml
    #-----------------------------------------------------------------------------

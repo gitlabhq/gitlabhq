@@ -20,7 +20,7 @@ Please make sure the spec files pass in AS-IF-FOSS mode either:
 
 1. Locally with `FOSS_ONLY=1 bin/rspec -- %<spec_files>s`.
 1. In the MR pipeline by verifying that the `rspec foss-impact` job has passed.
-1. In the MR pipelines by including `RUN AS-IF-FOSS` in the MR title (you can do it with the ``/title %<mr_title>s [RUN AS-IF-FOSS]`` quick action) and start a new MR pipeline.
+1. In the MR pipelines by setting the ~"pipeline:run-as-if-foss" label on the MR (you can do it with the `/label ~"pipeline:run-as-if-foss"` quick action) and start a new MR pipeline.
 
 MSG
 
@@ -32,11 +32,12 @@ request specs (and/or feature specs). Please add request specs under
 See https://gitlab.com/groups/gitlab-org/-/epics/5076 for information.
 MSG
 
-has_app_changes = helper.all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-has_ee_app_changes = helper.all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
-spec_changes = helper.all_changed_files.grep(%r{\Aspec/})
+all_changed_files = helper.all_changed_files
+has_app_changes = all_changed_files.grep(%r{\A(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+has_ee_app_changes = all_changed_files.grep(%r{\Aee/(app|lib|db/(geo/)?(post_)?migrate)/}).any?
+spec_changes = specs.changed_specs_files(ee: :exclude)
 has_spec_changes = spec_changes.any?
-has_ee_spec_changes = helper.all_changed_files.grep(%r{\Aee/spec/}).any?
+has_ee_spec_changes = specs.changed_specs_files(ee: :only).any?
 new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
 
 if (has_app_changes || has_ee_app_changes) && !(has_spec_changes || has_ee_spec_changes) && new_specs_needed
@@ -45,10 +46,14 @@ end
 
 # The only changes outside `ee/` are in `spec/`
 if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_changes)
-  warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" "), mr_title: gitlab.mr_json['title']), sticky: false
+  warn format(EE_CHANGE_WITH_FOSS_SPEC_CHANGE_MESSAGE, spec_files: spec_changes.join(" ")), sticky: false
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
-if git.added_files.grep(%r{^(ee/)?spec/controllers/}).any?
+if project_helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
   warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
+end
+
+specs.changed_specs_files.each do |filename|
+  specs.add_suggestions_for_match_with_array(filename)
 end

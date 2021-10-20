@@ -8,10 +8,6 @@ RSpec.describe 'Groups (JavaScript fixtures)', type: :controller do
   let(:user) { create(:user) }
   let(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre')}
 
-  before(:all) do
-    clean_frontend_fixtures('groups/')
-  end
-
   before do
     group.add_owner(user)
     sign_in(user)

@@ -2,20 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
+RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_gitlab_redis_queues do
   let(:middleware) { described_class.new }
-
-  let(:load_balancer) { double.as_null_object }
-
   let(:worker) { worker_class.new }
   let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8' } }
 
   before do
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
-    allow(::Gitlab::Database::LoadBalancing).to receive_message_chain(:proxy, :load_balancer).and_return(load_balancer)
 
     replication_lag!(false)
+    Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
   after do
@@ -67,7 +64,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
       let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
 
       it 'does not stick to the primary', :aggregate_failures do
-        expect(load_balancer).to receive(:select_up_to_date_host).with(location).and_return(true)
+        expect(ActiveRecord::Base.connection.load_balancer)
+          .to receive(:select_up_to_date_host)
+          .with(location)
+          .and_return(true)
 
         run_middleware do
           expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
@@ -92,7 +92,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'wal_locations' => wal_locations } }
 
         before do
-          allow(load_balancer).to receive(:select_up_to_date_host).with(location).and_return(true)
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            allow(lb)
+              .to receive(:select_up_to_date_host)
+              .with(location)
+              .and_return(true)
+          end
         end
 
         it_behaves_like 'replica is up to date', 'replica'
@@ -102,7 +107,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'dedup_wal_locations' => wal_locations } }
 
         before do
-          allow(load_balancer).to receive(:select_up_to_date_host).with(wal_locations[:main]).and_return(true)
+          allow(ActiveRecord::Base.connection.load_balancer)
+            .to receive(:select_up_to_date_host)
+            .with(wal_locations[:main])
+            .and_return(true)
         end
 
         it_behaves_like 'replica is up to date', 'replica'
@@ -112,7 +120,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_write_location' => '0/D525E3A8' } }
 
         before do
-          allow(load_balancer).to receive(:select_up_to_date_host).with('0/D525E3A8').and_return(true)
+          allow(ActiveRecord::Base.connection.load_balancer)
+            .to receive(:select_up_to_date_host)
+            .with('0/D525E3A8')
+            .and_return(true)
         end
 
         it_behaves_like 'replica is up to date', 'replica'
@@ -158,18 +169,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
               process_job(job)
             end.to raise_error(Sidekiq::JobRetry::Skip)
 
-            expect(job['error_class']).to eq('Gitlab::Database::LoadBalancing::SidekiqServerMiddleware::JobReplicaNotUpToDate')
+            job_for_retry = Sidekiq::RetrySet.new.first
+            expect(job_for_retry['error_class']).to eq('Gitlab::Database::LoadBalancing::SidekiqServerMiddleware::JobReplicaNotUpToDate')
           end
 
           include_examples 'load balancing strategy', 'retry'
         end
 
         context 'when job is retried' do
-          before do
-            expect do
-              process_job(job)
-            end.to raise_error(Sidekiq::JobRetry::Skip)
-          end
+          let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8', 'retry_count' => 0 } }
 
           context 'and replica still lagging behind' do
             include_examples 'stick to the primary', 'primary'
@@ -191,7 +199,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
 
       context 'when replica is not up to date' do
         before do
-          allow(load_balancer).to receive(:select_up_to_date_host).and_return(false)
+          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+            allow(lb).to receive(:select_up_to_date_host).and_return(false)
+          end
         end
 
         include_examples 'stick to the primary', 'primary'
@@ -199,8 +209,47 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
     end
   end
 
+  describe '#databases_in_sync?' do
+    it 'treats load balancers without WAL entries as in sync' do
+      expect(middleware.send(:databases_in_sync?, {}))
+        .to eq(true)
+    end
+
+    it 'returns true when all load balancers are in sync' do
+      locations = {}
+
+      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+        locations[lb.name] = 'foo'
+
+        expect(lb)
+          .to receive(:select_up_to_date_host)
+          .with('foo')
+          .and_return(true)
+      end
+
+      expect(middleware.send(:databases_in_sync?, locations))
+        .to eq(true)
+    end
+
+    it 'returns false when the load balancers are not in sync' do
+      locations = {}
+
+      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+        locations[lb.name] = 'foo'
+
+        allow(lb)
+          .to receive(:select_up_to_date_host)
+          .with('foo')
+          .and_return(false)
+      end
+
+      expect(middleware.send(:databases_in_sync?, locations))
+        .to eq(false)
+    end
+  end
+
   def process_job(job)
-    Sidekiq::JobRetry.new.local(worker_class, job, 'default') do
+    Sidekiq::JobRetry.new.local(worker_class, job.to_json, 'default') do
       worker_class.process_job(job)
     end
   end
@@ -212,6 +261,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware do
   end
 
   def replication_lag!(exists)
-    allow(load_balancer).to receive(:select_up_to_date_host).and_return(!exists)
+    Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+      allow(lb).to receive(:select_up_to_date_host).and_return(!exists)
+    end
   end
 end

@@ -48,6 +48,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
       expect(json_response['admin_mode']).to be(false)
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)
+      expect(json_response['suggest_pipeline_enabled']).to be(true)
     end
   end
 
@@ -135,7 +136,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
             wiki_page_max_content_bytes: 12345,
             personal_access_token_prefix: "GL-",
             user_deactivation_emails_enabled: false,
-            admin_mode: true
+            admin_mode: true,
+            suggest_pipeline_enabled: false
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -187,6 +189,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response['personal_access_token_prefix']).to eq("GL-")
         expect(json_response['admin_mode']).to be(true)
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
+        expect(json_response['suggest_pipeline_enabled']).to be(false)
       end
     end
 

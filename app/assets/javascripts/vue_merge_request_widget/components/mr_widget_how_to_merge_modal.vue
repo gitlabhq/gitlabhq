@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable @gitlab/require-i18n-strings */
 import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import { escapeShellString } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -75,19 +76,30 @@ export default {
   },
   computed: {
     mergeInfo1() {
+      const escapedOriginBranch = escapeShellString(`origin/${this.sourceBranch}`);
+
       return this.isFork
-        ? `git fetch "${this.sourceProjectDefaultUrl}" ${this.sourceBranch}\ngit checkout -b "${this.sourceProjectPath}-${this.sourceBranch}" FETCH_HEAD`
-        : `git fetch origin\ngit checkout -b "${this.sourceBranch}" "origin/${this.sourceBranch}"`;
+        ? `git fetch "${this.sourceProjectDefaultUrl}" ${this.escapedSourceBranch}\ngit checkout -b ${this.escapedForkBranch} FETCH_HEAD`
+        : `git fetch origin\ngit checkout -b ${this.escapedSourceBranch} ${escapedOriginBranch}`;
     },
     mergeInfo2() {
       return this.isFork
-        ? `git fetch origin\ngit checkout "${this.targetBranch}"\ngit merge --no-ff "${this.sourceProjectPath}-${this.sourceBranch}"`
-        : `git fetch origin\ngit checkout "${this.targetBranch}"\ngit merge --no-ff "${this.sourceBranch}"`;
+        ? `git fetch origin\ngit checkout ${this.escapedTargetBranch}\ngit merge --no-ff ${this.escapedForkBranch}`
+        : `git fetch origin\ngit checkout ${this.escapedTargetBranch}\ngit merge --no-ff ${this.escapedSourceBranch}`;
     },
     mergeInfo3() {
       return this.canMerge
-        ? `git push origin "${this.targetBranch}"`
+        ? `git push origin ${this.escapedTargetBranch}`
         : __('Note that pushing to GitLab requires write access to this repository.');
+    },
+    escapedForkBranch() {
+      return escapeShellString(`${this.sourceProjectPath}-${this.sourceBranch}`);
+    },
+    escapedTargetBranch() {
+      return escapeShellString(this.targetBranch);
+    },
+    escapedSourceBranch() {
+      return escapeShellString(this.sourceBranch);
     },
   },
 };

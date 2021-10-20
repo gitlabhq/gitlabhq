@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# OS Versions that are no longer supported
+# OS Versions that are no longer supported **(FREE SELF)**
 
 GitLab provides omnibus packages for operating systems only until their
 EOL (End-Of-Life). After the EOL date of the OS, GitLab will stop releasing

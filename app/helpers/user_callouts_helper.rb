@@ -10,6 +10,7 @@ module UserCalloutsHelper
   REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
   UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
   INVITE_MEMBERS_BANNER = 'invite_members_banner'
+  SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
 
   def show_gke_cluster_integration_callout?(project)
     active_nav_link?(controller: sidebar_operations_paths) &&
@@ -62,6 +63,11 @@ module UserCalloutsHelper
       !just_created? &&
       !user_dismissed_for_group(INVITE_MEMBERS_BANNER, group) &&
       !multiple_members?(group)
+  end
+
+  def show_security_newsletter_user_callout?
+    current_user&.admin? &&
+    !user_dismissed?(SECURITY_NEWSLETTER_CALLOUT)
   end
 
   private

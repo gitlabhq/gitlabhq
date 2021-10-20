@@ -5,7 +5,7 @@ import { formatNumber, __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { RUNNER_JOB_COUNT_LIMIT } from '../constants';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
-import RunnerNameCell from './cells/runner_name_cell.vue';
+import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerTypeCell from './cells/runner_type_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
@@ -35,7 +35,7 @@ export default {
     GlSkeletonLoader,
     TimeAgo,
     RunnerActionsCell,
-    RunnerNameCell,
+    RunnerSummaryCell,
     RunnerTags,
     RunnerTypeCell,
   },
@@ -77,7 +77,7 @@ export default {
   },
   fields: [
     tableField({ key: 'type', label: __('Type/State') }),
-    tableField({ key: 'name', label: s__('Runners|Runner'), width: 30 }),
+    tableField({ key: 'summary', label: s__('Runners|Runner'), width: 30 }),
     tableField({ key: 'version', label: __('Version') }),
     tableField({ key: 'ipAddress', label: __('IP Address') }),
     tableField({ key: 'projectCount', label: __('Projects'), width: 5 }),
@@ -107,8 +107,12 @@ export default {
         <runner-type-cell :runner="item" />
       </template>
 
-      <template #cell(name)="{ item }">
-        <runner-name-cell :runner="item" />
+      <template #cell(summary)="{ item, index }">
+        <runner-summary-cell :runner="item">
+          <template #runner-name="{ runner }">
+            <slot name="runner-name" :runner="runner" :index="index"></slot>
+          </template>
+        </runner-summary-cell>
       </template>
 
       <template #cell(version)="{ item: { version } }">

@@ -15,6 +15,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { n__, s__, __ } from '~/locale';
 import getProjects from '../graphql/projects.query.graphql';
 
+const sortByProjectName = (projects = []) => projects.sort((a, b) => a.name.localeCompare(b.name));
+
 export default {
   name: 'ProjectsDropdownFilter',
   components: {
@@ -88,12 +90,21 @@ export default {
     selectedProjectIds() {
       return this.selectedProjects.map((p) => p.id);
     },
+    hasSelectedProjects() {
+      return Boolean(this.selectedProjects.length);
+    },
     availableProjects() {
       return filterBySearchTerm(this.projects, this.searchTerm);
     },
     noResultsAvailable() {
       const { loading, availableProjects } = this;
       return !loading && !availableProjects.length;
+    },
+    selectedItems() {
+      return sortByProjectName(this.selectedProjects);
+    },
+    unselectedItems() {
+      return this.availableProjects.filter(({ id }) => !this.selectedProjectIds.includes(id));
     },
   },
   watch: {
@@ -105,43 +116,52 @@ export default {
     this.search();
   },
   methods: {
+    handleUpdatedSelectedProjects() {
+      this.$emit('selected', this.selectedProjects);
+    },
     search: debounce(function debouncedSearch() {
       this.fetchData();
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    getSelectedProjects(selectedProject, isMarking) {
-      return isMarking
+    getSelectedProjects(selectedProject, isSelected) {
+      return isSelected
         ? this.selectedProjects.concat([selectedProject])
         : this.selectedProjects.filter((project) => project.id !== selectedProject.id);
     },
     singleSelectedProject(selectedObj, isMarking) {
       return isMarking ? [selectedObj] : [];
     },
-    setSelectedProjects(selectedObj, isMarking) {
+    setSelectedProjects(project) {
       this.selectedProjects = this.multiSelect
-        ? this.getSelectedProjects(selectedObj, isMarking)
-        : this.singleSelectedProject(selectedObj, isMarking);
+        ? this.getSelectedProjects(project, !this.isProjectSelected(project))
+        : this.singleSelectedProject(project, !this.isProjectSelected(project));
     },
-    onClick({ project, isSelected }) {
-      this.setSelectedProjects(project, !isSelected);
-      this.$emit('selected', this.selectedProjects);
+    onClick(project) {
+      this.setSelectedProjects(project);
+      this.handleUpdatedSelectedProjects();
     },
-    onMultiSelectClick({ project, isSelected }) {
-      this.setSelectedProjects(project, !isSelected);
+    onMultiSelectClick(project) {
+      this.setSelectedProjects(project);
       this.isDirty = true;
     },
-    onSelected(ev) {
+    onSelected(project) {
       if (this.multiSelect) {
-        this.onMultiSelectClick(ev);
+        this.onMultiSelectClick(project);
       } else {
-        this.onClick(ev);
+        this.onClick(project);
       }
     },
     onHide() {
       if (this.multiSelect && this.isDirty) {
-        this.$emit('selected', this.selectedProjects);
+        this.handleUpdatedSelectedProjects();
       }
       this.searchTerm = '';
       this.isDirty = false;
+    },
+    onClearAll() {
+      if (this.hasSelectedProjects) {
+        this.isDirty = true;
+      }
+      this.selectedProjects = [];
     },
     fetchData() {
       this.loading = true;
@@ -168,8 +188,8 @@ export default {
           this.projects = nodes;
         });
     },
-    isProjectSelected(id) {
-      return this.selectedProjects ? this.selectedProjectIds.includes(id) : false;
+    isProjectSelected(project) {
+      return this.selectedProjectIds.includes(project.id);
     },
     getEntityId(project) {
       return getIdFromGraphQLId(project.id);
@@ -182,6 +202,10 @@ export default {
     ref="projectsDropdown"
     class="dropdown dropdown-projects"
     toggle-class="gl-shadow-none"
+    :show-clear-all="hasSelectedProjects"
+    show-highlighted-items-title
+    highlighted-items-title-class="gl-p-3"
+    @clear-all.stop="onClearAll"
     @hide="onHide"
   >
     <template #button-content>
@@ -204,14 +228,37 @@ export default {
       <gl-dropdown-section-header>{{ __('Projects') }}</gl-dropdown-section-header>
       <gl-search-box-by-type v-model.trim="searchTerm" />
     </template>
+    <template #highlighted-items>
+      <gl-dropdown-item
+        v-for="project in selectedItems"
+        :key="project.id"
+        is-check-item
+        :is-checked="isProjectSelected(project)"
+        @click.native.capture.stop="onSelected(project)"
+      >
+        <div class="gl-display-flex">
+          <gl-avatar
+            class="gl-mr-2 gl-vertical-align-middle"
+            :alt="project.name"
+            :size="16"
+            :entity-id="getEntityId(project)"
+            :entity-name="project.name"
+            :src="project.avatarUrl"
+            shape="rect"
+          />
+          <div>
+            <div data-testid="project-name">{{ project.name }}</div>
+            <div class="gl-text-gray-500" data-testid="project-full-path">
+              {{ project.fullPath }}
+            </div>
+          </div>
+        </div>
+      </gl-dropdown-item>
+    </template>
     <gl-dropdown-item
-      v-for="project in availableProjects"
+      v-for="project in unselectedItems"
       :key="project.id"
-      :is-check-item="true"
-      :is-checked="isProjectSelected(project.id)"
-      @click.native.capture.stop="
-        onSelected({ project, isSelected: isProjectSelected(project.id) })
-      "
+      @click.native.capture.stop="onSelected(project)"
     >
       <div class="gl-display-flex">
         <gl-avatar

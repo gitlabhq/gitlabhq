@@ -102,7 +102,7 @@ module.exports = (path, options = {}) => {
   return {
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -112,6 +112,7 @@ module.exports = (path, options = {}) => {
     cacheDirectory: '<rootDir>/tmp/cache/jest',
     modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
     reporters,
+    resolver: './jest_resolver.js',
     setupFilesAfterEnv: [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'],
     restoreMocks: true,
     transform: {
@@ -122,7 +123,7 @@ module.exports = (path, options = {}) => {
       '^.+\\.(md|zip|png)$': 'jest-raw-loader',
     },
     transformIgnorePatterns: [
-      'node_modules/(?!(@gitlab/ui|@gitlab/favicon-overlay|bootstrap-vue|three|monaco-editor|monaco-yaml|fast-mersenne-twister|prosemirror-markdown)/)',
+      'node_modules/(?!(@gitlab/ui|@gitlab/favicon-overlay|bootstrap-vue|three|monaco-editor|monaco-yaml|fast-mersenne-twister|prosemirror-markdown|dateformat)/)',
     ],
     timers: 'fake',
     testEnvironment: '<rootDir>/spec/frontend/environment.js',

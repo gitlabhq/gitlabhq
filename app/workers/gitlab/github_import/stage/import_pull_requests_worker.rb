@@ -27,6 +27,22 @@ module Gitlab
             { waiter.key => waiter.jobs_remaining },
             :pull_requests_merged_by
           )
+        rescue StandardError => e
+          Gitlab::Import::ImportFailureService.track(
+            project_id: project.id,
+            error_source: self.class.name,
+            exception: e,
+            fail_import: abort_on_failure,
+            metrics: true
+          )
+
+          raise(e)
+        end
+
+        private
+
+        def abort_on_failure
+          true
         end
       end
     end

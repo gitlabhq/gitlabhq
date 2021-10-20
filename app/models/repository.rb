@@ -732,7 +732,7 @@ class Repository
   end
 
   def tags_sorted_by(value)
-    return raw_repository.tags(sort_by: value) if Feature.enabled?(:gitaly_tags_finder, project, default_enabled: :yaml)
+    return raw_repository.tags(sort_by: value) if Feature.enabled?(:tags_finder_gitaly, project, default_enabled: :yaml)
 
     tags_ruby_sort(value)
   end
@@ -1054,10 +1054,10 @@ class Repository
   end
 
   def squash(user, merge_request, message)
-    raw.squash(user, merge_request.id, start_sha: merge_request.diff_start_sha,
-                                       end_sha: merge_request.diff_head_sha,
-                                       author: merge_request.author,
-                                       message: message)
+    raw.squash(user, start_sha: merge_request.diff_start_sha,
+                     end_sha: merge_request.diff_head_sha,
+                     author: merge_request.author,
+                     message: message)
   end
 
   def submodule_links

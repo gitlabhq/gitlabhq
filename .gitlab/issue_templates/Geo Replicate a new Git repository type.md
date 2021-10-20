@@ -109,7 +109,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   bin/rake geo:db:migrate
   ```
 
-- [ ] Be sure to commit the relevant changes in `ee/db/geo/schema.rb`
+- [ ] Be sure to commit the relevant changes in `ee/db/geo/structure.sql`
 
 ### Add verification state fields on the Geo primary site
 

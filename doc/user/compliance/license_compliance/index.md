@@ -47,7 +47,7 @@ When GitLab detects a **Denied** license, you can view it in the [license list](
 ![License List](img/license_list_v13_0.png)
 
 You can view and modify existing policies from the [policies](#policies) tab.
-![Edit Policy](img/policies_maintainer_edit_v14_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_3.png)
 
 ## License expressions
 
@@ -742,8 +742,9 @@ which enables a designated approver that can approve and then merge a merge requ
 The **Policies** tab in the project's license compliance section displays your project's license
 policies. Project maintainers can specify policies in this section.
 
-![Edit Policy](img/policies_maintainer_edit_v14_2.png)
-![Add Policy](img/policies_maintainer_add_v13_2.png)
+![Edit Policy](img/policies_maintainer_edit_v14_3.png)
+
+![Add Policy](img/policies_maintainer_add_v14_3.png)
 
 Developers of the project can view the policies configured in a project.
 
@@ -752,6 +753,10 @@ Developers of the project can view the policies configured in a project.
 ## Enabling License Approvals within a project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+
+Prerequisites:
+
+- Maintainer or Owner [role](../../permissions.md#project-members-permissions).
 
 `License-Check` is a [merge request approval](../../project/merge_requests/approvals/index.md) rule
 you can enable to allow an individual or group to approve a merge request that contains a `denied`

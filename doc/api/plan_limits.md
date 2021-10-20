@@ -14,7 +14,7 @@ The existing plans depend on the GitLab edition. In the Community Edition, only 
 is available. In the Enterprise Edition, additional plans are available as well.
 
 NOTE:
-Administrator access is required to use this API.
+The Administrator role is required to use this API.
 
 ## Get current plan limits
 

@@ -2,12 +2,9 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference, howto
 ---
 
-# Vault Authentication with GitLab OpenID Connect
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/22323) in GitLab 9.0
+# Vault Authentication with GitLab OpenID Connect **(FREE)**
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
 It allows you to store and manage sensitive information such as secret environment variables, encryption keys, and authentication tokens.

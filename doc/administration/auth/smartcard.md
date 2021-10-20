@@ -126,7 +126,7 @@ more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/
    gitlab_rails['smartcard_client_certificate_required_port'] = 3444
    ```
 
-   NOTE: **Note**
+   NOTE:
    Assign a value to at least one of the following variables:
    `gitlab_rails['smartcard_client_certificate_required_host']` or
    `gitlab_rails['smartcard_client_certificate_required_port']`.

@@ -46,12 +46,23 @@ module ErrorTracking
 
     after_save :clear_reactive_cache!
 
+    # When a user enables the integrated error tracking
+    # we want to immediately provide them with a first
+    # working client key so they have a DSN for Sentry SDK.
+    after_save :create_client_key!
+
     def sentry_enabled
       enabled && !integrated_client?
     end
 
     def integrated_client?
       integrated
+    end
+
+    def gitlab_dsn
+      strong_memoize(:gitlab_dsn) do
+        client_key&.sentry_dsn
+      end
     end
 
     def api_url=(value)
@@ -234,6 +245,20 @@ module ErrorTracking
 
       unless api_url_slug(:organization)
         errors.add(:project, 'is a required field')
+      end
+    end
+
+    def client_key
+      # Project can have multiple client keys.
+      # However for UI simplicity we render the first active one for user.
+      # In future we should make it possible to manage client keys from UI.
+      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/329596
+      project.error_tracking_client_keys.active.first
+    end
+
+    def create_client_key!
+      if enabled? && integrated_client? && !client_key
+        project.error_tracking_client_keys.create!
       end
     end
   end

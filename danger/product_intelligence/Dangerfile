@@ -5,19 +5,19 @@ CHANGED_FILES_MESSAGE = <<~MSG
 For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/growth/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
 Please check the ~"product intelligence" [guide](https://docs.gitlab.com/ee/development/usage_ping.html).
 
+For MR review guidelines, see the [Service Ping review guidelines](https://docs.gitlab.com/ee/development/usage_ping/review_guidelines.html) or the [Snowplow review guidelines](https://docs.gitlab.com/ee/development/snowplow/review_guidelines.html).
 
 %<changed_files>s
 
 MSG
 
-# exit if not matching files
+# exit if not matching files or if no product intelligence labels
 matching_changed_files = product_intelligence.matching_changed_files
-return unless matching_changed_files.any?
+labels = product_intelligence.missing_labels
+
+return if matching_changed_files.empty? || labels.empty?
 
 warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
-
-labels = product_intelligence.missing_labels
-return unless labels.any?
 
 gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
                                     gitlab.mr_json['iid'],

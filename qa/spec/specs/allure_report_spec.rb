@@ -45,14 +45,18 @@ describe QA::Runtime::AllureReport do
     let(:png_file) { 'png-file' }
     let(:html_file) { 'html-file' }
     let(:ci_job) { 'ee:relative 5' }
+    let(:versions) { { version: '14', revision: '6ced31db947' } }
 
     before do
       stub_env('CI', 'true')
       stub_env('CI_JOB_NAME', ci_job)
+      stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', 'token')
 
       allow(Allure).to receive(:add_attachment)
       allow(File).to receive(:open).with(png_path) { png_file }
       allow(File).to receive(:open).with(html_path) { html_file }
+      allow(RestClient::Request).to receive(:execute) { double('response', code: 200, body: versions.to_json) }
+      allow(QA::Runtime::Scenario).to receive(:method_missing).with(:gitlab_address).and_return('gitlab.com')
 
       described_class.configure!
     end
@@ -61,7 +65,7 @@ describe QA::Runtime::AllureReport do
       aggregate_failures do
         expect(allure_config.results_directory).to eq('tmp/allure-results')
         expect(allure_config.clean_results_directory).to eq(true)
-        expect(allure_config.environment_properties).to be_a_kind_of(Hash)
+        expect(allure_config.environment_properties.call).to eq(versions)
         expect(allure_config.environment).to eq('ee:relative')
       end
     end

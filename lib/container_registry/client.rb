@@ -51,6 +51,15 @@ module ContainerRegistry
       client.supports_tag_delete?
     end
 
+    def self.registry_info
+      registry_config = Gitlab.config.registry
+      return unless registry_config.enabled && registry_config.api_url.present?
+
+      token = Auth::ContainerRegistryAuthenticationService.access_token([], [])
+      client = new(registry_config.api_url, token: token)
+      client.registry_info
+    end
+
     def initialize(base_uri, options = {})
       @base_uri = base_uri
       @options = options

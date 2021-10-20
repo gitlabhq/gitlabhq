@@ -1,0 +1,33 @@
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: anchor), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    = _("Rate limits can help reduce request volume (like from crawlers or abusive bots).")
+
+  %fieldset
+    .form-group
+      = f.gitlab_ui_checkbox_component :"throttle_unauthenticated_#{setting_fragment}_enabled",
+        _('Enable unauthenticated API request rate limit'),
+        checkbox_options: { data: { qa_selector: "throttle_unauthenticated_#{setting_fragment}_checkbox" } },
+        label_options: { class: 'label-bold' }
+    .form-group
+      = f.label :"throttle_unauthenticated_#{setting_fragment}_requests_per_period", _('Maximum unauthenticated API requests per rate limit period per IP'), class: 'label-bold'
+      = f.number_field :"throttle_unauthenticated_#{setting_fragment}_requests_per_period", class: 'form-control gl-form-input'
+    .form-group
+      = f.label :"throttle_unauthenticated_#{setting_fragment}_period_in_seconds", _('Unauthenticated API rate limit period in seconds'), class: 'label-bold'
+      = f.number_field :"throttle_unauthenticated_#{setting_fragment}_period_in_seconds", class: 'form-control gl-form-input'
+
+  %fieldset
+    .form-group
+      = f.gitlab_ui_checkbox_component :"throttle_authenticated_#{setting_fragment}_enabled",
+        _('Enable authenticated API request rate limit'),
+        checkbox_options: { data: { qa_selector: "throttle_authenticated_#{setting_fragment}_checkbox" } },
+        label_options: { class: 'label-bold' }
+    .form-group
+      = f.label :"throttle_authenticated_#{setting_fragment}_requests_per_period", _('Maximum authenticated API requests per rate limit period per user'), class: 'label-bold'
+      = f.number_field :"throttle_authenticated_#{setting_fragment}_requests_per_period", class: 'form-control gl-form-input'
+    .form-group
+      = f.label :"throttle_authenticated_#{setting_fragment}_period_in_seconds", _('Authenticated API rate limit period in seconds'), class: 'label-bold'
+      = f.number_field :"throttle_authenticated_#{setting_fragment}_period_in_seconds", class: 'form-control gl-form-input'
+
+  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }

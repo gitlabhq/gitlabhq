@@ -212,7 +212,7 @@ that are not in status **closed** from one project to another.
 
 To access rails console run `sudo gitlab-rails console` on the GitLab server and run the below
 script. Please be sure to change `project`, `admin_user`, and `target_project` to your values.
-We do also recommend [creating a backup](../../../raketasks/backup_restore.md#back-up-gitlab) before
+We do also recommend [creating a backup](../../../raketasks/backup_restore.md) before
 attempting any changes in the console.
 
 ```ruby

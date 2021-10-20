@@ -200,7 +200,7 @@ module Gitlab
           Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
-      # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted
+      # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is highlighted
       def parallel_diff_lines
         @parallel_diff_lines ||= Gitlab::Diff::ParallelDiff.new(self).parallelize
       end

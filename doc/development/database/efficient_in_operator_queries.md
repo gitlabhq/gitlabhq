@@ -66,9 +66,9 @@ The execution of the query can be largely broken down into three steps:
 1. The database sorts the `issues` rows in memory by `created_at` and returns `LIMIT 20` rows to
    the end-user. For large groups, this final step requires both large memory and CPU resources.
 
-<details>
-<summary>Expand this sentence to see the execution plan for this DB query.</summary>
-<pre><code>
+Execution plan for this DB query:
+
+```sql
  Limit  (cost=90170.07..90170.12 rows=20 width=1329) (actual time=967.597..967.607 rows=20 loops=1)
    Buffers: shared hit=239127 read=3060
    I/O Timings: read=336.879
@@ -106,8 +106,7 @@ The execution of the query can be largely broken down into three steps:
  Planning Time: 7.750 ms
  Execution Time: 967.973 ms
 (36 rows)
-</code></pre>
-</details>
+```
 
 The performance of the query depends on the number of rows in the database.
 On average, we can say the following:
@@ -226,7 +225,12 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
 - `finder_query` loads the actual record row from the database. It must also be a lambda, where
   the order by column expressions is available for locating the record. In this example, the
   yielded values are `created_at` and `id` SQL expressions. Finding a record is very fast via the
-  primary key, so we don't use the `created_at` value.
+  primary key, so we don't use the `created_at` value. Providing the `finder_query` lambda is optional.
+  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  the end-user and not the full database row.
+
+  If it's not given, the IN operator optimization will only make the ORDER BY columns available to
+  the end-user and not the full database row.
 
 The following database index on the `issues` table must be present
 to make the query execute efficiently:
@@ -235,9 +239,9 @@ to make the query execute efficiently:
 "idx_issues_on_project_id_and_created_at_and_id" btree (project_id, created_at, id)
 ```
 
-<details>
-<summary>Expand this sentence to see the SQL query.</summary>
-<pre><code>
+The SQL query:
+
+```sql
 SELECT "issues".*
 FROM
   (WITH RECURSIVE "array_cte" AS MATERIALIZED
@@ -348,8 +352,7 @@ SELECT (records).*
    FROM "recursive_keyset_cte" AS "issues"
    WHERE (COUNT <> 0)) issues -- filtering out the initializer row
 LIMIT 20
-</code></pre>
-</details>
+```
 
 ### Using the `IN` query optimization
 
@@ -461,9 +464,9 @@ Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
 ).execute.limit(20)
 ```
 
-<details>
-<summary>Expand this sentence to see the SQL query.</summary>
-<pre><code>
+The SQL query:
+
+```sql
 SELECT "issues".*
 FROM
   (WITH RECURSIVE "array_cte" AS MATERIALIZED
@@ -581,9 +584,7 @@ FROM
    FROM "recursive_keyset_cte" AS "issues"
    WHERE (COUNT <> 0)) issues
 LIMIT 20
-</code>
-</pre>
-</details>
+```
 
 NOTE:
 To make the query efficient, the following columns need to be covered with an index: `project_id`, `issue_type`, `created_at`, and `id`.
@@ -608,6 +609,32 @@ opts = {
 
 Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 100) do |records|
   puts records.select(:id).map { |r| [r.id] }
+end
+```
+
+NOTE:
+The query loads complete database rows from the disk. This may cause increased I/O and slower
+database queries. Depending on the use case, the primary key is often only
+needed for the batch query to invoke additional statements. For example, `UPDATE` or `DELETE`. The
+`id` column is included in the `ORDER BY` columns (`created_at` and `id`) and is already
+loaded. In this case, you can omit the `finder_query` parameter.
+
+Example for loading the `ORDER BY` columns only:
+
+```ruby
+scope = Issue.order(:created_at, :id)
+array_scope = Group.find(9970).all_projects.select(:id)
+array_mapping_scope = -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+
+opts = {
+  in_operator_optimization_options: {
+    array_scope: array_scope,
+    array_mapping_scope: array_mapping_scope
+  }
+}
+
+Gitlab::Pagination::Keyset::Iterator.new(scope: scope, **opts).each_batch(of: 100) do |records|
+  puts records.select(:id).map { |r| [r.id] } # only id and created_at are available
 end
 ```
 

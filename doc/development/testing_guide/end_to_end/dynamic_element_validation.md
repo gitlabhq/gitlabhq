@@ -52,7 +52,7 @@ Simply put, a required element is a visible HTML element that appears on a UI co
 
 "Visible" can be defined as
 
-- Not having any CSS preventing its display. E.g.: `display: none` or `width: 0px; height: 0px;`
+- Not having any CSS preventing its display, for example, `display: none` or `width: 0px; height: 0px;`
 - Being able to be interacted with by the user
 
 "UI component" can be defined as

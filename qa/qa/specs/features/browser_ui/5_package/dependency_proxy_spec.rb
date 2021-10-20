@@ -28,9 +28,9 @@ module QA
 
         project.group.visit!
 
-        Page::Group::Menu.perform(&:go_to_dependency_proxy)
+        Page::Group::Menu.perform(&:go_to_package_settings)
 
-        Page::Group::DependencyProxy.perform do |index|
+        Page::Group::Settings::PackageRegistries.perform do |index|
           expect(index).to have_dependency_proxy_enabled
         end
       end

@@ -1,6 +1,7 @@
 import { GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
+import { GET_JIRA_ISSUE_TYPES_EVENT } from '~/integrations/constants';
 import JiraIssuesFields from '~/integrations/edit/components/jira_issues_fields.vue';
 import eventHub from '~/integrations/edit/event_hub';
 import { createStore } from '~/integrations/edit/store';
@@ -207,7 +208,7 @@ describe('JiraIssuesFields', () => {
         await setEnableCheckbox(true);
         await findJiraForVulnerabilities().vm.$emit('request-get-issue-types');
 
-        expect(eventHubEmitSpy).toHaveBeenCalledWith('getJiraIssueTypes');
+        expect(eventHubEmitSpy).toHaveBeenCalledWith(GET_JIRA_ISSUE_TYPES_EVENT);
       });
     });
   });

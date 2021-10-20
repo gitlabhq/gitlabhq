@@ -67,7 +67,7 @@ export default {
           spacing: 'section-10',
         },
         autoStop: {
-          title: s__('Environments|Auto stop in'),
+          title: s__('Environments|Auto stop'),
           spacing: 'section-10',
         },
         actions: {

@@ -1,16 +1,15 @@
 - user_email = "(#{params[:email]})" if params[:email].present?
+- request_link_start = '<a href="%{new_user_confirmation_path}">'.html_safe % { new_user_confirmation_path: new_user_confirmation_path }
+- request_link_end = '</a>'.html_safe
 
 .well-confirmation.gl-text-center.gl-mb-6
   %h1.gl-mt-0
     = _("Almost there...")
-  %p.lead.gl-mb-6
+  %p{ class: 'gl-mb-6 gl-font-lg!' }
     = _('Please check your email %{email} to confirm your account') % { email: user_email }
   %hr
 - if Gitlab::CurrentSettings.after_sign_up_text.present?
   .well-confirmation.gl-text-center
     = markdown_field(Gitlab::CurrentSettings, :after_sign_up_text)
-%p.text-center
-  = _("No confirmation email received? Please check your spam folder or")
-.gl-mb-6.prepend-top-20.gl-text-center
-  %a.gl-link{ href: new_user_confirmation_path }
-    = _("Request new confirmation email")
+%p.gl-text-center
+  = _("No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}.").html_safe % { request_link_start: request_link_start, request_link_end: request_link_end }

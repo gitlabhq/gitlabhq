@@ -1,0 +1,27 @@
+fragment PackageData on Package {
+  id
+  name
+  version
+  packageType
+  createdAt
+  status
+  tags {
+    nodes {
+      name
+    }
+  }
+  pipelines {
+    nodes {
+      sha
+      ref
+      commitPath
+      user {
+        name
+      }
+    }
+  }
+  project {
+    fullPath
+    webUrl
+  }
+}

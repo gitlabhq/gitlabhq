@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { EXTENSION_ICONS } from '../constants';
 import issuesCollapsedQuery from './issues_collapsed.query.graphql';
 import issuesQuery from './issues.query.graphql';
 
@@ -6,20 +7,29 @@ export default {
   // Give the extension a name
   // Make it easier to track in Vue dev tools
   name: 'WidgetIssues',
+  i18n: {
+    label: 'Issues',
+    loading: 'Loading issues...',
+  },
   // Add an array of props
   // These then get mapped to values stored in the MR Widget store
-  props: ['targetProjectFullPath'],
+  props: ['targetProjectFullPath', 'conflictsDocsPath'],
   // Add any extra computed props in here
   computed: {
     // Small summary text to be displayed in the collapsed state
     // Receives the collapsed data as an argument
     summary(count) {
-      return `<strong>${count}</strong> open issue`;
+      return 'Summary text<br/>Second line';
     },
     // Status icon to be used next to the summary text
     // Receives the collapsed data as an argument
     statusIcon(count) {
-      return count > 0 ? 'warning' : 'success';
+      return EXTENSION_ICONS.warning;
+    },
+    // Tertiary action buttons that will take the user elsewhere
+    // in the GitLab app
+    tertiaryButtons() {
+      return [{ text: 'Full report', href: this.conflictsDocsPath, target: '_blank' }];
     },
   },
   methods: {
@@ -44,16 +54,13 @@ export default {
             // Icon to get rendered on the side of each row
             icon: {
               // Required: Name maps to an icon in GitLabs SVG
-              name:
-                issue.state === 'closed' ? 'status_failed_borderless' : 'status_success_borderless',
-              // Optional: An extra class to be added to the icon for additional styling
-              class: issue.state === 'closed' ? 'text-danger' : 'text-success',
+              name: issue.state === 'closed' ? EXTENSION_ICONS.error : EXTENSION_ICONS.success,
             },
             // Badges get rendered next to the text on each row
-            badge: issue.state === 'closed' && {
-              text: 'Closed', // Required: Text to be used inside of the badge
-              // variant: 'info', // Optional: The variant of the badge, maps to GitLab UI variants
-            },
+            // badge: issue.state === 'closed' && {
+            //   text: 'Closed', // Required: Text to be used inside of the badge
+            //   // variant: 'info', // Optional: The variant of the badge, maps to GitLab UI variants
+            // },
             // Each row can have its own link that will take the user elsewhere
             // link: {
             //   href: 'https://google.com', // Required: href for the link

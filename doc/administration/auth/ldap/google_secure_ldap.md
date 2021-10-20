@@ -15,7 +15,7 @@ LDAP service that can be configured with GitLab for authentication and group syn
 Secure LDAP requires a slightly different configuration than standard LDAP servers.
 The steps below cover:
 
-- Configuring the Secure LDAP Client in the Google Admin console.
+- Configuring the Secure LDAP Client in the Google administrator console.
 - Required GitLab configuration.
 
 ## Configuring Google LDAP client

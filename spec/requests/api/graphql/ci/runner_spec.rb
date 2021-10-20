@@ -6,6 +6,7 @@ RSpec.describe 'Query.runner(id)' do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user, :admin) }
+  let_it_be(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
     create(:ci_runner, :instance, description: 'Runner 1', contacted_at: 2.hours.ago,
@@ -18,12 +19,20 @@ RSpec.describe 'Query.runner(id)' do
            version: 'adfe157', revision: 'b', ip_address: '10.10.10.10', access_level: 1, run_untagged: true)
   end
 
+  let_it_be(:active_group_runner) do
+    create(:ci_runner, :group, groups: [group], description: 'Group runner 1', contacted_at: 2.hours.ago,
+           active: true, version: 'adfe156', revision: 'a', locked: true, ip_address: '127.0.0.1', maximum_timeout: 600,
+           access_level: 0, tag_list: %w[tag1 tag2], run_untagged: true)
+  end
+
   def get_runner(id)
     case id
     when :active_instance_runner
       active_instance_runner
     when :inactive_instance_runner
       inactive_instance_runner
+    when :active_group_runner
+      active_group_runner
     end
   end
 
@@ -61,7 +70,39 @@ RSpec.describe 'Query.runner(id)' do
         'ipAddress' => runner.ip_address,
         'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
         'jobCount' => 0,
-        'projectCount' => nil
+        'projectCount' => nil,
+        'adminUrl' => "http://localhost/admin/runners/#{runner.id}",
+        'userPermissions' => {
+          'readRunner' => true,
+          'updateRunner' => true,
+          'deleteRunner' => true
+        }
+      )
+      expect(runner_data['tagList']).to match_array runner.tag_list
+    end
+  end
+
+  shared_examples 'retrieval with no admin url' do |runner_id|
+    let(:query) do
+      wrap_fields(query_graphql_path(query_path, all_graphql_fields_for('CiRunner')))
+    end
+
+    let(:query_path) do
+      [
+        [:runner, { id: get_runner(runner_id).to_global_id.to_s }]
+      ]
+    end
+
+    it 'retrieves expected fields' do
+      post_graphql(query, current_user: user)
+
+      runner_data = graphql_data_at(:runner)
+      expect(runner_data).not_to be_nil
+
+      runner = get_runner(runner_id)
+      expect(runner_data).to match a_hash_including(
+        'id' => "gid://gitlab/Ci::Runner/#{runner.id}",
+        'adminUrl' => nil
       )
       expect(runner_data['tagList']).to match_array runner.tag_list
     end
@@ -147,6 +188,39 @@ RSpec.describe 'Query.runner(id)' do
     it_behaves_like 'runner details fetch', :inactive_instance_runner
   end
 
+  describe 'for runner inside group request' do
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            runners {
+              edges {
+                webUrl
+                node {
+                  id
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'retrieves webUrl field with expected value' do
+      post_graphql(query, current_user: user)
+
+      runner_data = graphql_data_at(:group, :runners, :edges)
+      expect(runner_data).to match_array [
+        a_hash_including(
+          'webUrl' => "http://localhost/groups/#{group.full_path}/-/runners/#{active_group_runner.id}",
+          'node' => {
+            'id' => "gid://gitlab/Ci::Runner/#{active_group_runner.id}"
+          }
+        )
+      ]
+    end
+  end
+
   describe 'for multiple runners' do
     let_it_be(:project1) { create(:project, :test_repo) }
     let_it_be(:project2) { create(:project, :test_repo) }
@@ -176,7 +250,7 @@ RSpec.describe 'Query.runner(id)' do
       end
 
       before do
-        project_runner2.projects.clear
+        project_runner2.runner_projects.clear
 
         post_graphql(query, current_user: user)
       end
@@ -203,6 +277,16 @@ RSpec.describe 'Query.runner(id)' do
     let(:user) { create(:user) }
 
     it_behaves_like 'retrieval by unauthorized user', :active_instance_runner
+  end
+
+  describe 'by non-admin user' do
+    let(:user) { create(:user) }
+
+    before do
+      group.add_user(user, Gitlab::Access::OWNER)
+    end
+
+    it_behaves_like 'retrieval with no admin url', :active_group_runner
   end
 
   describe 'by unauthenticated user' do

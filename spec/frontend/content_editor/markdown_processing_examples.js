@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import jsYaml from 'js-yaml';
+// eslint-disable-next-line import/no-deprecated
 import { getJSONFixture } from 'helpers/fixtures';
 
 export const loadMarkdownApiResult = (testName) => {
   const fixturePathPrefix = `api/markdown/${testName}.json`;
 
+  // eslint-disable-next-line import/no-deprecated
   const fixture = getJSONFixture(fixturePathPrefix);
   return fixture.body || fixture.html;
 };

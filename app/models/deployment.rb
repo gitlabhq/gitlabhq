@@ -10,7 +10,8 @@ class Deployment < ApplicationRecord
   include FastDestroyAll
   include IgnorableColumns
 
-  ignore_column :deployable_id_convert_to_bigint, remove_with: '14.2', remove_after: '2021-08-22'
+  StatusUpdateError = Class.new(StandardError)
+  StatusSyncError = Class.new(StandardError)
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -48,7 +49,6 @@ class Deployment < ApplicationRecord
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :older_than, -> (deployment) { where('deployments.id < ?', deployment.id) }
-  scope :with_deployable, -> { joins('INNER JOIN ci_builds ON ci_builds.id = deployments.deployable_id').preload(:deployable) }
   scope :with_api_entity_associations, -> { preload({ deployable: { runner: [], tags: [], user: [], job_artifacts_archive: [] } }) }
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
@@ -148,6 +148,16 @@ class Deployment < ApplicationRecord
 
   def self.find_successful_deployment!(iid)
     success.find_by!(iid: iid)
+  end
+
+  # It should be used with caution especially on chaining.
+  # Fetching any unbounded or large intermediate dataset could lead to loading too many IDs into memory.
+  # See: https://docs.gitlab.com/ee/development/database/multiple_databases.html#use-disable_joins-for-has_one-or-has_many-through-relations
+  # For safety we default limit to fetch not more than 1000 records.
+  def self.builds(limit = 1000)
+    deployable_ids = where.not(deployable_id: nil).limit(limit).pluck(:deployable_id)
+
+    Ci::Build.where(id: deployable_ids)
   end
 
   class << self
@@ -305,20 +315,23 @@ class Deployment < ApplicationRecord
   # Changes the status of a deployment and triggers the corresponding state
   # machine events.
   def update_status(status)
-    case status
-    when 'running'
-      run
-    when 'success'
-      succeed
-    when 'failed'
-      drop
-    when 'canceled'
-      cancel
-    when 'skipped'
-      skip
-    else
-      raise ArgumentError, "The status #{status.inspect} is invalid"
-    end
+    update_status!(status)
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(
+      StatusUpdateError.new(e.message), deployment_id: self.id)
+
+    false
+  end
+
+  def sync_status_with(build)
+    return false unless ::Deployment.statuses.include?(build.status)
+
+    update_status!(build.status)
+  rescue StandardError => e
+    Gitlab::ErrorTracking.track_exception(
+      StatusSyncError.new(e.message), deployment_id: self.id, build_id: build.id)
+
+    false
   end
 
   def valid_sha
@@ -345,6 +358,23 @@ class Deployment < ApplicationRecord
   end
 
   private
+
+  def update_status!(status)
+    case status
+    when 'running'
+      run!
+    when 'success'
+      succeed!
+    when 'failed'
+      drop!
+    when 'canceled'
+      cancel!
+    when 'skipped'
+      skip!
+    else
+      raise ArgumentError, "The status #{status.inspect} is invalid"
+    end
+  end
 
   def legacy_finished_at
     self.created_at if success? && !read_attribute(:finished_at)

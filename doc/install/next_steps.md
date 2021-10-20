@@ -52,7 +52,7 @@ installation.
   Activate all GitLab Enterprise Edition functionality with a license.
 - [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
-## Cross-repo Code Search
+## Cross-repository Code Search
 
 - [Advanced Search](../integration/elasticsearch.md): Leverage Elasticsearch for
   faster, more advanced code search across your entire GitLab instance.

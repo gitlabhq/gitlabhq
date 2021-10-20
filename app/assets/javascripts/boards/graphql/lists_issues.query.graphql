@@ -16,6 +16,7 @@ query ListIssues(
         nodes {
           id
           issuesCount
+          listType
           issues(first: $first, filters: $filters, after: $after) {
             edges {
               node {
@@ -37,6 +38,7 @@ query ListIssues(
         nodes {
           id
           issuesCount
+          listType
           issues(first: $first, filters: $filters, after: $after) {
             edges {
               node {

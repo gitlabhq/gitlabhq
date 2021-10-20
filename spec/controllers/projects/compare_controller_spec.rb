@@ -409,7 +409,7 @@ RSpec.describe Projects::CompareController do
         end
       end
 
-      context 'when the user does not have access to the project' do
+      context 'when the user does not have access to the project', :sidekiq_inline do
         before do
           project.team.truncate
           project.update!(visibility: 'private')

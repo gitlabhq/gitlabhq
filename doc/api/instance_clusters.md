@@ -8,10 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36001) in GitLab 13.2.
 
-Instance-level Kubernetes clusters allow you to connect a Kubernetes cluster to the GitLab instance, which enables you to use the same cluster across multiple projects. [More information](../user/instance/clusters/index.md)
+With [instance-level Kubernetes clusters](../user/instance/clusters/index.md),
+you can connect a Kubernetes cluster to the GitLab instance and use the same cluster across all of
+the projects within your instance.
 
 NOTE:
-Users need administrator access to use these endpoints.
+Users need the Administrator role to use these endpoints.
 
 ## List instance clusters
 
@@ -240,7 +242,7 @@ Parameters:
 
 NOTE:
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the [Add existing Kubernetes cluster](../user/project/clusters/add_remove_clusters.md#add-existing-cluster) option or
+through the [Add existing Kubernetes cluster](../user/project/clusters/add_existing_cluster.md) option or
 through the [Add existing instance cluster](#add-existing-instance-cluster) endpoint.
 
 Example request:

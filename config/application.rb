@@ -23,6 +23,9 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
+    require_dependency Rails.root.join('lib/gitlab/redis/trace_chunks')
+    require_dependency Rails.root.join('lib/gitlab/redis/rate_limiting')
+    require_dependency Rails.root.join('lib/gitlab/redis/sessions')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
@@ -370,15 +373,7 @@ module Gitlab
     end
 
     # Use caching across all environments
-    # Full list of options:
-    # https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html#method-c-new
-    caching_config_hash = {}
-    caching_config_hash[:redis] = Gitlab::Redis::Cache.pool
-    caching_config_hash[:compress] = Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1'))
-    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
-    caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
-
-    config.cache_store = :redis_cache_store, caching_config_hash
+    config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 
     config.active_job.queue_adapter = :sidekiq
 

@@ -1,4 +1,4 @@
-import { LOAD_ACTION_ATTR_SELECTOR, DEPRECATED_LOAD_EVENT_ATTR_SELECTOR } from './constants';
+import { LOAD_ACTION_ATTR_SELECTOR } from './constants';
 import { dispatchSnowplowEvent } from './dispatch_snowplow_event';
 import getStandardContext from './get_standard_context';
 import {
@@ -105,9 +105,7 @@ export default class Tracking {
       return [];
     }
 
-    const loadEvents = parent.querySelectorAll(
-      `${LOAD_ACTION_ATTR_SELECTOR}, ${DEPRECATED_LOAD_EVENT_ATTR_SELECTOR}`,
-    );
+    const loadEvents = parent.querySelectorAll(LOAD_ACTION_ATTR_SELECTOR);
 
     loadEvents.forEach((element) => {
       const { action, data } = createEventPayload(element);
@@ -179,9 +177,12 @@ export default class Tracking {
     }
 
     const referrers = getReferrersCache();
-    const pageLinks = Object.seal({ url: '', referrer: '', originalUrl: window.location.href });
+    const pageLinks = Object.seal({
+      url: pageUrl,
+      referrer: '',
+      originalUrl: window.location.href,
+    });
 
-    pageLinks.url = `${pageUrl}${window.location.hash}`;
     window.snowplow('setCustomUrl', pageLinks.url);
 
     if (document.referrer) {

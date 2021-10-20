@@ -1,11 +1,9 @@
-import { getJSONFixture } from 'helpers/fixtures';
+import testReports from 'test_fixtures/pipelines/test_report.json';
 import * as types from '~/pipelines/stores/test_reports/mutation_types';
 import mutations from '~/pipelines/stores/test_reports/mutations';
 
 describe('Mutations TestReports Store', () => {
   let mockState;
-
-  const testReports = getJSONFixture('pipelines/test_report.json');
 
   const defaultState = {
     endpoint: '',

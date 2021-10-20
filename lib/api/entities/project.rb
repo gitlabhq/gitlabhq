@@ -132,7 +132,7 @@ module API
 
       def self.preload_relation(projects_relation, options = {})
         # Preloading topics, should be done with using only `:topics`,
-        # as `:topics` are defined as: `has_many :topics, through: :taggings`
+        # as `:topics` are defined as: `has_many :topics, through: :project_topics`
         # N+1 is solved then by using `subject.topics.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         super(projects_relation).preload(group: :namespace_settings)
@@ -144,7 +144,7 @@ module API
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
                                          fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :topics, :topics_acts_as_taggable, :group, :project_feature, namespace: [:route, :owner]])
+                                         forked_from_project: [:route, :topics, :group, :project_feature, namespace: [:route, :owner]])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

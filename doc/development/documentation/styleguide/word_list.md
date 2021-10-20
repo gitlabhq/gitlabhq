@@ -29,9 +29,39 @@ Try to avoid using **above** when referring to an example or table in a document
 
 - In the previous example, the dog had fleas.
 
-## admin, admin area
+Do not use **above** when referring to versions of the product. Use [**later**](#later) instead.
 
-Use **administration**, **administrator**, **administer**, or **Admin Area** instead. ([Vale](../testing.md#vale) rule: [`Admin.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Admin.yml))
+- Do: In GitLab 14.4 and later...
+- Do not: In GitLab 14.4 and above...
+- Do not: In GitLab 14.4 and higher...
+
+## access level
+
+Access levels are different than [roles](#roles) or [permissions](#permissions).
+When you create a user, you choose an access level: **Regular**, **Auditor**, or **Admin**.
+
+Capitalize these words when you refer to the UI. Otherwise use lowercase.
+
+## administrator
+
+Use **administrator** instead of **admin** when talking about a user's access level.
+Use lowercase unless you are referring to the **Admin** access level you select in the UI.
+
+To view the administrator access type, in the GitLab UI, go to the Admin Area and select
+**Users**. Then select **New user**.
+
+![admin access level](img/admin_access_level.png)
+
+An **administrator** is not a [role](#roles) or [permission](#permissions).
+
+- Do: To do this thing, you must be an administrator.
+- Do: To do this thing, you must have the administrator access level.
+- Do not: To do this thing, you must have the Admin role.
+
+## Admin Area
+
+Use title case **Admin Area** to refer to the area of the UI that you access when you select **Menu > Admin**.
+This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## allow, enable
 
@@ -54,9 +84,14 @@ in the handbook when writing about Alpha features.
 
 Instead of **and/or**, use **or** or rewrite the sentence to spell out both options.
 
+## and so on
+
+Do not use **and so on**. Instead, be more specific. For details, see
+[the Microsoft style guide](https://docs.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/a/and-so-on).
+
 ## area
 
-Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-admin-area).
+Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
 
 ## below
 
@@ -150,8 +185,8 @@ When writing about the Developer role:
 - Do not use the phrase, **if you are a developer** to mean someone who is assigned the Developer
   role. Instead, write it out. For example, **if you are assigned the Developer role**.
 - To describe a situation where the Developer role is the minimum required:
-  - Avoid: the Developer role or higher
-  - Use instead: at least the Developer role
+  - Do: at least the Developer role
+  - Do not: the Developer role or higher
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
 
@@ -207,7 +242,8 @@ Use lowercase for **epic board**.
 
 ## etc.
 
-Try to avoid **etc.**. Be as specific as you can. Do not use **and so on** as a replacement.
+Try to avoid **etc.**. Be as specific as you can. Do not use
+[**and so on**](#and-so-on) as a replacement.
 
 - Do: You can update objects, like merge requests and issues.
 - Do not: You can update objects, like merge requests, issues, etc.
@@ -220,8 +256,8 @@ Use **expand** instead of **open** when you are talking about expanding or colla
 
 Use **box** instead of **field** or **text box**.
 
-- Avoid: In the **Variable name** field, enter `my text`.
-- Use instead: In the **Variable name** box, enter `my text`.
+- Do: In the **Variable name** box, enter `my text`.
+- Do not: In the **Variable name** field, enter `my text`.
 
 ## foo
 
@@ -265,8 +301,8 @@ When writing about the Guest role:
 - Do not use the phrase, **if you are a guest** to mean someone who is assigned the Guest
   role. Instead, write it out. For example, **if you are assigned the Guest role**.
 - To describe a situation where the Guest role is the minimum required:
-  - Avoid: the Guest role or higher
-  - Use instead: at least the Guest role
+  - Do: at least the Guest role
+  - Do not: the Guest role or higher
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
 
@@ -282,15 +318,16 @@ Do not use **high availability** or **HA**. Instead, direct readers to the GitLa
 
 Do not use **higher** when talking about version numbers.
 
-- Do: In GitLab 14.1 and later.
-- Do not: In GitLab 14.1 and higher.
+- Do: In GitLab 14.4 and later...
+- Do not: In GitLab 14.4 and higher...
+- Do not: In GitLab 14.4 and above...
 
 ## hit
 
 Don't use **hit** to mean **press**.
 
-- Avoid: Hit the **ENTER** button.
-- Use instead: Press **ENTER**.
+- Do: Press **ENTER**.
+- Do not: Hit the **ENTER** button.
 
 ## I
 
@@ -326,8 +363,9 @@ If you want to use **CI** with the word **job**, use **CI/CD job** rather than *
 
 Use **later** when talking about version numbers.
 
-- Avoid: In GitLab 14.1 and higher.
-- Use instead: In GitLab 14.1 and later.
+- Do: In GitLab 14.1 and later...
+- Do not: In GitLab 14.1 and higher...
+- Do not: In GitLab 14.1 and above...
 
 ## list
 
@@ -354,8 +392,8 @@ When writing about the Maintainer role:
 - Do not use the phrase, **if you are a maintainer** to mean someone who is assigned the Maintainer
   role. Instead, write it out. For example, **if you are assigned the Maintainer role**.
 - To describe a situation where the Maintainer role is the minimum required:
-  - Avoid: the Maintainer role or higher
-  - Use instead: at least the Maintainer role
+  - Do: at least the Maintainer role
+  - Do not: the Maintainer role or higher
 
 Do not use **Maintainer permissions**. A user who is assigned the Maintainer role has a set of associated permissions.
 
@@ -416,6 +454,13 @@ Do not use **note that** because it's wordy.
 - Do: You can change the settings.
 - Do not: Note that you can change the settings.
 
+## once
+
+The word **once** means **one time**. Don't use it to mean **after** or **when**.
+
+- Do: When the process is complete...
+- Do not: Once the process is complete...
+
 ## Owner
 
 When writing about the Owner role:
@@ -429,7 +474,9 @@ Do not use **Owner permissions**. A user who is assigned the Owner role has a se
 
 ## permissions
 
-Do not use **roles** and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+Permissions are not the same as [**access levels**](#access-level).
 
 ## please
 
@@ -454,8 +501,8 @@ When writing about the Reporter role:
 - Do not use the phrase, **if you are a reporter** to mean someone who is assigned the Reporter
   role. Instead, write it out. For example, **if you are assigned the Reporter role**.
 - To describe a situation where the Reporter role is the minimum required:
-  - Avoid: the Reporter role or higher
-  - Use instead: at least the Reporter role
+  - Do: at least the Reporter role
+  - Do not: the Reporter role or higher
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
 
@@ -465,11 +512,22 @@ Use title case for **Repository Mirroring**.
 
 ## roles
 
-Do not use **roles** and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
+
+Roles are not the same as [**access levels**](#access-level).
 
 ## runner, runners
 
 Use lowercase for **runners**. These are the agents that run CI/CD jobs. See also [GitLab Runner](#gitlab-runner) and [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/233529).
+
+## (s)
+
+Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
+
+Do: Select the jobs you want.
+Do not: Select the job(s) you want.
+
+If you can select multiples of something, then write the word as plural.
 
 ## sanity check
 
@@ -513,6 +571,13 @@ You can use **single sign-on**.
 ## simply, simple
 
 Do not use **simply** or **simple**. If the user doesn't find the process to be simple, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
+
+## since
+
+The word **since** indicates a timeframe. For example, **Since 1984, Bon Jovi has existed**. Don't use **since** to mean **because**.
+
+- Do: Because you have the Developer role, you can delete the widget.
+- Do not: Since you have the Developer role, you can delete the widget.
 
 ## slashes
 

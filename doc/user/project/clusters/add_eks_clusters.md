@@ -4,23 +4,37 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# EKS clusters (DEPRECATED) **(FREE)**
+# Connect EKS clusters through cluster certificates **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
 
 WARNING:
-Use [Infrastructure as Code](../../infrastructure/index.md) to create new clusters. The method described in this document is deprecated as of GitLab 14.0.
+Use [Infrastrucure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
+to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
 Kubernetes Service (EKS).
 
-## Add an existing EKS cluster
+## Connect an existing EKS cluster
 
-If you already have an EKS cluster and want to integrate it with GitLab,
-see how to [add an existing cluster](add_existing_cluster.md).
+If you already have an EKS cluster and want to connect it to GitLab,
+use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
-## Create a new certificate-based EKS cluster
+Alternatively, you can [connect them with cluster certificates](add_existing_cluster.md),
+although this method is not recommended for [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
+
+## Create a new EKS cluster
+
+To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
+
+Alternatively, you can [create new EKS clusters using cluster certificates](#how-to-create-a-new-cluster-on-eks-through-cluster-certificates-deprecated).
+Although still available on the GitLab UI, this method was deprecated
+in GitLab 14.0 and is scheduled for removal in GitLab 15.0.
+It also has [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
+
+### How to create a new cluster on EKS through cluster certificates (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
 Prerequisites:
 
@@ -41,9 +55,10 @@ Further steps:
 1. [Create a default Storage Class](#create-a-default-storage-class).
 1. [Deploy the app to EKS](#deploy-the-app-to-eks).
 
-### Create a new EKS cluster in GitLab
+#### Create a new EKS cluster in GitLab
 
-To create a new EKS cluster:
+To create new a EKS cluster for your project, group, or instance, through
+cluster certificates:
 
 1. Go to your:
    - Project's **Infrastructure > Kubernetes clusters** page, for a project-level cluster.

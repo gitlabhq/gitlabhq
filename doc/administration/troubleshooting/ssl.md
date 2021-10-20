@@ -45,7 +45,7 @@ following issues:
   ```
 
 - The error `SSL certificate problem: unable to get local issuer certificate`
-  is displayed when setting up a [mirror](../../user/project/repository/repository_mirroring.md#repository-mirroring)
+  is displayed when setting up a [mirror](../../user/project/repository/mirror/index.md)
   from this GitLab instance.
 - `openssl` works when specifying the path to the certificate:
 
@@ -115,7 +115,7 @@ and the restart the runner by running `gitlab-runner restart`.
 
 ## Mirroring a remote GitLab repository that uses a self-signed SSL certificate
 
-When configuring a local GitLab instance to [mirror a repository](../../user/project/repository/repository_mirroring.md)
+When configuring a local GitLab instance to [mirror a repository](../../user/project/repository/mirror/index.md)
 from a remote GitLab instance that uses a self-signed certificate, you may see
 the `SSL certificate problem: self signed certificate` error message in the
 user interface.

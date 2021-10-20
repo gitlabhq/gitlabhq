@@ -1,7 +1,13 @@
 <script>
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { uniq } from 'lodash';
-import { EXCLUDED_NODES, HIDE_CLASS, HIGHLIGHT_CLASS, TYPING_DELAY } from '../constants';
+import { uniq, escapeRegExp } from 'lodash';
+import {
+  EXCLUDED_NODES,
+  HIDE_CLASS,
+  HIGHLIGHT_CLASS,
+  NONE_PADDING_CLASS,
+  TYPING_DELAY,
+} from '../constants';
 
 const origExpansions = new Map();
 
@@ -37,9 +43,13 @@ const resetSections = ({ sectionSelector }) => {
 };
 
 const clearHighlights = () => {
-  document
-    .querySelectorAll(`.${HIGHLIGHT_CLASS}`)
-    .forEach((element) => element.classList.remove(HIGHLIGHT_CLASS));
+  document.querySelectorAll(`.${HIGHLIGHT_CLASS}`).forEach((element) => {
+    const { parentNode } = element;
+    const textNode = document.createTextNode(element.textContent);
+    parentNode.replaceChild(textNode, element);
+
+    parentNode.normalize();
+  });
 };
 
 const hideSectionsExcept = (sectionSelector, visibleSections) => {
@@ -50,17 +60,41 @@ const hideSectionsExcept = (sectionSelector, visibleSections) => {
     });
 };
 
-const highlightElements = (elements = []) => {
-  elements.forEach((element) => element.classList.add(HIGHLIGHT_CLASS));
+const transformMatchElement = (element, searchTerm) => {
+  const textStr = element.textContent;
+  const escapedSearchTerm = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+
+  const textList = textStr.split(escapedSearchTerm);
+  const replaceFragment = document.createDocumentFragment();
+  textList.forEach((text) => {
+    let addElement = document.createTextNode(text);
+    if (escapedSearchTerm.test(text)) {
+      addElement = document.createElement('mark');
+      addElement.className = `${HIGHLIGHT_CLASS} ${NONE_PADDING_CLASS}`;
+      addElement.textContent = text;
+      escapedSearchTerm.lastIndex = 0;
+    }
+    replaceFragment.appendChild(addElement);
+  });
+
+  return replaceFragment;
 };
 
-const displayResults = ({ sectionSelector, expandSection }, matches) => {
+const highlightElements = (elements = [], searchTerm) => {
+  elements.forEach((element) => {
+    const replaceFragment = transformMatchElement(element, searchTerm);
+    element.innerHTML = '';
+    element.appendChild(replaceFragment);
+  });
+};
+
+const displayResults = ({ sectionSelector, expandSection, searchTerm }, matches) => {
   const elements = matches.map((match) => match.parentElement);
   const sections = uniq(elements.map((element) => findSettingsSection(sectionSelector, element)));
 
   hideSectionsExcept(sectionSelector, sections);
   sections.forEach(expandSection);
-  highlightElements(elements);
+  highlightElements(elements, searchTerm);
 };
 
 const clearResults = (params) => {
@@ -116,21 +150,21 @@ export default {
   },
   methods: {
     search(value) {
+      this.searchTerm = value;
       const displayOptions = {
         sectionSelector: this.sectionSelector,
         expandSection: this.expandSection,
         collapseSection: this.collapseSection,
         isExpanded: this.isExpandedFn,
+        searchTerm: this.searchTerm,
       };
-
-      this.searchTerm = value;
 
       clearResults(displayOptions);
 
       if (value.length) {
         saveExpansionState(document.querySelectorAll(this.sectionSelector), displayOptions);
 
-        displayResults(displayOptions, search(this.searchRoot, value));
+        displayResults(displayOptions, search(this.searchRoot, this.searchTerm));
       } else {
         restoreExpansionState(displayOptions);
       }

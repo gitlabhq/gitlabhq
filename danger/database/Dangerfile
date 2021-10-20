@@ -33,7 +33,7 @@ MSG
 DATABASE_APPROVED_LABEL = 'database::approved'
 
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
-geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb}).empty?
+geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/structure\.sql}).empty?
 
 non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
 geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).empty?
@@ -45,7 +45,7 @@ if non_geo_migration_created && !non_geo_db_schema_updated
 end
 
 if geo_migration_created && !geo_db_schema_updated
-  warn format(format_str, migrations: 'Geo migrations', schema: helper.html_link("ee/db/geo/schema.rb"))
+  warn format(format_str, migrations: 'Geo migrations', schema: helper.html_link("ee/db/geo/structure.sql"))
 end
 
 return unless helper.ci?

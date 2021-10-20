@@ -45,7 +45,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::MemoryKiller do
       expect(subject).to receive(:sleep).with(30).ordered
       expect(Process).to receive(:kill).with('SIGTERM', pid).ordered
 
-      expect(subject).to receive(:sleep).with(10).ordered
+      expect(subject).to receive(:sleep).with(Sidekiq.options[:timeout] + 2).ordered
       expect(Process).to receive(:kill).with('SIGKILL', pid).ordered
 
       expect(Sidekiq.logger)

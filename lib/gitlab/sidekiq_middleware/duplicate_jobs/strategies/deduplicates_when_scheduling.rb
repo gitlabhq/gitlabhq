@@ -4,11 +4,15 @@ module Gitlab
   module SidekiqMiddleware
     module DuplicateJobs
       module Strategies
-        module DeduplicatesWhenScheduling
+        class DeduplicatesWhenScheduling < Base
+          extend ::Gitlab::Utils::Override
+
+          override :initialize
           def initialize(duplicate_job)
             @duplicate_job = duplicate_job
           end
 
+          override :schedule
           def schedule(job)
             if deduplicatable_job? && check! && duplicate_job.duplicate?
               job['duplicate-of'] = duplicate_job.existing_jid
@@ -25,6 +29,7 @@ module Gitlab
             yield
           end
 
+          override :perform
           def perform(job)
             update_job_wal_location!(job)
           end

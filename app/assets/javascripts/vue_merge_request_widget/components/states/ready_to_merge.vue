@@ -29,6 +29,7 @@ import {
   WARNING,
   MT_MERGE_STRATEGY,
   PIPELINE_FAILED_STATE,
+  STATE_MACHINE,
 } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -46,6 +47,9 @@ const PIPELINE_SUCCESS_STATE = 'success';
 const MERGE_FAILED_STATUS = 'failed';
 const MERGE_SUCCESS_STATUS = 'success';
 const MERGE_HOOK_VALIDATION_ERROR_STATUS = 'hook_validation_error';
+
+const { transitions } = STATE_MACHINE;
+const { MERGE, MERGED, MERGE_FAILURE, AUTO_MERGE } = transitions;
 
 export default {
   name: 'ReadyToMerge',
@@ -99,8 +103,8 @@ export default {
     GlDropdownItem,
     GlFormCheckbox,
     GlSkeletonLoader,
-    MergeTrainHelperText: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_helper_text.vue'),
+    MergeTrainHelperIcon: () =>
+      import('ee_component/vue_merge_request_widget/components/merge_train_helper_icon.vue'),
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -234,7 +238,7 @@ export default {
       return CONFIRM;
     },
     iconClass() {
-      if (this.shouldRenderMergeTrainHelperText && !this.mr.preventMerge) {
+      if (this.shouldRenderMergeTrainHelperIcon && !this.mr.preventMerge) {
         return PIPELINE_RUNNING_STATE;
       }
 
@@ -361,6 +365,11 @@ export default {
       }
 
       this.isMakingRequest = true;
+
+      if (!useAutoMerge) {
+        this.mr.transitionStateMachine({ transition: MERGE });
+      }
+
       this.service
         .merge(options)
         .then((res) => res.data)
@@ -371,10 +380,12 @@ export default {
 
           if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
             eventHub.$emit('MRWidgetUpdateRequested');
+            this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
             this.initiateMergePolling();
           } else if (hasError) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
           if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -383,6 +394,7 @@ export default {
         })
         .catch(() => {
           this.isMakingRequest = false;
+          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           createFlash({
             message: __('Something went wrong. Please try again.'),
           });
@@ -417,6 +429,7 @@ export default {
             eventHub.$emit('FetchActionsContent');
             MergeRequest.hideCloseButton();
             MergeRequest.decreaseCounter();
+            this.mr.transitionStateMachine({ transition: MERGED });
             stopPolling();
 
             refreshUserMergeRequestCounts();
@@ -428,6 +441,7 @@ export default {
             }
           } else if (data.merge_error) {
             eventHub.$emit('FailedToMerge', data.merge_error);
+            this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
             stopPolling();
           } else {
             // MR is not merged yet, continue polling until the state becomes 'merged'
@@ -438,6 +452,7 @@ export default {
           createFlash({
             message: __('Something went wrong while merging this merge request. Please try again.'),
           });
+          this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           stopPolling();
         });
     },
@@ -489,7 +504,7 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div class="mr-widget-body media" :class="{ 'gl-pb-3': shouldRenderMergeTrainHelperText }">
+      <div class="mr-widget-body media">
         <status-icon :status="iconClass" />
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center">
@@ -560,6 +575,13 @@ export default {
                 :is-disabled="isSquashReadOnly"
                 class="gl-mx-3"
               />
+
+              <merge-train-helper-icon
+                v-if="shouldRenderMergeTrainHelperIcon"
+                :merge-train-when-pipeline-succeeds-docs-path="
+                  mr.mergeTrainWhenPipelineSucceedsDocsPath
+                "
+              />
             </div>
             <template v-else>
               <div class="bold js-resolve-mr-widget-items-message gl-ml-3">
@@ -590,13 +612,6 @@ export default {
           </div>
         </div>
       </div>
-      <merge-train-helper-text
-        v-if="shouldRenderMergeTrainHelperText"
-        :pipeline-id="pipelineId"
-        :pipeline-link="pipeline.path"
-        :merge-train-length="stateData.mergeTrainsCount"
-        :merge-train-when-pipeline-succeeds-docs-path="mr.mergeTrainWhenPipelineSucceedsDocsPath"
-      />
       <template v-if="shouldShowMergeControls">
         <div
           v-if="!shouldShowMergeEdit"

@@ -139,6 +139,8 @@ FactoryBot.define do
     end
 
     factory :omniauth_user do
+      password_automatically_set { true }
+
       transient do
         extern_uid { '123456' }
         provider { 'ldapmain' }

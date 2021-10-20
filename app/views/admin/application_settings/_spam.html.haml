@@ -2,6 +2,11 @@
   = form_errors(@application_setting)
 
   %fieldset
+    %h5
+      = _('reCAPTCHA')
+    %p
+      = _('reCAPTCHA helps prevent credential stuffing.')
+      = link_to _('Only reCAPTCHA v2 is supported:'), 'https://developers.google.com/recaptcha/docs/versions', target: '_blank', rel: 'noopener noreferrer'
     .form-group
       .form-check
         = f.check_box :recaptcha_enabled, class: 'form-check-input'
@@ -9,24 +14,30 @@
           = _("Enable reCAPTCHA")
         %span.form-text.text-muted#recaptcha_help_block
           = _('Helps prevent bots from creating accounts.')
+          = link_to _('How do I configure it?'), help_page_path('integration/recaptcha.md'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       .form-check
         = f.check_box :login_recaptcha_protection_enabled, class: 'form-check-input'
         = f.label :login_recaptcha_protection_enabled, class: 'form-check-label' do
-          = _("Enable reCAPTCHA for login")
+          = _('Enable reCAPTCHA for login.')
         %span.form-text.text-muted#recaptcha_help_block
           = _('Helps prevent bots from brute-force attacks.')
     .form-group
-      = f.label :recaptcha_site_key, _('reCAPTCHA Site Key'), class: 'label-bold'
+      = f.label :recaptcha_site_key, _('reCAPTCHA site key'), class: 'label-bold'
       = f.text_field :recaptcha_site_key, class: 'form-control gl-form-input'
       .form-text.text-muted
         = _("Generate site and private keys at")
         %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
-      = f.label :recaptcha_private_key, _('reCAPTCHA Private Key'), class: 'label-bold'
-    .form-group
+      = f.label :recaptcha_private_key, _('reCAPTCHA private key'), class: 'label-bold'
       = f.text_field :recaptcha_private_key, class: 'form-control gl-form-input'
+
+    %h5
+      = _('Invisible Captcha')
+    %p
+      = _('Invisible Captcha helps prevent the creation of spam accounts. It adds a honeypot field and time-sensitive form submission to the account signup form.')
+      = link_to _('Read their documentation.'), 'https://github.com/markets/invisible_captcha', target: '_blank', rel: 'noopener noreferrer'
 
     .form-group
       .form-check
@@ -36,12 +47,18 @@
         %span.form-text.text-muted
           = _('Helps prevent bots from creating accounts.')
 
+    %h5
+      = _('Akismet')
+    %p
+      = _('Akismet helps prevent the creation of spam issues in public projects.')
+      = link_to _('How do I configure Akismet?'), help_page_path('integration/akismet.md'), target: '_blank', rel: 'noopener noreferrer'
+
     .form-group
       .form-check
         = f.check_box :akismet_enabled, class: 'form-check-input'
         = f.label :akismet_enabled, class: 'form-check-label' do
           Enable Akismet
-        %span.form-text.text-muted#akismet_help_block= _("Helps prevent bots from creating issues")
+        %span.form-text.text-muted#akismet_help_block= _("Helps prevent bots from creating issues.")
 
     .form-group
       = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
@@ -50,25 +67,31 @@
         Generate API key at
         %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
+    %h5
+      = _('IP address restrictions')
+
     .form-group
       .form-check
         = f.check_box :unique_ips_limit_enabled, class: 'form-check-input'
         = f.label :unique_ips_limit_enabled, class: 'form-check-label' do
-          = _("Limit sign in from multiple ips")
+          = _("Limit sign in from multiple IP addresses")
         %span.form-text.text-muted#unique_ip_help_block
-          = _("Helps prevent malicious users hide their activity")
+          = _("Helps prevent malicious users hide their activity.")
 
     .form-group
-      = f.label :unique_ips_limit_per_user, _('IPs per user'), class: 'label-bold'
+      = f.label :unique_ips_limit_per_user, _('IP addresses per user'), class: 'label-bold'
       = f.number_field :unique_ips_limit_per_user, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = _("Maximum number of unique IPs per user")
+        = _("Maximum number of unique IP addresses per user.")
 
     .form-group
-      = f.label :unique_ips_limit_time_window, _('IP expiration time'), class: 'label-bold'
+      = f.label :unique_ips_limit_time_window, _('IP address expiration time'), class: 'label-bold'
       = f.number_field :unique_ips_limit_time_window, class: 'form-control gl-form-input'
       .form-text.text-muted
-        = _("How many seconds an IP will be counted towards the limit")
+        = _("How many seconds an IP counts toward the IP address limit.")
+
+    %h5
+      = _('Spam Check')
 
     .form-group
       .form-check
@@ -79,8 +102,8 @@
       = f.label :spam_check_endpoint_url, _('URL of the external Spam Check endpoint'), class: 'label-bold'
       = f.text_field :spam_check_endpoint_url, class: 'form-control gl-form-input'
     .form-group
-      = f.label :spam_check_api_key, _('Spam Check API Key'), class: 'gl-font-weight-bold'
+      = f.label :spam_check_api_key, _('Spam Check API key'), class: 'gl-font-weight-bold'
       = f.text_field :spam_check_api_key, class: 'form-control gl-form-input'
-      .form-text.text-muted= _('The API key used by GitLab for accessing the Spam Check service endpoint')
+      .form-text.text-muted= _('The API key used by GitLab for accessing the Spam Check service endpoint.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

@@ -499,10 +499,10 @@ const Api = {
     return axios.put(url, params);
   },
 
-  applySuggestionBatch(ids) {
+  applySuggestionBatch(ids, message) {
     const url = Api.buildUrl(Api.applySuggestionBatchPath);
 
-    return axios.put(url, { ids });
+    return axios.put(url, { ids, commit_message: message });
   },
 
   commitPipelines(projectId, sha) {

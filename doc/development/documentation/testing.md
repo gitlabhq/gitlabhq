@@ -206,7 +206,6 @@ Vale returns three types of results: `suggestion`, `warning`, and `error`:
   (after the Technical Writing team completes its cleanup). Warnings don't break CI. See a list of
   [warning-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Warning%3A&group_id=9970&project_id=278964).
 - **Error**-level results are Style Guide violations, and should contain clear explanations
-  about how to resolve the error. Errors break CI and are displayed in CI job output.
   of how to resolve the error. Errors break CI and are displayed in CI job output. See a list of
   [error-level rules](https://gitlab.com/search?utf8=✓&snippets=false&scope=&repository_ref=master&search=path%3Adoc%2F.vale%2Fgitlab+Error%3A&group_id=9970&project_id=278964).
 

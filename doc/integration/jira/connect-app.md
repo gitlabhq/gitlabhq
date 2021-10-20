@@ -81,7 +81,7 @@ self-managed GitLab instances with Jira Cloud, you can either:
 - [Install the application manually](#install-the-application-manually).
 - [Create a Marketplace listing](#create-a-marketplace-listing).
 
-### Install the application manually **(FREE SELF)**
+### Install the application manually
 
 You can configure your Atlassian Cloud instance to allow you to install applications
 from outside the Marketplace, which allows you to install the application:
@@ -114,7 +114,7 @@ NOTE:
 If a GitLab update makes changes to the application descriptor, you must uninstall, then reinstall, the
 application.
 
-### Create a Marketplace listing **(FREE SELF)**
+### Create a Marketplace listing
 
 If you prefer to not use development mode on your Jira instance, you can create
 your own Marketplace listing for your instance. This enables your application

@@ -55,7 +55,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching d
   end
 
   def expect_counters(issuable_type, count)
-    dashboard_count = find('.nav-links li.active')
+    dashboard_count = find('.gl-tabs-nav li a.active')
     nav_count = find(".dashboard-shortcuts-#{issuable_type}")
     header_count = find(".header-content .#{issuable_type.tr('_', '-')}-count")
 

@@ -12,9 +12,8 @@ When a pipeline job is about to run, GitLab generates a unique token and injects
 You can use a GitLab CI/CD job token to authenticate with specific API endpoints:
 
 - Packages:
-  - [Package Registry](../../user/packages/package_registry/index.md). To push to the
-    Package Registry, you can use [deploy tokens](../../user/project/deploy_tokens/index.md).
-  - [Container Registry](../../user/packages/container_registry/index.md)
+  - [Package Registry](../../user/packages/package_registry/index.md#use-gitlab-cicd-to-build-packages).
+  - [Container Registry](../../user/packages/container_registry/index.md#build-and-push-by-using-gitlab-cicd)
     (the `$CI_REGISTRY_PASSWORD` is `$CI_JOB_TOKEN`).
   - [Container Registry API](../../api/container_registry.md)
     (scoped to the job's project, when the `ci_job_token_scope` feature flag is enabled).
@@ -24,8 +23,8 @@ You can use a GitLab CI/CD job token to authenticate with specific API endpoints
 - [Release creation](../../api/releases/index.md#create-a-release).
 - [Terraform plan](../../user/infrastructure/index.md).
 
-The token has the same permissions to access the API as the user that triggers the
-pipeline. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
+The token has the same permissions to access the API as the user that executes the
+job. Therefore, this user must be assigned to [a role that has the required privileges](../../user/permissions.md#gitlab-cicd-permissions).
 
 The token is valid only while the pipeline job runs. After the job finishes, you can't
 use the token anymore.
@@ -60,20 +59,20 @@ tries to steal tokens from other jobs.
 
 ## Limit GitLab CI/CD job token access
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1.
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-ci-job-token-scope-limit). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1. [Deployed behind the `:ci_scoped_job_token` feature flag](../../user/feature_flags.md), disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.4.
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the `ci_scoped_job_token` flag](../../administration/feature_flags.md).
+On GitLab.com, this feature is available.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary
-to access specific private resources. Limiting the job token access scope reduces the risk of a leaked
-token being used to access private data that the user associated to the job can access.
+to access specific private resources.
+If a job token is leaked it could potentially be used to access data that is private
+to the job token's user. By limiting the job token access scope, private data cannot
+be accessed unless projects are explicitly authorized.
 
 Control the job token access scope with an allowlist of other projects authorized
 to be accessed by authenticating with the current project's job token. By default
@@ -87,10 +86,10 @@ setting at all times, and configure the allowlist for cross-project access if ne
 For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
 to make an API request to a private project `B`, then `B` must be added to the allowlist for `A`.
-If project `B` is public or internal, it doesn't need to be added to the allowlist.
+If project `B` is public or internal, it's not required to be added to the allowlist.
 The job token scope is only for controlling access to private projects.
 
-To enable and configure the job token scope limit:
+### Configure the job token scope limit
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -99,30 +98,8 @@ To enable and configure the job token scope limit:
 1. (Optional) Add existing projects to the token's access scope. The user adding a
    project must have the [maintainer role](../../user/permissions.md) in both projects.
 
-If the job token scope limit is disabled, the token can potentially be used to authenticate
-API requests to all projects accessible to the user that triggered the job.
-
 There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) to improve
 the feature with more strategic control of the access permissions.
-
-### Enable or disable CI job token scope limit **(FREE SELF)**
-
-The GitLab CI/CD job token access scope limit is under development and not ready for production
-use. It is deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:ci_scoped_job_token)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:ci_scoped_job_token)
-```
 
 ## Trigger a multi-project pipeline by using a CI job token
 
@@ -163,3 +140,50 @@ build_submodule:
 ```
 
 Read more about the [jobs artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
+
+## Troubleshooting
+
+CI job token failures are usually shown as responses like `404 Not Found` or similar:
+
+- Unauthorized Git clone:
+
+  ```plaintext
+  $ git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/fabiopitino/test2.git
+
+  Cloning into 'test2'...
+  remote: The project you were looking for could not be found or you don't have permission to view it.
+  fatal: repository 'https://gitlab-ci-token:[MASKED]@gitlab.com/<namespace>/<project>.git/' not found
+  ```
+
+- Unauthorized package download:
+
+  ```plaintext
+  $ wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/1234/packages/generic/my_package/0.0.1/file.txt
+
+  --2021-09-23 11:00:13--  https://gitlab.com/api/v4/projects/1234/packages/generic/my_package/0.0.1/file.txt
+  Resolving gitlab.com (gitlab.com)... 172.65.251.78, 2606:4700:90:0:f22e:fbec:5bed:a9b9
+  Connecting to gitlab.com (gitlab.com)|172.65.251.78|:443... connected.
+  HTTP request sent, awaiting response... 404 Not Found
+  2021-09-23 11:00:13 ERROR 404: Not Found.
+  ```
+
+- Unauthorized API request:
+
+  ```plaintext
+  $ curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+
+  < HTTP/2 404
+  < date: Thu, 23 Sep 2021 11:00:12 GMT
+  {"message":"404 Not Found"}
+  < content-type: application/json
+  ```
+
+While troubleshooting CI/CD job token authentication issues, be aware that:
+
+- When the [CI/CD job token limit](#limit-gitlab-cicd-job-token-access) is enabled,
+  and the job token is being used to access a different project:
+  - The user that executes the job must be a member of the project that is being accessed.
+  - The user must have the [permissions](../../user/permissions.md) to perform the action.
+  - The target project must be [allowlisted for the job token scope limit](#configure-the-job-token-scope-limit).
+- The CI job token becomes invalid if the job is no longer running, has been erased,
+  or if the project is in the process of being deleted.

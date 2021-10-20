@@ -33,19 +33,25 @@ Stories can be added for any Vue component in the `gitlab` repository.
 To add a story:
 
 1. Create a new `.stories.js` file in the same directory as the Vue component.
-   The file name should have the same prefix as the Vue component.
+   The filename should have the same prefix as the Vue component.
 
     ```txt
     vue_shared/
     ├─ components/
     │  ├─ sidebar
-    │  │  ├─ todo_button.vue
-    │  │  ├─ todo_button.stories.js
+    │  |  ├─ todo_toggle
+    │  |  |  ├─ todo_button.vue
+    │  │  |  ├─ todo_button.stories.js
     ```
 
 1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction/)
 
    Notes:
    - Specify the `title` field of the story as the component's file path from the `javascripts/` directory,
-     e.g. if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`, specify the `title` as
-     `vue_shared/components/To-do Button`. This will ensure the Storybook navigation maps closely to our internal directory structure.
+     e.g. if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`, specify the story `title` as `vue_shared/components/sidebar/todo_toggle/todo_button`. This will ensure the Storybook navigation maps closely to our internal directory structure.
+
+## Mock backend APIs
+
+GitLab’s Storybook uses [MirajeJS](https://miragejs.com/) to mock REST and GraphQL APIs. Storybook shares the MirajeJS server
+with the [frontend integration tests](../testing_guide/testing_levels.md#frontend-integration-tests). You can find the MirajeJS
+configuration files in `spec/frontend_integration/mock_server`.

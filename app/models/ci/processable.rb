@@ -58,7 +58,8 @@ module Ci
 
       after_transition any => ::Ci::Processable.completed_statuses do |processable|
         next unless processable.with_resource_group?
-        next unless processable.resource_group.release_resource_from(processable)
+
+        processable.resource_group.release_resource_from(processable)
 
         processable.run_after_commit do
           Ci::ResourceGroups::AssignResourceFromResourceGroupWorker

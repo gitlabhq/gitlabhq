@@ -175,10 +175,6 @@ p.time {
   text-shadow: none;
 }
 
-.thin-area {
-  height: 150px;
-}
-
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100%; }
@@ -298,10 +294,6 @@ img.emoji {
   margin: 0;
 }
 
-.space-right {
-  margin-right: 10px;
-}
-
 .alert {
   margin-bottom: $gl-padding;
 }
@@ -360,14 +352,6 @@ img.emoji {
     label {
       display: inline;
     }
-  }
-}
-
-.outline-0 {
-  outline: 0;
-
-  &:focus {
-    outline: 0;
   }
 }
 

@@ -12,6 +12,10 @@ end
 namespace :import do
   resources :available_namespaces, only: [:index], controller: :available_namespaces
 
+  namespace :url do
+    post :validate
+  end
+
   resource :github, only: [:create, :new], controller: :github do
     post :personal_access_token
     get :status
@@ -66,6 +70,7 @@ namespace :import do
     post :configure
     get :status
     get :realtime_changes
+    get :history
   end
 
   resource :manifest, only: [:create, :new], controller: :manifest do

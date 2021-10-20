@@ -4,11 +4,13 @@ import validation, { initForm } from '~/vue_shared/directives/validation';
 describe('validation directive', () => {
   let wrapper;
 
-  const createComponentFactory = ({ inputAttributes, template, data }) => {
-    const defaultInputAttributes = {
-      type: 'text',
-      required: true,
-    };
+  const createComponentFactory = (options) => {
+    const {
+      inputAttributes = { type: 'text', required: true },
+      template,
+      data,
+      feedbackMap = {},
+    } = options;
 
     const defaultTemplate = `
       <form>
@@ -18,11 +20,11 @@ describe('validation directive', () => {
 
     const component = {
       directives: {
-        validation: validation(),
+        validation: validation(feedbackMap),
       },
       data() {
         return {
-          attributes: inputAttributes || defaultInputAttributes,
+          attributes: inputAttributes,
           ...data,
         };
       },
@@ -32,8 +34,10 @@ describe('validation directive', () => {
     wrapper = shallowMount(component, { attachTo: document.body });
   };
 
-  const createComponent = ({ inputAttributes, showValidation, template } = {}) =>
-    createComponentFactory({
+  const createComponent = (options = {}) => {
+    const { inputAttributes, showValidation, template, feedbackMap } = options;
+
+    return createComponentFactory({
       inputAttributes,
       data: {
         showValidation,
@@ -48,10 +52,14 @@ describe('validation directive', () => {
         },
       },
       template,
+      feedbackMap,
     });
+  };
 
-  const createComponentWithInitForm = ({ inputAttributes } = {}) =>
-    createComponentFactory({
+  const createComponentWithInitForm = (options = {}) => {
+    const { inputAttributes, feedbackMap } = options;
+
+    return createComponentFactory({
       inputAttributes,
       data: {
         form: initForm({
@@ -68,7 +76,9 @@ describe('validation directive', () => {
           <input v-validation:[form.showValidation] name="exampleField" v-bind="attributes" />
         </form>
       `,
+      feedbackMap,
     });
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -192,6 +202,111 @@ describe('validation directive', () => {
 
       it('should set correct feedback', () => {
         expect(getFormData().fields.exampleField.feedback).toBe('Please fill out this field.');
+      });
+    });
+
+    describe('with valid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('hello');
+      });
+
+      it('set the correct state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: true,
+          feedback: '',
+        });
+      });
+    });
+  });
+
+  describe('with custom feedbackMap', () => {
+    const customMessage = 'Please fill out the name field.';
+    const template = `
+      <form>
+        <div v-validation:[showValidation]>
+          <input name="exampleField" v-bind="attributes" />
+        </div>
+      </form>
+    `;
+    beforeEach(() => {
+      const feedbackMap = {
+        valueMissing: {
+          isInvalid: (el) => el.validity?.valueMissing,
+          message: customMessage,
+        },
+      };
+
+      createComponent({
+        template,
+        inputAttributes: {
+          required: true,
+        },
+        feedbackMap,
+      });
+    });
+
+    describe('with invalid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('');
+      });
+
+      it('should set correct field state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: false,
+          feedback: customMessage,
+        });
+      });
+    });
+
+    describe('with valid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('hello');
+      });
+
+      it('set the correct state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: true,
+          feedback: '',
+        });
+      });
+    });
+  });
+
+  describe('with validation-message present on the element', () => {
+    const customMessage = 'The name field is required.';
+    const template = `
+      <form>
+        <div v-validation:[showValidation]>
+          <input name="exampleField" v-bind="attributes" validation-message="${customMessage}" />
+        </div>
+      </form>
+    `;
+    beforeEach(() => {
+      const feedbackMap = {
+        valueMissing: {
+          isInvalid: (el) => el.validity?.valueMissing,
+        },
+      };
+
+      createComponent({
+        template,
+        inputAttributes: {
+          required: true,
+        },
+        feedbackMap,
+      });
+    });
+
+    describe('with invalid value', () => {
+      beforeEach(() => {
+        setValueAndTriggerValidation('');
+      });
+
+      it('should set correct field state', () => {
+        expect(getFormData().fields.exampleField).toEqual({
+          state: false,
+          feedback: customMessage,
+        });
       });
     });
 

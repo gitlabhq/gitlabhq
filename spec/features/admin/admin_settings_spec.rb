@@ -314,12 +314,14 @@ RSpec.describe 'Admin updates settings' do
           check 'Default to Auto DevOps pipeline for all projects'
           fill_in 'application_setting_auto_devops_domain', with: 'domain.com'
           uncheck 'Keep the latest artifacts for all jobs in the latest successful pipelines'
+          uncheck 'Enable pipeline suggestion banner'
           click_button 'Save changes'
         end
 
         expect(current_settings.auto_devops_enabled?).to be true
         expect(current_settings.auto_devops_domain).to eq('domain.com')
         expect(current_settings.keep_latest_artifact).to be false
+        expect(current_settings.suggest_pipeline_enabled).to be false
         expect(page).to have_content "Application settings saved successfully"
       end
 
@@ -450,14 +452,14 @@ RSpec.describe 'Admin updates settings' do
         visit reporting_admin_application_settings_path
 
         page.within('.as-spam') do
-          fill_in 'reCAPTCHA Site Key', with: 'key'
-          fill_in 'reCAPTCHA Private Key', with: 'key'
+          fill_in 'reCAPTCHA site key', with: 'key'
+          fill_in 'reCAPTCHA private key', with: 'key'
           check 'Enable reCAPTCHA'
           check 'Enable reCAPTCHA for login'
-          fill_in 'IPs per user', with: 15
+          fill_in 'IP addresses per user', with: 15
           check 'Enable Spam Check via external API endpoint'
           fill_in 'URL of the external Spam Check endpoint', with: 'grpc://www.example.com/spamcheck'
-          fill_in 'Spam Check API Key', with: 'SPAM_CHECK_API_KEY'
+          fill_in 'Spam Check API key', with: 'SPAM_CHECK_API_KEY'
           click_button 'Save changes'
         end
 
@@ -602,18 +604,54 @@ RSpec.describe 'Admin updates settings' do
         expect(current_settings.issues_create_limit).to eq(0)
       end
 
-      it 'changes Files API rate limits settings' do
-        visit network_admin_application_settings_path
+      shared_examples 'regular throttle rate limit settings' do
+        it 'changes rate limit settings' do
+          visit network_admin_application_settings_path
 
-        page.within('[data-testid="files-limits-settings"]') do
-          check 'Enable unauthenticated API request rate limit'
-          fill_in 'Max unauthenticated API requests per period per IP', with: 10
-          click_button 'Save changes'
+          page.within(".#{selector}") do
+            check 'Enable unauthenticated API request rate limit'
+            fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 12
+            fill_in 'Unauthenticated API rate limit period in seconds', with: 34
+
+            check 'Enable authenticated API request rate limit'
+            fill_in 'Maximum authenticated API requests per rate limit period per user', with: 56
+            fill_in 'Authenticated API rate limit period in seconds', with: 78
+
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content "Application settings saved successfully"
+
+          expect(current_settings).to have_attributes(
+            "throttle_unauthenticated_#{fragment}_enabled" => true,
+            "throttle_unauthenticated_#{fragment}_requests_per_period" => 12,
+            "throttle_unauthenticated_#{fragment}_period_in_seconds" => 34,
+            "throttle_authenticated_#{fragment}_enabled" => true,
+            "throttle_authenticated_#{fragment}_requests_per_period" => 56,
+            "throttle_authenticated_#{fragment}_period_in_seconds" => 78
+          )
         end
+      end
 
-        expect(page).to have_content "Application settings saved successfully"
-        expect(current_settings.throttle_unauthenticated_files_api_enabled).to be true
-        expect(current_settings.throttle_unauthenticated_files_api_requests_per_period).to eq(10)
+      context 'Package Registry API rate limits' do
+        let(:selector) { 'as-packages-limits' }
+        let(:fragment) { :packages_api }
+
+        include_examples 'regular throttle rate limit settings'
+      end
+
+      context 'Files API rate limits' do
+        let(:selector) { 'as-files-limits' }
+        let(:fragment) { :files_api }
+
+        include_examples 'regular throttle rate limit settings'
+      end
+
+      context 'Deprecated API rate limits' do
+        let(:selector) { 'as-deprecated-limits' }
+        let(:fragment) { :deprecated_api }
+
+        include_examples 'regular throttle rate limit settings'
       end
     end
 
@@ -623,8 +661,6 @@ RSpec.describe 'Admin updates settings' do
       end
 
       it 'change Help page' do
-        stub_feature_flags(help_page_documentation_redirect: true)
-
         new_support_url = 'http://example.com/help'
         new_documentation_url = 'https://docs.gitlab.com'
 

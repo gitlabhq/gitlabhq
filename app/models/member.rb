@@ -50,6 +50,11 @@ class Member < ApplicationRecord
     },
     if: :project_bot?
 
+  scope :with_invited_user_state, -> do
+    joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
+    .select('members.*', 'invited_user.state as invited_user_state')
+  end
+
   scope :in_hierarchy, ->(source) do
     groups = source.root_ancestor.self_and_descendants
     group_members = Member.default_scoped.where(source: groups)
@@ -178,7 +183,13 @@ class Member < ApplicationRecord
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_save :log_invitation_token_cleanup
 
-  after_commit :refresh_member_authorized_projects, unless: :importing?
+  after_commit on: [:create, :update], unless: :importing? do
+    refresh_member_authorized_projects(blocking: true)
+  end
+
+  after_commit on: [:destroy], unless: :importing? do
+    refresh_member_authorized_projects(blocking: false)
+  end
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -395,8 +406,8 @@ class Member < ApplicationRecord
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
   # rubocop: disable CodeReuse/ServiceClass
-  def refresh_member_authorized_projects
-    UserProjectAccessChangedService.new(user_id).execute
+  def refresh_member_authorized_projects(blocking:)
+    UserProjectAccessChangedService.new(user_id).execute(blocking: blocking)
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -440,6 +451,14 @@ class Member < ApplicationRecord
     error = validate_admin_signup_restrictions(invite_email)
 
     errors.add(:user, error) if error
+  end
+
+  def signup_email_invalid_message
+    if source_type == 'Project'
+      _("is not allowed for this project.")
+    else
+      _("is not allowed for this group.")
+    end
   end
 
   def update_highest_role?

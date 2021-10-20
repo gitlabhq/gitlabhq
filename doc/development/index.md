@@ -18,7 +18,7 @@ the [Handbook](https://about.gitlab.com/handbook/).
 For information on using GitLab to work on your own software projects, see the
 [GitLab user documentation](../user/index.md).
 
-For information on working with the GitLab APIs, see the [API documentation](../api/README.md).
+For information on working with the GitLab APIs, see the [API documentation](../api/index.md).
 
 For information about how to install, configure, update, and upgrade your own
 GitLab instance, see the [administration documentation](../administration/index.md).
@@ -173,6 +173,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Windows Development on GCP](windows.md)
 - [FIPS compliance](fips_compliance.md)
 - [`Gemfile` guidelines](gemfile.md)
+- [Ruby upgrade guidelines](ruby_upgrade.md)
 
 ### Things to be aware of
 
@@ -189,6 +190,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Issuable-like Rails models](issuable-like-models.md)
 - [Issue types vs first-class types](issue_types.md)
 - [DeclarativePolicy framework](policies.md)
+- [Rails update guidelines](rails_update.md)
 
 ### Debugging
 
@@ -215,6 +217,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [How to dump production data to staging](db_dump.md)
 - [Geo development](geo.md)
 - [Redis guidelines](redis.md)
+  - [Adding a new Redis instance](redis/new_redis_instance.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Elasticsearch integration docs](elasticsearch.md)
@@ -253,8 +256,6 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 
 ## Performance guides
 
-- [Instrumentation](instrumentation.md) for Ruby code running in production
-  environments.
 - [Performance guidelines](performance.md) for writing code, benchmarks, and
   certain patterns to avoid.
 - [Caching guidelines](caching.md) for using caching in Rails under a GitLab environment.
@@ -334,6 +335,7 @@ See [database guidelines](database/index.md).
 - [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
 - [Dashboards for stage groups](stage_group_dashboards.md)
 - [Preventing transient bugs](transient/prevention-patterns.md)
+- [GitLab Application SLIs](application_slis/index.md)
 
 ## Other GitLab Development Kit (GDK) guides
 

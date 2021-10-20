@@ -95,7 +95,7 @@ export default {
       return this.formStrategies.filter((s) => !s.shouldBeDestroyed);
     },
     showRelatedIssues() {
-      return this.featureFlagIssuesEndpoint.length > 0;
+      return Boolean(this.featureFlagIssuesEndpoint);
     },
   },
   methods: {

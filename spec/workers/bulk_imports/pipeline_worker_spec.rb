@@ -22,47 +22,65 @@ RSpec.describe BulkImports::PipelineWorker do
   before do
     stub_const('FakePipeline', pipeline_class)
 
-    allow(BulkImports::Groups::Stage)
-      .to receive(:pipelines)
-      .and_return([[0, pipeline_class]])
+    allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
+      allow(instance).to receive(:pipelines)
+        .and_return([[0, pipeline_class]])
+    end
   end
 
-  it 'runs the given pipeline successfully' do
-    pipeline_tracker = create(
-      :bulk_import_tracker,
-      entity: entity,
-      pipeline_name: 'FakePipeline'
-    )
+  shared_examples 'successfully runs the pipeline' do
+    it 'runs the given pipeline successfully' do
+      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect(logger)
+          .to receive(:info)
+          .with(
+            worker: described_class.name,
+            pipeline_name: 'FakePipeline',
+            entity_id: entity.id
+          )
+      end
 
-    expect_next_instance_of(Gitlab::Import::Logger) do |logger|
-      expect(logger)
-        .to receive(:info)
-        .with(
-          worker: described_class.name,
-          pipeline_name: 'FakePipeline',
-          entity_id: entity.id
-        )
+      expect(BulkImports::EntityWorker)
+        .to receive(:perform_async)
+        .with(entity.id, pipeline_tracker.stage)
+
+      expect(subject).to receive(:jid).and_return('jid')
+
+      subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+      pipeline_tracker.reload
+
+      expect(pipeline_tracker.status_name).to eq(:finished)
+      expect(pipeline_tracker.jid).to eq('jid')
     end
+  end
 
-    expect(BulkImports::EntityWorker)
-      .to receive(:perform_async)
-      .with(entity.id, pipeline_tracker.stage)
+  it_behaves_like 'successfully runs the pipeline' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+    end
+  end
 
-    expect(subject).to receive(:jid).and_return('jid')
-
-    subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
-
-    pipeline_tracker.reload
-
-    expect(pipeline_tracker.status_name).to eq(:finished)
-    expect(pipeline_tracker.jid).to eq('jid')
+  it_behaves_like 'successfully runs the pipeline' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        :started,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+    end
   end
 
   context 'when the pipeline cannot be found' do
     it 'logs the error' do
       pipeline_tracker = create(
         :bulk_import_tracker,
-        :started,
+        :finished,
         entity: entity,
         pipeline_name: 'FakePipeline'
       )
@@ -126,6 +144,39 @@ RSpec.describe BulkImports::PipelineWorker do
       expect(pipeline_tracker.status_name).to eq(:failed)
       expect(pipeline_tracker.jid).to eq('jid')
     end
+
+    context 'when it is a network error' do
+      it 'reenqueue on retriable network errors' do
+        pipeline_tracker = create(
+          :bulk_import_tracker,
+          entity: entity,
+          pipeline_name: 'FakePipeline'
+        )
+
+        exception = BulkImports::NetworkError.new(
+          response: double(code: 429, headers: {})
+        )
+
+        expect_next_instance_of(pipeline_class) do |pipeline|
+          expect(pipeline)
+            .to receive(:run)
+            .and_raise(exception)
+        end
+
+        expect(subject).to receive(:jid).and_return('jid')
+
+        expect(described_class)
+          .to receive(:perform_in)
+          .with(
+            60.seconds,
+            pipeline_tracker.id,
+            pipeline_tracker.stage,
+            pipeline_tracker.entity.id
+          )
+
+        subject.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+      end
+    end
   end
 
   context 'when ndjson pipeline' do
@@ -156,9 +207,10 @@ RSpec.describe BulkImports::PipelineWorker do
     before do
       stub_const('NdjsonPipeline', ndjson_pipeline)
 
-      allow(BulkImports::Groups::Stage)
-        .to receive(:pipelines)
-        .and_return([[0, ndjson_pipeline]])
+      allow_next_instance_of(BulkImports::Groups::Stage) do |instance|
+        allow(instance).to receive(:pipelines)
+                             .and_return([[0, ndjson_pipeline]])
+      end
     end
 
     it 'runs the pipeline successfully' do

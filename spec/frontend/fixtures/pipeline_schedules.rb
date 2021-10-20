@@ -15,10 +15,6 @@ RSpec.describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', t
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('pipeline_schedules/')
-  end
-
   before do
     sign_in(user)
   end

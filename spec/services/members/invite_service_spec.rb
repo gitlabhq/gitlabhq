@@ -150,7 +150,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       expect_to_create_members(count: 1)
       expect(result[:status]).to eq(:error)
       expect(result[:message][invited_member.invite_email])
-        .to eq("Invite email has already been taken")
+        .to eq("The member's email address has already been taken")
       expect(project.users).to include project_user
     end
   end

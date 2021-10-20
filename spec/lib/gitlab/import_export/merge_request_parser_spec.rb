@@ -13,9 +13,11 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser do
     create(:merge_request, source_project: forked_project, target_project: project)
   end
 
+  let(:diff_head_sha) { SecureRandom.hex(20) }
+
   let(:parsed_merge_request) do
     described_class.new(project,
-                        'abcd',
+                        diff_head_sha,
                         merge_request,
                         merge_request.as_json).parse!
   end
@@ -34,14 +36,34 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser do
     expect(project.repository.branch_exists?(parsed_merge_request.target_branch)).to be true
   end
 
-  it 'parses a MR that has no source branch' do
-    allow_next_instance_of(described_class) do |instance|
-      allow(instance).to receive(:branch_exists?).and_call_original
-      allow(instance).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
-      allow(instance).to receive(:fork_merge_request?).and_return(true)
+  # Source and target branch are only created when: fork_merge_request
+  context 'fork merge request' do
+    before do
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:fork_merge_request?).and_return(true)
+      end
     end
 
-    expect(parsed_merge_request).to eq(merge_request)
+    it 'parses a MR that has no source branch' do
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:branch_exists?).and_call_original
+        allow(instance).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
+      end
+
+      expect(parsed_merge_request).to eq(merge_request)
+    end
+
+    it 'parses a MR that is closed' do
+      merge_request.update!(state: :closed, source_branch: 'new_branch')
+
+      expect(project.repository.branch_exists?(parsed_merge_request.source_branch)).to be false
+    end
+
+    it 'parses a MR that is merged' do
+      merge_request.update!(state: :merged, source_branch: 'new_branch')
+
+      expect(project.repository.branch_exists?(parsed_merge_request.source_branch)).to be false
+    end
   end
 
   context 'when the merge request has diffs' do

@@ -11,13 +11,18 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import BlobEdit from '~/repository/components/blob_edit.vue';
+import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
 import { loadViewer, viewerProps } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
+import { redirectTo } from '~/lib/utils/url_utility';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 
 jest.mock('~/repository/components/blob_viewers');
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/common_utils');
 
 let wrapper;
 let mockResolver;
@@ -34,12 +39,14 @@ const simpleMockData = {
   webPath: 'some_file.js',
   editBlobPath: 'some_file.js/edit',
   ideEditPath: 'some_file.js/ide/edit',
+  forkAndEditPath: 'some_file.js/fork/edit',
+  ideForkAndEditPath: 'some_file.js/fork/ide',
+  canModifyBlob: true,
   storedExternally: false,
   rawPath: 'some_file.js',
   externalStorageUrl: 'some_file.js',
   replacePath: 'some_file.js/replace',
   deletePath: 'some_file.js/delete',
-  forkPath: 'some_file.js/fork',
   simpleViewer: {
     fileType: 'text',
     tooLarge: false,
@@ -62,6 +69,8 @@ const projectMockData = {
   userPermissions: {
     pushCode: true,
     downloadCode: true,
+    createMergeRequestIn: true,
+    forkProject: true,
   },
   repository: {
     empty: false,
@@ -82,6 +91,8 @@ const createComponentWithApollo = (mockData = {}, inject = {}) => {
     emptyRepo = defaultEmptyRepo,
     canPushCode = defaultPushCode,
     canDownloadCode = defaultDownloadCode,
+    createMergeRequestIn = projectMockData.userPermissions.createMergeRequestIn,
+    forkProject = projectMockData.userPermissions.forkProject,
     pathLocks = [],
   } = mockData;
 
@@ -89,7 +100,12 @@ const createComponentWithApollo = (mockData = {}, inject = {}) => {
     data: {
       project: {
         id: '1234',
-        userPermissions: { pushCode: canPushCode, downloadCode: canDownloadCode },
+        userPermissions: {
+          pushCode: canPushCode,
+          downloadCode: canDownloadCode,
+          createMergeRequestIn,
+          forkProject,
+        },
         pathLocks: {
           nodes: pathLocks,
         },
@@ -158,9 +174,16 @@ describe('Blob content viewer component', () => {
   const findBlobEdit = () => wrapper.findComponent(BlobEdit);
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
+  const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
+
+  beforeEach(() => {
+    gon.features = { refactorTextViewer: true };
+    isLoggedIn.mockReturnValue(true);
+  });
 
   afterEach(() => {
     wrapper.destroy();
+    mockAxios.reset();
   });
 
   it('renders a GlLoadingIcon component', () => {
@@ -183,13 +206,22 @@ describe('Blob content viewer component', () => {
 
     it('renders a BlobContent component', () => {
       expect(findBlobContent().props('loading')).toEqual(false);
-      expect(findBlobContent().props('content')).toEqual('raw content');
       expect(findBlobContent().props('isRawContent')).toBe(true);
       expect(findBlobContent().props('activeViewer')).toEqual({
         fileType: 'text',
         tooLarge: false,
         type: 'simple',
         renderError: null,
+      });
+    });
+
+    describe('legacy viewers', () => {
+      it('loads a legacy viewer when a viewer component is not available', async () => {
+        createComponentWithApollo({ blobs: { ...simpleMockData, fileType: 'unknown' } });
+        await waitForPromises();
+
+        expect(mockAxios.history.get).toHaveLength(1);
+        expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=simple');
       });
     });
   });
@@ -210,7 +242,6 @@ describe('Blob content viewer component', () => {
 
     it('renders a BlobContent component', () => {
       expect(findBlobContent().props('loading')).toEqual(false);
-      expect(findBlobContent().props('content')).toEqual('raw content');
       expect(findBlobContent().props('isRawContent')).toBe(true);
       expect(findBlobContent().props('activeViewer')).toEqual({
         fileType: 'markup',
@@ -241,18 +272,12 @@ describe('Blob content viewer component', () => {
   });
 
   describe('legacy viewers', () => {
-    it('does not load a legacy viewer when a rich viewer is not available', async () => {
-      createComponentWithApollo({ blobs: simpleMockData });
-      await waitForPromises();
-
-      expect(mockAxios.history.get).toHaveLength(0);
-    });
-
-    it('loads a legacy viewer when a rich viewer is available', async () => {
-      createComponentWithApollo({ blobs: richMockData });
+    it('loads a legacy viewer when a viewer component is not available', async () => {
+      createComponentWithApollo({ blobs: { ...richMockData, fileType: 'unknown' } });
       await waitForPromises();
 
       expect(mockAxios.history.get).toHaveLength(1);
+      expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=rich');
     });
   });
 
@@ -462,7 +487,7 @@ describe('Blob content viewer component', () => {
       });
 
       it('does not render if not logged in', async () => {
-        window.gon.current_user_id = null;
+        isLoggedIn.mockReturnValueOnce(false);
 
         fullFactory({
           mockData: { blobInfo: simpleMockData },
@@ -505,5 +530,61 @@ describe('Blob content viewer component', () => {
         }),
       );
     });
+  });
+
+  describe('edit blob', () => {
+    beforeEach(() => {
+      fullFactory({
+        mockData: { blobInfo: simpleMockData },
+        stubs: {
+          BlobContent: true,
+          BlobReplace: true,
+        },
+      });
+    });
+
+    it('simple edit redirects to the simple editor', () => {
+      findBlobEdit().vm.$emit('edit', 'simple');
+      expect(redirectTo).toHaveBeenCalledWith(simpleMockData.editBlobPath);
+    });
+
+    it('IDE edit redirects to the IDE editor', () => {
+      findBlobEdit().vm.$emit('edit', 'ide');
+      expect(redirectTo).toHaveBeenCalledWith(simpleMockData.ideEditPath);
+    });
+
+    it.each`
+      loggedIn | canModifyBlob | createMergeRequestIn | forkProject | showForkSuggestion
+      ${true}  | ${false}      | ${true}              | ${true}     | ${true}
+      ${false} | ${false}      | ${true}              | ${true}     | ${false}
+      ${true}  | ${true}       | ${false}             | ${true}     | ${false}
+      ${true}  | ${true}       | ${true}              | ${false}    | ${false}
+    `(
+      'shows/hides a fork suggestion according to a set of conditions',
+      async ({
+        loggedIn,
+        canModifyBlob,
+        createMergeRequestIn,
+        forkProject,
+        showForkSuggestion,
+      }) => {
+        isLoggedIn.mockReturnValueOnce(loggedIn);
+        fullFactory({
+          mockData: {
+            blobInfo: { ...simpleMockData, canModifyBlob },
+            project: { userPermissions: { createMergeRequestIn, forkProject } },
+          },
+          stubs: {
+            BlobContent: true,
+            BlobButtonGroup: true,
+          },
+        });
+
+        findBlobEdit().vm.$emit('edit', 'simple');
+        await nextTick();
+
+        expect(findForkSuggestion().exists()).toBe(showForkSuggestion);
+      },
+    );
   });
 });

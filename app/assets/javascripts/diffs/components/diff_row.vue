@@ -1,4 +1,9 @@
 <script>
+/* eslint-disable vue/no-v-html */
+/**
+NOTE: This file uses v-html over v-safe-html for performance reasons, see:
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57842
+* */
 import { memoize } from 'lodash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
@@ -267,7 +272,9 @@ export default {
           ]"
           class="diff-td line_content with-coverage left-side"
           data-testid="left-content"
-          v-html="$options.lineContent(props.line.left) /* eslint-disable-line vue/no-v-html */"
+          v-html="
+            $options.lineContent(props.line.left) /* v-html for performance, see top of file */
+          "
         ></div>
       </template>
       <template
@@ -389,7 +396,9 @@ export default {
             },
           ]"
           class="diff-td line_content with-coverage right-side parallel"
-          v-html="$options.lineContent(props.line.right) /* eslint-disable-line vue/no-v-html */"
+          v-html="
+            $options.lineContent(props.line.right) /* v-html for performance, see top of file */
+          "
         ></div>
       </template>
       <template v-else>

@@ -239,7 +239,7 @@ RSpec.describe Projects::BranchesController do
         end
       end
 
-      context 'without issue feature access' do
+      context 'without issue feature access', :sidekiq_inline do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
@@ -654,6 +654,26 @@ RSpec.describe Projects::BranchesController do
         expect(assigns[:stale_branches].map(&:name)).to eq(
           ["feature", "improve/awesome", "merge-test", "markdown", "feature_conflict", "'test'"]
         )
+      end
+    end
+
+    context 'when gitaly is not available' do
+      before do
+        allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|
+          allow(ref_service).to receive(:local_branches).and_raise(GRPC::DeadlineExceeded)
+        end
+
+        get :index, format: :html, params: {
+           namespace_id: project.namespace, project_id: project
+        }
+      end
+
+      it 'returns with a status 200' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'sets gitaly_unavailable variable' do
+        expect(assigns[:gitaly_unavailable]).to be_truthy
       end
     end
   end

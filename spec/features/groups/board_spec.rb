@@ -24,7 +24,7 @@ RSpec.describe 'Group Boards' do
     it 'adds an issue to the backlog' do
       page.within(find('.board', match: :first)) do
         issue_title = 'New Issue'
-        find(:css, '.issue-count-badge-add-button').click
+        click_button 'New issue'
 
         wait_for_requests
 

@@ -17,6 +17,25 @@ RSpec.describe Projects::TagsController do
       expect(assigns(:tags).map(&:name)).to include('v1.1.0', 'v1.0.0')
     end
 
+    context 'when Gitaly is unavailable' do
+      where(:format) do
+        [:html, :atom]
+      end
+
+      with_them do
+        it 'returns 503 status code' do
+          expect_next_instance_of(TagsFinder) do |finder|
+            expect(finder).to receive(:execute).and_return([[], Gitlab::Git::CommandError.new])
+          end
+
+          get :index, params: { namespace_id: project.namespace.to_param, project_id: project }, format: format
+
+          expect(assigns(:tags)).to eq([])
+          expect(response).to have_gitlab_http_status(:service_unavailable)
+        end
+      end
+    end
+
     it 'returns releases matching those tags' do
       subject
 

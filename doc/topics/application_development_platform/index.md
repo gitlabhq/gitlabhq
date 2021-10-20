@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Application Development Platform
+# Application Development Platform **(FREE)**
 
 The GitLab Application Development Platform refers to the set of GitLab features used to create, configure, and manage
 a complete software development environment. It provides development, operations, and security teams with a robust feature set aimed at supporting best practices out of the box.

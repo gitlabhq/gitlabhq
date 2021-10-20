@@ -32,7 +32,7 @@ The resources created by GitLab differ depending on the type of cluster.
 Note the following about access controls:
 
 - Environment-specific resources are only created if your cluster is
-  [managed by GitLab](index.md#gitlab-managed-clusters).
+  [managed by GitLab](gitlab_managed_clusters.md).
 - If your cluster was created before GitLab 12.2, it uses a single namespace for all project
   environments.
 

@@ -45,7 +45,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it_behaves_like 'storing arguments in the application context' do
+        it_behaves_like 'storing arguments in the application context for the API' do
           let(:expected_params) { { client_id: "runner/#{runner.id}" } }
         end
       end

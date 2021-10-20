@@ -44,7 +44,7 @@ describe('preserve_url_fragment', () => {
     });
 
     it('when "remember-me" is present', () => {
-      $('.omniauth-btn')
+      $('.js-oauth-login')
         .parent('form')
         .attr('action', (i, href) => `${href}?remember_me=1`);
 

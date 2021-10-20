@@ -6,23 +6,32 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workspace
 
-Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage everything you can do as a GitLab administrator, including:
+Workspace will be above the [top-level namespaces](../group/index.md#namespaces) for you to manage
+everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
 - Aggregating data from all your groups, subgroups, and projects.
 
-The functionality in the [Admin Area](../admin_area/index.md) of self-managed installations will be split up and go to:
+Our goal is to reach feature parity between SaaS and self-managed installations, with all
+[Admin Area settings](/ee/user/admin_area/settings/) moving to either:
 
-1. Groups (available in the Workspace, Top-level group namespaces, and Sub-groups)
-1. Hardware Controls (for functionality that does not apply to groups)
-
-Our goal is to reach feature parity between SaaS and Self-Managed installations, with all [Admin Area settings](/ee/user/admin_area/settings/) moving to either:
-
-- Workspace (contains features relevant to both GitLab-managed and self-managed installations) with a dedicated Settings menu available within the left navigation bar.
-- Hardware controls (only contains features relative to Self-Managed installations, with one per installation).
+- Groups. Available in the Workspace, top-level group namespaces, and sub-groups.
+- Hardware Controls. For functionality that does not apply to groups, Hardware Controls are only
+  applicable to self-managed installations. There is one Hardware Controls section per installation.
 
 NOTE:
 Workspace is currently in development.
+
+## Demo: New hierarchy concept for groups and projects for epics
+
+The following demo introduces the new hierarchy concept for groups and projects for epics.
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/embed/fE74lsG_8yM">Consolidating groups and projects update (2021-08-23)</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/fE74lsG_8yM" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 ## Concept previews
 

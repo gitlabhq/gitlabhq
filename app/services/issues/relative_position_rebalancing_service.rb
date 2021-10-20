@@ -82,7 +82,7 @@ module Issues
       collection.each do |project|
         caching.cache_current_project_id(project.id)
         index += 1
-        scope = Issue.in_projects(project).reorder(custom_reorder).select(:id, :relative_position)
+        scope = Issue.in_projects(project).order_by_relative_position.with_non_null_relative_position.select(:id, :relative_position)
 
         with_retry(PREFETCH_ISSUES_BATCH_SIZE, 100) do |batch_size|
           Gitlab::Pagination::Keyset::Iterator.new(scope: scope).each_batch(of: batch_size) do |batch|
@@ -164,10 +164,6 @@ module Issues
 
     def start_position
       @start_position ||= (RelativePositioning::START_POSITION - (gaps / 2) * gap_size).to_i
-    end
-
-    def custom_reorder
-      ::Gitlab::Pagination::Keyset::Order.build([Issue.column_order_relative_position, Issue.column_order_id_asc])
     end
 
     def with_retry(initial_batch_size, exit_batch_size)

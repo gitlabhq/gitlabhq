@@ -64,6 +64,8 @@ Example of response
   "slug": "review-fix-foo-dfjre3",
   "external_url": "https://review-fix-foo-dfjre3.gitlab.example.com",
   "state": "available",
+  "created_at": "2019-05-25T18:55:13.252Z",
+  "updated_at": "2019-05-27T18:55:13.252Z",
   "last_deployment": {
     "id": 100,
     "iid": 34,
@@ -176,7 +178,9 @@ Example response:
   "name": "deploy",
   "slug": "deploy",
   "external_url": "https://deploy.gitlab.example.com",
-  "state": "available"
+  "state": "available",
+  "created_at": "2019-05-25T18:55:13.252Z",
+  "updated_at": "2019-05-27T18:55:13.252Z"
 }
 ```
 
@@ -210,7 +214,9 @@ Example response:
   "name": "staging",
   "slug": "staging",
   "external_url": "https://staging.gitlab.example.com",
-  "state": "available"
+  "state": "available",
+  "created_at": "2019-05-25T18:55:13.252Z",
+  "updated_at": "2019-05-27T18:55:13.252Z"
 }
 ```
 
@@ -302,6 +308,8 @@ Example response:
   "name": "deploy",
   "slug": "deploy",
   "external_url": "https://deploy.gitlab.example.com",
-  "state": "stopped"
+  "state": "stopped",
+  "created_at": "2019-05-25T18:55:13.252Z",
+  "updated_at": "2019-05-27T18:55:13.252Z"
 }
 ```

@@ -25,7 +25,6 @@ module Gitlab
 
           hash = {
             iid: issue.number,
-            github_id: issue.number,
             title: issue.title,
             description: issue.body,
             milestone_number: issue.milestone&.number,
@@ -74,6 +73,13 @@ module Gitlab
 
         def issuable_type
           pull_request? ? 'MergeRequest' : 'Issue'
+        end
+
+        def github_identifiers
+          {
+            iid: iid,
+            issuable_type: issuable_type
+          }
         end
       end
     end

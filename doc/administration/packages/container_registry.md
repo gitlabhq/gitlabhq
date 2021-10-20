@@ -119,6 +119,11 @@ GitLab from source respectively.
 Ensure you choose a port different than the one that Registry listens to (`5000` by default),
 otherwise conflicts occur.
 
+NOTE:
+Host and container firewall rules must be configured to allow traffic in through the port listed
+under the `registry_external_url` line, rather than the port listed under
+`gitlab_rails['registry_port']` (default `5000`).
+
 **Omnibus GitLab installations**
 
 1. Your `/etc/gitlab/gitlab.rb` should contain the Registry URL as well as the
@@ -150,6 +155,19 @@ otherwise conflicts occur.
    ```
 
 If your certificate provider provides the CA Bundle certificates, append them to the TLS certificate file.
+
+An administrator may want the container registry listening on an arbitrary port such as `5678`.
+However, the registry and application server are behind an AWS application load balancer that only
+listens on ports `80` and `443`. The admin may simply remove the port number for
+`registry_external_url`, so HTTP or HTTPS is assumed. Then, the rules apply that map the load
+balancer to the registry from ports `80` or `443` to the arbitrary port. This is important if users
+rely on the `docker login` example in the container registry. Here's an example:
+
+```ruby
+registry_external_url 'https://registry-gitlab.example.com'
+registry_nginx['redirect_http_to_https'] = true
+registry_nginx['listen_port'] = 5678
+```
 
 **Installations from source**
 

@@ -46,11 +46,11 @@ module QA
         merge_request.visit!
       end
 
-      it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1838' do
+      it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1838', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342131', type: :stale } do
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           4.times { merge_request.add_suggestion_to_batch }
-          merge_request.apply_suggestions_batch
+          merge_request.apply_suggestion_with_message("Custom commit message")
 
           expect(merge_request).to have_css('.badge-success', text: "Applied", count: 4)
         end

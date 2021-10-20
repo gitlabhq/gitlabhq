@@ -22,6 +22,10 @@ class ErrorTracking::ErrorEvent < ApplicationRecord
     )
   end
 
+  def release
+    payload.dig('release')
+  end
+
   private
 
   def build_stacktrace

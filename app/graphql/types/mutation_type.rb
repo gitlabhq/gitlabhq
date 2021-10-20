@@ -31,13 +31,20 @@ module Types
     mount_mutation Mutations::Boards::Lists::Update
     mount_mutation Mutations::Boards::Lists::Destroy
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
+    mount_mutation Mutations::Clusters::Agents::Create
+    mount_mutation Mutations::Clusters::Agents::Delete
+    mount_mutation Mutations::Clusters::AgentTokens::Create
+    mount_mutation Mutations::Clusters::AgentTokens::Delete
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
     mount_mutation Mutations::CustomEmoji::Create, feature_flag: :custom_emoji
     mount_mutation Mutations::CustomEmoji::Destroy, feature_flag: :custom_emoji
+    mount_mutation Mutations::CustomerRelations::Contacts::Create
+    mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create
     mount_mutation Mutations::CustomerRelations::Organizations::Update
     mount_mutation Mutations::Discussions::ToggleResolve
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
+    mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees

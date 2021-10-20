@@ -7,6 +7,10 @@ RSpec.describe Namespace do
   include GitHelpers
   include ReloadHelpers
 
+  let_it_be(:group_sti_name) { Group.sti_name }
+  let_it_be(:project_sti_name) { Namespaces::ProjectNamespace.sti_name }
+  let_it_be(:user_sti_name) { Namespaces::UserNamespace.sti_name }
+
   let!(:namespace) { create(:namespace, :with_namespace_settings) }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:repository_storage) { 'default' }
@@ -38,20 +42,22 @@ RSpec.describe Namespace do
     context 'validating the parent of a namespace' do
       using RSpec::Parameterized::TableSyntax
 
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:parent_type, :child_type, :error) do
-        nil         | 'User'      | nil
-        nil         | 'Group'     | nil
-        nil         | 'Project'   | 'must be set for a project namespace'
-        'Project'   | 'User'      | 'project namespace cannot be the parent of another namespace'
-        'Project'   | 'Group'     | 'project namespace cannot be the parent of another namespace'
-        'Project'   | 'Project'   | 'project namespace cannot be the parent of another namespace'
-        'Group'     | 'User'      | 'cannot not be used for user namespace'
-        'Group'     | 'Group'     | nil
-        'Group'     | 'Project'   | nil
-        'User'      | 'User'      | 'cannot not be used for user namespace'
-        'User'      | 'Group'     | 'user namespace cannot be the parent of another namespace'
-        'User'      | 'Project'   | nil
+        nil                      | ref(:user_sti_name)      | nil
+        nil                      | ref(:group_sti_name)     | nil
+        nil                      | ref(:project_sti_name)   | 'must be set for a project namespace'
+        ref(:project_sti_name)   | ref(:user_sti_name)      | 'project namespace cannot be the parent of another namespace'
+        ref(:project_sti_name)   | ref(:group_sti_name)     | 'project namespace cannot be the parent of another namespace'
+        ref(:project_sti_name)   | ref(:project_sti_name)   | 'project namespace cannot be the parent of another namespace'
+        ref(:group_sti_name)     | ref(:user_sti_name)      | 'cannot not be used for user namespace'
+        ref(:group_sti_name)     | ref(:group_sti_name)     | nil
+        ref(:group_sti_name)     | ref(:project_sti_name)   | nil
+        ref(:user_sti_name)      | ref(:user_sti_name)      | 'cannot not be used for user namespace'
+        ref(:user_sti_name)      | ref(:group_sti_name)     | 'user namespace cannot be the parent of another namespace'
+        ref(:user_sti_name)      | ref(:project_sti_name)   | nil
       end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'validates namespace parent' do
@@ -127,39 +133,77 @@ RSpec.describe Namespace do
       end
 
       context 'top-level group' do
-        let(:group) { build(:group, path: 'tree') }
+        let(:group) { build(:namespace, path: 'tree') }
 
         it { expect(group).to be_valid }
       end
     end
 
+    describe 'path validator' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:parent) { create(:namespace) }
+
+      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+      where(:namespace_type, :path, :valid) do
+        ref(:project_sti_name)   | 'j'     | true
+        ref(:project_sti_name)   | 'path.' | true
+        ref(:project_sti_name)   | 'blob'  | false
+        ref(:group_sti_name)     | 'j'     | false
+        ref(:group_sti_name)     | 'path.' | false
+        ref(:group_sti_name)     | 'blob'  | true
+        ref(:user_sti_name)      | 'j'     | false
+        ref(:user_sti_name)      | 'path.' | false
+        ref(:user_sti_name)      | 'blob'  | true
+      end
+      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
+
+      with_them do
+        it 'validates namespace path' do
+          parent_namespace = parent if namespace_type == Namespaces::ProjectNamespace.sti_name
+          namespace = build(:namespace, type: namespace_type, parent: parent_namespace, path: path)
+
+          expect(namespace.valid?).to be(valid)
+        end
+      end
+    end
+
     describe '1 char path length' do
-      it 'does not allow to create one' do
-        namespace = build(:namespace, path: 'j')
+      context 'with user namespace' do
+        let(:namespace) { build(:namespace) }
 
-        expect(namespace).not_to be_valid
-        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+        it 'does not allow to update path to single char' do
+          namespace.save!
+
+          namespace.path = 'j'
+
+          expect(namespace).not_to be_valid
+          expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
+        end
+
+        it 'allows updating other attributes for existing record' do
+          namespace.save!
+          namespace.update_attribute(:path, 'j')
+          namespace.reload
+
+          expect(namespace.path).to eq('j')
+
+          namespace.update(name: 'something new')
+
+          expect(namespace).to be_valid
+          expect(namespace.name).to eq('something new')
+        end
       end
 
-      it 'does not allow to update one' do
-        namespace = create(:namespace)
-        namespace.update(path: 'j')
+      context 'with project namespace' do
+        let(:namespace) { build(:project_namespace) }
 
-        expect(namespace).not_to be_valid
-        expect(namespace.errors[:path].first).to eq('is too short (minimum is 2 characters)')
-      end
+        it 'allows to update path to single char' do
+          namespace = create(:project_namespace)
+          namespace.update(path: 'j')
 
-      it 'allows updating other attributes for existing record' do
-        namespace = build(:namespace, path: 'j', owner: create(:user))
-        namespace.save(validate: false)
-        namespace.reload
-
-        expect(namespace.path).to eq('j')
-
-        namespace.update(name: 'something new')
-
-        expect(namespace).to be_valid
-        expect(namespace.name).to eq('something new')
+          expect(namespace).to be_valid
+        end
       end
     end
   end
@@ -170,55 +214,53 @@ RSpec.describe Namespace do
     let(:namespace) { Namespace.find(create(:namespace, type: namespace_type, parent: parent).id) }
 
     context 'creating a Group' do
-      let(:namespace_type) { 'Group' }
+      let(:namespace_type) { group_sti_name }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(namespace).to be_a(Group)
         expect(namespace.kind).to eq('group')
-        expect(namespace.group?).to be_truthy
+        expect(namespace.group_namespace?).to be_truthy
       end
     end
 
     context 'creating a ProjectNamespace' do
-      let(:namespace_type) { 'Project' }
+      let(:namespace_type) { project_sti_name }
       let(:parent) { create(:group) }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespaces::ProjectNamespace)
         expect(namespace.kind).to eq('project')
-        expect(namespace.project?).to be_truthy
+        expect(namespace.project_namespace?).to be_truthy
       end
     end
 
     context 'creating a UserNamespace' do
-      let(:namespace_type) { 'User' }
+      let(:namespace_type) { user_sti_name }
 
-      it 'is valid' do
-        # TODO: We create a normal Namespace until
-        #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
-        expect(Namespace.find(namespace.id)).to be_a(Namespace)
+      it 'is the correct type of namespace' do
+        expect(Namespace.find(namespace.id)).to be_a(Namespaces::UserNamespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
 
     context 'creating a default Namespace' do
       let(:namespace_type) { nil }
 
-      it 'is valid' do
+      it 'is the correct type of namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
 
     context 'creating an unknown Namespace type' do
       let(:namespace_type) { 'One' }
 
-      it 'defaults to a Namespace' do
+      it 'creates a default Namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)
         expect(namespace.kind).to eq('user')
-        expect(namespace.user?).to be_truthy
+        expect(namespace.user_namespace?).to be_truthy
       end
     end
   end
@@ -255,6 +297,15 @@ RSpec.describe Namespace do
         expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace2.path)).to eq([namespace2, namespace1, namespace2sub, namespace1sub, namespace])
         expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace2sub.name)).to eq([namespace2sub, namespace1sub, namespace2, namespace1, namespace])
         expect(described_class.sorted_by_similarity_and_parent_id_desc('Namespace')).to eq([namespace2, namespace1, namespace2sub, namespace1sub, namespace])
+      end
+    end
+
+    describe '.without_project_namespaces' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+      let_it_be(:project_namespace) { create(:project_namespace) }
+
+      it 'excludes project namespaces' do
+        expect(described_class.without_project_namespaces).to match_array([namespace, namespace1, namespace2, namespace1sub, namespace2sub, user_namespace, project_namespace.parent])
       end
     end
   end
@@ -428,9 +479,9 @@ RSpec.describe Namespace do
   end
 
   describe '.search' do
-    let_it_be(:first_group) { build(:group, name: 'my first namespace', path: 'old-path').tap(&:save!) }
-    let_it_be(:parent_group) { build(:group, name: 'my parent namespace', path: 'parent-path').tap(&:save!) }
-    let_it_be(:second_group) { build(:group, name: 'my second namespace', path: 'new-path', parent: parent_group).tap(&:save!) }
+    let_it_be(:first_group) { create(:group, name: 'my first namespace', path: 'old-path') }
+    let_it_be(:parent_group) { create(:group, name: 'my parent namespace', path: 'parent-path') }
+    let_it_be(:second_group) { create(:group, name: 'my second namespace', path: 'new-path', parent: parent_group) }
     let_it_be(:project_with_same_path) { create(:project, id: second_group.id, path: first_group.path) }
 
     it 'returns namespaces with a matching name' do
@@ -1558,8 +1609,8 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#user?' do
-    subject { namespace.user? }
+  describe '#user_namespace?' do
+    subject { namespace.user_namespace? }
 
     context 'when type is a user' do
       let(:user) { create(:user) }
@@ -1745,10 +1796,10 @@ RSpec.describe Namespace do
     using RSpec::Parameterized::TableSyntax
 
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :shared_runners_setting) do
-      true  | true  | 'enabled'
-      true  | false | 'enabled'
-      false | true  | 'disabled_with_override'
-      false | false | 'disabled_and_unoverridable'
+      true  | true  | Namespace::SR_ENABLED
+      true  | false | Namespace::SR_ENABLED
+      false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE
+      false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE
     end
 
     with_them do
@@ -1764,15 +1815,15 @@ RSpec.describe Namespace do
     using RSpec::Parameterized::TableSyntax
 
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
-      true  | true  | 'enabled'                    | false
-      true  | true  | 'disabled_with_override'     | true
-      true  | true  | 'disabled_and_unoverridable' | true
-      false | true  | 'enabled'                    | false
-      false | true  | 'disabled_with_override'     | false
-      false | true  | 'disabled_and_unoverridable' | true
-      false | false | 'enabled'                    | false
-      false | false | 'disabled_with_override'     | false
-      false | false | 'disabled_and_unoverridable' | false
+      true  | true  | Namespace::SR_ENABLED                    | false
+      true  | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | true
+      true  | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
+      false | true  | Namespace::SR_ENABLED                    | false
+      false | true  | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | true  | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
+      false | false | Namespace::SR_ENABLED                    | false
+      false | false | Namespace::SR_DISABLED_WITH_OVERRIDE     | false
+      false | false | Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false
     end
 
     with_them do

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :group, class: 'Group', parent: :namespace do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    type { 'Group' }
+    type { Group.sti_name }
     owner { nil }
     project_creation_level { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
 
@@ -67,6 +67,20 @@ FactoryBot.define do
 
     trait :allow_descendants_override_disabled_shared_runners do
       allow_descendants_override_disabled_shared_runners { true }
+    end
+
+    trait :disabled_and_unoverridable do
+      shared_runners_disabled
+      allow_descendants_override_disabled_shared_runners { false }
+    end
+
+    trait :disabled_with_override do
+      shared_runners_disabled
+      allow_descendants_override_disabled_shared_runners
+    end
+
+    trait :shared_runners_enabled do
+      shared_runners_enabled { true }
     end
 
     # Construct a hierarchy underneath the group.

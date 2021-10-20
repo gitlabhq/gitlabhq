@@ -32,19 +32,19 @@ module Metrics
       def ending_at_after_starting_at
         return if ending_at.blank? || starting_at.blank? || starting_at <= ending_at
 
-        errors.add(:ending_at, s_("Metrics::Dashboard::Annotation|can't be before starting_at time"))
+        errors.add(:ending_at, s_("MetricsDashboardAnnotation|can't be before starting_at time"))
       end
 
       def single_ownership
         return if cluster.nil? ^ environment.nil?
 
-        errors.add(:base, s_("Metrics::Dashboard::Annotation|Annotation can't belong to both a cluster and an environment at the same time"))
+        errors.add(:base, s_("MetricsDashboardAnnotation|Annotation can't belong to both a cluster and an environment at the same time"))
       end
 
       def orphaned_annotation
         return if cluster.present? || environment.present?
 
-        errors.add(:base, s_("Metrics::Dashboard::Annotation|Annotation must belong to a cluster or an environment"))
+        errors.add(:base, s_("MetricsDashboardAnnotation|Annotation must belong to a cluster or an environment"))
       end
     end
   end

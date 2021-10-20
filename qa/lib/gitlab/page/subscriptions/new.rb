@@ -6,10 +6,11 @@ module Gitlab
       class New < Chemlab::Page
         path '/subscriptions/new'
 
-        # Subscription Details
+        # Purchase Details
         select :plan_name
         select :group_name
         text_field :number_of_users
+        text_field :quantity
         button :continue_to_billing, text: /Continue to billing/
 
         # Billing address
@@ -35,6 +36,10 @@ module Gitlab
 
         # Confirmation
         button :confirm_purchase, text: /Confirm purchase/
+
+        # Order Summary
+        div :selected_plan, 'data-testid': 'selected-plan'
+        div :order_total, 'data-testid': 'total-amount'
       end
     end
   end

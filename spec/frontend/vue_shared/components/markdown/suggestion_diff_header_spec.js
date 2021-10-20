@@ -60,7 +60,7 @@ describe('Suggestion Diff component', () => {
     expect(findHelpButton().exists()).toBe(true);
   });
 
-  it('renders apply suggestion and add to batch buttons', () => {
+  it('renders add to batch button when more than 1 suggestion', () => {
     createComponent({
       suggestionsCount: 2,
     });
@@ -68,8 +68,7 @@ describe('Suggestion Diff component', () => {
     const applyBtn = findApplyButton();
     const addToBatchBtn = findAddToBatchButton();
 
-    expect(applyBtn.exists()).toBe(true);
-    expect(applyBtn.html().includes('Apply suggestion')).toBe(true);
+    expect(applyBtn.exists()).toBe(false);
 
     expect(addToBatchBtn.exists()).toBe(true);
     expect(addToBatchBtn.html().includes('Add suggestion to batch')).toBe(true);
@@ -85,7 +84,7 @@ describe('Suggestion Diff component', () => {
 
   describe('when apply suggestion is clicked', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ batchSuggestionsCount: 0 });
 
       findApplyButton().vm.$emit('apply');
     });
@@ -140,11 +139,11 @@ describe('Suggestion Diff component', () => {
 
   describe('apply suggestions is clicked', () => {
     it('emits applyBatch', () => {
-      createComponent({ isBatched: true });
+      createComponent({ isBatched: true, batchSuggestionsCount: 2 });
 
-      findApplyBatchButton().vm.$emit('click');
+      findApplyButton().vm.$emit('apply');
 
-      expect(wrapper.emitted().applyBatch).toEqual([[]]);
+      expect(wrapper.emitted().applyBatch).toEqual([[undefined]]);
     });
   });
 
@@ -155,23 +154,24 @@ describe('Suggestion Diff component', () => {
         isBatched: true,
       });
 
-      const applyBatchBtn = findApplyBatchButton();
+      const applyBatchBtn = findApplyButton();
       const removeFromBatchBtn = findRemoveFromBatchButton();
 
       expect(removeFromBatchBtn.exists()).toBe(true);
       expect(removeFromBatchBtn.html().includes('Remove from batch')).toBe(true);
 
       expect(applyBatchBtn.exists()).toBe(true);
-      expect(applyBatchBtn.html().includes('Apply suggestions')).toBe(true);
+      expect(applyBatchBtn.html().includes('Apply suggestion')).toBe(true);
       expect(applyBatchBtn.html().includes(String('9'))).toBe(true);
     });
 
     it('hides add to batch and apply buttons', () => {
       createComponent({
         isBatched: true,
+        batchSuggestionsCount: 9,
       });
 
-      expect(findApplyButton().exists()).toBe(false);
+      expect(findApplyButton().exists()).toBe(true);
       expect(findAddToBatchButton().exists()).toBe(false);
     });
 
@@ -215,9 +215,8 @@ describe('Suggestion Diff component', () => {
     });
 
     it('disables apply suggestion and hides add to batch button', () => {
-      expect(findApplyButton().exists()).toBe(true);
+      expect(findApplyButton().exists()).toBe(false);
       expect(findAddToBatchButton().exists()).toBe(false);
-      expect(findApplyButton().attributes('disabled')).toBe('true');
     });
   });
 
@@ -225,7 +224,7 @@ describe('Suggestion Diff component', () => {
     const findTooltip = () => getBinding(findApplyButton().element, 'gl-tooltip');
 
     it('renders correct tooltip message when button is applicable', () => {
-      createComponent();
+      createComponent({ batchSuggestionsCount: 0 });
       const tooltip = findTooltip();
 
       expect(tooltip.modifiers.viewport).toBe(true);
@@ -234,7 +233,7 @@ describe('Suggestion Diff component', () => {
 
     it('renders the inapplicable reason in the tooltip when button is not applicable', () => {
       const inapplicableReason = 'lorem';
-      createComponent({ canApply: false, inapplicableReason });
+      createComponent({ canApply: false, inapplicableReason, batchSuggestionsCount: 0 });
       const tooltip = findTooltip();
 
       expect(tooltip.modifiers.viewport).toBe(true);

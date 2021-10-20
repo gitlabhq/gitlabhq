@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GroupMemberPresenter < MemberPresenter
+  presents ::GroupMember
+
   private
 
   def admin_member_permission

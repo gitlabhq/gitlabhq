@@ -72,8 +72,8 @@ bundle exec rails db -e development
 
 ## Access the database with a GUI
 
-Most GUIs (DataGrid, RubyMine, DBeaver) require a TCP connection to the database, but by default 
-the database runs on a UNIX socket. To be able to access the database from these tools, some steps 
+Most GUIs (DataGrid, RubyMine, DBeaver) require a TCP connection to the database, but by default
+the database runs on a UNIX socket. To be able to access the database from these tools, some steps
 are needed:
 
 1. On the GDK root directory, run:

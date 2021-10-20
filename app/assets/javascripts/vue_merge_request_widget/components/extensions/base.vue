@@ -1,7 +1,18 @@
 <script>
-import { GlButton, GlLoadingIcon, GlIcon, GlLink, GlBadge, GlSafeHtmlDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlLink,
+  GlBadge,
+  GlSafeHtmlDirective,
+  GlTooltipDirective,
+  GlIntersectionObserver,
+} from '@gitlab/ui';
+import { sprintf, s__, __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import { EXTENSION_ICON_CLASS } from '../../constants';
+import StatusIcon from './status_icon.vue';
+import Actions from './actions.vue';
 
 export const LOADING_STATES = {
   collapsedLoading: 'collapsedLoading',
@@ -13,14 +24,16 @@ export default {
   components: {
     GlButton,
     GlLoadingIcon,
-    GlIcon,
     GlLink,
     GlBadge,
+    GlIntersectionObserver,
     SmartVirtualList,
     StatusIcon,
+    Actions,
   },
   directives: {
     SafeHtml: GlSafeHtmlDirective,
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -28,9 +41,16 @@ export default {
       collapsedData: null,
       fullData: null,
       isCollapsed: true,
+      showFade: false,
     };
   },
   computed: {
+    widgetLabel() {
+      return this.$options.i18n?.label || this.$options.name;
+    },
+    widgetLoadingText() {
+      return this.$options.i18n?.loading || __('Loading...');
+    },
     isLoadingSummary() {
       return this.loadingState === LOADING_STATES.collapsedLoading;
     },
@@ -44,16 +64,21 @@ export default {
 
       return true;
     },
+    collapseButtonLabel() {
+      return sprintf(
+        this.isCollapsed
+          ? s__('mrWidget|Show %{widget} details')
+          : s__('mrWidget|Hide %{widget} details'),
+        { widget: this.widgetLabel },
+      );
+    },
     statusIconName() {
-      if (this.isLoadingSummary) {
-        return 'loading';
-      }
-
-      if (this.loadingState === LOADING_STATES.collapsedError) {
-        return 'warning';
-      }
+      if (this.isLoadingSummary) return null;
 
       return this.statusIcon(this.collapsedData);
+    },
+    tertiaryActionsButtons() {
+      return this.tertiaryButtons ? this.tertiaryButtons() : undefined;
     },
   },
   watch: {
@@ -95,32 +120,59 @@ export default {
           throw e;
         });
     },
+    appear(index) {
+      if (index === this.fullData.length - 1) {
+        this.showFade = false;
+      }
+    },
+    disappear(index) {
+      if (index === this.fullData.length - 1) {
+        this.showFade = true;
+      }
+    },
   },
+  EXTENSION_ICON_CLASS,
 };
 </script>
 
 <template>
-  <section class="media-section mr-widget-border-top">
+  <section class="media-section" data-testid="widget-extension">
     <div class="media gl-p-5">
-      <status-icon :status="statusIconName" class="align-self-center" />
-      <div class="media-body d-flex flex-align-self-center align-items-center">
-        <div class="code-text">
-          <template v-if="isLoadingSummary">
-            {{ __('Loading...') }}
-          </template>
+      <status-icon
+        :name="$options.label || $options.name"
+        :is-loading="isLoadingSummary"
+        :icon-name="statusIconName"
+      />
+      <div class="media-body gl-display-flex gl-flex-direction-row!">
+        <div class="gl-flex-grow-1">
+          <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <div v-else v-safe-html="summary(collapsedData)"></div>
         </div>
-        <gl-button
-          v-if="isCollapsible"
-          size="small"
-          class="float-right align-self-center"
-          @click="toggleCollapsed"
-        >
-          {{ isCollapsed ? __('Expand') : __('Collapse') }}
-        </gl-button>
+        <actions
+          :widget="$options.label || $options.name"
+          :tertiary-buttons="tertiaryActionsButtons"
+        />
+        <div class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6">
+          <gl-button
+            v-if="isCollapsible"
+            v-gl-tooltip
+            :title="collapseButtonLabel"
+            :aria-expanded="`${!isCollapsed}`"
+            :aria-label="collapseButtonLabel"
+            :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
+            category="tertiary"
+            data-testid="toggle-button"
+            size="small"
+            @click="toggleCollapsed"
+          />
+        </div>
       </div>
     </div>
-    <div v-if="!isCollapsed" class="mr-widget-grouped-section">
+    <div
+      v-if="!isCollapsed"
+      class="mr-widget-grouped-section gl-relative"
+      data-testid="widget-extension-collapsed-section"
+    >
       <div v-if="isLoadingExpanded" class="report-block-container">
         <gl-loading-icon size="sm" inline /> {{ __('Loading...') }}
       </div>
@@ -131,27 +183,38 @@ export default {
         :size="32"
         wtag="ul"
         wclass="report-block-list"
-        class="report-block-container"
+        class="report-block-container gl-px-5 gl-py-0"
       >
-        <li v-for="data in fullData" :key="data.id" class="d-flex align-items-center">
-          <div v-if="data.icon" :class="data.icon.class" class="d-flex">
-            <gl-icon :name="data.icon.name" :size="24" />
-          </div>
-          <div
-            class="gl-mt-2 gl-mb-2 align-content-around align-items-start flex-wrap align-self-center d-flex"
+        <li
+          v-for="(data, index) in fullData"
+          :key="data.id"
+          :class="{
+            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== fullData.length - 1,
+          }"
+          class="gl-display-flex gl-align-items-center gl-py-3 gl-pl-7"
+          data-testid="extension-list-item"
+        >
+          <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
+          <gl-intersection-observer
+            :options="{ rootMargin: '100px', thresholds: 0.1 }"
+            class="gl-flex-wrap gl-align-self-center gl-display-flex"
+            @appear="appear(index)"
+            @disappear="disappear(index)"
           >
-            <div class="gl-mr-4">
-              {{ data.text }}
-            </div>
+            <div v-safe-html="data.text" class="gl-mr-4"></div>
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>
             <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
               {{ data.badge.text }}
             </gl-badge>
-          </div>
+          </gl-intersection-observer>
         </li>
       </smart-virtual-list>
+      <div
+        :class="{ show: showFade }"
+        class="fade mr-extenson-scrim gl-absolute gl-left-0 gl-bottom-0 gl-w-full gl-h-7"
+      ></div>
     </div>
   </section>
 </template>

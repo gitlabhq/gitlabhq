@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       dragCounter: 0,
-      isDragDataValid: false,
+      isDragDataValid: true,
     };
   },
   computed: {

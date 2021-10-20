@@ -2,6 +2,7 @@ import $ from 'jquery';
 import '~/profile/gl_crop';
 import Profile from '~/profile/profile';
 import initSearchSettings from '~/search_settings';
+import initPasswordPrompt from './password_prompt';
 
 // eslint-disable-next-line func-names
 $(document).on('input.ssh_key', '#key_key', function () {
@@ -19,3 +20,4 @@ $(document).on('input.ssh_key', '#key_key', function () {
 new Profile(); // eslint-disable-line no-new
 
 initSearchSettings();
+initPasswordPrompt();

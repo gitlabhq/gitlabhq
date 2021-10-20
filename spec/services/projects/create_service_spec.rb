@@ -622,6 +622,22 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when SAST initialization is requested' do
+    let(:project) { create_project(user, opts) }
+
+    before do
+      opts[:initialize_with_sast] = '1'
+      allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+    end
+
+    it 'creates a commit for SAST', :aggregate_failures do
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.commit.message).to eq(
+        'Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist'
+      )
+    end
+  end
+
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 
@@ -823,25 +839,23 @@ RSpec.describe Projects::CreateService, '#execute' do
     let_it_be(:user) { create :user }
 
     context 'when parent group is present' do
-      let_it_be(:group) do
+      let_it_be(:group, reload: true) do
         create(:group) do |group|
           group.add_owner(user)
         end
       end
 
       before do
-        allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive(:shared_runners_setting).and_return(shared_runners_setting)
-        end
+        group.update_shared_runners_setting!(shared_runners_setting)
 
         user.refresh_authorized_projects # Ensure cache is warm
       end
 
       context 'default value based on parent group setting' do
         where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
-          'enabled'                    | nil | true
-          'disabled_with_override'     | nil | false
-          'disabled_and_unoverridable' | nil | false
+          Namespace::SR_ENABLED                    | nil | true
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | nil | false
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | nil | false
         end
 
         with_them do
@@ -858,11 +872,11 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       context 'parent group is present and allows desired config' do
         where(:shared_runners_setting, :desired_config_for_new_project, :expected_result_for_project) do
-          'enabled'                    | true  | true
-          'enabled'                    | false | false
-          'disabled_with_override'     | false | false
-          'disabled_with_override'     | true  | true
-          'disabled_and_unoverridable' | false | false
+          Namespace::SR_ENABLED                    | true  | true
+          Namespace::SR_ENABLED                    | false | false
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | false | false
+          Namespace::SR_DISABLED_WITH_OVERRIDE     | true  | true
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | false | false
         end
 
         with_them do
@@ -878,7 +892,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
       context 'parent group is present and disallows desired config' do
         where(:shared_runners_setting, :desired_config_for_new_project) do
-          'disabled_and_unoverridable' | true
+          Namespace::SR_DISABLED_AND_UNOVERRIDABLE | true
         end
 
         with_them do

@@ -20,16 +20,15 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { size: 16, lazy_load: false }
+    default_opts = { size: 16 }
     opts = default_opts.merge(opts)
 
     classes = %W[avatar avatar-inline s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
     avatar = avatar_icon_for_user(author, opts[:size])
-    src = opts[:lazy_load] ? nil : avatar
 
-    image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
+    image_tag(avatar, width: opts[:size], class: classes, alt: '')
   end
 
   def author_content_tag(author, opts = {})
@@ -351,7 +350,7 @@ module ProjectsHelper
   end
 
   def show_terraform_banner?(project)
-    project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+    Feature.enabled?(:show_terraform_banner, type: :ops, default_enabled: true) && project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
   def project_permissions_panel_data(project)

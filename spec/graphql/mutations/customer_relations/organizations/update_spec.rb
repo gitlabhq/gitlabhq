@@ -4,10 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Organizations::Update do
   let_it_be(:user) { create(:user) }
-  let_it_be(:name) { 'GitLab' }
-  let_it_be(:default_rate) { 1000.to_f }
-  let_it_be(:description) { 'VIP' }
+  let_it_be(:group) { create(:group) }
 
+  let(:name) { 'GitLab' }
+  let(:default_rate) { 1000.to_f }
+  let(:description) { 'VIP' }
+  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
   let(:organization) { create(:organization, group: group) }
   let(:attributes) do
     {
@@ -26,32 +28,28 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
     end
 
     context 'when the user does not have permission to update an organization' do
-      let_it_be(:group) { create(:group) }
-
       before do
-        group.add_guest(user)
+        group.add_reporter(user)
       end
 
       it 'raises an error' do
         expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          .with_message(does_not_exist_or_no_permission)
       end
     end
 
     context 'when the organization does not exist' do
-      let_it_be(:group) { create(:group) }
-
       it 'raises an error' do
-        attributes[:id] = 'gid://gitlab/CustomerRelations::Organization/999'
+        attributes[:id] = "gid://gitlab/CustomerRelations::Organization/#{non_existing_record_id}"
 
         expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+          .with_message(does_not_exist_or_no_permission)
       end
     end
 
     context 'when the user has permission to update an organization' do
-      let_it_be(:group) { create(:group) }
-
       before_all do
-        group.add_reporter(user)
+        group.add_developer(user)
       end
 
       it 'updates the organization with correct values' do
@@ -65,6 +63,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+            .with_message('Feature disabled')
         end
       end
     end

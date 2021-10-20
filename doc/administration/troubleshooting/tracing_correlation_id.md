@@ -135,3 +135,69 @@ You can use the [performance bar](../monitoring/performance/performance_bar.md) 
 To view the data, the correlation ID of the request must match the same session as the user
 viewing the performance bar. For API requests, this means that you must perform the request
 using the session cookie of the signed-in user.
+
+For example, if you want to view the database queries executed for the following API endpoint:
+
+```shell
+https://gitlab.com/api/v4/groups/2564205/projects?with_security_reports=true&page=1&per_page=1
+```
+
+First, enable the **Developer Tools** panel. See [Getting the correlation ID in your browser](#getting-the-correlation-id-in-your-browser) for details on how to do this.
+
+After developer tools have been enabled, obtain a session cookie as follows:
+
+1. Visit <https://gitlab.com> while logged in.
+1. (Optional) Select **Fetch/XHR** request filter in the **Developer Tools** panel. This step is described for Google Chrome developer tools and is not strictly necessary, it just makes it easier to find the correct request.
+1. Select the `results?request_id=<some-request-id>` request on the left hand side.
+1. The session cookie is displayed under the `Request Headers` section of the `Headers` panel. Right-click on the cookie value and select `Copy value`.
+
+![Obtaining a session cookie for request](img/obtaining-a-session-cookie-for-request_v14_3.png)
+
+You have the value of the session cookie copied to your clipboard, for example:
+
+```shell
+experimentation_subject_id=<subject-id>; _gitlab_session=<session-id>; event_filter=all; visitor_id=<visitor-id>; perf_bar_enabled=true; sidebar_collapsed=true; diff_view=inline; sast_entry_point_dismissed=true; auto_devops_settings_dismissed=true; cf_clearance=<cf-clearance>; collapsed_gutter=false; frequently_used_emojis=clap,thumbsup,rofl,tada,eyes,bow
+```
+
+Use the value of the session cookie to craft an API request by pasting it into a custom header of a `curl` request:
+
+```shell
+$ curl --include "https://gitlab.com/api/v4/groups/2564205/projects?with_security_reports=true&page=1&per_page=1" \
+--header 'cookie: experimentation_subject_id=<subject-id>; _gitlab_session=<session-id>; event_filter=all; visitor_id=<visitor-id>; perf_bar_enabled=true; sidebar_collapsed=true; diff_view=inline; sast_entry_point_dismissed=true; auto_devops_settings_dismissed=true; cf_clearance=<cf-clearance>; collapsed_gutter=false; frequently_used_emojis=clap,thumbsup,rofl,tada,eyes,bow'
+
+  date: Tue, 28 Sep 2021 03:55:33 GMT
+  content-type: application/json
+  ...
+  x-request-id: 01FGN8P881GF2E5J91JYA338Y3
+  ...
+  [
+    {
+      "id":27497069,
+      "description":"Analyzer for images used on live K8S containers based on Starboard"
+    },
+    "container_registry_image_prefix":"registry.gitlab.com/gitlab-org/security-products/analyzers/cluster-image-scanning",
+    "..."
+  ]
+```
+
+The response contains the data from the API endpoint, and a `correlation_id` value, returned in the `x-request-id` header, as described in the [Identify the correlation ID for a request](#identify-the-correlation-id-for-a-request) section.
+
+You can then view the database details for this request:
+
+1. Paste the `x-request-id` value into the `request details` field of the [performance bar](../monitoring/performance/performance_bar.md) and press <kbd>Enter/Return</kbd>. This example uses the `x-request-id` value `01FGN8P881GF2E5J91JYA338Y3`, returned by the above response:
+
+   ![Paste request ID into progress bar](img/paste-request-id-into-progress-bar_v14_3.png)
+
+1. A new request is inserted into the `Request Selector` dropdown on the right-hand side of the Performance Bar. Select the new request to view the metrics of the API request:
+
+   ![Select request ID from request selector drop down menu](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
+
+   <!-- vale gitlab.Substitutions = NO -->
+1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:
+
+   ![View pg database details](img/view-pg-details_v14_3.png)
+   <!-- vale gitlab.Substitutions = YES -->
+
+   The database query dialog is displayed:
+
+   ![Database query dialog](img/database-query-dialog_v14_3.png)

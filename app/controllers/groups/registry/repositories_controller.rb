@@ -3,6 +3,7 @@ module Groups
   module Registry
     class RepositoriesController < Groups::ApplicationController
       include PackagesHelper
+      include ::Registry::ConnectionErrorsHandler
 
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!

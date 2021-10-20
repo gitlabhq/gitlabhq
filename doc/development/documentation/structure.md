@@ -149,6 +149,8 @@ For the heading:
 
 If you do not put the full error in the title, include it in the body text.
 
+If multiple causes or workarounds exist, consider putting them into a table format.
+
 ## Other types of content
 
 There are other types of content in the GitLab documentation that don't

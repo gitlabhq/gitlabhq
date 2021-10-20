@@ -103,7 +103,7 @@ sudo docker run --detach \
 ```
 
 This will ensure that the Docker process has enough permissions to create the
-config files in the mounted volumes.
+configuration files in the mounted volumes.
 
 If you're using the [Kerberos integration](../integration/kerberos.md) **(PREMIUM ONLY)**,
 you must also publish your Kerberos port (for example, `--publish 8443:8443`).
@@ -573,7 +573,7 @@ sudo docker restart gitlab
 
 This error occurs when using Docker Toolbox with VirtualBox on Windows or Mac,
 and making use of Docker volumes. The `/c/Users` volume is mounted as a
-VirtualBox Shared Folder, and does not support the all POSIX filesystem features.
+VirtualBox Shared Folder, and does not support the all POSIX file system features.
 The directory ownership and permissions cannot be changed without remounting, and
 GitLab fails.
 

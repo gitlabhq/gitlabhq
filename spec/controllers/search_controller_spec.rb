@@ -215,6 +215,16 @@ RSpec.describe SearchController do
         end
       end
 
+      it 'strips surrounding whitespace from search query' do
+        get :show, params: { scope: 'notes', search: '   foobar    ' }
+        expect(assigns[:search_term]).to eq 'foobar'
+      end
+
+      it 'strips surrounding whitespace from autocomplete term' do
+        expect(controller).to receive(:search_autocomplete_opts).with('youcompleteme')
+        get :autocomplete, params: { term: '   youcompleteme    ' }
+      end
+
       it 'finds issue comments' do
         project = create(:project, :public)
         note = create(:note_on_issue, project: project)
@@ -305,7 +315,7 @@ RSpec.describe SearchController do
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        expect(response.headers['Cache-Control']).to eq('no-store')
+        expect(response.headers['Cache-Control']).to eq('private, no-store')
       end
     end
 

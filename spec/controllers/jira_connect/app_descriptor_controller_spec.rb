@@ -46,7 +46,8 @@ RSpec.describe JiraConnect::AppDescriptorController do
         apiVersion: 1,
         apiMigrations: {
           'context-qsh': true,
-          gdpr: true
+          gdpr: true,
+          'signed-install': true
         }
       )
 
@@ -88,6 +89,18 @@ RSpec.describe JiraConnect::AppDescriptorController do
           key: 'gitlab-feature-flags'
         )
       )
+    end
+
+    context 'when jira_connect_asymmetric_jwt is disabled' do
+      before do
+        stub_feature_flags(jira_connect_asymmetric_jwt: false)
+      end
+
+      specify do
+        get :show
+
+        expect(json_response).to include('apiMigrations' => include('signed-install' => false))
+      end
     end
   end
 end

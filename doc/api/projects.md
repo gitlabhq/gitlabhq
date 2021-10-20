@@ -53,10 +53,10 @@ GET /projects
 | `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
 | `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
-| `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for admins. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
+| `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                                    | boolean  | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed` **(PREMIUM)** | boolean  | **{dotted-circle}** No | Limit projects where the repository checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in GitLab 11.2). |
-| `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(admins only)_ |
+| `repository_storage`                       | string   | **{dotted-circle}** No | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
 | `search_namespaces`                        | boolean  | **{dotted-circle}** No | Include ancestor namespaces when matching search criteria. Default is `false`. |
 | `search`                                   | string   | **{dotted-circle}** No | Return list of projects matching the search criteria. |
 | `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
@@ -66,7 +66,7 @@ GET /projects
 | `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `wiki_checksum_failed` **(PREMIUM)**       | boolean  | **{dotted-circle}** No | Limit projects where the wiki checksum calculation has failed ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6137) in GitLab 11.2). |
-| `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
+| `with_custom_attributes`                   | boolean  | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`                      | boolean  | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled`              | boolean  | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 | `with_programming_language`                | string   | **{dotted-circle}** No | Limit by projects which use the given programming language. |
@@ -386,7 +386,7 @@ GET /users/:user_id/projects
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `user_id`                     | string  | **{check-circle}** Yes | The ID or username of the user. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
-| `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
+| `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 | `with_programming_language`   | string  | **{dotted-circle}** No | Limit by projects which use the given programming language. |
@@ -621,7 +621,7 @@ GET /users/:user_id/starred_projects
 | `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `user_id`                     | string  | **{check-circle}** Yes | The ID or username of the user. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
-| `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
+| `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 
@@ -840,7 +840,7 @@ GET /projects/:id
 | `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `license`                | boolean        | **{dotted-circle}** No | Include project license data. |
 | `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
-| `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
+| `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 
 ```json
 {
@@ -1218,7 +1218,7 @@ POST /projects
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
-| `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(admins only)_ |
+| `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                                    | boolean | **{dotted-circle}** No | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
@@ -1237,7 +1237,7 @@ POST /projects
 
 ## Create project for user
 
-Creates a new project owned by the specified user. Available only for admins.
+Creates a new project owned by the specified user. Available only for administrators.
 
 If your HTTP repository isn't publicly accessible, add authentication information
 to the URL `https://username:password@gitlab.company.com/group/project.git`,
@@ -1295,7 +1295,7 @@ POST /projects/user/:user_id
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project-members. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
-| `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(admins only)_ |
+| `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
 | `request_access_enabled`                                    | boolean | **{dotted-circle}** No | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
@@ -1360,7 +1360,7 @@ PUT /projects/:id
 | `merge_requests_enabled`                                    | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `mirror_overwrites_diverged_branches` **(PREMIUM)**         | boolean        | **{dotted-circle}** No | Pull mirror overwrites diverged branches. |
 | `mirror_trigger_builds` **(PREMIUM)**                       | boolean        | **{dotted-circle}** No | Pull mirroring triggers builds. |
-| `mirror_user_id` **(PREMIUM)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(admins only)_ |
+| `mirror_user_id` **(PREMIUM)**                              | integer        | **{dotted-circle}** No | User responsible for all the activity surrounding a pull mirror event. _(administrators only)_ |
 | `mirror` **(PREMIUM)**                                      | boolean        | **{dotted-circle}** No | Enables pull mirroring in a project. |
 | `name`                                                      | string         | **{dotted-circle}** No | The name of the project. |
 | `operations_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
@@ -1375,7 +1375,7 @@ PUT /projects/:id
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
-| `repository_storage`                                        | string         | **{dotted-circle}** No | Which storage shard the repository is on. _(admins only)_ |
+| `repository_storage`                                        | string         | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
 | `request_access_enabled`                                    | boolean        | **{dotted-circle}** No | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                         | boolean        | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
@@ -1442,7 +1442,7 @@ GET /projects/:id/forks
 | `starred`                     | boolean        | **{dotted-circle}** No | Limit by projects starred by the current user. |
 | `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
 | `visibility`                  | string         | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
-| `with_custom_attributes`      | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(admins only)_ |
+| `with_custom_attributes`      | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 | `with_issues_enabled`         | boolean        | **{dotted-circle}** No | Limit by enabled issues feature. |
 | `with_merge_requests_enabled` | boolean        | **{dotted-circle}** No | Limit by enabled merge requests feature. |
 
@@ -2047,7 +2047,7 @@ This endpoint:
   merge requests).
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
-  admins can [configure](../user/group/index.md#enable-delayed-project-removal)
+  administrators can [configure](../user/group/index.md#enable-delayed-project-removal)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
@@ -2373,7 +2373,7 @@ is returned.
 ## Fork relationship
 
 Allows modification of the forked relationship between existing projects.
-Available only for project owners and admins.
+Available only for project owners and administrators.
 
 ### Create a forked from/to relation between existing projects
 
@@ -2678,13 +2678,21 @@ Read more in the [Project members](members.md) documentation.
 > - Introduced in GitLab 11.
 > - Moved to GitLab Premium in 13.9.
 
-Configure pull mirroring while [creating a new project](#create-project) or [updating an existing project](#edit-project) using the API if the remote repository is publicly accessible or via `username/password` authentication. In case your HTTP repository is not publicly accessible, you can add the authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`, where password is a [personal access token](../user/profile/personal_access_tokens.md) with the API scope enabled.
+Configure pull mirroring while [creating a new project](#create-project)
+or [updating an existing project](#edit-project) using the API
+if the remote repository is publicly accessible
+or via `username:token` authentication.
+In case your HTTP repository is not publicly accessible,
+you can add the authentication information to the URL:
+`https://username:token@gitlab.company.com/group/project.git`,
+where `token` is a [personal access token](../user/profile/personal_access_tokens.md)
+with the API scope enabled.
 
-The relevant API parameters to update are:
-
-- `import_url`: URL of remote repository being mirrored (with `username:password` if needed).
-- `mirror`: Enables pull mirroring on project when set to `true`.
-- `only_mirror_protected_branches`: Set to `true` for protected branches.
+| Attribute    | Type    | Required               | Description |
+|--------------|---------|------------------------|-------------|
+| `import_url` | string  | **{check-circle}** Yes | URL of remote repository being mirrored (with `user:token` if needed). |
+| `mirror`     | boolean | **{check-circle}** Yes | Enables pull mirroring on project when set to `true`. |
+| `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
 
 ## Start the pull mirroring process for a Project **(PREMIUM)**
 

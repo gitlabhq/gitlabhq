@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	"github.com/golang/gddo/httputil"
-
-	"gitlab.com/gitlab-org/labkit/log"
+	grpccodes "google.golang.org/grpc/codes"
+	grpcstatus "google.golang.org/grpc/status"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -26,6 +26,7 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 	defer responseWriter.Log(r, 0)
 
 	rpc := getService(r)
+
 	if !(rpc == "git-upload-pack" || rpc == "git-receive-pack") {
 		// The 'dumb' Git HTTP protocol is not supported
 		http.Error(responseWriter, "Not Found", 404)
@@ -41,19 +42,26 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 	encoding := httputil.NegotiateContentEncoding(r, offers)
 
 	if err := handleGetInfoRefsWithGitaly(r.Context(), responseWriter, a, rpc, gitProtocol, encoding); err != nil {
-		helper.Fail500(responseWriter, r, fmt.Errorf("handleGetInfoRefs: %v", err))
+		status := grpcstatus.Convert(err)
+		err = fmt.Errorf("handleGetInfoRefs: %v", err)
+
+		if status != nil && status.Code() == grpccodes.Unavailable {
+			helper.CaptureAndFail(responseWriter, r, err, "The git server, Gitaly, is not available at this time. Please contact your administrator.", http.StatusServiceUnavailable)
+		} else {
+			helper.Fail500(responseWriter, r, err)
+		}
 	}
 }
 
 func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpResponseWriter, a *api.Response, rpc, gitProtocol, encoding string) error {
 	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
 	if err != nil {
-		return fmt.Errorf("GetInfoRefsHandler: %v", err)
+		return err
 	}
 
 	infoRefsResponseReader, err := smarthttp.InfoRefsResponseReader(ctx, &a.Repository, rpc, gitConfigOptions(a), gitProtocol)
 	if err != nil {
-		return fmt.Errorf("GetInfoRefsHandler: %v", err)
+		return err
 	}
 
 	var w io.Writer
@@ -69,7 +77,7 @@ func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpRespon
 	}
 
 	if _, err = io.Copy(w, infoRefsResponseReader); err != nil {
-		log.WithError(err).Error("GetInfoRefsHandler: error copying gitaly response")
+		return err
 	}
 
 	return nil

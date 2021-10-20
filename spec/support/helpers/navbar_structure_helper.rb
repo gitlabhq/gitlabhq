@@ -52,4 +52,12 @@ module NavbarStructureHelper
       new_sub_nav_item_name: _('Infrastructure Registry')
     )
   end
+
+  def insert_infrastructure_google_cloud_nav
+    insert_after_sub_nav_item(
+      _('Terraform'),
+      within: _('Infrastructure'),
+      new_sub_nav_item_name: _('Google Cloud')
+    )
+  end
 end

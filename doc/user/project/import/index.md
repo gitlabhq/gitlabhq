@@ -47,7 +47,7 @@ information, see [the import notes](../settings/import_export.md#important-notes
 NOTE:
 When migrating to GitLab.com, you must create users manually unless [SCIM](../../../user/group/saml_sso/scim_setup.md)
 will be used. Creating users with the API is limited to self-managed instances as it requires
-administrator access.
+the Administrator role.
 
 To migrate all data from self-managed to GitLab.com, you can leverage the [API](../../../api/index.md).
 Migrate the assets in this order:

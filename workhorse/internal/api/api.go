@@ -155,8 +155,6 @@ type Response struct {
 	ProcessLsifReferences bool
 	// The maximum accepted size in bytes of the upload
 	MaximumSize int64
-	// DEPRECATED: Feature flag used to determine whether to strip the multipart filename of any directories
-	FeatureFlagExtractBase bool
 }
 
 // singleJoiningSlash is taken from reverseproxy.go:singleJoiningSlash

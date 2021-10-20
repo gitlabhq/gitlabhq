@@ -130,6 +130,20 @@ module API
 
           present paginate(jobs), with: Entities::Ci::JobBasicWithProject
         end
+
+        desc 'Reset runner authentication token' do
+          success Entities::Ci::ResetTokenResult
+        end
+        params do
+          requires :id, type: Integer, desc: 'The ID of the runner'
+        end
+        post ':id/reset_authentication_token' do
+          runner = get_runner(params[:id])
+          authenticate_update_runner!(runner)
+
+          runner.reset_token!
+          present runner.token, with: Entities::Ci::ResetTokenResult
+        end
       end
 
       params do
@@ -190,7 +204,7 @@ module API
           not_found!('Runner') unless runner_project
 
           runner = runner_project.runner
-          forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
+          forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.runner_projects.count == 1
 
           destroy_conditionally!(runner_project)
         end
@@ -226,13 +240,13 @@ module API
         before { authenticate_non_get! }
 
         desc 'Resets runner registration token' do
-          success Entities::Ci::ResetRegistrationTokenResult
+          success Entities::Ci::ResetTokenResult
         end
         post 'reset_registration_token' do
           authorize! :update_runners_registration_token
 
           ApplicationSetting.current.reset_runners_registration_token!
-          present ApplicationSetting.current_without_cache.runners_registration_token, with: Entities::Ci::ResetRegistrationTokenResult
+          present ApplicationSetting.current_without_cache.runners_registration_token, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -243,14 +257,14 @@ module API
         before { authenticate_non_get! }
 
         desc 'Resets runner registration token' do
-          success Entities::Ci::ResetRegistrationTokenResult
+          success Entities::Ci::ResetTokenResult
         end
         post ':id/runners/reset_registration_token' do
           project = find_project! user_project.id
           authorize! :update_runners_registration_token, project
 
           project.reset_runners_token!
-          present project.runners_token, with: Entities::Ci::ResetRegistrationTokenResult
+          present project.runners_token, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -261,14 +275,14 @@ module API
         before { authenticate_non_get! }
 
         desc 'Resets runner registration token' do
-          success Entities::Ci::ResetRegistrationTokenResult
+          success Entities::Ci::ResetTokenResult
         end
         post ':id/runners/reset_registration_token' do
           group = find_group! user_group.id
           authorize! :update_runners_registration_token, group
 
           group.reset_runners_token!
-          present group.runners_token, with: Entities::Ci::ResetRegistrationTokenResult
+          present group.runners_token, with: Entities::Ci::ResetTokenResult
         end
       end
 
@@ -317,7 +331,7 @@ module API
         def authenticate_delete_runner!(runner)
           return if current_user.admin?
 
-          forbidden!("Runner associated with more than one project") if runner.projects.count > 1
+          forbidden!("Runner associated with more than one project") if runner.runner_projects.count > 1
           forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
         end
 

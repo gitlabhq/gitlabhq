@@ -12,6 +12,7 @@ class SearchController < ApplicationController
   around_action :allow_gitaly_ref_name_caching
 
   before_action :block_anonymous_global_searches, :check_scope_global_search_enabled, except: :opensearch
+  before_action :strip_surrounding_whitespace_from_search, except: :opensearch
   skip_before_action :authenticate_user!
   requires_cross_project_access if: -> do
     search_term_present = params[:search].present? || params[:term].present?
@@ -23,6 +24,7 @@ class SearchController < ApplicationController
   layout 'search'
 
   feature_category :global_search
+  urgency :high, [:opensearch]
 
   def show
     @project = search_service.project
@@ -195,6 +197,10 @@ class SearchController < ApplicationController
 
   def count_action_name?
     action_name.to_sym == :count
+  end
+
+  def strip_surrounding_whitespace_from_search
+    %i(term search).each { |param| params[param]&.strip! }
   end
 end
 

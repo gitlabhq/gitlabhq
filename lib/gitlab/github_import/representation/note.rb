@@ -10,7 +10,7 @@ module Gitlab
         attr_reader :attributes
 
         expose_attribute :noteable_id, :noteable_type, :author, :note,
-                         :created_at, :updated_at, :github_id
+                         :created_at, :updated_at, :note_id
 
         NOTEABLE_TYPE_REGEX = %r{/(?<type>(pull|issues))/(?<iid>\d+)}i.freeze
 
@@ -42,7 +42,7 @@ module Gitlab
             note: note.body,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            github_id: note.id
+            note_id: note.id
           }
 
           new(hash)
@@ -64,6 +64,14 @@ module Gitlab
         end
 
         alias_method :issuable_type, :noteable_type
+
+        def github_identifiers
+          {
+            note_id: note_id,
+            noteable_id: noteable_id,
+            noteable_type: noteable_type
+          }
+        end
       end
     end
   end

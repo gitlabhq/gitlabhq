@@ -1,4 +1,5 @@
 import { escape } from 'lodash';
+import labelData from 'test_fixtures/labels/project_labels.json';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
@@ -132,14 +133,7 @@ describe('Filtered Search Visual Tokens', () => {
   });
 
   describe('updateLabelTokenColor', () => {
-    const jsonFixtureName = 'labels/project_labels.json';
     const dummyEndpoint = '/dummy/endpoint';
-
-    let labelData;
-
-    beforeAll(() => {
-      labelData = getJSONFixture(jsonFixtureName);
-    });
 
     const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
       'label',

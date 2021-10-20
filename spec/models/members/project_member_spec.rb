@@ -244,11 +244,16 @@ RSpec.describe ProjectMember do
         project.add_user(user, Gitlab::Access::GUEST)
       end
 
-      it 'changes access level' do
+      it 'changes access level', :sidekiq_inline do
         expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
       end
 
-      it_behaves_like 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserService to recalculate authorizations'
+      it 'calls AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker to recalculate authorizations' do
+        expect(AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker).to receive(:perform_async).with(project.id, user.id)
+
+        action
+      end
+
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
 
@@ -298,7 +303,7 @@ RSpec.describe ProjectMember do
           project.add_user(user, Gitlab::Access::GUEST)
         end
 
-        it 'changes access level' do
+        it 'changes access level', :sidekiq_inline do
           expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
         end
 

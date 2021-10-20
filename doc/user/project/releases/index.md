@@ -218,7 +218,7 @@ To set a deploy freeze window in the UI, complete these steps:
 1. Scroll to **Deploy freezes**.
 1. Click **Expand** to see the deploy freeze table.
 1. Click **Add deploy freeze** to open the deploy freeze modal.
-1. Enter the start time, end time, and timezone of the desired deploy freeze period.
+1. Enter the start time, end time, and time zone of the desired deploy freeze period.
 1. Click **Add deploy freeze** in the modal.
 1. After the deploy freeze is saved, you can edit it by selecting the edit button (**{pencil}**) and remove it by selecting the delete button (**{remove}**).
    ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v14_3.png)

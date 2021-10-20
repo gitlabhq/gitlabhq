@@ -18,6 +18,8 @@ class Upload < ApplicationRecord
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :needs_checksum?
 
+  after_commit :update_project_statistics, on: [:create, :destroy], if: :project?
+
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
@@ -67,7 +69,7 @@ class Upload < ApplicationRecord
     self.checksum = nil
     return unless needs_checksum?
 
-    self.checksum = self.class.hexdigest(absolute_path)
+    self.checksum = self.class.sha256_hexdigest(absolute_path)
   end
 
   # Initialize the associated Uploader class with current model
@@ -160,6 +162,14 @@ class Upload < ApplicationRecord
 
   def mount_point
     super&.to_sym
+  end
+
+  def project?
+    model_type == "Project"
+  end
+
+  def update_project_statistics
+    ProjectCacheWorker.perform_async(model_id, [], [:uploads_size])
   end
 end
 

@@ -137,11 +137,11 @@ module API
             bad_request!
           end
 
-          track_package_event('push_package', :composer, project: authorized_user_project, user: current_user, namespace: authorized_user_project.namespace)
-
           ::Packages::Composer::CreatePackageService
             .new(authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job))
             .execute
+
+          track_package_event('push_package', :composer, project: authorized_user_project, user: current_user, namespace: authorized_user_project.namespace)
 
           created!
         end

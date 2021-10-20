@@ -8,6 +8,7 @@ import { TREE_PAGE_SIZE, TREE_INITIAL_FETCH_COUNT, TREE_PAGE_LIMIT } from '../co
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import { readmeFile } from '../utils/readme';
+import { loadCommits, isRequested, resetRequestedCommits } from '../commits_service';
 import FilePreview from './preview/index.vue';
 import FileTable from './table/index.vue';
 
@@ -36,6 +37,7 @@ export default {
   },
   data() {
     return {
+      commits: [],
       projectPath: '',
       nextPageCursor: '',
       pagesLoaded: 1,
@@ -81,12 +83,16 @@ export default {
       this.entries.submodules = [];
       this.entries.blobs = [];
       this.nextPageCursor = '';
+      resetRequestedCommits();
       this.fetchFiles();
     },
   },
   mounted() {
     // We need to wait for `ref` and `projectPath` to be set
-    this.$nextTick(() => this.fetchFiles());
+    this.$nextTick(() => {
+      resetRequestedCommits();
+      this.fetchFiles();
+    });
   },
   methods: {
     fetchFiles() {
@@ -152,6 +158,18 @@ export default {
         .concat(data.trees.pageInfo, data.submodules.pageInfo, data.blobs.pageInfo)
         .find(({ hasNextPage }) => hasNextPage);
     },
+    loadCommitData({ rowNumber = 0, hasCommit } = {}) {
+      if (!this.glFeatures.lazyLoadCommits || hasCommit || isRequested(rowNumber)) {
+        return;
+      }
+
+      loadCommits(this.projectPath, this.path, this.ref, rowNumber)
+        .then(this.setCommitData)
+        .catch(() => {});
+    },
+    setCommitData(data) {
+      this.commits = this.commits.concat(data);
+    },
     handleShowMore() {
       this.clickedShowMore = true;
       this.pagesLoaded += 1;
@@ -169,7 +187,9 @@ export default {
       :is-loading="isLoadingFiles"
       :loading-path="loadingPath"
       :has-more="hasShowMore"
+      :commits="commits"
       @showMore="handleShowMore"
+      @row-appear="loadCommitData"
     />
     <file-preview v-if="readme" :blob="readme" />
   </div>

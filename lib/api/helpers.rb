@@ -75,8 +75,9 @@ module API
       save_current_user_in_env(@current_user) if @current_user
 
       if @current_user
-        ::Gitlab::Database::LoadBalancing::RackMiddleware
-          .stick_or_unstick(env, :user, @current_user.id)
+        ::ApplicationRecord
+          .sticking
+          .stick_or_unstick_request(env, :user, @current_user.id)
       end
 
       @current_user
@@ -429,8 +430,8 @@ module API
       render_api_error!('406 Not Acceptable', 406)
     end
 
-    def service_unavailable!
-      render_api_error!('503 Service Unavailable', 503)
+    def service_unavailable!(message = nil)
+      render_api_error!(message || '503 Service Unavailable', 503)
     end
 
     def conflict!(message = nil)
@@ -622,6 +623,12 @@ module API
     # Overridden in EE
     def project_finder_params_ee
       {}
+    end
+
+    def validate_anonymous_search_access!
+      return if current_user.present? || Feature.disabled?(:disable_anonymous_search, type: :ops)
+
+      unprocessable_entity!('User must be authenticated to use search')
     end
 
     private

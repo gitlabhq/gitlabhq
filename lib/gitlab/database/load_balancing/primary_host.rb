@@ -11,6 +11,12 @@ module Gitlab
       # balancing is enabled, but no replicas have been configured (= the
       # default case).
       class PrimaryHost
+        WAL_ERROR_MESSAGE = <<~MSG.strip
+          Obtaining WAL information when not using any replicas results in
+          redundant queries, and may break installations that don't support
+          streaming replication (e.g. AWS' Aurora database).
+        MSG
+
         def initialize(load_balancer)
           @load_balancer = load_balancer
         end
@@ -51,29 +57,15 @@ module Gitlab
         end
 
         def primary_write_location
-          @load_balancer.primary_write_location
+          raise NotImplementedError, WAL_ERROR_MESSAGE
         end
 
         def database_replica_location
-          row = query_and_release(<<-SQL.squish)
-            SELECT pg_last_wal_replay_lsn()::text AS location
-          SQL
-
-          row['location'] if row.any?
-        rescue *Host::CONNECTION_ERRORS
-          nil
+          raise NotImplementedError, WAL_ERROR_MESSAGE
         end
 
         def caught_up?(_location)
           true
-        end
-
-        def query_and_release(sql)
-          connection.select_all(sql).first || {}
-        rescue StandardError
-          {}
-        ensure
-          release_connection
         end
       end
     end

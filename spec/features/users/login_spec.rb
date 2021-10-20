@@ -171,6 +171,18 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe 'with OneTrust authentication' do
+    before do
+      stub_config(extra: { one_trust_id: SecureRandom.uuid })
+    end
+
+    it 'has proper Content-Security-Policy headers' do
+      visit root_path
+
+      expect(response_headers['Content-Security-Policy']).to include('https://cdn.cookielaw.org https://*.onetrust.com')
+    end
+  end
+
   describe 'with two-factor authentication', :js do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code
@@ -866,8 +878,8 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
 
         expect(current_path).to eq(new_profile_password_path)
 
-        fill_in 'user_current_password', with: '12345678'
-        fill_in 'user_password', with: 'new password'
+        fill_in 'user_password', with: '12345678'
+        fill_in 'user_new_password', with: 'new password'
         fill_in 'user_password_confirmation', with: 'new password'
         click_button 'Set new password'
 
@@ -875,7 +887,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when the user does not have an email configured' do
+    context 'when the user does not have an email configured', :js do
       let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml', email: 'temp-email-for-oauth-user@gitlab.localhost') }
 
       before do

@@ -7,6 +7,7 @@ module Tasks
     module Assets
       FOSS_ASSET_FOLDERS = %w[app/assets fixtures/emojis vendor/assets/javascripts].freeze
       EE_ASSET_FOLDERS = %w[ee/app/assets].freeze
+      JH_ASSET_FOLDERS = %w[jh/app/assets].freeze
       JS_ASSET_PATTERNS = %w[*.js config/**/*.js].freeze
       JS_ASSET_FILES = %w[package.json yarn.lock].freeze
       MASTER_MD5_HASH_FILE = 'master-assets-hash.txt'
@@ -28,6 +29,7 @@ module Tasks
       def self.assets_impacting_webpack_compilation
         assets_folders = FOSS_ASSET_FOLDERS
         assets_folders += EE_ASSET_FOLDERS if ::Gitlab.ee?
+        assets_folders += JH_ASSET_FOLDERS if ::Gitlab.jh?
 
         asset_files = Dir.glob(JS_ASSET_PATTERNS)
         asset_files += JS_ASSET_FILES

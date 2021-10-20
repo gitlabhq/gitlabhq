@@ -7,10 +7,10 @@
       = f.hidden_field :reset_password_token
       .form-group
         = f.label _('New password'), for: "user_password"
-        = f.password_field :password, class: "form-control gl-form-input top", required: true, title: _('This field is required.'), data: { qa_selector: 'password_field'}
+        = f.password_field :password, autocomplete: 'new-password', class: "form-control gl-form-input top", required: true, title: _('This field is required.'), data: { qa_selector: 'password_field'}
       .form-group
         = f.label _('Confirm new password'), for: "user_password_confirmation"
-        = f.password_field :password_confirmation, class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { qa_selector: 'password_confirmation_field' }, required: true
+        = f.password_field :password_confirmation, autocomplete: 'new-password', class: "form-control gl-form-input bottom", title: _('This field is required.'), data: { qa_selector: 'password_confirmation_field' }, required: true
       .clearfix
         = f.submit _("Change your password"), class: "gl-button btn btn-confirm", data: { qa_selector: 'change_password_button' }
 

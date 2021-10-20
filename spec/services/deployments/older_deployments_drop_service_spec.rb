@@ -84,7 +84,7 @@ RSpec.describe Deployments::OlderDeploymentsDropService do
 
             it 'does not drop an older deployment and tracks the exception' do
               expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                .with(kind_of(RuntimeError), subject_id: deployment.id, deployment_id: older_deployment.id)
+                .with(kind_of(RuntimeError), subject_id: deployment.id, build_id: older_deployment.deployable_id)
 
               expect { subject }.not_to change { Ci::Build.failed.count }
             end

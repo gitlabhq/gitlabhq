@@ -9,11 +9,6 @@ module QA
       let(:differ) { RSpec::Support::Differ.new(color: true) }
 
       let(:api_client) { Runtime::API::Client.as_admin }
-      let(:group) do
-        Resource::Group.fabricate_via_api! do |resource|
-          resource.api_client = api_client
-        end
-      end
 
       let(:user) do
         Resource::User.fabricate_via_api! do |resource|
@@ -86,19 +81,15 @@ module QA
         Resource::ProjectImportedFromGithub.fabricate_via_api! do |project|
           project.add_name_uuid = false
           project.name = 'imported-project'
-          project.group = group
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = github_repo
+          project.personal_namespace = user.username
           project.api_client = api_client
         end
       end
 
-      before do
-        group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
-      end
-
       after do |example|
-        user.remove_via_api!
+        user.remove_via_api! unless example.exception
         next unless defined?(@import_time)
 
         # save data for comparison after run finished
@@ -128,7 +119,10 @@ module QA
         )
       end
 
-      it 'imports large Github repo via api', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1880' do
+      it(
+        'imports large Github repo via api',
+        testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1880'
+      ) do
         start = Time.now
 
         Runtime::Logger.info("Importing project '#{imported_project.full_path}'") # import the project and log path

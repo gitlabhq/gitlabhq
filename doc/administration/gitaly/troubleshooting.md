@@ -243,7 +243,7 @@ To mirror-push branches and tags only, and avoid attempting to mirror-push prote
 git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
 ```
 
-Any other namespaces that the admin wants to push can be included there as well via additional patterns.
+Any other namespaces that the administrator wants to push can be included there as well via additional patterns.
 
 ### Command line tools cannot connect to Gitaly
 
@@ -365,6 +365,15 @@ To determine the current primary Gitaly node for a specific Praefect node:
   curl localhost:9652/metrics | grep gitaly_praefect_primaries`
   ```
 
+### Check that repositories are in sync
+
+Is [some cases](index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
+a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
+that checksums the repository on all Gitaly nodes.
+
+The [Praefect dataloss](praefect.md#check-for-data-loss) command only checks the state of the repo in the Praefect database, and cannot
+be relied to detect sync problems in this scenario.
+
 ### Relation does not exist errors
 
 By default Praefect database tables are created automatically by `gitlab-ctl reconfigure` task.
@@ -393,7 +402,7 @@ $ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config
 praefect sql-migrate: OK (applied 21 migrations)
 ```
 
-### Requests fail with 'repo scoped: invalid Repository' errors
+### Requests fail with 'repository scoped: invalid Repository' errors
 
 This indicates that the virtual storage name used in the
 [Praefect configuration](praefect.md#praefect) does not match the storage name used in

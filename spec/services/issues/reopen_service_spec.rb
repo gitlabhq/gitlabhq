@@ -8,17 +8,25 @@ RSpec.describe Issues::ReopenService do
 
   describe '#execute' do
     context 'when user is not authorized to reopen issue' do
-      before do
+      it 'does not reopen the issue' do
         guest = create(:user)
         project.add_guest(guest)
 
-        perform_enqueued_jobs do
-          described_class.new(project: project, current_user: guest).execute(issue)
-        end
+        described_class.new(project: project, current_user: guest).execute(issue)
+
+        expect(issue).to be_closed
       end
 
-      it 'does not reopen the issue' do
-        expect(issue).to be_closed
+      context 'when skip_authorization is true' do
+        it 'does close the issue even if user is not authorized' do
+          non_authorized_user = create(:user)
+
+          service = described_class.new(project: project, current_user: non_authorized_user)
+
+          expect do
+            service.execute(issue, skip_authorization: true)
+          end.to change { issue.reload.state }.from('closed').to('opened')
+        end
       end
     end
 

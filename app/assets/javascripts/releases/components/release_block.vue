@@ -1,4 +1,5 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
 import { isEmpty } from 'lodash';
 import { scrollToElement } from '~/lib/utils/common_utils';
@@ -20,6 +21,9 @@ export default {
     ReleaseBlockFooter,
     ReleaseBlockHeader,
     ReleaseBlockMilestoneInfo,
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -79,6 +83,7 @@ export default {
       $(this.$refs['gfm-content']).renderGFM();
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 <template>
@@ -102,10 +107,7 @@ export default {
       <evidence-block v-if="hasEvidence" :release="release" />
 
       <div ref="gfm-content" class="card-text gl-mt-3">
-        <div
-          class="md"
-          v-html="release.descriptionHtml /* eslint-disable-line vue/no-v-html */"
-        ></div>
+        <div v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml" class="md"></div>
       </div>
     </div>
 

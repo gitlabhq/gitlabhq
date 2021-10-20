@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { VALIDATE_INTEGRATION_FORM_EVENT } from '~/integrations/constants';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 
@@ -118,10 +119,10 @@ export default {
     },
   },
   created() {
-    eventHub.$on('validateForm', this.validateForm);
+    eventHub.$on(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   beforeDestroy() {
-    eventHub.$off('validateForm', this.validateForm);
+    eventHub.$off(VALIDATE_INTEGRATION_FORM_EVENT, this.validateForm);
   },
   methods: {
     validateForm() {

@@ -52,7 +52,7 @@ export default {
       required: true,
     },
     cssClassJobName: {
-      type: [String, Array],
+      type: [String, Array, Object],
       required: false,
       default: '',
     },
@@ -167,9 +167,13 @@ export default {
       return this.job.name === this.pipelineExpanded.jobName && this.pipelineExpanded.expanded;
     },
     jobClasses() {
-      return this.relatedDownstreamHovered || this.relatedDownstreamExpanded
-        ? `${this.$options.hoverClass} ${this.cssClassJobName}`
-        : this.cssClassJobName;
+      return [
+        {
+          [this.$options.hoverClass]:
+            this.relatedDownstreamHovered || this.relatedDownstreamExpanded,
+        },
+        this.cssClassJobName,
+      ];
     },
   },
   errorCaptured(err, _vm, info) {

@@ -12,11 +12,11 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
     <gl-dropdown-stub
       category="primary"
       clearalltext="Clear all"
+      clearalltextclass="gl-px-5"
       headertext=""
       hideheaderborder="true"
       highlighteditemstitle="Selected"
       highlighteditemstitleclass="gl-px-5"
-      showhighlighteditemstitle="true"
       size="medium"
       text="rspec"
       variant="default"

@@ -69,5 +69,12 @@
       %p.form-text.text-muted
         = _("The default CI/CD configuration file and path for new projects.").html_safe
         = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings', anchor: 'specify-a-custom-cicd-configuration-file'), target: '_blank'
+    .form-group
+      .form-check
+        = f.check_box :suggest_pipeline_enabled, class: 'form-check-input'
+        = f.label :suggest_pipeline_enabled, class: 'form-check-label' do
+          = s_('AdminSettings|Enable pipeline suggestion banner')
+        .form-text.text-muted
+          = s_('AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file.')
 
   = f.submit _('Save changes'), class: "gl-button btn btn-confirm"

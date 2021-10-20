@@ -82,7 +82,8 @@ module Ci
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
     has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
-
+    has_many :package_build_infos, class_name: 'Packages::BuildInfo', dependent: :nullify, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
+    has_many :package_file_build_infos, class_name: 'Packages::PackageFileBuildInfo', dependent: :nullify, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :failed_builds, -> { latest.failed }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
@@ -861,11 +862,6 @@ module Ci
       self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
-    def execute_hooks
-      project.execute_hooks(pipeline_data, :pipeline_hooks) if project.has_active_hooks?(:pipeline_hooks)
-      project.execute_integrations(pipeline_data, :pipeline_hooks) if project.has_active_integrations?(:pipeline_hooks)
-    end
-
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
       @all_merge_requests ||=
@@ -929,9 +925,22 @@ module Ci
     end
 
     def environments_in_self_and_descendants
-      environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
+      if ::Feature.enabled?(:avoid_cross_joins_environments_in_self_and_descendants, default_enabled: :yaml)
+        # We limit to 100 unique environments for application safety.
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
+        expanded_environment_names =
+          builds_in_self_and_descendants.joins(:metadata)
+                                        .where.not('ci_builds_metadata.expanded_environment_name' => nil)
+                                        .distinct('ci_builds_metadata.expanded_environment_name')
+                                        .limit(100)
+                                        .pluck(:expanded_environment_name)
 
-      Environment.where(id: environment_ids)
+        Environment.where(project: project, name: expanded_environment_names)
+      else
+        environment_ids = self_and_descendants.joins(:deployments).select(:'deployments.environment_id')
+
+        Environment.where(id: environment_ids)
+      end
     end
 
     # With multi-project and parent-child pipelines
@@ -1249,12 +1258,6 @@ module Ci
 
     def add_message(severity, content)
       messages.build(severity: severity, content: content)
-    end
-
-    def pipeline_data
-      strong_memoize(:pipeline_data) do
-        Gitlab::DataBuilder::Pipeline.build(self)
-      end
     end
 
     def merge_request_diff_sha

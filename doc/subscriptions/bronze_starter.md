@@ -68,7 +68,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Full code quality reports in the code quality tab](../user/project/merge_requests/code_quality.md#code-quality-reports)
   - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/getting_started.md#multiple-assignees)
-  - [Approval Rule information for Reviewers](../user/project/merge_requests/reviews/index.md#approval-rule-information-for-reviewers) **(PREMIUM)**
+  - [Approval Rule information for Reviewers](../user/project/merge_requests/reviews/index.md#approval-rule-information-for-reviewers)
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
@@ -89,14 +89,14 @@ the tiers are no longer mentioned in GitLab documentation:
 - Repositories:
   - [Repository size limit](../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:
-    - [Pull mirroring](../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository) outside repositories in a GitLab repository
-    - [Overwrite diverged branches](../user/project/repository/repository_mirroring.md#overwrite-diverged-branches)
-    - [Trigger pipelines for mirror updates](../user/project/repository/repository_mirroring.md#trigger-pipelines-for-mirror-updates)
-    - [Hard failures](../user/project/repository/repository_mirroring.md#hard-failure) when mirroring fails
-    - [Trigger pull mirroring from the API](../user/project/repository/repository_mirroring.md#trigger-an-update-using-the-api)
-    - [Mirror only protected branches](../user/project/repository/repository_mirroring.md#mirror-only-protected-branches)
-    - [Bidirectional mirroring](../user/project/repository/repository_mirroring.md#bidirectional-mirroring)
-    - [Mirror with Perforce Helix via Git Fusion](../user/project/repository/repository_mirroring.md#mirror-with-perforce-helix-via-git-fusion)
+    - [Pull mirroring](../user/project/repository/mirror/pull.md) outside repositories in a GitLab repository
+    - [Overwrite diverged branches](../user/project/repository/mirror/pull.md#overwrite-diverged-branches)
+    - [Trigger pipelines for mirror updates](../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
+    - [Hard failures](../user/project/repository/mirror/pull.md#hard-failure) when mirroring fails
+    - [Trigger pull mirroring from the API](../user/project/repository/mirror/pull.md#trigger-an-update-by-using-the-api)
+    - [Mirror only protected branches](../user/project/repository/mirror/index.md#mirror-only-protected-branches)
+    - [Bidirectional mirroring](../user/project/repository/mirror/bidirectional.md)
+    - [Mirror with Perforce Helix via Git Fusion](../user/project/repository/mirror/bidirectional.md#mirror-with-perforce-helix-via-git-fusion)
 - Runners:
   - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)

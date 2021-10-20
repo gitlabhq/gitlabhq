@@ -1,8 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # AsciiDoc **(FREE)**
@@ -85,7 +84,7 @@ I believe I shall--no, actually I won't.
 **Macros**
 
 ```plaintext
-// where c=specialchars, q=quotes, a=attributes, r=replacements, m=macros, p=post_replacements, etc.
+// where c=specialchars, q=quotes, a=attributes, r=replacements, m=macros, p=post_replacements
 The European icon:flag[role=blue] is blue & contains pass:[************] arranged in a icon:circle-o[role=yellow].
 The pass:c[->] operator is often referred to as the stabby lambda.
 Since `pass:[++]` has strong priority in AsciiDoc, you can rewrite pass:c,a,r[C++ => C{pp}].
@@ -151,7 +150,7 @@ This paragraph has a footnote.footnote:[This is the text of the footnote.]
 ** level 2
 *** level 3
 **** level 4
-***** etc.
+***** level 5
 * back at level 1
 +
 Attach a block or paragraph to a list item using a list continuation (which you can enclose in an open block).
@@ -240,10 +239,10 @@ include::basics.adoc[]
 include::https://example.org/installation.adoc[]
 ```
 
-To guarantee good system performance and prevent malicious documents causing
-problems, GitLab enforces a **maximum limit** on the number of include directives
-processed in any one document. Currently a total of 32 documents can be
-included, a number that is inclusive of transitive dependencies.
+To guarantee good system performance and prevent malicious documents from causing
+problems, GitLab enforces a maximum limit on the number of include directives
+processed in any one document. You can include up to 32 documents, which is
+inclusive of transitive dependencies.
 
 ### Blocks
 
@@ -428,7 +427,7 @@ If you're new to using Mermaid or need help identifying issues in your Mermaid c
 the [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/) is a helpful tool
 for creating and resolving issues within Mermaid diagrams.
 
-In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block:
+To generate a diagram or flowchart, enter your text in a `mermaid` block:
 
 ```plaintext
 [mermaid]
@@ -447,7 +446,7 @@ Kroki supports more than a dozen diagram libraries.
 To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
 Read more in the [Kroki integration](../administration/integration/kroki.md) page.
 
-Once Kroki is enabled, you can create a wide variety of diagrams in AsciiDoc and Markdown documents.
+After Kroki is enabled, you can create diagrams in AsciiDoc and Markdown documents.
 Here's an example using a GraphViz diagram:
 
 **AsciiDoc**
@@ -476,7 +475,7 @@ digraph G {
 To make PlantUML available in GitLab, a GitLab administrator needs to enable it first.
 Read more in [PlantUML & GitLab](../administration/integration/plantuml.md).
 
-Once enabled, you should write your text inside the `plantuml` block:
+After PlantUML is enabled, enter your text in a `plantuml` block:
 
 ```plaintext
 [plantuml]

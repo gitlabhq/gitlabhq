@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Where variables can be used
+# Where variables can be used **(FREE)**
 
 As it's described in the [CI/CD variables](index.md) docs, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
@@ -65,9 +65,10 @@ because the expansion is done in GitLab before any runner gets the job.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10. [Deployed behind the `variable_inside_variable` feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is disabled. To enable the feature per project or for your entire instance, ask an administrator to [enable the `variable_inside_variable` flag](../../administration/feature_flags.md).
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `variable_inside_variable`. On GitLab.com, this feature is available.
 
 GitLab expands job variable values recursively before sending them to the runner. For example:
 

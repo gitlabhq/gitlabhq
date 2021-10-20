@@ -11,11 +11,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Merge requests in a public repository are also public, even when the merge
 request is created for a [confidential issue](../issues/confidential_issues.md).
 To avoid leaking confidential information when working on a confidential issue,
-create your merge request from a private fork.
+create your merge request from a private fork in the same namespace.
 
 Roles are inherited from parent groups. If you create your private fork in the
-same group or subgroup as the original (public) repository, developers receive
-the same permissions in your fork. This inheritance ensures:
+same namespace (same group or subgroup) as the original (public) repository,
+developers receive the same permissions in your fork. This inheritance ensures:
 
 - Developer users have the needed permissions to view confidential issues and resolve them.
 - You do not need grant individual users access to your fork.
@@ -24,13 +24,17 @@ The [security practices for confidential merge requests](https://gitlab.com/gitl
 
 ## Create a confidential merge request
 
-WARNING:
-To create a confidential merge request, you must create a private fork. This fork
-may expose confidential information, if you create your fork in another namespace
-that may have other members.
-
 Branches are public by default. To protect the confidentiality of your work, you
-must create your changes in a private fork.
+must create your branches and merge requests in the same namespace, but downstream
+in a private fork. If you create your private fork in the same namespace as the
+public repository, your fork inherits the permissions of the upstream public repository.
+Users with the Developer role in the upstream public repository inherit those upstream
+permissions in your downstream private fork without action by you. These users can
+immediately push code to branches in your private fork to help fix the confidential issue.
+
+WARNING:
+Your private fork may expose confidential information, if you create it in a different
+namespace than the upstream repository. The two namespaces may not contain the same users.
 
 Prerequisites:
 
@@ -56,16 +60,15 @@ To create a confidential merge request:
    branches must be available in your selected fork.
 1. Select **Create**.
 
-If you created a branch in your private fork, users with the Developer role in the
-public repository can push code to that branch in your private fork to fix the
-confidential issue.
+This merge request targets your private fork, not the public upstream project.
+Your branch, merge requests, and commits remain in your private fork. This prevents
+prematurely revealing confidential information.
 
-As your merge request targets your private fork, not the public upstream project,
-your branch, merge request, and commits do not enter the public repository. This
-prevents prematurely revealing confidential information.
+Open a merge request
+[from your fork to the upstream repository](../repository/forking_workflow.md#merging-upstream) when:
 
-To make a confidential commit public, open a merge request from the private fork
-to the public upstream project.
+- You are satisfied the problem is resolved in your private fork.
+- You are ready to make the confidential commits public.
 
 ## Related links
 

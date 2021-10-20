@@ -33,7 +33,8 @@ module Gitlab
             ci_quota_exceeded: 'no more CI minutes available',
             no_matching_runner: 'no matching runner available',
             trace_size_exceeded: 'log size limit exceeded',
-            builds_disabled: 'project builds are disabled'
+            builds_disabled: 'project builds are disabled',
+            environment_creation_failure: 'environment creation failure'
           }.freeze
 
           private_constant :REASONS

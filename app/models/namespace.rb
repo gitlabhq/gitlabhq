@@ -28,7 +28,10 @@ class Namespace < ApplicationRecord
   # Android repo (15) + some extra backup.
   NUMBER_OF_ANCESTORS_ALLOWED = 20
 
-  SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
+  SR_DISABLED_AND_UNOVERRIDABLE = 'disabled_and_unoverridable'
+  SR_DISABLED_WITH_OVERRIDE = 'disabled_with_override'
+  SR_ENABLED = 'enabled'
+  SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
   cache_markdown_field :description, pipeline: :description
@@ -44,6 +47,8 @@ class Namespace < ApplicationRecord
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
+  # TODO: can this be moved into the UserNamespace class?
+  #       evaluate in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
@@ -63,21 +68,31 @@ class Namespace < ApplicationRecord
     length: { maximum: 255 }
 
   validates :description, length: { maximum: 255 }
+
   validates :path,
     presence: true,
-    length: { maximum: URL_MAX_LENGTH },
-    namespace_path: true
+    length: { maximum: URL_MAX_LENGTH }
+
+  validates :path, namespace_path: true, if: ->(n) { !n.project_namespace? }
+  # Project path validator is used for project namespaces for now to assure
+  # compatibility with project paths
+  # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/341764
+  validates :path, project_path: true, if: ->(n) { n.project_namespace? }
 
   # Introduce minimal path length of 2 characters.
   # Allow change of other attributes without forcing users to
   # rename their user or group. At the same time prevent changing
   # the path without complying with new 2 chars requirement.
   # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/225214
-  validates :path, length: { minimum: 2 }, if: :path_changed?
+  #
+  # For ProjectNamespace we don't check minimal path length to keep
+  # compatibility with existing project restrictions.
+  # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/341764
+  validates :path, length: { minimum: 2 }, if: :enforce_minimum_path_length?
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
-  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type) }
+  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type, default_enabled: :yaml) }
   validate :nesting_level_allowed
   validate :changing_shared_runners_enabled_is_allowed
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
@@ -93,7 +108,7 @@ class Namespace < ApplicationRecord
 
   # Legacy Storage specific hooks
 
-  after_update :move_dir, if: :saved_change_to_path_or_parent?
+  after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
   after_commit :expire_child_caches, on: :update, if: -> {
@@ -101,7 +116,12 @@ class Namespace < ApplicationRecord
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
   }
 
-  scope :for_user, -> { where(type: nil) }
+  # TODO: change to `type: Namespaces::UserNamespace.sti_name` when
+  #       working on issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+  scope :user_namespaces, -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) }
+  # TODO: this can be simplified with `type != 'Project'`  when working on issue
+  #       https://gitlab.com/gitlab-org/gitlab/-/issues/341070
+  scope :without_project_namespaces, -> { where("type IS DISTINCT FROM ?", Namespaces::ProjectNamespace.sti_name) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
@@ -138,14 +158,12 @@ class Namespace < ApplicationRecord
   class << self
     def sti_class_for(type_name)
       case type_name
-      when 'Group'
+      when Group.sti_name
         Group
-      when 'Project'
+      when Namespaces::ProjectNamespace.sti_name
         Namespaces::ProjectNamespace
-      when 'User'
-        # TODO: We create a normal Namespace until
-        #       https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68894 is ready
-        Namespace
+      when Namespaces::UserNamespace.sti_name
+        Namespaces::UserNamespace
       else
         Namespace
       end
@@ -247,27 +265,27 @@ class Namespace < ApplicationRecord
   end
 
   def kind
-    return 'group' if group?
-    return 'project' if project?
+    return 'group' if group_namespace?
+    return 'project' if project_namespace?
 
     'user' # defaults to user
   end
 
-  def group?
+  def group_namespace?
     type == Group.sti_name
   end
 
-  def project?
+  def project_namespace?
     type == Namespaces::ProjectNamespace.sti_name
   end
 
-  def user?
+  def user_namespace?
     # That last bit ensures we're considered a user namespace as a default
-    type.nil? || type == Namespaces::UserNamespace.sti_name || !(group? || project?)
+    type.nil? || type == Namespaces::UserNamespace.sti_name || !(group_namespace? || project_namespace?)
   end
 
   def owner_required?
-    user?
+    user_namespace?
   end
 
   def find_fork_of(project)
@@ -314,7 +332,7 @@ class Namespace < ApplicationRecord
   # that belongs to this namespace
   def all_projects
     if Feature.enabled?(:recursive_approach_for_all_projects, default_enabled: :yaml)
-      namespace = user? ? self : self_and_descendant_ids
+      namespace = user_namespace? ? self : self_and_descendant_ids
       Project.where(namespace: namespace)
     else
       Project.inside_path(full_path)
@@ -416,7 +434,7 @@ class Namespace < ApplicationRecord
   def changing_shared_runners_enabled_is_allowed
     return unless new_record? || changes.has_key?(:shared_runners_enabled)
 
-    if shared_runners_enabled && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+    if shared_runners_enabled && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE
       errors.add(:shared_runners_enabled, _('cannot be enabled because parent group has shared Runners disabled'))
     end
   end
@@ -428,30 +446,30 @@ class Namespace < ApplicationRecord
       errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be changed if shared runners are enabled'))
     end
 
-    if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == 'disabled_and_unoverridable'
+    if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE
       errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be enabled because parent group does not allow it'))
     end
   end
 
   def shared_runners_setting
     if shared_runners_enabled
-      'enabled'
+      SR_ENABLED
     else
       if allow_descendants_override_disabled_shared_runners
-        'disabled_with_override'
+        SR_DISABLED_WITH_OVERRIDE
       else
-        'disabled_and_unoverridable'
+        SR_DISABLED_AND_UNOVERRIDABLE
       end
     end
   end
 
   def shared_runners_setting_higher_than?(other_setting)
-    if other_setting == 'enabled'
+    if other_setting == SR_ENABLED
       false
-    elsif other_setting == 'disabled_with_override'
-      shared_runners_setting == 'enabled'
-    elsif other_setting == 'disabled_and_unoverridable'
-      shared_runners_setting == 'enabled' || shared_runners_setting == 'disabled_with_override'
+    elsif other_setting == SR_DISABLED_WITH_OVERRIDE
+      shared_runners_setting == SR_ENABLED
+    elsif other_setting == SR_DISABLED_AND_UNOVERRIDABLE
+      shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError
     end
@@ -536,21 +554,21 @@ class Namespace < ApplicationRecord
 
   def validate_parent_type
     unless has_parent?
-      if project?
+      if project_namespace?
         errors.add(:parent_id, _('must be set for a project namespace'))
       end
 
       return
     end
 
-    if parent.project?
+    if parent.project_namespace?
       errors.add(:parent_id, _('project namespace cannot be the parent of another namespace'))
     end
 
-    if user?
+    if user_namespace?
       errors.add(:parent_id, _('cannot not be used for user namespace'))
-    elsif group?
-      errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user?
+    elsif group_namespace?
+      errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user_namespace?
     end
   end
 
@@ -574,6 +592,10 @@ class Namespace < ApplicationRecord
       project.set_full_path
       project.track_project_repository
     end
+  end
+
+  def enforce_minimum_path_length?
+    path_changed? && !project_namespace?
   end
 end
 

@@ -55,9 +55,8 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 #### Query LDAP **(PREMIUM SELF)**
 
 The following allows you to perform a search in LDAP using the rails console.
-Depending on what you're trying to do, it may make more sense to query [a
-user](#query-a-user-in-ldap) or [a group](#query-a-group-in-ldap) directly, or
-even [use `ldapsearch`](#ldapsearch) instead.
+Depending on what you're trying to do, it may make more sense to query [a user](#query-a-user-in-ldap)
+or [a group](#query-a-group-in-ldap) directly, or even [use `ldapsearch`](#ldapsearch) instead.
 
 ```ruby
 adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain')
@@ -90,7 +89,7 @@ established but GitLab doesn't show you LDAP users in the output, one of the
 following is most likely true:
 
 - The `bind_dn` user doesn't have enough permissions to traverse the user tree.
-- The user(s) don't fall under the [configured `base`](index.md#configuration).
+- The user(s) don't fall under the [configured `base`](index.md#configure-ldap).
 - The [configured `user_filter`](index.md#set-up-ldap-user-filter) blocks access to the user(s).
 
 In this case, you con confirm which of the above is true using
@@ -102,7 +101,7 @@ In this case, you con confirm which of the above is true using
 A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
 
-- Does the user fall under the [configured `base`](index.md#configuration) in
+- Does the user fall under the [configured `base`](index.md#configure-ldap) in
   LDAP? The user must fall under this `base` to sign in.
 - Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter)?
   If one is not configured, this question can be ignored. If it is, then the
@@ -355,11 +354,10 @@ things to check to debug the situation.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
-- You've waited an hour or [the configured
-  interval](index.md#adjust-ldap-group-sync-schedule) for the group to
-  sync. To speed up the process, either go to the GitLab group **Group information > Members**
-  and press **Sync now** (sync one group) or [run the group sync Rake
-  task](../../raketasks/ldap.md#run-a-group-sync) (sync all groups).
+- You've waited an hour or [the configured interval](index.md#adjust-ldap-group-sync-schedule) for
+  the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
+  and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
+  (sync all groups).
 
 If all of the above looks good, jump in to a little more advanced debugging in
 the rails console.
@@ -371,8 +369,8 @@ the rails console.
 1. Look through the output of the sync. See [example log
    output](#example-console-output-after-a-group-sync)
    for how to read the output.
-1. If you still aren't able to see why the user isn't being added, [query the
-   LDAP group directly](#query-a-group-in-ldap) to see what members are listed.
+1. If you still aren't able to see why the user isn't being added, [query the LDAP group directly](#query-a-group-in-ldap)
+   to see what members are listed.
 1. Is the user's DN or UID in one of the lists from the above output? One of the DNs or
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
@@ -387,7 +385,7 @@ the following are true:
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
 - The members of the `admin_group` have already signed into GitLab with their LDAP
-  credentials. GitLab only grants this administrator access to the users whose
+  credentials. GitLab only grants the Administrator role to the users whose
   accounts are already connected to LDAP.
 
 If all the above are true and the users are still not getting access, [run a manual
@@ -398,8 +396,8 @@ GitLab syncs the `admin_group`.
 #### Sync all groups
 
 NOTE:
-To sync all groups manually when debugging is unnecessary, [use the Rake
-task](../../raketasks/ldap.md#run-a-group-sync) instead.
+To sync all groups manually when debugging is unnecessary,
+[use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
 The output from a manual [group sync](index.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP.

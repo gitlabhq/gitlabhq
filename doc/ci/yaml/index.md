@@ -10,7 +10,7 @@ type: reference
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
 - For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/index.md).
-- For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
+- For a collection of examples, see [GitLab CI/CD Examples](../examples/index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
@@ -446,15 +446,15 @@ that proposes expanding this feature to support more variables.
 
 #### `rules` with `include`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276515) in GitLab 14.2.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3 and is ready for production use.
-> - [Enabled with `ci_include_rules` flag](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) for self-managed GitLab in GitLab 14.3 and is ready for production use.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to [disable the `ci_include_rules` flag](../../administration/feature_flags.md). On GitLab.com, this feature is available.
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
+> - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
 
 You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
-You can only use `rules:if` in `include` with [certain variables](#variables-with-include).
+You can only use [`if` rules](#rulesif) in `include`, and only with [certain variables](#variables-with-include).
+`rules` keywords such as `changes` and `exists` are not supported.
 
 ```yaml
 include:
@@ -746,9 +746,9 @@ Use `before_script` to define an array of commands that should run before each j
 ```yaml
 job:
   before_script:
-    - echo "Execute this command before any `script:` commands."
+    - echo "Execute this command before any 'script:' commands."
   script:
-    - echo "This command executes after the job's `before_script` commands."
+    - echo "This command executes after the job's 'before_script' commands."
 ```
 
 **Additional details**:
@@ -794,7 +794,7 @@ job:
 Scripts you specify in `after_script` execute in a new shell, separate from any
 `before_script` or `script` commands. As a result, they:
 
-- Have a current working directory set back to the default.
+- Have the current working directory set back to the default (according to the [variables which define how the runner processes Git requests](#configure-runner-behavior-with-variables)).
 - Don't have access to changes done by commands defined in the `before_script` or `script`,
   including:
   - Command aliases and variables exported in `script` scripts.
@@ -1178,6 +1178,7 @@ job:
   all rules. You can't mix `when` at the job-level with `when` in rules.
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
+  - You can use `rules:if` with `include` to [conditionally include other configuration files](#rules-with-include).
 
 **Related topics**:
 
@@ -1701,6 +1702,8 @@ same group or namespace, you can omit them from the `project:` keyword. For exam
 
 The user running the pipeline must have at least `reporter` access to the group or project, or the group/project must have public visibility.
 
+You cannot use cross project artifact downloads in the same job as [`trigger`](#trigger).
+
 ##### Artifact downloads between pipelines in the same project
 
 Use `needs` to download artifacts from different pipelines in the current project.
@@ -2220,7 +2223,7 @@ For more information, see
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 Use the `kubernetes` keyword to configure deployments to a
-[Kubernetes cluster](../../user/project/clusters/index.md) that is associated with your project.
+[Kubernetes cluster](../../user/infrastructure/clusters/index.md) that is associated with your project.
 
 For example:
 
@@ -2243,7 +2246,7 @@ For more information, see
 
 NOTE:
 Kubernetes configuration is not supported for Kubernetes clusters
-that are [managed by GitLab](../../user/project/clusters/index.md#gitlab-managed-clusters).
+that are [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
 To follow progress on support for GitLab-managed clusters, see the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
 
@@ -3258,15 +3261,16 @@ job:
 
 ### `coverage`
 
-Use `coverage` to configure how code coverage is extracted from the
-job output.
+Use `coverage` with a custom regular expression to configure how code coverage
+is extracted from the job output. The coverage is shown in the UI if at least one
+line in the job output matches the regular expression.
 
-Regular expressions are the only valid kind of value expected here. So, using
-surrounding `/` is mandatory to consistently and explicitly represent
-a regular expression string. You must escape special characters if you want to
-match them literally.
+To extract the code coverage value in the matching line, GitLab uses this
+regular expression: `\d+(\.\d+)?`.
 
-For example:
+**Possible inputs**: A regular expression. Must start and end with `/`.
+
+**Example of `coverage`**:
 
 ```yaml
 job1:
@@ -3274,14 +3278,20 @@ job1:
   coverage: '/Code coverage: \d+\.\d+/'
 ```
 
-The coverage is shown in the UI if at least one line in the job output matches the regular expression.
-If there is more than one matched line in the job output, the last line is used.
-For the matched line, the first occurrence of `\d+(\.\d+)?` is the code coverage.
-Leading zeros are removed.
+In this example:
 
-Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md) is not recorded
-or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
-for more details.
+1. GitLab checks the job log for a line that matches the regular expression. A line
+   like `Code coverage: 67.89` would match.
+1. GitLab then checks the line to find a match to `\d+(\.\d+)?`. The sample matching
+   line above gives a code coverage of `67.89`.
+
+**Additional details**:
+
+- If there is more than one matched line in the job output, the last line is used.
+- Leading zeros are removed.
+- Coverage output from [child pipelines](../pipelines/parent_child_pipelines.md)
+  is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
+  for more details.
 
 ### `dast_configuration` **(ULTIMATE)**
 
@@ -3331,17 +3341,21 @@ to select a specific site profile and scanner profile.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5, you can control which failures to retry on.
 
-Use `retry` to configure how many times a job is retried in
-case of a failure.
+Use `retry` to configure how many times a job is retried if it fails.
+If not defined, defaults to `0` and jobs do not retry.
 
-When a job fails, the job is processed again,
-until the limit specified by the `retry` keyword is reached.
+When a job fails, the job is processed up to two more times, until it succeeds or
+reaches the maximum number of retries.
 
-If `retry` is set to `2`, and a job succeeds in a second run (first retry), it is not retried.
-The `retry` value must be a positive integer, from `0` to `2`
-(two retries maximum, three runs in total).
+By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen)
+to select which failures to retry on.
 
-The following example retries all failure cases:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: `0` (default), `1`, or `2`.
+
+**Example of `retry`**:
 
 ```yaml
 test:
@@ -3349,38 +3363,16 @@ test:
   retry: 2
 ```
 
-By default, a job is retried on all failure cases. To have better control
-over which failures to retry, `retry` can be a hash with the following keys:
+#### `retry:when`
 
-- `max`: The maximum number of retries.
-- `when`: The failure cases to retry.
+Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
+`retry:max` is the maximum number of retries, like [`retry`](#retry), and can be
+`0`, `1`, or `2`.
 
-To retry only runner system failures at maximum two times:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-```yaml
-test:
-  script: rspec
-  retry:
-    max: 2
-    when: runner_system_failure
-```
-
-If there is another failure, other than a runner system failure, the job
-is not retried.
-
-To retry on multiple failure cases, `when` can also be an array of failures:
-
-```yaml
-test:
-  script: rspec
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-      - stuck_or_timeout_failure
-```
-
-Possible values for `when` are:
+**Possible inputs**: A single failure type, or an array of one or more failure types:
 
 <!--
   If you change any of the values below, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
@@ -3396,7 +3388,6 @@ Possible values for `when` are:
 - `api_failure`: Retry on API failure.
 - `stuck_or_timeout_failure`: Retry when the job got stuck or timed out.
 - `runner_system_failure`: Retry if there is a runner system failure (for example, job setup failed).
-- `missing_dependency_failure`: Retry if a dependency is missing.
 - `runner_unsupported`: Retry if the runner is unsupported.
 - `stale_schedule`: Retry if a delayed job could not be executed.
 - `job_execution_timeout`: Retry if the script exceeded the maximum execution time set for the job.
@@ -3405,7 +3396,34 @@ Possible values for `when` are:
 - `scheduler_failure`: Retry if the scheduler failed to assign the job to a runner.
 - `data_integrity_failure`: Retry if there is a structural integrity problem detected.
 
-You can specify the number of [retry attempts for certain stages of job execution](../runners/configure_runners.md#job-stages-attempts) using variables.
+**Example of `retry:when`** (single failure type):
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when: runner_system_failure
+```
+
+If there is a failure other than a runner system failure, the job is not retried.
+
+**Example of `retry:when`** (array of failure types):
+
+```yaml
+test:
+  script: rspec
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+```
+
+**Related topics**:
+
+You can specify the number of [retry attempts for certain stages of job execution](../runners/configure_runners.md#job-stages-attempts)
+using variables.
 
 ### `timeout`
 
@@ -3859,7 +3877,7 @@ can be deployed to, but there can be only one deployment per device at any given
 The `resource_group` value can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
 It can't start or end with `/`.
 
-For more information, see [Deployments Safety](../environments/deployment_safety.md).
+For more information, see [Resource Group documentation](../resource_groups/index.md).
 
 #### Pipeline-level concurrency control with Cross-Project/Parent-Child pipelines
 

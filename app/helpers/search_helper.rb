@@ -87,9 +87,9 @@ module SearchHelper
 
   def search_entries_info_template(collection)
     if collection.total_pages > 1
-      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for%{term_element}").html_safe
+      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for %{term_element}").html_safe
     else
-      s_("SearchResults|Showing %{count} %{scope} for%{term_element}").html_safe
+      s_("SearchResults|Showing %{count} %{scope} for %{term_element}").html_safe
     end
   end
 

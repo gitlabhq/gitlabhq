@@ -254,7 +254,7 @@ export default {
         .then(() => $(this.$refs['markdown-preview']).renderGFM())
         .catch(() =>
           createFlash({
-            message: __('Error rendering markdown preview'),
+            message: __('Error rendering Markdown preview'),
           }),
         );
     },

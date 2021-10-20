@@ -2,7 +2,7 @@
 
 module Ci
   class StagePresenter < Gitlab::View::Presenter::Delegated
-    presents :stage
+    presents ::Ci::Stage, as: :stage
 
     PRELOADED_RELATIONS = [:pipeline, :metadata, :tags, :job_artifacts_archive, :downstream_pipeline].freeze
 

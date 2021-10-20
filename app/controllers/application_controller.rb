@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   include Impersonation
   include Gitlab::Logging::CloudflareHelper
   include Gitlab::Utils::StrongMemoize
-  include ::Gitlab::WithFeatureCategory
+  include ::Gitlab::EndpointAttributes
   include FlocOptOut
 
   before_action :authenticate_user!, except: [:route_not_found]
@@ -70,6 +70,10 @@ class ApplicationController < ActionController::Base
   # concerns due to caching private data.
   DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store"
 
+  def self.endpoint_id_for_action(action_name)
+    "#{self.name}##{action_name}"
+  end
+
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
     render "errors/encoding", layout: "errors", status: :internal_server_error
@@ -104,6 +108,12 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
+  rescue_from RateLimitedService::RateLimitedError do |e|
+    e.log_request(request, current_user)
+    response.headers.merge!(e.headers)
+    render plain: e.message, status: :too_many_requests
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_back(fallback_location: default, **options)
   end
@@ -129,6 +139,14 @@ class ApplicationController < ActionController::Base
         response.headers['X-GitLab-Custom-Error'] = '1'
       end
     end
+  end
+
+  def feature_category
+    self.class.feature_category_for_action(action_name).to_s
+  end
+
+  def urgency
+    self.class.urgency_for_action(action_name)
   end
 
   protected
@@ -457,7 +475,7 @@ class ApplicationController < ActionController::Base
       user: -> { context_user },
       project: -> { @project if @project&.persisted? },
       namespace: -> { @group if @group&.persisted? },
-      caller_id: caller_id,
+      caller_id: self.class.endpoint_id_for_action(action_name),
       remote_ip: request.ip,
       feature_category: feature_category
     )
@@ -541,14 +559,6 @@ class ApplicationController < ActionController::Base
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
-  end
-
-  def caller_id
-    "#{self.class.name}##{action_name}"
-  end
-
-  def feature_category
-    self.class.feature_category_for_action(action_name).to_s
   end
 
   def required_signup_info

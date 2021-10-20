@@ -524,7 +524,7 @@ GitLab Flavored Markdown recognizes the following:
 | specific user                   | `@user_name`               |                                         |                                |
 | specific group                  | `@group_name`              |                                         |                                |
 | entire team                     | `@all`                     |                                         |                                |
-| project                         | `namespace/project`        |                                         |                                |
+| project                         | `namespace/project>`       |                                         |                                |
 | issue                           | ``#123``                   | `namespace/project#123`                 | `project#123`                  |
 | merge request                   | `!123`                     | `namespace/project!123`                 | `project!123`                  |
 | snippet                         | `$123`                     | `namespace/project$123`                 | `project$123`                  |
@@ -954,6 +954,10 @@ Do not change to a reference style link.
 -->
 
 ![alt text](img/markdown_logo.png "Title Text")
+
+In the rare case where you need to set a specific height or width for an image,
+you can use the `img` HTML tag instead of Markdown and set its `height` and
+`width` parameters.
 
 #### Videos
 

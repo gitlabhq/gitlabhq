@@ -5,11 +5,13 @@ require 'spec_helper'
 RSpec.describe 'merge requests discussions' do
   # Further tests can be found at merge_requests_controller_spec.rb
   describe 'GET /:namespace/:project/-/merge_requests/:iid/discussions' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { project.owner }
+    let(:project) { create(:project, :repository, :public) }
+    let(:owner) { project.owner }
+    let(:user) { create(:user) }
     let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
     before do
+      project.add_maintainer(owner)
       project.add_developer(user)
       login_as(user)
     end
@@ -232,7 +234,7 @@ RSpec.describe 'merge requests discussions' do
 
       context 'when author role changes' do
         before do
-          Members::UpdateService.new(user, access_level: Gitlab::Access::GUEST).execute(author_membership)
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(author_membership)
         end
 
         it_behaves_like 'cache miss' do
@@ -240,9 +242,9 @@ RSpec.describe 'merge requests discussions' do
         end
       end
 
-      context 'when merge_request_discussion_cache is disabled' do
+      context 'when current_user role changes' do
         before do
-          stub_feature_flags(merge_request_discussion_cache: false)
+          Members::UpdateService.new(owner, access_level: Gitlab::Access::GUEST).execute(project.project_member(user))
         end
 
         it_behaves_like 'cache miss' do

@@ -97,9 +97,8 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
   To enable deployments, you need:
 
-  1. A [Kubernetes 1.12+ cluster](../../user/project/clusters/index.md) for your
-     project. The easiest way is to create a
-     [new cluster using the GitLab UI](../../user/project/clusters/add_remove_clusters.md#create-new-cluster).
+  1. A [Kubernetes 1.12+ cluster](../../user/infrastructure/clusters/index.md) for your
+     project.
      For Kubernetes 1.16+ clusters, you must perform additional configuration for
      [Auto Deploy for Kubernetes 1.16+](stages.md#kubernetes-116).
   1. For external HTTP traffic, an Ingress controller is required. For regular
@@ -161,7 +160,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
 - **cert-manager** (optional, for TLS/HTTPS)
 
-  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/installation/kubernetes/),
+  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/installation/supported-releases/),
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
   [Let's Encrypt](https://letsencrypt.org/) certificate and ensures the

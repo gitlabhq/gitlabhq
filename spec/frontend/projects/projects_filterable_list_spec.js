@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-deprecated
 import { getJSONFixture, setHTMLFixture } from 'helpers/fixtures';
 import ProjectsFilterableList from '~/projects/projects_filterable_list';
 
@@ -14,6 +15,7 @@ describe('ProjectsFilterableList', () => {
       </div>
       <div class="js-projects-list-holder"></div>
     `);
+    // eslint-disable-next-line import/no-deprecated
     getJSONFixture('static/projects.json');
     form = document.querySelector('form#project-filter-form');
     filter = document.querySelector('.js-projects-list-filter');

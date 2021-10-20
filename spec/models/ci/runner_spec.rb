@@ -5,6 +5,20 @@ require 'spec_helper'
 RSpec.describe Ci::Runner do
   it_behaves_like 'having unique enum values'
 
+  describe 'groups association' do
+    # Due to other assoctions such as projects this whole spec is allowed to
+    # generate cross-database queries. So we have this temporary spec to
+    # validate that at least groups association does not generate cross-DB
+    # queries.
+    it 'does not create a cross-database query' do
+      runner = create(:ci_runner, :group)
+
+      with_cross_joins_prevented do
+        expect(runner.groups.count).to eq(1)
+      end
+    end
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
@@ -257,7 +271,7 @@ RSpec.describe Ci::Runner do
         expect(subject).to be_truthy
 
         expect(runner).to be_project_type
-        expect(runner.projects).to eq([project])
+        expect(runner.runner_projects.pluck(:project_id)).to match_array([project.id])
         expect(runner.only_for?(project)).to be_truthy
       end
     end
@@ -383,10 +397,7 @@ RSpec.describe Ci::Runner do
     it 'sticks the runner to the primary and calls the original method' do
       runner = create(:ci_runner)
 
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
-        .and_return(true)
-
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+      expect(ApplicationRecord.sticking).to receive(:stick)
         .with(:runner, runner.id)
 
       expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
@@ -724,7 +735,7 @@ RSpec.describe Ci::Runner do
 
       context 'with invalid runner' do
         before do
-          runner.projects = []
+          runner.runner_projects.delete_all
         end
 
         it 'still updates redis cache and database' do

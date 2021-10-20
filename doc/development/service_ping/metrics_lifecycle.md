@@ -136,7 +136,10 @@ Product Intelligence team as inactive and is assigned to the group owner for rev
 
 We are working on automating this process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338466) for details.
 
-Only deprecated metrics can be removed from Service Ping.
+Metrics can be removed from Service Ping if they:
+
+- Were previously [deprecated](#deprecate-a-metric).
+- Are not used in any Sisense dashboard.
 
 For an example of the metric removal process take a look at this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/297029)
 

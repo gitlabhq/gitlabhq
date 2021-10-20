@@ -72,7 +72,6 @@ class HelpController < ApplicationController
   end
 
   def redirect_to_documentation_website?
-    return false unless Feature.enabled?(:help_page_documentation_redirect)
     return false unless Gitlab::UrlSanitizer.valid_web?(documentation_url)
 
     true

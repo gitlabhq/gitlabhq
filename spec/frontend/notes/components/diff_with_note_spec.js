@@ -1,9 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
+import discussionFixture from 'test_fixtures/merge_requests/diff_discussion.json';
+import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_discussion.json';
 import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
-
-const discussionFixture = 'merge_requests/diff_discussion.json';
-const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';
 
 describe('diff_with_note', () => {
   let store;
@@ -35,7 +34,7 @@ describe('diff_with_note', () => {
 
   describe('text diff', () => {
     beforeEach(() => {
-      const diffDiscussion = getJSONFixture(discussionFixture)[0];
+      const diffDiscussion = discussionFixture[0];
 
       wrapper = shallowMount(DiffWithNote, {
         propsData: {
@@ -75,7 +74,7 @@ describe('diff_with_note', () => {
 
   describe('image diff', () => {
     beforeEach(() => {
-      const imageDiscussion = getJSONFixture(imageDiscussionFixture)[0];
+      const imageDiscussion = imageDiscussionFixture[0];
       wrapper = shallowMount(DiffWithNote, {
         propsData: { discussion: imageDiscussion, diffFile: {} },
         store,

@@ -7,7 +7,7 @@ type: reference, api
 
 # Project remote mirrors API **(FREE)**
 
-[Push mirrors](../user/project/repository/repository_mirroring.md#push-to-a-remote-repository)
+[Push mirrors](../user/project/repository/mirror/push.md)
 defined on a project's repository settings are called "remote mirrors", and the
 state of these mirrors can be queried and modified via the remote mirror API
 outlined below.
@@ -51,11 +51,15 @@ NOTE:
 For security reasons, the `url` attribute is always scrubbed of username
 and password information.
 
-## Create a remote mirror
+## Create a pull mirror
+
+Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-a-project) using the Projects API.
+
+## Create a push mirror
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24189) in GitLab 12.9.
 
-Create a remote mirror for a project. The mirror is disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
+Push mirroring is disabled by default. You can enable it by including the optional parameter `enabled` when creating it:
 
 ```plaintext
 POST /projects/:id/remote_mirrors
@@ -63,7 +67,7 @@ POST /projects/:id/remote_mirrors
 
 | Attribute                 | Type    | Required   | Description                                         |
 | :----------               | :-----  | :--------- | :------------                                       |
-| `url`                     | String  | yes        | The URL of the remote repository to be mirrored.    |
+| `url`                     | String  | yes        | The target URL to which the repository is mirrored. |
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |

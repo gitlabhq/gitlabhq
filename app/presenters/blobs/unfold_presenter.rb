@@ -6,6 +6,8 @@ module Blobs
     include ActiveModel::AttributeAssignment
     include Gitlab::Utils::StrongMemoize
 
+    presents ::Blob
+
     attribute :full, :boolean, default: false
     attribute :since, :integer, default: 1
     attribute :to, :integer, default: 1

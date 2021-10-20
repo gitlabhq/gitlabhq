@@ -5,10 +5,18 @@ require 'spec_helper'
 RSpec.describe Backup::GitalyBackup do
   let(:parallel) { nil }
   let(:parallel_storage) { nil }
+
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
       progress.unlink
     end
+  end
+
+  let(:expected_env) do
+    {
+      'SSL_CERT_FILE' => OpenSSL::X509::DEFAULT_CERT_FILE,
+      'SSL_CERT_DIR'  => OpenSSL::X509::DEFAULT_CERT_DIR
+    }.merge(ENV)
   end
 
   after do
@@ -32,7 +40,7 @@ RSpec.describe Backup::GitalyBackup do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.owner)
 
-        expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything).and_call_original
 
         subject.start(:create)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -53,7 +61,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:parallel) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything, '-parallel', '3').and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel', '3').and_call_original
 
           subject.start(:create)
           subject.wait
@@ -64,7 +72,7 @@ RSpec.describe Backup::GitalyBackup do
         let(:parallel_storage) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(ENV, anything, 'create', '-path', anything, '-parallel-storage', '3').and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-parallel-storage', '3').and_call_original
 
           subject.start(:create)
           subject.wait
@@ -90,6 +98,26 @@ RSpec.describe Backup::GitalyBackup do
 
       it_behaves_like 'creates a repository backup'
     end
+
+    context 'custom SSL envs set' do
+      let(:ssl_env) do
+        {
+          'SSL_CERT_FILE' => '/some/cert/file',
+          'SSL_CERT_DIR'  => '/some/cert'
+        }
+      end
+
+      before do
+        stub_const('ENV', ssl_env)
+      end
+
+      it 'passes through SSL envs' do
+        expect(Open3).to receive(:popen2).with(ssl_env, anything, 'create', '-path', anything).and_call_original
+
+        subject.start(:create)
+        subject.wait
+      end
+    end
   end
 
   context 'restore' do
@@ -109,7 +137,7 @@ RSpec.describe Backup::GitalyBackup do
       copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
       copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
 
-      expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything).and_call_original
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything).and_call_original
 
       subject.start(:restore)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -132,7 +160,7 @@ RSpec.describe Backup::GitalyBackup do
       let(:parallel) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything, '-parallel', '3').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel', '3').and_call_original
 
         subject.start(:restore)
         subject.wait
@@ -143,7 +171,7 @@ RSpec.describe Backup::GitalyBackup do
       let(:parallel_storage) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(ENV, anything, 'restore', '-path', anything, '-parallel-storage', '3').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-parallel-storage', '3').and_call_original
 
         subject.start(:restore)
         subject.wait

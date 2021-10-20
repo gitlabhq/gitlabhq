@@ -33,9 +33,12 @@ class ProjectsController < Projects::ApplicationController
   before_action :export_rate_limit, only: [:export, :download_export, :generate_new_export]
 
   before_action do
+    push_frontend_feature_flag(:lazy_load_commits, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:refactor_text_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:paginated_tree_graphql_query, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
   end
 
   layout :determine_layout
@@ -72,6 +75,13 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
+      experiment(:new_project_sast_enabled, user: current_user).track(:created,
+        property: active_new_project_tab,
+        checked: Gitlab::Utils.to_boolean(project_params[:initialize_with_sast]),
+        project: @project,
+        namespace: @project.namespace
+      )
+
       redirect_to(
         project_path(@project, custom_import_params),
         notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
@@ -283,9 +293,9 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
+      tags, _ = TagsFinder.new(@repository, params).execute
 
-      options['Tags'] = tags
+      options['Tags'] = tags.take(100).map(&:name)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
@@ -435,6 +445,7 @@ class ProjectsController < Projects::ApplicationController
       :template_name,
       :template_project_id,
       :merge_method,
+      :initialize_with_sast,
       :initialize_with_readme,
       :autoclose_referenced_issues,
       :suggestion_commit_message,

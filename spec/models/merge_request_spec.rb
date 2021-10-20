@@ -1348,12 +1348,23 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     [
       'WIP:', 'WIP: ', '[WIP]', '[WIP] ', ' [WIP] WIP: [WIP] WIP:',
-      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
     ].each do |wip_prefix|
       it "detects the '#{wip_prefix}' prefix" do
         subject.title = "#{wip_prefix}#{subject.title}"
 
         expect(subject.work_in_progress?).to eq true
+      end
+    end
+
+    [
+      "WIP ", "(WIP)",
+      "draft", "Draft", "Draft -", "draft - ", "Draft ", "draft "
+    ].each do |draft_prefix|
+      it "doesn't detect '#{draft_prefix}' at the start of the title as a draft" do
+        subject.title = "#{draft_prefix}#{subject.title}"
+
+        expect(subject.work_in_progress?).to eq false
       end
     end
 
@@ -1363,10 +1374,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(subject.work_in_progress?).to eq true
     end
 
-    it "detects merge request title just saying 'draft'" do
+    it "does not detect merge request title just saying 'draft'" do
       subject.title = "draft"
 
-      expect(subject.work_in_progress?).to eq true
+      expect(subject.work_in_progress?).to eq false
     end
 
     it 'does not detect WIP in the middle of the title' do
@@ -1428,7 +1439,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
     [
       'WIP:', 'WIP: ', '[WIP]', '[WIP] ', '[WIP] WIP: [WIP] WIP:',
-      'draft:', 'Draft: ', '[Draft]', '[DRAFT] ', 'Draft - '
+      'draft:', 'Draft: ', '[Draft]', '[DRAFT] '
     ].each do |wip_prefix|
       it "removes the '#{wip_prefix}' prefix" do
         wipless_title = subject.title
@@ -3078,7 +3089,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
   end
 
-  describe '#mergeable_state?' do
+  shared_examples 'for mergeable_state' do
     subject { create(:merge_request) }
 
     it 'checks if merge request can be merged' do
@@ -3119,33 +3130,61 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'when failed' do
-      context 'when #mergeable_ci_state? is false' do
-        before do
-          allow(subject).to receive(:mergeable_ci_state?) { false }
+      shared_examples 'failed skip_ci_check' do
+        context 'when #mergeable_ci_state? is false' do
+          before do
+            allow(subject).to receive(:mergeable_ci_state?) { false }
+          end
+
+          it 'returns false' do
+            expect(subject.mergeable_state?).to be_falsey
+          end
+
+          it 'returns true when skipping ci check' do
+            expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
+          end
         end
 
-        it 'returns false' do
-          expect(subject.mergeable_state?).to be_falsey
-        end
+        context 'when #mergeable_discussions_state? is false' do
+          before do
+            allow(subject).to receive(:mergeable_discussions_state?) { false }
+          end
 
-        it 'returns true when skipping ci check' do
-          expect(subject.mergeable_state?(skip_ci_check: true)).to be(true)
+          it 'returns false' do
+            expect(subject.mergeable_state?).to be_falsey
+          end
+
+          it 'returns true when skipping discussions check' do
+            expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
+          end
         end
       end
 
-      context 'when #mergeable_discussions_state? is false' do
-        before do
-          allow(subject).to receive(:mergeable_discussions_state?) { false }
-        end
-
-        it 'returns false' do
-          expect(subject.mergeable_state?).to be_falsey
-        end
-
-        it 'returns true when skipping discussions check' do
-          expect(subject.mergeable_state?(skip_discussions_check: true)).to be(true)
-        end
+      context 'when improved_mergeability_checks is on' do
+        it_behaves_like 'failed skip_ci_check'
       end
+
+      context 'when improved_mergeability_checks is off' do
+        before do
+          stub_feature_flags(improved_mergeability_checks: false)
+        end
+
+        it_behaves_like 'failed skip_ci_check'
+      end
+    end
+  end
+
+  describe '#mergeable_state?' do
+    context 'when merge state caching is on' do
+      it_behaves_like 'for mergeable_state'
+    end
+
+    context 'when merge state caching is off' do
+      before do
+        stub_feature_flags(mergeability_caching: false)
+      end
+
+      it_behaves_like 'for mergeable_state'
     end
   end
 

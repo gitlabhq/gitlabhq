@@ -5,7 +5,7 @@ import { s__, __ } from '~/locale';
 export const CONTAINER_REGISTRY_TITLE = s__('ContainerRegistry|Container Registry');
 export const CONNECTION_ERROR_TITLE = s__('ContainerRegistry|Docker connection error');
 export const CONNECTION_ERROR_MESSAGE = s__(
-  `ContainerRegistry|We are having trouble connecting to the Registry, which could be due to an issue with your project name or path. %{docLinkStart}More information%{docLinkEnd}`,
+  `ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}.`,
 );
 export const LIST_INTRO_TEXT = s__(
   `ContainerRegistry|With the GitLab Container Registry, every project can have its own space to store images. %{docLinkStart}More information%{docLinkEnd}`,

@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# VM instances and images for Build Cloud for macOS
+# VM instances and images for Build Cloud for macOS **(FREE)**
 
 When you use the Build Cloud for macOS:
 

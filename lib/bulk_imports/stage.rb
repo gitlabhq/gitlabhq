@@ -2,8 +2,10 @@
 
 module BulkImports
   class Stage
-    def self.pipelines
-      new.pipelines
+    def initialize(bulk_import)
+      raise(ArgumentError, 'Expected an argument of type ::BulkImport') unless bulk_import.is_a?(::BulkImport)
+
+      @bulk_import = bulk_import
     end
 
     def pipelines

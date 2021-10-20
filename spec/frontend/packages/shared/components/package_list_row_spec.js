@@ -1,5 +1,5 @@
 import { GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
@@ -19,14 +19,14 @@ describe('packages_list_row', () => {
   const InfrastructureIconAndName = { name: 'InfrastructureIconAndName', template: '<div></div>' };
   const PackageIconAndName = { name: 'PackageIconAndName', template: '<div></div>' };
 
-  const findPackageTags = () => wrapper.find(PackageTags);
-  const findPackagePath = () => wrapper.find(PackagePath);
-  const findDeleteButton = () => wrapper.find('[data-testid="action-delete"]');
-  const findPackageIconAndName = () => wrapper.find(PackageIconAndName);
+  const findPackageTags = () => wrapper.findComponent(PackageTags);
+  const findPackagePath = () => wrapper.findComponent(PackagePath);
+  const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findPackageIconAndName = () => wrapper.findComponent(PackageIconAndName);
   const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
   const findListItem = () => wrapper.findComponent(ListItem);
   const findPackageLink = () => wrapper.findComponent(GlLink);
-  const findWarningIcon = () => wrapper.find('[data-testid="warning-icon"]');
+  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
 
   const mountComponent = ({
     isGroup = false,
@@ -35,7 +35,7 @@ describe('packages_list_row', () => {
     disableDelete = false,
     provide,
   } = {}) => {
-    wrapper = shallowMount(PackagesListRow, {
+    wrapper = shallowMountExtended(PackagesListRow, {
       store,
       provide,
       stubs: {

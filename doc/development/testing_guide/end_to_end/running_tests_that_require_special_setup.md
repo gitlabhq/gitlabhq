@@ -45,7 +45,7 @@ docker run \
 
 Jenkins is available on `http://localhost:8080`.
 
-Admin username is `admin` and password is `password`.
+Administrator username is `admin` and password is `password`.
 
 It is worth noting that this is not an orchestrated test. It is [tagged with the `:orchestrated` meta](https://gitlab.com/gitlab-org/gitlab/-/blob/163c8a8c814db26d11e104d1cb2dcf02eb567dbe/qa/qa/specs/features/ee/browser_ui/3_create/jenkins/jenkins_build_status_spec.rb#L5)
 only to prevent it from running in the pipelines for live environments such as Staging.
@@ -167,9 +167,9 @@ The following includes more information on the command:
 
 -`QA_DEBUG` - Set to `true` to verbosely log page object actions.
 -`WEBDRIVER_HEADLESS` - When running locally, set to `false` to allow browser tests to be visible - watch your tests being run.
--`GITLAB_ADMIN_USERNAME` - Admin username to use when adding a license.
--`GITLAB_ADMIN_PASSWORD` - Admin password to use when adding a license.
--`GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN` - A valid personal access token with the `api` scope. This is used for API access during tests, and is used in the version that staging is currently running. The `ADMIN_ACCESS_TOKEN` is from a user with admin access. Used for API access as an admin during tests.
+-`GITLAB_ADMIN_USERNAME` - Administrator username to use when adding a license.
+-`GITLAB_ADMIN_PASSWORD` - Administrator password to use when adding a license.
+-`GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN` - A valid personal access token with the `api` scope. This is used for API access during tests, and is used in the version that staging is currently running. The `ADMIN_ACCESS_TOKEN` is from a user with administrator access. Used for API access as an administrator during tests.
 -`CLUSTER_API_URL` - Use the address `https://kubernetes.docker.internal:6443` . This address is used to enable the cluster to be network accessible while deploying using Auto DevOps.
 -`https://[YOUR-PORT].qa-tunnel.gitlab.info/` - The address of your local GDK
 -`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - The path to the monitor core specs
@@ -410,9 +410,9 @@ Tests that are tagged with `:ldap_tls` and `:ldap_no_tls` meta are orchestrated 
 
 These tests spin up a Docker container [(`osixia/openldap`)](https://hub.docker.com/r/osixia/openldap) running an instance of [OpenLDAP](https://www.openldap.org/).
 The container uses fixtures [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap) to create
-base data such as users and groups including the admin group. The password for [all users](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/2_add_users.ldif) including [the `tanuki` user](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/tanuki.ldif) is `password`.
+base data such as users and groups including the administrator group. The password for [all users](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/2_add_users.ldif) including [the `tanuki` user](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/9ffb9ad3be847a9054967d792d6772a74220fb42/fixtures/ldap/tanuki.ldif) is `password`.
 
-A GitLab instance is also created in a Docker container based on our [General LDAP setup](../../../administration/auth/ldap/index.md#general-ldap-setup) documentation.
+A GitLab instance is also created in a Docker container based on our [LDAP setup](../../../administration/auth/ldap/index.md) documentation.
 
 Tests that are tagged `:ldap_tls` enable TLS on GitLab using the certificate [checked into the GitLab-QA repository](https://gitlab.com/gitlab-org/gitlab-qa/-/tree/9ffb9ad3be847a9054967d792d6772a74220fb42/tls_certificates/gitlab).
 

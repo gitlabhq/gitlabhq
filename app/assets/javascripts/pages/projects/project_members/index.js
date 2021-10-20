@@ -26,7 +26,7 @@ initInviteMembersForm();
 
 new UsersSelect(); // eslint-disable-line no-new
 
-const SHARED_FIELDS = ['account', 'expires', 'maxRole', 'expiration', 'actions'];
+const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
 initMembersApp(document.querySelector('.js-project-members-list-app'), {
   [MEMBER_TYPES.user]: {
     tableFields: SHARED_FIELDS.concat(['source', 'granted']),

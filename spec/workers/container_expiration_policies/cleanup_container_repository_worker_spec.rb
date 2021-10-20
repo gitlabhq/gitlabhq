@@ -74,6 +74,30 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
             end
           end
         end
+
+        context 'the cache hit ratio field' do
+          where(:after_truncate_size, :cached_tags_count, :ratio) do
+            nil | nil | nil
+            10  | nil | nil
+            nil | 10  | nil
+            0   | 5   | nil
+            10  | 0   | 0
+            10  | 5   | 0.5
+            3   | 10  | (10 / 3.to_f)
+          end
+
+          with_them do
+            it 'is logged properly' do
+              service_response = cleanup_service_response(status: :unfinished, repository: repository, cleanup_tags_service_before_truncate_size: after_truncate_size, cleanup_tags_service_after_truncate_size: after_truncate_size, cleanup_tags_service_cached_tags_count: cached_tags_count)
+              expect(ContainerExpirationPolicies::CleanupService)
+                .to receive(:new).with(repository).and_return(double(execute: service_response))
+              expect_log_extra_metadata(service_response: service_response, cleanup_status: :unfinished, truncated: false, cache_hit_ratio: ratio)
+              expect_log_info(project_id: project.id, container_repository_id: repository.id)
+
+              subject
+            end
+          end
+        end
       end
 
       context 'with an erroneous cleanup' do
@@ -372,7 +396,16 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
       end
     end
 
-    def cleanup_service_response(status: :finished, repository:, cleanup_tags_service_original_size: 100, cleanup_tags_service_before_truncate_size: 80, cleanup_tags_service_after_truncate_size: 80, cleanup_tags_service_before_delete_size: 50, cleanup_tags_service_deleted_size: 50)
+    def cleanup_service_response(
+      status: :finished,
+      repository:,
+      cleanup_tags_service_original_size: 100,
+      cleanup_tags_service_before_truncate_size: 80,
+      cleanup_tags_service_after_truncate_size: 80,
+      cleanup_tags_service_before_delete_size: 50,
+      cleanup_tags_service_deleted_size: 50,
+      cleanup_tags_service_cached_tags_count: 0
+    )
       ServiceResponse.success(
         message: "cleanup #{status}",
         payload: {
@@ -381,21 +414,35 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
           cleanup_tags_service_original_size: cleanup_tags_service_original_size,
           cleanup_tags_service_before_truncate_size: cleanup_tags_service_before_truncate_size,
           cleanup_tags_service_after_truncate_size: cleanup_tags_service_after_truncate_size,
-          cleanup_tags_service_before_delete_size: cleanup_tags_service_before_delete_size
+          cleanup_tags_service_before_delete_size: cleanup_tags_service_before_delete_size,
+          cleanup_tags_service_cached_tags_count: cleanup_tags_service_cached_tags_count
         }.compact
       )
     end
 
-    def expect_log_extra_metadata(service_response:, cleanup_status: :finished, truncated: false)
+    def expect_log_extra_metadata(service_response:, cleanup_status: :finished, truncated: false, cache_hit_ratio: 0)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:container_repository_id, repository.id)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:project_id, repository.project.id)
       expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_status, cleanup_status)
 
-      %i[cleanup_tags_service_original_size cleanup_tags_service_before_truncate_size cleanup_tags_service_after_truncate_size cleanup_tags_service_before_delete_size cleanup_tags_service_deleted_size].each do |field|
+      %i[
+        cleanup_tags_service_original_size
+        cleanup_tags_service_before_truncate_size
+        cleanup_tags_service_after_truncate_size
+        cleanup_tags_service_before_delete_size
+        cleanup_tags_service_deleted_size
+        cleanup_tags_service_cached_tags_count
+      ].each do |field|
         value = service_response.payload[field]
         expect(worker).to receive(:log_extra_metadata_on_done).with(field, value) unless value.nil?
       end
       expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_truncated, truncated)
+
+      after_truncate_size = service_response.payload[:cleanup_tags_service_after_truncate_size]
+      if cache_hit_ratio && after_truncate_size && after_truncate_size != 0
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:cleanup_tags_service_cache_hit_ratio, cache_hit_ratio)
+      end
+
       expect(worker).to receive(:log_extra_metadata_on_done).with(:running_jobs_count, 0)
 
       if service_response.error?

@@ -27,19 +27,22 @@ export const findTimezoneByIdentifier = (tzList = [], identifier = null) => {
 };
 
 export default class TimezoneDropdown {
-  constructor({ $dropdownEl, $inputEl, onSelectTimezone, displayFormat } = defaults) {
+  constructor({
+    $dropdownEl,
+    $inputEl,
+    onSelectTimezone,
+    displayFormat,
+    allowEmpty = false,
+  } = defaults) {
     this.$dropdown = $dropdownEl;
     this.$dropdownToggle = this.$dropdown.find('.dropdown-toggle-text');
     this.$input = $inputEl;
-    this.timezoneData = this.$dropdown.data('data');
+    this.timezoneData = this.$dropdown.data('data') || [];
 
     this.onSelectTimezone = onSelectTimezone;
     this.displayFormat = displayFormat || defaults.displayFormat;
+    this.allowEmpty = allowEmpty;
 
-    this.initialTimezone =
-      findTimezoneByIdentifier(this.timezoneData, this.$input.val()) || defaultTimezone;
-
-    this.initDefaultTimezone();
     this.initDropdown();
   }
 
@@ -52,24 +55,25 @@ export default class TimezoneDropdown {
       search: {
         fields: ['name'],
       },
-      clicked: (cfg) => this.updateInputValue(cfg),
+      clicked: (cfg) => this.handleDropdownChange(cfg),
       text: (item) => formatTimezone(item),
     });
 
-    this.setDropdownToggle(this.displayFormat(this.initialTimezone));
-  }
+    const initialTimezone = findTimezoneByIdentifier(this.timezoneData, this.$input.val());
 
-  initDefaultTimezone() {
-    if (!this.$input.val()) {
-      this.$input.val(defaultTimezone.name);
+    if (initialTimezone !== null) {
+      this.setDropdownValue(initialTimezone);
+    } else if (!this.allowEmpty) {
+      this.setDropdownValue(defaultTimezone);
     }
   }
 
-  setDropdownToggle(dropdownText) {
-    this.$dropdownToggle.text(dropdownText);
+  setDropdownValue(timezone) {
+    this.$dropdownToggle.text(this.displayFormat(timezone));
+    this.$input.val(timezone.name);
   }
 
-  updateInputValue({ selectedObj, e }) {
+  handleDropdownChange({ selectedObj, e }) {
     e.preventDefault();
     this.$input.val(selectedObj.identifier);
     if (this.onSelectTimezone) {

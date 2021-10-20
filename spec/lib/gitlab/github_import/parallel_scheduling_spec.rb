@@ -130,7 +130,8 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
             project_id: project.id,
             exception: exception,
             error_source: 'MyImporter',
-            fail_import: false
+            fail_import: false,
+            metrics: true
           ).and_call_original
 
         expect { importer.execute }
@@ -195,7 +196,8 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling do
             project_id: project.id,
             exception: exception,
             error_source: 'MyImporter',
-            fail_import: true
+            fail_import: true,
+            metrics: true
           ).and_call_original
 
         expect { importer.execute }

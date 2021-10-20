@@ -27,12 +27,16 @@ analysis are available in the [security dashboards](../security_dashboard/index.
 
 The results are sorted by the priority of the vulnerability:
 
+<!-- vale gitlab.SubstitutionWarning = NO -->
+
 1. Critical
 1. High
 1. Medium
 1. Low
 1. Info
 1. Unknown
+
+<!-- vale gitlab.SubstitutionWarning = YES -->
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
@@ -71,10 +75,11 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 | .NET Core                                                                                                                                         | [Security Code Scan](https://security-code-scan.github.io)                                                    | 11.0                                                                                    |
 | .NET Framework                                                                                                                                    | [Security Code Scan](https://security-code-scan.github.io)                                                    | 13.0                                                                                    |
 | Apex (Salesforce)                                                                                                                                 | [PMD](https://pmd.github.io/pmd/index.html)                                                                   | 12.1                                                                                    |
-| C                                                                                                                                            | [Semgrep](https://semgrep.dev)                                                                                | 14.2                                                                                    |
+| C                                                                                                                                                 | [Semgrep](https://semgrep.dev)                                                                                | 14.2                                                                                    |
 | C/C++                                                                                                                                             | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                                   | 10.7                                                                                    |
 | Elixir (Phoenix)                                                                                                                                  | [Sobelow](https://github.com/nccgroup/sobelow)                                                                | 11.1                                                                                    |
 | Go                                                                                                                                                | [Gosec](https://github.com/securego/gosec)                                                                    | 10.7                                                                                    |
+| Go                                                                                                                                                | [Semgrep](https://semgrep.dev)                                                                                | 14.4                                                                                    |
 | Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the     [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT)                                                  |
 | Helm Charts                                                                                                                                       | [Kubesec](https://github.com/controlplaneio/kubesec)                                                          | 13.1                                                                                    |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/))   | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin     | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT)                                           |
@@ -184,25 +189,59 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 
-### Configure SAST in the UI **(ULTIMATE)**
+### Configure SAST in the UI
+
+You can enable and configure SAST in the UI, either with default settings, or with customizations.
+Use the method that best meets your needs.
+
+- [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings)
+- [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations)
+
+### Configure SAST in the UI with default settings **(FREE)**
+
+> [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
+
+To enable and configure SAST with default settings:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance** > **Configuration**.
+1. In the SAST section, select `Enable via MR`.
+1. Review the draft MR that enables SAST with the default recommended settings in the
+   `.gitlab-ci.yml` file.
+1. Merge the MR to enable SAST. You should see SAST jobs run in that MR's pipeline.
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
+
+### Configure SAST in the UI with customizations **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab Ultimate 13.4.
 > - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab Ultimate 13.5.
 
-You can enable and configure SAST with a basic configuration using the **SAST Configuration**
-page:
+To enable and configure SAST with customizations:
 
-1. From the project's home page, go to **Security & Compliance** > **Configuration** in the
-   left sidebar.
-1. If the project does not have a `.gitlab-ci.yml` file, click **Enable** in the Static Application Security Testing (SAST) row, otherwise click **Configure**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Security & Compliance > Configuration**.
+1. If the project does not have a `.gitlab-ci.yml` file, select **Enable** in the Static Application
+   Security Testing (SAST) row, otherwise select **Configure**.
 1. Enter the custom SAST values.
 
-   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST Configuration page, their values are left unchanged. Default values are inherited from the GitLab SAST template.
+   Custom values are stored in the `.gitlab-ci.yml` file. For CI/CD variables not in the SAST
+   Configuration page, their values are left unchanged. Default values are inherited from the GitLab
+   SAST template.
 
-1. Optionally, expand the **SAST analyzers** section, select individual [SAST analyzers](analyzers.md) and enter custom analyzer values.
-1. Click **Create Merge Request**.
+1. Optionally, expand the **SAST analyzers** section, select individual
+   [SAST analyzers](analyzers.md) and enter custom analyzer values.
+1. Select **Create Merge Request**.
 1. Review and merge the merge request.
+
+NOTE:
+The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
+configuration file. If you have a complex GitLab configuration file it may not be parsed
+successfully, and an error may occur.
 
 ### Customizing the SAST settings
 
@@ -250,11 +289,15 @@ versions are pulled, there are certain cases where it can be beneficial to pin
 an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
 in the job template directly.
 
-In the example below, we are pinning to a specific patch version of the `spotbugs` analyzer:
+In the example below, we pin to a specific patch version of the `spotbugs` analyzer and minor version of the `semgrep` analyzer:
 
 ```yaml
 include:
   - template: Security/SAST.gitlab-ci.yml
+
+semgrep-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "2.12"
 
 spotbugs-sast:
   variables:
@@ -360,9 +403,6 @@ To create a custom ruleset:
 ### False Positive Detection **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the `vulnerability_flags` flag](../../../administration/feature_flags.md). On GitLab.com, this feature is available.
 
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
@@ -536,9 +576,11 @@ all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
-WARNING:
-Variables having names starting with these prefixes are **not** propagated to the SAST Docker container and/or
-analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
+NOTE:
+In [GitLab 13.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/220540),
+variables whose names started with the following prefixes are **not** propagated to either the
+analyzer containers or SAST Docker container: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`,
+`OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
 
 ### Experimental features
 
@@ -807,3 +849,55 @@ This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, 
 ### Semgrep slowness, unexpected results, or other errors
 
 If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/gitlab-sast/).
+
+### SAST job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
+
+Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
+
+- Disabled by default in GitLab 13.0 and later.
+- Unsupported from GitLab 13.4 and later.
+
+Several workarounds are available. From GitLab version 13.0 and later, you must not use
+Docker-in-Docker.
+
+#### Workaround 1: Pin analyzer versions (GitLab 12.1 and earlier)
+
+Set the following variables for the SAST job. This pins the analyzer versions to the last known
+working version, allowing SAST with Docker-in-Docker to complete as it did previously:
+
+```yaml
+sast:
+  variables:
+    SAST_DEFAULT_ANALYZERS: ""
+    SAST_ANALYZER_IMAGES: "registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2.9.6, registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2.10.0, registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2.11.1, registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2.14.0, registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2.9.1, registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2.9.0, registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3.12.0, registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2.13.0, registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2.8.0, registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2.13.6, registry.gitlab.com/gitlab-org/security-products/analyzers/tslint:2.4.0"
+```
+
+Remove any analyzers you don't need from the `SAST_ANALYZER_IMAGES` list. Keep
+`SAST_DEFAULT_ANALYZERS` set to an empty string `""`.
+
+#### Workaround 2: Disable Docker-in-Docker for SAST and Dependency Scanning (GitLab 12.3 and later)
+
+Disable Docker-in-Docker for SAST. Individual `<analyzer-name>-sast` jobs are created for each
+analyzer that runs in your CI/CD pipeline.
+
+```yaml
+include:
+  - template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
+```
+
+#### Workaround 3: Upgrade to GitLab 13.x and use the defaults
+
+From GitLab 13.0, SAST defaults to not using Docker-in-Docker. In GitLab 13.4 and later, SAST using
+Docker-in-Docker is [no longer supported](https://gitlab.com/gitlab-org/gitlab/-/issues/220540).
+If you have this problem on GitLab 13.x and later, you have customized your SAST job to
+use Docker-in-Docker. To resolve this, comment out any customizations you've made to
+your SAST CI job definition and [follow the documentation](index.md#configuration)
+to reconfigure, using the new and improved job definition default values.
+
+```yaml
+include:
+  - template: Security/SAST.gitlab-ci.yml
+```

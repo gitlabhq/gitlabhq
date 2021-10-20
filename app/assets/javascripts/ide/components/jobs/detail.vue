@@ -44,18 +44,18 @@ export default {
   methods: {
     ...mapActions('pipelines', ['fetchJobLogs', 'setDetailJob']),
     scrollDown() {
-      if (this.$refs.buildTrace) {
-        this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
+      if (this.$refs.buildJobLog) {
+        this.$refs.buildJobLog.scrollTo(0, this.$refs.buildJobLog.scrollHeight);
       }
     },
     scrollUp() {
-      if (this.$refs.buildTrace) {
-        this.$refs.buildTrace.scrollTo(0, 0);
+      if (this.$refs.buildJobLog) {
+        this.$refs.buildJobLog.scrollTo(0, 0);
       }
     },
     scrollBuildLog: throttle(function buildLogScrollDebounce() {
-      const { scrollTop } = this.$refs.buildTrace;
-      const { offsetHeight, scrollHeight } = this.$refs.buildTrace;
+      const { scrollTop } = this.$refs.buildJobLog;
+      const { offsetHeight, scrollHeight } = this.$refs.buildJobLog;
 
       if (scrollTop + offsetHeight === scrollHeight) {
         this.scrollPos = scrollPositions.bottom;
@@ -97,7 +97,7 @@ export default {
         <scroll-button :disabled="isScrolledToBottom" direction="down" @click="scrollDown" />
       </div>
     </div>
-    <pre ref="buildTrace" class="build-trace mb-0 h-100 mr-3" @scroll="scrollBuildLog">
+    <pre ref="buildJobLog" class="build-log mb-0 h-100 mr-3" @scroll="scrollBuildLog">
       <code
         v-show="!detailJob.isLoading"
         class="bash"

@@ -28,6 +28,7 @@ module Banzai
       def highlight_node(node)
         css_classes = +'code highlight js-syntax-highlight'
         lang, lang_params = parse_lang_params(node.attr('lang'))
+        sourcepos = node.parent.attr('data-sourcepos')
         retried = false
 
         if use_rouge?(lang)
@@ -55,7 +56,9 @@ module Banzai
           retry
         end
 
-        highlighted = %(<pre class="#{css_classes}"
+        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ""
+
+        highlighted = %(<pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"
                              #{lang_params}
                              v-pre="true"><code>#{code}</code></pre>)

@@ -7,12 +7,14 @@ RSpec.describe BulkImports::RelationExportService do
   let_it_be(:relation) { 'labels' }
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:label) { create(:group_label, group: group) }
   let_it_be(:export_path) { "#{Dir.tmpdir}/relation_export_service_spec/tree" }
   let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation) }
 
   before do
     group.add_owner(user)
+    project.add_maintainer(user)
 
     allow(export).to receive(:export_path).and_return(export_path)
   end
@@ -25,6 +27,10 @@ RSpec.describe BulkImports::RelationExportService do
 
   describe '#execute' do
     it 'exports specified relation and marks export as finished' do
+      expect_next_instance_of(BulkImports::TreeExportService) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
       subject.execute
 
       expect(export.reload.upload.export_file).to be_present
@@ -41,6 +47,18 @@ RSpec.describe BulkImports::RelationExportService do
       subject.execute
 
       expect(export.upload.export_file).to be_present
+    end
+
+    context 'when exporting a file relation' do
+      it 'uses file export service' do
+        service = described_class.new(user, project, 'uploads', jid)
+
+        expect_next_instance_of(BulkImports::FileExportService) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        service.execute
+      end
     end
 
     context 'when export record does not exist' do

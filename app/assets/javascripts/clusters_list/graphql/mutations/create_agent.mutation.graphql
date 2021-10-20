@@ -1,0 +1,8 @@
+mutation createClusterAgent($input: CreateClusterAgentInput!) {
+  createClusterAgent(input: $input) {
+    clusterAgent {
+      id
+    }
+    errors
+  }
+}

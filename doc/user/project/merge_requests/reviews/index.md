@@ -158,7 +158,7 @@ Multiline comments display the comment's line numbers above the body of the comm
 
 Users with permission level of [Developer or higher](../../../permissions.md) can manage merge requests.
 
-When bulk editing merge requests in a project, you can edit the following attributes:
+When bulk-editing merge requests in a project, you can edit the following attributes:
 
 - Status (open/closed)
 - Assignee
@@ -211,6 +211,8 @@ These features are associated with merge requests:
   GitLab can provide the option to resolve certain merge request conflicts in the GitLab UI.
 - [Revert changes](../revert_changes.md):
   Revert changes from any commit from a merge request.
+- [Keyboard shortcuts](../../../shortcuts.md#issues-and-merge-requests):
+  Access and modify specific parts of a merge request with keyboard commands.
 
 ## Troubleshooting
 

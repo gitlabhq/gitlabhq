@@ -87,10 +87,6 @@ GitLab removes events older than 3 years from the events table for performance r
 
 ## List currently authenticated user's events
 
->**Notes:**
-> This endpoint was introduced in GitLab 9.3.
-> `read_user` access was introduced in GitLab 11.3.
-
 Get a list of events for the authenticated user. Scope `read_user` or `api` is required.
 
 ```plaintext
@@ -162,10 +158,6 @@ Example response:
 ```
 
 ### Get user contribution events
-
->**Notes:**
-> Documentation was formerly located in the [Users API pages](users.md).
-> `read_user` access was introduced in GitLab 11.3.
 
 Get the contribution events for the specified user, sorted from newest to oldest. Scope `read_user` or `api` is required.
 

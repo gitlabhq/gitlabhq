@@ -11,9 +11,10 @@ import {
   GlFormInput,
   GlFormCheckboxGroup,
 } from '@gitlab/ui';
-import { partition, isString } from 'lodash';
+import { partition, isString, unescape } from 'lodash';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
+import { sanitize } from '~/lib/dompurify';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
 import {
@@ -293,7 +294,7 @@ export default {
       };
     },
     conditionallyShowToastSuccess(response) {
-      const message = responseMessageFromSuccess(response);
+      const message = this.unescapeMsg(responseMessageFromSuccess(response));
 
       if (message === '') {
         this.showToastMessageSuccess();
@@ -309,12 +310,16 @@ export default {
       this.closeModal();
     },
     showInvalidFeedbackMessage(response) {
+      const message = this.unescapeMsg(responseMessageFromError(response));
+
       this.isLoading = false;
-      this.invalidFeedbackMessage =
-        responseMessageFromError(response) || this.$options.labels.invalidFeedbackMessageDefault;
+      this.invalidFeedbackMessage = message || this.$options.labels.invalidFeedbackMessageDefault;
     },
     handleMembersTokenSelectClear() {
       this.invalidFeedbackMessage = '';
+    },
+    unescapeMsg(message) {
+      return unescape(sanitize(message, { ALLOWED_TAGS: [] }));
     },
   },
   labels: {

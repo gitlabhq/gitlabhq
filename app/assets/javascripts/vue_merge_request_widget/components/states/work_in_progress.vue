@@ -3,6 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { produce } from 'immer';
 import $ from 'jquery';
 import createFlash from '~/flash';
+import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import MergeRequest from '~/merge_request';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -123,10 +124,7 @@ export default {
               },
             },
           }) => {
-            createFlash({
-              message: __('Marked as ready. Merging is now allowed.'),
-              type: 'notice',
-            });
+            toast(__('Marked as ready. Merging is now allowed.'));
             $('.merge-request .detail-page-description .title').text(title);
           },
         )

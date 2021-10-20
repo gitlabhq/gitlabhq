@@ -13,8 +13,6 @@ module FeatureFlags
 
       ApplicationRecord.transaction do
         if feature_flag.destroy
-          save_audit_event(audit_event(feature_flag))
-
           success(feature_flag: feature_flag)
         else
           error(feature_flag.errors.full_messages)

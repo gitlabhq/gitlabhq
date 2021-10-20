@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto, reference
 ---
 
-# GitLab and SSH keys
+# GitLab and SSH keys **(FREE)**
 
 Git is a distributed version control system, which means you can work locally,
 then share or "push" your changes to a server. In this case, the server is GitLab.
@@ -213,7 +213,7 @@ To use SSH with GitLab, copy your public key to your GitLab account.
    which starts with `ssh-ed25519` or `ssh-rsa`, and may end with a comment.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
-1. Optional. In the **Expires at** box, select an expiration date. (Introduced in [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36243).)
+1. Optional. In the **Expires at** box, select an expiration date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36243) in GitLab 12.9.)
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
      you from using the key. Administrators can view expiration dates and use them for
@@ -326,7 +326,7 @@ If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH ke
 
 ## Use SSH on Microsoft Windows
 
-If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+If you're running Windows 10, you can either use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install)
 with [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2) which
 has both `git` and `ssh` preinstalled, or install [Git for Windows](https://gitforwindows.org) to
 use SSH through Powershell.

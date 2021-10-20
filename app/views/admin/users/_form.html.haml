@@ -1,5 +1,5 @@
 .user_new
-  = form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
+  = gitlab_ui_form_for [:admin, @user], html: { class: 'fieldset-form' } do |f|
     = form_errors(@user)
 
     %fieldset
@@ -39,12 +39,12 @@
           .col-sm-2.col-form-label
             = f.label :password
           .col-sm-10
-            = f.password_field :password, disabled: f.object.force_random_password, class: 'form-control gl-form-input'
+            = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
         .form-group.row
           .col-sm-2.col-form-label
             = f.label :password_confirmation
           .col-sm-10
-            = f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control gl-form-input'
+            = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input'
 
     = render partial: 'access_levels', locals: { f: f }
 

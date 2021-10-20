@@ -9,6 +9,9 @@ module Gitlab
         ee/lib/ee/peek
         lib/peek
         lib/gitlab/database
+        lib/gitlab/gitaly_client.rb
+        lib/gitlab/gitaly_client/call.rb
+        lib/gitlab/instrumentation/redis_interceptor.rb
       ].freeze
 
       def initialize(redis)
@@ -19,7 +22,9 @@ module Gitlab
         data = request(id)
         return unless data
 
-        log_sql_queries(id, data)
+        log_queries(id, data, 'active-record')
+        log_queries(id, data, 'gitaly')
+        log_queries(id, data, 'redis')
       rescue StandardError => err
         logger.error(message: "failed to process request id #{id}: #{err.message}")
       end
@@ -32,15 +37,15 @@ module Gitlab
         Gitlab::Json.parse(json_data)
       end
 
-      def log_sql_queries(id, data)
-        queries_by_location(data).each do |location, queries|
+      def log_queries(id, data, type)
+        queries_by_location(data, type).each do |location, queries|
           next unless location
 
           duration = queries.sum { |query| query['duration'].to_f }
           log_info = {
             method_path: "#{location[:filename]}:#{location[:method]}",
             filename: location[:filename],
-            type: :sql,
+            query_type: type,
             request_id: id,
             count: queries.count,
             duration_ms: duration
@@ -50,8 +55,8 @@ module Gitlab
         end
       end
 
-      def queries_by_location(data)
-        return [] unless queries = data.dig('data', 'active-record', 'details')
+      def queries_by_location(data, type)
+        return [] unless queries = data.dig('data', type, 'details')
 
         queries.group_by do |query|
           parse_backtrace(query['backtrace'])

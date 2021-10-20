@@ -15,7 +15,7 @@ The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/
 is an active in-cluster component for solving GitLab and Kubernetes integration
 tasks in a secure and cloud-native way. It enables:
 
-- Integrating GitLab with a Kubernetes cluster behind a firewall or NAT
+- GitLab integration with a Kubernetes cluster behind a firewall or NAT
   (network address translation).
 - Pull-based GitOps deployments.
 - [Inventory object](../../infrastructure/clusters/deploy/inventory_object.md) to keep track of objects applied to your cluster.
@@ -28,7 +28,7 @@ and [our development documentation](https://gitlab.com/gitlab-org/cluster-integr
 
 ## GitLab Agent GitOps workflow
 
-The GitLab Agent uses multiple GitLab projects to provide a flexible workflow
+The GitLab Agent, herein _Agent_, uses multiple GitLab projects to provide a flexible workflow
 that can suit various needs. This diagram shows these repositories and the main
 actors involved in a deployment:
 
@@ -54,10 +54,10 @@ There are several components that work in concert for the Agent to accomplish Gi
 
 - A properly-configured Kubernetes cluster where the Agent is running.
 - A configuration repository that contains a `config.yaml` file, which tells the
-  Agent which repositories to synchronize with the cluster.
+  Agent the repositories to synchronize with the cluster.
 - A manifest repository that contains manifest files. Any changes to manifest files are applied to the cluster.
 
-You can use the same GitLab project or separate projects for configuration and manifest files, as follows:
+You can use the same GitLab project or projects for configuration and manifest files, as follows:
 
 - Single GitLab project (recommended): when you use a single repository to hold both the manifest and the configuration files, these projects can be either private or public, as you prefer.
 - Two GitLab projects: when you opt to use two different GitLab projects, one for manifest files, and another for configuration files, the manifests project must be public, while the configuration project can be either private or public. Our backlog contains issues for adding support for
@@ -73,8 +73,8 @@ The setup process involves a few steps to enable GitOps deployments:
 1. [Set up the Kubernetes Agent Server](#set-up-the-kubernetes-agent-server) for your GitLab instance.
 1. [Define a configuration repository](#define-a-configuration-repository).
 1. [Create an Agent record in GitLab](#create-an-agent-record-in-gitlab).
-1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
 1. [Install the Agent into the cluster](#install-the-agent-into-the-cluster).
+1. [Generate and copy a Secret token used to connect to the Agent](#create-the-kubernetes-secret).
 1. [Create manifest files](#create-manifest-files).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walking-through video](https://www.youtube.com/watch?v=XuBpKtsgGkE) with this process.
@@ -200,7 +200,7 @@ For more advanced configurations, we recommend to use [the `kpt` based installat
 
 Otherwise, follow the manual installation steps described below.
 
-##### Create the Kubernetes secret
+### Create the Kubernetes secret
 
 After generating the token, you must apply it to the Kubernetes cluster.
 
@@ -256,7 +256,7 @@ NAMESPACE                NAME                                          READY   S
 gitlab-kubernetes-agent  gitlab-kubernetes-agent-77689f7dcb-5skqk      1/1     Running   0          51s
 ```
 
-##### Example `resources.yml` file
+#### Example `resources.yml` file
 
 ```yaml
 ---
@@ -403,7 +403,7 @@ The following example projects can help you get started with the Kubernetes Agen
 - [Configuration repository](https://gitlab.com/gitlab-org/configure/examples/kubernetes-agent)
 - This basic GitOps example deploys NGINX: [Manifest repository](https://gitlab.com/gitlab-org/configure/examples/gitops-project)
 
-### Deploying GitLab Runner with the Agent
+### GitLab Runner Deployment with the Agent
 
 You can use the Kubernetes Agent to
 [deploy GitLab Runner in a Kubernetes cluster](https://docs.gitlab.com/runner/install/kubernetes-agent.html).
@@ -444,6 +444,41 @@ the current project, and the configuration directory for each agent:
 Additional management interfaces are planned for the GitLab Kubernetes Agent.
 [Provide more feedback in the related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).
 
+## Remove the GitLab Kubernetes Agent
+
+1. Remove an Agent record with GraphQL by deleting the `clusterAgent` and the `clusterAgentToken`.
+
+   ```graphql
+   mutation deleteAgent {
+     clusterAgentDelete(input: { id: "<cluster-agent-id>" } ) {
+       errors
+     }
+   }
+
+   mutation deleteToken {
+     clusterAgentTokenDelete(input: { id: "<cluster-agent-token-id>" }) {
+       errors
+     }
+   }
+   ```
+
+1. Verify whether the removal occurred successfully. If the output in the Pod logs includes `unauthenticated`, it means that the agent was successfully removed:
+
+   ```json
+   {
+       "level": "warn",
+       "time": "2021-04-29T23:44:07.598Z",
+       "msg": "GetConfiguration.Recv failed",
+       "error": "rpc error: code = Unauthenticated desc = unauthenticated"
+   }
+   ```
+
+1. Delete the GitLab Kubernetes Agent in your cluster:
+
+   ```shell
+   kubectl delete -n gitlab-kubernetes-agent -f ./resources.yml
+   ```
+
 ## Troubleshooting
 
 If you face any issues while using GitLab Kubernetes Agent, you can read the
@@ -455,10 +490,17 @@ kubectl logs -f -l=app=gitlab-kubernetes-agent -n gitlab-kubernetes-agent
 
 GitLab administrators can additionally view the [Kubernetes Agent Server logs](../../../administration/clusters/kas.md#troubleshooting).
 
-### Agent logs - Transport: Error while dialing failed to WebSocket dial
+### Agent logs
+
+#### Transport: Error while dialing failed to WebSocket dial
 
 ```json
-{"level":"warn","time":"2020-11-04T10:14:39.368Z","msg":"GetConfiguration failed","error":"rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://gitlab-kas:443/-/kubernetes-agent\\\": dial tcp: lookup gitlab-kas on 10.60.0.10:53: no such host\""}
+{
+  "level": "warn",
+  "time": "2020-11-04T10:14:39.368Z",
+  "msg": "GetConfiguration failed",
+  "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://gitlab-kas:443/-/kubernetes-agent\\\": dial tcp: lookup gitlab-kas on 10.60.0.10:53: no such host\""
+}
 ```
 
 This error is shown if there are some connectivity issues between the address
@@ -466,27 +508,45 @@ specified as `kas-address`, and your Agent pod. To fix it, make sure that you
 specified the `kas-address` correctly.
 
 ```json
-{"level":"error","time":"2021-06-25T21:15:45.335Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc= \"transport: Error while dialing failed to WebSocket dial: expected handshake response status code 101 but got 301\""}
+{
+  "level": "error",
+  "time": "2021-06-25T21:15:45.335Z",
+  "msg": "Reverse tunnel",
+  "mod_name": "reverse_tunnel",
+  "error": "Connect(): rpc error: code = Unavailable desc = connection error: desc= \"transport: Error while dialing failed to WebSocket dial: expected handshake response status code 101 but got 301\""
+}
 ```
 
 This error occurs if the `kas-address` doesn't include a trailing slash. To fix it, make sure that the
 `wss` or `ws` URL ends with a training slash, such as `wss://GitLab.host.tld:443/-/kubernetes-agent/`
 or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
 
-### Agent logs - ValidationError(Deployment.metadata)
+#### ValidationError(Deployment.metadata)
 
 ```json
-{"level":"info","time":"2020-10-30T08:56:54.329Z","msg":"Synced","project_id":"root/kas-manifest001","resource_key":"apps/Deployment/kas-test001/nginx-deployment","sync_result":"error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"}
+{
+  "level": "info",
+  "time": "2020-10-30T08:56:54.329Z",
+  "msg": "Synced",
+  "project_id": "root/kas-manifest001",
+  "resource_key": "apps/Deployment/kas-test001/nginx-deployment",
+  "sync_result": "error validating data: [ValidationError(Deployment.metadata): unknown field \"replicas\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"selector\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta, ValidationError(Deployment.metadata): unknown field \"template\" in io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta]"
+}
 ```
 
 This error is shown if a manifest file is malformed, and Kubernetes can't
 create specified objects. Make sure that your manifest files are valid. You
 may try using them to create objects in Kubernetes directly for more troubleshooting.
 
-### Agent logs - Error while dialing failed to WebSocket dial: failed to send handshake request
+#### Error while dialing failed to WebSocket dial: failed to send handshake request
 
 ```json
-{"level":"warn","time":"2020-10-30T09:50:51.173Z","msg":"GetConfiguration failed","error":"rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent\\\": net/http: HTTP/1.x transport connection broken: malformed HTTP response \\\"\\\\x00\\\\x00\\\\x06\\\\x04\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x05\\\\x00\\\\x00@\\\\x00\\\"\""}
+{
+  "level": "warn",
+  "time": "2020-10-30T09:50:51.173Z",
+  "msg": "GetConfiguration failed",
+  "error": "rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent\\\": net/http: HTTP/1.x transport connection broken: malformed HTTP response \\\"\\\\x00\\\\x00\\\\x06\\\\x04\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x00\\\\x05\\\\x00\\\\x00@\\\\x00\\\"\""
+}
 ```
 
 This error is shown if you configured `wss` as `kas-address` on the agent side,
@@ -499,19 +559,30 @@ issue is in progress, directly edit the deployment with the
 `kubectl edit deployment gitlab-kas` command, and change `--listen-websocket=true` to `--listen-websocket=false`. After running that command, you should be able to use
 `grpc://gitlab-kas.<YOUR-NAMESPACE>:8150`.
 
-### Agent logs - Decompressor is not installed for grpc-encoding
+#### Decompressor is not installed for grpc-encoding
 
 ```json
-{"level":"warn","time":"2020-11-05T05:25:46.916Z","msg":"GetConfiguration.Recv failed","error":"rpc error: code = Unimplemented desc = grpc: Decompressor is not installed for grpc-encoding \"gzip\""}
+{
+  "level": "warn",
+  "time": "2020-11-05T05:25:46.916Z",
+  "msg": "GetConfiguration.Recv failed",
+  "error": "rpc error: code = Unimplemented desc = grpc: Decompressor is not installed for grpc-encoding \"gzip\""
+}
 ```
 
 This error is shown if the version of the agent is newer that the version of KAS.
 To fix it, make sure that both `agentk` and KAS use the same versions.
 
-### Agent logs - Certificate signed by unknown authority
+#### Certificate signed by unknown authority
 
 ```json
-{"level":"error","time":"2021-02-25T07:22:37.158Z","msg":"Reverse tunnel","mod_name":"reverse_tunnel","error":"Connect(): rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent/\\\": x509: certificate signed by unknown authority\""}
+{
+  "level": "error",
+  "time": "2021-02-25T07:22:37.158Z",
+  "msg": "Reverse tunnel",
+  "mod_name": "reverse_tunnel",
+  "error": "Connect(): rpc error: code = Unavailable desc = connection error: desc = \"transport: Error while dialing failed to WebSocket dial: failed to send handshake request: Get \\\"https://GitLabhost.tld:443/-/kubernetes-agent/\\\": x509: certificate signed by unknown authority\""
+}
 ```
 
 This error is shown if your GitLab instance is using a certificate signed by an internal CA that
@@ -580,34 +651,3 @@ Alternatively, you can mount the certificate file at a different location and in
           mountPath: /tmp/myCA.pem
           subPath: myCA.pem
 ```
-
-## Remove the GitLab Kubernetes Agent
-
-1. Remove an Agent record with GraphQL by deleting the `clusterAgent` and the `clusterAgentToken`.
-
-   ```graphql
-   mutation deleteAgent {
-     clusterAgentDelete(input: { id: "<cluster-agent-id>" } ) {
-       errors
-     }
-   }
-
-   mutation deleteToken {
-     clusterAgentTokenDelete(input: { id: "<cluster-agent-token-id>" }) {
-       errors
-     }
-   }
-   ```
-
-1. Verify whether the removal occurred successfully. If the output in the Pod logs includes `unauthenticated`, it means that the agent was successfully removed:
-
-   ```json
-      {"level":"warn","time":"2021-04-29T23:44:07.598Z","msg":"GetConfiguration.Recv failed","error":"rpc error:
-      code = Unauthenticated desc = unauthenticated"}
-   ```
-
-1. Delete the GitLab Kubernetes Agent in your cluster:
-
-   ```shell
-   kubectl delete -n gitlab-kubernetes-agent -f ./resources.yml
-   ```

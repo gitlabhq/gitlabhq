@@ -153,6 +153,10 @@
     vertical-align: middle;
     margin-bottom: 3px;
   }
+
+  .dropdown-chevron {
+    margin-bottom: 0;
+  }
 }
 
 @include media-breakpoint-down(xs) {

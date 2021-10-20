@@ -248,7 +248,7 @@ module MergeRequests
     def merge_from_quick_action(merge_request)
       last_diff_sha = params.delete(:merge)
 
-      MergeRequests::MergeOrchestrationService
+      ::MergeRequests::MergeOrchestrationService
         .new(project, current_user, { sha: last_diff_sha })
         .execute(merge_request)
     end

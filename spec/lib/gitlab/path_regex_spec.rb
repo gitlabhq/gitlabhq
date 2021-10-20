@@ -561,4 +561,25 @@ RSpec.describe Gitlab::PathRegex do
       expect(subject.match('sha256:asdf1234%2f')[0]).to eq('sha256:asdf1234')
     end
   end
+
+  describe '.dependency_proxy_route_regex' do
+    subject { described_class.dependency_proxy_route_regex }
+
+    it { is_expected.to match('/v2/group1/dependency_proxy/containers/alpine/manifests/latest') }
+    it { is_expected.to match('/v2/group1/dependency_proxy/containers/alpine/blobs/sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab') }
+
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match('/v3/group1/dependency_proxy/containers/alpine/manifests/latest') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/container/alpine/manifests/latest') }
+    it { is_expected.not_to match('/v2/group1/dependency_prox/containers/alpine/manifests/latest') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/manifest/latest') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/manifest/la%2Ftest') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/manifest/latest/../one') }
+    it { is_expected.not_to match('/v3/group1/dependency_proxy/containers/alpine/blobs/sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/container/alpine/blobs/sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab') }
+    it { is_expected.not_to match('/v2/group1/dependency_prox/containers/alpine/blobs/sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/blob/sha256:14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/blob/sha256:F14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab/../latest') }
+    it { is_expected.not_to match('/v2/group1/dependency_proxy/containers/alpine/blob/sha256:F14119a10abf4669e8cdbdff324a9f9605d99697215a0d21c360fe8dfa8471bab/latest') }
+  end
 end

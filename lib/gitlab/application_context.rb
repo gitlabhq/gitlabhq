@@ -124,7 +124,10 @@ module Gitlab
       strong_memoize(:runner_project) do
         next unless runner&.project_type?
 
-        projects = runner.projects.take(2) # rubocop: disable CodeReuse/ActiveRecord
+        projects = ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342147') do
+          runner.projects.take(2) # rubocop: disable CodeReuse/ActiveRecord
+        end
+
         projects.first if projects.one?
       end
     end

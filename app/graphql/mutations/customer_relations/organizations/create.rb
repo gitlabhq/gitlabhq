@@ -31,7 +31,7 @@ module Mutations
         argument :description,
                  GraphQL::Types::String,
                  required: false,
-                 description: 'Description or notes for the organization.'
+                 description: 'Description of or notes for the organization.'
 
         authorize :admin_organization
 

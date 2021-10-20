@@ -51,7 +51,7 @@ import {
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
-import * as workerUtils from '~/diffs/utils/workers';
+import * as treeWorkerUtils from '~/diffs/utils/tree_worker_utils';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
@@ -253,7 +253,7 @@ describe('DiffsStoreActions', () => {
           // Workers are synchronous in Jest environment (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58805)
           {
             type: types.SET_TREE_DATA,
-            payload: workerUtils.generateTreeList(diffMetadata.diff_files),
+            payload: treeWorkerUtils.generateTreeList(diffMetadata.diff_files),
           },
         ],
         [],

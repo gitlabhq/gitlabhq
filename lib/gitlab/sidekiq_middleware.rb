@@ -13,6 +13,13 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::SizeLimiter::Server
         chain.add ::Gitlab::SidekiqMiddleware::Monitor
 
+        # Labkit wraps the job in the `Labkit::Context` resurrected from
+        # the job-hash. We need properties from the context for
+        # recording metrics, so this needs to be before
+        # `::Gitlab::SidekiqMiddleware::ServerMetrics` (if we're using
+        # that).
+        chain.add ::Labkit::Middleware::Sidekiq::Server
+
         if metrics
           chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics
 
@@ -24,7 +31,6 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
-        chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add ::Gitlab::SidekiqVersioning::Middleware
@@ -33,7 +39,7 @@ module Gitlab
         # DuplicateJobs::Server should be placed  at the bottom, but before the SidekiqServerMiddleware,
         # so we can compare the latest WAL location against replica
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server
-        chain.add ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware if load_balancing_enabled?
+        chain.add ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware
       end
     end
 
@@ -46,7 +52,7 @@ module Gitlab
         chain.add ::Labkit::Middleware::Sidekiq::Client
         # Sidekiq Client Middleware should be placed before DuplicateJobs::Client middleware,
         # so we can store WAL location before we deduplicate the job.
-        chain.add ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware if load_balancing_enabled?
+        chain.add ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client
         chain.add ::Gitlab::SidekiqStatus::ClientMiddleware
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Client
@@ -55,10 +61,5 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::ClientMetrics
       end
     end
-
-    def self.load_balancing_enabled?
-      ::Gitlab::Database::LoadBalancing.enable?
-    end
-    private_class_method :load_balancing_enabled?
   end
 end

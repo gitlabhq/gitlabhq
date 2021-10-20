@@ -47,13 +47,11 @@ module Gitlab
             buckets SQL_DURATION_BUCKET
           end
 
-          if ::Gitlab::Database::LoadBalancing.enable?
-            db_role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(payload[:connection])
-            return if db_role.blank?
+          db_role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(payload[:connection])
+          return if db_role.blank?
 
-            increment_db_role_counters(db_role, payload)
-            observe_db_role_duration(db_role, event)
-          end
+          increment_db_role_counters(db_role, payload)
+          observe_db_role_duration(db_role, event)
         end
 
         def self.db_counter_payload
@@ -64,7 +62,7 @@ module Gitlab
               payload[key] = Gitlab::SafeRequestStore[key].to_i
             end
 
-            if ::Gitlab::SafeRequestStore.active? && ::Gitlab::Database::LoadBalancing.enable?
+            if ::Gitlab::SafeRequestStore.active?
               load_balancing_metric_counter_keys.each do |counter|
                 payload[counter] = ::Gitlab::SafeRequestStore[counter].to_i
               end

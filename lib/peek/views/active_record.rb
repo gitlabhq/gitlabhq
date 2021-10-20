@@ -44,10 +44,8 @@ module Peek
           count[item[:transaction]] += 1
         end
 
-        if ::Gitlab::Database::LoadBalancing.enable?
-          count[item[:db_role]] ||= 0
-          count[item[:db_role]] += 1
-        end
+        count[item[:db_role]] ||= 0
+        count[item[:db_role]] += 1
       end
 
       def setup_subscribers
@@ -72,8 +70,6 @@ module Peek
       end
 
       def db_role(data)
-        return unless ::Gitlab::Database::LoadBalancing.enable?
-
         role = ::Gitlab::Database::LoadBalancing.db_role_for_connection(data[:connection]) ||
           ::Gitlab::Database::LoadBalancing::ROLE_UNKNOWN
 

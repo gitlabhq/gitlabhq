@@ -34,9 +34,11 @@ RSpec.describe Deployments::UpdateService do
       expect(deploy).to be_canceled
     end
 
-    it 'raises ArgumentError if the status is invalid' do
-      expect { described_class.new(deploy, status: 'kittens').execute }
-        .to raise_error(ArgumentError)
+    it 'does not change the state if the status is invalid' do
+      expect(described_class.new(deploy, status: 'kittens').execute)
+        .to be_falsy
+
+      expect(deploy).to be_created
     end
 
     it 'links merge requests when changing the status to success', :sidekiq_inline do

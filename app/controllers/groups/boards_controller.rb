@@ -11,6 +11,7 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:board_multi_select, group, default_enabled: :yaml)
     push_frontend_feature_flag(:swimlanes_buffered_rendering, group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, group, default_enabled: :yaml)
+    push_frontend_feature_flag(:labels_widget, group, default_enabled: :yaml)
   end
 
   feature_category :boards

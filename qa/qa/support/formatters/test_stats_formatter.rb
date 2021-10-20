@@ -32,7 +32,6 @@ module QA
             influxdb_token,
             bucket: 'e2e-test-stats',
             org: 'gitlab-qa',
-            use_ssl: false,
             precision: InfluxDB2::WritePrecision::NANOSECOND
           )
         end
@@ -57,19 +56,22 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [Hash]
         def test_stats(example)
+          file_path = example.metadata[:file_path].gsub('./qa/specs/features', '')
+
           {
             name: 'test-stats',
             time: time,
             tags: {
               name: example.full_description,
-              file_path: example.metadata[:file_path].gsub('./qa/specs/features', ''),
+              file_path: file_path,
               status: example.execution_result.status,
               reliable: example.metadata.key?(:reliable).to_s,
               quarantined: example.metadata.key?(:quarantine).to_s,
               retried: ((example.metadata[:retry_attempts] || 0) > 0).to_s,
               job_name: job_name,
               merge_request: merge_request,
-              run_type: env('QA_RUN_TYPE') || run_type
+              run_type: env('QA_RUN_TYPE') || run_type,
+              stage: devops_stage(file_path)
             },
             fields: {
               id: example.id,
@@ -113,11 +115,11 @@ module QA
           @merge_request ||= (!!env('CI_MERGE_REQUEST_IID') || !!env('TOP_UPSTREAM_MERGE_REQUEST_IID')).to_s
         end
 
-        # Test run type from staging, canary or production env
+        # Test run type from staging, canary, preprod or production env
         #
-        # @return [String>, nil]
+        # @return [String, nil]
         def run_type
-          return unless %w[staging canary production].include?(project_name)
+          return unless %w[staging canary preprod production].include?(project_name)
 
           @run_type ||= begin
             test_subset = if env('NO_ADMIN') == 'true'
@@ -149,6 +151,14 @@ module QA
           return unless ENV[name] && !ENV[name].empty?
 
           ENV[name]
+        end
+
+        # Get spec devops stage
+        #
+        # @param [String] location
+        # @return [String, nil]
+        def devops_stage(file_path)
+          file_path.match(%r{(\d{1,2}_\w+)/})&.captures&.first
         end
       end
     end

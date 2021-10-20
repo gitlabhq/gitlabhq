@@ -204,6 +204,43 @@ RSpec.describe Gitlab::ProjectAuthorizations do
     end
   end
 
+  context 'with shared projects' do
+    let_it_be(:shared_with_group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, group: create(:group)) }
+
+    let(:mapping) { map_access_levels(authorizations) }
+
+    before do
+      create(:project_group_link, :developer, project: project, group: shared_with_group)
+      shared_with_group.add_maintainer(user)
+    end
+
+    it 'creates proper authorizations' do
+      expect(mapping[project.id]).to eq(Gitlab::Access::DEVELOPER)
+    end
+
+    context 'even when the `lock_memberships_to_ldap` setting has been turned ON' do
+      before do
+        stub_application_setting(lock_memberships_to_ldap: true)
+      end
+
+      it 'creates proper authorizations' do
+        expect(mapping[project.id]).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    context 'when the group containing the project has forbidden group shares for any of its projects' do
+      before do
+        project.namespace.update!(share_with_group_lock: true)
+      end
+
+      it 'does not create authorizations' do
+        expect(mapping[project.id]).to be_nil
+      end
+    end
+  end
+
   context 'with shared groups' do
     let(:parent_group_user) { create(:user) }
     let(:group_user) { create(:user) }

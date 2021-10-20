@@ -176,7 +176,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     it 'detaches exactly one partition' do
-      expect { subject }.to change { find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size }.from(9).to(8)
+      expect { subject }.to change { find_partitions(my_model.table_name).size }.from(9).to(8)
     end
 
     it 'detaches the old partition' do

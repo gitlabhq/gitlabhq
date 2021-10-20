@@ -86,6 +86,12 @@ export const dependencyLinks = () => [
   },
 ];
 
+export const packageProject = () => ({
+  fullPath: 'gitlab-org/gitlab-test',
+  webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
+  __typename: 'Project',
+});
+
 export const packageVersions = () => [
   {
     createdAt: '2021-08-10T09:33:54Z',
@@ -248,4 +254,32 @@ export const packageDestroyFileMutationError = () => ({
       path: ['destroyPackageFile'],
     },
   ],
+});
+
+export const packagesListQuery = (type = 'group') => ({
+  data: {
+    [type]: {
+      packages: {
+        count: 2,
+        nodes: [
+          {
+            ...packageData(),
+            project: packageProject(),
+            tags: { nodes: packageTags() },
+            pipelines: {
+              nodes: packagePipelines(),
+            },
+          },
+          {
+            ...packageData(),
+            project: packageProject(),
+            tags: { nodes: [] },
+            pipelines: { nodes: [] },
+          },
+        ],
+        __typename: 'PackageConnection',
+      },
+      __typename: 'Group',
+    },
+  },
 });

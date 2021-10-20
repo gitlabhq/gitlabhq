@@ -15,25 +15,25 @@ Your profile also includes settings, which you use to customize your GitLab expe
 
 To access your profile:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select your name or username.
 
 ## Access your user settings
 
 To access your user settings:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 
 ## Change your password
 
 To change your password:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Password**.
-1. In the **Current password** field, enter your current password.
-1. In the **New password** and **Password confirmation** field, enter your new password.
+1. In the **Current password** text box, enter your current password.
+1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
 If you don't know your current password, select the **I forgot my password** link.
@@ -53,7 +53,7 @@ Prerequisites:
 
 To change your username:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
@@ -63,10 +63,10 @@ To change your username:
 
 To add new email to your account:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
-1. In the **Email** box, enter the new email.
+1. In the **Email** text box, enter the new email.
 1. Select **Add email address**.
 1. Verify your email address with the verification email received.
 
@@ -76,7 +76,7 @@ You can make your user profile visible to only you and GitLab administrators.
 
 To make your profile private:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. Select the **Private profile** checkbox.
 1. Select **Update profile settings**.
@@ -107,7 +107,7 @@ They can help other users connect with you on other platforms.
 
 To add links to other accounts:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, add your information from:
    - Skype
@@ -121,7 +121,7 @@ In the user contribution calendar graph and recent activity list, you can see yo
 
 To show private contributions:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Main settings** section, select the **Include private contributions on my profile** checkbox.
 1. Select **Update profile settings**.
@@ -135,9 +135,9 @@ your name in your profile.
 
 To specify your pronouns:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronouns** field, enter your pronouns.
+1. In the **Pronouns** text box, enter your pronouns.
 1. Select **Update profile settings**.
 
 ## Add your name pronunciation
@@ -149,9 +149,9 @@ your name.
 
 To add your name pronunciation:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronunciation** field, enter how your name is pronounced.
+1. In the **Pronunciation** text box, enter how your name is pronounced.
 1. Select **Update profile settings**.
 
 ## Set your current status
@@ -165,11 +165,11 @@ Your status is publicly visible even if your [profile is private](#make-your-use
 
 To set your current status:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Set status** or, if you have already set a status, **Edit status**.
 1. Set the desired emoji and status message. Status messages must be plain text and 100 characters or less.
    They can also contain emoji codes like, `I'm on vacation :palm_tree:`.
-1. Select a value from the **Clear status after** dropdown.
+1. Select a value from the **Clear status after** dropdown list.
 1. Select **Set status**. Alternatively, you can select **Remove status** to remove your user status entirely.
 
 You can also set your current status by [using the API](../../api/users.md#user-status).
@@ -188,12 +188,12 @@ To indicate to others that you are busy, you can set an indicator.
 To set the busy status indicator, either:
 
 - Set it directly:
-  1. In the top-right corner, select your avatar.
+  1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Set status** or, if you have already set a status, **Edit status**.
   1. Select the **Busy** checkbox.
 
 - Set it on your profile:
-  1. In the top-right corner, select your avatar.
+  1. On the top bar, in the top-right corner, select your avatar.
   1. Select **Edit profile**.
   1. In the **Current status** section, select the **Busy** checkbox.
 
@@ -221,7 +221,7 @@ To set the busy status indicator, either:
 
 To set your time zone:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the **Time settings** section, select your time zone from the dropdown list.
 
@@ -236,7 +236,7 @@ To change your commit email:
 
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Commit email** list, select an email address.
+1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
 
 ### Use an automatically-generated private commit email
@@ -246,9 +246,9 @@ so you can keep your email information private.
 
 To use a private commit email:
 
-1. In the top-right corner, select your avatar.
+1. On the top bar, in the top-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Commit email** list, select the **Use a private email** option.
+1. In the **Commit email** dropdown list, select **Use a private email**.
 1. Select **Update profile settings**.
 
 Every Git-related action uses the private commit email.

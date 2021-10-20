@@ -51,7 +51,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
       end
 
       it 'includes the GitHub ID' do
-        expect(note.github_id).to eq(1)
+        expect(note.note_id).to eq(1)
       end
 
       it 'returns the noteable type' do
@@ -73,6 +73,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
         body: 'Hello world',
         created_at: created_at,
         updated_at: updated_at,
+        line: 23,
+        start_line: nil,
         id: 1
       )
     end
@@ -90,46 +92,69 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
 
       expect(note.author).to be_nil
     end
+
+    it 'formats a suggestion in the note body' do
+      allow(response)
+        .to receive(:body)
+        .and_return <<~BODY
+      ```suggestion
+      Hello World
+      ```
+      BODY
+
+      note = described_class.from_api_response(response)
+
+      expect(note.note).to eq <<~BODY
+      ```suggestion:-0+0
+      Hello World
+      ```
+      BODY
+    end
   end
 
   describe '.from_json_hash' do
-    it_behaves_like 'a DiffNote' do
-      let(:hash) do
-        {
-          'noteable_type' => 'MergeRequest',
-          'noteable_id' => 42,
-          'file_path' => 'README.md',
-          'commit_id' => '123abc',
-          'original_commit_id' => 'original123abc',
-          'diff_hunk' => hunk,
-          'author' => { 'id' => 4, 'login' => 'alice' },
-          'note' => 'Hello world',
-          'created_at' => created_at.to_s,
-          'updated_at' => updated_at.to_s,
-          'github_id' => 1
-        }
-      end
-
-      let(:note) { described_class.from_json_hash(hash) }
-    end
-
-    it 'does not convert the author if it was not specified' do
-      hash = {
+    let(:hash) do
+      {
         'noteable_type' => 'MergeRequest',
         'noteable_id' => 42,
         'file_path' => 'README.md',
         'commit_id' => '123abc',
         'original_commit_id' => 'original123abc',
         'diff_hunk' => hunk,
+        'author' => { 'id' => 4, 'login' => 'alice' },
         'note' => 'Hello world',
         'created_at' => created_at.to_s,
         'updated_at' => updated_at.to_s,
-        'github_id' => 1
+        'note_id' => 1
       }
+    end
+
+    it_behaves_like 'a DiffNote' do
+      let(:note) { described_class.from_json_hash(hash) }
+    end
+
+    it 'does not convert the author if it was not specified' do
+      hash.delete('author')
 
       note = described_class.from_json_hash(hash)
 
       expect(note.author).to be_nil
+    end
+
+    it 'formats a suggestion in the note body' do
+      hash['note'] = <<~BODY
+      ```suggestion
+      Hello World
+      ```
+      BODY
+
+      note = described_class.from_json_hash(hash)
+
+      expect(note.note).to eq <<~BODY
+      ```suggestion:-0+0
+      Hello World
+      ```
+      BODY
     end
   end
 
@@ -154,7 +179,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
         'note' => 'Hello world',
         'created_at' => created_at.to_s,
         'updated_at' => updated_at.to_s,
-        'github_id' => 1
+        'note_id' => 1
       )
 
       expect(note.diff_hash).to eq(
@@ -165,6 +190,70 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
         b_mode: '100644',
         new_file: false
       )
+    end
+  end
+
+  describe '#github_identifiers' do
+    it 'returns a hash with needed identifiers' do
+      github_identifiers = {
+        noteable_id: 42,
+        noteable_type: 'MergeRequest',
+        note_id: 1
+      }
+      other_attributes = { something_else: '_something_else_' }
+      note = described_class.new(github_identifiers.merge(other_attributes))
+
+      expect(note.github_identifiers).to eq(github_identifiers)
+    end
+  end
+
+  describe '#note' do
+    it 'returns the given note' do
+      hash = {
+        'note': 'simple text'
+      }
+
+      note = described_class.new(hash)
+
+      expect(note.note).to eq 'simple text'
+    end
+
+    it 'returns the suggestion formatted in the note' do
+      hash = {
+        'note': <<~BODY
+        ```suggestion
+        Hello World
+        ```
+        BODY
+      }
+
+      note = described_class.new(hash)
+
+      expect(note.note).to eq <<~BODY
+      ```suggestion:-0+0
+      Hello World
+      ```
+      BODY
+    end
+
+    it 'returns the multi-line suggestion formatted in the note' do
+      hash = {
+        'start_line': 20,
+        'end_line': 23,
+        'note': <<~BODY
+        ```suggestion
+        Hello World
+        ```
+        BODY
+      }
+
+      note = described_class.new(hash)
+
+      expect(note.note).to eq <<~BODY
+      ```suggestion:-3+0
+      Hello World
+      ```
+      BODY
     end
   end
 end

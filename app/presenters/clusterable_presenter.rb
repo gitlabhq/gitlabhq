@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ClusterablePresenter < Gitlab::View::Presenter::Delegated
-  presents :clusterable
+  presents ::Project, ::Group, ::Clusters::Instance, as: :clusterable
 
   def self.fabricate(clusterable, **attributes)
     presenter_class = "#{clusterable.class.name}ClusterablePresenter".constantize

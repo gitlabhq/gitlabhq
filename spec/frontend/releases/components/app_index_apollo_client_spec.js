@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import originalAllReleasesQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/all_releases.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import allReleasesQuery from 'shared_queries/releases/all_releases.query.graphql';
@@ -32,9 +33,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 describe('app_index_apollo_client.vue', () => {
-  const originalAllReleasesQueryResponse = getJSONFixture(
-    'graphql/releases/graphql/queries/all_releases.query.graphql.json',
-  );
   const projectPath = 'project/path';
   const newReleasePath = 'path/to/new/release/page';
   const before = 'beforeCursor';

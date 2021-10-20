@@ -24,8 +24,8 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
 
       it 'completely clean up the repository' do
         expect(Projects::ContainerRepository::CleanupTagsService)
-          .to receive(:new).with(project, nil, cleanup_tags_service_params).and_return(cleanup_tags_service)
-        expect(cleanup_tags_service).to receive(:execute).with(repository).and_return(status: :success)
+          .to receive(:new).with(repository, nil, cleanup_tags_service_params).and_return(cleanup_tags_service)
+        expect(cleanup_tags_service).to receive(:execute).and_return(status: :success)
 
         response = subject
 
@@ -69,6 +69,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
             before_truncate_size: 800,
             after_truncate_size: 200,
             before_delete_size: 100,
+            cached_tags_count: 0,
             deleted_size: 100
           }
         end
@@ -86,6 +87,7 @@ RSpec.describe ContainerExpirationPolicies::CleanupService do
                 cleanup_tags_service_before_truncate_size: 800,
                 cleanup_tags_service_after_truncate_size: 200,
                 cleanup_tags_service_before_delete_size: 100,
+                cleanup_tags_service_cached_tags_count: 0,
                 cleanup_tags_service_deleted_size: 100
               )
             expect(ContainerRepository.waiting_for_cleanup.count).to eq(1)

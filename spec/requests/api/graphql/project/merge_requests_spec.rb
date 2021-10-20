@@ -385,7 +385,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
 
     context 'when sorting by merged_at DESC' do
       let(:sort_param) { :MERGED_AT_DESC }
-      let(:expected_results) do
+      let(:all_records) do
         [
           merge_request_b,
           merge_request_d,
@@ -418,14 +418,14 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(expected_results.last(2))
+          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
         end
       end
     end
 
     context 'when sorting by closed_at DESC' do
       let(:sort_param) { :CLOSED_AT_DESC }
-      let(:expected_results) do
+      let(:all_records) do
         [
           merge_request_b,
           merge_request_d,
@@ -458,7 +458,7 @@ RSpec.describe 'getting merge request listings nested in a project' do
           query = pagination_query(params)
           post_graphql(query, current_user: current_user)
 
-          expect(results.map { |item| item["id"] }).to eq(expected_results.last(2))
+          expect(results.map { |item| item["id"] }).to eq(all_records.last(2))
         end
       end
     end

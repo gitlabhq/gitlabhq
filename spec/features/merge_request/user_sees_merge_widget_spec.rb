@@ -45,18 +45,12 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
     let!(:environment) { create(:environment, project: project) }
     let(:sha)          { project.commit(merge_request.source_branch).sha }
     let(:pipeline)     { create(:ci_pipeline, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
-    let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
-
-    let!(:deployment) do
-      create(:deployment, :succeed,
-                          environment: environment,
-                          ref: merge_request.source_branch,
-                          deployable: build,
-                          sha: sha)
-    end
+    let!(:build)       { create(:ci_build, :with_deployment, :success, environment: environment.name, pipeline: pipeline) }
+    let!(:deployment)  { build.deployment }
 
     before do
       merge_request.update!(head_pipeline: pipeline)
+      deployment.update!(status: :success)
       visit project_merge_request_path(project, merge_request)
     end
 

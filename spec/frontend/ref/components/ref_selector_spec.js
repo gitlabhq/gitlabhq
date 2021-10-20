@@ -4,6 +4,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge, last } from 'lodash';
 import Vuex from 'vuex';
+import commit from 'test_fixtures/api/commits/commit.json';
+import branches from 'test_fixtures/api/branches/branches.json';
+import tags from 'test_fixtures/api/tags/tags.json';
 import { trimText } from 'helpers/text_helper';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { sprintf } from '~/locale';
@@ -21,11 +24,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Ref selector component', () => {
-  const fixtures = {
-    branches: getJSONFixture('api/branches/branches.json'),
-    tags: getJSONFixture('api/tags/tags.json'),
-    commit: getJSONFixture('api/commits/commit.json'),
-  };
+  const fixtures = { branches, tags, commit };
 
   const projectId = '8';
 
@@ -479,8 +478,6 @@ describe('Ref selector component', () => {
 
         it('renders each commit as a selectable item with the short SHA and commit title', () => {
           const dropdownItems = findCommitDropdownItems();
-
-          const { commit } = fixtures;
 
           expect(dropdownItems.at(0).text()).toBe(`${commit.short_id} ${commit.title}`);
         });

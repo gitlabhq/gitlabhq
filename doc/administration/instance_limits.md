@@ -88,6 +88,29 @@ requests per user. For more information, read
 
 - **Default rate limit**: Disabled by default.
 
+### Files API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68561) in GitLab 14.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the `files_api_throttling` flag](../administration/feature_flags.md). On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+The feature is not ready for production use.
+
+This setting limits the request rate on the Packages API per user or IP address. For more information, read
+[Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md).
+
+- **Default rate limit**: Disabled by default.
+
+### Deprecated API endpoints
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
+
+This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
+[Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md).
+
+- **Default rate limit**: Disabled by default.
+
 ### Import/Export
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35728) in GitLab 13.2.
@@ -212,7 +235,7 @@ Activity history for projects and individuals' profiles was limited to one year 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14939) in GitLab 12.7.
 
-There is a limit when embedding metrics in GFM for performance reasons.
+There is a limit when embedding metrics in GitLab Flavored Markdown (GFM) for performance reasons.
 
 - **Max limit**: 100 embeds.
 
@@ -240,10 +263,10 @@ Set the limit to `0` to disable it.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/237891) in GitLab 13.7.
 
-The [minimum wait time between pull refreshes](../user/project/repository/repository_mirroring.md)
+The [minimum wait time between pull refreshes](../user/project/repository/mirror/index.md)
 defaults to 300 seconds (5 minutes). For example, by default a pull refresh will only run once in a given 300 second period regardless of how many times you try to trigger it.
 
-This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/repository_mirroring.md#how-it-works).
+This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
 To change this limit for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -511,7 +534,11 @@ Plan.default.actual_limits.update!(pages_file_entries: 100)
 
 ### Number of registered runners per scope
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321368) in GitLab 13.12. Disabled by default.
+> - Enabled on GitLab.com in GitLab 14.3.
+> - Enabled on self-managed in GitLab 14.4.
+> - Feature flag `ci_runner_limits` removed in GitLab 14.4. You can still use `ci_runner_limits_override`
+    to remove limits for a given scope.
 
 The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 3 months.
@@ -749,7 +776,7 @@ than the specified limit, hooks won't be executed.
 
 More information can be found in these docs:
 
-- [Webhooks push events](../user/project/integrations/webhooks.md#push-events)
+- [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
 - [Project services push hooks limit](../user/project/integrations/overview.md#push-hooks-limit)
 
 ### Activities

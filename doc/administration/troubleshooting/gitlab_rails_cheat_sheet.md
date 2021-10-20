@@ -26,7 +26,7 @@ As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a
-Support Engineer, who can also verify that they will continue to work as they
+Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 
 ## Find specific methods for an object
@@ -37,8 +37,6 @@ Array.methods.grep(/sing/)
 ```
 
 ## Find method source
-
-Works for [non-instrumented methods](../../development/instrumentation.md#checking-instrumented-methods):
 
 ```ruby
 instance_of_object.method(:foo).source_location
@@ -187,7 +185,7 @@ Project.update_all(visibility_level: 0)
 
 ```ruby
 #
-# This section will list all the projects which are pending deletion
+# This section lists all the projects which are pending deletion
 #
 projects = Project.where(pending_delete: true)
 projects.each do |p|
@@ -197,7 +195,7 @@ projects.each do |p|
 end
 
 #
-# Assign a user (the root user will do)
+# Assign a user (the root user does)
 #
 user = User.find_by_username('root')
 
@@ -257,7 +255,7 @@ namespace = Namespace.find_by_full_path("<new_namespace>")
 ### For Removing webhooks that is getting timeout due to large webhook logs
 
 ```ruby
-# ID will be the webhook_id
+# ID is the webhook_id
 hook=WebHook.find(ID)
 
 WebHooks::DestroyService.new(current_user).execute(hook)
@@ -399,7 +397,7 @@ projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
 ### Recreate
 
 WARNING:
-This is a destructive operation, the Wiki will be empty.
+This is a destructive operation, the Wiki becomes empty.
 
 A Projects Wiki can be recreated by this command:
 
@@ -476,13 +474,13 @@ Projects::ImportExport::ExportService.new(project, user).execute
 
 If the project you wish to export is available at `https://gitlab.example.com/baltig/pipeline-templates`, the value to use for `PROJECT_PATH` would be `baltig/pipeline-templates`.
 
-If this all runs successfully, you will see output like the following before being returned to the Rails console prompt:
+If this all runs successfully, you see an output like the following before being returned to the Rails console prompt:
 
 ```ruby
 => nil
 ```
 
-The exported project will be located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
+The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
 ## Repository
 
@@ -490,27 +488,29 @@ The exported project will be located within a `.tar.gz` file in `/var/opt/gitlab
 
 If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
 [This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
-describes how you can end up in this state without a force push.
+describes how you can end up in this state without a force push. Another cause can be a misconfigured [server hook](../server_hooks.md) that changes a HEAD ref via a `git reset` operation.
 
-If you look at the output from the sample code below for the target branch, you will
-see a discontinuity in the from/to commits as you step through the output. Each new
-push should be "from" the "to" SHA of the previous push. When this discontinuity happens,
-you will see two pushes with the same "from" SHA:
+If you look at the output from the sample code below for the target branch, you
+see a discontinuity in the from/to commits as you step through the output. The `commit_from` of each new push should equal the `commit_to` of the previous push. A break in that sequence indicates one or more commits have been "lost" from the repository history.
 
-```ruby
-p = Project.find_with_namespace('u/p')
-p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)\n", e.data[:ref], e.data[:before], e.data[:after], e.author.try(:username)
-end
-```
-
-GitLab 9.5 and above:
+The following example checks the last 100 pushes and prints the `commit_from` and `commit_to` entries:
 
 ```ruby
 p = Project.find_by_full_path('u/p')
 p.events.pushed_action.last(100).each do |e|
-  printf "%-20.20s %8s...%8s (%s)\n", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
+  printf "%-20.20s %8s...%8s (%s)
+", e.push_event_payload[:ref], e.push_event_payload[:commit_from], e.push_event_payload[:commit_to], e.author.try(:username)
 end
+```
+
+Example output showing break in sequence at line 4:
+
+```plaintext
+master               f21b07713251e04575908149bdc8ac1f105aabc3...6bc56c1f46244792222f6c85b11606933af171de (root)
+master               6bc56c1f46244792222f6c85b11606933af171de...132da6064f5d3453d445fd7cb452b148705bdc1b (root)
+master               132da6064f5d3453d445fd7cb452b148705bdc1b...a62e1e693150a2e46ace0ce696cd4a52856dfa65 (root)
+master               58b07b719a4b0039fec810efa52f479ba1b84756...f05321a5b5728bd8a89b7bf530aa44043c951dce (root)
+master               f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76a3284ee435368279a5eb3773 (root)
 ```
 
 ## Mirrors
@@ -558,7 +558,7 @@ end
 
 ```ruby
 u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
-u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user will recieve confirmation e-mail
+u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user receives confirmation e-mail
 u.save!
 ```
 
@@ -612,7 +612,7 @@ identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
 ```ruby
 users = User.where('id NOT IN (select distinct(user_id) from project_authorizations)')
 
-# How many users will be removed?
+# How many users are removed?
 users.count
 
 # If that count looks sane:
@@ -724,6 +724,18 @@ When disabling the 2FA Requirement on a subgroup, the whole parent group (includ
 group = Group.find_by_path_or_name('group-name')
 group.require_two_factor_authentication=false
 group.save
+```
+
+## Authentication
+
+### Re-enable standard web sign-in form
+
+Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
+
+You can use this method when a configured external authentication provider (through SSO or an LDAP configuration) is facing an outage and direct sign-in access to GitLab is required.
+
+```ruby
+Gitlab::CurrentSettings.update!(password_authentication_enabled_for_web: true)
 ```
 
 ## SCIM
@@ -1061,7 +1073,7 @@ encrypted credentials to allow manual reentry:
 If `User OTP Secret Bad count:` is detected. For each user listed disable/enable
 two-factor authentication.
 
-The following script will search in some of the tables for encrypted tokens that are
+The following script searches in some of the tables for encrypted tokens that are
 causing decryption errors, and update or reset as needed:
 
 ```shell
@@ -1123,7 +1135,7 @@ Geo::ProjectRegistry.sync_failed('repository')
 
 ### Resync repositories
 
-#### Queue up all repositories for resync. Sidekiq will handle each sync
+#### Queue up all repositories for resync. Sidekiq handles each sync
 
 ```ruby
 Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
@@ -1170,10 +1182,10 @@ registry.replicator.send(:download)
 
 #### Verify package files on the secondary manually
 
-This will iterate over all package files on the secondary, looking at the
+This iterates over all package files on the secondary, looking at the
 `verification_checksum` stored in the database (which came from the primary)
 and then calculate this value on the secondary to check if they match. This
-won't change anything in the UI:
+does not change anything in the UI:
 
 ```ruby
 # Run on secondary
@@ -1235,7 +1247,7 @@ Gitlab::UsageData.to_json
 
 ### Generate a fresh new Service Ping
 
-This will also refresh the cached Service Ping displayed in the admin area
+This also refreshes the cached Service Ping displayed in the Admin Area
 
 ```ruby
 Gitlab::UsageData.to_json(force_refresh: true)
@@ -1269,7 +1281,7 @@ cluster = Clusters::Cluster.find_by(name: 'cluster_name')
 Delete cluster without associated resources:
 
 ```ruby
-# Find an admin user
+# Find users with the Administrator role
 user = User.find_by(username: 'admin_user')
 
 # Find the cluster with the ID
@@ -1289,7 +1301,7 @@ Open the rails console (`gitlab rails c`) and run the following command to see a
 ApplicationSetting.last.attributes
 ```
 
-Among other attributes, in the output you will notice that all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), like: `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, `elasticsearch_pause_indexing`, and so on.
+Among other attributes, the output contains all the settings available in the [Elasticsearch Integration page](../../integration/elasticsearch.md), such as `elasticsearch_indexing`, `elasticsearch_url`, `elasticsearch_replicas`, and `elasticsearch_pause_indexing`.
 
 #### Setting attributes
 

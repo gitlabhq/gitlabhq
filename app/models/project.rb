@@ -98,6 +98,7 @@ class Project < ApplicationRecord
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_save :ensure_runners_token
+  before_save :ensure_project_namespace_in_sync
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -128,25 +129,8 @@ class Project < ApplicationRecord
   after_initialize :use_hashed_storage
   after_create :check_repository_absence!
 
-  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
-  # TODO: remove 'acts_as_ordered_taggable_on'  and ':topics_acts_as_taggable' in the further process of the migration
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
-  acts_as_ordered_taggable_on :topics
-  has_many :topics_acts_as_taggable, -> { order("#{ActsAsTaggableOn::Tagging.table_name}.id") },
-                     class_name: 'ActsAsTaggableOn::Tag',
-                     through: :topic_taggings,
-                     source: :tag
-
   has_many :project_topics, -> { order(:id) }, class_name: 'Projects::ProjectTopic'
   has_many :topics, through: :project_topics, class_name: 'Projects::Topic'
-
-  # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
-  # TODO: remove 'topics' in the further process of the migration
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
-  alias_method :topics_new, :topics
-  def topics
-    self.topics_acts_as_taggable + self.topics_new
-  end
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
@@ -159,11 +143,11 @@ class Project < ApplicationRecord
   # Relations
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
-  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -233,6 +217,7 @@ class Project < ApplicationRecord
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :export_jobs, class_name: 'ProjectExportJob'
+  has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
   has_one :project_repository, inverse_of: :project
   has_one :tracing_setting, class_name: 'ProjectTracingSetting'
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
@@ -652,15 +637,8 @@ class Project < ApplicationRecord
 
   scope :with_topic, ->(topic_name) do
     topic = Projects::Topic.find_by_name(topic_name)
-    acts_as_taggable_on_topic = ActsAsTaggableOn::Tag.find_by_name(topic_name)
 
-    return none unless topic || acts_as_taggable_on_topic
-
-    relations = []
-    relations << where(id: topic.project_topics.select(:project_id)) if topic
-    relations << where(id: acts_as_taggable_on_topic.taggings.select(:taggable_id)) if acts_as_taggable_on_topic
-
-    Project.from_union(relations)
+    topic ? where(id: topic.project_topics.select(:project_id)) : none
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -678,7 +656,7 @@ class Project < ApplicationRecord
   mount_uploader :bfg_object_map, AttachmentUploader
 
   def self.with_api_entity_associations
-    preload(:project_feature, :route, :topics, :topics_acts_as_taggable, :group, :timelogs, namespace: [:route, :owner])
+    preload(:project_feature, :route, :topics, :group, :timelogs, namespace: [:route, :owner])
   end
 
   def self.with_web_entity_associations
@@ -851,7 +829,7 @@ class Project < ApplicationRecord
     end
 
     def group_ids
-      joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+      joins(:namespace).where(namespaces: { type: Group.sti_name }).select(:namespace_id)
     end
 
     # Returns ids of projects with issuables available for given user
@@ -1200,7 +1178,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || bare_repository_import?
+    external_import? || forked? || gitlab_project_import? || jira_import? || bare_repository_import? || gitlab_project_migration?
   end
 
   def external_import?
@@ -1221,6 +1199,10 @@ class Project < ApplicationRecord
 
   def gitlab_project_import?
     import_type == 'gitlab_project'
+  end
+
+  def gitlab_project_migration?
+    import_type == 'gitlab_project_migration'
   end
 
   def gitea_import?
@@ -1327,8 +1309,18 @@ class Project < ApplicationRecord
   def changing_shared_runners_enabled_is_allowed
     return unless new_record? || changes.has_key?(:shared_runners_enabled)
 
-    if shared_runners_enabled && group && group.shared_runners_setting == 'disabled_and_unoverridable'
+    if shared_runners_setting_conflicting_with_group?
       errors.add(:shared_runners_enabled, _('cannot be enabled because parent group does not allow it'))
+    end
+  end
+
+  def shared_runners_setting_conflicting_with_group?
+    shared_runners_enabled && group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE
+  end
+
+  def reconcile_shared_runners_setting!
+    if shared_runners_setting_conflicting_with_group?
+      self.shared_runners_enabled = false
     end
   end
 
@@ -1814,7 +1806,7 @@ class Project < ApplicationRecord
   def open_issues_count(current_user = nil)
     return Projects::OpenIssuesCountService.new(self, current_user).count unless current_user.nil?
 
-    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
+    BatchLoader.for(self).batch do |projects, loader|
       issues_count_per_project = ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache_and_retrieve_data
 
       issues_count_per_project.each do |project, count|
@@ -2279,7 +2271,7 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def forks_count
-    BatchLoader.for(self).batch(replace_methods: false) do |projects, loader|
+    BatchLoader.for(self).batch do |projects, loader|
       fork_count_per_project = ::Projects::BatchForksCountService.new(projects).refresh_cache_and_retrieve_data
 
       fork_count_per_project.each do |project, count|
@@ -2418,7 +2410,7 @@ class Project < ApplicationRecord
   end
 
   def mark_primary_write_location
-    ::Gitlab::Database::LoadBalancing::Sticking.mark_primary_write_location(:project, self.id)
+    self.class.sticking.mark_primary_write_location(:project, self.id)
   end
 
   def toggle_ci_cd_settings!(settings_attribute)
@@ -2677,10 +2669,6 @@ class Project < ApplicationRecord
     ProjectStatistics.increment_statistic(self, statistic, delta)
   end
 
-  def merge_requests_author_approval
-    !!read_attribute(:merge_requests_author_approval)
-  end
-
   def ci_forward_deployment_enabled?
     return false unless ci_cd_settings
 
@@ -2734,15 +2722,9 @@ class Project < ApplicationRecord
     @topic_list = @topic_list.split(',') if @topic_list.instance_of?(String)
     @topic_list = @topic_list.map(&:strip).uniq.reject(&:empty?)
 
-    if @topic_list != self.topic_list || self.topics_acts_as_taggable.any?
-      self.topics_new.delete_all
+    if @topic_list != self.topic_list
+      self.topics.delete_all
       self.topics = @topic_list.map { |topic| Projects::Topic.find_or_create_by(name: topic) }
-
-      # Remove old topics (ActsAsTaggableOn::Tag)
-      # Required during the `ActsAsTaggableOn::Tag -> Topic` migration
-      # TODO: remove in the further process of the migration
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/335946
-      self.topic_taggings.clear
     end
 
     @topic_list = nil
@@ -2911,6 +2893,15 @@ class Project < ApplicationRecord
 
   def online_runners_with_tags
     @online_runners_with_tags ||= active_runners.with_tags.online
+  end
+
+  def ensure_project_namespace_in_sync
+    if changes.keys & [:name, :path, :namespace_id, :visibility_level] && project_namespace.present?
+      project_namespace.name = name
+      project_namespace.path = path
+      project_namespace.parent = namespace
+      project_namespace.visibility_level = visibility_level
+    end
   end
 end
 

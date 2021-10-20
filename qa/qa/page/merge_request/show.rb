@@ -25,6 +25,11 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/compare_versions.vue' do
           element :target_version_dropdown
+          element :file_tree_button
+        end
+
+        view 'app/assets/javascripts/diffs/components/tree_list.vue' do
+          element :file_tree_container
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -93,7 +98,6 @@ module QA
         end
 
         view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
-          element :apply_suggestions_batch_button
           element :add_suggestion_batch_button
         end
 
@@ -187,11 +191,17 @@ module QA
         end
 
         def has_file?(file_name)
-          has_element?(:file_name_content, text: file_name)
+          open_file_tree
+          has_element?(:file_name_content, file_name: file_name)
         end
 
         def has_no_file?(file_name)
-          has_no_element?(:file_name_content, text: file_name)
+          open_file_tree
+          has_no_element?(:file_name_content, file_name: file_name)
+        end
+
+        def open_file_tree
+          click_element(:file_tree_button) unless has_element?(:file_tree_container)
         end
 
         def has_merge_button?
@@ -202,7 +212,7 @@ module QA
 
         def has_pipeline_status?(text)
           # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
-          wait_until(sleep_interval: 5, reload: false) do
+          wait_until(max_duration: 120, sleep_interval: 5, reload: true) do
             has_element?(:merge_request_pipeline_info_content, text: text, wait: 15 )
           end
         end
@@ -288,13 +298,11 @@ module QA
         end
 
         def merge_immediately!
-          merge_moment_dropdown_found = has_element?(:merge_moment_dropdown, wait: 0)
-
-          if merge_moment_dropdown_found
-            click_element(:merge_moment_dropdown)
-            click_element(:merge_immediately_menu_item)
+          if has_element?(:merge_moment_dropdown)
+            click_element(:merge_moment_dropdown, skip_finished_loading_check: true)
+            click_element(:merge_immediately_menu_item, skip_finished_loading_check: true)
           else
-            click_element(:merge_button)
+            click_element(:merge_button, skip_finished_loading_check: true)
           end
         end
 
@@ -353,10 +361,6 @@ module QA
 
         def add_suggestion_to_batch
           all_elements(:add_suggestion_batch_button, minimum: 1).first.click
-        end
-
-        def apply_suggestions_batch
-          all_elements(:apply_suggestions_batch_button, minimum: 1).first.click
         end
 
         def cherry_pick!

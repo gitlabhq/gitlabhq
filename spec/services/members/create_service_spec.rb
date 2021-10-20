@@ -80,7 +80,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
     it 'does not add a member' do
       expect(execute_service[:status]).to eq(:error)
-      expect(execute_service[:message]).to eq('Invite email has already been taken')
+      expect(execute_service[:message]).to eq("The member's email address has already been taken")
       expect(OnboardingProgress.completed?(source.namespace, :user_added)).to be(false)
     end
   end

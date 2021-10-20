@@ -5,13 +5,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
+import { labelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/create_label.mutation.graphql';
-import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import {
   mockSuggestedColors,
   createLabelSuccessfulResponse,
-  labelsQueryResponse,
+  workspaceLabelsQueryResponse,
 } from './mock_data';
 
 jest.mock('~/flash');
@@ -47,11 +48,14 @@ describe('DropdownContentsCreateView', () => {
     findAllColors().at(0).vm.$emit('click', new Event('mouseclick'));
   };
 
-  const createComponent = ({ mutationHandler = createLabelSuccessHandler } = {}) => {
+  const createComponent = ({
+    mutationHandler = createLabelSuccessHandler,
+    issuableType = IssuableType.Issue,
+  } = {}) => {
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
-      query: projectLabelsQuery,
-      data: labelsQueryResponse.data,
+      query: labelsQueries[issuableType].workspaceQuery,
+      data: workspaceLabelsQueryResponse.data,
       variables: {
         fullPath: '',
         searchTerm: '',
@@ -61,6 +65,10 @@ describe('DropdownContentsCreateView', () => {
     wrapper = shallowMount(DropdownContentsCreateView, {
       localVue,
       apolloProvider: mockApollo,
+      propsData: {
+        issuableType,
+        fullPath: '',
+      },
     });
   };
 
@@ -135,15 +143,6 @@ describe('DropdownContentsCreateView', () => {
       expect(findCreateButton().props('disabled')).toBe(false);
     });
 
-    it('calls a mutation with correct parameters on Create button click', () => {
-      findCreateButton().vm.$emit('click');
-      expect(createLabelSuccessHandler).toHaveBeenCalledWith({
-        color: '#009966',
-        projectPath: '',
-        title: 'Test title',
-      });
-    });
-
     it('renders a loader spinner after Create button click', async () => {
       findCreateButton().vm.$emit('click');
       await nextTick();
@@ -159,6 +158,30 @@ describe('DropdownContentsCreateView', () => {
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);
+    });
+  });
+
+  it('calls a mutation with `projectPath` variable on the issue', () => {
+    createComponent();
+    fillLabelAttributes();
+    findCreateButton().vm.$emit('click');
+
+    expect(createLabelSuccessHandler).toHaveBeenCalledWith({
+      color: '#009966',
+      projectPath: '',
+      title: 'Test title',
+    });
+  });
+
+  it('calls a mutation with `groupPath` variable on the epic', () => {
+    createComponent({ issuableType: IssuableType.Epic });
+    fillLabelAttributes();
+    findCreateButton().vm.$emit('click');
+
+    expect(createLabelSuccessHandler).toHaveBeenCalledWith({
+      color: '#009966',
+      groupPath: '',
+      title: 'Test title',
     });
   });
 

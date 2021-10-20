@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
 import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
@@ -37,13 +36,6 @@ export default {
     };
   },
   computed: {
-    runnerNumericalId() {
-      return getIdFromGraphQLId(this.runner.id);
-    },
-    runnerUrl() {
-      // TODO implement using webUrl from the API
-      return `${gon.gitlab_url || ''}/admin/runners/${this.runnerNumericalId}`;
-    },
     isActive() {
       return this.runner.active;
     },
@@ -119,7 +111,7 @@ export default {
             },
           },
           awaitRefetchQueries: true,
-          refetchQueries: ['getRunners'],
+          refetchQueries: ['getRunners', 'getGroupRunners'],
         });
         if (errors && errors.length) {
           throw new Error(errors.join(' '));
@@ -147,12 +139,20 @@ export default {
 
 <template>
   <gl-button-group>
+    <!--
+      This button appears for administratos: those with
+      access to the adminUrl. More advanced permissions policies
+      will allow more granular permissions.
+
+      See https://gitlab.com/gitlab-org/gitlab/-/issues/334802
+    -->
     <gl-button
+      v-if="runner.adminUrl"
       v-gl-tooltip.hover.viewport
+      :href="runner.adminUrl"
       :title="$options.i18n.I18N_EDIT"
       :aria-label="$options.i18n.I18N_EDIT"
       icon="pencil"
-      :href="runnerUrl"
       data-testid="edit-runner"
     />
     <gl-button

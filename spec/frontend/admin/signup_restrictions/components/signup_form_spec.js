@@ -35,9 +35,6 @@ describe('Signup Form', () => {
 
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
-
-  const findRequireAdminApprovalCheckbox = () =>
-    wrapper.findByTestId('require-admin-approval-checkbox');
   const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
   const findModal = () => wrapper.find(GlModal);
 
@@ -191,125 +188,6 @@ describe('Signup Form', () => {
   });
 
   describe('form submit button confirmation modal for side-effect of adding possibly unwanted new users', () => {
-    it.each`
-      requireAdminApprovalAction | userCapAction                          | pendingUserCount | buttonEffect
-      ${'unchanged from true'}   | ${'unchanged'}                         | ${0}             | ${'submits form'}
-      ${'unchanged from false'}  | ${'unchanged'}                         | ${0}             | ${'submits form'}
-      ${'toggled off'}           | ${'unchanged'}                         | ${1}             | ${'shows confirmation modal'}
-      ${'toggled off'}           | ${'unchanged'}                         | ${0}             | ${'submits form'}
-      ${'toggled on'}            | ${'unchanged'}                         | ${0}             | ${'submits form'}
-      ${'unchanged from false'}  | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
-      ${'unchanged from true'}   | ${'increased'}                         | ${0}             | ${'submits form'}
-      ${'toggled off'}           | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
-      ${'toggled off'}           | ${'increased'}                         | ${0}             | ${'submits form'}
-      ${'toggled on'}            | ${'increased'}                         | ${1}             | ${'shows confirmation modal'}
-      ${'toggled on'}            | ${'increased'}                         | ${0}             | ${'submits form'}
-      ${'toggled on'}            | ${'decreased'}                         | ${0}             | ${'submits form'}
-      ${'toggled on'}            | ${'decreased'}                         | ${1}             | ${'submits form'}
-      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${1}             | ${'shows confirmation modal'}
-      ${'unchanged from false'}  | ${'changed from limited to unlimited'} | ${0}             | ${'submits form'}
-      ${'unchanged from false'}  | ${'changed from unlimited to limited'} | ${0}             | ${'submits form'}
-      ${'unchanged from false'}  | ${'unchanged from unlimited'}          | ${0}             | ${'submits form'}
-    `(
-      '$buttonEffect if require admin approval for new sign-ups is $requireAdminApprovalAction and the user cap is $userCapAction and pending user count is $pendingUserCount',
-      async ({ requireAdminApprovalAction, userCapAction, pendingUserCount, buttonEffect }) => {
-        let isModalDisplayed;
-
-        switch (buttonEffect) {
-          case 'shows confirmation modal':
-            isModalDisplayed = true;
-            break;
-          case 'submits form':
-            isModalDisplayed = false;
-            break;
-          default:
-            isModalDisplayed = false;
-            break;
-        }
-
-        const isFormSubmittedWhenClickingFormSubmitButton = !isModalDisplayed;
-
-        const injectedProps = {
-          pendingUserCount,
-        };
-
-        const USER_CAP_DEFAULT = 5;
-
-        switch (userCapAction) {
-          case 'changed from unlimited to limited':
-            injectedProps.newUserSignupsCap = '';
-            break;
-          case 'unchanged from unlimited':
-            injectedProps.newUserSignupsCap = '';
-            break;
-          default:
-            injectedProps.newUserSignupsCap = USER_CAP_DEFAULT;
-            break;
-        }
-
-        switch (requireAdminApprovalAction) {
-          case 'unchanged from true':
-            injectedProps.requireAdminApprovalAfterUserSignup = true;
-            break;
-          case 'unchanged from false':
-            injectedProps.requireAdminApprovalAfterUserSignup = false;
-            break;
-          case 'toggled off':
-            injectedProps.requireAdminApprovalAfterUserSignup = true;
-            break;
-          case 'toggled on':
-            injectedProps.requireAdminApprovalAfterUserSignup = false;
-            break;
-          default:
-            injectedProps.requireAdminApprovalAfterUserSignup = false;
-            break;
-        }
-
-        formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
-
-        await mountComponent({
-          injectedProps,
-          stubs: { GlButton, GlModal: stubComponent(GlModal) },
-        });
-
-        findModal().vm.show = jest.fn();
-
-        if (
-          requireAdminApprovalAction === 'toggled off' ||
-          requireAdminApprovalAction === 'toggled on'
-        ) {
-          await findRequireAdminApprovalCheckbox().vm.$emit('input', false);
-        }
-
-        switch (userCapAction) {
-          case 'increased':
-            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT + 1);
-            break;
-          case 'decreased':
-            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT - 1);
-            break;
-          case 'changed from limited to unlimited':
-            await findUserCapInput().vm.$emit('input', '');
-            break;
-          case 'changed from unlimited to limited':
-            await findUserCapInput().vm.$emit('input', USER_CAP_DEFAULT);
-            break;
-          default:
-            break;
-        }
-
-        await findFormSubmitButton().trigger('click');
-
-        if (isFormSubmittedWhenClickingFormSubmitButton) {
-          expect(formSubmitSpy).toHaveBeenCalled();
-          expect(findModal().vm.show).not.toHaveBeenCalled();
-        } else {
-          expect(formSubmitSpy).not.toHaveBeenCalled();
-          expect(findModal().vm.show).toHaveBeenCalled();
-        }
-      },
-    );
-
     describe('modal actions', () => {
       beforeEach(async () => {
         const INITIAL_USER_CAP = 5;

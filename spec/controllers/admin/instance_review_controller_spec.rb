@@ -6,7 +6,7 @@ RSpec.describe Admin::InstanceReviewController do
   include UsageDataHelpers
 
   let(:admin) { create(:admin) }
-  let(:subscriptions_url) { ::Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL }
+  let(:subscriptions_instance_review_url) { Gitlab::SubscriptionPortal.subscriptions_instance_review_url }
 
   before do
     sign_in(admin)
@@ -44,7 +44,7 @@ RSpec.describe Admin::InstanceReviewController do
           notes_count: 0
         } }.to_query
 
-        expect(response).to redirect_to("#{subscriptions_url}/instance_review?#{params}")
+        expect(response).to redirect_to("#{subscriptions_instance_review_url}?#{params}")
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Admin::InstanceReviewController do
           version: ::Gitlab::VERSION
         } }.to_query
 
-        expect(response).to redirect_to("#{subscriptions_url}/instance_review?#{params}")
+        expect(response).to redirect_to("#{subscriptions_instance_review_url}?#{params}")
       end
     end
   end

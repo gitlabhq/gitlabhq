@@ -133,7 +133,7 @@ class Commit
     end
 
     def lazy(container, oid)
-      BatchLoader.for({ container: container, oid: oid }).batch(replace_methods: false) do |items, loader|
+      BatchLoader.for({ container: container, oid: oid }).batch do |items, loader|
         items_by_container = items.group_by { |i| i[:container] }
 
         items_by_container.each do |container, commit_ids|

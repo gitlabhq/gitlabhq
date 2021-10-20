@@ -1,20 +1,26 @@
-import $ from 'jquery';
 import { delay } from 'lodash';
 import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import axios from '../lib/utils/axios_utils';
 import initForm from './edit';
 import eventHub from './edit/event_hub';
+import {
+  TEST_INTEGRATION_EVENT,
+  SAVE_INTEGRATION_EVENT,
+  GET_JIRA_ISSUE_TYPES_EVENT,
+  TOGGLE_INTEGRATION_EVENT,
+  VALIDATE_INTEGRATION_FORM_EVENT,
+} from './constants';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
-    this.$form = $(formSelector);
+    this.$form = document.querySelector(formSelector);
     this.formActive = false;
 
     this.vue = null;
 
     // Form Metadata
-    this.testEndPoint = this.$form.data('testUrl');
+    this.testEndPoint = this.$form.dataset.testUrl;
   }
 
   init() {
@@ -23,22 +29,19 @@ export default class IntegrationSettingsForm {
       document.querySelector('.js-vue-integration-settings'),
       document.querySelector('.js-vue-default-integration-settings'),
     );
-    eventHub.$on('toggle', (active) => {
+    eventHub.$on(TOGGLE_INTEGRATION_EVENT, (active) => {
       this.formActive = active;
       this.toggleServiceState();
     });
-    eventHub.$on('testIntegration', () => {
+    eventHub.$on(TEST_INTEGRATION_EVENT, () => {
       this.testIntegration();
     });
-    eventHub.$on('saveIntegration', () => {
+    eventHub.$on(SAVE_INTEGRATION_EVENT, () => {
       this.saveIntegration();
     });
-    eventHub.$on('getJiraIssueTypes', () => {
-      // eslint-disable-next-line no-jquery/no-serialize
-      this.getJiraIssueTypes(this.$form.serialize());
+    eventHub.$on(GET_JIRA_ISSUE_TYPES_EVENT, () => {
+      this.getJiraIssueTypes(new FormData(this.$form));
     });
-
-    eventHub.$emit('formInitialized');
   }
 
   saveIntegration() {
@@ -47,14 +50,14 @@ export default class IntegrationSettingsForm {
     // 2) If this service can be saved
     // If both conditions are true, we override form submission
     // and save the service using provided configuration.
-    const formValid = this.$form.get(0).checkValidity() || this.formActive === false;
+    const formValid = this.$form.checkValidity() || this.formActive === false;
 
     if (formValid) {
       delay(() => {
-        this.$form.trigger('submit');
+        this.$form.submit();
       }, 100);
     } else {
-      eventHub.$emit('validateForm');
+      eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsSaving', false);
     }
   }
@@ -65,11 +68,10 @@ export default class IntegrationSettingsForm {
     // 2) If this service can be tested
     // If both conditions are true, we override form submission
     // and test the service using provided configuration.
-    if (this.$form.get(0).checkValidity()) {
-      // eslint-disable-next-line no-jquery/no-serialize
-      this.testSettings(this.$form.serialize());
+    if (this.$form.checkValidity()) {
+      this.testSettings(new FormData(this.$form));
     } else {
-      eventHub.$emit('validateForm');
+      eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
       this.vue.$store.dispatch('setIsTesting', false);
     }
   }
@@ -79,9 +81,9 @@ export default class IntegrationSettingsForm {
    */
   toggleServiceState() {
     if (this.formActive) {
-      this.$form.removeAttr('novalidate');
-    } else if (!this.$form.attr('novalidate')) {
-      this.$form.attr('novalidate', 'novalidate');
+      this.$form.removeAttribute('novalidate');
+    } else if (!this.$form.getAttribute('novalidate')) {
+      this.$form.setAttribute('novalidate', 'novalidate');
     }
   }
 
@@ -109,7 +111,7 @@ export default class IntegrationSettingsForm {
           },
         }) => {
           if (error || !issuetypes?.length) {
-            eventHub.$emit('validateForm');
+            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
             throw new Error(message);
           }
 

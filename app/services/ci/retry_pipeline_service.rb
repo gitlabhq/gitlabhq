@@ -9,20 +9,15 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      needs = Set.new
-
       pipeline.ensure_scheduling_type!
 
       builds_relation(pipeline).find_each do |build|
         next unless can_be_retried?(build)
 
-        Ci::RetryBuildService.new(project, current_user)
-          .reprocess!(build)
-
-        needs += build.needs.map(&:name)
+        Ci::RetryBuildService.new(project, current_user).clone!(build)
       end
 
-      pipeline.builds.latest.skipped.find_each do |skipped|
+      pipeline.processables.latest.skipped.find_each do |skipped|
         retry_optimistic_lock(skipped, name: 'ci_retry_pipeline') { |build| build.process(current_user) }
       end
 

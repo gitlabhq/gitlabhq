@@ -23,20 +23,6 @@ describe('experiment Utilities', () => {
     });
   });
 
-  describe('getExperimentContexts', () => {
-    describe.each`
-      gon                     | input         | output
-      ${[TEST_KEY, '_data_']} | ${[TEST_KEY]} | ${[{ schema: TRACKING_CONTEXT_SCHEMA, data: { variant: '_data_' } }]}
-      ${[]}                   | ${[TEST_KEY]} | ${[]}
-    `('with input=$input and gon=$gon', ({ gon, input, output }) => {
-      assignGitlabExperiment(...gon);
-
-      it(`returns ${output}`, () => {
-        expect(experimentUtils.getExperimentContexts(...input)).toEqual(output);
-      });
-    });
-  });
-
   describe('getAllExperimentContexts', () => {
     const schema = TRACKING_CONTEXT_SCHEMA;
     let origGon;

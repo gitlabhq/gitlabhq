@@ -27,6 +27,7 @@ describe('sidebar labels', () => {
     labelsManagePath: '/gitlab-org/gitlab-test/-/labels',
     projectIssuesPath: '/gitlab-org/gitlab-test/-/issues',
     projectPath: 'gitlab-org/gitlab-test',
+    fullPath: 'gitlab-org/gitlab-test',
   };
 
   const $apollo = {
@@ -110,10 +111,9 @@ describe('sidebar labels', () => {
           mutation: updateIssueLabelsMutation,
           variables: {
             input: {
-              addLabelIds: [40],
               iid: defaultProps.iid,
               projectPath: defaultProps.projectPath,
-              removeLabelIds: [26, 55],
+              labelIds: [toLabelGid(29), toLabelGid(28), toLabelGid(27), toLabelGid(40)],
             },
           },
         };

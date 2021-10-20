@@ -34,15 +34,29 @@ module QA
         result
       end
 
-      def retry_until(max_attempts: nil, max_duration: nil, reload_page: nil, sleep_interval: 0, raise_on_failure: true, retry_on_exception: false, log: true)
+      def retry_until(
+        max_attempts: nil,
+        max_duration: nil,
+        reload_page: nil,
+        sleep_interval: 0,
+        raise_on_failure: true,
+        retry_on_exception: false,
+        log: true
+      )
         # For backwards-compatibility
         max_attempts = 3 if max_attempts.nil? && max_duration.nil?
 
         if log
-          start_msg ||= ["with retry_until:"]
+          start_msg = ["with retry_until:"]
           start_msg << "max_attempts: #{max_attempts};" if max_attempts
           start_msg << "max_duration: #{max_duration};" if max_duration
-          start_msg << "reload_page: #{reload_page}; sleep_interval: #{sleep_interval}; raise_on_failure: #{raise_on_failure}; retry_on_exception: #{retry_on_exception}"
+          start_msg.push(*[
+                           "reload_page: #{reload_page};",
+                           "sleep_interval: #{sleep_interval};",
+                           "raise_on_failure: #{raise_on_failure};",
+                           "retry_on_exception: #{retry_on_exception}"
+                         ])
+
           QA::Runtime::Logger.debug(start_msg.join(' '))
         end
 
@@ -58,7 +72,7 @@ module QA
         ) do
           result = yield
         end
-        QA::Runtime::Logger.debug("ended retry_until")
+        QA::Runtime::Logger.debug("ended retry_until") if log
 
         result
       end

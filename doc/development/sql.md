@@ -241,7 +241,7 @@ MergeRequest.where(source_project_id: Project.all.select(:id))
 ```
 
 The _only_ time you should use `pluck` is when you actually need to operate on
-the values in Ruby itself (e.g. write them to a file). In almost all other cases
+the values in Ruby itself (for example, writing them to a file). In almost all other cases
 you should ask yourself "Can I not just use a sub-query?".
 
 In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like

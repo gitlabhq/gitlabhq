@@ -85,7 +85,7 @@ export default {
   <span>
     <span
       v-if="issue.milestone"
-      class="issuable-milestone gl-display-none gl-sm-display-inline-block! gl-mr-3"
+      class="issuable-milestone gl-mr-3"
       data-testid="issuable-milestone"
     >
       <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate">
@@ -96,7 +96,7 @@ export default {
     <span
       v-if="issue.dueDate"
       v-gl-tooltip
-      class="issuable-due-date gl-display-none gl-sm-display-inline-block! gl-mr-3"
+      class="issuable-due-date gl-mr-3"
       :class="{ 'gl-text-red-500': showDueDateInRed }"
       :title="__('Due date')"
       data-testid="issuable-due-date"
@@ -107,21 +107,14 @@ export default {
     <span
       v-if="timeEstimate"
       v-gl-tooltip
-      class="gl-display-none gl-sm-display-inline-block! gl-mr-3"
+      class="gl-mr-3"
       :title="__('Estimate')"
       data-testid="time-estimate"
     >
       <gl-icon name="timer" />
       {{ timeEstimate }}
     </span>
-    <weight-count
-      class="issuable-weight gl-display-none gl-sm-display-inline-block gl-mr-3"
-      :weight="issue.weight"
-    />
-    <issue-health-status
-      v-if="showHealthStatus"
-      class="gl-display-none gl-sm-display-inline-block"
-      :health-status="healthStatus"
-    />
+    <weight-count class="issuable-weight gl-mr-3" :weight="issue.weight" />
+    <issue-health-status v-if="showHealthStatus" :health-status="healthStatus" />
   </span>
 </template>

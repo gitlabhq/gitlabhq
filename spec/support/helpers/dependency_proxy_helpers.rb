@@ -34,10 +34,18 @@ module DependencyProxyHelpers
 
   def build_jwt(user = nil, expire_time: nil)
     JSONWebToken::HMACToken.new(::Auth::DependencyProxyAuthenticationService.secret).tap do |jwt|
-      jwt['user_id'] = user.id if user.is_a?(User)
-      jwt['deploy_token'] = user.token if user.is_a?(DeployToken)
-      jwt.expire_time = expire_time || jwt.issued_at + 1.minute
+      if block_given?
+        yield(jwt)
+      else
+        jwt['user_id'] = user.id if user.is_a?(User)
+        jwt['deploy_token'] = user.token if user.is_a?(DeployToken)
+        jwt.expire_time = expire_time || jwt.issued_at + 1.minute
+      end
     end
+  end
+
+  def jwt_token_authorization_headers(jwt)
+    { 'AUTHORIZATION' => "Bearer #{jwt.encoded}" }
   end
 
   private

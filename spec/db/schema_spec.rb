@@ -67,6 +67,8 @@ RSpec.describe 'Database schema' do
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
     open_project_tracker_data: %w[closed_status_id],
+    packages_build_infos: %w[pipeline_id],
+    packages_package_file_build_infos: %w[pipeline_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
@@ -82,6 +84,7 @@ RSpec.describe 'Database schema' do
     subscriptions: %w[user_id subscribable_id],
     suggestions: %w[commit_id],
     taggings: %w[tag_id taggable_id tagger_id],
+    terraform_state_versions: %w[ci_build_id],
     timelogs: %w[user_id],
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
@@ -201,7 +204,8 @@ RSpec.describe 'Database schema' do
     "Operations::FeatureFlags::Strategy" => %w[parameters],
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
-    "Releases::Evidence" => %w[summary]
+    "Releases::Evidence" => %w[summary],
+    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

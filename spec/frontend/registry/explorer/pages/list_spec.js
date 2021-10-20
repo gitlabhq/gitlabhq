@@ -129,13 +129,16 @@ describe('List Page', () => {
     });
   });
 
-  describe('connection error', () => {
+  describe.each([
+    { error: 'connectionError', errorName: 'connection error' },
+    { error: 'invalidPathError', errorName: 'invalid path error' },
+  ])('handling $errorName', ({ error }) => {
     const config = {
-      characterError: true,
       containersErrorImage: 'foo',
       helpPagePath: 'bar',
       isGroupPage: false,
     };
+    config[error] = true;
 
     it('should show an empty state', () => {
       mountComponent({ config });

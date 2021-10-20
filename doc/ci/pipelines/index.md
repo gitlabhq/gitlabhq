@@ -38,7 +38,7 @@ A typical pipeline might consist of four stages, executed in the following order
 - A `production` stage, with a job called `deploy-to-prod`.
 
 NOTE:
-If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/repository_mirroring.md#pull-from-a-remote-repository),
+If you have a [mirrored repository that GitLab pulls from](../../user/project/repository/mirror/pull.md),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -148,7 +148,7 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
 keywords to define
@@ -339,7 +339,7 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### View full pipeline graph
 
-> - [Visualization improvements introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
 
 The [pipeline details page](#view-pipelines) displays the full pipeline graph of
 all the jobs in the pipeline.

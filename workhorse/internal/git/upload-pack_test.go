@@ -45,14 +45,13 @@ func TestUploadPackTimesOut(t *testing.T) {
 	uploadPackTimeout = time.Millisecond
 	defer func() { uploadPackTimeout = originalUploadPackTimeout }()
 
-	addr, cleanUp := startSmartHTTPServer(t, &smartHTTPServiceServer{
+	addr := startSmartHTTPServer(t, &smartHTTPServiceServer{
 		PostUploadPackFunc: func(stream gitalypb.SmartHTTPService_PostUploadPackServer) error {
 			_, err := stream.Recv() // trigger a read on the client request body
 			require.NoError(t, err)
 			return nil
 		},
 	})
-	defer cleanUp()
 
 	body := &fakeReader{n: 0, err: nil}
 
@@ -64,7 +63,9 @@ func TestUploadPackTimesOut(t *testing.T) {
 	require.EqualError(t, err, "smarthttp.UploadPack: busyReader: context deadline exceeded")
 }
 
-func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) (string, func()) {
+func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) string {
+	t.Helper()
+
 	tmp, err := ioutil.TempDir("", "")
 	require.NoError(t, err)
 
@@ -78,8 +79,10 @@ func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) (stri
 		require.NoError(t, srv.Serve(ln))
 	}()
 
-	return fmt.Sprintf("%s://%s", ln.Addr().Network(), ln.Addr().String()), func() {
+	t.Cleanup(func() {
 		srv.GracefulStop()
 		require.NoError(t, os.RemoveAll(tmp), "error removing temp dir %q", tmp)
-	}
+	})
+
+	return fmt.Sprintf("%s://%s", ln.Addr().Network(), ln.Addr().String())
 }

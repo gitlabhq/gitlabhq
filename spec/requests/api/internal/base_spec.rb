@@ -609,7 +609,7 @@ RSpec.describe API::Internal::Base do
       end
 
       context 'with Project' do
-        it_behaves_like 'storing arguments in the application context' do
+        it_behaves_like 'storing arguments in the application context for the API' do
           let(:expected_params) { { user: key.user.username, project: project.full_path, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, project) }
@@ -617,7 +617,7 @@ RSpec.describe API::Internal::Base do
       end
 
       context 'with PersonalSnippet' do
-        it_behaves_like 'storing arguments in the application context' do
+        it_behaves_like 'storing arguments in the application context for the API' do
           let(:expected_params) { { user: key.user.username, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, personal_snippet) }
@@ -625,7 +625,7 @@ RSpec.describe API::Internal::Base do
       end
 
       context 'with ProjectSnippet' do
-        it_behaves_like 'storing arguments in the application context' do
+        it_behaves_like 'storing arguments in the application context for the API' do
           let(:expected_params) { { user: key.user.username, project: project_snippet.project.full_path, caller_id: "POST /api/:version/internal/allowed" } }
 
           subject { push(key, project_snippet) }
@@ -1197,7 +1197,7 @@ RSpec.describe API::Internal::Base do
         subject
       end
 
-      it_behaves_like 'storing arguments in the application context' do
+      it_behaves_like 'storing arguments in the application context for the API' do
         let(:expected_params) { expected_context }
       end
     end

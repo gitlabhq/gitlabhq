@@ -648,7 +648,11 @@ For self-managed instances, those settings can be updated in the [Rails console]
   ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
   ```
 
-Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits), they are available in the [admin area](../../admin_area/index.md) **Settings > CI/CD > Container Registry**.
+Alternatively, once the limits are [enabled](#enable-or-disable-cleanup-policy-limits),
+they are available in the [administrator area](../../admin_area/index.md):
+
+1. On the top bar, select **Menu > Admin**.
+1. Go to **Settings > CI/CD > Container Registry**.
 
 #### Enable or disable cleanup policy limits
 
@@ -713,15 +717,6 @@ Check the regex patterns to ensure they are valid.
 
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/).
 View some common [regex pattern examples](#regex-pattern-examples).
-
-## Use the Container Registry to store Helm Charts
-
-With the launch of [Helm v3](https://helm.sh/docs/topics/registries/),
-you can use the Container Registry to store Helm Charts. However, due to the way metadata is passed
-and stored by Docker, it is not possible for GitLab to parse this data and meet performance standards.
-[This epic](https://gitlab.com/groups/gitlab-org/-/epics/2313) updates the architecture of the Container Registry to support Helm Charts.
-
-[Read more about the above challenges](https://gitlab.com/gitlab-org/gitlab/-/issues/38047#note_298842890).
 
 ## Limitations
 
@@ -911,10 +906,10 @@ these steps:
    while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
    ```
 
-### Troubleshoot as a GitLab server admin
+### Troubleshoot as a GitLab server administrator
 
 Troubleshooting the GitLab Container Registry, most of the times, requires
-administrator access to the GitLab server.
+you to log in to GitLab server with the Administrator role.
 
 [Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
 

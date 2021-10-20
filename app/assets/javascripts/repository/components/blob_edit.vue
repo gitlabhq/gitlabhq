@@ -27,6 +27,16 @@ export default {
       type: String,
       required: true,
     },
+    needsToFork: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    onEdit(target) {
+      this.$emit('edit', target);
+    },
   },
 };
 </script>
@@ -38,7 +48,9 @@ export default {
     class="gl-mr-3"
     :edit-url="editPath"
     :web-ide-url="webIdePath"
+    :needs-to-fork="needsToFork"
     :is-blob="true"
+    @edit="onEdit"
   />
   <div v-else>
     <gl-button
@@ -46,8 +58,8 @@ export default {
       class="gl-mr-2"
       category="primary"
       variant="confirm"
-      :href="editPath"
       data-testid="edit"
+      @click="onEdit('simple')"
     >
       {{ $options.i18n.edit }}
     </gl-button>
@@ -56,8 +68,8 @@ export default {
       class="gl-mr-3"
       category="primary"
       variant="confirm"
-      :href="webIdePath"
       data-testid="web-ide"
+      @click="onEdit('ide')"
     >
       {{ $options.i18n.webIde }}
     </gl-button>

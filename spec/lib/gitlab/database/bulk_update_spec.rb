@@ -91,45 +91,38 @@ RSpec.describe Gitlab::Database::BulkUpdate do
       .to eq(['MR a', 'Issue a', 'Issue b'])
   end
 
-  shared_examples 'basic functionality' do
-    it 'sets multiple values' do
-      create_default(:user)
-      create_default(:project)
+  context 'validates prepared_statements support', :reestablished_active_record_base do
+    using RSpec::Parameterized::TableSyntax
 
-      i_a, i_b = create_list(:issue, 2)
-
-      mapping = {
-        i_a => { title: 'Issue a' },
-        i_b => { title: 'Issue b' }
-      }
-
-      described_class.execute(%i[title], mapping)
-
-      expect([i_a, i_b].map { |x| x.reset.title })
-        .to eq(['Issue a', 'Issue b'])
+    where(:prepared_statements) do
+      [false, true]
     end
-  end
 
-  include_examples 'basic functionality'
-
-  context 'when prepared statements are configured differently to the normal test environment' do
     before do
-      klass = Class.new(ActiveRecord::Base) do
-        def self.abstract_class?
-          true # So it gets its own connection
-        end
-      end
+      configuration_hash = ActiveRecord::Base.connection_db_config.configuration_hash
 
-      stub_const('ActiveRecordBasePreparedStatementsInverted', klass)
-
-      c = ActiveRecord::Base.connection.instance_variable_get(:@config)
-      inverted = c.merge(prepared_statements: !ActiveRecord::Base.connection.prepared_statements)
-      ActiveRecordBasePreparedStatementsInverted.establish_connection(inverted)
-
-      allow(ActiveRecord::Base).to receive(:connection_specification_name)
-        .and_return(ActiveRecordBasePreparedStatementsInverted.connection_specification_name)
+      ActiveRecord::Base.establish_connection(
+        configuration_hash.merge(prepared_statements: prepared_statements)
+      )
     end
 
-    include_examples 'basic functionality'
+    with_them do
+      it 'sets multiple values' do
+        create_default(:user)
+        create_default(:project)
+
+        i_a, i_b = create_list(:issue, 2)
+
+        mapping = {
+          i_a => { title: 'Issue a' },
+          i_b => { title: 'Issue b' }
+        }
+
+        described_class.execute(%i[title], mapping)
+
+        expect([i_a, i_b].map { |x| x.reset.title })
+          .to eq(['Issue a', 'Issue b'])
+      end
+    end
   end
 end

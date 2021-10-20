@@ -3,6 +3,8 @@
 module API
   class ProjectContainerRepositories < ::API::Base
     include PaginationParams
+    include ::API::Helpers::ContainerRegistryHelpers
+
     helpers ::API::Helpers::PackagesHelpers
 
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(

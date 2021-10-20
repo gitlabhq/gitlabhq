@@ -211,6 +211,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
     end
 
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
+
     before do
       stub_const('TestWorker', Class.new)
       TestWorker.class_eval do
@@ -234,9 +237,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
     end
 
-    include_context 'server metrics with mocked prometheus'
-    include_context 'server metrics call'
-
     shared_context 'worker declaring data consistency' do
       let(:worker_class) { LBTestWorker }
 
@@ -250,61 +250,93 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
       end
     end
 
-    context 'when load_balancing is enabled' do
-      before do
-        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
+    describe '#call' do
+      context 'when worker declares data consistency' do
+        include_context 'worker declaring data consistency'
+
+        it 'increments load balancing counter with defined data consistency' do
+          process_job
+
+          expect(load_balancing_metric).to have_received(:increment).with(
+            a_hash_including(
+              data_consistency: :delayed,
+              load_balancing_strategy: 'replica'
+            ), 1)
+        end
       end
 
-      describe '#call' do
-        context 'when worker declares data consistency' do
-          include_context 'worker declaring data consistency'
+      context 'when worker does not declare data consistency' do
+        it 'increments load balancing counter with default data consistency' do
+          process_job
 
-          it 'increments load balancing counter with defined data consistency' do
-            process_job
+          expect(load_balancing_metric).to have_received(:increment).with(
+            a_hash_including(
+              data_consistency: :always,
+              load_balancing_strategy: 'primary'
+            ), 1)
+        end
+      end
+    end
+  end
 
-            expect(load_balancing_metric).to have_received(:increment).with(
-              a_hash_including(
-                data_consistency: :delayed,
-                load_balancing_strategy: 'replica'
-              ), 1)
-          end
+  context 'feature attribution' do
+    let(:test_worker) do
+      category = worker_category
+
+      Class.new do
+        include Sidekiq::Worker
+        include WorkerAttributes
+
+        if category
+          feature_category category
+        else
+          feature_category_not_owned!
         end
 
-        context 'when worker does not declare data consistency' do
-          it 'increments load balancing counter with default data consistency' do
-            process_job
-
-            expect(load_balancing_metric).to have_received(:increment).with(
-              a_hash_including(
-                data_consistency: :always,
-                load_balancing_strategy: 'primary'
-              ), 1)
-          end
+        def perform
         end
       end
     end
 
-    context 'when load_balancing is disabled' do
-      include_context 'worker declaring data consistency'
+    let(:context_category) { 'continuous_integration' }
+    let(:job) { { 'meta.feature_category' => 'continuous_integration' } }
 
-      before do
-        allow(::Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(false)
+    before do
+      stub_const('TestWorker', test_worker)
+    end
+
+    around do |example|
+      with_sidekiq_server_middleware do |chain|
+        Gitlab::SidekiqMiddleware.server_configurator(
+          metrics: true,
+          arguments_logger: false,
+          memory_killer: false
+        ).call(chain)
+
+        Sidekiq::Testing.inline! { example.run }
       end
+    end
 
-      describe '#initialize' do
-        it 'does not set load_balancing metrics' do
-          expect(Gitlab::Metrics).not_to receive(:counter).with(:sidekiq_load_balancing_count, anything)
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call'
 
-          subject
-        end
+    context 'when a worker has a feature category' do
+      let(:worker_category) { 'authentication_and_authorization' }
+
+      it 'uses that category for metrics' do
+        expect(completion_seconds_metric).to receive(:observe).with(a_hash_including(feature_category: worker_category), anything)
+
+        TestWorker.process_job(job)
       end
+    end
 
-      describe '#call' do
-        it 'does not increment load balancing counter' do
-          process_job
+    context 'when a worker does not have a feature category' do
+      let(:worker_category) { nil }
 
-          expect(load_balancing_metric).not_to have_received(:increment)
-        end
+      it 'uses the category from the context for metrics' do
+        expect(completion_seconds_metric).to receive(:observe).with(a_hash_including(feature_category: context_category), anything)
+
+        TestWorker.process_job(job)
       end
     end
   end

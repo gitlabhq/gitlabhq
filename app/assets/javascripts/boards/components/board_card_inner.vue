@@ -316,7 +316,7 @@ export default {
               </p>
             </gl-tooltip>
 
-            <span ref="countBadge" class="issue-count-badge board-card-info gl-mr-0 gl-pr-0">
+            <span ref="countBadge" class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3">
               <span v-if="allowSubEpics" class="gl-mr-3">
                 <gl-icon name="epic" />
                 {{ totalEpicsCount }}
@@ -334,7 +334,7 @@ export default {
             <span
               v-if="shouldRenderEpicProgress"
               ref="progressBadge"
-              class="issue-count-badge board-card-info gl-pl-0"
+              class="board-card-info gl-pl-0"
             >
               <span class="gl-mr-3" data-testid="epic-progress">
                 <gl-icon name="progress" />

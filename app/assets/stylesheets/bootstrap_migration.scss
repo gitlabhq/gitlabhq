@@ -112,7 +112,7 @@ code {
   border-radius: $border-radius-default;
 
   .code > &,
-  .build-trace & {
+  .build-log & {
     background-color: inherit;
     padding: unset;
   }

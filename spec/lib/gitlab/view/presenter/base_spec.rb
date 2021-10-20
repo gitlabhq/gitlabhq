@@ -18,10 +18,42 @@ RSpec.describe Gitlab::View::Presenter::Base do
 
   describe '.presents' do
     it 'exposes #subject with the given keyword' do
-      presenter_class.presents(:foo)
+      presenter_class.presents(Object, as: :foo)
       presenter = presenter_class.new(project)
 
       expect(presenter.foo).to eq(project)
+    end
+
+    it 'raises an error when symbol is passed' do
+      expect { presenter_class.presents(:foo) }.to raise_error(ArgumentError)
+    end
+
+    context 'when the presenter class inherits Presenter::Delegated' do
+      let(:presenter_class) do
+        Class.new(::Gitlab::View::Presenter::Delegated) do
+          include(::Gitlab::View::Presenter::Base)
+        end
+      end
+
+      it 'sets the delegator target' do
+        expect(presenter_class).to receive(:delegator_target).with(Object)
+
+        presenter_class.presents(Object, as: :foo)
+      end
+    end
+
+    context 'when the presenter class inherits Presenter::Simple' do
+      let(:presenter_class) do
+        Class.new(::Gitlab::View::Presenter::Simple) do
+          include(::Gitlab::View::Presenter::Base)
+        end
+      end
+
+      it 'does not set the delegator target' do
+        expect(presenter_class).not_to receive(:delegator_target).with(Object)
+
+        presenter_class.presents(Object, as: :foo)
+      end
     end
   end
 

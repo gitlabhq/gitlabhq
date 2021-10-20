@@ -14,7 +14,7 @@ having an issue with GitLab, you may want to check your [support options](https:
 first, before attempting to use this information.
 
 WARNING:
-If you are administering GitLab you are expected to know these commands for your distribution
+If you administer GitLab you are expected to know these commands for your distribution
 of choice. If you are a GitLab Support Engineer, consider this a cross-reference to
 translate `yum` -> `apt-get` and the like.
 

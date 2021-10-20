@@ -143,4 +143,18 @@ describe('Duplicates Settings', () => {
       expect(findInputGroup().exists()).toBe(false);
     });
   });
+
+  describe('loading', () => {
+    beforeEach(() => {
+      mountComponent({ ...defaultProps, loading: true });
+    });
+
+    it('disables the enable toggle', () => {
+      expect(findToggle().props('disabled')).toBe(true);
+    });
+
+    it('disables the form input', () => {
+      expect(findInput().attributes('disabled')).toBe('true');
+    });
+  });
 });

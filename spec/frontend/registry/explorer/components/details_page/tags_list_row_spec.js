@@ -1,13 +1,12 @@
-import { GlFormCheckbox, GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlFormCheckbox, GlSprintf, GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import DeleteButton from '~/registry/explorer/components/delete_button.vue';
+
 import component from '~/registry/explorer/components/details_page/tags_list_row.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
-  REMOVE_TAG_BUTTON_DISABLE_TOOLTIP,
   MISSING_MANIFEST_WARNING_TOOLTIP,
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
@@ -25,19 +24,20 @@ describe('tags list row', () => {
 
   const defaultProps = { tag, isMobile: false, index: 0 };
 
-  const findCheckbox = () => wrapper.find(GlFormCheckbox);
+  const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findName = () => wrapper.find('[data-testid="name"]');
   const findSize = () => wrapper.find('[data-testid="size"]');
   const findTime = () => wrapper.find('[data-testid="time"]');
   const findShortRevision = () => wrapper.find('[data-testid="digest"]');
-  const findClipboardButton = () => wrapper.find(ClipboardButton);
-  const findDeleteButton = () => wrapper.find(DeleteButton);
-  const findTimeAgoTooltip = () => wrapper.find(TimeAgoTooltip);
+  const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDetailsRows = () => wrapper.findAll(DetailsRow);
   const findPublishedDateDetail = () => wrapper.find('[data-testid="published-date-detail"]');
   const findManifestDetail = () => wrapper.find('[data-testid="manifest-detail"]');
   const findConfigurationDetail = () => wrapper.find('[data-testid="configuration-detail"]');
-  const findWarningIcon = () => wrapper.find(GlIcon);
+  const findWarningIcon = () => wrapper.findComponent(GlIcon);
+  const findAdditionalActionsMenu = () => wrapper.findComponent(GlDropdown);
+  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
 
   const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMount(component, {
@@ -45,6 +45,7 @@ describe('tags list row', () => {
         GlSprintf,
         ListItem,
         DetailsRow,
+        GlDropdown,
       },
       propsData,
       directives: {
@@ -262,44 +263,61 @@ describe('tags list row', () => {
     });
   });
 
-  describe('delete button', () => {
+  describe('additional actions menu', () => {
     it('exists', () => {
       mountComponent();
 
-      expect(findDeleteButton().exists()).toBe(true);
+      expect(findAdditionalActionsMenu().exists()).toBe(true);
     });
 
-    it('has the correct props/attributes', () => {
+    it('has the correct props', () => {
       mountComponent();
 
-      expect(findDeleteButton().attributes()).toMatchObject({
-        title: REMOVE_TAG_BUTTON_TITLE,
-        tooltiptitle: REMOVE_TAG_BUTTON_DISABLE_TOOLTIP,
-        tooltipdisabled: 'true',
+      expect(findAdditionalActionsMenu().props()).toMatchObject({
+        icon: 'ellipsis_v',
+        text: 'More actions',
+        textSrOnly: true,
+        category: 'tertiary',
+        right: true,
       });
     });
 
     it.each`
-      canDelete | digest   | disabled
-      ${true}   | ${null}  | ${true}
-      ${false}  | ${'foo'} | ${true}
-      ${false}  | ${null}  | ${true}
-      ${true}   | ${'foo'} | ${true}
+      canDelete | digest   | disabled | buttonDisabled
+      ${true}   | ${null}  | ${true}  | ${true}
+      ${false}  | ${'foo'} | ${true}  | ${true}
+      ${false}  | ${null}  | ${true}  | ${true}
+      ${true}   | ${'foo'} | ${true}  | ${true}
+      ${true}   | ${'foo'} | ${false} | ${false}
     `(
-      'is disabled when canDelete is $canDelete and digest is $digest and disabled is $disabled',
-      ({ canDelete, digest, disabled }) => {
+      'is $visible that is visible when canDelete is $canDelete and digest is $digest and disabled is $disabled',
+      ({ canDelete, digest, disabled, buttonDisabled }) => {
         mountComponent({ ...defaultProps, tag: { ...tag, canDelete, digest }, disabled });
 
-        expect(findDeleteButton().attributes('disabled')).toBe('true');
+        expect(findAdditionalActionsMenu().props('disabled')).toBe(buttonDisabled);
+        expect(findAdditionalActionsMenu().classes('gl-opacity-0')).toBe(buttonDisabled);
+        expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(buttonDisabled);
       },
     );
 
-    it('delete event emits delete', () => {
-      mountComponent();
+    describe('delete button', () => {
+      it('exists and has the correct attrs', () => {
+        mountComponent();
 
-      findDeleteButton().vm.$emit('delete');
+        expect(findDeleteButton().exists()).toBe(true);
+        expect(findDeleteButton().attributes()).toMatchObject({
+          variant: 'danger',
+        });
+        expect(findDeleteButton().text()).toBe(REMOVE_TAG_BUTTON_TITLE);
+      });
 
-      expect(wrapper.emitted('delete')).toEqual([[]]);
+      it('delete event emits delete', () => {
+        mountComponent();
+
+        findDeleteButton().vm.$emit('click');
+
+        expect(wrapper.emitted('delete')).toEqual([[]]);
+      });
     });
   });
 

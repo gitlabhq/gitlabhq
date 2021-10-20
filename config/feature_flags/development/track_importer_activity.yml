@@ -1,0 +1,8 @@
+---
+name: track_importer_activity
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70012
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339392
+milestone: '14.4'
+type: development
+group: group::import
+default_enabled: false

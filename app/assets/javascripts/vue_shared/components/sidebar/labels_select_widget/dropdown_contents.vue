@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
-
+import { __, s__, sprintf } from '~/locale';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
-import { isDropdownVariantSidebar, isDropdownVariantEmbedded } from './utils';
+import { isDropdownVariantStandalone, isDropdownVariantSidebar } from './utils';
 
 export default {
   components: {
@@ -48,10 +48,30 @@ export default {
       type: String,
       required: true,
     },
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    isVisible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
       showDropdownContentsCreateView: false,
+      localSelectedLabels: [...this.selectedLabels],
+      isDirty: false,
     };
   },
   computed: {
@@ -64,28 +84,66 @@ export default {
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
     },
+    buttonText() {
+      if (!this.localSelectedLabels.length) {
+        return this.dropdownButtonText || __('Label');
+      } else if (this.localSelectedLabels.length > 1) {
+        return sprintf(s__('LabelSelect|%{firstLabelName} +%{remainingLabelCount} more'), {
+          firstLabelName: this.localSelectedLabels[0].title,
+          remainingLabelCount: this.localSelectedLabels.length - 1,
+        });
+      }
+      return this.localSelectedLabels[0].title;
+    },
     showDropdownFooter() {
-      return (
-        !this.showDropdownContentsCreateView &&
-        (this.isDropdownVariantSidebar(this.variant) ||
-          this.isDropdownVariantEmbedded(this.variant))
-      );
+      return !this.showDropdownContentsCreateView && !this.isStandalone;
+    },
+    isStandalone() {
+      return isDropdownVariantStandalone(this.variant);
+    },
+  },
+  watch: {
+    localSelectedLabels: {
+      handler() {
+        this.isDirty = true;
+      },
+      deep: true,
+    },
+    isVisible(newVal) {
+      if (newVal) {
+        this.$refs.dropdown.show();
+        this.isDirty = false;
+      } else {
+        this.$refs.dropdown.hide();
+        this.setLabels();
+      }
+    },
+    selectedLabels(newVal) {
+      this.localSelectedLabels = newVal;
     },
   },
   methods: {
-    showDropdown() {
-      this.$refs.dropdown.show();
-    },
     toggleDropdownContentsCreateView() {
       this.showDropdownContentsCreateView = !this.showDropdownContentsCreateView;
     },
     toggleDropdownContent() {
       this.toggleDropdownContentsCreateView();
       // Required to recalculate dropdown position as its size changes
-      this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
+      if (this.$refs.dropdown?.$refs.dropdown) {
+        this.$refs.dropdown.$refs.dropdown.$_popper.scheduleUpdate();
+      }
     },
-    isDropdownVariantSidebar,
-    isDropdownVariantEmbedded,
+    setLabels() {
+      if (!this.isDirty) {
+        return;
+      }
+      this.$emit('setLabels', this.localSelectedLabels);
+    },
+    handleDropdownHide() {
+      if (!isDropdownVariantSidebar(this.variant)) {
+        this.setLabels();
+      }
+    },
   },
 };
 </script>
@@ -93,14 +151,16 @@ export default {
 <template>
   <gl-dropdown
     ref="dropdown"
-    :text="dropdownButtonText"
+    :text="buttonText"
     class="gl-w-full gl-mt-2"
     data-qa-selector="labels_dropdown_content"
+    @hide="handleDropdownHide"
   >
     <template #header>
       <div
-        v-if="isDropdownVariantSidebar(variant) || isDropdownVariantEmbedded(variant)"
+        v-if="!isStandalone"
         class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
+        data-testid="dropdown-header"
       >
         <gl-button
           v-if="showDropdownContentsCreateView"
@@ -119,27 +179,33 @@ export default {
           size="small"
           class="dropdown-header-button gl-p-0!"
           icon="close"
+          data-testid="close-button"
           @click="$emit('closeDropdown')"
         />
       </div>
     </template>
-    <component
-      :is="dropdownContentsView"
-      :selected-labels="selectedLabels"
-      :allow-multiselect="allowMultiselect"
-      @hideCreateView="toggleDropdownContentsCreateView"
-      @setLabels="$emit('setLabels', $event)"
-    />
+    <template #default>
+      <component
+        :is="dropdownContentsView"
+        v-model="localSelectedLabels"
+        :selected-labels="selectedLabels"
+        :allow-multiselect="allowMultiselect"
+        :issuable-type="issuableType"
+        :full-path="fullPath"
+        :attr-workspace-path="attrWorkspacePath"
+        @hideCreateView="toggleDropdownContentsCreateView"
+      />
+    </template>
     <template #footer>
       <div v-if="showDropdownFooter" data-testid="dropdown-footer">
         <gl-dropdown-item
           v-if="allowLabelCreate"
           data-testid="create-label-button"
-          @click.native.capture.stop="toggleDropdownContent"
+          @click.capture.native.stop="toggleDropdownContent"
         >
           {{ footerCreateLabelTitle }}
         </gl-dropdown-item>
-        <gl-dropdown-item :href="labelsManagePath" @click.native.capture.stop>
+        <gl-dropdown-item :href="labelsManagePath" @click.capture.native.stop>
           {{ footerManageLabelTitle }}
         </gl-dropdown-item>
       </div>

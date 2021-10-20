@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Token overview
+# GitLab Token overview **(FREE)**
 
 This document lists tokens used in GitLab, their purpose and, where applicable, security guidance.
 
@@ -63,7 +63,7 @@ Project maintainers and owners can add or enable a deploy key for a project repo
 
 ## Runner registration tokens
 
-Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance admins can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
+Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance administrators can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
 
 You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project's code, so be careful when assigning project and group-level permissions.
 

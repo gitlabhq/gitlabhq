@@ -53,6 +53,7 @@ in your SAML IdP:
    sudo -u git -H editor config/gitlab.yml
    ```
 
+1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
 1. To allow your users to use SAML to sign up without having to manually create
    an account first, add the following values to your configuration:
 
@@ -196,15 +197,13 @@ For example configurations, see the [notes on specific providers](#providers).
 | Field           | Supported keys |
 |-----------------|----------------|
 | Email (required)| `email`, `mail` |
-| Username        | `username`, `nickname` |
 | Full Name       | `name` |
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName` |
 
-If a username is not specified, the email address is used to generate the GitLab username.
-
-See [`attribute_statements`](#attribute_statements) for examples on how the
-assertions are configured.
+See [`attribute_statements`](#attribute_statements) for examples on how custom
+assertions are configured. This section also describes how to configure custom
+username attributes.
 
 Please refer to [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for a full list of supported assertions.
@@ -247,7 +246,7 @@ The name of the attribute can be anything you like, but it must contain the grou
 to which a user belongs. To tell GitLab where to find these groups, you need
 to add a `groups_attribute:` element to your SAML settings.
 
-### Required groups **(FREE SELF)**
+### Required groups
 
 Your IdP passes Group information to the SP (GitLab) in the SAML Response.
 To use this response, configure GitLab to identify:
@@ -274,7 +273,7 @@ Example:
   } }
 ```
 
-### External groups **(FREE SELF)**
+### External groups
 
 SAML login supports the automatic identification of a user as an
 [external user](../user/permissions.md#external-users). This is based on the user's group
@@ -294,7 +293,7 @@ membership in the SAML identity provider.
   } }
 ```
 
-### Administrator groups **(FREE SELF)**
+### Administrator groups
 
 The requirements are the same as the previous settings:
 
@@ -443,7 +442,7 @@ SAML users has an administrator role.
 You may also bypass the auto sign-in feature by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
-### `attribute_statements`
+### `attribute_statements` **(FREE SELF)**
 
 NOTE:
 This setting should be used only to map attributes that are part of the OmniAuth
@@ -475,12 +474,10 @@ args: {
 
 #### Set a username
 
-By default, the email in the SAML response is used to automatically generate the
-user's GitLab username. If you'd like to set another attribute as the username,
-assign it to the `nickname` OmniAuth `info` hash attribute.
+By default, the local part of the email address in the SAML response is used to
+generate the user's GitLab username.
 
-For example, if you want to set the `username` attribute in your SAML Response to the username
-in GitLab, use the following setting:
+Configure `nickname` in `attribute_statements` to specify one or more attributes that contain a user's desired username:
 
 ```yaml
 args: {
@@ -492,6 +489,8 @@ args: {
         attribute_statements: { nickname: ['username'] }
 }
 ```
+
+This also sets the `username` attribute in your SAML Response to the username in GitLab.
 
 ### `allowed_clock_drift`
 
@@ -719,8 +718,8 @@ documentation on how to use SAML to sign in to GitLab.
 Examples:
 
 - [ADFS (Active Directory Federation Services)](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/protocols/saml-protocol/configure-auth0-as-saml-identity-provider)
-- [PingOne by Ping Identity](https://docs.pingidentity.com/bundle/pingone/page/xsh1564020480660-1.html)
+- [Auth0](https://auth0.com/docs/configure/saml-configuration/configure-auth0-saml-identity-provider)
+- [PingOne by Ping Identity](http://docs.pingidentity.com/bundle/pingoneforenterprise/page/xsh1564020480660-1.html)
 
 GitLab provides the following setup notes for guidance only.
 If you have any questions on configuring the SAML app, please contact your provider's support.
@@ -729,7 +728,7 @@ If you have any questions on configuring the SAML app, please contact your provi
 
 The following guidance is based on this Okta article, on adding a [SAML Application with an Okta Developer account](https://support.okta.com/help/s/article/Why-can-t-I-add-a-SAML-Application-with-an-Okta-Developer-account?language=en_US):
 
-1. In the Okta admin section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
+1. In the Okta administrator section, make sure to select Classic UI view in the top left corner. From there, choose to **Add an App**.
 1. When the app screen comes up you see another button to **Create an App** and
    choose SAML 2.0 on the next screen.
 1. Optionally, you can add a logo
@@ -802,11 +801,12 @@ If you only require a SAML provider for testing, a [quick start guide to start a
 ### 500 error after login
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
-sign-in page, this likely indicates that GitLab couldn't get the email address
-for the SAML user.
+sign-in page, this could indicate that:
 
-Ensure the IdP provides a claim containing the user's email address, using the
-claim name `email` or `mail`.
+- GitLab couldn't get the email address for the SAML user. Ensure the IdP provides a claim containing the user's
+  email address using the claim name `email` or `mail`.
+- The certificate set your `gitlab.rb` file for `idp_cert_fingerprint` or `idp_cert` file is incorrect.
+- Your `gitlab.rb` file is set to enable `idp_cert_fingerprint`, and `idp_cert` is being provided, or the reverse.
 
 ### 422 error after login
 

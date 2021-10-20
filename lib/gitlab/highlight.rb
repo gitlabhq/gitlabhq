@@ -70,7 +70,7 @@ module Gitlab
     end
 
     def highlight_plain(text)
-      @formatter.format(Rouge::Lexers::PlainText.lex(text), context).html_safe
+      @formatter.format(Rouge::Lexers::PlainText.lex(text), **context).html_safe
     end
 
     def highlight_rich(text, continue: true)
@@ -78,7 +78,7 @@ module Gitlab
 
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
-      Timeout.timeout(timeout_time) { @formatter.format(tokens, context.merge(tag: tag)).html_safe }
+      Timeout.timeout(timeout_time) { @formatter.format(tokens, **context, tag: tag).html_safe }
     rescue Timeout::Error => e
       add_highlight_timeout_metric
 

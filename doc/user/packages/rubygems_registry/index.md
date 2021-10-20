@@ -9,8 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in [GitLab Free](https://about.gitlab.com/pricing/) 13.10.
 
 WARNING:
-The Ruby gems registry for GitLab is under development and isn't ready for production use due to
-limited functionality.
+The Ruby gems package registry for GitLab is under development and isn't ready for production use due to
+limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/3200) details the remaining
+work and timelines to make it production ready.
 
 You can publish Ruby gems in your project's Package Registry, then install the packages when you
 need to use them as a dependency. Although you can push gems to the registry, you cannot install

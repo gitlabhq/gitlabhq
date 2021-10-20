@@ -1,6 +1,6 @@
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import AjaxFilter from '../droplab/plugins/ajax_filter';
+import AjaxFilter from './droplab/plugins/ajax_filter';
 import DropdownUtils from './dropdown_utils';
 import FilteredSearchDropdown from './filtered_search_dropdown';
 import FilteredSearchTokenizer from './filtered_search_tokenizer';

@@ -37,7 +37,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_download_code!, only: [:related_branches]
 
   # Limit the amount of issues created per minute
-  before_action :create_rate_limit, only: [:create]
+  before_action :create_rate_limit, only: [:create], if: -> { Feature.disabled?('rate_limited_service_issues_create', project, default_enabled: :yaml) }
 
   before_action do
     push_frontend_feature_flag(:tribute_autocomplete, @project)

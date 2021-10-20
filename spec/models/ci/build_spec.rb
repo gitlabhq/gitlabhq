@@ -29,11 +29,13 @@ RSpec.describe Ci::Build do
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
   it { is_expected.to have_one(:trace_metadata) }
+  it { is_expected.to have_many(:terraform_state_versions).dependent(:nullify).inverse_of(:build) }
 
   it { is_expected.to validate_presence_of(:ref) }
 
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
+  it { is_expected.to respond_to(:runner_features) }
 
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
@@ -345,10 +347,10 @@ RSpec.describe Ci::Build do
   end
 
   describe '#stick_build_if_status_changed' do
-    it 'sticks the build if the status changed', :db_load_balancing do
+    it 'sticks the build if the status changed' do
       job = create(:ci_build, :pending)
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+      expect(ApplicationRecord.sticking).to receive(:stick)
         .with(:build, job.id)
 
       job.update!(status: :running)
@@ -1288,7 +1290,7 @@ RSpec.describe Ci::Build do
     end
   end
 
-  describe 'state transition as a deployable' do
+  shared_examples_for 'state transition as a deployable' do
     subject { build.send(event) }
 
     let!(:build) { create(:ci_build, :with_deployment, :start_review_app, project: project, pipeline: pipeline) }
@@ -1395,6 +1397,36 @@ RSpec.describe Ci::Build do
         expect(deployment).to be_canceled
       end
     end
+  end
+
+  it_behaves_like 'state transition as a deployable' do
+    context 'when transits to running' do
+      let(:event) { :run! }
+
+      context 'when deployment is already running state' do
+        before do
+          build.deployment.success!
+        end
+
+        it 'does not change deployment status and tracks an error' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception).with(
+              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: build.id)
+
+          with_cross_database_modification_prevented do
+            expect { subject }.not_to change { deployment.reload.status }
+          end
+        end
+      end
+    end
+  end
+
+  context 'when update_deployment_after_transaction_commit feature flag is disabled' do
+    before do
+      stub_feature_flags(update_deployment_after_transaction_commit: false)
+    end
+
+    it_behaves_like 'state transition as a deployable'
   end
 
   describe '#on_stop' do
@@ -3946,7 +3978,7 @@ RSpec.describe Ci::Build do
       end
 
       it 'can drop the build' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
         expect { build.drop! }.not_to raise_error
 
@@ -5286,6 +5318,12 @@ RSpec.describe Ci::Build do
       subject
 
       expect(build.reload.queuing_entry).not_to be_present
+    end
+  end
+
+  it 'does not generate cross DB queries when a record is created via FactoryBot' do
+    with_cross_database_modification_prevented do
+      create(:ci_build)
     end
   end
 end

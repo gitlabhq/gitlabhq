@@ -24,26 +24,6 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - The Delivery Team
 -->
 
-## The Rollout Plan
-
-- Partial Rollout on GitLab.com with testing groups
-- Rollout on GitLab.com for a certain period (How long)
-- Percentage Rollout on GitLab.com
-- Rollout Feature for everyone as soon as it's ready
-
-<!-- Which dashboards from https://dashboards.gitlab.net are most relevant? Sentry errors reports can also be useful to review -->
-
-## Testing Groups/Projects/Users
-
-<!-- If applicable, any groups/projects that are happy to have this feature turned on early. Some organizations may wish to test big changes they are interested in with a small subset of users ahead of time for example. -->
-
-- `gitlab-org/gitlab` project
-- `gitlab-org/gitlab-foss` project
-- `gitlab-com/www-gitlab-com` project
-- `gitlab-org`/`gitlab-com` groups
-- ...
-
-
 ## Expectations
 
 ### What are we expecting to happen?
@@ -62,17 +42,30 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 ### Rollout on non-production environments
 
-- [ ] Ensure that the feature MRs have been deployed to non-production environments.
+- Ensure that the feature MRs have been deployed to non-production environments.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - [ ] Enable the feature globally on non-production environments.
     - [ ] `/chatops run feature set <feature-flag-name> true --dev`
     - [ ] `/chatops run feature set <feature-flag-name> true --staging`
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
 
-### Preparation before production rollout
+### Specific rollout on production
 
-- [ ] Ensure that the feature MRs have been deployed to both production and canary.
+- Ensure that the feature MRs have been deployed to both production and canary.
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
+- If you're using [project-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-org/gitlab-foss <feature-flag-name> true`
+    - [ ] `/chatops run feature set --project=gitlab-com/www-gitlab-com <feature-flag-name> true`
+- If you're using [group-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
+    - [ ] `/chatops run feature set --group=gitlab-org <feature-flag-name> true`
+    - [ ] `/chatops run feature set --group=gitlab-com <feature-flag-name> true`
+- If you're using [user-actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), you must enable the feature on these entries:
+    - [ ] `/chatops run feature set --user=<your-username> <feature-flag-name> true`
+- [ ] Verify that the feature works on the specific entries. Posting the QA result in this issue is preferable.
+
+### Preparation before global rollout
+
 - [ ] Check if the feature flag change needs to be accompanied with a
   [change management issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
   Cross link the issue here if it does.
@@ -86,19 +79,13 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 All `/chatops` commands that target production should be done in the `#production` slack channel for visibility.
 
-- [ ] Confirm the feature flag is enabled on `staging` without incident
-- [ ] Roll out the feature to targeted testing projects/groups first
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-org/gitlab-foss <feature-flag-name> true`
-    - [ ] `/chatops run feature set --project=gitlab-com/www-gitlab-com <feature-flag-name> true`
-
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors`
   - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
     - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage>`
-- [ ] Verify the change has the desired outcome with the limited rollout before enabling the feature globally on production.
-- [ ] Enable the feature globally on production environment. `/chatops run feature set <feature-flag-name> true`
+  - Enable the feature globally on production environment.
+    - [ ] `/chatops run feature set <feature-flag-name> true`
 - [ ] Announce on [the feature issue](ISSUE LINK) that the feature has been globally enabled.
 - [ ] Wait for [at least one day for the verification term](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release).
 

@@ -9,6 +9,7 @@ class Projects::UsageQuotasController < Projects::ApplicationController
   feature_category :utilization
 
   def index
+    @hide_search_settings = true
     @storage_app_data = {
       project_path: @project.full_path,
       usage_quotas_help_page_path: help_page_path('user/usage_quotas'),

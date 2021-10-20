@@ -84,7 +84,7 @@ RSpec.describe BulkImportWorker do
 
         expect { subject.perform(bulk_import.id) }
           .to change(BulkImports::Tracker, :count)
-          .by(BulkImports::Groups::Stage.pipelines.size * 2)
+          .by(BulkImports::Groups::Stage.new(bulk_import).pipelines.size * 2)
 
         expect(entity_1.trackers).not_to be_empty
         expect(entity_2.trackers).not_to be_empty
@@ -111,10 +111,10 @@ RSpec.describe BulkImportWorker do
         end
 
         context 'when there are project entities to process' do
-          it 'does not enqueue ExportRequestWorker' do
+          it 'enqueues ExportRequestWorker' do
             create(:bulk_import_entity, :created, :project_entity, bulk_import: bulk_import)
 
-            expect(BulkImports::ExportRequestWorker).not_to receive(:perform_async)
+            expect(BulkImports::ExportRequestWorker).to receive(:perform_async).once
 
             subject.perform(bulk_import.id)
           end

@@ -1,28 +1,55 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value_collapsed.vue';
+import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
 import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import { mockConfig, issuableLabelsQueryResponse } from './mock_data';
 
-import { mockConfig } from './mock_data';
+jest.mock('~/flash');
+
+const localVue = createLocalVue();
+localVue.use(VueApollo);
+
+const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);
+const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
 describe('LabelsSelectRoot', () => {
   let wrapper;
 
-  const createComponent = (config = mockConfig, slots = {}) => {
+  const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
+  const findDropdownValue = () => wrapper.findComponent(DropdownValue);
+  const findDropdownContents = () => wrapper.findComponent(DropdownContents);
+
+  const createComponent = ({
+    config = mockConfig,
+    slots = {},
+    queryHandler = successfulQueryHandler,
+  } = {}) => {
+    const mockApollo = createMockApollo([[issueLabelsQuery, queryHandler]]);
+
     wrapper = shallowMount(LabelsSelectRoot, {
       slots,
-      propsData: config,
+      apolloProvider: mockApollo,
+      localVue,
+      propsData: {
+        ...config,
+        issuableType: IssuableType.Issue,
+      },
       stubs: {
-        DropdownContents,
         SidebarEditableItem,
       },
       provide: {
-        iid: '1',
-        projectPath: 'test',
         canUpdate: true,
         allowLabelEdit: true,
+        allowLabelCreate: true,
+        labelsManagePath: 'test',
       },
     });
   };
@@ -42,33 +69,63 @@ describe('LabelsSelectRoot', () => {
     ${'embedded'}   | ${'is-embedded'}
   `(
     'renders component root element with CSS class `$cssClass` when `state.variant` is "$variant"',
-    ({ variant, cssClass }) => {
+    async ({ variant, cssClass }) => {
       createComponent({
-        ...mockConfig,
-        variant,
+        config: { ...mockConfig, variant },
       });
 
-      return wrapper.vm.$nextTick(() => {
-        expect(wrapper.classes()).toContain(cssClass);
-      });
+      await nextTick();
+      expect(wrapper.classes()).toContain(cssClass);
     },
   );
 
-  it('renders `dropdown-value-collapsed` component when `allowLabelCreate` prop is `true`', async () => {
-    createComponent();
-    await wrapper.vm.$nextTick;
-    expect(wrapper.find(DropdownValueCollapsed).exists()).toBe(true);
+  describe('if dropdown variant is `sidebar`', () => {
+    it('renders sidebar editable item', () => {
+      createComponent();
+      expect(findSidebarEditableItem().exists()).toBe(true);
+    });
+
+    it('passes true `loading` prop to sidebar editable item when loading labels', () => {
+      createComponent();
+      expect(findSidebarEditableItem().props('loading')).toBe(true);
+    });
+
+    describe('when labels are fetched successfully', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      it('passes true `loading` prop to sidebar editable item', () => {
+        expect(findSidebarEditableItem().props('loading')).toBe(false);
+      });
+
+      it('renders dropdown value component when query labels is resolved', () => {
+        expect(findDropdownValue().exists()).toBe(true);
+        expect(findDropdownValue().props('selectedLabels')).toEqual(
+          issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
+        );
+      });
+
+      it('emits `onLabelRemove` event on dropdown value label remove event', () => {
+        const label = { id: 'gid://gitlab/ProjectLabel/1' };
+        findDropdownValue().vm.$emit('onLabelRemove', label);
+        expect(wrapper.emitted('onLabelRemove')).toEqual([[label]]);
+      });
+    });
+
+    it('creates flash with error message when query is rejected', async () => {
+      createComponent({ queryHandler: errorQueryHandler });
+      await waitForPromises();
+      expect(createFlash).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
+    });
   });
 
-  it('renders `dropdown-value` component', async () => {
-    createComponent(mockConfig, {
-      default: 'None',
-    });
-    await wrapper.vm.$nextTick;
+  it('emits `updateSelectedLabels` event on dropdown contents `setLabels` event', async () => {
+    const label = { id: 'gid://gitlab/ProjectLabel/1' };
+    createComponent();
 
-    const valueComp = wrapper.find(DropdownValue);
-
-    expect(valueComp.exists()).toBe(true);
-    expect(valueComp.text()).toBe('None');
+    findDropdownContents().vm.$emit('setLabels', [label]);
+    expect(wrapper.emitted('updateSelectedLabels')).toEqual([[[label]]]);
   });
 });

@@ -1,24 +1,14 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
 RSpec.describe "Every controller" do
   context "feature categories" do
     let_it_be(:feature_categories) do
-      YAML.load_file(Rails.root.join('config', 'feature_categories.yml')).map(&:to_sym).to_set
+      Gitlab::FeatureCategories.default.categories.map(&:to_sym).to_set
     end
 
     let_it_be(:controller_actions) do
-      # This will return tuples of all controller actions defined in the routes
-      # Only for controllers inheriting ApplicationController
-      # Excluding controllers from gems (OAuth, Sidekiq)
-      Rails.application.routes.routes
-        .map { |route| route.required_defaults.presence }
-        .compact
-        .select { |route| route[:controller].present? && route[:action].present? }
-        .map { |route| [constantize_controller(route[:controller]), route[:action]] }
-        .select { |(controller, action)| controller&.include?(::Gitlab::WithFeatureCategory) }
-        .reject { |(controller, action)| controller == ApplicationController || controller == Devise::UnlocksController }
+      Gitlab::RequestEndpoints.all_controller_actions
     end
 
     let_it_be(:routes_without_category) do
@@ -74,9 +64,6 @@ RSpec.describe "Every controller" do
   end
 
   def actions_defined_in_feature_category_config(controller)
-    controller.send(:class_attributes)[:feature_category_config]
-      .values
-      .flatten
-      .map(&:to_s)
+    controller.send(:class_attributes)[:endpoint_attributes_config].defined_actions
   end
 end

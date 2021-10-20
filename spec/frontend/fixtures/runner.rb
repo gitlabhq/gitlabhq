@@ -20,10 +20,6 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
   query_path = 'runner/graphql/'
   fixtures_path = 'graphql/runner/'
 
-  before(:all) do
-    clean_frontend_fixtures(fixtures_path)
-  end
-
   after(:all) do
     remove_repository(project)
   end

@@ -2,9 +2,10 @@
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import produce from 'immer';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
+import { labelsQueries } from '~/sidebar/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
-import projectLabelsQuery from './graphql/project_labels.query.graphql';
 
 const errorMessage = __('Error creating label.');
 
@@ -18,9 +19,19 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: {
-    projectPath: {
-      default: '',
+  props: {
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    attrWorkspacePath: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -38,6 +49,27 @@ export default {
       const colorsMap = gon.suggested_label_colors;
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
+    mutationVariables() {
+      if (this.issuableType === IssuableType.Epic) {
+        return {
+          title: this.labelTitle,
+          color: this.selectedColor,
+          groupPath: this.fullPath,
+        };
+      }
+
+      return this.attrWorkspacePath !== undefined
+        ? {
+            title: this.labelTitle,
+            color: this.selectedColor,
+            groupPath: this.attrWorkspacePath,
+          }
+        : {
+            title: this.labelTitle,
+            color: this.selectedColor,
+            projectPath: this.fullPath,
+          };
+    },
   },
   methods: {
     getColorCode(color) {
@@ -51,8 +83,8 @@ export default {
     },
     updateLabelsInCache(store, label) {
       const sourceData = store.readQuery({
-        query: projectLabelsQuery,
-        variables: { fullPath: this.projectPath, searchTerm: '' },
+        query: labelsQueries[this.issuableType].workspaceQuery,
+        variables: { fullPath: this.fullPath, searchTerm: '' },
       });
 
       const collator = new Intl.Collator('en');
@@ -63,8 +95,8 @@ export default {
       });
 
       store.writeQuery({
-        query: projectLabelsQuery,
-        variables: { fullPath: this.projectPath, searchTerm: '' },
+        query: labelsQueries[this.issuableType].workspaceQuery,
+        variables: { fullPath: this.fullPath, searchTerm: '' },
         data,
       });
     },
@@ -75,11 +107,7 @@ export default {
           data: { labelCreate },
         } = await this.$apollo.mutate({
           mutation: createLabelMutation,
-          variables: {
-            title: this.labelTitle,
-            color: this.selectedColor,
-            projectPath: this.projectPath,
-          },
+          variables: this.mutationVariables,
           update: (
             store,
             {

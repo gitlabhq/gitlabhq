@@ -53,154 +53,82 @@ RSpec.describe Peek::Views::ActiveRecord, :request_store do
     allow(connection_primary_2).to receive(:transaction_open?).and_return(true)
     allow(connection_unknown).to receive(:transaction_open?).and_return(false)
     allow(::Gitlab::Database).to receive(:db_config_name).and_return('the_db_config_name')
+
+    allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_replica).and_return(:replica)
+    allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_primary_1).and_return(:primary)
+    allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_primary_2).and_return(:primary)
+    allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_unknown).and_return(nil)
   end
 
-  context 'when database load balancing is not enabled' do
-    it 'subscribes and store data into peek views' do
-      Timecop.freeze(2021, 2, 23, 10, 0) do
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 2.seconds, '2', event_2)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 3.seconds, '3', event_3)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 4.seconds, '4', event_4)
-      end
+  it 'includes db role data and db_config_name name' do
+    Timecop.freeze(2021, 2, 23, 10, 0) do
+      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
+      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 2.seconds, '2', event_2)
+      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 3.seconds, '3', event_3)
+      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 4.seconds, '4', event_4)
+    end
 
-      expect(subject.results).to match(
-        calls: 4,
-        summary: {
-          "Cached" => 1,
-          "In a transaction" => 1
-        },
-        duration: '10000.00ms',
-        warnings: ["active-record duration: 10000.0 over 3000"],
-        details: contain_exactly(
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: '',
-            duration: 1000.0,
-            sql: 'SELECT * FROM users WHERE id = 10',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: 'Cached',
-            transaction: '',
-            duration: 2000.0,
-            sql: 'SELECT * FROM users WHERE id = 10',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: 'In a transaction',
-            duration: 3000.0,
-            sql: 'UPDATE users SET admin = true WHERE id = 10',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: '',
-            duration: 4000.0,
-            sql: 'SELECT VERSION()',
-            db_config_name: "Config name: the_db_config_name"
-          )
+    expect(subject.results).to match(
+      calls: 4,
+      summary: {
+        "Cached" => 1,
+        "In a transaction" => 1,
+        "Role: Primary" => 2,
+        "Role: Replica" => 1,
+        "Role: Unknown" => 1
+      },
+      duration: '10000.00ms',
+      warnings: ["active-record duration: 10000.0 over 3000"],
+      details: contain_exactly(
+        a_hash_including(
+          start: be_a(Time),
+          cached: '',
+          transaction: '',
+          duration: 1000.0,
+          sql: 'SELECT * FROM users WHERE id = 10',
+          db_role: 'Role: Primary',
+          db_config_name: "Config name: the_db_config_name"
+        ),
+        a_hash_including(
+          start: be_a(Time),
+          cached: 'Cached',
+          transaction: '',
+          duration: 2000.0,
+          sql: 'SELECT * FROM users WHERE id = 10',
+          db_role: 'Role: Replica',
+          db_config_name: "Config name: the_db_config_name"
+        ),
+        a_hash_including(
+          start: be_a(Time),
+          cached: '',
+          transaction: 'In a transaction',
+          duration: 3000.0,
+          sql: 'UPDATE users SET admin = true WHERE id = 10',
+          db_role: 'Role: Primary',
+          db_config_name: "Config name: the_db_config_name"
+        ),
+        a_hash_including(
+          start: be_a(Time),
+          cached: '',
+          transaction: '',
+          duration: 4000.0,
+          sql: 'SELECT VERSION()',
+          db_role: 'Role: Unknown',
+          db_config_name: "Config name: the_db_config_name"
         )
       )
-    end
-
-    context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
-      before do
-        stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
-      end
-
-      it 'does not include db_config_name field' do
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
-
-        expect(subject.results[:details][0][:db_config_name]).to be_nil
-      end
-    end
+    )
   end
 
-  context 'when database load balancing is enabled' do
+  context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
     before do
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
-      allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_replica).and_return(:replica)
-      allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_primary_1).and_return(:primary)
-      allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_primary_2).and_return(:primary)
-      allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).with(connection_unknown).and_return(nil)
+      stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
     end
 
-    it 'includes db role data and db_config_name name' do
-      Timecop.freeze(2021, 2, 23, 10, 0) do
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 2.seconds, '2', event_2)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 3.seconds, '3', event_3)
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 4.seconds, '4', event_4)
-      end
+    it 'does not include db_config_name field' do
+      ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
 
-      expect(subject.results).to match(
-        calls: 4,
-        summary: {
-          "Cached" => 1,
-          "In a transaction" => 1,
-          "Role: Primary" => 2,
-          "Role: Replica" => 1,
-          "Role: Unknown" => 1
-        },
-        duration: '10000.00ms',
-        warnings: ["active-record duration: 10000.0 over 3000"],
-        details: contain_exactly(
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: '',
-            duration: 1000.0,
-            sql: 'SELECT * FROM users WHERE id = 10',
-            db_role: 'Role: Primary',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: 'Cached',
-            transaction: '',
-            duration: 2000.0,
-            sql: 'SELECT * FROM users WHERE id = 10',
-            db_role: 'Role: Replica',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: 'In a transaction',
-            duration: 3000.0,
-            sql: 'UPDATE users SET admin = true WHERE id = 10',
-            db_role: 'Role: Primary',
-            db_config_name: "Config name: the_db_config_name"
-          ),
-          a_hash_including(
-            start: be_a(Time),
-            cached: '',
-            transaction: '',
-            duration: 4000.0,
-            sql: 'SELECT VERSION()',
-            db_role: 'Role: Unknown',
-            db_config_name: "Config name: the_db_config_name"
-          )
-        )
-      )
-    end
-
-    context 'when the GITLAB_MULTIPLE_DATABASE_METRICS env var is disabled' do
-      before do
-        stub_env('GITLAB_MULTIPLE_DATABASE_METRICS', nil)
-      end
-
-      it 'does not include db_config_name field' do
-        ActiveSupport::Notifications.publish('sql.active_record', Time.current, Time.current + 1.second, '1', event_1)
-
-        expect(subject.results[:details][0][:db_config_name]).to be_nil
-      end
+      expect(subject.results[:details][0][:db_config_name]).to be_nil
     end
   end
 end

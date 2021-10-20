@@ -23,19 +23,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
       end
     end
 
-    context 'multiple databases' do
-      let(:connection_class) do
-        Class.new(::ApplicationRecord) do
-          self.abstract_class = true
-
-          def self.name
-            'Gitlab::Database::SchemaMigrations::Context::TestConnection'
-          end
-        end
-      end
-
-      let(:configuration_overrides) { {} }
-
+    context 'multiple databases', :reestablished_active_record_base do
       before do
         connection_class.establish_connection(
           ActiveRecord::Base
@@ -44,10 +32,6 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
             .configuration_hash
             .merge(configuration_overrides)
         )
-      end
-
-      after do
-        connection_class.remove_connection
       end
 
       context 'when `schema_migrations_path` is configured as string' do

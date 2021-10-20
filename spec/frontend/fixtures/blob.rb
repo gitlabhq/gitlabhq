@@ -11,10 +11,6 @@ RSpec.describe Projects::BlobController, '(JavaScript fixtures)', type: :control
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('blob/')
-  end
-
   before do
     sign_in(user)
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')

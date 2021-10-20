@@ -1,15 +1,13 @@
-import { GlTable, GlLink, GlPagination } from '@gitlab/ui';
+import { GlTable, GlLink, GlPagination, GlAlert } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { shallowMount, mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_PER_PAGE } from '~/api';
-import createFlash from '~/flash';
 import IntegrationOverrides from '~/integrations/overrides/components/integration_overrides.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
-
-jest.mock('~/flash');
 
 const mockOverrides = Array(DEFAULT_PER_PAGE * 3)
   .fill(1)
@@ -62,6 +60,7 @@ describe('IntegrationOverrides', () => {
           text: link.text(),
         };
       });
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('while loading', () => {
     it('sets GlTable `busy` attribute to `true`', () => {
@@ -104,18 +103,26 @@ describe('IntegrationOverrides', () => {
 
   describe('when request fails', () => {
     beforeEach(async () => {
+      jest.spyOn(Sentry, 'captureException');
       mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.INTERNAL_SERVER_ERROR);
+
       createComponent();
       await waitForPromises();
     });
 
-    it('calls createFlash', () => {
-      expect(createFlash).toHaveBeenCalledTimes(1);
-      expect(createFlash).toHaveBeenCalledWith({
-        message: IntegrationOverrides.i18n.defaultErrorMessage,
-        captureError: true,
-        error: expect.any(Error),
-      });
+    it('displays error alert', () => {
+      const alert = findAlert();
+      expect(alert.exists()).toBe(true);
+      expect(alert.text()).toBe(IntegrationOverrides.i18n.defaultErrorMessage);
+    });
+
+    it('hides overrides table', () => {
+      const table = findGlTable();
+      expect(table.exists()).toBe(false);
+    });
+
+    it('captures exception in Sentry', () => {
+      expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 

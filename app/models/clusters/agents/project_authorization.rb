@@ -9,6 +9,10 @@ module Clusters
       belongs_to :project, class_name: '::Project', optional: false
 
       validates :config, json_schema: { filename: 'cluster_agent_authorization_configuration' }
+
+      def config_project
+        agent.project
+      end
     end
   end
 end

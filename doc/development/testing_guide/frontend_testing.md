@@ -146,7 +146,7 @@ it('does not display a dropdown if no metricTypes exist', () => {
 });
 ```
 
-Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A rule of thumb here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
+Keep an eye out for these kinds of tests, as they just make updating logic more fragile and tedious than it needs to be. This is also true for other libraries. A suggestion here is: if you are checking a `wrapper.vm` property, you should probably stop and rethink the test to check the rendered template instead.
 
 Some more examples can be found in the [Frontend unit tests section](testing_levels.md#frontend-unit-tests)
 
@@ -783,20 +783,25 @@ often using fixtures to validate correct integration with the backend code.
 
 ### Use fixtures
 
-Jest uses `spec/frontend/__helpers__/fixtures.js` to import fixtures in tests.
-
-The following are examples of tests that work for Jest:
+To import a JSON fixture, `import` it using the `test_fixtures` alias.
 
 ```javascript
+import responseBody from 'test_fixtures/some/fixture.json' // loads spec/frontend/fixtures/some/fixture.json
+
 it('makes a request', () => {
-  const responseBody = getJSONFixture('some/fixture.json'); // loads spec/frontend/fixtures/some/fixture.json
   axiosMock.onGet(endpoint).reply(200, responseBody);
 
   myButton.click();
 
   // ...
 });
+```
 
+For other fixtures, Jest uses `spec/frontend/__helpers__/fixtures.js` to import them in tests.
+
+The following are examples of tests that work for Jest:
+
+```javascript
 it('uses some HTML element', () => {
   loadFixtures('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
 
@@ -843,10 +848,6 @@ describe GraphQL::Query, type: :request do
 
   all_releases_query_path = 'releases/graphql/queries/all_releases.query.graphql'
 
-  before(:all) do
-    clean_frontend_fixtures('graphql/releases/')
-  end
-
   it "graphql/#{all_releases_query_path}.json" do
     query = get_graphql_query_as_string(all_releases_query_path)
 
@@ -860,7 +861,7 @@ end
 This will create a new fixture located at
 `tmp/tests/frontend/fixtures-ee/graphql/releases/graphql/queries/all_releases.query.graphql.json`.
 
-You can import the JSON fixture in a Jest test using the `getJSONFixture` method
+You can import the JSON fixture in a Jest test using the `test_fixtures` alias
 [as described below](#use-fixtures).
 
 ## Data-driven tests
@@ -998,7 +999,7 @@ it like so:
 import Subject from '~/feature/the_subject.vue';
 
 // Force Jest to transpile and cache
-// eslint-disable-next-line import/order, no-unused-vars
+// eslint-disable-next-line no-unused-vars
 import _Thing from '~/feature/path/to/thing.vue';
 ```
 

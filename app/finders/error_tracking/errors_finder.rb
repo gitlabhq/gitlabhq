@@ -15,8 +15,7 @@ module ErrorTracking
       collection = by_status(collection)
       collection = sort(collection)
 
-      # Limit collection until pagination implemented.
-      limit(collection)
+      collection.keyset_paginate(cursor: params[:cursor], per_page: limit)
     end
 
     private
@@ -39,9 +38,9 @@ module ErrorTracking
       params[:sort] ? collection.sort_by_attribute(params[:sort]) : collection.order_id_desc
     end
 
-    def limit(collection)
+    def limit
       # Restrict the maximum limit at 100 records.
-      collection.limit([(params[:limit] || 20).to_i, 100].min)
+      [(params[:limit] || 20).to_i, 100].min
     end
   end
 end

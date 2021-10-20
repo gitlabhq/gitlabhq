@@ -11,10 +11,13 @@ import Code from '../extensions/code';
 import CodeBlockHighlight from '../extensions/code_block_highlight';
 import DescriptionItem from '../extensions/description_item';
 import DescriptionList from '../extensions/description_list';
+import Details from '../extensions/details';
+import DetailsContent from '../extensions/details_content';
 import Division from '../extensions/division';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
+import Frontmatter from '../extensions/frontmatter';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import HorizontalRule from '../extensions/horizontal_rule';
@@ -24,6 +27,7 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
+import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
 import Reference from '../extensions/reference';
@@ -33,11 +37,13 @@ import Superscript from '../extensions/superscript';
 import Table from '../extensions/table';
 import TableCell from '../extensions/table_cell';
 import TableHeader from '../extensions/table_header';
+import TableOfContents from '../extensions/table_of_contents';
 import TableRow from '../extensions/table_row';
 import TaskItem from '../extensions/task_item';
 import TaskList from '../extensions/task_list';
 import Text from '../extensions/text';
 import Video from '../extensions/video';
+import WordBreak from '../extensions/word_break';
 import {
   isPlainURL,
   renderHardBreak,
@@ -50,6 +56,7 @@ import {
   renderImage,
   renderPlayable,
   renderHTMLNode,
+  renderContent,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -79,6 +86,11 @@ const defaultSerializerConfig = {
           ? '>'
           : `](${state.esc(href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`;
       },
+    },
+    [MathInline.name]: {
+      open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
+      close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
+      escape: false,
     },
     [Strike.name]: {
       open: '~~',
@@ -130,10 +142,33 @@ const defaultSerializerConfig = {
       renderHTMLNode(node.attrs.isTerm ? 'dt' : 'dd')(state, node);
       if (index === parent.childCount - 1) state.ensureNewLine();
     },
+    [Details.name]: renderHTMLNode('details', true),
+    [DetailsContent.name]: (state, node, parent, index) => {
+      if (!index) renderHTMLNode('summary')(state, node);
+      else {
+        if (index === 1) state.ensureNewLine();
+        renderContent(state, node);
+        if (index === parent.childCount - 1) state.ensureNewLine();
+      }
+    },
     [Emoji.name]: (state, node) => {
       const { name } = node.attrs;
 
       state.write(`:${name}:`);
+    },
+    [Frontmatter.name]: (state, node) => {
+      const { language } = node.attrs;
+      const syntax = {
+        toml: '+++',
+        json: ';;;',
+        yaml: '---',
+      }[language];
+
+      state.write(`${syntax}\n`);
+      state.text(node.textContent, false);
+      state.ensureNewLine();
+      state.write(syntax);
+      state.closeBlock(node);
     },
     [Figure.name]: renderHTMLNode('figure'),
     [FigureCaption.name]: renderHTMLNode('figcaption'),
@@ -146,6 +181,10 @@ const defaultSerializerConfig = {
     [Paragraph.name]: defaultMarkdownSerializer.nodes.paragraph,
     [Reference.name]: (state, node) => {
       state.write(node.attrs.originalText || node.attrs.text);
+    },
+    [TableOfContents.name]: (state, node) => {
+      state.write('[[_TOC_]]');
+      state.closeBlock(node);
     },
     [Table.name]: renderTable,
     [TableCell.name]: renderTableCell,
@@ -161,6 +200,7 @@ const defaultSerializerConfig = {
     },
     [Text.name]: defaultMarkdownSerializer.nodes.text,
     [Video.name]: renderPlayable,
+    [WordBreak.name]: (state) => state.write('<wbr>'),
   },
 };
 

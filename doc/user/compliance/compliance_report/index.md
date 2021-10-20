@@ -30,7 +30,7 @@ Prerequisites:
 To view the compliance report:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance**.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
 
 NOTE:
 The compliance report shows only the latest merge request on each project.
@@ -87,7 +87,7 @@ Depending on the merge strategy, the merge commit SHA can be a merge commit, squ
 To download the Chain of Custody report:
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance**.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. Select **List of all merge commits**.
 
 ### Commit-specific Chain of Custody Report **(ULTIMATE)**
@@ -97,7 +97,7 @@ To download the Chain of Custody report:
 You can generate a commit-specific Chain of Custody report for a given commit SHA.
 
 1. On the top bar, select **Menu > Groups** and find your group.
-1. On the left sidebar, select **Security & Compliance > Compliance**.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. At the top of the compliance report, to the right of **List of all merge commits**, select the down arrow (**{angle-down}**).
 1. Enter the merge commit SHA, and then select **Export commit custody report**.
    SHA and then select **Export commit custody report**.

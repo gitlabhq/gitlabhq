@@ -13,13 +13,6 @@ RSpec.describe 'CI YML Templates' do
     excluded + ["Terraform.gitlab-ci.yml"]
   end
 
-  before do
-    stub_feature_flags(
-      redirect_to_latest_template_terraform: false,
-      redirect_to_latest_template_security_api_fuzzing: false,
-      redirect_to_latest_template_security_dast: false)
-  end
-
   shared_examples 'require default stages to be included' do
     it 'require default stages to be included' do
       expect(subject.stages).to include(*Gitlab::Ci::Config::Entry::Stages.default)

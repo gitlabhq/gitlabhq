@@ -13,11 +13,8 @@ import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 
-/* eslint-disable import/order */
-/* You know what: sometimes alphabetical isn't the best order */
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
-/* eslint-enable import/order */
 
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
@@ -703,6 +700,25 @@ describe('diffs/components/app', () => {
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
+    });
+  });
+
+  describe('fluid layout', () => {
+    beforeEach(() => {
+      setFixtures(
+        '<div><div class="merge-request-container limit-container-width container-limited"></div></div>',
+      );
+    });
+
+    it('removes limited container classes when on diffs tab', () => {
+      createComponent({ isFluidLayout: false, shouldShow: true }, () => {}, {
+        glFeatures: { mrChangesFluidLayout: true },
+      });
+
+      const containerClassList = document.querySelector('.merge-request-container').classList;
+
+      expect(containerClassList).not.toContain('container-limited');
+      expect(containerClassList).not.toContain('limit-container-width');
     });
   });
 });

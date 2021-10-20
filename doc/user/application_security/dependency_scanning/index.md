@@ -82,6 +82,7 @@ table.supported-languages tr td:last-child {
 }
 
 table.supported-languages ul {
+    font-size: 1em;
     list-style-type: none;
     padding-left: 0px;
     margin-bottom: 0px;
@@ -346,7 +347,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 ```
 
 The included template creates dependency scanning jobs in your CI/CD
@@ -380,7 +381,7 @@ For example:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_LOG_LEVEL: error
@@ -402,7 +403,7 @@ the `gemnasium` analyzer:
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   variables:
@@ -413,7 +414,7 @@ To override the `dependencies: []` attribute, add an override job as above, targ
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   dependencies: ["build"]
@@ -712,7 +713,7 @@ value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of t
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
@@ -867,7 +868,7 @@ to the supported `requirements.txt` as follows.
 
 ```yaml
 include:
-  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
 
 stages:
   - test
@@ -926,3 +927,37 @@ gemnasium-maven-dependency_scanning:
     - for i in `ls cert*`; do keytool -v -importcert -alias "custom-cert-$i" -file $i -trustcacerts -noprompt -storepass changeit -keystore /opt/asdf/installs/java/adoptopenjdk-11.0.7+10.1/lib/security/cacerts 1>/dev/null 2>&1 || true; done # import each certificate using keytool (note the keystore location is related to the Java version being used and should be changed accordingly for other versions)
     - unset ADDITIONAL_CA_CERT_BUNDLE # unset the variable so that the analyzer doesn't duplicate the import
 ```
+
+### Dependency Scanning job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
+
+Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
+
+- Disabled by default in GitLab 13.0 and later.
+- Unsupported from GitLab 13.4 and later.
+
+To fix this error, disable Docker-in-Docker for dependency scanning. Individual
+`<analyzer-name>-dependency_scanning` jobs are created for each analyzer that runs in your CI/CD
+pipeline.
+
+```yaml
+include:
+  - template: Dependency-Scanning.gitlab-ci.yml
+
+variables:
+  DS_DISABLE_DIND: "true"
+```
+
+### Message `<file> does not exist in <commit SHA>`
+
+When the `Location` of a dependency in a file is shown, the path in the link goes to a specific Git
+SHA.
+
+If the lock file that our dependency scanning tools reviewed was cached, however, selecting that
+link redirects you to the repository root, with the message:
+`<file> does not exist in <commit SHA>`.
+
+The lock file is cached during the build phase and passed to the dependency scanning job before the
+scan occurs. Because the cache is downloaded before the analyzer run occurs, the existence of a lock
+file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
+
+We recommend committing the lock files, which prevents this warning.

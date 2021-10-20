@@ -10,10 +10,10 @@ export default {
   },
   computed: {
     ...mapState([
-      'traceEndpoint',
-      'trace',
-      'isTraceComplete',
-      'isScrolledToBottomBeforeReceivingTrace',
+      'jobLogEndpoint',
+      'jobLog',
+      'isJobLogComplete',
+      'isScrolledToBottomBeforeReceivingJobLog',
     ]),
   },
   updated() {
@@ -39,7 +39,7 @@ export default {
      * In order to scroll the page down after `v-html` has finished, we need to use setTimeout
      */
     handleScrollDown() {
-      if (this.isScrolledToBottomBeforeReceivingTrace) {
+      if (this.isScrolledToBottomBeforeReceivingJobLog) {
         setTimeout(() => {
           this.scrollBottom();
         }, 0);
@@ -50,18 +50,18 @@ export default {
 </script>
 <template>
   <code class="job-log d-block" data-qa-selector="job_log_content">
-    <template v-for="(section, index) in trace">
+    <template v-for="(section, index) in jobLog">
       <collapsible-log-section
         v-if="section.isHeader"
         :key="`collapsible-${index}`"
         :section="section"
-        :trace-endpoint="traceEndpoint"
+        :job-log-endpoint="jobLogEndpoint"
         @onClickCollapsibleLine="handleOnClickCollapsibleLine"
       />
-      <log-line v-else :key="section.offset" :line="section" :path="traceEndpoint" />
+      <log-line v-else :key="section.offset" :line="section" :path="jobLogEndpoint" />
     </template>
 
-    <div v-if="!isTraceComplete" class="js-log-animation loader-animation pt-3 pl-3">
+    <div v-if="!isJobLogComplete" class="js-log-animation loader-animation pt-3 pl-3">
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>

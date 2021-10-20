@@ -29,7 +29,7 @@ Read more about the
 [Source Commits endpoint](https://www.pivotaltracker.com/help/api/rest/v5#Source_Commits) in
 the Pivotal Tracker API documentation.
 
-See also the [Pivotal Tracker service API documentation](../../../api/services.md#pivotal-tracker).
+See also the [Pivotal Tracker integration API documentation](../../../api/integrations.md#pivotal-tracker).
 
 ## Set up Pivotal Tracker
 

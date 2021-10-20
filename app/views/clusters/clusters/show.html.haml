@@ -15,7 +15,7 @@
   provider_type: @cluster.provider_type,
   help_path: help_page_path('user/project/clusters/index.md'),
   environments_help_path: help_page_path('ci/environments/index.md', anchor: 'create-a-static-environment'),
-  clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
+  clusters_help_path: help_page_path('user/project/clusters/deploy_to_cluster.md'),
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.md', anchor: 'enabling-deploy-boards'),
   cluster_id: @cluster.id } }
 
@@ -24,11 +24,10 @@
 
   .js-serverless-survey-banner{ data: { user_name: current_user.name, user_email: current_user.email } }
 
-  .d-flex.my-3
-    %p.badge.badge-light.p-2.mr-2
+  %h4.gl-my-5
+    = @cluster.name
+    %span.badge.badge-info.badge-pill.gl-badge.md.gl-vertical-align-middle
       = cluster_type_label(@cluster.cluster_type)
-    %h4.m-0
-      = @cluster.name
 
   = render 'banner'
 
@@ -42,12 +41,12 @@
 
   - if cluster_created?(@cluster)
     .js-toggle-container
-      %ul.nav-links.mobile-separator.nav.nav-tabs{ role: 'tablist' }
-        = render 'details_tab'
+      = gl_tabs_nav do
+        = render 'clusters/clusters/details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/health_tab'
-        = render 'integrations_tab'
-        = render 'advanced_settings_tab'
+        = render 'clusters/clusters/integrations_tab'
+        = render 'clusters/clusters/advanced_settings_tab'
 
       .tab-content.py-3
         .tab-pane.active{ role: 'tabpanel' }

@@ -17,10 +17,6 @@ RSpec.describe Admin::UsersController, '(JavaScript fixtures)', type: :controlle
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('admin/users')
-  end
-
   it 'admin/users/new_with_internal_user_regex.html' do
     stub_application_setting(user_default_external: true)
     stub_application_setting(user_default_internal_regex: '^(?:(?!\.ext@).)*$\r?')

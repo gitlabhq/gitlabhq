@@ -11,14 +11,25 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
+import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import createFlash, { FLASH_TYPES } from '~/flash';
 
 import DeleteSnippetMutation from '../mutations/deleteSnippet.mutation.graphql';
+
+export const i18n = {
+  snippetSpamSuccess: sprintf(
+    s__('Snippets|%{spammable_titlecase} was submitted to Akismet successfully.'),
+    { spammable_titlecase: __('Snippet') },
+  ),
+  snippetSpamFailure: s__('Snippets|Error with Akismet. Please check the logs for more info.'),
+};
 
 export default {
   components: {
@@ -54,7 +65,7 @@ export default {
       },
     },
   },
-  inject: ['reportAbusePath'],
+  inject: ['reportAbusePath', 'canReportSpam'],
   props: {
     snippet: {
       type: Object,
@@ -63,7 +74,8 @@ export default {
   },
   data() {
     return {
-      isDeleting: false,
+      isLoading: false,
+      isSubmittingSpam: false,
       errorMessage: '',
       canCreateSnippet: false,
     };
@@ -105,10 +117,11 @@ export default {
           category: 'secondary',
         },
         {
-          condition: this.reportAbusePath,
+          condition: this.canReportSpam && !isEmpty(this.reportAbusePath),
           text: __('Submit as spam'),
-          href: this.reportAbusePath,
+          click: this.submitAsSpam,
           title: __('Submit as spam'),
+          loading: this.isSubmittingSpam,
         },
       ];
     },
@@ -157,7 +170,7 @@ export default {
       this.$refs.deleteModal.show();
     },
     deleteSnippet() {
-      this.isDeleting = true;
+      this.isLoading = true;
       this.$apollo
         .mutate({
           mutation: DeleteSnippetMutation,
@@ -167,17 +180,34 @@ export default {
           if (data?.destroySnippet?.errors.length) {
             throw new Error(data?.destroySnippet?.errors[0]);
           }
-          this.isDeleting = false;
           this.errorMessage = undefined;
           this.closeDeleteModal();
           this.redirectToSnippets();
         })
         .catch((err) => {
-          this.isDeleting = false;
+          this.isLoading = false;
           this.errorMessage = err.message;
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
+    async submitAsSpam() {
+      try {
+        this.isSubmittingSpam = true;
+        await axios.post(this.reportAbusePath);
+        createFlash({
+          message: this.$options.i18n.snippetSpamSuccess,
+          type: FLASH_TYPES.SUCCESS,
+        });
+      } catch (error) {
+        createFlash({ message: this.$options.i18n.snippetSpamFailure });
+      } finally {
+        this.isSubmittingSpam = false;
+      }
+    },
   },
+  i18n,
 };
 </script>
 <template>
@@ -189,9 +219,7 @@ export default {
         :title="snippetVisibilityLevelDescription"
         data-container="body"
       >
-        <span class="sr-only">
-          {{ s__(`VisibilityLevel|${visibility}`) }}
-        </span>
+        <span class="sr-only">{{ s__(`VisibilityLevel|${visibility}`) }}</span>
         <gl-icon :name="visibilityLevelIcon" :size="14" />
       </div>
       <div class="creator" data-testid="authored-message">
@@ -233,6 +261,7 @@ export default {
           >
             <gl-button
               :disabled="action.disabled"
+              :loading="action.loading"
               :variant="action.variant"
               :category="action.category"
               :class="action.cssClass"
@@ -240,9 +269,8 @@ export default {
               data-qa-selector="snippet_action_button"
               :data-qa-action="action.text"
               @click="action.click ? action.click() : undefined"
+              >{{ action.text }}</gl-button
             >
-              {{ action.text }}
-            </gl-button>
           </div>
         </template>
       </div>
@@ -266,14 +294,14 @@ export default {
     <gl-modal ref="deleteModal" modal-id="delete-modal" title="Example title">
       <template #modal-title>{{ __('Delete snippet?') }}</template>
 
-      <gl-alert v-if="errorMessage" variant="danger" class="mb-2" @dismiss="errorMessage = ''">{{
-        errorMessage
-      }}</gl-alert>
+      <gl-alert v-if="errorMessage" variant="danger" class="mb-2" @dismiss="errorMessage = ''">
+        {{ errorMessage }}
+      </gl-alert>
 
       <gl-sprintf :message="__('Are you sure you want to delete %{name}?')">
-        <template #name
-          ><strong>{{ snippet.title }}</strong></template
-        >
+        <template #name>
+          <strong>{{ snippet.title }}</strong>
+        </template>
       </gl-sprintf>
 
       <template #modal-footer>
@@ -281,11 +309,11 @@ export default {
         <gl-button
           variant="danger"
           category="primary"
-          :disabled="isDeleting"
+          :disabled="isLoading"
           data-qa-selector="delete_snippet_button"
           @click="deleteSnippet"
         >
-          <gl-loading-icon v-if="isDeleting" size="sm" inline />
+          <gl-loading-icon v-if="isLoading" size="sm" inline />
           {{ __('Delete snippet') }}
         </gl-button>
       </template>

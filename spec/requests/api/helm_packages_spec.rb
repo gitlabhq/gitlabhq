@@ -18,11 +18,11 @@ RSpec.describe API::HelmPackages do
   let_it_be(:other_package) { create(:npm_package, project: project) }
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/index.yaml' do
-    let(:url) { "/projects/#{project_id}/packages/helm/stable/index.yaml" }
+    let(:project_id) { project.id }
+    let(:channel) { 'stable' }
+    let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
     context 'with a project id' do
-      let(:project_id) { project.id }
-
       it_behaves_like 'handling helm chart index requests'
     end
 
@@ -30,6 +30,18 @@ RSpec.describe API::HelmPackages do
       let(:project_id) { ERB::Util.url_encode(project.full_path) }
 
       it_behaves_like 'handling helm chart index requests'
+    end
+
+    context 'with dot in channel' do
+      let(:channel) { 'with.dot' }
+
+      subject { get api(url) }
+
+      before do
+        project.update!(visibility: 'public')
+      end
+
+      it_behaves_like 'returning response status', :success
     end
   end
 

@@ -18,36 +18,28 @@ module Gitlab
 
         # project - An instance of Project.
         def import(_, project)
+          @project = project
           project.after_import
-          report_import_time(project)
+          report_import_time
         end
 
-        def report_import_time(project)
-          duration = Time.zone.now - project.created_at
+        private
 
-          histogram.observe({ project: project.full_path }, duration)
-          counter.increment
+        attr_reader :project
+
+        def report_import_time
+          metrics.track_finished_import
 
           info(
             project.id,
             message: "GitHub project import finished",
-            duration_s: duration.round(2),
+            duration_s: metrics.duration.round(2),
             object_counts: ::Gitlab::GithubImport::ObjectCounter.summary(project)
           )
         end
 
-        def histogram
-          @histogram ||= Gitlab::Metrics.histogram(
-            :github_importer_total_duration_seconds,
-            'Total time spent importing GitHub projects, in seconds'
-          )
-        end
-
-        def counter
-          @counter ||= Gitlab::Metrics.counter(
-            :github_importer_imported_projects,
-            'The number of imported GitHub projects'
-          )
+        def metrics
+          @metrics ||= Gitlab::Import::Metrics.new(:github_importer, project)
         end
       end
     end

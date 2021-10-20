@@ -14,7 +14,7 @@ module Ci
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
-      context 'checks database loadbalancing stickiness', :db_load_balancing do
+      context 'checks database loadbalancing stickiness' do
         subject { described_class.new(shared_runner).execute }
 
         before do
@@ -22,14 +22,14 @@ module Ci
         end
 
         it 'result is valid if replica did caught-up' do
-          expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
+          expect(ApplicationRecord.sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { true }
 
           expect(subject).to be_valid
         end
 
         it 'result is invalid if replica did not caught-up' do
-          expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:all_caught_up?)
+          expect(ApplicationRecord.sticking).to receive(:all_caught_up?)
             .with(:runner, shared_runner.id) { false }
 
           expect(subject).not_to be_valid
@@ -87,11 +87,17 @@ module Ci
           end
 
           context 'for specific runner' do
-            context 'with FF disabled' do
+            context 'with tables decoupling disabled' do
               before do
                 stub_feature_flags(
                   ci_pending_builds_project_runners_decoupling: false,
                   ci_queueing_builds_enabled_checks: false)
+              end
+
+              around do |example|
+                allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+                  example.run
+                end
               end
 
               it 'does not pick a build' do
@@ -99,7 +105,7 @@ module Ci
               end
             end
 
-            context 'with FF enabled' do
+            context 'with tables decoupling enabled' do
               before do
                 stub_feature_flags(
                   ci_pending_builds_project_runners_decoupling: true,
@@ -266,17 +272,23 @@ module Ci
           context 'and uses project runner' do
             let(:build) { execute(specific_runner) }
 
-            context 'with FF disabled' do
+            context 'with tables decoupling disabled' do
               before do
                 stub_feature_flags(
                   ci_pending_builds_project_runners_decoupling: false,
                   ci_queueing_builds_enabled_checks: false)
               end
 
+              around do |example|
+                allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+                  example.run
+                end
+              end
+
               it { expect(build).to be_nil }
             end
 
-            context 'with FF enabled' do
+            context 'with tables decoupling enabled' do
               before do
                 stub_feature_flags(
                   ci_pending_builds_project_runners_decoupling: true,
@@ -791,6 +803,12 @@ module Ci
             stub_feature_flags(ci_queueing_denormalize_shared_runners_information: false)
           end
 
+          around do |example|
+            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+              example.run
+            end
+          end
+
           include_examples 'handles runner assignment'
         end
 
@@ -807,12 +825,24 @@ module Ci
             stub_feature_flags(ci_queueing_denormalize_tags_information: false)
           end
 
+          around do |example|
+            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+              example.run
+            end
+          end
+
           include_examples 'handles runner assignment'
         end
 
         context 'with ci_queueing_denormalize_namespace_traversal_ids disabled' do
           before do
             stub_feature_flags(ci_queueing_denormalize_namespace_traversal_ids: false)
+          end
+
+          around do |example|
+            allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+              example.run
+            end
           end
 
           include_examples 'handles runner assignment'
@@ -822,6 +852,12 @@ module Ci
       context 'when not using pending builds table' do
         before do
           stub_feature_flags(ci_pending_builds_queue_source: false)
+        end
+
+        around do |example|
+          allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332952') do
+            example.run
+          end
         end
 
         include_examples 'handles runner assignment'

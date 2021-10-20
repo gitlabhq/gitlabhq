@@ -141,7 +141,62 @@ export const mockEpicToken = {
   token: EpicToken,
   operators: OPERATOR_IS_ONLY,
   idProperty: 'iid',
-  fetchEpics: () => Promise.resolve({ data: mockEpics }),
+  fullPath: 'gitlab-org',
+};
+
+export const mockEpicNode1 = {
+  __typename: 'Epic',
+  parent: null,
+  id: 'gid://gitlab/Epic/40',
+  iid: '2',
+  title: 'Marketing epic',
+  description: 'Mock epic description',
+  state: 'opened',
+  startDate: '2017-12-25',
+  dueDate: '2018-02-15',
+  webUrl: 'http://gdk.test:3000/groups/gitlab-org/marketing/-/epics/1',
+  hasChildren: false,
+  hasParent: false,
+  confidential: false,
+};
+
+export const mockEpicNode2 = {
+  __typename: 'Epic',
+  parent: null,
+  id: 'gid://gitlab/Epic/41',
+  iid: '3',
+  title: 'Another marketing',
+  startDate: '2017-12-26',
+  dueDate: '2018-03-10',
+  state: 'opened',
+  webUrl: 'http://gdk.test:3000/groups/gitlab-org/marketing/-/epics/2',
+};
+
+export const mockGroupEpicsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      name: 'Gitlab Org',
+      epics: {
+        edges: [
+          {
+            node: {
+              ...mockEpicNode1,
+            },
+            __typename: 'EpicEdge',
+          },
+          {
+            node: {
+              ...mockEpicNode2,
+            },
+            __typename: 'EpicEdge',
+          },
+        ],
+        __typename: 'EpicConnection',
+      },
+      __typename: 'Group',
+    },
+  },
 };
 
 export const mockReactionEmojiToken = {

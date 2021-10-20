@@ -1,22 +1,19 @@
 <script>
-import {
-  GlDropdownDivider,
-  GlFilteredSearchSuggestion,
-  GlFilteredSearchToken,
-  GlLoadingIcon,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
-import { DEBOUNCE_DELAY, DEFAULT_NONE_ANY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
+import { DEFAULT_NONE_ANY, FILTER_NONE_ANY, OPERATOR_IS_NOT } from '../constants';
+import searchEpicsQuery from '../queries/search_epics.query.graphql';
+
+import BaseToken from './base_token.vue';
 
 export default {
-  separator: '::&',
+  prefix: '&',
+  separator: '::',
   components: {
-    GlDropdownDivider,
-    GlFilteredSearchToken,
+    BaseToken,
     GlFilteredSearchSuggestion,
-    GlLoadingIcon,
   },
   props: {
     config: {
@@ -27,11 +24,15 @@ export default {
       type: Object,
       required: true,
     },
+    active: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       epics: this.config.initialEpics || [],
-      loading: true,
+      loading: false,
     };
   },
   computed: {
@@ -56,98 +57,73 @@ export default {
       }
       return this.defaultEpics;
     },
-    activeEpic() {
-      if (this.currentValue && this.epics.length) {
-        // Check if current value is an epic ID.
-        if (typeof this.currentValue === 'number') {
-          return this.epics.find((epic) => epic[this.idProperty] === this.currentValue);
-        }
-
-        // Current value is a string.
-        const [groupPath, idProperty] = this.currentValue?.split(this.$options.separator);
-        return this.epics.find(
-          (epic) =>
-            epic.group_full_path === groupPath &&
-            epic[this.idProperty] === parseInt(idProperty, 10),
-        );
-      }
-      return null;
-    },
-    displayText() {
-      return `${this.activeEpic?.title}${this.$options.separator}${this.activeEpic?.iid}`;
-    },
-  },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue) {
-        if (!newValue && !this.epics.length) {
-          this.searchEpics({ data: this.currentValue });
-        }
-      },
-    },
   },
   methods: {
-    fetchEpicsBySearchTerm({ epicPath = '', search = '' }) {
+    fetchEpics(search = '') {
+      return this.$apollo
+        .query({
+          query: searchEpicsQuery,
+          variables: { fullPath: this.config.fullPath, search },
+        })
+        .then(({ data }) => data.group?.epics.nodes);
+    },
+    fetchEpicsBySearchTerm(search) {
       this.loading = true;
-      this.config
-        .fetchEpics({ epicPath, search })
+      this.fetchEpics(search)
         .then((response) => {
-          this.epics = Array.isArray(response) ? response : response.data;
+          this.epics = Array.isArray(response) ? response : response?.data;
         })
         .catch(() => createFlash({ message: __('There was a problem fetching epics.') }))
         .finally(() => {
           this.loading = false;
         });
     },
-    searchEpics: debounce(function debouncedSearch({ data }) {
-      let epicPath = this.activeEpic?.web_url;
-
-      // When user visits the page with token value already included in filters
-      // We don't have any information about selected token except for its
-      // group path and iid joined by separator, so we need to manually
-      // compose epic path from it.
-      if (data.includes?.(this.$options.separator)) {
-        const [groupPath, epicIid] = data.split(this.$options.separator);
-        epicPath = `/groups/${groupPath}/-/epics/${epicIid}`;
+    getActiveEpic(epics, data) {
+      if (data && epics.length) {
+        return epics.find((epic) => this.getValue(epic) === data);
       }
-      this.fetchEpicsBySearchTerm({ epicPath, search: data });
-    }, DEBOUNCE_DELAY),
-
+      return undefined;
+    },
     getValue(epic) {
-      return this.config.useIdValue
-        ? String(epic[this.idProperty])
-        : `${epic.group_full_path}${this.$options.separator}${epic[this.idProperty]}`;
+      return this.getEpicIdProperty(epic).toString();
+    },
+    displayValue(epic) {
+      return `${this.$options.prefix}${this.getEpicIdProperty(epic)}${this.$options.separator}${
+        epic?.title
+      }`;
+    },
+    getEpicIdProperty(epic) {
+      return getIdFromGraphQLId(epic[this.idProperty]);
     },
   },
 };
 </script>
 
 <template>
-  <gl-filtered-search-token
+  <base-token
     :config="config"
-    v-bind="{ ...$props, ...$attrs }"
+    :value="value"
+    :active="active"
+    :suggestions-loading="loading"
+    :suggestions="epics"
+    :get-active-token-value="getActiveEpic"
+    :default-suggestions="availableDefaultEpics"
+    :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
+    search-by="title"
+    @fetch-suggestions="fetchEpicsBySearchTerm"
     v-on="$listeners"
-    @input="searchEpics"
   >
-    <template #view="{ inputValue }">
-      {{ activeEpic ? displayText : inputValue }}
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
+      {{ activeTokenValue ? displayValue(activeTokenValue) : inputValue }}
     </template>
-    <template #suggestions>
+    <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="epic in availableDefaultEpics"
-        :key="epic.value"
-        :value="epic.value"
+        v-for="epic in suggestions"
+        :key="epic.id"
+        :value="getValue(epic)"
       >
-        {{ epic.text }}
+        {{ epic.title }}
       </gl-filtered-search-suggestion>
-      <gl-dropdown-divider v-if="availableDefaultEpics.length" />
-      <gl-loading-icon v-if="loading" size="sm" />
-      <template v-else>
-        <gl-filtered-search-suggestion v-for="epic in epics" :key="epic.id" :value="getValue(epic)">
-          {{ epic.title }}
-        </gl-filtered-search-suggestion>
-      </template>
     </template>
-  </gl-filtered-search-token>
+  </base-token>
 </template>

@@ -795,7 +795,7 @@ module API
             use :pagination
             optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) impersonation_tokens'
           end
-          get feature_category :authentication_and_authorization do
+          get feature_category: :authentication_and_authorization do
             present paginate(finder(declared_params(include_missing: false)).execute), with: Entities::ImpersonationToken
           end
 
@@ -1058,6 +1058,10 @@ module API
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
         requires :credit_card_validated_at, type: DateTime, desc: 'The time when the user\'s credit card was validated'
+        requires :credit_card_expiration_month, type: Integer, desc: 'The month the credit card expires'
+        requires :credit_card_expiration_year, type: Integer, desc: 'The year the credit card expires'
+        requires :credit_card_holder_name, type: String, desc: 'The credit card holder name'
+        requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
       end
       put ":user_id/credit_card_validation", feature_category: :users do
         authenticated_as_admin!
@@ -1093,7 +1097,6 @@ module API
         attrs = declared_params(include_missing: false)
 
         service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
-
         if service.success?
           present preferences, with: Entities::UserPreferences
         else

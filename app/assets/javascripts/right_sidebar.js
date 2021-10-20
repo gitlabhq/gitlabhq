@@ -111,7 +111,7 @@ Sidebar.prototype.toggleTodo = function (e) {
 };
 
 Sidebar.prototype.sidebarCollapseClicked = function (e) {
-  if ($(e.currentTarget).hasClass('dont-change-state')) {
+  if ($(e.currentTarget).hasClass('js-dont-change-state')) {
     return;
   }
   const sidebar = e.data;

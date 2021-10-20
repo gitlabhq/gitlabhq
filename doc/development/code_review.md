@@ -106,6 +106,7 @@ with [domain expertise](#domain-experts).
 1. If your merge request includes user-facing changes (*3*), it must be
    **approved by a [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX)**,
    based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+   See the [design and user interface guidelines](contributing/design.md) for details.
 1. If your merge request includes adding a new JavaScript library (*1*)...
    - If the library significantly increases the
      [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md), it must
@@ -156,7 +157,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. I have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or I have decided that this does not apply.
 1. I have properly separated EE content from FOSS, or this MR is FOSS only.
     - [Where should EE code go?](ee_features.md#separation-of-ee-code)
-1. If I am introducing a new expectation for existing data, I have confirmed that existing data meets this expectation or I have made this expectation optional rather than required.
+1. I have considered that existing data may be surprisingly varied. For example, a new model validation can break existing records. Consider making validation on existing data optional rather than required if you haven't confirmed that existing data will pass validation.
 
 ##### Performance, reliability, and availability
 

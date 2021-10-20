@@ -230,7 +230,7 @@ func TestAllowedGetGitArchiveOldPayload(t *testing.T) {
 
 	// Create the repository in the Gitaly server
 	apiResponse := realGitalyOkBody(t)
-	repo := apiResponse.Repository
+	repo := &apiResponse.Repository
 	require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
 	archivePath := path.Join(scratchDir, "my/path")

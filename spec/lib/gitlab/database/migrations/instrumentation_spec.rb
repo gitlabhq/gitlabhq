@@ -2,8 +2,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Instrumentation do
+  let(:result_dir) { Dir.mktmpdir }
+
+  after do
+    FileUtils.rm_rf(result_dir)
+  end
   describe '#observe' do
-    subject { described_class.new }
+    subject { described_class.new(result_dir: result_dir) }
 
     let(:migration_name) { 'test' }
     let(:migration_version) { '12345' }
@@ -13,7 +18,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'behavior with observers' do
-      subject { described_class.new([Gitlab::Database::Migrations::Observers::MigrationObserver]).observe(version: migration_version, name: migration_name) {} }
+      subject { described_class.new(observer_classes: [Gitlab::Database::Migrations::Observers::MigrationObserver], result_dir: result_dir).observe(version: migration_version, name: migration_name) {} }
 
       let(:observer) { instance_double('Gitlab::Database::Migrations::Observers::MigrationObserver', before: nil, after: nil, record: nil) }
 
@@ -24,7 +29,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
       it 'instantiates observer with observation' do
         expect(Gitlab::Database::Migrations::Observers::MigrationObserver)
           .to receive(:new)
-          .with(instance_of(Gitlab::Database::Migrations::Observation)) { |observation| expect(observation.version).to eq(migration_version) }
+          .with(instance_of(Gitlab::Database::Migrations::Observation), anything) { |observation| expect(observation.version).to eq(migration_version) }
           .and_return(observer)
 
         subject
@@ -58,7 +63,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'on successful execution' do
-      subject { described_class.new.observe(version: migration_version, name: migration_name) {} }
+      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name) {} }
 
       it 'records walltime' do
         expect(subject.walltime).not_to be_nil
@@ -78,7 +83,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'upon failure' do
-      subject { described_class.new.observe(version: migration_version, name: migration_name) { raise 'something went wrong' } }
+      subject { described_class.new(result_dir: result_dir).observe(version: migration_version, name: migration_name) { raise 'something went wrong' } }
 
       it 'raises the exception' do
         expect { subject }.to raise_error(/something went wrong/)
@@ -93,7 +98,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
           # ignore
         end
 
-        let(:instance) { described_class.new }
+        let(:instance) { described_class.new(result_dir: result_dir) }
 
         it 'records walltime' do
           expect(subject.walltime).not_to be_nil
@@ -114,7 +119,7 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
     end
 
     context 'sequence of migrations with failures' do
-      subject { described_class.new }
+      subject { described_class.new(result_dir: result_dir) }
 
       let(:migration1) { double('migration1', call: nil) }
       let(:migration2) { double('migration2', call: nil) }

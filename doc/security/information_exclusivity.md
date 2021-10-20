@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: concepts
 ---
@@ -24,7 +24,7 @@ limitation.
 You can take steps to prevent unintentional sharing and information
 destruction. This limitation is the reason why only certain people are allowed
 to [add users to a project](../user/project/members/index.md)
-and why only a GitLab admin can [force push a protected
+and why only a GitLab administrator can [force push a protected
 branch](../user/project/protected_branches.md).
 
 <!-- ## Troubleshooting

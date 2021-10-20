@@ -1,0 +1,8 @@
+---
+name: update_deployment_after_transaction_commit
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71450
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/342021
+milestone: '14.4'
+type: development
+group: group::release
+default_enabled: false

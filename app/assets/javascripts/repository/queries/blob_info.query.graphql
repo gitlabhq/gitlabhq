@@ -4,6 +4,8 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
     userPermissions {
       pushCode
       downloadCode
+      createMergeRequestIn
+      forkProject
     }
     pathLocks {
       nodes {
@@ -23,6 +25,9 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           path
           editBlobPath
           ideEditPath
+          forkAndEditPath
+          ideForkAndEditPath
+          canModifyBlob
           storedExternally
           rawPath
           replacePath

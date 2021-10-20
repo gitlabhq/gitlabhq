@@ -148,7 +148,7 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.can_be_approved_by?(current_user)
         end
         command :approve do
-          success = MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
+          success = ::MergeRequests::ApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
 
@@ -162,7 +162,7 @@ module Gitlab
           quick_action_target.persisted? && quick_action_target.can_be_unapproved_by?(current_user)
         end
         command :unapprove do
-          success = MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
+          success = ::MergeRequests::RemoveApprovalService.new(project: quick_action_target.project, current_user: current_user).execute(quick_action_target)
 
           next unless success
 
@@ -275,7 +275,7 @@ module Gitlab
       end
 
       def merge_orchestration_service
-        @merge_orchestration_service ||= MergeRequests::MergeOrchestrationService.new(project, current_user)
+        @merge_orchestration_service ||= ::MergeRequests::MergeOrchestrationService.new(project, current_user)
       end
 
       def preferred_auto_merge_strategy(merge_request)

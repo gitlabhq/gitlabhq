@@ -20,16 +20,13 @@ describe('IssuableForm', () => {
   describe('removeWip', () => {
     it.each`
       prefix
-      ${'drAft '}
       ${'draFT: '}
       ${'  [DRaft] '}
       ${'drAft:'}
       ${'[draFT]'}
-      ${' dRaFt - '}
-      ${'dRaFt -      '}
       ${'(draft) '}
       ${' (DrafT)'}
-      ${'draft draft - draft: [draft] (draft)'}
+      ${'draft: [draft] (draft)'}
     `('removes "$prefix" from the beginning of the title', ({ prefix }) => {
       instance.titleField.val(`${prefix}The Issuable's Title Value`);
 
@@ -46,6 +43,20 @@ describe('IssuableForm', () => {
       instance.addWip();
 
       expect(instance.titleField.val()).toBe("Draft: The Issuable's Title Value");
+    });
+  });
+
+  describe('workInProgress', () => {
+    it.each`
+      title                                 | expected
+      ${'draFT: something is happening'}    | ${true}
+      ${'draft something is happening'}     | ${false}
+      ${'something is happening to drafts'} | ${false}
+      ${'something is happening'}           | ${false}
+    `('returns $expected with "$title"', ({ title, expected }) => {
+      instance.titleField.val(title);
+
+      expect(instance.workInProgress()).toBe(expected);
     });
   });
 });

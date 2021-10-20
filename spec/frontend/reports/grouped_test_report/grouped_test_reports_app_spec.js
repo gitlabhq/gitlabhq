@@ -24,7 +24,7 @@ describe('Grouped test reports app', () => {
   let wrapper;
   let mockStore;
 
-  const mountComponent = ({ props = { pipelinePath }, glFeatures = {} } = {}) => {
+  const mountComponent = ({ props = { pipelinePath } } = {}) => {
     wrapper = mount(GroupedTestReportsApp, {
       store: mockStore,
       localVue,
@@ -33,9 +33,6 @@ describe('Grouped test reports app', () => {
         headBlobPath,
         pipelinePath,
         ...props,
-      },
-      provide: {
-        glFeatures,
       },
     });
   };
@@ -114,8 +111,8 @@ describe('Grouped test reports app', () => {
       setReports(newFailedTestReports);
     });
 
-    it('tracks service ping metric when enabled', () => {
-      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: true } });
+    it('tracks service ping metric', () => {
+      mountComponent();
       findExpandButton().trigger('click');
 
       expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
@@ -123,20 +120,13 @@ describe('Grouped test reports app', () => {
     });
 
     it('only tracks the first expansion', () => {
-      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: true } });
+      mountComponent();
       const expandButton = findExpandButton();
       expandButton.trigger('click');
       expandButton.trigger('click');
       expandButton.trigger('click');
 
       expect(Api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not track service ping metric when disabled', () => {
-      mountComponent({ glFeatures: { usageDataITestingSummaryWidgetTotal: false } });
-      findExpandButton().trigger('click');
-
-      expect(Api.trackRedisHllUserEvent).not.toHaveBeenCalled();
     });
   });
 

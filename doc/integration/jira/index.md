@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Jira integrations **(FREE)**
 
 If your organization uses [Jira](https://www.atlassian.com/software/jira) issues,
-you can [migrate your issues from Jira](../../user/project/import/jira.md) **(PREMIUM)** and work
+you can [migrate your issues from Jira](../../user/project/import/jira.md) and work
 exclusively in GitLab. However, if you'd like to continue to use Jira, you can
 integrate it with GitLab. GitLab offers two types of Jira integrations, and you
 can use one or both depending on the capabilities you need. It is recommended that you enable both.
@@ -20,7 +20,7 @@ in your GitLab project with any of your projects in Jira.
 ### Jira integration
 
 This integration connects one or more GitLab projects to a Jira instance. The Jira instance
-can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/cloud).
+can be hosted by you or in [Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud).
 The supported Jira versions are `v6.x`, `v7.x`, and `v8.x`.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -49,8 +49,8 @@ or the Jira DVCS (distributed version control system) connector,
 | Mention a Jira issue ID in a GitLab branch name and the Jira issue shows the branch name. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
 | Add Jira time tracking to an issue. | No. | Yes. Time can be specified using Jira Smart Commits. |
 | Use a Git commit or merge request to transition or close a Jira issue. | Yes. Only a single transition type, typically configured to close the issue by setting it to Done. | Yes. Transition to any state using Jira Smart Commits. |
-| Display a list of Jira issues. | Yes. **(PREMIUM)** | No. |
-| Create a Jira issue from a vulnerability or finding. | Yes. **(ULTIMATE)** | No. |
+| Display a list of [Jira issues](issues.md#view-jira-issues). | Yes. | No. |
+| Create a Jira issue from a [vulnerability or finding](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability). | Yes. | No. |
 | Create a GitLab branch from a Jira issue. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
 
 ## Authentication in Jira

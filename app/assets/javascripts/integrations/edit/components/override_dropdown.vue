@@ -2,7 +2,7 @@
 import { GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
-import { defaultIntegrationLevel, overrideDropdownDescriptions } from '../constants';
+import { defaultIntegrationLevel, overrideDropdownDescriptions } from '~/integrations/constants';
 
 const dropdownOptions = [
   {

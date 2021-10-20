@@ -102,11 +102,11 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		preauth api.Response
+		preauth *api.Response
 	}{
 		{
 			name: "ObjectStore Upload",
-			preauth: api.Response{
+			preauth: &api.Response{
 				RemoteObject: api.RemoteObject{
 					StoreURL: storeServer.URL + "/url/put" + qs,
 					ID:       "store-id",
@@ -145,7 +145,7 @@ func TestUploadHandlerSendingToExternalStorageAndStorageServerUnreachable(t *tes
 		t.Fatal("it should not be called")
 	}
 
-	authResponse := api.Response{
+	authResponse := &api.Response{
 		TempPath: tempPath,
 		RemoteObject: api.RemoteObject{
 			StoreURL: "http://localhost:12323/invalid/url",
@@ -171,7 +171,7 @@ func TestUploadHandlerSendingToExternalStorageAndInvalidURLIsUsed(t *testing.T) 
 		t.Fatal("it should not be called")
 	}
 
-	authResponse := api.Response{
+	authResponse := &api.Response{
 		TempPath: tempPath,
 		RemoteObject: api.RemoteObject{
 			StoreURL: "htt:////invalid-url",
@@ -203,7 +203,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 	storeServer := httptest.NewServer(storeServerMux)
 	defer storeServer.Close()
 
-	authResponse := api.Response{
+	authResponse := &api.Response{
 		RemoteObject: api.RemoteObject{
 			StoreURL: storeServer.URL + "/url/put",
 			ID:       "store-id",
@@ -236,7 +236,7 @@ func TestUploadHandlerSendingToExternalStorageAndSupportRequestTimeout(t *testin
 	storeServer := httptest.NewServer(storeServerMux)
 	defer storeServer.Close()
 
-	authResponse := api.Response{
+	authResponse := &api.Response{
 		RemoteObject: api.RemoteObject{
 			StoreURL: storeServer.URL + "/url/put",
 			ID:       "store-id",
@@ -262,7 +262,7 @@ func TestUploadHandlerMultipartUploadSizeLimit(t *testing.T) {
 	objectURL := server.URL + test.ObjectPath
 
 	uploadSize := 10
-	preauth := api.Response{
+	preauth := &api.Response{
 		RemoteObject: api.RemoteObject{
 			ID: "store-id",
 			MultipartUpload: &api.MultipartUploadParams{
@@ -304,7 +304,7 @@ func TestUploadHandlerMultipartUploadMaximumSizeFromApi(t *testing.T) {
 
 	uploadSize := int64(10)
 	maxSize := uploadSize - 1
-	preauth := api.Response{
+	preauth := &api.Response{
 		MaximumSize: maxSize,
 		RemoteObject: api.RemoteObject{
 			ID: "store-id",

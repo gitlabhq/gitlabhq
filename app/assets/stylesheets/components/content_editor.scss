@@ -1,9 +1,13 @@
 .ProseMirror {
+  max-height: 55vh;
+  overflow-y: auto;
+
   td,
   th,
   li,
   dd,
-  dt {
+  dt,
+  summary {
     :first-child {
       margin-bottom: 0 !important;
     }
@@ -37,6 +41,7 @@
     }
   }
 
+
   .dl-content {
     width: 100%;
 
@@ -48,6 +53,38 @@
         margin: 0;
         font-weight: 600;
       }
+    }
+  }
+
+  .details-toggle-icon {
+    cursor: pointer;
+    z-index: 1;
+
+    &::before {
+      content: '▶';
+      display: inline-block;
+      width: $gl-spacing-scale-4;
+    }
+
+    &.is-open::before {
+      content: '▼';
+    }
+  }
+
+  .details-content {
+    width: calc(100% - #{$gl-spacing-scale-4});
+
+    > li {
+      list-style-type: none;
+      margin-left: $gl-spacing-scale-2;
+    }
+
+    > :not(:first-child) {
+      display: none;
+    }
+
+    &.is-open > :not(:first-child) {
+      display: inherit;
     }
   }
 }
@@ -69,4 +106,18 @@
   @include gl-w-auto;
 
   @include gl-white-space-nowrap;
+}
+
+
+.content-editor-color-chip::after {
+  content: ' ';
+  display: inline-block;
+  align-items: center;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  margin-left: 4px;
+  margin-top: -2px;
+  border: 1px solid $black-transparent;
+  background-color: var(--gl-color-chip-color);
 }

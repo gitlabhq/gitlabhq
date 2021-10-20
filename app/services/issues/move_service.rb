@@ -7,13 +7,7 @@ module Issues
     def execute(issue, target_project)
       @target_project = target_project
 
-      unless issue.can_move?(current_user, @target_project)
-        raise MoveError, s_('MoveIssue|Cannot move issue due to insufficient permissions!')
-      end
-
-      if @project == @target_project
-        raise MoveError, s_('MoveIssue|Cannot move issue to project it originates from!')
-      end
+      verify_can_move_issue!(issue, target_project)
 
       super
 
@@ -31,6 +25,20 @@ module Issues
     private
 
     attr_reader :target_project
+
+    def verify_can_move_issue!(issue, target_project)
+      unless issue.supports_move_and_clone?
+        raise MoveError, s_('MoveIssue|Cannot move issues of \'%{issue_type}\' type.') % { issue_type: issue.issue_type }
+      end
+
+      unless issue.can_move?(current_user, @target_project)
+        raise MoveError, s_('MoveIssue|Cannot move issue due to insufficient permissions!')
+      end
+
+      if @project == @target_project
+        raise MoveError, s_('MoveIssue|Cannot move issue to project it originates from!')
+      end
+    end
 
     def update_service_desk_sent_notifications
       return unless original_entity.from_service_desk?

@@ -21,6 +21,12 @@ module Gitlab
           :corrupted  # malformed trace found after comparing CRC32 and size
         ].freeze
 
+        TRACE_ERROR_TYPES = [
+          :chunks_invalid_size,       # used to be :corrupted
+          :chunks_invalid_checksum,   # used to be :invalid
+          :archive_invalid_checksum   # malformed trace found into object store after comparing MD5
+        ].freeze
+
         def increment_trace_operation(operation: :unknown)
           unless OPERATIONS.include?(operation)
             raise ArgumentError, "unknown trace operation: #{operation}"
@@ -31,6 +37,14 @@ module Gitlab
 
         def increment_trace_bytes(size)
           self.class.trace_bytes.increment({}, size.to_i)
+        end
+
+        def increment_error_counter(type: :unknown)
+          unless TRACE_ERROR_TYPES.include?(type)
+            raise ArgumentError, "unknown error type: #{type}"
+          end
+
+          self.class.trace_errors_counter.increment(type: type)
         end
 
         def observe_migration_duration(seconds)
@@ -63,6 +77,15 @@ module Gitlab
             labels = {}
 
             ::Gitlab::Metrics.histogram(name, comment, labels, buckets)
+          end
+        end
+
+        def self.trace_errors_counter
+          strong_memoize(:trace_errors_counter) do
+            name = :gitlab_ci_build_trace_errors_total
+            comment = 'Total amount of different error types on a build trace'
+
+            Gitlab::Metrics.counter(name, comment)
           end
         end
       end

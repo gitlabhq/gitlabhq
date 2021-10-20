@@ -32,7 +32,7 @@ Click on the service links to see further configuration instructions and details
 | [Bugzilla](bugzilla.md)                                   | Use Bugzilla as the issue tracker.                                                           | **{dotted-circle}** No |
 | Buildkite                                                 | Run CI/CD pipelines with Buildkite.                                                          | **{check-circle}** Yes |
 | Campfire                                                  | Connect to chat.                                                                             | **{dotted-circle}** No |
-| [Confluence Workspace](../../../api/services.md#confluence-service) | Replace the link to the internal wiki with a link to a Confluence Cloud Workspace. | **{dotted-circle}** No |
+| [Confluence Workspace](../../../api/integrations.md#confluence-integration) | Replace the link to the internal wiki with a link to a Confluence Cloud Workspace. | **{dotted-circle}** No |
 | [Custom issue tracker](custom_issue_tracker.md)           | Use a custom issue tracker.                                                                  | **{dotted-circle}** No |
 | [Datadog](../../../integration/datadog.md)                | Trace your GitLab pipelines with Datadog.                                                    | **{check-circle}** Yes |
 | [Discord Notifications](discord_notifications.md)         | Send notifications about project events to a Discord channel.                                | **{dotted-circle}** No |
@@ -40,7 +40,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md)                       | Send commits and diff of each push by email.                                                 | **{dotted-circle}** No |
 | [EWM](ewm.md)                                             | Use IBM Engineering Workflow Management as the issue tracker.                                | **{dotted-circle}** No |
 | [External wiki](../wiki/index.md#link-an-external-wiki)   | Link an external wiki.                                          | **{dotted-circle}** No |
-| [Flowdock](../../../api/services.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
+| [Flowdock](../../../api/integrations.md#flowdock)             | Send notifications from GitLab to Flowdock flows. | **{dotted-circle}** No |
 | [GitHub](github.md)                                       | Obtain statuses for commits and pull requests.                                               | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                           | Send notifications from your GitLab project to a room in Google Chat.| **{dotted-circle}** No |
 | [irker (IRC gateway)](irker.md)                           | Send IRC messages.                                                                           | **{dotted-circle}** No |
@@ -59,10 +59,9 @@ Click on the service links to see further configuration instructions and details
 | [Slack application](gitlab_slack_application.md)          | Use Slack's official GitLab application.                                                     | **{dotted-circle}** No |
 | [Slack notifications](slack.md)                           | Send notifications about project events to Slack.                                            | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)           | Enable slash commands in workspace.                                                          | **{dotted-circle}** No |
-| [Unify Circuit](unify_circuit.md)                         | Receive events notifications.                                                                | **{dotted-circle}** No |
+| [Unify Circuit](unify_circuit.md)                         | Send notifications about project events to Unify Circuit.                                    | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                             | Receive events notifications.                                                                | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                   | Use YouTrack as the issue tracker.                                                           | **{dotted-circle}** No |
-| [ZenTao](zentao.md)                                       | Use ZenTao as the issue tracker.                                                           | **{dotted-circle}** No |
 
 ## Push hooks limit
 
@@ -84,22 +83,7 @@ Read more about [Project integration management](../../admin_area/settings/proje
 
 ## Troubleshooting integrations
 
-Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. GitLab stores details of service hook requests made within the last 2 days. To view details of the requests, go to that integration's configuration page.
-
-The **Recent Deliveries** section lists the details of each request made within the last 2 days:
-
-- HTTP status code (green for 200-299 codes, red for the others, `internal error` for failed deliveries)
-- Triggered event
-- URL to which the request was sent
-- Elapsed time of the request
-- Relative time in which the request was made
-
-To view more information about the request's execution, click the respective **View details** link.
-On the details page, you can see the request headers and body sent and received by GitLab.
-
-To repeat a delivery using the same data, click **Resend Request**.
-
-![Recent deliveries](img/webhook_logs.png)
+Some integrations use service hooks for integration with external applications. To confirm which ones use service hooks, see the [integrations listing](#integrations-listing) above. Learn more about [troubleshooting service hooks](webhooks.md#troubleshoot-webhooks).
 
 ### Uninitialized repositories
 

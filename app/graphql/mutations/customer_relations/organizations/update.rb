@@ -32,7 +32,7 @@ module Mutations
         argument :description,
                 GraphQL::Types::String,
                 required: false,
-                description: 'Description or notes for the organization.'
+                description: 'Description of or notes for the organization.'
 
         def resolve(args)
           organization = ::Gitlab::Graphql::Lazy.force(GitlabSchema.object_from_id(args.delete(:id), expected_type: ::CustomerRelations::Organization))

@@ -188,7 +188,7 @@ To add a Kubernetes cluster to your project, group, or instance:
          ```
 
    1. **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster.
-      See the [Managed clusters section](index.md#gitlab-managed-clusters) for more information.
+      See the [Managed clusters section](gitlab_managed_clusters.md) for more information.
    1. **Project namespace** (optional) - You don't have to fill this in. By leaving
       it blank, GitLab creates one for you. Also:
       - Each project should have a unique namespace.

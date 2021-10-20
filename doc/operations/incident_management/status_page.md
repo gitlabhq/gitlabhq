@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Status Page **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in GitLab 12.10.
 
 With a GitLab Status Page, you can create and deploy a static website to communicate
 efficiently to users during an incident. The Status Page landing page displays an
@@ -138,7 +138,7 @@ you provided during setup. As part of publication, GitLab:
 - Anonymizes user and group mentions with `Incident Responder`.
 - Removes titles of non-public [GitLab references](../../user/markdown.md#gitlab-specific-references).
 - Publishes any files attached to incident issue descriptions, up to 5000 per issue.
-  ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)
 
 After publication, you can access the incident's details page by clicking the
 **Published on status page** button displayed under the Incident's title.
@@ -162,7 +162,7 @@ To publish comments to the Status Page Incident:
   adding a microphone [award emoji](../../user/award_emojis.md)
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per issue) are also published.
-  ([Introduced in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/issues/205166).)
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205166) in GitLab 13.1.)
 
 WARNING:
 Anyone with access to view the Issue can add an emoji award to a comment, so

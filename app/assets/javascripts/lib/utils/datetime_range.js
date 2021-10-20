@@ -26,7 +26,17 @@ const isValidDateString = (dateString) => {
     return false;
   }
 
-  return !Number.isNaN(Date.parse(dateformat(dateString, 'isoUtcDateTime')));
+  let isoFormatted;
+  try {
+    isoFormatted = dateformat(dateString, 'isoUtcDateTime');
+  } catch (e) {
+    if (e instanceof TypeError) {
+      // not a valid date string
+      return false;
+    }
+    throw e;
+  }
+  return !Number.isNaN(Date.parse(isoFormatted));
 };
 
 const handleRangeDirection = ({ direction = DEFAULT_DIRECTION, anchorDate, minDate, maxDate }) => {

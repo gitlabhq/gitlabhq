@@ -5,6 +5,7 @@ const path = require('path');
 const sass = require('node-sass'); // eslint-disable-line import/no-unresolved
 const { buildIncludePaths, resolveGlobUrl } = require('node-sass-magic-importer/dist/toolbox'); // eslint-disable-line import/no-unresolved
 const webpack = require('webpack');
+const IS_EE = require('../../config/helpers/is_ee_env');
 const IS_JH = require('../../config/helpers/is_jh_env');
 const gitlabWebpackConfig = require('../../config/webpack.config');
 
@@ -98,13 +99,31 @@ module.exports = function storybookWebpackConfig({ config }) {
         },
       ],
     },
+    {
+      test: /\.(graphql|gql)$/,
+      exclude: /node_modules/,
+      loader: 'graphql-tag/loader',
+    },
+    {
+      test: /\.(zip)$/,
+      loader: 'file-loader',
+      options: {
+        esModule: false,
+      },
+    },
   ];
 
   // Silence webpack warnings about moment/pikaday not being able to resolve.
   config.plugins.push(new webpack.IgnorePlugin(/moment/, /pikaday/));
 
+  const baseIntegrationTestHelpersPath = 'spec/frontend_integration/test_helpers';
+
   // Add any missing aliases from the main GitLab webpack config
-  Object.assign(config.resolve.alias, gitlabWebpackConfig.resolve.alias);
+  Object.assign(config.resolve.alias, gitlabWebpackConfig.resolve.alias, {
+    test_helpers: path.resolve(ROOT, baseIntegrationTestHelpersPath),
+    ee_else_ce_test_helpers: path.resolve(ROOT, IS_EE ? 'ee' : '', baseIntegrationTestHelpersPath),
+    test_fixtures: path.resolve(ROOT, 'tmp/tests/frontend', IS_EE ? 'fixtures-ee' : 'fixtures'),
+  });
   // The main GitLab project aliases this `icons.svg` file to app/assets/javascripts/lib/utils/icons_path.js,
   // which depends on the existence of a global `gon` variable.
   // By deleting the alias, imports of this path will resolve as expected.

@@ -38,6 +38,12 @@ describe('code quality issue body issue body', () => {
   describe('severity rating', () => {
     it.each`
       severity      | iconClass               | iconName
+      ${'INFO'}     | ${'text-primary-400'}   | ${'severity-info'}
+      ${'MINOR'}    | ${'text-warning-200'}   | ${'severity-low'}
+      ${'CRITICAL'} | ${'text-danger-600'}    | ${'severity-high'}
+      ${'BLOCKER'}  | ${'text-danger-800'}    | ${'severity-critical'}
+      ${'UNKNOWN'}  | ${'text-secondary-400'} | ${'severity-unknown'}
+      ${'INVALID'}  | ${'text-secondary-400'} | ${'severity-unknown'}
       ${'info'}     | ${'text-primary-400'}   | ${'severity-info'}
       ${'minor'}    | ${'text-warning-200'}   | ${'severity-low'}
       ${'major'}    | ${'text-warning-400'}   | ${'severity-medium'}

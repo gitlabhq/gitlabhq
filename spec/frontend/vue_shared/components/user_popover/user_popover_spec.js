@@ -9,6 +9,7 @@ const DEFAULT_PROPS = {
     username: 'root',
     name: 'Administrator',
     location: 'Vienna',
+    localTime: '2:30 PM',
     bot: false,
     bio: null,
     workInformation: null,
@@ -31,10 +32,11 @@ describe('User Popover Component', () => {
     wrapper.destroy();
   });
 
-  const findUserStatus = () => wrapper.find('.js-user-status');
+  const findUserStatus = () => wrapper.findByTestId('user-popover-status');
   const findTarget = () => document.querySelector('.js-user-link');
   const findUserName = () => wrapper.find(UserNameWithStatus);
   const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
+  const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
 
   const createWrapper = (props = {}, options = {}) => {
     wrapper = mountExtended(UserPopover, {
@@ -71,7 +73,6 @@ describe('User Popover Component', () => {
 
       expect(wrapper.text()).toContain(DEFAULT_PROPS.user.name);
       expect(wrapper.text()).toContain(DEFAULT_PROPS.user.username);
-      expect(wrapper.text()).toContain(DEFAULT_PROPS.user.location);
     });
 
     it('shows icon for location', () => {
@@ -161,6 +162,25 @@ describe('User Popover Component', () => {
       expect(
         wrapper.findAll(GlIcon).filter((icon) => icon.props('name') === 'work').length,
       ).toEqual(1);
+    });
+  });
+
+  describe('local time', () => {
+    it('should show local time when it is available', () => {
+      createWrapper();
+
+      expect(findUserLocalTime().exists()).toBe(true);
+    });
+
+    it('should not show local time when it is not available', () => {
+      const user = {
+        ...DEFAULT_PROPS.user,
+        localTime: null,
+      };
+
+      createWrapper({ user });
+
+      expect(findUserLocalTime().exists()).toBe(false);
     });
   });
 
@@ -255,6 +275,12 @@ describe('User Popover Component', () => {
       createWrapper({ user: { ...SECURITY_BOT_USER, name: '%<>\';"' } });
       const securityBotDocsLink = findSecurityBotDocsLink();
       expect(securityBotDocsLink.text()).toBe('Learn more about %<>\';"');
+    });
+
+    it('does not display local time', () => {
+      createWrapper({ user: SECURITY_BOT_USER });
+
+      expect(findUserLocalTime().exists()).toBe(false);
     });
   });
 });

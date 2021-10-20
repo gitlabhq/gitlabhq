@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
 import createFlash from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -26,10 +26,6 @@ jest.mock('~/releases/util', () => ({
     mutate: jest.fn(),
   },
 }));
-
-const originalOneReleaseForEditingQueryResponse = getJSONFixture(
-  'graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json',
-);
 
 describe('Release edit/new actions', () => {
   let state;

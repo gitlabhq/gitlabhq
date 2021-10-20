@@ -35,8 +35,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
       end
 
-      it 'calls ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking' do
-        expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:unstick_or_continue_sticking)
+      it 'calls ::ApplicationRecord.sticking.unstick_or_continue_sticking' do
+        expect(::ApplicationRecord.sticking).to receive(:unstick_or_continue_sticking)
           .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
           .and_call_original
 
@@ -49,8 +49,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
       end
 
-      it 'does not call ::Gitlab::Database::LoadBalancing::Sticking.unstick_or_continue_sticking' do
-        expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:unstick_or_continue_sticking)
+      it 'does not call ::ApplicationRecord.sticking.unstick_or_continue_sticking' do
+        expect(::ApplicationRecord.sticking).not_to receive(:unstick_or_continue_sticking)
 
         trace.read { |stream| stream }
       end
@@ -305,8 +305,8 @@ RSpec.shared_examples 'common trace features' do
           stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
         end
 
-        it 'calls ::Gitlab::Database::LoadBalancing::Sticking.stick' do
-          expect(::Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+        it 'calls ::ApplicationRecord.sticking.stick' do
+          expect(::ApplicationRecord.sticking).to receive(:stick)
             .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
             .and_call_original
 
@@ -319,8 +319,8 @@ RSpec.shared_examples 'common trace features' do
           stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
         end
 
-        it 'does not call ::Gitlab::Database::LoadBalancing::Sticking.stick' do
-          expect(::Gitlab::Database::LoadBalancing::Sticking).not_to receive(:stick)
+        it 'does not call ::ApplicationRecord.sticking.stick' do
+          expect(::ApplicationRecord.sticking).not_to receive(:stick)
 
           subject
         end
@@ -497,7 +497,7 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(File.exist?(src_path)).to be_falsy
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -523,7 +523,7 @@ RSpec.shared_examples 'trace with disabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(build.old_trace).to be_nil
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end
@@ -861,7 +861,7 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
         expect(build.job_artifacts_trace.file.filename).to eq('job.log')
         expect(Ci::BuildTraceChunk.where(build: build)).not_to be_exist
         expect(src_checksum)
-          .to eq(described_class.hexdigest(build.job_artifacts_trace.file.path))
+          .to eq(described_class.sha256_hexdigest(build.job_artifacts_trace.file.path))
         expect(build.job_artifacts_trace.file_sha256).to eq(src_checksum)
       end
     end

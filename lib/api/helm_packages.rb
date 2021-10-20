@@ -11,7 +11,8 @@ module API
     feature_category :package_registry
 
     PACKAGE_FILENAME = 'package.tgz'
-    FILE_NAME_REQUIREMENTS = {
+    HELM_REQUIREMENTS = {
+      channel: API::NO_SLASH_URL_PART_REGEX,
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
@@ -33,7 +34,7 @@ module API
       requires :id, type: String, desc: 'The ID or full path of a project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      namespace ':id/packages/helm' do
+      namespace ':id/packages/helm', requirements: HELM_REQUIREMENTS do
         desc 'Download a chart index' do
           detail 'This feature was introduced in GitLab 14.0'
         end
@@ -58,7 +59,7 @@ module API
           requires :channel, type: String, desc: 'Helm channel', regexp: Gitlab::Regex.helm_channel_regex
           requires :file_name, type: String, desc: 'Helm package file name'
         end
-        get ":channel/charts/:file_name.tgz", requirements: FILE_NAME_REQUIREMENTS do
+        get ":channel/charts/:file_name.tgz" do
           authorize_read_package!(authorized_user_project)
 
           package_file = Packages::Helm::PackageFilesFinder.new(authorized_user_project, params[:channel], file_name: "#{params[:file_name]}.tgz").most_recent!

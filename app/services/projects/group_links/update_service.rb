@@ -20,19 +20,15 @@ module Projects
       attr_reader :group_link
 
       def refresh_authorizations
-        if Feature.enabled?(:specialized_worker_for_project_share_update_auth_recalculation)
-          AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
 
-          # Until we compare the inconsistency rates of the new specialized worker and
-          # the old approach, we still run AuthorizedProjectsWorker
-          # but with some delay and lower urgency as a safety net.
-          group_link.group.refresh_members_authorized_projects(
-            blocking: false,
-            priority: UserProjectAccessChangedService::LOW_PRIORITY
-          )
-        else
-          group_link.group.refresh_members_authorized_projects
-        end
+        # Until we compare the inconsistency rates of the new specialized worker and
+        # the old approach, we still run AuthorizedProjectsWorker
+        # but with some delay and lower urgency as a safety net.
+        group_link.group.refresh_members_authorized_projects(
+          blocking: false,
+          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        )
       end
 
       def requires_authorization_refresh?(params)

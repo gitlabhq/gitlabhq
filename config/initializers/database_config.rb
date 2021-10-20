@@ -1,15 +1,5 @@
 # frozen_string_literal: true
 
-def log_pool_size(db, previous_pool_size, current_pool_size)
-  log_message = ["#{db} connection pool size: #{current_pool_size}"]
-
-  if previous_pool_size && current_pool_size > previous_pool_size
-    log_message << "(increased from #{previous_pool_size} to match thread count)"
-  end
-
-  Gitlab::AppLogger.debug(log_message.join(' '))
-end
-
 Gitlab.ee do
   # We need to initialize the Geo database before
   # setting the Geo DB connection pool size.

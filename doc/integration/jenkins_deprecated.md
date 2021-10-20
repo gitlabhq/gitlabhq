@@ -14,7 +14,7 @@ was deprecated in favor of the
 Please use documentation for the new [Jenkins CI service](jenkins.md).
 
 NOTE:
-This service was [removed in v13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/1600)
+This service was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/1600) in GitLab 13.0
 
 Integration includes:
 

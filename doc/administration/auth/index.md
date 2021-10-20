@@ -31,7 +31,7 @@ providers:
 - [Salesforce](../../integration/salesforce.md)
 - [SAML](../../integration/saml.md)
 - [SAML for GitLab.com groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
-- [Shibboleth](../../integration/shibboleth.md)
+- [Shibboleth](../../integration/saml.md)
 - [Smartcard](smartcard.md) **(PREMIUM SELF)**
 - [Twitter](../../integration/twitter.md)
 
@@ -45,7 +45,7 @@ For more information, see the links shown on this page for each external provide
 
 | Capability                                      | SaaS                                    | Self-Managed                       |
 |-------------------------------------------------|-----------------------------------------|------------------------------------|
-| **User Provisioning**                           | SCIM<br>JIT Provisioning                | LDAP Sync                          |
+| **User Provisioning**                           | SCIM<br>Just-In-Time (JIT) Provisioning | LDAP Sync                          |
 | **User Detail Updating** (not group management) | Not Available                           | LDAP Sync                          |
 | **Authentication**                              | SAML at top-level group (1 provider)    | LDAP (multiple providers)<br>Generic OAuth2<br>SAML (only 1 permitted per unique provider)<br>Kerberos<br>JWT<br>Smartcard<br>OmniAuth Providers (only 1 permitted per unique provider) |
 | **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync                    |

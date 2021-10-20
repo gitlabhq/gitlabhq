@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
-  let(:project) { double(:project, id: 4) }
+  let_it_be(:project) { create(:project, :import_started) }
 
   let(:worker) { described_class.new }
 
@@ -42,6 +42,15 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportRepositoryWorker do
         expect_next_instance_of(Gitlab::GithubImport::Importer::RepositoryImporter) do |instance|
           expect(instance).to receive(:execute).and_raise(exception_class)
         end
+
+        expect(Gitlab::Import::ImportFailureService).to receive(:track)
+                                                          .with(
+                                                            project_id: project.id,
+                                                            exception: exception_class,
+                                                            error_source: described_class.name,
+                                                            fail_import: true,
+                                                            metrics: true
+                                                          ).and_call_original
 
         expect(Gitlab::GithubImport::Stage::ImportBaseDataWorker)
           .not_to receive(:perform_async)

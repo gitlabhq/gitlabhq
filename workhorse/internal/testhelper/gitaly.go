@@ -1,6 +1,7 @@
 package testhelper
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -23,6 +25,7 @@ type GitalyTestServer struct {
 	finalMessageCode codes.Code
 	sync.WaitGroup
 	LastIncomingMetadata metadata.MD
+	gitalypb.UnimplementedSmartHTTPServiceServer
 	gitalypb.UnimplementedRepositoryServiceServer
 	gitalypb.UnimplementedBlobServiceServer
 	gitalypb.UnimplementedDiffServiceServer
@@ -191,13 +194,14 @@ func (s *GitalyTestServer) PostUploadPack(stream gitalypb.SmartHTTPService_PostU
 		return err
 	}
 
-	jsonString, err := marshalJSON(req)
-	if err != nil {
+	marshaler := &jsonpb.Marshaler{}
+	jsonBytes := &bytes.Buffer{}
+	if err := marshaler.Marshal(jsonBytes, req); err != nil {
 		return err
 	}
 
 	if err := stream.Send(&gitalypb.PostUploadPackResponse{
-		Data: []byte(strings.Join([]string{jsonString}, "\000") + "\000"),
+		Data: append(jsonBytes.Bytes(), 0),
 	}); err != nil {
 		return err
 	}
@@ -227,6 +231,43 @@ func (s *GitalyTestServer) PostUploadPack(stream gitalypb.SmartHTTPService_PostU
 	}
 
 	return s.finalError()
+}
+
+// PostUploadPackWithSidechannel should be a part of smarthttp server in real
+// server. In workhorse, setting up a real sidechannel server is troublesome.
+// Therefore, we bring up a sidechannel server with a mock server exported via
+// gitalyclient.TestSidechannelServer. This is the handler for that mock
+// server.
+func PostUploadPackWithSidechannel(srv interface{}, stream grpc.ServerStream, conn io.ReadWriteCloser) error {
+	if method, ok := grpc.Method(stream.Context()); !ok || method != "/gitaly.SmartHTTPService/PostUploadPackWithSidechannel" {
+		return fmt.Errorf("unexpected method: %s", method)
+	}
+
+	var req gitalypb.PostUploadPackWithSidechannelRequest
+	if err := stream.RecvMsg(&req); err != nil {
+		return err
+	}
+
+	if err := validateRepository(req.GetRepository()); err != nil {
+		return err
+	}
+
+	marshaler := &jsonpb.Marshaler{}
+	jsonBytes := &bytes.Buffer{}
+	if err := marshaler.Marshal(jsonBytes, &req); err != nil {
+		return err
+	}
+
+	// Bounce back all data back to the client, plus flushing bytes
+	if _, err := conn.Write(append(jsonBytes.Bytes(), 0)); err != nil {
+		return err
+	}
+
+	if _, err := io.Copy(conn, conn); err != nil {
+		return err
+	}
+
+	return stream.SendMsg(&gitalypb.PostUploadPackWithSidechannelResponse{})
 }
 
 func (s *GitalyTestServer) CommitIsAncestor(ctx context.Context, in *gitalypb.CommitIsAncestorRequest) (*gitalypb.CommitIsAncestorResponse, error) {

@@ -14,7 +14,7 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
       expect(review.note).to eq('note')
       expect(review.review_type).to eq('APPROVED')
       expect(review.submitted_at).to eq(submitted_at)
-      expect(review.github_id).to eq(999)
+      expect(review.review_id).to eq(999)
       expect(review.merge_request_id).to eq(42)
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
   describe '.from_json_hash' do
     let(:hash) do
       {
-        'github_id' => 999,
+        'review_id' => 999,
         'merge_request_id' => 42,
         'note' => 'note',
         'review_type' => 'APPROVED',
@@ -73,6 +73,19 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
       review = described_class.from_json_hash(hash.except('submitted_at'))
 
       expect(review.submitted_at).to be_nil
+    end
+  end
+
+  describe '#github_identifiers' do
+    it 'returns a hash with needed identifiers' do
+      github_identifiers = {
+        review_id: 999,
+        merge_request_id: 42
+      }
+      other_attributes = { something_else: '_something_else_' }
+      review = described_class.new(github_identifiers.merge(other_attributes))
+
+      expect(review.github_identifiers).to eq(github_identifiers)
     end
   end
 end

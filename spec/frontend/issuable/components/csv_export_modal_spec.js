@@ -61,11 +61,6 @@ describe('CsvExportModal', () => {
         expect(wrapper.text()).toContain('10 issues selected');
         expect(findIcon().exists()).toBe(true);
       });
-
-      it("doesn't display the info text when issuableCount is -1", () => {
-        wrapper = createComponent({ props: { issuableCount: -1 } });
-        expect(wrapper.text()).not.toContain('issues selected');
-      });
     });
 
     describe('email info text', () => {

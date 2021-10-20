@@ -112,6 +112,15 @@ export default {
       @execute="trackToolbarControlExecution"
     />
     <toolbar-button
+      data-testid="details"
+      content-type="details"
+      icon-name="details-block"
+      class="gl-mx-2"
+      editor-command="toggleDetails"
+      :label="__('Add a collapsible section')"
+      @execute="trackToolbarControlExecution"
+    />
+    <toolbar-button
       data-testid="horizontal-rule"
       content-type="horizontalRule"
       icon-name="dash"

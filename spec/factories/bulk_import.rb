@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :bulk_import, class: 'BulkImport' do
     user
     source_type { :gitlab }
+    source_version { BulkImport.min_gl_version_for_project_migration.to_s }
 
     trait :created do
       status { 0 }

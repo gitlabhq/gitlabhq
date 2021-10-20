@@ -4,7 +4,7 @@ module Packages
   class GroupPackagesFinder
     include ::Packages::FinderHelper
 
-    def initialize(current_user, group, params = { exclude_subgroups: false, order_by: 'created_at', sort: 'asc' })
+    def initialize(current_user, group, params = { exclude_subgroups: false, exact_name: false, order_by: 'created_at', sort: 'asc' })
       @current_user = current_user
       @group = group
       @params = params
@@ -30,7 +30,7 @@ module Packages
 
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
-      packages = filter_by_package_name(packages)
+      packages = (params[:exact_name] ? filter_by_exact_package_name(packages) : filter_by_package_name(packages))
       packages = filter_by_package_version(packages)
       installable_only ? packages.installable : filter_by_status(packages)
     end

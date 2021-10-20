@@ -34,6 +34,10 @@ RSpec.describe 'Admin Appearance' do
     visit admin_application_settings_appearances_path
     click_link "Sign-in page"
 
+    expect(find('#login')).to be_disabled
+    expect(find('#password')).to be_disabled
+    expect(find('button')).to be_disabled
+
     expect_custom_sign_in_appearance(appearance)
   end
 

@@ -69,7 +69,7 @@ module Gitlab
 
           self.sha = commit.sha
           self.status = commit.status
-          self.ref = project.default_branch
+          self.ref = project.repository.root_ref
         end
 
         # We only cache the status for the HEAD commit of a project
@@ -79,7 +79,7 @@ module Gitlab
           return unless sha
           return unless ref
 
-          if commit.sha == sha && project.default_branch == ref
+          if commit.sha == sha && project.repository.root_ref == ref
             store_in_cache
           end
         end

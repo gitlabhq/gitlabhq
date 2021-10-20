@@ -98,11 +98,13 @@ profile and log output to S3.
 
 ## Speedscope flamegraphs
 
-You can generate a flamegraph for a particular URL by adding the `performance_bar=flamegraph` parameter to the request.
+You can generate a flamegraph for a particular URL by selecting a flamegraph sampling mode button in the performance bar or by adding the `performance_bar=flamegraph` parameter to the request.
 
 ![Speedscope](img/speedscope_v13_12.png)
 
-More information about the views can be found in the [Speedscope docs](https://github.com/jlfwong/speedscope#views)
+Find more information about the views in the [Speedscope docs](https://github.com/jlfwong/speedscope#views).
+
+Find more information about different sampling modes in the [Stackprof docs](https://github.com/tmm1/stackprof#sampling).
 
 This is enabled for all users that can access the performance bar.
 

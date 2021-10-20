@@ -30,18 +30,12 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
   subject { relation_tree_restorer.restore }
 
   shared_examples 'import project successfully' do
-    it 'restores project tree' do
-      expect(subject).to eq(true)
-    end
-
     describe 'imported project' do
-      let(:project) { Project.find_by_path('project') }
+      it 'has the project attributes and relations', :aggregate_failures do
+        expect(subject).to eq(true)
 
-      before do
-        subject
-      end
+        project = Project.find_by_path('project')
 
-      it 'has the project attributes and relations' do
         expect(project.description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
         expect(project.labels.count).to eq(3)
         expect(project.boards.count).to eq(1)
@@ -86,7 +80,10 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
   end
 
   context 'when restoring a project' do
-    let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
+    let_it_be(:importable, reload: true) do
+      create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
+    end
+
     let(:importable_name) { 'project' }
     let(:importable_path) { 'project' }
     let(:object_builder) { Gitlab::ImportExport::Project::ObjectBuilder }
@@ -108,8 +105,10 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
       it_behaves_like 'import project successfully'
 
       context 'logging of relations creation' do
-        let(:group) { create(:group) }
-        let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:importable) do
+          create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group)
+        end
 
         include_examples 'logging of relations creation'
       end
@@ -120,6 +119,18 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
       let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
       it_behaves_like 'import project successfully'
+
+      context 'when inside a group' do
+        let_it_be(:group) do
+          create(:group, :disabled_and_unoverridable)
+        end
+
+        before do
+          importable.update!(shared_runners_enabled: false, group: group)
+        end
+
+        it_behaves_like 'import project successfully'
+      end
     end
 
     context 'with invalid relations' do
@@ -143,9 +154,10 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
   end
 
   context 'when restoring a group' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:importable) { create(:group, parent: group) }
+
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/group_exports/no_children/group.json' }
-    let(:group) { create(:group) }
-    let(:importable) { create(:group, parent: group) }
     let(:importable_name) { nil }
     let(:importable_path) { nil }
     let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }

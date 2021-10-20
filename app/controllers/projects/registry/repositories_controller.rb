@@ -4,6 +4,7 @@ module Projects
   module Registry
     class RepositoriesController < ::Projects::Registry::ApplicationController
       include PackagesHelper
+      include ::Registry::ConnectionErrorsHandler
 
       before_action :authorize_update_container_image!, only: [:destroy]
 
@@ -48,8 +49,6 @@ module Projects
             repository.save! if repository.has_tags?
           end
         end
-      rescue ContainerRegistry::Path::InvalidRegistryPathError
-        @character_error = true
       end
     end
   end

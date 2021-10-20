@@ -50,6 +50,7 @@ RSpec.describe ServicePing::SubmitService do
 
   let(:with_dev_ops_score_params) { { dev_ops_score: score_params[:score] } }
   let(:with_conv_index_params) { { conv_index: score_params[:score] } }
+  let(:with_usage_data_id_params) { { conv_index: { usage_data_id: usage_data_id } } }
 
   shared_examples 'does not run' do
     it do
@@ -158,6 +159,29 @@ RSpec.describe ServicePing::SubmitService do
       end
 
       it_behaves_like 'saves DevOps report data from the response'
+
+      it 'saves usage_data_id to version_usage_data_id_value' do
+        recorded_at = Time.current
+        usage_data = { uuid: 'uuid', recorded_at: recorded_at }
+
+        expect(Gitlab::UsageData).to receive(:data).with(force_refresh: true).and_return(usage_data)
+
+        subject.execute
+
+        raw_usage_data = RawUsageData.find_by(recorded_at: recorded_at)
+
+        expect(raw_usage_data.version_usage_data_id_value).to eq(31643)
+      end
+    end
+
+    context 'when only usage_data_id is passed in response' do
+      before do
+        stub_response(body: with_usage_data_id_params)
+      end
+
+      it 'does not save DevOps report data' do
+        expect { subject.execute }.not_to change { DevOpsReport::Metric.count }
+      end
 
       it 'saves usage_data_id to version_usage_data_id_value' do
         recorded_at = Time.current

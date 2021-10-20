@@ -257,6 +257,10 @@ RSpec.describe ErrorTracking::SentryClient::Issue do
         expect(subject.gitlab_issue).to eq('https://gitlab.com/gitlab-org/gitlab/issues/1')
       end
 
+      it 'has an integrated attribute set to false' do
+        expect(subject.integrated).to be_falsey
+      end
+
       context 'when issue annotations exist' do
         before do
           issue_sample_response['annotations'] = [

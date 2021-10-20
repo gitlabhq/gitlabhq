@@ -242,7 +242,7 @@ describe('InviteMembersModal', () => {
     };
 
     const expectedEmailRestrictedError =
-      "email 'email@example.com' does not match the allowed domains: example1.org";
+      "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.";
     const expectedSyntaxError = 'email contains an invalid email address';
 
     it('calls the API with the expected focus data when an areas_of_focus checkbox is clicked', () => {
@@ -421,7 +421,7 @@ describe('InviteMembersModal', () => {
           await waitForPromises();
 
           expect(membersFormGroupInvalidFeedback()).toBe(
-            "root: User email 'admin@example.com' does not match the allowed domain of example2.com",
+            "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.",
           );
           expect(findMembersSelect().props('validationState')).toBe(false);
         });

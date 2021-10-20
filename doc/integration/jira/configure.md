@@ -41,7 +41,7 @@ To configure your project:
      For **Jira Server**, use `username`. For **Jira on Atlassian cloud**, use `email`.
    - **Password/API token**:
      Use `password` for **Jira Server** or `API token` for **Jira on Atlassian cloud**.
-1. To enable users to view Jira issues inside the GitLab project **(PREMIUM)**, select **Enable Jira issues** and
+1. To enable users to [view Jira issues](issues.md#view-jira-issues) inside the GitLab project, select **Enable Jira issues** and
    enter a Jira project key.
 
    You can display issues only from a single Jira project in a given GitLab project.
@@ -50,7 +50,7 @@ To configure your project:
    If you enable Jira issues with this setting, all users with access to this GitLab project
    can view all issues from the specified Jira project.
 
-1. To enable issue creation for vulnerabilities **(ULTIMATE)**, select **Enable Jira issues creation from vulnerabilities**.
+1. To enable [issue creation for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select **Enable Jira issues creation from vulnerabilities**.
 1. Select the **Jira issue type**. If the dropdown is empty, select refresh (**{retry}**) and try again.
 1. To verify the Jira connection is working, select **Test settings**.
 1. Select **Save changes**.

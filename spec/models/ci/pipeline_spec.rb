@@ -35,6 +35,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
+  it { is_expected.to have_many(:package_build_infos).dependent(:nullify).inverse_of(:pipeline) }
+  it { is_expected.to have_many(:package_file_build_infos).dependent(:nullify).inverse_of(:pipeline) }
 
   it { is_expected.to have_one(:chat_data) }
   it { is_expected.to have_one(:source_pipeline) }
@@ -1218,32 +1220,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
             expect(statuses).to eq([%w(build failed),
                                     %w(test success),
                                     %w(deploy running)])
-          end
-
-          context 'when commit status is retried' do
-            let!(:old_commit_status) do
-              create(:commit_status, pipeline: pipeline,
-                                     stage: 'build',
-                                     name: 'mac',
-                                     stage_idx: 0,
-                                     status: 'success')
-            end
-
-            context 'when FF ci_remove_update_retried_from_process_pipeline is disabled' do
-              before do
-                stub_feature_flags(ci_remove_update_retried_from_process_pipeline: false)
-
-                Ci::ProcessPipelineService
-                  .new(pipeline)
-                  .execute
-              end
-
-              it 'ignores the previous state' do
-                expect(statuses).to eq([%w(build success),
-                                        %w(test success),
-                                        %w(deploy running)])
-              end
-            end
           end
         end
 
@@ -2906,121 +2882,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
-  describe '#execute_hooks' do
+  describe 'hooks trigerring' do
     let_it_be(:pipeline) { create(:ci_empty_pipeline, :created) }
 
-    let!(:build_a) { create_build('a', 0) }
-    let!(:build_b) { create_build('b', 0) }
+    %i[
+      enqueue
+      request_resource
+      prepare
+      run
+      skip
+      drop
+      succeed
+      cancel
+      block
+      delay
+    ].each do |action|
+      context "when pipeline action is #{action}" do
+        let(:pipeline_action) { action }
 
-    let!(:hook) do
-      create(:project_hook, pipeline_events: enabled)
-    end
+        it 'schedules a new PipelineHooksWorker job' do
+          expect(PipelineHooksWorker).to receive(:perform_async).with(pipeline.id)
 
-    before do
-      WebHookWorker.drain
-    end
-
-    context 'with pipeline hooks enabled' do
-      let(:enabled) { true }
-
-      before do
-        stub_full_request(hook.url, method: :post)
-      end
-
-      context 'with multiple builds', :sidekiq_inline do
-        context 'when build is queued' do
-          before do
-            build_a.reload.enqueue
-            build_b.reload.enqueue
-          end
-
-          it 'receives a pending event once' do
-            expect(WebMock).to have_requested_pipeline_hook('pending').once
-          end
-
-          it 'builds hook data once' do
-            create(:pipelines_email_integration)
-
-            expect(Gitlab::DataBuilder::Pipeline).to receive(:build).once.and_call_original
-
-            pipeline.execute_hooks
-          end
-        end
-
-        context 'when build is run' do
-          before do
-            build_a.reload.enqueue
-            build_a.reload.run!
-            build_b.reload.enqueue
-            build_b.reload.run!
-          end
-
-          it 'receives a running event once' do
-            expect(WebMock).to have_requested_pipeline_hook('running').once
-          end
-        end
-
-        context 'when all builds succeed' do
-          before do
-            build_a.success
-
-            # We have to reload build_b as this is in next stage and it gets triggered by PipelineProcessWorker
-            build_b.reload.success
-          end
-
-          it 'receives a success event once' do
-            expect(WebMock).to have_requested_pipeline_hook('success').once
-          end
-        end
-
-        context 'when stage one failed' do
-          let!(:build_b) { create_build('b', 1) }
-
-          before do
-            build_a.drop
-          end
-
-          it 'receives a failed event once' do
-            expect(WebMock).to have_requested_pipeline_hook('failed').once
-          end
-        end
-
-        def have_requested_pipeline_hook(status)
-          have_requested(:post, stubbed_hostname(hook.url)).with do |req|
-            json_body = Gitlab::Json.parse(req.body)
-            json_body['object_attributes']['status'] == status &&
-              json_body['builds'].length == 2
-          end
+          pipeline.reload.public_send(pipeline_action)
         end
       end
-    end
-
-    context 'with pipeline hooks disabled' do
-      let(:enabled) { false }
-
-      before do
-        build_a.enqueue
-        build_b.enqueue
-      end
-
-      it 'did not execute pipeline_hook after touched' do
-        expect(WebMock).not_to have_requested(:post, hook.url)
-      end
-
-      it 'does not build hook data' do
-        expect(Gitlab::DataBuilder::Pipeline).not_to receive(:build)
-
-        pipeline.execute_hooks
-      end
-    end
-
-    def create_build(name, stage_idx)
-      create(:ci_build,
-             :created,
-             pipeline: pipeline,
-             name: name,
-             stage: "stage:#{stage_idx}",
-             stage_idx: stage_idx)
     end
   end
 

@@ -801,38 +801,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         expect(query_count).to eq(0)
       end
     end
-
-    context 'when the feature for disable_join is disabled' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:ci_build) { create(:ci_build, project: project, pipeline: pipeline) }
-
-      before do
-        stub_feature_flags(environment_last_visible_pipeline_disable_joins: false)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
-      end
-
-      context 'for preload' do
-        it 'executes the original association instead of override' do
-          environment.reload
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_deployable: []])
-
-          expect_any_instance_of(Deployment).not_to receive(:deployable)
-
-          query_count = ActiveRecord::QueryRecorder.new do
-            expect(subject.id).to eq(ci_build.id)
-          end.count
-
-          expect(query_count).to eq(0)
-        end
-      end
-
-      context 'for direct call' do
-        it 'executes the original association instead of override' do
-          expect_any_instance_of(Deployment).not_to receive(:deployable)
-          expect(subject.id).to eq(ci_build.id)
-        end
-      end
-    end
   end
 
   describe '#last_visible_pipeline' do
@@ -961,40 +929,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
         end.count
 
         expect(query_count).to eq(0)
-      end
-    end
-
-    context 'when the feature for disable_join is disabled' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:ci_build) { create(:ci_build, project: project, pipeline: pipeline) }
-
-      before do
-        stub_feature_flags(environment_last_visible_pipeline_disable_joins: false)
-        create(:deployment, :failed, project: project, environment: environment, deployable: ci_build)
-      end
-
-      subject { environment.last_visible_pipeline }
-
-      context 'for preload' do
-        it 'executes the original association instead of override' do
-          environment.reload
-          ActiveRecord::Associations::Preloader.new.preload(environment, [last_visible_pipeline: []])
-
-          expect_any_instance_of(Ci::Build).not_to receive(:pipeline)
-
-          query_count = ActiveRecord::QueryRecorder.new do
-            expect(subject.id).to eq(pipeline.id)
-          end.count
-
-          expect(query_count).to eq(0)
-        end
-      end
-
-      context 'for direct call' do
-        it 'executes the original association instead of override' do
-          expect_any_instance_of(Ci::Build).not_to receive(:pipeline)
-          expect(subject.id).to eq(pipeline.id)
-        end
       end
     end
   end

@@ -6,10 +6,13 @@ module Clusters
       attr_reader :agent
 
       delegate :id, to: :agent, prefix: true
-      delegate :project, to: :agent
 
       def initialize(agent:)
         @agent = agent
+      end
+
+      def config_project
+        agent.project
       end
 
       def config

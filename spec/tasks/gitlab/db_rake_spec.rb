@@ -293,53 +293,24 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   end
 
   describe '#migrate_with_instrumentation' do
-    subject { run_rake_task('gitlab:db:migration_testing') }
+    describe '#up' do
+      subject { run_rake_task('gitlab:db:migration_testing:up') }
 
-    let(:ctx) { double('ctx', migrations: all_migrations, schema_migration: double, get_all_versions: existing_versions) }
-    let(:instrumentation) { instance_double(Gitlab::Database::Migrations::Instrumentation, observations: observations) }
-    let(:existing_versions) { [1] }
-    let(:all_migrations) { [double('migration1', version: 1, name: 'test'), pending_migration] }
-    let(:pending_migration) { double('migration2', version: 2, name: 'test') }
-    let(:filename) { Gitlab::Database::Migrations::Instrumentation::STATS_FILENAME }
-    let(:result_dir) { Dir.mktmpdir }
-    let(:observations) { %w[some data] }
+      it 'delegates to the migration runner' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:up, :run)
 
-    before do
-      allow(ActiveRecord::Base.connection).to receive(:migration_context).and_return(ctx)
-      allow(Gitlab::Database::Migrations::Instrumentation).to receive(:new).and_return(instrumentation)
-      allow(ActiveRecord::Migrator).to receive_message_chain('new.run').with(any_args).with(no_args)
-
-      allow(instrumentation).to receive(:observe).and_yield
-
-      stub_const('Gitlab::Database::Migrations::Instrumentation::RESULT_DIR', result_dir)
+        subject
+      end
     end
 
-    after do
-      FileUtils.rm_rf(result_dir)
-    end
+    describe '#down' do
+      subject { run_rake_task('gitlab:db:migration_testing:down') }
 
-    it 'creates result directory when one does not exist' do
-      FileUtils.rm_rf(result_dir)
+      it 'delegates to the migration runner' do
+        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:down, :run)
 
-      expect { subject }.to change { Dir.exist?(result_dir) }.from(false).to(true)
-    end
-
-    it 'instruments the pending migration' do
-      expect(instrumentation).to receive(:observe).with(version: 2, name: 'test').and_yield
-
-      subject
-    end
-
-    it 'executes the pending migration' do
-      expect(ActiveRecord::Migrator).to receive_message_chain('new.run').with(:up, ctx.migrations, ctx.schema_migration, pending_migration.version).with(no_args)
-
-      subject
-    end
-
-    it 'writes observations out to JSON file' do
-      subject
-
-      expect(File.read(File.join(result_dir, filename))).to eq(observations.to_json)
+        subject
+      end
     end
   end
 

@@ -17,7 +17,6 @@ module Gitlab
         def self.from_api_response(user)
           new(
             id: user.id,
-            github_id: user.id,
             login: user.login
           )
         end

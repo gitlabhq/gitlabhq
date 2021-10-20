@@ -131,7 +131,7 @@ RSpec.describe API::Ci::Triggers do
       let(:subject_proc) { proc { post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' } } }
 
       context 'when triggering a pipeline from a trigger token' do
-        it_behaves_like 'storing arguments in the application context'
+        it_behaves_like 'storing arguments in the application context for the API'
         it_behaves_like 'not executing any extra queries for the application context'
       end
 
@@ -142,7 +142,7 @@ RSpec.describe API::Ci::Triggers do
         context 'when other job is triggered by a user' do
           let(:trigger_token) { create(:ci_build, :running, project: project, user: user).token }
 
-          it_behaves_like 'storing arguments in the application context'
+          it_behaves_like 'storing arguments in the application context for the API'
           it_behaves_like 'not executing any extra queries for the application context'
         end
 
@@ -151,7 +151,7 @@ RSpec.describe API::Ci::Triggers do
           let(:runner) { create(:ci_runner) }
           let(:expected_params) { { client_id: "runner/#{runner.id}", project: project.full_path } }
 
-          it_behaves_like 'storing arguments in the application context'
+          it_behaves_like 'storing arguments in the application context for the API'
           it_behaves_like 'not executing any extra queries for the application context', 1
         end
       end

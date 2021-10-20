@@ -23,6 +23,16 @@ experiences. Several projects were started with different standards and they
 can still have specifics. They are described in their respective
 `README.md` or `PROCESS.md` files.
 
+## Go language versions
+
+The Go upgrade documentation [provides an overview](go_upgrade.md#overview)
+of how GitLab manages and ships Go binary support.
+
+If a GitLab component requires a newer version of Go, please
+follow the [upgrade process](go_upgrade.md#updating-go-version) to ensure no customer, team, or component is adversely impacted.
+
+Sometimes, individual projects must also [manage builds with multiple versions of Go](go_upgrade.md#supporting-multiple-go-versions).
+
 ## Dependency Management
 
 Go uses a source-based strategy for dependency management. Dependencies are
@@ -416,70 +426,6 @@ builds](https://docs.docker.com/develop/develop-images/multistage-build/):
 Generated Docker images should have the program at their `Entrypoint` to create
 portable commands. That way, anyone can run the image, and without parameters
 it displays its help message (if `cli` has been used).
-
-## Distributing Go binaries
-
-With the exception of [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner),
-which publishes its own binaries, our Go binaries are created by projects
-managed by the [Distribution group](https://about.gitlab.com/handbook/product/categories/#distribution-group).
-
-The [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) project creates a
-single, monolithic operating system package containing all the binaries, while
-the [Cloud-Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG) project
-publishes a set of Docker images and Helm charts to glue them together.
-
-Both approaches use the same version of Go for all projects, so it's important
-to ensure all our Go-using projects have at least one Go version in common in
-their test matrices. You can check the version of Go currently being used by
-[Omnibus](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/blob/master/docker/Dockerfile_debian_10#L59),
-and the version being used for [CNG](https://gitlab.com/gitlab-org/build/cng/blob/master/ci_files/variables.yml#L12).
-
-### Updating Go version
-
-We should always use a [supported version](https://golang.org/doc/devel/release#policy)
-of Go, that is, one of the three most recent minor releases, and should always use
-the most recent patch-level for that version, as it may contain security fixes.
-
-Changing the version affects every project being compiled, so it's important to
-ensure that all projects have been updated to test against the new Go version
-before changing the package builders to use it. Despite [Go's compatibility promise](https://golang.org/doc/go1compat),
-changes between minor versions can expose bugs or cause problems in our projects.
-
-Once you've picked a new Go version to use, the steps to update Omnibus and CNG
-are:
-
-- [Create a merge request in the CNG project](https://gitlab.com/gitlab-org/build/CNG/-/edit/master/ci_files/variables.yml?branch_name=update-go-version),
-  update the `GO_VERSION` in `ci_files/variables.yml`.
-- [Create a merge request in the `gitlab-omnibus-builder` project](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/edit/master/docker/VERSIONS?branch_name=update-go-version),
-  update the `GO_VERSION` in `docker/VERSIONS`.
-- Tag a new release of `gitlab-omnibus-builder` containing the change.
-- [Create a merge request in the `omnibus-gitlab` project](https://gitlab.com/gitlab-org/omnibus-gitlab/edit/master/.gitlab-ci.yml?branch_name=update-gitlab-omnibus-builder-version),
-  update the `BUILDER_IMAGE_REVISION` to match the newly-created tag.
-
-To reduce unnecessary differences between two distribution methods, Omnibus and
-CNG **should always use the same Go version**.
-
-### Supporting multiple Go versions
-
-Individual Golang-projects need to support multiple Go versions for the following reasons:
-
-1. When a new Go release is out, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
-1. We must support the [Omnibus official Go version](#updating-go-version), which may be behind the latest minor release.
-1. When Omnibus switches Go version, we still may need to support the old one for security backports.
-
-These 3 requirements may easily be satisfied by keeping support for the 3 latest minor versions of Go.
-
-It's ok to drop support for the oldest Go version and support only 2 latest releases,
-if this is enough to support backports to the last 3 GitLab minor releases.
-
-Example:
-
-In case we want to drop support for `go 1.11` in GitLab `12.10`, we need to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`.
-
-We do not consider the active milestone, `12.10`, because a backport for `12.7` is required in case of a critical security release.
-
-1. If both [Omnibus and CNG](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later, then we safely drop support for `1.11`.
-1. If Omnibus or CNG were using `1.11` in GitLab `12.7`, then we still need to keep support for Go `1.11` for easier backporting of security fixes.
 
 ## Secure Team standards and style guidelines
 

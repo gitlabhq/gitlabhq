@@ -8,7 +8,9 @@ import CiLint from './components/ci_lint.vue';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(resolvers),
+  defaultClient: createDefaultClient(resolvers, {
+    assumeImmutableResults: true,
+  }),
 });
 
 export default (containerId = '#js-ci-lint') => {

@@ -19,13 +19,15 @@ RSpec.describe 'Projects > Files > User uploads files' do
       wait_for_requests
     end
 
-    include_examples 'it uploads and commits a new text file'
+    [true, false].each do |value|
+      include_examples 'it uploads and commits a new text file', drop: value
 
-    include_examples 'it uploads and commits a new image file'
+      include_examples 'it uploads and commits a new image file', drop: value
 
-    include_examples 'it uploads and commits a new pdf file'
+      include_examples 'it uploads and commits a new pdf file', drop: value
 
-    include_examples 'it uploads a file to a sub-directory'
+      include_examples 'it uploads a file to a sub-directory', drop: value
+    end
   end
 
   context 'when a user does not have write access' do
@@ -35,6 +37,8 @@ RSpec.describe 'Projects > Files > User uploads files' do
       visit(project_tree_path(project2))
     end
 
-    include_examples 'it uploads and commits a new file to a forked project'
+    [true, false].each do |value|
+      include_examples 'it uploads and commits a new file to a forked project', drop: value
+    end
   end
 end

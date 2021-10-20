@@ -54,7 +54,7 @@ Get started:
 You may need to import projects from external sources like GitHub, Bitbucket, or another instance of GitLab. Many external sources can be imported into GitLab.
 
 - Review the [GitLab projects documentation](../user/project/index.md#project-integrations).
-- Consider [repository mirroring](../user/project/repository/repository_mirroring.md)—an [alternative to project migrations](../ci/ci_cd_for_external_repos/index.md).
+- Consider [repository mirroring](../user/project/repository/mirror/index.md)—an [alternative to project migrations](../ci/ci_cd_for_external_repos/index.md).
 - Check out our [migration index](../user/project/import/index.md) for documentation on common migration paths.
 - Schedule your project exports with our [import/export API](../api/project_import_export.md#schedule-an-export).
 
@@ -128,7 +128,7 @@ The routine differs, depending on whether you deployed with Omnibus or the Helm 
 
 When you backing up an Omnibus (single node) GitLab server, you can use a single Rake task.
 
-Learn about [backing up Omnibus or Helm variations](../raketasks/backup_restore.md#back-up-gitlab).
+Learn about [backing up Omnibus or Helm variations](../raketasks/backup_restore.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 
@@ -214,7 +214,7 @@ If you use GitLab SaaS, you have several channels with which to get support and 
 
 To get assistance for GitLab SaaS:
 
-- Access [GitLab Docs](../README.md) for self-service support.
+- Access [GitLab Docs](../index.md) for self-service support.
 - Join the [GitLab Forum](https://forum.gitlab.com/) for community support.
 - Gather [your subscription information](https://about.gitlab.com/support/#for-self-managed-users) before submitting a ticket.
 - Submit a support ticket for:

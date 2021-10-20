@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Manage
+group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference, howto
 ---
@@ -35,6 +35,8 @@ These are rate limits you can set in the Admin Area of your instance:
 - [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
 - [Package registry rate limits](../user/admin_area/settings/package_registry_rate_limits.md)
 - [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
+- [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
+- [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
 
 ## Non-configurable limits
 
@@ -51,7 +53,7 @@ The **rate limit** is 5 requests per minute per user.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/35bc85c3ca093fee58d60dacdc9ed1fd9a15adec) in GitLab 13.4.
 
-There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#testing-webhooks), which prevents abuse of the webhook functionality.
+There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#test-a-webhook), which prevents abuse of the webhook functionality.
 
 The **rate limit** is 5 requests per minute per user.
 

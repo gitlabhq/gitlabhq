@@ -141,21 +141,21 @@ func TestGetOpts(t *testing.T) {
 func TestGetOptsFail(t *testing.T) {
 	testCases := []struct {
 		desc string
-		in   api.Response
+		in   *api.Response
 	}{
 		{
 			desc: "neither local nor remote",
-			in:   api.Response{},
+			in:   &api.Response{},
 		},
 		{
 			desc: "both local and remote",
-			in:   api.Response{TempPath: "/foobar", RemoteObject: api.RemoteObject{ID: "id"}},
+			in:   &api.Response{TempPath: "/foobar", RemoteObject: api.RemoteObject{ID: "id"}},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			_, err := filestore.GetOpts(&tc.in)
+			_, err := filestore.GetOpts(tc.in)
 			require.Error(t, err, "expect input to be rejected")
 		})
 	}

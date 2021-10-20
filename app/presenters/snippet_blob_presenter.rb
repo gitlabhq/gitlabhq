@@ -3,6 +3,8 @@
 class SnippetBlobPresenter < BlobPresenter
   include GitlabRoutingHelper
 
+  presents ::SnippetBlob
+
   def rich_data
     return unless blob.rich_viewer
 

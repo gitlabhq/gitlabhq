@@ -1111,15 +1111,23 @@ class MergeRequest < ApplicationRecord
     can_be_merged? && !should_be_rebased?
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
-    return false unless skip_ci_check || mergeable_ci_state?
     return false unless skip_discussions_check || mergeable_discussions_state?
 
-    true
+    if Feature.enabled?(:improved_mergeability_checks, self.project, default_enabled: :yaml)
+      additional_checks = MergeRequests::Mergeability::RunChecksService.new(merge_request: self, params: { skip_ci_check: skip_ci_check })
+      additional_checks.execute.all?(&:success?)
+    else
+      return false unless skip_ci_check || mergeable_ci_state?
+
+      true
+    end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def ff_merge_possible?
     project.repository.ancestor?(target_branch_sha, diff_head_sha)
@@ -1658,6 +1666,10 @@ class MergeRequest < ApplicationRecord
     service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(identifier), actual_head_pipeline)
   end
 
+  def recent_diff_head_shas(limit = 100)
+    merge_request_diffs.recent(limit).pluck(:head_commit_sha)
+  end
+
   def all_commits
     MergeRequestDiffCommit
       .where(merge_request_diff: merge_request_diffs.recent)
@@ -1857,7 +1869,7 @@ class MergeRequest < ApplicationRecord
 
   override :ensure_metrics
   def ensure_metrics
-    if Feature.enabled?(:use_upsert_query_for_mr_metrics)
+    if Feature.enabled?(:use_upsert_query_for_mr_metrics, default_enabled: :yaml)
       MergeRequest::Metrics.record!(self)
     else
       # Backward compatibility: some merge request metrics records will not have target_project_id filled in.
@@ -1915,20 +1927,6 @@ class MergeRequest < ApplicationRecord
   def context_commits_diff
     strong_memoize(:context_commits_diff) do
       ContextCommitsDiff.new(self)
-    end
-  end
-
-  def lazy_upvotes_count
-    BatchLoader.for(id).batch(default_value: 0) do |ids, loader|
-      counts = AwardEmoji
-        .where(awardable_id: ids)
-        .upvotes
-        .group(:awardable_id)
-        .count
-
-      counts.each do |id, count|
-        loader.call(id, count)
-      end
     end
   end
 

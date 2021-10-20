@@ -12,7 +12,6 @@ settings:
     jest:
       jestConfigFile: 'jest.config.js'
 globals:
-  getJSONFixture: false
   loadFixtures: false
   setFixtures: false
 rules:
@@ -26,4 +25,9 @@ rules:
     - off
   "@gitlab/no-global-event-off":
     - off
-
+  import/no-unresolved:
+    - error
+    # The test fixtures and graphql schema are dynamically generated in CI
+    # during the `frontend-fixtures` and `graphql-schema-dump` jobs.
+    # They may not be present during linting.
+    - ignore: ['^test_fixtures\/', 'tmp/tests/graphql/gitlab_schema.graphql']

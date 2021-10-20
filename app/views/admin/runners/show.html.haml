@@ -9,7 +9,7 @@
 .row
   .col-md-6
     %h4= _('Restrict projects for this runner')
-    - if @runner.projects.any?
+    - if @runner.runner_projects.any?
       %table.table{ data: { testid: 'assigned-projects' } }
         %thead
           %tr

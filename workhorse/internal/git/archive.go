@@ -102,7 +102,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 
 	var archiveReader io.Reader
 
-	archiveReader, err = handleArchiveWithGitaly(r, params, format)
+	archiveReader, err = handleArchiveWithGitaly(r, &params, format)
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("operations.GetArchive: %v", err))
 		return
@@ -130,7 +130,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 	}
 }
 
-func handleArchiveWithGitaly(r *http.Request, params archiveParams, format gitalypb.GetArchiveRequest_Format) (io.Reader, error) {
+func handleArchiveWithGitaly(r *http.Request, params *archiveParams, format gitalypb.GetArchiveRequest_Format) (io.Reader, error) {
 	var request *gitalypb.GetArchiveRequest
 	ctx, c, err := gitaly.NewRepositoryClient(r.Context(), params.GitalyServer)
 	if err != nil {

@@ -75,7 +75,68 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
         checkbox_html
 
-        expect(fake_template).to have_received(:label).with(:user, :view_diffs_file_by_file, { class: %w(custom-control-label label-foo-bar), object: user })
+        expect(fake_template).to have_received(:label).with(:user, :view_diffs_file_by_file, { class: %w(custom-control-label label-foo-bar), object: user, value: nil })
+      end
+    end
+  end
+
+  describe '#gitlab_ui_radio_component' do
+    let(:optional_args) { {} }
+
+    subject(:radio_html) { form_builder.gitlab_ui_radio_component(:access_level, :admin, "Access Level", **optional_args) }
+
+    context 'without optional arguments' do
+      it 'renders correct html' do
+        expected_html = <<~EOS
+          <div class="gl-form-radio custom-control custom-radio">
+            <input class="custom-control-input" type="radio" value="admin" name="user[access_level]" id="user_access_level_admin" />
+            <label class="custom-control-label" for="user_access_level_admin">
+              Access Level
+            </label>
+          </div>
+        EOS
+
+        expect(radio_html).to eq(html_strip_whitespace(expected_html))
+      end
+    end
+
+    context 'with optional arguments' do
+      let(:optional_args) do
+        {
+          help_text: 'Administrators have access to all groups, projects, and users and can manage all features in this installation',
+          radio_options: { class: 'radio-foo-bar' },
+          label_options: { class: 'label-foo-bar' }
+        }
+      end
+
+      it 'renders help text' do
+        expected_html = <<~EOS
+          <div class="gl-form-radio custom-control custom-radio">
+            <input class="custom-control-input radio-foo-bar" type="radio" value="admin" name="user[access_level]" id="user_access_level_admin" />
+            <label class="custom-control-label label-foo-bar" for="user_access_level_admin">
+              <span>Access Level</span>
+              <p class="help-text">Administrators have access to all groups, projects, and users and can manage all features in this installation</p>
+            </label>
+          </div>
+        EOS
+
+        expect(radio_html).to eq(html_strip_whitespace(expected_html))
+      end
+
+      it 'passes arguments to `radio_button` method' do
+        allow(fake_template).to receive(:radio_button).and_return('')
+
+        radio_html
+
+        expect(fake_template).to have_received(:radio_button).with(:user, :access_level, :admin, { class: %w(custom-control-input radio-foo-bar), object: user })
+      end
+
+      it 'passes arguments to `label` method' do
+        allow(fake_template).to receive(:label).and_return('')
+
+        radio_html
+
+        expect(fake_template).to have_received(:label).with(:user, :access_level, { class: %w(custom-control-label label-foo-bar), object: user, value: :admin })
       end
     end
   end

@@ -29,7 +29,7 @@ RSpec.describe 'Two factor auths' do
       end
 
       context 'when user authenticates with an external service' do
-        let_it_be(:user) { create(:omniauth_user, password_automatically_set: true) }
+        let_it_be(:user) { create(:omniauth_user) }
 
         it 'does not require the current password to set up two factor authentication', :js do
           visit profile_two_factor_auth_path
@@ -88,7 +88,7 @@ RSpec.describe 'Two factor auths' do
       end
 
       context 'when user authenticates with an external service' do
-        let_it_be(:user) { create(:omniauth_user, :two_factor, password_automatically_set: true) }
+        let_it_be(:user) { create(:omniauth_user, :two_factor) }
 
         it 'does not require the current_password to disable two-factor authentication', :js do
           visit profile_two_factor_auth_path

@@ -19,7 +19,7 @@ module Tooling
       end
 
       def last_update
-        @last_update ||= Time.parse(self[:last_update])
+        @last_update ||= self[:last_update] ? Time.parse(self[:last_update]) : nil
       end
     end
 

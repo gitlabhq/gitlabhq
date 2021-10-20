@@ -1,4 +1,4 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import PinComponent from '~/environments/components/environment_pin.vue';
 import eventHub from '~/environments/event_hub';
@@ -30,15 +30,15 @@ describe('Pin Component', () => {
     wrapper.destroy();
   });
 
-  it('should render the component with thumbtack icon', () => {
-    expect(wrapper.find(GlIcon).props('name')).toBe('thumbtack');
+  it('should render the component with descriptive text', () => {
+    expect(wrapper.text()).toBe('Prevent auto-stopping');
   });
 
   it('should emit onPinClick when clicked', () => {
     const eventHubSpy = jest.spyOn(eventHub, '$emit');
-    const button = wrapper.find(GlButton);
+    const item = wrapper.find(GlDropdownItem);
 
-    button.vm.$emit('click');
+    item.vm.$emit('click');
 
     expect(eventHubSpy).toHaveBeenCalledWith('cancelAutoStop', autoStopUrl);
   });

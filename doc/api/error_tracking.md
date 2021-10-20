@@ -73,7 +73,7 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
 
-For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature that is behind a disabled feature flag. Only for project maintainers.
+For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature. Only for project maintainers.
 
 ### List project client keys
 

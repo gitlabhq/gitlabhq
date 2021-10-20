@@ -75,6 +75,15 @@
 
   details {
     margin-bottom: $gl-padding;
+
+    > *:not(summary) {
+      margin-left: $gl-spacing-scale-5;
+    }
+  }
+
+  summary > * {
+    display: inline-block;
+    margin-bottom: 0;
   }
 
   // Single code lines should wrap
@@ -160,8 +169,6 @@
   }
 
   table:not(.code) {
-    @extend .table;
-    @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
     border: 0;
@@ -172,9 +179,11 @@
     tbody {
       background-color: $white;
 
-      td {
-        border-color: $gray-100;
-      }
+    }
+
+    td,
+    th {
+      border: 1px solid $border-color;
     }
 
     tr {
@@ -478,6 +487,7 @@
     font-size: larger;
   }
 
+  figcaption,
   .small {
     font-size: smaller;
   }

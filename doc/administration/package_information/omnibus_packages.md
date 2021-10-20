@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Omnibus based packages and images
+# Omnibus based packages and images **(FREE SELF)**
 
 Below you can find some basic information on why GitLab provides packages and
 a Docker image that come with bundled dependencies.

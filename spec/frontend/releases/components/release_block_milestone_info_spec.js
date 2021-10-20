@@ -1,12 +1,12 @@
 import { GlProgressBar, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { getJSONFixture } from 'helpers/fixtures';
+import originalRelease from 'test_fixtures/api/releases/release.json';
 import { trimText } from 'helpers/text_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockMilestoneInfo from '~/releases/components/release_block_milestone_info.vue';
 import { MAX_MILESTONES_TO_DISPLAY } from '~/releases/constants';
 
-const { milestones: originalMilestones } = getJSONFixture('api/releases/release.json');
+const { milestones: originalMilestones } = originalRelease;
 
 describe('Release block milestone info', () => {
   let wrapper;

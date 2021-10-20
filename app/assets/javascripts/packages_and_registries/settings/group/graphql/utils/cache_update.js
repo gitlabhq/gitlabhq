@@ -9,9 +9,16 @@ export const updateGroupPackageSettings = (fullPath) => (client, { data: updated
   const sourceData = client.readQuery(queryAndParams);
 
   const data = produce(sourceData, (draftState) => {
-    draftState.group.packageSettings = {
-      ...updatedData.updateNamespacePackageSettings.packageSettings,
-    };
+    if (updatedData.updateNamespacePackageSettings) {
+      draftState.group.packageSettings = {
+        ...updatedData.updateNamespacePackageSettings.packageSettings,
+      };
+    }
+    if (updatedData.updateDependencyProxySettings) {
+      draftState.group.dependencyProxySetting = {
+        ...updatedData.updateDependencyProxySettings.dependencyProxySetting,
+      };
+    }
   });
 
   client.writeQuery({

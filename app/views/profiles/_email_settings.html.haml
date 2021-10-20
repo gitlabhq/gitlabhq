@@ -3,8 +3,11 @@
 - email_change_disabled = local_assigns.fetch(:email_change_disabled, nil)
 - read_only_help_text = readonly ? s_("Profiles|Your email address was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:email) } : user_email_help_text(@user)
 - help_text = email_change_disabled ? s_("Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO.") % { group_name: @user.managing_group.name } : read_only_help_text
+- password_automatically_set = @user.password_automatically_set?
 
 = form.text_field :email, required: true, class: 'input-lg gl-form-input', value: (@user.email unless @user.temp_oauth_email?), help: help_text.html_safe, readonly: readonly || email_change_disabled
+- unless password_automatically_set
+  = hidden_field_tag 'user[validation_password]', :validation_password, class: 'js-password-prompt-field', help: s_("Profiles|Enter your password to confirm the email change")
 = form.select :public_email, options_for_select(@user.public_verified_emails, selected: @user.public_email),
   { help: s_("Profiles|This email will be displayed on your public profile"), include_blank: s_("Profiles|Do not show on profile") },
   control_class: 'select2 input-lg', disabled: email_change_disabled

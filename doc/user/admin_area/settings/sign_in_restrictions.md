@@ -24,6 +24,8 @@ You can restrict the password authentication for web interface and Git over HTTP
 - **Web interface**: When this feature is disabled, the **Standard** sign-in tab is removed and an [external authentication provider](../../../administration/auth/index.md) must be used.
 - **Git over HTTP(S)**: When this feature is disabled, a [Personal Access Token](../../profile/personal_access_tokens.md) must be used to authenticate.
 
+In the event of an external authentication provider outage, use the [GitLab Rails console](../../../administration/operations/rails_console.md) to [re-enable the standard web sign-in form](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#re-enable-standard-web-sign-in-form). This configuration can also be changed over the [Application settings REST API](../../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
+
 ## Admin Mode
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
@@ -104,7 +106,7 @@ see [Email notification for unknown sign-ins](../../profile/unknown_sign_in_noti
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.
 
-All users are redirected to the page represented by the configured **After sign out path**
+All users are redirected to the page represented by the configured **After sign-out path**
 after sign out if value is not empty.
 
 In the **Sign-in restrictions** section, scroll to the **Sign-in text** field. You can add a

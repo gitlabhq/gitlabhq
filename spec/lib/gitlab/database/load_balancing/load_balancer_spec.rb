@@ -47,15 +47,26 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe '#initialize' do
-    it 'ignores the hosts when the primary_only option is enabled' do
+    it 'ignores the hosts when load balancing is disabled' do
       config = Gitlab::Database::LoadBalancing::Configuration
         .new(ActiveRecord::Base, [db_host])
-      lb = described_class.new(config, primary_only: true)
+
+      allow(config).to receive(:load_balancing_enabled?).and_return(false)
+
+      lb = described_class.new(config)
       hosts = lb.host_list.hosts
 
       expect(hosts.length).to eq(1)
       expect(hosts.first)
         .to be_instance_of(Gitlab::Database::LoadBalancing::PrimaryHost)
+    end
+
+    it 'sets the name of the connection that is used' do
+      config =
+        Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+      lb = described_class.new(config)
+
+      expect(lb.name).to eq(:main)
     end
   end
 
@@ -140,10 +151,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
         .to yield_with_args(ActiveRecord::Base.retrieve_connection)
     end
 
-    it 'uses the primary when the primary_only option is enabled' do
+    it 'uses the primary when load balancing is disabled' do
       config = Gitlab::Database::LoadBalancing::Configuration
         .new(ActiveRecord::Base)
-      lb = described_class.new(config, primary_only: true)
+
+      allow(config).to receive(:load_balancing_enabled?).and_return(false)
+
+      lb = described_class.new(config)
 
       # When no hosts are configured, we don't want to produce any warnings, as
       # they aren't useful/too noisy.
@@ -274,34 +288,43 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
       expect { lb.retry_with_backoff { raise } }.to raise_error(RuntimeError)
     end
+
+    it 'skips retries when only the primary is used' do
+      allow(lb).to receive(:primary_only?).and_return(true)
+
+      expect(lb).not_to receive(:sleep)
+
+      expect { lb.retry_with_backoff { raise } }.to raise_error(RuntimeError)
+    end
   end
 
   describe '#connection_error?' do
-    before do
-      stub_const('Gitlab::Database::LoadBalancing::LoadBalancer::CONNECTION_ERRORS',
-                 [NotImplementedError])
-    end
-
     it 'returns true for a connection error' do
-      error = NotImplementedError.new
+      error = ActiveRecord::ConnectionNotEstablished.new
 
       expect(lb.connection_error?(error)).to eq(true)
     end
 
+    it 'returns false for a missing database error' do
+      error = ActiveRecord::NoDatabaseError.new
+
+      expect(lb.connection_error?(error)).to eq(false)
+    end
+
     it 'returns true for a wrapped connection error' do
-      wrapped = wrapped_exception(ActiveRecord::StatementInvalid, NotImplementedError)
+      wrapped = wrapped_exception(ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(wrapped)).to eq(true)
     end
 
     it 'returns true for a wrapped connection error from a view' do
-      wrapped = wrapped_exception(ActionView::Template::Error, NotImplementedError)
+      wrapped = wrapped_exception(ActionView::Template::Error, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(wrapped)).to eq(true)
     end
 
     it 'returns true for deeply wrapped/nested errors' do
-      top = twice_wrapped_exception(ActionView::Template::Error, ActiveRecord::StatementInvalid, NotImplementedError)
+      top = twice_wrapped_exception(ActionView::Template::Error, ActiveRecord::StatementInvalid, ActiveRecord::ConnectionNotEstablished)
 
       expect(lb.connection_error?(top)).to eq(true)
     end

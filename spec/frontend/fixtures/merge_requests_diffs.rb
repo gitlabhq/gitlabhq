@@ -20,10 +20,6 @@ RSpec.describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)'
 
   render_views
 
-  before(:all) do
-    clean_frontend_fixtures('merge_request_diffs/')
-  end
-
   before do
     # Create a user that matches the project.commit author
     # This is so that the "author" information will be populated

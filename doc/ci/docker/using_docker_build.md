@@ -572,7 +572,7 @@ The configuration is picked up by the `dind` service.
 ## Authenticate with registry in Docker-in-Docker
 
 When you use Docker-in-Docker, the
-[standard authentication methods](using_docker_images.md#define-an-image-from-a-private-container-registry)
+[standard authentication methods](using_docker_images.md#access-an-image-from-a-private-container-registry)
 don't work because a fresh Docker daemon is started with the service.
 
 ### Option 1: Run `docker login`

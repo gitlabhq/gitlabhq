@@ -402,5 +402,17 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
         expect(output.keys).to match_array([:image, :my_build, :my_test])
       end
     end
+
+    context 'when rules defined' do
+      context 'when a rule is invalid' do
+        let(:values) do
+          { include: [{ local: 'builds.yml', rules: [{ exists: ['$MY_VAR'] }] }] }
+        end
+
+        it 'raises IncludeError' do
+          expect { subject }.to raise_error(described_class::IncludeError, /invalid include rule/)
+        end
+      end
+    end
   end
 end

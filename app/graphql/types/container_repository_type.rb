@@ -28,5 +28,11 @@ module Types
     def project
       Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
     end
+
+    def tags_count
+      object.tags_count
+    rescue Faraday::Error
+      raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, 'We are having trouble connecting to the Container Registry. If this error persists, please review the troubleshooting documentation.'
+    end
   end
 end

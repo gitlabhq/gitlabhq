@@ -71,7 +71,7 @@ module FeatureFlagHelpers
   end
 
   def add_linked_issue_button
-    find('.js-issue-count-badge-add-button')
+    find_button 'Add a related issue'
   end
 
   def remove_linked_issue_button

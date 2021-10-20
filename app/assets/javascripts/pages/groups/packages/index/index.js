@@ -1,5 +1,10 @@
-import initPackageList from '~/packages/list/packages_list_app_bundle';
+(async function packageApp() {
+  if (window.gon.features.packageListApollo) {
+    const newPackageList = await import('~/packages_and_registries/package_registry/pages/list');
 
-if (document.getElementById('js-vue-packages-list')) {
-  initPackageList();
-}
+    newPackageList.default();
+  } else {
+    const packageList = await import('~/packages/list/packages_list_app_bundle');
+    packageList.default();
+  }
+})();

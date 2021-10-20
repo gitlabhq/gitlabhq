@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Metrics Dictionary Guide
 
-This guide describes the [Metrics Dictionary](https://gitlab-org.gitlab.io/growth/product-intelligence/metric-dictionary) and how it's implemented.
+[Service Ping](index.md) metrics are defined in the
+[Metrics Dictionary](https://metrics.gitlab.com/index.html).
+This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation
 

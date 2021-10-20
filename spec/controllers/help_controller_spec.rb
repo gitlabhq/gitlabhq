@@ -34,14 +34,6 @@ RSpec.describe HelpController do
         is_expected.to redirect_to("#{documentation_base_url}/ee/#{path}.html")
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(help_page_documentation_redirect: false)
-      end
-
-      it_behaves_like 'documentation pages local render'
-    end
   end
 
   before do

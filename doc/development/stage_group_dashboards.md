@@ -1,6 +1,6 @@
 ---
-stage: Enablement
-group: Infrastructure
+stage: Platforms
+group: Scalability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -57,6 +57,12 @@ component can have 2 indicators:
    and
    [Web](https://gitlab.com/gitlab-com/runbooks/-/blob/f22f40b2c2eab37d85e23ccac45e658b2c914445/metrics-catalog/services/web.jsonnet#L154)
    services, that threshold is **5 seconds**.
+
+   We're working on making this target configurable per endpoint in [this
+   project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525). Learn
+   how to [customize the request
+   apdex](application_slis/rails_request_apdex.md), this new apdex
+   measurement is not yet part of the error budget.
 
    For Sidekiq job execution, the threshold depends on the [job
    urgency](sidekiq_style_guide.md#job-urgency). It is
@@ -120,7 +126,7 @@ Inside a stage group dashboard, there are some notable components. Let's take th
 
 ![Default time filter](img/stage_group_dashboards_time_filter.png)
 
-- By default, all the times are in UTC timezone. [We use UTC when communicating in Engineering](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+- By default, all the times are in UTC time zone. [We use UTC when communicating in Engineering](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 - All metrics recorded in the GitLab production system have [1-year retention](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus/-/blob/31526b03fef823e2f9b3cda7c75dcd28a12418a3/attributes/prometheus.rb#L40).
 - Alternatively, you can zoom in or filter the time range directly on a graph. See the [Grafana Time Range Controls](https://grafana.com/docs/grafana/latest/dashboards/time-range-controls/) documentation for more information.
 

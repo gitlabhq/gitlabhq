@@ -62,8 +62,8 @@ The value must be the full URL of the merge request.
 
 ### GitLab Enterprise changes
 
-If a change is for GitLab Enterprise Edition, you must also add the trailer `EE:
-true`:
+If a change is exclusively for GitLab Enterprise Edition, **you must add** the
+trailer `EE: true`:
 
 ```plaintext
 Update git vendor to gitlab
@@ -76,6 +76,8 @@ Changelog: changed
 MR: https://gitlab.com/foo/bar/-/merge_requests/123
 EE: true
 ```
+
+**Do not** add the trailer for changes that apply to both EE and CE.
 
 ## What warrants a changelog entry?
 

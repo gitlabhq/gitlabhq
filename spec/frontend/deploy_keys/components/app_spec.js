@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import data from 'test_fixtures/deploy_keys/keys.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
@@ -10,7 +11,6 @@ import axios from '~/lib/utils/axios_utils';
 const TEST_ENDPOINT = `${TEST_HOST}/dummy/`;
 
 describe('Deploy keys app component', () => {
-  const data = getJSONFixture('deploy_keys/keys.json');
   let wrapper;
   let mock;
 

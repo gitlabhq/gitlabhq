@@ -22,6 +22,7 @@ module Gitlab
                     :gitlab_issue,
                     :gitlab_project,
                     :id,
+                    :integrated,
                     :last_release_last_commit,
                     :last_release_short_version,
                     :last_release_version,

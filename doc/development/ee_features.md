@@ -40,7 +40,7 @@ By default, merge request pipelines for development run in an EE-context only. I
 developing features that differ between FOSS and EE, you may wish to run pipelines in a
 FOSS context as well.
 
-To run pipelines in both contexts, include `RUN AS-IF-FOSS` in the merge request title.
+To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
 See the [As-if-FOSS jobs](pipelines.md#as-if-foss-jobs) pipelines documentation for more information.
 

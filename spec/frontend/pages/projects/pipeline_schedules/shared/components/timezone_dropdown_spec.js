@@ -10,7 +10,17 @@ describe('Timezone Dropdown', () => {
   let $dropdownEl = null;
   let $wrapper = null;
   const tzListSel = '.dropdown-content ul li a.is-active';
-  const tzDropdownToggleText = '.dropdown-toggle-text';
+
+  const initTimezoneDropdown = (options = {}) => {
+    // eslint-disable-next-line no-new
+    new TimezoneDropdown({
+      $inputEl,
+      $dropdownEl,
+      ...options,
+    });
+  };
+
+  const findDropdownToggleText = () => $wrapper.find('.dropdown-toggle-text');
 
   describe('Initialize', () => {
     describe('with dropdown already loaded', () => {
@@ -18,16 +28,13 @@ describe('Timezone Dropdown', () => {
         loadFixtures('pipeline_schedules/edit.html');
         $wrapper = $('.dropdown');
         $inputEl = $('#schedule_cron_timezone');
+        $inputEl.val('');
         $dropdownEl = $('.js-timezone-dropdown');
-
-        // eslint-disable-next-line no-new
-        new TimezoneDropdown({
-          $inputEl,
-          $dropdownEl,
-        });
       });
 
       it('can take an $inputEl in the constructor', () => {
+        initTimezoneDropdown();
+
         const tzStr = '[UTC + 5.5] Sri Jayawardenepura';
         const tzValue = 'Asia/Colombo';
 
@@ -42,6 +49,8 @@ describe('Timezone Dropdown', () => {
       });
 
       it('will format data array of timezones into a list of offsets', () => {
+        initTimezoneDropdown();
+
         const data = $dropdownEl.data('data');
         const formatted = $wrapper.find(tzListSel).text();
 
@@ -50,10 +59,28 @@ describe('Timezone Dropdown', () => {
         });
       });
 
-      it('will default the timezone to UTC', () => {
-        const tz = $inputEl.val();
+      describe('when `allowEmpty` property is `false`', () => {
+        beforeEach(() => {
+          initTimezoneDropdown();
+        });
 
-        expect(tz).toBe('UTC');
+        it('will default the timezone to UTC', () => {
+          const tz = $inputEl.val();
+
+          expect(tz).toBe('UTC');
+        });
+      });
+
+      describe('when `allowEmpty` property is `true`', () => {
+        beforeEach(() => {
+          initTimezoneDropdown({
+            allowEmpty: true,
+          });
+        });
+
+        it('will default the value of the input to an empty string', () => {
+          expect($inputEl.val()).toBe('');
+        });
       });
     });
 
@@ -68,23 +95,15 @@ describe('Timezone Dropdown', () => {
       it('will populate the list of UTC offsets after the dropdown is loaded', () => {
         expect($wrapper.find(tzListSel).length).toEqual(0);
 
-        // eslint-disable-next-line no-new
-        new TimezoneDropdown({
-          $inputEl,
-          $dropdownEl,
-        });
+        initTimezoneDropdown();
 
         expect($wrapper.find(tzListSel).length).toEqual($($dropdownEl).data('data').length);
       });
 
       it('will call a provided handler when a new timezone is selected', () => {
         const onSelectTimezone = jest.fn();
-        // eslint-disable-next-line no-new
-        new TimezoneDropdown({
-          $inputEl,
-          $dropdownEl,
-          onSelectTimezone,
-        });
+
+        initTimezoneDropdown({ onSelectTimezone });
 
         $wrapper.find(tzListSel).first().trigger('click');
 
@@ -94,24 +113,15 @@ describe('Timezone Dropdown', () => {
       it('will correctly set the dropdown label if a timezone identifier is set on the inputEl', () => {
         $inputEl.val('America/St_Johns');
 
-        // eslint-disable-next-line no-new
-        new TimezoneDropdown({
-          $inputEl,
-          $dropdownEl,
-          displayFormat: (selectedItem) => formatTimezone(selectedItem),
-        });
+        initTimezoneDropdown({ displayFormat: (selectedItem) => formatTimezone(selectedItem) });
 
-        expect($wrapper.find(tzDropdownToggleText).html()).toEqual('[UTC - 2.5] Newfoundland');
+        expect(findDropdownToggleText().html()).toEqual('[UTC - 2.5] Newfoundland');
       });
 
       it('will call a provided `displayFormat` handler to format the dropdown value', () => {
         const displayFormat = jest.fn();
-        // eslint-disable-next-line no-new
-        new TimezoneDropdown({
-          $inputEl,
-          $dropdownEl,
-          displayFormat,
-        });
+
+        initTimezoneDropdown({ displayFormat });
 
         $wrapper.find(tzListSel).first().trigger('click');
 

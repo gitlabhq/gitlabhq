@@ -4,7 +4,7 @@ module Terraform
   class ModulesPresenter < Gitlab::View::Presenter::Simple
     attr_accessor :packages, :system
 
-    presents :modules
+    presents nil, as: :modules
 
     def initialize(packages, system)
       @packages = packages

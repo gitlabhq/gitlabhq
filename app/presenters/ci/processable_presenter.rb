@@ -2,5 +2,6 @@
 
 module Ci
   class ProcessablePresenter < CommitStatusPresenter
+    presents ::Ci::Processable
   end
 end

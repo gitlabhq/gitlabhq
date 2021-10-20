@@ -12,7 +12,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 The Debian package registry for GitLab is under development and isn't ready for production use due to
-limited functionality.
+limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
+work and timelines to make it production ready.
 
 Publish Debian packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -138,7 +139,7 @@ To install a package:
 
 1. Configure the repository:
 
-    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt config:
+    If you are using a private project, add your [credentials](#authenticate-to-the-package-registry) to your apt configuration:
 
     ```shell
     echo 'machine gitlab.example.com login <username> password <your_access_token>' \

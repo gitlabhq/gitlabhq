@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class InvitationPresenter < Gitlab::View::Presenter::Delegated
-  presents :invitation
+  presents nil, as: :invitation
 end

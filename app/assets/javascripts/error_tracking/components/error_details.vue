@@ -128,6 +128,12 @@ export default {
     lastReleaseLink() {
       return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
     },
+    firstCommitLink() {
+      return `${this.error.externalBaseUrl}/-/commit/${this.error.firstReleaseVersion}`;
+    },
+    lastCommitLink() {
+      return `${this.error.externalBaseUrl}/-/commit/${this.error.lastReleaseVersion}`;
+    },
     showStacktrace() {
       return Boolean(this.stacktrace?.length);
     },
@@ -394,7 +400,7 @@ export default {
               <span>{{ error.gitlabIssuePath }}</span>
             </gl-link>
           </li>
-          <li>
+          <li v-if="!error.integrated">
             <strong class="bold">{{ __('Sentry event') }}:</strong>
             <gl-link
               v-track-event="trackClickErrorLinkToSentryOptions(error.externalUrl)"
@@ -409,15 +415,21 @@ export default {
           <li v-if="error.firstReleaseVersion">
             <strong class="bold">{{ __('First seen') }}:</strong>
             <time-ago-tooltip :time="error.firstSeen" />
-            <gl-link :href="firstReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.firstReleaseVersion }}</span>
+            <gl-link v-if="error.integrated" :href="firstCommitLink">
+              {{ __('GitLab commit') }}: {{ error.firstReleaseVersion }}
+            </gl-link>
+            <gl-link v-else :href="firstReleaseLink" target="_blank">
+              {{ __('Release') }}: {{ error.firstReleaseVersion }}
             </gl-link>
           </li>
           <li v-if="error.lastReleaseVersion">
             <strong class="bold">{{ __('Last seen') }}:</strong>
             <time-ago-tooltip :time="error.lastSeen" />
-            <gl-link :href="lastReleaseLink" target="_blank">
-              <span>{{ __('Release') }}: {{ error.lastReleaseVersion }}</span>
+            <gl-link v-if="error.integrated" :href="lastCommitLink">
+              {{ __('GitLab commit') }}: {{ error.lastReleaseVersion }}
+            </gl-link>
+            <gl-link v-else :href="lastReleaseLink" target="_blank">
+              {{ __('Release') }}: {{ error.lastReleaseVersion }}
             </gl-link>
           </li>
           <li>

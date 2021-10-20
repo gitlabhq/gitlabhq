@@ -21,10 +21,7 @@ To access the visibility and access control options:
 
 With this option, you can define [branch protections](../../project/protected_branches.md)
 to apply to every repository's [default branch](../../project/repository/branches/default.md).
-These protections specify the user roles with permission to:
-
-- Push to branches.
-- Delete branches.
+These protections specify the user roles with permission to push to default branches.
 
 This setting applies only to each repository's default branch. To protect other branches,
 you must configure [branch protection in the repository](../../project/protected_branches.md),
@@ -37,14 +34,14 @@ To change the default branch protection for the entire instance:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Select a **Default branch protection**:
-   - **Not protected** - Both developers and maintainers can push new commits,
-     force push, or delete the branch.
+   - **Not protected** - Both developers and maintainers can push new commits
+     and force push.
    - **Protected against pushes** - Developers cannot push new commits, but are
      allowed to accept merge requests to the branch. Maintainers can push to the branch.
    - **Partially protected** - Both developers and maintainers can push new commits,
-     but cannot force push or delete the branch.
+     but cannot force push.
    - **Fully protected** - Developers cannot push new commits, but maintainers can.
-     No one can force push or delete the branch.
+     No one can force push.
 1. To allow group owners to override the instance's default branch protection, select
    [**Allow owners to manage default branch protection per group**](#prevent-overrides-of-default-branch-protection).
 1. Select **Save changes**.
@@ -295,7 +292,7 @@ For more details, see [SSH key restrictions](../../../security/ssh_keys_restrict
 ## Enable project mirroring
 
 This option is enabled by default. By disabling it, both
-[pull and push mirroring](../../project/repository/repository_mirroring.md) no longer
+[pull mirroring](../../project/repository/mirror/pull.md) and [push mirroring](../../project/repository/mirror/push.md) no longer
 work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
 ![Mirror settings](img/mirror_settings.png)

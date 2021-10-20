@@ -104,11 +104,11 @@ export default {
       <gl-loading-icon v-if="loading" size="sm" :inline="true" />
       {{ participantLabel }}
     </div>
-    <div class="participants-list hide-collapsed">
+    <div class="hide-collapsed gl-display-flex gl-flex-wrap">
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"
-        class="participants-author"
+        class="participants-author gl-display-inline-block gl-pr-3 gl-pb-3"
       >
         <a :href="participant.web_url || participant.webUrl" class="author-link">
           <user-avatar-image

@@ -27,12 +27,6 @@ RSpec.describe Profiles::TwoFactorAuthsController do
       expect(flash[:notice])
         .to eq _('You need to verify your primary email first before enabling Two-Factor Authentication.')
     end
-
-    it 'does not redirect when the `ensure_verified_primary_email_for_2fa` feature flag is disabled' do
-      stub_feature_flags(ensure_verified_primary_email_for_2fa: false)
-
-      expect(response).not_to redirect_to(profile_emails_path)
-    end
   end
 
   shared_examples 'user must enter a valid current password' do

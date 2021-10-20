@@ -33,17 +33,40 @@ module Gitlab
       end
 
       def execute
-        Importer::RepositoryImporter.new(project, client).execute
+        metrics.track_start_import
 
-        SEQUENTIAL_IMPORTERS.each do |klass|
-          klass.new(project, client).execute
+        begin
+          Importer::RepositoryImporter.new(project, client).execute
+
+          SEQUENTIAL_IMPORTERS.each do |klass|
+            klass.new(project, client).execute
+          end
+
+        rescue StandardError => e
+          Gitlab::Import::ImportFailureService.track(
+            project_id: project.id,
+            error_source: self.class.name,
+            exception: e,
+            fail_import: true,
+            metrics: true
+          )
+
+          raise(e)
         end
 
         PARALLEL_IMPORTERS.each do |klass|
           klass.new(project, client, parallel: false).execute
         end
 
+        metrics.track_finished_import
+
         true
+      end
+
+      private
+
+      def metrics
+        @metrics ||= Gitlab::Import::Metrics.new(:github_importer, project)
       end
     end
   end

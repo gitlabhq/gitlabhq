@@ -41,6 +41,7 @@ const populateUserInfo = (user) => {
           workInformation: userData.work_information,
           websiteUrl: userData.website_url,
           pronouns: userData.pronouns,
+          localTime: userData.local_time,
           loaded: true,
         });
       }

@@ -16,7 +16,7 @@ module Gitlab
 
             inner.call
           ensure
-            ::Gitlab::Database::LoadBalancing.proxy.load_balancer.release_host
+            ::Gitlab::Database::LoadBalancing.release_hosts
             ::Gitlab::Database::LoadBalancing::Session.clear_session
           end
         end

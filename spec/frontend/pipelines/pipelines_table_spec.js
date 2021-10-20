@@ -1,6 +1,7 @@
 import '~/commons';
 import { GlTable } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
 import PipelineOperations from '~/pipelines/components/pipelines_list/pipeline_operations.vue';
@@ -20,8 +21,6 @@ describe('Pipelines Table', () => {
   let pipeline;
   let wrapper;
 
-  const jsonFixtureName = 'pipelines/pipelines.json';
-
   const defaultProps = {
     pipelines: [],
     viewType: 'root',
@@ -29,7 +28,8 @@ describe('Pipelines Table', () => {
   };
 
   const createMockPipeline = () => {
-    const { pipelines } = getJSONFixture(jsonFixtureName);
+    // Clone fixture as it could be modified by tests
+    const { pipelines } = JSON.parse(JSON.stringify(fixture));
     return pipelines.find((p) => p.user !== null && p.commit !== null);
   };
 

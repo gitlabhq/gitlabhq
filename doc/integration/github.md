@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Integrate your GitLab instance with GitHub **(FREE)**
+# Integrate your GitLab instance with GitHub **(FREE SELF)**
 
 You can integrate your GitLab instance with GitHub.com and GitHub Enterprise. This integration
 enables users to import projects from GitHub, or sign in to your GitLab instance

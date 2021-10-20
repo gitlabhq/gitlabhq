@@ -18,6 +18,10 @@ FactoryBot.define do
     transient { child_of { nil } }
     transient { upstream_of { nil } }
 
+    before(:create) do |pipeline, evaluator|
+      pipeline.ensure_project_iid!
+    end
+
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
         pipeline.project = evaluator.child_of.project

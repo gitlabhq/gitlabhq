@@ -9,20 +9,23 @@ module BulkImports
       @portable = portable
       @relation = relation
       @jid = jid
+      @config = FileTransfer.config_for(portable)
     end
 
     def execute
       find_or_create_export! do |export|
         remove_existing_export_file!(export)
-        serialize_relation_to_file(export.relation_definition)
+        export_service.execute
         compress_exported_relation
         upload_compressed_file(export)
       end
+    ensure
+      FileUtils.remove_entry(config.export_path)
     end
 
     private
 
-    attr_reader :user, :portable, :relation, :jid
+    attr_reader :user, :portable, :relation, :jid, :config
 
     def find_or_create_export!
       validate_user_permissions!
@@ -55,52 +58,28 @@ module BulkImports
       upload.save!
     end
 
-    def serialize_relation_to_file(relation_definition)
-      serializer.serialize_relation(relation_definition)
-    end
-
-    def compress_exported_relation
-      gzip(dir: export_path, filename: ndjson_filename)
+    def export_service
+      @export_service ||= if config.tree_relation?(relation)
+                            TreeExportService.new(portable, config.export_path, relation)
+                          elsif config.file_relation?(relation)
+                            FileExportService.new(portable, config.export_path, relation)
+                          else
+                            raise BulkImports::Error, 'Unsupported export relation'
+                          end
     end
 
     def upload_compressed_file(export)
-      compressed_filename = File.join(export_path, "#{ndjson_filename}.gz")
+      compressed_file = File.join(config.export_path, "#{export_service.exported_filename}.gz")
+
       upload = ExportUpload.find_or_initialize_by(export_id: export.id) # rubocop: disable CodeReuse/ActiveRecord
 
-      File.open(compressed_filename) { |file| upload.export_file = file }
+      File.open(compressed_file) { |file| upload.export_file = file }
 
       upload.save!
     end
 
-    def config
-      @config ||= FileTransfer.config_for(portable)
-    end
-
-    def export_path
-      @export_path ||= config.export_path
-    end
-
-    def portable_tree
-      @portable_tree ||= config.portable_tree
-    end
-
-    # rubocop: disable CodeReuse/Serializer
-    def serializer
-      @serializer ||= ::Gitlab::ImportExport::Json::StreamingSerializer.new(
-        portable,
-        portable_tree,
-        json_writer,
-        exportable_path: ''
-      )
-    end
-    # rubocop: enable CodeReuse/Serializer
-
-    def json_writer
-      @json_writer ||= ::Gitlab::ImportExport::Json::NdjsonWriter.new(export_path)
-    end
-
-    def ndjson_filename
-      @ndjson_filename ||= "#{relation}.ndjson"
+    def compress_exported_relation
+      gzip(dir: config.export_path, filename: export_service.exported_filename)
     end
   end
 end

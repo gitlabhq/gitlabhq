@@ -4,7 +4,7 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# OmniAuth **(FREE)**
+# OmniAuth **(FREE SELF)**
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and
 other popular services. [OmniAuth](https://rubygems.org/gems/omniauth/) is a
@@ -47,7 +47,7 @@ contains some settings that are common for all providers.
 | [OpenID Connect](../administration/auth/oidc.md)                    | `openid_connect`           |
 | [Salesforce](salesforce.md)                                         | `salesforce`               |
 | [SAML](saml.md)                                                     | `saml`                     |
-| [Shibboleth](shibboleth.md)                                         | `shibboleth`               |
+| [Shibboleth](saml.md)                                         | `shibboleth`               |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
 ## Initial OmniAuth Configuration

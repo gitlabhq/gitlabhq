@@ -24,4 +24,32 @@ describe('Repository router spec', () => {
       expect(componentsForRoute).toContain(component);
     }
   });
+
+  describe('Storing Web IDE path globally', () => {
+    const proj = 'foo-bar-group/foo-bar-proj';
+    let originalGl;
+
+    beforeEach(() => {
+      originalGl = window.gl;
+    });
+
+    afterEach(() => {
+      window.gl = originalGl;
+    });
+
+    it.each`
+      path                         | branch          | expectedPath
+      ${'/'}                       | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
+      ${'/tree/main'}              | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
+      ${'/tree/feat(test)'}        | ${'feat(test)'} | ${`/-/ide/project/${proj}/edit/feat(test)/-/`}
+      ${'/-/tree/main'}            | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
+      ${'/-/tree/main/app/assets'} | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/app/assets/`}
+      ${'/-/blob/main/file.md'}    | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/file.md`}
+    `('generates the correct Web IDE url for $path', ({ path, branch, expectedPath } = {}) => {
+      const router = createRouter(proj, branch);
+
+      router.push(path);
+      expect(window.gl.webIDEPath).toBe(expectedPath);
+    });
+  });
 });

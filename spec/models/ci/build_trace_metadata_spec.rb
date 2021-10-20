@@ -88,14 +88,16 @@ RSpec.describe Ci::BuildTraceMetadata do
   describe '#track_archival!' do
     let(:trace_artifact) { create(:ci_job_artifact) }
     let(:metadata) { create(:ci_build_trace_metadata) }
+    let(:checksum) { SecureRandom.hex }
 
     it 'stores the artifact id and timestamp' do
       expect(metadata.trace_artifact_id).to be_nil
 
-      metadata.track_archival!(trace_artifact.id)
+      metadata.track_archival!(trace_artifact.id, checksum)
       metadata.reload
 
       expect(metadata.trace_artifact_id).to eq(trace_artifact.id)
+      expect(metadata.checksum).to eq(checksum)
       expect(metadata.archived_at).to be_like_time(Time.current)
     end
   end
@@ -129,6 +131,31 @@ RSpec.describe Ci::BuildTraceMetadata do
         expect(metadata.id).to eq(build.id)
         expect(metadata.archival_attempts).to eq(described_class::MAX_ATTEMPTS)
       end
+    end
+  end
+
+  describe '#remote_checksum_valid?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:metadata) do
+      build(:ci_build_trace_metadata,
+        checksum: checksum,
+        remote_checksum: remote_checksum)
+    end
+
+    subject { metadata.remote_checksum_valid? }
+
+    where(:checksum, :remote_checksum, :result) do
+      nil         | nil         | false
+      nil         | 'a'         | false
+      'a'         | nil         | false
+      'a'         | 'b'         | false
+      'b'         | 'a'         | false
+      'a'         | 'a'         | true
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
     end
   end
 end

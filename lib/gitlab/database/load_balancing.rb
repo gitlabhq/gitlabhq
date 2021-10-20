@@ -4,72 +4,34 @@ module Gitlab
   module Database
     module LoadBalancing
       # The exceptions raised for connection errors.
-      CONNECTION_ERRORS = if defined?(PG)
-                            [
-                              PG::ConnectionBad,
-                              PG::ConnectionDoesNotExist,
-                              PG::ConnectionException,
-                              PG::ConnectionFailure,
-                              PG::UnableToSend,
-                              # During a failover this error may be raised when
-                              # writing to a primary.
-                              PG::ReadOnlySqlTransaction
-                            ].freeze
-                          else
-                            [].freeze
-                          end
+      CONNECTION_ERRORS = [
+        PG::ConnectionBad,
+        PG::ConnectionDoesNotExist,
+        PG::ConnectionException,
+        PG::ConnectionFailure,
+        PG::UnableToSend,
+        # During a failover this error may be raised when
+        # writing to a primary.
+        PG::ReadOnlySqlTransaction,
+        # This error is raised when we can't connect to the database in the
+        # first place (e.g. it's offline or the hostname is incorrect).
+        ActiveRecord::ConnectionNotEstablished
+      ].freeze
 
-      ProxyNotConfiguredError = Class.new(StandardError)
+      def self.base_models
+        @base_models ||= ::Gitlab::Database.database_base_models.values.freeze
+      end
 
-      # The connection proxy to use for load balancing (if enabled).
-      def self.proxy
-        unless load_balancing_proxy = ActiveRecord::Base.load_balancing_proxy
-          Gitlab::ErrorTracking.track_exception(
-            ProxyNotConfiguredError.new(
-              "Attempting to access the database load balancing proxy, but it wasn't configured.\n" \
-              "Did you forget to call '#{self.name}.configure_proxy'?"
-            ))
+      def self.each_load_balancer
+        return to_enum(__method__) unless block_given?
+
+        base_models.each do |model|
+          yield model.connection.load_balancer
         end
-
-        load_balancing_proxy
       end
 
-      # Returns a Hash containing the load balancing configuration.
-      def self.configuration
-        @configuration ||= Configuration.for_model(ActiveRecord::Base)
-      end
-
-      # Returns true if load balancing is to be enabled.
-      def self.enable?
-        return false if Gitlab::Runtime.rake?
-
-        configured?
-      end
-
-      def self.configured?
-        configuration.load_balancing_enabled? ||
-          configuration.service_discovery_enabled?
-      end
-
-      def self.start_service_discovery
-        return unless configuration.service_discovery_enabled?
-
-        ServiceDiscovery
-          .new(proxy.load_balancer, **configuration.service_discovery)
-          .start
-      end
-
-      # Configures proxying of requests.
-      def self.configure_proxy
-        lb = LoadBalancer.new(configuration, primary_only: !enable?)
-        ActiveRecord::Base.load_balancing_proxy = ConnectionProxy.new(lb)
-
-        # Populate service discovery immediately if it is configured
-        if configuration.service_discovery_enabled?
-          ServiceDiscovery
-            .new(lb, **configuration.service_discovery)
-            .perform_service_discovery
-        end
+      def self.release_hosts
+        each_load_balancer(&:release_host)
       end
 
       DB_ROLES = [

@@ -77,7 +77,7 @@ export default {
   >
     <!-- use d-flex so that slot can be appropriately styled -->
     <span class="gl-display-flex gl-align-items-center">
-      <reviewer-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
+      <reviewer-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
       <slot :user="user"></slot>
     </span>
   </gl-link>

@@ -4,7 +4,6 @@ module API
   class Notes < ::API::Base
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
-    helpers Helpers::RateLimiter
 
     before { authenticate! }
 
@@ -88,7 +87,7 @@ module API
 
           note = create_note(noteable, opts)
 
-          if note.errors.keys == [:commands_only]
+          if note.errors.attribute_names == [:commands_only]
             status 202
             present note, with: Entities::NoteCommands
           elsif note.valid?

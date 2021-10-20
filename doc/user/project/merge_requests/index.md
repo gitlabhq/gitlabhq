@@ -40,14 +40,18 @@ important parts of the merge request:
 
 ## View merge requests
 
-You can view merge requests for a specific project, or for all projects in a group:
+To view a list of merge requests:
 
-- **Specific project**: Go to your project and select **Merge requests**.
+- **Merge requests for a project**: Go to your project and select **Merge requests**, or use
+  the <kbd>g</kbd> + <kbd>m</kbd> [keyboard shortcut](../../shortcuts.md) from a page in your project.
 - **All projects in a group**: Go to your group and select **Merge requests**.
   If your group contains subgroups, this view also displays merge requests from the subgroup projects.
   GitLab displays a count of open merge requests in the left sidebar, but
   [caches the value](reviews/index.md#cached-merge-request-count) for groups with a large number of
   open merge requests.
+- **Merge requests assigned to you**: On any GitLab page, select **Merge requests**
+  in the top bar, or use the <kbd>Shift</kbd> + <kbd>m</kbd>
+  [global keyboard shortcut](../../shortcuts.md).
 
 GitLab displays open merge requests, with tabs to filter the list by open and closed status:
 
@@ -153,3 +157,4 @@ For a web developer writing a webpage for your company's website:
 - [Review a merge request](reviews/index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](testing_and_reports_in_merge_requests.md)
+- [GitLab keyboard shortcuts](../../shortcuts.md)

@@ -1,0 +1,16 @@
+- if one_trust_enabled?
+  - one_trust_id = sanitize(extra_config.one_trust_id, scrubber: Rails::Html::TextOnlyScrubber.new)
+
+  <!-- OneTrust -->
+  = javascript_include_tag "https://cdn.cookielaw.org/consent/#{one_trust_id}/OtAutoBlock.js"
+  = javascript_tag nonce: content_security_policy_nonce do
+    :plain
+      const oneTrustScript = document.createElement('script');
+      oneTrustScript.src = 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js';
+      oneTrustScript.dataset.domainScript = '#{one_trust_id}';
+      oneTrustScript.nonce = '#{content_security_policy_nonce}'
+      oneTrustScript.charset = 'UTF-8';
+      oneTrustScript.defer = true;
+      document.head.appendChild(oneTrustScript);
+
+      function OptanonWrapper() { }

@@ -12,22 +12,24 @@ RSpec.describe CustomerRelations::Organizations::CreateService do
     subject(:response) { described_class.new(group: group, current_user: user, params: params).execute }
 
     it 'creates an organization' do
-      group.add_reporter(user)
+      group.add_developer(user)
 
       expect(response).to be_success
     end
 
     it 'returns an error when user does not have permission' do
+      group.add_reporter(user)
+
       expect(response).to be_error
-      expect(response.message).to eq('You have insufficient permissions to create an organization for this group')
+      expect(response.message).to match_array(['You have insufficient permissions to create an organization for this group'])
     end
 
     it 'returns an error when the organization is not persisted' do
-      group.add_reporter(user)
+      group.add_developer(user)
       params[:name] = nil
 
       expect(response).to be_error
-      expect(response.message).to eq(["Name can't be blank"])
+      expect(response.message).to match_array(["Name can't be blank"])
     end
   end
 end

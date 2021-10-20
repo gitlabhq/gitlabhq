@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations). **(FREE SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-batched-background-migrations).
 
 There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
@@ -21,12 +21,12 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-## Check the status of background migrations **(FREE SELF)**
+## Check the status of background migrations
 
 All migrations must have a `Finished` status before you [upgrade GitLab](../../../update/index.md).
 You can [check the status of existing migrations](../../../update/index.md#checking-for-background-migrations-before-upgrading).
 
-## Enable or disable batched background migrations **(FREE SELF)**
+## Enable or disable batched background migrations
 
 Batched background migrations are under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -45,21 +45,21 @@ To disable it:
 Feature.disable(:execute_batched_migrations_on_schedule)
 ```
 
-## Automatic batch size optimization **(FREE SELF)**
+## Automatic batch size optimization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.12.
 > - [Deployed behind a feature flag](../../../user/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-automatic-batch-size-optimization). **(FREE SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-automatic-batch-size-optimization).
 
 There can be [risks when disabling released features](../../../administration/feature_flags.md#risks-when-disabling-released-features).
 Refer to this feature's version history for more details.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 
-## Enable or disable automatic batch size optimization **(FREE SELF)**
+## Enable or disable automatic batch size optimization
 
 Automatic batch size optimization for batched background migrations is under development but ready for production use.
 It is deployed behind a feature flag that is **enabled by default**.
@@ -91,13 +91,95 @@ Expected batched background migration for the given configuration to be marked a
   {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob", :table_name=>"push_event_payloads", :column_name=>"event_id", :job_arguments=>[["event_id"], ["event_id_convert_to_bigint"]]}
 ```
 
-To fix this error:
+First, check if you have followed the [version-specific upgrade instructions for 14.2](../../../update/index.md#1420).
+If you have, you can [manually finish the batched background migration](#manually-finishing-a-batched-background-migration).
+If you haven't, choose one of the following methods:
 
-1. Update to either 14.0.5 or 14.1.
-1. [Check the status](#check-the-status-of-background-migrations) of the batched background migration from the error message, and make sure it is listed as finished. If it is still active, either wait until it is done, or finalize it manually using the command suggested in the error, for example:
+1. [Rollback and upgrade](#roll-back-and-follow-the-required-upgrade-path) through one of the required
+versions before updating to 14.2+.
+1. [Roll forward](#roll-forward-and-finish-the-migrations-on-the-upgraded-version), staying on the current
+version and manually ensuring that the batched migrations complete successfully.
+
+#### Roll back and follow the required upgrade path
+
+1. [Rollback and restore the previously installed version](../../../update/restore_after_failure.md#roll-back-to-an-earlier-version-and-restore-a-backup)
+1. Update to either 14.0.5 or 14.1 **before** updating to 14.2+
+1. [Check the status](#check-the-status-of-background-migrations) of the batched background migrations and
+make sure they are all marked as finished before attempting to upgrade again. If any remain marked as active,
+you can [manually finish them](#manually-finishing-a-batched-background-migration).
+
+#### Roll forward and finish the migrations on the upgraded version
+
+##### For a deployment with downtime
+
+To run all the batched background migrations, it can take a significant amount of time
+depending on the size of your GitLab installation.
+
+1. [Check the status](#check-the-status-of-background-migrations) of the batched background migrations in the
+database, and [manually run them](#manually-finishing-a-batched-background-migration) with the appropriate
+arguments until the status query returns no rows.
+1. When the status of all of all them is marked as complete, re-run migrations for your installation.
+1. [Complete the database migrations](../../../administration/raketasks/maintenance.md#run-incomplete-database-migrations) from your GitLab upgrade:
+
+   ```plaintext
+   sudo gitlab-rake db:migrate
+   ```
+
+1. Run a reconfigure:
+
+     ```plaintext
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Finish the upgrade for your installation.
+
+##### For a no-downtime deployment
+
+As the failing migrations are post-deployment migrations, you can remain on a running instance of the upgraded
+version and wait for the batched background migrations to finish normally.
+
+1. [Check the status](#check-the-status-of-background-migrations) of the batched background migration from
+the error message, and make sure it is listed as finished. If it is still active, either wait until it is done,
+or [manually finish it](#manually-finishing-a-batched-background-migration).
+1. Re-run migrations for your installation, so the remaining post-deployment migrations finish.
+
+### Manually finishing a batched background migration
+
+If you need to manually finish a batched background migration due to an
+error, you can run:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
+```
+
+Replace the values in angle brackets with the correct
+arguments. For example, if you receive an error similar to this:
+
+```plaintext
+StandardError: An error has occurred, all later migrations canceled:
+
+Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
+  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob", :table_name=>"push_event_payloads", :column_name=>"event_id", :job_arguments=>[["event_id"], ["event_id_convert_to_bigint"]]}
+```
+
+Plug the arguments from the error message into the command:
 
 ```shell
 sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
 ```
 
-1. You can now update to GitLab 14.2 or higher.
+If you need to manually run a batched background migration to continue an upgrade, you can
+[check the status](#check-the-status-of-background-migrations) in the database and get the
+arguments from the query results. For example, if the query returns this:
+
+```plaintext
+            job_class_name             | table_name | column_name |           job_arguments
+---------------------------------------+------------+-------------+------------------------------------
+ CopyColumnUsingBackgroundMigrationJob | events     | id          | [["id"], ["id_convert_to_bigint"]]
+ ```
+
+The results from the query can be plugged into the command:
+
+```shell
+sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
+```

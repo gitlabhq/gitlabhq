@@ -21,8 +21,8 @@ RSpec.describe Packages::Composer::CacheUpdateWorker, type: :worker do
 
     include_examples 'an idempotent worker' do
       context 'creating a package' do
-        it 'updates the cache' do
-          expect { subject }.to change { Packages::Composer::CacheFile.count }.by(1)
+        it 'does nothing' do
+          expect { subject }.to change { Packages::Composer::CacheFile.count }.by(0)
         end
       end
 
@@ -36,12 +36,12 @@ RSpec.describe Packages::Composer::CacheUpdateWorker, type: :worker do
           package.destroy!
         end
 
-        it 'marks the file for deletion' do
+        it 'does nothing' do
           expect { subject }.not_to change { Packages::Composer::CacheFile.count }
 
           cache_file = Packages::Composer::CacheFile.last
 
-          expect(cache_file.reload.delete_at).not_to be_nil
+          expect(cache_file.reload.delete_at).to be_nil
         end
       end
     end

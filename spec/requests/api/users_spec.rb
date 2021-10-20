@@ -1457,10 +1457,20 @@ RSpec.describe API::Users do
 
   describe "PUT /user/:id/credit_card_validation" do
     let(:credit_card_validated_time) { Time.utc(2020, 1, 1) }
+    let(:expiration_year) { Date.today.year + 10 }
+    let(:params) do
+      {
+        credit_card_validated_at: credit_card_validated_time,
+        credit_card_expiration_year: expiration_year,
+        credit_card_expiration_month: 1,
+        credit_card_holder_name: 'John Smith',
+        credit_card_mask_number: '1111'
+      }
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        put api("/user/#{user.id}/credit_card_validation"), params: { credit_card_validated_at: credit_card_validated_time }
+        put api("/user/#{user.id}/credit_card_validation"), params: {}
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1468,7 +1478,7 @@ RSpec.describe API::Users do
 
     context 'when authenticated as non-admin' do
       it "does not allow updating user's credit card validation", :aggregate_failures do
-        put api("/user/#{user.id}/credit_card_validation", user), params: { credit_card_validated_at: credit_card_validated_time }
+        put api("/user/#{user.id}/credit_card_validation", user), params: params
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1476,10 +1486,17 @@ RSpec.describe API::Users do
 
     context 'when authenticated as admin' do
       it "updates user's credit card validation", :aggregate_failures do
-        put api("/user/#{user.id}/credit_card_validation", admin), params: { credit_card_validated_at: credit_card_validated_time }
+        put api("/user/#{user.id}/credit_card_validation", admin), params: params
+
+        user.reload
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(user.reload.credit_card_validated_at).to eq(credit_card_validated_time)
+        expect(user.credit_card_validation).to have_attributes(
+          credit_card_validated_at: credit_card_validated_time,
+          expiration_date: Date.new(expiration_year, 1, 31),
+          last_digits: 1111,
+          holder_name: 'John Smith'
+        )
       end
 
       it "returns 400 error if credit_card_validated_at is missing" do
@@ -1489,7 +1506,7 @@ RSpec.describe API::Users do
       end
 
       it 'returns 404 error if user not found' do
-        put api("/user/#{non_existing_record_id}/credit_card_validation", admin), params: { credit_card_validated_at: credit_card_validated_time }
+        put api("/user/#{non_existing_record_id}/credit_card_validation", admin), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')

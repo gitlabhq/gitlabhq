@@ -48,6 +48,19 @@ RSpec.describe API::ContainerRepositories do
         expect(response).to match_response_schema('registry/repository')
       end
 
+      context 'with a network error' do
+        before do
+          stub_container_registry_network_error(client_method: :repository_tags)
+        end
+
+        it 'returns a matching schema' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('registry/repository')
+        end
+      end
+
       context 'with tags param' do
         let(:url) { "/registry/repositories/#{repository.id}?tags=true" }
 
@@ -60,6 +73,19 @@ RSpec.describe API::ContainerRepositories do
 
           expect(json_response['id']).to eq(repository.id)
           expect(response.body).to include('tags')
+        end
+
+        context 'with a network error' do
+          before do
+            stub_container_registry_network_error(client_method: :repository_tags)
+          end
+
+          it 'returns a connection error message' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:service_unavailable)
+            expect(json_response['message']).to include('We are having trouble connecting to the Container Registry')
+          end
         end
       end
 

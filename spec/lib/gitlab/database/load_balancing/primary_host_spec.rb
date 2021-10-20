@@ -63,9 +63,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
   end
 
   describe '#primary_write_location' do
-    it 'returns the write location of the primary' do
-      expect(host.primary_write_location).to be_an_instance_of(String)
-      expect(host.primary_write_location).not_to be_empty
+    it 'raises NotImplementedError' do
+      expect { host.primary_write_location }.to raise_error(NotImplementedError)
     end
   end
 
@@ -76,51 +75,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
   end
 
   describe '#database_replica_location' do
-    let(:connection) { double(:connection) }
-
-    it 'returns the write ahead location of the replica', :aggregate_failures do
-      expect(host)
-        .to receive(:query_and_release)
-        .and_return({ 'location' => '0/D525E3A8' })
-
-      expect(host.database_replica_location).to be_an_instance_of(String)
-    end
-
-    it 'returns nil when the database query returned no rows' do
-      expect(host).to receive(:query_and_release).and_return({})
-
-      expect(host.database_replica_location).to be_nil
-    end
-
-    it 'returns nil when the database connection fails' do
-      allow(host).to receive(:connection).and_raise(PG::Error)
-
-      expect(host.database_replica_location).to be_nil
-    end
-  end
-
-  describe '#query_and_release' do
-    it 'executes a SQL query' do
-      results = host.query_and_release('SELECT 10 AS number')
-
-      expect(results).to be_an_instance_of(Hash)
-      expect(results['number'].to_i).to eq(10)
-    end
-
-    it 'releases the connection after running the query' do
-      expect(host)
-        .to receive(:release_connection)
-        .once
-
-      host.query_and_release('SELECT 10 AS number')
-    end
-
-    it 'returns an empty Hash in the event of an error' do
-      expect(host.connection)
-        .to receive(:select_all)
-        .and_raise(RuntimeError, 'kittens')
-
-      expect(host.query_and_release('SELECT 10 AS number')).to eq({})
+    it 'raises NotImplementedError' do
+      expect { host.database_replica_location }.to raise_error(NotImplementedError)
     end
   end
 end

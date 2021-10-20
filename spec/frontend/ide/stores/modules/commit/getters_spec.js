@@ -126,7 +126,7 @@ describe('IDE commit module getters', () => {
         );
 
         expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe(
-          'Update test-file, index.js files',
+          'Update test-file, index.js',
         );
       });
 

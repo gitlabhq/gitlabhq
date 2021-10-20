@@ -17,6 +17,7 @@ RSpec.describe BulkInsertSafe do
         t.binary :sha_value, null: false, limit: 20
         t.jsonb :jsonb_value, null: false
         t.belongs_to :bulk_insert_parent_item, foreign_key: true, null: true
+        t.timestamps null: true
 
         t.index :name, unique: true
       end
@@ -179,29 +180,26 @@ RSpec.describe BulkInsertSafe do
       end
 
       context 'with returns option set' do
-        context 'when is set to :ids' do
-          it 'return an array with the primary key values for all inserted records' do
-            items = bulk_insert_item_class.valid_list(1)
+        let(:items) { bulk_insert_item_class.valid_list(1) }
 
-            expect(bulk_insert_item_class.bulk_insert!(items, returns: :ids)).to contain_exactly(a_kind_of(Integer))
-          end
+        subject(:bulk_insert) { bulk_insert_item_class.bulk_insert!(items, returns: returns) }
+
+        context 'when is set to :ids' do
+          let(:returns) { :ids }
+
+          it { is_expected.to contain_exactly(a_kind_of(Integer)) }
         end
 
         context 'when is set to nil' do
-          it 'returns an empty array' do
-            items = bulk_insert_item_class.valid_list(1)
+          let(:returns) { nil }
 
-            expect(bulk_insert_item_class.bulk_insert!(items, returns: nil)).to eq([])
-          end
+          it { is_expected.to eq([]) }
         end
 
-        context 'when is set to anything else' do
-          it 'raises an error' do
-            items = bulk_insert_item_class.valid_list(1)
+        context 'when is set to a list of attributes' do
+          let(:returns) { [:id, :sha_value] }
 
-            expect { bulk_insert_item_class.bulk_insert!([items], returns: [:id, :name]) }
-              .to raise_error(ArgumentError, "returns needs to be :ids or nil")
-          end
+          it { is_expected.to contain_exactly([a_kind_of(Integer), '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12']) }
         end
       end
     end
@@ -228,10 +226,20 @@ RSpec.describe BulkInsertSafe do
       end
 
       describe '.bulk_upsert!' do
-        it 'updates existing object' do
-          bulk_insert_item_class.bulk_upsert!([new_object], unique_by: %w[name])
+        subject(:bulk_upsert) { bulk_insert_item_class.bulk_upsert!([new_object], unique_by: %w[name]) }
 
-          expect(existing_object.reload.secret_value).to eq('new value')
+        it 'updates existing object' do
+          expect { bulk_upsert }.to change { existing_object.reload.secret_value }.to('new value')
+        end
+
+        context 'when the `created_at` attribute is provided' do
+          before do
+            new_object.created_at = 10.days.from_now
+          end
+
+          it 'does not change the existing `created_at` value' do
+            expect { bulk_upsert }.not_to change { existing_object.reload.created_at }
+          end
         end
       end
     end
@@ -250,7 +258,7 @@ RSpec.describe BulkInsertSafe do
       it 'successfully inserts an item' do
         expect(ActiveRecord::InsertAll).to receive(:new)
           .with(
-            bulk_insert_items_with_composite_pk_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
+            bulk_insert_items_with_composite_pk_class.insert_all_proxy_class, [new_object.as_json], on_duplicate: :raise, returning: false, unique_by: %w[id name]
           ).and_call_original
 
         expect { bulk_insert_items_with_composite_pk_class.bulk_insert!([new_object]) }.to(
