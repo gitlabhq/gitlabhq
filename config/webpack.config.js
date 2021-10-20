@@ -198,6 +198,7 @@ if (!IS_PRODUCTION) {
 
   Object.assign(alias, {
     test_fixtures: path.join(ROOT_PATH, `tmp/tests/frontend/${fixtureDir}`),
+    test_fixtures_static: path.join(ROOT_PATH, 'spec/frontend/fixtures/static'),
     test_helpers: path.join(ROOT_PATH, 'spec/frontend_integration/test_helpers'),
   });
 }

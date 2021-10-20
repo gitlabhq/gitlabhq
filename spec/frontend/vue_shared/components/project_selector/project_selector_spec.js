@@ -2,8 +2,7 @@ import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import { head } from 'lodash';
 import Vue from 'vue';
-// eslint-disable-next-line import/no-deprecated
-import { getJSONFixture } from 'helpers/fixtures';
+import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 import ProjectSelector from '~/vue_shared/components/project_selector/project_selector.vue';
@@ -13,8 +12,7 @@ const localVue = createLocalVue();
 describe('ProjectSelector component', () => {
   let wrapper;
   let vm;
-  // eslint-disable-next-line import/no-deprecated
-  const allProjects = getJSONFixture('static/projects.json');
+  const allProjects = mockProjects;
   const searchResults = allProjects.slice(0, 5);
   let selected = [];
   selected = selected.concat(allProjects.slice(0, 3)).concat(allProjects.slice(5, 8));

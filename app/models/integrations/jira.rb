@@ -89,7 +89,6 @@ module Integrations
         site: URI.join(url, '/').to_s.delete_suffix('/'), # Intended to find the root
         context_path: (url.path.presence || '/').delete_suffix('/'),
         auth_type: :basic,
-        read_timeout: 120,
         use_cookies: true,
         additional_cookies: ['OBBasicAuth=fromDialog'],
         use_ssl: url.scheme == 'https'

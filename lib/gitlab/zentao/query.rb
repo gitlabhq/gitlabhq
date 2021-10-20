@@ -7,8 +7,6 @@ module Gitlab
       ISSUES_DEFAULT_LIMIT = 20
       ISSUES_MAX_LIMIT = 50
 
-      attr_reader :client, :params
-
       def initialize(integration, params)
         @client = Client.new(integration)
         @params = params
@@ -31,6 +29,8 @@ module Gitlab
       end
 
       private
+
+      attr_reader :client, :params
 
       def query_options
         {

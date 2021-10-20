@@ -6,11 +6,7 @@ module Sidebars
       class ZentaoMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          render?.tap do |render|
-            break unless render
-
-            add_items
-          end
+          render?.tap { |render| add_items if render }
         end
 
         override :link
