@@ -109,10 +109,6 @@ module Ci
       end
 
       def parse_artifact(artifact)
-        unless Feature.enabled?(:ci_synchronous_artifact_parsing, project, default_enabled: true)
-          return success
-        end
-
         case artifact.file_type
         when 'dotenv' then parse_dotenv_artifact(artifact)
         else success

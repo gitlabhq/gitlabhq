@@ -21,18 +21,11 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
-.terraform:init: &terraform_init
-  stage: init
-  script:
-    - cd ${TF_ROOT}
-    - gitlab-terraform init
-
 .terraform:fmt: &terraform_fmt
   stage: validate
-  needs: []
   script:
     - cd ${TF_ROOT}
-    - gitlab-terraform fmt -check -recursive
+    - gitlab-terraform fmt
   allow_failure: true
 
 .terraform:validate: &terraform_validate

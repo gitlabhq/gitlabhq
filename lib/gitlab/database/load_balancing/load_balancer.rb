@@ -133,7 +133,7 @@ module Gitlab
         # Returns the transaction write location of the primary.
         def primary_write_location
           location = read_write do |connection|
-            ::Gitlab::Database.main.get_write_location(connection)
+            get_write_location(connection)
           end
 
           return location if location
@@ -267,6 +267,33 @@ module Gitlab
         def request_cache
           base = SafeRequestStore[:gitlab_load_balancer] ||= {}
           base[self] ||= {}
+        end
+
+        # @param [ActiveRecord::Connection] ar_connection
+        # @return [String]
+        def get_write_location(ar_connection)
+          use_new_load_balancer_query = Gitlab::Utils
+            .to_boolean(ENV['USE_NEW_LOAD_BALANCER_QUERY'], default: true)
+
+          sql =
+            if use_new_load_balancer_query
+              <<~NEWSQL
+                SELECT CASE
+                    WHEN pg_is_in_recovery() = true AND EXISTS (SELECT 1 FROM pg_stat_get_wal_senders())
+                      THEN pg_last_wal_replay_lsn()::text
+                    WHEN pg_is_in_recovery() = false
+                      THEN pg_current_wal_insert_lsn()::text
+                      ELSE NULL
+                    END AS location;
+              NEWSQL
+            else
+              <<~SQL
+                SELECT pg_current_wal_insert_lsn()::text AS location
+              SQL
+            end
+
+          row = ar_connection.select_all(sql).first
+          row['location'] if row
         end
       end
     end

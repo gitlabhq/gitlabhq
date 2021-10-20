@@ -1,11 +1,9 @@
-import { GlAlert, GlButton, GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
-import TextEditor from '~/pipeline_editor/components/editor/text_editor.vue';
 
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
@@ -35,10 +33,6 @@ import {
 const localVue = createLocalVue();
 localVue.use(VueApollo);
 
-const MockSourceEditor = {
-  template: '<div/>',
-};
-
 const mockProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
@@ -55,19 +49,15 @@ describe('Pipeline editor app component', () => {
   let mockLatestCommitShaQuery;
   let mockPipelineQuery;
 
-  const createComponent = ({ blobLoading = false, options = {}, provide = {} } = {}) => {
+  const createComponent = ({
+    blobLoading = false,
+    options = {},
+    provide = {},
+    stubs = {},
+  } = {}) => {
     wrapper = shallowMount(PipelineEditorApp, {
       provide: { ...mockProvide, ...provide },
-      stubs: {
-        GlTabs,
-        GlButton,
-        CommitForm,
-        PipelineEditorHome,
-        PipelineEditorTabs,
-        PipelineEditorMessages,
-        SourceEditor: MockSourceEditor,
-        PipelineEditorEmptyState,
-      },
+      stubs,
       data() {
         return {
           commitSha: '',
@@ -89,7 +79,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({ props = {}, provide = {} } = {}) => {
+  const createComponentWithApollo = async ({ props = {}, provide = {}, stubs = {} } = {}) => {
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
@@ -111,7 +101,7 @@ describe('Pipeline editor app component', () => {
       apolloProvider: mockApollo,
     };
 
-    createComponent({ props, provide, options });
+    createComponent({ props, provide, stubs, options });
 
     return waitForPromises();
   };
@@ -119,7 +109,6 @@ describe('Pipeline editor app component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
-  const findTextEditor = () => wrapper.findComponent(TextEditor);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
   const findEmptyStateButton = () =>
     wrapper.findComponent(PipelineEditorEmptyState).findComponent(GlButton);
@@ -141,7 +130,7 @@ describe('Pipeline editor app component', () => {
       createComponent({ blobLoading: true });
 
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(findTextEditor().exists()).toBe(false);
+      expect(findEditorHome().exists()).toBe(false);
     });
   });
 
@@ -185,7 +174,11 @@ describe('Pipeline editor app component', () => {
     describe('when no CI config file exists', () => {
       beforeEach(async () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
-        await createComponentWithApollo();
+        await createComponentWithApollo({
+          stubs: {
+            PipelineEditorEmptyState,
+          },
+        });
 
         jest
           .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
@@ -207,7 +200,11 @@ describe('Pipeline editor app component', () => {
           const loadUnknownFailureText = 'The CI configuration was not loaded, please try again.';
 
           mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
-          await createComponentWithApollo();
+          await createComponentWithApollo({
+            stubs: {
+              PipelineEditorMessages,
+            },
+          });
 
           expect(findEmptyState().exists()).toBe(false);
 
@@ -222,15 +219,20 @@ describe('Pipeline editor app component', () => {
         mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
         mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
 
-        await createComponentWithApollo();
+        await createComponentWithApollo({
+          stubs: {
+            PipelineEditorHome,
+            PipelineEditorEmptyState,
+          },
+        });
 
         expect(findEmptyState().exists()).toBe(true);
-        expect(findTextEditor().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(false);
 
         await findEmptyStateButton().vm.$emit('click');
 
         expect(findEmptyState().exists()).toBe(false);
-        expect(findTextEditor().exists()).toBe(true);
+        expect(findEditorHome().exists()).toBe(true);
       });
     });
 
@@ -241,7 +243,7 @@ describe('Pipeline editor app component', () => {
       describe('and the commit mutation succeeds', () => {
         beforeEach(async () => {
           window.scrollTo = jest.fn();
-          await createComponentWithApollo();
+          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('commit', { type: COMMIT_SUCCESS });
         });
@@ -295,7 +297,7 @@ describe('Pipeline editor app component', () => {
 
         beforeEach(async () => {
           window.scrollTo = jest.fn();
-          await createComponentWithApollo();
+          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
             type: COMMIT_FAILURE,
@@ -319,7 +321,7 @@ describe('Pipeline editor app component', () => {
 
         beforeEach(async () => {
           window.scrollTo = jest.fn();
-          await createComponentWithApollo();
+          await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
           findEditorHome().vm.$emit('showError', {
             type: COMMIT_FAILURE,
@@ -386,7 +388,9 @@ describe('Pipeline editor app component', () => {
     });
 
     it('renders the given template', async () => {
-      await createComponentWithApollo();
+      await createComponentWithApollo({
+        stubs: { PipelineEditorHome, PipelineEditorTabs },
+      });
 
       expect(mockGetTemplate).toHaveBeenCalledWith({
         projectPath: mockProjectFullPath,
@@ -394,7 +398,7 @@ describe('Pipeline editor app component', () => {
       });
 
       expect(findEmptyState().exists()).toBe(false);
-      expect(findTextEditor().exists()).toBe(true);
+      expect(findEditorHome().exists()).toBe(true);
     });
   });
 });

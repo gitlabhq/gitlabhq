@@ -39886,6 +39886,9 @@ msgstr ""
 msgid "cannot be modified"
 msgstr ""
 
+msgid "cannot be used for user namespace"
+msgstr ""
+
 msgid "cannot block others"
 msgstr ""
 
@@ -39899,9 +39902,6 @@ msgid "cannot itself be blocked"
 msgstr ""
 
 msgid "cannot merge"
-msgstr ""
-
-msgid "cannot not be used for user namespace"
 msgstr ""
 
 msgid "ciReport|%{degradedNum} degraded"

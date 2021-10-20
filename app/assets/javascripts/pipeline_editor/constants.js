@@ -22,7 +22,14 @@ export const LINT_TAB = 'LINT_TAB';
 export const MERGED_TAB = 'MERGED_TAB';
 export const VISUALIZE_TAB = 'VISUALIZE_TAB';
 
+export const TABS_INDEX = {
+  [CREATE_TAB]: '0',
+  [VISUALIZE_TAB]: '1',
+  [LINT_TAB]: '2',
+  [MERGED_TAB]: '3',
+};
 export const TABS_WITH_COMMIT_FORM = [CREATE_TAB, LINT_TAB, VISUALIZE_TAB];
+export const TAB_QUERY_PARAM = 'tab';
 
 export const COMMIT_ACTION_CREATE = 'CREATE';
 export const COMMIT_ACTION_UPDATE = 'UPDATE';

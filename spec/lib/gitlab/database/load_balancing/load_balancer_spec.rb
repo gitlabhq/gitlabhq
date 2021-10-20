@@ -441,4 +441,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       lb.disconnect!(timeout: 30)
     end
   end
+
+  describe '#get_write_location' do
+    it 'returns a string' do
+      expect(lb.send(:get_write_location, lb.pool.connection))
+        .to be_a(String)
+    end
+
+    it 'returns nil if there are no results' do
+      expect(lb.send(:get_write_location, double(select_all: []))).to be_nil
+    end
+  end
 end

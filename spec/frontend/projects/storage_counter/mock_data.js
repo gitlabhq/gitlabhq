@@ -1,23 +1,6 @@
-export const mockGetProjectStorageCountGraphQLResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/20',
-      statistics: {
-        buildArtifactsSize: 400000.0,
-        pipelineArtifactsSize: 25000.0,
-        lfsObjectsSize: 4800000.0,
-        packagesSize: 3800000.0,
-        repositorySize: 3900000.0,
-        snippetsSize: 1200000.0,
-        storageSize: 15300000.0,
-        uploadsSize: 900000.0,
-        wikiSize: 300000.0,
-        __typename: 'ProjectStatistics',
-      },
-      __typename: 'Project',
-    },
-  },
-};
+import mockGetProjectStorageCountGraphQLResponse from 'test_fixtures/graphql/projects/storage_counter/project_storage.query.graphql.json';
+
+export { mockGetProjectStorageCountGraphQLResponse };
 
 export const mockEmptyResponse = { data: { project: null } };
 
@@ -37,7 +20,7 @@ export const defaultProvideValues = {
 
 export const projectData = {
   storage: {
-    totalUsage: '14.6 MiB',
+    totalUsage: '13.8 MiB',
     storageTypes: [
       {
         storageType: {
@@ -84,7 +67,7 @@ export const projectData = {
           description: 'Shared bits of code and text.',
           helpPath: '/snippets',
         },
-        value: 1200000,
+        value: 0,
       },
       {
         storageType: {

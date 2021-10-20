@@ -428,15 +428,4 @@ RSpec.describe Gitlab::Database::Connection do
       expect(connection.system_id).to be_an_instance_of(Integer)
     end
   end
-
-  describe '#get_write_location' do
-    it 'returns a string' do
-      expect(connection.get_write_location(connection.scope.connection))
-        .to be_a(String)
-    end
-
-    it 'returns nil if there are no results' do
-      expect(connection.get_write_location(double(select_all: []))).to be_nil
-    end
-  end
 end

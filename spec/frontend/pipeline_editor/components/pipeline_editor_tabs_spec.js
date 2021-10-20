@@ -1,16 +1,21 @@
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import CiConfigMergedPreview from '~/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiLint from '~/pipeline_editor/components/lint/ci_lint.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 import {
+  CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
   EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
+  MERGED_TAB,
+  TAB_QUERY_PARAM,
+  TABS_INDEX,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import { mockLintResponse, mockCiYml } from '../mock_data';
@@ -53,6 +58,7 @@ describe('Pipeline editor tabs component', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCiLint = () => wrapper.findComponent(CiLint);
+  const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineGraph = () => wrapper.findComponent(PipelineGraph);
   const findTextEditor = () => wrapper.findComponent(MockTextEditor);
@@ -180,5 +186,55 @@ describe('Pipeline editor tabs component', () => {
         expect(findMergedPreview().exists()).toBe(merged);
       },
     );
+  });
+
+  describe('default tab based on url query param', () => {
+    const gitlabUrl = 'https://gitlab.test/ci/editor/';
+    const matchObject = {
+      hostname: 'gitlab.test',
+      pathname: '/ci/editor/',
+      search: '',
+    };
+
+    it(`is ${CREATE_TAB} if the query param ${TAB_QUERY_PARAM} is not present`, () => {
+      setWindowLocation(gitlabUrl);
+      createComponent();
+
+      expect(window.location).toMatchObject(matchObject);
+    });
+
+    it(`is ${CREATE_TAB} tab if the query param ${TAB_QUERY_PARAM} is invalid`, () => {
+      const queryValue = 'FOO';
+      setWindowLocation(`${gitlabUrl}?${TAB_QUERY_PARAM}=${queryValue}`);
+      createComponent();
+
+      // If the query param remains unchanged, then we have ignored it.
+      expect(window.location).toMatchObject({
+        ...matchObject,
+        search: `?${TAB_QUERY_PARAM}=${queryValue}`,
+      });
+    });
+
+    it('is the tab specified in query param and transform it into an index value', async () => {
+      setWindowLocation(`${gitlabUrl}?${TAB_QUERY_PARAM}=${MERGED_TAB}`);
+      createComponent();
+
+      // If the query param has changed to an index, it means we have synced the
+      // query with.
+      expect(window.location).toMatchObject({
+        ...matchObject,
+        search: `?${TAB_QUERY_PARAM}=${TABS_INDEX[MERGED_TAB]}`,
+      });
+    });
+  });
+
+  describe('glTabs', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('passes the `sync-active-tab-with-query-params` prop', () => {
+      expect(findGlTabs().props('syncActiveTabWithQueryParams')).toBe(true);
+    });
   });
 });

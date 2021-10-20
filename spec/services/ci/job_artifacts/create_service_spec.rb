@@ -175,18 +175,6 @@ RSpec.describe Ci::JobArtifacts::CreateService do
           hash_including('key' => 'KEY1', 'value' => 'VAR1', 'source' => 'dotenv'),
           hash_including('key' => 'KEY2', 'value' => 'VAR2', 'source' => 'dotenv'))
       end
-
-      context 'when ci_synchronous_artifact_parsing feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_synchronous_artifact_parsing: false)
-        end
-
-        it 'does not call parse service' do
-          expect(Ci::ParseDotenvArtifactService).not_to receive(:new)
-
-          expect(subject[:status]).to eq(:success)
-        end
-      end
     end
 
     context 'when artifact_type is metrics' do

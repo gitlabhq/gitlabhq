@@ -4,7 +4,7 @@ import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue
 import PipelineEditorFileNav from './components/file_nav/pipeline_editor_file_nav.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
-import { TABS_WITH_COMMIT_FORM, CREATE_TAB } from './constants';
+import { CREATE_TAB, TABS_WITH_COMMIT_FORM } from './constants';
 
 export default {
   components: {
