@@ -2,6 +2,7 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
+import { BoardType } from '~/boards/constants';
 import issueBoardFilters from '~/boards/issue_board_filters';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -19,6 +20,7 @@ export default {
   },
   i18n: {
     search: __('Search'),
+    epic: __('Epic'),
     label: __('Label'),
     author: __('Author'),
     assignee: __('Assignee'),
@@ -42,7 +44,15 @@ export default {
     },
   },
   computed: {
-    tokens() {
+    isGroupBoard() {
+      return this.boardType === BoardType.group;
+    },
+    epicsGroupPath() {
+      return this.isGroupBoard
+        ? this.fullPath
+        : this.fullPath.slice(0, this.fullPath.lastIndexOf('/'));
+    },
+    tokensCE() {
       const {
         label,
         is,
@@ -133,6 +143,9 @@ export default {
           unique: true,
         },
       ];
+    },
+    tokens() {
+      return this.tokensCE;
     },
   },
   methods: {

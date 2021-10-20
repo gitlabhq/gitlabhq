@@ -139,6 +139,32 @@ In [GitLab 13.8 and earlier](https://gitlab.com/gitlab-org/gitlab/-/merge_reques
 the regular expression is `\d+[\s:\/\\]+\d+\s*`. [Feature flag](../../user/feature_flags.md)
 removed in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/322080).
 
+## Hide jobs
+
+To temporarily disable a job without deleting it from the configuration
+file:
+
+- Comment out the job's configuration:
+
+  ```yaml
+  # hidden_job:
+  #   script:
+  #     - run test
+  ```
+
+- Start the job name with a dot (`.`) and it is not processed by GitLab CI/CD:
+
+```yaml
+.hidden_job:
+  script:
+    - run test
+```
+
+You can use hidden jobs that start with `.` as templates for reusable configuration with:
+
+- The [`extends` keyword](../yaml/index.md#extends).
+- [YAML anchors](../yaml/yaml_specific_features.md#anchors).
+
 ## Specifying variables when running manual jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30485) in GitLab 12.2.

@@ -86,9 +86,19 @@ export default {
           fieldName: 'description',
           lockVersion: this.lockVersion,
           selector: '.detail-page-description',
+          onUpdate: this.taskListUpdateStarted.bind(this),
+          onSuccess: this.taskListUpdateSuccess.bind(this),
           onError: this.taskListUpdateError.bind(this),
         });
       }
+    },
+
+    taskListUpdateStarted() {
+      this.$emit('taskListUpdateStarted');
+    },
+
+    taskListUpdateSuccess() {
+      this.$emit('taskListUpdateSucceeded');
     },
 
     taskListUpdateError() {

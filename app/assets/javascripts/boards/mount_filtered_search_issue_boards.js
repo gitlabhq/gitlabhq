@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
+import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
 import store from '~/boards/stores';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';

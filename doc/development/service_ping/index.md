@@ -72,6 +72,12 @@ Starting with GitLab version 14.1, free self-managed users running [GitLab EE](.
 
 1. [Email from GitLab](../../tools/email.md).
 
+##### Features available in 14.4 and later
+
+1. [Repository size limit](../../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit).
+
+1. [Restrict group access by IP address](../../user/group/index.md#restrict-group-access-by-ip-address).
+
 NOTE:
 Registration is not yet required for participation, but will be added in a future milestone.
 

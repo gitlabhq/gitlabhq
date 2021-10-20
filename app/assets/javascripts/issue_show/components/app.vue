@@ -12,6 +12,7 @@ import {
   IssueTypePath,
   IncidentTypePath,
   IncidentType,
+  POLLING_DELAY,
 } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -282,7 +283,7 @@ export default {
     });
 
     if (!Visibility.hidden()) {
-      this.poll.makeDelayedRequest(2000);
+      this.poll.makeDelayedRequest(POLLING_DELAY);
     }
 
     Visibility.change(() => {
@@ -457,6 +458,22 @@ export default {
         this.flashContainer = null;
       }
     },
+
+    taskListUpdateStarted() {
+      this.poll.stop();
+    },
+
+    taskListUpdateSucceeded() {
+      this.poll.enable();
+      this.poll.makeDelayedRequest(POLLING_DELAY);
+    },
+
+    taskListUpdateFailed() {
+      this.poll.enable();
+      this.poll.makeDelayedRequest(POLLING_DELAY);
+
+      this.updateStoreState();
+    },
   },
 };
 </script>
@@ -552,7 +569,9 @@ export default {
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
-        @taskListUpdateFailed="updateStoreState"
+        @taskListUpdateStarted="taskListUpdateStarted"
+        @taskListUpdateSucceeded="taskListUpdateSucceeded"
+        @taskListUpdateFailed="taskListUpdateFailed"
       />
 
       <edited-component

@@ -81,24 +81,28 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
     let(:attributes_permitter) { described_class.new }
 
     where(:relation_name, :permitted_attributes_defined) do
-      :user                   | false
-      :author                 | false
-      :ci_cd_settings         | true
-      :metrics_setting        | true
-      :project_badges         | true
-      :pipeline_schedules     | true
-      :error_tracking_setting | true
-      :auto_devops            | true
-      :boards                 | true
-      :custom_attributes      | true
-      :labels                 | true
-      :protected_branches     | true
-      :protected_tags         | true
-      :create_access_levels   | true
-      :merge_access_levels    | true
-      :push_access_levels     | true
-      :releases               | true
-      :links                  | true
+      :user                        | false
+      :author                      | false
+      :ci_cd_settings              | true
+      :metrics_setting             | true
+      :project_badges              | true
+      :pipeline_schedules          | true
+      :error_tracking_setting      | true
+      :auto_devops                 | true
+      :boards                      | true
+      :custom_attributes           | true
+      :labels                      | true
+      :protected_branches          | true
+      :protected_tags              | true
+      :create_access_levels        | true
+      :merge_access_levels         | true
+      :push_access_levels          | true
+      :releases                    | true
+      :links                       | true
+      :container_expiration_policy | true
+      :project_feature             | true
+      :prometheus_metrics          | true
+      :service_desk_setting        | true
     end
 
     with_them do

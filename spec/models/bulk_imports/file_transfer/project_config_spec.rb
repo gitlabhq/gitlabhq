@@ -80,7 +80,7 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
 
   describe '#tree_relation_definition_for' do
     it 'returns relation definition' do
-      expected = { service_desk_setting: { except: [:outgoing_name, :file_template_project_id], include: [] } }
+      expected = { service_desk_setting: { except: [:outgoing_name, :file_template_project_id], include: [], only: %i[project_id issue_template_key project_key] } }
 
       expect(subject.tree_relation_definition_for('service_desk_setting')).to eq(expected)
     end

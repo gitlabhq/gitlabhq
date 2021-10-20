@@ -1,6 +1,7 @@
 <script>
 import { pickBy } from 'lodash';
 import { mapActions } from 'vuex';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -35,7 +36,9 @@ export default {
         milestoneTitle,
         types,
         weight,
+        epicId,
       } = this.filterParams;
+
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -47,6 +50,7 @@ export default {
             'not[types]': this.filterParams.not.types,
             'not[milestone_title]': this.filterParams.not.milestoneTitle,
             'not[weight]': this.filterParams.not.weight,
+            'not[epic_id]': this.filterParams.not.epicId,
           },
           undefined,
         );
@@ -61,6 +65,7 @@ export default {
         search,
         types,
         weight,
+        epic_id: getIdFromGraphQLId(epicId),
       };
     },
   },
@@ -86,6 +91,7 @@ export default {
         milestoneTitle,
         types,
         weight,
+        epicId,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -133,6 +139,13 @@ export default {
         });
       }
 
+      if (epicId) {
+        filteredSearchValue.push({
+          type: 'epic_id',
+          value: { data: epicId, operator: '=' },
+        });
+      }
+
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
           type: 'author_username',
@@ -177,6 +190,13 @@ export default {
         });
       }
 
+      if (this.filterParams['not[epicId]']) {
+        filteredSearchValue.push({
+          type: 'epic_id',
+          value: { data: this.filterParams['not[epicId]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -215,6 +235,9 @@ export default {
             break;
           case 'weight':
             filterParams.weight = filter.value.data;
+            break;
+          case 'epic_id':
+            filterParams.epicId = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

@@ -197,21 +197,22 @@ card includes:
 Users with the [Reporter and higher roles](../permissions.md) can use all the functionality of the
 issue board feature to create or delete lists. They can also drag issues from one list to another.
 
-## How GitLab orders issues in a list
-
-When visiting a board, issues appear ordered in any list. You're able to change
-that order by dragging the issues. The changed order is saved, so that anybody who visits the same
-board later sees the reordering, with some exceptions.
+## Ordering issues in a list
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
 of that issue's project or root group. This means the issue will be at the bottom of any issue list that
 it appears in.
 
+When you visit a board, issues appear ordered in any list. You're able to change
+that order by dragging the issues. The changed order is saved, so that anybody who visits the same
+board later sees the reordering, with some exceptions.
+
 Any time you drag and reorder the issue, its relative order value changes accordingly.
 Then, any time that issue appears in any board, the ordering is done according to
 the updated relative order value. If a user in your GitLab instance
 drags issue `A` above issue `B`, the ordering is maintained when these two issues are subsequently
-loaded in any board in the same instance. This could be a different project board or a different group
+loaded in any board in the same instance.
+This could be a different project board or a different group
 board, for example.
 
 This ordering also affects [issue lists](issues/sorting_issue_lists.md).

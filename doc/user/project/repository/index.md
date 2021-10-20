@@ -41,7 +41,7 @@ to a branch in the repository. When you use the command line, you can commit mul
   If the project is configured with [GitLab CI/CD](../../../ci/index.md),
   you trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
-  Add the [`ci skip`](../../../ci/yaml/index.md#skip-pipeline) keyword to
+  Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
   your commit message to make GitLab CI/CD skip the pipeline.
   - **Cross-link issues and merge requests:**
   Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)

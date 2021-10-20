@@ -83,7 +83,7 @@ where:
 - Configuration imported with [`include`](../yaml/index.md#include) is copied into the view.
 - Jobs that use [`extends`](../yaml/index.md#extends) display with the
   [extended configuration merged into the job](../yaml/index.md#merge-details).
-- YAML anchors are [replaced with the linked configuration](../yaml/index.md#anchors).
+- YAML anchors are [replaced with the linked configuration](../yaml/yaml_specific_features.md#anchors).
 
 ## Commit changes to CI configuration
 

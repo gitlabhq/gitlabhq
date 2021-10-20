@@ -390,9 +390,9 @@ You can also store template files in a central repository and `include` them in 
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
 otherwise the external file is not included.
 
-You can't use [YAML anchors](#anchors) across different YAML files sourced by `include`.
+You can't use [YAML anchors](yaml_specific_features.md#anchors) across different YAML files sourced by `include`.
 You can only refer to anchors in the same file. To reuse configuration from different
-YAML files, use [`!reference` tags](#reference-tags) or the [`extends` keyword](#extends).
+YAML files, use [`!reference` tags](yaml_specific_features.md#reference-tags) or the [`extends` keyword](#extends).
 
 `include` supports the following inclusion methods:
 
@@ -427,6 +427,13 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
 - `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md) in GitLab 14.2
   and later.
+  - When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
+    ref path, like `refs/heads/branch-name`. In other cases, this variable returns only
+    the branch name, like `branch-name`.
+
+    To use `CI_COMMIT_REF_NAME` in `include:rules`, you might need to use `if: $CI_COMMIT_REF_NAME =~ /main/`
+    (not `== main`). [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/337633)
+    to align `CI_COMMIT_REF_NAME` behavior in all cases.
 - [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
 - [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
 - [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
@@ -703,7 +710,7 @@ All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
 
 **Example of `script`:**
 
@@ -742,7 +749,7 @@ Use `before_script` to define an array of commands that should run before each j
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
 
 **Example of `before_script`:**
 
@@ -780,7 +787,7 @@ Use `after_script` to define an array of commands that run after each job, inclu
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
 
 **Example of `after_script`:**
 
@@ -943,7 +950,7 @@ job2:
 
 > Introduced in GitLab 11.3.
 
-Use `extends` to reuse configuration sections. It's an alternative to [YAML anchors](#anchors)
+Use `extends` to reuse configuration sections. It's an alternative to [YAML anchors](yaml_specific_features.md#anchors)
 and is a little more flexible and readable. You can use `extends` to reuse configuration
 from [included configuration files](#use-extends-and-include-together).
 
@@ -983,7 +990,7 @@ rspec:
       - $RSPEC
 ```
 
-`.tests` in this example is a [hidden job](#hide-jobs), but it's
+`.tests` in this example is a [hidden job](../jobs/index.md#hide-jobs), but it's
 possible to extend configuration from regular jobs as well.
 
 `extends` supports multi-level inheritance. You should avoid using more than three levels,
@@ -1076,7 +1083,7 @@ In this example:
 - The `variables` sections merge, but `URL: "http://docker-url.internal"` overwrites `URL: "http://my-url.internal"`.
 - `tags: ['docker']` overwrites `tags: ['production']`.
 - `script` does not merge, but `script: ['rake rspec']` overwrites
-  `script: ['echo "Hello world!"']`. You can use [YAML anchors](#anchors) to merge arrays.
+  `script: ['echo "Hello world!"']`. You can use [YAML anchors](yaml_specific_features.md#anchors) to merge arrays.
 
 #### Use `extends` and `include` together
 
@@ -1111,8 +1118,11 @@ to the contents of the `script`:
 
 Use `rules` to include or exclude jobs in pipelines.
 
-Rules are evaluated *in order* until the first match. When a match is found, the job
-is either included or excluded from the pipeline, depending on the configuration.
+Rules are evaluated when the pipeline is created, and evaluated *in order*
+until the first match. When a match is found, the job is either included or excluded from the pipeline,
+depending on the configuration.
+
+You cannot use dotenv variables created in job scripts in rules, because rules are evaluated before any jobs run.
 
 `rules` replaces [`only/except`](#only--except) and they can't be used together
 in the same job. If you configure one job to use both keywords, the GitLab returns
@@ -1140,7 +1150,7 @@ The job is not added to the pipeline:
 - If no rules match.
 - If a rule matches and has `when: never`.
 
-You can use [`!reference` tags](#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
+You can use [`!reference` tags](yaml_specific_features.md#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
 in different jobs.
 
 #### `rules:if`
@@ -2177,7 +2187,7 @@ Also in the example, `GIT_STRATEGY` is set to `none`. If the
 the runner won't try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends
-on global variables, use [anchor variables](#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
+on global variables, use [anchor variables](yaml_specific_features.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
 to change the job without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
@@ -4541,7 +4551,7 @@ If a variable of the same name is defined globally and for a specific job, the
 All YAML-defined variables are also set to any linked
 [Docker service containers](../services/index.md).
 
-You can use [YAML anchors for variables](#yaml-anchors-for-variables).
+You can use [YAML anchors for variables](yaml_specific_features.md#yaml-anchors-for-variables).
 
 ### Prefill variables in manual pipelines
 
@@ -4576,311 +4586,6 @@ You can use [CI/CD variables](../variables/index.md) to configure how the runner
 
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
-
-## YAML-specific features
-
-In your `.gitlab-ci.yml` file, you can use YAML-specific features like anchors (`&`), aliases (`*`),
-and map merging (`<<`). Use these features to reduce the complexity
-of the code in the `.gitlab-ci.yml` file.
-
-Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
-
-In most cases, the [`extends` keyword](#extends) is more user friendly and you should
-use it when possible.
-
-You can use YAML anchors to merge YAML arrays.
-
-### Anchors
-
-YAML has a feature called 'anchors' that you can use to duplicate
-content across your document.
-
-Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](#hide-jobs)
-to provide templates for your jobs. When there are duplicate keys, GitLab
-performs a reverse deep merge based on the keys.
-
-You can't use YAML anchors across multiple files when using the [`include`](#include)
-keyword. Anchors are only valid in the file they were defined in. To reuse configuration
-from different YAML files, use [`!reference` tags](#reference-tags) or the
-[`extends` keyword](#extends).
-
-The following example uses anchors and map merging. It creates two jobs,
-`test1` and `test2`, that inherit the `.job_template` configuration, each
-with their own custom `script` defined:
-
-```yaml
-.job_template: &job_configuration  # Hidden yaml configuration that defines an anchor named 'job_configuration'
-  image: ruby:2.6
-  services:
-    - postgres
-    - redis
-
-test1:
-  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
-  script:
-    - test1 project
-
-test2:
-  <<: *job_configuration           # Merge the contents of the 'job_configuration' alias
-  script:
-    - test2 project
-```
-
-`&` sets up the name of the anchor (`job_configuration`), `<<` means "merge the
-given hash into the current one," and `*` includes the named anchor
-(`job_configuration` again). The expanded version of this example is:
-
-```yaml
-.job_template:
-  image: ruby:2.6
-  services:
-    - postgres
-    - redis
-
-test1:
-  image: ruby:2.6
-  services:
-    - postgres
-    - redis
-  script:
-    - test1 project
-
-test2:
-  image: ruby:2.6
-  services:
-    - postgres
-    - redis
-  script:
-    - test2 project
-```
-
-You can use anchors to define two sets of services. For example, `test:postgres`
-and `test:mysql` share the `script` defined in `.job_template`, but use different
-`services`, defined in `.postgres_services` and `.mysql_services`:
-
-```yaml
-.job_template: &job_configuration
-  script:
-    - test project
-  tags:
-    - dev
-
-.postgres_services:
-  services: &postgres_configuration
-    - postgres
-    - ruby
-
-.mysql_services:
-  services: &mysql_configuration
-    - mysql
-    - ruby
-
-test:postgres:
-  <<: *job_configuration
-  services: *postgres_configuration
-  tags:
-    - postgres
-
-test:mysql:
-  <<: *job_configuration
-  services: *mysql_configuration
-```
-
-The expanded version is:
-
-```yaml
-.job_template:
-  script:
-    - test project
-  tags:
-    - dev
-
-.postgres_services:
-  services:
-    - postgres
-    - ruby
-
-.mysql_services:
-  services:
-    - mysql
-    - ruby
-
-test:postgres:
-  script:
-    - test project
-  services:
-    - postgres
-    - ruby
-  tags:
-    - postgres
-
-test:mysql:
-  script:
-    - test project
-  services:
-    - mysql
-    - ruby
-  tags:
-    - dev
-```
-
-You can see that the hidden jobs are conveniently used as templates, and
-`tags: [postgres]` overwrites `tags: [dev]`.
-
-#### YAML anchors for scripts
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23005) in GitLab 12.5.
-
-You can use [YAML anchors](#anchors) with [script](#script), [`before_script`](#before_script),
-and [`after_script`](#after_script) to use predefined commands in multiple jobs:
-
-```yaml
-.some-script-before: &some-script-before
-  - echo "Execute this script first"
-
-.some-script: &some-script
-  - echo "Execute this script second"
-  - echo "Execute this script too"
-
-.some-script-after: &some-script-after
-  - echo "Execute this script last"
-
-job1:
-  before_script:
-    - *some-script-before
-  script:
-    - *some-script
-    - echo "Execute something, for this job only"
-  after_script:
-    - *some-script-after
-
-job2:
-  script:
-    - *some-script-before
-    - *some-script
-    - echo "Execute something else, for this job only"
-    - *some-script-after
-```
-
-#### YAML anchors for variables
-
-Use [YAML anchors](#anchors) with `variables` to repeat assignment
-of variables across multiple jobs. You can also use YAML anchors when a job
-requires a specific `variables` block that would otherwise override the global variables.
-
-The following example shows how override the `GIT_STRATEGY` variable without affecting
-the use of the `SAMPLE_VARIABLE` variable:
-
-```yaml
-# global variables
-variables: &global-variables
-  SAMPLE_VARIABLE: sample_variable_value
-  ANOTHER_SAMPLE_VARIABLE: another_sample_variable_value
-
-# a job that must set the GIT_STRATEGY variable, yet depend on global variables
-job_no_git_strategy:
-  stage: cleanup
-  variables:
-    <<: *global-variables
-    GIT_STRATEGY: none
-  script: echo $SAMPLE_VARIABLE
-```
-
-### Hide jobs
-
-If you want to temporarily disable a job, rather than commenting out all the
-lines where the job is defined:
-
-```yaml
-# hidden_job:
-#   script:
-#     - run test
-```
-
-Instead, you can start its name with a dot (`.`) and it is not processed by
-GitLab CI/CD. In the following example, `.hidden_job` is ignored:
-
-```yaml
-.hidden_job:
-  script:
-    - run test
-```
-
-Use this feature to ignore jobs, or use the
-[YAML-specific features](#yaml-specific-features) and transform the hidden jobs
-into templates.
-
-### `!reference` tags
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/266173) in GitLab 13.9.
-> - `rules` keyword support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
-
-Use the `!reference` custom YAML tag to select keyword configuration from other job
-sections and reuse it in the current section. Unlike [YAML anchors](#anchors), you can
-use `!reference` tags to reuse configuration from [included](#include) configuration
-files as well.
-
-In the following example, a `script` and an `after_script` from two different locations are
-reused in the `test` job:
-
-- `setup.yml`:
-
-  ```yaml
-  .setup:
-    script:
-      - echo creating environment
-  ```
-
-- `.gitlab-ci.yml`:
-
-  ```yaml
-  include:
-    - local: setup.yml
-
-  .teardown:
-    after_script:
-      - echo deleting environment
-
-  test:
-    script:
-      - !reference [.setup, script]
-      - echo running my own command
-    after_script:
-      - !reference [.teardown, after_script]
-  ```
-
-In the following example, `test-vars-1` reuses all the variables in `.vars`, while `test-vars-2`
-selects a specific variable and reuses it as a new `MY_VAR` variable.
-
-```yaml
-.vars:
-  variables:
-    URL: "http://my-url.internal"
-    IMPORTANT_VAR: "the details"
-
-test-vars-1:
-  variables: !reference [.vars, variables]
-  script:
-    - printenv
-
-test-vars-2:
-  variables:
-    MY_VAR: !reference [.vars, variables, IMPORTANT_VAR]
-  script:
-    - printenv
-```
-
-You can't reuse a section that already includes a `!reference` tag. Only one level
-of nesting is supported.
-
-## Skip Pipeline
-
-To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
-capitalization, to your commit message.
-
-Alternatively, if you are using Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
-The `ci.skip` push option does not skip merge request
-pipelines.
 
 ## Processing Git pushes
 

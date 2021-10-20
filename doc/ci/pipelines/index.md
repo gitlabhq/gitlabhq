@@ -229,6 +229,15 @@ This functionality is only available:
 - For users with at least the Developer role.
 - If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
 
+### Skip a pipeline
+
+To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
+capitalization, to your commit message.
+
+Alternatively, if you are using Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+The `ci.skip` push option does not skip merge request
+pipelines.
+
 ### Delete a pipeline
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.

@@ -50,8 +50,6 @@
 - "./spec/requests/api/graphql/packages/pypi_spec.rb"
 - "./spec/requests/api/graphql/project/packages_spec.rb"
 - "./spec/requests/api/package_files_spec.rb"
-- "./spec/services/environments/stop_service_spec.rb"
-- "./spec/services/merge_requests/post_merge_service_spec.rb"
 - "./spec/services/packages/conan/create_package_file_service_spec.rb"
 - "./spec/services/packages/create_package_file_service_spec.rb"
 - "./spec/services/packages/generic/create_package_file_service_spec.rb"

@@ -37127,6 +37127,9 @@ msgstr ""
 msgid "User and IP rate limits"
 msgstr ""
 
+msgid "User cap"
+msgstr ""
+
 msgid "User created at"
 msgstr ""
 
@@ -38429,6 +38432,9 @@ msgstr ""
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
 msgstr ""
 
+msgid "When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."
+msgstr ""
+
 msgid "When this merge request is accepted"
 msgid_plural "When these merge requests are accepted"
 msgstr[0] ""
@@ -39676,9 +39682,6 @@ msgid "ZenTaoIntegration|ZenTao user"
 msgstr ""
 
 msgid "Zentao issues"
-msgstr ""
-
-msgid "Zentao user"
 msgstr ""
 
 msgid "ZentaoIntegration|An error occurred while requesting data from the ZenTao service."

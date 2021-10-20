@@ -101,7 +101,7 @@ for details on avoiding two pipelines for a single merge request.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
 
-When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/yaml/index.md#skip-pipeline) prevent
+When the **Pipelines must succeed** checkbox is checked, [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
 merge requests from being merged. To change this behavior:
 
 1. Navigate to your project's **Settings > General** page.

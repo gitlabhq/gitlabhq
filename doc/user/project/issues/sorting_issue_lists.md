@@ -23,7 +23,7 @@ The available sorting options can change based on the context of the list.
 For sorting by issue priority, see [Label Priority](../labels.md#label-priority).
 
 In group and project issue lists, it is also possible to order issues manually,
-similar to [issue boards](../issue_board.md#how-gitlab-orders-issues-in-a-list).
+similar to [issue boards](../issue_board.md#ordering-issues-in-a-list).
 
 ## Sorting by popularity
 
@@ -48,7 +48,7 @@ the updated relative order value is used for the ordering.
 So, if anyone drags issue `A` above issue `B` in your GitLab instance,
 this ordering is maintained whenever they appear together in any list.
 
-This ordering also affects [issue boards](../issue_board.md#how-gitlab-orders-issues-in-a-list).
+This ordering also affects [issue boards](../issue_board.md#ordering-issues-in-a-list).
 Changing the order in an issue list changes the ordering in an issue board,
 and vice versa.
 

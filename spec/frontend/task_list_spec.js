@@ -125,6 +125,7 @@ describe('TaskList', () => {
       const response = { data: { lock_version: 3 } };
       jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
       jest.spyOn(taskList, 'disableTaskListItems').mockImplementation(() => {});
+      jest.spyOn(taskList, 'onUpdate').mockImplementation(() => {});
       jest.spyOn(taskList, 'onSuccess').mockImplementation(() => {});
       jest.spyOn(axios, 'patch').mockReturnValue(Promise.resolve(response));
 
@@ -151,8 +152,11 @@ describe('TaskList', () => {
         },
       };
 
-      taskList
-        .update(event)
+      const update = taskList.update(event);
+
+      expect(taskList.onUpdate).toHaveBeenCalled();
+
+      update
         .then(() => {
           expect(taskList.disableTaskListItems).toHaveBeenCalledWith(event);
           expect(axios.patch).toHaveBeenCalledWith(endpoint, patchData);
@@ -168,12 +172,17 @@ describe('TaskList', () => {
   it('should handle request error and enable task list items', (done) => {
     const response = { data: { error: 1 } };
     jest.spyOn(taskList, 'enableTaskListItems').mockImplementation(() => {});
+    jest.spyOn(taskList, 'onUpdate').mockImplementation(() => {});
     jest.spyOn(taskList, 'onError').mockImplementation(() => {});
     jest.spyOn(axios, 'patch').mockReturnValue(Promise.reject({ response })); // eslint-disable-line prefer-promise-reject-errors
 
     const event = { detail: {} };
-    taskList
-      .update(event)
+
+    const update = taskList.update(event);
+
+    expect(taskList.onUpdate).toHaveBeenCalled();
+
+    update
       .then(() => {
         expect(taskList.enableTaskListItems).toHaveBeenCalledWith(event);
         expect(taskList.onError).toHaveBeenCalledWith(response.data);

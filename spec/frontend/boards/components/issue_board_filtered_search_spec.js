@@ -9,28 +9,33 @@ jest.mock('~/boards/issue_board_filters');
 describe('IssueBoardFilter', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = ({ epicFeatureAvailable = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
-      props: { fullPath: '', boardType: '' },
+      propsData: { fullPath: 'gitlab-org', boardType: 'group' },
+      provide: {
+        epicFeatureAvailable,
+      },
     });
   };
+
+  let fetchAuthorsSpy;
+  let fetchLabelsSpy;
+  beforeEach(() => {
+    fetchAuthorsSpy = jest.fn();
+    fetchLabelsSpy = jest.fn();
+
+    issueBoardFilters.mockReturnValue({
+      fetchAuthors: fetchAuthorsSpy,
+      fetchLabels: fetchLabelsSpy,
+    });
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('default', () => {
-    let fetchAuthorsSpy;
-    let fetchLabelsSpy;
     beforeEach(() => {
-      fetchAuthorsSpy = jest.fn();
-      fetchLabelsSpy = jest.fn();
-
-      issueBoardFilters.mockReturnValue({
-        fetchAuthors: fetchAuthorsSpy,
-        fetchLabels: fetchLabelsSpy,
-      });
-
       createComponent();
     });
 
