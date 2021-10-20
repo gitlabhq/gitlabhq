@@ -29,6 +29,11 @@ export default {
       required: false,
       default: false,
     },
+    lineRange: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     linePosition: {
       type: String,
       required: false,
@@ -59,6 +64,7 @@ export default {
         <diff-line-note-form
           :diff-file-hash="diffFileHash"
           :line="line"
+          :range="lineRange"
           :note-target-line="line"
           :help-page-path="helpPagePath"
           :line-position="linePosition"

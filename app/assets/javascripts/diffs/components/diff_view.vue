@@ -6,6 +6,7 @@ import draftCommentsMixin from '~/diffs/mixins/draft_comments';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
 import DiffRow from './diff_row.vue';
@@ -106,6 +107,16 @@ export default {
       });
       this.idState.dragStart = null;
     },
+    singleLineComment(code, line) {
+      const lineDir = pickDirection({ line, code });
+
+      this.idState.updatedLineRange = {
+        start: lineDir,
+        end: lineDir,
+      };
+
+      this.showCommentForm({ lineCode: lineDir.line_code, fileHash: this.diffFile.file_hash });
+    },
     isHighlighted(line) {
       return isHighlighted(
         this.highlightedRow,
@@ -169,7 +180,7 @@ export default {
         :index="index"
         :is-highlighted="isHighlighted(line)"
         :file-line-coverage="fileLineCoverage"
-        @showCommentForm="(lineCode) => showCommentForm({ lineCode, fileHash: diffFile.file_hash })"
+        @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
         @toggleLineDiscussions="
           ({ lineCode, expanded }) =>
@@ -193,6 +204,7 @@ export default {
           <diff-comment-cell
             v-if="line.left && (line.left.renderDiscussion || line.left.hasCommentForm)"
             :line="line.left"
+            :line-range="idState.updatedLineRange"
             :diff-file-hash="diffFile.file_hash"
             :help-page-path="helpPagePath"
             line-position="left"
@@ -206,6 +218,7 @@ export default {
           <diff-comment-cell
             v-if="line.right && (line.right.renderDiscussion || line.right.hasCommentForm)"
             :line="line.right"
+            :line-range="idState.updatedLineRange"
             :diff-file-hash="diffFile.file_hash"
             :line-index="index"
             :help-page-path="helpPagePath"

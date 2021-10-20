@@ -50,18 +50,6 @@ describe('MultilineCommentForm', () => {
       expect(wrapper.vm.commentLineStart).toEqual(lineRange.start);
       expect(setSelectedCommentPosition).toHaveBeenCalled();
     });
-
-    it('sets commentLineStart to selectedCommentPosition', () => {
-      const notes = {
-        selectedCommentPosition: {
-          start: { ...testLine },
-        },
-      };
-      const wrapper = createWrapper({}, { notes });
-
-      expect(wrapper.vm.commentLineStart).toEqual(wrapper.vm.selectedCommentPosition.start);
-      expect(setSelectedCommentPosition).not.toHaveBeenCalled();
-    });
   });
 
   describe('destroyed', () => {

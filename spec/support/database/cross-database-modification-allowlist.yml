@@ -378,7 +378,6 @@
 - "./ee/spec/models/ci/build_spec.rb"
 - "./ee/spec/models/ci/minutes/additional_pack_spec.rb"
 - "./ee/spec/models/ci/pipeline_spec.rb"
-- "./ee/spec/models/ci/subscriptions/project_spec.rb"
 - "./ee/spec/models/concerns/approval_rule_like_spec.rb"
 - "./ee/spec/models/concerns/approver_migrate_hook_spec.rb"
 - "./ee/spec/models/dora/daily_metrics_spec.rb"

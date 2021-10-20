@@ -84,6 +84,11 @@ module Database
       parsed_query = PgQuery.parse(sql)
       tables = sql.downcase.include?(' for update') ? parsed_query.tables : parsed_query.dml_tables
 
+      # We have some code where plans and gitlab_subscriptions are lazily
+      # created and this causes lots of spec failures
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/343394
+      tables -= %w[plans gitlab_subscriptions]
+
       return if tables.empty?
 
       cross_database_context[:modified_tables_by_db][database].merge(tables)

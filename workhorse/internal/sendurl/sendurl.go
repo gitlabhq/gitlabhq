@@ -3,18 +3,15 @@ package sendurl
 import (
 	"fmt"
 	"io"
-	"net"
 	"net/http"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
-	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/mask"
-	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
@@ -47,22 +44,7 @@ var preserveHeaderKeys = map[string]bool{
 	"Pragma":        true, // Support for HTTP 1.0 proxies
 }
 
-// httpTransport defines a http.Transport with values
-// that are more restrictive than for http.DefaultTransport,
-// they define shorter TLS Handshake, and more aggressive connection closing
-// to prevent the connection hanging and reduce FD usage
-var httpTransport = tracing.NewRoundTripper(correlation.NewInstrumentedRoundTripper(&http.Transport{
-	Proxy: http.ProxyFromEnvironment,
-	DialContext: (&net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 10 * time.Second,
-	}).DialContext,
-	MaxIdleConns:          2,
-	IdleConnTimeout:       30 * time.Second,
-	TLSHandshakeTimeout:   10 * time.Second,
-	ExpectContinueTimeout: 10 * time.Second,
-	ResponseHeaderTimeout: 30 * time.Second,
-}))
+var httpTransport = httptransport.New()
 
 var httpClient = &http.Client{
 	Transport: httpTransport,

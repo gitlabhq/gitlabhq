@@ -272,6 +272,62 @@ logic to delete these rows if or whenever necessary in your domain.
 Finally, this de-normalization and new query also improves performance because
 it does less joins and needs less filtering.
 
+##### Remove a redundant join
+
+Sometimes there are cases where a query is doing excess (or redundant) joins.
+
+A common example occurs where a query is joining from `A` to `C`, via some
+table with both foreign keys, `B`.
+When you only care about counting how
+many rows there are in `C` and if there are foreign keys and `NOT NULL` constraints
+on the foreign keys in `B`, then it might be enough to count those rows.
+For example, in
+[MR 71811](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71811), it was
+previously doing `project.runners.count`, which would produce a query like:
+
+```sql
+select count(*) from projects
+inner join ci_runner_projects on ci_runner_projects.project_id = projects.id
+where ci_runner_projects.runner_id IN (1, 2, 3)
+```
+
+This was changed to avoid the cross-join by changing the code to
+`project.runner_projects.count`. It produces the same response with the
+following query:
+
+```sql
+select count(*) from ci_runner_projects
+where ci_runner_projects.runner_id IN (1, 2, 3)
+```
+
+Another common redundant join is joining all the way to another table,
+then filtering by primary key when you could have instead filtered on a foreign
+key. See an example in
+[MR 71614](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71614). The previous
+code was `joins(scan: :build).where(ci_builds: { id: build_ids })`, which
+generated a query like:
+
+```sql
+select ...
+inner join security_scans
+inner join ci_builds on security_scans.build_id = ci_builds.id
+where ci_builds.id IN (1, 2, 3)
+```
+
+However, as `security_scans` already has a foreign key `build_id`, the code
+can be changed to `joins(:scan).where(security_scans: { build_id: build_ids })`,
+which produces the same response with the following query:
+
+```sql
+select ...
+inner join security_scans
+where security_scans.build_id IN (1, 2, 3)
+```
+
+Both of these examples of removing redundant joins remove the cross-joins,
+but they have the added benefit of producing simpler and faster
+queries.
+
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
 Sometimes a join query is caused by using `has_one ... through:` or `has_many

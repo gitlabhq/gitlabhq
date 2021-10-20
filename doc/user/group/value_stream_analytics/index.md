@@ -87,6 +87,12 @@ The "Time" metrics near the top of the page are measured as follows:
 - **Lead time**: median time from issue created to issue closed.
 - **Cycle time**: median time from first commit to issue closed. (You can associate a commit with an
   issue by [crosslinking in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).)
+- **Lead Time for Changes**: median time between when a merge request is merged and deployed to a
+production environment for all merge requests deployed in the given time period.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5 (**Ultimate**
+tier only).
+
+- **Lead Time for Changes**: median duration between merge request merge and deployment to a production environment for all MRs deployed in the given time period. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5 (**Ultimate** tier only).
 
 The "Recent Activity" metrics near the top of the page are measured as follows:
 

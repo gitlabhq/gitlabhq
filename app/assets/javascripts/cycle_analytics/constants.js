@@ -47,6 +47,11 @@ export const METRICS_POPOVER_CONTENT = {
       "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
     ),
   },
+  'lead-time-for-changes': {
+    description: s__(
+      'ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period.',
+    ),
+  },
   'new-issue': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   'new-issues': { description: s__('ValueStreamAnalytics|Number of new issues created.') },
   deploys: { description: s__('ValueStreamAnalytics|Total number of deploys to production.') },

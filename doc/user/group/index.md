@@ -95,10 +95,8 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 You can give a user access to all projects in a group.
 
-1. On the top bar, select **Menu > Groups**.
-1. Select **Your Groups**.
-1. Find your group and select it.
-1. From the left sidebar, select **Group information > Members**.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Group information > Members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. [Learn more about permissions](../permissions.md).
    - On the **Access expiration date**, the user can no longer access projects in the group.
@@ -107,9 +105,7 @@ You can give a user access to all projects in a group.
 
 As a user, you can request to be a member of a group, if an administrator allows it.
 
-1. On the top bar, select **Menu > Groups**.
-1. Select **Your Groups**.
-1. Find the group and select it.
+1. On the top bar, select **Menu > Groups** and find your group.
 1. Under the group name, select **Request Access**.
 
 As many as ten of the most-recently-active group owners receive an email with your request.

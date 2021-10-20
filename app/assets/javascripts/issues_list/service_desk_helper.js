@@ -20,7 +20,7 @@ export function generateMessages(emptyStateMeta) {
   );
 
   const serviceDeskSupportedMessage = s__(
-    'ServiceDesk|Issues created from Service Desk emails appear here. Each comment becomes part of the email conversation.',
+    'ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.',
   );
 
   const commonDescription = `

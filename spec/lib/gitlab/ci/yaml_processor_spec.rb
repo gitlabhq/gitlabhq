@@ -1046,6 +1046,64 @@ module Gitlab
           end
         end
 
+        context 'when overriding `extends`' do
+          let(:config) do
+            <<~YAML
+              .base:
+                script: test
+                variables:
+                  VAR1: base var 1
+
+              test1:
+                extends: .base
+                variables:
+                  VAR1: test1 var 1
+                  VAR2: test2 var 2
+
+              test2:
+                extends: .base
+                variables:
+                  VAR2: test2 var 2
+
+              test3:
+                extends: .base
+                variables: {}
+
+              test4:
+                extends: .base
+                variables: null
+            YAML
+          end
+
+          it 'correctly extends jobs' do
+            expect(config_processor.builds[0]).to include(
+              name: 'test1',
+              options: { script: ['test'] },
+              job_variables: [{ key: 'VAR1', value: 'test1 var 1', public: true },
+                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+            )
+
+            expect(config_processor.builds[1]).to include(
+              name: 'test2',
+              options: { script: ['test'] },
+              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true },
+                              { key: 'VAR2', value: 'test2 var 2', public: true }]
+            )
+
+            expect(config_processor.builds[2]).to include(
+              name: 'test3',
+              options: { script: ['test'] },
+              job_variables: [{ key: 'VAR1', value: 'base var 1', public: true }]
+            )
+
+            expect(config_processor.builds[3]).to include(
+              name: 'test4',
+              options: { script: ['test'] },
+              job_variables: []
+            )
+          end
+        end
+
         context 'when using recursive `extends`' do
           let(:config) do
             <<~YAML

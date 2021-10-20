@@ -16,7 +16,7 @@
           = s_("ServiceDesk|Your users can send emails to this address:")
           %code= @project.service_desk_address
 
-      %span= s_("ServiceDesk|Issues created from Service Desk emails appear here. Each comment becomes part of the email conversation.")
+      %span= s_("ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.")
       = link_to _('Learn more.'), help_page_path('user/project/service_desk')
 
       - if can_edit_project_settings && !service_desk_enabled

@@ -14,7 +14,9 @@ export * from '@gitlab/ui';
  */
 
 jest.mock('@gitlab/ui/dist/directives/tooltip.js', () => ({
-  bind() {},
+  GlTooltipDirective: {
+    bind() {},
+  },
 }));
 
 jest.mock('@gitlab/ui/dist/components/base/tooltip/tooltip.js', () => ({

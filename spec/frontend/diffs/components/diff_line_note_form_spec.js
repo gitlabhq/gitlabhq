@@ -26,8 +26,9 @@ describe('DiffLineNoteForm', () => {
       propsData: {
         diffFileHash: diffFile.file_hash,
         diffLines,
-        line: diffLines[0],
-        noteTargetLine: diffLines[0],
+        line: diffLines[1],
+        range: { start: diffLines[0], end: diffLines[1] },
+        noteTargetLine: diffLines[1],
       },
     });
   };
@@ -67,7 +68,7 @@ describe('DiffLineNoteForm', () => {
         expect(window.confirm).not.toHaveBeenCalled();
         wrapper.vm.$nextTick(() => {
           expect(wrapper.vm.cancelCommentForm).toHaveBeenCalledWith({
-            lineCode: diffLines[0].line_code,
+            lineCode: diffLines[1].line_code,
             fileHash: wrapper.vm.diffFileHash,
           });
 
@@ -88,13 +89,13 @@ describe('DiffLineNoteForm', () => {
           start: {
             line_code: wrapper.vm.commentLineStart.line_code,
             type: wrapper.vm.commentLineStart.type,
-            new_line: 1,
+            new_line: 2,
             old_line: null,
           },
           end: {
             line_code: wrapper.vm.line.line_code,
             type: wrapper.vm.line.type,
-            new_line: 1,
+            new_line: 2,
             old_line: null,
           },
         };
@@ -120,7 +121,7 @@ describe('DiffLineNoteForm', () => {
 
   describe('mounted', () => {
     it('should init autosave', () => {
-      const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
+      const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2';
       wrapper = createComponent();
 
       expect(wrapper.vm.autosave).toBeDefined();

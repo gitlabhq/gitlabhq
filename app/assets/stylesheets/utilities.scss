@@ -281,3 +281,12 @@ $gl-line-height-42: px-to-rem(42px);
     display: none;
   }
 }
+
+// Will both be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1465
+.gl-text-transparent {
+  color: transparent;
+}
+
+.gl-focus-ring-border-1-gray-900\! {
+  @include gl-focus($gl-border-size-1, $gray-900, true);
+}

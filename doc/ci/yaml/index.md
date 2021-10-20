@@ -1085,6 +1085,61 @@ In this example:
 - `script` does not merge, but `script: ['rake rspec']` overwrites
   `script: ['echo "Hello world!"']`. You can use [YAML anchors](yaml_specific_features.md#anchors) to merge arrays.
 
+##### Exclude a key from `extends`
+
+To exclude a key from the extended content, you must assign it to `null`, for example:
+
+```yaml
+.base:
+  script: test
+  variables:
+    VAR1: base var 1
+
+test1:
+  extends: .base
+  variables:
+    VAR1: test1 var 1
+    VAR2: test2 var 2
+
+test2:
+  extends: .base
+  variables:
+    VAR2: test2 var 2
+
+test3:
+  extends: .base
+  variables: {}
+
+test4:
+  extends: .base
+  variables: null
+```
+
+Merged configuration:
+
+```yaml
+test1:
+  script: test
+  variables:
+    VAR1: test1 var 1
+    VAR2: test2 var 2
+
+test2:
+  script: test
+  variables:
+    VAR1: base var 1
+    VAR2: test2 var 2
+
+test3:
+  script: test
+  variables:
+    VAR1: base var 1
+
+test4:
+  script: test
+  variables: null
+```
+
 #### Use `extends` and `include` together
 
 To reuse configuration from different configuration files,

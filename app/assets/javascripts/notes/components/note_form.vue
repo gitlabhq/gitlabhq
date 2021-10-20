@@ -334,13 +334,13 @@ export default {
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
           :line="line"
+          :lines="lines"
           :note="discussionNote"
           :can-suggest="canSuggest"
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :show-suggest-popover="showSuggestPopover"
           :textarea-value="updatedNoteBody"
-          :lines="lines"
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         >
           <template #textarea>

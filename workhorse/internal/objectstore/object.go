@@ -5,34 +5,15 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
-	"time"
 
-	"gitlab.com/gitlab-org/labkit/correlation"
 	"gitlab.com/gitlab-org/labkit/mask"
-	"gitlab.com/gitlab-org/labkit/tracing"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/httptransport"
 )
 
-// httpTransport defines a http.Transport with values
-// that are more restrictive than for http.DefaultTransport,
-// they define shorter TLS Handshake, and more aggressive connection closing
-// to prevent the connection hanging and reduce FD usage
-var httpTransport = tracing.NewRoundTripper(correlation.NewInstrumentedRoundTripper(&http.Transport{
-	Proxy: http.ProxyFromEnvironment,
-	DialContext: (&net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 10 * time.Second,
-	}).DialContext,
-	MaxIdleConns:          2,
-	IdleConnTimeout:       30 * time.Second,
-	TLSHandshakeTimeout:   10 * time.Second,
-	ExpectContinueTimeout: 10 * time.Second,
-	ResponseHeaderTimeout: 30 * time.Second,
-}))
-
 var httpClient = &http.Client{
-	Transport: httpTransport,
+	Transport: httptransport.New(),
 }
 
 // Object represents an object on a S3 compatible Object Store service.

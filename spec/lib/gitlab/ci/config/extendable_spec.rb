@@ -73,6 +73,50 @@ RSpec.describe Gitlab::Ci::Config::Extendable do
       end
     end
 
+    context 'when the job tries to delete an extension key' do
+      let(:hash) do
+        {
+          something: {
+            script: 'deploy',
+            only: { variables: %w[$SOMETHING] }
+          },
+
+          test1: {
+            extends: 'something',
+            script: 'ls',
+            only: {}
+          },
+
+          test2: {
+            extends: 'something',
+            script: 'ls',
+            only: nil
+          }
+        }
+      end
+
+      it 'deletes the key if assigned to null' do
+        expect(subject.to_hash).to eq(
+          something: {
+            script: 'deploy',
+            only: { variables: %w[$SOMETHING] }
+          },
+          test1: {
+            extends: 'something',
+            script: 'ls',
+            only: {
+              variables: %w[$SOMETHING]
+            }
+          },
+          test2: {
+            extends: 'something',
+            script: 'ls',
+            only: nil
+          }
+        )
+      end
+    end
+
     context 'when a hash uses recursive extensions' do
       let(:hash) do
         {

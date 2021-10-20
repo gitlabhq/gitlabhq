@@ -32,6 +32,11 @@ export default {
       type: Object,
       required: true,
     },
+    range: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     linePosition: {
       type: String,
       required: false,
@@ -49,6 +54,7 @@ export default {
   },
   data() {
     return {
+      lines: null,
       commentLineStart: {
         line_code: this.line.line_code,
         type: this.line.type,
@@ -116,10 +122,8 @@ export default {
       return commentLineOptions(lines, this.line, this.line.line_code, side);
     },
     commentLines() {
-      if (!this.selectedCommentPosition) return [];
-
       const lines = [];
-      const { start, end } = this.selectedCommentPosition;
+      const { start, end } = this.lines;
       const diffLines = this.diffFile[INLINE_DIFF_LINES_KEY];
       let isAdding = false;
 
@@ -143,6 +147,9 @@ export default {
 
       return lines;
     },
+  },
+  created() {
+    this.lines = { ...this.range };
   },
   mounted() {
     if (this.isLoggedIn) {
@@ -189,6 +196,9 @@ export default {
         this.handleCancelCommentForm(),
       );
     },
+    updateStartLine(line) {
+      this.lines.start = line;
+    },
   },
 };
 </script>
@@ -199,7 +209,9 @@ export default {
       <multiline-comment-form
         v-model="commentLineStart"
         :line="line"
+        :line-range="lines"
         :comment-line-options="commentLineOptions"
+        @input="updateStartLine"
       />
     </div>
     <note-form
