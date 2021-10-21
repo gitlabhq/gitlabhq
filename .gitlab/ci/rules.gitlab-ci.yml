@@ -707,6 +707,7 @@
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *feature-flag-config-patterns
+      when: manual
       allow_failure: true
 
 ###############

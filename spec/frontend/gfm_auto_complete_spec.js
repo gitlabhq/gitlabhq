@@ -2,7 +2,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
-import GfmAutoComplete, { membersBeforeSave } from 'ee_else_ce/gfm_auto_complete';
+import GfmAutoComplete, { membersBeforeSave, highlighter } from 'ee_else_ce/gfm_auto_complete';
 import { initEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -855,6 +855,16 @@ describe('GfmAutoComplete', () => {
 
       expect(GfmAutoComplete.Milestones.templateFunction(title, expired)).toBe(
         '<li>&dollar;{search}&lt;script&gt;oh no &dollar;</li>',
+      );
+    });
+  });
+
+  describe('highlighter', () => {
+    it('escapes regex', () => {
+      const li = '<li>couple (woman,woman) <gl-emoji data-name="couple_ww"></gl-emoji></li>';
+
+      expect(highlighter(li, ')')).toBe(
+        '<li> couple (woman,woman<strong>)</strong>  <gl-emoji data-name="couple_ww"></gl-emoji></li>',
       );
     });
   });

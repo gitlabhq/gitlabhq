@@ -250,7 +250,7 @@ return new Vue({
   render(createElement) {
     return createElement('my-component', {
       props: {
-        username: gon.current_username,
+        avatarUrl: gl.avatarUrl,
       },
     });
   },

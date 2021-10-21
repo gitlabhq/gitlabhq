@@ -409,6 +409,8 @@ For Omnibus GitLab packages:
 
 ##### S3 Encrypted Buckets
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
+
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
 - Amazon S3-Managed Keys (SSE-S3)
@@ -1377,16 +1379,28 @@ after which users must reactivate 2FA.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Examine the `ci_group_variables` and `ci_variables` tables:
@@ -1411,16 +1425,28 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Clear all tokens for projects, groups, and the entire instance:
@@ -1448,16 +1474,28 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Clear all the tokens for pending jobs:
@@ -1480,16 +1518,28 @@ The fix is to truncate the `web_hooks` table:
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Truncate the table:

@@ -27800,6 +27800,9 @@ msgstr ""
 msgid "Protip: %{linkStart}Auto DevOps%{linkEnd} uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
+msgid "Provide a number our sales team can use to call you."
+msgstr ""
+
 msgid "Provider"
 msgstr ""
 

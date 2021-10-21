@@ -723,17 +723,31 @@ If you disabled a secondary node, either with the [replication pause task](../in
 (13.2) or by using the user interface (13.1 and earlier), you must first
 re-enable the node before you can continue. This is fixed in 13.4.
 
-Run the following command, replacing  `https://<secondary url>/` with the URL
-for your secondary server, using either `http` or `https`, and ensuring that you
-end the URL with a slash (`/`):
+This can be fixed in the database.
 
-```shell
-sudo gitlab-rails dbconsole
+1. Start a database console:
 
-UPDATE geo_nodes SET enabled = true WHERE url = 'https://<secondary url>/' AND enabled = false;"
-```
+   In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/341210):
 
-This should update 1 row.
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   In GitLab 14.1 and earlier:
+
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+1. Run the following command, replacing  `https://<secondary url>/` with the URL
+   for your secondary server. You can use either `http` or `https`, but ensure that you
+   end the URL with a slash (`/`):
+
+   ```sql
+   UPDATE geo_nodes SET enabled = true WHERE url = 'https://<secondary url>/' AND enabled = false;"
+   ```
+
+   This should update 1 row.
 
 ### Message: ``NoMethodError: undefined method `secondary?' for nil:NilClass``
 

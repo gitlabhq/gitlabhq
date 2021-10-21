@@ -165,8 +165,16 @@ and they will assist you with any issues you are having.
 
 - How to connect to a GitLab PostgreSQL database:
 
+  In GitLab 14.2 (chart 5.2) and later:
+
   ```shell
-  kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole -p
+  kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole --include-password --database main
+  ```
+
+  In GitLab 14.1 (chart 5.1) and earlier:
+
+  ```shell
+  kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole --include-password
   ```
 
 - How to get information about Helm installation status:
