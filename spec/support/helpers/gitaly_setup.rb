@@ -98,7 +98,7 @@ module GitalySetup
   end
 
   def build_gitaly
-    system(env, 'make', chdir: tmp_tests_gitaly_dir) # rubocop:disable GitlabSecurity/SystemCommandInjection
+    system(env.merge({ 'GIT_VERSION' => nil }), 'make all git', chdir: tmp_tests_gitaly_dir) # rubocop:disable GitlabSecurity/SystemCommandInjection
   end
 
   def start_gitaly

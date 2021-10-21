@@ -48,8 +48,8 @@ Learn more about using the GitLab Package Registry with CI/CD:
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
 - [npm](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
-- [PyPI](../pypi_repository/#authenticate-with-a-ci-job-token)
-- [RubyGems](../rubygems_registry/#authenticate-with-a-ci-job-token)
+- [PyPI](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
+- [RubyGems](../rubygems_registry/index.md#authenticate-with-a-ci-job-token)
 
 If you use CI/CD to build a package, extended activity information is displayed
 when you view the package details:

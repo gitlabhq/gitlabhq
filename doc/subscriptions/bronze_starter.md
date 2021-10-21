@@ -92,7 +92,7 @@ the tiers are no longer mentioned in GitLab documentation:
     - [Pull mirroring](../user/project/repository/mirror/pull.md) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/mirror/pull.md#overwrite-diverged-branches)
     - [Trigger pipelines for mirror updates](../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
-    - [Hard failures](../user/project/repository/mirror/pull.md#hard-failure) when mirroring fails
+    - [Fix hard failures when mirroring](../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring)
     - [Trigger pull mirroring from the API](../user/project/repository/mirror/pull.md#trigger-an-update-by-using-the-api)
     - [Mirror only protected branches](../user/project/repository/mirror/index.md#mirror-only-protected-branches)
     - [Bidirectional mirroring](../user/project/repository/mirror/bidirectional.md)

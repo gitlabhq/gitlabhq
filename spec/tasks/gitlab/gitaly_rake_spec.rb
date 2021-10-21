@@ -68,7 +68,7 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(Gitlab::Popen).to receive(:popen).with(%w[gmake], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen).with(%w[gmake all git], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
 
           subject
         end
@@ -81,13 +81,13 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
         end
 
         it 'calls make in the gitaly directory' do
-          expect(Gitlab::Popen).to receive(:popen).with(%w[make], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen).with(%w[make all git], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
 
           subject
         end
 
         context 'when Rails.env is test' do
-          let(:command) { %w[make] }
+          let(:command) { %w[make all git] }
 
           before do
             stub_rails_env('test')

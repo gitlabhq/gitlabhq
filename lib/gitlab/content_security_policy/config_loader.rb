@@ -25,7 +25,7 @@ module Gitlab
           'media_src' => "'self'",
           'script_src' => "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com",
           'style_src' => "'self' 'unsafe-inline'",
-          'worker_src' => "'self' blob: data:",
+          'worker_src' => "#{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:",
           'object_src' => "'none'",
           'report_uri' => nil
         }
@@ -39,10 +39,17 @@ module Gitlab
         allow_customersdot(directives) if Rails.env.development? && ENV['CUSTOMER_PORTAL_URL'].present?
         allow_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
 
+        # The follow section contains workarounds to patch Safari's lack of support for CSP Level 3
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/343579
         # frame-src was deprecated in CSP level 2 in favor of child-src
         # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
         # However Safari seems to read child-src first so we'll just keep both equal
         directives['child_src'] = directives['frame_src']
+
+        # Safari also doesn't support worker-src and only checks child-src
+        # So for compatibility until it catches up to other browsers we need to
+        # append worker-src's content to child-src
+        directives['child_src'] += " #{directives['worker_src']}"
 
         directives
       end

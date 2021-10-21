@@ -28,7 +28,6 @@ export const TABS_INDEX = {
   [LINT_TAB]: '2',
   [MERGED_TAB]: '3',
 };
-export const TABS_WITH_COMMIT_FORM = [CREATE_TAB, LINT_TAB, VISUALIZE_TAB];
 export const TAB_QUERY_PARAM = 'tab';
 
 export const COMMIT_ACTION_CREATE = 'CREATE';
