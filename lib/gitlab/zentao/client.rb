@@ -16,7 +16,7 @@ module Gitlab
 
       def ping
         response = fetch_product(zentao_product_xid) rescue {}
-        active = response.fetch('deleted') == '0' rescue false
+        active = response['deleted'] == '0'
         if active
           { success: true }
         else

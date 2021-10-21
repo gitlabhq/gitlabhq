@@ -68,23 +68,35 @@ RSpec.describe Ci::RunnersHelper do
   end
 
   describe '#group_shared_runners_settings_data' do
-    let(:group) { create(:group, parent: parent, shared_runners_enabled: false) }
-    let(:parent) { create(:group) }
+    let_it_be(:parent) { create(:group) }
+    let_it_be(:group) { create(:group, parent: parent, shared_runners_enabled: false) }
+
+    let(:runner_constants) do
+      {
+        runner_enabled: Namespace::SR_ENABLED,
+        runner_disabled: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+        runner_allow_override: Namespace::SR_DISABLED_WITH_OVERRIDE
+      }
+    end
 
     it 'returns group data for top level group' do
-      data = group_shared_runners_settings_data(parent)
+      result = {
+        update_path: "/api/v4/groups/#{parent.id}",
+        shared_runners_availability: Namespace::SR_ENABLED,
+        parent_shared_runners_availability: nil
+      }.merge(runner_constants)
 
-      expect(data[:update_path]).to eq("/api/v4/groups/#{parent.id}")
-      expect(data[:shared_runners_availability]).to eq('enabled')
-      expect(data[:parent_shared_runners_availability]).to eq(nil)
+      expect(group_shared_runners_settings_data(parent)).to eq result
     end
 
     it 'returns group data for child group' do
-      data = group_shared_runners_settings_data(group)
+      result = {
+        update_path: "/api/v4/groups/#{group.id}",
+        shared_runners_availability: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
+        parent_shared_runners_availability: Namespace::SR_ENABLED
+      }.merge(runner_constants)
 
-      expect(data[:update_path]).to eq("/api/v4/groups/#{group.id}")
-      expect(data[:shared_runners_availability]).to eq(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
-      expect(data[:parent_shared_runners_availability]).to eq('enabled')
+      expect(group_shared_runners_settings_data(group)).to eq result
     end
   end
 

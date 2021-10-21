@@ -14,7 +14,7 @@ module Database
     def perform
       Gitlab::Database::Partitioning.sync_partitions
     ensure
-      Gitlab::Database::Partitioning::PartitionMonitoring.new.report_metrics
+      Gitlab::Database::Partitioning.report_metrics
     end
   end
 end

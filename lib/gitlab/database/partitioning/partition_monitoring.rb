@@ -4,20 +4,12 @@ module Gitlab
   module Database
     module Partitioning
       class PartitionMonitoring
-        attr_reader :models
+        def report_metrics_for_model(model)
+          strategy = model.partitioning_strategy
 
-        def initialize(models = Gitlab::Database::Partitioning.registered_models)
-          @models = models
-        end
-
-        def report_metrics
-          models.each do |model|
-            strategy = model.partitioning_strategy
-
-            gauge_present.set({ table: model.table_name }, strategy.current_partitions.size)
-            gauge_missing.set({ table: model.table_name }, strategy.missing_partitions.size)
-            gauge_extra.set({ table: model.table_name }, strategy.extra_partitions.size)
-          end
+          gauge_present.set({ table: model.table_name }, strategy.current_partitions.size)
+          gauge_missing.set({ table: model.table_name }, strategy.missing_partitions.size)
+          gauge_extra.set({ table: model.table_name }, strategy.extra_partitions.size)
         end
 
         private

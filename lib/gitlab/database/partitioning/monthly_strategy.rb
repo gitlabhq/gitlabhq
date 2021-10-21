@@ -96,10 +96,6 @@ module Gitlab
         def oldest_active_date
           (Date.today - retain_for).beginning_of_month
         end
-
-        def connection
-          ActiveRecord::Base.connection
-        end
       end
     end
   end

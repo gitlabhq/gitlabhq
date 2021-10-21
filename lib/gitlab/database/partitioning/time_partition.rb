@@ -87,7 +87,7 @@ module Gitlab
         end
 
         def conn
-          @conn ||= ActiveRecord::Base.connection
+          @conn ||= Gitlab::Database::SharedModel.connection
         end
       end
     end

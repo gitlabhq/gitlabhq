@@ -91,6 +91,11 @@ module Database
 
       return if tables.empty?
 
+      # All migrations will write to schema_migrations in the same transaction.
+      # It's safe to ignore this since schema_migrations exists in all
+      # databases
+      return if tables == ['schema_migrations']
+
       cross_database_context[:modified_tables_by_db][database].merge(tables)
 
       all_tables = cross_database_context[:modified_tables_by_db].values.map(&:to_a).flatten

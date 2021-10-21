@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
-  self.gitlab_schema = :gitlab_main
   self.abstract_class = true
 
   alias_method :reset, :reload

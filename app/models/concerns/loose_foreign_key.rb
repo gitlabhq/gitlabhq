@@ -69,7 +69,7 @@ module LooseForeignKey
       end
 
       on_delete_options = %i[async_delete async_nullify]
-      gitlab_schema_options = [ApplicationRecord.gitlab_schema, Ci::ApplicationRecord.gitlab_schema]
+      gitlab_schema_options = %i(gitlab_main gitlab_ci)
 
       unless on_delete_options.include?(symbolized_options[:on_delete]&.to_sym)
         raise "Invalid on_delete option given: #{symbolized_options[:on_delete]}. Valid options: #{on_delete_options.join(', ')}"

@@ -9,17 +9,12 @@ module Database
     end
 
     def self.table_schema(name)
-      tables_to_schema[name] || :undefined
+      # When undefined it's best to return a unique name so that we don't incorrectly assume that 2 undefined schemas belong on the same database
+      tables_to_schema[name] || :"undefined_#{name}"
     end
 
     def self.tables_to_schema
-      @tables_to_schema ||= all_classes_with_schema.to_h do |klass|
-        [klass.table_name, klass.gitlab_schema]
-      end
-    end
-
-    def self.all_classes_with_schema
-      ActiveRecord::Base.descendants.reject(&:abstract_class?).select(&:gitlab_schema?) # rubocop:disable Database/MultipleDatabases
+      @tables_to_schema ||= YAML.load_file(Rails.root.join('spec/support/database/gitlab_schemas.yml'))
     end
   end
 end
