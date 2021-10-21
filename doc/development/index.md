@@ -181,6 +181,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Avoid modules with instance variables](module_with_instance_variables.md), if
   possible
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
+- [Ruby 3 gotchas](ruby3_gotchas.md)
 
 ### Rails Framework related
 

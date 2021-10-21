@@ -11,7 +11,7 @@ status: removed
 milestone_removed: '13.11'
 milestone: '13.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49886
-time_frame: 7d
+time_frame: 28d
 data_source: redis_hll
 distribution:
   - ce

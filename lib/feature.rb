@@ -155,13 +155,13 @@ class Feature
 
     def flipper
       if Gitlab::SafeRequestStore.active?
-        Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance
+        Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance(memoize: true)
       else
         @flipper ||= build_flipper_instance
       end
     end
 
-    def build_flipper_instance
+    def build_flipper_instance(memoize: false)
       active_record_adapter = Flipper::Adapters::ActiveRecord.new(
         feature_class: FlipperFeature,
         gate_class: FlipperGate)
@@ -182,7 +182,7 @@ class Feature
         expires_in: 1.minute)
 
       Flipper.new(flipper_adapter).tap do |flip|
-        flip.memoize = true
+        flip.memoize = memoize
       end
     end
 

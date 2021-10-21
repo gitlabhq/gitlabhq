@@ -23947,6 +23947,10 @@ ALTER TABLE ONLY zentao_tracker_data
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT zoom_meetings_pkey PRIMARY KEY (id);
 
+CREATE INDEX index_loose_foreign_keys_deleted_records_for_loading_records ON ONLY loose_foreign_keys_deleted_records USING btree (fully_qualified_table_name, id, primary_key_value, partition) WHERE (status = 1);
+
+CREATE INDEX index_8be8640437 ON gitlab_partitions_static.loose_foreign_keys_deleted_records_1 USING btree (fully_qualified_table_name, id, primary_key_value, partition) WHERE (status = 1);
+
 CREATE INDEX index_product_analytics_events_experimental_project_and_time ON ONLY product_analytics_events_experimental USING btree (project_id, collector_tstamp);
 
 CREATE INDEX product_analytics_events_expe_project_id_collector_tstamp_idx10 ON gitlab_partitions_static.product_analytics_events_experimental_10 USING btree (project_id, collector_tstamp);
@@ -27248,6 +27252,8 @@ ALTER INDEX analytics_cycle_analytics_merge_request_stage_events_pkey ATTACH PAR
 ALTER INDEX analytics_cycle_analytics_merge_request_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_30_pkey;
 
 ALTER INDEX analytics_cycle_analytics_merge_request_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_31_pkey;
+
+ALTER INDEX index_loose_foreign_keys_deleted_records_for_loading_records ATTACH PARTITION gitlab_partitions_static.index_8be8640437;
 
 ALTER INDEX loose_foreign_keys_deleted_records_pkey ATTACH PARTITION gitlab_partitions_static.loose_foreign_keys_deleted_records_1_pkey;
 

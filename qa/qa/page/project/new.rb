@@ -13,6 +13,7 @@ module QA
 
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :initialize_with_readme_checkbox
+          element :initialize_with_sast_checkbox
           element :project_namespace_field, 'namespaces_options' # rubocop:disable QA/ElementWithPattern
           element :project_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
           element :project_path, 'text_field :path' # rubocop:disable QA/ElementWithPattern
@@ -77,6 +78,13 @@ module QA
 
         def set_visibility(visibility)
           choose visibility.capitalize
+        end
+
+        # Disable experiment for SAST at project creation https://gitlab.com/gitlab-org/gitlab/-/issues/333196
+        def disable_initialize_with_sast
+          return unless has_element?(:initialize_with_sast_checkbox)
+
+          uncheck_element(:initialize_with_sast_checkbox)
         end
 
         def click_github_link

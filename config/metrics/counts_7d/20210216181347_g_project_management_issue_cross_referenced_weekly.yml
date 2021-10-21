@@ -8,7 +8,7 @@ product_group: group::project management
 product_category: issue_tracking
 value_type: number
 status: active
-time_frame: 28d
+time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:

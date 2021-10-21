@@ -102,12 +102,14 @@ RSpec.describe Feature, stub_feature_flags: false do
 
   describe '.flipper' do
     context 'when request store is inactive' do
-      it 'memoizes the Flipper instance' do
+      it 'memoizes the Flipper instance but does not not enable Flipper memoization' do
         expect(Flipper).to receive(:new).once.and_call_original
 
         2.times do
-          described_class.send(:flipper)
+          described_class.flipper
         end
+
+        expect(described_class.flipper.adapter.memoizing?).to eq(false)
       end
     end
 
@@ -115,9 +117,11 @@ RSpec.describe Feature, stub_feature_flags: false do
       it 'memoizes the Flipper instance' do
         expect(Flipper).to receive(:new).once.and_call_original
 
-        described_class.send(:flipper)
+        described_class.flipper
         described_class.instance_variable_set(:@flipper, nil)
-        described_class.send(:flipper)
+        described_class.flipper
+
+        expect(described_class.flipper.adapter.memoizing?).to eq(true)
       end
     end
   end

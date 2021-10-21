@@ -8,7 +8,7 @@ product_group: group::optimize
 product_category:
 value_type: number
 status: removed
-time_frame: 7d
+time_frame: all
 data_source: redis_hll
 distribution:
 - ce

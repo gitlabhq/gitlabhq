@@ -7,20 +7,18 @@ module LooseForeignKey
   # Loose foreign keys allow delayed processing of associated database records
   # with similar guarantees than a database foreign key.
   #
-  # TODO: finalize this later once the async job is in place
-  #
   # Prerequisites:
   #
   # To start using the concern, you'll need to install a database trigger to the parent
   # table in a standard DB migration (not post-migration).
   #
-  # > add_loose_foreign_key_support(:projects, :gitlab_main)
+  # > track_record_deletions(:projects)
   #
   # Usage:
   #
   # > class Ci::Build < ApplicationRecord
   # >
-  # >   loose_foreign_key :security_scans, :build_id, on_delete: :async_delete, gitlab_schema: :gitlab_main
+  # >   loose_foreign_key :security_scans, :build_id, on_delete: :async_delete
   # >
   # >   # associations can be still defined, the dependent options is no longer necessary:
   # >   has_many :security_scans, class_name: 'Security::Scan'
@@ -31,14 +29,6 @@ module LooseForeignKey
   #
   # - :async_delete - deletes the children rows via an asynchronous process.
   # - :async_nullify - sets the foreign key column to null via an asynchronous process.
-  #
-  # Options for gitlab_schema:
-  #
-  # - :gitlab_ci
-  # - :gitlab_main
-  #
-  # The value can be determined by calling `Model.gitlab_schema` where the Model represents
-  # the model for the child table.
   #
   # How it works:
   #
@@ -69,14 +59,9 @@ module LooseForeignKey
       end
 
       on_delete_options = %i[async_delete async_nullify]
-      gitlab_schema_options = %i(gitlab_main gitlab_ci)
 
       unless on_delete_options.include?(symbolized_options[:on_delete]&.to_sym)
         raise "Invalid on_delete option given: #{symbolized_options[:on_delete]}. Valid options: #{on_delete_options.join(', ')}"
-      end
-
-      unless gitlab_schema_options.include?(symbolized_options[:gitlab_schema]&.to_sym)
-        raise "Invalid gitlab_schema option given: #{symbolized_options[:gitlab_schema]}. Valid options: #{gitlab_schema_options.join(', ')}"
       end
 
       definition = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
@@ -84,8 +69,7 @@ module LooseForeignKey
         to_table.to_s,
         {
           column: column.to_s,
-          on_delete: symbolized_options[:on_delete].to_sym,
-          gitlab_schema: symbolized_options[:gitlab_schema].to_sym
+          on_delete: symbolized_options[:on_delete].to_sym
         }
       )
 

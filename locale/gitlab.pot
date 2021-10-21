@@ -26669,6 +26669,9 @@ msgstr ""
 msgid "ProjectService|Enter new password."
 msgstr ""
 
+msgid "ProjectService|Enter new token"
+msgstr ""
+
 msgid "ProjectService|Issue URL"
 msgstr ""
 
@@ -26682,6 +26685,9 @@ msgid "ProjectService|Leave blank to use your current password"
 msgstr ""
 
 msgid "ProjectService|Leave blank to use your current password."
+msgstr ""
+
+msgid "ProjectService|Leave blank to use your current token."
 msgstr ""
 
 msgid "ProjectService|Mock service URL"
@@ -39702,7 +39708,7 @@ msgstr ""
 msgid "ZentaoIntegration|Base URL of the ZenTao instance."
 msgstr ""
 
-msgid "ZentaoIntegration|Enter API token"
+msgid "ZentaoIntegration|Enter new ZenTao API token"
 msgstr ""
 
 msgid "ZentaoIntegration|If different from Web URL."

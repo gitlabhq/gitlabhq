@@ -66,7 +66,8 @@ module Integrations
           type: 'password',
           name: 'api_token',
           title: s_('ZentaoIntegration|ZenTao API token'),
-          non_empty_password_title: s_('ZentaoIntegration|Enter API token'),
+          non_empty_password_title: s_('ZentaoIntegration|Enter new ZenTao API token'),
+          non_empty_password_help: s_('ProjectService|Leave blank to use your current token.'),
           required: true
         },
         {

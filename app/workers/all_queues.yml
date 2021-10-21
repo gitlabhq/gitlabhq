@@ -363,6 +363,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:loose_foreign_keys_cleanup
+  :worker_name: LooseForeignKeys::CleanupWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:member_invitation_reminder_emails
   :worker_name: MemberInvitationReminderEmailsWorker
   :feature_category: :subgroups

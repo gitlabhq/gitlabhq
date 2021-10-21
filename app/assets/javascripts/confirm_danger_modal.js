@@ -3,14 +3,14 @@ import { Rails } from '~/lib/utils/rails_ujs';
 import { rstrip } from './lib/utils/common_utils';
 
 function openConfirmDangerModal($form, $modal, text) {
-  const $input = $('.js-confirm-danger-input', $modal);
+  const $input = $('.js-legacy-confirm-danger-input', $modal);
   $input.val('');
 
   $('.js-confirm-text', $modal).text(text || '');
   $modal.modal('show');
 
-  const confirmTextMatch = $('.js-confirm-danger-match', $modal).text();
-  const $submit = $('.js-confirm-danger-submit', $modal);
+  const confirmTextMatch = $('.js-legacy-confirm-danger-match', $modal).text();
+  const $submit = $('.js-legacy-confirm-danger-submit', $modal);
   $submit.disable();
   $input.focus();
 
@@ -25,7 +25,7 @@ function openConfirmDangerModal($form, $modal, text) {
   });
 
   // eslint-disable-next-line @gitlab/no-global-event-off
-  $('.js-confirm-danger-submit', $modal)
+  $('.js-legacy-confirm-danger-submit', $modal)
     .off('click')
     .on('click', () => {
       if ($form.data('remote')) {
@@ -47,7 +47,7 @@ function getModal($btn) {
 }
 
 export default function initConfirmDangerModal() {
-  $(document).on('click', '.js-confirm-danger', (e) => {
+  $(document).on('click', '.js-legacy-confirm-danger', (e) => {
     const $btn = $(e.target);
     const checkFieldName = $btn.data('checkFieldName');
     const checkFieldCompareValue = $btn.data('checkCompareValue');

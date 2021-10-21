@@ -10,7 +10,7 @@ product_category: code_review
 value_type: number
 status: active
 milestone: "13.12"
-time_frame: 28d
+time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:

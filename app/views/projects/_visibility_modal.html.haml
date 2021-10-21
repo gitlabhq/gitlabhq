@@ -20,10 +20,10 @@
           %li
             = _("Current forks will keep their visibility level.").html_safe
         %label{ for: "confirm_path_input" }
-          = _("To confirm, type %{phrase_code}").html_safe % { phrase_code: '<code class="js-confirm-danger-match">%{phrase_name}</code>'.html_safe % { phrase_name: @project.full_path } }
+          = _("To confirm, type %{phrase_code}").html_safe % { phrase_code: '<code class="js-legacy-confirm-danger-match">%{phrase_name}</code>'.html_safe % { phrase_name: @project.full_path } }
         .form-group
-          = text_field_tag 'confirm_path_input', '', class: 'form-control js-confirm-danger-input qa-confirm-input'
+          = text_field_tag 'confirm_path_input', '', class: 'form-control js-legacy-confirm-danger-input qa-confirm-input'
         .form-actions
           %button.btn.gl-button.btn-default.gl-mr-4{ type: "button", "data-dismiss": "modal" }
             = _('Cancel')
-          = submit_tag _('Reduce project visibility'), class: "btn gl-button btn-danger js-confirm-danger-submit qa-confirm-button", disabled: true
+          = submit_tag _('Reduce project visibility'), class: "btn gl-button btn-danger js-legacy-confirm-danger-submit qa-confirm-button", disabled: true

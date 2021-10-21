@@ -559,3 +559,7 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_kaniko
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly

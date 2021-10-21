@@ -93,6 +93,7 @@ module QA
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)
+          new_page.disable_initialize_with_sast
           new_page.disable_initialize_with_readme unless @initialize_with_readme
           new_page.create_new_project
         end
