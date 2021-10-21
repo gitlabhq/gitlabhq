@@ -78,10 +78,7 @@ the author's:
 - `slug`
 - `displayName`
 
-If the user is not found by any of these properties, the search falls back to the author's
-`email` address.
-
-Alternatively, if there is also no email address, the project creator is set as the author.
+If the user is not found by any of these properties, the project creator is set as the author.
 
 ##### Enable or disable User assignment by username
 

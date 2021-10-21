@@ -461,10 +461,14 @@ module Gitlab
       end
 
       def uid(rep_object)
-        find_user_id(by: :email, value: rep_object.author_email) unless Feature.enabled?(:bitbucket_server_user_mapping_by_username)
-
-        find_user_id(by: :username, value: rep_object.author_username) ||
+        # We want this explicit to only be username on the FF
+        # Otherwise, match email.
+        # There should be no default fall-through on username. Fall-through to import user
+        if Feature.enabled?(:bitbucket_server_user_mapping_by_username)
+          find_user_id(by: :username, value: rep_object.author_username)
+        else
           find_user_id(by: :email, value: rep_object.author_email)
+        end
       end
     end
   end

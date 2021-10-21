@@ -5,7 +5,11 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
-import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
+import {
+  GROUPS_LOCAL_STORAGE_KEY,
+  PROJECTS_LOCAL_STORAGE_KEY,
+  SIDEBAR_PARAMS,
+} from '~/search/store/constants';
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
 import * as storeUtils from '~/search/store/utils';
@@ -153,15 +157,24 @@ describe('Global Search Store Actions', () => {
     });
   });
 
-  describe('setQuery', () => {
-    const payload = { key: 'key1', value: 'value1' };
+  describe.each`
+    payload                                      | isDirty  | isDirtyMutation
+    ${{ key: SIDEBAR_PARAMS[0], value: 'test' }} | ${false} | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: false }]}
+    ${{ key: SIDEBAR_PARAMS[0], value: 'test' }} | ${true}  | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: true }]}
+    ${{ key: SIDEBAR_PARAMS[1], value: 'test' }} | ${false} | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: false }]}
+    ${{ key: SIDEBAR_PARAMS[1], value: 'test' }} | ${true}  | ${[{ type: types.SET_SIDEBAR_DIRTY, payload: true }]}
+    ${{ key: 'non-sidebar', value: 'test' }}     | ${false} | ${[]}
+    ${{ key: 'non-sidebar', value: 'test' }}     | ${true}  | ${[]}
+  `('setQuery', ({ payload, isDirty, isDirtyMutation }) => {
+    describe(`when filter param is ${payload.key} and utils.isSidebarDirty returns ${isDirty}`, () => {
+      const expectedMutations = [{ type: types.SET_QUERY, payload }].concat(isDirtyMutation);
 
-    it('calls the SET_QUERY mutation', () => {
-      return testAction({
-        action: actions.setQuery,
-        payload,
-        state,
-        expectedMutations: [{ type: types.SET_QUERY, payload }],
+      beforeEach(() => {
+        storeUtils.isSidebarDirty = jest.fn().mockReturnValue(isDirty);
+      });
+
+      it(`should dispatch the correct mutations`, () => {
+        return testAction({ action: actions.setQuery, payload, state, expectedMutations });
       });
     });
   });

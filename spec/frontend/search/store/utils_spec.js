@@ -1,6 +1,11 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { MAX_FREQUENCY } from '~/search/store/constants';
-import { loadDataFromLS, setFrequentItemToLS, mergeById } from '~/search/store/utils';
+import { MAX_FREQUENCY, SIDEBAR_PARAMS } from '~/search/store/constants';
+import {
+  loadDataFromLS,
+  setFrequentItemToLS,
+  mergeById,
+  isSidebarDirty,
+} from '~/search/store/utils';
 import {
   MOCK_LS_KEY,
   MOCK_GROUPS,
@@ -213,6 +218,26 @@ describe('Global Search Store Utils', () => {
 
       it('prioritizes inflatedData and preserves frequency count', () => {
         expect(response).toStrictEqual(res);
+      });
+    });
+  });
+
+  describe.each`
+    description            | currentQuery                                                          | urlQuery                                                              | isDirty
+    ${'identical'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${false}
+    ${'different'}         | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'new' }}     | ${{ [SIDEBAR_PARAMS[0]]: 'default', [SIDEBAR_PARAMS[1]]: 'default' }} | ${true}
+    ${'null/undefined'}    | ${{ [SIDEBAR_PARAMS[0]]: null, [SIDEBAR_PARAMS[1]]: null }}           | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${false}
+    ${'updated/undefined'} | ${{ [SIDEBAR_PARAMS[0]]: 'new', [SIDEBAR_PARAMS[1]]: 'new' }}         | ${{ [SIDEBAR_PARAMS[0]]: undefined, [SIDEBAR_PARAMS[1]]: undefined }} | ${true}
+  `('isSidebarDirty', ({ description, currentQuery, urlQuery, isDirty }) => {
+    describe(`with ${description} sidebar query data`, () => {
+      let res;
+
+      beforeEach(() => {
+        res = isSidebarDirty(currentQuery, urlQuery);
+      });
+
+      it(`returns ${isDirty}`, () => {
+        expect(res).toStrictEqual(isDirty);
       });
     });
   });
