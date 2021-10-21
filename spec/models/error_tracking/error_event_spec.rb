@@ -37,6 +37,23 @@ RSpec.describe ErrorTracking::ErrorEvent, type: :model do
       expect(event.stacktrace).to be_kind_of(Array)
       expect(event.stacktrace.first).to eq(expected_entry)
     end
+
+    context 'error context is missing' do
+      let(:event) { create(:error_tracking_error_event, :browser) }
+
+      it 'generates a stacktrace without context' do
+        expected_entry = {
+          'lineNo' => 6395,
+          'context' => [],
+          'filename' => 'webpack-internal:///./node_modules/vue/dist/vue.runtime.esm.js',
+          'function' => 'hydrate',
+          'colNo' => 0
+        }
+
+        expect(event.stacktrace).to be_kind_of(Array)
+        expect(event.stacktrace.first).to eq(expected_entry)
+      end
+    end
   end
 
   describe '#to_sentry_error_event' do

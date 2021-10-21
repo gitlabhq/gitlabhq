@@ -27,6 +27,7 @@ import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql'
 import actions from '~/boards/stores/actions';
 import * as types from '~/boards/stores/mutation_types';
 import mutations from '~/boards/stores/mutations';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import {
   mockLists,
@@ -1572,12 +1573,13 @@ describe('setActiveIssueLabels', () => {
   const getters = { activeBoardItem: mockIssue };
   const testLabelIds = labels.map((label) => label.id);
   const input = {
-    addLabelIds: testLabelIds,
+    labelIds: testLabelIds,
     removeLabelIds: [],
     projectPath: 'h/b',
+    labels,
   };
 
-  it('should assign labels on success, and sets loading state for labels', (done) => {
+  it('should assign labels on success', (done) => {
     jest
       .spyOn(gqlClient, 'mutate')
       .mockResolvedValue({ data: { updateIssue: { issue: { labels: { nodes: labels } } } } });
@@ -1594,14 +1596,6 @@ describe('setActiveIssueLabels', () => {
       { ...state, ...getters },
       [
         {
-          type: types.SET_LABELS_LOADING,
-          payload: true,
-        },
-        {
-          type: types.SET_LABELS_LOADING,
-          payload: false,
-        },
-        {
           type: types.UPDATE_BOARD_ITEM_BY_ID,
           payload,
         },
@@ -1617,6 +1611,64 @@ describe('setActiveIssueLabels', () => {
       .mockResolvedValue({ data: { updateIssue: { errors: ['failed mutation'] } } });
 
     await expect(actions.setActiveIssueLabels({ getters }, input)).rejects.toThrow(Error);
+  });
+
+  describe('labels_widget FF on', () => {
+    beforeEach(() => {
+      window.gon = {
+        features: { labelsWidget: true },
+      };
+
+      getters.activeBoardItem = { ...mockIssue, labels };
+    });
+
+    afterEach(() => {
+      window.gon = {
+        features: {},
+      };
+    });
+
+    it('should assign labels', () => {
+      const payload = {
+        itemId: getters.activeBoardItem.id,
+        prop: 'labels',
+        value: labels,
+      };
+
+      testAction(
+        actions.setActiveIssueLabels,
+        input,
+        { ...state, ...getters },
+        [
+          {
+            type: types.UPDATE_BOARD_ITEM_BY_ID,
+            payload,
+          },
+        ],
+        [],
+      );
+    });
+
+    it('should remove label', () => {
+      const payload = {
+        itemId: getters.activeBoardItem.id,
+        prop: 'labels',
+        value: [labels[1]],
+      };
+
+      testAction(
+        actions.setActiveIssueLabels,
+        { ...input, removeLabelIds: [getIdFromGraphQLId(labels[0].id)] },
+        { ...state, ...getters },
+        [
+          {
+            type: types.UPDATE_BOARD_ITEM_BY_ID,
+            payload,
+          },
+        ],
+        [],
+      );
+    });
   });
 });
 

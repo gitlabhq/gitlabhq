@@ -61,9 +61,9 @@ class ErrorTracking::ErrorEvent < ApplicationRecord
     pre_context = entry['pre_context']
     post_context = entry['post_context']
 
-    context += lines_with_position(pre_context, error_line_no - pre_context.size)
+    context += lines_with_position(pre_context, error_line_no - pre_context.size) if pre_context
     context += lines_with_position([error_line], error_line_no)
-    context += lines_with_position(post_context, error_line_no + 1)
+    context += lines_with_position(post_context, error_line_no + 1) if post_context
 
     context.reject(&:blank?)
   end

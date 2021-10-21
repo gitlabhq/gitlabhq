@@ -760,10 +760,6 @@ class Group < Namespace
     Timelog.in_group(self)
   end
 
-  def cached_issues_state_count_enabled?
-    Feature.enabled?(:cached_issues_state_count, self, default_enabled: :yaml)
-  end
-
   def organizations
     ::CustomerRelations::Organization.where(group_id: self.id)
   end

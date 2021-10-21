@@ -1,8 +1,10 @@
 <script>
+import { MutationOperationMode } from '~/graphql_shared/utils';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { labelsQueries } from '~/sidebar/constants';
+import { labelsQueries, labelsMutations } from '~/sidebar/constants';
 import { DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
@@ -50,16 +52,6 @@ export default {
       required: false,
       default: DropdownVariant.Sidebar,
     },
-    selectedLabels: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    labelsSelectInProgress: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     labelsFilterBasePath: {
       type: String,
       required: false,
@@ -95,25 +87,25 @@ export default {
       required: false,
       default: __('Manage group labels'),
     },
-    isEditing: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     issuableType: {
       type: String,
       required: true,
     },
     attrWorkspacePath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
+    },
+    labelType: {
+      type: String,
+      required: true,
     },
   },
   data() {
     return {
       contentIsOnViewport: true,
       issuableLabels: [],
+      labelsSelectInProgress: false,
+      oldIid: null,
     };
   },
   computed: {
@@ -143,9 +135,19 @@ export default {
       },
     },
   },
+  watch: {
+    iid(_, oldVal) {
+      this.oldIid = oldVal;
+    },
+  },
   methods: {
     handleDropdownClose(labels) {
-      this.$emit('updateSelectedLabels', labels);
+      if (this.iid !== '') {
+        this.updateSelectedLabels(this.getUpdateVariables(labels));
+      } else {
+        this.$emit('updateSelectedLabels', { labels });
+      }
+
       this.collapseEditableItem();
     },
     collapseEditableItem() {
@@ -153,6 +155,85 @@ export default {
     },
     handleCollapsedValueClick() {
       this.$emit('toggleCollapse');
+    },
+    getUpdateVariables(labels) {
+      let labelIds = [];
+
+      labelIds = labels.map(({ id }) => id);
+      const currentIid = this.oldIid || this.iid;
+
+      const updateVariables = {
+        iid: currentIid,
+        projectPath: this.fullPath,
+        labelIds,
+      };
+
+      switch (this.issuableType) {
+        case IssuableType.Issue:
+          return updateVariables;
+        case IssuableType.MergeRequest:
+          updateVariables.operationMode = MutationOperationMode.Replace;
+          return updateVariables;
+        default:
+          return {};
+      }
+    },
+    updateSelectedLabels(inputVariables) {
+      this.labelsSelectInProgress = true;
+
+      this.$apollo
+        .mutate({
+          mutation: labelsMutations[this.issuableType].mutation,
+          variables: { input: inputVariables },
+        })
+        .then(({ data }) => {
+          const { mutationName } = labelsMutations[this.issuableType];
+
+          if (data[mutationName]?.errors?.length) {
+            throw new Error();
+          }
+
+          this.$emit('updateSelectedLabels', {
+            id: data[mutationName]?.[this.issuableType].id,
+            labels: data[mutationName]?.[this.issuableType].labels?.nodes,
+          });
+        })
+        .catch((error) =>
+          createFlash({
+            message: __('An error occurred while updating labels.'),
+            captureError: true,
+            error,
+          }),
+        )
+        .finally(() => {
+          this.labelsSelectInProgress = false;
+        });
+    },
+    getRemoveVariables(labelId) {
+      const removeVariables = {
+        iid: this.iid,
+        projectPath: this.fullPath,
+      };
+
+      switch (this.issuableType) {
+        case IssuableType.Issue:
+          return {
+            ...removeVariables,
+            removeLabelIds: [labelId],
+          };
+        case IssuableType.MergeRequest:
+          return {
+            ...removeVariables,
+            labelIds: [labelId],
+            operationMode: MutationOperationMode.Remove,
+          };
+        default:
+          return {};
+      }
+    },
+    handleLabelRemove(labelId) {
+      this.updateSelectedLabels(this.getRemoveVariables(labelId));
+      this.$emit('onLabelRemove', labelId);
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -180,6 +261,7 @@ export default {
         :title="__('Labels')"
         :loading="isLoading"
         :can-edit="allowLabelEdit"
+        @open="oldIid = null"
       >
         <template #collapsed>
           <dropdown-value
@@ -188,7 +270,7 @@ export default {
             :allow-label-remove="allowLabelRemove"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
-            @onLabelRemove="$emit('onLabelRemove', $event)"
+            @onLabelRemove="handleLabelRemove"
           >
             <slot></slot>
           </dropdown-value>
@@ -201,7 +283,7 @@ export default {
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             class="gl-mb-2"
-            @onLabelRemove="$emit('onLabelRemove', $event)"
+            @onLabelRemove="handleLabelRemove"
           >
             <slot></slot>
           </dropdown-value>
@@ -212,12 +294,13 @@ export default {
             :footer-create-label-title="footerCreateLabelTitle"
             :footer-manage-label-title="footerManageLabelTitle"
             :labels-create-title="labelsCreateTitle"
-            :selected-labels="selectedLabels"
+            :selected-labels="issuableLabels"
             :variant="variant"
             :issuable-type="issuableType"
             :is-visible="edit"
             :full-path="fullPath"
             :attr-workspace-path="attrWorkspacePath"
+            :label-type="labelType"
             @setLabels="handleDropdownClose"
             @closeDropdown="collapseEditableItem"
           />
@@ -233,10 +316,12 @@ export default {
       :footer-create-label-title="footerCreateLabelTitle"
       :footer-manage-label-title="footerManageLabelTitle"
       :labels-create-title="labelsCreateTitle"
-      :selected-labels="selectedLabels"
+      :selected-labels="issuableLabels"
       :variant="variant"
       :issuable-type="issuableType"
       :full-path="fullPath"
+      :attr-workspace-path="attrWorkspacePath"
+      :label-type="labelType"
       @setLabels="handleDropdownClose"
     />
   </div>

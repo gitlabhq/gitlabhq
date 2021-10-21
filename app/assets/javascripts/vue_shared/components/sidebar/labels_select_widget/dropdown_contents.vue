@@ -1,20 +1,25 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
+import { debounce } from 'lodash';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from './dropdown_contents_labels_view.vue';
+import DropdownFooter from './dropdown_footer.vue';
+import DropdownHeader from './dropdown_header.vue';
 import { isDropdownVariantStandalone, isDropdownVariantSidebar } from './utils';
 
 export default {
   components: {
     DropdownContentsLabelsView,
     DropdownContentsCreateView,
+    DropdownHeader,
+    DropdownFooter,
     GlButton,
     GlDropdown,
     GlDropdownItem,
     GlLink,
   },
-  inject: ['allowLabelCreate', 'labelsManagePath'],
   props: {
     labelsCreateTitle: {
       type: String,
@@ -63,8 +68,11 @@ export default {
     },
     attrWorkspacePath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
+    },
+    labelType: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -72,6 +80,7 @@ export default {
       showDropdownContentsCreateView: false,
       localSelectedLabels: [...this.selectedLabels],
       isDirty: false,
+      searchKey: '',
     };
   },
   computed: {
@@ -113,14 +122,23 @@ export default {
       if (newVal) {
         this.$refs.dropdown.show();
         this.isDirty = false;
+        this.localSelectedLabels = this.selectedLabels;
       } else {
         this.$refs.dropdown.hide();
         this.setLabels();
       }
     },
     selectedLabels(newVal) {
-      this.localSelectedLabels = newVal;
+      if (!this.isDirty) {
+        this.localSelectedLabels = newVal;
+      }
     },
+  },
+  created() {
+    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
+  beforeDestroy() {
+    this.debouncedSearchKeyUpdate.cancel();
   },
   methods: {
     toggleDropdownContentsCreateView() {
@@ -144,6 +162,12 @@ export default {
         this.setLabels();
       }
     },
+    setSearchKey(value) {
+      this.searchKey = value;
+    },
+    setFocus() {
+      this.$refs.header.focusInput();
+    },
   },
 };
 </script>
@@ -155,60 +179,41 @@ export default {
     class="gl-w-full gl-mt-2"
     data-qa-selector="labels_dropdown_content"
     @hide="handleDropdownHide"
+    @shown="setFocus"
   >
     <template #header>
-      <div
+      <dropdown-header
         v-if="!isStandalone"
-        class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!"
-        data-testid="dropdown-header"
-      >
-        <gl-button
-          v-if="showDropdownContentsCreateView"
-          :aria-label="__('Go back')"
-          variant="link"
-          size="small"
-          class="js-btn-back dropdown-header-button gl-p-0"
-          icon="arrow-left"
-          data-testid="go-back-button"
-          @click.stop="toggleDropdownContent"
-        />
-        <span class="gl-flex-grow-1">{{ dropdownTitle }}</span>
-        <gl-button
-          :aria-label="__('Close')"
-          variant="link"
-          size="small"
-          class="dropdown-header-button gl-p-0!"
-          icon="close"
-          data-testid="close-button"
-          @click="$emit('closeDropdown')"
-        />
-      </div>
+        ref="header"
+        v-model="searchKey"
+        :labels-create-title="labelsCreateTitle"
+        :labels-list-title="labelsListTitle"
+        :show-dropdown-contents-create-view="showDropdownContentsCreateView"
+        @toggleDropdownContentsCreateView="toggleDropdownContent"
+        @closeDropdown="$emit('closeDropdown')"
+        @input="debouncedSearchKeyUpdate"
+      />
     </template>
     <template #default>
       <component
         :is="dropdownContentsView"
         v-model="localSelectedLabels"
-        :selected-labels="selectedLabels"
+        :search-key="searchKey"
         :allow-multiselect="allowMultiselect"
         :issuable-type="issuableType"
         :full-path="fullPath"
         :attr-workspace-path="attrWorkspacePath"
+        :label-type="labelType"
         @hideCreateView="toggleDropdownContentsCreateView"
       />
     </template>
     <template #footer>
-      <div v-if="showDropdownFooter" data-testid="dropdown-footer">
-        <gl-dropdown-item
-          v-if="allowLabelCreate"
-          data-testid="create-label-button"
-          @click.capture.native.stop="toggleDropdownContent"
-        >
-          {{ footerCreateLabelTitle }}
-        </gl-dropdown-item>
-        <gl-dropdown-item :href="labelsManagePath" @click.capture.native.stop>
-          {{ footerManageLabelTitle }}
-        </gl-dropdown-item>
-      </div>
+      <dropdown-footer
+        v-if="showDropdownFooter"
+        :footer-create-label-title="footerCreateLabelTitle"
+        :footer-manage-label-title="footerManageLabelTitle"
+        @toggleDropdownContentsCreateView="toggleDropdownContent"
+      />
     </template>
   </gl-dropdown>
 </template>

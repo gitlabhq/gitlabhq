@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('[data-qa-panel-name="create_from_template"]').click # rubocop:disable QA/SelectorUsage
+        click_link 'Create from template'
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)

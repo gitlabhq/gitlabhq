@@ -166,13 +166,13 @@ To edit the custom email display name:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
 It is possible to customize the email address used by Service Desk. To do this, you must configure
-both a [custom mailbox](#configuring-a-custom-mailbox) and a
+a [custom mailbox](#configuring-a-custom-mailbox). If you want you can also configure a
 [custom suffix](#configuring-a-custom-email-address-suffix).
 
 #### Configuring a custom mailbox
 
 NOTE:
-On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, so you only have to configure the
+On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
 [custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
 
 Using the `service_desk_email` configuration, you can customize the mailbox
@@ -270,6 +270,8 @@ For example, suppose the `mygroup/myproject` project Service Desk settings has t
 
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
 The [incoming email](../../administration/incoming_email.md) address still works.
+
+If you don't configure the custom suffix, the default project identification will be used for identifying the project. You can see that email address in the project settings.
 
 ## Using Service Desk
 

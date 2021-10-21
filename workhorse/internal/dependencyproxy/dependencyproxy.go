@@ -67,6 +67,8 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		return
 	}
 
+	w.Header().Set("Content-Length", dependencyResponse.Header.Get("Content-Length"))
+
 	teeReader := io.TeeReader(dependencyResponse.Body, w)
 	saveFileRequest, err := http.NewRequestWithContext(r.Context(), "POST", r.URL.String()+"/upload", teeReader)
 	if err != nil {
@@ -74,8 +76,6 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	}
 	saveFileRequest.Header = helper.HeaderClone(r.Header)
 	saveFileRequest.ContentLength = dependencyResponse.ContentLength
-
-	w.Header().Del("Content-Length")
 
 	nrw := &nullResponseWriter{header: make(http.Header)}
 	p.uploadHandler.ServeHTTP(nrw, saveFileRequest)

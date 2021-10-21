@@ -43,6 +43,7 @@ describe('DropdownContentsLabelsView', () => {
     initialState = mockConfig,
     queryHandler = successfulQueryHandler,
     injected = {},
+    searchKey = '',
   } = {}) => {
     const mockApollo = createMockApollo([[projectLabelsQuery, queryHandler]]);
 
@@ -57,6 +58,7 @@ describe('DropdownContentsLabelsView', () => {
         ...initialState,
         localSelectedLabels,
         issuableType: IssuableType.Issue,
+        searchKey,
       },
       stubs: {
         GlSearchBoxByType,
@@ -68,7 +70,6 @@ describe('DropdownContentsLabelsView', () => {
     wrapper.destroy();
   });
 
-  const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findLabels = () => wrapper.findAllComponents(LabelItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -81,12 +82,6 @@ describe('DropdownContentsLabelsView', () => {
   }
 
   describe('when loading labels', () => {
-    it('renders disabled search input field', async () => {
-      createComponent();
-      await makeObserverAppear();
-      expect(findSearchInput().props('disabled')).toBe(true);
-    });
-
     it('renders loading icon', async () => {
       createComponent();
       await makeObserverAppear();
@@ -105,10 +100,6 @@ describe('DropdownContentsLabelsView', () => {
       createComponent();
       await makeObserverAppear();
       await waitForPromises();
-    });
-
-    it('renders enabled search input field', async () => {
-      expect(findSearchInput().props('disabled')).toBe(false);
     });
 
     it('does not render loading icon', async () => {
@@ -132,9 +123,9 @@ describe('DropdownContentsLabelsView', () => {
           },
         },
       }),
+      searchKey: '123',
     });
     await makeObserverAppear();
-    findSearchInput().vm.$emit('input', '123');
     await waitForPromises();
     await nextTick();
 

@@ -102,14 +102,12 @@ track_action: "click_button" })
 ### Implement Vue component tracking
 
 For custom event tracking, use a Vue `mixin` in components. Vue `mixin` exposes the `Tracking.event`
-static method and the `track` method called from components or templates. You can specify tracking 
-options in `data` or `computed`. These options override any defaults and allow the values to be dynamic 
-from props or based on state. 
+static method and the `track` method. You can specify tracking options in `data` or `computed`. 
+These options override any defaults and allow the values to be dynamic from props or based on state. 
 
-Default options are passed when an event is tracked from the component. If you don't specify an option,
-the default `document.body.dataset.page` is used. The default options are: 
+Several default options are passed when an event is tracked from the component: 
 
-- `category`
+- `category`: If you don't specify, by default `document.body.dataset.page` is used. 
 - `label`
 - `property`
 - `value`

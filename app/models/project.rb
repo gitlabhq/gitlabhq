@@ -2582,16 +2582,19 @@ class Project < ApplicationRecord
     config = Gitlab.config.incoming_email
     wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
 
-    config.address&.gsub(wildcard, "#{full_path_slug}-#{id}-issue-")
+    config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end
 
   def service_desk_custom_address
     return unless Gitlab::ServiceDeskEmail.enabled?
 
-    key = service_desk_setting&.project_key
-    return unless key.present?
+    key = service_desk_setting&.project_key || default_service_desk_suffix
 
     Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+  end
+
+  def default_service_desk_suffix
+    "#{id}-issue-"
   end
 
   def root_namespace

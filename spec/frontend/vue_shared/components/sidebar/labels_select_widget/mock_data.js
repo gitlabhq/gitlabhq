@@ -40,12 +40,12 @@ export const mockConfig = {
   labelsListTitle: 'Assign labels',
   labelsCreateTitle: 'Create label',
   variant: 'sidebar',
-  selectedLabels: [mockRegularLabel, mockScopedLabel],
   labelsSelectInProgress: false,
   labelsFilterBasePath: '/gitlab-org/my-project/issues',
   labelsFilterParam: 'label_name',
   footerCreateLabelTitle: 'create',
   footerManageLabelTitle: 'manage',
+  attrWorkspacePath: 'test',
 };
 
 export const mockSuggestedColors = {

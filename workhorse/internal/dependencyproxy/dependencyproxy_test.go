@@ -33,7 +33,7 @@ func (f *fakeUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type errWriter struct{ writes int }
 
-func (w *errWriter) Header() http.Header { return nil }
+func (w *errWriter) Header() http.Header { return make(http.Header) }
 func (w *errWriter) WriteHeader(h int)   {}
 
 // First call of Write function succeeds while all the subsequent ones fail
@@ -112,8 +112,9 @@ func TestInject(t *testing.T) {
 
 func TestSuccessfullRequest(t *testing.T) {
 	content := []byte("result")
+	contentLength := strconv.Itoa(len(content))
 	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Length", strconv.Itoa(len(content)))
+		w.Header().Set("Content-Length", contentLength)
 		w.Write(content)
 	}))
 
@@ -135,6 +136,7 @@ func TestSuccessfullRequest(t *testing.T) {
 
 	require.Equal(t, 200, response.Code)
 	require.Equal(t, string(content), response.Body.String())
+	require.Equal(t, contentLength, response.Header().Get("Content-Length"))
 }
 
 func TestIncorrectSendData(t *testing.T) {

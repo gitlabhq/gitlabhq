@@ -1,3 +1,4 @@
+import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import { IssuableType } from '~/issue_show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
@@ -29,6 +30,7 @@ import updateIssueConfidentialMutation from '~/sidebar/queries/update_issue_conf
 import updateIssueDueDateMutation from '~/sidebar/queries/update_issue_due_date.mutation.graphql';
 import updateIssueSubscriptionMutation from '~/sidebar/queries/update_issue_subscription.mutation.graphql';
 import mergeRequestMilestoneMutation from '~/sidebar/queries/update_merge_request_milestone.mutation.graphql';
+import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import epicLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_labels.query.graphql';
@@ -117,6 +119,17 @@ export const labelsQueries = {
   [IssuableType.Epic]: {
     issuableQuery: epicLabelsQuery,
     workspaceQuery: groupLabelsQuery,
+  },
+};
+
+export const labelsMutations = {
+  [IssuableType.Issue]: {
+    mutation: updateIssueLabelsMutation,
+    mutationName: 'updateIssue',
+  },
+  [IssuableType.MergeRequest]: {
+    mutation: updateMergeRequestLabelsMutation,
+    mutationName: 'mergeRequestSetLabels',
   },
 };
 

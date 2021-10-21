@@ -1,16 +1,8 @@
 <script>
-import {
-  GlDropdownForm,
-  GlDropdownItem,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 import { labelsQueries } from '~/sidebar/constants';
 import LabelItem from './label_item.vue';
@@ -20,7 +12,6 @@ export default {
     GlDropdownForm,
     GlDropdownItem,
     GlLoadingIcon,
-    GlSearchBoxByType,
     GlIntersectionObserver,
     LabelItem,
   },
@@ -28,10 +19,6 @@ export default {
     prop: 'localSelectedLabels',
   },
   props: {
-    selectedLabels: {
-      type: Array,
-      required: true,
-    },
     allowMultiselect: {
       type: Boolean,
       required: true,
@@ -48,10 +35,13 @@ export default {
       type: String,
       required: true,
     },
+    searchKey: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      searchKey: '',
       labels: [],
       isVisible: false,
     };
@@ -71,12 +61,6 @@ export default {
         return this.searchKey.length === 1 || !this.isVisible;
       },
       update: (data) => data.workspace?.labels?.nodes || [],
-      async result() {
-        if (this.$refs.searchInput) {
-          await this.$nextTick;
-          this.$refs.searchInput.focusInput();
-        }
-      },
       error() {
         createFlash({ message: __('Error fetching labels.') });
       },
@@ -100,12 +84,6 @@ export default {
     showNoMatchingResultsMessage() {
       return Boolean(this.searchKey) && this.visibleLabels.length === 0;
     },
-  },
-  created() {
-    this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-  },
-  beforeDestroy() {
-    this.debouncedSearchKeyUpdate.cancel();
   },
   methods: {
     isLabelSelected(label) {
@@ -153,12 +131,8 @@ export default {
         this.$emit('closeDropdown', this.localSelectedLabels);
       }
     },
-    setSearchKey(value) {
-      this.searchKey = value;
-    },
     onDropdownAppear() {
       this.isVisible = true;
-      this.$refs.searchInput.focusInput();
     },
   },
 };
@@ -167,14 +141,6 @@ export default {
 <template>
   <gl-intersection-observer @appear="onDropdownAppear">
     <gl-dropdown-form class="labels-select-contents-list js-labels-list">
-      <gl-search-box-by-type
-        ref="searchInput"
-        :value="searchKey"
-        :disabled="labelsFetchInProgress"
-        data-qa-selector="dropdown_input_field"
-        data-testid="dropdown-input-field"
-        @input="debouncedSearchKeyUpdate"
-      />
       <div ref="labelsListContainer" data-testid="dropdown-content">
         <gl-loading-icon
           v-if="labelsFetchInProgress"

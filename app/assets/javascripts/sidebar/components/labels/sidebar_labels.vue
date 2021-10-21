@@ -11,6 +11,7 @@ import { toLabelGid } from '~/sidebar/utils';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const mutationMap = {
@@ -48,6 +49,7 @@ export default {
     return {
       isLabelsSelectInProgress: false,
       selectedLabels: this.initiallySelectedLabels,
+      LabelType,
     };
   },
   methods: {
@@ -154,13 +156,11 @@ export default {
     :footer-manage-label-title="__('Manage project labels')"
     :labels-create-title="__('Create project label')"
     :labels-filter-base-path="projectIssuesPath"
-    :labels-select-in-progress="isLabelsSelectInProgress"
-    :selected-labels="selectedLabels"
     :variant="$options.variant"
     :issuable-type="issuableType"
+    :attr-workspace-path="fullPath"
+    :label-type="LabelType.project"
     data-qa-selector="labels_block"
-    @onLabelRemove="handleLabelRemove"
-    @updateSelectedLabels="handleUpdateSelectedLabels"
   >
     {{ __('None') }}
   </labels-select-widget>

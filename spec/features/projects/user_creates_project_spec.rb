@@ -14,7 +14,7 @@ RSpec.describe 'User creates a project', :js do
   it 'creates a new project' do
     visit(new_project_path)
 
-    find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
+    click_link 'Create blank project'
     fill_in(:project_name, with: 'Empty')
 
     expect(page).to have_checked_field 'Initialize repository with a README'
@@ -38,7 +38,7 @@ RSpec.describe 'User creates a project', :js do
 
     visit(new_project_path)
 
-    find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
+    click_link 'Create blank project'
     fill_in(:project_name, with: 'With initial commits')
 
     expect(page).to have_checked_field 'Initialize repository with a README'
@@ -67,7 +67,7 @@ RSpec.describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
-      find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
+      click_link 'Create blank project'
       fill_in :project_name, with: 'A Subgroup Project'
       fill_in :project_path, with: 'a-subgroup-project'
 
@@ -96,7 +96,7 @@ RSpec.describe 'User creates a project', :js do
     it 'creates a new project' do
       visit(new_project_path)
 
-      find('[data-qa-panel-name="blank_project"]').click # rubocop:disable QA/SelectorUsage
+      click_link 'Create blank project'
       fill_in :project_name, with: 'a-new-project'
       fill_in :project_path, with: 'a-new-project'
 

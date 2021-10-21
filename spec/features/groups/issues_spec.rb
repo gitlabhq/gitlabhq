@@ -83,6 +83,18 @@ RSpec.describe 'Group issues page' do
       end
     end
 
+    it 'truncates issue counts if over the threshold', :clean_gitlab_redis_cache do
+      allow(Rails.cache).to receive(:read).and_call_original
+      allow(Rails.cache).to receive(:read).with(
+        ['group', group.id, 'issues'],
+        { expires_in: Gitlab::IssuablesCountForState::CACHE_EXPIRES_IN }
+      ).and_return({ opened: 1050, closed: 500, all: 1550 })
+
+      visit issues_group_path(group)
+
+      expect(page).to have_text('Open 1.1k Closed 500 All 1.6k')
+    end
+
     context 'when project is archived' do
       before do
         ::Projects::UpdateService.new(project, user_in_group, archived: true).execute
@@ -92,41 +104,6 @@ RSpec.describe 'Group issues page' do
         visit path
 
         expect(page).not_to have_content issue.title[0..80]
-      end
-    end
-
-    context 'when cached issues state count is enabled', :clean_gitlab_redis_cache do
-      before do
-        stub_feature_flags(cached_issues_state_count: true)
-      end
-
-      it 'truncates issue counts if over the threshold' do
-        allow(Rails.cache).to receive(:read).and_call_original
-        allow(Rails.cache).to receive(:read).with(
-          ['group', group.id, 'issues'],
-          { expires_in: Gitlab::IssuablesCountForState::CACHE_EXPIRES_IN }
-        ).and_return({ opened: 1050, closed: 500, all: 1550 })
-
-        visit issues_group_path(group)
-
-        expect(page).to have_text('Open 1.1k Closed 500 All 1.6k')
-      end
-    end
-
-    context 'when cached issues state count is disabled', :clean_gitlab_redis_cache do
-      before do
-        stub_feature_flags(cached_issues_state_count: false)
-      end
-
-      it 'does not truncate counts if they are over the threshold' do
-        allow_next_instance_of(IssuesFinder) do |finder|
-          allow(finder).to receive(:count_by_state).and_return(true)
-            .and_return({ opened: 1050, closed: 500, all: 1550 })
-        end
-
-        visit issues_group_path(group)
-
-        expect(page).to have_text('Open 1,050 Closed 500 All 1,550')
       end
     end
   end

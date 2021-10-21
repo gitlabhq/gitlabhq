@@ -284,9 +284,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    store_in_cache = parent.is_a?(Group) ? parent.cached_issues_state_count_enabled? : false
-
-    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: store_in_cache)[state]
+    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: true)[state]
   end
 
   def close_issuable_path(issuable)
@@ -442,7 +440,7 @@ module IssuablesHelper
   end
 
   def format_count(issuable_type, count, threshold)
-    if issuable_type == :issues && parent.is_a?(Group) && parent.cached_issues_state_count_enabled?
+    if issuable_type == :issues && parent.is_a?(Group)
       format_cached_count(threshold, count)
     else
       number_with_delimiter(count)

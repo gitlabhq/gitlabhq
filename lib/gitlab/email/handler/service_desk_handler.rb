@@ -15,16 +15,14 @@ module Gitlab
         PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/.freeze
 
         def initialize(mail, mail_key, service_desk_key: nil)
+          if service_desk_key
+            mail_key ||= service_desk_key
+            @service_desk_key = service_desk_key
+          end
+
           super(mail, mail_key)
 
-          if service_desk_key.present?
-            @service_desk_key = service_desk_key
-          elsif !mail_key&.include?('/') && (matched = HANDLER_REGEX.match(mail_key.to_s))
-            @project_slug = matched[:project_slug]
-            @project_id   = matched[:project_id]&.to_i
-          elsif matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-            @project_path = matched[:project_path]
-          end
+          match_project_slug || match_legacy_project_slug
         end
 
         def can_handle?
@@ -42,15 +40,29 @@ module Gitlab
           end
         end
 
+        def match_project_slug
+          return if mail_key&.include?('/')
+          return unless matched = HANDLER_REGEX.match(mail_key.to_s)
+
+          @project_slug = matched[:project_slug]
+          @project_id   = matched[:project_id]&.to_i
+        end
+
+        def match_legacy_project_slug
+          return unless matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
+
+          @project_path = matched[:project_path]
+        end
+
         def metrics_event
           :receive_email_service_desk
         end
 
         def project
           strong_memoize(:project) do
-            @project = service_desk_key ? project_from_key : super
-            @project = nil unless @project&.service_desk_enabled?
-            @project
+            project_record = super
+            project_record ||= project_from_key if service_desk_key
+            project_record&.service_desk_enabled? ? project_record : nil
           end
         end
 

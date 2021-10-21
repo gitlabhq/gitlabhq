@@ -1715,13 +1715,19 @@ RSpec.describe Project, factory_default: :keep do
         allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
-      it 'returns custom address when project_key is set' do
-        create(:service_desk_setting, project: project, project_key: 'key1')
+      context 'when project_key is set' do
+        it 'returns custom address including the project_key' do
+          create(:service_desk_setting, project: project, project_key: 'key1')
 
-        expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
+          expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
+        end
       end
 
-      it_behaves_like 'with incoming email address'
+      context 'when project_key is not set' do
+        it 'returns custom address including the project full path' do
+          expect(subject).to eq("foo+#{project.full_path_slug}-#{project.project_id}-issue-@bar.com")
+        end
+      end
     end
   end
 

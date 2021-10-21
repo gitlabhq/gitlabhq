@@ -2,10 +2,10 @@
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import produce from 'immer';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
 import { labelsQueries } from '~/sidebar/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
+import { LabelType } from './constants';
 
 const errorMessage = __('Error creating label.');
 
@@ -30,8 +30,11 @@ export default {
     },
     attrWorkspacePath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
+    },
+    labelType: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -50,25 +53,13 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      if (this.issuableType === IssuableType.Epic) {
-        return {
-          title: this.labelTitle,
-          color: this.selectedColor,
-          groupPath: this.fullPath,
-        };
-      }
+      const attributePath = this.labelType === LabelType.group ? 'groupPath' : 'projectPath';
 
-      return this.attrWorkspacePath !== undefined
-        ? {
-            title: this.labelTitle,
-            color: this.selectedColor,
-            groupPath: this.attrWorkspacePath,
-          }
-        : {
-            title: this.labelTitle,
-            color: this.selectedColor,
-            projectPath: this.fullPath,
-          };
+      return {
+        title: this.labelTitle,
+        color: this.selectedColor,
+        [attributePath]: this.attrWorkspacePath,
+      };
     },
   },
   methods: {

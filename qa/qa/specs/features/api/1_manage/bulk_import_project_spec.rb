@@ -48,6 +48,10 @@ module QA
         imported_group.reload!.projects
       end
 
+      let(:import_details) do
+        imported_group.import_details.find { |entity| entity[:destination_name] == source_project.name }
+      end
+
       before do
         Runtime::Feature.enable(:bulk_import_projects)
         Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
@@ -70,6 +74,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2297'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+          expect(import_details[:failures]).to be_empty, "Expected to not have import errors, was: #{import_details}"
 
           aggregate_failures do
             expect(imported_projects.count).to eq(1)
@@ -109,6 +114,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2325'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+          expect(import_details[:failures]).to be_empty, "Expected to not have import errors, was: #{import_details}"
 
           aggregate_failures do
             expect(imported_issues.count).to eq(1)

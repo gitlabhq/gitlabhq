@@ -15,6 +15,7 @@ import SidebarDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -63,7 +64,7 @@ export default {
       'groupPathForActiveIssue',
       'projectPathForActiveIssue',
     ]),
-    ...mapState(['sidebarType', 'issuableType', 'isSettingLabels']),
+    ...mapState(['sidebarType', 'issuableType']),
     isIssuableSidebar() {
       return this.sidebarType === ISSUABLE;
     },
@@ -84,7 +85,10 @@ export default {
       });
     },
     attrWorkspacePath() {
-      return this.isGroupBoard ? this.groupPathForActiveIssue : undefined;
+      return this.isGroupBoard ? this.groupPathForActiveIssue : this.projectPathForActiveIssue;
+    },
+    labelType() {
+      return this.isGroupBoard ? LabelType.group : LabelType.project;
     },
   },
   methods: {
@@ -98,21 +102,19 @@ export default {
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeBoardItem, sidebarType: this.sidebarType });
     },
-    handleUpdateSelectedLabels(input) {
+    handleUpdateSelectedLabels({ labels, id }) {
       this.setActiveBoardItemLabels({
-        iid: this.activeBoardItem.iid,
+        id,
         projectPath: this.projectPathForActiveIssue,
-        addLabelIds: input.map((label) => getIdFromGraphQLId(label.id)),
-        removeLabelIds: this.activeBoardItem.labels
-          .filter((label) => !input.find((selected) => selected.id === label.id))
-          .map((label) => label.id),
+        labelIds: labels.map((label) => getIdFromGraphQLId(label.id)),
+        labels,
       });
     },
-    handleLabelRemove(input) {
+    handleLabelRemove(removeLabelId) {
       this.setActiveBoardItemLabels({
         iid: this.activeBoardItem.iid,
         projectPath: this.projectPathForActiveIssue,
-        removeLabelIds: [input],
+        removeLabelIds: [removeLabelId],
       });
     },
   },
@@ -207,14 +209,13 @@ export default {
           :full-path="projectPathForActiveIssue"
           :allow-label-remove="allowLabelEdit"
           :allow-multiselect="true"
-          :selected-labels="activeBoardItem.labels"
-          :labels-select-in-progress="isSettingLabels"
           :footer-create-label-title="createLabelTitle"
           :footer-manage-label-title="manageLabelTitle"
           :labels-create-title="createLabelTitle"
           :labels-filter-base-path="projectPathForActiveIssue"
           :attr-workspace-path="attrWorkspacePath"
           :issuable-type="issuableType"
+          :label-type="labelType"
           @onLabelRemove="handleLabelRemove"
           @updateSelectedLabels="handleUpdateSelectedLabels"
         >

@@ -196,51 +196,64 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         end
       end
 
-      context 'when using service desk key' do
-        let_it_be(:service_desk_key) { 'mykey' }
-
-        let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml') }
+      context 'when using custom service desk address' do
         let(:receiver) { Gitlab::Email::ServiceDeskReceiver.new(email_raw) }
 
         before do
           stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
         end
 
-        before_all do
-          create(:service_desk_setting, project: project, project_key: service_desk_key)
-        end
+        context 'when using project key' do
+          let_it_be(:service_desk_key) { 'mykey' }
 
-        it_behaves_like 'a new issue request'
+          let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml') }
 
-        context 'when there is no project with the key' do
-          let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', key: 'some_key') }
+          before_all do
+            create(:service_desk_setting, project: project, project_key: service_desk_key)
+          end
 
-          it 'bounces the email' do
-            expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+          it_behaves_like 'a new issue request'
+
+          context 'when there is no project with the key' do
+            let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', key: 'some_key') }
+
+            it 'bounces the email' do
+              expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+            end
+          end
+
+          context 'when the project slug does not match' do
+            let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: 'some-slug') }
+
+            it 'bounces the email' do
+              expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
+            end
+          end
+
+          context 'when there are multiple projects with same key' do
+            let_it_be(:project_with_same_key) { create(:project, group: group, service_desk_enabled: true) }
+
+            let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: project_with_same_key.full_path_slug.to_s) }
+
+            before do
+              create(:service_desk_setting, project: project_with_same_key, project_key: service_desk_key)
+            end
+
+            it 'process email for project with matching slug' do
+              expect { receiver.execute }.to change { Issue.count }.by(1)
+              expect(Issue.last.project).to eq(project_with_same_key)
+            end
           end
         end
 
-        context 'when the project slug does not match' do
-          let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: 'some-slug') }
-
-          it 'bounces the email' do
-            expect { receiver.execute }.to raise_error(Gitlab::Email::ProjectNotFound)
-          end
-        end
-
-        context 'when there are multiple projects with same key' do
-          let_it_be(:project_with_same_key) { create(:project, group: group, service_desk_enabled: true) }
-
-          let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: project_with_same_key.full_path_slug.to_s) }
+        context 'when project key is not set' do
+          let(:email_raw) { email_fixture('emails/service_desk_custom_address_no_key.eml') }
 
           before do
-            create(:service_desk_setting, project: project_with_same_key, project_key: service_desk_key)
+            stub_service_desk_email_setting(enabled: true, address: 'support+%{key}@example.com')
           end
 
-          it 'process email for project with matching slug' do
-            expect { receiver.execute }.to change { Issue.count }.by(1)
-            expect(Issue.last.project).to eq(project_with_same_key)
-          end
+          it_behaves_like 'a new issue request'
         end
       end
 

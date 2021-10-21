@@ -195,10 +195,6 @@ export default {
     Vue.set(state.boardItems[itemId], prop, value);
   },
 
-  [mutationTypes.SET_LABELS_LOADING](state, isLoading) {
-    state.isSettingLabels = isLoading;
-  },
-
   [mutationTypes.SET_ASSIGNEE_LOADING](state, isLoading) {
     state.isSettingAssignees = isLoading;
   },

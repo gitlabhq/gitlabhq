@@ -656,30 +656,45 @@ export default {
   },
 
   setActiveIssueLabels: async ({ commit, getters }, input) => {
-    commit(types.SET_LABELS_LOADING, true);
     const { activeBoardItem } = getters;
-    const { data } = await gqlClient.mutate({
-      mutation: issueSetLabelsMutation,
-      variables: {
-        input: {
-          iid: input.iid || String(activeBoardItem.iid),
-          addLabelIds: input.addLabelIds ?? [],
-          removeLabelIds: input.removeLabelIds ?? [],
-          projectPath: input.projectPath,
+
+    if (!gon.features?.labelsWidget) {
+      const { data } = await gqlClient.mutate({
+        mutation: issueSetLabelsMutation,
+        variables: {
+          input: {
+            iid: input.iid || String(activeBoardItem.iid),
+            labelIds: input.labelsId ?? undefined,
+            addLabelIds: input.addLabelIds ?? [],
+            removeLabelIds: input.removeLabelIds ?? [],
+            projectPath: input.projectPath,
+          },
         },
-      },
-    });
+      });
 
-    commit(types.SET_LABELS_LOADING, false);
+      if (data.updateIssue?.errors?.length > 0) {
+        throw new Error(data.updateIssue.errors);
+      }
 
-    if (data.updateIssue?.errors?.length > 0) {
-      throw new Error(data.updateIssue.errors);
+      commit(types.UPDATE_BOARD_ITEM_BY_ID, {
+        itemId: data.updateIssue?.issue?.id || activeBoardItem.id,
+        prop: 'labels',
+        value: data.updateIssue?.issue?.labels.nodes,
+      });
+
+      return;
     }
 
+    let labels = input?.labels || [];
+    if (input.removeLabelIds) {
+      labels = activeBoardItem.labels.filter(
+        (label) => input.removeLabelIds[0] !== getIdFromGraphQLId(label.id),
+      );
+    }
     commit(types.UPDATE_BOARD_ITEM_BY_ID, {
-      itemId: data.updateIssue?.issue?.id || activeBoardItem.id,
+      itemId: input.id || activeBoardItem.id,
       prop: 'labels',
-      value: data.updateIssue.issue.labels.nodes,
+      value: labels,
     });
   },
 

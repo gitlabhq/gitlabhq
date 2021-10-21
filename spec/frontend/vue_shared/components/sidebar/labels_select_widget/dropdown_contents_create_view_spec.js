@@ -51,6 +51,7 @@ describe('DropdownContentsCreateView', () => {
   const createComponent = ({
     mutationHandler = createLabelSuccessHandler,
     issuableType = IssuableType.Issue,
+    labelType = 'ProjectLabel',
   } = {}) => {
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
@@ -68,6 +69,8 @@ describe('DropdownContentsCreateView', () => {
       propsData: {
         issuableType,
         fullPath: '',
+        attrWorkspacePath: '',
+        labelType,
       },
     });
   };
@@ -174,7 +177,7 @@ describe('DropdownContentsCreateView', () => {
   });
 
   it('calls a mutation with `groupPath` variable on the epic', () => {
-    createComponent({ issuableType: IssuableType.Epic });
+    createComponent({ issuableType: IssuableType.Epic, labelType: 'GroupLabel' });
     fillLabelAttributes();
     findCreateButton().vm.$emit('click');
 

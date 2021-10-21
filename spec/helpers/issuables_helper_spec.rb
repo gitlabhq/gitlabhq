@@ -169,26 +169,9 @@ RSpec.describe IssuablesHelper do
           stub_const("Gitlab::IssuablesCountForState::THRESHOLD", 1000)
         end
 
-        context 'when feature flag cached_issues_state_count is disabled' do
-          before do
-            stub_feature_flags(cached_issues_state_count: false)
-          end
-
-          it 'returns complete count' do
-            expect(helper.issuables_state_counter_text(:issues, :opened, true))
-              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">1,100</span>')
-          end
-        end
-
-        context 'when feature flag cached_issues_state_count is enabled' do
-          before do
-            stub_feature_flags(cached_issues_state_count: true)
-          end
-
-          it 'returns truncated count' do
-            expect(helper.issuables_state_counter_text(:issues, :opened, true))
-              .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">1.1k</span>')
-          end
+        it 'returns truncated count' do
+          expect(helper.issuables_state_counter_text(:issues, :opened, true))
+            .to eq('<span>Open</span> <span class="badge badge-muted badge-pill gl-badge gl-tab-counter-badge sm gl-display-none gl-sm-display-inline-flex">1.1k</span>')
         end
       end
     end
