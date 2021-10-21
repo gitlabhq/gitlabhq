@@ -9,31 +9,45 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can configure a [webhook](webhooks.md) in your project that triggers when
 an event occurs. The following events are supported.
 
+Event type                                   | Trigger
+---------------------------------------------|-----------------------------------------------------------------------------
+[Push event](#push-events)                   | A push is made to the repository.
+[Tag event](#tag-events)                     | Tags are created or deleted in the repository.
+[Issue event](#issue-events)                 | A new issue is created or an existing issue is updated, closed, or reopened.
+[Comment event](#comment-events)             | A new comment is made on commits, merge requests, issues, and code snippets.
+[Merge request event](#merge-request-events) | A merge request is created, updated, merged, or closed, or a commit is added in the source branch.
+[Wiki page event](#wiki-page-events)         | A wiki page is created, updated, or deleted.
+[Pipeline event](#pipeline-events)           | A pipeline status changes.
+[Job event](#job-events)                     | A job status changes.
+[Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
+[Group member event](#group-member-events)   | A user is added or removed from a group, or a user's access level or access expiration date changes.
+[Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
+[Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
+[Release event](#release-events)             | A release is created or updated.
+
 ## Push events
 
-Triggered when you push to the repository except when pushing tags.
+Push events are triggered when you push to the repository, except when:
 
-NOTE:
-When more than 20 commits are pushed at once, the `commits` webhook
-attribute only contains the newest 20 for performance reasons. Loading
-detailed commit data is expensive. Note that despite only 20 commits being
-present in the `commits` attribute, the `total_commits_count` attribute contains the actual total.
+- You push tags.
+- A single push includes changes for more than three branches by default
+  (depending on the [`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)).
 
-NOTE:
-If a branch creation push event is generated without new commits being introduced, the
+If you push more than 20 commits at once, the `commits`
+attribute in the payload contains information about the newest 20 commits only.
+Loading detailed commit data is expensive, so this restriction exists for performance reasons.
+The `total_commits_count` attribute contains the actual number of commits.
+
+If you create and push a branch without any new commits, the
 `commits` attribute in the payload is empty.
 
-Also, if a single push includes changes for more than three (by default, depending on
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
-branches, this hook isn't executed.
-
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Push Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -111,20 +125,19 @@ X-Gitlab-Event: Push Hook
 
 ## Tag events
 
-Triggered when you create (or delete) tags to the repository.
+Tag events are triggered when you create or delete tags in the repository.
 
-NOTE:
-If a single push includes changes for more than three (by default, depending on
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls))
-tags, this hook is not executed.
+This hook is not executed if a single push includes changes for more than three
+tags by default (depending on the
+[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)).
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Tag Push Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -171,22 +184,26 @@ X-Gitlab-Event: Tag Push Hook
 
 ## Issue events
 
-Triggered when a new issue is created or an existing issue was updated/closed/reopened.
+Issue events are triggered when a new issue is created or
+an existing issue is updated, closed, or reopened.
 
-**Request header**:
-
-```plaintext
-X-Gitlab-Event: Issue Hook
-```
-
-**Available `object_attributes.action`:**
+The available values for `object_attributes.action` in the payload are:
 
 - `open`
 - `close`
 - `reopen`
 - `update`
 
-**Payload example:**
+The `assignee` and `assignee_id` keys are deprecated
+and contain the first assignee only.
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Issue Hook
+```
+
+Payload example:
 
 ```json
 {
@@ -329,31 +346,31 @@ X-Gitlab-Event: Issue Hook
 }
 ```
 
-NOTE:
-`assignee` and `assignee_id` keys are deprecated and now show the first assignee only.
-
 ## Comment events
 
-Triggered when a new comment is made on commits, merge requests, issues, and code snippets.
-The note data is stored in `object_attributes` (for example, `note` or `noteable_type`). The
-payload also includes information about the target of the comment. For example,
-a comment on an issue includes the specific issue information under the `issue` key.
-Valid target types:
+Comment events are triggered when a new comment is made on commits,
+merge requests, issues, and code snippets.
+
+The note data is stored in `object_attributes` (for example, `note` or `noteable_type`).
+The payload includes information about the target of the comment. For example,
+a comment on an issue includes specific issue information under the `issue` key.
+
+The valid target types are:
 
 - `commit`
 - `merge_request`
 - `issue`
 - `snippet`
 
-### Comment on commit
+### Comment on a commit
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Note Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -428,15 +445,15 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-### Comment on merge request
+### Comment on a merge request
 
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Note Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -558,15 +575,18 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-### Comment on issue
+### Comment on an issue
 
-**Request header**:
+- The `assignee_id` field is deprecated and shows the first assignee only.
+- The `event_type` is set to `confidential_note` for confidential issues.
+
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Note Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -664,21 +684,15 @@ X-Gitlab-Event: Note Hook
 }
 ```
 
-NOTE:
-`assignee_id` field is deprecated and now shows the first assignee only.
+### Comment on a code snippet
 
-NOTE:
-`event_type` is set to `confidential_note` for confidential issues.
-
-### Comment on code snippet
-
-**Request header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Note Hook
 ```
 
-**Payload example:**
+Payload example:
 
 ```json
 {
@@ -749,15 +763,13 @@ X-Gitlab-Event: Note Hook
 
 ## Merge request events
 
-Triggered when a new merge request is created, an existing merge request was updated/merged/closed or a commit is added in the source branch.
+Merge request events are triggered when:
 
-**Request header**:
+- A new merge request is created.
+- An existing merge request is updated, merged, or closed.
+- A commit is added in the source branch.
 
-```plaintext
-X-Gitlab-Event: Merge Request Hook
-```
-
-**Available `object_attributes.action`:**
+The available values for `object_attributes.action` in the payload are:
 
 - `open`
 - `close`
@@ -767,7 +779,13 @@ X-Gitlab-Event: Merge Request Hook
 - `unapproved`
 - `merge`
 
-**Payload example:**
+Request header:
+
+```plaintext
+X-Gitlab-Event: Merge Request Hook
+```
+
+Payload example:
 
 ```json
 {
@@ -921,17 +939,17 @@ X-Gitlab-Event: Merge Request Hook
 }
 ```
 
-## Wiki Page events
+## Wiki page events
 
-Triggered when a wiki page is created, updated or deleted.
+Wiki page events are triggered when a wiki page is created, updated, or deleted.
 
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Wiki Page Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -981,18 +999,18 @@ X-Gitlab-Event: Wiki Page Hook
 
 ## Pipeline events
 
+Pipeline events are triggered when the status of a pipeline changes.
+
 In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53159)
 and later, the pipeline webhook returns only the latest jobs.
 
-Triggered on status change of Pipeline.
-
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Pipeline Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1233,15 +1251,17 @@ X-Gitlab-Event: Pipeline Hook
 
 ## Job events
 
-Triggered on status change of a job.
+Job events are triggered when the status of a job changes.
 
-**Request Header**:
+The `commit.id` in the payload is the ID of the pipeline, not the ID of the commit.
+
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Job Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1303,24 +1323,24 @@ X-Gitlab-Event: Job Hook
 }
 ```
 
-Note that `commit.id` is the ID of the pipeline, not the ID of the commit.
-
 ## Deployment events
 
-Triggered when a deployment:
+Deployment events are triggered when a deployment:
 
-- Starts ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41214) in GitLab 13.5.)
+- Starts ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41214) in GitLab 13.5)
 - Succeeds
 - Fails
 - Is cancelled
 
-**Request Header**:
+The `deployable_id` in the payload is the ID of the CI/CD job.
+
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Deployment Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1363,28 +1383,26 @@ X-Gitlab-Event: Deployment Hook
 }
 ```
 
-Note that `deployable_id` is the ID of the CI job.
-
 ## Group member events **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260347) in GitLab 13.7.
 
 Member events are triggered when:
 
-- A user is added as a group member
-- The access level of a user has changed
-- The expiration date for user access has been updated
-- A user has been removed from the group
+- A user is added as a group member.
+- The access level of a user changes.
+- The expiration date for user access is updated.
+- A user is removed from the group.
 
 ### Add member to group
 
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Member Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1406,13 +1424,13 @@ X-Gitlab-Event: Member Hook
 
 ### Update member access level or expiration date
 
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Member Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1434,13 +1452,13 @@ X-Gitlab-Event: Member Hook
 
 ### Remove member from group
 
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Member Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1466,18 +1484,18 @@ X-Gitlab-Event: Member Hook
 
 Subgroup events are triggered when:
 
-- A [subgroup is created in a group](#subgroup-created-in-a-group)
-- A [subgroup is removed from a group](#subgroup-removed-from-a-group)
+- A [subgroup is created in a group](#create-a-subgroup-in-a-group).
+- A [subgroup is removed from a group](#remove-a-subgroup-from-a-group).
 
-### Subgroup created in a group
+### Create a subgroup in a group
 
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Subgroup Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1497,15 +1515,17 @@ X-Gitlab-Event: Subgroup Hook
 }
 ```
 
-### Subgroup removed from a group
+### Remove a subgroup from a group
 
-**Request Header**:
+This webhook is not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transfer-a-group).
+
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Subgroup Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1525,20 +1545,17 @@ X-Gitlab-Event: Subgroup Hook
 }
 ```
 
-NOTE:
-Webhooks for when a [subgroup is removed from a group](#subgroup-removed-from-a-group) are not triggered when a [subgroup is transferred to a new parent group](../../group/index.md#transfer-a-group)
+## Feature flag events
 
-## Feature Flag events
+Feature flag events are triggered when a feature flag is turned on or off.
 
-Triggered when a feature flag is turned on or off.
-
-**Request Header**:
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Feature Flag Hook
 ```
 
-**Payload example**:
+Payload example:
 
 ```json
 {
@@ -1580,20 +1597,20 @@ X-Gitlab-Event: Feature Flag Hook
 
 ## Release events
 
-Triggered when a release is created or updated.
+Release events are triggered when a release is created or updated.
 
-**Request Header**:
+The available values for `object_attributes.action` in the payload are:
+
+- `create`
+- `update`
+
+Request header:
 
 ```plaintext
 X-Gitlab-Event: Release Hook
 ```
 
-**Available `object_attributes.action`:**
-
-- `create`
-- `update`
-
-**Payload example**:
+Payload example:
 
 ```json
 {

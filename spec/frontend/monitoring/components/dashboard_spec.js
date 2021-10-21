@@ -46,7 +46,6 @@ describe('Dashboard', () => {
       stubs: {
         DashboardHeader,
       },
-      provide: { hasManagedPrometheus: false },
       ...options,
     });
   };
@@ -59,9 +58,6 @@ describe('Dashboard', () => {
         'graph-group': true,
         'dashboard-panel': true,
         'dashboard-header': DashboardHeader,
-      },
-      provide: {
-        hasManagedPrometheus: false,
       },
       ...options,
     });
@@ -806,30 +802,5 @@ describe('Dashboard', () => {
 
       expect(dashboardPanel.exists()).toBe(true);
     });
-  });
-
-  describe('alerts deprecation', () => {
-    beforeEach(() => {
-      setupStoreWithData(store);
-    });
-
-    const findDeprecationNotice = () => wrapper.findByTestId('alerts-deprecation-warning');
-
-    it.each`
-      managedAlertsDeprecation | hasManagedPrometheus | isVisible
-      ${false}                 | ${false}             | ${false}
-      ${false}                 | ${true}              | ${true}
-      ${true}                  | ${false}             | ${false}
-      ${true}                  | ${true}              | ${false}
-    `(
-      'when the deprecation feature flag is $managedAlertsDeprecation and has managed prometheus is $hasManagedPrometheus',
-      ({ hasManagedPrometheus, managedAlertsDeprecation, isVisible }) => {
-        createMountedWrapper(
-          {},
-          { provide: { hasManagedPrometheus, glFeatures: { managedAlertsDeprecation } } },
-        );
-        expect(findDeprecationNotice().exists()).toBe(isVisible);
-      },
-    );
   });
 });

@@ -3,7 +3,7 @@
 describe QA::Runtime::AllureReport do
   include QA::Support::Helpers::StubEnv
 
-  let(:rspec_config) { double('RSpec::Core::Configuration', 'add_formatter': nil, after: nil) }
+  let(:rspec_config) { double('RSpec::Core::Configuration', 'add_formatter': nil, append_after: nil) }
 
   let(:png_path) { 'png_path' }
   let(:html_path) { 'html_path' }
@@ -46,6 +46,8 @@ describe QA::Runtime::AllureReport do
     let(:html_file) { 'html-file' }
     let(:ci_job) { 'ee:relative 5' }
     let(:versions) { { version: '14', revision: '6ced31db947' } }
+    let(:session) { double('session') }
+    let(:browser_log) { ['log message 1', 'log message 2'] }
 
     before do
       stub_env('CI', 'true')
@@ -57,6 +59,9 @@ describe QA::Runtime::AllureReport do
       allow(File).to receive(:open).with(html_path) { html_file }
       allow(RestClient::Request).to receive(:execute) { double('response', code: 200, body: versions.to_json) }
       allow(QA::Runtime::Scenario).to receive(:method_missing).with(:gitlab_address).and_return('gitlab.com')
+
+      allow(Capybara).to receive(:current_session).and_return(session)
+      allow(session).to receive_message_chain('driver.browser.logs.get').and_return(browser_log)
 
       described_class.configure!
     end
@@ -76,7 +81,11 @@ describe QA::Runtime::AllureReport do
         .with(QA::Support::Formatters::AllureMetadataFormatter).ordered
     end
 
-    it 'configures screenshot saving' do
+    it 'configures attachments saving' do
+      expect(rspec_config).to have_received(:append_after) do |&arg|
+        arg.call
+      end
+
       aggregate_failures do
         expect(Allure).to have_received(:add_attachment).with(
           name: 'screenshot',
@@ -88,6 +97,12 @@ describe QA::Runtime::AllureReport do
           name: 'html',
           source: html_file,
           type: 'text/html',
+          test_case: true
+        )
+        expect(Allure).to have_received(:add_attachment).with(
+          name: 'browser.log',
+          source: browser_log.join("\n\n"),
+          type: Allure::ContentType::TXT,
           test_case: true
         )
       end

@@ -643,7 +643,6 @@ describe('Time series component', () => {
             expect(props.data).toBe(wrapper.vm.chartData);
             expect(props.option).toBe(wrapper.vm.chartOptions);
             expect(props.formatTooltipText).toBe(wrapper.vm.formatTooltipText);
-            expect(props.thresholds).toBe(wrapper.vm.thresholds);
           });
 
           it('receives a tooltip title', () => {

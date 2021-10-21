@@ -13767,9 +13767,6 @@ msgstr ""
 msgid "Example: @sub\\.company\\.com$"
 msgstr ""
 
-msgid "Example: Usage = single query. (Requested) / (Capacity) = multiple queries combined into a formula."
-msgstr ""
-
 msgid "Except policy:"
 msgstr ""
 
@@ -18579,9 +18576,6 @@ msgstr ""
 msgid "Invalid policy type"
 msgstr ""
 
-msgid "Invalid query"
-msgstr ""
-
 msgid "Invalid repository bundle for snippet with id %{snippet_id}"
 msgstr ""
 
@@ -21831,9 +21825,6 @@ msgstr ""
 msgid "Metrics|For grouping similar metrics"
 msgstr ""
 
-msgid "Metrics|GitLab-managed Prometheus is deprecated and %{linkStart}scheduled for removal%{linkEnd}. Following this removal, your existing alerts will continue to function as part of the new cluster integration. However, you will no longer be able to add new alerts or edit existing alerts from the metrics dashboard."
-msgstr ""
-
 msgid "Metrics|Invalid time range, please verify."
 msgstr ""
 
@@ -21967,9 +21958,6 @@ msgid "Metrics|View documentation"
 msgstr ""
 
 msgid "Metrics|View logs"
-msgstr ""
-
-msgid "Metrics|View runbook - %{label}"
 msgstr ""
 
 msgid "Metrics|Y-axis label"
@@ -27299,52 +27287,7 @@ msgstr ""
 msgid "Prometheus"
 msgstr ""
 
-msgid "PrometheusAlerts|%{count} alerts applied"
-msgstr ""
-
-msgid "PrometheusAlerts|%{firingCount} firing"
-msgstr ""
-
-msgid "PrometheusAlerts|Add alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Edit alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Error creating alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Error deleting alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Error fetching alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Error saving alert"
-msgstr ""
-
-msgid "PrometheusAlerts|Firing: %{alerts}"
-msgstr ""
-
-msgid "PrometheusAlerts|Firing: %{alert}"
-msgstr ""
-
-msgid "PrometheusAlerts|Operator"
-msgstr ""
-
-msgid "PrometheusAlerts|Runbook URL (optional)"
-msgstr ""
-
-msgid "PrometheusAlerts|Select query"
-msgstr ""
-
-msgid "PrometheusAlerts|Threshold"
-msgstr ""
-
 msgid "PrometheusAlerts|exceeded"
-msgstr ""
-
-msgid "PrometheusAlerts|https://gitlab.com/gitlab-com/runbooks"
 msgstr ""
 
 msgid "PrometheusAlerts|is equal to"
@@ -28005,9 +27948,6 @@ msgid "Query"
 msgstr ""
 
 msgid "Query cannot be processed"
-msgstr ""
-
-msgid "Query is valid"
 msgstr ""
 
 msgid "Queued"
@@ -31701,9 +31641,6 @@ msgid "Similar issues"
 msgstr ""
 
 msgid "Simulate a pipeline created for the default branch"
-msgstr ""
-
-msgid "Single or combined queries"
 msgstr ""
 
 msgid "Site profile failed to delete"

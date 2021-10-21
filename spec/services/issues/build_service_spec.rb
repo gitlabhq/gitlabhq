@@ -140,74 +140,61 @@ RSpec.describe Issues::BuildService do
   end
 
   describe '#execute' do
-    context 'as developer' do
-      it 'builds a new issues with given params' do
-        milestone = create(:milestone, project: project)
-        issue = build_issue(milestone_id: milestone.id)
+    describe 'setting milestone' do
+      context 'when developer' do
+        it 'builds a new issues with given params' do
+          milestone = create(:milestone, project: project)
+          issue = build_issue(milestone_id: milestone.id)
 
-        expect(issue.milestone).to eq(milestone)
-        expect(issue.issue_type).to eq('issue')
-        expect(issue.work_item_type.base_type).to eq('issue')
+          expect(issue.milestone).to eq(milestone)
+        end
+
+        it 'sets milestone to nil if it is not available for the project' do
+          milestone = create(:milestone, project: create(:project))
+          issue = build_issue(milestone_id: milestone.id)
+
+          expect(issue.milestone).to be_nil
+        end
       end
 
-      it 'sets milestone to nil if it is not available for the project' do
-        milestone = create(:milestone, project: create(:project))
-        issue = build_issue(milestone_id: milestone.id)
+      context 'when guest' do
+        let(:user) { guest }
 
-        expect(issue.milestone).to be_nil
-      end
+        it 'cannot set milestone' do
+          milestone = create(:milestone, project: project)
+          issue = build_issue(milestone_id: milestone.id)
 
-      context 'when issue_type is incident' do
-        it 'sets the correct issue type' do
-          issue = build_issue(issue_type: 'incident')
-
-          expect(issue.issue_type).to eq('incident')
-          expect(issue.work_item_type.base_type).to eq('incident')
+          expect(issue.milestone).to be_nil
         end
       end
     end
 
-    context 'as guest' do
-      let(:user) { guest }
+    describe 'setting issue type' do
+      context 'with a corresponding WorkItem::Type' do
+        let_it_be(:type_issue_id) { WorkItem::Type.default_issue_type.id }
+        let_it_be(:type_incident_id) { WorkItem::Type.default_by_type(:incident).id }
 
-      it 'cannot set milestone' do
-        milestone = create(:milestone, project: project)
-        issue = build_issue(milestone_id: milestone.id)
+        where(:issue_type, :current_user, :work_item_type_id, :resulting_issue_type) do
+          nil           | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          'issue'       | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          'incident'    | ref(:guest)    | ref(:type_incident_id)    | 'incident'
+          # update once support for test_case is enabled
+          'test_case'   | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          # update once support for requirement is enabled
+          'requirement' | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          'invalid'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          # ensure that we don't set a value which has a permission check but is an invalid issue type
+          'project'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+        end
 
-        expect(issue.milestone).to be_nil
-      end
+        with_them do
+          let(:user) { current_user }
 
-      context 'setting issue type' do
-        shared_examples 'builds an issue' do
-          specify do
+          it 'builds an issue' do
             issue = build_issue(issue_type: issue_type)
 
             expect(issue.issue_type).to eq(resulting_issue_type)
             expect(issue.work_item_type_id).to eq(work_item_type_id)
-          end
-        end
-
-        it 'cannot set invalid issue type' do
-          issue = build_issue(issue_type: 'project')
-
-          expect(issue).to be_issue
-        end
-
-        context 'with a corresponding WorkItem::Type' do
-          let_it_be(:type_issue_id) { WorkItem::Type.default_issue_type.id }
-          let_it_be(:type_incident_id) { WorkItem::Type.default_by_type(:incident).id }
-
-          where(:issue_type, :work_item_type_id, :resulting_issue_type) do
-            nil           | ref(:type_issue_id)       | 'issue'
-            'issue'       | ref(:type_issue_id)       | 'issue'
-            'incident'    | ref(:type_incident_id)    | 'incident'
-            'test_case'   | ref(:type_issue_id)       | 'issue' # update once support for test_case is enabled
-            'requirement' | ref(:type_issue_id)       | 'issue' # update once support for requirement is enabled
-            'invalid'     | ref(:type_issue_id)       | 'issue'
-          end
-
-          with_them do
-            it_behaves_like 'builds an issue'
           end
         end
       end

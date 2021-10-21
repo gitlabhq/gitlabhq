@@ -169,7 +169,7 @@ The following table lists project permissions available for each role:
 | [Repository](project/repository/index.md):<br>Enable or disable branch protection                                       |          |          |           | ✓          | ✓     |
 | [Repository](project/repository/index.md):<br>Enable or disable tag protection                                          |          |          |           | ✓          | ✓     |
 | [Repository](project/repository/index.md):<br>Manage [push rules](../push_rules/push_rules.md)                          |          |          |           | ✓          | ✓     |
-| [Repository](project/repository/index.md):<br>Push to protected branches                                                |          |          |           | ✓          | ✓     |
+| [Repository](project/repository/index.md):<br>Push to protected branches (*5*)                                          |          |          |           | ✓          | ✓     |
 | [Repository](project/repository/index.md):<br>Turn on or off protected branch push for developers                       |          |          |           | ✓          | ✓     |
 | [Repository](project/repository/index.md):<br>Remove fork relationship                                                  |          |          |           |            | ✓     |
 | [Repository](project/repository/index.md):<br>Force push to protected branches (*4*)                                    |          |          |           |            |       |

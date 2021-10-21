@@ -8,8 +8,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
   metricsdashboardbasepath="/monitoring/monitor-project/-/environments/1/metrics"
   metricsendpoint="/monitoring/monitor-project/-/environments/1/additional_metrics.json"
 >
-  <alerts-deprecation-warning-stub />
-   
   <div
     class="prometheus-graphs-header d-sm-flex flex-sm-wrap pt-2 pr-1 pb-0 pl-2 border-bottom bg-gray-light"
   >

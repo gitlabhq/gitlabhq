@@ -106,6 +106,7 @@ RSpec/MultipleMemoizedHelpers:
 
 Naming/FileName:
   ExpectMatchingDefinition: true
+  CheckDefinitionPathHierarchy: false
   Exclude:
     - '**/*/*.builder'
     - 'ee/bin/*'

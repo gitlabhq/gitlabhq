@@ -1598,7 +1598,7 @@ Input type: `DastProfileRunInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilerunclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofilerunfullpath"></a>`fullPath` | [`ID!`](#id) | Full path for the project the scanner profile belongs to. |
+| <a id="mutationdastprofilerunfullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastprofilerunid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be used for the scan. |
 
 #### Fields
@@ -1623,7 +1623,7 @@ Input type: `DastProfileUpdateInput`
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile to be associated. |
 | <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
-| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the profile belongs to. |
+| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastprofileupdateid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be deleted. |
 | <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | Name of the profile. |
 | <a id="mutationdastprofileupdaterunafterupdate"></a>`runAfterUpdate` | [`Boolean`](#boolean) | Run scan using profile after update. Defaults to false. |
@@ -1671,7 +1671,7 @@ Input type: `DastScannerProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` | [`ID!`](#id) | Full path for the project the scanner profile belongs to. |
+| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastscannerprofiledeleteid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be deleted. |
 
 #### Fields
@@ -1690,7 +1690,7 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the scanner profile belongs to. |
+| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be updated. |
 | <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the scanner profile. |
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
@@ -1741,7 +1741,7 @@ Input type: `DastSiteProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastsiteprofiledeleteid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be deleted. |
 
 #### Fields
@@ -1762,7 +1762,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | Parameters for authentication. |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
-| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |

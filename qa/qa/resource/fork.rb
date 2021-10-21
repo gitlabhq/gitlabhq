@@ -37,11 +37,7 @@ module QA
         namespace_path ||= user.name
 
         # Sign out as admin and sign is as the fork user
-        Page::Main::Menu.perform(&:sign_out)
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform do |login|
-          login.sign_in_using_credentials(user: user)
-        end
+        Flow::Login.sign_in(as: user)
 
         upstream.visit!
 
@@ -61,9 +57,6 @@ module QA
       def fabricate_via_api!
         populate(:upstream, :user)
 
-        # Remove after Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/343396
-        Flow::Login.sign_in(as: user) if Specs::Helpers::ContextSelector.dot_com?
-
         @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
 
         Runtime::Logger.debug("Forking project #{upstream.name} to namespace #{user.username}...")
@@ -71,9 +64,6 @@ module QA
         wait_until_forked
 
         populate(:project)
-
-        # Remove after Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/343396
-        Flow::Login.sign_in if Specs::Helpers::ContextSelector.dot_com?
       end
 
       def remove_via_api!

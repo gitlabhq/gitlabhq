@@ -382,7 +382,11 @@ export default {
           :data-testid="`radio-${value}`"
         >
           <div>
-            <gl-icon :name="icon" />
+            <gl-icon
+              data-qa-selector="fork_privacy_button"
+              :name="icon"
+              :data-qa-privacy-level="`${value}`"
+            />
             <span>{{ text }}</span>
           </div>
           <template #help>{{ help }}</template>
