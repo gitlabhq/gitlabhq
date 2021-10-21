@@ -303,6 +303,12 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 14.5.0
+
+When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
+are using a source install, update paths to these binaries in your init scripts by
+[following the documentation](upgrading_from_source.md#init-script).
+
 ### 14.4.0
 
 Git 2.33.x and later is required. We recommend you use the

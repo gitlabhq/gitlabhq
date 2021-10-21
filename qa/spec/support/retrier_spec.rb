@@ -1,42 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe QA::Support::Retrier do
-  before do
-    logger = ::Logger.new $stdout
-    logger.level = ::Logger::DEBUG
-    QA::Runtime::Logger.logger = logger
-  end
-
   describe '.retry_until' do
-    context 'when the condition is true' do
-      it 'logs max attempts (3 by default)' do
-        expect { subject.retry_until { true } }
-          .to output(/with retry_until: max_attempts: 3; reload_page: ; sleep_interval: 0; raise_on_failure: true; retry_on_exception: false/).to_stdout_from_any_process
-      end
-
-      it 'logs max duration' do
-        expect { subject.retry_until(max_duration: 1) { true } }
-          .to output(/with retry_until: max_duration: 1; reload_page: ; sleep_interval: 0; raise_on_failure: true; retry_on_exception: false/).to_stdout_from_any_process
-      end
-
-      it 'logs the end' do
-        expect { subject.retry_until { true } }
-        .to output(/ended retry_until$/).to_stdout_from_any_process
-      end
-    end
-
-    context 'when the condition is false' do
-      it 'logs the start' do
-        expect { subject.retry_until(max_duration: 0, raise_on_failure: false) { false } }
-          .to output(/with retry_until: max_duration: 0; reload_page: ; sleep_interval: 0; raise_on_failure: false; retry_on_exception: false/).to_stdout_from_any_process
-      end
-
-      it 'logs the end' do
-        expect { subject.retry_until(max_duration: 0, raise_on_failure: false) { false } }
-        .to output(/ended retry_until$/).to_stdout_from_any_process
-      end
-    end
-
     context 'when max_duration and max_attempts are nil' do
       it 'sets max attempts to 3 by default' do
         expect(subject).to receive(:repeat_until).with(hash_including(max_attempts: 3))
@@ -62,35 +27,15 @@ RSpec.describe QA::Support::Retrier do
 
       subject.retry_until
     end
+
+    it 'allows logs to be silenced' do
+      expect(subject).to receive(:repeat_until).with(hash_including(log: false))
+
+      subject.retry_until(log: false)
+    end
   end
 
   describe '.retry_on_exception' do
-    context 'when the condition is true' do
-      it 'logs max_attempts, reload_page, and sleep_interval parameters' do
-        message = /with retry_on_exception: max_attempts: 1; reload_page: true; sleep_interval: 0/
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: true, sleep_interval: 0) { true } }
-          .to output(message).to_stdout_from_any_process
-      end
-
-      it 'logs the end' do
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: nil, sleep_interval: 0) { true } }
-        .to output(/ended retry_on_exception$/).to_stdout_from_any_process
-      end
-    end
-
-    context 'when the condition is false' do
-      it 'logs the start' do
-        message = /with retry_on_exception: max_attempts: 1; reload_page: true; sleep_interval: 0/
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: true, sleep_interval: 0) { false } }
-          .to output(message).to_stdout_from_any_process
-      end
-
-      it 'logs the end' do
-        expect { subject.retry_on_exception(max_attempts: 1, reload_page: nil, sleep_interval: 0) { false } }
-        .to output(/ended retry_on_exception$/).to_stdout_from_any_process
-      end
-    end
-
     it 'does not repeat if no exception is raised' do
       loop_counter = 0
       return_value = "test passed"
@@ -120,6 +65,12 @@ RSpec.describe QA::Support::Retrier do
       expect(subject).to receive(:repeat_until).with(hash_including(sleep_interval: 0.5))
 
       subject.retry_on_exception
+    end
+
+    it 'allows logs to be silenced' do
+      expect(subject).to receive(:repeat_until).with(hash_including(log: false))
+
+      subject.retry_on_exception(log: false)
     end
   end
 end

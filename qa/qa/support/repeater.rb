@@ -25,10 +25,26 @@ module QA
 
         begin
           while remaining_attempts?(attempts, max_attempts) && remaining_time?(start, max_duration)
-            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}") if max_attempts && log
+            # start logging from the second attempt
+            if log && attempts == 1
+              msg = ["Retrying action with:"]
+              msg << "max_attempts: #{max_attempts};" if max_attempts
+              msg << "max_duration: #{max_duration};" if max_duration
+              msg << "reload_page: #{reload_page};" if reload_page
+              msg << "sleep_interval: #{sleep_interval};"
+              msg << "raise_on_failure: #{raise_on_failure};"
+              msg << "retry_on_exception: #{retry_on_exception}"
+
+              QA::Runtime::Logger.debug(msg.join(' '))
+            end
+
+            QA::Runtime::Logger.debug("Attempt number #{attempts + 1}") if log && max_attempts && attempts > 0
 
             result = yield
-            return result if result
+            if result
+              log_completion(log, attempts)
+              return result
+            end
 
             sleep_and_reload_if_needed(sleep_interval, reload_page)
             attempts += 1
@@ -54,6 +70,8 @@ module QA
           raise WaitExceededError, "Wait condition not met after #{max_duration} #{'second'.pluralize(max_duration)}"
         end
 
+        log_completion(log, attempts)
+
         false
       end
 
@@ -70,6 +88,17 @@ module QA
 
       def remaining_time?(start, max_duration)
         max_duration ? Time.now - start < max_duration : true
+      end
+
+      # Log completion if more than one attempt performed
+      #
+      # @param [Boolean] log
+      # @param [Integer] attempts
+      # @return [void]
+      def log_completion(log, attempts)
+        return unless log && attempts > 0
+
+        QA::Runtime::Logger.debug('ended retry')
       end
     end
   end

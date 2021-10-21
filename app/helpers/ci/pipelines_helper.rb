@@ -67,6 +67,17 @@ module Ci
       ]
     end
 
+    def has_pipeline_badges?(pipeline)
+      pipeline.child? ||
+        pipeline.latest? ||
+        pipeline.merge_train_pipeline? ||
+        pipeline.has_yaml_errors? ||
+        pipeline.failure_reason? ||
+        pipeline.auto_devops_source? ||
+        pipeline.detached_merge_request_pipeline? ||
+        pipeline.stuck?
+    end
+
     private
 
     def warning_markdown(pipeline)

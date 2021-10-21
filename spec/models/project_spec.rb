@@ -424,8 +424,9 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       include_context 'invalid urls'
+      include_context 'valid urls with CRLF'
 
-      it 'does not allow urls with CR or LF characters' do
+      it 'does not allow URLs with unencoded CR or LF characters' do
         project = build(:project)
 
         aggregate_failures do
@@ -434,6 +435,19 @@ RSpec.describe Project, factory_default: :keep do
 
             expect(project).not_to be_valid
             expect(project.errors.full_messages.first).to match(/is blocked: URI is invalid/)
+          end
+        end
+      end
+
+      it 'allow URLs with CR or LF characters' do
+        project = build(:project)
+
+        aggregate_failures do
+          valid_urls_with_CRLF.each do |url|
+            project.import_url = url
+
+            expect(project).to be_valid
+            expect(project.errors).to be_empty
           end
         end
       end

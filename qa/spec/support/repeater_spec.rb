@@ -380,34 +380,67 @@ RSpec.describe QA::Support::Repeater do
       end
     end
 
-    it 'logs attempts' do
-      attempted = false
+    context 'with logging' do
+      before do
+        allow(QA::Runtime::Logger).to receive(:debug)
+      end
 
-      expect do
-        subject.repeat_until(max_attempts: 1) do
-          unless attempted
-            attempted = true
-            break false
-          end
-
+      it 'skips logging single attempt with max_attempts' do
+        subject.repeat_until(max_attempts: 3) do
           true
         end
-      end.to output(/Attempt number/).to_stdout_from_any_process
-    end
 
-    it 'allows logging to be silenced' do
-      attempted = false
+        expect(QA::Runtime::Logger).not_to have_received(:debug)
+      end
 
-      expect do
-        subject.repeat_until(max_attempts: 1, log: false) do
-          unless attempted
-            attempted = true
-            break false
-          end
-
+      it 'skips logging single attempt with max_duration' do
+        subject.repeat_until(max_duration: 3) do
           true
         end
-      end.not_to output.to_stdout_from_any_process
+
+        expect(QA::Runtime::Logger).not_to have_received(:debug)
+      end
+
+      it 'allows logging to be silenced' do
+        subject.repeat_until(max_attempts: 3, log: false, raise_on_failure: false) do
+          false
+        end
+
+        expect(QA::Runtime::Logger).not_to have_received(:debug)
+      end
+
+      it 'starts logging on subsequent attempts for max_duration' do
+        subject.repeat_until(max_duration: 0.3, sleep_interval: 0.1, raise_on_failure: false) do
+          false
+        end
+
+        aggregate_failures do
+          expect(QA::Runtime::Logger).to have_received(:debug).with(<<~MSG.strip).ordered.once
+            Retrying action with: max_duration: 0.3; sleep_interval: 0.1; raise_on_failure: false; retry_on_exception: false
+          MSG
+          expect(QA::Runtime::Logger).to have_received(:debug).with('ended retry').ordered.once
+          expect(QA::Runtime::Logger).not_to have_received(:debug).with(/Attempt number/)
+        end
+      end
+
+      it 'starts logging subsequent attempts for max_attempts' do
+        attempts = 0
+        subject.repeat_until(max_attempts: 4, raise_on_failure: false) do
+          next true if attempts == 2
+
+          attempts += 1
+          false
+        end
+
+        aggregate_failures do
+          expect(QA::Runtime::Logger).to have_received(:debug).with(<<~MSG.strip).ordered.once
+            Retrying action with: max_attempts: 4; sleep_interval: 0; raise_on_failure: false; retry_on_exception: false
+          MSG
+          expect(QA::Runtime::Logger).to have_received(:debug).with('Attempt number 2').ordered.once
+          expect(QA::Runtime::Logger).to have_received(:debug).with('Attempt number 3').ordered.once
+          expect(QA::Runtime::Logger).to have_received(:debug).with('ended retry').ordered.once
+        end
+      end
     end
   end
 end

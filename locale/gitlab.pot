@@ -39693,9 +39693,6 @@ msgstr ""
 msgid "ZenTaoIntegration|ZenTao user"
 msgstr ""
 
-msgid "Zentao issues"
-msgstr ""
-
 msgid "ZentaoIntegration|An error occurred while requesting data from the ZenTao service."
 msgstr ""
 
@@ -39730,9 +39727,6 @@ msgid "ZentaoIntegration|ZenTao Web URL"
 msgstr ""
 
 msgid "ZentaoIntegration|ZenTao issues"
-msgstr ""
-
-msgid "ZentaoIntegration|Zentao issues"
 msgstr ""
 
 msgid "Zoom meeting added"

@@ -71,4 +71,26 @@ RSpec.describe Ci::PipelinesHelper do
       it { expect(has_gitlab_ci?).to eq(result) }
     end
   end
+
+  describe 'has_pipeline_badges?' do
+    let(:pipeline) { create(:ci_empty_pipeline) }
+
+    subject { helper.has_pipeline_badges?(pipeline) }
+
+    context 'when pipeline has a badge' do
+      before do
+        pipeline.drop!(:config_error)
+      end
+
+      it 'shows pipeline badges' do
+        expect(subject).to eq(true)
+      end
+    end
+
+    context 'when pipeline has no badges' do
+      it 'shows pipeline badges' do
+        expect(subject).to eq(false)
+      end
+    end
+  end
 end
