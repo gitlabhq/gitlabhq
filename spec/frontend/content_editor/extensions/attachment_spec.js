@@ -74,10 +74,10 @@ describe('content_editor/extensions/attachment', () => {
   });
 
   it.each`
-    eventType  | propName         | eventData                                         | output
-    ${'paste'} | ${'handlePaste'} | ${{ clipboardData: { files: [attachmentFile] } }} | ${true}
-    ${'paste'} | ${'handlePaste'} | ${{ clipboardData: { files: [] } }}               | ${undefined}
-    ${'drop'}  | ${'handleDrop'}  | ${{ dataTransfer: { files: [attachmentFile] } }}  | ${true}
+    eventType  | propName         | eventData                                                             | output
+    ${'paste'} | ${'handlePaste'} | ${{ clipboardData: { getData: jest.fn(), files: [attachmentFile] } }} | ${true}
+    ${'paste'} | ${'handlePaste'} | ${{ clipboardData: { getData: jest.fn(), files: [] } }}               | ${undefined}
+    ${'drop'}  | ${'handleDrop'}  | ${{ dataTransfer: { getData: jest.fn(), files: [attachmentFile] } }}  | ${true}
   `('handles $eventType properly', ({ eventType, propName, eventData, output }) => {
     const event = Object.assign(new Event(eventType), eventData);
     const handled = tiptapEditor.view.someProp(propName, (eventHandler) => {

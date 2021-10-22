@@ -1,13 +1,17 @@
 import TableOfContents from '~/content_editor/extensions/table_of_contents';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
 
-describe('content_editor/extensions/emoji', () => {
+describe('content_editor/extensions/table_of_contents', () => {
   let tiptapEditor;
-  let builders;
+  let doc;
+  let tableOfContents;
+  let p;
 
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [TableOfContents] });
-    ({ builders } = createDocBuilder({
+    ({
+      builders: { doc, p, tableOfContents },
+    } = createDocBuilder({
       tiptapEditor,
       names: { tableOfContents: { nodeType: TableOfContents.name } },
     }));
@@ -15,20 +19,16 @@ describe('content_editor/extensions/emoji', () => {
 
   it.each`
     input          | insertedNode
-    ${'[[_TOC_]]'} | ${'tableOfContents'}
-    ${'[TOC]'}     | ${'tableOfContents'}
-    ${'[toc]'}     | ${'p'}
-    ${'TOC'}       | ${'p'}
-    ${'[_TOC_]'}   | ${'p'}
-    ${'[[TOC]]'}   | ${'p'}
+    ${'[[_TOC_]]'} | ${() => tableOfContents()}
+    ${'[TOC]'}     | ${() => tableOfContents()}
+    ${'[toc]'}     | ${() => p()}
+    ${'TOC'}       | ${() => p()}
+    ${'[_TOC_]'}   | ${() => p()}
+    ${'[[TOC]]'}   | ${() => p()}
   `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
-    const { doc } = builders;
-    const { view } = tiptapEditor;
-    const { selection } = view.state;
-    const expectedDoc = doc(builders[insertedNode]());
+    const expectedDoc = doc(insertedNode());
 
-    // Triggers the event handler that input rules listen to
-    view.someProp('handleTextInput', (f) => f(view, selection.from, selection.to, input));
+    triggerNodeInputRule({ tiptapEditor, inputRuleText: input });
 
     expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
   });

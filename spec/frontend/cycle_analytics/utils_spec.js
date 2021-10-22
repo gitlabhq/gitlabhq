@@ -1,3 +1,4 @@
+import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import { useFakeDate } from 'helpers/fake_date';
 import {
   transformStagesForPathNavigation,
@@ -14,7 +15,6 @@ import {
   stageMedians,
   pathNavIssueMetric,
   rawStageMedians,
-  metricsData,
 } from './mock_data';
 
 describe('Value stream analytics utils', () => {

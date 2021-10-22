@@ -39,6 +39,8 @@ module QA
         # Sign out as admin and sign is as the fork user
         Flow::Login.sign_in(as: user)
 
+        @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
+
         upstream.visit!
 
         Page::Project::Show.perform(&:fork_project)

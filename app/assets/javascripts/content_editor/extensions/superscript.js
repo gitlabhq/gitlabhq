@@ -4,6 +4,12 @@ import { markInputRegex, extractMarkAttributesFromMatch } from '../services/mark
 
 export default Superscript.extend({
   addInputRules() {
-    return [markInputRule(markInputRegex('sup'), this.type, extractMarkAttributesFromMatch)];
+    return [
+      markInputRule({
+        find: markInputRegex('sup'),
+        type: this.type,
+        getAttributes: extractMarkAttributesFromMatch,
+      }),
+    ];
   },
 });

@@ -1,5 +1,5 @@
 <script>
-import { GlTab, GlTabs, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
@@ -31,6 +31,7 @@ export default {
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
     FeatureCard,
+    GlAlert,
     GlLink,
     GlSprintf,
     GlTab,
@@ -79,6 +80,7 @@ export default {
   data() {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
+      errorMessage: '',
     };
   },
   computed: {
@@ -106,6 +108,12 @@ export default {
       dismissedProjects.add(this.projectPath);
       this.autoDevopsEnabledAlertDismissedProjects = Array.from(dismissedProjects);
     },
+    onError(message) {
+      this.errorMessage = message;
+    },
+    dismissAlert() {
+      this.errorMessage = '';
+    },
   },
   autoDevopsEnabledAlertStorageKey: AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
 };
@@ -113,6 +121,16 @@ export default {
 
 <template>
   <article>
+    <gl-alert
+      v-if="errorMessage"
+      sticky
+      class="gl-top-8 gl-z-index-1"
+      data-testid="manage-via-mr-error-alert"
+      variant="danger"
+      @dismiss="dismissAlert"
+    >
+      {{ errorMessage }}
+    </gl-alert>
     <local-storage-sync
       v-model="autoDevopsEnabledAlertDismissedProjects"
       :storage-key="$options.autoDevopsEnabledAlertStorageKey"
@@ -174,6 +192,7 @@ export default {
               data-testid="security-testing-card"
               :feature="feature"
               class="gl-mb-6"
+              @error="onError"
             />
           </template>
         </section-layout>
@@ -207,6 +226,7 @@ export default {
               :key="feature.type"
               :feature="feature"
               class="gl-mb-6"
+              @error="onError"
             />
           </template>
         </section-layout>

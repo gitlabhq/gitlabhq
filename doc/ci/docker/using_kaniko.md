@@ -37,7 +37,7 @@ few important details:
 - The kaniko debug image is recommended (`gcr.io/kaniko-project/executor:debug`)
   because it has a shell, and a shell is required for an image to be used with
   GitLab CI/CD.
-- The entrypoint needs to be [overridden](using_docker_images.md#overriding-the-entrypoint-of-an-image),
+- The entrypoint needs to be [overridden](using_docker_images.md#override-the-entrypoint-of-an-image),
   otherwise the build script doesn't run.
 - A Docker `config.json` file needs to be created with the authentication
   information for the desired container registry.

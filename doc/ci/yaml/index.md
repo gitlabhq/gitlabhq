@@ -645,24 +645,87 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `image`
 
-Use `image` to specify [a Docker image](../docker/using_docker_images.md#what-is-an-image) to use for the job.
+Use `image` to specify a Docker image that the job runs in.
 
-For:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-- Usage examples, see [Define `image` in the `.gitlab-ci.yml` file](../docker/using_docker_images.md#define-image-in-the-gitlab-ciyml-file).
-- Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
+**Possible inputs**: The name of the image, including the registry path if needed, in one of these formats:
+
+- `<image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `<image-name>:<tag>`
+- `<image-name>@<digest>`
+
+**Example of `image`**:
+
+```yaml
+default:
+  image: ruby:3.0
+
+rspec:
+  script: bundle exec rspec
+
+rspec 2.7:
+  image: registry.example.com/my-group/my-project/ruby:2.7
+  script: bundle exec rspec
+```
+
+In this example, the `ruby:3.0` image is the default for all jobs in the pipeline.
+The `rspec 2.7` job does not use the default, because it overrides the default with
+a job-specific `image:` section.
+
+**Related topics**:
+
+- [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 
 #### `image:name`
 
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+The name of the Docker image that the job runs in. Similar to [`image:`](#image) used by itself.
 
-For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: The name of the image, including the registry path if needed, in one of these formats:
+
+- `<image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `<image-name>:<tag>`
+- `<image-name>@<digest>`
+
+**Example of `image:name`**:
+
+```yaml
+image:
+  name: "registry.example.com/my/image:latest"
+```
+
+**Related topics**:
+
+- [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 
 #### `image:entrypoint`
 
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+Command or script to execute as the container's entry point.
 
-For more information, see [Available settings for `image`](../docker/using_docker_images.md#available-settings-for-image).
+When the Docker container is created, the `entrypoint` is translated to the Docker `--entrypoint` option.
+The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/engine/reference/builder/#entrypoint),
+where each shell token is a separate string in the array.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
+
+**Possible inputs**: A string.
+
+**Example of `image:entrypoint`**:
+
+```yaml
+image:
+  name: super/sql:experimental
+  entrypoint: [""]
+```
+
+**Related topics**:
+
+- [Override the entrypoint of an image](../docker/using_docker_images.md#override-the-entrypoint-of-an-image).
 
 #### `services`
 

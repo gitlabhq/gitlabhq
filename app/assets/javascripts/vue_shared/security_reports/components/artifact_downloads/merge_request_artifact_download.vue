@@ -26,6 +26,11 @@ export default {
       type: Number,
       required: true,
     },
+    injectedArtifacts: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -56,6 +61,9 @@ export default {
     isLoadingReportArtifacts() {
       return this.$apollo.queries.reportArtifacts.loading;
     },
+    mergedReportArtifacts() {
+      return [...this.reportArtifacts, ...this.injectedArtifacts];
+    },
   },
   methods: {
     showError(error) {
@@ -77,7 +85,7 @@ export default {
 <template>
   <security-report-download-dropdown
     :title="s__('SecurityReports|Download results')"
-    :artifacts="reportArtifacts"
+    :artifacts="mergedReportArtifacts"
     :loading="isLoadingReportArtifacts"
   />
 </template>

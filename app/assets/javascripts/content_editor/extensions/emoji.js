@@ -1,8 +1,5 @@
-import { Node } from '@tiptap/core';
-import { InputRule } from 'prosemirror-inputrules';
+import { Node, InputRule } from '@tiptap/core';
 import { initEmojiMap, getAllEmoji } from '~/emoji';
-
-export const emojiInputRegex = /(?:^|\s)((?::)((?:\w+))(?::))$/;
 
 export default Node.create({
   name: 'emoji',
@@ -54,23 +51,28 @@ export default Node.create({
   },
 
   addInputRules() {
+    const emojiInputRegex = /(?:^|\s)(:(\w+):)$/;
+
     return [
-      new InputRule(emojiInputRegex, (state, match, start, end) => {
-        const [, , name] = match;
-        const emojis = getAllEmoji();
-        const emoji = emojis[name];
-        const { tr } = state;
+      new InputRule({
+        find: emojiInputRegex,
+        handler: ({ state, range: { from, to }, match }) => {
+          const [, , name] = match;
+          const emojis = getAllEmoji();
+          const emoji = emojis[name];
+          const { tr } = state;
 
-        if (emoji) {
-          tr.replaceWith(start, end, [
-            state.schema.text(' '),
-            this.type.create({ name, moji: emoji.e, unicodeVersion: emoji.u, title: emoji.d }),
-          ]);
+          if (emoji) {
+            tr.replaceWith(from, to, [
+              state.schema.text(' '),
+              this.type.create({ name, moji: emoji.e, unicodeVersion: emoji.u, title: emoji.d }),
+            ]);
 
-          return tr;
-        }
+            return tr;
+          }
 
-        return null;
+          return null;
+        },
       }),
     ];
   },

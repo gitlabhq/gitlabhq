@@ -53,9 +53,7 @@ RSpec.describe "Internal references", :js do
           end
 
           it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
-            page.within(".issue-details") do
-              expect(page).not_to have_content("#merge-requests .merge-requests-title")
-            end
+            expect(page).not_to have_text 'Related merge requests'
           end
         end
 
@@ -65,12 +63,9 @@ RSpec.describe "Internal references", :js do
           end
 
           it "shows references", :sidekiq_might_not_need_inline do
-            page.within("#merge-requests .merge-requests-title") do
-              expect(page).to have_content("Related merge requests")
-              expect(page).to have_css(".mr-count-badge")
-            end
+            expect(page).to have_text 'Related merge requests 1'
 
-            page.within("#merge-requests ul") do
+            page.within('.related-items-list') do
               expect(page).to have_content(private_project_merge_request.title)
               expect(page).to have_css(".ic-issue-open-m")
             end
@@ -122,9 +117,7 @@ RSpec.describe "Internal references", :js do
           end
 
           it "doesn't show any references", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/257832' do
-            page.within(".merge-request-details") do
-              expect(page).not_to have_content("#merge-requests .merge-requests-title")
-            end
+            expect(page).not_to have_text 'Related merge requests'
           end
         end
 

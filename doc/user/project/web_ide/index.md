@@ -15,7 +15,8 @@ projects by providing an advanced editor with commit staging.
 
 ## Open the Web IDE
 
-You can open the Web IDE when viewing a file, from the repository file list,
+Use the <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md) to open the Web IDE.
+You can also open the Web IDE when viewing a file, from the repository file list,
 and from merge requests:
 
 - *When viewing a file, or the repository file list* -

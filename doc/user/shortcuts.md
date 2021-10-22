@@ -43,6 +43,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>t</kbd> | Go to your To-Do List page. |
 | <kbd>p</kbd> + <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>g</kbd> + <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
+| <kbd>.</kbd>     | Open the [Web IDE](project/web_ide/index.md). |
 
 Additionally, the following shortcuts are available when editing text in text
 fields (for example, comments, replies, issue descriptions, and merge request
@@ -101,6 +102,7 @@ These shortcuts are available when viewing issues and [merge requests](project/m
 | <kbd>]</kbd> or <kbd>j</kbd> | Move to next file (merge requests only). |
 | <kbd>[</kbd> or <kbd>k</kbd> | Move to previous file (merge requests only). |
 | <kbd>b</kbd>                 | Copy source branch name (merge requests only). |
+| <kbd>.</kbd>     | Open the [Web IDE](project/web_ide/index.md). |
 
 ### Project files
 
@@ -114,6 +116,7 @@ These shortcuts are available when browsing the files in a project (go to
 | <kbd>enter</kbd>  | Open selection. |
 | <kbd>Escape</kbd> | Go back to file list screen (only while searching for files, **Repository > Files**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
+| <kbd>.</kbd>     | Open the [Web IDE](project/web_ide/index.md). |
 
 ### Web IDE
 

@@ -9829,7 +9829,7 @@ msgstr ""
 msgid "CreateValueStreamForm|Restore stage"
 msgstr ""
 
-msgid "CreateValueStreamForm|Save Value Stream"
+msgid "CreateValueStreamForm|Save value stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|Select end event"
@@ -29682,9 +29682,6 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-msgid "Save Value Stream"
-msgstr ""
-
 msgid "Save application"
 msgstr ""
 
@@ -30418,9 +30415,6 @@ msgstr ""
 msgid "SecurityReports|Download scanned URLs"
 msgstr ""
 
-msgid "SecurityReports|Download scanned resources"
-msgstr ""
-
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
 msgstr ""
 
@@ -30629,6 +30623,9 @@ msgid "SecurityReports|You must sign in as an authorized user to see this report
 msgstr ""
 
 msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
+msgstr ""
+
+msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "See example DevOps Score page in our documentation."

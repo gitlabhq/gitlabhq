@@ -59,3 +59,8 @@ To make submodules work correctly in CI/CD jobs:
    variables:
      GIT_SUBMODULE_STRATEGY: recursive
    ```
+   
+If you use the [`CI_JOB_TOKEN`](jobs/ci_job_token.md) to clone a submodule in a
+pipeline job, the user executing the job must be assigned to a role that has
+[permission](../user/permissions.md#gitlab-cicd-permissions) to trigger a pipeline
+in the upstream submodule project.

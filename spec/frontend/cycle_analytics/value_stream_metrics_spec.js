@@ -1,11 +1,12 @@
 import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
+import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
 import createFlash from '~/flash';
-import { group, metricsData } from './mock_data';
+import { group } from './mock_data';
 
 jest.mock('~/flash');
 

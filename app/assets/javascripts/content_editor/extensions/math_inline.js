@@ -2,8 +2,6 @@ import { Mark, markInputRule } from '@tiptap/core';
 import { __ } from '~/locale';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
-export const inputRegex = /(?:^|\s)\$`([^`]+)`\$$/gm;
-
 export default Mark.create({
   name: 'mathInline',
 
@@ -30,6 +28,8 @@ export default Mark.create({
   },
 
   addInputRules() {
-    return [markInputRule(inputRegex, this.type)];
+    const inputRegex = /(?:^|\s)\$`([^`]+)`\$$/gm;
+
+    return [markInputRule({ find: inputRegex, type: this.type })];
   },
 });

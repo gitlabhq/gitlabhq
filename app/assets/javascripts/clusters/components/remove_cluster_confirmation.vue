@@ -1,8 +1,7 @@
 <script>
-import { GlModal, GlButton, GlFormInput } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 
 const splitButtonActionItems = [
@@ -29,6 +28,7 @@ export default {
     GlModal,
     GlButton,
     GlFormInput,
+    GlSprintf,
   },
   props: {
     clusterPath: {
@@ -67,17 +67,11 @@ export default {
         : s__('ClusterIntegration|You are about to remove your cluster integration.');
     },
     confirmationTextLabel() {
-      return sprintf(
-        this.confirmCleanup
-          ? s__(
-              'ClusterIntegration|To remove your integration and resources, type %{clusterName} to confirm:',
-            )
-          : s__('ClusterIntegration|To remove your integration, type %{clusterName} to confirm:'),
-        {
-          clusterName: `<code>${escape(this.clusterName)}</code>`,
-        },
-        false,
-      );
+      return this.confirmCleanup
+        ? s__(
+            'ClusterIntegration|To remove your integration and resources, type %{clusterName} to confirm:',
+          )
+        : s__('ClusterIntegration|To remove your integration, type %{clusterName} to confirm:');
     },
     canSubmit() {
       return this.enteredClusterName === this.clusterName;
@@ -140,7 +134,13 @@ export default {
           <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
         </ul>
       </div>
-      <strong v-html="confirmationTextLabel /* eslint-disable-line vue/no-v-html */"></strong>
+      <strong>
+        <gl-sprintf :message="confirmationTextLabel">
+          <template #clusterName>
+            <code>{{ clusterName }}</code>
+          </template>
+        </gl-sprintf>
+      </strong>
       <form ref="form" :action="clusterPath" method="post" class="gl-mb-5">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />

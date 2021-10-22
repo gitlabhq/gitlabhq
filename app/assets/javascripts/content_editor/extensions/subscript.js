@@ -4,6 +4,12 @@ import { markInputRegex, extractMarkAttributesFromMatch } from '../services/mark
 
 export default Subscript.extend({
   addInputRules() {
-    return [markInputRule(markInputRegex('sub'), this.type, extractMarkAttributesFromMatch)];
+    return [
+      markInputRule({
+        find: markInputRegex('sub'),
+        type: this.type,
+        getAttributes: extractMarkAttributesFromMatch,
+      }),
+    ];
   },
 });

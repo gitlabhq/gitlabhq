@@ -1,32 +1,30 @@
-import Blockquote from '~/content_editor/extensions/blockquote';
+import WordBreak from '~/content_editor/extensions/word_break';
 import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
 
-describe('content_editor/extensions/blockquote', () => {
+describe('content_editor/extensions/word_break', () => {
   let tiptapEditor;
   let doc;
   let p;
-  let blockquote;
+  let wordBreak;
 
   beforeEach(() => {
-    tiptapEditor = createTestEditor({ extensions: [Blockquote] });
+    tiptapEditor = createTestEditor({ extensions: [WordBreak] });
 
     ({
-      builders: { doc, p, blockquote },
+      builders: { doc, p, wordBreak },
     } = createDocBuilder({
       tiptapEditor,
       names: {
-        blockquote: { nodeType: Blockquote.name },
+        wordBreak: { nodeType: WordBreak.name },
       },
     }));
   });
 
   it.each`
     input      | insertedNode
-    ${'>>> '}  | ${() => blockquote({ multiline: true }, p())}
-    ${'> '}    | ${() => blockquote(p())}
-    ${' >>> '} | ${() => blockquote({ multiline: true }, p())}
-    ${'>> '}   | ${() => p()}
-    ${'>>>x '} | ${() => p()}
+    ${'<wbr>'} | ${() => p(wordBreak())}
+    ${'<wbr'}  | ${() => p()}
+    ${'wbr>'}  | ${() => p()}
   `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
     const expectedDoc = doc(insertedNode());
 

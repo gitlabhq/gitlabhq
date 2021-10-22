@@ -83,9 +83,11 @@ can assign, categorize, and track progress on a merge request:
 ## Add changes to a merge request
 
 If you have permission to add changes to a merge request, you can add your changes
-to an existing merge request in several ways, depending on the complexity of your change and whether you need access to a development environment:
+to an existing merge request in several ways, depending on the complexity of your
+change and whether you need access to a development environment:
 
-- [Edit changes in the Web IDE](../web_ide/index.md) in your browser. Use this
+- [Edit changes in the Web IDE](../web_ide/index.md) in your browser with the
+  <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md). Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.
 - [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you

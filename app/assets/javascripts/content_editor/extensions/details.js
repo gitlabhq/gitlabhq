@@ -1,9 +1,6 @@
-import { Node } from '@tiptap/core';
+import { Node, wrappingInputRule } from '@tiptap/core';
 import { VueNodeViewRenderer } from '@tiptap/vue-2';
-import { wrappingInputRule } from 'prosemirror-inputrules';
 import DetailsWrapper from '../components/wrappers/details.vue';
-
-export const inputRegex = /^\s*(<details>)$/;
 
 export default Node.create({
   name: 'details',
@@ -24,7 +21,9 @@ export default Node.create({
   },
 
   addInputRules() {
-    return [wrappingInputRule(inputRegex, this.type)];
+    const inputRegex = /^\s*(<details>)$/;
+
+    return [wrappingInputRule({ find: inputRegex, type: this.type })];
   },
 
   addCommands() {

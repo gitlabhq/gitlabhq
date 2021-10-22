@@ -1,7 +1,5 @@
 import { Node, mergeAttributes, nodeInputRule } from '@tiptap/core';
 
-export const inputRegex = /^<wbr>$/;
-
 export default Node.create({
   name: 'wordBreak',
   inline: true,
@@ -24,6 +22,8 @@ export default Node.create({
   },
 
   addInputRules() {
-    return [nodeInputRule(inputRegex, this.type)];
+    const inputRegex = /^<wbr>$/;
+
+    return [nodeInputRule({ find: inputRegex, type: this.type })];
   },
 });

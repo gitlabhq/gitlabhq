@@ -76,6 +76,7 @@
 /doc/user/project/web_ide/index.md @aqualls
 /doc/user/project/wiki/index.md @aqualls
 /doc/user/search/ @marcia @aqualls
+/doc/user/workspace/ @fneill 
 
 [Docs Create]
 /doc/administration/file_hooks.md @aqualls

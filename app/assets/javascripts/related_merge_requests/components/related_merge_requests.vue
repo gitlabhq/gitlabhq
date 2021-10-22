@@ -64,58 +64,51 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)"
-    id="related-merge-requests"
-  >
-    <div id="merge-requests" class="card card-slim mt-3">
+  <div v-if="isFetchingMergeRequests || (!isFetchingMergeRequests && totalCount)">
+    <div class="card card-slim gl-mt-5">
       <div class="card-header">
-        <div class="card-title mt-0 mb-0 h5 merge-requests-title position-relative">
+        <div
+          class="card-title gl-relative gl-display-flex gl-align-items-center gl-line-height-20 gl-font-weight-bold gl-m-0"
+        >
           <gl-link
-            id="user-content-related-merge-requests"
-            class="anchor position-absolute text-decoration-none"
+            class="anchor gl-absolute gl-text-decoration-none"
             href="#related-merge-requests"
-            aria-hidden="true"
+            aria-labelledby="related-merge-requests"
           />
-          <span class="mr-1">
+          <h3 id="related-merge-requests" class="gl-font-base gl-m-0">
             {{ __('Related merge requests') }}
-          </span>
-          <div v-if="totalCount" class="d-inline-flex lh-100 align-middle">
-            <div
-              class="mr-count-badge gl-display-inline-flex gl-align-items-center gl-py-2 gl-px-3"
-            >
-              <svg class="s16 mr-1 text-secondary">
-                <gl-icon name="merge-request" class="mr-1 text-secondary" />
-              </svg>
-              <span class="js-items-count">{{ totalCount }}</span>
-            </div>
-          </div>
+          </h3>
+          <template v-if="totalCount">
+            <gl-icon name="merge-request" class="gl-ml-5 gl-mr-2 gl-text-gray-500" />
+            <span data-testid="count">{{ totalCount }}</span>
+          </template>
         </div>
       </div>
-      <div>
-        <div v-if="isFetchingMergeRequests" class="qa-related-merge-requests-loading-icon">
-          <gl-loading-icon size="sm" label="Fetching related merge requests" class="py-2" />
-        </div>
-        <ul v-else class="content-list related-items-list">
-          <li v-for="mr in mergeRequests" :key="mr.id" class="list-item pt-0 pb-0">
-            <related-issuable-item
-              :id-key="mr.id"
-              :display-reference="mr.reference"
-              :title="mr.title"
-              :milestone="mr.milestone"
-              :assignees="getAssignees(mr)"
-              :created-at="mr.created_at"
-              :closed-at="mr.closed_at"
-              :merged-at="mr.merged_at"
-              :path="mr.web_url"
-              :state="mr.state"
-              :is-merge-request="true"
-              :pipeline-status="mr.head_pipeline && mr.head_pipeline.detailed_status"
-              path-id-separator="!"
-            />
-          </li>
-        </ul>
-      </div>
+      <gl-loading-icon
+        v-if="isFetchingMergeRequests"
+        size="sm"
+        label="Fetching related merge requests"
+        class="gl-py-3"
+      />
+      <ul v-else class="content-list related-items-list">
+        <li v-for="mr in mergeRequests" :key="mr.id" class="list-item gl-m-0! gl-p-0!">
+          <related-issuable-item
+            :id-key="mr.id"
+            :display-reference="mr.reference"
+            :title="mr.title"
+            :milestone="mr.milestone"
+            :assignees="getAssignees(mr)"
+            :created-at="mr.created_at"
+            :closed-at="mr.closed_at"
+            :merged-at="mr.merged_at"
+            :path="mr.web_url"
+            :state="mr.state"
+            :is-merge-request="true"
+            :pipeline-status="mr.head_pipeline && mr.head_pipeline.detailed_status"
+            path-id-separator="!"
+          />
+        </li>
+      </ul>
     </div>
     <div
       v-if="hasClosingMergeRequest && !isFetchingMergeRequests"

@@ -1,5 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
@@ -70,6 +71,7 @@ describe('App component', () => {
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
+  const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
     const selector = `a[href="${href}"]`;
     const link = container.find(selector);
@@ -170,6 +172,43 @@ describe('App component', () => {
     it('should not show configuration History Link when gitlabCiPresent & gitlabCiHistoryPath are not defined', () => {
       expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
+    });
+  });
+
+  describe('Manage via MR Error Alert', () => {
+    beforeEach(() => {
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+      });
+    });
+
+    describe('on initial load', () => {
+      it('should  not show Manage via MR Error Alert', () => {
+        expect(findManageViaMRErrorAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when error occurs', () => {
+      it('should show Alert with error Message', async () => {
+        expect(findManageViaMRErrorAlert().exists()).toBe(false);
+        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+
+        await nextTick();
+        expect(findManageViaMRErrorAlert().exists()).toBe(true);
+        expect(findManageViaMRErrorAlert().text()).toEqual('There was a manage via MR error');
+      });
+
+      it('should hide Alert when it is dismissed', async () => {
+        findFeatureCards().at(1).vm.$emit('error', 'There was a manage via MR error');
+
+        await nextTick();
+        expect(findManageViaMRErrorAlert().exists()).toBe(true);
+
+        findManageViaMRErrorAlert().vm.$emit('dismiss');
+        await nextTick();
+        expect(findManageViaMRErrorAlert().exists()).toBe(false);
+      });
     });
   });
 

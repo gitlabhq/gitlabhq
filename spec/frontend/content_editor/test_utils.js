@@ -119,3 +119,26 @@ export const createTestContentEditorExtension = ({ commands = [] } = {}) => {
     },
   };
 };
+
+export const triggerNodeInputRule = ({ tiptapEditor, inputRuleText }) => {
+  const { view } = tiptapEditor;
+  const { state } = tiptapEditor;
+  const { selection } = state;
+
+  // Triggers the event handler that input rules listen to
+  view.someProp('handleTextInput', (f) => f(view, selection.from, selection.to, inputRuleText));
+};
+
+export const triggerMarkInputRule = ({ tiptapEditor, inputRuleText }) => {
+  const { view } = tiptapEditor;
+
+  tiptapEditor.chain().setContent(inputRuleText).setTextSelection(0).run();
+
+  const { state } = tiptapEditor;
+  const { selection } = state;
+
+  // Triggers the event handler that input rules listen to
+  view.someProp('handleTextInput', (f) =>
+    f(view, selection.from, inputRuleText.length + 1, inputRuleText),
+  );
+};

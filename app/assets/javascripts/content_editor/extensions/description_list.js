@@ -1,7 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core';
-import { wrappingInputRule } from 'prosemirror-inputrules';
-
-export const inputRegex = /^\s*(<dl>)$/;
+import { Node, mergeAttributes, wrappingInputRule } from '@tiptap/core';
 
 export default Node.create({
   name: 'descriptionList',
@@ -18,6 +15,8 @@ export default Node.create({
   },
 
   addInputRules() {
-    return [wrappingInputRule(inputRegex, this.type)];
+    const inputRegex = /^\s*(<dl>)$/;
+
+    return [wrappingInputRule({ find: inputRegex, type: this.type })];
   },
 });
