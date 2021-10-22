@@ -71,7 +71,7 @@ To work on GitLab itself, we recommend setting up your development environment w
 If you do not use the GitLab Development Kit you need to install and configure all the dependencies yourself, this is a lot of work and error prone.
 One small thing you also have to do when installing it yourself is to copy the example development Puma configuration file:
 
-    cp config/puma.rb.example.development config/puma.rb
+    cp config/puma.example.development.rb config/puma.rb
 
 Instructions on how to start GitLab and how to run the tests can be found in the [getting started section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#getting-started).
 

@@ -147,8 +147,18 @@ module Gitlab
         options = options.merge({ algorithm: :concurrently })
 
         if index_exists?(table_name, column_name, **options)
-          Gitlab::AppLogger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
-          return
+          name = options[:name] || index_name(table_name, column_name)
+          _, schema = table_name.to_s.split('.').reverse
+
+          if index_invalid?(name, schema: schema)
+            say "Index being recreated because the existing version was INVALID: table_name: #{table_name}, column_name: #{column_name}"
+
+            remove_concurrent_index_by_name(table_name, name)
+          else
+            say "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
+
+            return
+          end
         end
 
         disable_statement_timeout do
@@ -157,6 +167,23 @@ module Gitlab
 
         # We created this index. Now let's remove the queuing entry for async creation in case it's still there.
         unprepare_async_index(table_name, column_name, **options)
+      end
+
+      def index_invalid?(index_name, schema: nil)
+        index_name = connection.quote(index_name)
+        schema = connection.quote(schema) if schema
+        schema ||= 'current_schema()'
+
+        connection.select_value(<<~SQL)
+          select not i.indisvalid
+          from pg_class c
+          inner join pg_index i
+            on c.oid = i.indexrelid
+          inner join pg_namespace n
+            on n.oid = c.relnamespace
+          where n.nspname = #{schema}
+            and c.relname = #{index_name}
+        SQL
       end
 
       # Removes an existed index, concurrently

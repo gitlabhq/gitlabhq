@@ -282,6 +282,11 @@ export const tokenValuePlain = {
   value: { data: 'foo' },
 };
 
+export const tokenValueEmpty = {
+  type: 'filtered-search-term',
+  value: { data: '' },
+};
+
 export const tokenValueEpic = {
   type: 'epic_iid',
   value: {

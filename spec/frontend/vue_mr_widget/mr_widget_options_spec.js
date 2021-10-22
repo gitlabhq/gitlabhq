@@ -1,4 +1,4 @@
-import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -912,6 +912,10 @@ describe('MrWidgetOptions', () => {
         .trigger('click');
 
       await Vue.nextTick();
+
+      expect(
+        wrapper.find('[data-testid="widget-extension-top-level"]').find(GlDropdown).exists(),
+      ).toBe(false);
 
       const collapsedSection = wrapper.find('[data-testid="widget-extension-collapsed-section"]');
       expect(collapsedSection.exists()).toBe(true);

@@ -30,7 +30,7 @@ export default {
 <template>
   <div>
     <gl-dropdown
-      v-if="tertiaryButtons"
+      v-if="tertiaryButtons.length"
       :text="dropdownLabel"
       icon="ellipsis_v"
       no-caret

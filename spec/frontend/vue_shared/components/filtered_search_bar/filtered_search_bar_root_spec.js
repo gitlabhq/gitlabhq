@@ -25,6 +25,7 @@ import {
   tokenValueMilestone,
   tokenValueMembership,
   tokenValueConfidential,
+  tokenValueEmpty,
 } from './mock_data';
 
 jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', () => ({
@@ -43,6 +44,7 @@ const createComponent = ({
   recentSearchesStorageKey = 'requirements',
   tokens = mockAvailableTokens,
   sortOptions,
+  initialFilterValue = [],
   showCheckbox = false,
   checkboxChecked = false,
   searchInputPlaceholder = 'Filter requirements',
@@ -55,6 +57,7 @@ const createComponent = ({
       recentSearchesStorageKey,
       tokens,
       sortOptions,
+      initialFilterValue,
       showCheckbox,
       checkboxChecked,
       searchInputPlaceholder,
@@ -193,19 +196,27 @@ describe('FilteredSearchBarRoot', () => {
 
   describe('watchers', () => {
     describe('filterValue', () => {
-      it('emits component event `onFilter` with empty array when `filterValue` is cleared by GlFilteredSearch', () => {
+      it('emits component event `onFilter` with empty array and false when filter was never selected', () => {
+        wrapper = createComponent({ initialFilterValue: [tokenValueEmpty] });
         wrapper.setData({
           initialRender: false,
-          filterValue: [
-            {
-              type: 'filtered-search-term',
-              value: { data: '' },
-            },
-          ],
+          filterValue: [tokenValueEmpty],
         });
 
         return wrapper.vm.$nextTick(() => {
-          expect(wrapper.emitted('onFilter')[0]).toEqual([[]]);
+          expect(wrapper.emitted('onFilter')[0]).toEqual([[], false]);
+        });
+      });
+
+      it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', () => {
+        wrapper = createComponent({ initialFilterValue: [tokenValueLabel] });
+        wrapper.setData({
+          initialRender: false,
+          filterValue: [tokenValueEmpty],
+        });
+
+        return wrapper.vm.$nextTick(() => {
+          expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
         });
       });
     });

@@ -267,8 +267,8 @@ RSpec.describe Spam::SpamVerdictService do
           where(:verdict_value, :expected) do
             ::Spam::SpamConstants::ALLOW               | ::Spam::SpamConstants::ALLOW
             ::Spam::SpamConstants::CONDITIONAL_ALLOW   | ::Spam::SpamConstants::CONDITIONAL_ALLOW
-            ::Spam::SpamConstants::DISALLOW            | ::Spam::SpamConstants::CONDITIONAL_ALLOW
-            ::Spam::SpamConstants::BLOCK_USER          | ::Spam::SpamConstants::CONDITIONAL_ALLOW
+            ::Spam::SpamConstants::DISALLOW            | ::Spam::SpamConstants::DISALLOW
+            ::Spam::SpamConstants::BLOCK_USER          | ::Spam::SpamConstants::BLOCK_USER
           end
           # rubocop: enable Lint/BinaryOperatorWithIdenticalOperands
 

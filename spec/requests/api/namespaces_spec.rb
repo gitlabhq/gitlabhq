@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Namespaces do
-  let(:admin) { create(:admin) }
-  let(:user) { create(:user) }
-  let!(:group1) { create(:group, name: 'group.one') }
-  let!(:group2) { create(:group, :nested) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group1) { create(:group, name: 'group.one') }
+  let_it_be(:group2) { create(:group, :nested) }
+  let_it_be(:project) { create(:project, namespace: group2, name: group2.name, path: group2.path) }
+  let_it_be(:project_namespace) { create(:project_namespace, project: project) }
 
   describe "GET /namespaces" do
     context "when unauthenticated" do
@@ -26,7 +28,7 @@ RSpec.describe API::Namespaces do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
-                                                         'parent_id', 'members_count_with_descendants')
+          'parent_id', 'members_count_with_descendants')
 
         expect(user_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
       end
@@ -37,7 +39,8 @@ RSpec.describe API::Namespaces do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(Namespace.count)
+        # project namespace is excluded
+        expect(json_response.length).to eq(Namespace.count - 1)
       end
 
       it "admin: returns an array of matched namespaces" do
@@ -61,7 +64,7 @@ RSpec.describe API::Namespaces do
         owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
         expect(owned_group_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
-                                                     'parent_id', 'members_count_with_descendants')
+          'parent_id', 'members_count_with_descendants')
       end
 
       it "returns correct attributes when user cannot admin group" do
@@ -109,7 +112,8 @@ RSpec.describe API::Namespaces do
 
   describe 'GET /namespaces/:id' do
     let(:owned_group) { group1 }
-    let(:user2) { create(:user) }
+
+    let_it_be(:user2) { create(:user) }
 
     shared_examples 'can access namespace' do
       it 'returns namespace details' do
@@ -144,6 +148,16 @@ RSpec.describe API::Namespaces do
 
             it_behaves_like 'can access namespace'
           end
+
+          context 'when requesting project_namespace' do
+            let(:namespace_id) { project_namespace.id }
+
+            it 'returns not-found' do
+              get api("/namespaces/#{namespace_id}", request_actor)
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
         end
 
         context 'when requested by path' do
@@ -158,6 +172,16 @@ RSpec.describe API::Namespaces do
             let(:requested_namespace) { request_actor.namespace }
 
             it_behaves_like 'can access namespace'
+          end
+
+          context 'when requesting project_namespace' do
+            let(:namespace_id) { project_namespace.full_path }
+
+            it 'returns not-found' do
+              get api("/namespaces/#{namespace_id}", request_actor)
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
           end
         end
       end
@@ -174,6 +198,12 @@ RSpec.describe API::Namespaces do
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api("/namespaces/#{group1.id}")
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns authentication error' do
+        get api("/namespaces/#{project_namespace.id}")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -231,10 +261,10 @@ RSpec.describe API::Namespaces do
   end
 
   describe 'GET /namespaces/:namespace/exists' do
-    let!(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
-    let!(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
-    let!(:namespace1sub) { create(:group, name: 'Sub Namespace 1', path: 'sub-namespace-1', parent: namespace1) }
-    let!(:namespace2sub) { create(:group, name: 'Sub Namespace 2', path: 'sub-namespace-2', parent: namespace2) }
+    let_it_be(:namespace1) { create(:group, name: 'Namespace 1', path: 'namespace-1') }
+    let_it_be(:namespace2) { create(:group, name: 'Namespace 2', path: 'namespace-2') }
+    let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace 1', path: 'sub-namespace-1', parent: namespace1) }
+    let_it_be(:namespace2sub) { create(:group, name: 'Sub Namespace 2', path: 'sub-namespace-2', parent: namespace2) }
 
     context 'when unauthenticated' do
       it 'returns authentication error' do

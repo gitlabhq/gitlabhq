@@ -143,7 +143,10 @@ export default {
         :is-loading="isLoadingSummary"
         :icon-name="statusIconName"
       />
-      <div class="media-body gl-display-flex gl-flex-direction-row!">
+      <div
+        class="media-body gl-display-flex gl-flex-direction-row!"
+        data-testid="widget-extension-top-level"
+      >
         <div class="gl-flex-grow-1">
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <div v-else v-safe-html="summary(collapsedData)"></div>

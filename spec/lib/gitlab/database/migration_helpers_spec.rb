@@ -271,12 +271,92 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         model.add_concurrent_index(:users, :foo, unique: true)
       end
 
-      it 'does nothing if the index exists already' do
-        expect(model).to receive(:index_exists?)
-          .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
-        expect(model).not_to receive(:add_index)
+      context 'when the index exists and is valid' do
+        before do
+          model.add_index :users, :id, unique: true
+        end
 
-        model.add_concurrent_index(:users, :foo, unique: true)
+        it 'does leaves the existing index' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :id, { algorithm: :concurrently, unique: true }).and_call_original
+
+          expect(model).not_to receive(:remove_index)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :id, unique: true)
+        end
+      end
+
+      context 'when an invalid copy of the index exists' do
+        before do
+          model.add_index :users, :id, unique: true, name: index_name
+
+          model.connection.execute(<<~SQL)
+            UPDATE pg_index
+            SET indisvalid = false
+            WHERE indexrelid = '#{index_name}'::regclass
+          SQL
+        end
+
+        context 'when the default name is used' do
+          let(:index_name) { model.index_name(:users, :id) }
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :id, { algorithm: :concurrently, unique: true }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: nil).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(:users, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(:users, :id, { algorithm: :concurrently, unique: true })
+
+            model.add_concurrent_index(:users, :id, unique: true)
+          end
+        end
+
+        context 'when a custom name is used' do
+          let(:index_name) { 'my_test_index' }
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :id, { algorithm: :concurrently, unique: true, name: index_name }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: nil).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(:users, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(:users, :id, { algorithm: :concurrently, unique: true, name: index_name })
+
+            model.add_concurrent_index(:users, :id, unique: true, name: index_name)
+          end
+        end
+
+        context 'when a qualified table name is used' do
+          let(:other_schema) { 'foo_schema' }
+          let(:index_name) { 'my_test_index' }
+          let(:table_name) { "#{other_schema}.users" }
+
+          before do
+            model.connection.execute(<<~SQL)
+              CREATE SCHEMA #{other_schema};
+              ALTER TABLE users SET SCHEMA #{other_schema};
+            SQL
+          end
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(table_name, :id, { algorithm: :concurrently, unique: true, name: index_name }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: other_schema).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(table_name, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(table_name, :id, { algorithm: :concurrently, unique: true, name: index_name })
+
+            model.add_concurrent_index(table_name, :id, unique: true, name: index_name)
+          end
+        end
       end
 
       it 'unprepares the async index creation' do

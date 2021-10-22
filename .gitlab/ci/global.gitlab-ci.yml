@@ -44,6 +44,7 @@
     prefix: "gitaly-binaries"
   paths:
     - tmp/tests/gitaly/_build/bin/
+    - tmp/tests/gitaly/_build/deps/git/install/
     - tmp/tests/gitaly/config.toml
     - tmp/tests/gitaly/gitaly2.config.toml
     - tmp/tests/gitaly/internal/

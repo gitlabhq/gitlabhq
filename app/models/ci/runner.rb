@@ -96,6 +96,7 @@ module Ci
       union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
 
       from("(#{union_sql}) #{table_name}")
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {

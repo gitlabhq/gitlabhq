@@ -37,7 +37,7 @@ module API
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
 
-        namespaces = namespaces.include_route
+        namespaces = namespaces.without_project_namespaces.include_route
 
         namespaces = namespaces.include_gitlab_subscription_with_hosted_plan if Gitlab.ee?
 
