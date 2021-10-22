@@ -33,7 +33,7 @@ module Gitlab
       end
 
       def fetch_issue(issue_id)
-        raise Gitlab::Zentao::Client::Error unless issue_id_pattern.match(issue_id)
+        raise Gitlab::Zentao::Client::Error, 'invalid issue id' unless issue_id_pattern.match(issue_id)
 
         get("issues/#{issue_id}")
       end
@@ -48,11 +48,11 @@ module Gitlab
         options = { headers: headers, query: params }
         response = Gitlab::HTTP.get(url(path), options)
 
-        raise Gitlab::Zentao::Client::Error unless response.success?
+        raise Gitlab::Zentao::Client::Error, 'request error' unless response.success?
 
         Gitlab::Json.parse(response.body)
       rescue JSON::ParserError
-        raise Gitlab::Zentao::Client::Error
+        raise Gitlab::Zentao::Client::Error, 'invalid response format'
       end
 
       def url(path)

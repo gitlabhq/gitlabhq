@@ -111,12 +111,9 @@ To generate an API Fuzzing configuration snippet:
 
 ### OpenAPI Specification
 
-> Support for OpenAPI Specification v3.1 was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
-> Support for OpenAPI Specification using YAML format was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
-> Support for OpenAPI Specification v3.0 was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
+> - Support for OpenAPI Specification v3.0 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
+> - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
+> - Support for OpenAPI Specification v3.1 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
@@ -214,7 +211,7 @@ To configure API fuzzing to use a HAR file:
    ```
 
 1. Provide the location of the HAR specification. You can provide the specification as a file
-   or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
+   or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
    in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_HAR` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
@@ -285,7 +282,7 @@ To configure API fuzzing to use a Postman Collection file:
    ```
 
 1. Provide the location of the Postman Collection specification. You can provide the specification
-   as a file or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
+   as a file or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
    in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
    variable.
 
@@ -613,15 +610,15 @@ Overrides use a JSON document, where each type of override is represented by a J
   },
   "body-form":  {
     "form-param1": "value",
-    "form-param1": "value",
+    "form-param2": "value"
   },
   "body-json":  {
     "json-path1": "value",
-    "json-path2": "value",
+    "json-path2": "value"
   },
   "body-xml" :  {
     "xpath1":    "value",
-    "xpath2":    "value",
+    "xpath2":    "value"
   }
 }
 ```
@@ -975,7 +972,7 @@ reported.
 
 ### View details of an API Fuzzing vulnerability
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+> Introduced in GitLab 13.7.
 
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a

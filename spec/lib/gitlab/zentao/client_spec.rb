@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Zentao::Client do
       it 'fetches the empty product' do
         expect do
           integration.fetch_product(zentao_integration.zentao_product_xid)
-        end.to raise_error(Gitlab::Zentao::Client::Error)
+        end.to raise_error(Gitlab::Zentao::Client::Error, 'request error')
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Zentao::Client do
       it 'fetches the empty product' do
         expect do
           integration.fetch_product(zentao_integration.zentao_product_xid)
-        end.to raise_error(Gitlab::Zentao::Client::Error)
+        end.to raise_error(Gitlab::Zentao::Client::Error, 'invalid response format')
       end
     end
   end
@@ -111,7 +111,8 @@ RSpec.describe Gitlab::Zentao::Client do
 
       it 'returns empty object' do
         invalid_ids.each do |id|
-          expect { integration.fetch_issue(id) }.to raise_error(Gitlab::Zentao::Client::Error)
+          expect { integration.fetch_issue(id) }
+            .to raise_error(Gitlab::Zentao::Client::Error, 'invalid issue id')
         end
       end
     end

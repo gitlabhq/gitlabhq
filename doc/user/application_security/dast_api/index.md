@@ -681,15 +681,15 @@ Overrides use a JSON document, where each type of override is represented by a J
   },
   "body-form":  {
     "form-param1": "value",
-    "form-param1": "value",
+    "form-param2": "value"
   },
   "body-json":  {
     "json-path1": "value",
-    "json-path2": "value",
+    "json-path2": "value"
   },
   "body-xml" :  {
     "xpath1":    "value",
-    "xpath2":    "value",
+    "xpath2":    "value"
   }
 }
 ```
@@ -968,16 +968,16 @@ Follow these steps to view details of a vulnerability:
 
    | Field               | Description                                                                             |
    |:--------------------|:----------------------------------------------------------------------------------------|
-   | Description         | Description of the vulnerability including what was modified.                                   |
+   | Description         | Description of the vulnerability including what was modified.                           |
    | Project             | Namespace and project in which the vulnerability was detected.                          |
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
-   | Request             | The HTTP request that caused the vulnerability.                                                 |
+   | Request             | The HTTP request that caused the vulnerability.                                         |
    | Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
-   | Actual Response     | Response received from test request.                                                  |
-   | Evidence            | How we determined a vulnerability occurred.                                                     |
-   | Identifiers         | The DAST API check used to find this vulnerability.                                              |
-   | Severity            | Severity of the vulnerability.                                              |
+   | Actual Response     | Response received from test request.                                                    |
+   | Evidence            | How we determined a vulnerability occurred.                                             |
+   | Identifiers         | The DAST API check used to find this vulnerability.                                     |
+   | Severity            | Severity of the vulnerability.                                                          |
    | Scanner Type        | Scanner used to perform testing.                                                        |
 
 ### Security Dashboard
@@ -1139,7 +1139,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 **Error message**
 
 - In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found.  Are you sure that you are connecting to the API Security server?`.
+- In GitLab 13.10 and earlier, `API Security version header not found. Are you sure that you are connecting to the API Security server?`.
 
 **Solution**
 

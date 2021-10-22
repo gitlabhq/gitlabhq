@@ -320,8 +320,8 @@ tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/20
 
 ### API scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - A new DAST API scanning engine was introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in GitLab 12.10.
+> - A new DAST API scanning engine was introduced in GitLab 13.10.
 
 Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
 Vulnerability rules in an API scan are different than those in a normal website scan.
@@ -416,7 +416,7 @@ variables:
 
 ### URL scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/273141) in GitLab 13.11.
 
 A URL scan allows you to specify which parts of a website are scanned by DAST.
@@ -492,7 +492,7 @@ Click **View details** to view the web console output which includes the list of
 
 ### View details of a vulnerability detected by DAST
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 Vulnerabilities detected by DAST occur in the live web application. Addressing these types of
 vulnerabilities requires specific information. DAST provides the information required to

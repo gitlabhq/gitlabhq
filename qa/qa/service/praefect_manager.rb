@@ -376,7 +376,6 @@ module QA
             select job from replication_queue
             where state = 'ready'
               and job ->> 'change' = 'update'
-              and job ->> 'source_node_storage' = '#{current_primary_node}'
               and job ->> 'target_node_storage' = '#{@primary_node}';
           SQL
         ) do |line|

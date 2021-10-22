@@ -146,7 +146,7 @@ corpus.
 
 ### Reports JSON format
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
 
 The `gitlab-cov-fuzz` tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).
