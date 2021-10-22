@@ -20,7 +20,7 @@ describe('GlobalSearchSidebar', () => {
   const createComponent = (initialState) => {
     const store = new Vuex.Store({
       state: {
-        query: MOCK_QUERY,
+        urlQuery: MOCK_QUERY,
         ...initialState,
       },
       actions: actionSpies,
@@ -84,7 +84,7 @@ describe('GlobalSearchSidebar', () => {
   describe('ResetLinkButton', () => {
     describe('with no filter selected', () => {
       beforeEach(() => {
-        createComponent({ query: {} });
+        createComponent({ urlQuery: {} });
       });
 
       it('does not render', () => {
@@ -94,10 +94,20 @@ describe('GlobalSearchSidebar', () => {
 
     describe('with filter selected', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({ urlQuery: MOCK_QUERY });
       });
 
-      it('does render when a filter selected', () => {
+      it('does render', () => {
+        expect(findResetLinkButton().exists()).toBe(true);
+      });
+    });
+
+    describe('with filter selected and user updated query back to default', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: MOCK_QUERY, query: {} });
+      });
+
+      it('does render', () => {
         expect(findResetLinkButton().exists()).toBe(true);
       });
     });

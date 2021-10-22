@@ -15,17 +15,16 @@ export default (containerId = 'update-shared-runners-form') => {
 
   return new Vue({
     el: containerEl,
+    provide: {
+      updatePath,
+      sharedRunnersAvailability,
+      parentSharedRunnersAvailability,
+      runnerEnabled,
+      runnerDisabled,
+      runnerAllowOverride,
+    },
     render(createElement) {
-      return createElement(UpdateSharedRunnersForm, {
-        provide: {
-          updatePath,
-          sharedRunnersAvailability,
-          parentSharedRunnersAvailability,
-          runnerEnabled,
-          runnerDisabled,
-          runnerAllowOverride,
-        },
-      });
+      return createElement(UpdateSharedRunnersForm);
     },
   });
 };

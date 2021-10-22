@@ -13,9 +13,9 @@ export default {
     ConfidentialityFilter,
   },
   computed: {
-    ...mapState(['query', 'sidebarDirty']),
+    ...mapState(['urlQuery', 'sidebarDirty']),
     showReset() {
-      return this.query.state || this.query.confidential;
+      return this.urlQuery.state || this.urlQuery.confidential;
     },
   },
   methods: {
