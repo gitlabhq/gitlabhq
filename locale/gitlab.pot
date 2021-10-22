@@ -12890,7 +12890,9 @@ msgid "Enterprise"
 msgstr ""
 
 msgid "Environment"
-msgstr ""
+msgid_plural "Environments"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Environment does not have deployments"
 msgstr ""
@@ -22591,9 +22593,6 @@ msgstr ""
 msgid "NetworkPolicies|Edit policy"
 msgstr ""
 
-msgid "NetworkPolicies|Enforcement status"
-msgstr ""
-
 msgid "NetworkPolicies|Environment does not have deployment platform"
 msgstr ""
 
@@ -30242,16 +30241,19 @@ msgstr ""
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
+msgid "SecurityOrchestration|Disabled"
+msgstr ""
+
 msgid "SecurityOrchestration|Edit policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit policy project"
 msgstr ""
 
-msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
+msgid "SecurityOrchestration|Enabled"
 msgstr ""
 
-msgid "SecurityOrchestration|Enforcement Status"
+msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|Executes a %{scanType} scan"
@@ -30318,6 +30320,9 @@ msgid "SecurityOrchestration|Select security project"
 msgstr ""
 
 msgid "SecurityOrchestration|Sorry, your filter produced no results."
+msgstr ""
+
+msgid "SecurityOrchestration|Status"
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"

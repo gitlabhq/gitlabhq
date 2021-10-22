@@ -79,7 +79,7 @@ module Gitlab
           if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
             self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
 
-            record_apdex_if_needed(env, elapsed)
+            record_apdex(env, elapsed)
           end
 
           [status, headers, body]
@@ -113,9 +113,7 @@ module Gitlab
         ::Gitlab::ApplicationContext.current_context_attribute(:caller_id)
       end
 
-      def record_apdex_if_needed(env, elapsed)
-        return unless Gitlab::Metrics::RailsSlis.request_apdex_counters_enabled?
-
+      def record_apdex(env, elapsed)
         urgency = urgency_for_env(env)
 
         Gitlab::Metrics::RailsSlis.request_apdex.increment(

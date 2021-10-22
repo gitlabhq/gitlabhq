@@ -39,15 +39,6 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
 
       described_class.initialize_request_slis_if_needed!
     end
-
-    it 'does not initialize anything if the feature flag is disabled' do
-      stub_feature_flags(request_apdex_counters: false)
-
-      expect(Gitlab::Metrics::Sli).not_to receive(:initialize_sli)
-      expect(Gitlab::Metrics::Sli).not_to receive(:initialized?)
-
-      described_class.initialize_request_slis_if_needed!
-    end
   end
 
   describe '.request_apdex' do

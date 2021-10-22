@@ -97,7 +97,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         end
       end
 
-      it 'shows data on each stage', :sidekiq_might_not_need_inline do
+      it 'shows data on each stage', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
         expect_issue_to_be_present
 
         click_stage('Plan')
@@ -133,7 +133,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         expect(metrics_values).to eq(['-'] * 4)
       end
 
-      it 'can sort records' do
+      it 'can sort records', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
         # NOTE: checking that the string changes should suffice
         # depending on the order the tests are run we might run into problems with hard coded strings
         original_first_title = first_stage_title

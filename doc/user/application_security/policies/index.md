@@ -118,9 +118,9 @@ examining the Cilium logs:
 kubectl -n gitlab-managed-apps logs -l k8s-app=cilium -c cilium-monitor
 ```
 
-### Change the enforcement status
+### Change the status
 
-To change a network policy's enforcement status:
+To change a network policy's status:
 
 - Select the network policy you want to update.
 - Select **Edit policy**.

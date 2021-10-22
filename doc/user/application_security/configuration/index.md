@@ -7,9 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Security Configuration **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.6. **(ULTIMATE)**
-> - SAST configuration was [enabled](https://gitlab.com/groups/gitlab-org/-/epics/3659) in 13.3 and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in 13.4. **(ULTIMATE)**
-> - DAST Profiles feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40474) in 13.4. **(ULTIMATE)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in GitLab 12.6.
+> - SAST configuration was [enabled](https://gitlab.com/groups/gitlab-org/-/epics/3659) in 13.3 and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in 13.4.
+> - DAST Profiles feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40474) in 13.4.
 > - A simplified version was made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/294076) in GitLab 13.10.
 > - [Redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in 14.2.
 
@@ -38,31 +38,31 @@ Select **Configuration history** to see the `.gitlab-ci.yml` file's history.
 
 You can configure the following security controls:
 
-- Static Application Security Testing (SAST) **(FREE)**
+- [Static Application Security Testing](../sast/index.md) (SAST)
   - Select **Enable SAST** to configure SAST for the current project.
     For more details, read [Configure SAST in the UI](../sast/index.md#configure-sast-in-the-ui).
-- Dynamic Application Security Testing (DAST) **(ULTIMATE)**
+- [Dynamic Application Security Testing](../dast/index.md) (DAST)
   - Select **Enable DAST** to configure DAST for the current project.
   - Select **Manage scans** to manage the saved DAST scans, site profiles, and scanner profiles.
     For more details, read [DAST on-demand scans](../dast/index.md#on-demand-scans).
-- Dependency Scanning **(ULTIMATE)**
+- [Dependency Scanning](../dependency_scanning/index.md)
   - Select **Configure via Merge Request** to create a merge request with the changes required to
     enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
-- Container Scanning **(ULTIMATE)**
+- [Container Scanning](../container_scanning/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Container Scanning](../../../user/application_security/container_scanning/index.md#configuration).
-- Cluster Image Scanning **(ULTIMATE)**
+- [Cluster Image Scanning](../cluster_image_scanning/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Cluster Image Scanning](../../../user/application_security/cluster_image_scanning/#configuration).
-- Secret Detection
+- [Secret Detection](../secret_detection/index.md)
   - Select **Configure via Merge Request** to create a merge request with the changes required to
     enable Secret Detection. For more details, read [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).
-- API Fuzzing **(ULTIMATE)**
+- [API Fuzzing](../api_fuzzing/index.md)
   - Select **Enable API Fuzzing** to use API Fuzzing for the current project. For more details, read [API Fuzzing](../../../user/application_security/api_fuzzing/index.md#enable-web-api-fuzzing).
-- Coverage Fuzzing **(ULTIMATE)**
+- [Coverage Fuzzing](../coverage_fuzzing/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#configuration).
 
 ## Compliance **(ULTIMATE)**
 
 You can configure the following security controls:
 
-- License Compliance **(ULTIMATE)**
+- [License Compliance](../../../user/compliance/license_compliance/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [License Compliance](../../../user/compliance/license_compliance/index.md#configuration).

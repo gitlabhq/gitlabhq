@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency list **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab Ultimate 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10075) in GitLab 12.0.
 
 Use the dependency list to review your project's dependencies and key
 details about those dependencies, including their known vulnerabilities. It is a collection of dependencies in your project, including existing and new findings.
@@ -66,7 +66,7 @@ Dependency paths are supported for the following package managers:
 
 ## Licenses
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab Ultimate 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab 12.3.
 
 If the [License Compliance](../../compliance/license_compliance/index.md) CI job is configured,
 [discovered licenses](../../compliance/license_compliance/index.md#supported-languages-and-package-managers) are displayed on this page.

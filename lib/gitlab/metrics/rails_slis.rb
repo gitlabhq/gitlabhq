@@ -4,12 +4,7 @@ module Gitlab
   module Metrics
     module RailsSlis
       class << self
-        def request_apdex_counters_enabled?
-          Feature.enabled?(:request_apdex_counters)
-        end
-
         def initialize_request_slis_if_needed!
-          return unless request_apdex_counters_enabled?
           return if Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
 
           Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels)

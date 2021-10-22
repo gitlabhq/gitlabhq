@@ -7,8 +7,8 @@ type: reference, howto
 
 # Static Application Security Testing (SAST) **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
-> - All open source (OSS) analyzers were moved to GitLab Free in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3775) in GitLab 10.3.
+> - All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -20,7 +20,7 @@ Testing (SAST) to check your source code for known vulnerabilities. When a pipel
 the results of the SAST analysis are processed and shown in the pipeline's Security tab. If the
 pipeline is associated with a merge request, the SAST analysis is compared with the results of
 the target branch's analysis (if available). The results of that comparison are shown in the merge
-request. **(ULTIMATE)** If the pipeline is running from the default branch, the results of the SAST
+request. If the pipeline is running from the default branch, the results of the SAST
 analysis are available in the [security dashboards](../security_dashboard/index.md).
 
 ![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
@@ -197,7 +197,7 @@ Use the method that best meets your needs.
 - [Configure SAST in the UI with default settings](#configure-sast-in-the-ui-with-default-settings)
 - [Configure SAST in the UI with customizations](#configure-sast-in-the-ui-with-customizations)
 
-### Configure SAST in the UI with default settings **(FREE)**
+### Configure SAST in the UI with default settings
 
 > [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
 
@@ -217,9 +217,9 @@ successfully, and an error may occur.
 
 ### Configure SAST in the UI with customizations **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab Ultimate 13.3.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab Ultimate 13.4.
-> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab Ultimate 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3659) in GitLab 13.3.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in GitLab 13.4.
+> - [Improved](https://gitlab.com/groups/gitlab-org/-/epics/3635) in GitLab 13.5.
 
 To enable and configure SAST with customizations:
 
@@ -402,7 +402,7 @@ To create a custom ruleset:
 
 ### False Positive Detection **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292686) in GitLab 14.2.
+> Introduced in GitLab 14.2.
 
 Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
 
@@ -423,7 +423,7 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 ### Enabling Kubesec analyzer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab Ultimate 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab 12.6.
 
 You need to set `SCAN_KUBERNETES_MANIFESTS` to `"true"` to enable the
 Kubesec analyzer. In `.gitlab-ci.yml`, define:
@@ -569,7 +569,7 @@ Some analyzers can be customized with CI/CD variables.
 
 #### Custom CI/CD variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab Ultimate 12.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab 12.5.
 
 In addition to the aforementioned SAST configuration CI/CD variables,
 all [custom variables](../../../ci/variables/index.md#custom-cicd-variables) are propagated

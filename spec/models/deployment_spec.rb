@@ -851,6 +851,12 @@ RSpec.describe Deployment do
     context 'with created deployment' do
       let(:deployment_status) { :created }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -873,12 +879,16 @@ RSpec.describe Deployment do
     context 'with running deployment' do
       let(:deployment_status) { :running }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"run\"} }
-        end
+        it_behaves_like 'ignoring build'
       end
 
       context 'with finished build' do
@@ -897,6 +907,12 @@ RSpec.describe Deployment do
     context 'with finished deployment' do
       let(:deployment_status) { :success }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -908,9 +924,13 @@ RSpec.describe Deployment do
       context 'with finished build' do
         let(:build_status) { :success }
 
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"succeed\"} }
-        end
+        it_behaves_like 'ignoring build'
+      end
+
+      context 'with failed build' do
+        let(:build_status) { :failed }
+
+        it_behaves_like 'synchronizing deployment'
       end
 
       context 'with unrelated build' do

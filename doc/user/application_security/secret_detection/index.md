@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection **(FREE)**
 
-> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
-> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) in 13.3.
+> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in GitLab 11.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab Free in 13.3.
 
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
@@ -138,9 +138,9 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
-### Enable Secret Detection via an automatic merge request **(FREE)**
+### Enable Secret Detection via an automatic merge request
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, behind a feature flag, enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
 To enable Secret Detection in a project, you can create a merge request

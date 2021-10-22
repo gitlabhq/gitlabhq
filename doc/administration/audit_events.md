@@ -240,7 +240,7 @@ The search filters you can see depends on which audit level you are at.
 | Scope (Instance level) | A specific group, project, or user that the action was scoped to. |
 | Date range | Either via the date range buttons or pickers (maximum range of 31 days). Default is from the first day of the month to today's date. |
 
-![audit events](img/audit_log_v13_6.png)
+![audit events](img/audit_events_v14_5.png)
 
 ## Export to CSV **(PREMIUM SELF)**
 

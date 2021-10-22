@@ -1,8 +1,0 @@
----
-name: request_apdex_counters
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69154
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1099
-milestone: '14.3'
-type: development
-group: team::Scalability
-default_enabled: false
