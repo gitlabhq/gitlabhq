@@ -39,7 +39,7 @@ By default, the author of a merge request cannot approve it. To change this sett
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Clear the **Prevent MR approval by the author** checkbox.
+1. Clear the **Prevent approval by author** checkbox.
 1. Select **Save changes**.
 
 Authors can edit the approval rule in an individual merge request and override
@@ -64,7 +64,7 @@ their own. To do this:
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Select the **Prevent MR approvals from users who make commits to the MR** checkbox.
+1. Select the **Prevent approvals by users who add commits** checkbox.
    If this checkbox is cleared, an administrator has disabled it
    [at the instance level](../../../admin_area/merge_requests_approvals.md), and
    it can't be changed at the project level.
@@ -84,7 +84,7 @@ on merge requests, you can disable this setting:
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Select the **Prevent users from modifying MR approval rules in merge requests** checkbox.
+1. Select the **Prevent editing approval rules in merge requests** checkbox.
 1. Select **Save changes**.
 
 This change affects all open merge requests.
@@ -102,7 +102,7 @@ permission enables an electronic signature for approvals, such as the one define
    [sign-in restrictions documentation](../../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Select the **Require user password for approvals** checkbox.
+1. Select the **Require user password to approve** checkbox.
 1. Select **Save changes**.
 
 ## Remove all approvals when commits are added to the source branch
@@ -113,7 +113,7 @@ when more changes are added to it:
 
 1. Go to your project and select **Settings > General**.
 1. Expand **Merge request (MR) approvals**.
-1. Select the **Require new approvals when new commits are added to an MR** checkbox.
+1. Select the **Remove all approvals when commits are added to the source branch** checkbox.
 1. Select **Save changes**.
 
 Approvals aren't reset when a merge request is [rebased from the UI](../fast_forward_merge.md)

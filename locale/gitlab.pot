@@ -25249,6 +25249,9 @@ msgstr ""
 msgid "Pipelines|There are currently no pipelines."
 msgstr ""
 
+msgid "Pipelines|There was a problem with loading the pipeline data."
+msgstr ""
+
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
@@ -33154,6 +33157,9 @@ msgstr ""
 msgid "Survey Response"
 msgstr ""
 
+msgid "Switch Branches"
+msgstr ""
+
 msgid "Switch branch"
 msgstr ""
 
@@ -35924,7 +35930,7 @@ msgstr ""
 msgid "TransferGroup|Group is already associated to the parent group."
 msgstr ""
 
-msgid "TransferGroup|The parent group already has a subgroup with the same path."
+msgid "TransferGroup|The parent group already has a subgroup or a project with the same path."
 msgstr ""
 
 msgid "TransferGroup|Transfer failed: %{error_message}"
@@ -36292,6 +36298,9 @@ msgstr ""
 msgid "Unable to fetch branches list, please close the form and try again"
 msgstr ""
 
+msgid "Unable to fetch upstream and downstream pipelines."
+msgstr ""
+
 msgid "Unable to fetch vulnerable projects"
 msgstr ""
 
@@ -36374,6 +36383,9 @@ msgid "Unauthenticated requests"
 msgstr ""
 
 msgid "Unauthenticated web rate limit period in seconds"
+msgstr ""
+
+msgid "Uncommitted changes will be lost if you change branches. Do you want to continue?"
 msgstr ""
 
 msgid "Undo"
@@ -39163,6 +39175,9 @@ msgid "You have successfully purchased %{product}. You'll receive a receipt by e
 msgstr ""
 
 msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email."
+msgstr ""
+
+msgid "You have unsaved changes"
 msgstr ""
 
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."

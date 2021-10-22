@@ -295,19 +295,22 @@ Examples of implementation:
 - Using Redis methods [`INCR`](https://redis.io/commands/incr), [`GET`](https://redis.io/commands/get), and [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb)
 - Using Redis methods [`HINCRBY`](https://redis.io/commands/hincrby), [`HGETALL`](https://redis.io/commands/hgetall), and [`Gitlab::UsageCounters::PodLogs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_counters/pod_logs.rb)
 
+##### `UsageData` API
+
+You can use the `UsageData` API to track events.
+To track events, the `usage_data_api` feature flag must
+be enabled (set to `default_enabled: true`).
+Enabled by default in GitLab 13.7 and later.
+
 ##### UsageData API tracking
 
-<!-- There's nearly identical content in `##### Adding new events`. If you fix errors here, you may need to fix the same errors in the other location. -->
+1. Track events using the [`UsageData` API](#usagedata-api).
 
-1. Track event using `UsageData` API
-
-   Increment event count using ordinary Redis counter, for given event name.
-
-   Tracking events using the `UsageData` API requires the `usage_data_api` feature flag to be enabled, which is enabled by default.
+   Increment event count using an ordinary Redis counter, for a given event name.
 
    API requests are protected by checking for a valid CSRF token.
 
-   To be able to increment the values, the related feature `usage_data_<event_name>` should be enabled.
+   To increment the values, the related feature `usage_data_<event_name>` must be enabled.
 
    ```plaintext
    POST /usage_data/increment_counter
@@ -315,18 +318,18 @@ Examples of implementation:
 
    | Attribute | Type | Required | Description |
    | :-------- | :--- | :------- | :---------- |
-   | `event` | string | yes | The event name it should be tracked |
+   | `event` | string | yes | The event name to track. |
 
    Response:
 
-   - `200` if event was tracked
-   - `400 Bad request` if event parameter is missing
-   - `401 Unauthorized` if user is not authenticated
-   - `403 Forbidden` for invalid CSRF token provided
+   - `200` if the event was tracked.
+   - `400 Bad request` if the event parameter is missing.
+   - `401 Unauthorized` if the user is not authenticated.
+   - `403 Forbidden` if an invalid CSRF token is provided.
 
-1. Track events using JavaScript/Vue API helper which calls the API above
+1. Track events using the JavaScript/Vue API helper which calls the [`UsageData` API](#usagedata-api).
 
-   Note that `usage_data_api` and `usage_data_#{event_name}` should be enabled to be able to track events
+   To track events, `usage_data_api` and `usage_data_#{event_name}` must be enabled.
 
    ```javascript
    import api from '~/api';
@@ -460,13 +463,9 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
        track_usage_event(:incident_management_incident_created, current_user.id)
      ```
 
-   - Using the `UsageData` API.
-     <!-- There's nearly identical content in `##### UsageData API Tracking`. If you find / fix errors here, you may need to fix errors in that section too. -->
+   - Using the [`UsageData` API](#usagedata-api).
 
      Increment unique users count using Redis HLL, for a given event name.
-
-     To track events using the `UsageData` API, ensure the `usage_data_api` feature flag
-     is set to `default_enabled: true`. Enabled by default in GitLab 13.7 and later.
 
      API requests are protected by checking for a valid CSRF token.
 
@@ -485,10 +484,7 @@ Implemented using Redis methods [PFADD](https://redis.io/commands/pfadd) and [PF
      - `401 Unauthorized` if the user is not authenticated.
      - `403 Forbidden` if an invalid CSRF token is provided.
 
-   - Using the JavaScript/Vue API helper, which calls the `UsageData` API.
-
-     To track events using the `UsageData` API, ensure the `usage_data_api` feature flag
-     is set to `default_enabled: true`. Enabled by default in GitLab 13.7 and later.
+   - Using the JavaScript/Vue API helper, which calls the [`UsageData` API](#usagedata-api).
 
      Example for an existing event already defined in [known events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/):
 

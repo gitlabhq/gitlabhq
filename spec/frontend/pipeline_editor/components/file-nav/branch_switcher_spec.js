@@ -36,8 +36,9 @@ describe('Pipeline editor branch switcher', () => {
   let mockLastCommitBranchQuery;
 
   const createComponent = (
-    { currentBranch, isQueryLoading, mountFn, options } = {
+    { currentBranch, isQueryLoading, mountFn, options, props } = {
       currentBranch: mockDefaultBranch,
+      hasUnsavedChanges: false,
       isQueryLoading: false,
       mountFn: shallowMount,
       options: {},
@@ -45,6 +46,7 @@ describe('Pipeline editor branch switcher', () => {
   ) => {
     wrapper = mountFn(BranchSwitcher, {
       propsData: {
+        ...props,
         paginationLimit: mockBranchPaginationLimit,
       },
       provide: {
@@ -70,7 +72,7 @@ describe('Pipeline editor branch switcher', () => {
     });
   };
 
-  const createComponentWithApollo = (mountFn = shallowMount) => {
+  const createComponentWithApollo = ({ mountFn = shallowMount, props = {} } = {}) => {
     const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
     const resolvers = {
       Query: {
@@ -86,6 +88,7 @@ describe('Pipeline editor branch switcher', () => {
 
     createComponent({
       mountFn,
+      props,
       options: {
         localVue,
         apolloProvider: mockApollo,
@@ -149,7 +152,7 @@ describe('Pipeline editor branch switcher', () => {
         availableBranches: mockProjectBranches,
         currentBranch: mockDefaultBranch,
       });
-      createComponentWithApollo(mount);
+      createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
 
@@ -201,7 +204,7 @@ describe('Pipeline editor branch switcher', () => {
         availableBranches: mockProjectBranches,
         currentBranch: mockDefaultBranch,
       });
-      createComponentWithApollo(mount);
+      createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
 
@@ -247,6 +250,23 @@ describe('Pipeline editor branch switcher', () => {
 
       expect(wrapper.emitted('refetchContent')).toBeUndefined();
     });
+
+    describe('with unsaved changes', () => {
+      beforeEach(async () => {
+        createComponentWithApollo({ mountFn: mount, props: { hasUnsavedChanges: true } });
+        await waitForPromises();
+      });
+
+      it('emits `select-branch` event and does not switch branch', async () => {
+        expect(wrapper.emitted('select-branch')).toBeUndefined();
+
+        const branch = findDropdownItems().at(1);
+        await branch.vm.$emit('click');
+
+        expect(wrapper.emitted('select-branch')).toEqual([[branch.text()]]);
+        expect(wrapper.emitted('refetchContent')).toBeUndefined();
+      });
+    });
   });
 
   describe('when searching', () => {
@@ -255,7 +275,7 @@ describe('Pipeline editor branch switcher', () => {
         availableBranches: mockProjectBranches,
         currentBranch: mockDefaultBranch,
       });
-      createComponentWithApollo(mount);
+      createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
     });
 
@@ -429,7 +449,7 @@ describe('Pipeline editor branch switcher', () => {
         availableBranches: mockProjectBranches,
         currentBranch: mockDefaultBranch,
       });
-      createComponentWithApollo(mount);
+      createComponentWithApollo({ mountFn: mount });
       await waitForPromises();
       await createNewBranch();
     });

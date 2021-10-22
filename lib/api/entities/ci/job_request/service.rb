@@ -6,6 +6,7 @@ module API
       module JobRequest
         class Service < Entities::Ci::JobRequest::Image
           expose :alias, :command
+          expose :variables
         end
       end
     end

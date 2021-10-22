@@ -232,7 +232,7 @@ RSpec.describe Mutations::Releases::Update do
           let(:mutation_arguments) { super().merge(project_path: 'not/a/real/path') }
 
           it 'raises an error' do
-            expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, "The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+            expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
           end
         end
       end
@@ -242,7 +242,7 @@ RSpec.describe Mutations::Releases::Update do
       let(:current_user) { reporter }
 
       it 'raises an error' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, "The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
       end
     end
   end

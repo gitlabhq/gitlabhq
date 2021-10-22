@@ -9,7 +9,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
   let(:name) { 'GitLab' }
   let(:default_rate) { 1000.to_f }
   let(:description) { 'VIP' }
-  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
+  let(:does_not_exist_or_no_permission) { Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR }
   let(:organization) { create(:organization, group: group) }
   let(:attributes) do
     {

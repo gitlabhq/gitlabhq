@@ -42,6 +42,26 @@ module API
 
           not_found! 'Blob' unless @blob
         end
+
+        def fetch_target_project(current_user, user_project, params)
+          return user_project unless params[:from_project_id].present?
+
+          MergeRequestTargetProjectFinder
+            .new(current_user: current_user, source_project: user_project, project_feature: :repository)
+            .execute(include_routes: true).find_by_id(params[:from_project_id])
+        end
+
+        def compare_cache_key(current_user, user_project, target_project, params)
+          [
+            user_project,
+            target_project,
+            current_user,
+            :repository_compare,
+            target_project.repository.commit(params[:from]),
+            user_project.repository.commit(params[:to]),
+            params
+          ]
+        end
       end
 
       desc 'Get a project repository tree' do
@@ -126,20 +146,15 @@ module API
       end
       get ':id/repository/compare' do
         ff_enabled = Feature.enabled?(:api_caching_rate_limit_repository_compare, user_project, default_enabled: :yaml)
+        target_project = fetch_target_project(current_user, user_project, params)
 
-        cache_action_if(ff_enabled, [user_project, :repository_compare, current_user, declared_params], expires_in: 1.minute) do
-          if params[:from_project_id].present?
-            target_project = MergeRequestTargetProjectFinder
-              .new(current_user: current_user, source_project: user_project, project_feature: :repository)
-              .execute(include_routes: true).find_by_id(params[:from_project_id])
+        if target_project.blank?
+          render_api_error!("Target project id:#{params[:from_project_id]} is not a fork of project id:#{params[:id]}", 400)
+        end
 
-            if target_project.blank?
-              render_api_error!("Target project id:#{params[:from_project_id]} is not a fork of project id:#{params[:id]}", 400)
-            end
-          else
-            target_project = user_project
-          end
+        cache_key = compare_cache_key(current_user, user_project, target_project, declared_params)
 
+        cache_action_if(ff_enabled, cache_key, expires_in: 1.minute) do
           compare = CompareService.new(user_project, params[:to]).execute(target_project, params[:from], straight: params[:straight])
 
           if compare

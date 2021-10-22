@@ -10,7 +10,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Update do
   let(:last_name) { 'Smith' }
   let(:email) { 'ls@gitlab.com' }
   let(:description) { 'VIP' }
-  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
+  let(:does_not_exist_or_no_permission) { Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR }
   let(:contact) { create(:contact, group: group) }
   let(:attributes) do
     {

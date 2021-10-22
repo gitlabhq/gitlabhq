@@ -14,10 +14,10 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script type image services start_in artifacts
                             cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
-                            release dast_configuration secrets].freeze
+                            release].freeze
 
           validations do
-            validates :config, allowed_keys: ALLOWED_KEYS + PROCESSABLE_ALLOWED_KEYS
+            validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
             validates :script, presence: true
 
             with_options allow_nil: true do
@@ -176,6 +176,10 @@ module Gitlab
 
           def ignored?
             allow_failure_defined? ? static_allow_failure : manual_action?
+          end
+
+          def self.allowed_keys
+            ALLOWED_KEYS
           end
 
           private

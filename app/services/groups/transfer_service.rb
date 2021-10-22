@@ -191,7 +191,7 @@ module Groups
     def localized_error_messages
       {
         database_not_supported: s_('TransferGroup|Database is not supported.'),
-        namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup with the same path.'),
+        namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup or a project with the same path.'),
         group_is_already_root: s_('TransferGroup|Group is already a root group.'),
         same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
         invalid_policies: s_("TransferGroup|You don't have enough permissions."),

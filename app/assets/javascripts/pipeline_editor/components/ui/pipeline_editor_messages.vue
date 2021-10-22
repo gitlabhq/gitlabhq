@@ -8,6 +8,7 @@ import {
   DEFAULT_FAILURE,
   DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
+  PIPELINE_FAILURE,
 } from '../../constants';
 import CodeSnippetAlert from '../code_snippet_alert/code_snippet_alert.vue';
 import {
@@ -24,6 +25,7 @@ export default {
     [COMMIT_FAILURE]: s__('Pipelines|The GitLab CI configuration could not be updated.'),
     [DEFAULT_FAILURE]: __('Something went wrong on our end.'),
     [LOAD_FAILURE_UNKNOWN]: s__('Pipelines|The CI configuration was not loaded, please try again.'),
+    [PIPELINE_FAILURE]: s__('Pipelines|There was a problem with loading the pipeline data.'),
   },
   successTexts: {
     [COMMIT_SUCCESS]: __('Your changes have been successfully committed.'),
@@ -72,6 +74,11 @@ export default {
         case COMMIT_FAILURE:
           return {
             text: this.$options.errorTexts[COMMIT_FAILURE],
+            variant: 'danger',
+          };
+        case PIPELINE_FAILURE:
+          return {
+            text: this.$options.errorTexts[PIPELINE_FAILURE],
             variant: 'danger',
           };
         default:

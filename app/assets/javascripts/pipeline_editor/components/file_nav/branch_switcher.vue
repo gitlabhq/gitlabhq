@@ -43,14 +43,25 @@ export default {
   },
   inject: ['projectFullPath', 'totalBranches'],
   props: {
+    hasUnsavedChanges: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     paginationLimit: {
       type: Number,
       required: false,
       default: BRANCH_PAGINATION_LIMIT,
     },
+    shouldLoadNewBranch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
+      branchSelected: null,
       availableBranches: [],
       filteredBranches: [],
       isSearchingBranches: false,
@@ -105,6 +116,13 @@ export default {
       return this.branches.length > 0 || this.searchTerm.length > 0;
     },
   },
+  watch: {
+    shouldLoadNewBranch(flag) {
+      if (flag) {
+        this.changeBranch(this.branchSelected);
+      }
+    },
+  },
   methods: {
     availableBranchesQueryVars(varsOverride = {}) {
       if (this.searchTerm.length > 0) {
@@ -149,11 +167,7 @@ export default {
         })
         .catch(this.showFetchError);
     },
-    async selectBranch(newBranch) {
-      if (newBranch === this.currentBranch) {
-        return;
-      }
-
+    async changeBranch(newBranch) {
       this.updateCurrentBranch(newBranch);
       const updatedPath = setUrlParams({ branch_name: newBranch });
       historyPushState(updatedPath);
@@ -163,6 +177,19 @@ export default {
       // so we need to make sure the currentBranch (and consequently, the commitSha) are updated first
       await this.$nextTick();
       this.$emit('refetchContent');
+    },
+    selectBranch(newBranch) {
+      if (newBranch !== this.currentBranch) {
+        // If there are unsaved changes, we want to show the user
+        // a modal to confirm what to do with these before changing
+        // branches.
+        if (this.hasUnsavedChanges) {
+          this.branchSelected = newBranch;
+          this.$emit('select-branch', newBranch);
+        } else {
+          this.changeBranch(newBranch);
+        }
+      }
     },
     async setSearchTerm(newSearchTerm) {
       this.pageCounter = 0;

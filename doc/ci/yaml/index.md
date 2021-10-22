@@ -598,6 +598,11 @@ include:
 All [nested includes](#nested-includes) execute without context as a public user,
 so you can only `include` public projects or templates.
 
+NOTE:
+Be careful when including a remote CI/CD configuration file. No pipelines or notifications
+trigger when external CI/CD configuration files change. From a security perspective,
+this is similar to pulling a third party dependency.
+
 #### `include:template`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53445) in GitLab 11.7.

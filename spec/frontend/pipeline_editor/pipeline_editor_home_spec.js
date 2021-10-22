@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-
+import { GlModal } from '@gitlab/ui';
 import CommitSection from '~/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorDrawer from '~/pipeline_editor/components/drawer/pipeline_editor_drawer.vue';
 import PipelineEditorFileNav from '~/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
+import BranchSwitcher from '~/pipeline_editor/components/file_nav/branch_switcher.vue';
 import PipelineEditorHeader from '~/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/pipeline_editor/components/pipeline_editor_tabs.vue';
 import { MERGED_TAB, VISUALIZE_TAB, CREATE_TAB, LINT_TAB } from '~/pipeline_editor/constants';
@@ -11,11 +12,14 @@ import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
 
 import { mockLintResponse, mockCiYml } from './mock_data';
 
+jest.mock('~/lib/utils/common_utils');
+
 describe('Pipeline editor home wrapper', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
+  const createComponent = ({ props = {}, glFeatures = {}, data = {}, stubs = {} } = {}) => {
     wrapper = shallowMount(PipelineEditorHome, {
+      data: () => data,
       propsData: {
         ciConfigData: mockLintResponse,
         ciFileContent: mockCiYml,
@@ -24,15 +28,20 @@ describe('Pipeline editor home wrapper', () => {
         ...props,
       },
       provide: {
+        projectFullPath: '',
+        totalBranches: 19,
         glFeatures: {
           ...glFeatures,
         },
       },
+      stubs,
     });
   };
 
+  const findBranchSwitcher = () => wrapper.findComponent(BranchSwitcher);
   const findCommitSection = () => wrapper.findComponent(CommitSection);
   const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findPipelineEditorDrawer = () => wrapper.findComponent(PipelineEditorDrawer);
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
@@ -64,6 +73,46 @@ describe('Pipeline editor home wrapper', () => {
 
     it('show the pipeline drawer', () => {
       expect(findPipelineEditorDrawer().exists()).toBe(true);
+    });
+  });
+
+  describe('modal when switching branch', () => {
+    describe('when `showSwitchBranchModal` value is false', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('is not visible', () => {
+        expect(findModal().exists()).toBe(false);
+      });
+    });
+    describe('when `showSwitchBranchModal` value is true', () => {
+      beforeEach(() => {
+        createComponent({
+          data: { showSwitchBranchModal: true },
+          stubs: { PipelineEditorFileNav },
+        });
+      });
+
+      it('is visible', () => {
+        expect(findModal().exists()).toBe(true);
+      });
+
+      it('pass down `shouldLoadNewBranch` to the branch switcher when primary is selected', async () => {
+        expect(findBranchSwitcher().props('shouldLoadNewBranch')).toBe(false);
+
+        await findModal().vm.$emit('primary');
+
+        expect(findBranchSwitcher().props('shouldLoadNewBranch')).toBe(true);
+      });
+
+      it('closes the modal when secondary action is selected', async () => {
+        expect(findModal().exists()).toBe(true);
+
+        await findModal().vm.$emit('secondary');
+
+        expect(findModal().exists()).toBe(false);
+      });
     });
   });
 

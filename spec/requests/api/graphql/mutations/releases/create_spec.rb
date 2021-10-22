@@ -342,7 +342,7 @@ RSpec.describe 'Creation of a new release' do
   end
 
   context "when the current user doesn't have access to create releases" do
-    expected_error_message = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+    expected_error_message = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
 
     context 'when the current user is a Reporter' do
       let(:current_user) { reporter }

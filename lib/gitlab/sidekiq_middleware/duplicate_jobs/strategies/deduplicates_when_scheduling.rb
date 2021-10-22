@@ -6,6 +6,7 @@ module Gitlab
       module Strategies
         class DeduplicatesWhenScheduling < Base
           extend ::Gitlab::Utils::Override
+          include ::Gitlab::Utils::StrongMemoize
 
           override :initialize
           def initialize(duplicate_job)
@@ -19,8 +20,9 @@ module Gitlab
 
               if duplicate_job.idempotent?
                 duplicate_job.update_latest_wal_location!
+                duplicate_job.set_deduplicated_flag!(expiry)
 
-                Gitlab::SidekiqLogging::DeduplicationLogger.instance.log(
+                Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
                   job, "dropped #{strategy_name}", duplicate_job.options)
                 return false
               end
@@ -49,11 +51,13 @@ module Gitlab
           end
 
           def expiry
-            return DuplicateJob::DUPLICATE_KEY_TTL unless duplicate_job.scheduled?
+            strong_memoize(:expiry) do
+              next DuplicateJob::DUPLICATE_KEY_TTL unless duplicate_job.scheduled?
 
-            time_diff = duplicate_job.scheduled_at.to_i - Time.now.to_i
+              time_diff = duplicate_job.scheduled_at.to_i - Time.now.to_i
 
-            time_diff > 0 ? time_diff : DuplicateJob::DUPLICATE_KEY_TTL
+              time_diff > 0 ? time_diff : DuplicateJob::DUPLICATE_KEY_TTL
+            end
           end
         end
       end

@@ -139,7 +139,7 @@ This sample has a few limitations:
 - The script circumvents the Git hook quarantine environment because the update of `$TARGET_REPO`
   is seen as a ref update, and Git displays warnings about it.
 
-## Mirror with Perforce Helix via Git Fusion **(PREMIUM)**
+## Mirror with Perforce Helix with Git Fusion **(PREMIUM)**
 
 > Moved to GitLab Premium in 13.9.
 

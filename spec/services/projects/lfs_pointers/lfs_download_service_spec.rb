@@ -102,6 +102,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
       it 'skips read_total_timeout', :aggregate_failures do
         stub_const('GitLab::HTTP::DEFAULT_READ_TOTAL_TIMEOUT', 0)
 
+        expect(ProjectCacheWorker).to receive(:perform_async).once
         expect(Gitlab::Metrics::System).not_to receive(:monotonic_time)
         expect(subject.execute).to include(status: :success)
       end

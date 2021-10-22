@@ -4,7 +4,7 @@ module Gitlab
   module Ci
     module Build
       class Image
-        attr_reader :alias, :command, :entrypoint, :name, :ports
+        attr_reader :alias, :command, :entrypoint, :name, :ports, :variables
 
         class << self
           def from_image(job)
@@ -33,6 +33,7 @@ module Gitlab
             @entrypoint = image[:entrypoint]
             @name = image[:name]
             @ports = build_ports(image).select(&:valid?)
+            @variables = build_variables(image)
           end
         end
 
@@ -44,6 +45,12 @@ module Gitlab
 
         def build_ports(image)
           image[:ports].to_a.map { |port| ::Gitlab::Ci::Build::Port.new(port) }
+        end
+
+        def build_variables(image)
+          image[:variables].to_a.map do |key, value|
+            { key: key, value: value.to_s }
+          end
         end
       end
     end

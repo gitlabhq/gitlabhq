@@ -325,8 +325,9 @@ export default {
       <pipeline-editor-home
         :ci-config-data="ciConfigData"
         :ci-file-content="currentCiFileContent"
-        :is-new-ci-config-file="isNewCiConfigFile"
         :commit-sha="commitSha"
+        :has-unsaved-changes="hasUnsavedChanges"
+        :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
         @resetContent="resetContent"
         @showError="showErrorAlert"

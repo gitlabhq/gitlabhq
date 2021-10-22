@@ -153,7 +153,7 @@ RSpec.describe Groups::TransferService do
 
         it 'adds an error on group' do
           transfer_service.execute(nil)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
       end
 
@@ -241,7 +241,7 @@ RSpec.describe Groups::TransferService do
 
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
       end
 

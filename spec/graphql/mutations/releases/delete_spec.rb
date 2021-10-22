@@ -28,7 +28,7 @@ RSpec.describe Mutations::Releases::Delete do
 
   shared_examples 'unauthorized or not found error' do
     it 'raises a Gitlab::Graphql::Errors::ResourceNotAvailable error' do
-      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, "The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+      expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable, Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
     end
   end
 

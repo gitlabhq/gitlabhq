@@ -255,6 +255,11 @@ module Ci
 end
 ```
 
+Also, you can pass `if_deduplicated: :reschedule_once` option to re-run a job once after
+the currently running job finished and deduplication happened at least once.
+This ensures that the latest result is always produced even if a race condition
+happened. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342123) for more information.
+
 #### Scheduling jobs in the future
 
 GitLab doesn't skip jobs scheduled in the future, as we assume that

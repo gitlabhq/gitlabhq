@@ -30,7 +30,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+            .with_message(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
         end
       end
 
