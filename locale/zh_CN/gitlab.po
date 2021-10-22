@@ -1389,6 +1389,9 @@ msgstr "平台值可以是web, mob或app。"
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
 msgstr "使用 Salesforce Developer 工具开发 Salesforce App 的项目样板"
 
+msgid "A project boilerplate for Tencent Serverless Framework that uses Next.js SSR"
+msgstr "使用腾讯云Serverless服务，迅速地构建Serverless应用"
+
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
 msgstr "项目包含美国卫生与公共服务部发布的HIPAA审计协议中每个审计查询的议题"
 
@@ -26817,6 +26820,9 @@ msgstr "GitLab示例项目"
 
 msgid "ProjectTemplates|Serverless Framework/JS"
 msgstr "Serverless Framework/JS"
+
+msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
+msgstr "Tencent Serverless Framework/NextjsSSR"
 
 msgid "ProjectTemplates|Spring"
 msgstr "Spring"

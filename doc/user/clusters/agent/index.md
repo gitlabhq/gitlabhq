@@ -4,12 +4,13 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Kubernetes Agent **(PREMIUM)**
+# GitLab Kubernetes Agent **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223061) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
 > - Support for `grpcs` [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/7) in GitLab 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) in GitLab 13.10, KAS became available on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program.
 > - Introduced in GitLab 13.11, the GitLab Kubernetes Agent became available to every project on GitLab.com.
+> - The GitLab Kubernetes Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 
 The [GitLab Kubernetes Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent) ("Agent", for short)
 is an active in-cluster component for connecting Kubernetes clusters to GitLab safely to support cloud-native deployment, management, and monitoring.
@@ -52,7 +53,7 @@ See the [GitLab Kubernetes Agent roadmap](https://gitlab.com/groups/gitlab-org/-
 
 To contribute to the Agent, see the [Agent's development documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/doc).
 
-## Agent's workflow
+## Agent's GitOps workflow **(PREMIUM)**
 
 The Agent uses multiple GitLab projects to provide a flexible workflow
 that can suit various needs. This diagram shows these repositories and the main
@@ -82,7 +83,7 @@ For more details, refer to our [architecture documentation](https://gitlab.com/g
 
 See how to [install the GitLab Kubernetes Agent in your cluster](install/index.md).
 
-## GitOps deployments
+## GitOps deployments **(PREMIUM)**
 
 To perform GitOps deployments with the Agent, you need:
 
@@ -104,7 +105,7 @@ configuration and manifest files, as follows:
 
 Support for private manifest repositories is tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
-## Kubernetes Network Security Alerts
+## Kubernetes Network Security Alerts **(ULTIMATE)**
 
 The GitLab Agent also provides an integration with Cilium. This integration provides a simple way to
 generate network policy-related alerts and to surface those alerts in GitLab.

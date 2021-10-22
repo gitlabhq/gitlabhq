@@ -1495,6 +1495,9 @@ msgstr ""
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
 msgstr ""
 
+msgid "A project boilerplate for Tencent Serverless Framework that uses Next.js SSR"
+msgstr ""
+
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
 msgstr ""
 
@@ -8488,6 +8491,9 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
+msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
+msgstr ""
+
 msgid "Compliance framework"
 msgstr ""
 
@@ -13473,6 +13479,9 @@ msgstr ""
 msgid "Error: %{error_message}"
 msgstr ""
 
+msgid "Error: %{error}"
+msgstr ""
+
 msgid "Error: Couldn't load some or all of the changes."
 msgstr ""
 
@@ -16754,6 +16763,9 @@ msgstr ""
 msgid "Header must be associated with a request or response"
 msgstr ""
 
+msgid "Headers"
+msgstr ""
+
 msgid "Heading 1"
 msgstr ""
 
@@ -18501,6 +18513,9 @@ msgid "Internal - The project can be accessed by any logged in user except exter
 msgstr ""
 
 msgid "Internal URL (optional)"
+msgstr ""
+
+msgid "Internal error occured while delivering this webhook."
 msgstr ""
 
 msgid "Internal users"
@@ -27142,6 +27157,9 @@ msgstr ""
 msgid "ProjectTemplates|Static Site Editor/Middleman"
 msgstr ""
 
+msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
+msgstr ""
+
 msgid "ProjectTemplates|iOS (Swift)"
 msgstr ""
 
@@ -28897,6 +28915,9 @@ msgstr ""
 msgid "RepositorySettingsAccessLevel|Select"
 msgstr ""
 
+msgid "Request"
+msgstr ""
+
 msgid "Request Access"
 msgstr ""
 
@@ -29379,6 +29400,9 @@ msgstr ""
 msgid "Runners|Copy instructions"
 msgstr ""
 
+msgid "Runners|Copy registration token"
+msgstr ""
+
 msgid "Runners|Deploy GitLab Runner in AWS"
 msgstr ""
 
@@ -29454,6 +29478,24 @@ msgstr ""
 msgid "Runners|Protected"
 msgstr ""
 
+msgid "Runners|Register a group runner"
+msgstr ""
+
+msgid "Runners|Register a project runner"
+msgstr ""
+
+msgid "Runners|Register a runner"
+msgstr ""
+
+msgid "Runners|Register an instance runner"
+msgstr ""
+
+msgid "Runners|Registration token"
+msgstr ""
+
+msgid "Runners|Registration token copied!"
+msgstr ""
+
 msgid "Runners|Revision"
 msgstr ""
 
@@ -29491,6 +29533,9 @@ msgid "Runners|Shared runners are available to every project in a GitLab instanc
 msgstr ""
 
 msgid "Runners|Show Runner installation instructions"
+msgstr ""
+
+msgid "Runners|Show runner installation and registration instructions"
 msgstr ""
 
 msgid "Runners|Something went wrong while fetching runner data."
@@ -31193,9 +31238,6 @@ msgid "Set up Jira Integration"
 msgstr ""
 
 msgid "Set up a %{type} Runner for a project"
-msgstr ""
-
-msgid "Set up a %{type} runner manually"
 msgstr ""
 
 msgid "Set up a hardware device as a second factor to sign in."

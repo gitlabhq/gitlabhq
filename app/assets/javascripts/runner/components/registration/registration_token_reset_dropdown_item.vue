@@ -1,17 +1,18 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import createFlash from '~/flash';
 import { TYPE_GROUP, TYPE_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../constants';
+import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 
 export default {
   name: 'RunnerRegistrationTokenReset',
   components: {
-    GlButton,
+    GlDropdownItem,
+    GlLoadingIcon,
   },
   inject: {
     groupId: {
@@ -95,10 +96,7 @@ export default {
       this.reportToSentry(error);
     },
     onSuccess(token) {
-      createFlash({
-        message: s__('Runners|New registration token generated!'),
-        type: FLASH_TYPES.SUCCESS,
-      });
+      this.$toast?.show(s__('Runners|New registration token generated!'));
       this.$emit('tokenReset', token);
     },
     reportToSentry(error) {
@@ -108,7 +106,8 @@ export default {
 };
 </script>
 <template>
-  <gl-button :loading="loading" @click="resetToken">
+  <gl-dropdown-item @click.capture.native.stop="resetToken">
     {{ __('Reset registration token') }}
-  </gl-button>
+    <gl-loading-icon v-if="loading" inline />
+  </gl-dropdown-item>
 </template>

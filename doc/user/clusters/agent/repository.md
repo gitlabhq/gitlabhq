@@ -4,12 +4,13 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
 ---
 
-# Kubernetes Agent configuration repository **(PREMIUM)**
+# Kubernetes Agent configuration repository **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.7.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the Kubernetes Agent became available on GitLab.com.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
 > - The `ci_access` attribute was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+> - The GitLab Kubernetes Agent was [moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -32,7 +33,7 @@ of your Agent:
           |- config.yaml
 ```
 
-## Synchronize manifest projects
+## Synchronize manifest projects **(PREMIUM)**
 
 Your `config.yaml` file contains a `gitops` section, which contains a `manifest_projects`
 section. Each `id` in the `manifest_projects` section is the path to a Git repository
@@ -132,7 +133,7 @@ INCORRECT - both globs match `*.yaml` files in the root directory:
 ```yaml
 gitops:
   manifest_projects:
-  - id: project1    
+  - id: project1
     paths:
     - glob: '/**/*.yaml'
     - glob: '/*.yaml'
@@ -143,7 +144,7 @@ CORRECT - single globs matches all `*.yaml` files recursively:
 ```yaml
 gitops:
   manifest_projects:
-  - id: project1    
+  - id: project1
     paths:
     - glob: '/**/*.yaml'
 ```
@@ -187,7 +188,7 @@ ci_access:
   - id: group/subgroup
 ```
 
-## Surface network security alerts from cluster to GitLab
+## Surface network security alerts from cluster to GitLab **(ULTIMATE)**
 
 The GitLab Agent provides an [integration with Cilium](index.md#kubernetes-network-security-alerts).
 To integrate, add a top-level `cilium` section to your `config.yml` file. Currently, the

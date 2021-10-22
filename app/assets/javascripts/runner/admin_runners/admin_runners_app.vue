@@ -4,11 +4,13 @@ import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber, sprintf, __ } from '~/locale';
+
+import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
-import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
+
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { typeTokenConfig } from '../components/search_tokens/type_token_config';
@@ -25,9 +27,9 @@ export default {
   name: 'AdminRunnersApp',
   components: {
     GlLink,
+    RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerList,
-    RunnerManualSetupHelp,
     RunnerName,
     RunnerPagination,
   },
@@ -126,10 +128,14 @@ export default {
 </script>
 <template>
   <div>
-    <runner-manual-setup-help
-      :registration-token="registrationToken"
-      :type="$options.INSTANCE_TYPE"
-    />
+    <div class="gl-py-3 gl-display-flex">
+      <registration-dropdown
+        class="gl-ml-auto"
+        :registration-token="registrationToken"
+        :type="$options.INSTANCE_TYPE"
+        right
+      />
+    </div>
 
     <runner-filtered-search-bar
       v-model="search"

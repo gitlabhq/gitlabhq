@@ -12,7 +12,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
+import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 import {
@@ -50,7 +50,7 @@ describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
 
-  const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
+  const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
@@ -87,7 +87,8 @@ describe('AdminRunnersApp', () => {
   });
 
   it('shows the runner setup instructions', () => {
-    expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
   });
 
   it('shows the runners list', () => {

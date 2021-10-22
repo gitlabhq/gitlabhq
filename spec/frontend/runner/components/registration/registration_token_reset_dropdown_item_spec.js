@@ -1,11 +1,11 @@
-import { GlButton } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlToast } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash, { FLASH_TYPES } from '~/flash';
-import RunnerRegistrationTokenReset from '~/runner/components/runner_registration_token_reset.vue';
+import createFlash from '~/flash';
+import RegistrationTokenResetDropdownItem from '~/runner/components/registration/registration_token_reset_dropdown_item.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/runner/constants';
 import runnersRegistrationTokenResetMutation from '~/runner/graphql/runners_registration_token_reset.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
@@ -15,17 +15,20 @@ jest.mock('~/runner/sentry_utils');
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
+localVue.use(GlToast);
 
 const mockNewToken = 'NEW_TOKEN';
 
-describe('RunnerRegistrationTokenReset', () => {
+describe('RegistrationTokenResetDropdownItem', () => {
   let wrapper;
   let runnersRegistrationTokenResetMutationHandler;
+  let showToast;
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const createComponent = ({ props, provide = {} } = {}) => {
-    wrapper = shallowMount(RunnerRegistrationTokenReset, {
+    wrapper = shallowMount(RegistrationTokenResetDropdownItem, {
       localVue,
       provide,
       propsData: {
@@ -36,6 +39,8 @@ describe('RunnerRegistrationTokenReset', () => {
         [runnersRegistrationTokenResetMutation, runnersRegistrationTokenResetMutationHandler],
       ]),
     });
+
+    showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
   };
 
   beforeEach(() => {
@@ -58,7 +63,7 @@ describe('RunnerRegistrationTokenReset', () => {
   });
 
   it('Displays reset button', () => {
-    expect(findButton().exists()).toBe(true);
+    expect(findDropdownItem().exists()).toBe(true);
   });
 
   describe('On click and confirmation', () => {
@@ -78,7 +83,8 @@ describe('RunnerRegistrationTokenReset', () => {
         });
 
         window.confirm.mockReturnValueOnce(true);
-        findButton().vm.$emit('click');
+
+        findDropdownItem().trigger('click');
         await waitForPromises();
       });
 
@@ -95,14 +101,13 @@ describe('RunnerRegistrationTokenReset', () => {
       });
 
       it('does not show a loading state', () => {
-        expect(findButton().props('loading')).toBe(false);
+        expect(findLoadingIcon().exists()).toBe(false);
       });
 
       it('shows confirmation', () => {
-        expect(createFlash).toHaveBeenLastCalledWith({
-          message: expect.stringContaining('registration token generated'),
-          type: FLASH_TYPES.SUCCESS,
-        });
+        expect(showToast).toHaveBeenLastCalledWith(
+          expect.stringContaining('registration token generated'),
+        );
       });
     });
   });
@@ -110,7 +115,7 @@ describe('RunnerRegistrationTokenReset', () => {
   describe('On click without confirmation', () => {
     beforeEach(async () => {
       window.confirm.mockReturnValueOnce(false);
-      findButton().vm.$emit('click');
+      findDropdownItem().vm.$emit('click');
       await waitForPromises();
     });
 
@@ -123,11 +128,11 @@ describe('RunnerRegistrationTokenReset', () => {
     });
 
     it('does not show a loading state', () => {
-      expect(findButton().props('loading')).toBe(false);
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('does not shows confirmation', () => {
-      expect(createFlash).not.toHaveBeenCalled();
+      expect(showToast).not.toHaveBeenCalled();
     });
   });
 
@@ -138,7 +143,7 @@ describe('RunnerRegistrationTokenReset', () => {
       runnersRegistrationTokenResetMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
       window.confirm.mockReturnValueOnce(true);
-      findButton().vm.$emit('click');
+      findDropdownItem().trigger('click');
       await waitForPromises();
 
       expect(createFlash).toHaveBeenLastCalledWith({
@@ -164,7 +169,7 @@ describe('RunnerRegistrationTokenReset', () => {
       });
 
       window.confirm.mockReturnValueOnce(true);
-      findButton().vm.$emit('click');
+      findDropdownItem().trigger('click');
       await waitForPromises();
 
       expect(createFlash).toHaveBeenLastCalledWith({
@@ -180,10 +185,10 @@ describe('RunnerRegistrationTokenReset', () => {
   describe('Immediately after click', () => {
     it('shows loading state', async () => {
       window.confirm.mockReturnValue(true);
-      findButton().vm.$emit('click');
+      findDropdownItem().trigger('click');
       await nextTick();
 
-      expect(findButton().props('loading')).toBe(true);
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 });

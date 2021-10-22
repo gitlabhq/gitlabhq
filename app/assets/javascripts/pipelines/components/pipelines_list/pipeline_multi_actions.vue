@@ -95,9 +95,9 @@ export default {
       {{ $options.i18n.artifactsFetchErrorMessage }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" size="sm" />
+    <gl-loading-icon v-else-if="isLoading" size="sm" />
 
-    <gl-dropdown-item v-if="!artifacts.length && !isLoading" data-testid="artifacts-empty-message">
+    <gl-dropdown-item v-else-if="!artifacts.length" data-testid="artifacts-empty-message">
       {{ $options.i18n.emptyArtifactsMessage }}
     </gl-dropdown-item>
 

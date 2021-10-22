@@ -50,11 +50,6 @@ export default {
       isLoading: false,
     };
   },
-  computed: {
-    hasArtifacts() {
-      return Boolean(this.artifacts.length);
-    },
-  },
   methods: {
     fetchArtifacts() {
       this.isLoading = true;
@@ -99,9 +94,9 @@ export default {
       {{ $options.i18n.artifactsFetchErrorMessage }}
     </gl-alert>
 
-    <gl-loading-icon v-if="isLoading" size="sm" />
+    <gl-loading-icon v-else-if="isLoading" size="sm" />
 
-    <gl-alert v-else-if="!hasArtifacts" variant="info" :dismissible="false">
+    <gl-alert v-else-if="!artifacts.length" variant="info" :dismissible="false">
       {{ $options.i18n.noArtifacts }}
     </gl-alert>
 

@@ -140,7 +140,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Add new team members                                                                   |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Change [project features visibility](../public_access/public_access.md) level          |          |          |           | ✓ (14)     | ✓     |
 | [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                             |          |          |           | ✓          | ✓     |
-| [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                             |          |          |           | ✓          | ✓     |
+| [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                             |          |          | ✓         | ✓          | ✓     |
 | [Projects](project/index.md):<br>Edit comments (posted by any user)                                                     |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Edit project badges                                                                    |          |          |           | ✓          | ✓     |
 | [Projects](project/index.md):<br>Edit project settings                                                                  |          |          |           | ✓          | ✓     |
@@ -305,7 +305,7 @@ The following table lists group permissions available for each role:
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
 | View group Audit Events                                |       |          | ✓ (7)     | ✓ (7)      | ✓     |
 | Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
-| Delete group wiki pages **(PREMIUM)**                  |       |          |           | ✓          | ✓     |
+| Delete group wiki pages **(PREMIUM)**                  |       |          | ✓         | ✓          | ✓     |
 | Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
 | List group deploy tokens                               |       |          |           | ✓          | ✓     |
 | Manage [group push rules](group/index.md#group-push-rules) **(PREMIUM)** | | |        | ✓          | ✓     |

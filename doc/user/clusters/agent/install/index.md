@@ -4,7 +4,9 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the GitLab Kubernetes Agent **(PREMIUM)**
+# Install the GitLab Kubernetes Agent **(FREE)**
+
+> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
 
 To get started with the GitLab Kubernetes Agent, install it in your cluster.
 

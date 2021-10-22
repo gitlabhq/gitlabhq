@@ -1,4 +1,4 @@
-import { GlAlert, GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlModal, GlButton, GlLoadingIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { nextTick } from 'vue';
@@ -52,7 +52,7 @@ describe('RunnerInstructionsModal component', () => {
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
 
-  const createComponent = () => {
+  const createComponent = (options = {}) => {
     const requestHandlers = [
       [getRunnerPlatformsQuery, runnerPlatformsHandler],
       [getRunnerSetupInstructionsQuery, runnerSetupInstructionsHandler],
@@ -67,6 +67,7 @@ describe('RunnerInstructionsModal component', () => {
         },
         localVue,
         apolloProvider: fakeApollo,
+        ...options,
       }),
     );
   };
@@ -215,6 +216,38 @@ describe('RunnerInstructionsModal component', () => {
     it('should not show instructions', () => {
       expect(findBinaryInstructions().exists()).toBe(false);
       expect(findRegisterCommand().exists()).toBe(false);
+    });
+  });
+
+  describe('GlModal API', () => {
+    const getGlModalStub = (methods) => {
+      return {
+        ...GlModal,
+        methods: {
+          ...GlModal.methods,
+          ...methods,
+        },
+      };
+    };
+
+    describe('show()', () => {
+      let mockShow;
+
+      beforeEach(() => {
+        mockShow = jest.fn();
+
+        createComponent({
+          stubs: {
+            GlModal: getGlModalStub({ show: mockShow }),
+          },
+        });
+      });
+
+      it('delegates show()', () => {
+        wrapper.vm.show();
+
+        expect(mockShow).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

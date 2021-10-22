@@ -11,7 +11,7 @@ import { updateHistory } from '~/lib/utils/url_utility';
 
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
+import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 import {
@@ -19,6 +19,7 @@ import {
   CREATED_DESC,
   DEFAULT_SORT,
   INSTANCE_TYPE,
+  GROUP_TYPE,
   PARAM_KEY_STATUS,
   PARAM_KEY_RUNNER_TYPE,
   STATUS_ACTIVE,
@@ -48,7 +49,7 @@ describe('GroupRunnersApp', () => {
   let wrapper;
   let mockGroupRunnersQuery;
 
-  const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
+  const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
@@ -82,7 +83,8 @@ describe('GroupRunnersApp', () => {
   });
 
   it('shows the runner setup instructions', () => {
-    expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('type')).toBe(GROUP_TYPE);
   });
 
   it('shows the runners list', () => {

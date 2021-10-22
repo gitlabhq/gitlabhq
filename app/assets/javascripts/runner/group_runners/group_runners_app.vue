@@ -5,9 +5,9 @@ import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { formatNumber, sprintf, s__ } from '~/locale';
 
+import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
-import RunnerManualSetupHelp from '../components/runner_manual_setup_help.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 
@@ -31,9 +31,9 @@ export default {
   name: 'GroupRunnersApp',
   components: {
     GlLink,
+    RegistrationDropdown,
     RunnerFilteredSearchBar,
     RunnerList,
-    RunnerManualSetupHelp,
     RunnerName,
     RunnerPagination,
   },
@@ -144,7 +144,14 @@ export default {
 
 <template>
   <div>
-    <runner-manual-setup-help :registration-token="registrationToken" :type="$options.GROUP_TYPE" />
+    <div class="gl-py-3 gl-display-flex">
+      <registration-dropdown
+        class="gl-ml-auto"
+        :registration-token="registrationToken"
+        :type="$options.GROUP_TYPE"
+        right
+      />
+    </div>
 
     <runner-filtered-search-bar
       v-model="search"

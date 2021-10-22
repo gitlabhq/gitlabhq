@@ -41,7 +41,8 @@ export default {
   props: {
     modalId: {
       type: String,
-      required: true,
+      required: false,
+      default: 'runner-instructions-modal',
     },
   },
   apollo: {
@@ -119,6 +120,9 @@ export default {
     },
   },
   methods: {
+    show() {
+      this.$refs.modal.show();
+    },
     selectPlatform(platform) {
       this.selectedPlatform = platform;
 
@@ -158,9 +162,11 @@ export default {
 </script>
 <template>
   <gl-modal
+    ref="modal"
     :modal-id="modalId"
     :title="$options.i18n.installARunner"
     :action-secondary="$options.closeButton"
+    v-bind="$attrs"
   >
     <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
