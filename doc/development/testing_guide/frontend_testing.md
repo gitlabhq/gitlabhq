@@ -423,7 +423,8 @@ it('passes', () => {
 ### Waiting in tests
 
 Sometimes a test needs to wait for something to happen in the application before it continues.
-Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout)
+Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
+
 because it makes the reason for waiting unclear. Instead use one of the following approaches.
 
 #### Promises and Ajax calls

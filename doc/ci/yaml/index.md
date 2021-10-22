@@ -2774,7 +2774,7 @@ Files matched by [`artifacts:untracked`](#artifactsuntracked) can be excluded us
 Use `expire_in` to specify how long [job artifacts](../pipelines/job_artifacts.md) are stored before
 they expire and are deleted. The `expire_in` setting does not affect:
 
-- Artifacts from the latest job, unless this keeping the latest job artifacts is:
+- Artifacts from the latest job, unless keeping the latest job artifacts is:
   - [Disabled at the project level](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
   - [Disabled instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 - [Pipeline artifacts](../pipelines/pipeline_artifacts.md). It's not possible to specify an

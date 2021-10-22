@@ -100,6 +100,8 @@ Before following these instructions, note the following **important** informatio
   these instructions, **it is not possible to always achieve true zero downtime
   updates**. Users may see some connections timeout or be refused for a few minutes,
   depending on which services need to restart.
+- On Omnibus deployments, the `/etc/gitlab/gitlab.rb` configuration file must **not** have
+  `gitlab_rails['auto_migrate'] = true`.
 
 1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab.
 
@@ -208,7 +210,9 @@ load balancer to latest GitLab version.
        If you are an Enterprise Edition user, replace `gitlab-ce` with
        `gitlab-ee` in the above command.
 
-    1. Get the regular migrations and latest code in place:
+    1. Get the regular migrations and latest code in place. Before running this step,
+       the deploy node's `/etc/gitlab/gitlab.rb` configuration file must have
+       `gitlab_rails['auto_migrate'] = true` to permit regular migrations.
 
        ```shell
        sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure

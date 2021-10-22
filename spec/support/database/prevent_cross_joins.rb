@@ -90,23 +90,13 @@ ActiveRecord::Relation.prepend(
 
 ALLOW_LIST = Set.new(YAML.load_file(File.join(__dir__, 'cross-join-allowlist.yml'))).freeze
 
-# Based on https://github.com/rspec/rspec-core/blob/d57c371ee92b16211b80ac7b0b025968438f5297/lib/rspec/core/example.rb#L96-L104,
-# but with file_path
-def example_relative_file_path(example)
-  loaded_spec_files = RSpec.configuration.loaded_spec_files
-
-  RSpec::Core::Metadata.ascending(example.metadata) do |meta|
-    break meta[:file_path] if loaded_spec_files.include?(meta[:absolute_file_path])
-  end
-end
-
 RSpec.configure do |config|
   config.include(::Database::PreventCrossJoins::SpecHelpers)
 
   config.around do |example|
     Thread.current[:has_cross_join_exception] = false
 
-    if ALLOW_LIST.include?(example_relative_file_path(example))
+    if ALLOW_LIST.include?(example.file_path_rerun_argument)
       example.run
     else
       with_cross_joins_prevented { example.run }

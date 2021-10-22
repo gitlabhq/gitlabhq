@@ -338,6 +338,22 @@ For more details about which findings or vulnerabilities you can view in each of
 - Link it to an existing issue.
 - [Resolve the vulnerability](vulnerabilities/index.md#resolve-a-vulnerability), if a solution is known.
 
+## Security scanning configuration tips
+
+Each GitLab security scanning tool has a default
+[CI/CD configuration file](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Security),
+also known as a _template_.
+
+When customizing the configuration:
+
+- [Include](../../ci/yaml/index.md#include) the scanning tool's CI/CD template. Don't _copy_ the content
+  of the template.
+- Use the [stable](../../development/cicd/templates.md#stable-version) version of each template
+  for production workflows. The stable version changes less often, and breaking changes are only
+  made between major GitLab versions. The [latest](../../development/cicd/templates.md#latest-version)
+  version contains the most recent changes, but may have significant changes between minor GitLab versions.
+- Only override values in the template as needed. All other values are inherited from the template.
+
 ## Troubleshooting
 
 ### Secure job failing with exit code 1

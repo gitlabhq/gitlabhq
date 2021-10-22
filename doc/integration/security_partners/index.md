@@ -18,7 +18,7 @@ each security partner:
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
 - [Deepfactor](https://docs.deepfactor.io/hc/en-us/articles/1500008981941)
 - [GrammaTech](https://www.grammatech.com/codesonar-gitlab-integration)
-- [Indeni](https://indeni.com/doc-indeni-cloudrail/integrate-with-ci-cd/gitlab-instructions/)
+- [Indeni](https://cloudrail.app/doc/integrate-with-ci-cd/gitlab-instructions/)
 - [JScrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)
 - [Semgrep](https://semgrep.dev/for/gitlab)
 - [StackHawk](https://docs.stackhawk.com/continuous-integration/gitlab.html)

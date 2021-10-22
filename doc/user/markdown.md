@@ -236,7 +236,7 @@ emojis where there is no support.
 
 <!-- vale gitlab.Spelling = NO -->
 
-On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/)
+On Linux, you can download [Noto Color Emoji](https://github.com/googlefonts/noto-emoji)
 to get full native emoji support. Ubuntu 18.04 (like many modern Linux distributions) has
 this font installed by default.
 

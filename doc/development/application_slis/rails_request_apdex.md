@@ -14,7 +14,7 @@ groups](../stage_group_dashboards.md#error-budget) or service
 monitoring. This is being worked on in [this
 project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/573).
 
-The request apdex SLI is [an SLI defined in the application](index.md)
+The request apdex SLI (Service Level Indicator) is [an SLI defined in the application](index.md)
 that measures the duration of successful requests as an indicator for
 application performance. This includes the REST and GraphQL API, and the
 regular controller endpoints. It consists of these counters:

@@ -122,7 +122,7 @@ RSpec.configure do |config|
   # Using before and after blocks because the around block causes problems with the let_it_be
   # record creations. It makes an extra savepoint which breaks the transaction count logic.
   config.before do |example_file|
-    if CROSS_DB_MODIFICATION_ALLOW_LIST.exclude?(example_file.file_path)
+    if CROSS_DB_MODIFICATION_ALLOW_LIST.exclude?(example_file.file_path_rerun_argument)
       with_cross_database_modification_prevented
     end
   end
