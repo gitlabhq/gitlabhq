@@ -42,7 +42,7 @@ module Gitlab
     end
 
     def self.about_pricing_faq_url
-      "https://about.gitlab.com/gitlab-com/#faq"
+      "https://about.gitlab.com/pricing#faq"
     end
   end
 end

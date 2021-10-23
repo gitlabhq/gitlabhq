@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable vue/require-default-prop */
 import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
@@ -23,6 +22,7 @@ export default {
     matcher: {
       type: String,
       required: false,
+      default: '',
     },
     itemId: {
       type: Number,
@@ -35,6 +35,7 @@ export default {
     namespace: {
       type: String,
       required: false,
+      default: '',
     },
     webUrl: {
       type: String,

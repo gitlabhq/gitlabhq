@@ -149,7 +149,11 @@ export default {
     },
   },
   created() {
-    this.lines = { ...this.range };
+    if (this.range) {
+      this.lines = { ...this.range };
+    } else if (this.line) {
+      this.lines = { start: this.line, end: this.line };
+    }
   },
   mounted() {
     if (this.isLoggedIn) {

@@ -24,11 +24,14 @@ describe('DiffLineNoteForm', () => {
     return shallowMount(DiffLineNoteForm, {
       store,
       propsData: {
-        diffFileHash: diffFile.file_hash,
-        diffLines,
-        line: diffLines[1],
-        range: { start: diffLines[0], end: diffLines[1] },
-        noteTargetLine: diffLines[1],
+        ...{
+          diffFileHash: diffFile.file_hash,
+          diffLines,
+          line: diffLines[1],
+          range: { start: diffLines[0], end: diffLines[1] },
+          noteTargetLine: diffLines[1],
+        },
+        ...(args.props || {}),
       },
     });
   };
@@ -116,6 +119,22 @@ describe('DiffLineNoteForm', () => {
           .then(done)
           .catch(done.fail);
       });
+    });
+  });
+
+  describe('created', () => {
+    it('should use the provided `range` of lines', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.vm.lines.start).toBe(diffLines[0]);
+      expect(wrapper.vm.lines.end).toBe(diffLines[1]);
+    });
+
+    it("should fill the internal `lines` data with the provided `line` if there's no provided `range", () => {
+      wrapper = createComponent({ props: { range: null } });
+
+      expect(wrapper.vm.lines.start).toBe(diffLines[1]);
+      expect(wrapper.vm.lines.end).toBe(diffLines[1]);
     });
   });
 
