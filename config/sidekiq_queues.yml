@@ -213,6 +213,10 @@
   - 2
 - - issue_rebalancing
   - 1
+- - issues_placement
+  - 2
+- - issues_rebalancing
+  - 1
 - - iterations
   - 1
 - - jira_connect

@@ -316,6 +316,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'IssuableExportCsvWorker' => 3,
         'IssuePlacementWorker' => 3,
         'IssueRebalancingWorker' => 3,
+        'Issues::PlacementWorker' => 3,
+        'Issues::RebalancingWorker' => 3,
         'IterationsUpdateStatusWorker' => 3,
         'JiraConnect::SyncBranchWorker' => 3,
         'JiraConnect::SyncBuildsWorker' => 3,

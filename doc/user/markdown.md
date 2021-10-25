@@ -811,10 +811,6 @@ the note content.
 Regardless of the tag names, the relative order of the reference tags determines the rendered
 numbering.
 
-Reference tags can use letters and other characters. Avoid using lowercase `w` or an underscore
-(`_`) in footnote tag names until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/24423) is
-resolved.
-
 <!--
 Do not edit the following codeblock. It uses HTML to skip the Vale ReferenceLinks test.
 -->

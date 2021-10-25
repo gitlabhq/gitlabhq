@@ -885,5 +885,24 @@ fail-pipeline-early:
     - install_gitlab_gem
   script:
     - fail_pipeline_early
+
+rspec rspec-pg12-rerun-previous-failed-tests:
+  extends:
+    - .rspec-base-pg12
+    - .rails:rules:rerun-previous-failed-tests
+  stage: test
+  needs: ["setup-test-env", "compile-test-assets", "detect-previous-failed-tests"]
+  script:
+    - !reference [.base-script, script]
+    - rspec_rerun_previous_failed_tests tmp/previous_failed_tests/rspec_failed_files.txt
+
+rspec rspec-ee-pg12-rerun-previous-failed-tests:
+  extends:
+    - "rspec rspec-pg12-rerun-previous-failed-tests"
+    - .rspec-ee-base-pg12
+  script:
+    - !reference [.base-script, script]
+    - rspec_rerun_previous_failed_tests tmp/previous_failed_tests/rspec_ee_failed_files.txt
+
 # EE: Canonical MR pipelines
 ##################################################

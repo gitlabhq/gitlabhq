@@ -89,6 +89,22 @@ function crystalball_rspec_data_exists() {
   compgen -G "crystalball/rspec*.yml" >/dev/null
 }
 
+function retrieve_previous_failed_tests() {
+  local directory_for_output_reports="${1}"
+  local rspec_pg_regex="${2}"
+  local rspec_ee_pg_regex="${3}"
+  local pipeline_report_path="test_results/previous/test_reports.json"
+  local project_path="gitlab-org/gitlab"
+
+  echo 'Attempting to build pipeline test report...'
+
+  scripts/pipeline_test_report_builder.rb --instance-base-url "https://gitlab.com" --project "${project_path}" --mr-id "${CI_MERGE_REQUEST_IID}" --output-file-path "${pipeline_report_path}"
+
+  echo 'Generating failed tests lists...'
+
+  scripts/failed_tests.rb --previous-tests-report-path "${pipeline_report_path}" --output-directory "${directory_for_output_reports}" --rspec-pg-regex "${rspec_pg_regex}" --rspec-ee-pg-regex "${rspec_ee_pg_regex}"
+}
+
 function rspec_simple_job() {
   local rspec_opts="${1}"
 
@@ -170,6 +186,25 @@ function rspec_paralellized_job() {
   fi
 
   date
+}
+
+function rspec_rerun_previous_failed_tests() {
+  local test_file_count_threshold=${RSPEC_PREVIOUS_FAILED_TEST_FILE_COUNT_THRESHOLD:-10}
+  local matching_tests_file=${1}
+  local rspec_opts=${2}
+  local test_files="$(cat "${matching_tests_file}")"
+  local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
+
+  if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
+    echo "This job is intentionally failed because there are more than ${test_file_count_threshold} test files to rerun."
+    exit 1
+  fi
+
+  if [[ -n $test_files ]]; then
+    rspec_simple_job "${test_files}"
+  else
+    echo "No failed test files to rerun"
+  fi
 }
 
 function rspec_fail_fast() {

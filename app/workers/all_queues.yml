@@ -2285,6 +2285,24 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: issues_placement
+  :worker_name: Issues::PlacementWorker
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: issues_rebalancing
+  :worker_name: Issues::RebalancingWorker
+  :feature_category: :issue_tracking
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: mailers
   :worker_name: ActionMailer::MailDeliveryJob
   :feature_category: :not_owned

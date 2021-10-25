@@ -14,6 +14,7 @@ module ApplicationWorker
 
   LOGGING_EXTRA_KEY = 'extra'
   DEFAULT_DELAY_INTERVAL = 1
+  SAFE_PUSH_BULK_LIMIT = 1000
 
   included do
     set_queue
@@ -135,24 +136,47 @@ module ApplicationWorker
     end
 
     def bulk_perform_async(args_list)
-      Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
+      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
+        in_safe_limit_batches(args_list) do |args_batch, _|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+        end
+      else
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
+      end
     end
 
     def bulk_perform_in(delay, args_list, batch_size: nil, batch_delay: nil)
       now = Time.now.to_i
-      schedule = now + delay.to_i
+      base_schedule_at = now + delay.to_i
 
-      if schedule <= now
-        raise ArgumentError, _('The schedule time must be in the future!')
+      if base_schedule_at <= now
+        raise ArgumentError, 'The schedule time must be in the future!'
       end
 
+      schedule_at = base_schedule_at
+
       if batch_size && batch_delay
-        args_list.each_slice(batch_size.to_i).with_index do |args_batch, idx|
-          batch_schedule = schedule + idx * batch_delay.to_i
-          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => batch_schedule)
+        batch_size = batch_size.to_i
+        batch_delay = batch_delay.to_i
+
+        raise ArgumentError, 'batch_size should be greater than 0' unless batch_size > 0
+        raise ArgumentError, 'batch_delay should be greater than 0' unless batch_delay > 0
+
+        # build an array of schedules corresponding to each item in `args_list`
+        bulk_schedule_at = Array.new(args_list.size) do |index|
+          batch_number = index / batch_size
+          base_schedule_at + (batch_number * batch_delay)
+        end
+
+        schedule_at = bulk_schedule_at
+      end
+
+      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
+        in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
         end
       else
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule)
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list, 'at' => schedule_at)
       end
     end
 
@@ -160,6 +184,35 @@ module ApplicationWorker
 
     def delay_interval
       DEFAULT_DELAY_INTERVAL.seconds
+    end
+
+    private
+
+    def in_safe_limit_batches(args_list, schedule_at = nil, safe_limit = SAFE_PUSH_BULK_LIMIT)
+      # `schedule_at` could be one of
+      # - nil.
+      # - a single Numeric that represents time, like `30.minutes.from_now.to_i`.
+      # - an array, where each element is a Numeric that reprsents time.
+      #    - Each element in this array would correspond to the time at which
+      #    - the job in `args_list` at the corresponding index needs to be scheduled.
+
+      # In the case where `schedule_at` is an array of Numeric, it needs to be sliced
+      # in the same manner as the `args_list`, with each slice containing `safe_limit`
+      # number of elements.
+      schedule_at = schedule_at.each_slice(safe_limit).to_a if schedule_at.is_a?(Array)
+
+      args_list.each_slice(safe_limit).with_index.flat_map do |args_batch, index|
+        schedule_at_for_batch = process_schedule_at_for_batch(schedule_at, index)
+
+        yield(args_batch, schedule_at_for_batch)
+      end
+    end
+
+    def process_schedule_at_for_batch(schedule_at, index)
+      return unless schedule_at
+      return schedule_at[index] if schedule_at.is_a?(Array) && schedule_at.all?(Array)
+
+      schedule_at
     end
   end
 end
