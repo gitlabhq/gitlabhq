@@ -4711,17 +4711,17 @@ Input type: `VulnerabilityCreateInput`
 | <a id="mutationvulnerabilitycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitycreateconfidence"></a>`confidence` | [`VulnerabilityConfidence`](#vulnerabilityconfidence) | Confidence of the vulnerability (defaults to `unknown`). |
 | <a id="mutationvulnerabilitycreateconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to confirmed (defaults to creation time if status is `confirmed`). |
-| <a id="mutationvulnerabilitycreatedescription"></a>`description` | [`String!`](#string) | Description of the vulnerability. |
+| <a id="mutationvulnerabilitycreatedescription"></a>`description` | [`String!`](#string) | Long text section that describes the vulnerability in more detail. |
 | <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
 | <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
 | <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
-| <a id="mutationvulnerabilitycreatemessage"></a>`message` | [`String`](#string) | Additional information about the vulnerability. |
+| <a id="mutationvulnerabilitycreatemessage"></a>`message` | [`String`](#string) | Short text section that describes the vulnerability. This may include the finding's specific information. |
 | <a id="mutationvulnerabilitycreatename"></a>`name` | [`String!`](#string) | Name of the vulnerability. |
 | <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
 | <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
 | <a id="mutationvulnerabilitycreatescanner"></a>`scanner` | [`VulnerabilityScannerInput!`](#vulnerabilityscannerinput) | Information about the scanner used to discover the vulnerability. |
 | <a id="mutationvulnerabilitycreateseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (defaults to `unknown`). |
-| <a id="mutationvulnerabilitycreatesolution"></a>`solution` | [`String`](#string) | How to fix this vulnerability. |
+| <a id="mutationvulnerabilitycreatesolution"></a>`solution` | [`String`](#string) | Instructions for how to fix the vulnerability. |
 | <a id="mutationvulnerabilitycreatestate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (defaults to `detected`). |
 
 #### Fields
@@ -13935,7 +13935,7 @@ Counts of requirements by their state.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="runnersetupinstallinstructions"></a>`installInstructions` | [`String!`](#string) | Instructions for installing the runner on the specified architecture. |
-| <a id="runnersetupregisterinstructions"></a>`registerInstructions` | [`String`](#string) | Instructions for registering the runner. |
+| <a id="runnersetupregisterinstructions"></a>`registerInstructions` | [`String`](#string) | Instructions for registering the runner. The actual registration tokens are not included in the commands. Instead, a placeholder `$REGISTRATION_TOKEN` is shown. |
 
 ### `SastCiConfiguration`
 

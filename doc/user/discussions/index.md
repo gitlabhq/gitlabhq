@@ -125,7 +125,7 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 > - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it.
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -178,7 +178,7 @@ When you reply to a standard comment, you create a thread.
 Prerequisites:
 
 - You must have at least the [Guest role](../permissions.md#project-members-permissions).
-- You must be in an issue, merge request, or epic. Commits and snippets threads are not supported.
+- You must be in an issue, merge request, or epic. Threads in commits and snippets are not supported.
 
 To create a thread by replying to a comment:
 

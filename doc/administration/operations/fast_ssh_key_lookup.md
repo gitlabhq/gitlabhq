@@ -132,6 +132,44 @@ This is a brief overview. Please refer to the above instructions for more contex
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
 1. Reload `sshd`: `sudo service sshd reload`.
 
+## Use `gitlab-sshd` instead of OpenSSH
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5.
+
+WARNING:
+`gitlab-sshd` is in [**Alpha**](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+It is not ready for production use.
+
+`gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
+ written in Go. It is provided as a part of `gitlab-shell` package. It has a lower memory
+ use as a OpenSSH alternative and supports
+ [group access restriction by IP address](../../user/group/index.md) for applications
+ running behind the proxy.
+
+If you are considering switching from OpenSSH to `gitlab-sshd`, consider these concerns:
+
+- The `gitlab-sshd` component is only available for
+  [Cloud Native Helm Charts](https://docs.gitlab.com/charts/) deployments.
+- `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
+  on it, such as HAProxy.
+- `gitlab-sshd` does not share a SSH port with the system administrator's OpenSSH,
+  and requires a bind to port 22.
+- `gitlab-sshd` **does not** support SSH certificates.
+
+To switch from OpenSSH to `gitlab-sshd`:
+
+1. Set the `gitlab-shell` charts `sshDaemon` option to
+   [`gitlab-sshd`](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options).
+   For example:
+
+   ```yaml
+   gitlab:
+     gitlab-shell:
+       sshDaemon: gitlab-sshd
+   ```
+
+1. Perform a Helm upgrade.
+
 ## Compiling a custom version of OpenSSH for CentOS 6
 
 Building a custom version of OpenSSH is not necessary for Ubuntu 16.04 users,

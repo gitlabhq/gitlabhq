@@ -45,4 +45,10 @@ RSpec.describe Gitlab::Usage::Metric do
       expect(described_class.new(issue_count_metric_definiton).with_instrumentation).to eq({ counts: { issues: "SELECT COUNT(\"issues\".\"id\") FROM \"issues\"" } })
     end
   end
+
+  describe '#with_suggested_name' do
+    it 'returns key_path metric with the corresponding generated query' do
+      expect(described_class.new(issue_count_metric_definiton).with_suggested_name).to eq({ counts: { issues: 'count_issues' } })
+    end
+  end
 end

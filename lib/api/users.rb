@@ -1062,6 +1062,7 @@ module API
         requires :credit_card_expiration_year, type: Integer, desc: 'The year the credit card expires'
         requires :credit_card_holder_name, type: String, desc: 'The credit card holder name'
         requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
+        requires :credit_card_type, type: String, desc: 'The credit card network name'
       end
       put ":user_id/credit_card_validation", feature_category: :users do
         authenticated_as_admin!

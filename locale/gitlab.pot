@@ -8644,9 +8644,6 @@ msgstr ""
 msgid "Configure advanced permissions, Large File Storage, and two-factor authentication settings."
 msgstr ""
 
-msgid "Configure approvals by authors and committers on all projects."
-msgstr ""
-
 msgid "Configure existing installation"
 msgstr ""
 
@@ -10907,12 +10904,6 @@ msgid "Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
-msgstr ""
-
-msgid "Define approval rules."
-msgstr ""
-
-msgid "Define approval rules. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Define custom rules for what constitutes spam, independent of Akismet"
@@ -21561,6 +21552,15 @@ msgstr ""
 msgid "MergeRequestAnalytics|Time to merge"
 msgstr ""
 
+msgid "MergeRequestApprovals|Define approval rules and settings to ensure %{link_start}separation of duties%{link_end} for new merge requests."
+msgstr ""
+
+msgid "MergeRequestApprovals|Enforce %{link_start}separation of duties%{link_end} for all projects."
+msgstr ""
+
+msgid "MergeRequestApprovals|Enforce %{separationLinkStart}separation of duties%{separationLinkEnd} for all projects. %{learnLinkStart}Learn more.%{learnLinkEnd}"
+msgstr ""
+
 msgid "MergeRequestDiffs|Commenting on lines %{selectStart}start%{selectEnd} to %{end}"
 msgstr ""
 
@@ -26071,9 +26071,6 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
-msgid "Profiles|\"Busy\" will be shown next to your name"
-msgstr ""
-
 msgid "Profiles|%{provider} Active"
 msgstr ""
 
@@ -26099,6 +26096,9 @@ msgid "Profiles|Add status emoji"
 msgstr ""
 
 msgid "Profiles|An error occurred while updating your username, please try again."
+msgstr ""
+
+msgid "Profiles|An indicator appears next to your name and avatar"
 msgstr ""
 
 msgid "Profiles|Avatar cropper"
@@ -31294,10 +31294,10 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
-msgid "SetStatusModal|A busy indicator is shown next to your name and avatar."
+msgid "SetStatusModal|Add status emoji"
 msgstr ""
 
-msgid "SetStatusModal|Add status emoji"
+msgid "SetStatusModal|An indicator appears next to your name and avatar"
 msgstr ""
 
 msgid "SetStatusModal|Busy"
@@ -39888,10 +39888,16 @@ msgstr ""
 msgid "can only have one escalation policy"
 msgstr ""
 
+msgid "can't be nil"
+msgstr ""
+
 msgid "can't be the same as the source project"
 msgstr ""
 
 msgid "can't include: %{invalid_storages}"
+msgstr ""
+
+msgid "can't reference a branch that does not exist"
 msgstr ""
 
 msgid "cannot be a date in the past"
@@ -40269,6 +40275,12 @@ msgstr ""
 msgid "container_name cannot be larger than %{max_length} chars"
 msgstr ""
 
+msgid "contains URLs that exceed the 1024 character limit (%{urls})"
+msgstr ""
+
+msgid "contains invalid URLs (%{urls})"
+msgstr ""
+
 msgid "contribute to this project."
 msgstr ""
 
@@ -40337,6 +40349,12 @@ msgstr ""
 msgid "does not have a supported extension. Only %{extension_list} are supported"
 msgstr ""
 
+msgid "does not match dast_site.project"
+msgstr ""
+
+msgid "does not match dast_site_validation.project"
+msgstr ""
+
 msgid "download it"
 msgstr ""
 
@@ -40388,6 +40406,9 @@ msgid "estimateCommand|%{slash_command} overwrites the total estimated time."
 msgstr ""
 
 msgid "example.com"
+msgstr ""
+
+msgid "exceeds the %{max_value_length} character limit"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"
@@ -41066,6 +41087,12 @@ msgid "must be set for a project namespace"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"
+msgstr ""
+
+msgid "must have a repository"
+msgstr ""
+
+msgid "must match %{association}.project_id"
 msgstr ""
 
 msgid "my-awesome-group"

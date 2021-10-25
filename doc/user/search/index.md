@@ -35,7 +35,7 @@ You can also filter the results using the search and filter field, as described 
 GitLab shows shortcuts to issues and merge requests created by you or assigned to you
 in the search field in the upper right corner:
 
-![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
+![shortcut to your issues and merge requests](img/issues_mrs_shortcut_v14_4.png)
 
 ### Filter issue and merge request lists
 
@@ -290,7 +290,7 @@ To start a search, type into the search bar on the top-right of the screen. You 
 in all GitLab and may also see the options to search in a group or project if you are in the
 group or project dashboard.
 
-![basic search](img/basic_search.png)
+![basic search](img/basic_search_v14_4.png)
 
 After the results are returned, you can modify the search, select a different type of data to
 search, or choose a specific group or project.

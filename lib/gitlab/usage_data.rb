@@ -45,23 +45,10 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          license_usage_data
-            .merge(system_usage_data_license)
-            .merge(system_usage_data_settings)
-            .merge(system_usage_data)
-            .merge(system_usage_data_monthly)
-            .merge(system_usage_data_weekly)
-            .merge(features_usage_data)
-            .merge(components_usage_data)
-            .merge(object_store_usage_data)
-            .merge(topology_usage_data)
-            .merge(usage_activity_by_stage)
-            .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-            .merge(analytics_unique_visits_data)
-            .merge(compliance_unique_visits_data)
-            .merge(search_unique_visits_data)
-            .merge(redis_hll_counters)
-            .deep_merge(aggregated_metrics_data)
+          usage_data = usage_data_metrics
+          usage_data = usage_data.with_indifferent_access.deep_merge(instrumentation_metrics.with_indifferent_access) if Feature.enabled?(:usage_data_instrumentation)
+
+          usage_data
         end
       end
 
@@ -728,6 +715,30 @@ module Gitlab
       end
 
       private
+
+      def usage_data_metrics
+        license_usage_data
+          .merge(system_usage_data_license)
+          .merge(system_usage_data_settings)
+          .merge(system_usage_data)
+          .merge(system_usage_data_monthly)
+          .merge(system_usage_data_weekly)
+          .merge(features_usage_data)
+          .merge(components_usage_data)
+          .merge(object_store_usage_data)
+          .merge(topology_usage_data)
+          .merge(usage_activity_by_stage)
+          .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
+          .merge(analytics_unique_visits_data)
+          .merge(compliance_unique_visits_data)
+          .merge(search_unique_visits_data)
+          .merge(redis_hll_counters)
+          .deep_merge(aggregated_metrics_data)
+      end
+
+      def instrumentation_metrics
+        Gitlab::UsageDataMetrics.uncached_data # rubocop:disable UsageData/LargeTable
+      end
 
       def metric_time_period(time_period)
         time_period.present? ? '28d' : 'none'

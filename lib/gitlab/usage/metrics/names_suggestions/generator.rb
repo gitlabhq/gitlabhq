@@ -18,6 +18,10 @@ module Gitlab
 
             private
 
+            def instrumentation_metrics
+              ::Gitlab::UsageDataMetrics.suggested_names
+            end
+
             def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
               Gitlab::Usage::Metrics::NameSuggestion.for(:count, column: column, relation: relation)
             end

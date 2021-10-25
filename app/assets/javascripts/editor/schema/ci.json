@@ -555,7 +555,7 @@
     },
     "start_in": {
       "type": "string",
-      "description": "Used in conjunction with 'when: delayed' to set how long to delay before starting a job.",
+      "description": "Used in conjunction with 'when: delayed' to set how long to delay before starting a job. e.g. '5', 5 seconds, 30 minutes, 1 week, etc. Read more: https://docs.gitlab.com/ee/ci/jobs/job_control.html#run-a-job-after-a-delay",
       "minLength": 1
     },
     "allow_failure": {
@@ -939,7 +939,7 @@
         "stage": {
           "type": "string",
           "description": "Define what stage the job will run in.",
-          "default": "test"
+          "minLength": 1
         },
         "only": {
           "$ref": "#/definitions/filter",

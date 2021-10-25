@@ -80,6 +80,12 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         end
       end
     end
+
+    it 'allows indifferent access' do
+      allow(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:unique_events).and_return(1)
+      expect(subject[:search_unique_visits][:search_unique_visits_for_any_target_monthly]).to eq(1)
+      expect(subject[:search_unique_visits]['search_unique_visits_for_any_target_monthly']).to eq(1)
+    end
   end
 
   describe 'usage_activity_by_stage_package' do
@@ -428,7 +434,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       expect(described_class.usage_activity_by_stage_plan({})).to include(
-        issues: 3,
         notes: 2,
         projects: 2,
         todos: 2,
@@ -439,7 +444,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_jira_dvcs_server_active: 2
       )
       expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(
-        issues: 2,
         notes: 1,
         projects: 1,
         todos: 1,
@@ -449,6 +453,44 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         projects_jira_dvcs_cloud_active: 1,
         projects_jira_dvcs_server_active: 1
       )
+    end
+
+    context 'with usage_data_instrumentation feature flag' do
+      context 'when enabled' do
+        it 'merges the data from instrumentation classes' do
+          stub_feature_flags(usage_data_instrumentation: true)
+
+          for_defined_days_back do
+            user = create(:user)
+            project = create(:project, creator: user)
+            create(:issue, project: project, author: user)
+            create(:issue, project: project, author: User.support_bot)
+          end
+
+          expect(described_class.usage_activity_by_stage_plan({})).to include(issues: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+          expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(issues: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+
+          uncached_data = described_class.uncached_data
+          expect(uncached_data[:usage_activity_by_stage][:plan]).to include(issues: 3)
+          expect(uncached_data[:usage_activity_by_stage_monthly][:plan]).to include(issues: 2)
+        end
+      end
+
+      context 'when disabled' do
+        it 'does not merge the data from instrumentation classes' do
+          stub_feature_flags(usage_data_instrumentation: false)
+
+          for_defined_days_back do
+            user = create(:user)
+            project = create(:project, creator: user)
+            create(:issue, project: project, author: user)
+            create(:issue, project: project, author: User.support_bot)
+          end
+
+          expect(described_class.usage_activity_by_stage_plan({})).to include(issues: 3)
+          expect(described_class.usage_activity_by_stage_plan(described_class.monthly_time_range_db_params)).to include(issues: 2)
+        end
+      end
     end
   end
 
@@ -466,16 +508,52 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         deployments: 2,
         failed_deployments: 2,
         releases: 2,
-        successful_deployments: 2,
-        releases_with_milestones: 2
+        successful_deployments: 2
       )
       expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(
         deployments: 1,
         failed_deployments: 1,
         releases: 1,
-        successful_deployments: 1,
-        releases_with_milestones: 1
+        successful_deployments: 1
       )
+    end
+
+    context 'with usage_data_instrumentation feature flag' do
+      before do
+        for_defined_days_back do
+          user = create(:user)
+          create(:deployment, :failed, user: user)
+          release = create(:release, author: user)
+          create(:milestone, project: release.project, releases: [release])
+          create(:deployment, :success, user: user)
+        end
+      end
+
+      context 'when enabled' do
+        before do
+          stub_feature_flags(usage_data_instrumentation: true)
+        end
+
+        it 'merges data from instrumentation classes' do
+          expect(described_class.usage_activity_by_stage_release({})).to include(releases_with_milestones: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+          expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(releases_with_milestones: Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+
+          uncached_data = described_class.uncached_data
+          expect(uncached_data[:usage_activity_by_stage][:release]).to include(releases_with_milestones: 2)
+          expect(uncached_data[:usage_activity_by_stage_monthly][:release]).to include(releases_with_milestones: 1)
+        end
+      end
+
+      context 'when disabled' do
+        before do
+          stub_feature_flags(usage_data_instrumentation: false)
+        end
+
+        it 'does not merge data from instrumentation classes' do
+          expect(described_class.usage_activity_by_stage_release({})).to include(releases_with_milestones: 2)
+          expect(described_class.usage_activity_by_stage_release(described_class.monthly_time_range_db_params)).to include(releases_with_milestones: 1)
+        end
+      end
     end
   end
 
@@ -525,16 +603,16 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.data }
 
     it 'gathers usage data' do
-      expect(subject.keys).to include(*UsageDataHelpers::USAGE_DATA_KEYS)
+      expect(subject.keys).to include(*UsageDataHelpers::USAGE_DATA_KEYS.map(&:to_s))
     end
 
     it 'gathers usage counts', :aggregate_failures do
       count_data = subject[:counts]
-
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
-      expect(count_data.keys).to include(*UsageDataHelpers::COUNTS_KEYS)
-      expect(UsageDataHelpers::COUNTS_KEYS - count_data.keys).to be_empty
+      count_keys = UsageDataHelpers::COUNTS_KEYS.map(&:to_s)
+      expect(count_data.keys).to include(*count_keys)
+      expect(count_keys - count_data.keys).to be_empty
       expect(count_data.values).to all(be_a_kind_of(Integer))
     end
 
@@ -619,7 +697,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
          external_diffs: { enabled: false },
          lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
          uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-         packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
+         packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }.with_indifferent_access
       )
     end
 
@@ -793,11 +871,36 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     subject { described_class.license_usage_data }
 
     it 'gathers license data' do
-      expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:installation_type]).to eq('gitlab-development-kit')
-      expect(subject[:active_user_count]).to eq(User.active.size)
       expect(subject[:recorded_at]).to be_a(Time)
+    end
+
+    context 'with usage_data_instrumentation feature flag' do
+      context 'when enabled' do
+        it 'merges uuid and hostname data from instrumentation classes' do
+          stub_feature_flags(usage_data_instrumentation: true)
+
+          expect(subject[:uuid]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+          expect(subject[:hostname]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+          expect(subject[:active_user_count]).to eq(Gitlab::Utils::UsageData::INSTRUMENTATION_CLASS_FALLBACK)
+
+          uncached_data = described_class.data
+          expect(uncached_data[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
+          expect(uncached_data[:hostname]).to eq(Gitlab.config.gitlab.host)
+          expect(uncached_data[:active_user_count]).to eq(User.active.size)
+        end
+      end
+
+      context 'when disabled' do
+        it 'does not merge uuid and hostname data from instrumentation classes' do
+          stub_feature_flags(usage_data_instrumentation: false)
+
+          expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
+          expect(subject[:hostname]).to eq(Gitlab.config.gitlab.host)
+          expect(subject[:active_user_count]).to eq(User.active.size)
+        end
+      end
     end
   end
 
@@ -1061,18 +1164,46 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
         expect(subject[:settings][:gitaly_apdex]).to be_within(0.001).of(0.95)
       end
 
-      it 'reports collected data categories' do
-        expected_value = %w[standard subscription operational optional]
+      context 'with usage_data_instrumentation feature flag' do
+        context 'when enabled' do
+          before do
+            stub_feature_flags(usage_data_instrumentation: true)
+          end
 
-        allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
-          expect(instance).to receive(:execute).and_return(expected_value)
+          it 'reports collected data categories' do
+            expected_value = %w[standard subscription operational optional]
+
+            allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+              expect(instance).to receive(:execute).and_return(expected_value)
+            end
+
+            expect(described_class.data[:settings][:collected_data_categories]).to eq(expected_value)
+          end
+
+          it 'gathers service_ping_features_enabled' do
+            expect(described_class.data[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
+          end
         end
 
-        expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
-      end
+        context 'when disabled' do
+          before do
+            stub_feature_flags(usage_data_instrumentation: false)
+          end
 
-      it 'gathers service_ping_features_enabled' do
-        expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
+          it 'reports collected data categories' do
+            expected_value = %w[standard subscription operational optional]
+
+            allow_next_instance_of(ServicePing::PermitDataCategoriesService) do |instance|
+              expect(instance).to receive(:execute).and_return(expected_value)
+            end
+
+            expect(subject[:settings][:collected_data_categories]).to eq(expected_value)
+          end
+
+          it 'gathers service_ping_features_enabled' do
+            expect(subject[:settings][:service_ping_features_enabled]).to eq(Gitlab::CurrentSettings.usage_ping_features_enabled)
+          end
+        end
       end
 
       it 'gathers user_cap_feature_enabled' do

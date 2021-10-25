@@ -41,7 +41,7 @@ To access the default page for Admin Area settings:
 | [Kroki](../../../administration/integration/kroki.md#enable-kroki-in-gitlab) | Allow rendering of diagrams in AsciiDoc and Markdown documents using [kroki.io](https://kroki.io). |
 | [Mailgun](../../../administration/integration/mailgun.md) | Enable your GitLab instance to receive invite email bounce events from Mailgun, if it is your email provider. |
 | [PlantUML](../../../administration/integration/plantuml.md) | Allow rendering of PlantUML diagrams in documents. |
-| [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) **(FREE SAAS)** | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
+| [Slack application](../../../user/project/integrations/gitlab_slack_application.md#configuration) | Slack integration allows you to interact with GitLab via slash commands in a chat window. This option is only available on GitLab.com, though it may be [available for self-managed instances in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/28164). |
 | [Third party offers](third_party_offers.md) | Control the display of third party offers. |
 | [Snowplow](../../../development/snowplow/index.md) | Configure the Snowplow integration. |
 | [Google GKE](../../project/clusters/add_gke_clusters.md) | Google GKE integration allows you to provision GKE clusters from GitLab. |
@@ -69,7 +69,7 @@ To access the default page for Admin Area settings:
 | Option | Description |
 | ------ | ----------- |
 | [Continuous Integration and Deployment](continuous_integration.md) | Auto DevOps, runners and job artifacts. |
-| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) **(PREMIUM SELF)** | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/index.md). This pipeline configuration is run after the project's own configuration. |
+| [Required pipeline configuration](continuous_integration.md#required-pipeline-configuration) | Set an instance-wide auto included [pipeline configuration](../../../ci/yaml/index.md). This pipeline configuration is run after the project's own configuration. |
 | [Package Registry](continuous_integration.md#package-registry-configuration) | Settings related to the use and experience of using the GitLab Package Registry. Note there are [risks involved](../../packages/container_registry/index.md#use-with-external-container-registries) in enabling some of these settings. |
 
 ## Reporting
@@ -88,7 +88,7 @@ To access the default page for Admin Area settings:
 | [Profiling - Performance bar](../../../administration/monitoring/performance/performance_bar.md#enable-the-performance-bar-for-non-administrators) | Enable access to the Performance Bar for non-administrator users in a given group. |
 | [Self monitoring](../../../administration/monitoring/gitlab_self_monitoring_project/index.md#create-the-self-monitoring-project) | Enable or disable instance self monitoring. |
 | [Usage statistics](usage_statistics.md) | Enable or disable version check and Service Ping. |
-| [Pseudonymizer data collection](../../../administration/pseudonymizer.md) **(ULTIMATE)** | Enable or disable the Pseudonymizer data collection. |
+| [Pseudonymizer data collection](../../../administration/pseudonymizer.md) | Enable or disable the Pseudonymizer data collection. |
 
 ## Network
 
@@ -105,11 +105,11 @@ To access the default page for Admin Area settings:
 | [Incident Management](../../../operations/incident_management/index.md) Limits | Limit the number of inbound alerts that can be sent to a project. |
 | [Notes creation limit](rate_limit_on_notes_creation.md)| Set a rate limit on the note creation requests. |
 
-## Geo
+## Geo **(PREMIUM SELF)**
 
 | Option | Description |
 | ------ | ----------- |
-| Geo    | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **Admin Area > Geo > Settings** are no longer available at **Admin Area > Settings > Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
+| [Geo](../../../administration/geo/index.md) | Geo allows you to replicate your GitLab instance to other geographical locations. Redirects to **Admin Area > Geo > Settings** are no longer available at **Admin Area > Settings > Geo** in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/36896). |
 
 ## Preferences
 

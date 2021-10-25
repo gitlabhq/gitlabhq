@@ -9,7 +9,12 @@ Vue.use(VueApollo);
 Vue.use(GlToast);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
+  defaultClient: createDefaultClient(
+    {},
+    {
+      assumeImmutableResults: true,
+    },
+  ),
 });
 
 export default (containerId = 'js-jobs-table') => {

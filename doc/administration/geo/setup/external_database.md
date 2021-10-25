@@ -8,7 +8,7 @@ type: howto
 # Geo with external PostgreSQL instances **(PREMIUM SELF)**
 
 This document is relevant if you are using a PostgreSQL instance that is *not
-managed by Omnibus*. This includes cloud-managed instances like AWS RDS, or
+managed by Omnibus*. This includes cloud-managed instances like Amazon RDS, or
 manually installed and configured PostgreSQL instances.
 
 NOTE:
@@ -58,7 +58,7 @@ developed and tested. We aim to be compatible with most external
 
 To set up an external database, you can either:
 
-- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example AWS RDS, bare metal not managed by Omnibus, and so on).
+- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, bare metal not managed by Omnibus, and so on).
 - Perform the Omnibus configuration manually as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database
@@ -200,7 +200,7 @@ This is for the installation of extensions during installation and upgrades. As 
 To setup an external tracking database, follow the instructions below:
 
 NOTE:
-If you want to use AWS RDS as a tracking database, make sure it has access to
+If you want to use Amazon RDS as a tracking database, make sure it has access to
 the secondary database. Unfortunately, just assigning the same security group is not enough as
 outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
 rule to the read-replica's security group allowing any TCP traffic from

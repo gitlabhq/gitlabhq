@@ -52,7 +52,7 @@ describe('RunnerInstructionsModal component', () => {
   const findBinaryInstructions = () => wrapper.findByTestId('binary-instructions');
   const findRegisterCommand = () => wrapper.findByTestId('register-command');
 
-  const createComponent = (options = {}) => {
+  const createComponent = ({ props, ...options } = {}) => {
     const requestHandlers = [
       [getRunnerPlatformsQuery, runnerPlatformsHandler],
       [getRunnerSetupInstructionsQuery, runnerSetupInstructionsHandler],
@@ -64,6 +64,8 @@ describe('RunnerInstructionsModal component', () => {
       shallowMount(RunnerInstructionsModal, {
         propsData: {
           modalId: 'runner-instructions-modal',
+          registrationToken: 'MY_TOKEN',
+          ...props,
         },
         localVue,
         apolloProvider: fakeApollo,
@@ -119,18 +121,30 @@ describe('RunnerInstructionsModal component', () => {
       expect(instructions).toBe(installInstructions);
     });
 
-    it('register command is shown', () => {
+    it('register command is shown with a replaced token', () => {
       const instructions = findRegisterCommand().text();
 
-      expect(instructions).toBe(registerInstructions);
+      expect(instructions).toBe(
+        'sudo gitlab-runner register --url http://gdk.test:3000/ --registration-token MY_TOKEN',
+      );
+    });
+
+    describe('when a register token is not shown', () => {
+      beforeEach(async () => {
+        createComponent({ props: { registrationToken: undefined } });
+        await nextTick();
+      });
+
+      it('register command is shown without a defined registration token', () => {
+        const instructions = findRegisterCommand().text();
+
+        expect(instructions).toBe(registerInstructions);
+      });
     });
   });
 
   describe('after a platform and architecture are selected', () => {
-    const {
-      installInstructions,
-      registerInstructions,
-    } = mockGraphqlInstructionsWindows.data.runnerSetup;
+    const { installInstructions } = mockGraphqlInstructionsWindows.data.runnerSetup;
 
     beforeEach(async () => {
       runnerSetupInstructionsHandler.mockResolvedValue(mockGraphqlInstructionsWindows);
@@ -158,7 +172,9 @@ describe('RunnerInstructionsModal component', () => {
     it('register command is shown', () => {
       const command = findRegisterCommand().text();
 
-      expect(command).toBe(registerInstructions);
+      expect(command).toBe(
+        './gitlab-runner.exe register --url http://gdk.test:3000/ --registration-token MY_TOKEN',
+      );
     });
   });
 

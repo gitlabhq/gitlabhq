@@ -25,6 +25,10 @@ module Gitlab
         unflatten_key_path(intrumentation_object.instrumentation)
       end
 
+      def with_suggested_name
+        unflatten_key_path(intrumentation_object.suggested_name)
+      end
+
       private
 
       def unflatten_key_path(value)

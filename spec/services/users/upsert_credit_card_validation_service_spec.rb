@@ -15,6 +15,7 @@ RSpec.describe Users::UpsertCreditCardValidationService do
       credit_card_expiration_year: expiration_year,
       credit_card_expiration_month: 1,
       credit_card_holder_name: 'John Smith',
+      credit_card_type: 'AmericanExpress',
       credit_card_mask_number: '1111'
     }
   end
@@ -30,7 +31,16 @@ RSpec.describe Users::UpsertCreditCardValidationService do
           result = service.execute
 
           expect(result.status).to eq(:success)
-          expect(user.reload.credit_card_validated_at).to eq(credit_card_validated_time)
+
+          user.reload
+
+          expect(user.credit_card_validation).to have_attributes(
+            credit_card_validated_at: credit_card_validated_time,
+            network: 'AmericanExpress',
+            holder_name: 'John Smith',
+            last_digits: 1111,
+            expiration_date: Date.new(expiration_year, 1, 31)
+          )
         end
       end
 
@@ -97,6 +107,7 @@ RSpec.describe Users::UpsertCreditCardValidationService do
           expiration_date: Date.new(expiration_year, 1, 31),
           holder_name: "John Smith",
           last_digits: 1111,
+          network: "AmericanExpress",
           user_id: user_id
         }
 

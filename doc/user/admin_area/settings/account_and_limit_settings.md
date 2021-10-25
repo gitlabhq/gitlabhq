@@ -148,7 +148,7 @@ add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachme
 nginx['client_max_body_size'] = "200m"
 ```
 
-## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM)**
+## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
 > - It's deployed behind a feature flag, disabled by default.
@@ -173,7 +173,7 @@ To set a limit on how long these sessions are valid:
 
 ## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab Ultimate 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a lifetime for
 [personal access tokens](../../profile/personal_access_tokens.md).
@@ -222,7 +222,7 @@ Disabling SSH key expiration immediately enables all expired SSH keys.
 
 ## Allow expired Personal Access Tokens to be used **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab Ultimate 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
 
 By default, expired personal access tokens (PATs) **are not usable**.

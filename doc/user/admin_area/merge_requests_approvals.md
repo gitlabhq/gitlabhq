@@ -7,7 +7,7 @@ type: reference, concepts
 
 # Merge request approval rules **(PREMIUM SELF)**
 
-> Introduced in [GitLab Premium](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) 12.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) in GitLab 12.8.
 
 Merge request approval rules prevent users from overriding certain settings on the project
 level. When enabled at the instance level, these settings are no longer editable on the

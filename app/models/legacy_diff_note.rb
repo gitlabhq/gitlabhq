@@ -13,7 +13,7 @@ class LegacyDiffNote < Note
 
   validates :line_code, presence: true, line_code: true
 
-  before_create :set_diff
+  before_create :set_diff, unless: :skip_setting_st_diff?
 
   def discussion_class(*)
     LegacyDiffDiscussion
@@ -88,6 +88,10 @@ class LegacyDiffNote < Note
     diff ||= find_diff
 
     self.st_diff = diff.to_hash if diff
+  end
+
+  def skip_setting_st_diff?
+    st_diff.present? && importing? && Feature.enabled?(:skip_legacy_diff_note_callback_on_import, default_enabled: :yaml)
   end
 
   def diff_for_line_code

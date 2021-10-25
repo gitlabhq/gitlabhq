@@ -524,8 +524,8 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
 
-Do: Select the jobs you want.
-Do not: Select the job(s) you want.
+- Do: Select the jobs you want.
+- Do not: Select the job(s) you want.
 
 If you can select multiples of something, then write the word as plural.
 

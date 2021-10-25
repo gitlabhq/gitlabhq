@@ -32,7 +32,7 @@ For the Cloud Native Hybrid architectures there are two Infrastructure as Code o
 
 ## Introduction
 
-For the most part, we'll make use of Omnibus GitLab in our setup, but we'll also leverage native AWS services. Instead of using the Omnibus bundled PostgreSQL and Redis, we will use AWS RDS and ElastiCache.
+For the most part, we'll make use of Omnibus GitLab in our setup, but we'll also leverage native AWS services. Instead of using the Omnibus bundled PostgreSQL and Redis, we will use Amazon RDS and ElastiCache.
 
 In this guide, we'll go through a multi-node setup where we'll start by
 configuring our Virtual Private Cloud and subnets to later integrate
