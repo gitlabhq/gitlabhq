@@ -2808,6 +2808,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: tasks_to_be_done_create
+  :worker_name: TasksToBeDone::CreateWorker
+  :feature_category: :onboarding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker
   :feature_category: :source_code_management

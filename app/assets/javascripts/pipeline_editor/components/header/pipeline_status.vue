@@ -21,6 +21,9 @@ export const i18n = {
     `Pipeline|Pipeline %{idStart}#%{idEnd} %{statusStart}%{statusEnd} for %{commitStart}%{commitEnd}`,
   ),
   viewBtn: s__('Pipeline|View pipeline'),
+  pipelineNotTriggeredMsg: s__(
+    'Pipeline|No pipeline was triggered for the latest changes due to the current CI/CD configuration.',
+  ),
 };
 
 export default {
@@ -73,16 +76,22 @@ export default {
       result(res) {
         if (res.data?.project?.pipeline) {
           this.hasError = false;
+        } else {
+          this.hasError = true;
+          this.pipelineNotTriggered = true;
         }
       },
       error() {
         this.hasError = true;
+        this.networkError = true;
       },
       pollInterval: POLL_INTERVAL,
     },
   },
   data() {
     return {
+      networkError: false,
+      pipelineNotTriggered: false,
       hasError: false,
     };
   },
@@ -126,9 +135,15 @@ export default {
       </div>
     </template>
     <template v-else-if="hasError">
-      <div>
+      <div v-if="networkError">
         <gl-icon class="gl-mr-auto" name="warning-solid" />
         <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
+      </div>
+      <div v-else>
+        <gl-icon class="gl-mr-auto" name="information-o" />
+        <span data-testid="pipeline-not-triggered-error-msg">
+          {{ $options.i18n.pipelineNotTriggeredMsg }}
+        </span>
       </div>
     </template>
     <template v-else>

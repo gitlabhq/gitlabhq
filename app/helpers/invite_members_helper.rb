@@ -42,6 +42,14 @@ module InviteMembersHelper
       e.candidate { dataset.merge!(areas_of_focus_options: member_areas_of_focus_options.to_json, no_selection_areas_of_focus: ['no_selection']) }
     end
 
+    if show_invite_members_for_task?
+      dataset.merge!(
+        tasks_to_be_done_options: tasks_to_be_done_options.to_json,
+        projects: projects_for_source(source).to_json,
+        new_project_path: source.is_a?(Group) ? new_project_path(namespace_id: source.id) : ''
+      )
+    end
+
     dataset
   end
 
@@ -70,5 +78,20 @@ module InviteMembersHelper
   # Overridden in EE
   def users_filter_data(group)
     {}
+  end
+
+  def show_invite_members_for_task?
+    return unless current_user && experiment(:invite_members_for_task).enabled?
+
+    params[:open_modal] == 'invite_members_for_task'
+  end
+
+  def tasks_to_be_done_options
+    ::MemberTask::TASKS.keys.map { |task| { value: task, text: localized_tasks_to_be_done_choices[task] } }
+  end
+
+  def projects_for_source(source)
+    projects = source.is_a?(Project) ? [source] : source.projects
+    projects.map { |project| { id: project.id, title: project.title } }
   end
 end

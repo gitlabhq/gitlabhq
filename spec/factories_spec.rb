@@ -75,6 +75,7 @@ RSpec.describe 'factories' do
     group_member
     import_state
     issue_customer_relations_contact
+    member_task
     milestone_release
     namespace
     project_broken_repo

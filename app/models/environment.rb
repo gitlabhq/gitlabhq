@@ -425,6 +425,14 @@ class Environment < ApplicationRecord
     clear_reactive_cache!
   end
 
+  def should_link_to_merge_requests?
+    unfoldered? || production? || staging?
+  end
+
+  def unfoldered?
+    environment_type.nil?
+  end
+
   private
 
   def rollout_status_available?

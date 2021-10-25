@@ -77,6 +77,26 @@ Data is shown for workflow items created during the selected date range. To filt
 1. Optionally select a project.
 1. Select a date range using the available date pickers.
 
+### Upcoming date filter change
+
+In the [epics](https://gitlab.com/groups/gitlab-org/-/epics/6046), we plan to alter
+the date filter behavior to filter the end event time of the currently selected stage.
+
+The change makes it possible to get a much better picture about the completed items within the
+stage and helps uncover long-running items.
+
+For example, an issue was created a year ago and the current stage was finished in the current month. 
+If you were to look at the metrics for the last three months, this issue would not be included in the calculation of 
+the stage metrics. With the new date filter, this item would be included.
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 ## How metrics are measured
 
 > DORA API-based deployment metrics [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256)

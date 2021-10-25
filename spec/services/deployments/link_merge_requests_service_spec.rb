@@ -32,6 +32,19 @@ RSpec.describe Deployments::LinkMergeRequestsService do
       end
     end
 
+    context 'when the deployment is for one of the production environments' do
+      it 'links merge requests' do
+        environment =
+          create(:environment, environment_type: 'production', name: 'production/gcp')
+
+        deploy = create(:deployment, :success, environment: environment)
+
+        expect(deploy).to receive(:link_merge_requests).once
+
+        described_class.new(deploy).execute
+      end
+    end
+
     context 'when the deployment failed' do
       it 'does nothing' do
         environment = create(:environment, name: 'foo')

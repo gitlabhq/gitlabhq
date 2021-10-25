@@ -63,7 +63,11 @@ module Namespaces
         # Make sure we drop the STI `type = 'Group'` condition for better performance.
         # Logically equivalent so long as hierarchies remain homogeneous.
         def without_sti_condition
-          unscope(where: :type)
+          if Feature.enabled?(:include_sti_condition, default_enabled: :yaml)
+            all
+          else
+            unscope(where: :type)
+          end
         end
 
         def order_by_depth(hierarchy_order)

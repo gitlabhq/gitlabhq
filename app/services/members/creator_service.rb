@@ -4,6 +4,8 @@ module Members
   # This class serves as more of an app-wide way we add/create members
   # All roads to add members should take this path.
   class CreatorService
+    include Gitlab::Experiment::Dsl
+
     class << self
       def parsed_access_level(access_level)
         access_levels.fetch(access_level) { access_level.to_i }
@@ -24,6 +26,7 @@ module Members
     def execute
       find_or_build_member
       update_member
+      create_member_task
 
       member
     end
@@ -58,6 +61,21 @@ module Members
         created_by: member.created_by || current_user,
         access_level: access_level,
         expires_at: args[:expires_at]
+      }
+    end
+
+    def create_member_task
+      return unless experiment(:invite_members_for_task).enabled?
+      return unless member.persisted?
+      return if member_task_attributes.value?(nil)
+
+      member.create_member_task(member_task_attributes)
+    end
+
+    def member_task_attributes
+      {
+        tasks_to_be_done: args[:tasks_to_be_done],
+        project_id: args[:tasks_project_id]
       }
     end
 

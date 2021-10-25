@@ -133,6 +133,7 @@ project_members:
 - user
 - source
 - project
+- member_task
 merge_requests:
 - status_check_responses
 - subscriptions

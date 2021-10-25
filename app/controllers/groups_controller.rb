@@ -92,6 +92,7 @@ class GroupsController < Groups::ApplicationController
         if @group.import_state&.in_progress?
           redirect_to group_import_path(@group)
         else
+          publish_invite_members_for_task_experiment
           render_show_html
         end
       end
@@ -378,6 +379,13 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
+  end
+
+  def publish_invite_members_for_task_experiment
+    return unless params[:open_modal] == 'invite_members_for_task'
+    return unless current_user&.can?(:admin_group_member, @group)
+
+    experiment(:invite_members_for_task, namespace: @group).publish_to_client
   end
 end
 

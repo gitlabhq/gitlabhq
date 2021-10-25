@@ -65,6 +65,10 @@ module Gitlab
             ][series]
           end
 
+          def invite_members?
+            invite_members_for_task_experiment_enabled?
+          end
+
           private
 
           def ci_link

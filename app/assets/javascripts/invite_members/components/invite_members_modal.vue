@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlFormGroup,
   GlModal,
   GlDropdown,
@@ -16,12 +17,14 @@ import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { sanitize } from '~/lib/dompurify';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import {
   INVITE_MEMBERS_IN_COMMENT,
   GROUP_FILTERS,
   USERS_FILTER_ALL,
   MEMBER_AREAS_OF_FOCUS,
+  INVITE_MEMBERS_FOR_TASK,
 } from '../constants';
 import eventHub from '../event_hub';
 import {
@@ -34,6 +37,7 @@ import MembersTokenSelect from './members_token_select.vue';
 export default {
   name: 'InviteMembersModal',
   components: {
+    GlAlert,
     GlFormGroup,
     GlDatepicker,
     GlLink,
@@ -47,6 +51,7 @@ export default {
     MembersTokenSelect,
     GroupSelect,
   },
+  inject: ['newProjectPath'],
   props: {
     id: {
       type: String,
@@ -100,6 +105,14 @@ export default {
       type: Array,
       required: true,
     },
+    tasksToBeDoneOptions: {
+      type: Array,
+      required: true,
+    },
+    projects: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -110,6 +123,8 @@ export default {
       newUsersToInvite: [],
       selectedDate: undefined,
       selectedAreasOfFocus: [],
+      selectedTasksToBeDone: [],
+      selectedTaskProject: this.projects[0],
       groupToBeSharedWith: {},
       source: 'unknown',
       invalidFeedbackMessage: '',
@@ -156,7 +171,7 @@ export default {
       );
     },
     areasOfFocusEnabled() {
-      return this.areasOfFocusOptions.length !== 0;
+      return !this.tasksToBeDoneEnabled && this.areasOfFocusOptions.length !== 0;
     },
     areasOfFocusForPost() {
       if (this.selectedAreasOfFocus.length === 0 && this.areasOfFocusEnabled) {
@@ -172,12 +187,40 @@ export default {
 
       return this.$options.labels[this.inviteeType].placeHolder;
     },
+    tasksToBeDoneEnabled() {
+      return (
+        getParameterValues('open_modal')[0] === 'invite_members_for_task' &&
+        this.tasksToBeDoneOptions.length
+      );
+    },
+    showTasksToBeDone() {
+      return (
+        this.tasksToBeDoneEnabled &&
+        this.selectedAccessLevel >= INVITE_MEMBERS_FOR_TASK.minimum_access_level
+      );
+    },
+    showTaskProjects() {
+      return !this.isProject && this.selectedTasksToBeDone.length;
+    },
+    tasksToBeDoneForPost() {
+      return this.showTasksToBeDone ? this.selectedTasksToBeDone : [];
+    },
+    tasksProjectForPost() {
+      return this.showTasksToBeDone && this.selectedTasksToBeDone.length
+        ? this.selectedTaskProject.id
+        : '';
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
       this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
     });
+
+    if (this.tasksToBeDoneEnabled) {
+      this.openModal({ inviteeType: 'members', source: 'in_product_marketing_email' });
+      this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, INVITE_MEMBERS_FOR_TASK.view);
+    }
   },
   methods: {
     partitionNewUsersToInvite() {
@@ -219,6 +262,12 @@ export default {
 
       this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.submit);
     },
+    trackinviteMembersForTask() {
+      const label = 'selected_tasks_to_be_done';
+      const property = this.selectedTasksToBeDone.join(',');
+      const tracking = new ExperimentTracking(INVITE_MEMBERS_FOR_TASK.name, { label, property });
+      tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
+    },
     resetFields() {
       this.isLoading = false;
       this.selectedAccessLevel = this.defaultAccessLevel;
@@ -227,9 +276,14 @@ export default {
       this.groupToBeSharedWith = {};
       this.invalidFeedbackMessage = '';
       this.selectedAreasOfFocus = [];
+      this.selectedTasksToBeDone = [];
+      [this.selectedTaskProject] = this.projects;
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
+    },
+    changeSelectedTaskProject(project) {
+      this.selectedTaskProject = project;
     },
     submitShareWithGroup() {
       const apiShareWithGroup = this.isProject
@@ -263,6 +317,7 @@ export default {
         promises.push(apiAddByUserId(this.id, this.addByUserIdPostData(usersToAddById)));
       }
       this.trackInvite();
+      this.trackinviteMembersForTask();
 
       Promise.all(promises)
         .then(this.conditionallyShowToastSuccess)
@@ -275,6 +330,8 @@ export default {
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
         areas_of_focus: this.areasOfFocusForPost,
+        tasks_to_be_done: this.tasksToBeDoneForPost,
+        tasks_project_id: this.tasksProjectForPost,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -284,6 +341,8 @@ export default {
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
         areas_of_focus: this.areasOfFocusForPost,
+        tasks_to_be_done: this.tasksToBeDoneForPost,
+        tasks_project_id: this.tasksProjectForPost,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {
@@ -336,6 +395,17 @@ export default {
         introText: s__(
           "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
         ),
+      },
+      tasksToBeDone: {
+        title: s__(
+          'InviteMembersModal|Create issues for your new team member to work on (optional)',
+        ),
+        noProjects: s__(
+          'InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}',
+        ),
+      },
+      tasksProject: {
+        title: s__('InviteMembersModal|Choose a project for the issues'),
       },
     },
     group: {
@@ -475,6 +545,54 @@ export default {
           :options="areasOfFocusOptions"
           data-testid="area-of-focus-checks"
         />
+      </div>
+      <div v-if="showTasksToBeDone" data-testid="invite-members-modal-tasks-to-be-done">
+        <label class="gl-mt-5">
+          {{ $options.labels.members.tasksToBeDone.title }}
+        </label>
+        <template v-if="projects.length">
+          <gl-form-checkbox-group
+            v-model="selectedTasksToBeDone"
+            :options="tasksToBeDoneOptions"
+            data-testid="invite-members-modal-tasks"
+          />
+          <template v-if="showTaskProjects">
+            <label class="gl-mt-5 gl-display-block">
+              {{ $options.labels.members.tasksProject.title }}
+            </label>
+            <gl-dropdown
+              class="gl-w-half gl-xs-w-full"
+              :text="selectedTaskProject.title"
+              data-testid="invite-members-modal-project-select"
+            >
+              <template v-for="project in projects">
+                <gl-dropdown-item
+                  :key="project.id"
+                  active-class="is-active"
+                  is-check-item
+                  :is-checked="project.id === selectedTaskProject.id"
+                  @click="changeSelectedTaskProject(project)"
+                >
+                  {{ project.title }}
+                </gl-dropdown-item>
+              </template>
+            </gl-dropdown>
+          </template>
+        </template>
+        <gl-alert
+          v-else-if="tasksToBeDoneEnabled"
+          variant="tip"
+          :dismissible="false"
+          data-testid="invite-members-modal-no-projects-alert"
+        >
+          <gl-sprintf :message="$options.labels.members.tasksToBeDone.noProjects">
+            <template #link="{ content }">
+              <gl-link :href="newProjectPath" target="_blank" class="gl-label-link">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-alert>
       </div>
     </div>
 

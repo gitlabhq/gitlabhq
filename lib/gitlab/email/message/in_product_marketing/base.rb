@@ -7,6 +7,7 @@ module Gitlab
         class Base
           include Gitlab::Email::Message::InProductMarketing::Helper
           include Gitlab::Routing
+          include Gitlab::Experiment::Dsl
 
           attr_accessor :format
 
@@ -54,6 +55,18 @@ module Gitlab
             else
               [cta_text, group_email_campaigns_url(group, track: track, series: series)].join(' >> ')
             end
+          end
+
+          def invite_members?
+            false
+          end
+
+          def invite_text
+            s_('InProductMarketing|Do you have a teammate who would be perfect for this task?')
+          end
+
+          def invite_link
+            action_link(s_('InProductMarketing|Invite them to help out.'), group_url(group, open_modal: 'invite_members_for_task'))
           end
 
           def unsubscribe
@@ -147,6 +160,16 @@ module Gitlab
             preference_link = "https://about.gitlab.com/company/preference-center/?#{params.to_query}"
 
             link(s_('InProductMarketing|update your preferences'), preference_link)
+          end
+
+          def invite_members_for_task_experiment_enabled?
+            return unless user.can?(:admin_group_member, group)
+
+            experiment(:invite_members_for_task, namespace: group) do |e|
+              e.candidate { true }
+              e.record!
+              e.run
+            end
           end
         end
       end

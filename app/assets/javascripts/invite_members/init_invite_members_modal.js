@@ -14,6 +14,9 @@ export default function initInviteMembersModal() {
 
   return new Vue({
     el,
+    provide: {
+      newProjectPath: el.dataset.newProjectPath,
+    },
     render: (createElement) =>
       createElement(InviteMembersModal, {
         props: {
@@ -24,6 +27,8 @@ export default function initInviteMembersModal() {
           groupSelectFilter: el.dataset.groupsFilter,
           groupSelectParentId: parseInt(el.dataset.parentId, 10),
           areasOfFocusOptions: JSON.parse(el.dataset.areasOfFocusOptions),
+          tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
+          projects: JSON.parse(el.dataset.projects || '[]'),
           noSelectionAreasOfFocus: JSON.parse(el.dataset.noSelectionAreasOfFocus),
           usersFilter: el.dataset.usersFilter,
           filterId: parseInt(el.dataset.filterId, 10),

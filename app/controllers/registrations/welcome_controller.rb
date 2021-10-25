@@ -16,6 +16,8 @@ module Registrations
       result = ::Users::SignupService.new(current_user, update_params).execute
 
       if result[:status] == :success
+        return redirect_to issues_dashboard_path(assignee_username: current_user.username) if show_tasks_to_be_done?
+
         return redirect_to experiment(:combined_registration, user: current_user).redirect_path(trial_params) if show_signup_onboarding?
 
         members = current_user.members
@@ -66,6 +68,12 @@ module Registrations
 
     def show_signup_onboarding?
       false
+    end
+
+    def show_tasks_to_be_done?
+      return unless experiment(:invite_members_for_task).enabled?
+
+      MemberTask.for_members(current_user.members).exists?
     end
 
     def trial_params

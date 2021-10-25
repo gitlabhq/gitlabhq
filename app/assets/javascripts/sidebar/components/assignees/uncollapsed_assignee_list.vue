@@ -1,4 +1,5 @@
 <script>
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IssuableType } from '~/issue_show/constants';
 import { __, sprintf } from '~/locale';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
@@ -11,6 +12,7 @@ export default {
     AssigneeAvatarLink,
     UserNameWithStatus,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     users: {
       type: Array,
@@ -32,6 +34,10 @@ export default {
       return this.users[0];
     },
     hasOneUser() {
+      if (this.showVerticalList) {
+        return false;
+      }
+
       return this.users.length === 1;
     },
     hiddenAssigneesLabel() {
@@ -45,6 +51,10 @@ export default {
       return this.users.length - DEFAULT_RENDER_COUNT;
     },
     uncollapsedUsers() {
+      if (this.showVerticalList) {
+        return this.users;
+      }
+
       const uncollapsedLength = this.showLess
         ? Math.min(this.users.length, DEFAULT_RENDER_COUNT)
         : this.users.length;
@@ -52,6 +62,12 @@ export default {
     },
     username() {
       return `@${this.firstUser.username}`;
+    },
+    showVerticalList() {
+      return this.glFeatures.mrAttentionRequests && this.isMergeRequest;
+    },
+    isMergeRequest() {
+      return this.issuableType === IssuableType.MergeRequest;
     },
   },
   methods: {
@@ -84,11 +100,28 @@ export default {
   <div v-else>
     <div class="gl-display-flex gl-flex-wrap">
       <div
-        v-for="user in uncollapsedUsers"
+        v-for="(user, index) in uncollapsedUsers"
         :key="user.id"
-        class="user-item gl-display-inline-block"
+        :class="{
+          'user-item': !showVerticalList,
+          'gl-mb-3': index !== users.length - 1 && showVerticalList,
+        }"
+        class="gl-display-inline-block"
       >
-        <assignee-avatar-link :user="user" :issuable-type="issuableType" />
+        <assignee-avatar-link
+          :user="user"
+          :issuable-type="issuableType"
+          :tooltip-has-name="!showVerticalList"
+        >
+          <div
+            v-if="showVerticalList"
+            class="gl-ml-3 gl-line-height-normal gl-display-grid"
+            data-testid="username"
+          >
+            <user-name-with-status :name="user.name" :availability="userAvailability(user)" />
+            <span>@{{ user.username }}</span>
+          </div>
+        </assignee-avatar-link>
       </div>
     </div>
     <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">

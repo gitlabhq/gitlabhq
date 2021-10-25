@@ -82,6 +82,16 @@ RSpec.describe GroupsController, factory_default: :keep do
         expect(subject).to redirect_to group_import_path(group)
       end
     end
+
+    context 'publishing the invite_members_for_task experiment' do
+      it 'publishes the experiment data to the client' do
+        wrapped_experiment(experiment(:invite_members_for_task)) do |e|
+          expect(e).to receive(:publish_to_client)
+        end
+
+        get :show, params: { id: group.to_param, open_modal: 'invite_members_for_task' }, format: format
+      end
+    end
   end
 
   describe 'GET #details' do

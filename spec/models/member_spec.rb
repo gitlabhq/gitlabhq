@@ -9,6 +9,7 @@ RSpec.describe Member do
 
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_one(:member_task) }
   end
 
   describe 'Validation' do
@@ -677,6 +678,19 @@ RSpec.describe Member do
       expect(member.invite_accepted_at).to be_nil
       expect(member.invite_token).not_to be_nil
       expect_any_instance_of(Member).not_to receive(:after_accept_invite)
+    end
+
+    it 'schedules a TasksToBeDone::CreateWorker task' do
+      stub_experiments(invite_members_for_task: true)
+
+      member_task = create(:member_task, member: member, project: member.project)
+
+      expect(TasksToBeDone::CreateWorker)
+        .to receive(:perform_async)
+        .with(member_task.id, member.created_by_id, [user.id])
+        .once
+
+      member.accept_invite!(user)
     end
   end
 

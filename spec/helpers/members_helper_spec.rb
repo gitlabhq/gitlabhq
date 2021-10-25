@@ -68,4 +68,10 @@ RSpec.describe MembersHelper do
     it { expect(leave_confirmation_message(project)).to eq "Are you sure you want to leave the \"#{project.full_name}\" project?" }
     it { expect(leave_confirmation_message(group)).to eq "Are you sure you want to leave the \"#{group.name}\" group?" }
   end
+
+  describe '#localized_tasks_to_be_done_choices' do
+    it 'has a translation for all `TASKS_TO_BE_DONE` keys' do
+      expect(localized_tasks_to_be_done_choices).to include(*MemberTask::TASKS.keys)
+    end
+  end
 end

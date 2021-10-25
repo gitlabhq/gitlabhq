@@ -10,7 +10,7 @@ const DEFAULT_RENDER_COUNT = 5;
 describe('UncollapsedAssigneeList component', () => {
   let wrapper;
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, glFeatures = {}) {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
@@ -19,6 +19,7 @@ describe('UncollapsedAssigneeList component', () => {
 
     wrapper = mount(UncollapsedAssigneeList, {
       propsData,
+      provide: { glFeatures },
     });
   }
 
@@ -97,6 +98,24 @@ describe('UncollapsedAssigneeList component', () => {
           expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT + 1);
         });
       });
+    });
+  });
+
+  describe('merge requests', () => {
+    it.each`
+      numberOfUsers
+      ${1}
+      ${5}
+    `('displays as a vertical list for $numberOfUsers of users', ({ numberOfUsers }) => {
+      createComponent(
+        {
+          users: UsersMockHelper.createNumberRandomUsers(numberOfUsers),
+          issuableType: 'merge_request',
+        },
+        { mrAttentionRequests: true },
+      );
+
+      expect(wrapper.findAll('[data-testid="username"]').length).toBe(numberOfUsers);
     });
   });
 });

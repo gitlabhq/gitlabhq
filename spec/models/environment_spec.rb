@@ -1710,4 +1710,36 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       subject
     end
   end
+
+  describe '#should_link_to_merge_requests?' do
+    subject { environment.should_link_to_merge_requests? }
+
+    context 'when environment is foldered' do
+      context 'when environment is production tier' do
+        let(:environment) { create(:environment, project: project, name: 'production/aws') }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when environment is development tier' do
+        let(:environment) { create(:environment, project: project, name: 'review/feature') }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'when environment is unfoldered' do
+      context 'when environment is production tier' do
+        let(:environment) { create(:environment, project: project, name: 'production') }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when environment is development tier' do
+        let(:environment) { create(:environment, project: project, name: 'development') }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
 end

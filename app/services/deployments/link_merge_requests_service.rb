@@ -16,7 +16,7 @@ module Deployments
       # Review apps have the environment type set (e.g. to `review`, though the
       # exact value may differ). We don't want to link merge requests to review
       # app deployments, as this is not useful.
-      return if deployment.environment.environment_type
+      return unless deployment.environment.should_link_to_merge_requests?
 
       # This service is triggered by a Sidekiq worker, which only runs when a
       # deployment is successful. We add an extra check here in case we ever

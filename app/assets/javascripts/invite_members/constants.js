@@ -8,6 +8,12 @@ export const MEMBER_AREAS_OF_FOCUS = {
   view: 'view',
   submit: 'submit',
 };
+export const INVITE_MEMBERS_FOR_TASK = {
+  minimum_access_level: 30,
+  name: 'invite_members_for_task',
+  view: 'modal_opened_from_email',
+  submit: 'submit',
+};
 
 export const GROUP_FILTERS = {
   ALL: 'all',

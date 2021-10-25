@@ -17544,6 +17544,9 @@ msgstr ""
 msgid "InProductMarketing|Do you have a minute?"
 msgstr ""
 
+msgid "InProductMarketing|Do you have a teammate who would be perfect for this task?"
+msgstr ""
+
 msgid "InProductMarketing|Easy"
 msgstr ""
 
@@ -17656,6 +17659,9 @@ msgid "InProductMarketing|Improve code quality and streamline reviews"
 msgstr ""
 
 msgid "InProductMarketing|Increase Operational Efficiencies"
+msgstr ""
+
+msgid "InProductMarketing|Invite them to help out."
 msgstr ""
 
 msgid "InProductMarketing|Invite your colleagues and start shipping code faster."
@@ -18692,6 +18698,12 @@ msgstr ""
 msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
 msgstr ""
 
+msgid "InviteEmail|You were assigned the following tasks:"
+msgstr ""
+
+msgid "InviteEmail|and has assigned you the following tasks:"
+msgstr ""
+
 msgid "InviteMembersBanner|Collaborate with your team"
 msgstr ""
 
@@ -18710,6 +18722,9 @@ msgstr ""
 msgid "InviteMembersModal|Cancel"
 msgstr ""
 
+msgid "InviteMembersModal|Choose a project for the issues"
+msgstr ""
+
 msgid "InviteMembersModal|Close invite team members"
 msgstr ""
 
@@ -18723,6 +18738,9 @@ msgid "InviteMembersModal|Configure security features"
 msgstr ""
 
 msgid "InviteMembersModal|Contribute to the codebase"
+msgstr ""
+
+msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
 msgstr ""
 
 msgid "InviteMembersModal|GitLab member or email address"
@@ -18756,6 +18774,9 @@ msgid "InviteMembersModal|Select members or type email addresses"
 msgstr ""
 
 msgid "InviteMembersModal|Something went wrong"
+msgstr ""
+
+msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
 msgstr ""
 
 msgid "InviteMembersModal|What would you like new member(s) to focus on? (optional)"
@@ -25382,6 +25403,9 @@ msgid "Pipeline|Merge train pipeline jobs can not be retried"
 msgstr ""
 
 msgid "Pipeline|Merged result pipeline"
+msgstr ""
+
+msgid "Pipeline|No pipeline was triggered for the latest changes due to the current CI/CD configuration."
 msgstr ""
 
 msgid "Pipeline|Passed"
@@ -33412,6 +33436,15 @@ msgstr ""
 msgid "Task ID: %{elastic_task}"
 msgstr ""
 
+msgid "TasksToBeDone|Create/import code into a project (repository)"
+msgstr ""
+
+msgid "TasksToBeDone|Create/import issues (tickets) to collaborate on ideas and plan work"
+msgstr ""
+
+msgid "TasksToBeDone|Set up CI/CD pipelines to build, test, deploy, and monitor code"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 
@@ -37555,6 +37588,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day."
 msgstr ""
 
+msgid "ValueStreamAnalytics|Items in Value Stream Analytics are currently filtered by their creation time. There is an %{epic_link_start}epic%{epic_link_end} that will change the Value Stream Analytics date filter to use the end event time for the selected stage."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period."
 msgstr ""
 
@@ -40553,6 +40589,12 @@ msgid "is not allowed. We do not currently support project-level iterations"
 msgstr ""
 
 msgid "is not in the group enforcing Group Managed Account"
+msgstr ""
+
+msgid "is not in the member group"
+msgstr ""
+
+msgid "is not the member project"
 msgstr ""
 
 msgid "is not valid. The iteration group has to match the iteration cadence group."
