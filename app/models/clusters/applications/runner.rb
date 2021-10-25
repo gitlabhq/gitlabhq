@@ -70,7 +70,7 @@ module Clusters
         }
 
         if cluster.group_type?
-          attributes[:groups] = [group]
+          attributes[:runner_namespaces] = [::Ci::RunnerNamespace.new(namespace: group)]
         elsif cluster.project_type?
           attributes[:runner_projects] = [::Ci::RunnerProject.new(project: project)]
         end

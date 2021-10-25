@@ -52,7 +52,7 @@ module Sidebars
         end
 
         def dependency_proxy_menu_item
-          unless context.group.dependency_proxy_feature_available?
+          unless can?(context.current_user, :read_dependency_proxy, context.group)
             return ::Sidebars::NilMenuItem.new(item_id: :dependency_proxy)
           end
 

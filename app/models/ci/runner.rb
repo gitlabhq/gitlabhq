@@ -439,10 +439,8 @@ module Ci
     end
 
     def no_groups
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        if groups.any?
-          errors.add(:runner, 'cannot have groups assigned')
-        end
+      if runner_namespaces.any?
+        errors.add(:runner, 'cannot have groups assigned')
       end
     end
 
@@ -453,10 +451,8 @@ module Ci
     end
 
     def exactly_one_group
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        unless groups.one?
-          errors.add(:runner, 'needs to be assigned to exactly one group')
-        end
+      unless runner_namespaces.one?
+        errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end
 

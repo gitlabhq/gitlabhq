@@ -112,7 +112,7 @@ RSpec.describe Clusters::Applications::Runner do
           subject
 
           expect(runner).to be_group_type
-          expect(runner.groups).to eq [group]
+          expect(runner.runner_namespaces.pluck(:namespace_id)).to match_array [group.id]
         end
       end
 
