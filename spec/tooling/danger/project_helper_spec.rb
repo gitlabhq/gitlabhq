@@ -40,7 +40,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     using RSpec::Parameterized::TableSyntax
 
     before do
-      allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ count(User.active)") }
+      allow(fake_git).to receive(:diff_for_file).with(instance_of(String)) { double(:diff, patch: "+ count(User.active)") }
     end
 
     where(:path, :expected_categories) do
@@ -189,6 +189,10 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'spec/frontend/tracking/foo.js' | [:frontend, :product_intelligence]
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
+      'config/metrics/counts_7d/test_metric.yml' | [:product_intelligence]
+      'config/metrics/schema.json' | [:product_intelligence]
+      'doc/api/usage_data.md' | [:product_intelligence]
+      'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]
     end
 
     with_them do
@@ -199,6 +203,9 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
     context 'having specific changes' do
       where(:expected_categories, :patch, :changed_files) do
+        [:product_intelligence]                      | '+data-track-action'                           | ['components/welcome.vue']
+        [:product_intelligence]                      | '+ data: { track_label:'                       | ['admin/groups/_form.html.haml']
+        [:product_intelligence]                      | '+ Gitlab::Tracking.event'                     | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
         [:database, :backend, :product_intelligence] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
         [:database, :backend, :product_intelligence] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
         [:backend, :product_intelligence]            | '+ alt_usage_data(User.active)'                | ['lib/gitlab/usage_data.rb']

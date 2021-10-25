@@ -53,7 +53,7 @@ class FinalizeCiStagesBigintConversion < ActiveRecord::Migration[6.1]
       execute "ALTER TABLE #{TABLE_NAME} RENAME COLUMN #{id_convert_to_bigint_name} TO #{id_name}"
       execute "ALTER TABLE #{TABLE_NAME} RENAME COLUMN #{temp_name} TO #{id_convert_to_bigint_name}"
 
-      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(:id, :id_convert_to_bigint)
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(:id, :id_convert_to_bigint)
       execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
 
       # Swap defaults

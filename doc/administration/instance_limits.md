@@ -222,10 +222,12 @@ When the number exceeds the limit the page displays an alert and links to a pagi
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51401) in GitLab 11.10.
 
 The number of pipelines that can be created in a single push is 4.
-This is to prevent the accidental creation of pipelines when `git push --all`
+This limit prevents the accidental creation of pipelines when `git push --all`
 or `git push --mirror` is used.
 
-Read more in the [CI documentation](../ci/yaml/index.md#processing-git-pushes).
+This limit does not affect any of the updated merge request pipelines.
+All updated merge requests have a pipeline created when using
+[pipelines for merge requests](../ci/pipelines/merge_request_pipelines.md).
 
 ## Retention of activity history
 

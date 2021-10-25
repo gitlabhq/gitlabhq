@@ -1,3 +1,5 @@
+import capitalize from 'lodash/capitalize';
+
 export const packageTags = () => [
   { id: 'gid://gitlab/Packages::Tag/87', name: 'bananas_9', __typename: 'PackageTag' },
   { id: 'gid://gitlab/Packages::Tag/86', name: 'bananas_8', __typename: 'PackageTag' },
@@ -156,6 +158,15 @@ export const nugetMetadata = () => ({
   projectUrl: 'projectUrl',
 });
 
+export const pagination = (extend) => ({
+  endCursor: 'eyJpZCI6IjIwNSIsIm5hbWUiOiJteS9jb21wYW55L2FwcC9teS1hcHAifQ',
+  hasNextPage: true,
+  hasPreviousPage: true,
+  startCursor: 'eyJpZCI6IjI0NyIsIm5hbWUiOiJ2ZXJzaW9uX3Rlc3QxIn0',
+  __typename: 'PageInfo',
+  ...extend,
+});
+
 export const packageDetailsQuery = (extendPackage) => ({
   data: {
     package: {
@@ -256,7 +267,7 @@ export const packageDestroyFileMutationError = () => ({
   ],
 });
 
-export const packagesListQuery = (type = 'group') => ({
+export const packagesListQuery = ({ type = 'group', extend = {}, extendPagination = {} } = {}) => ({
   data: {
     [type]: {
       packages: {
@@ -277,9 +288,11 @@ export const packagesListQuery = (type = 'group') => ({
             pipelines: { nodes: [] },
           },
         ],
+        pageInfo: pagination(extendPagination),
         __typename: 'PackageConnection',
       },
-      __typename: 'Group',
+      ...extend,
+      __typename: capitalize(type),
     },
   },
 });

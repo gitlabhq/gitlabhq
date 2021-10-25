@@ -1,75 +1,79 @@
 <script>
-import { GlPagination, GlModal, GlSprintf } from '@gitlab/ui';
-import { mapState, mapGetters } from 'vuex';
+import { GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
+import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
-import { TrackingActions } from '~/packages/shared/constants';
-import { packageTypeToTrackCategory } from '~/packages/shared/utils';
+import {
+  DELETE_PACKAGE_TRACKING_ACTION,
+  REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
+  CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+} from '~/packages_and_registries/package_registry/constants';
+import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
 import Tracking from '~/tracking';
 
 export default {
   components: {
-    GlPagination,
+    GlKeysetPagination,
     GlModal,
     GlSprintf,
     PackagesListLoader,
     PackagesListRow,
   },
   mixins: [Tracking.mixin()],
+  props: {
+    list: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pageInfo: {
+      type: Object,
+      required: true,
+    },
+  },
+
   data() {
     return {
       itemToBeDeleted: null,
     };
   },
   computed: {
-    ...mapState({
-      perPage: (state) => state.pagination.perPage,
-      totalItems: (state) => state.pagination.total,
-      page: (state) => state.pagination.page,
-      isGroupPage: (state) => state.config.isGroupPage,
-      isLoading: 'isLoading',
-    }),
-    ...mapGetters({ list: 'getList' }),
-    currentPage: {
-      get() {
-        return this.page;
-      },
-      set(value) {
-        this.$emit('page:changed', value);
-      },
-    },
     isListEmpty() {
       return !this.list || this.list.length === 0;
-    },
-    modalAction() {
-      return s__('PackageRegistry|Delete package');
     },
     deletePackageName() {
       return this.itemToBeDeleted?.name ?? '';
     },
     tracking() {
       const category = this.itemToBeDeleted
-        ? packageTypeToTrackCategory(this.itemToBeDeleted.package_type)
+        ? packageTypeToTrackCategory(this.itemToBeDeleted.packageType)
         : undefined;
       return {
         category,
       };
     },
+    showPagination() {
+      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
+    },
   },
   methods: {
     setItemToBeDeleted(item) {
       this.itemToBeDeleted = { ...item };
-      this.track(TrackingActions.REQUEST_DELETE_PACKAGE);
+      this.track(REQUEST_DELETE_PACKAGE_TRACKING_ACTION);
       this.$refs.packageListDeleteModal.show();
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
-      this.track(TrackingActions.DELETE_PACKAGE);
+      this.track(DELETE_PACKAGE_TRACKING_ACTION);
       this.itemToBeDeleted = null;
     },
     deleteItemCanceled() {
-      this.track(TrackingActions.CANCEL_DELETE_PACKAGE);
+      this.track(CANCEL_DELETE_PACKAGE_TRACKING_ACTION);
       this.itemToBeDeleted = null;
     },
   },
@@ -77,6 +81,7 @@ export default {
     deleteModalContent: s__(
       'PackageRegistry|You are about to delete %{name}, this operation is irreversible, are you sure?',
     ),
+    modalAction: s__('PackageRegistry|Delete package'),
   },
 };
 </script>
@@ -95,19 +100,19 @@ export default {
           v-for="packageEntity in list"
           :key="packageEntity.id"
           :package-entity="packageEntity"
-          :package-link="packageEntity._links.web_path"
-          :is-group="isGroupPage"
           @packageToDelete="setItemToBeDeleted"
         />
       </div>
 
-      <gl-pagination
-        v-model="currentPage"
-        :per-page="perPage"
-        :total-items="totalItems"
-        align="center"
-        class="gl-w-full gl-mt-3"
-      />
+      <div class="gl-display-flex gl-justify-content-center">
+        <gl-keyset-pagination
+          v-if="showPagination"
+          v-bind="pageInfo"
+          class="gl-mt-3"
+          @prev="$emit('prev-page')"
+          @next="$emit('next-page')"
+        />
+      </div>
 
       <gl-modal
         ref="packageListDeleteModal"
@@ -116,8 +121,8 @@ export default {
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
       >
-        <template #modal-title>{{ modalAction }}</template>
-        <template #modal-ok>{{ modalAction }}</template>
+        <template #modal-title>{{ $options.i18n.modalAction }}</template>
+        <template #modal-ok>{{ $options.i18n.modalAction }}</template>
         <gl-sprintf :message="$options.i18n.deleteModalContent">
           <template #name>
             <strong>{{ deletePackageName }}</strong>

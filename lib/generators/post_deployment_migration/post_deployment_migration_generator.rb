@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
 require 'rails/generators'
+require 'rails/generators/active_record'
+require 'rails/generators/active_record/migration/migration_generator'
 
 module PostDeploymentMigration
-  class PostDeploymentMigrationGenerator < Rails::Generators::NamedBase
-    def create_migration_file
-      timestamp = Time.now.utc.strftime('%Y%m%d%H%M%S')
-
-      template "migration.rb", "db/post_migrate/#{timestamp}_#{file_name}.rb"
-    end
-
-    def migration_class_name
-      file_name.camelize
+  class PostDeploymentMigrationGenerator < ActiveRecord::Generators::MigrationGenerator
+    def db_migrate_path
+      super.sub("migrate", "post_migrate")
     end
   end
 end

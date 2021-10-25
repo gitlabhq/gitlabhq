@@ -47,7 +47,7 @@ class FinalizeCiBuildsNeedsBigintConversion < ActiveRecord::Migration[6.1]
       # We need to update the trigger function in order to make PostgreSQL to
       # regenerate the execution plan for it. This is to avoid type mismatch errors like
       # "type of parameter 15 (bigint) does not match that when preparing the plan (integer)"
-      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(:build_id, :build_id_convert_to_bigint)
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(:build_id, :build_id_convert_to_bigint)
       execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
 
       # Swap defaults

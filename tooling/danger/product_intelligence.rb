@@ -9,26 +9,6 @@ module Tooling
         'product intelligence::review pending'
       ].freeze
 
-      TRACKING_FILES = [
-        'lib/gitlab/tracking.rb',
-        'spec/lib/gitlab/tracking_spec.rb',
-        'app/helpers/tracking_helper.rb',
-        'spec/helpers/tracking_helper_spec.rb',
-        'app/assets/javascripts/tracking/index.js',
-        'app/assets/javascripts/tracking/constants.js',
-        'app/assets/javascripts/tracking/get_standard_context.js',
-        'spec/frontend/tracking/get_standard_context_spec.js',
-        'spec/frontend/tracking_spec.js',
-        'generator_templates/usage_metric_definition/metric_definition.yml',
-        'lib/generators/gitlab/usage_metric/usage_metric_generator.rb',
-        'lib/generators/gitlab/usage_metric_definition_generator.rb',
-        'lib/generators/gitlab/usage_metric_definition/redis_hll_generator.rb',
-        'spec/lib/generators/gitlab/usage_metric_generator_spec.rb',
-        'spec/lib/generators/gitlab/usage_metric_definition_generator_spec.rb',
-        'spec/lib/generators/gitlab/usage_metric_definition/redis_hll_generator_spec.rb',
-        'config/metrics/schema.json'
-      ].freeze
-
       def missing_labels
         return [] if !helper.ci? || helper.mr_has_labels?('growth experiment')
 
@@ -37,43 +17,6 @@ module Tooling
         labels << 'product intelligence::review pending' unless helper.mr_has_labels?(WORKFLOW_LABELS)
 
         labels
-      end
-
-      def matching_changed_files
-        tracking_changed_files = all_changed_files & TRACKING_FILES
-        usage_data_changed_files = all_changed_files.grep(%r{(usage_data)})
-
-        usage_data_changed_files + tracking_changed_files + metrics_changed_files + snowplow_changed_files
-      end
-
-      private
-
-      def all_changed_files
-        helper.all_changed_files
-      end
-
-      def metrics_changed_files
-        all_changed_files.grep(%r{((ee/)?config/metrics/.*\.yml)})
-      end
-
-      def matching_files?(file, extension:, pattern:)
-        return unless file.end_with?(extension)
-
-        helper.changed_lines(file).grep(pattern).any?
-      end
-
-      def snowplow_changed_files
-        js_patterns = Regexp.union(
-          'Tracking.event',
-          /\btrack\(/,
-          'data-track-action'
-        )
-        all_changed_files.select do |file|
-          matching_files?(file, extension: '.rb', pattern: %r{Gitlab::Tracking\.(event|enabled\?|options)$}) ||
-            matching_files?(file, extension: '.js', pattern: js_patterns) ||
-            matching_files?(file, extension: '.vue', pattern: js_patterns) ||
-            matching_files?(file, extension: '.haml', pattern: %r{data: \{ track})
-        end
       end
     end
   end

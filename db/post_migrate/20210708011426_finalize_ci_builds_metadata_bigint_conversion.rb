@@ -53,8 +53,8 @@ class FinalizeCiBuildsMetadataBigintConversion < Gitlab::Database::Migration[1.0
       # We need to update the trigger function in order to make PostgreSQL to
       # regenerate the execution plan for it. This is to avoid type mismatch errors like
       # "type of parameter 15 (bigint) does not match that when preparing the plan (integer)"
-      execute "ALTER FUNCTION #{quote_table_name(Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(:id, :id_convert_to_bigint))} RESET ALL"
-      execute "ALTER FUNCTION #{quote_table_name(Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(:build_id, :build_id_convert_to_bigint))} RESET ALL"
+      execute "ALTER FUNCTION #{quote_table_name(Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(:id, :id_convert_to_bigint))} RESET ALL"
+      execute "ALTER FUNCTION #{quote_table_name(Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(:build_id, :build_id_convert_to_bigint))} RESET ALL"
 
       # Swap defaults for PK
       execute "ALTER SEQUENCE ci_builds_metadata_id_seq OWNED BY #{TABLE_NAME}.id"

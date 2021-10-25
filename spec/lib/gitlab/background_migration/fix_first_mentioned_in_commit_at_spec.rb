@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require Rails.root.join('db', 'post_migrate', '20211004110500_add_temporary_index_to_issue_metrics.rb')
 
 RSpec.describe Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt, :migration, schema: 20211004110500 do
   let(:namespaces) { table(:namespaces) }
@@ -99,42 +100,67 @@ RSpec.describe Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt, :migrat
       .perform(issue_metrics.minimum(:issue_id), issue_metrics.maximum(:issue_id))
   end
 
-  it "marks successful slices as completed" do
-    min_issue_id = issue_metrics.minimum(:issue_id)
-    max_issue_id = issue_metrics.maximum(:issue_id)
+  shared_examples 'fixes first_mentioned_in_commit_at' do
+    it "marks successful slices as completed" do
+      min_issue_id = issue_metrics.minimum(:issue_id)
+      max_issue_id = issue_metrics.maximum(:issue_id)
 
-    expect(subject).to receive(:mark_job_as_succeeded).with(min_issue_id, max_issue_id)
+      expect(subject).to receive(:mark_job_as_succeeded).with(min_issue_id, max_issue_id)
 
-    subject.perform(min_issue_id, max_issue_id)
-  end
+      subject.perform(min_issue_id, max_issue_id)
+    end
 
-  context 'when the persisted first_mentioned_in_commit_at is later than the first commit authored_date' do
-    it 'updates the issue_metrics record' do
-      record1 = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: Time.current)
-      record2 = issue_metrics.create!(issue_id: issue2.id, first_mentioned_in_commit_at: Time.current)
+    context 'when the persisted first_mentioned_in_commit_at is later than the first commit authored_date' do
+      it 'updates the issue_metrics record' do
+        record1 = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: Time.current)
+        record2 = issue_metrics.create!(issue_id: issue2.id, first_mentioned_in_commit_at: Time.current)
 
-      run_migration
-      record1.reload
-      record2.reload
+        run_migration
+        record1.reload
+        record2.reload
 
-      expect(record1.first_mentioned_in_commit_at).to be_within(2.seconds).of(commit2.authored_date)
-      expect(record2.first_mentioned_in_commit_at).to be_within(2.seconds).of(commit3.authored_date)
+        expect(record1.first_mentioned_in_commit_at).to be_within(2.seconds).of(commit2.authored_date)
+        expect(record2.first_mentioned_in_commit_at).to be_within(2.seconds).of(commit3.authored_date)
+      end
+    end
+
+    context 'when the persisted first_mentioned_in_commit_at is earlier than the first commit authored_date' do
+      it 'does not update the issue_metrics record' do
+        record = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: 20.days.ago)
+
+        expect { run_migration }.not_to change { record.reload.first_mentioned_in_commit_at }
+      end
+    end
+
+    context 'when the first_mentioned_in_commit_at is null' do
+      it 'does nothing' do
+        record = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: nil)
+
+        expect { run_migration }.not_to change { record.reload.first_mentioned_in_commit_at }
+      end
     end
   end
 
-  context 'when the persisted first_mentioned_in_commit_at is earlier than the first commit authored_date' do
-    it 'does not update the issue_metrics record' do
-      record = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: 20.days.ago)
-
-      expect { run_migration }.not_to change { record.reload.first_mentioned_in_commit_at }
-    end
+  describe 'running the migration when first_mentioned_in_commit_at is timestamp without time zone' do
+    it_behaves_like 'fixes first_mentioned_in_commit_at'
   end
 
-  context 'when the first_mentioned_in_commit_at is null' do
-    it 'does nothing' do
-      record = issue_metrics.create!(issue_id: issue1.id, first_mentioned_in_commit_at: nil)
+  describe 'running the migration when first_mentioned_in_commit_at is timestamp with time zone' do
+    around do |example|
+      AddTemporaryIndexToIssueMetrics.new.down
 
-      expect { run_migration }.not_to change { record.reload.first_mentioned_in_commit_at }
+      ActiveRecord::Base.connection.execute "ALTER TABLE issue_metrics ALTER first_mentioned_in_commit_at type timestamp with time zone"
+      Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt::TmpIssueMetrics.reset_column_information
+      AddTemporaryIndexToIssueMetrics.new.up
+
+      example.run
+
+      AddTemporaryIndexToIssueMetrics.new.down
+      ActiveRecord::Base.connection.execute "ALTER TABLE issue_metrics ALTER first_mentioned_in_commit_at type timestamp without time zone"
+      Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt::TmpIssueMetrics.reset_column_information
+      AddTemporaryIndexToIssueMetrics.new.up
     end
+
+    it_behaves_like 'fixes first_mentioned_in_commit_at'
   end
 end

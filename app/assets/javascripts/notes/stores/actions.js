@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-string-literal-i18n-helpers */
 import $ from 'jquery';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
@@ -621,7 +620,7 @@ export const submitSuggestion = (
       const flashMessage = errorMessage || defaultMessage;
 
       createFlash({
-        message: __(flashMessage),
+        message: flashMessage,
         parent: flashContainer,
       });
     })
@@ -657,7 +656,7 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
       const flashMessage = errorMessage || defaultMessage;
 
       createFlash({
-        message: __(flashMessage),
+        message: flashMessage,
         parent: flashContainer,
       });
     })

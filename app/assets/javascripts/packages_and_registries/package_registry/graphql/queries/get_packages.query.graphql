@@ -1,4 +1,5 @@
 #import "~/packages_and_registries/package_registry/graphql/fragments/package_data.fragment.graphql"
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
 
 query getPackages(
   $fullPath: ID!
@@ -7,20 +8,46 @@ query getPackages(
   $groupSort: PackageGroupSort
   $packageName: String
   $packageType: PackageTypeEnum
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
 ) {
   project(fullPath: $fullPath) @skip(if: $isGroupPage) {
-    packages(sort: $sort, packageName: $packageName, packageType: $packageType) {
+    packages(
+      sort: $sort
+      packageName: $packageName
+      packageType: $packageType
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
       count
       nodes {
         ...PackageData
       }
+      pageInfo {
+        ...PageInfo
+      }
     }
   }
   group(fullPath: $fullPath) @include(if: $isGroupPage) {
-    packages(sort: $groupSort, packageName: $packageName, packageType: $packageType) {
+    packages(
+      sort: $groupSort
+      packageName: $packageName
+      packageType: $packageType
+      after: $after
+      before: $before
+      first: $first
+      last: $last
+    ) {
       count
       nodes {
         ...PackageData
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

@@ -518,7 +518,7 @@ export const toggleActiveFileByHash = ({ commit }, hash) => {
   commit(types.VIEW_DIFF_FILE, hash);
 };
 
-export const scrollToFile = ({ state, commit, getters }, path) => {
+export const scrollToFile = ({ state, commit, getters }, { path, setHash = true }) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
@@ -528,9 +528,11 @@ export const scrollToFile = ({ state, commit, getters }, path) => {
   if (getters.isVirtualScrollingEnabled) {
     eventHub.$emit('scrollToFileHash', fileHash);
 
-    setTimeout(() => {
-      window.history.replaceState(null, null, `#${fileHash}`);
-    });
+    if (setHash) {
+      setTimeout(() => {
+        window.history.replaceState(null, null, `#${fileHash}`);
+      });
+    }
   } else {
     document.location.hash = fileHash;
 

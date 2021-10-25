@@ -290,62 +290,6 @@ export const mockProjectPipeline = ({ hasStages = true } = {}) => {
   };
 };
 
-export const mockLinkedPipelines = ({ hasDownstream = true, hasUpstream = true } = {}) => {
-  let upstream = null;
-  let downstream = {
-    nodes: [],
-    __typename: 'PipelineConnection',
-  };
-
-  if (hasDownstream) {
-    downstream = {
-      nodes: [
-        {
-          id: 'gid://gitlab/Ci::Pipeline/612',
-          path: '/root/job-log-sections/-/pipelines/612',
-          project: { name: 'job-log-sections', __typename: 'Project' },
-          detailedStatus: {
-            group: 'success',
-            icon: 'status_success',
-            label: 'passed',
-            __typename: 'DetailedStatus',
-          },
-          __typename: 'Pipeline',
-        },
-      ],
-      __typename: 'PipelineConnection',
-    };
-  }
-
-  if (hasUpstream) {
-    upstream = {
-      id: 'gid://gitlab/Ci::Pipeline/610',
-      path: '/root/trigger-downstream/-/pipelines/610',
-      project: { name: 'trigger-downstream', __typename: 'Project' },
-      detailedStatus: {
-        group: 'success',
-        icon: 'status_success',
-        label: 'passed',
-        __typename: 'DetailedStatus',
-      },
-      __typename: 'Pipeline',
-    };
-  }
-
-  return {
-    data: {
-      project: {
-        pipeline: {
-          path: '/root/ci-project/-/pipelines/790',
-          downstream,
-          upstream,
-        },
-        __typename: 'Project',
-      },
-    },
-  };
-};
-
 export const mockLintResponse = {
   valid: true,
   mergedYaml: mockCiYml,

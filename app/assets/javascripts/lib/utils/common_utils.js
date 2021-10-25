@@ -220,16 +220,16 @@ export const scrollToElement = (element, options = {}) => {
     // In the previous implementation, jQuery naturally deferred this scrolling.
     // Unfortunately, we're quite coupled to this implementation detail now.
     defer(() => {
-      const { duration = 200, offset = 0 } = options;
+      const { duration = 200, offset = 0, behavior = duration ? 'smooth' : 'auto' } = options;
       const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
-      window.scrollTo({ top: y, behavior: duration ? 'smooth' : 'auto' });
+      window.scrollTo({ top: y, behavior });
     });
   }
 };
 
-export const scrollToElementWithContext = (element) => {
+export const scrollToElementWithContext = (element, options) => {
   const offsetMultiplier = -0.1;
-  return scrollToElement(element, { offset: window.innerHeight * offsetMultiplier });
+  return scrollToElement(element, { ...options, offset: window.innerHeight * offsetMultiplier });
 };
 
 /**

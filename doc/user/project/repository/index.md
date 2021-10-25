@@ -82,14 +82,19 @@ prompted to open XCode.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
 
-All projects can be cloned into Visual Studio Code. To do that:
+All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
+can also install the [GitLab Workflow VS Code extension](vscode.md) to clone from
+Visual Studio Code:
 
-1. From the GitLab UI, go to the project's overview page.
-1. Click **Clone**.
-1. Select **Clone with Visual Studio Code** under either HTTPS or SSH method.
-1. Select a folder to clone the project into.
+- From the GitLab interface:
+  1. Go to the project's overview page.
+  1. Select **Clone**.
+  1. Under either the **HTTPS** or **SSH** method, select **Clone with Visual Studio Code**.
+  1. Select a folder to clone the project into.
 
-When VS Code has successfully cloned your project, it opens the folder.
+     After Visual Studio Code clones your project, it opens the folder.
+- From Visual Studio Code, with the [extension](vscode.md) installed, use the
+  extension's [`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
 
 ## Download the code in a repository
 
@@ -242,6 +247,10 @@ When you [rename a user](../../profile/index.md#change-your-username),
   work after a rename.
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
+
+## Related links
+
+- [GitLab Workflow VS Code extension](vscode.md)
 
 ## Troubleshooting
 

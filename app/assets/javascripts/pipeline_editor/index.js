@@ -93,7 +93,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
       ciExamplesHelpPagePath,
       ciHelpPagePath,
       configurationPaths,
-      dataMethod: 'graphql',
       defaultBranch,
       emptyStateIllustrationPath,
       helpPaths,

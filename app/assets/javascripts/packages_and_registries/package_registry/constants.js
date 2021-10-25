@@ -59,12 +59,6 @@ export const TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND =
 export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
   'copy_composer_package_include_command';
 
-export const TrackingCategories = {
-  [PACKAGE_TYPE_MAVEN]: 'MavenPackages',
-  [PACKAGE_TYPE_NPM]: 'NpmPackages',
-  [PACKAGE_TYPE_CONAN]: 'ConanPackages',
-};
-
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
 export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package.',
@@ -93,3 +87,4 @@ export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 export const PROJECT_RESOURCE_TYPE = 'project';
 export const GROUP_RESOURCE_TYPE = 'group';
 export const LIST_QUERY_DEBOUNCE_TIME = 50;
+export const GRAPHQL_PAGE_SIZE = 20;

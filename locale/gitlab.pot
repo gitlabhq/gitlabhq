@@ -25264,9 +25264,6 @@ msgstr ""
 msgid "Pipelines|There are currently no pipelines."
 msgstr ""
 
-msgid "Pipelines|There was a problem with loading the pipeline data."
-msgstr ""
-
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
@@ -36338,9 +36335,6 @@ msgid "Unable to fetch branch list for this project."
 msgstr ""
 
 msgid "Unable to fetch branches list, please close the form and try again"
-msgstr ""
-
-msgid "Unable to fetch upstream and downstream pipelines."
 msgstr ""
 
 msgid "Unable to fetch vulnerable projects"

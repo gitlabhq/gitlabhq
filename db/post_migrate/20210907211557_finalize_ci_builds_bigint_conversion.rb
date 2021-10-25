@@ -136,7 +136,7 @@ class FinalizeCiBuildsBigintConversion < Gitlab::Database::Migration[1.0]
       execute "ALTER TABLE #{quoted_table_name} RENAME COLUMN #{quote_column_name(temporary_name)} TO #{quote_column_name(:id_convert_to_bigint)}"
 
       # Reset the function so PG drops the plan cache for the incorrect integer type
-      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME)
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection)
         .name([:id, :stage_id], [:id_convert_to_bigint, :stage_id_convert_to_bigint])
       execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
 

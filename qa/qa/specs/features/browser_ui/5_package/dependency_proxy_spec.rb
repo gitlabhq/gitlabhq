@@ -22,6 +22,7 @@ module QA
       let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
       let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
       let(:dependency_proxy_url) { "#{gitlab_host_with_port}/#{project.group.full_path}/dependency_proxy/containers" }
+      let(:image_sha) { 'alpine@sha256:c3d45491770c51da4ef58318e3714da686bc7165338b7ab5ac758e75c7455efb' }
 
       before do
         Flow::Login.sign_in
@@ -63,15 +64,15 @@ module QA
                                             apk add --no-cache openssl
                                             true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
                                             update-ca-certificates
-                                            dockerd-entrypoint.sh || exit     
+                                            dockerd-entrypoint.sh || exit
                                         before_script:
                                           - apk add curl jq grep
                                           - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" "$CI_DEPENDENCY_PROXY_SERVER"
                                         script:
-                                          - docker pull #{dependency_proxy_url}/alpine:latest
+                                          - docker pull #{dependency_proxy_url}/#{image_sha}
                                           - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)
                                           - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
-                                          - docker pull #{dependency_proxy_url}/alpine:latest
+                                          - docker pull #{dependency_proxy_url}/#{image_sha}
                                           - 'curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1'
                                         tags:
                                         - "runner-for-#{project.name}"
@@ -95,7 +96,7 @@ module QA
           Page::Group::Menu.perform(&:go_to_dependency_proxy)
 
           Page::Group::DependencyProxy.perform do |index|
-            expect(index).to have_blob_count("Contains 2 blobs of images")
+            expect(index).to have_blob_count("Contains 1 blobs of images")
           end
         end
       end

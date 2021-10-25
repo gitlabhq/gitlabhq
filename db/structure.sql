@@ -15706,7 +15706,8 @@ CREATE TABLE merge_request_assignees (
     id bigint NOT NULL,
     user_id integer NOT NULL,
     merge_request_id integer NOT NULL,
-    created_at timestamp with time zone
+    created_at timestamp with time zone,
+    state smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE merge_request_assignees_id_seq

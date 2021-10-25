@@ -570,7 +570,7 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
-        this.scrollToFile(this.diffFiles[targetIndex].file_path);
+        this.scrollToFile({ path: this.diffFiles[targetIndex].file_path });
       }
     },
     setTreeDisplay() {

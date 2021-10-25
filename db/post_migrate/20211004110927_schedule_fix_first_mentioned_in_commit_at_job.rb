@@ -8,8 +8,8 @@ class ScheduleFixFirstMentionedInCommitAtJob < Gitlab::Database::Migration[1.0]
   disable_ddl_transaction!
 
   def up
-    scope = define_batchable_model('issue_metrics')
-      .where('EXTRACT(YEAR FROM first_mentioned_in_commit_at) > 2019')
+    scope = Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt::TmpIssueMetrics
+      .from_2020
 
     queue_background_migration_jobs_by_range_at_intervals(
       scope,

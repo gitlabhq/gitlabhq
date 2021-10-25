@@ -2454,7 +2454,6 @@ Database/MultipleDatabases:
     - 'lib/gitlab/database/schema_cache_with_renamed_table.rb'
     - 'lib/gitlab/database/schema_migrations/context.rb'
     - 'lib/gitlab/database/schema_version_files.rb'
-    - 'lib/gitlab/database/unidirectional_copy_trigger.rb'
     - 'lib/gitlab/database/with_lock_retries.rb'
     - 'lib/gitlab/gitlab_import/importer.rb'
     - 'lib/gitlab/health_checks/db_check.rb'

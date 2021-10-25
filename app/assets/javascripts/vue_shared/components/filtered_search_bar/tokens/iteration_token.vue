@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchSuggestion } from '@gitlab/ui';
+import { GlDropdownDivider, GlDropdownSectionHeader, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
@@ -9,6 +9,8 @@ import { DEFAULT_ITERATIONS } from '../constants';
 export default {
   components: {
     BaseToken,
+    GlDropdownDivider,
+    GlDropdownSectionHeader,
     GlFilteredSearchSuggestion,
   },
   props: {
@@ -39,6 +41,23 @@ export default {
   methods: {
     getActiveIteration(iterations, data) {
       return iterations.find((iteration) => this.getValue(iteration) === data);
+    },
+    groupIterationsByCadence(iterations) {
+      const cadences = [];
+      iterations.forEach((iteration) => {
+        if (!iteration.iterationCadence) {
+          return;
+        }
+        const { title } = iteration.iterationCadence;
+        const cadenceIteration = { id: iteration.id, title: iteration.title };
+        const cadence = cadences.find((cad) => cad.title === title);
+        if (cadence) {
+          cadence.iterations.push(cadenceIteration);
+        } else {
+          cadences.push({ title, iterations: [cadenceIteration] });
+        }
+      });
+      return cadences;
     },
     fetchIterations(searchTerm) {
       this.loading = true;
@@ -77,13 +96,23 @@ export default {
       {{ activeTokenValue ? activeTokenValue.title : inputValue }}
     </template>
     <template #suggestions-list="{ suggestions }">
-      <gl-filtered-search-suggestion
-        v-for="iteration in suggestions"
-        :key="iteration.id"
-        :value="getValue(iteration)"
-      >
-        {{ iteration.title }}
-      </gl-filtered-search-suggestion>
+      <template v-for="(cadence, index) in groupIterationsByCadence(suggestions)">
+        <gl-dropdown-divider v-if="index !== 0" :key="index" />
+        <gl-dropdown-section-header
+          :key="cadence.title"
+          class="gl-overflow-hidden"
+          :title="cadence.title"
+        >
+          {{ cadence.title }}
+        </gl-dropdown-section-header>
+        <gl-filtered-search-suggestion
+          v-for="iteration in cadence.iterations"
+          :key="iteration.id"
+          :value="getValue(iteration)"
+        >
+          {{ iteration.title }}
+        </gl-filtered-search-suggestion>
+      </template>
     </template>
   </base-token>
 </template>

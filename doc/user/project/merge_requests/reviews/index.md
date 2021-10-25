@@ -17,6 +17,10 @@ your merge request, and makes [code suggestions](suggestions.md) you can accept
 from the user interface. When your work is reviewed, your team members can choose
 to accept or reject it.
 
+You can review merge requests from the GitLab interface. If you install the
+[GitLab Workflow VS Code extension](../../repository/vscode.md), you can also
+review merge requests in Visual Studio Code.
+
 ## Review a merge request
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213) in GitLab Premium 11.4.

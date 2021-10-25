@@ -111,7 +111,6 @@ export default {
       :ci-config-data="ciConfigData"
       :commit-sha="commitSha"
       :is-new-ci-config-file="isNewCiConfigFile"
-      v-on="$listeners"
     />
     <pipeline-editor-tabs
       :ci-config-data="ciConfigData"

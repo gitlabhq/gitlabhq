@@ -2,6 +2,8 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_utils';
 import eventHub from '../event_hub';
 
+const isDiffsVirtualScrollingEnabled = () => window.gon?.features?.diffsVirtualScrolling;
+
 /**
  * @param {string} selector
  * @returns {boolean}
@@ -11,7 +13,9 @@ function scrollTo(selector, { withoutContext = false } = {}) {
   const scrollFunction = withoutContext ? scrollToElement : scrollToElementWithContext;
 
   if (el) {
-    scrollFunction(el);
+    scrollFunction(el, {
+      behavior: isDiffsVirtualScrollingEnabled() ? 'auto' : 'smooth',
+    });
     return true;
   }
 
@@ -81,8 +85,15 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   const discussion = self.getDiscussion(targetId);
   const discussionFilePath = discussion?.diff_file?.file_path;
 
+  if (isDiffsVirtualScrollingEnabled()) {
+    window.location.hash = '';
+  }
+
   if (discussionFilePath) {
-    self.scrollToFile(discussionFilePath);
+    self.scrollToFile({
+      path: discussionFilePath,
+      setHash: !isDiffsVirtualScrollingEnabled(),
+    });
   }
 
   self.$nextTick(() => {

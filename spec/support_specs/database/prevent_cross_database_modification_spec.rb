@@ -68,6 +68,17 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
         end
       end.to raise_error /Cross-database data modification/
     end
+
+    it 'raises an error when an undefined gitlab_schema table is modified with another table' do
+      expect do
+        with_cross_database_modification_prevented do
+          Project.transaction do
+            project.touch
+            project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
+          end
+        end
+      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
+    end
   end
 
   context 'when running tests with prevent_cross_database_modification', :prevent_cross_database_modification do

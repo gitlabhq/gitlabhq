@@ -38,6 +38,8 @@ module Tooling
 
         %r{\A((ee|jh)/)?config/feature_flags/} => :feature_flag,
 
+        %r{doc/api/usage_data.md} => [:product_intelligence],
+
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
@@ -100,6 +102,7 @@ module Tooling
         %r{\A((ee|jh)/)?spec/support/shared_contexts/features/} => :test,
         %r{\A((ee|jh)/)?spec/support/helpers/features/} => :test,
 
+        %r{\A((spec/)?lib/generators/gitlab/usage_metric_)} => [:product_intelligence],
         %r{\A((ee|jh)/)?lib/gitlab/usage_data_counters/.*\.yml\z} => [:product_intelligence],
         %r{\A((ee|jh)/)?config/metrics/((.*\.yml)|(schema\.json))\z} => [:product_intelligence],
         %r{\A((ee|jh)/)?lib/gitlab/usage_data(_counters)?(/|\.rb)} => [:backend, :product_intelligence],
@@ -108,9 +111,16 @@ module Tooling
           spec/lib/gitlab/tracking_spec\.rb |
           app/helpers/tracking_helper\.rb |
           spec/helpers/tracking_helper_spec\.rb |
+          (spec/)?lib/generators/gitlab/usage_metric_\S+ |
+          (spec/)?lib/generators/gitlab/usage_metric_definition/redis_hll_generator(_spec)?\.rb |
           lib/generators/rails/usage_metric_definition_generator\.rb |
           spec/lib/generators/usage_metric_definition_generator_spec\.rb |
           generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :product_intelligence],
+        %r{gitlab/usage_data(_spec)?\.rb} => [:product_intelligence],
+        [%r{\.haml\z}, %r{data: \{ track}] => [:product_intelligence],
+        [%r{\.(rb|haml)\z}, %r{Gitlab::Tracking\.(event|enabled\?|options)$}] => [:product_intelligence],
+        [%r{\.(vue|js)\z}, %r{(Tracking.event|/\btrack\(/|data-track-action)}] => [:product_intelligence],
+
         %r{\A((ee|jh)/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A((ee|jh)/)?(bin|config|generator_templates|lib|rubocop)/} => :backend,
         %r{\A((ee|jh)/)?spec/migrations} => :database,

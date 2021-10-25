@@ -4741,15 +4741,6 @@ You can use [CI/CD variables](../variables/index.md) to configure how the runner
 You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
 
-## Processing Git pushes
-
-GitLab creates at most four branch and tag pipelines when
-pushing multiple changes in a single `git push` invocation.
-
-This limitation does not affect any of the updated merge request pipelines.
-All updated merge requests have a pipeline created when using
-[pipelines for merge requests](../pipelines/merge_request_pipelines.md).
-
 ## Deprecated keywords
 
 The following keywords are deprecated.

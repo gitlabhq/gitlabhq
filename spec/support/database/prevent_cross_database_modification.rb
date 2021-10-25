@@ -102,10 +102,15 @@ module Database
       schemas = Database::GitlabSchema.table_schemas(all_tables)
 
       if schemas.many?
-        raise Database::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError,
-          "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
+        message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
           "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables." \
           "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."
+
+        if schemas.any? { |s| s.to_s.start_with?("undefined") }
+          message += " The gitlab_schema was undefined for one or more of the tables in this transaction. Any new tables must be added to spec/support/database/gitlab_schemas.yml ."
+        end
+
+        raise Database::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError, message
       end
     end
   end

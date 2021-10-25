@@ -37,4 +37,6 @@ RSpec.describe MergeRequestAssignee do
       end
     end
   end
+
+  it_behaves_like 'having unique enum values'
 end

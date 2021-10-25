@@ -12,12 +12,12 @@ For MR review guidelines, see the [Service Ping review guidelines](https://docs.
 MSG
 
 # exit if not matching files or if no product intelligence labels
-matching_changed_files = product_intelligence.matching_changed_files
+product_intelligence_paths_to_review = project_helper.changes_by_category[:product_intelligence]
 labels = product_intelligence.missing_labels
 
-return if matching_changed_files.empty? || labels.empty?
+return if product_intelligence_paths_to_review.empty? || labels.empty?
 
-warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(matching_changed_files))
+warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review))
 
 gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
                                     gitlab.mr_json['iid'],

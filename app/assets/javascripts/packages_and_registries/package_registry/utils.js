@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash';
 import { s__ } from '~/locale';
 import {
   PACKAGE_TYPE_CONAN,
@@ -38,3 +39,5 @@ export const getPackageTypeLabel = (packageType) => {
       return null;
   }
 };
+
+export const packageTypeToTrackCategory = (type) => `UI::${capitalize(type)}Packages`;

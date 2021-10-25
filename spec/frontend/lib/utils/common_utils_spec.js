@@ -279,6 +279,14 @@ describe('common_utils', () => {
           top: elementTopWithContext,
         });
       });
+
+      it('passes through behaviour', () => {
+        commonUtils.scrollToElementWithContext(`#${id}`, { behavior: 'smooth' });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
+      });
     });
   });
 

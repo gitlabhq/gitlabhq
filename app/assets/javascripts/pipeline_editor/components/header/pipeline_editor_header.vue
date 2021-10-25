@@ -63,7 +63,6 @@ export default {
       v-if="showPipelineStatus"
       :commit-sha="commitSha"
       :class="$options.pipelineStatusClasses"
-      v-on="$listeners"
     />
     <validation-segment :class="validationStyling" :ci-config="ciConfigData" />
   </div>

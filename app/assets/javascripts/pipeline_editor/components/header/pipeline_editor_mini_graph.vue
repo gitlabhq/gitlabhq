@@ -1,52 +1,17 @@
 <script>
-import { __ } from '~/locale';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
-import getLinkedPipelinesQuery from '~/projects/commit_box/info/graphql/queries/get_linked_pipelines.query.graphql';
-import { PIPELINE_FAILURE } from '../../constants';
 
 export default {
-  i18n: {
-    linkedPipelinesFetchError: __('Unable to fetch upstream and downstream pipelines.'),
-  },
   components: {
     PipelineMiniGraph,
-    LinkedPipelinesMiniList: () =>
-      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
-  inject: ['projectFullPath'],
   props: {
     pipeline: {
       type: Object,
       required: true,
     },
   },
-  apollo: {
-    linkedPipelines: {
-      query: getLinkedPipelinesQuery,
-      variables() {
-        return {
-          fullPath: this.projectFullPath,
-          iid: this.pipeline.iid,
-        };
-      },
-      skip() {
-        return !this.pipeline.iid;
-      },
-      update({ project }) {
-        return project?.pipeline;
-      },
-      error() {
-        this.$emit('showError', {
-          type: PIPELINE_FAILURE,
-          reasons: [this.$options.i18n.linkedPipelinesFetchError],
-        });
-      },
-    },
-  },
   computed: {
-    downstreamPipelines() {
-      return this.linkedPipelines?.downstream?.nodes || [];
-    },
     pipelinePath() {
       return this.pipeline.detailedStatus?.detailsPath || '';
     },
@@ -73,29 +38,12 @@ export default {
         };
       });
     },
-    showDownstreamPipelines() {
-      return this.downstreamPipelines.length > 0;
-    },
-    upstreamPipeline() {
-      return this.linkedPipelines?.upstream;
-    },
   },
 };
 </script>
 
 <template>
   <div v-if="pipelineStages.length > 0" class="stage-cell gl-mr-5">
-    <linked-pipelines-mini-list
-      v-if="upstreamPipeline"
-      :triggered-by="[upstreamPipeline]"
-      data-testid="pipeline-editor-mini-graph-upstream"
-    />
     <pipeline-mini-graph class="gl-display-inline" :stages="pipelineStages" />
-    <linked-pipelines-mini-list
-      v-if="showDownstreamPipelines"
-      :triggered="downstreamPipelines"
-      :pipeline-path="pipelinePath"
-      data-testid="pipeline-editor-mini-graph-downstream"
-    />
   </div>
 </template>

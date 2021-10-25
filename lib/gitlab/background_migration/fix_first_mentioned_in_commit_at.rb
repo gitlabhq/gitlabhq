@@ -14,7 +14,15 @@ module Gitlab
         self.table_name = 'issue_metrics'
 
         def self.from_2020
-          where('EXTRACT(YEAR FROM first_mentioned_in_commit_at) > 2019')
+          where(first_mentioned_in_commit_at_condition)
+        end
+
+        def self.first_mentioned_in_commit_at_condition
+          if columns_hash['first_mentioned_in_commit_at'].sql_type == 'timestamp without time zone'
+            'EXTRACT(YEAR FROM first_mentioned_in_commit_at) > 2019'
+          else
+            "EXTRACT(YEAR FROM first_mentioned_in_commit_at at time zone 'UTC') > 2019"
+          end
         end
       end
       # rubocop: enable Style/Documentation

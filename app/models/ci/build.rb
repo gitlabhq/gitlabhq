@@ -313,12 +313,6 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            build.deployment&.run
-          end
-        end
-
         build.run_after_commit do
           build.pipeline.persistent_ref.create
 
@@ -339,33 +333,10 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            build.deployment&.succeed
-          end
-        end
-
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
-      end
-
-      after_transition any => [:failed] do |build|
-        next unless build.project
-        next unless build.deployment
-
-        unless build.update_deployment_after_transaction_commit?
-          begin
-            Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-              build.deployment.drop!
-            end
-          rescue StandardError => e
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
-          end
-        end
-
-        true
       end
 
       after_transition any => [:failed] do |build|
@@ -380,25 +351,12 @@ module Ci
         end
       end
 
-      after_transition any => [:skipped, :canceled] do |build, transition|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            if transition.to_name == :skipped
-              build.deployment&.skip
-            else
-              build.deployment&.cancel
-            end
-          end
-        end
-      end
-
       # Synchronize Deployment Status
       # Please note that the data integirty is not assured because we can't use
       # a database transaction due to DB decomposition.
       after_transition do |build, transition|
         next if transition.loopback?
         next unless build.project
-        next unless build.update_deployment_after_transaction_commit?
 
         build.run_after_commit do
           build.deployment&.sync_status_with(build)
@@ -1118,12 +1076,6 @@ module Ci
 
     def shared_runner_build?
       runner&.instance_type?
-    end
-
-    def update_deployment_after_transaction_commit?
-      strong_memoize(:update_deployment_after_transaction_commit) do
-        Feature.enabled?(:update_deployment_after_transaction_commit, project, default_enabled: :yaml)
-      end
     end
 
     protected
