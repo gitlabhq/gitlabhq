@@ -1900,6 +1900,32 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#refs_by_oid' do
+    it 'returns a list of refs from a OID' do
+      refs = repository.refs_by_oid(oid: repository.commit.id)
+
+      expect(refs).to be_an(Array)
+      expect(refs).to include(Gitlab::Git::BRANCH_REF_PREFIX + repository.root_ref)
+    end
+
+    it 'returns a single ref from a OID' do
+      refs = repository.refs_by_oid(oid: repository.commit.id, limit: 1)
+
+      expect(refs).to be_an(Array)
+      expect(refs).to eq([Gitlab::Git::BRANCH_REF_PREFIX + repository.root_ref])
+    end
+
+    it 'returns empty for unknown ID' do
+      expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
+    end
+
+    it 'returns nil for an empty repo' do
+      project = create(:project)
+
+      expect(project.repository.refs_by_oid(oid: SeedRepo::Commit::ID, limit: 0)).to be_nil
+    end
+  end
+
   describe '#set_full_path' do
     before do
       repository_rugged.config["gitlab.fullpath"] = repository_path

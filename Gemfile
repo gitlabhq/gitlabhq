@@ -476,7 +476,7 @@ end
 gem 'spamcheck', '~> 0.1.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 14.3.0.pre.rc2'
+gem 'gitaly', '~> 14.4.0.pre.rc43'
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.0.2'

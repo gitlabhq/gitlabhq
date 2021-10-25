@@ -76,13 +76,21 @@ export default {
     },
     onTokenReset(token) {
       this.currentRegistrationToken = token;
+
+      this.$refs.runnerRegistrationDropdown.hide(true);
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown menu-class="gl-w-auto!" :text="dropdownText" variant="confirm" v-bind="$attrs">
+  <gl-dropdown
+    ref="runnerRegistrationDropdown"
+    menu-class="gl-w-auto!"
+    :text="dropdownText"
+    variant="confirm"
+    v-bind="$attrs"
+  >
     <gl-dropdown-item @click.capture.native.stop="onShowInstructionsClick">
       {{ $options.i18n.showInstallationInstructions }}
       <runner-instructions-modal

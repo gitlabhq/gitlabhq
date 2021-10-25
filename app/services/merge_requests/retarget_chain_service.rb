@@ -5,8 +5,6 @@ module MergeRequests
     MAX_RETARGET_MERGE_REQUESTS = 4
 
     def execute(merge_request)
-      return unless Feature.enabled?(:retarget_merge_requests, merge_request.target_project, default_enabled: :yaml)
-
       # we can only retarget MRs that are targeting the same project
       return unless merge_request.for_same_project? && merge_request.merged?
 

@@ -172,11 +172,6 @@ is set for deletion, the merge request widget displays the
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to
-[disable the `retarget_merge_requests` flag](../../../administration/feature_flags.md).
-
 In specific circumstances, GitLab can retarget the destination branch of
 open merge request, if the destination branch merges while the merge request is
 open. Merge requests are often chained in this manner, with one merge request

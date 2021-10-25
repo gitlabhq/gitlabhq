@@ -282,4 +282,19 @@ RSpec.describe Gitlab::GitalyClient::RefService do
       client.pack_refs
     end
   end
+
+  describe '#find_refs_by_oid' do
+    let(:oid) { project.repository.commit.id }
+
+    it 'sends a find_refs_by_oid message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:find_refs_by_oid)
+        .with(gitaly_request_with_params(sort_field: 'refname', oid: oid, limit: 1), kind_of(Hash))
+        .and_call_original
+
+      refs = client.find_refs_by_oid(oid: oid, limit: 1)
+
+      expect(refs.to_a).to eq([Gitlab::Git::BRANCH_REF_PREFIX + project.repository.root_ref])
+    end
+  end
 end

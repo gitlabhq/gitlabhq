@@ -11,6 +11,7 @@ import {
   DEFAULT_FAILURE,
   DEFAULT_SUCCESS,
   LOAD_FAILURE_UNKNOWN,
+  PIPELINE_FAILURE,
 } from '~/pipeline_editor/constants';
 
 beforeEach(() => {
@@ -65,6 +66,7 @@ describe('Pipeline Editor messages', () => {
       failureType             | message                             | expectedFailureType
       ${COMMIT_FAILURE}       | ${'failed commit'}                  | ${COMMIT_FAILURE}
       ${LOAD_FAILURE_UNKNOWN} | ${'loading failure'}                | ${LOAD_FAILURE_UNKNOWN}
+      ${PIPELINE_FAILURE}     | ${'pipeline failure'}               | ${PIPELINE_FAILURE}
       ${'random'}             | ${'error without a specified type'} | ${DEFAULT_FAILURE}
     `('shows a message for $message', ({ failureType, expectedFailureType }) => {
       createComponent({ failureType, showFailure: true });

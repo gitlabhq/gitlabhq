@@ -20,7 +20,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects. Groups can also be nested by creating subgroups.',
+            'GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects.',
           )
         "
       >

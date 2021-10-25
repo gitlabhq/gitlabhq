@@ -45,14 +45,6 @@ RSpec.describe MergeRequests::RetargetChainService do
             .from(merge_request.source_branch)
             .to(merge_request.target_branch)
         end
-
-        context 'when FF retarget_merge_requests is disabled' do
-          before do
-            stub_feature_flags(retarget_merge_requests: false)
-          end
-
-          include_examples 'does not retarget merge request'
-        end
       end
 
       context 'in the same project' do

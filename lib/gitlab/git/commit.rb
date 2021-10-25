@@ -315,8 +315,16 @@ module Gitlab
       #
       def ref_names(repo)
         refs(repo).map do |ref|
-          ref.sub(%r{^refs/(heads|remotes|tags)/}, "")
+          strip_ref_prefix(ref)
         end
+      end
+
+      def first_ref_by_oid(repo)
+        ref = repo.refs_by_oid(oid: id, limit: 1)&.first
+
+        return unless ref
+
+        strip_ref_prefix(ref)
       end
 
       def message
@@ -465,6 +473,10 @@ module Gitlab
             commit_id.include?("\x00") ||
             commit_id.match?(/\s/)
         )
+      end
+
+      def strip_ref_prefix(ref)
+        ref.sub(%r{^refs/(heads|remotes|tags)/}, "")
       end
     end
   end

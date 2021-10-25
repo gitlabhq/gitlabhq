@@ -323,6 +323,8 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'changes registration token' do
+          click_on 'Register an instance runner'
+
           click_on 'Click to reveal'
           expect(page_token).not_to eq token
         end

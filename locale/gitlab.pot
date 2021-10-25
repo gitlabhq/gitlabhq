@@ -16625,7 +16625,7 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
-msgid "GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects. Groups can also be nested by creating subgroups."
+msgid "GroupsNew|%{linkStart}Groups%{linkEnd} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
 msgid "GroupsNew|Assemble related projects together and grant members access to several projects at once."
@@ -25283,6 +25283,9 @@ msgid "Pipelines|There are currently no finished pipelines."
 msgstr ""
 
 msgid "Pipelines|There are currently no pipelines."
+msgstr ""
+
+msgid "Pipelines|There was a problem with loading the pipeline data."
 msgstr ""
 
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
@@ -36365,6 +36368,9 @@ msgid "Unable to fetch branch list for this project."
 msgstr ""
 
 msgid "Unable to fetch branches list, please close the form and try again"
+msgstr ""
+
+msgid "Unable to fetch upstream and downstream pipelines."
 msgstr ""
 
 msgid "Unable to fetch vulnerable projects"

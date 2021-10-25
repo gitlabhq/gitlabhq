@@ -715,6 +715,14 @@ RSpec.describe Gitlab::Git::Commit, :seed_helper do
     it { is_expected.not_to include("feature") }
   end
 
+  describe '#first_ref_by_oid' do
+    let(:commit) { described_class.find(repository, 'master') }
+
+    subject { commit.first_ref_by_oid(repository) }
+
+    it { is_expected.to eq("master") }
+  end
+
   describe '.get_message' do
     let(:commit_ids) { %w[6d394385cf567f80a8fd85055db1ab4c5295806f cfe32cf61b73a0d5e9f13e774abde7ff789b1660] }
 

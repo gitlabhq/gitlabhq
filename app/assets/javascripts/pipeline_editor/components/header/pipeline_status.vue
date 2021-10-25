@@ -62,11 +62,12 @@ export default {
         };
       },
       update(data) {
-        const { id, commitPath = '', detailedStatus = {}, stages, status } =
+        const { id, iid, commitPath = '', detailedStatus = {}, stages, status } =
           data.project?.pipeline || {};
 
         return {
           id,
+          iid,
           commitPath,
           detailedStatus,
           stages,
@@ -174,6 +175,7 @@ export default {
         <pipeline-editor-mini-graph
           v-if="glFeatures.pipelineEditorMiniGraph"
           :pipeline="pipeline"
+          v-on="$listeners"
         />
         <gl-button
           class="gl-mt-2 gl-md-mt-0"

@@ -1,0 +1,8 @@
+---
+name: jira_use_first_ref_by_oid
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72739
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343585
+milestone: '14.5'
+type: development
+group: group::integrations
+default_enabled: false

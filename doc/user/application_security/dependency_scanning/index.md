@@ -321,14 +321,15 @@ We execute both analyzers because they use different sources of vulnerability da
 
 The analyzer for these languages supports multiple lockfiles.
 
-### Future support for additional languages
+### Support for additional languages
 
-Plans are underway for supporting the following languages, dependency managers, and dependency files. For details, see the issue link for each.
-For workarounds, see the [Troubleshooting section](#troubleshooting)
+Support for additional languages, dependency managers, and dependency files are tracked in the following issues:
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
 | [Poetry](https://python-poetry.org/) | Python | `poetry.lock` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) | [GitLab#7006](https://gitlab.com/gitlab-org/gitlab/-/issues/7006) |
+
+For workarounds, see the [Troubleshooting section](#troubleshooting).
 
 ## Contribute your scanner
 

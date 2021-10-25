@@ -519,6 +519,17 @@ module Gitlab
         @refs_hash
       end
 
+      # Returns matching refs for OID
+      #
+      # Limit of 0 means there is no limit.
+      def refs_by_oid(oid:, limit: 0)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit)
+        end
+      rescue CommandError, TypeError, NoRepository
+        nil
+      end
+
       # Returns url for submodule
       #
       # Ex.

@@ -876,8 +876,22 @@ RSpec.describe Integrations::Jira do
         subject
 
         expect(WebMock).to have_requested(:post, comment_url).with(
-          body: /mentioned this issue in/
+          body: /mentioned this issue.*on branch \[master/
         ).once
+      end
+
+      context 'with jira_use_first_ref_by_oid feature flag disabled' do
+        before do
+          stub_feature_flags(jira_use_first_ref_by_oid: false)
+        end
+
+        it 'creates a comment on Jira' do
+          subject
+
+          expect(WebMock).to have_requested(:post, comment_url).with(
+            body: /mentioned this issue.*on branch \[master/
+          ).once
+        end
       end
 
       it 'tracks usage' do
