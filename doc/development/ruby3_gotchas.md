@@ -10,7 +10,8 @@ This section documents several problems we found while working on [Ruby 3 suppor
 and which led to subtle bugs or test failures that were difficult to understand. We encourage every GitLab contributor
 who writes Ruby code on a regular basis to familiarize themselves with these issues.
 
-The complete list of changes to the Ruby 3 language and standard library is found [here](https://rubyreferences.github.io/rubychanges/3.0.html).
+To find the complete list of changes to the Ruby 3 language and standard library, see
+[Ruby Changes](https://rubyreferences.github.io/rubychanges/3.0.html).
 
 ## `Hash#each` consistently yields a 2-element array to lambdas
 
@@ -56,23 +57,23 @@ To write code that works under both 2.7 and 3.0, consider the following options:
 
 We recommend always passing the block explicitly, and prefer two required arguments as block parameters.
 
-More information can be found in [Ruby issue 12706](https://bugs.ruby-lang.org/issues/12706).
+To learn more, see [Ruby issue 12706](https://bugs.ruby-lang.org/issues/12706).
 
 ## `Symbol#to_proc` returns signature metadata consistent with lambdas
 
-A common idiom in Ruby is to obtain procs via the `&:<symbol>` shorthand and
+A common idiom in Ruby is to obtain `Proc` objects using the `&:<symbol>` shorthand and
 pass them to higher-order functions:
 
 ```ruby
 [1, 2, 3].each(&:to_s)
 ```
 
-Ruby desugars `&:<symbol>` to `Symbol#to_proc`, which we can `call` with
-the method _receiver_ as its first argument (here `Integer`), and all method _arguments_
-(here none) as its remaining arguments.
+Ruby desugars `&:<symbol>` to `Symbol#to_proc`. We can call it with
+the method _receiver_ as its first argument (here: `Integer`), and all method _arguments_
+(here: none) as its remaining arguments.
 
-This behaves the same in both Ruby 2.7 and Ruby 3; where Ruby 3 diverges is when capturing
-this proc and inspecting its call signature.
+This behaves the same in both Ruby 2.7 and Ruby 3. Where Ruby 3 diverges is when capturing
+this `Proc` object and inspecting its call signature.
 This is often done when writing DSLs or using other forms of meta-programming:
 
 ```ruby
@@ -83,32 +84,33 @@ p = :foo.to_proc # This usually happens via a conversion through `&:foo`
 puts "#{p.parameters} (#{p.arity})"
 ```
 
-Ruby 2.7 reports zero required and one optional parameter for this proc, while Ruby 3 reports one required
-and one optional parameter. As described above, Ruby 2.7 is incorrect: the first argument must
-always be passed, as it is the receiver of the method the proc represents, and methods cannot be
+Ruby 2.7 reports zero required and one optional parameter for this `Proc` object, while Ruby 3 reports one required
+and one optional parameter. Ruby 2.7 is incorrect: the first argument must
+always be passed, as it is the receiver of the method the `Proc` object represents, and methods cannot be
 called without a receiver.
 
-Ruby 3 corrects this, meaning code that tests proc arity or parameter lists might now break and
+Ruby 3 corrects this: the code that tests `Proc` object arity or parameter lists might now break and
 has to be updated.
 
-More information can be found in [Ruby issue 16260](https://bugs.ruby-lang.org/issues/16260).
+To learn more, see [Ruby issue 16260](https://bugs.ruby-lang.org/issues/16260).
 
 ## `OpenStruct` does not evaluate fields lazily
 
-The `OpenStruct` implementation has undergone a partial rewrite in Ruby 3, resulting in 
+The `OpenStruct` implementation has undergone a partial rewrite in Ruby 3, resulting in
 behavioral changes. In Ruby 2.7, `OpenStruct` defines methods lazily, when the method is first accessed.
 In Ruby 3.0, it defines these methods eagerly in the initializer, which can break classes that inherit from `OpenStruct`
 and override these methods.
 
 Don't inherit from `OpenStruct` for these reasons; ideally, don't use it at all.
-`OpenStruct` is [considered problematic](https://ruby-doc.org/stdlib-3.0.2/libdoc/ostruct/rdoc/OpenStruct.html#class-OpenStruct-label-Caveats) for various reasons. When writing new code, prefer a `Struct` instead, which is simpler in implementation, although less flexible.
+`OpenStruct` is [considered problematic](https://ruby-doc.org/stdlib-3.0.2/libdoc/ostruct/rdoc/OpenStruct.html#class-OpenStruct-label-Caveats).
+When writing new code, prefer a `Struct` instead, which is simpler in implementation, although less flexible.
 
 ## `Regexp` and `Range` instances are frozen
 
-It is not necessary anymore to explicitly `freeze` `Regexp` or `Range` instances, since Ruby 3 freezes
+It is not necessary anymore to explicitly freeze `Regexp` or `Range` instances because Ruby 3 freezes
 them automatically upon creation.
 
-This has a subtle side-effect: Tests that stub method calls on these types now fail with an error, since
+This has a subtle side-effect: Tests that stub method calls on these types now fail with an error because
 RSpec cannot stub frozen objects:
 
 ```ruby
@@ -129,11 +131,10 @@ allow(subject).to receive(:function_returning_range).and_return(1..42)
 Ruby 3.0.2 has a known bug that causes [table tests](testing_guide/best_practices.md#table-based--parameterized-tests)
 to fail when table values consist of integer values.
 The reasons are documented in [issue 337614](https://gitlab.com/gitlab-org/gitlab/-/issues/337614).
-This problem has been fixed in Ruby and the fix is expected to be included in Ruby 3.0.3, which is not yet
-available at this time.
+This problem has been fixed in Ruby and the fix is expected to be included in Ruby 3.0.3.
 
 The problem only affects users who run an unpatched Ruby 3.0.2. This is likely the case when you
 installed Ruby manually or via tools like `asdf`. Users of the `gitlab-development-kit (GDK)`
 are also affected by this problem.
 
-Build images are not affected, since they include the patch set addressing this bug.
+Build images are not affected because they include the patch set addressing this bug.
