@@ -188,6 +188,21 @@ variables:
 In this example, `my-custom-install-script.sh` is a shell script at the root
 directory of your project.
 
+### Working with Monorepos
+
+Depending on your language, you may need to specify the path to the individual 
+projects of a monorepo using the `LICENSE_FINDER_CLI_OPTS` variable. Passing in 
+the project paths can significantly speed up builds over using the `--recursive`
+license_finder option.
+
+```yaml
+include:
+  - template: Security/License-Scanning.gitlab-ci.yml
+
+variables:
+  LICENSE_FINDER_CLI_OPTS: "--aggregate_paths=relative-path/to/sub-project/one relative-path/to/sub-project/two"
+```
+
 ### Overriding the template
 
 WARNING:

@@ -77,7 +77,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 
-### Ref Specs for Runners
+### Ref specs for runners
 
 When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
 which indicate which ref (branch, tag, and so on) and commit (SHA1) are checked out from your
@@ -87,9 +87,9 @@ This table lists the refspecs injected for each pipeline type:
 
 | Pipeline type                                                      | Refspecs                                                                                       |
 |---------------                                                     |----------------------------------------                                                        |
-| Pipeline for Branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for Tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [Pipeline for Merge Requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| pipeline for branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
+| [pipeline for merge requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
