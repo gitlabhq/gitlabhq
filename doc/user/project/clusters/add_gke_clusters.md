@@ -4,9 +4,12 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Connect GKE clusters through cluster certificates **(FREE)**
+# Connect GKE clusters through cluster certificates (DEPRECATED) **(FREE)**
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 Use [Infrastrucure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
 to create a cluster hosted on Google Kubernetes Engine (GKE).
 
@@ -18,21 +21,13 @@ hosted on Google Kubernetes Engine (GKE).
 If you already have a GKE cluster and want to connect it to GitLab,
 use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
-Alternatively, you can [connect them with cluster certificates](add_existing_cluster.md),
-altough this method is not recommended for [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
-
 ## Create a new GKE cluster from GitLab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25925) in GitLab 12.4, all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md).
 
-Alternatively, you can [create new GKE clusters using cluster certificates](#create-a-new-cluster-on-gke-through-cluster-certificates-deprecated).
-Although still available in the GitLab UI, this method was deprecated
-in GitLab 14.0 and is scheduled for removal in GitLab 15.0.
-It also has [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
-
-## Create a new cluster on GKE through cluster certificates (DEPRECATED)
+## Create a new cluster on GKE through cluster certificates
 
 > [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
 

@@ -238,8 +238,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
         expect(source.issues).to all have_attributes(
           project: source,
-          author: user,
-          assignees: array_including(member)
+          author: user
         )
       end
     end

@@ -6,20 +6,16 @@ module Gitlab
       class TreeSaver
         attr_reader :full_path
 
-        def initialize(project:, current_user:, shared:, params: {})
+        def initialize(project:, current_user:, shared:, params: {}, logger: Gitlab::Import::Logger)
           @params       = params
           @project      = project
           @current_user = current_user
           @shared       = shared
+          @logger       = logger
         end
 
         def save
-          ImportExport::Json::StreamingSerializer.new(
-            exportable,
-            reader.project_tree,
-            json_writer,
-            exportable_path: "project"
-          ).execute
+          stream_export
 
           true
         rescue StandardError => e
@@ -30,6 +26,32 @@ module Gitlab
         end
 
         private
+
+        def stream_export
+          on_retry = proc do |exception, try, elapsed_time, next_interval|
+            @logger.info(
+              message: "Project export retry triggered from streaming",
+              'error.class': exception.class,
+              'error.message': exception.message,
+              try_count: try,
+              elapsed_time_s: elapsed_time,
+              wait_to_retry_s: next_interval,
+              project_name: @project.name,
+              project_id: @project.id
+            )
+          end
+
+          serializer = ImportExport::Json::StreamingSerializer.new(
+            exportable,
+            reader.project_tree,
+            json_writer,
+            exportable_path: "project"
+          )
+
+          Retriable.retriable(on: Net::OpenTimeout, on_retry: on_retry) do
+            serializer.execute
+          end
+        end
 
         def reader
           @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)

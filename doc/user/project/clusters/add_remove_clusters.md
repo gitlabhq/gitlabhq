@@ -9,9 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
 WARNING:
-Creating a new cluster through cluster certificates
-is deprecated and no longer recommended. To create a new cluster use
-[Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+To create a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
 
 NOTE:
 Every new Google Cloud Platform (GCP) account receives

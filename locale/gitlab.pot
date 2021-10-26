@@ -23802,9 +23802,6 @@ msgstr ""
 msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the Add a rotation button. To enable notifications for this schedule, you must also create an %{linkStart}escalation policy%{linkEnd}."
 msgstr ""
 
-msgid "OnDemandScans|%{learnMoreLinkStart}Lean more about on-demand scans%{learnMoreLinkEnd}."
-msgstr ""
-
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
 msgstr ""
 
@@ -23887,15 +23884,6 @@ msgid "OnDemandScans|Site profile"
 msgstr ""
 
 msgid "OnDemandScans|Start time"
-msgstr ""
-
-msgid "OnDemandScans|There are no finished scans."
-msgstr ""
-
-msgid "OnDemandScans|There are no running scans."
-msgstr ""
-
-msgid "OnDemandScans|There are no scheduled scans."
 msgstr ""
 
 msgid "OnDemandScans|Use existing scanner profile"

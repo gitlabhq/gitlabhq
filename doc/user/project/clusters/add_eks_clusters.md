@@ -4,12 +4,13 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Connect EKS clusters through cluster certificates **(FREE)**
+# Connect EKS clusters through cluster certificates (DEPRECATED) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
-Use [Infrastrucure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
+This feature was deprecated in GitLab 14.5. Use [Infrastrucure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac)
 to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
@@ -20,17 +21,9 @@ Kubernetes Service (EKS).
 If you already have an EKS cluster and want to connect it to GitLab,
 use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
-Alternatively, you can [connect them with cluster certificates](add_existing_cluster.md),
-although this method is not recommended for [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
-
 ## Create a new EKS cluster
 
 To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md#create-a-new-cluster-through-iac).
-
-Alternatively, you can [create new EKS clusters using cluster certificates](#how-to-create-a-new-cluster-on-eks-through-cluster-certificates-deprecated).
-Although still available on the GitLab UI, this method was deprecated
-in GitLab 14.0 and is scheduled for removal in GitLab 15.0.
-It also has [security implications](../../infrastructure/clusters/connect/index.md#security-implications-for-clusters-connected-with-certificates).
 
 ### How to create a new cluster on EKS through cluster certificates (DEPRECATED)
 

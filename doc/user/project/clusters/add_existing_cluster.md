@@ -4,16 +4,17 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Connect existing clusters through cluster certificates
+# Connect existing clusters through cluster certificates **(DEPRECATED)**
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+To connect your cluster to GitLab, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
+instead.
 
 If you have an existing Kubernetes cluster, you can add it to a project, group,
 or instance and benefit from the integration with GitLab.
-
-WARNING:
-The process described on this page uses cluster certificates to connect your cluster
-to GitLab. Although this method still works, it is **no longer recommended**.
-To connect your cluster to GitLab, we **recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
-instead. **(PREMIUM)**
 
 ## Prerequisites
 
