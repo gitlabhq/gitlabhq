@@ -130,6 +130,7 @@ Naming/FileName:
     - 'qa/spec/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
+    - '**/*.ru'
 
   IgnoreExecutableScripts: true
   AllowedAcronyms:
@@ -151,6 +152,23 @@ Naming/FileName:
     - CI
     - CD
     - OAuth
+    - CSP
+    - CSV
+    - SCA
+    - SAN
+    - CIDR
+    - SPDX
+    - MR
+    - SSE
+    - JWT
+    - HLL
+    - VSCode
+    - GPG
+    - OTP
+    - GID
+    - AR
+    - RSpec
+    - Javascript
     # default ones:
     - CLI
     - DSL

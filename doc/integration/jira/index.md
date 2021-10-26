@@ -63,7 +63,7 @@ The process for configuring Jira depends on whether you host Jira on your own se
   how to [set up a user in Jira Server](jira_server_configuration.md).
 - **Jira on Atlassian cloud** supports authentication through an API token. When connecting to Jira on
   Atlassian cloud, an email and API token are required. For more information, read
-  [set up a user in Jira on Atlassian cloud](jira_cloud_configuration.md).
+  [create an API token for Jira in Atlassian cloud](jira_cloud_configuration.md).
 
 ## Privacy considerations
 

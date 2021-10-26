@@ -14,9 +14,13 @@ For GitLab.com, please see
 Rate limiting is a common technique used to improve the security and durability
 of a web application.
 
-For example, a simple script can make thousands of web requests per second.
-Whether malicious, apathetic, or just a bug, your application and infrastructure
-may not be able to cope with the load. For more details, see
+For example, a simple script can make thousands of web requests per second. The requests could be:
+
+- Malicious.
+- Apathetic.
+- Just a bug.
+
+Your application and infrastructure may not be able to cope with the load. For more details, see
 [Denial-of-service attack](https://en.wikipedia.org/wiki/Denial-of-service_attack).
 Most cases can be mitigated by limiting the rate of requests from a single IP address.
 
@@ -25,7 +29,7 @@ similarly mitigated by a rate limit.
 
 ## Admin Area settings
 
-These are rate limits you can set in the Admin Area of your instance:
+You can set these rate limits in the Admin Area of your instance:
 
 - [Import/Export rate limits](../user/admin_area/settings/import_export_rate_limits.md)
 - [Issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md)
@@ -38,14 +42,36 @@ These are rate limits you can set in the Admin Area of your instance:
 - [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
 
+## Failed authentication ban for Git and container registry
+
+GitLab returns HTTP status code `403` for 1 hour, if 30 failed authentication requests were received
+in a 3-minute period from a single IP address. This applies only to combined:
+
+- Git requests.
+- Container registry (`/jwt/auth`) requests.
+
+This limit:
+
+- Is reset by requests that authenticate successfully. For example, 29 failed authentication
+  requests followed by 1 successful request, followed by 29 more failed authentication requests
+  would not trigger a ban.
+- Does not apply to JWT requests authenticated by `gitlab-ci-token`.
+- Is disabled by default.
+
+No response headers are provided.
+
+For configuration information, see
+[Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-failed-authentication-ban).
+
 ## Non-configurable limits
 
 ### Repository archives
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25750) in GitLab 12.9.
 
-There is a rate limit for [downloading repository archives](../api/repositories.md#get-file-archive),
-which applies to the project and to the user initiating the download either through the UI or the API.
+A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
+available. The limit applies to the project and to the user initiating the download either through
+the UI or the API.
 
 The **rate limit** is 5 requests per minute per user.
 
@@ -57,8 +83,50 @@ There is a rate limit for [testing webhooks](../user/project/integrations/webhoo
 
 The **rate limit** is 5 requests per minute per user.
 
-## Rack Attack initializer
+## Troubleshooting
 
-This method of rate limiting is cumbersome, but has some advantages. It allows
-throttling of specific paths, and is also integrated into Git and container
-registry requests. See [Rack Attack initializer](rack_attack.md).
+### Rack Attack is denylisting the load balancer
+
+Rack Attack may block your load balancer if all traffic appears to come from
+the load balancer. In that case, you must:
+
+1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-gitlab-trusted_proxies-and-the-nginx-real_ip-module).
+   This keeps users' IPs from being listed as the load balancer IPs.
+1. Allowlist the load balancer's IP addresses.
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+### Remove blocked IPs from Rack Attack with Redis
+
+To remove a blocked IP:
+
+1. Find the IPs that have been blocked in the production log:
+
+   ```shell
+   grep "Rack_Attack" /var/log/gitlab/gitlab-rails/auth.log
+   ```
+
+1. Since the denylist is stored in Redis, you must open up `redis-cli`:
+
+   ```shell
+   /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
+   ```
+
+1. You can remove the block using the following syntax, replacing `<ip>` with
+   the actual IP that is denylisted:
+
+   ```plaintext
+   del cache:gitlab:rack::attack:allow2ban:ban:<ip>
+   ```
+
+1. Confirm that the key with the IP no longer shows up:
+
+   ```plaintext
+   keys *rack::attack*
+   ```
+
+1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-rack-attack)
+   to prevent it being denylisted again.

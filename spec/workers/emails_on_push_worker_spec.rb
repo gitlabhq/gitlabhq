@@ -139,6 +139,43 @@ RSpec.describe EmailsOnPushWorker, :mailer do
 
           perform
         end
+
+        context 'when SMIME signing is enabled' do
+          include SmimeHelper
+
+          before :context do
+            @root_ca = generate_root
+            @cert = generate_cert(signer_ca: @root_ca)
+          end
+
+          let(:root_certificate) do
+            Gitlab::X509::Certificate.new(@root_ca[:key], @root_ca[:cert])
+          end
+
+          let(:certificate) do
+            Gitlab::X509::Certificate.new(@cert[:key], @cert[:cert])
+          end
+
+          before do
+            allow(Gitlab::X509::Certificate).to receive_messages(from_files: certificate)
+
+            Mail.register_interceptor(Gitlab::Email::Hook::SmimeSignatureInterceptor)
+          end
+
+          after do
+            Mail.unregister_interceptor(Gitlab::Email::Hook::SmimeSignatureInterceptor)
+          end
+
+          it 'does not sign the email multiple times' do
+            perform
+
+            ActionMailer::Base.deliveries.each do |mail|
+              expect(mail.header['Content-Type'].value).to match('multipart/signed').and match('protocol="application/x-pkcs7-signature"')
+
+              expect(mail.to_s.scan(/Content-Disposition: attachment;\r\n filename=smime.p7s/).size).to eq(1)
+            end
+          end
+        end
       end
 
       context "when recipients are invalid" do

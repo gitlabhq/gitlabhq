@@ -8,9 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 In GitLab 14.5, the certificate-based method to connect Kubernetes clusters
-to GitLab was deprecated, as well as the related [features](#deprecated-features).
+to GitLab was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
+as well as its related [features](#deprecated-features).
 
-This feature is now deprecated. It had the following issues:
+Connecting Kubernetes clusters to GitLab through cluster certificates is deprecated.
+This method had the following issues:
 
 - There were security issues as it required direct access to the Kube API by GitLab.
 - The configuration options weren't flexible.
@@ -54,10 +56,16 @@ the Kubernetes Agent model on the [Agent's blueprint documentation](../../../arc
 - [Clusters health](manage/clusters_health.md)
 - [Crossplane integration](../../clusters/crossplane.md)
 - [Auto Deploy](../../../topics/autodevops/stages.md#auto-deploy)
+- [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels
 
-The concept of project-level, group-level, and instance-level clusters becomes
+The concept of [project-level](../../project/clusters/index.md),
+[group-level](../../group/clusters/index.md), and
+[instance-level](../../instance/clusters/index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
-The Agent is always configured in a GitLab project, but you can grant your
-cluster's access to a GitLab group through the Agent.
+
+The Agent is always configured in a GitLab project, but you can:
+
+- [Grant your cluster's access to GitLab groups through the Agent](../../clusters/agent/repository.md#authorize-groups-to-use-an-agent).
+- [Share access to the Agent with other projects and groups through the CI/CD Tunnel](../../clusters/agent/ci_cd_tunnel.md#share-the-cicd-tunnel-provided-by-an-agent-with-other-projects-and-group).

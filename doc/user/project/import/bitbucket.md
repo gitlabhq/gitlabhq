@@ -52,20 +52,18 @@ namespace that started the import process.
 
 ## Import your Bitbucket repositories
 
-1. Sign in to GitLab and go to your dashboard.
-1. Click on **New project**.
-
-1. Click on the "Bitbucket Cloud" button.
-
-   ![Bitbucket](img/import_projects_from_new_project_page.png)
-
-1. Grant GitLab access to your Bitbucket account
+1. Sign in to GitLab.
+1. On the top bar, select **New** (**{plus}**).
+1. Select **New project/repository**.
+1. Select **Import project**.
+1. Select **Bitbucket Cloud**.
+1. Log in to Bitbucket and grant GitLab access to your Bitbucket account.
 
    ![Grant access](img/bitbucket_import_grant_access.png)
 
-1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also filter projects by name and select the namespace under which
-   each project will be imported.
+1. Select the projects that you'd like to import or import all projects.
+   You can filter projects by name and select the namespace
+   each project will be imported for.
 
    ![Import projects](img/bitbucket_import_select_project_v12_3.png)
 

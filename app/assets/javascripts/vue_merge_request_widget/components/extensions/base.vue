@@ -8,6 +8,8 @@ import {
   GlTooltipDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
+import { once } from 'lodash';
+import api from '~/api';
 import { sprintf, s__, __ } from '~/locale';
 import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
 import { EXTENSION_ICON_CLASS } from '../../constants';
@@ -102,8 +104,15 @@ export default {
       });
   },
   methods: {
+    triggerRedisTracking: once(function triggerRedisTracking() {
+      if (this.$options.expandEvent) {
+        api.trackRedisHllUserEvent(this.$options.expandEvent);
+      }
+    }),
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
+
+      this.triggerRedisTracking();
     },
     loadAllData() {
       if (this.fullData) return;

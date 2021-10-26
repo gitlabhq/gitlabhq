@@ -15,9 +15,7 @@ performance, data, or could even exhaust the allocated resources for the applica
 
 Rate limits can be used to improve the security and durability of GitLab.
 
-For example, one script can make thousands of web requests per second. Whether malicious, apathetic, or just a bug, your application and infrastructure may not be able to cope with the load. Rate limits can help to mitigate these types of attacks.
-
-Read more about [configuring rate limits](../security/rate_limits.md) in the Security documentation.
+Read more about [configuring rate limits](../security/rate_limits.md).
 
 ### Issue creation
 
@@ -127,16 +125,6 @@ This setting limits the import/export actions for groups and projects.
 | Group Export Download   | 1 |
 
 Read more about [import/export rate limits](../user/admin_area/settings/import_export_rate_limits.md).
-
-### Rack attack
-
-This method of rate limiting is cumbersome, but has some advantages. It allows
-throttling of specific paths, and is also integrated into Git and container
-registry requests.
-
-Read more about the [Rack Attack initializer](../security/rack_attack.md) method of setting rate limits.
-
-- **Default rate limit**: Disabled.
 
 ### Member Invitations
 

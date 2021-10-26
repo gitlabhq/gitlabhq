@@ -150,6 +150,7 @@ denormalized
 denormalizes
 denormalizing
 denylist
+denylisted
 denylisting
 denylists
 deployer

@@ -4,18 +4,19 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Create an API token in Jira on Atlassian cloud **(FREE)**
+# Create an API token for Jira in Atlassian cloud **(FREE)**
 
 You need an API token to [integrate with Jira](index.md)
 on Atlassian cloud. To create the API token:
 
-1. Sign in to [`id.atlassian.com`](https://id.atlassian.com/manage-profile/security/api-tokens)
-   with your email address. Use an account with *write* access to Jira projects.
-1. Go to **Settings > Atlassian account settings > Security > Create and manage API tokens**.
-1. Select **Create API token** to display a modal window with an API token.
+1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)
+   using an account with *write* access to Jira projects.
+
+   The link opens the API tokens page. Alternatively, to go to this page from your Atlassian
+   profile, select **Account Settings > Security > Create and manage API tokens**.
+1. Select **Create API token**.
 1. In the dialog, enter a label for your token and select **Create**.
-1. To copy the API token, select **Copy**, then paste the token somewhere safe. You need this value when you
-   [configure GitLab](configure.md).
+1. To copy the API token, select **Copy**, then paste the token somewhere safe.
 
 You need the newly created token, and the email
 address you used when you created it, when you

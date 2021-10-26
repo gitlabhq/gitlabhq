@@ -11,6 +11,7 @@ export default {
     label: 'Issues',
     loading: 'Loading issues...',
   },
+  expandEvent: 'i_testing_load_performance_widget_total',
   // Add an array of props
   // These then get mapped to values stored in the MR Widget store
   props: ['targetProjectFullPath', 'conflictsDocsPath'],

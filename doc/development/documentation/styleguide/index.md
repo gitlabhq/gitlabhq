@@ -1026,18 +1026,13 @@ document to ensure it links to the most recent version of the file.
 When documenting how to navigate through the GitLab UI:
 
 - Always use location, then action.
-  - `From the **Visibility** list,` (location) `select **Public**.` (action)
+  - From the **Visibility** dropdown list (location), select **Public** (action).
 - Be brief and specific. For example:
-  - Avoid: `Select **Save** for the changes to take effect.`
-  - Use instead: `Select **Save**.`
-- When selecting from high-level UI elements, use the word **on**.
-  - Avoid: `From the left sidebar...` or `In the left sidebar...`
-  - Use instead: `On the left sidebar...`
-- If a step must include a reason, start the step with it.
-  - Avoid: `Select the link in the merge request to view the changes.`
-  - Use instead: `To view the changes, select the link in the merge request.`
-- If a step is optional, start the step with the word `Optional` followed by a period.
-  - `1. Optional. Enter a name for the dog.`
+  - Do: Select **Save**.
+  - Do not: Select **Save** for the changes to take effect.
+- If a step must include a reason, start the step with it. This helps the user scan more quickly.
+  - Do: To view the changes, in the merge request, select the link.
+  - Do not: Select the link in the merge request to view the changes.
 
 ### Names for menus
 
@@ -1081,6 +1076,42 @@ To select your avatar:
 ```markdown
 1. On the top bar, in the top right corner, select your avatar.
 ```
+
+### Optional steps
+
+If a step is optional, start the step with the word `Optional` followed by a period.
+
+For example:
+
+```markdown
+1. Optional. Enter a description for the job.
+```
+
+### Documenting multiple fields at once
+
+If the UI text sufficiently explains the fields in a section, do not include a task step for every field.
+Instead, summarize multiple fields in a single task step.
+
+Use the phrase **Complete the fields**. 
+
+For example:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Push rules**.
+1. Complete the fields.
+
+If you are documenting multiple fields and only one field needs explanation, do it in the same step:
+
+1. Expand **Push rules**.
+1. Complete the fields. **Branch name** must be a regular expression.
+
+To describe multiple fields, use bullets:
+
+1. Expand **General pipelines**.
+1. Complete the fields.
+   - **Branch name** must be a regular expression.
+   - **User** must be a user with at least the **Maintainer** role.
 
 ## Images
 

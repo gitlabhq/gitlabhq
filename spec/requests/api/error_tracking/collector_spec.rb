@@ -24,10 +24,10 @@ RSpec.describe API::ErrorTracking::Collector do
   end
 
   RSpec.shared_examples 'successful request' do
-    it 'writes to the database and returns no content' do
+    it 'writes to the database and returns OK' do
       expect { subject }.to change { ErrorTracking::ErrorEvent.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(:no_content)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -89,10 +89,10 @@ RSpec.describe API::ErrorTracking::Collector do
     context 'transaction request type' do
       let(:params) { fixture_file('error_tracking/transaction.txt') }
 
-      it 'does nothing and returns no content' do
+      it 'does nothing and returns ok' do
         expect { subject }.not_to change { ErrorTracking::ErrorEvent.count }
 
-        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

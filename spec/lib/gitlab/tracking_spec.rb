@@ -41,7 +41,6 @@ RSpec.describe Gitlab::Tracking do
     shared_examples 'delegates to destination' do |klass|
       before do
         allow_any_instance_of(Gitlab::Tracking::Destinations::Snowplow).to receive(:event)
-        allow_any_instance_of(Gitlab::Tracking::Destinations::ProductAnalytics).to receive(:event)
       end
 
       it "delegates to #{klass} destination" do
@@ -73,7 +72,6 @@ RSpec.describe Gitlab::Tracking do
     end
 
     it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::Snowplow
-    it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::ProductAnalytics
 
     it 'tracks errors' do
       expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(

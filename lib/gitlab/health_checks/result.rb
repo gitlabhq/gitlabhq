@@ -1,3 +1,4 @@
+# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 module Gitlab
@@ -13,3 +14,5 @@ module Gitlab
     end
   end
 end
+
+# rubocop:enable Naming/FileName

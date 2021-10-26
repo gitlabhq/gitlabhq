@@ -46,6 +46,7 @@ class SearchController < ApplicationController
     @search_results = @search_service.search_results
     @search_objects = @search_service.search_objects
     @search_highlight = @search_service.search_highlight
+    @aggregations = @search_service.search_aggregations
 
     increment_search_counters
   end

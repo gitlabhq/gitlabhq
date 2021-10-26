@@ -3334,7 +3334,7 @@ msgstr ""
 msgid "All merge request dependencies have been merged"
 msgstr ""
 
-msgid "All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URL%{relative_url_link_end}."
+msgid "All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URLs%{relative_url_link_end}."
 msgstr ""
 
 msgid "All projects"
@@ -8653,9 +8653,6 @@ msgstr ""
 msgid "Configure existing installation"
 msgstr ""
 
-msgid "Configure paths to be protected by Rack Attack."
-msgstr ""
-
 msgid "Configure repository mirroring."
 msgstr ""
 
@@ -12709,7 +12706,7 @@ msgstr ""
 msgid "Enable or disable version check and Service Ping."
 msgstr ""
 
-msgid "Enable protected paths rate limit"
+msgid "Enable rate limiting for POST requests to the specified paths"
 msgstr ""
 
 msgid "Enable reCAPTCHA"
@@ -16847,7 +16844,7 @@ msgstr ""
 msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
 msgstr ""
 
-msgid "Helps reduce request volume for protected paths"
+msgid "Helps reduce request volume for protected paths."
 msgstr ""
 
 msgid "Here you will find recent merge request activity"
@@ -23640,9 +23637,6 @@ msgstr ""
 msgid "OmniAuth"
 msgstr ""
 
-msgid "Omnibus Protected Paths throttle is active, and takes priority over these settings. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
-msgstr ""
-
 msgid "On"
 msgstr ""
 
@@ -24773,6 +24767,9 @@ msgid "Path:"
 msgstr ""
 
 msgid "Paths can contain wildcards, like */welcome"
+msgstr ""
+
+msgid "Paths to protect with rate limiting"
 msgstr ""
 
 msgid "Pause"
@@ -27658,9 +27655,6 @@ msgstr ""
 msgid "Protected Environment"
 msgstr ""
 
-msgid "Protected Paths"
-msgstr ""
-
 msgid "Protected Paths: requests"
 msgstr ""
 
@@ -27674,6 +27668,9 @@ msgid "Protected branches"
 msgstr ""
 
 msgid "Protected environments"
+msgstr ""
+
+msgid "Protected paths"
 msgstr ""
 
 msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported."
@@ -28049,6 +28046,9 @@ msgid "Rate Limits"
 msgstr ""
 
 msgid "Rate limit"
+msgstr ""
+
+msgid "Rate limit access to specified paths."
 msgstr ""
 
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
@@ -34691,9 +34691,6 @@ msgid "These examples show how to trigger this project's pipeline for a branch o
 msgstr ""
 
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
-msgstr ""
-
-msgid "These paths are protected for POST requests."
 msgstr ""
 
 msgid "These runners are shared across projects in this group."

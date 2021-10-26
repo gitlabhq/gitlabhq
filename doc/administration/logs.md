@@ -752,7 +752,6 @@ Depending on your installation method, this file is located at:
 
 This log records:
 
-- Information whenever [Rack Attack](../security/rack_attack.md) registers an abusive request.
 - Requests over the [Rate Limit](../user/admin_area/settings/rate_limits_on_raw_endpoints.md) on raw endpoints.
 - [Protected paths](../user/admin_area/settings/protected_paths.md) abusive requests.
 - In GitLab versions [12.3](https://gitlab.com/gitlab-org/gitlab/-/issues/29239) and later,

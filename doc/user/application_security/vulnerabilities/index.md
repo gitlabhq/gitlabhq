@@ -20,6 +20,9 @@ vulnerability include:
 - Linked issues
 - Actions log
 
+In GitLab 14.3 and later, if the scanner determined the vulnerability to be a false positive, an
+alert message is included at the top of the vulnerability's page.
+
 On the vulnerability's page, you can:
 
 - [Change the vulnerability's status](#change-vulnerability-status).

@@ -13,7 +13,6 @@ module Gitlab
         contexts = [Tracking::StandardContext.new(project: project, user: user, namespace: namespace, **extra).to_context, *context]
 
         snowplow.event(category, action, label: label, property: property, value: value, context: contexts)
-        product_analytics.event(category, action, label: label, property: property, value: value, context: contexts)
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
@@ -34,10 +33,6 @@ module Gitlab
 
       def snowplow
         @snowplow ||= Gitlab::Tracking::Destinations::Snowplow.new
-      end
-
-      def product_analytics
-        @product_analytics ||= Gitlab::Tracking::Destinations::ProductAnalytics.new
       end
     end
   end

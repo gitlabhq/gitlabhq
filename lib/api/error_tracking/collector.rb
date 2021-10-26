@@ -96,7 +96,10 @@ module API
       # Collector should never return any information back.
       # Because DSN and public key are designed for public use,
       # it is safe only for submission of new events.
-      no_content!
+      #
+      # Some clients sdk require status 200 OK to work correctly.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/343531.
+      status 200
     end
 
     desc 'Submit error tracking event to the project' do
@@ -129,7 +132,10 @@ module API
       # Collector should never return any information back.
       # Because DSN and public key are designed for public use,
       # it is safe only for submission of new events.
-      no_content!
+      #
+      # Some clients sdk require status 200 OK to work correctly.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/343531.
+      status 200
     end
   end
 end

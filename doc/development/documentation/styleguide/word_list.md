@@ -259,6 +259,16 @@ Use **box** instead of **field** or **text box**.
 - Do: In the **Variable name** box, enter `my text`.
 - Do not: In the **Variable name** field, enter `my text`.
 
+However, you can make an exception when you are writing a task and you need to refer to all
+of the fields at once. For example:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Complete the fields.
+
+Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+
 ## foo
 
 Do not use **foo** in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
@@ -453,6 +463,13 @@ Do not use **note that** because it's wordy.
 
 - Do: You can change the settings.
 - Do not: Note that you can change the settings.
+
+## on
+
+When documenting how to select high-level UI elements, use the word **on**.
+
+- Do: `On the left sidebar...`
+- Do not: `From the left sidebar...` or `In the left sidebar...`
 
 ## once
 

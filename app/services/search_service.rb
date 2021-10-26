@@ -75,6 +75,10 @@ class SearchService
     search_results.highlight_map(scope)
   end
 
+  def search_aggregations
+    search_results.aggregations(scope)
+  end
+
   private
 
   def page

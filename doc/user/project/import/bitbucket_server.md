@@ -101,22 +101,22 @@ Feature.disable(:bitbucket_server_user_mapping_by_username)
 
 ## Import your Bitbucket repositories
 
-1. Sign in to GitLab and go to your dashboard.
-1. Click on **New project**.
-1. Click on the "Bitbucket Server" button. If the button is not present, enable the importer in
-   **Admin > Application Settings > Visibility and access controls > Import sources**.
+Prerequisite:
 
-   ![Bitbucket](img/import_projects_from_new_project_page.png)
+- An administrator must have enabled the importer in
+  **Admin > Application Settings > Visibility and access controls > Import sources**.
 
-1. Enter your Bitbucket Server credentials.
+To import your Bitbucket repositories:
 
-   ![Grant access](img/bitbucket_server_import_credentials.png)
-
-1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also filter projects by name and select the namespace under which each project is
-   imported.
-
-   ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)
+1. Sign in to GitLab.
+1. On the top bar, select **New** (**{plus}**).
+1. Select **New project/repository**.
+1. Select **Import project**.
+1. Select **Bitbucket Server**.
+1. Log in to Bitbucket and grant GitLab access to your Bitbucket account.
+1. Select the projects that you'd like to import or import all projects.
+   You can filter projects by name and select the namespace
+   each project will be imported for.
 
 ## Troubleshooting
 

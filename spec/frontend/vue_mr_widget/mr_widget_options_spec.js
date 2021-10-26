@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
+import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -22,6 +23,8 @@ import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 import testExtension from './test_extension';
+
+jest.mock('~/api.js');
 
 jest.mock('~/smart_interval');
 
@@ -902,6 +905,18 @@ describe('MrWidgetOptions', () => {
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Test extension summary count: 1');
+    });
+
+    it('triggers trackRedisHllUserEvent API call', async () => {
+      await waitForPromises();
+
+      wrapper
+        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
+        .trigger('click');
+
+      await Vue.nextTick();
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_expand_event');
     });
 
     it('renders full data', async () => {
