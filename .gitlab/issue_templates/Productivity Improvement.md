@@ -2,7 +2,7 @@
 
 <!--
 Please describe the engineering productivity problem that needs to be solved backed by charts from
-https://about.gitlab.com/handbook/engineering/quality/engineering-productivity-team/#engineering-productivity-team-metrics.
+https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/#engineering-productivity-metrics.
 -->
 
 ### Problem identification checklist

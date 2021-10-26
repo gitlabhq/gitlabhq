@@ -38,6 +38,11 @@ RSpec.shared_context 'stubbed service ping metrics definitions' do
     )
   end
 
+  after do |example|
+    Gitlab::Usage::Metric.instance_variable_set(:@all, nil)
+    Gitlab::Usage::MetricDefinition.instance_variable_set(:@all, nil)
+  end
+
   def metric_attributes(key_path, category, value_type = 'string')
     {
       'key_path' => key_path,

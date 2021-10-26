@@ -684,7 +684,9 @@ module Ci
     end
 
     def freeze_period?
-      Ci::FreezePeriodStatus.new(project: project).execute
+      strong_memoize(:freeze_period) do
+        Ci::FreezePeriodStatus.new(project: project).execute
+      end
     end
 
     def has_warnings?
@@ -800,20 +802,7 @@ module Ci
         variables.append(key: 'CI_PIPELINE_CREATED_AT', value: created_at&.iso8601)
 
         variables.concat(predefined_commit_variables)
-
-        if merge_request?
-          variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
-          variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
-          variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
-
-          diff = self.merge_request_diff
-          if diff.present?
-            variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
-            variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
-          end
-
-          variables.concat(merge_request.predefined_variables)
-        end
+        variables.concat(predefined_merge_request_variables)
 
         if open_merge_requests_refs.any?
           variables.append(key: 'CI_OPEN_MERGE_REQUESTS', value: open_merge_requests_refs.join(','))
@@ -829,27 +818,49 @@ module Ci
     end
 
     def predefined_commit_variables
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_COMMIT_SHA', value: sha)
-        variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
-        variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
-        variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
-        variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
-        variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
-        variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
-        variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
-        variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
-        variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
-        variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
-        variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
-        variables.append(key: 'CI_COMMIT_AUTHOR', value: git_author_full_text.to_s)
+      strong_memoize(:predefined_commit_variables) do
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          variables.append(key: 'CI_COMMIT_SHA', value: sha)
+          variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
+          variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
+          variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
+          variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
+          variables.append(key: 'CI_COMMIT_BRANCH', value: ref) if branch?
+          variables.append(key: 'CI_COMMIT_TAG', value: ref) if tag?
+          variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+          variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+          variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+          variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
+          variables.append(key: 'CI_COMMIT_TIMESTAMP', value: git_commit_timestamp.to_s)
+          variables.append(key: 'CI_COMMIT_AUTHOR', value: git_author_full_text.to_s)
 
-        # legacy variables
-        variables.append(key: 'CI_BUILD_REF', value: sha)
-        variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
-        variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
-        variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
-        variables.append(key: 'CI_BUILD_TAG', value: ref) if tag?
+          # legacy variables
+          variables.append(key: 'CI_BUILD_REF', value: sha)
+          variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
+          variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
+          variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
+          variables.append(key: 'CI_BUILD_TAG', value: ref) if tag?
+        end
+      end
+    end
+
+    def predefined_merge_request_variables
+      strong_memoize(:predefined_merge_request_variables) do
+        Gitlab::Ci::Variables::Collection.new.tap do |variables|
+          next variables unless merge_request?
+
+          variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
+          variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
+          variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
+
+          diff = self.merge_request_diff
+          if diff.present?
+            variables.append(key: 'CI_MERGE_REQUEST_DIFF_ID', value: diff.id.to_s)
+            variables.append(key: 'CI_MERGE_REQUEST_DIFF_BASE_SHA', value: diff.base_commit_sha)
+          end
+
+          variables.concat(merge_request.predefined_variables)
+        end
       end
     end
 

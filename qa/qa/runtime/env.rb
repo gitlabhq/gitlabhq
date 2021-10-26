@@ -153,6 +153,12 @@ module QA
         ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
       end
 
+      def mobile_layout?
+        return false if ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].blank?
+
+        !(ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('ipad') || ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('tablet'))
+      end
+
       def user_username
         ENV['GITLAB_USERNAME']
       end

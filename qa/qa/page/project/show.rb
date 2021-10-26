@@ -9,6 +9,7 @@ module QA
         include Page::Component::Breadcrumbs
         include Page::Project::SubMenus::Settings
         include Page::File::Shared::CommitMessage
+        prepend Mobile::Page::Project::Show if Runtime::Env.mobile_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
           element :blob_viewer_content
@@ -117,7 +118,7 @@ module QA
         end
 
         def go_to_new_issue
-          click_element :new_menu_toggle
+          click_element(:new_menu_toggle)
           click_element(:new_issue_link)
         end
 

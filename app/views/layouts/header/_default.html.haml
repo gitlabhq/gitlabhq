@@ -120,7 +120,7 @@
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
                 = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'gl-button btn btn-default btn-sign-in'
 
-      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle' } }
+      %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle', qa_selector: 'mobile_navbar_button' } }
         %span.sr-only= _('Toggle navigation')
         %span.more-icon.gl-px-3.gl-font-sm.gl-font-weight-bold
           %span.gl-pr-2= _('Menu')

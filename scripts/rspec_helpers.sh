@@ -196,8 +196,8 @@ function rspec_rerun_previous_failed_tests() {
   local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
 
   if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
-    echo "This job is intentionally failed because there are more than ${test_file_count_threshold} test files to rerun."
-    exit 1
+    echo "This job is intentionally exited because there are more than ${test_file_count_threshold} test files to rerun."
+    exit 0
   fi
 
   if [[ -n $test_files ]]; then

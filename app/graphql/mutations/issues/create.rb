@@ -3,12 +3,13 @@
 module Mutations
   module Issues
     class Create < BaseMutation
+      include Mutations::SpamProtection
       include FindsProject
+      include CommonMutationArguments
+
       graphql_name 'CreateIssue'
 
       authorize :create_issue
-
-      include CommonMutationArguments
 
       argument :project_path, GraphQL::Types::ID,
                required: true,
@@ -76,9 +77,7 @@ module Mutations
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         issue = ::Issues::CreateService.new(project: project, current_user: current_user, params: params, spam_params: spam_params).execute
 
-        if issue.spam?
-          issue.errors.add(:base, 'Spam detected.')
-        end
+        check_spam_action_response!(issue)
 
         {
           issue: issue.valid? ? issue : nil,

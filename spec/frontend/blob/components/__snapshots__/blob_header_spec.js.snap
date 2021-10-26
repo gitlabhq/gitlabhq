@@ -4,9 +4,17 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
 <div
   class="js-file-title file-title-flex-parent"
 >
-  <blob-filepath-stub
-    blob="[object Object]"
-  />
+  <div
+    class="gl-display-flex"
+  >
+    <table-of-contents-stub
+      class="gl-pr-2"
+    />
+     
+    <blob-filepath-stub
+      blob="[object Object]"
+    />
+  </div>
    
   <div
     class="gl-display-none gl-sm-display-flex"

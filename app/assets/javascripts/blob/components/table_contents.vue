@@ -18,11 +18,12 @@ export default {
   },
   mounted() {
     this.blobViewer = document.querySelector('.blob-viewer[data-type="rich"]');
+    const blobViewerAttr = (attr) => this.blobViewer.getAttribute(attr);
 
     this.observer = new MutationObserver(() => {
-      if (this.blobViewer.classList.contains('hidden')) {
+      if (this.blobViewer.classList.contains('hidden') || blobViewerAttr('data-type') !== 'rich') {
         this.isHidden = true;
-      } else if (this.blobViewer.getAttribute('data-loaded') === 'true') {
+      } else if (blobViewerAttr('data-loaded') === 'true') {
         this.isHidden = false;
         this.generateHeaders();
       }

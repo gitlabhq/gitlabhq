@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1185' do
+      it 'creates an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1185' do
         issue = Resource::Issue.fabricate_via_browser_ui!
 
         Page::Project::Menu.perform(&:click_issues)
@@ -19,13 +19,13 @@ module QA
         end
       end
 
-      it 'closes an issue', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1222' do
+      it 'closes an issue', :mobile, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1222' do
         closed_issue.visit!
 
         Page::Project::Issue::Show.perform do |issue_page|
           issue_page.click_close_issue_button
 
-          expect(issue_page).to have_element(:reopen_issue_button)
+          expect(issue_page).to have_reopen_issue_button
         end
 
         Page::Project::Menu.perform(&:click_issues)

@@ -22,6 +22,6 @@ export default {
 
 <template>
   <span class="folder-caret gl-mr-2">
-    <gl-icon :size="10" :name="iconClass" use-deprecated-sizes />
+    <gl-icon :size="12" :name="iconClass" />
   </span>
 </template>

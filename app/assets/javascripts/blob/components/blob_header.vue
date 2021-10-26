@@ -3,12 +3,14 @@ import DefaultActions from './blob_header_default_actions.vue';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER } from './constants';
+import TableOfContents from './table_contents.vue';
 
 export default {
   components: {
     ViewerSwitcher,
     DefaultActions,
     BlobFilepath,
+    TableOfContents,
   },
   props: {
     blob: {
@@ -70,11 +72,14 @@ export default {
 </script>
 <template>
   <div class="js-file-title file-title-flex-parent">
-    <blob-filepath :blob="blob">
-      <template #filepath-prepend>
-        <slot name="prepend"></slot>
-      </template>
-    </blob-filepath>
+    <div class="gl-display-flex">
+      <table-of-contents class="gl-pr-2" />
+      <blob-filepath :blob="blob">
+        <template #filepath-prepend>
+          <slot name="prepend"></slot>
+        </template>
+      </blob-filepath>
+    </div>
 
     <div class="gl-display-none gl-sm-display-flex">
       <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" />

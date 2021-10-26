@@ -19,6 +19,10 @@ module QA
               view 'app/views/shared/nav/_sidebar_menu.html.haml' do
                 element :sidebar_menu_link
               end
+
+              view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+                element :toggle_mobile_nav_button
+              end
             end
           end
 

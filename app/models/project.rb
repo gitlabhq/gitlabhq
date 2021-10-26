@@ -2056,14 +2056,16 @@ class Project < ApplicationRecord
   end
 
   def predefined_variables
-    Gitlab::Ci::Variables::Collection.new
-      .concat(predefined_ci_server_variables)
-      .concat(predefined_project_variables)
-      .concat(pages_variables)
-      .concat(container_registry_variables)
-      .concat(dependency_proxy_variables)
-      .concat(auto_devops_variables)
-      .concat(api_variables)
+    strong_memoize(:predefined_variables) do
+      Gitlab::Ci::Variables::Collection.new
+        .concat(predefined_ci_server_variables)
+        .concat(predefined_project_variables)
+        .concat(pages_variables)
+        .concat(container_registry_variables)
+        .concat(dependency_proxy_variables)
+        .concat(auto_devops_variables)
+        .concat(api_variables)
+    end
   end
 
   def predefined_project_variables

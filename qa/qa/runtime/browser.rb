@@ -205,6 +205,9 @@ module QA
 
           simulate_slow_connection if Runtime::Env.simulate_slow_connection?
 
+          # Wait until the new page is ready for us to interact with it
+          Support::WaitForRequests.wait_for_requests
+
           page_class.validate_elements_present! if page_class.respond_to?(:validate_elements_present!)
 
           if QA::Runtime::Env.qa_cookies

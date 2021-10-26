@@ -203,7 +203,7 @@ specified the `kas-address` correctly.
 ```
 
 This error occurs if the `kas-address` doesn't include a trailing slash. To fix it, make sure that the
-`wss` or `ws` URL ends with a training slash, such as `wss://GitLab.host.tld:443/-/kubernetes-agent/`
+`wss` or `ws` URL ends with a trailing slash, such as `wss://GitLab.host.tld:443/-/kubernetes-agent/`
 or `ws://GitLab.host.tld:80/-/kubernetes-agent/`.
 
 #### ValidationError(Deployment.metadata)

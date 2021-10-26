@@ -197,7 +197,7 @@ export default {
           class="gl-display-flex gl-align-items-center gl-py-3 gl-pl-7"
           data-testid="extension-list-item"
         >
-          <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" />
+          <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" class="gl-pl-0" />
           <gl-intersection-observer
             :options="{ rootMargin: '100px', thresholds: 0.1 }"
             class="gl-flex-wrap gl-align-self-center gl-display-flex"

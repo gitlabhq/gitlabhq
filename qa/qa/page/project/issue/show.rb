@@ -9,6 +9,7 @@ module QA
           include Page::Component::Note
           include Page::Component::DesignManagement
           include Page::Component::Issuable::Sidebar
+          prepend Mobile::Page::Project::Issue::Show if Runtime::Env.mobile_layout?
 
           view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
             element :remove_related_issue_button
@@ -63,6 +64,10 @@ module QA
 
           def has_metrics_unfurled?
             has_element?(:prometheus_graph_widgets, wait: 30)
+          end
+
+          def has_reopen_issue_button?
+            has_element?(:reopen_issue_button)
           end
         end
       end
