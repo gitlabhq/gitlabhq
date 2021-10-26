@@ -63,6 +63,7 @@ RSpec.describe Emails::InProductMarketing do
       :team_short   | 0
       :trial_short  | 0
       :admin_verify | 0
+      :invite_team  | 0
     end
 
     with_them do
@@ -91,6 +92,12 @@ RSpec.describe Emails::InProductMarketing do
           else
             is_expected.not_to have_body_text(message.invite_text)
             is_expected.not_to have_body_text(CGI.unescapeHTML(message.invite_link))
+          end
+
+          if track == :invite_team
+            is_expected.not_to have_body_text(/This is email \d of \d/)
+          else
+            is_expected.to have_body_text(message.progress)
           end
         end
       end

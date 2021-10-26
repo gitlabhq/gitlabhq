@@ -17604,6 +17604,9 @@ msgstr ""
 msgid "InProductMarketing|GitHub Enterprise projects to GitLab"
 msgstr ""
 
+msgid "InProductMarketing|GitLab is better with teammates to help out!"
+msgstr ""
+
 msgid "InProductMarketing|GitLab provides static application security testing (SAST), dynamic application security testing (DAST), container scanning, and dependency scanning to help you deliver secure applications along with license compliance."
 msgstr ""
 
@@ -17677,6 +17680,15 @@ msgid "InProductMarketing|Invite your team now"
 msgstr ""
 
 msgid "InProductMarketing|Invite your team today to build better code (and processes) together"
+msgstr ""
+
+msgid "InProductMarketing|Invite your teammates to GitLab"
+msgstr ""
+
+msgid "InProductMarketing|Invite your teammates to help"
+msgstr ""
+
+msgid "InProductMarketing|Invite your teammates today and build better code together. You can even assign tasks to new teammates such as setting up CI/CD, to help get projects up and running."
 msgstr ""
 
 msgid "InProductMarketing|It's all in the stats"

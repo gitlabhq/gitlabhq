@@ -1,18 +1,22 @@
+@import 'mixins_and_variables_and_functions';
+
 .terms {
+  .with-system-header &,
+  .with-system-header.with-performance-bar &,
   .with-performance-bar & {
     margin-top: 0;
   }
 
-  .alert-wrapper {
-    min-height: $header-height + $gl-padding;
+  .terms-fade {
+    background: linear-gradient(0deg, $white 0%, rgba($white, 0.5) 100%);
   }
 
   .content {
     padding-top: $gl-padding;
   }
 
-  .card {
-    .card-header {
+  .gl-card {
+    .gl-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;

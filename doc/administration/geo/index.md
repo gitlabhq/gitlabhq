@@ -148,6 +148,18 @@ NOTE:
 When using HTTPS protocol for port 443, you need to add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
+#### Internal URL
+
+HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
+Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin Area, the
+public URL of the primary site will be used.
+
+To update the internal URL of the primary Geo site:
+
+1. On the top bar, go to **Menu > Admin > Geo > Sites**.
+1. Select **Edit** on the primary site.
+1. Change the **Internal URL**, then select **Save changes**.
+
 ### LDAP
 
 We recommend that if you use LDAP on your **primary** site, you also set up secondary LDAP servers on each **secondary** site. Otherwise, users are unable to perform Git operations over HTTP(s) on the **secondary** site using HTTP Basic Authentication. However, Git via SSH and personal access tokens still works.
@@ -257,6 +269,10 @@ For information on using Geo in disaster recovery situations to mitigate data-lo
 ### Replicating the Container Registry
 
 For more information on how to replicate the Container Registry, see [Docker Registry for a **secondary** site](replication/docker_registry.md).
+
+### Geo secondary proxy
+
+For more information on using Geo proxying on secondary nodes, see [Geo proxying for secondary sites](secondary_proxy/index.md).
 
 ### Security Review
 

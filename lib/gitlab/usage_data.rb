@@ -536,7 +536,9 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_manage(time_period)
         {
-          events: distinct_count(::Event.where(time_period), :author_id),
+          # rubocop: disable UsageData/LargeTable
+          events: estimate_batch_distinct_count(::Event.where(time_period), :author_id),
+          # rubocop: enable UsageData/LargeTable
           groups: distinct_count(::GroupMember.where(time_period), :user_id),
           users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },

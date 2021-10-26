@@ -10,10 +10,15 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing do
 
     context 'when track exists' do
       where(:track, :expected_class) do
-        :create | described_class::Create
-        :verify | described_class::Verify
-        :trial  | described_class::Trial
-        :team   | described_class::Team
+        :create       | described_class::Create
+        :team_short   | described_class::TeamShort
+        :trial_short  | described_class::TrialShort
+        :admin_verify | described_class::AdminVerify
+        :verify       | described_class::Verify
+        :trial        | described_class::Trial
+        :team         | described_class::Team
+        :experience   | described_class::Experience
+        :invite_team  | described_class::InviteTeam
       end
 
       with_them do

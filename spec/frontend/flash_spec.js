@@ -3,6 +3,7 @@ import createFlash, {
   createAction,
   hideFlash,
   removeFlashClickListener,
+  FLASH_CLOSED_EVENT,
 } from '~/flash';
 
 describe('Flash', () => {
@@ -78,6 +79,16 @@ describe('Flash', () => {
       el.dispatchEvent(new Event('transitionend'));
 
       expect(el.remove.mock.calls.length).toBe(1);
+    });
+
+    it(`dispatches ${FLASH_CLOSED_EVENT} event after transitionend event`, () => {
+      jest.spyOn(el, 'dispatchEvent');
+
+      hideFlash(el);
+
+      el.dispatchEvent(new Event('transitionend'));
+
+      expect(el.dispatchEvent).toHaveBeenCalledWith(new Event(FLASH_CLOSED_EVENT));
     });
   });
 

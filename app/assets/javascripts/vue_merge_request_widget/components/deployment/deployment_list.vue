@@ -2,10 +2,11 @@
 import { GlSprintf } from '@gitlab/ui';
 import { n__ } from '~/locale';
 import MrCollapsibleExtension from '../mr_collapsible_extension.vue';
+import Deployment from './deployment.vue';
 
 export default {
   components: {
-    Deployment: () => import('./deployment.vue'),
+    Deployment,
     GlSprintf,
     MrCollapsibleExtension,
   },

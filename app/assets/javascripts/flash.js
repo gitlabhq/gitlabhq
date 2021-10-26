@@ -9,6 +9,8 @@ const FLASH_TYPES = {
   WARNING: 'warning',
 };
 
+const FLASH_CLOSED_EVENT = 'flashClosed';
+
 const getCloseEl = (flashEl) => {
   return flashEl.querySelector('.js-close-icon');
 };
@@ -26,6 +28,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
     () => {
       flashEl.remove();
       window.dispatchEvent(new Event('resize'));
+      flashEl.dispatchEvent(new Event(FLASH_CLOSED_EVENT));
       if (document.body.classList.contains('flash-shown'))
         document.body.classList.remove('flash-shown');
     },
@@ -132,4 +135,5 @@ export {
   hideFlash,
   removeFlashClickListener,
   FLASH_TYPES,
+  FLASH_CLOSED_EVENT,
 };

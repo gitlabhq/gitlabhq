@@ -12,12 +12,12 @@ module Gitlab
           attr_accessor :format
 
           def initialize(group:, user:, series:, format: :html)
-            raise ArgumentError, "Only #{total_series} series available for this track." unless series.between?(0, total_series - 1)
-
+            @series = series
             @group = group
             @user = user
-            @series = series
             @format = format
+
+            validate_series!
           end
 
           def subject_line
@@ -115,6 +115,10 @@ module Gitlab
             ["mailers/in_product_marketing", "#{track}-#{series}.png"].join('/')
           end
 
+          def series?
+            total_series > 0
+          end
+
           protected
 
           attr_reader :group, :user, :series
@@ -170,6 +174,12 @@ module Gitlab
               e.record!
               e.run
             end
+          end
+
+          def validate_series!
+            return unless series?
+
+            raise ArgumentError, "Only #{total_series} series available for this track." unless @series.between?(0, total_series - 1)
           end
         end
       end
