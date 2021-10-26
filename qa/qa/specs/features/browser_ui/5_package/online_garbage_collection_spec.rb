@@ -2,7 +2,8 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] } do
+    # TODO: Remove :requires_admin when the `Runtime::Feature.enable` method call is removed
+    describe 'Container Registry Online Garbage Collection', :registry_gc, :requires_admin, only: { subdomain: %i[pre] } do
       let(:group) { Resource::Group.fabricate_via_api! }
 
       let(:imported_project) do
@@ -23,12 +24,12 @@ module QA
             STAGE_THREE_VALIDATION_DELAY: "6m"
             STAGE_FOUR_VALIDATION_DELAY: "12m"
             STAGE_FIVE_VALIDATION_DELAY: "12m"
-                   
+
           stages:
             - generate
             - build
             - test
-          
+
           .base: &base
             image: docker:19
             services:
@@ -39,11 +40,11 @@ module QA
               DOCKER_TLS_VERIFY: 1
               DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
             before_script:
-              - until docker info; do sleep 1; done 
+              - until docker info; do sleep 1; done
               - mkdir -p $GOPATH
               - mkdir -p $BUILD_CACHE
               - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-          
+
           test:
             stage: generate
             extends: .base
@@ -64,6 +65,8 @@ module QA
       end
 
       before do
+        Runtime::Feature.enable(:paginatable_namespace_drop_down_for_project_creation)
+
         Flow::Login.sign_in
 
         imported_project

@@ -6,11 +6,6 @@ class MergeRequestDiffCommit < ApplicationRecord
   include BulkInsertSafe
   include ShaAttribute
   include CachedCommit
-  include IgnorableColumns
-
-  ignore_column %i[author_name author_email committer_name committer_email],
-    remove_with: '14.6',
-    remove_after: '2021-11-22'
 
   belongs_to :merge_request_diff
 
@@ -56,14 +51,9 @@ class MergeRequestDiffCommit < ApplicationRecord
       committer =
         users[[commit_hash[:committer_name], commit_hash[:committer_email]]]
 
-      # These fields are only used to determine the author/committer IDs, we
-      # don't store them in the DB.
-      commit_hash = commit_hash
-        .except(:author_name, :author_email, :committer_name, :committer_email)
-
       commit_hash.merge(
-        commit_author_id: author.id,
-        committer_id: committer.id,
+        commit_author_id: author&.id,
+        committer_id: committer&.id,
         merge_request_diff_id: merge_request_diff_id,
         relative_order: index,
         sha: Gitlab::Database::ShaAttribute.serialize(sha), # rubocop:disable Cop/ActiveRecordSerialize
@@ -114,18 +104,18 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def author_name
-    commit_author.name
+    commit_author_id ? commit_author.name : super
   end
 
   def author_email
-    commit_author.email
+    commit_author_id ? commit_author.email : super
   end
 
   def committer_name
-    committer.name
+    committer_id ? committer.name : super
   end
 
   def committer_email
-    committer.email
+    committer_id ? committer.email : super
   end
 end

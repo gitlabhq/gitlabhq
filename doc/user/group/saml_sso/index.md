@@ -515,6 +515,13 @@ Here are possible causes and solutions:
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](#user-access-and-management). |
 
+User accounts are created in one of the following ways:
+
+- User registration
+- Sign in through OAuth
+- Sign in through SAML
+- SCIM provisioning
+
 ### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the identity provider didn't exactly match the previous value for that user.

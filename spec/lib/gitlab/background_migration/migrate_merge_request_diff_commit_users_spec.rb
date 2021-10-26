@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateMergeRequestDiffCommitUsers, schema: 20211012134316 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateMergeRequestDiffCommitUsers do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

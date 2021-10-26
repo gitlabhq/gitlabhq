@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::StealMigrateMergeRequestDiffCommitUsers, schema: 20211012134316 do
+RSpec.describe Gitlab::BackgroundMigration::StealMigrateMergeRequestDiffCommitUsers do
   let(:migration) { described_class.new }
 
   describe '#perform' do
