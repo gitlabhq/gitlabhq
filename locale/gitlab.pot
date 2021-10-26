@@ -1128,10 +1128,13 @@ msgstr ""
 msgid "(revoked)"
 msgstr ""
 
-msgid "(target)"
+msgid "(this user)"
 msgstr ""
 
 msgid "(we need your current password to confirm your changes)"
+msgstr ""
+
+msgid "* All times are in UTC unless specified"
 msgstr ""
 
 msgid "+ %{amount} more"
@@ -6329,6 +6332,9 @@ msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
 msgid "Capacity threshold"
+msgstr ""
+
+msgid "Card holder name"
 msgstr ""
 
 msgid "Card number:"
@@ -22561,6 +22567,9 @@ msgid "Needs attention"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Network:"
 msgstr ""
 
 msgid "NetworkPolicies|%{ifLabelStart}if%{ifLabelEnd} %{ruleType} %{isLabelStart}is%{isLabelEnd} %{ruleDirection} %{ruleSelector} %{directionLabelStart}and is inbound from a%{directionLabelEnd} %{rule} %{portsLabelStart}on%{portsLabelEnd} %{ports}"

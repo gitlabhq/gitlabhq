@@ -1,11 +1,14 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import NoteHeader from '~/notes/components/note_header.vue';
 
 export default {
   components: {
     NoteHeader,
     GlIcon,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     note: {
@@ -39,7 +42,7 @@ export default {
 
       <div class="note-header">
         <note-header :author="noteAuthor" :created-at="note.createdAt" :note-id="note.id">
-          <span v-html="note.bodyHtml /* eslint-disable-line vue/no-v-html */"></span>
+          <span v-safe-html="note.bodyHtml"></span>
         </note-header>
       </div>
     </div>

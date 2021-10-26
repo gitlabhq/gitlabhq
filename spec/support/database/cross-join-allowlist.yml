@@ -16,7 +16,6 @@
 - "./spec/migrations/associate_existing_dast_builds_with_variables_spec.rb"
 - "./spec/migrations/disable_job_token_scope_when_unused_spec.rb"
 - "./spec/migrations/schedule_copy_ci_builds_columns_to_security_scans2_spec.rb"
-- "./spec/models/ci/runner_spec.rb"
 - "./spec/presenters/packages/detail/package_presenter_spec.rb"
 - "./spec/requests/api/graphql/group/packages_spec.rb"
 - "./spec/requests/api/graphql/packages/composer_spec.rb"

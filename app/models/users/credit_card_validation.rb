@@ -18,7 +18,7 @@ module Users
       self.class.where(
         expiration_date: expiration_date,
         last_digits: last_digits,
-        holder_name: holder_name
+        network: network
       ).order(credit_card_validated_at: :desc).includes(:user)
     end
   end

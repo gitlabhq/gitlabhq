@@ -103,7 +103,9 @@ module Ci
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
       hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
-      joins(:groups).where(namespaces: { id: hierarchy_groups })
+      joins(:groups)
+        .where(namespaces: { id: hierarchy_groups })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
