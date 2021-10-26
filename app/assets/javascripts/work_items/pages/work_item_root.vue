@@ -36,7 +36,11 @@ export default {
   <section>
     <!-- Title widget placeholder -->
     <div>
-      <h2 v-if="titleWidgetData" class="title" data-testid="title">
+      <h2
+        v-if="titleWidgetData"
+        class="gl-font-weight-normal gl-sm-font-weight-bold gl-my-5"
+        data-testid="title"
+      >
         {{ titleWidgetData.contentText }}
       </h2>
     </div>

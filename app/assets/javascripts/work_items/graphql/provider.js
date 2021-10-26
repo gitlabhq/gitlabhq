@@ -40,7 +40,7 @@ export function createApolloProvider() {
               type: 'TITLE',
               enabled: true,
               // eslint-disable-next-line @gitlab/require-i18n-strings
-              contentText: 'Test',
+              contentText: 'Test Work Item Title',
             },
           ],
         },

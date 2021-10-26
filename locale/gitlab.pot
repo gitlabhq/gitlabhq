@@ -15602,6 +15602,9 @@ msgstr ""
 msgid "GitLab project export"
 msgstr ""
 
+msgid "GitLab runs a background job to export pseudonymized CSVs of the GitLab database. The CSV files are then uploaded to your configured object storage directory."
+msgstr ""
+
 msgid "GitLab single sign-on URL"
 msgstr ""
 
@@ -15615,9 +15618,6 @@ msgid "GitLab uses %{linkStart}Sidekiq%{linkEnd} to process background jobs"
 msgstr ""
 
 msgid "GitLab version"
-msgstr ""
-
-msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
 msgstr ""
 
 msgid "GitLab.com"
@@ -27808,6 +27808,9 @@ msgstr ""
 msgid "Proxy support for this API is not available currently"
 msgstr ""
 
+msgid "Pseudonymized data collection is disabled. When enabled, GitLab runs a background job to export pseudonymized CSVs of the GitLab database. The CSV files are then uploaded to your configured object storage directory."
+msgstr ""
+
 msgid "Pseudonymizer data collection"
 msgstr ""
 
@@ -34202,9 +34205,6 @@ msgid "The project was successfully forked."
 msgstr ""
 
 msgid "The project was successfully imported."
-msgstr ""
-
-msgid "The pseudonymizer data collection is disabled. When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
 msgstr ""
 
 msgid "The regular expression used to find test coverage output in the job log. For example, use %{regex} for Simplecov (Ruby). Leave blank to disable."
