@@ -1,11 +1,12 @@
 <script>
-import { MutationOperationMode } from '~/graphql_shared/utils';
+import { debounce } from 'lodash';
+import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createFlash from '~/flash';
 import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { labelsQueries, labelsMutations } from '~/sidebar/constants';
-import { DropdownVariant } from './constants';
+import { issuableLabelsQueries } from '~/sidebar/constants';
+import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
@@ -91,11 +92,15 @@ export default {
       type: String,
       required: true,
     },
+    workspaceType: {
+      type: String,
+      required: true,
+    },
     attrWorkspacePath: {
       type: String,
       required: true,
     },
-    labelType: {
+    labelCreateType: {
       type: String,
       required: true,
     },
@@ -106,17 +111,21 @@ export default {
       issuableLabels: [],
       labelsSelectInProgress: false,
       oldIid: null,
+      sidebarExpandedOnClick: false,
     };
   },
   computed: {
     isLoading() {
       return this.labelsSelectInProgress || this.$apollo.queries.issuableLabels.loading;
     },
+    issuableLabelIds() {
+      return this.issuableLabels.map((label) => label.id);
+    },
   },
   apollo: {
     issuableLabels: {
       query() {
-        return labelsQueries[this.issuableType].issuableQuery;
+        return issuableLabelsQueries[this.issuableType].issuableQuery;
       },
       skip() {
         return !isDropdownVariantSidebar(this.variant);
@@ -140,6 +149,15 @@ export default {
       this.oldIid = oldVal;
     },
   },
+  mounted() {
+    document.addEventListener('toggleSidebarRevealLabelsDropdown', this.handleCollapsedValueClick);
+  },
+  beforeDestroy() {
+    document.removeEventListener(
+      'toggleSidebarRevealLabelsDropdown',
+      this.handleCollapsedValueClick,
+    );
+  },
   methods: {
     handleDropdownClose(labels) {
       if (this.iid !== '') {
@@ -152,9 +170,18 @@ export default {
     },
     collapseEditableItem() {
       this.$refs.editable?.collapse();
+      if (this.sidebarExpandedOnClick) {
+        this.sidebarExpandedOnClick = false;
+        this.$emit('toggleCollapse');
+      }
     },
     handleCollapsedValueClick() {
+      this.sidebarExpandedOnClick = true;
       this.$emit('toggleCollapse');
+      debounce(() => {
+        this.$refs.editable.toggle();
+        this.$refs.dropdownContents.showDropdown();
+      }, DEBOUNCE_DROPDOWN_DELAY)();
     },
     getUpdateVariables(labels) {
       let labelIds = [];
@@ -172,8 +199,19 @@ export default {
         case IssuableType.Issue:
           return updateVariables;
         case IssuableType.MergeRequest:
-          updateVariables.operationMode = MutationOperationMode.Replace;
-          return updateVariables;
+          return {
+            ...updateVariables,
+            operationMode: MutationOperationMode.Replace,
+          };
+        case IssuableType.Epic:
+          return {
+            iid: currentIid,
+            groupPath: this.fullPath,
+            addLabelIds: labelIds,
+            removeLabelIds: this.issuableLabelIds
+              .filter((id) => !labelIds.includes(id))
+              .map((id) => getIdFromGraphQLId(id)),
+          };
         default:
           return {};
       }
@@ -183,11 +221,11 @@ export default {
 
       this.$apollo
         .mutate({
-          mutation: labelsMutations[this.issuableType].mutation,
+          mutation: issuableLabelsQueries[this.issuableType].mutation,
           variables: { input: inputVariables },
         })
         .then(({ data }) => {
-          const { mutationName } = labelsMutations[this.issuableType];
+          const { mutationName } = issuableLabelsQueries[this.issuableType];
 
           if (data[mutationName]?.errors?.length) {
             throw new Error();
@@ -226,6 +264,12 @@ export default {
             ...removeVariables,
             labelIds: [labelId],
             operationMode: MutationOperationMode.Remove,
+          };
+        case IssuableType.Epic:
+          return {
+            iid: this.iid,
+            removeLabelIds: [labelId],
+            groupPath: this.fullPath,
           };
         default:
           return {};
@@ -288,6 +332,7 @@ export default {
             <slot></slot>
           </dropdown-value>
           <dropdown-contents
+            ref="dropdownContents"
             :dropdown-button-text="dropdownButtonText"
             :allow-multiselect="allowMultiselect"
             :labels-list-title="labelsListTitle"
@@ -299,8 +344,9 @@ export default {
             :issuable-type="issuableType"
             :is-visible="edit"
             :full-path="fullPath"
+            :workspace-type="workspaceType"
             :attr-workspace-path="attrWorkspacePath"
-            :label-type="labelType"
+            :label-create-type="labelCreateType"
             @setLabels="handleDropdownClose"
             @closeDropdown="collapseEditableItem"
           />
@@ -320,8 +366,9 @@ export default {
       :variant="variant"
       :issuable-type="issuableType"
       :full-path="fullPath"
+      :workspace-type="workspaceType"
       :attr-workspace-path="attrWorkspacePath"
-      :label-type="labelType"
+      :label-create-type="labelCreateType"
       @setLabels="handleDropdownClose"
     />
   </div>

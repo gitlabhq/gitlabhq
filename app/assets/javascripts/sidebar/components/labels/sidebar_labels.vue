@@ -158,8 +158,9 @@ export default {
     :labels-filter-base-path="projectIssuesPath"
     :variant="$options.variant"
     :issuable-type="issuableType"
+    workspace-type="project"
     :attr-workspace-path="fullPath"
-    :label-type="LabelType.project"
+    :label-create-type="LabelType.project"
     data-qa-selector="labels_block"
   >
     {{ __('None') }}

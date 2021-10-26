@@ -592,3 +592,90 @@ In order to prevent this from happening, it is recommended to use the method `us
           forbidden!(api_access_denied_message(user))
         end
 ```
+
+## Guidelines when defining missing methods with metaprogramming
+
+Metaprogramming is a way to define methods **at runtime**, instead of at the time of writing and deploying the code. It is a powerful tool, but can be dangerous if we allow untrusted actors (like users) to define their own arbitrary methods. For example, imagine we accidentally let an attacker overwrite an access control method to always return true! It can lead to many classes of vulnerabilities such as access control bypass, information disclosure, arbitrary file reads, and remote code execution.
+
+Key methods to watch out for are `method_missing`, `define_method`, `delegate`, and similar methods.
+
+### Insecure metaprogramming example
+
+This example is adapted from an example submitted by [@jobert](https://hackerone.com/jobert?type=user) through our HackerOne bug bounty program.
+Thank you for your contribution!
+
+Before Ruby 2.5.1, you could implement delegators using the `delegate` or `method_missing` methods. For example:
+
+```ruby  
+class User  
+  def initialize(attributes)  
+    @options = OpenStruct.new(attributes)  
+  end
+
+  def is_admin?  
+    name.eql?("Sid") # Note - never do this!
+  end
+
+  def method_missing(method, *args)  
+    @options.send(method, *args)  
+  end  
+end  
+```
+
+When a method was called on a `User` instance that didn't exist, it passed it along to the `@options` instance variable.
+
+```ruby  
+User.new({name: "Jeeves"}).is_admin?  
+# => false
+
+User.new(name: "Sid").is_admin?  
+# => true
+
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?  
+# => false  
+```
+
+Because the `is_admin?` method is already defined on the class, its behavior is not overridden when passing `is_admin?` to the initializer.
+
+This class can be refactored to use the `Forwardable` method and `def_delegators`:
+
+```ruby  
+class User  
+  extend Forwardable
+
+  def initialize(attributes)  
+    @options = OpenStruct.new(attributes)
+
+    self.class.instance_eval do  
+      def_delegators :@options, *attributes.keys  
+    end  
+  end
+
+  def is_admin?  
+    name.eql?("Sid") # Note - never do this!
+  end 
+end  
+```
+
+It might seem like this example has the same behavior as the first code example. However, there's one crucial difference: **because the delegators are meta-programmed after the class is loaded, it can overwrite existing methods**:
+
+```ruby  
+User.new({name: "Jeeves"}).is_admin?  
+# => false
+
+User.new(name: "Sid").is_admin?  
+# => true
+
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?  
+# => true  
+#     ^------------------ The method is overwritten! Sneaky Jeeves!  
+```
+
+In the example above, the `is_admin?` method is overwritten when passing it to the initializer.
+
+### Best practices
+
+- Never pass user-provided details into method-defining metaprogramming methods.
+  - If you must, be **very** confident that you've sanitized the values correctly.
+    Consider creating an allowlist of values, and validating the user input against that.
+- When extending classes that use metaprogramming, make sure you don't inadvertently override any method definition safety checks.

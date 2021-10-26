@@ -1,4 +1,5 @@
 export const SCOPED_LABEL_DELIMITER = '::';
+export const DEBOUNCE_DROPDOWN_DELAY = 200;
 
 export const DropdownVariant = {
   Sidebar: 'sidebar',
@@ -7,6 +8,6 @@ export const DropdownVariant = {
 };
 
 export const LabelType = {
-  group: 'GroupLabel',
-  project: 'ProjectLabel',
+  group: 'group',
+  project: 'project',
 };

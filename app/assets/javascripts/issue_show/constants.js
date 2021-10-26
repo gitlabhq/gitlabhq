@@ -39,3 +39,8 @@ export const IncidentType = 'incident';
 export const issueState = { issueType: undefined, isDirty: false };
 
 export const POLLING_DELAY = 2000;
+
+export const WorkspaceType = {
+  project: 'project',
+  group: 'group',
+};

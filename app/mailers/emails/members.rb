@@ -43,9 +43,13 @@ module Emails
 
       user = User.find(user_id)
 
+      @source_hidden = !member_source.readable_by?(user)
+
+      human_name = @source_hidden ? 'Hidden' : member_source.human_name
+
       member_email_with_layout(
         to: user.notification_email_for(notification_group),
-        subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was denied"))
+        subject: subject("Access to the #{human_name} #{member_source.model_name.singular} was denied"))
     end
 
     def member_invited_email(member_source_type, member_id, token)

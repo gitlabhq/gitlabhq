@@ -66,11 +66,15 @@ export default {
       type: String,
       required: true,
     },
+    workspaceType: {
+      type: String,
+      required: true,
+    },
     attrWorkspacePath: {
       type: String,
       required: true,
     },
-    labelType: {
+    labelCreateType: {
       type: String,
       required: true,
     },
@@ -158,6 +162,7 @@ export default {
       this.$emit('setLabels', this.localSelectedLabels);
     },
     handleDropdownHide() {
+      this.$emit('closeDropdown');
       if (!isDropdownVariantSidebar(this.variant)) {
         this.setLabels();
       }
@@ -168,6 +173,9 @@ export default {
     setFocus() {
       this.$refs.header.focusInput();
     },
+    showDropdown() {
+      this.$refs.dropdown.show();
+    },
   },
 };
 </script>
@@ -177,6 +185,7 @@ export default {
     ref="dropdown"
     :text="buttonText"
     class="gl-w-full gl-mt-2"
+    data-testid="labels-select-dropdown-contents"
     data-qa-selector="labels_dropdown_content"
     @hide="handleDropdownHide"
     @shown="setFocus"
@@ -202,9 +211,10 @@ export default {
         :allow-multiselect="allowMultiselect"
         :issuable-type="issuableType"
         :full-path="fullPath"
+        :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"
-        :label-type="labelType"
-        @hideCreateView="toggleDropdownContentsCreateView"
+        :label-create-type="labelCreateType"
+        @hideCreateView="toggleDropdownContent"
       />
     </template>
     <template #footer>

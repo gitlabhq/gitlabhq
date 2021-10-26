@@ -59,6 +59,8 @@ describe('DropdownContentsLabelsView', () => {
         localSelectedLabels,
         issuableType: IssuableType.Issue,
         searchKey,
+        labelCreateType: 'project',
+        workspaceType: 'project',
       },
       stubs: {
         GlSearchBoxByType,

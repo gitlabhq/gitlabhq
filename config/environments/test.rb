@@ -49,7 +49,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: true)
+  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: ENV['CI'].present?)
 
   config.cache_store = :null_store
 

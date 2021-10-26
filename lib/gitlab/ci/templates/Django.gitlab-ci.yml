@@ -1,54 +1,76 @@
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Django.gitlab-ci.yml
-
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/python
-image: python:latest
-
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
-services:
-  - mysql:latest
-  - postgres:latest
+# This example is for testing Django with MySQL.
+#
+# The test CI/CD variables MYSQL_DB, MYSQL_USER and MYSQL_PASS can be set in the project settings at:
+#     Settings --> CI/CD --> Variables
+#
+# The Django settings in settings.py, used in tests, might look similar to:
+#
+#  DATABASES = {
+#      'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('MYSQL_DATABASE'),
+#        	'USER':  os.environ.get('MYSQL_USER'),
+#        	'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+#       	'HOST': 'mysql',
+#     	  'PORT': '3306',
+#         'CONN_MAX_AGE':60,
+#      },
+#  }
+#
+# It is possible to use '--settings' to specify a custom settings file on the command line below or use an environment
+# variable to trigger an include on the bottom of your settings.py:
+#   if os.environ.get('DJANGO_CONFIG')=='test':
+#       from .settings_test import *
+#
+# It is also possible to hardcode the database name and credentials in the settings.py file and in the .gitlab-ci.yml file.
+#
+# The mysql service needs some variables too. See https://hub.docker.com/_/mysql for possible mysql env variables
+# Note that when using a service in GitLab CI/CD that needs environment variables to run, only variables defined in
+# .gitlab-ci.yml are passed to the service and variables defined in the GitLab UI are not.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/30178
 
 variables:
-  POSTGRES_DB: database_name
+  # DJANGO_CONFIG: "test"
+  MYSQL_DATABASE: $MYSQL_DB
+  MYSQL_ROOT_PASSWORD: $MYSQL_PASS
+  MYSQL_USER: $MYSQL_USER
+  MYSQL_PASSWORD: $MYSQL_PASS
 
-# This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-cache:
-  paths:
-    - ~/.cache/pip/
+default:
+  image: ubuntu:20.04
+  #
+  # Pick zero or more services to be used on all builds.
+  # Only needed when using a docker container to run your tests in.
+  # Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
+  services:
+    - mysql:8.0
+  #
+  # This folder is cached between builds
+  # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
+  cache:
+    paths:
+      - ~/.cache/pip/
+  before_script:
+    - apt -y update
+    - apt -y install apt-utils
+    - apt -y install net-tools python3.8 python3-pip mysql-client libmysqlclient-dev
+    - apt -y upgrade
+    - pip3 install -r requirements.txt
 
-# This is a basic example for a gem or script which doesn't use
-# services such as redis or postgres
-before_script:
-  - python -V  # Print out python version for debugging
-  # Uncomment next line if your Django app needs a JS runtime:
-  # - apt-get update -q && apt-get install nodejs -yqq
-  - pip install -r requirements.txt
 
-# To get Django tests to work you may need to create a settings file using
-# the following DATABASES:
-#
-# DATABASES = {
-#     'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'ci',
-#        'USER': 'postgres',
-#        'PASSWORD': 'postgres',
-#        'HOST': 'postgres',
-#        'PORT': '5432',
-#    },
-# }
-#
-# and then adding `--settings app.settings.ci` (or similar) to the test command
-
-test:
-  variables:
-    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+migrations:
+  stage: build
   script:
-    - python manage.py test
+    - python3 manage.py makemigrations
+    # - python3 manage.py makemigrations myapp
+    - python3 manage.py migrate
+    - python3 manage.py check
+
+
+django-tests:
+  stage: test
+  script:
+    # The MYSQL user only gets permissions for MYSQL_DB, so Django can't create a test database.
+    - echo "GRANT ALL on *.* to '${MYSQL_USER}';"| mysql -u root --password="${MYSQL_ROOT_PASSWORD}" -h mysql
+    # use python3 explicitly. see https://wiki.ubuntu.com/Python/3
+    - python3 manage.py test

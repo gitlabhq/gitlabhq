@@ -721,11 +721,8 @@ RSpec.describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:project, :public) }
-      let(:project_member) do
-        project.request_access(user)
-        project.requesters.find_by(user_id: user.id)
-      end
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:project_member) { create(:project_member, :developer, :access_request, user: user, source: project) }
 
       subject { described_class.member_access_denied_email('project', project.id, user.id) }
 
@@ -739,6 +736,17 @@ RSpec.describe Notify do
         is_expected.to have_subject "Access to the #{project.full_name} project was denied"
         is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
+      end
+
+      context 'when user can not read project' do
+        let_it_be(:project) { create(:project, :private) }
+
+        it 'hides project name from subject and body' do
+          is_expected.to have_subject "Access to the Hidden project was denied"
+          is_expected.to have_body_text "Hidden project"
+          is_expected.not_to have_body_text project.full_name
+          is_expected.not_to have_body_text project.web_url
+        end
       end
     end
 
@@ -1375,10 +1383,8 @@ RSpec.describe Notify do
     end
 
     describe 'group access denied' do
-      let(:group_member) do
-        group.request_access(user)
-        group.requesters.find_by(user_id: user.id)
-      end
+      let_it_be(:group) { create(:group, :public) }
+      let_it_be(:group_member) { create(:group_member, :developer, :access_request, user: user, source: group) }
 
       let(:recipient) { user }
 
@@ -1395,6 +1401,17 @@ RSpec.describe Notify do
         is_expected.to have_subject "Access to the #{group.name} group was denied"
         is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
+      end
+
+      context 'when user can not read group' do
+        let_it_be(:group) { create(:group, :private) }
+
+        it 'hides group name from subject and body' do
+          is_expected.to have_subject "Access to the Hidden group was denied"
+          is_expected.to have_body_text "Hidden group"
+          is_expected.not_to have_body_text group.name
+          is_expected.not_to have_body_text group.web_url
+        end
       end
     end
 

@@ -35,7 +35,6 @@ RSpec.describe Ci::Build do
 
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to respond_to(:runner_features) }
 
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }

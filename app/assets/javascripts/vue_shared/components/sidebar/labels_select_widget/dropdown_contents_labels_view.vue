@@ -4,7 +4,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
-import { labelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '~/sidebar/constants';
 import LabelItem from './label_item.vue';
 
 export default {
@@ -39,6 +39,10 @@ export default {
       type: String,
       required: true,
     },
+    workspaceType: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -49,7 +53,7 @@ export default {
   apollo: {
     labels: {
       query() {
-        return labelsQueries[this.issuableType].workspaceQuery;
+        return workspaceLabelsQueries[this.workspaceType].query;
       },
       variables() {
         return {

@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from
 import produce from 'immer';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import { labelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '~/sidebar/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
 import { LabelType } from './constants';
 
@@ -20,10 +20,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    issuableType: {
-      type: String,
-      required: true,
-    },
     fullPath: {
       type: String,
       required: true,
@@ -32,7 +28,16 @@ export default {
       type: String,
       required: true,
     },
-    labelType: {
+    labelCreateType: {
+      type: String,
+      required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    workspaceType: {
       type: String,
       required: true,
     },
@@ -53,7 +58,7 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      const attributePath = this.labelType === LabelType.group ? 'groupPath' : 'projectPath';
+      const attributePath = this.labelCreateType === LabelType.group ? 'groupPath' : 'projectPath';
 
       return {
         title: this.labelTitle,
@@ -73,8 +78,10 @@ export default {
       this.selectedColor = this.getColorCode(color);
     },
     updateLabelsInCache(store, label) {
+      const { query } = workspaceLabelsQueries[this.workspaceType];
+
       const sourceData = store.readQuery({
-        query: labelsQueries[this.issuableType].workspaceQuery,
+        query,
         variables: { fullPath: this.fullPath, searchTerm: '' },
       });
 
@@ -86,7 +93,7 @@ export default {
       });
 
       store.writeQuery({
-        query: labelsQueries[this.issuableType].workspaceQuery,
+        query,
         variables: { fullPath: this.fullPath, searchTerm: '' },
         data,
       });
@@ -171,7 +178,7 @@ export default {
       <gl-button
         class="js-btn-cancel-create"
         data-testid="cancel-button"
-        @click="$emit('hideCreateView')"
+        @click.stop="$emit('hideCreateView')"
       >
         {{ __('Cancel') }}
       </gl-button>

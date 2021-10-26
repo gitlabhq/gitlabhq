@@ -214,8 +214,9 @@ export default {
           :labels-create-title="createLabelTitle"
           :labels-filter-base-path="projectPathForActiveIssue"
           :attr-workspace-path="attrWorkspacePath"
+          workspace-type="project"
           :issuable-type="issuableType"
-          :label-type="labelType"
+          :label-create-type="labelType"
           @onLabelRemove="handleLabelRemove"
           @updateSelectedLabels="handleUpdateSelectedLabels"
         >

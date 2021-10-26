@@ -1,5 +1,5 @@
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType, WorkspaceType } from '~/issue_show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';
@@ -34,6 +34,7 @@ import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_req
 import updateMergeRequestSubscriptionMutation from '~/sidebar/queries/update_merge_request_subscription.mutation.graphql';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
 import epicLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_labels.query.graphql';
+import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
 import groupLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/group_labels.query.graphql';
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
 import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
@@ -111,25 +112,29 @@ export const referenceQueries = {
   },
 };
 
-export const labelsQueries = {
-  [IssuableType.Issue]: {
-    issuableQuery: issueLabelsQuery,
-    workspaceQuery: projectLabelsQuery,
+export const workspaceLabelsQueries = {
+  [WorkspaceType.project]: {
+    query: projectLabelsQuery,
   },
-  [IssuableType.Epic]: {
-    issuableQuery: epicLabelsQuery,
-    workspaceQuery: groupLabelsQuery,
+  [WorkspaceType.group]: {
+    query: groupLabelsQuery,
   },
 };
 
-export const labelsMutations = {
+export const issuableLabelsQueries = {
   [IssuableType.Issue]: {
+    issuableQuery: issueLabelsQuery,
     mutation: updateIssueLabelsMutation,
     mutationName: 'updateIssue',
   },
   [IssuableType.MergeRequest]: {
     mutation: updateMergeRequestLabelsMutation,
     mutationName: 'mergeRequestSetLabels',
+  },
+  [IssuableType.Epic]: {
+    issuableQuery: epicLabelsQuery,
+    mutation: updateEpicLabelsMutation,
+    mutationName: 'updateEpic',
   },
 };
 

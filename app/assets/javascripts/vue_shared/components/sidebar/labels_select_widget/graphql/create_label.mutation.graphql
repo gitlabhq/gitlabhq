@@ -1,12 +1,11 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
 mutation createLabel($title: String!, $color: String, $projectPath: ID, $groupPath: ID) {
   labelCreate(
     input: { title: $title, color: $color, projectPath: $projectPath, groupPath: $groupPath }
   ) {
     label {
-      id
-      color
-      description
-      title
+      ...Label
     }
     errors
   }

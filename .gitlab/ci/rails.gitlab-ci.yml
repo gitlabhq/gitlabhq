@@ -168,7 +168,6 @@ setup-test-env:
     - .rails:rules:code-backstage-qa
   stage: prepare
   variables:
-    GITLAB_TEST_EAGER_LOAD: "0"
     SETUP_DB: "false"
   script:
     - run_timed_command "scripts/setup-test-env"

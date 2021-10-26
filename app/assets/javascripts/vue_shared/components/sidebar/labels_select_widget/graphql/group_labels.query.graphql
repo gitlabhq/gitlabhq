@@ -1,11 +1,10 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
 query groupLabels($fullPath: ID!, $searchTerm: String) {
   workspace: group(fullPath: $fullPath) {
     labels(searchTerm: $searchTerm, onlyGroupLabels: true) {
       nodes {
-        id
-        title
-        color
-        description
+        ...Label
       }
     }
   }

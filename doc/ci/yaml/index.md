@@ -734,37 +734,50 @@ image:
 
 #### `services`
 
-Use `services` to specify a [service Docker image](../services/index.md), linked to a base image specified in [`image`](#image).
+Use `services` to specify an additional Docker image to run scripts in. The [`services` image](../services/index.md) is linked
+to the image specified in the [`image`](#image) keyword.
 
-For:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#custom-default-keyword-values).
 
-- Usage examples, see [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
-- Detailed usage information, refer to [Docker integration](../docker/index.md) documentation.
-- Example services, see [GitLab CI/CD Services](../services/index.md).
+**Possible inputs**: The name of the services image, including the registry path if needed, in one of these formats:
 
-##### `services:name`
+- `<image-name>` (Same as using `<image-name>` with the `latest` tag)
+- `<image-name>:<tag>`
+- `<image-name>@<digest>`
 
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+**Example of `services`**:
 
-For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
+```yaml
+default:
+  image:
+    name: ruby:2.6
+    entrypoint: ["/bin/bash"]
 
-##### `services:alias`
+  services:
+    - name: my-postgres:11.7
+      alias: db-postgres
+      entrypoint: ["/usr/local/bin/db-postgres"]
+      command: ["start"]
 
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+  before_script:
+    - bundle install
 
-For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
+test:
+  script:
+    - bundle exec rake spec
+```
 
-##### `services:entrypoint`
+In this example, the job launches a Ruby container. Then, from that container, the job launches
+another container that's running PostgreSQL. Then the job then runs scripts
+in that container.
 
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
+**Related topics**:
 
-For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
-
-##### `services:command`
-
-An [extended Docker configuration option](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-For more information, see [Available settings for `services`](../services/index.md#available-settings-for-services).
+- [Available settings for `services`](../services/index.md#available-settings-for-services).
+- [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
+- [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
+- [Use Docker to build Docker images](../docker/using_docker_build.md).
 
 ### `script`
 

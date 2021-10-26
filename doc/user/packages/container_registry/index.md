@@ -309,7 +309,7 @@ in addition to the steps in the
 [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
 
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/yaml/index.md#servicesalias).
+1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
 
 Below is an example of what your `.gitlab-ci.yml` should look like:
 
@@ -339,7 +339,7 @@ in addition to the steps in the
 [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-the-docker-executor-with-the-docker-image-docker-in-docker) section:
 
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/yaml/index.md#servicesalias).
+1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
 
 Below is an example of what your `.gitlab-ci.yml` should look like:
 

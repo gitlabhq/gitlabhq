@@ -381,8 +381,8 @@
   - "config/helpers/**/*.js"
   - "vendor/assets/javascripts/**/*"
 
-.feature-flag-config-patterns: &feature-flag-config-patterns
-  - "{,ee/}config/feature_flags/**/*.yml"
+.feature-flag-development-config-patterns: &feature-flag-development-config-patterns
+  - "{,ee/}config/feature_flags/development/*.yml"
 
 ################
 # Shared rules #
@@ -686,7 +686,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *feature-flag-config-patterns
+      changes: *feature-flag-development-config-patterns
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
@@ -706,7 +706,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
-      changes: *feature-flag-config-patterns
+      changes: *feature-flag-development-config-patterns
       when: manual
       allow_failure: true
 
