@@ -528,8 +528,8 @@
 
 .frontend:rules:default-frontend-jobs:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-patterns
 
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:

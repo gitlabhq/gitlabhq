@@ -61,6 +61,7 @@ module Database
       return unless cross_database_context[:enabled]
 
       return if connection.pool.instance_of?(ActiveRecord::ConnectionAdapters::NullPool)
+      return if in_factory_bot_create?
 
       database = connection.pool.db_config.name
 
@@ -112,6 +113,15 @@ module Database
 
         raise Database::PreventCrossDatabaseModification::CrossDatabaseModificationAcrossUnsupportedTablesError, message
       end
+    end
+
+    # We ignore execution in the #create method from FactoryBot
+    # because it is not representative of real code we run in
+    # production. There are far too many false positives caused
+    # by instantiating objects in different `gitlab_schema` in a
+    # FactoryBot `create`.
+    def self.in_factory_bot_create?
+      caller_locations.any? { |l| l.path.end_with?('lib/factory_bot/evaluation.rb') && l.label == 'create' }
     end
   end
 end

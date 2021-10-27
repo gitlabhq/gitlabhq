@@ -176,10 +176,10 @@ module CascadingNamespaceSettingAttribute
   private
 
   def locked_value(attribute)
+    return application_setting_value(attribute) if locked_by_application_setting?(attribute)
+
     ancestor = locked_ancestor(attribute)
     return ancestor.read_attribute(attribute) if ancestor
-
-    Gitlab::CurrentSettings.public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def locked_ancestor(attribute)

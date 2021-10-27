@@ -136,6 +136,21 @@ RSpec.describe NamespaceSetting, 'CascadingNamespaceSettingAttribute' do
           .to raise_error(ActiveRecord::RecordInvalid, /Delayed project removal cannot be changed because it is locked by an ancestor/)
       end
     end
+
+    context 'when parent locked the attribute then the application settings locks it' do
+      before do
+        subgroup_settings.update!(delayed_project_removal: true)
+        group_settings.update!(lock_delayed_project_removal: true, delayed_project_removal: false)
+        stub_application_setting(lock_delayed_project_removal: true, delayed_project_removal: true)
+
+        subgroup_settings.clear_memoization(:delayed_project_removal)
+        subgroup_settings.clear_memoization(:delayed_project_removal_locked_ancestor)
+      end
+
+      it 'returns the application setting value' do
+        expect(delayed_project_removal).to eq(true)
+      end
+    end
   end
 
   describe '#delayed_project_removal?' do

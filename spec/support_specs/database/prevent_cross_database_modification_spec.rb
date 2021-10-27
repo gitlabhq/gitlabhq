@@ -127,6 +127,14 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
               expect { run_queries }.to raise_error /Cross-database data modification/
             end
           end
+
+          context 'when the modification is inside a factory save! call' do
+            let(:runner) { create(:ci_runner, :project, projects: [build(:project)]) }
+
+            it 'does not raise an error' do
+              runner
+            end
+          end
         end
       end
     end
@@ -150,14 +158,6 @@ RSpec.describe 'Database::PreventCrossDatabaseModification' do
             end
           end
         end.not_to raise_error
-      end
-
-      it 'raises error when complex factories are built referencing both databases' do
-        expect do
-          ApplicationRecord.transaction do
-            create(:ci_pipeline)
-          end
-        end.to raise_error /Cross-database data modification/
       end
 
       it 'skips raising error on factory creation' do
