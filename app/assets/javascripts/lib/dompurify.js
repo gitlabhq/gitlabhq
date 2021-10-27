@@ -1,5 +1,5 @@
 import { sanitize as dompurifySanitize, addHook } from 'dompurify';
-import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
+import { getNormalizedURL, getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
 
 const defaultConfig = {
   // Safely allow SVG <use> tags
@@ -11,12 +11,14 @@ const defaultConfig = {
 
 // Only icons urls from `gon` are allowed
 const getAllowedIconUrls = (gon = window.gon) =>
-  [gon.sprite_file_icons, gon.sprite_icons].filter(Boolean);
+  [gon.sprite_file_icons, gon.sprite_icons]
+    .filter(Boolean)
+    .map((path) => relativePathToAbsolute(path, getBaseURL()));
 
-const isUrlAllowed = (url) => getAllowedIconUrls().some((allowedUrl) => url.startsWith(allowedUrl));
+const isUrlAllowed = (url) =>
+  getAllowedIconUrls().some((allowedUrl) => getNormalizedURL(url).startsWith(allowedUrl));
 
-const isHrefSafe = (url) =>
-  isUrlAllowed(url) || isUrlAllowed(relativePathToAbsolute(url, getBaseURL())) || url.match(/^#/);
+const isHrefSafe = (url) => url.match(/^#/) || isUrlAllowed(url);
 
 const removeUnsafeHref = (node, attr) => {
   if (!node.hasAttribute(attr)) {
@@ -36,13 +38,14 @@ const removeUnsafeHref = (node, attr) => {
  *   <use href="/assets/icons-xxx.svg#icon_name"></use>
  * </svg>
  *
+ * It validates both href & xlink:href attributes.
+ * Note that `xlink:href` is deprecated, but still in use
+ * https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href
+ *
  * @param {Object} node - Node to sanitize
  */
 const sanitizeSvgIcon = (node) => {
   removeUnsafeHref(node, 'href');
-
-  // Note: `xlink:href` is deprecated, but still in use
-  // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href
   removeUnsafeHref(node, 'xlink:href');
 };
 
