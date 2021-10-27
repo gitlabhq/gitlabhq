@@ -12,7 +12,7 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/cluster_image_scanning/#available-variables
 
 variables:
-  CIS_ANALYZER_IMAGE: registry.gitlab.com/gitlab-org/security-products/analyzers/cluster-image-scanning:0
+  CIS_ANALYZER_IMAGE: registry.gitlab.com/security-products/cluster-image-scanning:0
 
 cluster_image_scanning:
   image: "$CIS_ANALYZER_IMAGE"

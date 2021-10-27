@@ -4,9 +4,14 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Instance-level Kubernetes clusters **(FREE SELF)**
+# Instance-level Kubernetes clusters (certificate-based) (DEPRECATED) **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
+use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
 Similar to [project-level](../../project/clusters/index.md)
 and [group-level](../../group/clusters/index.md) Kubernetes clusters,

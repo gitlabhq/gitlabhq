@@ -4,15 +4,19 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Certificate-based cluster connection (DEPRECATED) **(FREE)**
+# Kubernetes clusters **(FREE)**
+
+To connect clusters to GitLab, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
+
+## Certificate-based Kubernetes integration (DEPRECATED) **(FREE)**
 
 WARNING:
 In GitLab 14.5, the certificate-based method to connect Kubernetes clusters
 to GitLab was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
 as well as its related [features](#deprecated-features).
 
-Connecting Kubernetes clusters to GitLab through cluster certificates is deprecated.
-This method had the following issues:
+The certificate-based Kubernetes integration with GitLab is deprecated.
+It had the following issues:
 
 - There were security issues as it required direct access to the Kube API by GitLab.
 - The configuration options weren't flexible.
@@ -52,7 +56,6 @@ the Kubernetes Agent model on the [Agent's blueprint documentation](../../../arc
 - [Serverless](../../project/clusters/serverless/index.md)
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
-- [Container Host Security](../../project/clusters/protect/container_host_security/index.md)
 - [Clusters health](manage/clusters_health.md)
 - [Crossplane integration](../../clusters/crossplane.md)
 - [Auto Deploy](../../../topics/autodevops/stages.md#auto-deploy)
