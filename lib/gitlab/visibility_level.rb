@@ -155,6 +155,14 @@ module Gitlab
       false
     end
 
+    def visibility_attribute_value(attributes)
+      visibility_level_attributes.each do |attr|
+        return attributes[attr] if attributes.has_key?(attr)
+      end
+
+      nil
+    end
+
     def visibility_level_attributes
       [visibility_level_field, visibility_level_field.to_s,
        :visibility, 'visibility']
