@@ -13,6 +13,10 @@ RSpec.describe IssuablePolicy, models: true do
       let(:merge_request) { create(:merge_request, source_project: project, author: user) }
       let(:policies) { described_class.new(user, merge_request) }
 
+      it 'allows resolving notes' do
+        expect(policies).to be_allowed(:resolve_note)
+      end
+
       context 'when user is able to read project' do
         it 'enables user to read and update issuables' do
           expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
@@ -43,15 +47,23 @@ RSpec.describe IssuablePolicy, models: true do
         it 'can not create a note nor award emojis' do
           expect(policies).to be_disallowed(:create_note, :award_emoji)
         end
+
+        it 'does not allow resolving note' do
+          expect(policies).to be_disallowed(:resolve_note)
+        end
       end
 
       context 'when the user is a project member' do
         before do
-          project.add_guest(user)
+          project.add_developer(user)
         end
 
         it 'can create a note and award emojis' do
           expect(policies).to be_allowed(:create_note, :award_emoji)
+        end
+
+        it 'allows resolving notes' do
+          expect(policies).to be_allowed(:resolve_note)
         end
       end
     end

@@ -7,6 +7,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
     described_class.new(object: nil, context: { current_user: user }, field: nil)
   end
 
+  let_it_be(:author) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#resolve' do
@@ -136,20 +137,37 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
           end
         end
       end
+
+      context 'when user is the author and discussion is locked' do
+        let(:user) { author }
+
+        before do
+          issuable.update!(discussion_locked: true)
+        end
+
+        it 'raises an error' do
+          expect { mutation.resolve(id: id_arg, resolve: resolve_arg) }.to raise_error(
+            Gitlab::Graphql::Errors::ResourceNotAvailable,
+            "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+          )
+        end
+      end
     end
 
     context 'when discussion is on a merge request' do
-      let_it_be(:noteable) { create(:merge_request, source_project: project) }
+      let_it_be(:noteable) { create(:merge_request, source_project: project, author: author) }
 
       let(:discussion) { create(:diff_note_on_merge_request, noteable: noteable, project: project).to_discussion }
+      let(:issuable) { noteable }
 
       it_behaves_like 'a working resolve method'
     end
 
     context 'when discussion is on a design' do
-      let_it_be(:noteable) { create(:design, :with_file, issue: create(:issue, project: project)) }
+      let_it_be(:noteable) { create(:design, :with_file, issue: create(:issue, project: project, author: author)) }
 
       let(:discussion) { create(:diff_note_on_design, noteable: noteable, project: project).to_discussion }
+      let(:issuable) { noteable.issue }
 
       it_behaves_like 'a working resolve method'
     end

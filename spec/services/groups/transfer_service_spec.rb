@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::TransferService do
+RSpec.describe Groups::TransferService, :sidekiq_inline do
   shared_examples 'project namespace path is in sync with project path' do
     it 'keeps project and project namespace attributes in sync' do
       projects_with_project_namespace.each do |project|
@@ -651,6 +651,59 @@ RSpec.describe Groups::TransferService do
                 .with(array_including(new_parent_group.members_with_parents.pluck(:user_id).map {|id| [id, anything] }))
 
               transfer_service.execute(new_parent_group)
+            end
+          end
+
+          context 'transferring groups with shared_projects' do
+            let_it_be_with_reload(:shared_project) { create(:project, :public) }
+
+            shared_examples_for 'drops the authorizations of ancestor members from the old hierarchy' do
+              it 'drops the authorizations of ancestor members from the old hierarchy' do
+                expect { transfer_service.execute(new_parent_group) }.to change {
+                  ProjectAuthorization.where(project: shared_project, user: old_group_member).size
+                }.from(1).to(0)
+              end
+            end
+
+            context 'when the group that has existing project share is transferred' do
+              before do
+                create(:project_group_link, :maintainer, project: shared_project, group: group)
+              end
+
+              it_behaves_like 'drops the authorizations of ancestor members from the old hierarchy'
+            end
+
+            context 'when the group whose subgroup has an existing project share is transferred' do
+              let_it_be_with_reload(:subgroup) { create(:group, :private, parent: group) }
+
+              before do
+                create(:project_group_link, :maintainer, project: shared_project, group: subgroup)
+              end
+
+              it_behaves_like 'drops the authorizations of ancestor members from the old hierarchy'
+            end
+          end
+
+          context 'when a group that has existing group share is transferred' do
+            let(:shared_with_group) { group }
+
+            let_it_be(:member_of_shared_with_group) { create(:user) }
+            let_it_be(:shared_group) { create(:group, :private) }
+            let_it_be(:project_in_shared_group) { create(:project, namespace: shared_group) }
+
+            before do
+              shared_with_group.add_developer(member_of_shared_with_group)
+              create(:group_group_link, :maintainer, shared_group: shared_group, shared_with_group: shared_with_group)
+              shared_with_group.refresh_members_authorized_projects
+            end
+
+            it 'retains the authorizations of direct members' do
+              expect { transfer_service.execute(new_parent_group) }.not_to change {
+                ProjectAuthorization.where(
+                  project: project_in_shared_group,
+                  user: member_of_shared_with_group,
+                  access_level: Gitlab::Access::DEVELOPER).size
+              }.from(1)
             end
           end
         end

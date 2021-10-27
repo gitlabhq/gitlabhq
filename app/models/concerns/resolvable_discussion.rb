@@ -81,8 +81,7 @@ module ResolvableDiscussion
     return false unless current_user
     return false unless resolvable?
 
-    current_user == self.noteable.try(:author) ||
-      current_user.can?(:resolve_note, self.project)
+    current_user.can?(:resolve_note, self.noteable)
   end
 
   def resolve!(current_user)
