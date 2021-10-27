@@ -329,7 +329,7 @@ Group syncing allows LDAP groups to be mapped to GitLab groups. This provides mo
 
 Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group.
 
-For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/index.md#group-sync).
+For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
 NOTE:
 When you add LDAP synchronization, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.

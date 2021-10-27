@@ -229,7 +229,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 
 #### Sync all users **(PREMIUM SELF)**
 
-The output from a manual [user sync](index.md#user-sync) can show you what happens when
+The output from a manual [user sync](ldap_synchronization.md#user-sync) can show you what happens when
 GitLab tries to sync its users against LDAP. Enter the [rails console](#rails-console)
 and then run:
 
@@ -239,8 +239,7 @@ Rails.logger.level = Logger::DEBUG
 LdapSyncWorker.new.perform
 ```
 
-Next, [learn how to read the
-output](#example-console-output-after-a-user-sync).
+Next, [learn how to read the output](#example-console-output-after-a-user-sync).
 
 ##### Example console output after a user sync **(PREMIUM SELF)**
 
@@ -342,9 +341,8 @@ LDAP group sync, but for some reason it's not happening. There are several
 things to check to debug the situation.
 
 - Ensure LDAP configuration has a `group_base` specified.
-  [This configuration](index.md#group-sync) is required for group sync to work properly.
-- Ensure the correct [LDAP group link is added to the GitLab
-  group](index.md#add-group-links).
+  [This configuration](ldap_synchronization.md#group-sync) is required for group sync to work properly.
+- Ensure the correct [LDAP group link is added to the GitLab group](ldap_synchronization.md#add-group-links).
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
   1. On the top bar, select **Menu > Admin**.
@@ -354,7 +352,7 @@ things to check to debug the situation.
   1. Select the **Identities** tab. There should be an LDAP identity with
      an LDAP DN as the 'Identifier'. If not, this user hasn't signed in with
      LDAP yet and must do so first.
-- You've waited an hour or [the configured interval](index.md#adjust-ldap-group-sync-schedule) for
+- You've waited an hour or [the configured interval](ldap_synchronization.md#adjust-ldap-group-sync-schedule) for
   the group to sync. To speed up the process, either go to the GitLab group **Group information > Members**
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
@@ -366,8 +364,7 @@ the rails console.
 1. Choose a GitLab group to test with. This group should have an LDAP group link
    already configured.
 1. [Enable debug logging, find the above GitLab group, and sync it with LDAP](#sync-one-group).
-1. Look through the output of the sync. See [example log
-   output](#example-console-output-after-a-group-sync)
+1. Look through the output of the sync. See [example log output](#example-console-output-after-a-group-sync)
    for how to read the output.
 1. If you still aren't able to see why the user isn't being added, [query the LDAP group directly](#query-a-group-in-ldap)
    to see what members are listed.
@@ -377,20 +374,20 @@ the rails console.
 
 #### Administrator privileges not granted
 
-When [Administrator sync](index.md#administrator-sync) has been configured
+When [Administrator sync](ldap_synchronization.md#administrator-sync) has been configured
 but the configured users aren't granted the correct administrator privileges, confirm
 the following are true:
 
-- A [`group_base` is also configured](index.md#group-sync).
+- A [`group_base` is also configured](ldap_synchronization.md#group-sync).
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
 - This CN falls under the scope of the configured `group_base`.
 - The members of the `admin_group` have already signed into GitLab with their LDAP
   credentials. GitLab only grants the Administrator role to the users whose
   accounts are already connected to LDAP.
 
-If all the above are true and the users are still not getting access, [run a manual
-group sync](#sync-all-groups) in the rails console and [look through the
-output](#example-console-output-after-a-group-sync) to see what happens when
+If all the above are true and the users are still not getting access,
+[run a manual group sync](#sync-all-groups) in the rails console and
+[look through the output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
 
 #### Sync all groups
@@ -399,7 +396,7 @@ NOTE:
 To sync all groups manually when debugging is unnecessary,
 [use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
-The output from a manual [group sync](index.md#group-sync) can show you what happens
+The output from a manual [group sync](ldap_synchronization.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP.
 
 ```ruby
@@ -494,7 +491,7 @@ this line indicates the sync is finished:
 Finished syncing admin users for 'ldapmain' provider
 ```
 
-If [administrator sync](index.md#administrator-sync) is not configured, you see a message
+If [administrator sync](ldap_synchronization.md#administrator-sync) is not configured, you see a message
 stating as such:
 
 ```shell
@@ -610,8 +607,7 @@ If a user account is blocked or unblocked due to the LDAP configuration, a
 message is [logged to `application.log`](../../logs.md#applicationlog).
 
 If there is an unexpected error during an LDAP lookup (configuration error,
-timeout), the sign-in is rejected and a message is [logged to
-`production.log`](../../logs.md#productionlog).
+timeout), the sign-in is rejected and a message is [logged to `production.log`](../../logs.md#productionlog).
 
 ### ldapsearch
 

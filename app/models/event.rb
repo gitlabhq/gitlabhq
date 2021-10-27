@@ -9,9 +9,6 @@ class Event < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include UsageStatistics
   include ShaAttribute
-  include IgnorableColumns
-
-  ignore_columns :id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
 
   default_scope { reorder(nil) } # rubocop:disable Cop/DefaultScope
 

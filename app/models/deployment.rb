@@ -8,7 +8,6 @@ class Deployment < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
-  include IgnorableColumns
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)

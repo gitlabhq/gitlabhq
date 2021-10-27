@@ -44,7 +44,7 @@ Get started:
 **More resources**
 
 - Learn more about [running multiple Agile teams](https://www.youtube.com/watch?v=VR2r1TJCDew).
-- Sync group memberships [by using LDAP](../administration/auth/ldap/index.md#group-sync).
+- Sync group memberships [by using LDAP](../administration/auth/ldap/ldap_synchronization.md#group-sync).
 - Manage user access with inherited permissions. Use up to 20 levels of subgroups to organize both teams and projects.
   - Learn more about [inherited permissions](../user/project/members/index.md#inherited-membership).
   - View [nested category examples](../user/group/subgroups/index.md#overview).

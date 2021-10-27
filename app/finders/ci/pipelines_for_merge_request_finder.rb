@@ -42,6 +42,8 @@ module Ci
               triggered_for_branch.for_sha(commit_shas)
             end
 
+          pipelines = pipelines.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
+
           sort(pipelines)
         end
       end

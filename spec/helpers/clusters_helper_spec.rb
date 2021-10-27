@@ -152,4 +152,24 @@ RSpec.describe ClustersHelper do
       end
     end
   end
+
+  describe '#display_cluster_agents?' do
+    subject { helper.display_cluster_agents?(clusterable) }
+
+    context 'when clusterable is a project' do
+      let(:clusterable) { build(:project) }
+
+      it 'allows agents to display' do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context 'when clusterable is a group' do
+      let(:clusterable) { build(:group) }
+
+      it 'does not allow agents to display' do
+        expect(subject).to be_falsey
+      end
+    end
+  end
 end

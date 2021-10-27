@@ -10,9 +10,6 @@ module Ci
     include Artifactable
     include FileStoreMounter
     include EachBatch
-    include IgnorableColumns
-
-    ignore_columns %i[id_convert_to_bigint job_id_convert_to_bigint], remove_with: '14.5', remove_after: '2021-11-22'
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze

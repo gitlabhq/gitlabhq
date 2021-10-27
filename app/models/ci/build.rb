@@ -10,7 +10,6 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
-    include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -69,9 +68,6 @@ module Ci
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
-
-    ignore_columns :id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
-    ignore_columns :stage_id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after

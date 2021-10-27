@@ -583,6 +583,7 @@ module ProjectsHelper
     %w[
       environments
       clusters
+      cluster_agents
       functions
       error_tracking
       alert_management

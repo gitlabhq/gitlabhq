@@ -48,6 +48,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 | `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8).
 | `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
 | `status`           | string          | no       | The package status. It can be `default` (default) or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md).
+| `select`           | string          | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request.
 
 Provide the file context in the request body.
 
@@ -59,11 +60,39 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?status=hidden"
 ```
 
-Example response:
+Example response without attribute `select`:
 
 ```json
 {
   "message":"201 Created"
+}
+```
+
+Example response with attribute `select = package_file`:
+
+```json
+{
+  "id": 1,
+  "package_id": 1,
+  "created_at": "2021-10-12T12:05:23.387Z",
+  "updated_at": "2021-10-12T12:05:23.387Z",
+  "size": 0,
+  "file_store": 1,
+  "file_md5": null,
+  "file_sha1": null,
+  "file_name": "file.txt",
+  "file": {
+    "url": "/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b/packages/26/files/36/file.txt"
+  },
+  "file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "verification_retry_at": null,
+  "verified_at": null,
+  "verification_failure": null,
+  "verification_retry_count": null,
+  "verification_checksum": null,
+  "verification_state": 0,
+  "verification_started_at": null,
+  "new_file_path": null
 }
 ```
 

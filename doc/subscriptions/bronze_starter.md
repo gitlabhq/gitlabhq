@@ -50,15 +50,15 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Group management through LDAP](../administration/auth/ldap/ldap-troubleshooting.md#group-memberships)
   - Syncing information through LDAP:
     - Groups: [one group](../administration/auth/ldap/ldap-troubleshooting.md#sync-one-group),
-      [all groups programmatically](../administration/auth/ldap/index.md#group-sync),
-      [group sync schedule](../administration/auth/ldap/index.md#adjust-ldap-group-sync-schedule), and
+      [all groups programmatically](../administration/auth/ldap/ldap_synchronization.md#group-sync),
+      [group sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule), and
       [all groups manually](../administration/auth/ldap/ldap-troubleshooting.md#sync-all-groups)
     - [Configuration settings](../administration/auth/ldap/index.md#ldap-sync-configuration-settings)
-    - Users: [all users](../administration/auth/ldap/index.md#user-sync),
-      [administrators](../administration/auth/ldap/index.md#administrator-sync),
-      [user sync schedule](../administration/auth/ldap/index.md#adjust-ldap-user-sync-schedule)
-    - [Adding group links](../administration/auth/ldap/index.md#add-group-links)
-    - [Lock memberships to LDAP synchronization](../administration/auth/ldap/index.md#global-group-memberships-lock)
+    - Users: [all users](../administration/auth/ldap/ldap_synchronization.md#user-sync),
+      [administrators](../administration/auth/ldap/ldap_synchronization.md#administrator-sync),
+      [user sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-user-sync-schedule)
+    - [Adding group links](../administration/auth/ldap/ldap_synchronization.md#add-group-links)
+    - [Lock memberships to LDAP synchronization](../administration/auth/ldap/ldap_synchronization.md#global-group-memberships-lock)
     - Rake tasks for [LDAP tasks](../administration/raketasks/ldap.md), including
       [syncing groups](../administration/raketasks/ldap.md#run-a-group-sync)
 - Logging:

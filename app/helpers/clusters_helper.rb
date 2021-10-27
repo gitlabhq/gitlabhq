@@ -12,8 +12,8 @@ module ClustersHelper
     end
   end
 
-  def display_cluster_agents?(_clusterable)
-    false
+  def display_cluster_agents?(clusterable)
+    clusterable.is_a?(Project)
   end
 
   def js_cluster_agents_list_data(clusterable_project)
