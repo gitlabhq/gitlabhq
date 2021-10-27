@@ -11,6 +11,10 @@ module Gitlab
 
           has_one :saml_provider
 
+          def root_saml_provider
+            root_ancestor.saml_provider
+          end
+
           def self.declarative_policy_class
             "GroupPolicy"
           end

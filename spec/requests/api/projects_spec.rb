@@ -990,7 +990,7 @@ RSpec.describe API::Projects do
 
         expect do
           get api('/projects', admin)
-        end.not_to exceed_query_limit(control.count)
+        end.not_to exceed_query_limit(control)
       end
     end
   end
