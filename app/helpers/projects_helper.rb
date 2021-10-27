@@ -376,6 +376,12 @@ module ProjectsHelper
     }
   end
 
+  def project_classes(project)
+    return "project-highlight-puc" if project.warn_about_potentially_unwanted_characters?
+
+    ""
+  end
+
   private
 
   def tab_ability_map
@@ -532,6 +538,7 @@ module ProjectsHelper
       metricsDashboardAccessLevel: feature.metrics_dashboard_access_level,
       operationsAccessLevel: feature.operations_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
+      warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,
       securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
       containerRegistryAccessLevel: feature.container_registry_access_level
     }

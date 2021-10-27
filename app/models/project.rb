@@ -423,8 +423,8 @@ class Project < ApplicationRecord
     :container_registry_access_level, :container_registry_enabled?,
     to: :project_feature, allow_nil: true
   alias_method :container_registry_enabled, :container_registry_enabled?
-  delegate :show_default_award_emojis, :show_default_award_emojis=,
-    :show_default_award_emojis?,
+  delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
+    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
     to: :project_setting, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
     prefix: :import, to: :import_state, allow_nil: true
