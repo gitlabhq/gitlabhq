@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   bundler-audit:
     enabled: true
   duplication:
@@ -8,33 +9,22 @@ engines:
       languages:
         - ruby
         - javascript
-ratings:
-  paths:
-    - Gemfile.lock
-    - "**.erb"
-    - "**.haml"
-    - "**.rb"
-    - "**.rhtml"
-    - "**.slim"
-    - "**.inc"
-    - "**.js"
-    - "**.jsx"
-    - "**.module"
-exclude_paths:
-  - config/
-  - db/
-  - features/
-  - node_modules/
-  - spec/
-  - vendor/
+  rubocop:
+    enabled: false
+exclude_patterns:
+  - "{ee/,jh/,}config/"
+  - "{ee/,jh/,}db/"
+  - "**/log/"
+  - "**/node_modules/"
+  - "**/spec/"
+  - "**/tmp/"
+  - "**/vendor/"
   - .yarn-cache/
-  - tmp/
+  - backups/
   - builds/
   - coverage/
+  - file_hooks/
+  - plugins/
   - public/
   - shared/
   - webpack-report/
-  - log/
-  - backups/
-  - plugins/
-  - file_hooks/

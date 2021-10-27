@@ -6,13 +6,13 @@ export const PROJECT_STORAGE_TYPES = [
     name: s__('UsageQuota|Artifacts'),
     description: s__('UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD.'),
     warningMessage: s__(
-      'UsageQuota|There is a known issue with Artifact storage where the total could be incorrect for some projects. More details and progress are available in %{warningLinkStart}the epic%{warningLinkEnd}.',
+      'UsageQuota|Because of a known issue, the artifact total for some projects may be incorrect. For more details, read %{warningLinkStart}the epic%{warningLinkEnd}.',
     ),
     warningLink: 'https://gitlab.com/groups/gitlab-org/-/epics/5380',
   },
   {
     id: 'lfsObjectsSize',
-    name: s__('UsageQuota|LFS Storage'),
+    name: s__('UsageQuota|LFS storage'),
     description: s__('UsageQuota|Audio samples, videos, datasets, and graphics.'),
   },
   {
@@ -23,7 +23,7 @@ export const PROJECT_STORAGE_TYPES = [
   {
     id: 'repositorySize',
     name: s__('UsageQuota|Repository'),
-    description: s__('UsageQuota|Git repository, managed by the Gitaly service.'),
+    description: s__('UsageQuota|Git repository.'),
   },
   {
     id: 'snippetsSize',
@@ -55,7 +55,7 @@ export const LEARN_MORE_LABEL = s__('Learn more.');
 export const USAGE_QUOTAS_LABEL = s__('UsageQuota|Usage Quotas');
 export const HELP_LINK_ARIA_LABEL = s__('UsageQuota|%{linkTitle} help link');
 export const TOTAL_USAGE_DEFAULT_TEXT = __('N/A');
-export const TOTAL_USAGE_TITLE = s__('UsageQuota|Usage Breakdown');
+export const TOTAL_USAGE_TITLE = s__('UsageQuota|Usage breakdown');
 export const TOTAL_USAGE_SUBTITLE = s__(
-  'UsageQuota|Includes project registry, artifacts, packages, wiki, uploads and other items.',
+  'UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items.',
 );

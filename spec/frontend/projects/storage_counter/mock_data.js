@@ -28,7 +28,7 @@ export const projectData = {
           name: 'Artifacts',
           description: 'Pipeline artifacts and job artifacts, created with CI/CD.',
           warningMessage:
-            'There is a known issue with Artifact storage where the total could be incorrect for some projects. More details and progress are available in %{warningLinkStart}the epic%{warningLinkEnd}.',
+            'Because of a known issue, the artifact total for some projects may be incorrect. For more details, read %{warningLinkStart}the epic%{warningLinkEnd}.',
           helpPath: '/build-artifacts',
         },
         value: 400000,
@@ -36,7 +36,7 @@ export const projectData = {
       {
         storageType: {
           id: 'lfsObjectsSize',
-          name: 'LFS Storage',
+          name: 'LFS storage',
           description: 'Audio samples, videos, datasets, and graphics.',
           helpPath: '/lsf-objects',
         },
@@ -55,7 +55,7 @@ export const projectData = {
         storageType: {
           id: 'repositorySize',
           name: 'Repository',
-          description: 'Git repository, managed by the Gitaly service.',
+          description: 'Git repository.',
           helpPath: '/repository',
         },
         value: 3900000,

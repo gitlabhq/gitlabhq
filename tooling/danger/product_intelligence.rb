@@ -14,9 +14,15 @@ module Tooling
 
         labels = []
         labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
-        labels << 'product intelligence::review pending' unless helper.mr_has_labels?(WORKFLOW_LABELS)
+        labels << 'product intelligence::review pending' unless has_workflow_labels?
 
         labels
+      end
+
+      private
+
+      def has_workflow_labels?
+        (WORKFLOW_LABELS & helper.mr_labels).any?
       end
     end
   end

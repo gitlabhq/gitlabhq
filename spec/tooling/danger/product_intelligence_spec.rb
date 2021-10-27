@@ -44,20 +44,26 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
 
     context 'with product intelligence label' do
       let(:expected_labels) { ['product intelligence::review pending'] }
+      let(:mr_labels) { [] }
 
       before do
         allow(fake_helper).to receive(:mr_has_labels?).with('product intelligence').and_return(true)
+        allow(fake_helper).to receive(:mr_labels).and_return(mr_labels)
       end
 
       it { is_expected.to match_array(expected_labels) }
-    end
 
-    context 'with product intelligence::review pending' do
-      before do
-        allow(fake_helper).to receive(:mr_has_labels?).and_return(true)
+      context 'with product intelligence::review pending' do
+        let(:mr_labels) { ['product intelligence::review pending'] }
+
+        it { is_expected.to be_empty }
       end
 
-      it { is_expected.to be_empty }
+      context 'with product intelligence::approved' do
+        let(:mr_labels) { ['product intelligence::approved'] }
+
+        it { is_expected.to be_empty }
+      end
     end
 
     context 'with growth experiment label' do

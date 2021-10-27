@@ -36811,6 +36811,9 @@ msgstr ""
 msgid "UsageQuota|Audio samples, videos, datasets, and graphics."
 msgstr ""
 
+msgid "UsageQuota|Because of a known issue, the artifact total for some projects may be incorrect. For more details, read %{warningLinkStart}the epic%{warningLinkEnd}."
+msgstr ""
+
 msgid "UsageQuota|Buy additional minutes"
 msgstr ""
 
@@ -36829,10 +36832,10 @@ msgstr ""
 msgid "UsageQuota|File attachments and smaller design graphics."
 msgstr ""
 
-msgid "UsageQuota|Git repository, managed by the Gitaly service."
+msgid "UsageQuota|Git repository."
 msgstr ""
 
-msgid "UsageQuota|Includes project registry, artifacts, packages, wiki, uploads and other items."
+msgid "UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items."
 msgstr ""
 
 msgid "UsageQuota|Increase storage temporarily"
@@ -36842,6 +36845,9 @@ msgid "UsageQuota|LFS Objects"
 msgstr ""
 
 msgid "UsageQuota|LFS Storage"
+msgstr ""
+
+msgid "UsageQuota|LFS storage"
 msgstr ""
 
 msgid "UsageQuota|Learn more about excess storage usage"
@@ -36889,9 +36895,6 @@ msgstr ""
 msgid "UsageQuota|Storage type"
 msgstr ""
 
-msgid "UsageQuota|There is a known issue with Artifact storage where the total could be incorrect for some projects. More details and progress are available in %{warningLinkStart}the epic%{warningLinkEnd}."
-msgstr ""
-
 msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
 msgstr ""
 
@@ -36931,10 +36934,10 @@ msgstr ""
 msgid "UsageQuota|Usage"
 msgstr ""
 
-msgid "UsageQuota|Usage Breakdown"
+msgid "UsageQuota|Usage Quotas"
 msgstr ""
 
-msgid "UsageQuota|Usage Quotas"
+msgid "UsageQuota|Usage breakdown"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"

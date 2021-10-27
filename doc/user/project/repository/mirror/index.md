@@ -142,7 +142,7 @@ needs this key to establish trust with your GitLab repository. To copy your SSH 
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
-1. Identify the correct repository, and select **Copy SSH public key**.
+1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
 1. Add the public SSH key to the other repository's configuration:
    - If the other repository is hosted on GitLab, add the public SSH key
      as a [deploy key](../../../project/deploy_keys/index.md).
