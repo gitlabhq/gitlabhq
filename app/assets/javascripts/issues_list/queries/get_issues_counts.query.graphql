@@ -10,6 +10,8 @@ query getIssuesCount(
   $milestoneTitle: [String]
   $milestoneWildcardId: MilestoneWildcardId
   $myReactionEmoji: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
   $not: NegatedIssueFilterInput
 ) {
@@ -78,6 +80,8 @@ query getIssuesCount(
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {
@@ -94,6 +98,8 @@ query getIssuesCount(
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {
@@ -110,6 +116,8 @@ query getIssuesCount(
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {

@@ -4,24 +4,21 @@
 
 DEFAULT_BRANCH = 'master'
 
-THROUGHPUT_LABELS = [
-  'Community contribution',
-  'security',
-  'bug',
-  'feature',
+TYPE_LABELS = [
+  'type::feature',
   'feature::addition',
-  'feature::maintenance',
-  'tooling',
+  'type::maintenance',
+  'type::tooling',
   'tooling::pipelines',
   'tooling::workflow',
-  'documentation'
+  'type::bug'
 ].freeze
 
 if gitlab.mr_body.size < 5
   fail "Please provide a proper merge request description."
 end
 
-if (THROUGHPUT_LABELS & gitlab.mr_labels).empty?
+if (TYPE_LABELS & gitlab.mr_labels).empty?
   warn 'Please add a [merge request type](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification) to this merge request.'
 end
 

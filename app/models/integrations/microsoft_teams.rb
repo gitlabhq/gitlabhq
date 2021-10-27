@@ -37,7 +37,12 @@ module Integrations
       [
         { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}" },
         { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'If selected, successful pipelines do not trigger a notification event.' },
-        { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
+        {
+          type: 'select',
+          name: 'branches_to_be_notified',
+          title: s_('Integrations|Branches for which notifications are to be sent'),
+          choices: branch_choices
+        }
       ]
     end
 

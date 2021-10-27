@@ -24,5 +24,5 @@ Please link to the respective test case in the testcases project
 
 /label ~"Quality:test-gap" ~"Quality:EE test gaps"
 
-<!-- Select the appropriate feature label, ~"feature::addition" for tests added for new features, ~"feature::maintenance" for tests added for existing features -->
-/label ~"feature::addition" ~"feature::maintenance" 
+<!-- Select the appropriate feature label, ~"feature::addition" for tests added for new features, ~"type::maintenance" for tests added for existing features -->
+/label ~"feature::addition" ~"type::maintenance"

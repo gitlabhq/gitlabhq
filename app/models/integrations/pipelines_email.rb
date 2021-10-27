@@ -71,6 +71,7 @@ module Integrations
           name: 'notify_only_broken_pipelines' },
         { type: 'select',
           name: 'branches_to_be_notified',
+          title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: branch_choices }
       ]
     end

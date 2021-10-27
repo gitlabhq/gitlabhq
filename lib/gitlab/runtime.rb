@@ -63,12 +63,8 @@ module Gitlab
         puma?
       end
 
-      def action_cable?
-        web_server? && (!!defined?(ACTION_CABLE_SERVER) || Gitlab::ActionCable::Config.in_app?)
-      end
-
       def multi_threaded?
-        puma? || sidekiq? || action_cable?
+        puma? || sidekiq?
       end
 
       def puma_in_clustered_mode?
@@ -92,7 +88,7 @@ module Gitlab
           threads += Sidekiq.options[:concurrency] + 2
         end
 
-        if action_cable?
+        if web_server?
           threads += Gitlab::ActionCable::Config.worker_pool_size
         end
 

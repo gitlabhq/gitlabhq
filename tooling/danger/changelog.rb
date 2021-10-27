@@ -6,7 +6,7 @@ module Tooling
   module Danger
     module Changelog
       NO_CHANGELOG_LABELS = [
-        'tooling',
+        'type::tooling',
         'tooling::pipelines',
         'tooling::workflow',
         'ci-build',

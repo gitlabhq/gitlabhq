@@ -76,7 +76,12 @@ module Integrations
           help: s_("EmailsOnPushService|Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance (such as %{domains}).") % { domains: domains } },
         { type: 'checkbox', name: 'disable_diffs', title: s_("EmailsOnPushService|Disable code diffs"),
           help: s_("EmailsOnPushService|Don't include possibly sensitive code diffs in notification body.") },
-        { type: 'select', name: 'branches_to_be_notified', choices: branch_choices },
+        {
+          type: 'select',
+          name: 'branches_to_be_notified',
+          title: s_('Integrations|Branches for which notifications are to be sent'),
+          choices: branch_choices
+        },
         {
           type: 'textarea',
           name: 'recipients',

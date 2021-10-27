@@ -73,7 +73,12 @@ module Integrations
         { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}", required: true }.freeze,
         { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze,
         { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
-        { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }.freeze,
+        {
+          type: 'select',
+          name: 'branches_to_be_notified',
+          title: s_('Integrations|Branches for which notifications are to be sent'),
+          choices: branch_choices
+        }.freeze,
         {
           type: 'text',
           name: 'labels_to_be_notified',

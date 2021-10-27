@@ -86,7 +86,7 @@ RSpec.describe ServiceFieldEntity do
           expected_hash = {
             type: 'select',
             name: 'branches_to_be_notified',
-            title: nil,
+            title: 'Branches for which notifications are to be sent',
             placeholder: nil,
             required: nil,
             choices: [['All branches', 'all'], ['Default branch', 'default'], ['Protected branches', 'protected'], ['Default branch and protected branches', 'default_and_protected']],

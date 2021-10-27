@@ -18350,6 +18350,9 @@ msgstr ""
 msgid "Integrations|An error occurred while loading projects using custom settings."
 msgstr ""
 
+msgid "Integrations|Branches for which notifications are to be sent"
+msgstr ""
+
 msgid "Integrations|Browser limitations"
 msgstr ""
 
@@ -34505,6 +34508,9 @@ msgid "There was a problem fetching recent groups."
 msgstr ""
 
 msgid "There was a problem fetching recent projects."
+msgstr ""
+
+msgid "There was a problem fetching releases."
 msgstr ""
 
 msgid "There was a problem fetching the job token scope value"

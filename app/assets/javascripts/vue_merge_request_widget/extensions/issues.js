@@ -67,6 +67,7 @@ export default {
             //   href: 'https://google.com', // Required: href for the link
             //   text: 'Link text', // Required: Text to be used inside the link
             // },
+            actions: [{ text: 'Full report', href: 'https://gitlab.com', target: '_blank' }],
           }));
         });
     },

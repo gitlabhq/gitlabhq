@@ -3,6 +3,8 @@
 class Projects::WikisController < Projects::ApplicationController
   include WikiActions
 
+  urgency :low
+
   alias_method :container, :project
 
   before_action do

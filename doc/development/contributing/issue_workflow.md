@@ -45,7 +45,7 @@ scheduling into milestones. Labeling is a task for everyone. (For some projects,
 
 Most issues will have labels for at least one of the following:
 
-- Type. For example: `~feature`, `~bug`, `~tooling`, or `~documentation`.
+- Type. For example: `~"type::feature"`, `~"type::bug"`, or `~"type::tooling"`.
 - Stage. For example: `~"devops::plan"` or `~"devops::create"`.
 - Group. For example: `~"group::source code"`, `~"group::knowledge"`, or `~"group::editor"`.
 - Category. For example: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, or `~"Category:Templates"`.
@@ -70,12 +70,12 @@ issue should have one and only one.
 
 The current type labels are:
 
-- `~feature`
+- `~"type::feature"`
   - `~"feature::addition"`
   - `~"feature::enhancement"`
-  - `~"feature::maintenance"`
-- `~bug`
-- `~tooling`
+- `~"type::maintenance"`
+- `~"type::bug"`
+- `~"type::tooling"`
   - `~"tooling::pipelines"`
   - `~"tooling::workflow"`
 - `~"support request"`
@@ -342,11 +342,11 @@ To create a feature proposal, open an issue on the
 [issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=feature) label.
+[`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.
 For the time being, users that are not members of the project cannot add labels.
 You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
-members to add the label `~feature` to the issue or add the following
-code snippet right after your description in a new line: `~feature`.
+members to add the label `~"type::feature"` to the issue or add the following
+code snippet right after your description in a new line: `~"type::feature"`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.

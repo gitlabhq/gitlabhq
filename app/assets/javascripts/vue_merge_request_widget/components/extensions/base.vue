@@ -209,17 +209,25 @@ export default {
           <status-icon v-if="data.icon" :icon-name="data.icon.name" :size="12" class="gl-pl-0" />
           <gl-intersection-observer
             :options="{ rootMargin: '100px', thresholds: 0.1 }"
-            class="gl-flex-wrap gl-align-self-center gl-display-flex"
+            class="gl-flex-wrap gl-display-flex gl-w-full"
             @appear="appear(index)"
             @disappear="disappear(index)"
           >
-            <div v-safe-html="data.text" class="gl-mr-4"></div>
+            <div
+              v-safe-html="data.text"
+              class="gl-mr-4 gl-display-flex gl-align-items-center"
+            ></div>
             <div v-if="data.link">
               <gl-link :href="data.link.href">{{ data.link.text }}</gl-link>
             </div>
             <gl-badge v-if="data.badge" :variant="data.badge.variant || 'info'">
               {{ data.badge.text }}
             </gl-badge>
+            <actions
+              :widget="$options.label || $options.name"
+              :tertiary-buttons="data.actions"
+              class="gl-ml-auto"
+            />
           </gl-intersection-observer>
         </li>
       </smart-virtual-list>

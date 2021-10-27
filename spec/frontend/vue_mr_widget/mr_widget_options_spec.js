@@ -1,4 +1,4 @@
-import { GlBadge, GlLink, GlIcon, GlDropdown } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon, GlButton, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -947,6 +947,9 @@ describe('MrWidgetOptions', () => {
       // Renders a link in the row
       expect(collapsedSection.find(GlLink).exists()).toBe(true);
       expect(collapsedSection.find(GlLink).text()).toBe('GitLab.com');
+
+      expect(collapsedSection.find(GlButton).exists()).toBe(true);
+      expect(collapsedSection.find(GlButton).text()).toBe('Full report');
     });
   });
 });

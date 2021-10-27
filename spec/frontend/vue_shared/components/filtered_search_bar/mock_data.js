@@ -9,6 +9,7 @@ import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_t
 import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const mockAuthor1 = {
@@ -130,6 +131,14 @@ export const mockMilestoneToken = {
   token: MilestoneToken,
   operators: OPERATOR_IS_ONLY,
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
+};
+
+export const mockReleaseToken = {
+  type: 'release',
+  icon: 'rocket',
+  title: 'Release',
+  token: ReleaseToken,
+  fetchReleases: () => Promise.resolve(),
 };
 
 export const mockEpicToken = {

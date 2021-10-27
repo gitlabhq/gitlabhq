@@ -32,7 +32,7 @@ module API
         params do
           optional :with_content, type: Boolean, default: false, desc: "Include pages' content"
         end
-        get ':id/wikis' do
+        get ':id/wikis', urgency: :low do
           authorize! :read_wiki, container
 
           entity = params[:with_content] ? Entities::WikiPage : Entities::WikiPageBasic

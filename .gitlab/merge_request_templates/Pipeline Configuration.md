@@ -35,4 +35,4 @@ This will help keep track of expected cost increases to the [GitLab project aver
 
 - [ ] Consider communicating these changes to the broader team following the [communication guideline for pipeline changes](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/#pipeline-changes)
 
-/label ~tooling ~"tooling::pipelines" ~"Engineering Productivity"
+/label ~"type::tooling" ~"tooling::pipelines" ~"Engineering Productivity"

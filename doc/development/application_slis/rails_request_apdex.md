@@ -78,7 +78,7 @@ duration is capped at 5 seconds.
 
 ## Decreasing the urgency (setting a higher target duration)
 
-Increasing the urgency on an existing endpoint can be done on
+Decreasing the urgency on an existing endpoint can be done on
 a case-by-case basis. Please take the following into account:
 
 1. Apdex is about perceived performance, if a user is actively waiting
@@ -137,7 +137,7 @@ the decision.
 
 ## Increasing urgency (setting a lower target duration)
 
-When decreasing the target duration, we need to make sure the endpoint
+When increasing the urgency, we need to make sure the endpoint
 still meets SLO for the fleet that handles the request. You can use the
 information in the logs to determine this:
 
