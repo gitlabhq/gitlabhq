@@ -270,7 +270,7 @@ func TestUploadHandlerForMultipleFiles(t *testing.T) {
 	require.NoError(t, s.writer.Close())
 
 	response := testUploadArtifacts(t, s.writer.FormDataContentType(), s.url, s.buffer)
-	require.Equal(t, http.StatusInternalServerError, response.Code)
+	require.Equal(t, http.StatusBadRequest, response.Code)
 }
 
 func TestUploadFormProcessing(t *testing.T) {

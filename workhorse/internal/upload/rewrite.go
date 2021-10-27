@@ -25,7 +25,10 @@ import (
 )
 
 // ErrInjectedClientParam means that the client sent a parameter that overrides one of our own fields
-var ErrInjectedClientParam = errors.New("injected client parameter")
+var (
+	ErrInjectedClientParam   = errors.New("injected client parameter")
+	ErrMultipleFilesUploaded = errors.New("upload request contains more than one file")
+)
 
 var (
 	multipartUploadRequests = promauto.NewCounterVec(
@@ -114,6 +117,10 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 }
 
 func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *filestore.SaveFileOpts) error {
+	if rew.filter.Count() > 0 {
+		return ErrMultipleFilesUploaded
+	}
+
 	multipartFiles.WithLabelValues(rew.filter.Name()).Inc()
 
 	filename := filepath.Base(p.FileName())
