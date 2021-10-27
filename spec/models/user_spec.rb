@@ -5679,16 +5679,29 @@ RSpec.describe User do
   end
 
   describe '#hook_attrs' do
-    it 'includes id, name, username, avatar_url, and email' do
-      user = create(:user)
-      user_attributes = {
+    let(:user) { create(:user) }
+    let(:user_attributes) do
+      {
         id: user.id,
         name: user.name,
         username: user.username,
-        avatar_url: user.avatar_url(only_path: false),
-        email: user.email
+        avatar_url: user.avatar_url(only_path: false)
       }
-      expect(user.hook_attrs).to eq(user_attributes)
+    end
+
+    context 'with a public email' do
+      it 'includes id, name, username, avatar_url, and email' do
+        user.public_email = "hello@hello.com"
+        user_attributes[:email] = user.public_email
+        expect(user.hook_attrs).to eq(user_attributes)
+      end
+    end
+
+    context 'without a public email' do
+      it "does not include email if user's email is private" do
+        user_attributes[:email] = "[REDACTED]"
+        expect(user.hook_attrs).to eq(user_attributes)
+      end
     end
   end
 
