@@ -49,7 +49,7 @@ module Projects
     private
 
     def validate!
-      unless valid_visibility_level_change?(project, params[:visibility_level])
+      unless valid_visibility_level_change?(project, project.visibility_attribute_value(params))
         raise ValidationError, s_('UpdateProject|New visibility level not allowed!')
       end
 
