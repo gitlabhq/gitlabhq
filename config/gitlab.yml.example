@@ -176,8 +176,10 @@ production: &base
     ## Application settings cache expiry in seconds (default: 60)
     # application_settings_cache_seconds: 60
 
-    ## Print initial root password to stdout during initialization (default: true)
-    # display_initial_root_password: true
+    ## Print initial root password to stdout during initialization (default: false)
+    # WARNING: setting this to true means that the root password will be printed in
+    # plaintext. This can be a security risk.
+    # display_initial_root_password: false
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
