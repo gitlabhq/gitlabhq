@@ -3610,7 +3610,7 @@ msgstr ""
 msgid "An error occurred while fetching ancestors"
 msgstr ""
 
-msgid "An error occurred while fetching branches.  Retry the search."
+msgid "An error occurred while fetching branches. Retry the search."
 msgstr ""
 
 msgid "An error occurred while fetching codequality mr diff reports."
@@ -3619,7 +3619,7 @@ msgstr ""
 msgid "An error occurred while fetching commit data."
 msgstr ""
 
-msgid "An error occurred while fetching commits.  Retry the search."
+msgid "An error occurred while fetching commits. Retry the search."
 msgstr ""
 
 msgid "An error occurred while fetching coverage reports."
@@ -5672,7 +5672,7 @@ msgstr ""
 msgid "Branches|Cancel, keep branch"
 msgstr ""
 
-msgid "Branches|Cant find HEAD commit for this branch"
+msgid "Branches|Can’t find HEAD commit for this branch"
 msgstr ""
 
 msgid "Branches|Compare"
@@ -7511,7 +7511,7 @@ msgstr ""
 msgid "ClusterIntegration|Check your token"
 msgstr ""
 
-msgid "ClusterIntegration|Choose the %{linkStart}security group %{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
+msgid "ClusterIntegration|Choose the %{linkStart}security group%{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
 msgstr ""
 
 msgid "ClusterIntegration|Choose the %{linkStart}subnets %{linkEnd} in your VPC where your worker nodes will run."
@@ -15695,10 +15695,10 @@ msgstr ""
 msgid "GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}."
 msgstr ""
 
-msgid "GitLabPages|Support for domains and certificates is disabled.  Ask your system's administrator to enable it."
+msgid "GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it."
 msgstr ""
 
-msgid "GitLabPages|The total size of deployed static content will be limited to this size.  0 for unlimited.  Leave empty to inherit the global value."
+msgid "GitLabPages|The total size of deployed static content will be limited to this size. 0 for unlimited. Leave empty to inherit the global value."
 msgstr ""
 
 msgid "GitLabPages|Unverified"
@@ -21049,9 +21049,6 @@ msgid "Max role"
 msgstr ""
 
 msgid "Max session time"
-msgstr ""
-
-msgid "MaxBuilds"
 msgstr ""
 
 msgid "Maximum 20 characters"
@@ -34921,7 +34918,7 @@ msgstr ""
 msgid "This group, its subgroups and projects has been scheduled for removal on %{date}."
 msgstr ""
 
-msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}'' has been scheduled for removal."
+msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
 msgstr ""
 
 msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
@@ -38515,9 +38512,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, please provide the exact URL to the repository. HTTP redirects will not be followed."
-msgstr ""
-
-msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{code_close} protocols, provide the exact URL to the repository. HTTP redirects will not be followed."
 msgstr ""
 
 msgid "When:"

@@ -116,7 +116,7 @@ RSpec.describe API::API do
                           'meta.root_namespace' => project.namespace.full_path,
                           'meta.user' => user.username,
                           'meta.client_id' => a_string_matching(%r{\Auser/.+}),
-                          'meta.feature_category' => 'issue_tracking',
+                          'meta.feature_category' => 'team_planning',
                           'route' => '/api/:version/projects/:id/issues')
           end
 

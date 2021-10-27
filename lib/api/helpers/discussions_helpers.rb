@@ -7,7 +7,7 @@ module API
         # This is a method instead of a constant, allowing EE to more easily
         # extend it.
         {
-          Issue => :issue_tracking,
+          Issue => :team_planning,
           Snippet => :snippets,
           MergeRequest => :code_review,
           Commit => :code_review

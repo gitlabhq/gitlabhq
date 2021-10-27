@@ -54,7 +54,7 @@ class GroupsController < Groups::ApplicationController
                      :destroy, :details, :transfer, :activity
                    ]
 
-  feature_category :issue_tracking, [:issues, :issues_calendar, :preview_markdown]
+  feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]

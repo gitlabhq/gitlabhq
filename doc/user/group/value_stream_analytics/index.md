@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value Stream Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9 for groups.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in GitLab 12.9 for groups.
 
 Value Stream Analytics measures the time spent to go from an
 [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab)
@@ -99,8 +99,8 @@ sole discretion of GitLab Inc.
 
 ## How metrics are measured
 
-> DORA API-based deployment metrics [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256)
-> to Premium in GitLab 14.3 for group-level Value Stream Analytics.
+> DORA API-based deployment metrics for group-level Value Stream Analytics were 
+> [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in 14.3.
 
 The "Time" metrics near the top of the page are measured as follows:
 
@@ -109,10 +109,9 @@ The "Time" metrics near the top of the page are measured as follows:
   issue by [crosslinking in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).)
 - **Lead Time for Changes**: median time between when a merge request is merged and deployed to a
 production environment for all merge requests deployed in the given time period.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5 (**Ultimate**
-tier only).
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5.
 
-- **Lead Time for Changes**: median duration between merge request merge and deployment to a production environment for all MRs deployed in the given time period. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5 (**Ultimate** tier only).
+- **Lead Time for Changes**: median duration between merge request merge and deployment to a production environment for all MRs deployed in the given time period. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5.
 
 The "Recent Activity" metrics near the top of the page are measured as follows:
 
@@ -417,8 +416,8 @@ To delete a custom value stream:
 ## Days to completion chart
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
-> - [Chart median line removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
-> - [Totals replaced with averages](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) in GitLab 13.12.
+> - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
+> - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
 
 This chart visually depicts the average number of days it takes for cycles to be completed.
 
@@ -430,7 +429,7 @@ The chart data is limited to the last 500 items.
 
 ## Type of work - Tasks by type chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 
 This chart shows a cumulative count of issues and merge requests per day.
 

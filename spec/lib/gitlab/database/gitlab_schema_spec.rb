@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Database::GitlabSchema do
+RSpec.describe Gitlab::Database::GitlabSchema do
   it 'matches all the tables in the database', :aggregate_failures do
     # These tables do not need a gitlab_schema
     excluded_tables = %w(ar_internal_metadata schema_migrations)

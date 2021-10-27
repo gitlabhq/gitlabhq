@@ -116,14 +116,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
     context 'application context' do
       context 'when a context is present' do
         before do
-          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking', caller_id: 'IssuesController#show')
+          ::Gitlab::ApplicationContext.push(feature_category: 'team_planning', caller_id: 'IssuesController#show')
         end
 
         it 'adds the feature category to the labels for required metrics' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'issue_tracking')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'team_planning')
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex)
-            .to receive(:increment).with(labels: { feature_category: 'issue_tracking', endpoint_id: 'IssuesController#show', request_urgency: :default }, success: true)
+            .to receive(:increment).with(labels: { feature_category: 'team_planning', endpoint_id: 'IssuesController#show', request_urgency: :default }, success: true)
 
           subject.call(env)
         end
@@ -141,12 +141,12 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
       context 'when application raises an exception when the feature category context is present' do
         before do
-          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking')
+          ::Gitlab::ApplicationContext.push(feature_category: 'team_planning')
           allow(app).to receive(:call).and_raise(StandardError)
         end
 
         it 'adds the feature category to the labels for http_requests_total' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'issue_tracking')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'team_planning')
           expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
           expect { subject.call(env) }.to raise_error(StandardError)

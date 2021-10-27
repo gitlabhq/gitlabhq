@@ -12,7 +12,7 @@ class IssueRebalancingWorker
 
   idempotent!
   urgency :low
-  feature_category :issue_tracking
+  feature_category :team_planning
   deduplicate :until_executed, including_scheduled: true
 
   def perform(ignore = nil, project_id = nil, root_namespace_id = nil)

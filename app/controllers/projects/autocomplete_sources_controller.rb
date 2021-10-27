@@ -3,7 +3,7 @@
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :authorize_read_milestone!, only: :milestones
 
-  feature_category :issue_tracking, [:issues, :labels, :milestones, :commands]
+  feature_category :team_planning, [:issues, :labels, :milestones, :commands]
   feature_category :code_review, [:merge_requests]
   feature_category :users, [:members]
   feature_category :snippets, [:snippets]

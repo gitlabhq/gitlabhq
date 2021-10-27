@@ -12,7 +12,7 @@ class IssuePlacementWorker
 
   idempotent!
   deduplicate :until_executed, including_scheduled: true
-  feature_category :issue_tracking
+  feature_category :team_planning
   urgency :high
   worker_resource_boundary :cpu
   weight 2

@@ -5,7 +5,7 @@ module API
     module AwardEmoji
       def self.awardables
         [
-          { type: 'issue', resource: :projects, find_by: :iid, feature_category: :issue_tracking },
+          { type: 'issue', resource: :projects, find_by: :iid, feature_category: :team_planning },
           { type: 'merge_request', resource: :projects, find_by: :iid, feature_category: :code_review },
           { type: 'snippet', resource: :projects, find_by: :id, feature_category: :snippets }
         ]

@@ -38,8 +38,8 @@ module Gitlab
         def unstick_or_continue_sticking(env)
           namespaces_and_ids = sticking_namespaces(env)
 
-          namespaces_and_ids.each do |(model, namespace, id)|
-            model.sticking.unstick_or_continue_sticking(namespace, id)
+          namespaces_and_ids.each do |(sticking, namespace, id)|
+            sticking.unstick_or_continue_sticking(namespace, id)
           end
         end
 
@@ -47,8 +47,8 @@ module Gitlab
         def stick_if_necessary(env)
           namespaces_and_ids = sticking_namespaces(env)
 
-          namespaces_and_ids.each do |model, namespace, id|
-            model.sticking.stick_if_necessary(namespace, id)
+          namespaces_and_ids.each do |sticking, namespace, id|
+            sticking.stick_if_necessary(namespace, id)
           end
         end
 
@@ -74,7 +74,7 @@ module Gitlab
             # models that support load balancing. In the future (if we
             # determined this to be OK) we may be able to relax this.
             ::Gitlab::Database::LoadBalancing.base_models.map do |model|
-              [model, :user, warden.user.id]
+              [model.sticking, :user, warden.user.id]
             end
           elsif env[STICK_OBJECT].present?
             env[STICK_OBJECT].to_a

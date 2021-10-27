@@ -965,6 +965,19 @@ license.save
 License.current # check to make sure it applied
 ```
 
+### Remove licenses
+
+To clean up the [License History table](../../user/admin_area/license.md#license-history):
+
+```ruby
+TYPE = :trial?
+# or :expired?
+
+License.select(&TYPE).each(&:destroy!)
+
+# or even License.all.each(&:destroy!)
+```
+
 ## Registry
 
 ### Registry Disk Space Usage by Project

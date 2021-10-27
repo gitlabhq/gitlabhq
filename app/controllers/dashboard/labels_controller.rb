@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Dashboard::LabelsController < Dashboard::ApplicationController
-  feature_category :issue_tracking
+  feature_category :team_planning
 
   def index
     respond_to do |format|

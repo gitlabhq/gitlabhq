@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
       sticking.stick_or_unstick_request(env, :user, 42)
 
       expect(env[Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].to_a)
-        .to eq([[ActiveRecord::Base, :user, 42]])
+        .to eq([[sticking, :user, 42]])
     end
 
     it 'sticks or unsticks multiple objects and updates the Rack environment' do
@@ -42,8 +42,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
       sticking.stick_or_unstick_request(env, :runner, '123456789')
 
       expect(env[Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].to_a).to eq([
-        [ActiveRecord::Base, :user, 42],
-        [ActiveRecord::Base, :runner, '123456789']
+        [sticking, :user, 42],
+        [sticking, :runner, '123456789']
       ])
     end
   end

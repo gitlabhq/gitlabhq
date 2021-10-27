@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Ci::Runner do
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_runner }
+
+    before do
+      Clusters::Applications::Runner # ensure that the referenced model is loaded
+    end
+  end
+
   describe 'groups association' do
     # Due to other assoctions such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to

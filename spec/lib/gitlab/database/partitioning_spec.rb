@@ -45,8 +45,13 @@ RSpec.describe Gitlab::Database::Partitioning do
       let(:model) { double('model') }
 
       it 'manages partitions for each registered model' do
+        registered_for_sync = described_class.__send__(:registered_for_sync)
+
+        allow(described_class).to receive(:registered_for_sync)
+          .and_return(registered_for_sync)
+
         expect(Gitlab::Database::EachDatabase).to receive(:each_model_connection)
-          .with(described_class.registered_models)
+          .with(registered_for_sync)
           .and_yield(model)
 
         expect(partition_manager_class).to receive(:new).with(model).and_return(partition_manager)
@@ -71,7 +76,7 @@ RSpec.describe Gitlab::Database::Partitioning do
         end
 
         expect(Gitlab::Database::EachDatabase).to receive(:each_model_connection)
-          .with(described_class.registered_models)
+          .with(described_class.__send__(:registered_models))
           .and_yield(model1)
           .and_yield(model2)
 
@@ -123,7 +128,7 @@ RSpec.describe Gitlab::Database::Partitioning do
 
   context 'ensure that the registered models have partitioning strategy' do
     it 'fails when partitioning_strategy is not specified for the model' do
-      expect(described_class.registered_models).to all(respond_to(:partitioning_strategy))
+      expect(described_class.__send__(:registered_models)).to all(respond_to(:partitioning_strategy))
     end
   end
 end

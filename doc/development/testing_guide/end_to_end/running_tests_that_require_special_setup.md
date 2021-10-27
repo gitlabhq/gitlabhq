@@ -165,20 +165,20 @@ QA_DEBUG=true WEBDRIVER_HEADLESS=false GITLAB_ADMIN_USERNAME=rootusername GITLAB
 
 The following includes more information on the command:
 
--`QA_DEBUG` - Set to `true` to verbosely log page object actions.
--`WEBDRIVER_HEADLESS` - When running locally, set to `false` to allow browser tests to be visible - watch your tests being run.
--`GITLAB_ADMIN_USERNAME` - Administrator username to use when adding a license.
--`GITLAB_ADMIN_PASSWORD` - Administrator password to use when adding a license.
--`GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN` - A valid personal access token with the `api` scope. This is used for API access during tests, and is used in the version that staging is currently running. The `ADMIN_ACCESS_TOKEN` is from a user with administrator access. Used for API access as an administrator during tests.
--`CLUSTER_API_URL` - Use the address `https://kubernetes.docker.internal:6443` . This address is used to enable the cluster to be network accessible while deploying using Auto DevOps.
--`https://[YOUR-PORT].qa-tunnel.gitlab.info/` - The address of your local GDK
--`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - The path to the monitor core specs
--`--tag` - the meta-tags used to filter the specs correctly
+- `QA_DEBUG` - Set to `true` to verbosely log page object actions.
+- `WEBDRIVER_HEADLESS` - When running locally, set to `false` to allow browser tests to be visible - watch your tests being run.
+- `GITLAB_ADMIN_USERNAME` - Administrator username to use when adding a license.
+- `GITLAB_ADMIN_PASSWORD` - Administrator password to use when adding a license.
+- `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN` - A valid personal access token with the `api` scope. This is used for API access during tests, and is used in the version that staging is currently running. The `ADMIN_ACCESS_TOKEN` is from a user with administrator access. Used for API access as an administrator during tests.
+- `CLUSTER_API_URL` - Use the address `https://kubernetes.docker.internal:6443` . This address is used to enable the cluster to be network accessible while deploying using Auto DevOps.
+- `https://[YOUR-PORT].qa-tunnel.gitlab.info/` - The address of your local GDK
+- `qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - The path to the monitor core specs
+- `--tag` - the meta-tags used to filter the specs correctly
 
 At the moment of this writing, there are two specs which run monitor tests:
 
--`qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - has the specs of features in GitLab Free
--`qa/specs/features/ee/browser_ui/8_monitor/all_monitor_features_spec.rb` - has the specs of features for paid GitLab (Enterprise Edition)
+- `qa/specs/features/browser_ui/8_monitor/all_monitor_core_features_spec.rb` - has the specs of features in GitLab Free
+- `qa/specs/features/ee/browser_ui/8_monitor/all_monitor_features_spec.rb` - has the specs of features for paid GitLab (Enterprise Edition)
 
 ### How to debug
 

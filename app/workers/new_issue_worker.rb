@@ -8,7 +8,7 @@ class NewIssueWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options retry: 3
   include NewIssuable
 
-  feature_category :issue_tracking
+  feature_category :team_planning
   urgency :high
   worker_resource_boundary :cpu
   weight 2

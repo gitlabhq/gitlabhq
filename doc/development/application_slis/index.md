@@ -43,7 +43,7 @@ example:
 ```ruby
 Gitlab::Metrics::Sli.initialize_sli(:received_email, [
   {
-    feature_category: :issue_tracking,
+    feature_category: :team_planning,
     email_type: :create_issue
   },
   {

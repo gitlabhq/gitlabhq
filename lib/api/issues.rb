@@ -7,7 +7,7 @@ module API
 
     before { authenticate_non_get! }
 
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     helpers do
       params :negatable_issue_filter_params do

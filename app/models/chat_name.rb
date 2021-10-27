@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ChatName < ApplicationRecord
+  include LooseForeignKey
+
   LAST_USED_AT_INTERVAL = 1.hour
 
   belongs_to :integration, foreign_key: :service_id
@@ -13,6 +15,8 @@ class ChatName < ApplicationRecord
 
   validates :user_id, uniqueness: { scope: [:service_id] }
   validates :chat_id, uniqueness: { scope: [:service_id, :team_id] }
+
+  loose_foreign_key :ci_pipeline_chat_data, :chat_name_id, on_delete: :async_delete
 
   # Updates the "last_used_timestamp" but only if it wasn't already updated
   # recently.

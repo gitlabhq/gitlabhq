@@ -923,7 +923,7 @@ RSpec.describe ApplicationController do
 
   describe '#set_current_context' do
     controller(described_class) do
-      feature_category :issue_tracking
+      feature_category :team_planning
 
       def index
         Gitlab::ApplicationContext.with_raw_context do |context|
@@ -977,7 +977,7 @@ RSpec.describe ApplicationController do
     it 'sets the feature_category as defined in the controller' do
       get :index, format: :json
 
-      expect(json_response['meta.feature_category']).to eq('issue_tracking')
+      expect(json_response['meta.feature_category']).to eq('team_planning')
     end
 
     it 'assigns the context to a variable for logging' do

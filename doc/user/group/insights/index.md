@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Insights **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
 Configure the Insights that matter for your groups. Explore data such as
 triage hygiene, issues created or closed for a given period, average time for merge

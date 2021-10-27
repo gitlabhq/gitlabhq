@@ -14,7 +14,7 @@ class Projects::BoardsController < Projects::ApplicationController
     push_frontend_feature_flag(:labels_widget, project, default_enabled: :yaml)
   end
 
-  feature_category :boards
+  feature_category :team_planning
 
   private
 

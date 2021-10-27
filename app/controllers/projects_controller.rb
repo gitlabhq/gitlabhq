@@ -49,7 +49,7 @@ class ProjectsController < Projects::ApplicationController
                    ]
 
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
-  feature_category :issue_tracking, [:preview_markdown, :new_issuable_address]
+  feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
   feature_category :code_review, [:unfoldered_environment_names]
 

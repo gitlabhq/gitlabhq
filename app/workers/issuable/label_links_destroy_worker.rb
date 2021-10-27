@@ -7,7 +7,7 @@ module Issuable
     data_consistency :always
 
     idempotent!
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     def perform(target_id, target_type)
       ::Issuable::DestroyLabelLinksService.new(target_id, target_type).execute

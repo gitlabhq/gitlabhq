@@ -23,7 +23,7 @@ module Gitlab
           [
             %r(#{RESERVED_WORDS_PREFIX}/noteable/issue/\d+/notes\z),
             'issue_notes',
-            'issue_tracking'
+            'team_planning'
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/noteable/merge_request/\d+/notes\z),
@@ -33,7 +33,7 @@ module Gitlab
           [
             %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
             'issue_title',
-            'issue_tracking'
+            'team_planning'
           ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/commit/\S+/pipelines\.json\z),

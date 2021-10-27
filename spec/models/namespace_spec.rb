@@ -40,6 +40,30 @@ RSpec.describe Namespace do
     end
   end
 
+  shared_examples 'validations called by different namespace types' do |method|
+    using RSpec::Parameterized::TableSyntax
+
+    where(:namespace_type, :call_validation) do
+      :namespace            | true
+      :group                | true
+      :user_namespace       | true
+      :project_namespace    | false
+    end
+
+    with_them do
+      it 'conditionally runs given validation' do
+        namespace = build(namespace_type)
+        if call_validation
+          expect(namespace).to receive(method)
+        else
+          expect(namespace).not_to receive(method)
+        end
+
+        namespace.valid?
+      end
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
@@ -112,14 +136,20 @@ RSpec.describe Namespace do
       end
     end
 
-    it 'does not allow too deep nesting' do
-      ancestors = (1..21).to_a
-      group = build(:group)
+    describe '#nesting_level_allowed' do
+      context 'for a group' do
+        it 'does not allow too deep nesting' do
+          ancestors = (1..21).to_a
+          group = build(:group)
 
-      allow(group).to receive(:ancestors).and_return(ancestors)
+          allow(group).to receive(:ancestors).and_return(ancestors)
 
-      expect(group).not_to be_valid
-      expect(group.errors[:parent_id].first).to eq('has too deep level of nesting')
+          expect(group).not_to be_valid
+          expect(group.errors[:parent_id].first).to eq('has too deep level of nesting')
+        end
+      end
+
+      it_behaves_like 'validations called by different namespace types', :nesting_level_allowed
     end
 
     describe 'reserved path validation' do
@@ -1855,87 +1885,95 @@ RSpec.describe Namespace do
     end
 
     context 'with a parent' do
-      context 'when parent has shared runners disabled' do
-        let(:parent) { create(:group, :shared_runners_disabled) }
-        let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
+      context 'when namespace is a group' do
+        context 'when parent has shared runners disabled' do
+          let(:parent) { create(:group, :shared_runners_disabled) }
+          let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
 
-        it 'is invalid' do
-          expect(group).to be_invalid
-          expect(group.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group has shared Runners disabled')
+          it 'is invalid' do
+            expect(group).to be_invalid
+            expect(group.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group has shared Runners disabled')
+          end
         end
-      end
 
-      context 'when parent has shared runners disabled but allows override' do
-        let(:parent) { create(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners) }
-        let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
+        context 'when parent has shared runners disabled but allows override' do
+          let(:parent) { create(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners) }
+          let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
 
-        it 'is valid' do
-          expect(group).to be_valid
+          it 'is valid' do
+            expect(group).to be_valid
+          end
         end
-      end
 
-      context 'when parent has shared runners enabled' do
-        let(:parent) { create(:group, shared_runners_enabled: true) }
-        let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
+        context 'when parent has shared runners enabled' do
+          let(:parent) { create(:group, shared_runners_enabled: true) }
+          let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
 
-        it 'is valid' do
-          expect(group).to be_valid
+          it 'is valid' do
+            expect(group).to be_valid
+          end
         end
       end
     end
+
+    it_behaves_like 'validations called by different namespace types', :changing_shared_runners_enabled_is_allowed
   end
 
   describe 'validation #changing_allow_descendants_override_disabled_shared_runners_is_allowed' do
-    context 'without a parent' do
-      context 'with shared runners disabled' do
-        let(:namespace) { build(:namespace, :allow_descendants_override_disabled_shared_runners, :shared_runners_disabled) }
+    context 'when namespace is a group' do
+      context 'without a parent' do
+        context 'with shared runners disabled' do
+          let(:namespace) { build(:group, :allow_descendants_override_disabled_shared_runners, :shared_runners_disabled) }
 
-        it 'is valid' do
-          expect(namespace).to be_valid
+          it 'is valid' do
+            expect(namespace).to be_valid
+          end
+        end
+
+        context 'with shared runners enabled' do
+          let(:namespace) { create(:namespace) }
+
+          it 'is invalid' do
+            namespace.allow_descendants_override_disabled_shared_runners = true
+
+            expect(namespace).to be_invalid
+            expect(namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be changed if shared runners are enabled')
+          end
         end
       end
 
-      context 'with shared runners enabled' do
-        let(:namespace) { create(:namespace) }
+      context 'with a parent' do
+        context 'when parent does not allow shared runners' do
+          let(:parent) { create(:group, :shared_runners_disabled) }
+          let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
 
-        it 'is invalid' do
-          namespace.allow_descendants_override_disabled_shared_runners = true
+          it 'is invalid' do
+            expect(group).to be_invalid
+            expect(group.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be enabled because parent group does not allow it')
+          end
+        end
 
-          expect(namespace).to be_invalid
-          expect(namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be changed if shared runners are enabled')
+        context 'when parent allows shared runners and setting to true' do
+          let(:parent) { create(:group, shared_runners_enabled: true) }
+          let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
+
+          it 'is valid' do
+            expect(group).to be_valid
+          end
+        end
+
+        context 'when parent allows shared runners and setting to false' do
+          let(:parent) { create(:group, shared_runners_enabled: true) }
+          let(:group) { build(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent_id: parent.id) }
+
+          it 'is valid' do
+            expect(group).to be_valid
+          end
         end
       end
     end
 
-    context 'with a parent' do
-      context 'when parent does not allow shared runners' do
-        let(:parent) { create(:group, :shared_runners_disabled) }
-        let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
-
-        it 'is invalid' do
-          expect(group).to be_invalid
-          expect(group.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be enabled because parent group does not allow it')
-        end
-      end
-
-      context 'when parent allows shared runners and setting to true' do
-        let(:parent) { create(:group, shared_runners_enabled: true) }
-        let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
-
-        it 'is valid' do
-          expect(group).to be_valid
-        end
-      end
-
-      context 'when parent allows shared runners and setting to false' do
-        let(:parent) { create(:group, shared_runners_enabled: true) }
-        let(:group) { build(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent_id: parent.id) }
-
-        it 'is valid' do
-          expect(group).to be_valid
-        end
-      end
-    end
+    it_behaves_like 'validations called by different namespace types', :changing_allow_descendants_override_disabled_shared_runners_is_allowed
   end
 
   describe '#root?' do

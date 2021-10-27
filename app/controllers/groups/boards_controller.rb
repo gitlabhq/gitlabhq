@@ -14,7 +14,7 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:labels_widget, group, default_enabled: :yaml)
   end
 
-  feature_category :boards
+  feature_category :team_planning
 
   private
 

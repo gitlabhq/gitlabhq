@@ -8,7 +8,7 @@ module Boards
     before_action :authorize_read_list, only: [:index]
     skip_before_action :authenticate_user!, only: [:index]
 
-    feature_category :boards
+    feature_category :team_planning
 
     def index
       lists = Boards::Lists::ListService.new(board.resource_parent, current_user).execute(board)

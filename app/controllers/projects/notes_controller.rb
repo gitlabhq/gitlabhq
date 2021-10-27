@@ -11,7 +11,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
-  feature_category :issue_tracking
+  feature_category :team_planning
 
   def delete_attachment
     note.remove_attachment!

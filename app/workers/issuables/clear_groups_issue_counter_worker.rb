@@ -8,7 +8,7 @@ module Issuables
 
     idempotent!
     urgency :low
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     def perform(group_ids = [])
       return if group_ids.empty?

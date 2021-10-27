@@ -26,6 +26,8 @@ For authentication, the Releases API accepts either:
 
 ## List Releases
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+
 Paginated list of Releases, sorted by `released_at`.
 
 ```plaintext
@@ -230,6 +232,8 @@ Example response:
 ```
 
 ## Get a Release by a tag name
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Get a Release for the given tag.
 
@@ -508,7 +512,8 @@ adding milestones for ancestor groups raises an error.
 
 ## Collect release evidence **(PREMIUM SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Create Evidence for an existing Release.
 
@@ -534,6 +539,8 @@ Example response:
 ```
 
 ## Update a release
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Update a release. Developer level access to the project is required to update a release.
 
@@ -641,6 +648,8 @@ Example response:
 ```
 
 ## Delete a Release
+
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Delete a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
 

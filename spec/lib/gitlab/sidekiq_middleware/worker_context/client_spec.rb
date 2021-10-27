@@ -11,7 +11,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       include ApplicationWorker
 
-      feature_category :issue_tracking
+      feature_category :team_planning
 
       def self.job_for_args(args)
         jobs.find { |job| job['args'] == args }
@@ -78,8 +78,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
         job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
 
-        expect(job1['meta.feature_category']).to eq('issue_tracking')
-        expect(job2['meta.feature_category']).to eq('issue_tracking')
+        expect(job1['meta.feature_category']).to eq('team_planning')
+        expect(job2['meta.feature_category']).to eq('team_planning')
       end
 
       it 'takes the feature category from the caller if the worker is not owned' do
@@ -116,8 +116,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
         job2 = TestWithContextWorker.job_for_args(['job2', 1, 2, 3])
 
-        expect(job1['meta.feature_category']).to eq('issue_tracking')
-        expect(job2['meta.feature_category']).to eq('issue_tracking')
+        expect(job1['meta.feature_category']).to eq('team_planning')
+        expect(job2['meta.feature_category']).to eq('team_planning')
       end
 
       it 'takes the feature category from the caller if the worker is not owned' do

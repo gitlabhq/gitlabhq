@@ -6,7 +6,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     params do
       requires :id, type: String, desc: 'The ID of a project'

@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   let(:conflict_error) { Class.new(RuntimeError) }
-  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
+  let(:model) { ActiveRecord::Base }
+  let(:db_host) { model.connection_pool.db_config.host }
   let(:config) do
     Gitlab::Database::LoadBalancing::Configuration
-      .new(ActiveRecord::Base, [db_host, db_host])
+      .new(model, [db_host, db_host])
   end
 
   let(:lb) { described_class.new(config) }
@@ -450,6 +451,53 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
     it 'returns nil if there are no results' do
       expect(lb.send(:get_write_location, double(select_all: []))).to be_nil
+    end
+  end
+
+  describe 'primary connection re-use', :reestablished_active_record_base do
+    let(:model) { Ci::CiDatabaseRecord }
+
+    before do
+      # fake additional Database
+      model.establish_connection(
+        ActiveRecord::DatabaseConfigurations::HashConfig.new(Rails.env, 'ci', ActiveRecord::Base.connection_db_config.configuration_hash)
+      )
+    end
+
+    describe '#read' do
+      it 'returns ci replica connection' do
+        expect { |b| lb.read(&b) }.to yield_with_args do |args|
+          expect(args.pool.db_config.name).to eq('ci_replica')
+        end
+      end
+
+      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+        it 'returns ci replica connection' do
+          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+          expect { |b| lb.read(&b) }.to yield_with_args do |args|
+            expect(args.pool.db_config.name).to eq('ci_replica')
+          end
+        end
+      end
+    end
+
+    describe '#read_write' do
+      it 'returns Ci::CiDatabaseRecord connection' do
+        expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
+          expect(args.pool.db_config.name).to eq('ci')
+        end
+      end
+
+      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+        it 'returns ActiveRecord::Base connection' do
+          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+          expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
+            expect(args.pool.db_config.name).to eq('main')
+          end
+        end
+      end
     end
   end
 end

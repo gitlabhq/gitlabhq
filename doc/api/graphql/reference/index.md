@@ -1554,7 +1554,7 @@ Input type: `DastProfileCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilecreatebranchname"></a>`branchName` | [`String`](#string) | Associated branch. |
 | <a id="mutationdastprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofilecreatedastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileScheduleInput`](#dastprofilescheduleinput) | Represents a DAST Profile Schedule. Results in an error if `dast_on_demand_scans_scheduler` feature flag is disabled. |
+| <a id="mutationdastprofilecreatedastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileScheduleInput`](#dastprofilescheduleinput) | Represents a DAST Profile Schedule. |
 | <a id="mutationdastprofilecreatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofilecreatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be associated. |
 | <a id="mutationdastprofilecreatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
@@ -1619,7 +1619,7 @@ Input type: `DastProfileUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofileupdatebranchname"></a>`branchName` | [`String`](#string) | Associated branch. |
 | <a id="mutationdastprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofileupdatedastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileScheduleInput`](#dastprofilescheduleinput) | Represents a DAST profile schedule. Results in an error if `dast_on_demand_scans_scheduler` feature flag is disabled. |
+| <a id="mutationdastprofileupdatedastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileScheduleInput`](#dastprofilescheduleinput) | Represents a DAST profile schedule. |
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile to be associated. |
 | <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
@@ -8951,7 +8951,7 @@ Represents a DAST Profile.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dastprofilebranch"></a>`branch` | [`DastProfileBranch`](#dastprofilebranch) | Associated branch. |
-| <a id="dastprofiledastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileSchedule`](#dastprofileschedule) | Associated profile schedule. Will always return `null` if `dast_on_demand_scans_scheduler` feature flag is disabled. |
+| <a id="dastprofiledastprofileschedule"></a>`dastProfileSchedule` | [`DastProfileSchedule`](#dastprofileschedule) | Associated profile schedule. |
 | <a id="dastprofiledastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Associated scanner profile. |
 | <a id="dastprofiledastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Associated site profile. |
 | <a id="dastprofiledescription"></a>`description` | [`String`](#string) | Description of the scan. |

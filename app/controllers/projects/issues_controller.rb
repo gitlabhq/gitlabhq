@@ -69,7 +69,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   alias_method :designs, :show
 
-  feature_category :issue_tracking, [
+  feature_category :team_planning, [
                      :index, :calendar, :show, :new, :create, :edit, :update,
                      :destroy, :move, :reorder, :designs, :toggle_subscription,
                      :discussions, :bulk_update, :realtime_changes,

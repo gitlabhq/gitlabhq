@@ -153,7 +153,7 @@ information in the logs to determine this:
    the service the endpoint is handled by. The overall duration should
    be lower than the target you intend to set.
 
-1. If the overall duration is below the intended targed. Please also
+1. Assess if the overall duration is below the intended target. Please also
    check the peaks over time in [this
    graph](https://log.gprd.gitlab.net/goto/9319c4a402461d204d13f3a4924a89fc)
    in Kibana. Here, the percentile in question should not peak above
@@ -161,7 +161,7 @@ information in the logs to determine this:
 
 Since decreasing a threshold too much could result in alerts for the
 apdex degradation, please also involve a Scalability team member in
-the merge reqeust.
+the merge request.
 
 ## How to adjust the urgency
 

@@ -100,7 +100,7 @@ module Database
       cross_database_context[:modified_tables_by_db][database].merge(tables)
 
       all_tables = cross_database_context[:modified_tables_by_db].values.map(&:to_a).flatten
-      schemas = Database::GitlabSchema.table_schemas(all_tables)
+      schemas = ::Gitlab::Database::GitlabSchema.table_schemas(all_tables)
 
       if schemas.many?
         message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \

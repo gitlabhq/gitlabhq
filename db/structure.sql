@@ -135,6 +135,19 @@ CREATE TABLE incident_management_pending_issue_escalations (
 )
 PARTITION BY RANGE (process_at);
 
+CREATE TABLE verification_codes (
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    visitor_id_code text NOT NULL,
+    code text NOT NULL,
+    phone text NOT NULL,
+    CONSTRAINT check_9b84e6aaff CHECK ((char_length(code) <= 8)),
+    CONSTRAINT check_ccc542256b CHECK ((char_length(visitor_id_code) <= 64)),
+    CONSTRAINT check_f5684c195b CHECK ((char_length(phone) <= 32))
+)
+PARTITION BY RANGE (created_at);
+
+COMMENT ON TABLE verification_codes IS 'JiHu-specific table';
+
 CREATE TABLE web_hook_logs (
     id bigint NOT NULL,
     web_hook_id integer NOT NULL,
@@ -20185,19 +20198,6 @@ CREATE SEQUENCE users_statistics_id_seq
 
 ALTER SEQUENCE users_statistics_id_seq OWNED BY users_statistics.id;
 
-CREATE TABLE verification_codes (
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    visitor_id_code text NOT NULL,
-    code text NOT NULL,
-    phone text NOT NULL,
-    CONSTRAINT check_9b84e6aaff CHECK ((char_length(code) <= 8)),
-    CONSTRAINT check_ccc542256b CHECK ((char_length(visitor_id_code) <= 64)),
-    CONSTRAINT check_f5684c195b CHECK ((char_length(phone) <= 32))
-)
-PARTITION BY RANGE (created_at);
-
-COMMENT ON TABLE verification_codes IS 'JiHu-specific table';
-
 CREATE TABLE vulnerabilities (
     id bigint NOT NULL,
     milestone_id bigint,
@@ -26446,8 +26446,6 @@ CREATE UNIQUE INDEX index_release_links_on_release_id_and_name ON release_links 
 
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_url ON release_links USING btree (release_id, url);
 
-CREATE INDEX index_releases_on_author_id ON releases USING btree (author_id);
-
 CREATE INDEX index_releases_on_author_id_id_created_at ON releases USING btree (author_id, id, created_at);
 
 CREATE INDEX index_releases_on_project_id_and_tag ON releases USING btree (project_id, tag);
@@ -27549,6 +27547,10 @@ ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_p
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_62_pkey;
 
 ALTER INDEX product_analytics_events_experimental_pkey ATTACH PARTITION gitlab_partitions_static.product_analytics_events_experimental_63_pkey;
+
+CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER ci_runners_loose_fk_trigger AFTER DELETE ON ci_runners REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER trigger_91dc388a5fe6 BEFORE INSERT OR UPDATE ON dep_ci_build_trace_sections FOR EACH ROW EXECUTE FUNCTION trigger_91dc388a5fe6();
 

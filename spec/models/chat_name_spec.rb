@@ -43,4 +43,12 @@ RSpec.describe ChatName do
       expect(subject.last_used_at).to eq(time)
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :chat_name }
+
+    before do
+      Ci::PipelineChatData # ensure that the referenced model is loaded
+    end
+  end
 end
