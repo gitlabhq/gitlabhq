@@ -233,7 +233,7 @@ func handleExifUpload(ctx context.Context, r io.Reader, filename string, imageTy
 }
 
 func isTIFF(r io.Reader) bool {
-	_, err := tiff.Decode(r)
+	_, err := tiff.DecodeConfig(r)
 	if err == nil {
 		return true
 	}
