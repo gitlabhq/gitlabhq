@@ -38,11 +38,12 @@ with GitLab, so it's up to developers to use a compatible client library and
 
 To create and enable a feature flag:
 
-1. Navigate to your project's **Deployments > Feature Flags**.
-1. Click the **New feature flag** button.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Select **New feature flag**.
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
-1. Enter a description (optional, 255 characters max).
+1. Optional. Enter a description (255 characters maximum).
 1. Enter details about how the flag should be applied:
    - In GitLab 13.0 and earlier, add **Environment specs**. For each environment,
      include the **Status** (default enabled) and [**Rollout strategy**](#rollout-strategy-legacy)
@@ -50,9 +51,9 @@ To create and enable a feature flag:
    - In GitLab 13.1 and later, add Feature Flag [**Strategies**](#feature-flag-strategies).
      For each strategy, include the **Type** (defaults to [**All users**](#all-users))
      and **Environments** (defaults to all environments).
-1. Click **Create feature flag**.
+1. Select **Create feature flag**.
 
-You can change these settings by clicking the **{pencil}** (edit) button
+To change these settings, select **Edit** (**{pencil}**).
 next to any feature flag in the list.
 
 ## Maximum number of feature flags
@@ -91,7 +92,7 @@ and the supported strategies are:
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
 or by editing an existing feature flag after creation by navigating to **Deployments > Feature Flags**
-and clicking **{pencil}** (edit).
+and selecting **Edit** (**{pencil}**).
 
 ### All users
 
@@ -204,14 +205,15 @@ For example:
 
 To create a user list:
 
-1. In your project, navigate to **Deployments > Feature Flags**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
 1. Select **View user lists**
 1. Select **New user list**.
 1. Enter a name for the list.
 1. Select **Create**.
 
-You can view a list's User IDs by clicking the **{pencil}** (edit) button next to it.
-When viewing a list, you can rename it by clicking the **Edit** button.
+You can view a list's User IDs by selecting **Edit** (**{pencil}**) next to it.
+When viewing a list, you can rename it by selecting **Edit** (**{pencil}**).
 
 #### Add users to a user list
 
@@ -219,12 +221,13 @@ When viewing a list, you can rename it by clicking the **Edit** button.
 
 To add users to a user list:
 
-1. In your project, navigate to **Deployments > Feature Flags**.
-1. Click on the **{pencil}** (edit) button next to the list you want to add users to.
-1. Click on **Add Users**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Select **Edit** (**{pencil}**) next to the list you want to add users to.
+1. Select **Add Users**.
 1. Enter the user IDs as a comma-separated list of values. For example,
    `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on.
-1. Click on **Add**.
+1. Select **Add**.
 
 #### Remove users from a user list
 
@@ -232,9 +235,10 @@ To add users to a user list:
 
 To remove users from a user list:
 
-1. In your project, navigate to **Deployments > Feature Flags**.
-1. Click on the **{pencil}** (edit) button next to the list you want to change.
-1. Click on the **{remove}** (remove) button next to the ID you want to remove.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Select **Edit** (**{pencil}**) next to the list you want to change.
+1. Select **Remove** (**{remove}**) next to the ID you want to remove.
 
 ## Rollout strategy (legacy)
 
@@ -270,21 +274,23 @@ See [this video tutorial](https://www.youtube.com/watch?v=CAJY2IGep7Y) for help 
 In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621),
 to disable a feature flag for a specific environment:
 
-1. Navigate to your project's **Deployments > Feature Flags**.
-1. For the feature flag you want to disable, click the Pencil icon.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. For the feature flag you want to disable, select **Edit** (**{pencil}**).
 1. To disable the flag:
 
    - In GitLab 13.0 and earlier: Slide the Status toggle for the environment. Or, to delete the
-     environment spec, on the right, click the **Remove (X)** icon.
+     environment spec, on the right, select **Remove (X)**.
    - In GitLab 13.1 and later: For each strategy it applies to, under **Environments**, delete the environment.
 
-1. Click **Save changes**.
+1. Select **Save changes**.
 
 ## Disable a feature flag for all environments
 
 To disable a feature flag for all environments:
 
-1. Navigate to your project's **Deployments > Feature Flags**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
 1. For the feature flag you want to disable, slide the Status toggle to **Disabled**.
 
 The feature flag is displayed on the **Disabled** tab.
@@ -298,8 +304,9 @@ Then prepare your application with a client library.
 
 To get the access credentials that your application needs to communicate with GitLab:
 
-1. Navigate to your project's **Deployments > Feature Flags**.
-1. Click the **Configure** button to view the following:
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Feature Flags**.
+1. Select **Configure** to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
    - **Application name**: The name of the *environment* the application runs in

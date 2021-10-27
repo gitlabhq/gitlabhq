@@ -308,6 +308,31 @@ Note the following:
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
+## Track newly included merge requests per deployment
+
+GitLab can track newly included merge requests per deployment.
+When a deployment succeeded, the system calculates commit-diffs between the latest deployment and the previous deployment.
+This tracking information can be fetched via the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
+and displayed at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
+
+To activate this tracking, your environment must be configured in the following:
+
+- [Environment name](../yaml/index.md#environmentname) is not foldered with `/` (that is, top-level/long-lived environments), _OR_
+- [Environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
+
+Here are the example setups of [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
+
+```yaml
+# Trackable
+environment: production
+environment: production/aws
+environment: development
+
+# Non Trackable
+environment: review/$CI_COMMIT_REF_SLUG
+environment: testing/aws
+```
+
 ## Working with environments
 
 Once environments are configured, GitLab provides many features for working with them,
