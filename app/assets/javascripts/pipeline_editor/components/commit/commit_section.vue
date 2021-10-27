@@ -11,7 +11,6 @@ import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphq
 import updateCurrentBranchMutation from '../../graphql/mutations/update_current_branch.mutation.graphql';
 import updateLastCommitBranchMutation from '../../graphql/mutations/update_last_commit_branch.mutation.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
-import getIsNewCiConfigFile from '../../graphql/queries/client/is_new_ci_config_file.graphql';
 import getPipelineEtag from '../../graphql/queries/client/pipeline_etag.graphql';
 
 import CommitForm from './commit_form.vue';
@@ -41,18 +40,19 @@ export default {
       required: false,
       default: '',
     },
+    isNewCiConfigFile: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       commit: {},
-      isNewCiConfigFile: false,
       isSaving: false,
     };
   },
   apollo: {
-    isNewCiConfigFile: {
-      query: getIsNewCiConfigFile,
-    },
     currentBranch: {
       query: getCurrentBranch,
     },

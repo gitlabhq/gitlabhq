@@ -9,6 +9,7 @@ class Admin::HookLogsController < Admin::ApplicationController
   respond_to :html
 
   feature_category :integrations
+  urgency :low, [:retry]
 
   def show
   end

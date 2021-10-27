@@ -35,6 +35,17 @@ job_build:
     - echo "build"
   needs: ["job_test_2"]
 `;
+
+export const mockCiTemplateQueryResponse = {
+  data: {
+    project: {
+      ciTemplate: {
+        content: mockCiYml,
+      },
+    },
+  },
+};
+
 export const mockBlobContentQueryResponse = {
   data: {
     project: { repository: { blobs: { nodes: [{ rawBlob: mockCiYml }] } } },

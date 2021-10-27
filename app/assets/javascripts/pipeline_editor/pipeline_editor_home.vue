@@ -125,6 +125,7 @@ export default {
       :ref="$options.commitSectionRef"
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"
+      :is-new-ci-config-file="isNewCiConfigFile"
       v-on="$listeners"
     />
     <pipeline-editor-drawer />

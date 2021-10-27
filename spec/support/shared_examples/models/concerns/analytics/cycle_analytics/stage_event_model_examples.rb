@@ -12,6 +12,7 @@ RSpec.shared_examples 'StageEventModel' do
           project_id: 4,
           author_id: 5,
           milestone_id: 6,
+          state_id: 1,
           start_event_timestamp: time,
           end_event_timestamp: time
         },
@@ -22,6 +23,7 @@ RSpec.shared_examples 'StageEventModel' do
           project_id: 11,
           author_id: 12,
           milestone_id: 13,
+          state_id: 1,
           start_event_timestamp: time,
           end_event_timestamp: time
         }
@@ -36,6 +38,7 @@ RSpec.shared_examples 'StageEventModel' do
         :project_id,
         :milestone_id,
         :author_id,
+        :state_id,
         :start_event_timestamp,
         :end_event_timestamp
       ]
@@ -59,7 +62,13 @@ RSpec.shared_examples 'StageEventModel' do
       upsert_data
 
       output_data = described_class.all.map do |record|
-        column_order.map { |column| record[column] }
+        column_order.map do |column|
+          if column == :state_id
+            described_class.states[record[column]]
+          else
+            record[column]
+          end
+        end
       end.sort
 
       expect(input_data.map(&:values).sort).to eq(output_data)

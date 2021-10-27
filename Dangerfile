@@ -17,6 +17,14 @@ end
 
 anything_to_post = status_report.values.any? { |data| data.any? }
 
-if helper.ci? && anything_to_post
+return unless helper.ci?
+
+if project_helper.labels_to_add.any?
+  gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
+                                  gitlab.mr_json['iid'],
+                                  add_labels: project_helper.labels_to_add.join(','))
+end
+
+if anything_to_post
   markdown("**If needed, you can retry the [`danger-review` job](#{ENV['CI_JOB_URL']}) that generated this comment.**")
 end

@@ -11,17 +11,21 @@ import PipelineEditorMessages from '~/pipeline_editor/components/ui/pipeline_edi
 import { COMMIT_SUCCESS, COMMIT_FAILURE } from '~/pipeline_editor/constants';
 import getBlobContent from '~/pipeline_editor/graphql/queries/blob_content.graphql';
 import getCiConfigData from '~/pipeline_editor/graphql/queries/ci_config.graphql';
-import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
 import getTemplate from '~/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from '~/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
+
+import getPipelineQuery from '~/pipeline_editor/graphql/queries/client/pipeline.graphql';
+
 import PipelineEditorApp from '~/pipeline_editor/pipeline_editor_app.vue';
 import PipelineEditorHome from '~/pipeline_editor/pipeline_editor_home.vue';
+
 import {
   mockCiConfigPath,
   mockCiConfigQueryResponse,
   mockBlobContentQueryResponse,
   mockBlobContentQueryResponseNoCiFile,
   mockCiYml,
+  mockCiTemplateQueryResponse,
   mockCommitSha,
   mockCommitShaResults,
   mockDefaultBranch,
@@ -79,7 +83,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({ props = {}, provide = {}, stubs = {} } = {}) => {
+  const createComponentWithApollo = async ({ provide = {}, stubs = {} } = {}) => {
     const handlers = [
       [getBlobContent, mockBlobContentData],
       [getCiConfigData, mockCiConfigData],
@@ -87,7 +91,6 @@ describe('Pipeline editor app component', () => {
       [getLatestCommitShaQuery, mockLatestCommitShaQuery],
       [getPipelineQuery, mockPipelineQuery],
     ];
-
     mockApollo = createMockApollo(handlers);
 
     const options = {
@@ -95,13 +98,15 @@ describe('Pipeline editor app component', () => {
       data() {
         return {
           currentBranch: mockDefaultBranch,
+          lastCommitBranch: '',
+          appStatus: '',
         };
       },
       mocks: {},
       apolloProvider: mockApollo,
     };
 
-    createComponent({ props, provide, stubs, options });
+    createComponent({ provide, stubs, options });
 
     return waitForPromises();
   };
@@ -199,7 +204,7 @@ describe('Pipeline editor app component', () => {
         it('shows a unkown error message', async () => {
           const loadUnknownFailureText = 'The CI configuration was not loaded, please try again.';
 
-          mockBlobContentData.mockRejectedValueOnce(new Error('My error!'));
+          mockBlobContentData.mockRejectedValueOnce();
           await createComponentWithApollo({
             stubs: {
               PipelineEditorMessages,
@@ -344,6 +349,8 @@ describe('Pipeline editor app component', () => {
 
   describe('when refetching content', () => {
     beforeEach(() => {
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+      mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
       mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
     });
 
@@ -379,7 +386,10 @@ describe('Pipeline editor app component', () => {
     const originalLocation = window.location.href;
 
     beforeEach(() => {
+      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
+      mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
       mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
+      mockGetTemplate.mockResolvedValue(mockCiTemplateQueryResponse);
       setWindowLocation('?template=Android');
     });
 

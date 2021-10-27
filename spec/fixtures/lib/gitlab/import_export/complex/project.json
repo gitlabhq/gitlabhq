@@ -2795,11 +2795,7 @@
             "sha": "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
             "message": "Feature conflict added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-08-06T08:35:52.000+02:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-08-06T08:35:52.000+02:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -2815,11 +2811,7 @@
             "sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
             "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T10:01:38.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -2835,11 +2827,7 @@
             "sha": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
             "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:57:31.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -2855,11 +2843,7 @@
             "sha": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
             "message": "More submodules\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:54:21.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -2875,11 +2859,7 @@
             "sha": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
             "message": "Remove ds_store files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:49:50.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -2895,11 +2875,7 @@
             "sha": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
             "message": "Ignore DS files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:48:32.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -3291,11 +3267,7 @@
             "relative_order": 0,
             "message": "Feature added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:26:01.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:26:01.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -3562,11 +3534,7 @@
             "sha": "94b8d581c48d894b86661718582fecbc5e3ed2eb",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T13:22:56.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T13:22:56.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"
@@ -3833,11 +3801,7 @@
             "sha": "ddd4ff416a931589c695eb4f5b23f844426f6928",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T14:14:43.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:14:43.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"
@@ -3853,11 +3817,7 @@
             "sha": "be93687618e4b132087f430a4d8fc3a609c9b77c",
             "message": "Merge branch 'master' into 'master'\r\n\r\nLFS object pointer.\r\n\r\n\r\n\r\nSee merge request !6",
             "authored_date": "2015-12-07T12:52:12.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "marin@gitlab.com"
@@ -3873,11 +3833,7 @@
             "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
             "message": "LFS object pointer.\n",
             "authored_date": "2015-12-07T11:54:28.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "maxlazio@gmail.com"
@@ -3893,11 +3849,7 @@
             "sha": "5f923865dde3436854e9ceb9cdb7815618d4e849",
             "message": "GitLab currently doesn't support patches that involve a merge commit: add a commit here\n",
             "authored_date": "2015-11-13T16:27:12.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -3913,11 +3865,7 @@
             "sha": "d2d430676773caa88cdaf7c55944073b2fd5561a",
             "message": "Merge branch 'add-svg' into 'master'\r\n\r\nAdd GitLab SVG\r\n\r\nAdded to test preview of sanitized SVG images\r\n\r\nSee merge request !5",
             "authored_date": "2015-11-13T08:50:17.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -3933,11 +3881,7 @@
             "sha": "2ea1f3dec713d940208fb5ce4a38765ecb5d3f73",
             "message": "Add GitLab SVG\n",
             "authored_date": "2015-11-13T08:39:43.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -3953,11 +3897,7 @@
             "sha": "59e29889be61e6e0e5e223bfa9ac2721d31605b8",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd whitespace test file\r\n\r\nSorry, I did a mistake.\r\nGit ignore empty files.\r\nSo I add a new whitespace test file.\r\n\r\nSee merge request !4",
             "authored_date": "2015-11-13T07:21:40.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -3973,11 +3913,7 @@
             "sha": "66eceea0db202bb39c4e445e8ca28689645366c5",
             "message": "add spaces in whitespace file\n",
             "authored_date": "2015-11-13T06:01:27.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -3993,11 +3929,7 @@
             "sha": "08f22f255f082689c0d7d39d19205085311542bc",
             "message": "remove empty file.(beacase git ignore empty file)\nadd whitespace test file.\n",
             "authored_date": "2015-11-13T06:00:16.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4013,11 +3945,7 @@
             "sha": "19e2e9b4ef76b422ce1154af39a91323ccc57434",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd spaces\r\n\r\nTo test this pull request.(https://github.com/gitlabhq/gitlabhq/pull/9757)\r\nJust add whitespaces.\r\n\r\nSee merge request !3",
             "authored_date": "2015-11-13T05:23:14.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4033,11 +3961,7 @@
             "sha": "c642fe9b8b9f28f9225d7ea953fe14e74748d53b",
             "message": "add whitespace in empty\n",
             "authored_date": "2015-11-13T05:08:45.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4053,11 +3977,7 @@
             "sha": "9a944d90955aaf45f6d0c88f30e27f8d2c41cec0",
             "message": "add empty file\n",
             "authored_date": "2015-11-13T05:08:04.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4073,11 +3993,7 @@
             "sha": "c7fbe50c7c7419d9701eebe64b1fdacc3df5b9dd",
             "message": "Add ISO-8859 test file\n",
             "authored_date": "2015-08-25T17:53:12.000+02:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@packetzoom.com"
@@ -4093,11 +4009,7 @@
             "sha": "e56497bb5f03a90a51293fc6d516788730953899",
             "message": "Merge branch 'tree_helper_spec' into 'master'\n\nAdd directory structure for tree_helper spec\n\nThis directory structure is needed for a testing the method flatten_tree(tree) in the TreeHelper module\n\nSee [merge request #275](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/275#note_732774)\n\nSee merge request !2\n",
             "authored_date": "2015-01-10T22:23:29.000+01:00",
-            "author_name": "Sytse Sijbrandij",
-            "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
-            "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com",
             "commit_author": {
               "name": "Sytse Sijbrandij",
               "email": "sytse@gitlab.com"
@@ -4113,11 +4025,7 @@
             "sha": "4cd80ccab63c82b4bad16faa5193fbd2aa06df40",
             "message": "add directory structure for tree_helper spec\n",
             "authored_date": "2015-01-10T21:28:18.000+01:00",
-            "author_name": "marmis85",
-            "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
-            "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com",
             "commit_author": {
               "name": "marmis85",
               "email": "marmis85@gmail.com"
@@ -4133,11 +4041,7 @@
             "sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
             "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T10:01:38.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -4153,11 +4057,7 @@
             "sha": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
             "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:57:31.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -4173,11 +4073,7 @@
             "sha": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
             "message": "More submodules\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:54:21.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -4193,11 +4089,7 @@
             "sha": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
             "message": "Remove ds_store files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:49:50.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -4213,11 +4105,7 @@
             "sha": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
             "message": "Ignore DS files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:48:32.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -4678,11 +4566,7 @@
             "sha": "0bfedc29d30280c7e8564e19f654584b459e5868",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T15:25:23.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T15:25:23.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"
@@ -4698,11 +4582,7 @@
             "sha": "be93687618e4b132087f430a4d8fc3a609c9b77c",
             "message": "Merge branch 'master' into 'master'\r\n\r\nLFS object pointer.\r\n\r\n\r\n\r\nSee merge request !6",
             "authored_date": "2015-12-07T12:52:12.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "marin@gitlab.com"
@@ -4718,11 +4598,7 @@
             "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
             "message": "LFS object pointer.\n",
             "authored_date": "2015-12-07T11:54:28.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "maxlazio@gmail.com"
@@ -4738,11 +4614,7 @@
             "sha": "5f923865dde3436854e9ceb9cdb7815618d4e849",
             "message": "GitLab currently doesn't support patches that involve a merge commit: add a commit here\n",
             "authored_date": "2015-11-13T16:27:12.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4758,11 +4630,7 @@
             "sha": "d2d430676773caa88cdaf7c55944073b2fd5561a",
             "message": "Merge branch 'add-svg' into 'master'\r\n\r\nAdd GitLab SVG\r\n\r\nAdded to test preview of sanitized SVG images\r\n\r\nSee merge request !5",
             "authored_date": "2015-11-13T08:50:17.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4778,11 +4646,7 @@
             "sha": "2ea1f3dec713d940208fb5ce4a38765ecb5d3f73",
             "message": "Add GitLab SVG\n",
             "authored_date": "2015-11-13T08:39:43.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4798,11 +4662,7 @@
             "sha": "59e29889be61e6e0e5e223bfa9ac2721d31605b8",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd whitespace test file\r\n\r\nSorry, I did a mistake.\r\nGit ignore empty files.\r\nSo I add a new whitespace test file.\r\n\r\nSee merge request !4",
             "authored_date": "2015-11-13T07:21:40.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4818,11 +4678,7 @@
             "sha": "66eceea0db202bb39c4e445e8ca28689645366c5",
             "message": "add spaces in whitespace file\n",
             "authored_date": "2015-11-13T06:01:27.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4838,11 +4694,7 @@
             "sha": "08f22f255f082689c0d7d39d19205085311542bc",
             "message": "remove empty file.(beacase git ignore empty file)\nadd whitespace test file.\n",
             "authored_date": "2015-11-13T06:00:16.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4858,11 +4710,7 @@
             "sha": "19e2e9b4ef76b422ce1154af39a91323ccc57434",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd spaces\r\n\r\nTo test this pull request.(https://github.com/gitlabhq/gitlabhq/pull/9757)\r\nJust add whitespaces.\r\n\r\nSee merge request !3",
             "authored_date": "2015-11-13T05:23:14.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -4878,11 +4726,7 @@
             "sha": "c642fe9b8b9f28f9225d7ea953fe14e74748d53b",
             "message": "add whitespace in empty\n",
             "authored_date": "2015-11-13T05:08:45.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4898,11 +4742,7 @@
             "sha": "9a944d90955aaf45f6d0c88f30e27f8d2c41cec0",
             "message": "add empty file\n",
             "authored_date": "2015-11-13T05:08:04.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -4918,11 +4758,7 @@
             "sha": "c7fbe50c7c7419d9701eebe64b1fdacc3df5b9dd",
             "message": "Add ISO-8859 test file\n",
             "authored_date": "2015-08-25T17:53:12.000+02:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@packetzoom.com"
@@ -4938,11 +4774,7 @@
             "sha": "e56497bb5f03a90a51293fc6d516788730953899",
             "message": "Merge branch 'tree_helper_spec' into 'master'\n\nAdd directory structure for tree_helper spec\n\nThis directory structure is needed for a testing the method flatten_tree(tree) in the TreeHelper module\n\nSee [merge request #275](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/275#note_732774)\n\nSee merge request !2\n",
             "authored_date": "2015-01-10T22:23:29.000+01:00",
-            "author_name": "Sytse Sijbrandij",
-            "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
-            "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com",
             "commit_author": {
               "name": "Sytse Sijbrandij",
               "email": "sytse@gitlab.com"
@@ -4958,11 +4790,7 @@
             "sha": "4cd80ccab63c82b4bad16faa5193fbd2aa06df40",
             "message": "add directory structure for tree_helper spec\n",
             "authored_date": "2015-01-10T21:28:18.000+01:00",
-            "author_name": "marmis85",
-            "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
-            "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com",
             "commit_author": {
               "name": "marmis85",
               "email": "marmis85@gmail.com"
@@ -5307,11 +5135,7 @@
             "sha": "97a0df9696e2aebf10c31b3016f40214e0e8f243",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T14:08:21.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:08:21.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"
@@ -5327,11 +5151,7 @@
             "sha": "be93687618e4b132087f430a4d8fc3a609c9b77c",
             "message": "Merge branch 'master' into 'master'\r\n\r\nLFS object pointer.\r\n\r\n\r\n\r\nSee merge request !6",
             "authored_date": "2015-12-07T12:52:12.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "marin@gitlab.com"
@@ -5347,11 +5167,7 @@
             "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
             "message": "LFS object pointer.\n",
             "authored_date": "2015-12-07T11:54:28.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "maxlazio@gmail.com"
@@ -5367,11 +5183,7 @@
             "sha": "5f923865dde3436854e9ceb9cdb7815618d4e849",
             "message": "GitLab currently doesn't support patches that involve a merge commit: add a commit here\n",
             "authored_date": "2015-11-13T16:27:12.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -5387,11 +5199,7 @@
             "sha": "d2d430676773caa88cdaf7c55944073b2fd5561a",
             "message": "Merge branch 'add-svg' into 'master'\r\n\r\nAdd GitLab SVG\r\n\r\nAdded to test preview of sanitized SVG images\r\n\r\nSee merge request !5",
             "authored_date": "2015-11-13T08:50:17.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -5407,11 +5215,7 @@
             "sha": "2ea1f3dec713d940208fb5ce4a38765ecb5d3f73",
             "message": "Add GitLab SVG\n",
             "authored_date": "2015-11-13T08:39:43.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -5427,11 +5231,7 @@
             "sha": "59e29889be61e6e0e5e223bfa9ac2721d31605b8",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd whitespace test file\r\n\r\nSorry, I did a mistake.\r\nGit ignore empty files.\r\nSo I add a new whitespace test file.\r\n\r\nSee merge request !4",
             "authored_date": "2015-11-13T07:21:40.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -5447,11 +5247,7 @@
             "sha": "66eceea0db202bb39c4e445e8ca28689645366c5",
             "message": "add spaces in whitespace file\n",
             "authored_date": "2015-11-13T06:01:27.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -5467,11 +5263,7 @@
             "sha": "08f22f255f082689c0d7d39d19205085311542bc",
             "message": "remove empty file.(beacase git ignore empty file)\nadd whitespace test file.\n",
             "authored_date": "2015-11-13T06:00:16.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -5487,11 +5279,7 @@
             "sha": "19e2e9b4ef76b422ce1154af39a91323ccc57434",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd spaces\r\n\r\nTo test this pull request.(https://github.com/gitlabhq/gitlabhq/pull/9757)\r\nJust add whitespaces.\r\n\r\nSee merge request !3",
             "authored_date": "2015-11-13T05:23:14.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -5507,11 +5295,7 @@
             "sha": "c642fe9b8b9f28f9225d7ea953fe14e74748d53b",
             "message": "add whitespace in empty\n",
             "authored_date": "2015-11-13T05:08:45.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -5527,11 +5311,7 @@
             "sha": "9a944d90955aaf45f6d0c88f30e27f8d2c41cec0",
             "message": "add empty file\n",
             "authored_date": "2015-11-13T05:08:04.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -5547,11 +5327,7 @@
             "sha": "c7fbe50c7c7419d9701eebe64b1fdacc3df5b9dd",
             "message": "Add ISO-8859 test file\n",
             "authored_date": "2015-08-25T17:53:12.000+02:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@packetzoom.com"
@@ -6119,11 +5895,7 @@
             "sha": "f998ac87ac9244f15e9c15109a6f4e62a54b779d",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T14:43:23.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T14:43:23.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"
@@ -6139,11 +5911,7 @@
             "sha": "be93687618e4b132087f430a4d8fc3a609c9b77c",
             "message": "Merge branch 'master' into 'master'\r\n\r\nLFS object pointer.\r\n\r\n\r\n\r\nSee merge request !6",
             "authored_date": "2015-12-07T12:52:12.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "marin@gitlab.com",
             "committed_date": "2015-12-07T12:52:12.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "marin@gitlab.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "marin@gitlab.com"
@@ -6159,11 +5927,7 @@
             "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
             "message": "LFS object pointer.\n",
             "authored_date": "2015-12-07T11:54:28.000+01:00",
-            "author_name": "Marin Jankovski",
-            "author_email": "maxlazio@gmail.com",
             "committed_date": "2015-12-07T11:54:28.000+01:00",
-            "committer_name": "Marin Jankovski",
-            "committer_email": "maxlazio@gmail.com",
             "commit_author": {
               "name": "Marin Jankovski",
               "email": "maxlazio@gmail.com"
@@ -6179,11 +5943,7 @@
             "sha": "5f923865dde3436854e9ceb9cdb7815618d4e849",
             "message": "GitLab currently doesn't support patches that involve a merge commit: add a commit here\n",
             "authored_date": "2015-11-13T16:27:12.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T16:27:12.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -6199,11 +5959,7 @@
             "sha": "d2d430676773caa88cdaf7c55944073b2fd5561a",
             "message": "Merge branch 'add-svg' into 'master'\r\n\r\nAdd GitLab SVG\r\n\r\nAdded to test preview of sanitized SVG images\r\n\r\nSee merge request !5",
             "authored_date": "2015-11-13T08:50:17.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:50:17.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -6219,11 +5975,7 @@
             "sha": "2ea1f3dec713d940208fb5ce4a38765ecb5d3f73",
             "message": "Add GitLab SVG\n",
             "authored_date": "2015-11-13T08:39:43.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T08:39:43.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -6239,11 +5991,7 @@
             "sha": "59e29889be61e6e0e5e223bfa9ac2721d31605b8",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd whitespace test file\r\n\r\nSorry, I did a mistake.\r\nGit ignore empty files.\r\nSo I add a new whitespace test file.\r\n\r\nSee merge request !4",
             "authored_date": "2015-11-13T07:21:40.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T07:21:40.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -6259,11 +6007,7 @@
             "sha": "66eceea0db202bb39c4e445e8ca28689645366c5",
             "message": "add spaces in whitespace file\n",
             "authored_date": "2015-11-13T06:01:27.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:01:27.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -6279,11 +6023,7 @@
             "sha": "08f22f255f082689c0d7d39d19205085311542bc",
             "message": "remove empty file.(beacase git ignore empty file)\nadd whitespace test file.\n",
             "authored_date": "2015-11-13T06:00:16.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T06:00:16.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -6299,11 +6039,7 @@
             "sha": "19e2e9b4ef76b422ce1154af39a91323ccc57434",
             "message": "Merge branch 'whitespace' into 'master'\r\n\r\nadd spaces\r\n\r\nTo test this pull request.(https://github.com/gitlabhq/gitlabhq/pull/9757)\r\nJust add whitespaces.\r\n\r\nSee merge request !3",
             "authored_date": "2015-11-13T05:23:14.000+01:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@gmail.com",
             "committed_date": "2015-11-13T05:23:14.000+01:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@gmail.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@gmail.com"
@@ -6319,11 +6055,7 @@
             "sha": "c642fe9b8b9f28f9225d7ea953fe14e74748d53b",
             "message": "add whitespace in empty\n",
             "authored_date": "2015-11-13T05:08:45.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:45.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -6339,11 +6071,7 @@
             "sha": "9a944d90955aaf45f6d0c88f30e27f8d2c41cec0",
             "message": "add empty file\n",
             "authored_date": "2015-11-13T05:08:04.000+01:00",
-            "author_name": "윤민식",
-            "author_email": "minsik.yoon@samsung.com",
             "committed_date": "2015-11-13T05:08:04.000+01:00",
-            "committer_name": "윤민식",
-            "committer_email": "minsik.yoon@samsung.com",
             "commit_author": {
               "name": "윤민식",
               "email": "minsik.yoon@samsung.com"
@@ -6359,11 +6087,7 @@
             "sha": "c7fbe50c7c7419d9701eebe64b1fdacc3df5b9dd",
             "message": "Add ISO-8859 test file\n",
             "authored_date": "2015-08-25T17:53:12.000+02:00",
-            "author_name": "Stan Hu",
-            "author_email": "stanhu@packetzoom.com",
             "committed_date": "2015-08-25T17:53:12.000+02:00",
-            "committer_name": "Stan Hu",
-            "committer_email": "stanhu@packetzoom.com",
             "commit_author": {
               "name": "Stan Hu",
               "email": "stanhu@packetzoom.com"
@@ -6379,11 +6103,7 @@
             "sha": "e56497bb5f03a90a51293fc6d516788730953899",
             "message": "Merge branch 'tree_helper_spec' into 'master'\n\nAdd directory structure for tree_helper spec\n\nThis directory structure is needed for a testing the method flatten_tree(tree) in the TreeHelper module\n\nSee [merge request #275](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/275#note_732774)\n\nSee merge request !2\n",
             "authored_date": "2015-01-10T22:23:29.000+01:00",
-            "author_name": "Sytse Sijbrandij",
-            "author_email": "sytse@gitlab.com",
             "committed_date": "2015-01-10T22:23:29.000+01:00",
-            "committer_name": "Sytse Sijbrandij",
-            "committer_email": "sytse@gitlab.com",
             "commit_author": {
               "name": "Sytse Sijbrandij",
               "email": "sytse@gitlab.com"
@@ -6399,11 +6119,7 @@
             "sha": "4cd80ccab63c82b4bad16faa5193fbd2aa06df40",
             "message": "add directory structure for tree_helper spec\n",
             "authored_date": "2015-01-10T21:28:18.000+01:00",
-            "author_name": "marmis85",
-            "author_email": "marmis85@gmail.com",
             "committed_date": "2015-01-10T21:28:18.000+01:00",
-            "committer_name": "marmis85",
-            "committer_email": "marmis85@gmail.com",
             "commit_author": {
               "name": "marmis85",
               "email": "marmis85@gmail.com"
@@ -6419,11 +6135,7 @@
             "sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
             "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T10:01:38.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T10:01:38.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -6439,11 +6151,7 @@
             "sha": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
             "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:57:31.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:57:31.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -6459,11 +6167,7 @@
             "sha": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
             "message": "More submodules\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:54:21.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:54:21.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -6479,11 +6183,7 @@
             "sha": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
             "message": "Remove ds_store files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:49:50.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:49:50.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -6499,11 +6199,7 @@
             "sha": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
             "message": "Ignore DS files\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
             "authored_date": "2014-02-27T09:48:32.000+01:00",
-            "author_name": "Dmitriy Zaporozhets",
-            "author_email": "dmitriy.zaporozhets@gmail.com",
             "committed_date": "2014-02-27T09:48:32.000+01:00",
-            "committer_name": "Dmitriy Zaporozhets",
-            "committer_email": "dmitriy.zaporozhets@gmail.com",
             "commit_author": {
               "name": "Dmitriy Zaporozhets",
               "email": "dmitriy.zaporozhets@gmail.com"
@@ -6952,11 +6648,7 @@
             "sha": "a4e5dfebf42e34596526acb8611bc7ed80e4eb3f",
             "message": "fixes #10\n",
             "authored_date": "2016-01-19T15:44:02.000+01:00",
-            "author_name": "James Lopez",
-            "author_email": "james@jameslopez.es",
             "committed_date": "2016-01-19T15:44:02.000+01:00",
-            "committer_name": "James Lopez",
-            "committer_email": "james@jameslopez.es",
             "commit_author": {
               "name": "James Lopez",
               "email": "james@jameslopez.es"

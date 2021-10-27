@@ -15,6 +15,7 @@ module Analytics
               :project_id,
               :author_id,
               :milestone_id,
+              :state_id,
               :start_event_timestamp,
               :end_event_timestamp
             )
@@ -31,6 +32,7 @@ module Analytics
             project_id,
             milestone_id,
             author_id,
+            state_id,
             start_event_timestamp,
             end_event_timestamp
           )
@@ -39,10 +41,11 @@ module Analytics
           DO UPDATE SET
             group_id = excluded.group_id,
             project_id = excluded.project_id,
-            start_event_timestamp = excluded.start_event_timestamp,
-            end_event_timestamp = excluded.end_event_timestamp,
             milestone_id = excluded.milestone_id,
-            author_id = excluded.author_id
+            author_id = excluded.author_id,
+            state_id = excluded.state_id,
+            start_event_timestamp = excluded.start_event_timestamp,
+            end_event_timestamp = excluded.end_event_timestamp
           SQL
 
           result = connection.execute(query)

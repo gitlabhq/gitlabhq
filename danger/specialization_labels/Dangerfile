@@ -19,8 +19,4 @@ labels_to_add = project_helper.changes_by_category.each_with_object([]) do |(cat
   memo << label if label && !gitlab.mr_labels.include?(label)
 end
 
-if labels_to_add.any?
-  gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
-                                  gitlab.mr_json['iid'],
-                                  add_labels: labels_to_add.join(','))
-end
+project_helper.labels_to_add.concat(labels_to_add) if labels_to_add.any?

@@ -41,7 +41,11 @@ Which tier is this feature available in?
 
 ### Deprecation Milestone
 
-<!-- In which milestone will this deprecation happen? -->
+<!-- In which milestone will this deprecation be announced ? -->
+
+### Planned Removal  Milestone
+
+<!-- In which milestone will the feature or functionality be removed and announced? -->
 
 ### Links
 

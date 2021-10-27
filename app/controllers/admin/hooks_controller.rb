@@ -6,6 +6,7 @@ class Admin::HooksController < Admin::ApplicationController
   before_action :hook_logs, only: :edit
 
   feature_category :integrations
+  urgency :low, [:test]
 
   def index
     @hooks = SystemHook.all

@@ -52,6 +52,7 @@ describe('Pipeline Editor | Commit section', () => {
   const defaultProps = {
     ciFileContent: mockCiYml,
     commitSha: mockCommitSha,
+    isNewCiConfigFile: false,
   };
 
   const createComponent = ({ props = {}, options = {}, provide = {} } = {}) => {
@@ -72,7 +73,6 @@ describe('Pipeline Editor | Commit section', () => {
       data() {
         return {
           currentBranch: mockDefaultBranch,
-          isNewCiConfigFile: Boolean(options?.isNewCiConfigfile),
         };
       },
       mocks: {
@@ -115,7 +115,7 @@ describe('Pipeline Editor | Commit section', () => {
 
   describe('when the user commits a new file', () => {
     beforeEach(async () => {
-      createComponent({ options: { isNewCiConfigfile: true } });
+      createComponent({ props: { isNewCiConfigFile: true } });
       await submitCommit();
     });
 

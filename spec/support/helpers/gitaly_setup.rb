@@ -9,6 +9,7 @@
 require 'securerandom'
 require 'socket'
 require 'logger'
+require 'bundler'
 
 module GitalySetup
   LOGGER = begin
@@ -46,13 +47,26 @@ module GitalySetup
     File.join(tmp_tests_gitlab_shell_dir, '.gitlab_shell_secret')
   end
 
+  # Return the path of the vendored gems in <gdk>/gitaly, if exists
+  def gdk_gitaly_ruby_gem_path
+    gitaly_ruby_path = File.expand_path('../../../../gitaly/ruby/', __dir__)
+    bundle_config_path = File.join(gitaly_ruby_path, '.bundle')
+    bundle_path = Bundler::Settings.new(bundle_config_path).path
+
+    return if bundle_path.use_system_gems?
+
+    File.expand_path(bundle_path.explicit_path, gitaly_ruby_path)
+  end
+
   def env
     {
       'HOME' => File.expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
-      'BUNDLE_APP_CONFIG' => File.join(gemfile_dir, '.bundle'),
-      'BUNDLE_INSTALL_FLAGS' => nil,
+      'BUNDLE_IGNORE_CONFIG' => '1',
       'BUNDLE_GEMFILE' => gemfile,
+      'BUNDLE_PATH' => bundle_path,
+      'BUNDLE_JOBS' => '4',
+      'BUNDLE_RETRY' => '3',
       'RUBYOPT' => nil,
 
       # Git hooks can't run during tests as the internal API is not running.
@@ -61,17 +75,13 @@ module GitalySetup
     }
   end
 
-  # rubocop:disable GitlabSecurity/SystemCommandInjection
-  def set_bundler_config
-    system('bundle config set --local jobs 4', chdir: gemfile_dir)
-    system('bundle config set --local retry 3', chdir: gemfile_dir)
-
+  def bundle_path
     if ENV['CI']
-      bundle_path = File.expand_path('../../../vendor/gitaly-ruby', __dir__)
-      system('bundle', 'config', 'set', '--local', 'path', bundle_path, chdir: gemfile_dir)
+      File.expand_path('../../../vendor/gitaly-ruby', __dir__)
+    else
+      gdk_gitaly_ruby_gem_path || File.expand_path(Bundler.configured_bundle_path.base_path)
     end
   end
-  # rubocop:enable GitlabSecurity/SystemCommandInjection
 
   def config_path(service)
     case service

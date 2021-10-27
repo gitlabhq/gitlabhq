@@ -22,12 +22,12 @@ module Tooling
         ce_ee_vue_templates
         ci_templates
         datateam
-        metadata
         feature_flag
         roulette
         sidekiq_queues
         specialization_labels
         specs
+        z_metadata
       ].freeze
 
       MESSAGE_PREFIX = '==>'
@@ -187,6 +187,10 @@ module Tooling
 
       def file_lines(filename)
         read_file(filename).lines(chomp: true)
+      end
+
+      def labels_to_add
+        @labels_to_add ||= []
       end
 
       private

@@ -1,0 +1,3 @@
+mutation updateAppStatus($appStatus: String) {
+  updateAppStatus(appStatus: $appStatus) @client
+}

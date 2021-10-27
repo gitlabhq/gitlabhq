@@ -8,6 +8,8 @@ module IntegrationsActions
     include IntegrationsHelper
 
     before_action :integration, only: [:edit, :update, :overrides, :test]
+
+    urgency :low, [:test]
   end
 
   def edit

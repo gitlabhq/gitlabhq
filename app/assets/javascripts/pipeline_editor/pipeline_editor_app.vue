@@ -17,11 +17,11 @@ import {
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
+import updateAppStatus from './graphql/mutations/update_app_status.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getAppStatus from './graphql/queries/client/app_status.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
-import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
@@ -44,20 +44,20 @@ export default {
   },
   data() {
     return {
-      starterTemplateName: STARTER_TEMPLATE_NAME,
       ciConfigData: {},
+      currentCiFileContent: '',
       failureType: null,
       failureReasons: [],
       initialCiFileContent: '',
       isFetchingCommitSha: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
-      currentCiFileContent: '',
-      successType: null,
+      showFailure: false,
       showStartScreen: false,
       showSuccess: false,
-      showFailure: false,
       starterTemplate: '',
+      starterTemplateName: STARTER_TEMPLATE_NAME,
+      successType: null,
     };
   },
 
@@ -179,9 +179,6 @@ export default {
     currentBranch: {
       query: getCurrentBranch,
     },
-    isNewCiConfigFile: {
-      query: getIsNewCiConfigFile,
-    },
     starterTemplate: {
       query: getTemplate,
       variables() {
@@ -261,12 +258,10 @@ export default {
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
-      this.$apollo.getClient().writeQuery({ query: getAppStatus, data: { appStatus } });
+      this.$apollo.mutate({ mutation: updateAppStatus, variables: { appStatus } });
     },
     setNewEmptyCiConfigFile() {
-      this.$apollo
-        .getClient()
-        .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: true } });
+      this.isNewCiConfigFile = true;
       this.showStartScreen = false;
     },
     showErrorAlert({ type, reasons = [] }) {
@@ -283,9 +278,7 @@ export default {
       this.reportSuccess(type);
 
       if (this.isNewCiConfigFile) {
-        this.$apollo
-          .getClient()
-          .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: false } });
+        this.isNewCiConfigFile = false;
       }
 
       // Keep track of the latest committed content to know

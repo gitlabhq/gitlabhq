@@ -9,7 +9,6 @@ class GitalyTestSpawn
   include GitalySetup
 
   def run
-    set_bundler_config
     install_gitaly_gems if ENV['CI']
     check_gitaly_config!
 
