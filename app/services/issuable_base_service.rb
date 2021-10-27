@@ -142,6 +142,7 @@ class IssuableBaseService < ::BaseProjectService
   def filter_severity(issuable)
     severity = params.delete(:severity)
     return unless severity && issuable.supports_severity?
+    return unless can_admin_issuable?(issuable)
 
     severity = IssuableSeverity::DEFAULT unless IssuableSeverity.severities.key?(severity)
     return if severity == issuable.severity
