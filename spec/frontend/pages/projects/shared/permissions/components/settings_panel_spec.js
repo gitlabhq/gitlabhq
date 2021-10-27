@@ -27,6 +27,7 @@ const defaultProps = {
     emailsDisabled: false,
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
+    warnAboutPotentiallyUnwantedCharacters: true,
   },
   isGitlabCom: true,
   canDisableEmails: true,
@@ -97,6 +98,10 @@ describe('Settings Panel', () => {
   const findEmailSettings = () => wrapper.find({ ref: 'email-settings' });
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
+  const findWarnAboutPuc = () =>
+    wrapper.find(
+      'input[name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"]',
+    );
   const findMetricsVisibilitySettings = () => wrapper.find({ ref: 'metrics-visibility-settings' });
   const findOperationsSettings = () => wrapper.find({ ref: 'operations-settings' });
 
@@ -536,6 +541,14 @@ describe('Settings Panel', () => {
       wrapper = mountComponent();
 
       expect(findShowDefaultAwardEmojis().exists()).toBe(true);
+    });
+  });
+
+  describe('Warn about potentially unwanted characters', () => {
+    it('should have a "Warn about Potentially Unwanted Characters" input', () => {
+      wrapper = mountComponent();
+
+      expect(findWarnAboutPuc().exists()).toBe(true);
     });
   });
 

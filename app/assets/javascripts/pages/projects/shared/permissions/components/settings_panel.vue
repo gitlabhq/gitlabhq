@@ -37,6 +37,10 @@ export default {
     securityAndComplianceLabel: s__('ProjectSettings|Security & Compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
+    pucWarningLabel: s__('ProjectSettings|Warn about Potentially Unwanted Characters'),
+    pucWarningHelpText: s__(
+      'ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits.',
+    ),
   },
 
   components: {
@@ -178,6 +182,7 @@ export default {
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       operationsAccessLevel: featureAccessLevel.EVERYONE,
       containerRegistryAccessLevel: featureAccessLevel.EVERYONE,
+      warnAboutPotentiallyUnwantedCharacters: true,
       lfsEnabled: true,
       requestAccessEnabled: true,
       highlightChangesClass: false,
@@ -750,6 +755,20 @@ export default {
             'ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets.',
           )
         }}</template>
+      </gl-form-checkbox>
+    </project-setting-row>
+    <project-setting-row class="gl-mb-5">
+      <input
+        :value="warnAboutPotentiallyUnwantedCharacters"
+        type="hidden"
+        name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
+      />
+      <gl-form-checkbox
+        v-model="warnAboutPotentiallyUnwantedCharacters"
+        name="project[project_setting_attributes][warn_about_potentially_unwanted_characters]"
+      >
+        {{ $options.i18n.pucWarningLabel }}
+        <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
       </gl-form-checkbox>
     </project-setting-row>
   </div>

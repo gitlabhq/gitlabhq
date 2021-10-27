@@ -21,10 +21,22 @@ module Rouge
           is_first = false
 
           yield %(<span id="LC#{@line_number}" class="line" lang="#{@tag}">)
-          line.each { |token, value| yield span(token, value.chomp! || value) }
+
+          line.each do |token, value|
+            yield highlight_unicode_control_characters(span(token, value.chomp! || value))
+          end
+
           yield %(</span>)
 
           @line_number += 1
+        end
+      end
+
+      private
+
+      def highlight_unicode_control_characters(text)
+        text.gsub(Gitlab::Unicode::BIDI_REGEXP) do |char|
+          %(<span class="unicode-bidi has-tooltip" data-toggle="tooltip" title="#{Gitlab::Unicode.bidi_warning}">#{char}</span>)
         end
       end
     end
