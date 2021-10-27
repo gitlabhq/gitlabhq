@@ -19,6 +19,10 @@ FactoryBot.define do
       admin { true }
     end
 
+    trait :public_email do
+      public_email { email }
+    end
+
     trait :blocked do
       after(:build) { |user, _| user.block! }
     end
