@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     it 'sets up the load balancer' do
       setup = described_class.new(ActiveRecord::Base)
 
-      expect(setup).to receive(:disable_prepared_statements)
+      expect(setup).to receive(:configure_connection)
       expect(setup).to receive(:setup_load_balancer)
       expect(setup).to receive(:setup_service_discovery)
 
@@ -15,11 +15,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     end
   end
 
-  describe '#disable_prepared_statements' do
-    it 'disables prepared statements and reconnects to the database' do
+  describe '#configure_connection' do
+    it 'configures pool, prepared statements and reconnects to the database' do
       config = double(
         :config,
-        configuration_hash: { host: 'localhost' },
+        configuration_hash: { host: 'localhost', pool: 2, prepared_statements: true },
         env_name: 'test',
         name: 'main'
       )
@@ -27,7 +27,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
       expect(ActiveRecord::DatabaseConfigurations::HashConfig)
         .to receive(:new)
-        .with('test', 'main', { host: 'localhost', prepared_statements: false })
+        .with('test', 'main', {
+          host: 'localhost',
+          prepared_statements: false,
+          pool: Gitlab::Database.default_pool_size
+        })
         .and_call_original
 
       # HashConfig doesn't implement its own #==, so we can't directly compare
@@ -36,7 +40,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         .to receive(:establish_connection)
         .with(an_instance_of(ActiveRecord::DatabaseConfigurations::HashConfig))
 
-      described_class.new(model).disable_prepared_statements
+      described_class.new(model).configure_connection
     end
   end
 

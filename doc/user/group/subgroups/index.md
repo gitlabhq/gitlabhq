@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto, concepts
 ---
 
-# Subgroups
+# Subgroups **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2772) in GitLab 9.0.
 

@@ -239,8 +239,8 @@ There are two different ways to add a new project to a group:
 
 ### Specify who can add projects to a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab Premium 10.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) to GitLab Free in 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2534) in GitLab 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25975) from GitLab Premium to GitLab Free in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
@@ -258,8 +258,7 @@ To change this setting globally, see [Default project creation protection](../ad
 
 ## Group activity analytics **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as
-a [beta feature](https://about.gitlab.com/handbook/product/#beta).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [beta feature](https://about.gitlab.com/handbook/product/#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 
@@ -309,7 +308,7 @@ All the members of the `Engineering` group are added to the `Frontend` group.
 > - Enabled on GitLab.com.
 > - Recommended for production use.
 > - Replaces the existing form with buttons to open a modal window.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../project/members/index.md#enable-or-disable-modal-window). **(FREE SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](../project/members/index.md#enable-or-disable-modal-window).
 
 WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
@@ -412,7 +411,7 @@ because the project cannot be moved.
 
 ## Use a custom name for the initial branch
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
 When you create a new project in GitLab, a default branch is created with the
 first push. The group owner can
@@ -432,7 +431,7 @@ This action removes the group. It also adds a background job to delete all proje
 
 Specifically:
 
-- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
+- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#default-deletion-delay).
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
@@ -538,8 +537,8 @@ You can export a list of members in a group as a CSV.
 
 ## Restrict group access by IP address **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) to [GitLab Premium](https://about.gitlab.com/pricing/) in 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
 
 To ensure only people from your organization can access particular
 resources, you can restrict access to groups by IP address. This group-level setting
@@ -574,7 +573,7 @@ To restrict group access by IP address:
 
 ## Restrict group access by domain **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7297) in GitLab 12.2.
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
 > - Support for restricting access to projects within the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
 
@@ -617,7 +616,7 @@ To learn how to create templates for issues and merge requests, see
 [Description templates](../project/description_templates.md).
 
 Define project templates at a group level by setting a group as the template source.
-[Learn more about group-level project templates](custom_project_templates.md). **(PREMIUM)**
+[Learn more about group-level project templates](custom_project_templates.md).
 
 ### Enable group file template **(PREMIUM)**
 
@@ -696,7 +695,7 @@ In GitLab 13.11 and above the group setting for delayed project removal is inher
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects in a group can be forked.
-Optionally, on [Premium](https://about.gitlab.com/pricing/) or higher tiers,
+Optionally, on [GitLab Premium](https://about.gitlab.com/pricing/) or higher tiers,
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
 Previously, this setting was available only for groups enforcing a
@@ -757,20 +756,20 @@ To view the merge request approval rules UI for a group:
 ## Related topics
 
 - [Group wikis](../project/wiki/index.md)
-- [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size). **(FREE SELF)**
-- [Repositories analytics](repositories_analytics/index.md): View overall activity of all projects with code coverage. **(PREMIUM)**
+- [Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size).
+- [Repositories analytics](repositories_analytics/index.md): View overall activity of all projects with code coverage.
 - [Contribution analytics](contribution_analytics/index.md): View the contributions (pushes, merge requests,
-  and issues) of group members. **(PREMIUM)**
-- [Issue analytics](issues_analytics/index.md): View a bar chart of your group's number of issues per month. **(PREMIUM)**
+  and issues) of group members.
+- [Issue analytics](issues_analytics/index.md): View a bar chart of your group's number of issues per month.
 - Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
-- [Epics](epics/index.md): Track groups of issues that share a theme. **(ULTIMATE)**
+- [Epics](epics/index.md): Track groups of issues that share a theme.
 - [Security Dashboard](../application_security/security_dashboard/index.md): View the vulnerabilities of all
-  the projects in a group and its subgroups. **(ULTIMATE)**
+  the projects in a group and its subgroups.
 - [Insights](insights/index.md): Configure insights like triage hygiene, issues created/closed per a given period, and
-  average time for merge requests to be merged. **(ULTIMATE)**
+  average time for merge requests to be merged.
 - [Webhooks](../project/integrations/webhooks.md).
 - [Kubernetes cluster integration](clusters/index.md).
-- [Audit Events](../../administration/audit_events.md#group-events). **(PREMIUM)**
+- [Audit Events](../../administration/audit_events.md#group-events).
 - [Pipelines quota](../admin_area/settings/continuous_integration.md): Keep track of the pipeline quota for the group.
 - [Integrations](../admin_area/settings/project_integration_management.md).
 - [Transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
@@ -778,7 +777,7 @@ To view the merge request approval rules UI for a group:
 - [Lock the sharing with group feature](#prevent-a-project-from-being-shared-with-groups).
 - [Enforce two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforce-2fa-for-all-users-in-a-group): Enforce 2FA
   for all group members.
-- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md)..
+- Namespaces [API](../../api/namespaces.md) and [Rake tasks](../../raketasks/features.md).
 
 ## Troubleshooting
 

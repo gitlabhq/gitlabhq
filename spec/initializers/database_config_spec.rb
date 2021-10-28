@@ -9,6 +9,7 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
 
   before do
     allow(Gitlab::Runtime).to receive(:max_threads).and_return(max_threads)
+    stub_env('GITLAB_LB_CONFIGURE_CONNECTION', 'false')
   end
 
   let(:max_threads) { 8 }
@@ -40,6 +41,16 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
       subject
 
       expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
+    end
+
+    context 'when GITLAB_LB_CONFIGURE_CONNECTION=true' do
+      before do
+        stub_env('GITLAB_LB_CONFIGURE_CONNECTION', 'true')
+      end
+
+      it 'does not overwrite custom pool settings' do
+        expect { subject }.not_to change { ActiveRecord::Base.connection_db_config.pool }
+      end
     end
   end
 

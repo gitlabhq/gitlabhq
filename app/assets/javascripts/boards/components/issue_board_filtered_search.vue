@@ -1,7 +1,7 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { mapActions } from 'vuex';
-import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
+import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import { BoardType } from '~/boards/constants';
 import issueBoardFilters from '~/boards/issue_board_filters';
 import { TYPE_USER } from '~/graphql_shared/constants';

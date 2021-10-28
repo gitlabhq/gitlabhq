@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
+import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
 import issueBoardFilters from '~/boards/issue_board_filters';
 import { mockTokens } from '../mock_data';
@@ -8,6 +8,8 @@ jest.mock('~/boards/issue_board_filters');
 
 describe('IssueBoardFilter', () => {
   let wrapper;
+
+  const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
 
   const createComponent = ({ epicFeatureAvailable = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
@@ -40,13 +42,13 @@ describe('IssueBoardFilter', () => {
     });
 
     it('finds BoardFilteredSearch', () => {
-      expect(wrapper.find(BoardFilteredSearch).exists()).toBe(true);
+      expect(findBoardsFilteredSearch().exists()).toBe(true);
     });
 
     it('passes the correct tokens to BoardFilteredSearch', () => {
       const tokens = mockTokens(fetchLabelsSpy, fetchAuthorsSpy, wrapper.vm.fetchMilestones);
 
-      expect(wrapper.find(BoardFilteredSearch).props('tokens')).toEqual(tokens);
+      expect(findBoardsFilteredSearch().props('tokens')).toEqual(tokens);
     });
   });
 });

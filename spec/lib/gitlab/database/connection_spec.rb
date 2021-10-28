@@ -126,39 +126,6 @@ RSpec.describe Gitlab::Database::Connection do
     end
   end
 
-  describe '#disable_prepared_statements', :reestablished_active_record_base do
-    it 'disables prepared statements' do
-      connection.scope.establish_connection(
-        ::Gitlab::Database.main.config.merge(prepared_statements: true)
-      )
-
-      expect(connection.scope.connection.prepared_statements).to eq(true)
-
-      connection.disable_prepared_statements
-
-      expect(connection.scope.connection.prepared_statements).to eq(false)
-    end
-
-    it 'retains the connection name' do
-      connection.disable_prepared_statements
-
-      expect(connection.scope.connection_db_config.name).to eq('main')
-    end
-
-    context 'with dynamic connection pool size' do
-      before do
-        connection.scope.establish_connection(connection.config.merge(pool: 7))
-      end
-
-      it 'retains the set pool size' do
-        connection.disable_prepared_statements
-
-        expect(connection.scope.connection.prepared_statements).to eq(false)
-        expect(connection.scope.connection.pool.size).to eq(7)
-      end
-    end
-  end
-
   describe '#db_read_only?' do
     it 'detects a read-only database' do
       allow(connection.scope.connection)

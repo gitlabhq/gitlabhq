@@ -59,6 +59,7 @@ module Gitlab
         adapter_name.casecmp('postgresql') == 0
       end
 
+      # TODO: To be removed with GITLAB_LB_CONFIGURE_CONNECTION
       def db_config_with_default_pool_size
         db_config_object = scope.connection_db_config
         config = db_config_object
@@ -70,20 +71,6 @@ module Gitlab
           db_config_object.name,
           config
         )
-      end
-
-      # Disables prepared statements for the current database connection.
-      def disable_prepared_statements
-        db_config_object = scope.connection_db_config
-        config = db_config_object.configuration_hash.merge(prepared_statements: false)
-
-        hash_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
-          db_config_object.env_name,
-          db_config_object.name,
-          config
-        )
-
-        scope.establish_connection(hash_config)
       end
 
       # Check whether the underlying database is in read-only mode
