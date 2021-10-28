@@ -92,3 +92,5 @@
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/matomo' if extra_config.has_key?('matomo_url') && extra_config.has_key?('matomo_site_id')
   = render 'layouts/snowplow'
+  -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/184)
+  = render_if_exists "layouts/frontend_monitor"

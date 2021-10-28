@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module AsyncIndexes
-      class PostgresAsyncIndex < ApplicationRecord
+      class PostgresAsyncIndex < SharedModel
         self.table_name = 'postgres_async_indexes'
 
         MAX_IDENTIFIER_LENGTH = Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH

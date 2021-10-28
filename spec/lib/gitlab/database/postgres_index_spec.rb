@@ -22,6 +22,8 @@ RSpec.describe Gitlab::Database::PostgresIndex do
 
   it_behaves_like 'a postgres model'
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe '.reindexing_support' do
     it 'only non partitioned indexes' do
       expect(described_class.reindexing_support).to all(have_attributes(partitioned: false))

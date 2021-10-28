@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def connection
-          @connection ||= ApplicationRecord.connection
+          @connection ||= async_index.connection
         end
 
         def lease_timeout

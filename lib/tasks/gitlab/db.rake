@@ -161,31 +161,33 @@ namespace :gitlab do
     end
 
     desc 'reindex a regular index without downtime to eliminate bloat'
-    task :reindex, [:index_name] => :environment do |_, args|
+    task :reindex, [:index_name, :database] => :environment do |_, args|
       unless Feature.enabled?(:database_reindexing, type: :ops)
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
         exit
       end
 
-      indexes = Gitlab::Database::PostgresIndex.reindexing_support
+      Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
+        indexes = Gitlab::Database::PostgresIndex.reindexing_support
 
-      if identifier = args[:index_name]
-        raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
+        if (identifier = args[:index_name]) && (args.fetch(:database, 'main') == connection_name)
+          raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
 
-        indexes = indexes.where(identifier: identifier)
+          indexes = indexes.where(identifier: identifier)
 
-        raise "Index not found or not supported: #{args[:index_name]}" if indexes.empty?
+          raise "Index #{args[:index_name]} for #{connection_name} database not found or not supported" if indexes.empty?
+        end
+
+        Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
+
+        # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
+        Gitlab::Database::Reindexing.cleanup_leftovers!
+
+        # Hack: Before we do actual reindexing work, create async indexes
+        Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+
+        Gitlab::Database::Reindexing.perform(indexes)
       end
-
-      ActiveRecord::Base.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
-
-      # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
-      Gitlab::Database::Reindexing.cleanup_leftovers!
-
-      # Hack: Before we do actual reindexing work, create async indexes
-      Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
-
-      Gitlab::Database::Reindexing.perform(indexes)
     rescue StandardError => e
       Gitlab::AppLogger.error(e)
       raise

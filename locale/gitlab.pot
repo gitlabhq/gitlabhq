@@ -40896,6 +40896,12 @@ msgstr ""
 msgid "mrWidget|Approved by"
 msgstr ""
 
+msgid "mrWidget|Approved by you"
+msgstr ""
+
+msgid "mrWidget|Approved by you and others"
+msgstr ""
+
 msgid "mrWidget|Are you adding technical debt or code vulnerabilities?"
 msgstr ""
 
@@ -40991,9 +40997,6 @@ msgid "mrWidget|Merge failed."
 msgstr ""
 
 msgid "mrWidget|Merge locally"
-msgstr ""
-
-msgid "mrWidget|Merge request approved."
 msgstr ""
 
 msgid "mrWidget|Merged by"

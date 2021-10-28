@@ -2449,8 +2449,6 @@ Database/MultipleDatabases:
     - 'lib/gitlab/database/postgresql_adapter/dump_schema_versions_mixin.rb'
     - 'lib/gitlab/database/postgresql_database_tasks/load_schema_versions_mixin.rb'
     - 'lib/gitlab/database.rb'
-    - 'lib/gitlab/database/reindexing/concurrent_reindex.rb'
-    - 'lib/gitlab/database/reindexing/reindex_concurrently.rb'
     - 'lib/gitlab/database/schema_cache_with_renamed_table.rb'
     - 'lib/gitlab/database/schema_migrations/context.rb'
     - 'lib/gitlab/database/schema_version_files.rb'

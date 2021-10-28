@@ -1684,3 +1684,8 @@ Payload example:
   }
 }
 ```
+
+NOTE:
+If an author has no public e-mail listed in their
+[GitLab profile](https://gitlab.com/-/profile), the `email` attribute displays
+a value of `["REDACTED"]`.

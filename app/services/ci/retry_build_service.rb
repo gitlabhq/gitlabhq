@@ -63,7 +63,7 @@ module Ci
 
     def clone_build(build)
       project.builds.new(build_attributes(build)).tap do |new_build|
-        new_build.assign_attributes(::Gitlab::Ci::Pipeline::Seed::Build.environment_attributes_for(new_build))
+        new_build.assign_attributes(deployment_attributes_for(new_build, build))
       end
     end
 
@@ -74,6 +74,16 @@ module Ci
 
       attributes[:user] = current_user
       attributes
+    end
+
+    def deployment_attributes_for(new_build, old_build)
+      if Feature.enabled?(:sticky_environments_in_job_retry, project, default_enabled: :yaml)
+        ::Gitlab::Ci::Pipeline::Seed::Build
+          .deployment_attributes_for(new_build, old_build.persisted_environment)
+      else
+        ::Gitlab::Ci::Pipeline::Seed::Build
+          .deployment_attributes_for(new_build)
+      end
     end
   end
 end

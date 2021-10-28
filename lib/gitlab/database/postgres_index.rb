@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    class PostgresIndex < ActiveRecord::Base
+    class PostgresIndex < SharedModel
       include Gitlab::Utils::StrongMemoize
 
       self.table_name = 'postgres_indexes'

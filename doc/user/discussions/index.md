@@ -119,16 +119,15 @@ Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
 
-## Mark a comment as confidential
+## Mark a comment as confidential **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
+On GitLab.com, this feature is not available.
+You should not use this feature for production environments.
 
 You can make a comment confidential, so that it is visible only to project members
 who have at least the Reporter role.
@@ -286,22 +285,3 @@ with a new push.
 
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
-
-## Enable or disable confidential comments **(FREE SELF)**
-
-Confidential comments are under development and not ready for production use. The feature is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:confidential_notes)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:confidential_notes)
-```

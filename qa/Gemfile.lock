@@ -41,7 +41,7 @@ GEM
     capybara-screenshot (1.0.23)
       capybara (>= 1.0, < 4)
       launchy
-    chemlab (0.9.1)
+    chemlab (0.9.2)
       colorize (~> 0.8)
       i18n (~> 1.8)
       rake (>= 12, < 14)

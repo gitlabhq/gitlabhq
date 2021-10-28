@@ -17,7 +17,7 @@ RSpec.describe 'Merge request > User approves', :js do
 
   it 'approves merge request' do
     click_approval_button('Approve')
-    expect(page).to have_content('Merge request approved')
+    expect(page).to have_content('Approved by you')
 
     verify_approvals_count_on_index!
 

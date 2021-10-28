@@ -323,6 +323,53 @@ RSpec.describe Ci::RetryBuildService do
         it 'persists expanded environment name' do
           expect(new_build.metadata.expanded_environment_name).to eq('production')
         end
+
+        it 'does not create a new environment' do
+          expect { new_build }.not_to change { Environment.count }
+        end
+      end
+
+      context 'when build with dynamic environment is retried' do
+        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(other_developer) } }
+
+        let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
+
+        let!(:build) do
+          create(:ci_build, :with_deployment, environment: environment_name,
+                options: { environment: { name: environment_name } },
+                pipeline: pipeline, stage_id: stage.id, project: project,
+                user: other_developer)
+        end
+
+        it 're-uses the previous persisted environment' do
+          expect(build.persisted_environment.name).to eq("review/#{build.ref}-#{other_developer.id}")
+
+          expect(new_build.persisted_environment.name).to eq("review/#{build.ref}-#{other_developer.id}")
+        end
+
+        it 'creates a new deployment' do
+          expect { new_build }.to change { Deployment.count }.by(1)
+        end
+
+        it 'does not create a new environment' do
+          expect { new_build }.not_to change { Environment.count }
+        end
+
+        context 'when sticky_environments_in_job_retry feature flag is disabled' do
+          before do
+            stub_feature_flags(sticky_environments_in_job_retry: false)
+          end
+
+          it 'creates a new environment' do
+            expect { new_build }.to change { Environment.count }
+          end
+
+          it 'ignores the previous persisted environment' do
+            expect(build.persisted_environment.name).to eq("review/#{build.ref}-#{other_developer.id}")
+
+            expect(new_build.persisted_environment.name).to eq("review/#{build.ref}-#{developer.id}")
+          end
+        end
       end
 
       context 'when build has needs' do

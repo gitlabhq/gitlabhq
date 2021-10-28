@@ -1,7 +1,11 @@
 <script>
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { n__, sprintf } from '~/locale';
-import { APPROVED_MESSAGE } from '~/vue_merge_request_widget/components/approvals/messages';
+import {
+  APPROVED_BY_YOU_AND_OTHERS,
+  APPROVED_BY_YOU,
+  APPROVED_BY_OTHERS,
+} from '~/vue_merge_request_widget/components/approvals/messages';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 
 export default {
@@ -29,12 +33,23 @@ export default {
     },
   },
   computed: {
-    message() {
-      if (this.approved) {
-        return APPROVED_MESSAGE;
+    approvalLeftMessage() {
+      if (this.rulesLeft.length) {
+        return sprintf(
+          n__(
+            'Requires %{count} approval from %{names}.',
+            'Requires %{count} approvals from %{names}.',
+            this.approvalsLeft,
+          ),
+          {
+            names: toNounSeriesText(this.rulesLeft),
+            count: this.approvalsLeft,
+          },
+          false,
+        );
       }
 
-      if (!this.rulesLeft.length) {
+      if (!this.approved) {
         return n__(
           'Requires %d approval from eligible users.',
           'Requires %d approvals from eligible users.',
@@ -42,32 +57,51 @@ export default {
         );
       }
 
-      return sprintf(
-        n__(
-          'Requires %{count} approval from %{names}.',
-          'Requires %{count} approvals from %{names}.',
-          this.approvalsLeft,
-        ),
-        {
-          names: toNounSeriesText(this.rulesLeft),
-          count: this.approvalsLeft,
-        },
-        false,
-      );
+      return '';
+    },
+    message() {
+      if (this.approvedByMe && this.approvedByOthers) {
+        return APPROVED_BY_YOU_AND_OTHERS;
+      }
+
+      if (this.approvedByMe) {
+        return APPROVED_BY_YOU;
+      }
+
+      if (this.approved) {
+        return APPROVED_BY_OTHERS;
+      }
+
+      return '';
     },
     hasApprovers() {
       return Boolean(this.approvers.length);
     },
+    approvedByMe() {
+      if (!this.currentUserId) {
+        return false;
+      }
+      return this.approvers.some((approver) => approver.id === this.currentUserId);
+    },
+    approvedByOthers() {
+      if (!this.currentUserId) {
+        return false;
+      }
+      return this.approvers.some((approver) => approver.id !== this.currentUserId);
+    },
+    currentUserId() {
+      return gon.current_user_id;
+    },
   },
-  APPROVED_MESSAGE,
 };
 </script>
 
 <template>
   <div data-qa-selector="approvals_summary_content">
-    <strong>{{ message }}</strong>
+    <strong>{{ approvalLeftMessage }}</strong>
     <template v-if="hasApprovers">
-      <span>{{ s__('mrWidget|Approved by') }}</span>
+      <span v-if="approvalLeftMessage">{{ message }}</span>
+      <strong v-else>{{ message }}</strong>
       <user-avatar-list class="d-inline-block align-middle" :items="approvers" />
     </template>
   </div>

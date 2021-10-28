@@ -81,6 +81,15 @@ The following table lists project permissions available for each role:
 | [GitLab Pages](project/pages/index.md):<br>Manage                                                                       |          |          |           | ✓          | ✓     |
 | [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                 |          |          |           | ✓          | ✓     |
 | [GitLab Pages](project/pages/index.md):<br>Remove GitLab Pages                                                          |          |          |           | ✓          | ✓     |
+| [Incident Management](../operations/incident_management/index.md):<br>View [alerts](../operations/incident_management/alerts.md)                            |  | ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Assign an alert                                                                       | ✓| ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>View [incident](../operations/incident_management/incidents.md)                       | ✓| ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                     | ✓| ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>View [on-call schedules](../operations/incident_management/oncall_schedules.md)       |  | ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Participate in on-call rotation                                                       | ✓| ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)  |  | ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)     |  |   |   | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)|  |   |   | ✓ | ✓ |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                        | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Assign                                                                            | ✓ (*16*) | ✓        | ✓         | ✓          | ✓     |
 | [Issues](project/issues/index.md):<br>Create                                                                            | ✓        | ✓        | ✓         | ✓          | ✓     |

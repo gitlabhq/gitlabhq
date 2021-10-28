@@ -252,10 +252,26 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
       end
 
+      context 'when database name is provided' do
+        it 'calls the index rebuilder with the proper arguments when the database name match' do
+          allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
+          expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
+
+          run_rake_task('gitlab:db:reindex', '[public.foo_idx,main]')
+        end
+
+        it 'ignores the index and uses all candidate indexes if database name does not match' do
+          expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
+          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
+
+          run_rake_task('gitlab:db:reindex', '[public.foo_idx,ci]')
+        end
+      end
+
       it 'raises an error if the index does not exist' do
         allow(indexes).to receive(:where).with(identifier: 'public.absent_index').and_return([])
 
-        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(/Index not found/)
+        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(/Index public.absent_index for main database not found or not supported/)
       end
 
       it 'raises an error if the index is not fully qualified with a schema' do

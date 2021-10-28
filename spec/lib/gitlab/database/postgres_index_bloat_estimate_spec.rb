@@ -13,6 +13,8 @@ RSpec.describe Gitlab::Database::PostgresIndexBloatEstimate do
 
   let(:identifier) { 'public.schema_migrations_pkey' }
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe '#bloat_size' do
     it 'returns the bloat size in bytes' do
       # We cannot reach much more about the bloat size estimate here

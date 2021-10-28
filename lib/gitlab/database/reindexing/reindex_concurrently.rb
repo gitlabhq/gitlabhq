@@ -99,6 +99,7 @@ module Gitlab
           logger.info("Removing dangling index #{index.identifier}")
 
           retries = Gitlab::Database::WithLockRetriesOutsideTransaction.new(
+            connection: connection,
             timing_configuration: REMOVE_INDEX_RETRY_CONFIG,
             klass: self.class,
             logger: logger
@@ -107,11 +108,6 @@ module Gitlab
           retries.run(raise_on_exhaustion: false) do
             execute("DROP INDEX CONCURRENTLY IF EXISTS #{quote_table_name(index.schema)}.#{quote_table_name(index.name)}")
           end
-        end
-
-        def with_lock_retries(&block)
-          arguments = { klass: self.class, logger: logger }
-          Gitlab::Database::WithLockRetries.new(**arguments).run(raise_on_exhaustion: true, &block)
         end
 
         def set_statement_timeout
@@ -123,7 +119,7 @@ module Gitlab
 
         delegate :execute, :quote_table_name, to: :connection
         def connection
-          @connection ||= ActiveRecord::Base.connection
+          @connection ||= index.connection
         end
       end
     end

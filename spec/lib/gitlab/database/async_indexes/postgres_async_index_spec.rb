@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::AsyncIndexes::PostgresAsyncIndex, type: :model do
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe 'validations' do
     let(:identifier_limit) { described_class::MAX_IDENTIFIER_LENGTH }
     let(:definition_limit) { described_class::MAX_DEFINITION_LENGTH }

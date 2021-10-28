@@ -42,7 +42,7 @@ class PrepareCiBuildsMetadataAndCiBuildAsyncIndexes < ActiveRecord::Migration[6.
 
     return if index_name_exists?(table_name, index_name)
 
-    async_index = Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.safe_find_or_create_by!(name: index_name) do |rec|
+    async_index = Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
       rec.table_name = table_name
       rec.definition = definition
     end
