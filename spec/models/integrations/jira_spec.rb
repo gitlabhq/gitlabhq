@@ -972,7 +972,9 @@ RSpec.describe Integrations::Jira do
         expect(jira_integration).to receive(:log_error).with(
           'Error sending message',
           client_url: 'http://jira.example.com',
-          error: error_message
+          'exception.class' => anything,
+          'exception.message' => error_message,
+          'exception.backtrace' => anything
         )
 
         expect(jira_integration.test(nil)).to eq(success: false, result: error_message)

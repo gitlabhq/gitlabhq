@@ -528,7 +528,9 @@ module Integrations
       yield
     rescue StandardError => error
       @error = error
-      log_error("Error sending message", client_url: client_url, error: @error.message)
+      payload = { client_url: client_url }
+      Gitlab::ExceptionLogFormatter.format!(error, payload)
+      log_error("Error sending message", payload)
       nil
     end
 
