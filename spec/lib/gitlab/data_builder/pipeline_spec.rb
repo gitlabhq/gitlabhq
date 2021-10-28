@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Pipeline do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be_with_reload(:pipeline) do
@@ -46,7 +46,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline do
         name: user.name,
         username: user.username,
         avatar_url: user.avatar_url(only_path: false),
-        email: user.email
+        email: user.public_email
         })
     end
 

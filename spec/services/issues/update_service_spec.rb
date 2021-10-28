@@ -6,6 +6,7 @@ RSpec.describe Issues::UpdateService, :mailer do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
+  let_it_be(:guest) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, project: project) }
@@ -24,6 +25,7 @@ RSpec.describe Issues::UpdateService, :mailer do
     project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
+    project.add_guest(guest)
   end
 
   describe 'execute' do
@@ -95,9 +97,7 @@ RSpec.describe Issues::UpdateService, :mailer do
         end
 
         context 'user is a guest' do
-          before do
-            project.add_guest(user)
-          end
+          let(:user) { guest }
 
           it 'does not assign the sentry error' do
             update_issue(opts)
@@ -258,11 +258,7 @@ RSpec.describe Issues::UpdateService, :mailer do
 
         context 'from issue to restricted issue types' do
           context 'without sufficient permissions' do
-            let(:user) { create(:user) }
-
-            before do
-              project.add_guest(user)
-            end
+            let(:user) { guest }
 
             it 'does nothing to the labels' do
               expect { update_issue(issue_type: 'issue') }.not_to change(issue.labels, :count)
@@ -407,12 +403,6 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
 
       context 'when current user cannot admin issues in the project' do
-        let(:guest) { create(:user) }
-
-        before do
-          project.add_guest(guest)
-        end
-
         it 'filters out params that cannot be set without the :admin_issue permission' do
           described_class.new(
             project: project, current_user: guest, params: opts.merge(
@@ -1112,6 +1102,24 @@ RSpec.describe Issues::UpdateService, :mailer do
             let(:opts) { { severity: IssuableSeverity::DEFAULT } }
 
             it_behaves_like 'does not change the severity'
+          end
+
+          context 'as guest' do
+            let(:user) { guest }
+
+            it_behaves_like 'does not change the severity'
+
+            context 'and also author' do
+              let(:issue) { create(:incident, project: project, author: user) }
+
+              it_behaves_like 'does not change the severity'
+            end
+
+            context 'and also assignee' do
+              let(:issue) { create(:incident, project: project, assignee_ids: [user.id]) }
+
+              it_behaves_like 'does not change the severity'
+            end
           end
         end
 

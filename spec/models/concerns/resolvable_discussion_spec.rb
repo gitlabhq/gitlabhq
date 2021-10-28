@@ -188,6 +188,16 @@ RSpec.describe Discussion, ResolvableDiscussion do
           it "returns true" do
             expect(subject.can_resolve?(current_user)).to be true
           end
+
+          context 'when noteable is locked' do
+            before do
+              allow(subject.noteable).to receive(:discussion_locked?).and_return(true)
+            end
+
+            it 'returns false' do
+              expect(subject.can_resolve?(current_user)).to be_falsey
+            end
+          end
         end
 
         context "when the signed in user can push to the project" do
@@ -200,8 +210,11 @@ RSpec.describe Discussion, ResolvableDiscussion do
           end
 
           context "when the noteable has no author" do
+            before do
+              subject.noteable.author = nil
+            end
+
             it "returns true" do
-              expect(noteable).to receive(:author).and_return(nil)
               expect(subject.can_resolve?(current_user)).to be true
             end
           end
@@ -213,8 +226,11 @@ RSpec.describe Discussion, ResolvableDiscussion do
           end
 
           context "when the noteable has no author" do
+            before do
+              subject.noteable.author = nil
+            end
+
             it "returns false" do
-              expect(noteable).to receive(:author).and_return(nil)
               expect(subject.can_resolve?(current_user)).to be false
             end
           end

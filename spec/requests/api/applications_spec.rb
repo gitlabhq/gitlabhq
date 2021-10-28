@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe API::Applications, :api do
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
-  let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: '') }
+  let(:scopes) { 'api' }
+  let!(:application) { create(:application, name: 'another_application', owner: nil, redirect_uri: 'http://other_application.url', scopes: scopes) }
 
   describe 'POST /applications' do
     context 'authenticated and authorized user' do
       it 'creates and returns an OAuth application' do
         expect do
-          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
         end.to change { Doorkeeper::Application.count }.by 1
 
         application = Doorkeeper::Application.find_by(name: 'application_name', redirect_uri: 'http://application.url')
@@ -22,11 +23,12 @@ RSpec.describe API::Applications, :api do
         expect(json_response['secret']).to eq application.secret
         expect(json_response['callback_url']).to eq application.redirect_uri
         expect(json_response['confidential']).to eq application.confidential
+        expect(application.scopes.to_s).to eq('api')
       end
 
       it 'does not allow creating an application with the wrong redirect_uri format' do
         expect do
-          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://', scopes: '' }
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -36,7 +38,7 @@ RSpec.describe API::Applications, :api do
 
       it 'does not allow creating an application with a forbidden URI format' do
         expect do
-          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'javascript://alert()', scopes: '' }
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'javascript://alert()', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -46,7 +48,7 @@ RSpec.describe API::Applications, :api do
 
       it 'does not allow creating an application without a name' do
         expect do
-          post api('/applications', admin_user), params: { redirect_uri: 'http://application.url', scopes: '' }
+          post api('/applications', admin_user), params: { redirect_uri: 'http://application.url', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -56,7 +58,7 @@ RSpec.describe API::Applications, :api do
 
       it 'does not allow creating an application without a redirect_uri' do
         expect do
-          post api('/applications', admin_user), params: { name: 'application_name', scopes: '' }
+          post api('/applications', admin_user), params: { name: 'application_name', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
@@ -64,19 +66,59 @@ RSpec.describe API::Applications, :api do
         expect(json_response['error']).to eq('redirect_uri is missing')
       end
 
-      it 'does not allow creating an application without scopes' do
+      it 'does not allow creating an application without specifying `scopes`' do
         expect do
           post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
-        expect(json_response['error']).to eq('scopes is missing')
+        expect(json_response['error']).to eq('scopes is missing, scopes is empty')
+      end
+
+      it 'does not allow creating an application with blank `scopes`' do
+        expect do
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('scopes is empty')
+      end
+
+      it 'does not allow creating an application with invalid `scopes`' do
+        expect do
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'non_existent_scope' }
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
+      end
+
+      context 'multiple scopes' do
+        it 'creates an application with multiple `scopes` when each scope specified is seperated by a space' do
+          expect do
+            post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api read_user' }
+          end.to change { Doorkeeper::Application.count }.by 1
+
+          application = Doorkeeper::Application.last
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(application.scopes.to_s).to eq('api read_user')
+        end
+
+        it 'does not allow creating an application with multiple `scopes` when one of the scopes is invalid' do
+          expect do
+            post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api non_existent_scope' }
+          end.not_to change { Doorkeeper::Application.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
+        end
       end
 
       it 'defaults to creating an application with confidential' do
         expect do
-          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '', confidential: nil }
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes, confidential: nil }
         end.to change { Doorkeeper::Application.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
@@ -89,7 +131,7 @@ RSpec.describe API::Applications, :api do
     context 'authorized user without authorization' do
       it 'does not create application' do
         expect do
-          post api('/applications', user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
+          post api('/applications', user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(:forbidden)

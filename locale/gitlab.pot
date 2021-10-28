@@ -25417,6 +25417,9 @@ msgstr ""
 msgid "Postman collection file path or URL"
 msgstr ""
 
+msgid "Potentially unwanted character detected: Unicode BiDi Control"
+msgstr ""
+
 msgid "Pre-defined push rules."
 msgstr ""
 
@@ -26521,6 +26524,9 @@ msgstr ""
 msgid "ProjectSettings|Global"
 msgstr ""
 
+msgid "ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits."
+msgstr ""
+
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -26708,6 +26714,9 @@ msgid "ProjectSettings|Visibility options for this fork are limited by the curre
 msgstr ""
 
 msgid "ProjectSettings|Visualize the project's performance metrics."
+msgstr ""
+
+msgid "ProjectSettings|Warn about Potentially Unwanted Characters"
 msgstr ""
 
 msgid "ProjectSettings|What are badges?"
@@ -39277,6 +39286,9 @@ msgid "Zoom meeting removed"
 msgstr ""
 
 msgid "[No reason]"
+msgstr ""
+
+msgid "[REDACTED]"
 msgstr ""
 
 msgid "[Redacted]"

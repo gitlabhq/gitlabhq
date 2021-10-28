@@ -16,6 +16,16 @@ RSpec.describe API::ProjectImport do
     namespace.add_owner(user)
   end
 
+  shared_examples 'requires authentication' do
+    let(:user) { nil }
+
+    it 'returns 401' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
   describe 'POST /projects/import' do
     subject { upload_archive(file_upload, workhorse_headers, params) }
 
@@ -31,6 +41,8 @@ RSpec.describe API::ProjectImport do
     before do
       allow(ImportExportUploader).to receive(:workhorse_upload_path).and_return('/')
     end
+
+    it_behaves_like 'requires authentication'
 
     it 'executes a limited number of queries' do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
@@ -281,6 +293,10 @@ RSpec.describe API::ProjectImport do
   end
 
   describe 'POST /projects/remote-import' do
+    subject do
+      post api('/projects/remote-import', user), params: params
+    end
+
     let(:params) do
       {
         path: 'test-import',
@@ -288,10 +304,12 @@ RSpec.describe API::ProjectImport do
       }
     end
 
+    it_behaves_like 'requires authentication'
+
     it 'returns NOT FOUND when the feature is disabled' do
       stub_feature_flags(import_project_from_remote_file: false)
 
-      post api('/projects/remote-import', user), params: params
+      subject
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -315,7 +333,7 @@ RSpec.describe API::ProjectImport do
             .to receive(:execute)
             .and_return(service_response)
 
-          post api('/projects/remote-import', user), params: params
+          subject
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response).to include({
@@ -338,7 +356,7 @@ RSpec.describe API::ProjectImport do
             .to receive(:execute)
             .and_return(service_response)
 
-          post api('/projects/remote-import', user), params: params
+          subject
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response).to eq({
@@ -350,6 +368,14 @@ RSpec.describe API::ProjectImport do
   end
 
   describe 'GET /projects/:id/import' do
+    it 'public project accessible for an unauthenticated user' do
+      project = create(:project, :public)
+
+      get api("/projects/#{project.id}/import", nil)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'returns the import status' do
       project = create(:project, :import_started)
       project.add_maintainer(user)
@@ -375,6 +401,8 @@ RSpec.describe API::ProjectImport do
 
   describe 'POST /projects/import/authorize' do
     subject { post api('/projects/import/authorize', user), headers: workhorse_headers }
+
+    it_behaves_like 'requires authentication'
 
     it 'authorizes importing project with workhorse header' do
       subject
