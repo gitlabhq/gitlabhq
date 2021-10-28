@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.6 (2021-10-28)
+
+### Security (13 changes)
+
+- [Highlight usage of unicode bidi characters](gitlab-org/security/gitlab@18a768bb3cd19b6dc780bb85d91a93605ec8aa4f) ([merge request](gitlab-org/security/gitlab!1939))
+- [Fix dompurify.js to prevent path traversal attacks](gitlab-org/security/gitlab@cfd7c715162c22060b9b80268ef501a9e604421a) ([merge request](gitlab-org/security/gitlab!1931))
+- [Refresh authorizations on transfer of groups having project shares](gitlab-org/security/gitlab@3fc08eb869156a090b015e78da79c8ced16a7162) ([merge request](gitlab-org/security/gitlab!1918))
+- [Do not allow Applications API to create apps with blank scopes](gitlab-org/security/gitlab@c4ffc8c0ee5356bcb9b76dbfa92517589b4225a8) ([merge request](gitlab-org/security/gitlab!1924))
+- [Don't allow author to resolve discussions when MR is locked via GraphQL](gitlab-org/security/gitlab@fe2d0b6f250b60619da97f162c93c9e645daf4af) ([merge request](gitlab-org/security/gitlab!1921))
+- [Workhorse: Allow uploading only a single file](gitlab-org/security/gitlab@89b04599592b7dfc0e4883cfde5d3ecd9ea855b2) ([merge request](gitlab-org/security/gitlab!1915))
+- [Group owners should see SCIM token only once](gitlab-org/security/gitlab@d52c1e41f38039db075a7a3418b8eb9ed8474c2a) ([merge request](gitlab-org/security/gitlab!1908)) **GitLab Enterprise Edition**
+- [Respect visibility level settings when updating project via API](gitlab-org/security/gitlab@3051d6a00d1a56133a77ecd24313bafb4565d576) ([merge request](gitlab-org/security/gitlab!1905))
+- [Avoid decoding the whole tiff image on isTIFF check](gitlab-org/security/gitlab@bab7f45def8fc81fe4b0961a21b4c90a60358ff9) ([merge request](gitlab-org/security/gitlab!1901))
+- [Adding a '[redacted]' to mask private email addresses](gitlab-org/security/gitlab@8eb9749f40b87b9b49b034bceb263219a4d3b114) ([merge request](gitlab-org/security/gitlab!1895))
+- [Do not display the root password by default](gitlab-org/security/gitlab@4ccf08b6645b9f616657edd266d9d31e3602d170) ([merge request](gitlab-org/security/gitlab!1802))
+- [Set PipelineSchedules to inactive](gitlab-org/security/gitlab@ebee16945325d22ceb5c07b7ba48df6fd0b2f067) ([merge request](gitlab-org/security/gitlab!1878))
+- [Remove external_webhook_token from exported project](gitlab-org/security/gitlab@f3ef12185902f3ed5c9d62ffce07418fd704a753) ([merge request](gitlab-org/security/gitlab!1865))
+
 ## 14.2.5 (2021-09-30)
 
 ### Security (28 changes)
