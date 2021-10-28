@@ -20,6 +20,10 @@ It's useful to make a backup just in case things go south. Depending on the inst
 ### 1. Stop server
 
 ```shell
+# For systems running systemd
+sudo systemctl stop gitlab.target
+
+# For systems running SysV init
 sudo service gitlab stop
 ```
 
@@ -108,6 +112,11 @@ Please follow the [install instruction](../integration/elasticsearch.md#install-
 ### 9. Start application
 
 ```shell
+# For systems running systemd
+sudo systemctl start gitlab.target
+sudo systemctl restart nginx.service
+
+# For systems running SysV init
 sudo service gitlab start
 sudo service nginx restart
 ```

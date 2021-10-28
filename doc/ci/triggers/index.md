@@ -113,6 +113,9 @@ This means that whenever a new tag is pushed on project A, the job runs and the
 `stage: deploy` ensures that this job runs only after all jobs with
 `stage: test` complete successfully.
 
+NOTE:
+You [cannot use the API to start `when:manual` trigger jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
+
 ## Triggering a pipeline from a webhook
 
 To trigger a job from a webhook of another project you need to add the following

@@ -177,7 +177,7 @@ deploy:
 ```
 
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
-and the [`strategy: depend` option](../yaml/index.md#linking-pipelines-with-triggerstrategy) makes the `test` job wait until the child pipeline has finished.
+and the [`strategy: depend` option](../yaml/index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
 The parent pipeline runs the `deploy` job in the next stage, that requires a resource from the `production` resource group.
 If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is going to be executed next.
 

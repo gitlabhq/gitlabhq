@@ -54,6 +54,10 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ### 2. Stop server
 
 ```shell
+# For systems running systemd
+sudo systemctl stop gitlab.target
+
+# For systems running SysV init
 sudo service gitlab stop
 ```
 
@@ -230,7 +234,29 @@ ActionMailer::Base.delivery_method = :smtp
 
 See [`smtp_settings.rb.sample`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/smtp_settings.rb.sample#L13) as an example.
 
-#### Init script
+#### Configure systemd units
+
+If using the SysV init script, see [Configure SysV init script](#configure-sysv-init-script).
+
+Check if the systemd units have been updated:
+
+```shell
+cd /home/git/gitlab
+
+git diff origin/PREVIOUS_BRANCH:lib/support/systemd origin/BRANCH:lib/support/systemd
+```
+
+Copy them over:
+
+```shell
+sudo mkdir -p /usr/local/lib/systemd/system
+sudo cp lib/support/systemd/* /usr/local/lib/systemd/system/
+sudo systemctl daemon-reload
+```
+
+#### Configure SysV init script
+
+If using systemd units, see [Configure systemd units](#configure-systemd-units).
 
 There might be new configuration options available for
 [`gitlab.default.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/init.d/gitlab.default.example).
@@ -250,7 +276,7 @@ cd /home/git/gitlab
 sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
 ```
 
-For Ubuntu 16.04.1 LTS:
+If you are using the init script on a system running systemd as init, because you have not switched to native systemd units yet, run:
 
 ```shell
 sudo systemctl daemon-reload
@@ -342,6 +368,11 @@ sudo -u git -H make
 ### 15. Start application
 
 ```shell
+# For systems running systemd
+sudo systemctl start gitlab.target
+sudo systemctl restart nginx.service
+
+# For systems running SysV init
 sudo service gitlab start
 sudo service nginx restart
 ```

@@ -3802,31 +3802,19 @@ deploystacks:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8997) in GitLab Premium 11.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/199224) to GitLab Free in 12.8.
 
-Use `trigger` to define a downstream pipeline trigger. When GitLab starts a `trigger` job,
-a downstream pipeline is created.
+Use `trigger` to start a downstream pipeline that is either:
 
-Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
-For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
-or [`after_script`](#after_script).
+- [A multi-project pipeline](../pipelines/multi_project_pipelines.md).
+- [A child pipeline](../pipelines/parent_child_pipelines.md).
 
-You can use this keyword to create two different types of downstream pipelines:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-- [Multi-project pipelines](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file)
-- [Child pipelines](../pipelines/parent_child_pipelines.md)
+**Possible inputs**: 
 
-In [GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
-view which job triggered a downstream pipeline. In the [pipeline graph](../pipelines/index.md#visualize-pipelines),
-hover over the downstream pipeline job.
+- For multi-project pipelines, path to the downstream project.
+- For child pipelines, path to the child pipeline CI/CD configuration file.
 
-In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
-can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
-earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-You [cannot start `manual` trigger jobs with the API](https://gitlab.com/gitlab-org/gitlab/-/issues/284086).
-
-#### Basic `trigger` syntax for multi-project pipelines
-
-You can configure a downstream trigger by using the `trigger` keyword
-with a full path to a downstream project:
+**Example of `trigger` for multi-project pipeline**:
 
 ```yaml
 rspec:
@@ -3838,47 +3826,7 @@ staging:
   trigger: my/deployment
 ```
 
-#### Complex `trigger` syntax for multi-project pipelines
-
-You can configure a branch name that GitLab uses to create
-a downstream pipeline with:
-
-```yaml
-rspec:
-  stage: test
-  script: bundle exec rspec
-
-staging:
-  stage: deploy
-  trigger:
-    project: my/deployment
-    branch: stable
-```
-
-To mirror the status from a triggered pipeline:
-
-```yaml
-trigger_job:
-  trigger:
-    project: my/project
-    strategy: depend
-```
-
-To mirror the status from an upstream pipeline:
-
-```yaml
-upstream_bridge:
-  stage: test
-  needs:
-    pipeline: other/project
-```
-
-#### `trigger` syntax for child pipeline
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16094) in GitLab 12.7.
-
-To create a [child pipeline](../pipelines/parent_child_pipelines.md), specify the path to the
-YAML file that contains the configuration of the child pipeline:
+**Example of `trigger` for child pipelines**:
 
 ```yaml
 trigger_job:
@@ -3886,71 +3834,36 @@ trigger_job:
     include: path/to/child-pipeline.yml
 ```
 
-Similar to [multi-project pipelines](../pipelines/multi_project_pipelines.md#mirror-status-of-a-triggered-pipeline-in-the-trigger-job),
-it's possible to mirror the status from a triggered pipeline:
+**Additional details**:
 
-```yaml
-trigger_job:
-  trigger:
-    include:
-      - local: path/to/child-pipeline.yml
-    strategy: depend
-```
+- Jobs with `trigger` can only use a [limited set of keywords](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
+  For example, you can't run commands with [`script`](#script), [`before_script`](#before_script),
+  or [`after_script`](#after_script).
+- In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201938), you
+  can use [`when:manual`](#when) in the same job as `trigger`. In GitLab 13.4 and
+  earlier, using them together causes the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+- In [GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/), you can
+  view which job triggered a downstream pipeline in the [pipeline graph](../pipelines/index.md#visualize-pipelines).
 
-##### Trigger child pipeline with generated configuration file
+**Related topics**:
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
+- [Multi-project pipeline configuration examples](../pipelines/multi_project_pipelines.md#define-multi-project-pipelines-in-your-gitlab-ciyml-file).
+- [Child pipeline configuration examples](../pipelines/parent_child_pipelines.md#examples).
+- To force a rebuild of a specific branch, tag, or commit, you can
+  [use an API call with a trigger token](../triggers/index.md).
+  The trigger token is different than the `trigger` keyword.
 
-You can also trigger a child pipeline from a [dynamically generated configuration file](../pipelines/parent_child_pipelines.md#dynamic-child-pipelines):
+#### `trigger:strategy`
 
-```yaml
-generate-config:
-  stage: build
-  script: generate-ci-config > generated-config.yml
-  artifacts:
-    paths:
-      - generated-config.yml
+Use `trigger:strategy` to force the `trigger` job to wait for the downstream pipeline to complete
+before it is marked as **success**.
 
-child-pipeline:
-  stage: test
-  trigger:
-    include:
-      - artifact: generated-config.yml
-        job: generate-config
-```
+This behavior is different than the default, which is for the `trigger` job to be marked as
+**success** as soon as the downstream pipeline is created.
 
-The `generated-config.yml` is extracted from the artifacts and used as the configuration
-for triggering the child pipeline.
+This setting makes your pipeline execution linear rather than parallel.
 
-##### Trigger child pipeline with files from another project
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
-
-To trigger child pipelines with files from another private project under the same
-GitLab instance, use [`include:file`](#includefile):
-
-```yaml
-child-pipeline:
-  trigger:
-    include:
-      - project: 'my-group/my-pipeline-library'
-        ref: 'main'
-        file: '/path/to/child-pipeline.yml'
-```
-
-#### Linking pipelines with `trigger:strategy`
-
-By default, the `trigger` job completes with the `success` status
-as soon as the downstream pipeline is created.
-
-To force the `trigger` job to wait for the downstream (multi-project or child) pipeline to complete, use
-`strategy: depend`. This setting makes the trigger job wait with a "running" status until the triggered
-pipeline completes. At that point, the `trigger` job completes and displays the same status as
-the downstream job.
-
-This setting can help keep your pipeline execution linear. In the following example, jobs from
-subsequent stages wait for the triggered pipeline to successfully complete before
-starting, which reduces parallelization.
+**Example of `trigger:strategy`**:
 
 ```yaml
 trigger_job:
@@ -3959,14 +3872,8 @@ trigger_job:
     strategy: depend
 ```
 
-#### Trigger a pipeline by API call
-
-To force a rebuild of a specific branch, tag, or commit, you can use an API call
-with a trigger token.
-
-The trigger token is different than the [`trigger`](#trigger) keyword.
-
-[Read more in the triggers documentation.](../triggers/index.md)
+In this example, jobs from subsequent stages wait for the triggered pipeline to
+successfully complete before starting. 
 
 ### `interruptible`
 
@@ -4109,7 +4016,7 @@ deployment:
   script: echo "Deploying..."
 ```
 
-You must define [`strategy: depend`](#linking-pipelines-with-triggerstrategy)
+You must define [`strategy: depend`](#triggerstrategy)
 with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
 finishes.
 

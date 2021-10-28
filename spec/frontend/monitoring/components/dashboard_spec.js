@@ -408,7 +408,7 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('when all requests have been commited by the store', () => {
+  describe('when all requests have been committed by the store', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
         currentEnvironmentName: 'production',

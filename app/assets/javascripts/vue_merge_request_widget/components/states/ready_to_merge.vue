@@ -557,6 +557,14 @@ export default {
               v-if="shouldShowMergeControls"
               class="gl-display-flex gl-align-items-center gl-flex-wrap"
             >
+              <merge-train-helper-icon
+                v-if="shouldRenderMergeTrainHelperIcon"
+                :merge-train-when-pipeline-succeeds-docs-path="
+                  mr.mergeTrainWhenPipelineSucceedsDocsPath
+                "
+                class="gl-mx-3"
+              />
+
               <gl-form-checkbox
                 v-if="canRemoveSourceBranch"
                 id="remove-source-branch-input"
@@ -574,13 +582,6 @@ export default {
                 :help-path="mr.squashBeforeMergeHelpPath"
                 :is-disabled="isSquashReadOnly"
                 class="gl-mx-3"
-              />
-
-              <merge-train-helper-icon
-                v-if="shouldRenderMergeTrainHelperIcon"
-                :merge-train-when-pipeline-succeeds-docs-path="
-                  mr.mergeTrainWhenPipelineSucceedsDocsPath
-                "
               />
             </div>
             <template v-else>

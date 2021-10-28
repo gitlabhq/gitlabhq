@@ -15,7 +15,7 @@ module UpdateHighestRole
   # Schedule a Sidekiq job to update the highest role for a User
   #
   # The job will be called outside of a transaction in order to ensure the changes
-  # to be commited before attempting to update the highest role.
+  # to be committed before attempting to update the highest role.
   # The exlusive lease will not be released after completion to prevent multiple jobs
   # being executed during the defined timeout.
   def update_highest_role

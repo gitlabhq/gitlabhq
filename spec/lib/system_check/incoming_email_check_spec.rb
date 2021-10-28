@@ -28,7 +28,7 @@ RSpec.describe SystemCheck::IncomingEmailCheck do
       it 'runs IMAP and mailroom checks' do
         expect(SystemCheck).to receive(:run).with('Reply by email', [
           SystemCheck::IncomingEmail::ImapAuthenticationCheck,
-          SystemCheck::IncomingEmail::InitdConfiguredCheck,
+          SystemCheck::IncomingEmail::MailRoomEnabledCheck,
           SystemCheck::IncomingEmail::MailRoomRunningCheck
         ])
 
@@ -43,7 +43,7 @@ RSpec.describe SystemCheck::IncomingEmailCheck do
 
       it 'runs mailroom checks' do
         expect(SystemCheck).to receive(:run).with('Reply by email', [
-          SystemCheck::IncomingEmail::InitdConfiguredCheck,
+          SystemCheck::IncomingEmail::MailRoomEnabledCheck,
           SystemCheck::IncomingEmail::MailRoomRunningCheck
         ])
 

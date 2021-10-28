@@ -2,20 +2,21 @@
 
 module SystemCheck
   module IncomingEmail
-    class InitdConfiguredCheck < SystemCheck::BaseCheck
-      set_name 'Init.d configured correctly?'
+    class MailRoomEnabledCheck < SystemCheck::BaseCheck
+      include ::SystemCheck::InitHelpers
+      set_name 'Mailroom enabled?'
 
       def skip?
         omnibus_gitlab?
       end
 
       def check?
-        mail_room_configured?
+        mail_room_enabled? || mail_room_configured?
       end
 
       def show_error
         try_fixing_it(
-          'Enable mail_room in the init.d configuration.'
+          'Enable mail_room'
         )
         for_more_information(
           'doc/administration/reply_by_email.md'
@@ -24,6 +25,13 @@ module SystemCheck
       end
 
       private
+
+      def mail_room_enabled?
+        target = '/usr/local/lib/systemd/system/gitlab.target'
+        service = '/usr/local/lib/systemd/system/gitlab-mailroom.service'
+
+        File.exist?(target) && File.exist?(service) && systemd_get_wants('gitlab.target').include?("gitlab-mailroom.service")
+      end
 
       def mail_room_configured?
         path = '/etc/default/gitlab'

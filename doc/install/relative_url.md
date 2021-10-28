@@ -101,8 +101,9 @@ Make sure to follow all steps below:
    gitlab_url: http://127.0.0.1/gitlab
    ```
 
-1. Make sure you have copied the supplied init script and the defaults file
-   as stated in the [installation guide](installation.md#install-init-script).
+1. Make sure you have copied either the supplied systemd services, or the init
+   script and the defaults file, as stated in the
+   [installation guide](installation.md#install-the-service).
    Then, edit `/etc/default/gitlab` and set in `gitlab_workhorse_options` the
    `-authBackend` setting to read like:
 

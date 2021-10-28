@@ -1,0 +1,6 @@
+[Unit]
+Description=GitLab
+Wants=gitlab-gitaly.service gitlab-puma.service gitlab-sidekiq.service gitlab-workhorse.service
+
+[Install]
+WantedBy=multi-user.target

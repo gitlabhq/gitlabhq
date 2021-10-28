@@ -1,0 +1,22 @@
+[Unit]
+Description=GitLab Sidekiq
+ReloadPropagatedFrom=gitlab.target
+PartOf=gitlab.target
+After=network.target
+JoinsNamespaceOf=gitlab-puma.service
+
+[Service]
+Type=simple
+User=git
+WorkingDirectory=/home/git/gitlab
+Environment=RAILS_ENV=production
+ExecStart=/usr/local/bin/bundle exec sidekiq --config /home/git/gitlab/config/sidekiq_queues.yml --environment production
+ExecStop=/usr/local/bin/bundle exec sidekiqctl stop /run/gitlab/sidekiq.pid
+PIDFile=/home/git/gitlab/tmp/pids/sidekiq.pid
+Restart=on-failure
+RestartSec=1
+SyslogIdentifier=gitlab-sidekiq
+Slice=gitlab.slice
+
+[Install]
+WantedBy=gitlab.target

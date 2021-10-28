@@ -146,13 +146,6 @@
      *  Blame file
      */
     &.blame {
-      //
-      // IMPORTANT PERFORMANCE OPTIMIZATION
-      //
-      // When viewinng a blame with many commits a lot of content is rendered on the page.
-      // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
-      content-visibility: auto;
-
       table {
         border: 0;
         margin: 0;
@@ -167,12 +160,6 @@
       }
 
       td {
-        //
-        // IMPORTANT PERFORMANCE OPTIMIZATION
-        //
-        // When viewinng a blame with many commits a lot of content is rendered on the page.
-        // The line below ensures that we only render what is visible to the user, thus reducing TBT in the browser.
-        content-visibility: auto;
         border-top: 0;
         border-bottom: 0;
 
@@ -234,6 +221,21 @@
         &:hover {
           color: $gray-900;
         }
+      }
+
+      //
+      // IMPORTANT PERFORMANCE OPTIMIZATION
+      //
+      // When viewinng a blame with many commits a lot of content is rendered on the page.
+      // Two selectors below ensure that we only render what is visible to the user, thus reducing TBT in the browser.
+      .commit {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 3em;
+      }
+
+      code .line {
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 1.1875rem;
       }
     }
 

@@ -1,0 +1,8 @@
+[Unit]
+Description=Slice to bundle all GitLab services
+Before=slices.target
+
+[Slice]
+MemoryAccounting=true
+IOAccounting=true
+CPUAccounting=true

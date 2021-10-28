@@ -234,54 +234,65 @@ Migration tests depend on what the migration does exactly, the most common types
 #### Example of a data migration test
 
 This spec tests the
-[`db/post_migrate/20170526185842_migrate_pipeline_stages.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/db/post_migrate/20170526185842_migrate_pipeline_stages.rb)
+[`db/post_migrate/20200723040950_migrate_incident_issues_to_incident_type.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/post_migrate/20200723040950_migrate_incident_issues_to_incident_type.rb)
 migration. You can find the complete spec in
-[`spec/migrations/migrate_pipeline_stages_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/spec/migrations/migrate_pipeline_stages_spec.rb).
+[`spec/migrations/migrate_incident_issues_to_incident_type_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/migrations/migrate_incident_issues_to_incident_type_spec.rb).
 
 ```ruby
-require 'spec_helper'
+# frozen_string_literal: true
 
+require 'spec_helper'
 require_migration!
 
-RSpec.describe MigratePipelineStages do
-  # Create test data - pipeline and CI/CD jobs.
-  let(:jobs) { table(:ci_builds) }
-  let(:stages) { table(:ci_stages) }
-  let(:pipelines) { table(:ci_pipelines) }
+RSpec.describe MigrateIncidentIssuesToIncidentType do
+  let(:migration) { described_class.new }
+
   let(:projects) { table(:projects) }
+  let(:namespaces) { table(:namespaces) }
+  let(:labels) { table(:labels) }
+  let(:issues) { table(:issues) }
+  let(:label_links) { table(:label_links) }
+  let(:label_props) { IncidentManagement::CreateIncidentLabelService::LABEL_PROPERTIES }
+
+  let(:namespace) { namespaces.create!(name: 'foo', path: 'foo') }
+  let!(:project) { projects.create!(namespace_id: namespace.id) }
+  let(:label) { labels.create!(project_id: project.id, **label_props) }
+  let!(:incident_issue) { issues.create!(project_id: project.id) }
+  let!(:other_issue) { issues.create!(project_id: project.id) }
+
+  # Issue issue_type enum
+  let(:issue_type) { 0 }
+  let(:incident_type) { 1 }
 
   before do
-    projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
-    pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
-    jobs.create!(id: 1, commit_id: 1, project_id: 123, stage_idx: 2, stage: 'build')
-    jobs.create!(id: 2, commit_id: 1, project_id: 123, stage_idx: 1, stage: 'test')
+    label_links.create!(target_id: incident_issue.id, label_id: label.id, target_type: 'Issue')
   end
 
-  # Test just the up migration.
-  it 'correctly migrates pipeline stages' do
-    expect(stages.count).to be_zero
+  describe '#up' do
+    it 'updates the incident issue type' do
+      expect { migrate! }
+        .to change { incident_issue.reload.issue_type }
+        .from(issue_type)
+        .to(incident_type)
 
-    migrate!
-
-    expect(stages.count).to eq 2
-    expect(stages.all.pluck(:name)).to match_array %w[test build]
-  end
-
-  # Test a reversible migration.
-  it 'correctly migrates up and down pipeline stages' do
-    reversible_migration do |migration|
-      # Expectations will run before the up migration,
-      # and then again after the down migration
-      migration.before -> {
-        expect(stages.count).to be_zero
-      }
-
-      # Expectations will run after the up migration.
-      migration.after -> {
-        expect(stages.count).to eq 2
-        expect(stages.all.pluck(:name)).to match_array %w[test build]
-      }
+      expect(other_issue.reload.issue_type).to eql(issue_type)
     end
+  end
+
+  describe '#down' do
+    let!(:incident_issue) { issues.create!(project_id: project.id, issue_type: issue_type) }
+
+    it 'updates the incident issue type' do
+      migration.up
+
+      expect { migration.down }
+        .to change { incident_issue.reload.issue_type }
+        .from(incident_type)
+        .to(issue_type)
+
+      expect(other_issue.reload.issue_type).to eql(issue_type)
+    end
+  end
 end
 ```
 
@@ -357,41 +368,62 @@ end
 ### Example background migration test
 
 This spec tests the
-[`lib/gitlab/background_migration/archive_legacy_traces.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/lib/gitlab/background_migration/archive_legacy_traces.rb)
+[`lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb)
 background migration. You can find the complete spec on
-[`spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb)
+[`spec/lib/gitlab/background_migration/backfill_draft_status_on_merge_requests_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/background_migration/backfill_draft_status_on_merge_requests_spec.rb)
 
 ```ruby
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::ArchiveLegacyTraces, schema: 20180529152628 do
-  include TraceHelpers
+RSpec.describe Gitlab::BackgroundMigration::BackfillDraftStatusOnMergeRequests do
+  let(:namespaces)     { table(:namespaces) }
+  let(:projects)       { table(:projects) }
+  let(:merge_requests) { table(:merge_requests) }
 
-  let(:namespaces) { table(:namespaces) }
-  let(:projects) { table(:projects) }
-  let(:builds) { table(:ci_builds) }
-  let(:job_artifacts) { table(:ci_job_artifacts) }
+  let(:group)   { namespaces.create!(name: 'gitlab', path: 'gitlab') }
+  let(:project) { projects.create!(namespace_id: group.id) }
 
-  before do
-    namespaces.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
-    projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1', namespace_id: 123)
-    @build = builds.create!(id: 1, project_id: 123, status: 'success', type: 'Ci::Build')
+  let(:draft_prefixes) { ["[Draft]", "(Draft)", "Draft:", "Draft", "[WIP]", "WIP:", "WIP"] }
+
+  def create_merge_request(params)
+    common_params = {
+      target_project_id: project.id,
+      target_branch: 'feature1',
+      source_branch: 'master'
+    }
+
+    merge_requests.create!(common_params.merge(params))
   end
 
-  context 'when trace file exists at the right place' do
+  context "for MRs with #draft? == true titles but draft attribute false" do
+    let(:mr_ids) { merge_requests.all.collect(&:id) }
+
     before do
-      create_legacy_trace(@build, 'trace in file')
+      draft_prefixes.each do |prefix|
+        (1..4).each do |n|
+          create_merge_request(
+            title: "#{prefix} This is a title",
+            draft: false,
+            state_id: n
+          )
+        end
+      end
     end
 
-    it 'correctly archive legacy traces' do
-      expect(job_artifacts.count).to eq(0)
-      expect(File.exist?(legacy_trace_path(@build))).to be_truthy
+    it "updates all open draft merge request's draft field to true" do
+      mr_count = merge_requests.all.count
 
-      described_class.new.perform(1, 1)
+      expect { subject.perform(mr_ids.first, mr_ids.last) }
+        .to change { MergeRequest.where(draft: false).count }
+              .from(mr_count).to(mr_count - draft_prefixes.length)
+    end
 
-      expect(job_artifacts.count).to eq(1)
-      expect(File.exist?(legacy_trace_path(@build))).to be_falsy
-      expect(File.read(archived_trace_path(job_artifacts.first))).to eq('trace in file')
+    it "marks successful slices as completed" do
+      expect(subject).to receive(:mark_job_as_succeeded).with(mr_ids.first, mr_ids.last)
+
+      subject.perform(mr_ids.first, mr_ids.last)
     end
   end
 end

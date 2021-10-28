@@ -14,7 +14,7 @@ module SystemCheck
         end
 
         if Rails.env.production?
-          checks << SystemCheck::IncomingEmail::InitdConfiguredCheck
+          checks << SystemCheck::IncomingEmail::MailRoomEnabledCheck
           checks << SystemCheck::IncomingEmail::MailRoomRunningCheck
         end
 

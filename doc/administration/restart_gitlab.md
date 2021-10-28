@@ -103,39 +103,15 @@ If you have followed the official installation guide to [install GitLab from
 source](../install/installation.md), run the following command to restart GitLab:
 
 ```shell
+# For systems running systemd
+sudo systemctl restart gitlab.target
+
+# For systems running SysV init
 sudo service gitlab restart
 ```
 
-The output should be similar to this:
-
-```plaintext
-Shutting down GitLab Puma
-Shutting down GitLab Sidekiq
-Shutting down GitLab Workhorse
-Shutting down GitLab MailRoom
-...
-GitLab is not running.
-Starting GitLab Puma
-Starting GitLab Sidekiq
-Starting GitLab Workhorse
-Starting GitLab MailRoom
-...
-The GitLab Puma web server with pid 28059 is running.
-The GitLab Sidekiq job dispatcher with pid 28176 is running.
-The GitLab Workhorse with pid 28122 is running.
-The GitLab MailRoom email processor with pid 28114 is running.
-GitLab and all its components are up and running.
-```
-
 This should restart Puma, Sidekiq, GitLab Workhorse, and [Mailroom](reply_by_email.md)
-(if enabled). The init service file that does all the magic can be found on
-your server in `/etc/init.d/gitlab`.
-
----
-
-If you are using other init systems, like `systemd`, you can check the
-[GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init) repository for some unofficial services. These are
-**not** officially supported so use them at your own risk.
+(if enabled).
 
 ## Helm chart installations
 

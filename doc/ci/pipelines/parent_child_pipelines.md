@@ -81,7 +81,8 @@ microservice_a:
   trigger:
     include:
       - project: 'my-group/my-pipeline-library'
-        file: 'path/to/ci-config.yml'
+        ref: 'main'
+        file: '/path/to/child-pipeline.yml'
 ```
 
 The maximum number of entries that are accepted for `trigger:include:` is three.
@@ -98,7 +99,7 @@ microservice_a:
     strategy: depend
 ```
 
-## Merge Request child pipelines
+## Merge request child pipelines
 
 To trigger a child pipeline as a [Merge Request Pipeline](merge_request_pipelines.md) we need to:
 
@@ -149,7 +150,7 @@ microservice_a:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
 
 Instead of running a child pipeline from a static YAML file, you can define a job that runs
-your own script to generate a YAML file, which is then [used to trigger a child pipeline](../yaml/index.md#trigger-child-pipeline-with-generated-configuration-file).
+your own script to generate a YAML file, which is then used to trigger a child pipeline.
 
 This technique can be very powerful in generating pipelines targeting content that changed or to
 build a matrix of targets and architectures.
@@ -170,6 +171,31 @@ configuration for jobs, like scripts, that use the Windows runner would use `\`.
 
 In GitLab 12.9, the child pipeline could fail to be created in certain cases, causing the parent pipeline to fail.
 This is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/209070) in GitLab 12.10.
+
+### Dynamic child pipeline example
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35632) in GitLab 12.9.
+
+You can trigger a child pipeline from a [dynamically generated configuration file](../pipelines/parent_child_pipelines.md#dynamic-child-pipelines):
+
+```yaml
+generate-config:
+  stage: build
+  script: generate-ci-config > generated-config.yml
+  artifacts:
+    paths:
+      - generated-config.yml
+
+child-pipeline:
+  stage: test
+  trigger:
+    include:
+      - artifact: generated-config.yml
+        job: generate-config
+```
+
+The `generated-config.yml` is extracted from the artifacts and used as the configuration
+for triggering the child pipeline.
 
 ## Nested child pipelines
 
