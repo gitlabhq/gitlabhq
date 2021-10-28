@@ -43,7 +43,6 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   let pasteText;
   let addFileToForm;
   let updateAttachingMessage;
-  let isImage;
   let uploadFile;
 
   formTextarea.wrap('<div class="div-dropzone"></div>');
@@ -173,7 +172,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
       return dropzoneInstance.addFile(file);
     });
   });
-  // eslint-disable-next-line consistent-return
+
   handlePaste = (event) => {
     const pasteEvent = event.originalEvent;
     const { clipboardData } = pasteEvent;
@@ -186,32 +185,22 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
         const text = converter.convertToTableMarkdown();
         pasteText(text);
       } else {
-        const image = isImage(pasteEvent);
+        const fileList = [...clipboardData.files];
+        fileList.forEach((file) => {
+          if (file.type.indexOf('image') !== -1) {
+            event.preventDefault();
+            const MAX_FILE_NAME_LENGTH = 246;
 
-        if (image) {
-          event.preventDefault();
-          const MAX_FILE_NAME_LENGTH = 246;
-          const filename = getFilename(pasteEvent) || 'image.png';
-          const truncateFilename = truncate(filename, MAX_FILE_NAME_LENGTH);
-          const text = `{{${truncateFilename}}}`;
-          pasteText(text);
+            const filename = getFilename(file) || 'image.png';
+            const truncateFilename = truncate(filename, MAX_FILE_NAME_LENGTH);
+            const text = `{{${truncateFilename}}}`;
+            pasteText(text);
 
-          return uploadFile(image.getAsFile(), truncateFilename);
-        }
+            uploadFile(file, truncateFilename);
+          }
+        });
       }
     }
-  };
-
-  isImage = (data) => {
-    let i = 0;
-    while (i < data.clipboardData.items.length) {
-      const item = data.clipboardData.items[i];
-      if (item.type.indexOf('image') !== -1) {
-        return item;
-      }
-      i += 1;
-    }
-    return false;
   };
 
   pasteText = (text, shouldPad) => {

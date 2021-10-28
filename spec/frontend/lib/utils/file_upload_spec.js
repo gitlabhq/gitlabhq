@@ -1,4 +1,4 @@
-import fileUpload, { getFilename } from '~/lib/utils/file_upload';
+import fileUpload, { getFilename, validateImageName } from '~/lib/utils/file_upload';
 
 describe('File upload', () => {
   beforeEach(() => {
@@ -64,13 +64,23 @@ describe('File upload', () => {
 });
 
 describe('getFilename', () => {
-  it('returns first value correctly', () => {
-    const event = {
-      clipboardData: {
-        getData: () => 'test.png\rtest.txt',
-      },
-    };
+  it('returns file name', () => {
+    const file = new File([], 'test.jpg');
 
-    expect(getFilename(event)).toBe('test.png');
+    expect(getFilename(file)).toBe('test.jpg');
+  });
+});
+
+describe('file name validator', () => {
+  it('validate file name', () => {
+    const file = new File([], 'test.jpg');
+
+    expect(validateImageName(file)).toBe('test.jpg');
+  });
+
+  it('illegal file name should be rename to image.png', () => {
+    const file = new File([], 'test<.png');
+
+    expect(validateImageName(file)).toBe('image.png');
   });
 });

@@ -64,6 +64,9 @@ use the `GITLAB_TEST_EAGER_LOAD` environment variable:
 GITLAB_TEST_EAGER_LOAD=1 bin/rspec spec/models/project_spec.rb
 ```
 
+If your test depends on all the application code that is being loaded, add the `:eager_load` tag.
+This ensures that the application code is eagerly loaded before the test execution.
+
 ### Ruby warnings
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.

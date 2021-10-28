@@ -32,7 +32,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline do
         expect(result[:escaped_literals]).to be_truthy
       end
 
-      it 'ensure we handle all the GitLab reference characters' do
+      it 'ensure we handle all the GitLab reference characters', :eager_load do
         reference_chars = ObjectSpace.each_object(Class).map do |klass|
           next unless klass.included_modules.include?(Referable)
           next unless klass.respond_to?(:reference_prefix)

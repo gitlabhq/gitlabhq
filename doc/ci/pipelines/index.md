@@ -127,6 +127,11 @@ you can filter the pipeline list by:
 [Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
 pipeline column to display the pipeline ID or the pipeline IID.
 
+If you use VS Code to edit your GitLab CI/CD configuration, the
+[GitLab Workflow VS Code extension](../../user/project/repository/vscode.md) helps you
+[validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
+and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+
 ### Run a pipeline manually
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).

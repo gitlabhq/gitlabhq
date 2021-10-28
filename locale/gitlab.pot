@@ -1471,7 +1471,7 @@ msgstr ""
 msgid "A merge request hasn't yet been merged"
 msgstr ""
 
-msgid "A new Auto DevOps pipeline has been created, go to %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details"
+msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
 msgstr ""
 
 msgid "A new Release %{tag} for %{name} was published. Visit the %{release_link_start}Releases page%{release_link_end} to read more about it."
@@ -30428,6 +30428,9 @@ msgid "SecurityOrchestration|Scan Execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution"
+msgstr ""
+
+msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
 msgid "SecurityOrchestration|Scan to be performed every %{cadence} on the %{branches}"

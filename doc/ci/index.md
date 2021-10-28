@@ -129,13 +129,17 @@ See also:
 
 - [Enable or disable GitLab CI/CD in a project](enable_or_disable_ci.md).
 
-## References
+## Related topics
 
 Learn more about GitLab CI/CD:
 
 - [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/).
 - [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/).
 - [5 Teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
+- If you use VS Code to edit your GitLab CI/CD configuration, the
+  [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) helps you
+  [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
+  and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
 
 See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJaIOzCX4Vqg3dlwfELC3u2jEeCBbDk) presentation.
 

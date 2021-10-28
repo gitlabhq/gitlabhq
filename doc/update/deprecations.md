@@ -47,16 +47,6 @@ Announced: 2021-08-22
 
 ## 15.0
 
-### Legacy database configuration
-
-The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
-configuration located in `database.yml` is changing and the legacy format is deprecated. The legacy format
-supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
-
-This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
-
-Announced: 2021-09-22
-
 ### Audit events for repository push events
 
 Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#repository-push) are now deprecated and will be removed in GitLab 15.0.
@@ -67,6 +57,24 @@ dramatically slow down GitLab instances. For this reason, they are being removed
 
 Announced: 2021-09-22
 
+### GitLab Serverless
+
+[GitLab Serverless](https://docs.gitlab.com/ee/user/project/clusters/serverless/) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+
+We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
+
+Announced: 2021-09-22
+
+### Legacy database configuration
+
+The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
+configuration located in `database.yml` is changing and the legacy format is deprecated. The legacy format
+supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
+
+This deprecation mainly impacts users compiling GitLab from source because Omnibus will handle this configuration automatically.
+
+Announced: 2021-09-22
+
 ### OmniAuth Kerberos gem
 
 The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15.0.
@@ -74,14 +82,6 @@ The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15
 This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
 
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
-
-Announced: 2021-09-22
-
-### GitLab Serverless
-
-[GitLab Serverless](https://docs.gitlab.com/ee/user/project/clusters/serverless/) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
-
-We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
 
 Announced: 2021-09-22
 

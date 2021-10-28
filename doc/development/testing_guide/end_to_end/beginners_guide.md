@@ -350,7 +350,7 @@ GITLAB_PASSWORD=<GDK root password> bundle exec bin/qa Test::Instance::All http:
 Where `<test_file>` is:
 
 - `qa/specs/features/browser_ui/1_manage/login/log_in_spec.rb` when running the Login example.
-- `qa/specs/features/browser_ui/2_plan/issues/create_issue_spec.rb` when running the Issue example.
+- `qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb` when running the Issue example.
 
 ## End-to-end test merge request template
 

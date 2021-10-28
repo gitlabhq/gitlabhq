@@ -50,6 +50,26 @@ RSpec.describe LooseForeignKeys::ModificationTracker do
     end
   end
 
+  describe '#add_deletions' do
+    it 'increments a Prometheus counter' do
+      counter = Gitlab::Metrics.registry.get(:loose_foreign_key_deletions)
+
+      subject.add_deletions(:users, 4)
+
+      expect(counter.get(table: :users)).to eq(4)
+    end
+  end
+
+  describe '#add_updates' do
+    it 'increments a Prometheus counter' do
+      counter = Gitlab::Metrics.registry.get(:loose_foreign_key_updates)
+
+      subject.add_updates(:users, 4)
+
+      expect(counter.get(table: :users)).to eq(4)
+    end
+  end
+
   describe '#stats' do
     it 'exposes stats' do
       freeze_time do

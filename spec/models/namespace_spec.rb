@@ -568,26 +568,30 @@ RSpec.describe Namespace do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:            namespace,
-                               repository_size:      101,
-                               wiki_size:            505,
-                               lfs_objects_size:     202,
-                               build_artifacts_size: 303,
-                               packages_size:        404,
-                               snippets_size:        605))
+                               namespace:               namespace,
+                               repository_size:         101,
+                               wiki_size:               505,
+                               lfs_objects_size:        202,
+                               build_artifacts_size:    303,
+                               pipeline_artifacts_size: 707,
+                               packages_size:           404,
+                               snippets_size:           605,
+                               uploads_size:            808))
     end
 
     let(:project2) do
       create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
-                               namespace:            namespace,
-                               repository_size:      10,
-                               wiki_size:            50,
-                               lfs_objects_size:     20,
-                               build_artifacts_size: 30,
-                               packages_size:        40,
-                               snippets_size:        60))
+                               namespace:               namespace,
+                               repository_size:         10,
+                               wiki_size:               50,
+                               lfs_objects_size:        20,
+                               build_artifacts_size:    30,
+                               pipeline_artifacts_size: 70,
+                               packages_size:           40,
+                               snippets_size:           60,
+                               uploads_size:            80))
     end
 
     it "sums all project storage counters in the namespace" do
@@ -595,13 +599,15 @@ RSpec.describe Namespace do
       project2
       statistics = described_class.with_statistics.find(namespace.id)
 
-      expect(statistics.storage_size).to eq 2330
+      expect(statistics.storage_size).to eq 3995
       expect(statistics.repository_size).to eq 111
       expect(statistics.wiki_size).to eq 555
       expect(statistics.lfs_objects_size).to eq 222
       expect(statistics.build_artifacts_size).to eq 333
+      expect(statistics.pipeline_artifacts_size).to eq 777
       expect(statistics.packages_size).to eq 444
       expect(statistics.snippets_size).to eq 665
+      expect(statistics.uploads_size).to eq 888
     end
 
     it "correctly handles namespaces without projects" do
@@ -612,8 +618,10 @@ RSpec.describe Namespace do
       expect(statistics.wiki_size).to eq 0
       expect(statistics.lfs_objects_size).to eq 0
       expect(statistics.build_artifacts_size).to eq 0
+      expect(statistics.pipeline_artifacts_size).to eq 0
       expect(statistics.packages_size).to eq 0
       expect(statistics.snippets_size).to eq 0
+      expect(statistics.uploads_size).to eq 0
     end
   end
 

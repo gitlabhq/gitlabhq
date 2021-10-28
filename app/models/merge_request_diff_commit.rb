@@ -114,18 +114,18 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def author_name
-    commit_author.name
+    commit_author&.name
   end
 
   def author_email
-    commit_author.email
+    commit_author&.email
   end
 
   def committer_name
-    committer.name
+    committer&.name
   end
 
   def committer_email
-    committer.email
+    committer&.email
   end
 end

@@ -9,7 +9,7 @@ class Admin::HooksController < Admin::ApplicationController
   urgency :low, [:test]
 
   def index
-    @hooks = SystemHook.all
+    @hooks = SystemHook.all.load
     @hook = SystemHook.new
   end
 

@@ -12,14 +12,24 @@ module LooseForeignKeys
       @delete_count_by_table = Hash.new { |h, k| h[k] = 0 }
       @update_count_by_table = Hash.new { |h, k| h[k] = 0 }
       @start_time = monotonic_time
+      @deletes_counter = Gitlab::Metrics.counter(
+        :loose_foreign_key_deletions,
+        'The number of loose foreign key deletions'
+      )
+      @updates_counter = Gitlab::Metrics.counter(
+        :loose_foreign_key_updates,
+        'The number of loose foreign key updates'
+      )
     end
 
     def add_deletions(table, count)
       @delete_count_by_table[table] += count
+      @deletes_counter.increment({ table: table }, count)
     end
 
     def add_updates(table, count)
       @update_count_by_table[table] += count
+      @updates_counter.increment({ table: table }, count)
     end
 
     def over_limit?

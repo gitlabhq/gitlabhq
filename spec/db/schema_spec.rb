@@ -210,7 +210,7 @@ RSpec.describe 'Database schema' do
 
   # We are skipping GEO models for now as it adds up complexity
   describe 'for jsonb columns' do
-    it 'uses json schema validator' do
+    it 'uses json schema validator', :eager_load do
       columns_name_with_jsonb.each do |hash|
         next if models_by_table_name[hash["table_name"]].nil?
 

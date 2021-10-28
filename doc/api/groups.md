@@ -100,13 +100,15 @@ GET /groups?statistics=true
     "parent_id": null,
     "created_at": "2020-01-15T12:36:29.590Z",
     "statistics": {
-      "storage_size" : 363,
-      "repository_size" : 33,
-      "wiki_size" : 100,
-      "lfs_objects_size" : 123,
-      "job_artifacts_size" : 57,
+      "storage_size": 363,
+      "repository_size": 33,
+      "wiki_size": 100,
+      "lfs_objects_size": 123,
+      "job_artifacts_size": 57,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size" : 50
+      "snippets_size": 50,
+      "uploads_size": 0
     }
   }
 ]

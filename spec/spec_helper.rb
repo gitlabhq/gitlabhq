@@ -431,6 +431,10 @@ RSpec.configure do |config|
     Gitlab::Metrics.reset_registry!
   end
 
+  config.before(:example, :eager_load) do
+    Rails.application.eager_load!
+  end
+
   # This makes sure the `ApplicationController#can?` method is stubbed with the
   # original implementation for all view specs.
   config.before(:each, type: :view) do

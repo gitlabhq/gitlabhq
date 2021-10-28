@@ -375,7 +375,7 @@ RSpec.describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   end
 
   describe 'classes including this concern' do
-    it 'sets reactive_cache_work_type' do
+    it 'sets reactive_cache_work_type', :eager_load do
       classes = ObjectSpace.each_object(Class).select do |klass|
         klass < described_class && klass.name
       end

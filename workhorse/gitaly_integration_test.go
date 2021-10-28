@@ -16,6 +16,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v14/proto/go/gitalypb"
 
@@ -53,6 +54,10 @@ func realGitalyOkBody(t *testing.T) *api.Response {
 	return realGitalyAuthResponse(gitOkBody(t))
 }
 
+func realGitalyOkBodyWithSidechannel(t *testing.T) *api.Response {
+	return realGitalyAuthResponse(gitOkBodyWithSidechannel(t))
+}
+
 func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
 	ctx, namespace, err := gitaly.NewNamespaceClient(context.Background(), apiResponse.GitalyServer)
 	if err != nil {
@@ -83,10 +88,18 @@ func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
 }
 
 func TestAllowedClone(t *testing.T) {
+	testAllowedClone(t, realGitalyOkBody(t))
+}
+
+func TestAllowedCloneWithSidechannel(t *testing.T) {
+	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
+	testAllowedClone(t, realGitalyOkBodyWithSidechannel(t))
+}
+
+func testAllowedClone(t *testing.T, apiResponse *api.Response) {
 	skipUnlessRealGitaly(t)
 
 	// Create the repository in the Gitaly server
-	apiResponse := realGitalyOkBody(t)
 	require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
 	// Prepare test server and backend
@@ -107,10 +120,18 @@ func TestAllowedClone(t *testing.T) {
 }
 
 func TestAllowedShallowClone(t *testing.T) {
+	testAllowedShallowClone(t, realGitalyOkBody(t))
+}
+
+func TestAllowedShallowCloneWithSidechannel(t *testing.T) {
+	gitaly.InitializeSidechannelRegistry(logrus.StandardLogger())
+	testAllowedShallowClone(t, realGitalyOkBodyWithSidechannel(t))
+}
+
+func testAllowedShallowClone(t *testing.T, apiResponse *api.Response) {
 	skipUnlessRealGitaly(t)
 
 	// Create the repository in the Gitaly server
-	apiResponse := realGitalyOkBody(t)
 	require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
 	// Prepare test server and backend

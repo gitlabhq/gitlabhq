@@ -71,6 +71,7 @@ describe('dropzone_input', () => {
       triggerPasteEvent({
         types: ['text/plain', 'text/html', 'text/rtf', 'Files'],
         getData: () => longFileName,
+        files: [new File([new Blob()], longFileName, { type: 'image/png' })],
         items: [
           {
             kind: 'file',
@@ -83,6 +84,24 @@ describe('dropzone_input', () => {
       axiosMock.onPost().reply(httpStatusCodes.OK, { link: { markdown: 'foo' } });
       await waitForPromises();
       expect(axiosMock.history.post[0].data.get('file').name).toHaveLength(246);
+    });
+
+    it('display original file name in comment box', async () => {
+      const axiosMock = new MockAdapter(axios);
+      triggerPasteEvent({
+        types: ['Files'],
+        files: [new File([new Blob()], 'test.png', { type: 'image/png' })],
+        items: [
+          {
+            kind: 'file',
+            type: 'image/png',
+            getAsFile: () => new Blob(),
+          },
+        ],
+      });
+      axiosMock.onPost().reply(httpStatusCodes.OK, { link: { markdown: 'foo' } });
+      await waitForPromises();
+      expect(axiosMock.history.post[0].data.get('file').name).toEqual('test.png');
     });
   });
 

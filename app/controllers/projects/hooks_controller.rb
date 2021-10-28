@@ -16,7 +16,7 @@ class Projects::HooksController < Projects::ApplicationController
   urgency :low, [:test]
 
   def index
-    @hooks = @project.hooks
+    @hooks = @project.hooks.load
     @hook = ProjectHook.new
   end
 

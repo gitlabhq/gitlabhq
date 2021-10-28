@@ -191,8 +191,10 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -303,8 +305,10 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -469,8 +473,10 @@ GET /users/:user_id/projects
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -581,8 +587,10 @@ GET /users/:user_id/projects
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -704,6 +712,10 @@ Example response:
       "repository_size": 1038090,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -811,6 +823,10 @@ Example response:
       "repository_size": 2066080,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -978,8 +994,10 @@ GET /projects/:id
     "wiki_size" : 0,
     "lfs_objects_size": 0,
     "job_artifacts_size": 0,
+    "pipeline_artifacts_size": 0,
     "packages_size": 0,
-    "snippets_size": 0
+    "snippets_size": 0,
+    "uploads_size": 0
   },
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
   "_links": {

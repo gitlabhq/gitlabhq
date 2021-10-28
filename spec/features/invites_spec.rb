@@ -103,6 +103,20 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures do
               expect(page).to have_content('You are already a member of this group.')
             end
           end
+
+          context 'when email case doesnt match', :js do
+            let(:invite_email) { 'User@example.com' }
+            let(:user) { create(:user, email: 'user@example.com') }
+
+            before do
+              sign_in(user)
+              visit invite_path(group_invite.raw_invite_token)
+            end
+
+            it 'accepts invite' do
+              expect(page).to have_content('You have been granted Developer access to group Owned.')
+            end
+          end
         end
 
         context 'when declining the invitation from invitation reminder email' do

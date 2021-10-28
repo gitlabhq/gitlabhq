@@ -52,7 +52,7 @@ class InvitesController < ApplicationController
   end
 
   def current_user_matches_invite?
-    current_user.verified_emails.include?(@member.invite_email)
+    current_user.verified_email?(@member.invite_email)
   end
 
   def member?

@@ -5,6 +5,7 @@ import {
   VALIDATE_INTEGRATION_FORM_EVENT,
   GET_JIRA_ISSUE_TYPES_EVENT,
 } from '~/integrations/constants';
+import { s__, __ } from '~/locale';
 import eventHub from '../event_hub';
 import JiraUpgradeCta from './jira_upgrade_cta.vue';
 
@@ -94,33 +95,38 @@ export default {
       eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
     },
   },
+  i18n: {
+    sectionTitle: s__('JiraService|View Jira issues in GitLab'),
+    sectionDescription: s__(
+      'JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only.',
+    ),
+    enableCheckboxLabel: s__('JiraService|Enable Jira issues'),
+    enableCheckboxHelp: s__(
+      'JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below.',
+    ),
+    projectKeyLabel: s__('JiraService|Jira project key'),
+    projectKeyPlaceholder: s__('JiraService|For example, AB'),
+    requiredFieldFeedback: __('This field is required.'),
+    issueTrackerConflictWarning: s__(
+      'JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used.',
+    ),
+  },
 };
 </script>
 
 <template>
   <div>
-    <gl-form-group
-      :label="s__('JiraService|View Jira issues in GitLab')"
-      label-for="jira-issue-settings"
-    >
+    <gl-form-group :label="$options.i18n.sectionTitle" label-for="jira-issue-settings">
       <div id="jira-issue-settings">
         <p>
-          {{
-            s__(
-              'JiraService|Work on Jira issues without leaving GitLab. Adds a Jira menu to access your list of Jira issues and view any issue as read-only.',
-            )
-          }}
+          {{ $options.i18n.sectionDescription }}
         </p>
         <template v-if="showJiraIssuesIntegration">
           <input name="service[issues_enabled]" type="hidden" :value="enableJiraIssues || false" />
           <gl-form-checkbox v-model="enableJiraIssues" :disabled="isInheriting">
-            {{ s__('JiraService|Enable Jira issues') }}
+            {{ $options.i18n.enableCheckboxLabel }}
             <template #help>
-              {{
-                s__(
-                  'JiraService|Warning: All GitLab users that have access to this GitLab project are able to view all issues from the Jira project specified below.',
-                )
-              }}
+              {{ $options.i18n.enableCheckboxHelp }}
             </template>
           </gl-form-checkbox>
           <template v-if="enableJiraIssues">
@@ -152,30 +158,25 @@ export default {
     </gl-form-group>
     <template v-if="showJiraIssuesIntegration">
       <gl-form-group
-        :label="s__('JiraService|Jira project key')"
+        :label="$options.i18n.projectKeyLabel"
         label-for="service_project_key"
-        :invalid-feedback="__('This field is required.')"
+        :invalid-feedback="$options.i18n.requiredFieldFeedback"
         :state="validProjectKey"
+        data-testid="project-key-form-group"
       >
         <gl-form-input
           id="service_project_key"
           v-model="projectKey"
           name="service[project_key]"
-          :placeholder="s__('JiraService|For example, AB')"
+          :placeholder="$options.i18n.projectKeyPlaceholder"
           :required="enableJiraIssues"
           :state="validProjectKey"
           :disabled="!enableJiraIssues"
           :readonly="isInheriting"
         />
       </gl-form-group>
-      <p v-if="gitlabIssuesEnabled">
-        <gl-sprintf
-          :message="
-            s__(
-              'JiraService|Displaying Jira issues while leaving the GitLab issue functionality enabled might be confusing. Consider %{linkStart}disabling GitLab issues%{linkEnd} if they won’t otherwise be used.',
-            )
-          "
-        >
+      <p v-if="gitlabIssuesEnabled" data-testid="conflict-warning-text">
+        <gl-sprintf :message="$options.i18n.issueTrackerConflictWarning">
           <template #link="{ content }">
             <gl-link :href="editProjectPath" target="_blank">{{ content }}</gl-link>
           </template>

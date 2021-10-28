@@ -24,6 +24,7 @@ module TodosHelper
     when Todo::UNMERGEABLE then 'Could not merge'
     when Todo::DIRECTLY_ADDRESSED then "directly addressed #{todo_action_subject(todo)} on"
     when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
+    when Todo::ATTENTION_REQUIRED then 'requested your attention on'
     end
   end
 

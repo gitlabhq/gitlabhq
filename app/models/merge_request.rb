@@ -1919,6 +1919,10 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def find_assignee(user)
+    merge_request_assignees.find_by(user_id: user.id)
+  end
+
   def find_reviewer(user)
     merge_request_reviewers.find_by(user_id: user.id)
   end
