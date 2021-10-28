@@ -4610,22 +4610,5 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
     end
-
-    context 'group_authorized_agents feature flag is disabled' do
-      let(:finder) { double(execute: [agent]) }
-
-      before do
-        stub_feature_flags(group_authorized_agents: false)
-      end
-
-      it 'retrieves agent records from the legacy finder and caches the result' do
-        expect(Clusters::DeployableAgentsFinder).to receive(:new).once
-          .with(pipeline.project)
-          .and_return(finder)
-
-        expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
-        expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
-      end
-    end
   end
 end

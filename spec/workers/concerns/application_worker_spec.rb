@@ -341,11 +341,25 @@ RSpec.describe ApplicationWorker do
       it 'enqueues jobs in one go' do
         expect(Sidekiq::Client).to(
           receive(:push_bulk).with(hash_including('args' => args)).once.and_call_original)
+        expect(Sidekiq.logger).not_to receive(:info)
 
         perform_action
 
         expect(worker.jobs.count).to eq args.count
         expect(worker.jobs).to all(include('enqueued_at'))
+      end
+    end
+
+    shared_examples_for 'logs bulk insertions' do
+      it 'logs arguments and job IDs' do
+        worker.log_bulk_perform_async!
+
+        expect(Sidekiq.logger).to(
+          receive(:info).with(hash_including('args_list' => args)).once.and_call_original)
+        expect(Sidekiq.logger).to(
+          receive(:info).with(hash_including('jid_list' => anything)).once.and_call_original)
+
+        perform_action
       end
     end
 
@@ -381,6 +395,7 @@ RSpec.describe ApplicationWorker do
           include_context 'set safe limit beyond the number of jobs to be enqueued'
 
           it_behaves_like 'enqueues jobs in one go'
+          it_behaves_like 'logs bulk insertions'
           it_behaves_like 'returns job_id of all enqueued jobs'
           it_behaves_like 'does not schedule the jobs for any specific time'
         end
@@ -400,6 +415,7 @@ RSpec.describe ApplicationWorker do
             include_context 'set safe limit beyond the number of jobs to be enqueued'
 
             it_behaves_like 'enqueues jobs in one go'
+            it_behaves_like 'logs bulk insertions'
             it_behaves_like 'returns job_id of all enqueued jobs'
             it_behaves_like 'does not schedule the jobs for any specific time'
           end

@@ -11,7 +11,7 @@ type: reference
 
 Group repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrating-to-gitaly-cluster), for
-example, or to migrate a [group wiki](../user/project/wiki/index.md#group-wikis).
+example, or to migrate a [group wiki](../user/project/wiki/group.md).
 
 As group repository storage moves are processed, they transition through different states. Values
 of `state` are:

@@ -688,17 +688,20 @@ export const searchBy = (query = '', searchSpace = {}) => {
  */
 export const isScopedLabel = ({ title = '' } = {}) => title.includes(SCOPED_LABEL_DELIMITER);
 
+const scopedLabelRegex = new RegExp(`(.*)${SCOPED_LABEL_DELIMITER}.*`);
+
 /**
- * Returns the base value of the scoped label
+ * Returns the key of a scoped label.
+ * For example:
+ * - returns `scoped` if the label is `scoped::value`.
+ * - returns `scoped::label` if the label is `scoped::label::value`.
  *
- * Expected Label to be an Object with `title` as a key:
- *   { title: 'LabelTitle', ...otherProperties };
- *
- * @param {Object} label
- * @returns String
+ * @param {Object} label object containing `title` property
+ * @returns String scoped label key, or full label if it is not a scoped label
  */
-export const scopedLabelKey = ({ title = '' }) =>
-  isScopedLabel({ title }) && title.split(SCOPED_LABEL_DELIMITER)[0];
+export const scopedLabelKey = ({ title = '' }) => {
+  return title.replace(scopedLabelRegex, '$1');
+};
 
 // Methods to set and get Cookie
 export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });

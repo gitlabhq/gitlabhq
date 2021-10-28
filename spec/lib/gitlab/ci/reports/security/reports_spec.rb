@@ -57,8 +57,9 @@ RSpec.describe Gitlab::Ci::Reports::Security::Reports do
     let(:high_severity_dast) { build(:ci_reports_security_finding, severity: 'high', report_type: :dast) }
     let(:vulnerabilities_allowed) { 0 }
     let(:severity_levels) { %w(critical high) }
+    let(:vulnerability_states) { %w(newly_detected)}
 
-    subject { security_reports.violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels) }
+    subject { security_reports.violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels, vulnerability_states) }
 
     before do
       security_reports.get_report('sast', artifact).add_finding(high_severity_dast)

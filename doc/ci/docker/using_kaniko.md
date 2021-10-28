@@ -95,12 +95,12 @@ build:
     - mkdir -p /kaniko/.docker
     - |-
        KANIKOPROXYBUILDARGS=""
-       KANIKOCFG="{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}"
+       KANIKOCFG="\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}"
        if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
          KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
          KANIKOPROXYBUILDARGS="--build-arg http_proxy=${http_proxy} --build-arg https_proxy=${https_proxy} --build-arg no_proxy=${no_proxy}"
        fi
-       KANIKOCFG="${KANIKOCFG} }"
+       KANIKOCFG="{ ${KANIKOCFG} }"
        echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - >-
       /kaniko/executor

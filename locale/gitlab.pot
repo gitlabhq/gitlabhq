@@ -4223,10 +4223,16 @@ msgstr ""
 msgid "ApprovalRule|All severity levels"
 msgstr ""
 
+msgid "ApprovalRule|All vulnerability states"
+msgstr ""
+
 msgid "ApprovalRule|Apply this approval rule to consider only the selected security scanners."
 msgstr ""
 
 msgid "ApprovalRule|Apply this approval rule to consider only the selected severity levels."
+msgstr ""
+
+msgid "ApprovalRule|Apply this approval rule to consider only the selected vulnerability states."
 msgstr ""
 
 msgid "ApprovalRule|Approval rules"
@@ -4241,10 +4247,19 @@ msgstr ""
 msgid "ApprovalRule|Approvers"
 msgstr ""
 
+msgid "ApprovalRule|Confirmed"
+msgstr ""
+
+msgid "ApprovalRule|Dismissed"
+msgstr ""
+
 msgid "ApprovalRule|Examples: QA, Security."
 msgstr ""
 
 msgid "ApprovalRule|Name"
+msgstr ""
+
+msgid "ApprovalRule|Newly detected"
 msgstr ""
 
 msgid "ApprovalRule|Number of vulnerabilities allowed before approval rule is triggered."
@@ -4257,6 +4272,15 @@ msgid "ApprovalRule|Please select at least one security scanner"
 msgstr ""
 
 msgid "ApprovalRule|Please select at least one severity level"
+msgstr ""
+
+msgid "ApprovalRule|Please select at least one vulnerability state"
+msgstr ""
+
+msgid "ApprovalRule|Previously detected"
+msgstr ""
+
+msgid "ApprovalRule|Resolved"
 msgstr ""
 
 msgid "ApprovalRule|Rule name"
@@ -4274,6 +4298,9 @@ msgstr ""
 msgid "ApprovalRule|Select severity levels"
 msgstr ""
 
+msgid "ApprovalRule|Select vulnerability states"
+msgstr ""
+
 msgid "ApprovalRule|Severity levels"
 msgstr ""
 
@@ -4281,6 +4308,9 @@ msgid "ApprovalRule|Target branch"
 msgstr ""
 
 msgid "ApprovalRule|Vulnerabilities allowed"
+msgstr ""
+
+msgid "ApprovalRule|Vulnerability states"
 msgstr ""
 
 msgid "ApprovalSettings|Merge request approval settings have been updated."
@@ -5429,6 +5459,9 @@ msgid "Blocks"
 msgstr ""
 
 msgid "Blog"
+msgstr ""
+
+msgid "Board scope affects which epics are displayed for anyone who visits this board"
 msgstr ""
 
 msgid "Board scope affects which issues are displayed for anyone who visits this board"

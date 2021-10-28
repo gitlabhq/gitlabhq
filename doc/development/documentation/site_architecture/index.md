@@ -163,6 +163,35 @@ We can then loop over the `versions` array with something like:
 Note that the data file must have the `yaml` extension (not `yml`) and that
 we reference the array with a symbol (`:versions`).
 
+## Archived documentation banner
+
+A banner is displayed on archived documentation pages with the text `This is archived documentation for
+GitLab. Go to the latest.` when either:
+
+- The version of the documentation displayed is not the first version entry in `online` in
+  `content/_data/versions.yaml`.
+- The documentation was built from the default branch (`main`).
+
+For example, if the `online` entries for `content/_data/versions.yaml` are:
+
+```yaml
+online:
+  - "14.4"
+  - "14.3"
+  - "14.2"
+```
+
+In this case, the archived documentation banner isn't displayed:
+
+- For 14.4, the docs built from the `14.4` branch. The branch name is the first entry in `online`.
+- For 14.5-pre, the docs built from the default project branch (`main`).
+
+The archived documentation banner is displayed:
+
+- For 14.3.
+- For 14.2.
+- For any other version.
+
 ## Bumping versions of CSS and JavaScript
 
 Whenever the custom CSS and JavaScript files under `content/assets/` change,

@@ -131,17 +131,27 @@ module ApplicationWorker
       end
     end
 
+    def log_bulk_perform_async?
+      @log_bulk_perform_async
+    end
+
+    def log_bulk_perform_async!
+      @log_bulk_perform_async = true
+    end
+
     def queue_size
       Sidekiq::Queue.new(queue).size
     end
 
     def bulk_perform_async(args_list)
-      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
-        in_safe_limit_batches(args_list) do |args_batch, _|
-          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+      if log_bulk_perform_async?
+        Sidekiq.logger.info('class' => self, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')
+      end
+
+      do_push_bulk(args_list).tap do |job_ids|
+        if log_bulk_perform_async?
+          Sidekiq.logger.info('class' => self, 'jid_list' => job_ids, 'jid_list_count' => job_ids.length, 'message' => 'Completed JID insertion')
         end
-      else
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
       end
     end
 
@@ -187,6 +197,16 @@ module ApplicationWorker
     end
 
     private
+
+    def do_push_bulk(args_list)
+      if Feature.enabled?(:sidekiq_push_bulk_in_batches)
+        in_safe_limit_batches(args_list) do |args_batch, _|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+        end
+      else
+        Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
+      end
+    end
 
     def in_safe_limit_batches(args_list, schedule_at = nil, safe_limit = SAFE_PUSH_BULK_LIMIT)
       # `schedule_at` could be one of

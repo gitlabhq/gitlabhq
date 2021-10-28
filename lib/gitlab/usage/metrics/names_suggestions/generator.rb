@@ -10,10 +10,10 @@ module Gitlab
               uncached_data.deep_stringify_keys.dig(*key_path.split('.'))
             end
 
-            def add_metric(metric, time_frame: 'none')
+            def add_metric(metric, time_frame: 'none', options: {})
               metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
-              metric_class.new(time_frame: time_frame).suggested_name
+              metric_class.new(time_frame: time_frame, options: options).suggested_name
             end
 
             private

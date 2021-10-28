@@ -10579,7 +10579,8 @@ CREATE TABLE approval_project_rules (
     scanners text[],
     vulnerabilities_allowed smallint DEFAULT 0 NOT NULL,
     severity_levels text[] DEFAULT '{}'::text[] NOT NULL,
-    report_type smallint
+    report_type smallint,
+    vulnerability_states text[] DEFAULT '{newly_detected}'::text[] NOT NULL
 );
 
 CREATE TABLE approval_project_rules_groups (

@@ -61,7 +61,7 @@ including:
 - Container Registry images
 - GitLab Pages content
 - Snippets
-- [Group wikis](../user/project/wiki/index.md#group-wikis)
+- [Group wikis](../user/project/wiki/group.md)
 
 Backups do not include:
 

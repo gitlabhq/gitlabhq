@@ -153,11 +153,6 @@ gitops:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the
-feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `group_authorized_agents`. On
-GitLab.com, this feature is available.
-
 If you use the same cluster across multiple projects, you can set up the CI/CD Tunnel
 to grant the Agent access to one or more groups. This way, all the projects that belong
 to the authorized groups can access the same Agent. This enables you to save resources and

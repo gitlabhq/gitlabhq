@@ -1008,6 +1008,21 @@ describe('common_utils', () => {
     });
   });
 
+  describe('scopedLabelKey', () => {
+    it.each`
+      label                           | expectedLabelKey
+      ${undefined}                    | ${''}
+      ${''}                           | ${''}
+      ${'title'}                      | ${'title'}
+      ${'scoped::value'}              | ${'scoped'}
+      ${'scoped::label::value'}       | ${'scoped::label'}
+      ${'scoped::label-some::value'}  | ${'scoped::label-some'}
+      ${'scoped::label::some::value'} | ${'scoped::label::some'}
+    `('returns "$expectedLabelKey" when label is "$label"', ({ label, expectedLabelKey }) => {
+      expect(commonUtils.scopedLabelKey({ title: label })).toBe(expectedLabelKey);
+    });
+  });
+
   describe('getDashPath', () => {
     it('returns the path following /-/', () => {
       expect(commonUtils.getDashPath('/some/-/url-with-dashes-/')).toEqual('url-with-dashes-/');

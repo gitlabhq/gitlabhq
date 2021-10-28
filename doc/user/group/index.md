@@ -266,6 +266,8 @@ These Group Activity Analytics can be enabled with the `group_activity_analytics
 
 ![Recent Group Activity](img/group_activity_analytics_v13_10.png)
 
+Changes to [group wikis](../project/wiki/group.md) do not appear in group activity analytics.
+
 ### View group activity
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:

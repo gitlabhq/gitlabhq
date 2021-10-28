@@ -42,6 +42,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
   credentials store is recommended.
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you must
   [add the URL to Git configuration manually](#troubleshooting).
+- [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
 
 NOTE:
 With 8.12 GitLab added LFS support to SSH. The Git LFS communication
