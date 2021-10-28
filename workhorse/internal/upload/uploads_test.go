@@ -18,7 +18,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/filestore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/objectstore/test"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
@@ -28,11 +27,7 @@ import (
 
 var nilHandler = http.HandlerFunc(func(http.ResponseWriter, *http.Request) {})
 
-type testFormProcessor struct{}
-
-func (a *testFormProcessor) ProcessFile(ctx context.Context, formName string, file *filestore.FileHandler, writer *multipart.Writer) error {
-	return nil
-}
+type testFormProcessor struct{ SavedFileTracker }
 
 func (a *testFormProcessor) ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error {
 	if formName != "token" && !strings.HasPrefix(formName, "file.") && !strings.HasPrefix(formName, "other.") {
@@ -43,10 +38,6 @@ func (a *testFormProcessor) ProcessField(ctx context.Context, formName string, w
 
 func (a *testFormProcessor) Finalize(ctx context.Context) error {
 	return nil
-}
-
-func (a *testFormProcessor) Name() string {
-	return ""
 }
 
 func TestUploadTempPathRequirement(t *testing.T) {
@@ -257,6 +248,38 @@ func TestUploadProcessingField(t *testing.T) {
 	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 500, response.Code)
+}
+
+func TestUploadingMultipleFiles(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	tempPath, err := ioutil.TempDir("", "uploads")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempPath)
+
+	var buffer bytes.Buffer
+
+	writer := multipart.NewWriter(&buffer)
+	_, err = writer.CreateFormFile("file", "my.file")
+	require.NoError(t, err)
+	_, err = writer.CreateFormFile("file", "my.file")
+	require.NoError(t, err)
+	require.NoError(t, writer.Close())
+
+	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
+	require.NoError(t, err)
+	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+	response := httptest.NewRecorder()
+	apiResponse := &api.Response{TempPath: tempPath}
+	preparer := &DefaultPreparer{}
+	opts, _, err := preparer.Prepare(apiResponse)
+	require.NoError(t, err)
+
+	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
+
+	require.Equal(t, 400, response.Code)
+	require.Equal(t, "Uploading multiple files is not allowed\n", response.Body.String())
 }
 
 func TestUploadProcessingFile(t *testing.T) {

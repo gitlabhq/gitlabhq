@@ -22,12 +22,16 @@ const safeUrls = {
 const unsafeUrls = [
   '/an/evil/url',
   '../../../evil/url',
-  'https://evil.url/assets/icons-123a.svg',
+  'https://evil.url/assets/icons-123a.svg#test',
   'https://evil.url/assets/icons-456b.svg',
   `https://evil.url/${rootGon.sprite_icons}`,
   `https://evil.url/${rootGon.sprite_file_icons}`,
   `https://evil.url/${absoluteGon.sprite_icons}`,
   `https://evil.url/${absoluteGon.sprite_file_icons}`,
+  `${rootGon.sprite_icons}/../evil/path`,
+  `${rootGon.sprite_file_icons}/../../evil/path`,
+  `${absoluteGon.sprite_icons}/../evil/path`,
+  `${absoluteGon.sprite_file_icons}/../../https://evil.url`,
 ];
 
 const forbiddenDataAttrs = ['data-remote', 'data-url', 'data-type', 'data-method'];

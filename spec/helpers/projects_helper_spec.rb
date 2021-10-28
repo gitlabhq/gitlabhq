@@ -961,4 +961,26 @@ RSpec.describe ProjectsHelper do
       )
     end
   end
+
+  describe '#project_classes' do
+    subject { helper.project_classes(project) }
+
+    it { is_expected.to be_a(String) }
+
+    context 'PUC highlighting enabled' do
+      before do
+        project.warn_about_potentially_unwanted_characters = true
+      end
+
+      it { is_expected.to include('project-highlight-puc') }
+    end
+
+    context 'PUC highlighting disabled' do
+      before do
+        project.warn_about_potentially_unwanted_characters = false
+      end
+
+      it { is_expected.not_to include('project-highlight-puc') }
+    end
+  end
 end

@@ -399,6 +399,24 @@ export function isSafeURL(url) {
   }
 }
 
+/**
+ * Returns a normalized url
+ *
+ * https://gitlab.com/foo/../baz => https://gitlab.com/baz
+ *
+ * @param {String} url - URL to be transformed
+ * @param {String?} baseUrl - current base URL
+ * @returns {String}
+ */
+export const getNormalizedURL = (url, baseUrl) => {
+  const base = baseUrl || getBaseURL();
+  try {
+    return new URL(url, base).href;
+  } catch (e) {
+    return '';
+  }
+};
+
 export function getWebSocketProtocol() {
   return window.location.protocol.replace('http', 'ws');
 }

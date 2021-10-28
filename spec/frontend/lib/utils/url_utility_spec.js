@@ -607,6 +607,27 @@ describe('URL utility', () => {
     });
   });
 
+  describe('getNormalizedURL', () => {
+    it.each`
+      url                       | base                                 | result
+      ${'./foo'}                | ${''}                                | ${'http://test.host/foo'}
+      ${'../john.md'}           | ${''}                                | ${'http://test.host/john.md'}
+      ${'/images/img.png'}      | ${'https://gitlab.com'}              | ${'https://gitlab.com/images/img.png'}
+      ${'/images/../img.png'}   | ${'https://gitlab.com'}              | ${'https://gitlab.com/img.png'}
+      ${'/images/./img.png'}    | ${'https://gitlab.com'}              | ${'https://gitlab.com/images/img.png'}
+      ${'./images/img.png'}     | ${'https://gitlab.com/user/project'} | ${'https://gitlab.com/user/images/img.png'}
+      ${'../images/../img.png'} | ${'https://gitlab.com/user/project'} | ${'https://gitlab.com/img.png'}
+      ${'/images/img.png'}      | ${'https://gitlab.com/user/project'} | ${'https://gitlab.com/images/img.png'}
+      ${'/images/../img.png'}   | ${'https://gitlab.com/user/project'} | ${'https://gitlab.com/img.png'}
+      ${'/images/./img.png'}    | ${'https://gitlab.com/user/project'} | ${'https://gitlab.com/images/img.png'}
+    `(
+      'converts url "$url" with base "$base" to normalized url => "expected"',
+      ({ url, base, result }) => {
+        expect(urlUtils.getNormalizedURL(url, base)).toBe(result);
+      },
+    );
+  });
+
   describe('getWebSocketProtocol', () => {
     it.each`
       protocol    | expectation

@@ -409,6 +409,7 @@ class ProjectsController < Projects::ApplicationController
       show_default_award_emojis
       squash_option
       mr_default_target_self
+      warn_about_potentially_unwanted_characters
     ]
   end
 

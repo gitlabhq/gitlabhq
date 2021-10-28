@@ -323,6 +323,34 @@ RSpec.describe ProjectsController do
         expect(response).to render_template('_files')
         expect(response.body).to have_content('LICENSE') # would be 'MIT license' if stub not works
       end
+
+      describe "PUC highlighting" do
+        render_views
+
+        before do
+          expect(controller).to receive(:find_routable!).and_return(public_project)
+        end
+
+        context "option is enabled" do
+          it "adds the highlighting class" do
+            expect(public_project).to receive(:warn_about_potentially_unwanted_characters?).and_return(true)
+
+            get_show
+
+            expect(response.body).to have_css(".project-highlight-puc")
+          end
+        end
+
+        context "option is disabled" do
+          it "doesn't add the highlighting class" do
+            expect(public_project).to receive(:warn_about_potentially_unwanted_characters?).and_return(false)
+
+            get_show
+
+            expect(response.body).not_to have_css(".project-highlight-puc")
+          end
+        end
+      end
     end
 
     context "when the url contains .atom" do

@@ -879,6 +879,15 @@ RSpec.describe API::Groups do
         expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
       end
 
+      it 'does not update visibility_level if it is restricted' do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+        put api("/groups/#{group1.id}", user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['visibility_level']).to include('internal has been restricted by your GitLab administrator')
+      end
+
       context 'updating the `default_branch_protection` attribute' do
         subject do
           put api("/groups/#{group1.id}", user1), params: { default_branch_protection: ::Gitlab::Access::PROTECTION_NONE }
@@ -965,6 +974,15 @@ RSpec.describe API::Groups do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(new_group_name)
+      end
+
+      it 'ignores visibility level restrictions' do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+        put api("/groups/#{group1.id}", admin), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['visibility']).to eq('internal')
       end
     end
 
