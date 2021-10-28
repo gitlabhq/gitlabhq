@@ -22,8 +22,10 @@ located at `lib/tasks/gitlab/docs/compile_deprecations.rake`.
 
 Do not edit this page directly.
 
-To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template,
-then run `bin/rake gitlab:docs:compile_deprecations`.
+To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
+
+To update this doc, run `bin/rake gitlab:docs:compile_deprecations`.
+To verify this doc is up to date, run `bin/rake gitlab:docs:check_deprecations`
 -->
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>

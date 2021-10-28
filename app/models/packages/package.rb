@@ -40,7 +40,7 @@ class Packages::Package < ApplicationRecord
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_many :build_infos, inverse_of: :package
-  has_many :pipelines, through: :build_infos
+  has_many :pipelines, through: :build_infos, disable_joins: -> { disable_cross_joins_to_pipelines? }
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
   has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
 
@@ -131,9 +131,11 @@ class Packages::Package < ApplicationRecord
 
   scope :has_version, -> { where.not(version: nil) }
   scope :preload_files, -> { preload(:package_files) }
+  scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
+  scope :load_pipelines, -> { disable_cross_joins_to_pipelines? ? preload_pipelines : including_build_info }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
@@ -158,6 +160,10 @@ class Packages::Package < ApplicationRecord
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
 
     joins(:project).reorder(keyset_order)
+  end
+
+  def self.disable_cross_joins_to_pipelines?
+    ::Feature.enabled?(:packages_remove_cross_joins_to_pipelines, default_enabled: :yaml)
   end
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -245,7 +251,7 @@ class Packages::Package < ApplicationRecord
 
   def versions
     project.packages
-           .including_build_info
+           .load_pipelines
            .including_tags
            .with_name(name)
            .where.not(version: version)

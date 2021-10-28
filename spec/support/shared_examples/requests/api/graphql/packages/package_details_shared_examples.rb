@@ -2,9 +2,42 @@
 
 RSpec.shared_examples 'a package detail' do
   it_behaves_like 'a working graphql query' do
-    it 'matches the JSON schema' do
-      expect(package_details).to match_schema('graphql/packages/package_details')
+    it_behaves_like 'matching the package details schema'
+  end
+
+  context 'with pipelines' do
+    let_it_be(:build_info1) { create(:package_build_info, :with_pipeline, package: package) }
+    let_it_be(:build_info2) { create(:package_build_info, :with_pipeline, package: package) }
+    let_it_be(:build_info3) { create(:package_build_info, :with_pipeline, package: package) }
+
+    it_behaves_like 'a working graphql query' do
+      it_behaves_like 'matching the package details schema'
     end
+
+    context 'with packages_remove_cross_joins_to_pipelines disabled' do
+      # subject is called in a before callback that is executed before the one below
+      # the callback below MUST be executed before the subject
+      # solution: nullify subject and manually call #post_graphql
+      subject {}
+
+      before do
+        stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
+
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342921') do
+          post_graphql(query, current_user: user)
+        end
+      end
+
+      it_behaves_like 'a working graphql query' do
+        it_behaves_like 'matching the package details schema'
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'matching the package details schema' do
+  it 'matches the JSON schema' do
+    expect(package_details).to match_schema('graphql/packages/package_details')
   end
 end
 

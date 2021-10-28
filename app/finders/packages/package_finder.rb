@@ -9,7 +9,7 @@ module Packages
     def execute
       @project
         .packages
-        .including_build_info
+        .load_pipelines
         .including_project_route
         .including_tags
         .displayable

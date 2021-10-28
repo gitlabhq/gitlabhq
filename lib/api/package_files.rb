@@ -28,7 +28,10 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        present paginate(package.package_files), with: ::API::Entities::PackageFile
+        files = package.package_files
+        files = files.preload_pipelines if Packages::Package.disable_cross_joins_to_pipelines?
+
+        present paginate(files), with: ::API::Entities::PackageFile
       end
 
       desc 'Remove a package file' do

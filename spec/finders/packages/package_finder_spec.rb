@@ -32,5 +32,29 @@ RSpec.describe ::Packages::PackageFinder do
         expect { subject }.to raise_exception(ActiveRecord::RecordNotFound)
       end
     end
+
+    context 'with pipelines' do
+      let_it_be(:build_info) { create(:package_build_info, :with_pipeline, package: maven_package) }
+
+      it 'preloads the pipelines' do
+        expect(::Packages::Package).to receive(:preload_pipelines).and_call_original
+        expect(::Packages::Package).not_to receive(:including_build_info)
+
+        expect(subject).to eq(maven_package)
+      end
+
+      context 'with packages_remove_cross_joins_to_pipelines disabled' do
+        before do
+          stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
+        end
+
+        it 'includes the pipelines' do
+          expect(::Packages::Package).to receive(:including_build_info).and_call_original
+          expect(::Packages::Package).not_to receive(:preload_pipelines)
+
+          expect(subject).to eq(maven_package)
+        end
+      end
+    end
   end
 end

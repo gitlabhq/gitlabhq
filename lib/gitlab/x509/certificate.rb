@@ -19,6 +19,10 @@ module Gitlab
         ca_certs.map(&:to_pem).join('\n') unless ca_certs.blank?
       end
 
+      class << self
+        include ::Gitlab::Utils::StrongMemoize
+      end
+
       def self.from_strings(key_string, cert_string, ca_certs_string = nil)
         key = OpenSSL::PKey::RSA.new(key_string)
         cert = OpenSSL::X509::Certificate.new(cert_string)
@@ -44,13 +48,17 @@ module Gitlab
 
       # Returns a concatenated array of Strings, each being a PEM-coded CA certificate.
       def self.ca_certs_bundle
-        return @certs if @certs
+        strong_memoize(:ca_certs_bundle) do
+          ca_certs_paths.flat_map do |cert_file|
+            load_ca_certs_bundle(File.read(cert_file))
+          rescue OpenSSL::OpenSSLError => e
+            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, cert_file: cert_file)
+          end.uniq.join("\n")
+        end
+      end
 
-        @certs = ca_certs_paths.flat_map do |cert_file|
-          load_ca_certs_bundle(File.read(cert_file))
-        rescue OpenSSL::OpenSSLError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, cert_file: cert_file)
-        end.uniq.join("\n")
+      def self.reset_ca_certs_bundle
+        clear_memoization(:ca_certs_bundle)
       end
 
       # Returns an array of OpenSSL::X509::Certificate objects, empty array if none found

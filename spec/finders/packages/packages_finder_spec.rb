@@ -81,6 +81,31 @@ RSpec.describe ::Packages::PackagesFinder do
       it { is_expected.to match_array([conan_package, maven_package]) }
     end
 
+    context 'with pipelines' do
+      let_it_be(:build_info1) { create(:package_build_info, :with_pipeline, package: conan_package) }
+      let_it_be(:build_info2) { create(:package_build_info, :with_pipeline, package: maven_package) }
+
+      it 'preloads the pipelines' do
+        expect(::Packages::Package).to receive(:preload_pipelines).and_call_original
+        expect(::Packages::Package).not_to receive(:including_build_info)
+
+        expect(subject).to match_array([conan_package, maven_package])
+      end
+
+      context 'with packages_remove_cross_joins_to_pipelines disabled' do
+        before do
+          stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
+        end
+
+        it 'includes the pipelines' do
+          expect(::Packages::Package).to receive(:including_build_info).and_call_original
+          expect(::Packages::Package).not_to receive(:preload_pipelines)
+
+          expect(subject).to match_array([conan_package, maven_package])
+        end
+      end
+    end
+
     it_behaves_like 'concerning versionless param'
     it_behaves_like 'concerning package statuses'
   end

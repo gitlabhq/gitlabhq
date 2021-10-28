@@ -14,9 +14,10 @@ module Packages
 
     def execute
       packages = project.packages
-                        .including_build_info
+                        .load_pipelines
                         .including_project_route
                         .including_tags
+
       packages = filter_with_version(packages)
       packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)

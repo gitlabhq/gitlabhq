@@ -19,6 +19,11 @@ RSpec.describe Gitlab::X509::Certificate do
   before do
     stub_const("OpenSSL::X509::DEFAULT_CERT_DIR", sample_ca_certs_path)
     stub_const("OpenSSL::X509::DEFAULT_CERT_FILE", sample_cert)
+    described_class.reset_ca_certs_bundle
+  end
+
+  after(:context) do
+    described_class.reset_ca_certs_bundle
   end
 
   describe 'testing environment setup' do

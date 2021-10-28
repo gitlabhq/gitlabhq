@@ -2,8 +2,6 @@
 
 require 'active_record'
 require 'active_record/log_subscriber'
-require 'sidekiq/job_logger'
-require 'sidekiq/job_retry'
 
 module Gitlab
   module SidekiqLogging

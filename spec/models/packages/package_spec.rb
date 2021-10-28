@@ -14,7 +14,6 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
-    it { is_expected.to have_many(:pipelines).through(:build_infos) }
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
@@ -962,6 +961,33 @@ RSpec.describe Packages::Package, type: :model do
     end
   end
 
+  describe '.load_pipelines' do
+    let_it_be(:package) { create(:maven_package) }
+    let_it_be(:build_info) { create(:package_build_info, :with_pipeline, package: package) }
+
+    subject { described_class.load_pipelines }
+
+    it 'uses preload', :aggregate_failures do
+      expect(described_class).to receive(:preload_pipelines).and_call_original
+      expect(described_class).not_to receive(:including_build_info)
+
+      subject
+    end
+
+    context 'with packages_remove_cross_joins_to_pipelines disabled' do
+      before do
+        stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
+      end
+
+      it 'uses includes', :aggregate_failures do
+        expect(described_class).to receive(:including_build_info).and_call_original
+        expect(described_class).not_to receive(:preload_pipelines)
+
+        subject
+      end
+    end
+  end
+
   describe '#versions' do
     let_it_be(:project) { create(:project) }
     let_it_be(:package) { create(:maven_package, project: project) }
@@ -974,6 +1000,30 @@ RSpec.describe Packages::Package, type: :model do
 
     it 'does not return different packages' do
       expect(package.versions).not_to include(package3)
+    end
+
+    context 'with pipelines' do
+      let_it_be(:build_info) { create(:package_build_info, :with_pipeline, package: package2) }
+
+      it 'preloads the pipelines' do
+        expect(::Packages::Package).to receive(:preload_pipelines).and_call_original
+        expect(::Packages::Package).not_to receive(:including_build_info)
+
+        expect(package.versions).to contain_exactly(package2)
+      end
+
+      context 'with packages_remove_cross_joins_to_pipelines disabled' do
+        before do
+          stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
+        end
+
+        it 'includes the pipelines' do
+          expect(::Packages::Package).to receive(:including_build_info).and_call_original
+          expect(::Packages::Package).not_to receive(:preload_pipelines)
+
+          expect(package.versions).to contain_exactly(package2)
+        end
+      end
     end
   end
 
@@ -996,6 +1046,28 @@ RSpec.describe Packages::Package, type: :model do
       it 'returns the pipeline' do
         expect(package.pipeline).to eq(pipeline)
       end
+    end
+  end
+
+  describe '#pipelines' do
+    let_it_be_with_refind(:package) { create(:maven_package) }
+
+    subject { package.pipelines }
+
+    context 'package without pipeline' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'package with pipeline' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+      let_it_be(:pipeline2) { create(:ci_pipeline) }
+
+      before do
+        package.build_infos.create!(pipeline: pipeline)
+        package.build_infos.create!(pipeline: pipeline2)
+      end
+
+      it { is_expected.to contain_exactly(pipeline, pipeline2) }
     end
   end
 
