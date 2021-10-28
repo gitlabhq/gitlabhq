@@ -9178,9 +9178,6 @@ msgstr ""
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
 msgstr ""
 
-msgid "Contains %{count} blobs of images (%{size})"
-msgstr ""
-
 msgid "Content parsed with %{link}."
 msgstr ""
 
@@ -9368,9 +9365,6 @@ msgid "Copy link"
 msgstr ""
 
 msgid "Copy link to chart"
-msgstr ""
-
-msgid "Copy prefix"
 msgstr ""
 
 msgid "Copy reference"
@@ -11230,16 +11224,16 @@ msgstr ""
 msgid "Dependency Proxy"
 msgstr ""
 
-msgid "Dependency Proxy disabled. To enable it, contact the group owner."
-msgstr ""
-
-msgid "Dependency Proxy feature is limited to public groups for now."
-msgstr ""
-
-msgid "Dependency Proxy image prefix"
-msgstr ""
-
 msgid "Dependency Scanning"
+msgstr ""
+
+msgid "DependencyProxy|Cached %{time}"
+msgstr ""
+
+msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
+msgstr ""
+
+msgid "DependencyProxy|Copy prefix"
 msgstr ""
 
 msgid "DependencyProxy|Create a local proxy for storing frequently used upstream images. %{docLinkStart}Learn more%{docLinkEnd} about dependency proxies."
@@ -11248,7 +11242,19 @@ msgstr ""
 msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
+msgid "DependencyProxy|Dependency Proxy disabled. To enable it, contact the group owner."
+msgstr ""
+
+msgid "DependencyProxy|Dependency Proxy feature is limited to public groups for now."
+msgstr ""
+
+msgid "DependencyProxy|Dependency Proxy image prefix"
+msgstr ""
+
 msgid "DependencyProxy|Enable Proxy"
+msgstr ""
+
+msgid "DependencyProxy|Manifest list"
 msgstr ""
 
 msgid "Depends on %d merge request being merged"
@@ -25828,6 +25834,9 @@ msgstr ""
 msgid "Postman collection file path or URL"
 msgstr ""
 
+msgid "Potentially unwanted character detected: Unicode BiDi Control"
+msgstr ""
+
 msgid "Pre-defined push rules."
 msgstr ""
 
@@ -26953,6 +26962,9 @@ msgstr ""
 msgid "ProjectSettings|Global"
 msgstr ""
 
+msgid "ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits."
+msgstr ""
+
 msgid "ProjectSettings|Internal"
 msgstr ""
 
@@ -26963,6 +26975,9 @@ msgid "ProjectSettings|Issues"
 msgstr ""
 
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
+msgstr ""
+
+msgid "ProjectSettings|Manage who can see the project in the public access directory."
 msgstr ""
 
 msgid "ProjectSettings|Manages large files such as audio, video, and graphics files."
@@ -27140,6 +27155,9 @@ msgid "ProjectSettings|Visibility options for this fork are limited by the curre
 msgstr ""
 
 msgid "ProjectSettings|Visualize the project's performance metrics."
+msgstr ""
+
+msgid "ProjectSettings|Warn about Potentially Unwanted Characters"
 msgstr ""
 
 msgid "ProjectSettings|What are badges?"
@@ -39834,6 +39852,9 @@ msgid "Zoom meeting removed"
 msgstr ""
 
 msgid "[No reason]"
+msgstr ""
+
+msgid "[REDACTED]"
 msgstr ""
 
 msgid "[Redacted]"

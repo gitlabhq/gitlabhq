@@ -121,4 +121,16 @@ RSpec.describe Ci::BuildMetadata do
       end
     end
   end
+
+  describe 'set_cancel_gracefully' do
+    it 'sets cancel_gracefully' do
+      build.set_cancel_gracefully
+
+      expect(build.cancel_gracefully?).to be true
+    end
+
+    it 'returns false' do
+      expect(build.cancel_gracefully?).to be false
+    end
+  end
 end

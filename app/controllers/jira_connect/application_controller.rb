@@ -76,6 +76,6 @@ class JiraConnect::ApplicationController < ApplicationController
   end
 
   def signed_install_active?
-    Feature.enabled?(:jira_connect_asymmetric_jwt)
+    Feature.enabled?(:jira_connect_asymmetric_jwt, default_enabled: :yaml)
   end
 end

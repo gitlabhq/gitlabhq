@@ -23,6 +23,7 @@ module Ci
 
     serialize :config_options, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
     serialize :config_variables, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :runtime_runner_features, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
@@ -45,6 +46,14 @@ module Ci
       return unless timeout
 
       update(timeout: timeout.value, timeout_source: timeout.source)
+    end
+
+    def set_cancel_gracefully
+      runtime_runner_features.merge!( { cancel_gracefully: true } )
+    end
+
+    def cancel_gracefully?
+      runtime_runner_features[:cancel_gracefully] == true
     end
 
     private

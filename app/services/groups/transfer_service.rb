@@ -182,6 +182,14 @@ module Groups
 
       # schedule refreshing projects for all the members of the group
       @group.refresh_members_authorized_projects
+
+      # When a group is transferred, it also affects who gets access to the projects shared to
+      # the subgroups within its hierarchy, so we also schedule jobs that refresh authorizations for all such shared projects.
+      project_group_shares_within_the_hierarchy = ProjectGroupLink.in_group(group.self_and_descendants.select(:id))
+
+      project_group_shares_within_the_hierarchy.find_each do |project_group_link|
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project_group_link.project_id)
+      end
     end
 
     def raise_transfer_error(message)

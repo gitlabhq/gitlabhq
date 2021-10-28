@@ -20,6 +20,8 @@ module Ci
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
       delegate :has_exposed_artifacts?, to: :metadata, prefix: false, allow_nil: true
       delegate :environment_auto_stop_in, to: :metadata, prefix: false, allow_nil: true
+      delegate :set_cancel_gracefully, to: :metadata, prefix: false, allow_nil: false
+      delegate :cancel_gracefully?, to: :metadata, prefix: false, allow_nil: false
       before_create :ensure_metadata
     end
 

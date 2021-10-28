@@ -27,6 +27,10 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 4
           },
+          merge_requests: {
+            pipeline: BulkImports::Projects::Pipelines::MergeRequestsPipeline,
+            stage: 4
+          },
           uploads: {
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 5

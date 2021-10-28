@@ -10,7 +10,14 @@ module LearnGitlabHelper
   def onboarding_actions_data(project)
     attributes = onboarding_progress(project).attributes.symbolize_keys
 
-    action_urls.to_h do |action, url|
+    urls_to_use = nil
+
+    experiment(:change_continuous_onboarding_link_urls) do |e|
+      e.use { urls_to_use = action_urls }
+      e.try { urls_to_use = new_action_urls(project) }
+    end
+
+    urls_to_use.to_h do |action, url|
       [
         action,
         url: url,
@@ -46,6 +53,17 @@ module LearnGitlabHelper
       .merge(LearnGitlab::Onboarding::ACTION_DOC_URLS)
   end
 
+  def new_action_urls(project)
+    action_urls.merge(
+      issue_created: project_issues_path(project),
+      git_write: project_path(project),
+      pipeline_created: project_pipelines_path(project),
+      merge_request_created: project_merge_requests_path(project),
+      user_added: project_members_url(project),
+      security_scan_enabled: project_security_configuration_path(project)
+    )
+  end
+
   def learn_gitlab_project
     @learn_gitlab_project ||= LearnGitlab::Project.new(current_user).project
   end
@@ -54,3 +72,5 @@ module LearnGitlabHelper
     OnboardingProgress.find_by(namespace: project.namespace) # rubocop: disable CodeReuse/ActiveRecord
   end
 end
+
+LearnGitlabHelper.prepend_mod_with('LearnGitlabHelper')

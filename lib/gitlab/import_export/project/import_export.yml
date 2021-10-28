@@ -368,9 +368,11 @@ excluded_attributes:
     - :marked_for_deletion_by_user_id
     - :compliance_framework_setting
     - :show_default_award_emojis
+    - :warn_about_potentially_unwanted_characters
     - :services
     - :exported_protected_branches
     - :repository_size_limit
+    - :external_webhook_token
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -583,6 +585,8 @@ excluded_attributes:
   system_note_metadata:
     - :description_version_id
     - :note_id
+  pipeline_schedules:
+    - :active
 methods:
   notes:
     - :type

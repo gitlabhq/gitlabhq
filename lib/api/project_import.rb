@@ -9,6 +9,8 @@ module API
 
     feature_category :importers
 
+    before { authenticate! unless route.settings[:skip_authentication] }
+
     helpers do
       def import_params
         declared_params(include_missing: false)
@@ -109,6 +111,7 @@ module API
         detail 'This feature was introduced in GitLab 10.6.'
         success Entities::ProjectImportStatus
       end
+      route_setting :skip_authentication, true
       get ':id/import' do
         present user_project, with: Entities::ProjectImportStatus
       end

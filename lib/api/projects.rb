@@ -433,7 +433,7 @@ module API
         authorize_admin_project
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
-        authorize! :change_visibility_level, user_project if attrs[:visibility].present?
+        authorize! :change_visibility_level, user_project if user_project.visibility_attribute_present?(attrs)
 
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)

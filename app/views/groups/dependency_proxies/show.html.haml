@@ -1,4 +1,5 @@
 - page_title _("Dependency Proxy")
+- @content_class = "limit-container-width" unless fluid_layout
 - dependency_proxy_available = Feature.enabled?(:dependency_proxy_for_private_groups, default_enabled: true) || @group.public?
 
 #js-dependency-proxy{ data: { group_path: @group.full_path,

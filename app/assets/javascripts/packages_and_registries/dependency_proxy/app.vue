@@ -1,12 +1,13 @@
 <script>
 import { GlAlert, GlFormGroup, GlFormInputGroup, GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import {
   DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
   DEPENDENCY_PROXY_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
+import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -22,11 +23,16 @@ export default {
   },
   inject: ['groupPath', 'dependencyProxyAvailable'],
   i18n: {
-    proxyNotAvailableText: __('Dependency Proxy feature is limited to public groups for now.'),
-    proxyDisabledText: __('Dependency Proxy disabled. To enable it, contact the group owner.'),
-    proxyImagePrefix: __('Dependency Proxy image prefix'),
-    copyImagePrefixText: __('Copy prefix'),
-    blobCountAndSize: __('Contains %{count} blobs of images (%{size})'),
+    proxyNotAvailableText: s__(
+      'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
+    ),
+    proxyDisabledText: s__(
+      'DependencyProxy|Dependency Proxy disabled. To enable it, contact the group owner.',
+    ),
+    proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
+    copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
+    blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
+    pageTitle: s__('DependencyProxy|Dependency Proxy'),
   },
   data() {
     return {
@@ -40,7 +46,7 @@ export default {
         return !this.dependencyProxyAvailable;
       },
       variables() {
-        return { fullPath: this.groupPath };
+        return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
       },
     },
   },
@@ -62,7 +68,7 @@ export default {
 
 <template>
   <div>
-    <title-area :title="__('Dependency Proxy')" :info-messages="infoMessages" />
+    <title-area :title="$options.i18n.pageTitle" :info-messages="infoMessages" />
     <gl-alert
       v-if="!dependencyProxyAvailable"
       :dismissible="false"

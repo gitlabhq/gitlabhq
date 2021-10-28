@@ -18262,6 +18262,7 @@ CREATE TABLE project_settings (
     cve_id_request_enabled boolean DEFAULT true NOT NULL,
     mr_default_target_self boolean DEFAULT false NOT NULL,
     previous_default_branch text,
+    warn_about_potentially_unwanted_characters boolean DEFAULT true NOT NULL,
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL))
 );

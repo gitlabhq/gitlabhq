@@ -23,6 +23,14 @@ We have two kinds of changes related to JH:
 
 If needed, review the corresponding JH merge request located at [JH repository](https://gitlab.com/gitlab-jh/gitlab)
 
+## When to merge files to the GitLab Inc. repository
+
+Files that are added to the `gitlab-jh` repository outside of `jh/` must be mirrored in the GitLab Inc. repository.
+
+If code that is added to the GitLab Inc. repository references (for example, `render_if_exists`) any `gitlab-jh` file that does not
+exist in the GitLab Inc. codebase, add a comment with a link to the JiHu merge request or file. This is to prevent
+the reference from being misidentified as a missing partial and subsequently deleted in the `gitlab` codebase.
+
 ## Process overview
 
 See the [merge request process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/#merge-request-process)

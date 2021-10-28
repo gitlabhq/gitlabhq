@@ -423,8 +423,8 @@ class Project < ApplicationRecord
     :container_registry_access_level, :container_registry_enabled?,
     to: :project_feature, allow_nil: true
   alias_method :container_registry_enabled, :container_registry_enabled?
-  delegate :show_default_award_emojis, :show_default_award_emojis=,
-    :show_default_award_emojis?,
+  delegate :show_default_award_emojis, :show_default_award_emojis=, :show_default_award_emojis?,
+    :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=, :warn_about_potentially_unwanted_characters?,
     to: :project_setting, allow_nil: true
   delegate :scheduled?, :started?, :in_progress?, :failed?, :finished?,
     prefix: :import, to: :import_state, allow_nil: true
@@ -2724,7 +2724,22 @@ class Project < ApplicationRecord
     self.errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
   end
 
+  def visible_group_links(for_user:)
+    user = for_user
+    links = project_group_links_with_preload
+    user.max_member_access_for_group_ids(links.map(&:group_id)) if user && links.any?
+
+    DeclarativePolicy.user_scope do
+      links.select { Ability.allowed?(user, :read_group, _1.group) }
+    end
+  end
+
   private
+
+  # overridden in EE
+  def project_group_links_with_preload
+    project_group_links
+  end
 
   def save_topics
     return if @topic_list.nil?

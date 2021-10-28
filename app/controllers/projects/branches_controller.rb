@@ -105,8 +105,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
-    @branch_name = Addressable::URI.unescape(params[:id])
-    result = ::Branches::DeleteService.new(project, current_user).execute(@branch_name)
+    result = ::Branches::DeleteService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       format.html do

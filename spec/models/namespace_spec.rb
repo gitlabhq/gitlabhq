@@ -1341,6 +1341,7 @@ RSpec.describe Namespace do
   context 'refreshing project access on updating share_with_group_lock' do
     let(:group) { create(:group, share_with_group_lock: false) }
     let(:project) { create(:project, :private, group: group) }
+    let(:another_project) { create(:project, :private, group: group) }
 
     let_it_be(:shared_with_group_one) { create(:group) }
     let_it_be(:shared_with_group_two) { create(:group) }
@@ -1353,12 +1354,16 @@ RSpec.describe Namespace do
       shared_with_group_one.add_developer(group_one_user)
       shared_with_group_two.add_developer(group_two_user)
       create(:project_group_link, group: shared_with_group_one, project: project)
+      create(:project_group_link, group: shared_with_group_one, project: another_project)
       create(:project_group_link, group: shared_with_group_two, project: project)
     end
 
     it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
         .to receive(:perform_async).with(project.id).once
+
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
+        .to receive(:perform_async).with(another_project.id).once
 
       execute_update
     end
@@ -1392,10 +1397,22 @@ RSpec.describe Namespace do
         stub_feature_flags(specialized_worker_for_group_lock_update_auth_recalculation: false)
       end
 
-      it 'refreshes the permissions of the members of the old and new namespace' do
+      it 'updates authorizations leading to users from shared groups losing access', :sidekiq_inline do
         expect { execute_update }
           .to change { group_one_user.authorized_projects.include?(project) }.from(true).to(false)
           .and change { group_two_user.authorized_projects.include?(project) }.from(true).to(false)
+      end
+
+      it 'updates the authorizations in a non-blocking manner' do
+        expect(AuthorizedProjectsWorker).to(
+          receive(:bulk_perform_async)
+            .with([[group_one_user.id]])).once
+
+        expect(AuthorizedProjectsWorker).to(
+          receive(:bulk_perform_async)
+            .with([[group_two_user.id]])).once
+
+        execute_update
       end
     end
   end

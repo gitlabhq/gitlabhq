@@ -85,7 +85,7 @@ module QA
           end
         end
 
-        it "publishes a nuget package at the project level, installs and deletes it at the group level using a #{params[:token_name]}", testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1073' do
+        it "publishes a nuget package at the project level, installs and deletes it at the group level using a #{params[:token_name]}" do
           Flow::Login.sign_in
 
           Resource::Repository::Commit.fabricate_via_api! do |commit|

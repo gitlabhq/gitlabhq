@@ -267,6 +267,35 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
   end
 
+  context 'pipeline_schedule' do
+    let(:relation_sym) { :pipeline_schedules }
+    let(:relation_hash) do
+      {
+        "id": 3,
+        "created_at": "2016-07-22T08:55:44.161Z",
+        "updated_at": "2016-07-22T08:55:44.161Z",
+        "description": "pipeline schedule",
+        "ref": "main",
+        "cron": "0 4 * * 0",
+        "cron_timezone": "UTC",
+        "active": value,
+        "project_id": project.id
+      }
+    end
+
+    subject { created_object.active }
+
+    [true, false].each do |v|
+      context "when relation_hash has active set to #{v}" do
+        let(:value) { v }
+
+        it "the created object is not active" do
+          expect(created_object.active).to eq(false)
+        end
+      end
+    end
+  end
+
   # `project_id`, `described_class.USER_REFERENCES`, noteable_id, target_id, and some project IDs are already
   # re-assigned by described_class.
   context 'Potentially hazardous foreign keys' do

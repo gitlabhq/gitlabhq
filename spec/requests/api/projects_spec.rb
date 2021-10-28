@@ -991,7 +991,7 @@ RSpec.describe API::Projects do
 
         expect do
           get api('/projects', admin)
-        end.not_to exceed_query_limit(control.count)
+        end.not_to exceed_query_limit(control)
       end
     end
   end
@@ -3232,6 +3232,15 @@ RSpec.describe API::Projects do
         expect(json_response['visibility']).to eq('private')
       end
 
+      it 'does not update visibility_level if it is restricted' do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+        put api("/projects/#{project3.id}", user), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['visibility_level']).to include('internal has been restricted by your GitLab administrator')
+      end
+
       it 'does not update name to existing name' do
         project_param = { name: project3.name }
 
@@ -3552,6 +3561,19 @@ RSpec.describe API::Projects do
                           request_access_enabled: true }
         put api("/projects/#{project.id}", user3), params: project_param
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated as the admin' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'ignores visibility level restrictions' do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+        put api("/projects/#{project3.id}", admin), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['visibility']).to eq('internal')
       end
     end
 

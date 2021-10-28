@@ -17,10 +17,18 @@ module BulkImports
         def load(context, data)
           url = data['httpUrlToRepo']
           url = url.sub("://", "://oauth2:#{context.configuration.access_token}@")
+          project = context.portable
 
           Gitlab::UrlBlocker.validate!(url, allow_local_network: allow_local_requests?, allow_localhost: allow_local_requests?)
 
-          context.portable.repository.import_repository(url)
+          project.ensure_repository
+          project.repository.fetch_as_mirror(url)
+        end
+
+        # The initial fetch can bring in lots of loose refs and objects.
+        # Running a `git gc` will make importing merge requests faster.
+        def after_run(_)
+          ::Repositories::HousekeepingService.new(context.portable, :gc).execute
         end
 
         private

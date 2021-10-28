@@ -3,25 +3,57 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Issues::SetSeverity do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:issue) { create(:incident) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:issue) { create(:incident, project: project) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
-  specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
+  specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
+
+  before_all do
+    project.add_guest(guest)
+    project.add_reporter(reporter)
+  end
 
   describe '#resolve' do
     let(:severity) { 'critical' }
-    let(:mutated_incident) { subject[:issue] }
 
-    subject(:resolve) { mutation.resolve(project_path: issue.project.full_path, iid: issue.iid, severity: severity) }
+    subject(:resolve) do
+      mutation.resolve(
+        project_path: issue.project.full_path,
+        iid: issue.iid,
+        severity: severity
+      )
+    end
 
-    it_behaves_like 'permission level for issue mutation is correctly verified'
+    context 'as guest' do
+      let(:user) { guest }
 
-    context 'when the user can update the issue' do
-      before do
-        issue.project.add_developer(user)
+      it 'raises an error' do
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
+
+      context 'and also author' do
+        let!(:issue) { create(:incident, project: project, author: user) }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+
+      context 'and also assignee' do
+        let!(:issue) { create(:incident, project: project, assignee_ids: [user.id]) }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        end
+      end
+    end
+
+    context 'as reporter' do
+      let(:user) { reporter }
 
       context 'when issue type is incident' do
         context 'when severity has a correct value' do
@@ -48,9 +80,9 @@ RSpec.describe Mutations::Issues::SetSeverity do
       end
 
       context 'when issue type is not incident' do
-        let!(:issue) { create(:issue) }
+        let!(:issue) { create(:issue, project: project) }
 
-        it 'does not updates the issue' do
+        it 'does not update the issue' do
           expect { resolve }.not_to change { issue.updated_at }
         end
       end

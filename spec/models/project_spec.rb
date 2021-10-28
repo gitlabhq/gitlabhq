@@ -681,6 +681,19 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:container_registry_enabled?).to(:project_feature) }
     it { is_expected.to delegate_method(:container_registry_access_level).to(:project_feature) }
 
+    describe 'project settings' do
+      %i(
+        show_default_award_emojis
+        show_default_award_emojis=
+        show_default_award_emojis?
+        warn_about_potentially_unwanted_characters
+        warn_about_potentially_unwanted_characters=
+        warn_about_potentially_unwanted_characters?
+      ).each do |method|
+        it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(allow_nil: true) }
+      end
+    end
+
     include_examples 'ci_cd_settings delegation' do
       # Skip attributes defined in EE code
       let(:exclude_attributes) do

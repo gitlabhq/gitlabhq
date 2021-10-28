@@ -280,7 +280,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
     end
 
     context 'metrics' do
-      let(:histogram) { double(:histogram) }
+      let(:histogram) { double(:histogram).as_null_object }
       let(:counter) { double('counter', increment: true) }
 
       before do
@@ -315,7 +315,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         )
 
         expect(counter).to receive(:increment)
-        allow(histogram).to receive(:observe).with({ importer: :bitbucket_server_importer }, anything)
 
         subject.execute
       end

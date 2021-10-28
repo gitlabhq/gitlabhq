@@ -35,6 +35,8 @@ RSpec.describe Ci::Build do
 
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
+  it { is_expected.to respond_to(:set_cancel_gracefully) }
+  it { is_expected.to respond_to(:cancel_gracefully?) }
 
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
@@ -5384,6 +5386,25 @@ RSpec.describe Ci::Build do
   it 'does not generate cross DB queries when a record is created via FactoryBot' do
     with_cross_database_modification_prevented do
       create(:ci_build)
+    end
+  end
+
+  describe '#runner_features' do
+    subject do
+      build.save!
+      build.cancel_gracefully?
+    end
+
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+
+    it 'cannot cancel gracefully' do
+      expect(subject).to be false
+    end
+
+    it 'can cancel gracefully' do
+      build.set_cancel_gracefully
+
+      expect(subject).to be true
     end
   end
 end

@@ -356,7 +356,7 @@ RSpec.describe Projects::BranchesController do
       context "valid branch name with encoded slashes" do
         let(:branch) { "improve%2Fawesome" }
 
-        it { expect(response).to have_gitlab_http_status(:ok) }
+        it { expect(response).to have_gitlab_http_status(:not_found) }
         it { expect(response.body).to be_blank }
       end
 
@@ -396,10 +396,10 @@ RSpec.describe Projects::BranchesController do
         let(:branch) { 'improve%2Fawesome' }
 
         it 'returns JSON response with message' do
-          expect(json_response).to eql('message' => 'Branch was deleted')
+          expect(json_response).to eql('message' => 'No such branch')
         end
 
-        it { expect(response).to have_gitlab_http_status(:ok) }
+        it { expect(response).to have_gitlab_http_status(:not_found) }
       end
 
       context 'invalid branch name, valid ref' do
