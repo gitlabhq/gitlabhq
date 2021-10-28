@@ -26,6 +26,8 @@ class Namespace < ApplicationRecord
   SHARED_RUNNERS_SETTINGS = %w[disabled_and_unoverridable disabled_with_override enabled].freeze
   URL_MAX_LENGTH = 255
 
+  PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -162,9 +164,14 @@ class Namespace < ApplicationRecord
       # Remove everything that's not in the list of allowed characters.
       path.gsub!(/[^a-zA-Z0-9_\-\.]/,    "")
       # Remove trailing violations ('.atom', '.git', or '.')
-      path.gsub!(/(\.atom|\.git|\.)*\z/, "")
+      loop do
+        orig = path
+        PATH_TRAILING_VIOLATIONS.each { |ext| path = path.chomp(ext) }
+        break if orig == path
+      end
+
       # Remove leading violations ('-')
-      path.gsub!(/\A\-+/,                "")
+      path.gsub!(/\A\-+/, "")
 
       # Users with the great usernames of "." or ".." would end up with a blank username.
       # Work around that by setting their username to "blank", followed by a counter.

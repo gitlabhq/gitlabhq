@@ -8,6 +8,8 @@ module Mutations
       argument :severity, Types::IssuableSeverityEnum, required: true,
                description: 'Set the incident severity level.'
 
+      authorize :admin_issue
+
       def resolve(project_path:, iid:, severity:)
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project

@@ -84,6 +84,7 @@ module Gitlab
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_issue
+          when :'Ci::PipelineSchedule' then setup_pipeline_schedule
           end
 
           update_project_references
@@ -141,6 +142,10 @@ module Gitlab
 
         def setup_issue
           @relation_hash['relative_position'] = compute_relative_position
+        end
+
+        def setup_pipeline_schedule
+          @relation_hash['active'] = false
         end
 
         def compute_relative_position

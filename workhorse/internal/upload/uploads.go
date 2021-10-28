@@ -21,6 +21,7 @@ type MultipartFormProcessor interface {
 	ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error
 	Finalize(ctx context.Context) error
 	Name() string
+	Count() int
 }
 
 func HandleFileUploads(w http.ResponseWriter, r *http.Request, h http.Handler, preauth *api.Response, filter MultipartFormProcessor, opts *filestore.SaveFileOpts) {
@@ -34,6 +35,8 @@ func HandleFileUploads(w http.ResponseWriter, r *http.Request, h http.Handler, p
 		switch err {
 		case ErrInjectedClientParam:
 			helper.CaptureAndFail(w, r, err, "Bad Request", http.StatusBadRequest)
+		case ErrMultipleFilesUploaded:
+			helper.CaptureAndFail(w, r, err, "Uploading multiple files is not allowed", http.StatusBadRequest)
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
 		case filestore.ErrEntityTooLarge:

@@ -15,7 +15,7 @@ module Groups
         return false
       end
 
-      return false unless valid_visibility_level_change?(group, params[:visibility_level])
+      return false unless valid_visibility_level_change?(group, group.visibility_attribute_value(params))
 
       return false unless valid_share_with_group_lock_change?
 
@@ -77,7 +77,7 @@ module Groups
     end
 
     def after_update
-      if group.previous_changes.include?(:visibility_level) && group.private?
+      if group.previous_changes.include?(group.visibility_level_field) && group.private?
         # don't enqueue immediately to prevent todos removal in case of a mistake
         TodosDestroyer::GroupPrivateWorker.perform_in(Todo::WAIT_FOR_DELETE, group.id)
       end

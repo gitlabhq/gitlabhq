@@ -1459,7 +1459,7 @@ class User < ApplicationRecord
       name: name,
       username: username,
       avatar_url: avatar_url(only_path: false),
-      email: email
+      email: public_email.presence || _('[REDACTED]')
     }
   end
 
