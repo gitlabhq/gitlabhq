@@ -52,11 +52,11 @@ module Gitlab
 
           def expiry
             strong_memoize(:expiry) do
-              next DuplicateJob::DUPLICATE_KEY_TTL unless duplicate_job.scheduled?
+              next duplicate_job.duplicate_key_ttl unless duplicate_job.scheduled?
 
               time_diff = duplicate_job.scheduled_at.to_i - Time.now.to_i
 
-              time_diff > 0 ? time_diff : DuplicateJob::DUPLICATE_KEY_TTL
+              time_diff > 0 ? time_diff : duplicate_job.duplicate_key_ttl
             end
           end
         end

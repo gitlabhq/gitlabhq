@@ -26,8 +26,8 @@ module Gitlab
           end
 
           def check!
-            # The default expiry time is the DuplicateJob::DUPLICATE_KEY_TTL already
-            # Only the strategies de-duplicating when scheduling
+            # The default expiry time is the worker class'
+            # configured deduplication TTL or DuplicateJob::DEFAULT_DUPLICATE_KEY_TTL.
             duplicate_job.check!
           end
         end

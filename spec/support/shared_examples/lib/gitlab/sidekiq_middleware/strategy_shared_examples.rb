@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
   let(:fake_duplicate_job) do
-    instance_double(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob)
+    instance_double(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, duplicate_key_ttl: Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DEFAULT_DUPLICATE_KEY_TTL)
   end
 
   let(:expected_message) { "dropped #{strategy_name.to_s.humanize.downcase}" }
@@ -18,7 +18,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       expect(fake_duplicate_job).to receive(:scheduled?).twice.ordered.and_return(false)
       expect(fake_duplicate_job).to(
         receive(:check!)
-          .with(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DUPLICATE_KEY_TTL)
+          .with(fake_duplicate_job.duplicate_key_ttl)
           .ordered
           .and_return('a jid'))
       expect(fake_duplicate_job).to receive(:duplicate?).ordered.and_return(false)
@@ -62,7 +62,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
             allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })
             allow(fake_duplicate_job).to(
               receive(:check!)
-                .with(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob::DUPLICATE_KEY_TTL)
+                .with(fake_duplicate_job.duplicate_key_ttl)
                 .and_return('the jid'))
             allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
             allow(fake_duplicate_job).to receive(:update_latest_wal_location!)

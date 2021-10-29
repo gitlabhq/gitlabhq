@@ -19,7 +19,7 @@ module Gitlab
       class DuplicateJob
         include Gitlab::Utils::StrongMemoize
 
-        DUPLICATE_KEY_TTL = 6.hours
+        DEFAULT_DUPLICATE_KEY_TTL = 6.hours
         WAL_LOCATION_TTL = 60.seconds
         MAX_REDIS_RETRIES = 5
         DEFAULT_STRATEGY = :until_executing
@@ -59,7 +59,7 @@ module Gitlab
         end
 
         # This method will return the jid that was set in redis
-        def check!(expiry = DUPLICATE_KEY_TTL)
+        def check!(expiry = duplicate_key_ttl)
           read_jid = nil
           read_wal_locations = {}
 
@@ -133,7 +133,7 @@ module Gitlab
           jid != existing_jid
         end
 
-        def set_deduplicated_flag!(expiry = DUPLICATE_KEY_TTL)
+        def set_deduplicated_flag!(expiry = duplicate_key_ttl)
           return unless reschedulable?
 
           Sidekiq.redis do |redis|
@@ -166,6 +166,10 @@ module Gitlab
           return false unless preserve_wal_location? || !worker_klass.utilizes_load_balancing_capabilities?
 
           worker_klass.idempotent?
+        end
+
+        def duplicate_key_ttl
+          options[:ttl] || DEFAULT_DUPLICATE_KEY_TTL
         end
 
         private

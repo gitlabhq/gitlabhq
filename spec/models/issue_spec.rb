@@ -1219,7 +1219,7 @@ RSpec.describe Issue do
       end
 
       it 'returns public and hidden issues' do
-        expect(described_class.public_only).to eq([public_issue, hidden_issue])
+        expect(described_class.public_only).to contain_exactly(public_issue, hidden_issue)
       end
     end
   end
@@ -1248,7 +1248,7 @@ RSpec.describe Issue do
       end
 
       it 'returns public and hidden issues' do
-        expect(described_class.without_hidden).to eq([public_issue, hidden_issue])
+        expect(described_class.without_hidden).to contain_exactly(public_issue, hidden_issue)
       end
     end
   end

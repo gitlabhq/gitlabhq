@@ -77,13 +77,15 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
     context 'when CDN host is defined' do
       before do
-        stub_config_setting(cdn_host: 'https://example.com')
+        stub_config_setting(cdn_host: 'https://cdn.example.com')
       end
 
       it 'adds CDN host to CSP' do
-        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")
-        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
-        expect(directives['font_src']).to eq("'self' https://example.com")
+        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://cdn.example.com")
+        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
+        expect(directives['font_src']).to eq("'self' https://cdn.example.com")
+        expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
+        expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com https://cdn.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
       end
     end
 
@@ -111,7 +113,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com")
+          expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
         end
       end
 
@@ -121,7 +123,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com http://localhost/rails/letter_opener/ https://customers.example.com")
+          expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
         end
       end
     end
@@ -152,30 +154,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         it 'adds letter_opener to CSP' do
           expect(directives['frame_src']).to include(letter_opener_url)
         end
-      end
-    end
-  end
-
-  describe '#framed_gitlab_paths' do
-    context 'generates URLs to be added to child-src' do
-      it 'with insecure domain' do
-        stub_config_setting(url: 'http://example.com')
-        expect(described_class.framed_gitlab_paths).to eq(%w[http://example.com/admin/sidekiq http://example.com/admin/sidekiq/ http://example.com/-/speedscope/index.html])
-      end
-
-      it 'with secure domain' do
-        stub_config_setting(url: 'https://example.com')
-        expect(described_class.framed_gitlab_paths).to eq(%w[https://example.com/admin/sidekiq https://example.com/admin/sidekiq/ https://example.com/-/speedscope/index.html])
-      end
-
-      it 'with custom port' do
-        stub_config_setting(url: 'http://example.com:1234')
-        expect(described_class.framed_gitlab_paths).to eq(%w[http://example.com:1234/admin/sidekiq http://example.com:1234/admin/sidekiq/ http://example.com:1234/-/speedscope/index.html])
-      end
-
-      it 'with custom port and secure domain' do
-        stub_config_setting(url: 'https://example.com:1234')
-        expect(described_class.framed_gitlab_paths).to eq(%w[https://example.com:1234/admin/sidekiq https://example.com:1234/admin/sidekiq/ https://example.com:1234/-/speedscope/index.html])
       end
     end
   end

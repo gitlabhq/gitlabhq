@@ -9607,6 +9607,9 @@ msgstr ""
 msgid "Create a new issue"
 msgstr ""
 
+msgid "Create a new project"
+msgstr ""
+
 msgid "Create a new repository"
 msgstr ""
 
@@ -16995,6 +16998,9 @@ msgstr ""
 msgid "Hour (UTC)"
 msgstr ""
 
+msgid "House your files, plan your work, collaborate on code, and more."
+msgstr ""
+
 msgid "Housekeeping"
 msgstr ""
 
@@ -19806,6 +19812,12 @@ msgid "Job|with"
 msgstr ""
 
 msgid "Join Zoom meeting"
+msgstr ""
+
+msgid "Join a project"
+msgstr ""
+
+msgid "Join your team on GitLab and contribute to an existing project"
 msgstr ""
 
 msgid "Joined %{time_ago}"
@@ -38540,6 +38552,9 @@ msgid "What templates can I create?"
 msgstr ""
 
 msgid "What will you use this group for?"
+msgstr ""
+
+msgid "What would you like to do?"
 msgstr ""
 
 msgid "What's new"

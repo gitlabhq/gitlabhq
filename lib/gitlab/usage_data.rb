@@ -537,8 +537,7 @@ module Gitlab
       def usage_activity_by_stage_manage(time_period)
         {
           # rubocop: disable UsageData/LargeTable
-          events: estimate_batch_distinct_count(::Event.where(time_period), :author_id),
-          # rubocop: enable UsageData/LargeTable
+          events: stage_manage_events(time_period),
           groups: distinct_count(::GroupMember.where(time_period), :user_id),
           users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
@@ -717,6 +716,18 @@ module Gitlab
       end
 
       private
+
+      def stage_manage_events(time_period)
+        if time_period.empty?
+          Gitlab::Utils::UsageData::FALLBACK
+        else
+          # rubocop: disable CodeReuse/ActiveRecord
+          # rubocop: disable UsageData/LargeTable
+          estimate_batch_distinct_count(::Event.where(time_period), :author_id)
+          # rubocop: enable UsageData/LargeTable
+          # rubocop: enable CodeReuse/ActiveRecord
+        end
+      end
 
       def usage_data_metrics
         license_usage_data

@@ -284,6 +284,36 @@ module AuthorizedProjectUpdate
 end
 ```
 
+### Setting the deduplication time-to-live (TTL)
+
+Deduplication depends on an idempotency key that is stored in Redis. This is normally
+cleared by the configured deduplication strategy.
+
+However, the key can remain until its TTL in certain cases like:
+
+1. `until_executing` is used but the job was never enqueued or executed after the Sidekiq
+   client middleware was run.
+
+1. `until_executed` is used but the job fails to finish due to retry exhaustion, gets
+   interrupted the maximum number of times, or gets lost.
+
+The default value is 6 hours. During this time, jobs won't be enqueued even if the first
+job never executed or finished.
+
+The TTL can be configured with:
+
+```ruby
+class ProjectImportScheduleWorker
+  include ApplicationWorker
+
+  idempotent!
+  deduplicate :until_executing, ttl: 5.minutes
+end
+```
+
+Duplicate jobs can happen when the TTL is reached, so make sure you lower this only for jobs
+that can tolerate some duplication.
+
 ### Deduplication with load balancing
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6763) in GitLab 14.4.

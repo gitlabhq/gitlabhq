@@ -134,8 +134,14 @@ export default {
         <gl-icon name="question-o" css-classes="link-highlight" />
       </a>
     </div>
-    <div v-if="isApplied" class="badge badge-success">{{ __('Applied') }}</div>
-    <div v-else-if="isApplying" class="d-flex align-items-center text-secondary">
+    <div v-if="isApplied" class="badge badge-success" data-qa-selector="applied_badge">
+      {{ __('Applied') }}
+    </div>
+    <div
+      v-else-if="isApplying"
+      class="d-flex align-items-center text-secondary"
+      data-qa-selector="applying_badge"
+    >
       <gl-loading-icon size="sm" class="d-flex-center mr-2" />
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>

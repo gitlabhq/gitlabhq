@@ -215,7 +215,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
 
       expect(described_class.usage_activity_by_stage_manage({})).to include(
-        events: be_within(error_rate).percent_of(2),
+        events: -1,
         groups: 2,
         users_created: 6,
         omniauth_providers: ['google_oauth2'],

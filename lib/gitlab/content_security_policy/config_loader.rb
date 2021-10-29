@@ -19,7 +19,7 @@ module Gitlab
           'font_src' => "'self'",
           'form_action' => "'self' https: http:",
           'frame_ancestors' => "'self'",
-          'frame_src' => "#{framed_gitlab_paths.join(' ')} https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
+          'frame_src' => "https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com",
           'img_src' => "'self' data: blob: http: https:",
           'manifest_src' => "'self'",
           'media_src' => "'self'",
@@ -42,18 +42,19 @@ module Gitlab
         allow_websocket_connections(directives)
         allow_cdn(directives, Settings.gitlab.cdn_host) if Settings.gitlab.cdn_host.present?
         allow_sentry(directives) if Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
+        allow_framed_gitlab_paths(directives)
 
         # The follow section contains workarounds to patch Safari's lack of support for CSP Level 3
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/343579
         # frame-src was deprecated in CSP level 2 in favor of child-src
         # CSP level 3 "undeprecated" frame-src and browsers fall back on child-src if it's missing
         # However Safari seems to read child-src first so we'll just keep both equal
-        directives['child_src'] = directives['frame_src']
+        append_to_directive(directives, 'child_src', directives['frame_src'])
 
         # Safari also doesn't support worker-src and only checks child-src
         # So for compatibility until it catches up to other browsers we need to
         # append worker-src's content to child-src
-        directives['child_src'] += " #{directives['worker_src']}"
+        append_to_directive(directives, 'child_src', directives['worker_src'])
 
         directives
       end
@@ -111,6 +112,8 @@ module Gitlab
         append_to_directive(directives, 'script_src', cdn_host)
         append_to_directive(directives, 'style_src', cdn_host)
         append_to_directive(directives, 'font_src', cdn_host)
+        append_to_directive(directives, 'worker_src', cdn_host)
+        append_to_directive(directives, 'frame_src', cdn_host)
       end
 
       def self.append_to_directive(directives, directive, text)
@@ -137,12 +140,12 @@ module Gitlab
 
       # Using 'self' in the CSP introduces several CSP bypass opportunities
       # for this reason we list the URLs where GitLab frames itself instead
-      def self.framed_gitlab_paths
+      def self.allow_framed_gitlab_paths(directives)
         # We need the version without trailing / for the sidekiq page itself
         # and we also need the version with trailing / for "deeper" pages
         # like /admin/sidekiq/busy
         ['/admin/sidekiq', '/admin/sidekiq/', '/-/speedscope/index.html'].map do |path|
-          Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path)
+          append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, path))
         end
       end
     end

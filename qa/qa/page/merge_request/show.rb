@@ -99,6 +99,8 @@ module QA
 
         view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
           element :add_suggestion_batch_button
+          element :applied_badge
+          element :applying_badge
         end
 
         view 'app/views/projects/merge_requests/_description.html.haml' do
@@ -361,6 +363,13 @@ module QA
 
         def add_suggestion_to_batch
           all_elements(:add_suggestion_batch_button, minimum: 1).first.click
+        end
+
+        def has_suggestions_applied?(count)
+          wait_until(reload: false) do
+            has_no_element?(:applying_badge)
+          end
+          all_elements(:applied_badge, count: count)
         end
 
         def cherry_pick!

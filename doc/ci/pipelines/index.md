@@ -405,6 +405,7 @@ be found when you go to:
 - The pipelines index page.
 - A single commit page.
 - A merge request page.
+- The [pipeline editor](../pipeline_editor/index.md), [in GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) and later.
 
 Pipeline mini graphs allow you to see all related jobs for a single commit and the net result
 of each stage of your pipeline. This allows you to quickly see what failed and
