@@ -42,12 +42,10 @@ module Mutations
                  required: false,
                  description: 'Description of or notes for the contact.'
 
-        authorize :admin_contact
+        authorize :admin_crm_contact
 
         def resolve(args)
           group = authorized_find!(id: args[:group_id])
-
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group, default_enabled: :yaml)
 
           set_organization!(args)
           result = ::CustomerRelations::Contacts::CreateService.new(group: group, current_user: current_user, params: args).execute

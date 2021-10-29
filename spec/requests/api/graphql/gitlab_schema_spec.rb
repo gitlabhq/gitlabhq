@@ -190,19 +190,18 @@ RSpec.describe 'GitlabSchema configurations' do
     let(:query) { File.read(Rails.root.join('spec/fixtures/api/graphql/introspection.graphql')) }
 
     it 'logs the query complexity and depth' do
-      analyzer_memo = {
-        query_string: query,
-        variables: {}.to_s,
-        complexity: 181,
-        depth: 13,
-        duration_s: 7,
-        operation_name: 'IntrospectionQuery',
-        used_fields: an_instance_of(Array),
-        used_deprecated_fields: an_instance_of(Array)
-      }
-
       expect_any_instance_of(Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer).to receive(:duration).and_return(7)
-      expect(Gitlab::GraphqlLogger).to receive(:info).with(analyzer_memo)
+
+      expect(Gitlab::GraphqlLogger).to receive(:info).with(
+        hash_including(
+          trace_type: 'execute_query',
+          "query_analysis.duration_s" => 7,
+          "query_analysis.complexity" => 181,
+          "query_analysis.depth" => 13,
+          "query_analysis.used_deprecated_fields" => an_instance_of(Array),
+          "query_analysis.used_fields" => an_instance_of(Array)
+        )
+      )
 
       post_graphql(query, current_user: nil)
     end

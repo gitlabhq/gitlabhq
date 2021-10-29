@@ -12,21 +12,33 @@ RSpec.describe 'GraphQL' do
 
   describe 'logging' do
     shared_examples 'logging a graphql query' do
-      let(:expected_params) do
+      let(:expected_execute_query_log) do
         {
-          query_string: query,
-          variables: variables.to_s,
-          duration_s: anything,
+          "correlation_id" => kind_of(String),
+          "meta.caller_id" => "GraphqlController#execute",
+          "meta.client_id" => kind_of(String),
+          "meta.feature_category" => "not_owned",
+          "meta.remote_ip" => kind_of(String),
+          "query_analysis.duration_s" => kind_of(Numeric),
+          "query_analysis.depth" => 1,
+          "query_analysis.complexity" => 1,
+          "query_analysis.used_fields" => ['Query.echo'],
+          "query_analysis.used_deprecated_fields" => [],
+          # query_fingerprint starts with operation name
+          query_fingerprint: %r{^anonymous\/},
+          duration_s: kind_of(Numeric),
+          trace_type: 'execute_query',
           operation_name: nil,
-          depth: 1,
-          complexity: 1,
-          used_fields: ['Query.echo'],
-          used_deprecated_fields: []
+          # operation_fingerprint starts with operation name
+          operation_fingerprint: %r{^anonymous\/},
+          is_mutation: false,
+          variables: variables,
+          query_string: query
         }
       end
 
       it 'logs a query with the expected params' do
-        expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_params).once
+        expect(Gitlab::GraphqlLogger).to receive(:info).with(expected_execute_query_log).once
 
         post_graphql(query, variables: variables)
       end

@@ -91,7 +91,7 @@ class LegacyDiffNote < Note
   end
 
   def skip_setting_st_diff?
-    st_diff.present? && importing? && Feature.enabled?(:skip_legacy_diff_note_callback_on_import, default_enabled: :yaml)
+    st_diff.present? && importing?
   end
 
   def diff_for_line_code

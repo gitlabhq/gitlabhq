@@ -5,7 +5,7 @@ module Types
     class OrganizationType < BaseObject
       graphql_name 'CustomerRelationsOrganization'
 
-      authorize :read_organization
+      authorize :read_crm_organization
 
       field :id,
             GraphQL::Types::ID,

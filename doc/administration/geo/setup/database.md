@@ -688,8 +688,8 @@ could do it with [HAProxy](https://www.haproxy.org/).
 The following IPs and names are used as an example:
 
 - `10.6.0.21`: Patroni 1 (`patroni1.internal`)
-- `10.6.0.21`: Patroni 2 (`patroni2.internal`)
-- `10.6.0.22`: Patroni 3 (`patroni3.internal`)
+- `10.6.0.22`: Patroni 2 (`patroni2.internal`)
+- `10.6.0.23`: Patroni 3 (`patroni3.internal`)
 
 ```plaintext
 global
@@ -714,7 +714,7 @@ backend postgresql
 
     server patroni1.internal 10.6.0.21:5432 maxconn 100 check port 8008
     server patroni2.internal 10.6.0.22:5432 maxconn 100 check port 8008
-    server patroni3.internal 10.6.0.23.195:5432 maxconn 100 check port 8008
+    server patroni3.internal 10.6.0.23:5432 maxconn 100 check port 8008
 ```
 
 Refer to your preferred Load Balancer's documentation for further guidance.

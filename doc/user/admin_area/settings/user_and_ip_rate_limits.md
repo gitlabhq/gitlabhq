@@ -76,7 +76,9 @@ To enable the unauthenticated request rate limit:
 
 ## Use a custom rate limit response
 
-A request that exceeds a rate limit returns a 429 response code and a
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50693) in GitLab 13.8.
+
+A request that exceeds a rate limit returns a `429` response code and a
 plain-text body, which by default is `Retry later`.
 
 To use a custom response:
@@ -88,7 +90,7 @@ To use a custom response:
 
 ## Response headers
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `Rate-Limit` headers. `Retry-After` was introduced in an earlier version.
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `RateLimit` headers. `Retry-After` was introduced in an earlier version.
 
 When a client exceeds the associated rate limit, the following requests are
 blocked. The server may respond with rate-limiting information allowing the

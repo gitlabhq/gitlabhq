@@ -36,18 +36,6 @@ RSpec.describe LegacyDiffNote do
           expect(note.st_diff).to eq('_st_diff_')
         end
 
-        context 'when feature flag is false' do
-          before do
-            stub_feature_flags(skip_legacy_diff_note_callback_on_import: false)
-          end
-
-          it 'updates st_diff' do
-            note.save!(validate: false)
-
-            expect(note.st_diff).to eq({})
-          end
-        end
-
         context 'when st_diff is blank' do
           before do
             note.st_diff = nil
