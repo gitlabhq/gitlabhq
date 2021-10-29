@@ -52,7 +52,7 @@ be higher than those defined above.
 For example: for the web-service, we want at least 99.8% of requests
 to be faster than their target duration.
 
-These are the targets we use for alerting and service montoring. So
+These are the targets we use for alerting and service monitoring. So
 durations should be set keeping those into account. So we would not
 cause alerts. But the goal would be to set the urgency to a target
 that users would be satisfied with.
@@ -63,7 +63,7 @@ error budget for stage groups.
 ## Adjusting request urgency
 
 Not all endpoints perform the same type of work, so it is possible to
-define different urgencies for different endpoints. An endpoint with a
+define different urgency levels for different endpoints. An endpoint with a
 lower urgency can have a longer request duration than endpoints that
 are high urgency.
 
@@ -90,7 +90,7 @@ a case-by-case basis. Please take the following into account:
 
 1. The workload for some endpoints can sometimes differ greatly
    depending on the parameters specified by the caller. The urgency
-   needs to accomodate that. In some cases, it might be interesting to
+   needs to accommodate that. In some cases, it might be interesting to
    define a separate [application SLI](index.md#defining-a-new-sli)
    for what the endpoint is doing.
 
@@ -99,7 +99,7 @@ a case-by-case basis. Please take the following into account:
    target. For example, if the `MergeRequests::DraftsController` is
    hit for every merge request being viewed, but doesn't need to
    render anything in most cases, then we should pick the target that
-   would still accomodate the endpoint performing work.
+   would still accommodate the endpoint performing work.
 
 1. Consider the dependent resources consumed by the endpoint. If the endpoint
    loads a lot of data from Gitaly or the database and this is causing
@@ -117,10 +117,10 @@ a case-by-case basis. Please take the following into account:
    should try to keep as short as possible.
 
 1. Traffic characteristics should also be taken into account: if the
-   trafic to the endpoint is bursty, like CI traffic spinning up a
+   traffic to the endpoint is bursty, like CI traffic spinning up a
    big batch of jobs hitting the same endpoint, then having these
    endpoints take 5s is not acceptable from an infrastructure point of
-   view. We cannot scale up the fleet fast enough to accomodate for
+   view. We cannot scale up the fleet fast enough to accommodate for
    the incoming slow requests alongside the regular traffic.
 
 When lowering the urgency for an existing endpoint, please involve a
@@ -146,14 +146,14 @@ information in the logs to determine this:
 
 1. The table loads information for the busiest endpoints by
    default. You can speed things up by adding a filter for
-   `json.caller_id.keyword` and adding the identifier you're intersted
+   `json.caller_id.keyword` and adding the identifier you're interested
    in (for example: `Projects::RawController#show`).
 
 1. Check the [appropriate percentile duration](#request-apdex-slo) for
    the service the endpoint is handled by. The overall duration should
    be lower than the target you intend to set.
 
-1. Assess if the overall duration is below the intended target. Please also
+1. If the overall duration is below the intended target. Please also
    check the peaks over time in [this
    graph](https://log.gprd.gitlab.net/goto/9319c4a402461d204d13f3a4924a89fc)
    in Kibana. Here, the percentile in question should not peak above
@@ -232,3 +232,23 @@ get 'client/features', urgency: :low do
   # endpoint logic
 end
 ```
+
+### Error budget attribution and ownership
+
+This SLI is used for service level monitoring. It feeds into the
+[error budget for stage groups](../stage_group_dashboards.md#error-budget) when
+opting in. For more information, read the epic for
+[defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).
+The endpoints for the SLI feed into a group's error budget based on the
+[feature category declared on it](../feature_categorization/index.md).
+
+To know which endpoints are included for your group, you can see the
+request rates on the
+[group dashboard for your group](https://dashboards.gitlab.net/dashboards/f/stage-groups/stage-groups).
+In the **Budget Attribution** row, the **Puma apdex** log link shows you
+how many requests are not meeting a 1s or 5s target.
+
+Learn more about the content of the dashboard in the documentation for
+[Dashboards for stage groups](../stage_group_dashboards.md). For more information
+on our exploration of the error budget itself, read the infrastructure issue
+[Stage group error budget exploration dashboard](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1365).

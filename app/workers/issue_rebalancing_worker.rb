@@ -19,6 +19,7 @@ class IssueRebalancingWorker
     # we need to have exactly one of the project_id and root_namespace_id params be non-nil
     raise ArgumentError, "Expected only one of the params project_id: #{project_id} and root_namespace_id: #{root_namespace_id}" if project_id && root_namespace_id
     return if project_id.nil? && root_namespace_id.nil?
+    return if ::Gitlab::Issues::Rebalancing::State.rebalance_recently_finished?(project_id, root_namespace_id)
 
     # pull the projects collection to be rebalanced either the project if namespace is not a group(i.e. user namesapce)
     # or the root namespace, this also makes the worker backward compatible with previous version where a project_id was

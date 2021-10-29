@@ -308,6 +308,7 @@ RSpec.describe API::Ci::Jobs do
         it 'returns no artifacts nor trace data' do
           json_job = json_response.first
 
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_job['artifacts_file']).to be_nil
           expect(json_job['artifacts']).to be_an Array
           expect(json_job['artifacts']).to be_empty
@@ -424,6 +425,22 @@ RSpec.describe API::Ci::Jobs do
 
       it 'does not return specific job data' do
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when trace artifact record exists with no stored file', :skip_before_request do
+      before do
+        create(:ci_job_artifact, :unarchived_trace_artifact, job: job, project: job.project)
+      end
+
+      it 'returns no artifacts nor trace data' do
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['artifacts']).to be_an Array
+        expect(json_response['artifacts'].size).to eq(1)
+        expect(json_response['artifacts'][0]['file_type']).to eq('trace')
+        expect(json_response['artifacts'][0]['filename']).to eq('job.log')
       end
     end
   end
@@ -1024,12 +1041,43 @@ RSpec.describe API::Ci::Jobs do
         end
       end
 
-      context 'when trace is file' do
+      context 'when live trace and uploadless trace artifact' do
+        let(:job) { create(:ci_build, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is live' do
         let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
         it 'returns specific job trace' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when no trace' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'returns empty trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to be_empty
+        end
+      end
+
+      context 'when trace artifact record exists with no stored file' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        before do
+          create(:ci_job_artifact, :unarchived_trace_artifact, job: job, project: job.project)
+        end
+
+        it 'returns empty trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to be_empty
         end
       end
     end
@@ -1143,9 +1191,7 @@ RSpec.describe API::Ci::Jobs do
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
-    context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
-
+    shared_examples_for 'erases job' do
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(:created)
         expect(job.job_artifacts.count).to eq(0)
@@ -1154,6 +1200,12 @@ RSpec.describe API::Ci::Jobs do
         expect(job.artifacts_metadata.present?).to be_falsy
         expect(job.has_job_artifacts?).to be_falsy
       end
+    end
+
+    context 'job is erasable' do
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
+
+      it_behaves_like 'erases job'
 
       it 'updates job' do
         job.reload
@@ -1161,6 +1213,12 @@ RSpec.describe API::Ci::Jobs do
         expect(job.erased_at).to be_truthy
         expect(job.erased_by).to eq(user)
       end
+    end
+
+    context 'when job has an unarchived trace artifact' do
+      let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, project: project, pipeline: pipeline) }
+
+      it_behaves_like 'erases job'
     end
 
     context 'job is not erasable' do

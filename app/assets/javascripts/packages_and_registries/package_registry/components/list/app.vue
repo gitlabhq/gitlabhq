@@ -1,22 +1,19 @@
 <script>
-/*
- * The following component has several commented lines, this is because we are refactoring them piece by piece on several mrs
- * For a complete overview of the plan please check: https://gitlab.com/gitlab-org/gitlab/-/issues/330846
- * This work is behind feature flag: https://gitlab.com/gitlab-org/gitlab/-/issues/341136
- */
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   LIST_QUERY_DEBOUNCE_TIME,
   GRAPHQL_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
+import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+
+import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 import PackageTitle from './package_title.vue';
 import PackageSearch from './package_search.vue';
 import PackageList from './packages_list.vue';
@@ -29,6 +26,7 @@ export default {
     PackageList,
     PackageTitle,
     PackageSearch,
+    DeletePackage,
   },
   inject: [
     'packageHelpUrl',
@@ -42,6 +40,7 @@ export default {
       packages: {},
       sort: '',
       filters: {},
+      mutationLoading: false,
     };
   },
   apollo: {
@@ -87,6 +86,17 @@ export default {
       return this.emptySearch
         ? this.$options.i18n.emptyPageTitle
         : this.$options.i18n.noResultsTitle;
+    },
+    isLoading() {
+      return this.$apollo.queries.packages.loading || this.mutationLoading;
+    },
+    refetchQueriesData() {
+      return [
+        {
+          query: getPackagesQuery,
+          variables: this.queryVariables,
+        },
+      ];
     },
   },
   mounted() {
@@ -153,25 +163,35 @@ export default {
     <package-title :help-url="packageHelpUrl" :count="packagesCount" />
     <package-search @update="handleSearchUpdate" />
 
-    <package-list
-      :list="packages.nodes"
-      :is-loading="$apollo.queries.packages.loading"
-      :page-info="pageInfo"
-      @prev-page="fetchPreviousPage"
-      @next-page="fetchNextPage"
+    <delete-package
+      :refetch-queries="refetchQueriesData"
+      show-success-alert
+      @start="mutationLoading = true"
+      @end="mutationLoading = false"
     >
-      <template #empty-state>
-        <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
-          <template #description>
-            <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
-            <gl-sprintf v-else :message="$options.i18n.noResultsText">
-              <template #noPackagesLink="{ content }">
-                <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+      <template #default="{ deletePackage }">
+        <package-list
+          :list="packages.nodes"
+          :is-loading="isLoading"
+          :page-info="pageInfo"
+          @prev-page="fetchPreviousPage"
+          @next-page="fetchNextPage"
+          @package:delete="deletePackage"
+        >
+          <template #empty-state>
+            <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
+              <template #description>
+                <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
+                <gl-sprintf v-else :message="$options.i18n.noResultsText">
+                  <template #noPackagesLink="{ content }">
+                    <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
               </template>
-            </gl-sprintf>
+            </gl-empty-state>
           </template>
-        </gl-empty-state>
+        </package-list>
       </template>
-    </package-list>
+    </delete-package>
   </div>
 </template>

@@ -766,7 +766,7 @@ Payload example:
 Merge request events are triggered when:
 
 - A new merge request is created.
-- An existing merge request is updated, merged, or closed.
+- An existing merge request is updated, approved, unapproved, merged, or closed.
 - A commit is added in the source branch.
 
 The available values for `object_attributes.action` in the payload are:

@@ -211,6 +211,7 @@
 .startup-css-patterns: &startup-css-patterns
   - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
 
+# Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -224,6 +225,7 @@
   - ".gitlab/ci/**/*"
   - "*_VERSION"
 
+# DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
@@ -252,6 +254,11 @@
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
+.qa-patterns: &qa-patterns
+  - ".dockerignore"
+  - "qa/**/*"
+
+# Code patterns + .ci-patterns + .workhorse-patterns
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -260,9 +267,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -273,11 +277,11 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
 
-.qa-patterns: &qa-patterns
-  - ".dockerignore"
-  - "qa/**/*"
-
+# .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -286,9 +290,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -299,6 +300,9 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -307,6 +311,7 @@
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
+# .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -315,9 +320,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -328,10 +330,14 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
 
+# .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -340,9 +346,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -353,6 +356,9 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -364,8 +370,44 @@
   - ".dockerignore"
   - "qa/**/*"
 
-.code-backstage-danger-patterns: &code-backstage-danger-patterns
+# .code-backstage-qa-patterns + .workhorse-patterns
+.setup-test-env-patterns: &setup-test-env-patterns
+  - "{package.json,yarn.lock}"
+  - ".browserslistrc"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "vendor/assets/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
+  - "*_VERSION"
+  - "{,jh/}Gemfile{,.lock}"
+  - "Rakefile"
+  - "tests.yml"
+  - "config.ru"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "{,ee/,jh/}spec/**/*"
+  - "{,spec/}tooling/**/*"
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+  # Workhorse changes
+  - "GITLAB_WORKHORSE_VERSION"
+  - "workhorse/**/*"
+  - ".gitlab/ci/workhorse.gitlab-ci.yml"
+
+.danger-patterns: &danger-patterns
   - "Dangerfile"
   - "danger/**/*"
   - "tooling/danger/**/*"
@@ -713,6 +755,11 @@
 ###############
 # Rails rules #
 ###############
+.rails:rules:setup-test-env:
+  rules:
+    - changes: *setup-test-env-patterns
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .rails:rules:decomposed-databases:
   rules:
     - <<: *if-merge-request-labels-run-decomposed
@@ -1632,7 +1679,7 @@
 .review:rules:danger-local:
   rules:
     - if: '$CI_MERGE_REQUEST_IID'
-      changes: *code-backstage-danger-patterns
+      changes: *danger-patterns
 
 ###############
 # Setup rules #

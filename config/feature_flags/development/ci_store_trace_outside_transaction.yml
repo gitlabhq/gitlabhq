@@ -1,0 +1,8 @@
+---
+name: ci_store_trace_outside_transaction
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66203
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336280
+milestone: '15.4'
+type: development
+group: group::pipeline execution
+default_enabled: false

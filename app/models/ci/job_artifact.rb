@@ -10,6 +10,7 @@ module Ci
     include Artifactable
     include FileStoreMounter
     include EachBatch
+    include Gitlab::Utils::StrongMemoize
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     COVERAGE_REPORT_FILE_TYPES = %w[cobertura].freeze
@@ -120,6 +121,9 @@ module Ci
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
     mount_file_store_uploader JobArtifactUploader
+
+    skip_callback :save, :after, :store_file!, if: :store_after_commit?
+    after_commit :store_file_after_commit!, on: [:create, :update], if: :store_after_commit?
 
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
@@ -335,7 +339,22 @@ module Ci
       }
     end
 
+    def store_after_commit?
+      strong_memoize(:store_after_commit) do
+        trace? &&
+          JobArtifactUploader.direct_upload_enabled? &&
+          Feature.enabled?(:ci_store_trace_outside_transaction, project, default_enabled: :yaml)
+      end
+    end
+
     private
+
+    def store_file_after_commit!
+      return unless previous_changes.key?(:file)
+
+      store_file!
+      update_file_store
+    end
 
     def set_size
       self.size = file.size

@@ -49,6 +49,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
         expect(new_artifact.file_type).to eq(params['artifact_type'])
         expect(new_artifact.file_format).to eq(params['artifact_format'])
         expect(new_artifact.file_sha256).to eq(artifacts_sha256)
+        expect(new_artifact.locked).to eq(job.pipeline.locked)
       end
 
       it 'does not track the job user_id' do
@@ -75,6 +76,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
           expect(new_artifact.file_type).to eq('metadata')
           expect(new_artifact.file_format).to eq('gzip')
           expect(new_artifact.file_sha256).to eq(artifacts_sha256)
+          expect(new_artifact.locked).to eq(job.pipeline.locked)
         end
 
         it 'sets expiration date according to application settings' do

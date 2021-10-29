@@ -36,14 +36,36 @@ RSpec.describe 'User browses a job', :js do
     expect(page).to have_content('Job has been erased')
   end
 
-  context 'with a failed job' do
-    let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
+  context 'with unarchived trace artifact' do
+    let!(:build) { create(:ci_build, :success, :unarchived_trace_artifact, :coverage, pipeline: pipeline) }
+
+    it 'shows no trace message', :js do
+      wait_for_requests
+
+      expect(page).to have_content('This job does not have a trace.')
+    end
+  end
+
+  context 'with a failed job and live trace' do
+    let!(:build) { create(:ci_build, :failed, :trace_live, pipeline: pipeline) }
 
     it 'displays the failure reason' do
       wait_for_all_requests
       within('.builds-container') do
         expect(page).to have_selector(
           ".build-job > a[title='test - failed - (unknown failure)']")
+      end
+    end
+
+    context 'with unarchived trace artifact' do
+      let!(:artifact) { create(:ci_job_artifact, :unarchived_trace_artifact, job: build) }
+
+      it 'displays the failure reason from the live trace' do
+        wait_for_all_requests
+        within('.builds-container') do
+          expect(page).to have_selector(
+            ".build-job > a[title='test - failed - (unknown failure)']")
+        end
       end
     end
   end

@@ -122,14 +122,6 @@ describe('packages_list', () => {
       expect(findPackageListDeleteModal().text()).toContain(firstPackage.name);
     });
 
-    it('confirming delete empties itemsToBeDeleted', async () => {
-      findPackageListDeleteModal().vm.$emit('ok');
-
-      await nextTick();
-
-      expect(findPackageListDeleteModal().text()).not.toContain(firstPackage.name);
-    });
-
     it('confirming on the modal emits package:delete', async () => {
       findPackageListDeleteModal().vm.$emit('ok');
 
@@ -138,8 +130,9 @@ describe('packages_list', () => {
       expect(wrapper.emitted('package:delete')[0]).toEqual([firstPackage]);
     });
 
-    it('cancel event resets itemToBeDeleted', async () => {
-      findPackageListDeleteModal().vm.$emit('cancel');
+    it('closing the modal resets itemToBeDeleted', async () => {
+      // triggering the v-model
+      findPackageListDeleteModal().vm.$emit('input', false);
 
       await nextTick();
 

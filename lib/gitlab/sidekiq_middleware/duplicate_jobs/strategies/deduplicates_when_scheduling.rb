@@ -54,9 +54,12 @@ module Gitlab
             strong_memoize(:expiry) do
               next duplicate_job.duplicate_key_ttl unless duplicate_job.scheduled?
 
-              time_diff = duplicate_job.scheduled_at.to_i - Time.now.to_i
+              time_diff = [
+                duplicate_job.scheduled_at.to_i - Time.now.to_i,
+                0
+              ].max
 
-              time_diff > 0 ? time_diff : duplicate_job.duplicate_key_ttl
+              time_diff + duplicate_job.duplicate_key_ttl
             end
           end
         end

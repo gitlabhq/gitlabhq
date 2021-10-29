@@ -44,6 +44,10 @@ module Gitlab
         }
       end
 
+      def mail
+        strong_memoize(:mail) { build_mail }
+      end
+
       private
 
       def handler
@@ -52,10 +56,6 @@ module Gitlab
 
       def find_handler
         Handler.for(mail, mail_key)
-      end
-
-      def mail
-        strong_memoize(:mail) { build_mail }
       end
 
       def build_mail

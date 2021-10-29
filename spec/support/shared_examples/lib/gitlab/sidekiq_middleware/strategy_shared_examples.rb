@@ -85,7 +85,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
               allow(fake_duplicate_job).to receive(:scheduled_at).and_return(Time.now + time_diff)
               allow(fake_duplicate_job).to receive(:options).and_return({ including_scheduled: true })
               allow(fake_duplicate_job).to(
-                receive(:check!).with(time_diff.to_i).and_return('the jid'))
+                receive(:check!).with(time_diff.to_i + fake_duplicate_job.duplicate_key_ttl).and_return('the jid'))
               allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
               allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
               allow(fake_duplicate_job).to receive(:set_deduplicated_flag!)

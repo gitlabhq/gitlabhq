@@ -15,9 +15,12 @@ module Ci
       ::Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
         break unless pipeline.has_archive_artifacts?
 
-        ::Ci::UnlockArtifactsService
+        results = ::Ci::UnlockArtifactsService
           .new(pipeline.project, pipeline.user)
           .execute(pipeline.ci_ref, pipeline)
+
+        log_extra_metadata_on_done(:unlocked_pipelines, results[:unlocked_pipelines])
+        log_extra_metadata_on_done(:unlocked_job_artifacts, results[:unlocked_job_artifacts])
       end
     end
   end

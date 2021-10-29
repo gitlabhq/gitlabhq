@@ -118,7 +118,9 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
       end
 
     if reason
-      EmailRejectionMailer.rejection(reason, raw, can_retry).deliver_later
+      receiver.mail.body = nil
+
+      EmailRejectionMailer.rejection(reason, receiver.mail.encoded, can_retry).deliver_later
     end
   end
 end

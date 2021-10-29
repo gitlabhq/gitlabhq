@@ -60,21 +60,28 @@ export default {
     showPagination() {
       return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
     },
+    showDeleteModal: {
+      get() {
+        return Boolean(this.itemToBeDeleted);
+      },
+      set(value) {
+        if (!value) {
+          this.itemToBeDeleted = null;
+        }
+      },
+    },
   },
   methods: {
     setItemToBeDeleted(item) {
       this.itemToBeDeleted = { ...item };
       this.track(REQUEST_DELETE_PACKAGE_TRACKING_ACTION);
-      this.$refs.packageListDeleteModal.show();
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
       this.track(DELETE_PACKAGE_TRACKING_ACTION);
-      this.itemToBeDeleted = null;
     },
     deleteItemCanceled() {
       this.track(CANCEL_DELETE_PACKAGE_TRACKING_ACTION);
-      this.itemToBeDeleted = null;
     },
   },
   i18n: {
@@ -115,7 +122,7 @@ export default {
       </div>
 
       <gl-modal
-        ref="packageListDeleteModal"
+        v-model="showDeleteModal"
         modal-id="confirm-delete-pacakge"
         ok-variant="danger"
         @ok="deleteItemConfirmation"

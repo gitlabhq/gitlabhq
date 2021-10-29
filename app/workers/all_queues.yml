@@ -354,6 +354,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: cronjob:issues_reschedule_stuck_issue_rebalances
+  :worker_name: Issues::RescheduleStuckIssueRebalancesWorker
+  :feature_category: :team_planning
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:jira_import_stuck_jira_import_jobs
   :worker_name: Gitlab::JiraImport::StuckJiraImportJobsWorker
   :feature_category: :importers

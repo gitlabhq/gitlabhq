@@ -808,7 +808,19 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
         create(:ci_job_artifact, :trace, job: build)
       end
 
-      it { is_expected.to be_truthy }
+      it 'is truthy' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when archived trace record exists but file is not stored' do
+      before do
+        create(:ci_job_artifact, :unarchived_trace_artifact, job: build)
+      end
+
+      it 'is falsy' do
+        is_expected.to be_falsy
+      end
     end
 
     context 'when live trace exists' do
@@ -872,10 +884,32 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
 
         build.reload
         expect(build.trace.exist?).to be_truthy
-        expect(build.job_artifacts_trace).to be_nil
         Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
           expect(stream.read).to eq(trace_raw)
         end
+      end
+    end
+
+    shared_examples 'a pre-commit error' do |error:|
+      it_behaves_like 'source trace in ChunkedIO stays intact', error: error
+
+      it 'does not save the trace artifact' do
+        expect { subject }.to raise_error(error)
+
+        build.reload
+        expect(build.job_artifacts_trace).to be_nil
+      end
+    end
+
+    shared_examples 'a post-commit error' do |error:|
+      it_behaves_like 'source trace in ChunkedIO stays intact', error: error
+
+      it 'saves the trace artifact but not the file' do
+        expect { subject }.to raise_error(error)
+
+        build.reload
+        expect(build.job_artifacts_trace).to be_present
+        expect(build.job_artifacts_trace.file.exists?).to be_falsy
       end
     end
 
@@ -892,7 +926,7 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
             allow(IO).to receive(:copy_stream).and_return(0)
           end
 
-          it_behaves_like 'source trace in ChunkedIO stays intact', error: Gitlab::Ci::Trace::ArchiveError
+          it_behaves_like 'a pre-commit error', error: Gitlab::Ci::Trace::ArchiveError
         end
 
         context 'when failed to create job artifact record' do
@@ -902,7 +936,16 @@ RSpec.shared_examples 'trace with enabled live trace feature' do
               .and_return(%w[Error Error])
           end
 
-          it_behaves_like 'source trace in ChunkedIO stays intact', error: ActiveRecord::RecordInvalid
+          it_behaves_like 'a pre-commit error', error: ActiveRecord::RecordInvalid
+        end
+
+        context 'when storing the file raises an error' do
+          before do
+            stub_artifacts_object_storage(direct_upload: true)
+            allow_any_instance_of(Ci::JobArtifact).to receive(:store_file!).and_raise(Excon::Error::BadGateway, 'S3 is down lol')
+          end
+
+          it_behaves_like 'a post-commit error', error: Excon::Error::BadGateway
         end
       end
     end

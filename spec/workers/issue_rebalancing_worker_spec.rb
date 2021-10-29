@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueRebalancingWorker do
+RSpec.describe IssueRebalancingWorker, :clean_gitlab_redis_shared_state do
   describe '#perform' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
@@ -34,6 +34,20 @@ RSpec.describe IssueRebalancingWorker do
         expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
 
         described_class.new.perform # all arguments are nil
+      end
+
+      it 'does not schedule a new rebalance if it finished under 1h ago' do
+        container_type = arguments.second.present? ? ::Gitlab::Issues::Rebalancing::State::PROJECT : ::Gitlab::Issues::Rebalancing::State::NAMESPACE
+        container_id = arguments.second || arguments.third
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(::Gitlab::Issues::Rebalancing::State.send(:recently_finished_key, container_type, container_id), true)
+        end
+
+        expect(Issues::RelativePositionRebalancingService).not_to receive(:new)
+        expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+        described_class.new.perform(*arguments)
       end
     end
 

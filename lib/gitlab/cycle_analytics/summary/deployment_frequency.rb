@@ -6,7 +6,7 @@ module Gitlab
       class DeploymentFrequency < Base
         include SummaryHelper
 
-        def initialize(deployments:, options:, project: nil)
+        def initialize(deployments:, options:, project:)
           @deployments = deployments
 
           super(project: project, options: options)
@@ -22,6 +22,13 @@ module Gitlab
 
         def unit
           _('per day')
+        end
+
+        def links
+          [
+            { "name" => _('Deployment frequency'), "url" => Gitlab::Routing.url_helpers.charts_project_pipelines_path(project, chart: 'deployment-frequency'), "label" => s_('ValueStreamAnalytics|Dashboard') },
+            { "name" => _('Deployment frequency'), "url" => Gitlab::Routing.url_helpers.help_page_path('user/analytics/index', anchor: 'definitions'), "docs_link" => true, "label" => s_('ValueStreamAnalytics|Go to docs') }
+          ]
         end
       end
     end

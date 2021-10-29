@@ -182,7 +182,7 @@ setup-test-env:
   extends:
     - .rails-job-base
     - .setup-test-env-cache
-    - .rails:rules:code-backstage-qa
+    - .rails:rules:setup-test-env
   stage: prepare
   variables:
     SETUP_DB: "false"

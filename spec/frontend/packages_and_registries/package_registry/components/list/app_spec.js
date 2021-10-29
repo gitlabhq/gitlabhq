@@ -10,6 +10,7 @@ import PackageListApp from '~/packages_and_registries/package_registry/component
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import OriginalPackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
+import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 
 import {
   PROJECT_RESOURCE_TYPE,
@@ -55,6 +56,7 @@ describe('PackagesListApp', () => {
   const findSearch = () => wrapper.findComponent(PackageSearch);
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findDeletePackage = () => wrapper.findComponent(DeletePackage);
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
@@ -72,9 +74,10 @@ describe('PackagesListApp', () => {
       stubs: {
         GlEmptyState,
         GlLoadingIcon,
-        PackageList,
         GlSprintf,
         GlLink,
+        PackageList,
+        DeletePackage,
       },
     });
   };
@@ -226,6 +229,47 @@ describe('PackagesListApp', () => {
     it('should show specific empty message', () => {
       expect(findEmptyState().text()).toContain(PackageListApp.i18n.noResultsTitle);
       expect(findEmptyState().text()).toContain(PackageListApp.i18n.widenFilters);
+    });
+  });
+
+  describe('delete package', () => {
+    it('exists and has the correct props', async () => {
+      mountComponent();
+
+      await waitForDebouncedApollo();
+
+      expect(findDeletePackage().props()).toMatchObject({
+        refetchQueries: [{ query: getPackagesQuery, variables: {} }],
+        showSuccessAlert: true,
+      });
+    });
+
+    it('deletePackage is bound to package-list package:delete event', async () => {
+      mountComponent();
+
+      await waitForDebouncedApollo();
+
+      findListComponent().vm.$emit('package:delete', { id: 1 });
+
+      expect(findDeletePackage().emitted('start')).toEqual([[]]);
+    });
+
+    it('start and end event set loading correctly', async () => {
+      mountComponent();
+
+      await waitForDebouncedApollo();
+
+      findDeletePackage().vm.$emit('start');
+
+      await nextTick();
+
+      expect(findListComponent().props('isLoading')).toBe(true);
+
+      findDeletePackage().vm.$emit('end');
+
+      await nextTick();
+
+      expect(findListComponent().props('isLoading')).toBe(false);
     });
   });
 });

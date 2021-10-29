@@ -6,9 +6,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { METRIC_TYPE_SUMMARY } from '~/api/analytics_api';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
 import createFlash from '~/flash';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { group } from './mock_data';
 
 jest.mock('~/flash');
+jest.mock('~/lib/utils/url_utility');
 
 describe('ValueStreamMetrics', () => {
   let wrapper;
@@ -68,19 +70,30 @@ describe('ValueStreamMetrics', () => {
         expectToHaveRequest({ params: {} });
       });
 
-      it.each`
-        index | value                   | title                   | unit
-        ${0}  | ${metricsData[0].value} | ${metricsData[0].title} | ${metricsData[0].unit}
-        ${1}  | ${metricsData[1].value} | ${metricsData[1].title} | ${metricsData[1].unit}
-        ${2}  | ${metricsData[2].value} | ${metricsData[2].title} | ${metricsData[2].unit}
-        ${3}  | ${metricsData[3].value} | ${metricsData[3].title} | ${metricsData[3].unit}
-      `(
-        'renders a single stat component for the $title with value and unit',
-        ({ index, value, title, unit }) => {
+      describe.each`
+        index | value                   | title                   | unit                   | clickable
+        ${0}  | ${metricsData[0].value} | ${metricsData[0].title} | ${metricsData[0].unit} | ${false}
+        ${1}  | ${metricsData[1].value} | ${metricsData[1].title} | ${metricsData[1].unit} | ${false}
+        ${2}  | ${metricsData[2].value} | ${metricsData[2].title} | ${metricsData[2].unit} | ${false}
+        ${3}  | ${metricsData[3].value} | ${metricsData[3].title} | ${metricsData[3].unit} | ${true}
+      `('metric tiles', ({ index, value, title, unit, clickable }) => {
+        it(`renders a single stat component for "${title}" with value and unit`, () => {
           const metric = findMetrics().at(index);
           expect(metric.props()).toMatchObject({ value, title, unit: unit ?? '' });
-        },
-      );
+        });
+
+        it(`${
+          clickable ? 'redirects' : "doesn't redirect"
+        } when the user clicks the "${title}" metric`, () => {
+          const metric = findMetrics().at(index);
+          metric.vm.$emit('click');
+          if (clickable) {
+            expect(redirectTo).toHaveBeenCalledWith(metricsData[index].links[0].url);
+          } else {
+            expect(redirectTo).not.toHaveBeenCalled();
+          }
+        });
+      });
 
       it('will not display a loading icon', () => {
         expect(wrapper.find(GlSkeletonLoading).exists()).toBe(false);

@@ -282,6 +282,12 @@ FactoryBot.define do
       end
     end
 
+    trait :unarchived_trace_artifact do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :unarchived_trace_artifact, job: build)
+      end
+    end
+
     trait :trace_with_duplicate_sections do
       after(:create) do |build, evaluator|
         trace = File.binread(

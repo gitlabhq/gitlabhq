@@ -23,6 +23,7 @@ import PackageFiles from '~/packages_and_registries/package_registry/components/
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
 import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
+import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 import {
   PACKAGE_TYPE_NUGET,
   PACKAGE_TYPE_COMPOSER,
@@ -35,12 +36,10 @@ import {
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
-  DELETE_PACKAGE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/package_registry/constants';
 
-import destroyPackageMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package.mutation.graphql';
 import destroyPackageFileMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_file.mutation.graphql';
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
 import Tracking from '~/tracking';
@@ -62,6 +61,7 @@ export default {
     AdditionalMetadata,
     InstallationCommands,
     PackageFiles,
+    DeletePackage,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -148,40 +148,15 @@ export default {
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    async deletePackage() {
-      const { data } = await this.$apollo.mutate({
-        mutation: destroyPackageMutation,
-        variables: {
-          id: this.packageEntity.id,
-        },
-      });
+    navigateToListWithSuccessModal() {
+      const returnTo =
+        !this.groupListUrl || document.referrer.includes(this.projectName)
+          ? this.projectListUrl
+          : this.groupListUrl; // to avoid security issue url are supplied from backend
 
-      if (data?.destroyPackage?.errors[0]) {
-        throw data.destroyPackage.errors[0];
-      }
-    },
-    async confirmPackageDeletion() {
-      this.track(DELETE_PACKAGE_TRACKING_ACTION);
+      const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
 
-      try {
-        await this.deletePackage();
-
-        const returnTo =
-          !this.groupListUrl || document.referrer.includes(this.projectName)
-            ? this.projectListUrl
-            : this.groupListUrl; // to avoid security issue url are supplied from backend
-
-        const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
-
-        window.location.replace(`${returnTo}?${modalQuery}`);
-      } catch (error) {
-        createFlash({
-          message: DELETE_PACKAGE_ERROR_MESSAGE,
-          type: 'warning',
-          captureError: true,
-          error,
-        });
-      }
+      window.location.replace(`${returnTo}?${modalQuery}`);
     },
     async deletePackageFile(id) {
       try {
@@ -322,26 +297,33 @@ export default {
       </gl-tab>
     </gl-tabs>
 
-    <gl-modal
-      ref="deleteModal"
-      modal-id="delete-modal"
-      data-testid="delete-modal"
-      :action-primary="$options.modal.packageDeletePrimaryAction"
-      :action-cancel="$options.modal.cancelAction"
-      @primary="confirmPackageDeletion"
-      @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
+    <delete-package
+      @start="track($options.trackingActions.DELETE_PACKAGE_TRACKING_ACTION)"
+      @end="navigateToListWithSuccessModal"
     >
-      <template #modal-title>{{ $options.i18n.deleteModalTitle }}</template>
-      <gl-sprintf :message="$options.i18n.deleteModalContent">
-        <template #version>
-          <strong>{{ packageEntity.version }}</strong>
-        </template>
+      <template #default="{ deletePackage }">
+        <gl-modal
+          ref="deleteModal"
+          modal-id="delete-modal"
+          data-testid="delete-modal"
+          :action-primary="$options.modal.packageDeletePrimaryAction"
+          :action-cancel="$options.modal.cancelAction"
+          @primary="deletePackage(packageEntity)"
+          @canceled="track($options.trackingActions.CANCEL_DELETE_PACKAGE)"
+        >
+          <template #modal-title>{{ $options.i18n.deleteModalTitle }}</template>
+          <gl-sprintf :message="$options.i18n.deleteModalContent">
+            <template #version>
+              <strong>{{ packageEntity.version }}</strong>
+            </template>
 
-        <template #name>
-          <strong>{{ packageEntity.name }}</strong>
-        </template>
-      </gl-sprintf>
-    </gl-modal>
+            <template #name>
+              <strong>{{ packageEntity.name }}</strong>
+            </template>
+          </gl-sprintf>
+        </gl-modal>
+      </template>
+    </delete-package>
 
     <gl-modal
       ref="deleteFileModal"

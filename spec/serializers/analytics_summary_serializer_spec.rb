@@ -36,7 +36,7 @@ RSpec.describe AnalyticsSummarySerializer do
   context 'when representing with unit' do
     let(:resource) do
       Gitlab::CycleAnalytics::Summary::DeploymentFrequency
-        .new(deployments: 10, options: { from: 1.day.ago })
+        .new(deployments: 10, options: { from: 1.day.ago }, project: project)
     end
 
     subject { described_class.new.represent(resource, with_unit: true) }

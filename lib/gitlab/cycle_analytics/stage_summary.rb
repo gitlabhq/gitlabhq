@@ -38,7 +38,8 @@ module Gitlab
         serialize(
           Summary::DeploymentFrequency.new(
             deployments: deployments_summary.value.raw_value,
-            options: @options),
+            options: @options,
+            project: @project),
           with_unit: true
         )
       end

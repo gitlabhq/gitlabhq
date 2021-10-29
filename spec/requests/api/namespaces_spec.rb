@@ -272,6 +272,16 @@ RSpec.describe API::Namespaces do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+
+      context 'when requesting project_namespace' do
+        let(:namespace_id) { project_namespace.id }
+
+        it 'returns authentication error' do
+          get api("/namespaces/#{project_namespace.path}/exists"), params: { parent_id: group2.id }
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
 
     context 'when authenticated' do
@@ -329,6 +339,18 @@ RSpec.describe API::Namespaces do
         expected_json = { exists: false, suggests: [] }.to_json
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq(expected_json)
+      end
+
+      context 'when requesting project_namespace' do
+        let(:namespace_id) { project_namespace.id }
+
+        it 'returns JSON indicating the namespace does not exist without a suggestion' do
+          get api("/namespaces/#{project_namespace.path}/exists", user), params: { parent_id: group2.id }
+
+          expected_json = { exists: false, suggests: [] }.to_json
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(expected_json)
+        end
       end
     end
   end

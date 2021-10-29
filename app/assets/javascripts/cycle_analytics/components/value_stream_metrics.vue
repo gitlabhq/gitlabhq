@@ -1,11 +1,13 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading, GlPopover } from '@gitlab/ui';
+import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { flatten } from 'lodash';
 import createFlash from '~/flash';
 import { sprintf, s__ } from '~/locale';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { METRICS_POPOVER_CONTENT } from '../constants';
 import { removeFlash, prepareTimeMetricsData } from '../utils';
+import MetricPopover from './metric_popover.vue';
 
 const requestData = ({ request, endpoint, path, params, name }) => {
   return request({ endpoint, params, requestPath: path })
@@ -31,9 +33,9 @@ const fetchMetricsData = (reqs = [], path, params) => {
 export default {
   name: 'ValueStreamMetrics',
   components: {
-    GlPopover,
     GlSingleStat,
     GlSkeletonLoading,
+    MetricPopover,
   },
   props: {
     requestPath: {
@@ -76,6 +78,14 @@ export default {
           this.isLoading = false;
         });
     },
+    hasLinks(links) {
+      return links?.length && links[0].url;
+    },
+    clickHandler({ links }) {
+      if (this.hasLinks(links)) {
+        redirectTo(links[0].url);
+      }
+    },
   },
 };
 </script>
@@ -93,14 +103,11 @@ export default {
           :unit="metric.unit || ''"
           :should-animate="true"
           :animation-decimal-places="1"
+          :class="{ 'gl-hover-cursor-pointer': hasLinks(metric.links) }"
           tabindex="0"
+          @click="clickHandler(metric)"
         />
-        <gl-popover :target="metric.key" placement="bottom">
-          <template #title>
-            <span class="gl-display-block gl-text-left">{{ metric.label }}</span>
-          </template>
-          <span v-if="metric.description">{{ metric.description }}</span>
-        </gl-popover>
+        <metric-popover :metric="metric" :target="metric.key" />
       </div>
     </template>
   </div>

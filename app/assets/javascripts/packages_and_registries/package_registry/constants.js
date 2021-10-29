@@ -60,9 +60,6 @@ export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
   'copy_composer_package_include_command';
 
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
-export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
-  'PackageRegistry|Something went wrong while deleting the package.',
-);
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package file.',
 );

@@ -52,7 +52,7 @@ module AccessMatchers
       emulate_user(user, @membership)
       visit(url)
 
-      status_code == 200 && !current_path.in?([new_user_session_path, new_admin_session_path])
+      [200, 204].include?(status_code) && !current_path.in?([new_user_session_path, new_admin_session_path])
     end
 
     chain :of do |membership|
