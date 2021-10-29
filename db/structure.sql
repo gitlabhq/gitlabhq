@@ -27058,6 +27058,8 @@ CREATE INDEX index_vulnerability_occurrence_identifiers_on_identifier_id ON vuln
 
 CREATE UNIQUE INDEX index_vulnerability_occurrence_identifiers_on_unique_keys ON vulnerability_occurrence_identifiers USING btree (occurrence_id, identifier_id);
 
+CREATE INDEX index_vulnerability_occurrence_pipelines_occurrence_id_and_id ON vulnerability_occurrence_pipelines USING btree (occurrence_id, id DESC);
+
 CREATE INDEX index_vulnerability_occurrence_pipelines_on_pipeline_id ON vulnerability_occurrence_pipelines USING btree (pipeline_id);
 
 CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occurrences USING btree (project_id, report_type, project_fingerprint);

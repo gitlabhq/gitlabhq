@@ -1453,10 +1453,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    disabled_integrations = []
-    disabled_integrations << :zentao unless ::Integrations::Zentao.feature_flag_enabled?(self)
-
-    disabled_integrations
+    []
   end
 
   def find_or_initialize_integration(name)

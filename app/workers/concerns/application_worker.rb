@@ -145,12 +145,12 @@ module ApplicationWorker
 
     def bulk_perform_async(args_list)
       if log_bulk_perform_async?
-        Sidekiq.logger.info('class' => self, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')
+        Sidekiq.logger.info('class' => self.name, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')
       end
 
       do_push_bulk(args_list).tap do |job_ids|
         if log_bulk_perform_async?
-          Sidekiq.logger.info('class' => self, 'jid_list' => job_ids, 'jid_list_count' => job_ids.length, 'message' => 'Completed JID insertion')
+          Sidekiq.logger.info('class' => self.name, 'jid_list' => job_ids, 'jid_list_count' => job_ids.length, 'message' => 'Completed JID insertion')
         end
       end
     end

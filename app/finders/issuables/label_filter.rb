@@ -82,6 +82,8 @@ module Issuables
       if root_namespace
         label_ids = find_label_ids(label_names).flatten(1)
 
+        return issuables if label_ids.empty?
+
         issuables.where(label_link_query(target_model, label_ids: label_ids).arel.exists.not)
       else
         issuables.where(label_link_query(target_model, label_names: label_names).arel.exists.not)

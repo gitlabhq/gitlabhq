@@ -355,9 +355,9 @@ RSpec.describe ApplicationWorker do
         worker.log_bulk_perform_async!
 
         expect(Sidekiq.logger).to(
-          receive(:info).with(hash_including('args_list' => args)).once.and_call_original)
+          receive(:info).with(hash_including('class' => worker.name, 'args_list' => args)).once.and_call_original)
         expect(Sidekiq.logger).to(
-          receive(:info).with(hash_including('jid_list' => anything)).once.and_call_original)
+          receive(:info).with(hash_including('class' => worker.name, 'jid_list' => anything)).once.and_call_original)
 
         perform_action
       end
