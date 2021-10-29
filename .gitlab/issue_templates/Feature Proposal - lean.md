@@ -12,6 +12,37 @@
 
 <!-- Use this section to explain the feature and how it will work. It can be helpful to add technical details, design proposals, and links to related epics or issues. -->
 
+### Intended Users
+
+<!-- Who will use this feature? If known, include any of the following: types of users (e.g. Developer), personas, or specific company roles (e.g. Release Manager). It's okay to write "Unknown" and fill this field in later.
+
+Personas are described at https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/
+
+* [Cameron (Compliance Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#cameron-compliance-manager)
+* [Parker (Product Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#parker-product-manager)
+* [Delaney (Development Team Lead)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#delaney-development-team-lead)
+* [Presley (Product Designer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#presley-product-designer)
+* [Sasha (Software Developer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sasha-software-developer)
+* [Devon (DevOps Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#devon-devops-engineer)
+* [Sidney (Systems Administrator)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sidney-systems-administrator)
+* [Sam (Security Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#sam-security-analyst)
+* [Rachel (Release Manager)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#rachel-release-manager)
+* [Alex (Security Operations Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#alex-security-operations-engineer)
+* [Simone (Software Engineer in Test)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#simone-software-engineer-in-test)
+* [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops)
+* [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
+* [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
+* [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor) 
+
+-->
+
+### Metrics 
+
+<!-- How are you going to track uage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
+
+Create tracking issue using the Snowplow event tracking template. See https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Snowplow%20event%20tracking.md
+
+-->
 
 
 /label ~"type::feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Free"/~"GitLab Premium"/~"GitLab Ultimate"

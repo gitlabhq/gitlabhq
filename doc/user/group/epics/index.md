@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Epics **(PREMIUM)**
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
-> - Single-level epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
+> - Introduced in GitLab 10.2.
+> - Single-level epics were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 
 When [issues](../../project/issues/index.md) share a theme across projects and milestones,
 you can manage them by using epics.
@@ -39,7 +39,7 @@ graph TD
 
 ## Roadmap in epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in GitLab 11.10.
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, a visual

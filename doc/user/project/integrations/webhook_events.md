@@ -25,6 +25,11 @@ Event type                                   | Trigger
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created or updated.
 
+NOTE:
+If an author has no public email listed in their
+[GitLab profile](https://gitlab.com/-/profile), the `email` attribute in the
+webhook payload displays a value of `[REDACTED]`.
+
 ## Push events
 
 Push events are triggered when you push to the repository, except when:
@@ -1684,8 +1689,3 @@ Payload example:
   }
 }
 ```
-
-NOTE:
-If an author has no public e-mail listed in their
-[GitLab profile](https://gitlab.com/-/profile), the `email` attribute displays
-a value of `["REDACTED"]`.

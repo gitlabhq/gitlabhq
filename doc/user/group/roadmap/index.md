@@ -7,11 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Roadmap **(PREMIUM)**
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Roadmaps were moved to the Premium tier.
+> - Introduced in GitLab 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
 > - Milestones appear in roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
-> - Feature flag for milestones visible in roadmaps removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641).
+> - Feature flag for milestones visible in roadmaps [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641) in GitLab 13.0.
 > - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/214375) and later, the Roadmap also shows milestones in projects in a group.
 > - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/212494) and later, milestone bars can be collapsed and expanded.
 
@@ -53,8 +53,6 @@ A dropdown menu lets you show only open or closed epics. By default, all epics a
 
 You can sort epics in the Roadmap view by:
 
-- Created date
-- Last updated
 - Start date
 - Due date
 
@@ -76,8 +74,8 @@ Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-ep
 
 ## Timeline duration
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Timelines were moved to the Premium tier.
+> - Introduced in GitLab 11.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 
 ### Date range presets
 

@@ -353,3 +353,19 @@ For example, an alert notification email can have one of
 
 Expanding the list of events included in the `X-GitLab-NotificationReason` header is tracked in
 [issue 20689](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).
+
+## Troubleshooting
+
+### Pull a list of recipients for notifications
+
+If you want to pull a list of recipients to receive notifications from a project
+(mainly used for troubleshooting custom notifications),
+in a Rails console, run `sudo gitlab-rails c` and be sure to update the project name:
+
+```plaintext
+project = Project.find_by_full_path '<project_name>'
+merge_request = project.merge_requests.find_by(iid: 1)
+current_user = User.first
+recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to"); recipients.count
+recipients.each { |notify| puts notify.user.username }
+```

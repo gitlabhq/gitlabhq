@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Clusters from '~/clusters_list/components/clusters.vue';
+import ClustersEmptyState from '~/clusters_list/components/clusters_empty_state.vue';
 import ClusterStore from '~/clusters_list/store';
 import axios from '~/lib/utils/axios_utils';
 import { apiData } from '../mock_data';
@@ -18,18 +19,30 @@ describe('Clusters', () => {
   let wrapper;
 
   const endpoint = 'some/endpoint';
+  const totalClustersNumber = 6;
+  const clustersEmptyStateImage = 'path/to/svg';
+  const emptyStateHelpText = null;
+  const newClusterPath = '/path/to/new/cluster';
 
   const entryData = {
     endpoint,
     imgTagsAwsText: 'AWS Icon',
     imgTagsDefaultText: 'Default Icon',
     imgTagsGcpText: 'GCP Icon',
+    totalClusters: totalClustersNumber,
   };
 
-  const findLoader = () => wrapper.find(GlLoadingIcon);
-  const findPaginatedButtons = () => wrapper.find(GlPagination);
-  const findTable = () => wrapper.find(GlTable);
+  const provideData = {
+    clustersEmptyStateImage,
+    emptyStateHelpText,
+    newClusterPath,
+  };
+
+  const findLoader = () => wrapper.findComponent(GlLoadingIcon);
+  const findPaginatedButtons = () => wrapper.findComponent(GlPagination);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findStatuses = () => findTable().findAll('.js-status');
+  const findEmptyState = () => wrapper.findComponent(ClustersEmptyState);
 
   const mockPollingApi = (response, body, header) => {
     mock.onGet(`${endpoint}?page=${header['x-page']}`).reply(response, body, header);
@@ -37,7 +50,7 @@ describe('Clusters', () => {
 
   const mountWrapper = () => {
     store = ClusterStore(entryData);
-    wrapper = mount(Clusters, { store });
+    wrapper = mount(Clusters, { provide: provideData, store, stubs: { GlTable } });
     return axios.waitForAll();
   };
 
@@ -70,7 +83,6 @@ describe('Clusters', () => {
     describe('when data is loading', () => {
       beforeEach(() => {
         wrapper.vm.$store.state.loadingClusters = true;
-        return wrapper.vm.$nextTick();
       });
 
       it('displays a loader instead of the table while loading', () => {
@@ -79,23 +91,19 @@ describe('Clusters', () => {
       });
     });
 
-    it('displays a table component', () => {
-      expect(findTable().exists()).toBe(true);
+    describe('when clusters are present', () => {
+      it('displays a table component', () => {
+        expect(findTable().exists()).toBe(true);
+      });
     });
 
-    it('renders the correct table headers', () => {
-      const tableHeaders = wrapper.vm.fields;
-      const headers = findTable().findAll('th');
-
-      expect(headers.length).toBe(tableHeaders.length);
-
-      tableHeaders.forEach((headerText, i) =>
-        expect(headers.at(i).text()).toEqual(headerText.label),
-      );
-    });
-
-    it('should stack on smaller devices', () => {
-      expect(findTable().classes()).toContain('b-table-stacked-md');
+    describe('when there are no clusters', () => {
+      beforeEach(() => {
+        wrapper.vm.$store.state.totalClusters = 0;
+      });
+      it('should render empty state', () => {
+        expect(findEmptyState().exists()).toBe(true);
+      });
     });
   });
 

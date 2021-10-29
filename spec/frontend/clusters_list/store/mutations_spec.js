@@ -26,7 +26,7 @@ describe('Admin statistics panel mutations', () => {
       expect(state.clusters).toBe(apiData.clusters);
       expect(state.clustersPerPage).toBe(paginationInformation.perPage);
       expect(state.hasAncestorClusters).toBe(apiData.has_ancestor_clusters);
-      expect(state.totalCulsters).toBe(paginationInformation.total);
+      expect(state.totalClusters).toBe(paginationInformation.total);
     });
   });
 

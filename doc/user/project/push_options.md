@@ -69,8 +69,8 @@ time as pushing changes:
 | `merge_request.milestone="<milestone>"`      | Set the milestone of the merge request. Ex: `git push -o merge_request.milestone="3.0"`.                        | [14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63960)       |
 | `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it is created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
 | `merge_request.unlabel="<label>"`            | Remove labels from the merge request. For example, for two labels: `git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
-| `merge_request.assign="<user>"`              | Assign users to the merge request. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904) |
-| `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904) |
+| `merge_request.assign="<user>"`              | Assign users to the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904) |
+| `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. Accepts username or user ID.For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904) |
 
 If you use a push option that requires text with spaces in it, you need to enclose it
 in quotes (`"`). You can omit the quotes if there are no spaces. Some examples:
@@ -117,3 +117,13 @@ pipeline succeeds:
 ```shell
 git mwps origin <local-branch-name>
 ```
+
+## Troubleshooting
+
+## Push options for merge request assignment ignored
+
+When you push a branch to GitLab, you can use push options to assign to (`merge_request.assign="<USERNAME>"`)
+or unassign from (`merge_request.unassign="<USERNAME>"`) a user. If GitLab creates
+the merge request successfully, but fails to assign or unassign the merge request
+correctly, you can use the user ID instead. For more information, read the issue
+[Push option `merge_request.(un)assign` seems to be ignored](https://gitlab.com/gitlab-org/gitlab/-/issues/325169).

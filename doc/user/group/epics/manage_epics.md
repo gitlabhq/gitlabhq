@@ -12,7 +12,7 @@ to them.
 
 ## Create an epic
 
-> - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> - The New Epic form [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211533) in GitLab 13.2.
 > - In [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/229621) and later, the New Epic button on the Epics list opens the New Epic form.
 > - In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45948) and later, you can create a new epic from an empty roadmap.
 
@@ -80,9 +80,9 @@ To edit an epic's start date, due date, or labels:
 
 ## Bulk edit epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7250) in GitLab 12.2.
 
-Users with permission level of [Reporter or higher](../../permissions.md) can manage epics.
+Users with at least the [Reporter role](../../permissions.md) can manage epics.
 
 When bulk editing epics in a group, you can edit their labels.
 
@@ -137,8 +137,8 @@ link in the issue sidebar.
 
 ## Search for an epic from epics list page
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to the [Premium](https://about.gitlab.com/pricing/) tier in GitLab 12.8.
+> - Introduced in GitLab 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 > - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
 
@@ -173,7 +173,7 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ## Change activity sort order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in GitLab 13.2.
 
 You can reverse the default order and interact with the activity feed sorted by most recent items
 at the top. Your preference is saved via local storage and automatically applied to every epic and issue
@@ -186,9 +186,9 @@ or newest items to be shown first.
 
 ## Make an epic confidential
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.0 behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.2.
-> - You can [use the Confidentiality option in the epic sidebar](https://gitlab.com/gitlab-org/gitlab/-/issues/197340) in GitLab [Premium](https://about.gitlab.com/pricing/) 13.3 and later.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in GitLab 13.0 behind a feature flag, disabled by default.
+> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in GitLab 13.2.
+> - You can [use the Confidentiality option in the epic sidebar](https://gitlab.com/gitlab-org/gitlab/-/issues/197340) in GitLab 13.3 and later.
 
 If you're working on items that contain private information, you can make an epic confidential.
 
@@ -238,7 +238,7 @@ To add a new issue to an epic:
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
    - Search for the desired issue by entering part of the issue's title, then selecting the desired
-     match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
+     match ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9126) in GitLab 12.5).
 
    If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
@@ -285,7 +285,7 @@ To reorder issues assigned to an epic:
 
 ### Move issues between epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 
 New issues appear at the top of the list in the **Epics and Issues**
 tab. You can move issues from one epic to another.
@@ -297,8 +297,8 @@ To move an issue to another epic:
 
 ### Promote an issue to an epic
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 
 If you have the necessary [permissions](../../permissions.md) to close an issue and create an
 epic in the immediate parent group, you can promote an issue to an epic with the `/promote`
@@ -318,7 +318,7 @@ The following issue metadata is copied to the epic:
 - Upvotes/downvotes.
 - Participants.
 - Group labels that the issue already has.
-- Parent epic. **(ULTIMATE)**
+- Parent epic.
 
 ### Use an epic template for repeating issues
 
@@ -331,7 +331,7 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 ## Multi-level child epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8333) in GitLab Ultimate 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8333) in GitLab 11.7.
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
@@ -349,14 +349,14 @@ To add a child epic to an epic:
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
    - Search for the desired issue by entering part of the epic's title, then selecting the desired
-     match (introduced in [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/9126)).
+     match ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9126) in GitLab 12.5).
 
    If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
 ### Move child epics between epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 
 New child epics appear at the top of the list in the **Epics and Issues** tab.
 You can move child epics from one epic to another.

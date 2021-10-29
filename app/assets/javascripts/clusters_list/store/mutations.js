@@ -12,7 +12,7 @@ export default {
       clusters: data.clusters,
       clustersPerPage: paginationInformation.perPage,
       hasAncestorClusters: data.has_ancestor_clusters,
-      totalCulsters: paginationInformation.total,
+      totalClusters: paginationInformation.total,
     });
   },
   [types.SET_PAGE](state, value) {

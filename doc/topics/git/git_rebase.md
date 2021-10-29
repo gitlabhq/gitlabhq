@@ -3,13 +3,13 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: concepts, howto
-description: "Introduction to Git rebase, force-push, and resolving merge conflicts through the command line."
+description: "Introduction to Git rebase and force-push, methods to resolve merge conflicts through the command line."
 ---
 
-# Introduction to Git rebase, force-push, and merge conflicts **(FREE)**
+# Introduction to Git rebase and force-push **(FREE)**
 
 This guide helps you to get started with rebasing, force-pushing, and fixing
-merge conflicts locally.
+[merge conflicts](../../user/project/merge_requests/conflicts.md) locally.
 
 Before diving into this document, make sure you are familiar with using
 [Git through the command line](../../gitlab-basics/start-using-git.md).
@@ -26,7 +26,8 @@ Git. There are the following rebase options:
 
 WARNING:
 `git rebase` rewrites the commit history. It **can be harmful** to do it in
-shared branches. It can cause complex and hard to resolve merge conflicts. In
+shared branches. It can cause complex and hard to resolve
+[merge conflicts](../../user/project/merge_requests/conflicts.md). In
 these cases, instead of rebasing your branch against the default branch,
 consider pulling it instead (`git pull origin master`). It has a similar
 effect without compromising the work of your contributors.
@@ -117,7 +118,7 @@ example, `release-10-3`. You can also replace `origin` with other remote
 repositories, for example, `upstream`. To check what remotes you have linked to your local
 repository, you can run `git remote -v`.
 
-If there are [merge conflicts](#merge-conflicts), Git prompts you to fix
+If there are merge conflicts, Git prompts you to fix
 them before continuing the rebase.
 
 To learn more, check Git's documentation on [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
@@ -129,7 +130,7 @@ You can rebase your feature branch directly from the merge request through a
 [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
 if all of these conditions are met:
 
-- No [merge conflicts](#merge-conflicts) exist for your feature branch.
+- No merge conflicts exist for your feature branch.
 - You have the **Developer** role for the source project. This role grants you
   permission to push to the source branch for the source project.
 - If the merge request is in a fork, the fork must allow commits
@@ -235,70 +236,3 @@ you can't force push to it unless you either:
   to it.
 
 Then you can force push and protect it again.
-
-## Merge conflicts
-
-As Git is based on comparing versions of a file
-line-by-line, whenever a line changed in your branch coincides with the same
-line changed in the target branch (after the moment you created your feature branch from it), Git
-identifies these changes as a merge conflict. To fix it, you need to choose
-which version of that line you want to keep.
-
-Most conflicts can be [resolved through the GitLab UI](../../user/project/merge_requests/resolve_conflicts.md).
-
-For more complex cases, there are various methods for resolving them. There are
-also [Git GUI apps](https://git-scm.com/downloads/guis) that can help by
-visualizing the differences.
-
-To fix conflicts locally, you can use the following method:
-
-1. Open the terminal and checkout your feature branch, for example, `my-feature-branch`:
-
-   ```shell
-   git checkout my-feature-branch
-   ```
-
-1. [Rebase](#regular-rebase) your branch against the target branch so Git
-   prompts you with the conflicts:
-
-   ```shell
-   git rebase origin/master
-   ```
-
-1. Open the conflicting file in a code editor of your preference.
-1. Look for the conflict block:
-   - It begins with the marker: `<<<<<<< HEAD`.
-   - Below, there is the content with your changes.
-   - The marker: `=======` indicates the end of your changes.
-   - Below, there's the content of the latest changes in the target branch.
-   - The marker `>>>>>>>` indicates the end of the conflict.
-1. Edit the file: choose which version (before or after `=======`) you want to
-   keep, and then delete the portion of the content you don't want in the file.
-1. Delete the markers.
-1. Save the file.
-1. Repeat the process if there are other conflicting files.
-1. Stage your changes:
-
-   ```shell
-   git add .
-   ```
-
-1. Commit your changes:
-
-   ```shell
-   git commit -m "Fix merge conflicts"
-   ```
-
-1. Continue rebasing:
-
-   ```shell
-   git rebase --continue
-   ```
-
-   WARNING:
-   Up to this point, you can run `git rebase --abort` to stop the process.
-   Git aborts the rebase and rolls back the branch to the state you had before
-   running `git rebase`.
-   After you run `git rebase --continue` the rebase **cannot** be aborted.
-
-1. [Force-push](#force-push) to your remote branch.

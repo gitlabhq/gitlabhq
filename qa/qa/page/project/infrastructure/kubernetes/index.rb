@@ -6,7 +6,7 @@ module QA
       module Infrastructure
         module Kubernetes
           class Index < Page::Base
-            view 'app/views/clusters/clusters/_empty_state.html.haml' do
+            view 'app/assets/javascripts/clusters_list/components/clusters_empty_state.vue' do
               element :add_kubernetes_cluster_link
             end
 

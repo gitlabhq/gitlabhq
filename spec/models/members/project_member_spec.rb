@@ -256,59 +256,5 @@ RSpec.describe ProjectMember do
 
       it_behaves_like 'calls AuthorizedProjectUpdate::UserRefreshFromReplicaWorker with a delay to update project authorizations'
     end
-
-    context 'when the feature flag `specialized_service_for_project_member_auth_refresh` is disabled' do
-      before do
-        stub_feature_flags(specialized_service_for_project_member_auth_refresh: false)
-      end
-
-      shared_examples_for 'calls UserProjectAccessChangedService to recalculate authorizations' do
-        it 'calls UserProjectAccessChangedService' do
-          expect_next_instance_of(UserProjectAccessChangedService, user.id) do |service|
-            expect(service).to receive(:execute)
-          end
-
-          action
-        end
-      end
-
-      context 'on create' do
-        let(:action) { project.add_user(user, Gitlab::Access::GUEST) }
-
-        it 'changes access level' do
-          expect { action }.to change { user.can?(:guest_access, project) }.from(false).to(true)
-        end
-
-        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
-      end
-
-      context 'on update' do
-        let(:action) { project.members.find_by(user: user).update!(access_level: Gitlab::Access::DEVELOPER) }
-
-        before do
-          project.add_user(user, Gitlab::Access::GUEST)
-        end
-
-        it 'changes access level' do
-          expect { action }.to change { user.can?(:developer_access, project) }.from(false).to(true)
-        end
-
-        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
-      end
-
-      context 'on destroy' do
-        let(:action) { project.members.find_by(user: user).destroy! }
-
-        before do
-          project.add_user(user, Gitlab::Access::GUEST)
-        end
-
-        it 'changes access level', :sidekiq_inline do
-          expect { action }.to change { user.can?(:guest_access, project) }.from(true).to(false)
-        end
-
-        it_behaves_like 'calls UserProjectAccessChangedService to recalculate authorizations'
-      end
-    end
   end
 end

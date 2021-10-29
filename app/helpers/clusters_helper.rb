@@ -29,15 +29,19 @@ module ClustersHelper
     }
   end
 
-  def js_clusters_list_data(path = nil)
+  def js_clusters_list_data(clusterable)
     {
       ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
-      endpoint: path,
+      endpoint: clusterable.index_path(format: :json),
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
         default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
-      }
+      },
+      clusters_empty_state_image: image_path('illustrations/clusters_empty.svg'),
+      empty_state_help_text: clusterable.empty_state_help_text,
+      new_cluster_path: clusterable.new_path(tab: 'create'),
+      can_add_cluster: clusterable.can_add_cluster?.to_s
     }
   end
 
