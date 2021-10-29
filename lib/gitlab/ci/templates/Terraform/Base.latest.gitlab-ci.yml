@@ -53,10 +53,9 @@ cache:
     - cd ${TF_ROOT}
     - gitlab-terraform apply
   resource_group: ${TF_STATE_NAME}
-  when: manual
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
 
 .terraform:destroy: &terraform_destroy
   stage: cleanup

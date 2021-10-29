@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :reliable, :object_storage do
-    describe 'npm registry' do
+  RSpec.describe 'Package Registry', :orchestrated, :packages, :reliable, :object_storage do
+    describe 'npm instance level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
 
@@ -28,13 +28,13 @@ module QA
 
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
-          project.name = 'npm-project'
+          project.name = 'npm-instace-level-publish'
         end
       end
 
       let!(:another_project) do
         Resource::Project.fabricate_via_api! do |another_project|
-          another_project.name = 'npm-another-project'
+          another_project.name = 'npm-instance-level-install'
           another_project.template_name = 'express'
           another_project.group = project.group
         end
@@ -54,7 +54,7 @@ module QA
           file_path: '.gitlab-ci.yml',
           content:
               <<~YAML
-              image: node:14-buster
+              image: node:latest
 
               stages:
                 - deploy
@@ -62,6 +62,7 @@ module QA
               deploy:
                 stage: deploy
                 script:
+                  - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=#{auth_token}">.npmrc
                   - npm publish
                 only:
                   - "#{project.default_branch}"
@@ -149,23 +150,12 @@ module QA
           end
         end
 
-        let(:npmrc) do
-          {
-            file_path: '.npmrc',
-            content: <<~NPMRC
-              //#{gitlab_host_with_port}/api/v4/projects/#{project.id}/packages/npm/:_authToken=#{auth_token}
-              @#{registry_scope}:registry=#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/npm/
-            NPMRC
-          }
-        end
-
         it "push and pull a npm package via CI using a #{params[:token_name]}" do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.add_files([
                               gitlab_ci_deploy_yaml,
-                              npmrc,
                               package_json
                             ])
           end

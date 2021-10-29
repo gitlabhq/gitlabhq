@@ -213,21 +213,6 @@ RSpec.describe ProjectsController do
 
       before do
         sign_in(user)
-
-        allow(controller).to receive(:record_experiment_user)
-      end
-
-      context 'when user can push to default branch', :experiment do
-        let(:user) { empty_project.owner }
-
-        it 'creates an "view_project_show" experiment tracking event' do
-          expect(experiment(:empty_repo_upload)).to track(
-            :view_project_show,
-            property: 'empty'
-          ).on_next_instance
-
-          get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
-        end
       end
 
       User.project_views.keys.each do |project_view|

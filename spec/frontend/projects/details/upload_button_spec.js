@@ -1,10 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import UploadButton from '~/projects/details/upload_button.vue';
-import { trackFileUploadEvent } from '~/projects/upload_file_experiment_tracking';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
-
-jest.mock('~/projects/upload_file_experiment_tracking');
 
 const MODAL_ID = 'details-modal-upload-blob';
 
@@ -48,10 +45,6 @@ describe('UploadButton', () => {
   describe('when clickinig the upload file button', () => {
     beforeEach(() => {
       wrapper.find(GlButton).vm.$emit('click');
-    });
-
-    it('tracks the click_upload_modal_trigger event', () => {
-      expect(trackFileUploadEvent).toHaveBeenCalledWith('click_upload_modal_trigger');
     });
 
     it('opens the modal', () => {

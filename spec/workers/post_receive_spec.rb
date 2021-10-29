@@ -91,14 +91,6 @@ RSpec.describe PostReceive do
 
         perform
       end
-
-      it 'tracks an event for the empty_repo_upload experiment', :experiment do
-        expect_next_instance_of(EmptyRepoUploadExperiment) do |e|
-          expect(e).to receive(:track_initial_write)
-        end
-
-        perform
-      end
     end
 
     shared_examples 'not updating remote mirrors' do

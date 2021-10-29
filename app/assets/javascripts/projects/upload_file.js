@@ -4,7 +4,7 @@ import createRouter from '~/repository/router';
 import UploadButton from './details/upload_button.vue';
 
 export const initUploadFileTrigger = () => {
-  const uploadFileTriggerEl = document.querySelector('.js-upload-file-experiment-trigger');
+  const uploadFileTriggerEl = document.querySelector('.js-upload-file-trigger');
 
   if (!uploadFileTriggerEl) return false;
 

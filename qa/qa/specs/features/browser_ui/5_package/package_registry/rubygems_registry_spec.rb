@@ -50,7 +50,7 @@ module QA
           push.project = project
           push.directory = Pathname
             .new(__dir__)
-            .join('../../../../fixtures/rubygems_package')
+            .join('../../../../../fixtures/rubygems_package')
           push.commit_message = 'RubyGems package'
         end
 
