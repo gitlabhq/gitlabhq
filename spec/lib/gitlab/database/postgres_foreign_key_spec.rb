@@ -38,4 +38,16 @@ RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model do
       expect(described_class.by_referenced_table_identifier('public.referenced_table')).to contain_exactly(expected)
     end
   end
+
+  describe '#by_constrained_table_identifier' do
+    it 'throws an error when the identifier name is not fully qualified' do
+      expect { described_class.by_constrained_table_identifier('constrained_table') }.to raise_error(ArgumentError, /not fully qualified/)
+    end
+
+    it 'finds the foreign keys for the constrained table' do
+      expected = described_class.where(name: %w[fk_constrained_to_referenced fk_constrained_to_other_referenced]).to_a
+
+      expect(described_class.by_constrained_table_identifier('public.constrained_table')).to match_array(expected)
+    end
+  end
 end

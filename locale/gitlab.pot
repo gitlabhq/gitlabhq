@@ -10897,6 +10897,9 @@ msgstr ""
 msgid "Default branch and protected branches"
 msgstr ""
 
+msgid "Default branch protection"
+msgstr ""
+
 msgid "Default classification label"
 msgstr ""
 
@@ -10934,6 +10937,30 @@ msgid "Default: Map a FogBugz account ID to a full name"
 msgstr ""
 
 msgid "DefaultBranchLabel|default"
+msgstr ""
+
+msgid "DefaultBranchProtection|Both developers and maintainers can push new commits, but cannot force push."
+msgstr ""
+
+msgid "DefaultBranchProtection|Both developers and maintainers can push new commits, force push, or delete the branch."
+msgstr ""
+
+msgid "DefaultBranchProtection|Developers cannot push new commits, but are allowed to accept merge requests to the branch. Maintainers can push to the branch."
+msgstr ""
+
+msgid "DefaultBranchProtection|Developers cannot push new commits, but maintainers can. No one can force push."
+msgstr ""
+
+msgid "DefaultBranchProtection|Fully protected"
+msgstr ""
+
+msgid "DefaultBranchProtection|Not protected"
+msgstr ""
+
+msgid "DefaultBranchProtection|Partially protected"
+msgstr ""
+
+msgid "DefaultBranchProtection|Protected against pushes"
 msgstr ""
 
 msgid "Define a custom deploy freeze pattern with %{cronSyntaxStart}cron syntax%{cronSyntaxEnd}"

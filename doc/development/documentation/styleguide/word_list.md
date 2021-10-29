@@ -572,6 +572,10 @@ or collapsing a section, don't include the word **section**.
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
 
+## Service Desk
+
+Use title case for **Service Desk**.
+
 ## setup, set up
 
 Use **setup** as a noun, and **set up** as a verb. For example:
