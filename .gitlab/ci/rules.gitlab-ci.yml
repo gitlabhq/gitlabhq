@@ -1179,6 +1179,21 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
+.rails:rules:as-if-jh-rspec:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+      allow_failure: true
+    - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      allow_failure: true
+
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - changes: *db-library-patterns

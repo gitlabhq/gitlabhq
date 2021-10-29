@@ -847,7 +847,9 @@ To ensure the `action: stop` can always run when needed, you can:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
 
 FLAG:
-On self-managed GitLab, by default this bug fix is not available. To make it available per project or for your entire instance, ask an administrator to [enable the `surface_environment_creation_failure` flag](../../administration/feature_flags.md). On GitLab.com, this bug fix is not available, but will be rolled out shortly.
+On self-managed GitLab, by default this bug fix is available. To hide the bug fix per project,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `surface_environment_creation_failure`.
+On GitLab.com, this bug fix is available.
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error because the dynamically generated parameter can't be used for creating an environment.

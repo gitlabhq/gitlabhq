@@ -101,6 +101,7 @@ review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
-  stage: post-qa
+  stage: deploy
+  needs: []
   script:
     - delete_k8s_release_namespace

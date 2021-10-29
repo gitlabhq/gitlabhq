@@ -1,8 +1,7 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
-import { escape } from 'lodash';
 import createFlash from '~/flash';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
@@ -85,13 +84,7 @@ export default {
       return ['failed', 'loading'].includes(this.status);
     },
     fastForwardMergeText() {
-      return sprintf(
-        __('Merge blocked: the source branch must be rebased onto the target branch.'),
-        {
-          targetBranch: `<span class="label-branch">${escape(this.targetBranch)}</span>`,
-        },
-        false,
-      );
+      return __('Merge blocked: the source branch must be rebased onto the target branch.');
     },
   },
   methods: {
@@ -170,8 +163,8 @@ export default {
           v-if="!rebaseInProgress && !canPushToSourceBranch"
           class="gl-font-weight-bold gl-ml-0!"
           data-testid="rebase-message"
-          v-html="fastForwardMergeText /* eslint-disable-line vue/no-v-html */"
-        ></span>
+          >{{ fastForwardMergeText }}</span
+        >
         <div
           v-if="!rebaseInProgress && canPushToSourceBranch && !isMakingRequest"
           class="accept-merge-holder clearfix js-toggle-container accept-action media space-children"

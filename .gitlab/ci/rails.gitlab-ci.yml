@@ -77,6 +77,12 @@
     - .use-pg12
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-foss", "detect-tests"]
 
+.rspec-base-pg12-as-if-jh:
+  extends:
+    - .rspec-base
+    - .use-pg12
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets as-if-jh", "detect-tests", "add-jh-folder"]
+
 .rspec-base-pg13:
   extends:
     - .rspec-base
@@ -90,6 +96,11 @@
 .rspec-ee-base-pg12:
   extends:
     - .rspec-base
+    - .use-pg12-ee
+
+.rspec-jh-base-pg12:
+  extends:
+    - .rspec-base-pg12-as-if-jh
     - .use-pg12-ee
 
 .rspec-ee-base-pg13:
@@ -112,6 +123,12 @@
   extends:
     - .rspec-ee-base-geo
     - .use-pg12-ee
+
+.rspec-jh-base-geo-pg12:
+  extends:
+    - .rspec-jh-base-pg12
+  script:
+    - !reference [.rspec-ee-base-geo, script]
 
 .rspec-ee-base-geo-pg13:
   extends:
@@ -577,6 +594,31 @@ rspec system pg12-as-if-foss decomposed:
     - .decomposed-database-rspec
     - .rails:rules:decomposed-databases
 
+rspec migration pg12-as-if-jh:
+  extends:
+    - .rspec-base-pg12-as-if-jh
+    - .rspec-base-migration
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-migration-parallel
+
+rspec unit pg12-as-if-jh:
+  extends:
+    - .rspec-base-pg12-as-if-jh
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-unit-parallel
+
+rspec integration pg12-as-if-jh:
+  extends:
+    - .rspec-base-pg12-as-if-jh
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-integration-parallel
+
+rspec system pg12-as-if-jh:
+  extends:
+    - .rspec-base-pg12-as-if-jh
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-system-parallel
+
 rspec-ee migration pg12:
   extends:
     - .rspec-ee-base-pg12
@@ -683,6 +725,83 @@ rspec-ee system pg12 geo minimal:
     - rspec-ee system pg12 geo
     - .minimal-rspec-tests
     - .rails:rules:ee-only-system:minimal
+
+rspec-ee migration pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rspec-base-migration
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-ee-migration-parallel
+
+rspec-ee unit pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-ee-unit-parallel
+
+rspec-ee integration pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-ee-integration-parallel
+
+rspec-ee system pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-ee-system-parallel
+
+rspec-ee unit pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
+    - .rspec-ee-unit-geo-parallel
+
+rspec-ee integration pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-ee system pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh migration pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rspec-base-migration
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh unit pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh integration pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh system pg12-as-if-jh:
+  extends:
+    - .rspec-jh-base-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh unit pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh integration pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
+
+rspec-jh system pg12-as-if-jh geo:
+  extends:
+    - .rspec-jh-base-geo-pg12
+    - .rails:rules:as-if-jh-rspec
 
 db:rollback geo:
   extends:

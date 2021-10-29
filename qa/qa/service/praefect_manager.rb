@@ -19,6 +19,8 @@ module QA
         @virtual_storage = 'default'
       end
 
+      attr_reader :primary_node, :secondary_node, :tertiary_node
+
       # Executes the praefect `dataloss` command.
       #
       # @return [Boolean] whether dataloss has occurred
@@ -393,6 +395,97 @@ module QA
         # Therefore when replication is pending there is at least 1 row of data plus 4 rows of metadata/layout
 
         result.size >= 5
+      end
+
+      def list_untracked_repositories
+        untracked_repositories = []
+        shell "docker exec #{@praefect} bash -c 'gitlab-ctl praefect list-untracked-repositories'" do |line|
+          # Results look like this depending on whether untracked items found or not
+          #   Running list-untracked-repositories
+          #   Done.
+
+          #   Running list-untracked-repositories
+          #   {"relative_path":"@hashed/aa/bb.git","storage":"gitaly1","virtual_storage":"default"}
+          #   {"relative_path":"@hashed/bb/cc.git","storage":"gitaly3","virtual_storage":"default"}
+          #   Done.
+
+          QA::Runtime::Logger.debug(line.chomp)
+          next if line.start_with?('Running list-untracked-repositories')
+          next if line.start_with?('Done.')
+
+          untracked_repositories.append(JSON.parse(line))
+        end
+
+        QA::Runtime::Logger.debug("list_untracked_repositories --- #{untracked_repositories}")
+        untracked_repositories
+      end
+
+      def track_repository_in_praefect(relative_path, storage, virtual_storage)
+        cmd = "gitlab-ctl praefect track-repository --repository-relative-path #{relative_path} --authoritative-storage #{storage} --virtual-storage-name #{virtual_storage}"
+        shell "docker exec #{@praefect} bash -c '#{cmd}'"
+      end
+
+      def remove_tracked_praefect_repository(relative_path, virtual_storage)
+        cmd = "gitlab-ctl praefect remove-repository --repository-relative-path #{relative_path} --virtual-storage-name #{virtual_storage}"
+        shell "docker exec #{@praefect} bash -c '#{cmd}'"
+      end
+
+      def add_repo_to_disk(node, repo_path)
+        cmd = "GIT_DIR=. git init --initial-branch=main /var/opt/gitlab/git-data/repositories/#{repo_path}"
+        shell "docker exec --user git #{node} bash -c '#{cmd}'"
+      end
+
+      def remove_repo_from_disk(repo_path)
+        cmd = "rm -rf /var/opt/gitlab/git-data/repositories/#{repo_path}"
+        shell "docker exec #{@primary_node} bash -c '#{cmd}'"
+        shell "docker exec #{@secondary_node} bash -c '#{cmd}'"
+        shell "docker exec #{@tertiary_node} bash -c '#{cmd}'"
+      end
+
+      def remove_repository_from_praefect_database(relative_path)
+        shell sql_to_docker_exec_cmd("delete from repositories where relative_path = '#{relative_path}';")
+        shell sql_to_docker_exec_cmd("delete from storage_repositories where relative_path = '#{relative_path}';")
+      end
+
+      def praefect_database_tracks_repo?(relative_path)
+        storage_repositories = []
+        shell sql_to_docker_exec_cmd("SELECT count(*) FROM storage_repositories where relative_path='#{relative_path}';") do |line|
+          storage_repositories << line
+        end
+        QA::Runtime::Logger.debug("storage_repositories count is ---#{storage_repositories}")
+
+        repositories = []
+        shell sql_to_docker_exec_cmd("SELECT count(*) FROM repositories where relative_path='#{relative_path}';") do |line|
+          repositories << line
+        end
+        QA::Runtime::Logger.debug("repositories count is ---#{repositories}")
+
+        (storage_repositories[2].to_i >= 1) && (repositories[2].to_i >= 1)
+      end
+
+      def repository_replicated_to_disk?(node, relative_path)
+        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 3, raise_on_failure: false) do
+          result = []
+          shell sql_to_docker_exec_cmd("SELECT count(*) FROM storage_repositories where relative_path='#{relative_path}';") do |line|
+            result << line
+          end
+          QA::Runtime::Logger.debug("result is ---#{result}")
+          result[2].to_i == 3
+        end
+
+        repository_exists_on_node_disk?(node, relative_path)
+      end
+
+      def repository_exists_on_node_disk?(node, relative_path)
+        # If the dir does not exist it has a non zero exit code leading to a error being raised
+        # Instead we echo a test line if the dir does not exist, which has a zero exit code, with no output
+        bash_command = "test -d /var/opt/gitlab/git-data/repositories/#{relative_path} || echo -n 'DIR_DOES_NOT_EXIST'"
+        result = []
+        shell "docker exec #{node} bash -c '#{bash_command}'" do |line|
+          result << line
+        end
+        QA::Runtime::Logger.debug("result is ---#{result}")
+        result.exclude?("DIR_DOES_NOT_EXIST")
       end
 
       private

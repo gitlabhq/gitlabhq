@@ -102,7 +102,7 @@
     "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.17",
     "apollo-upload-client": "^13.0.0",
-    "autosize": "^4.0.2",
+    "autosize": "^5.0.1",
     "aws-sdk": "^2.637.0",
     "axios": "^0.20.0",
     "babel-loader": "^8.2.2",
