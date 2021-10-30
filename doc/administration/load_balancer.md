@@ -69,7 +69,7 @@ for details on managing SSL certificates and configuring NGINX.
 | 443     | 443          | TCP or HTTPS (*1*) (*2*) |
 | 22      | 22           | TCP                      |
 
-- (*1*): [Web terminal](../ci/environments/index.md#web-terminals) support requires
+- (*1*): [Web terminal](../ci/environments/index.md#web-terminals-deprecated) support requires
   your load balancer to correctly handle WebSocket connections. When using
   HTTP or HTTPS proxying, this means your load balancer must be configured
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the

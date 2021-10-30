@@ -70,7 +70,7 @@ The following table lists project permissions available for each role:
 | [CI/CD](../ci/index.md):<br>Manage job triggers                                                                        |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Manage runners                                                                             |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Run Web IDE's Interactive Web Terminals **(ULTIMATE ONLY)**                                |          |          |           | ✓          | ✓     |
-| [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals)                     |          |          |           | ✓          | ✓     |
+| [CI/CD](../ci/index.md):<br>Use [environment terminals](../ci/environments/index.md#web-terminals-deprecated)                     |          |          |           | ✓          | ✓     |
 | [CI/CD](../ci/index.md):<br>Delete pipelines                                                                           |          |          |           |            | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>View [pod logs](project/clusters/kubernetes_pod_logs.md)                                                                 |          |          | ✓         | ✓          | ✓     |
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                               |          |          |           | ✓          | ✓     |

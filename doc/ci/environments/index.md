@@ -21,7 +21,7 @@ GitLab:
 
 If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
 associated with your project, you can use it to assist with your deployments.
-You can even access a [web terminal](#web-terminals) for your environment from within GitLab.
+You can even access a [web terminal](#web-terminals-deprecated) for your environment from within GitLab.
 
 ## View environments and deployments
 
@@ -171,9 +171,13 @@ The `when: manual` action:
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
-## Configure Kubernetes deployments
+## Configure Kubernetes deployments (DEPRECATED)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 If you are deploying to a [Kubernetes cluster](../../user/infrastructure/clusters/index.md)
 associated with your project, you can configure these deployments from your
@@ -656,7 +660,12 @@ It may take a minute or two for data to appear after initial deployment.
 
 Metric charts can be embedded in GitLab Flavored Markdown. See [Embedding Metrics in GitLab Flavored Markdown](../../operations/metrics/embed.md) for more details.
 
-### Web terminals
+### Web terminals (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 If you deploy to your environments with the help of a deployment service (for example,
 the [Kubernetes integration](../../user/infrastructure/clusters/index.md)), GitLab can open

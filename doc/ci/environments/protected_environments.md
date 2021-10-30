@@ -120,7 +120,7 @@ they have the following privileges:
 
 - [Stop an environment](index.md#stop-an-environment).
 - [Delete a stopped environment](index.md#delete-a-stopped-environment).
-- [Create an environment terminal](index.md#web-terminals).
+- [Create an environment terminal](index.md#web-terminals-deprecated).
 
 ## Deployment-only access to protected environments
 

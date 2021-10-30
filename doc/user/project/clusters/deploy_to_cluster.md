@@ -78,7 +78,7 @@ You can customize the deployment namespace in a few ways:
 - For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
   but the user is responsible for ensuring its existence. You can fully customize
   this value using
-  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments)
+  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments-deprecated)
   in `.gitlab-ci.yml`.
 
 When you customize the namespace, existing environments remain linked to their current
@@ -101,7 +101,7 @@ combined with *one* of the following:
 
 > Introduced in GitLab 8.15.
 
-The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
+The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
 support to your [environments](../../../ci/environments/index.md). This is based
 on the `exec` functionality found in Docker and Kubernetes, so you get a new
 shell session in your existing containers. To use this integration, you

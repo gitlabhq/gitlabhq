@@ -218,7 +218,7 @@ See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops
 
 For clusters not managed by GitLab, you can customize the namespace in
 `.gitlab-ci.yml` by specifying
-[`environment:kubernetes:namespace`](../../ci/environments/index.md#configure-kubernetes-deployments).
+[`environment:kubernetes:namespace`](../../ci/environments/index.md#configure-kubernetes-deployments-deprecated).
 For example, the following configuration overrides the namespace used for
 `production` deployments:
 

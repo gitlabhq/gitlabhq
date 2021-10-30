@@ -14,7 +14,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
-[web terminals](../../ci/environments/index.md#web-terminals) for environments.
+[web terminals](../../ci/environments/index.md#web-terminals-deprecated) for environments.
 
 NOTE:
 Only project maintainers and owners can access web terminals.
