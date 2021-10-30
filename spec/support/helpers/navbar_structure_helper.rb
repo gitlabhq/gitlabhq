@@ -29,6 +29,19 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_customer_relations_nav(within)
+    insert_after_nav_item(
+      within,
+      new_nav_item: {
+        nav_item: _('Customer relations'),
+        nav_sub_items: [
+          _('Contacts'),
+          _('Organizations')
+        ]
+      }
+    )
+  end
+
   def insert_container_nav
     insert_after_sub_nav_item(
       _('Package Registry'),

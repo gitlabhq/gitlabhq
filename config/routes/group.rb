@@ -125,6 +125,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         get 'milestones'
       end
     end
+
+    resources :crm, only: [] do
+      collection do
+        get 'contacts'
+        get 'organizations'
+      end
+    end
   end
 
   scope(path: '*id',

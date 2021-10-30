@@ -13,6 +13,7 @@ module Sidebars
         add_menu(Sidebars::Groups::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Groups::Menus::KubernetesMenu.new(context))
         add_menu(Sidebars::Groups::Menus::PackagesRegistriesMenu.new(context))
+        add_menu(Sidebars::Groups::Menus::CustomerRelationsMenu.new(context))
         add_menu(Sidebars::Groups::Menus::SettingsMenu.new(context))
       end
 

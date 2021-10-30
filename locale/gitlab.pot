@@ -8830,6 +8830,9 @@ msgstr ""
 msgid "Contact support"
 msgstr ""
 
+msgid "Contacts"
+msgstr ""
+
 msgid "Container Registry"
 msgstr ""
 
@@ -10100,6 +10103,15 @@ msgid "Custom range"
 msgstr ""
 
 msgid "Custom range (UTC)"
+msgstr ""
+
+msgid "Customer Relations Contacts"
+msgstr ""
+
+msgid "Customer Relations Organizations"
+msgstr ""
+
+msgid "Customer relations"
 msgstr ""
 
 msgid "Customizable by an administrator."
@@ -24183,6 +24195,9 @@ msgid "Options"
 msgstr ""
 
 msgid "Or you can choose one of the suggested colors below"
+msgstr ""
+
+msgid "Organizations"
 msgstr ""
 
 msgid "Orphaned member"

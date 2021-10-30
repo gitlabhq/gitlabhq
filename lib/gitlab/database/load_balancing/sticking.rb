@@ -26,8 +26,8 @@ module Gitlab
         def stick_or_unstick_request(env, namespace, id)
           unstick_or_continue_sticking(namespace, id)
 
-          env[RackMiddleware::STICK_OBJECT] ||= Set.new
-          env[RackMiddleware::STICK_OBJECT] << [self, namespace, id]
+          env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT] ||= Set.new
+          env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT] << [self, namespace, id]
         end
 
         # Sticks to the primary if a write was performed.
