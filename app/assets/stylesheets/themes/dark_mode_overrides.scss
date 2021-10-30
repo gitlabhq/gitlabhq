@@ -42,8 +42,24 @@
 }
 
 .nav-sidebar {
-  li.active {
-    box-shadow: none;
+  li {
+    a {
+      color: var(--gray-600);
+    }
+
+    > a:hover {
+      background-color: var(--indigo-900-alpha-008);
+    }
+
+    &.active {
+      box-shadow: none;
+
+      &:not(.fly-out-top-item) {
+        > a:not(.has-sub-items) {
+          background-color: var(--indigo-900-alpha-008);
+        }
+      }
+    }
   }
 
   .sidebar-sub-level-items.fly-out-list {
@@ -53,7 +69,7 @@
 }
 
 body.gl-dark {
-  @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-800, $gray-900, $white);
+  @include gitlab-theme($gray-900, $gray-400, $gray-500, $gray-900, $gray-900, $white);
 
   .logo-text svg {
     fill: var(--gl-text-color);
