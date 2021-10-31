@@ -3370,7 +3370,7 @@ msgstr ""
 msgid "Allow group owners to manage LDAP-related settings"
 msgstr ""
 
-msgid "Allow non-administrators to access to the performance bar"
+msgid "Allow non-administrators access to the performance bar"
 msgstr ""
 
 msgid "Allow only the selected protocols to be used for Git access."
