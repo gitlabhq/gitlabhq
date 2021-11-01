@@ -56,7 +56,8 @@ module Gitlab
       # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
       {
         'grpc.keepalive_time_ms': 20000,
-        'grpc.keepalive_permit_without_calls': 1
+        'grpc.keepalive_permit_without_calls': 1,
+        'grpc.http2.max_pings_without_data': 0
       }
     end
     private_class_method :channel_args

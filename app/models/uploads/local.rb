@@ -55,3 +55,5 @@ module Uploads
     end
   end
 end
+
+Uploads::Local.prepend_mod

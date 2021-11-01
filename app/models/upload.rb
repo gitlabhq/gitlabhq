@@ -2,6 +2,7 @@
 
 class Upload < ApplicationRecord
   include Checksummable
+
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
 
@@ -51,9 +52,9 @@ class Upload < ApplicationRecord
 
     ##
     # FastDestroyAll concerns
-    def finalize_fast_destroy(keys)
-      keys.each do |store_class, paths|
-        store_class.new.delete_keys_async(paths)
+    def finalize_fast_destroy(items_to_remove)
+      items_to_remove.each do |store_class, keys|
+        store_class.new.delete_keys_async(keys)
       end
     end
   end
@@ -63,6 +64,10 @@ class Upload < ApplicationRecord
     return path unless relative_path?
 
     uploader_class.absolute_path(self)
+  end
+
+  def relative_path
+    uploader_class.relative_path(self)
   end
 
   def calculate_checksum!

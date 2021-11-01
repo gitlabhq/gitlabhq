@@ -82,6 +82,18 @@ RSpec.describe Upload do
     end
   end
 
+  describe '#relative_path' do
+    it "delegates to the uploader's relative_path method" do
+      uploader = spy('FakeUploader')
+      upload = described_class.new(path: '/tmp/secret/file.jpg', store: ObjectStorage::Store::LOCAL)
+      expect(upload).to receive(:uploader_class).and_return(uploader)
+
+      upload.relative_path
+
+      expect(uploader).to have_received(:relative_path).with(upload)
+    end
+  end
+
   describe '#calculate_checksum!' do
     let(:upload) do
       described_class.new(path: __FILE__,
