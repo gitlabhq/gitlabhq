@@ -140,6 +140,10 @@
     - <<: *gitaly-binaries-cache
       policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
+.ruby-cache:
+  cache:
+    - *ruby-gems-cache
+
 .rails-cache:
   cache:
     - *ruby-gems-cache
@@ -151,7 +155,12 @@
     - *node-modules-cache
     - *rubocop-cache
 
-.static-analysis-cache-push:
+.rubocop-job-cache:
+  cache:
+    - *ruby-gems-cache
+    - *rubocop-cache
+
+.rubocop-job-cache-push:
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *rubocop-cache-push

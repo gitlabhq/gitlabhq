@@ -3,6 +3,7 @@ stages:
   - prepare
   - build-images
   - fixtures
+  - lint
   - test
   - post-test
   - review

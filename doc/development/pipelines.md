@@ -590,7 +590,8 @@ The current stages are:
 - `build-images`: This stage includes jobs that prepare Docker images
   that are needed by jobs in subsequent stages or downstream pipelines.
 - `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
-- `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
+- `lint`: This stage includes linting and static analysis jobs.
+- `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
 - `review-prepare`: This stage includes a job that build the CNG images that are
@@ -741,8 +742,10 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml),
    with fixed keys:
    - `.setup-test-env-cache`
+   - `.ruby-cache`
    - `.rails-cache`
    - `.static-analysis-cache`
+   - `.rubocop-cache`
    - `.coverage-cache`
    - `.danger-review-cache`
    - `.qa-cache`
@@ -752,7 +755,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
-   - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
+   - `update-rubocop-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-qa-cache`, defined in [`.gitlab/ci/qa.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/qa.gitlab-ci.yml).
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).

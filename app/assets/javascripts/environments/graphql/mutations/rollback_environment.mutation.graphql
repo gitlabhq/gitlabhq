@@ -1,0 +1,5 @@
+mutation($environment: Environment) {
+  rollbackEnvironment(environment: $environment) @client {
+    errors
+  }
+}

@@ -6,6 +6,7 @@ skip_frontmatter: false
 exclude:
   - 'vendor/**/*'
   - 'spec/**/*'
+  - 'ee/spec/**/*'
 require:
   - './haml_lint/linter/no_plain_nodes.rb'
   - './haml_lint/linter/documentation_links.rb'

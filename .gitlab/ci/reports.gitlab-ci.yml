@@ -9,6 +9,7 @@ code_quality:
   extends:
     - .default-retry
     - .use-docker-in-docker
+  stage: lint
   artifacts:
     paths:
       - gl-code-quality-report.json  # GitLab-specific
@@ -20,6 +21,7 @@ code_quality:
   extends:
     - .default-retry
     - sast
+  stage: lint
   needs: []
   artifacts:
     paths:
@@ -54,6 +56,7 @@ gosec-sast:
 
 .secret-analyzer:
   extends: .default-retry
+  stage: lint
   needs: []
   artifacts:
     paths:
@@ -68,6 +71,7 @@ secret_detection:
   extends:
     - .default-retry
     - dependency_scanning
+  stage: lint
   needs: []
   variables:
     DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp"  # GitLab-specific
@@ -134,6 +138,7 @@ package_hunter-bundler:
 
 license_scanning:
   extends: .default-retry
+  stage: lint
   needs: []
   artifacts:
     expire_in: 1 week  # GitLab-specific

@@ -5,7 +5,7 @@ lint-yaml:
     - .default-retry
     - .yaml-lint:rules
   image: pipelinecomponents/yamllint:latest
-  stage: test
+  stage: lint
   needs: []
   variables:
     LINT_PATHS: .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates

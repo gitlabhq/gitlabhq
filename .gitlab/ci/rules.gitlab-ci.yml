@@ -1354,6 +1354,12 @@
   rules:
     - changes: *code-backstage-qa-patterns
 
+.static-analysis:rules:ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - changes: *code-backstage-qa-patterns
+
 .static-analysis:rules:as-if-foss:
   rules:
     - <<: *if-not-ee

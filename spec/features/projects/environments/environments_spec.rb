@@ -8,6 +8,7 @@ RSpec.describe 'Environments page', :js do
   let(:role) { :developer }
 
   before do
+    stub_feature_flags(new_environments_table: false)
     project.add_role(user, role)
     sign_in(user)
   end

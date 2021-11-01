@@ -1,0 +1,7 @@
+query getEnvironmentFolder($environment: NestedEnvironment) {
+  folder(environment: $environment) @client {
+    availableCount
+    environments
+    stoppedCount
+  }
+}

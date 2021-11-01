@@ -6,33 +6,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pseudonymizer **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5532) in GitLab 11.1.
+Your GitLab database contains sensitive information. To protect sensitive information
+when you run analytics on your database, you can use the Pseudonymizer service, which:
 
-As the GitLab database hosts sensitive information, using it unfiltered for analytics
-implies high security requirements. To help alleviate this constraint, the Pseudonymizer
-service is used to export GitLab data in a pseudonymized way.
+1. Uses `HMAC(SHA256)` to mutate fields containing sensitive information.
+1. Preserves references (referential integrity) between fields.
+1. Exports your GitLab data, scrubbed of sensitive material.
 
 WARNING:
-This process is not impervious. If the source data is available, it's possible for
-a user to correlate data to the pseudonymized version.
+If the source data is available, users can compare and correlate the scrubbed data
+with the original.
 
-The Pseudonymizer currently uses `HMAC(SHA256)` to mutate fields that shouldn't
-be textually exported. This ensures that:
+To generate a pseudonymized data set:
 
-- the end-user of the data source cannot infer/revert the pseudonymized fields
-- the referential integrity is maintained
+1. [Configure Pseudonymizer](#configure-pseudonymizer) fields and output location.
+1. [Enable Pseudonymizer data collection](#enable-pseudonymizer-data-collection).
+1. Optional. [Generate a data set manually](#generate-data-set-manually).
 
-## Configuration
+## Configure Pseudonymizer
 
-To configure the Pseudonymizer, you need to:
+To use the Pseudonymizer, configure both the fields you want to anonymize, and the location to
+store the scrubbed data:
 
-- Provide a manifest file that describes which fields should be included or
-  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/pseudonymizer.yml)).
-  A default manifest is provided with the GitLab installation, using a relative file path that resolves from the Rails root.
-  Alternatively, you can use an absolute file path.
-- Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.
-
-[Read more about using object storage with GitLab](object_storage.md).
+1. **Create a manifest file**: This file describes the fields to include or pseudonymize.
+   - **Default manifest** - GitLab provides a default manifest in your GitLab installation
+     ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/pseudonymizer.yml)).
+     To use the example manifest file, use the `config/pseudonymizer.yml` relative path
+     when you configure connection parameters.
+   - **Custom manifest** - To use a custom manifest file, use the absolute path to
+   the file when you configure the connection parameters.
+1. **Configure connection parameters**: In the configuration method appropriate for
+   your version of GitLab, specify the [object storage](object_storage.md)
+   connection parameters (`pseudonymizer.upload.connection`).
 
 **For Omnibus installations:**
 
@@ -50,7 +55,7 @@ To configure the Pseudonymizer, you need to:
    }
    ```
 
-   If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+   If you are using AWS IAM profiles, omit the AWS access key and secret access key/value pairs.
 
    ```ruby
    gitlab_rails['pseudonymizer_upload_connection'] = {
@@ -85,24 +90,34 @@ To configure the Pseudonymizer, you need to:
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source)
    for the changes to take effect.
 
-## Usage
+## Enable Pseudonymizer data collection
 
-You can optionally run the Pseudonymizer using the following environment variables:
+To enable data collection:
 
-- `PSEUDONYMIZER_OUTPUT_DIR` - where to store the output CSV files (defaults to `/tmp`)
-- `PSEUDONYMIZER_BATCH` - the batch size when querying the DB (defaults to `100000`)
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Metrics and Profiling**, then expand
+   **Pseudonymizer data collection**.
+1. Select **Enable Pseudonymizer data collection**.
+1. Select **Save changes**.
 
-```shell
-## Omnibus
-sudo gitlab-rake gitlab:db:pseudonymizer
+## Generate data set manually
 
-## Source
-sudo -u git -H bundle exec rake gitlab:db:pseudonymizer RAILS_ENV=production
-```
+You can also run the Pseudonymizer manually:
 
-This produces some CSV files that might be very large, so make sure the
-`PSEUDONYMIZER_OUTPUT_DIR` has sufficient space. As a rule of thumb, at least
-10% of the database size is recommended.
+1. Set these environment variables:
+   - `PSEUDONYMIZER_OUTPUT_DIR` - Where to store the output CSV files. Defaults to `/tmp`.
+     These commands produce CSV files that can be quite large. Make sure the directory
+     can store a file at least 10% of the size of your database.
+   - `PSEUDONYMIZER_BATCH` - The batch size when querying the database. Defaults to `100000`.
+1. Run the command appropriate for your application:
+   - **Omnibus GitLab**:
+     `sudo gitlab-rake gitlab:db:pseudonymizer`
+   - **Installations from source**:
+     `sudo -u git -H bundle exec rake gitlab:db:pseudonymizer RAILS_ENV=production`
 
-After the pseudonymizer has run, the output CSV files should be uploaded to the
-configured object storage and deleted from the local disk.
+After you run the command, upload the output CSV files to your configured object
+storage. After the upload completes, delete the output file from the local disk.
+
+## Related topics
+
+- [Using object storage with GitLab](object_storage.md).

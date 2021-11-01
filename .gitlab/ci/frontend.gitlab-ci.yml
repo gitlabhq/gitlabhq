@@ -197,15 +197,6 @@ graphql-schema-dump:
     - *yarn-install
   stage: test
 
-eslint-as-if-foss:
-  extends:
-    - .frontend-test-base
-    - .frontend:rules:eslint-as-if-foss
-    - .as-if-foss
-  needs: []
-  script:
-    - run_timed_command "yarn run lint:eslint:all"
-
 .jest-base:
   extends: .frontend-test-base
   script:

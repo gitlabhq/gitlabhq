@@ -91,24 +91,20 @@ export default {
 </script>
 <template>
   <div class="gl-display-flex gl-flex-wrap" data-testid="vsa-time-metrics">
-    <div v-if="isLoading" class="gl-h-auto gl-py-3 gl-pr-9 gl-my-6">
-      <gl-skeleton-loading />
+    <gl-skeleton-loading v-if="isLoading" class="gl-h-auto gl-py-3 gl-pr-9 gl-my-6" />
+    <div v-for="metric in metrics" v-show="!isLoading" :key="metric.key" class="gl-my-6 gl-pr-9">
+      <gl-single-stat
+        :id="metric.key"
+        :value="`${metric.value}`"
+        :title="metric.label"
+        :unit="metric.unit || ''"
+        :should-animate="true"
+        :animation-decimal-places="1"
+        :class="{ 'gl-hover-cursor-pointer': hasLinks(metric.links) }"
+        tabindex="0"
+        @click="clickHandler(metric)"
+      />
+      <metric-popover :metric="metric" :target="metric.key" />
     </div>
-    <template v-else>
-      <div v-for="metric in metrics" :key="metric.key" class="gl-my-6 gl-pr-9">
-        <gl-single-stat
-          :id="metric.key"
-          :value="`${metric.value}`"
-          :title="metric.label"
-          :unit="metric.unit || ''"
-          :should-animate="true"
-          :animation-decimal-places="1"
-          :class="{ 'gl-hover-cursor-pointer': hasLinks(metric.links) }"
-          tabindex="0"
-          @click="clickHandler(metric)"
-        />
-        <metric-popover :metric="metric" :target="metric.key" />
-      </div>
-    </template>
   </div>
 </template>

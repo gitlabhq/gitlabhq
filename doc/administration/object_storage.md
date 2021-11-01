@@ -557,7 +557,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | **{check-circle}** Yes |
-| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | **{dotted-circle}** No |
+| [Pseudonymizer](pseudonymizer.md) (optional feature) | **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [GitLab Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |

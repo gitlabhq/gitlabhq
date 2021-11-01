@@ -43,13 +43,7 @@ class StaticAnalysis
   # contain values that a FOSS installation won't find. To work
   # around this we will only enable this task on EE installations.
   TASKS_WITH_DURATIONS_SECONDS = [
-    Task.new(%w[bin/rake lint:haml], 562),
-    # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
-    # the cache would prevent these files from being created.
-    Task.new(%w[bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false], 400),
     (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 360) : nil),
-    Task.new(%w[yarn run lint:eslint:all], 312),
-    Task.new(%w[bundle exec rubocop --parallel], 60),
     Task.new(%w[yarn run lint:prettier], 160),
     Task.new(%w[bin/rake gettext:lint], 85),
     Task.new(%W[bundle exec license_finder --decisions-file config/dependency_decisions.yml --project-path #{project_path}], 20),

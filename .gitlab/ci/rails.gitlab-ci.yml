@@ -507,7 +507,11 @@ rspec:feature-flags:
     - .coverage-base
     - .rails:rules:rspec-feature-flags
   stage: post-test
-  needs: ["static-analysis"]
+  needs:
+    - job: "feature-flags-usage"
+    - job: "haml-lint foss"
+    - job: "haml-lint ee"
+      optional: true
   script:
     - !reference [.minimal-bundle-install, script]
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then

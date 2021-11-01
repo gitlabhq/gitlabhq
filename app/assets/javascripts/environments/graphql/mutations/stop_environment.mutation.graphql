@@ -1,0 +1,5 @@
+mutation($environment: Environment) {
+  stopEnvironment(environment: $environment) @client {
+    errors
+  }
+}

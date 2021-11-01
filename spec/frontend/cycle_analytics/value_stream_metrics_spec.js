@@ -46,7 +46,6 @@ describe('ValueStreamMetrics', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('with successful requests', () => {
@@ -58,7 +57,23 @@ describe('ValueStreamMetrics', () => {
     it('will display a loader with pending requests', async () => {
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.find(GlSkeletonLoading).exists()).toBe(true);
+      expect(wrapper.findComponent(GlSkeletonLoading).exists()).toBe(true);
+    });
+
+    it('renders hidden GlSingleStat components for each metric', async () => {
+      await waitForPromises();
+
+      wrapper.setData({ isLoading: true });
+
+      await wrapper.vm.$nextTick();
+
+      const components = findMetrics();
+
+      expect(components).toHaveLength(metricsData.length);
+
+      metricsData.forEach((metric, index) => {
+        expect(components.at(index).isVisible()).toBe(false);
+      });
     });
 
     describe('with data loaded', () => {
@@ -80,6 +95,7 @@ describe('ValueStreamMetrics', () => {
         it(`renders a single stat component for "${title}" with value and unit`, () => {
           const metric = findMetrics().at(index);
           expect(metric.props()).toMatchObject({ value, title, unit: unit ?? '' });
+          expect(metric.isVisible()).toBe(true);
         });
 
         it(`${
