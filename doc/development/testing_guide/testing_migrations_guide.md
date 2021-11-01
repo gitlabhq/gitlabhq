@@ -38,7 +38,7 @@ ensures proper isolation.
 
 ## Testing an `ActiveRecord::Migration` class
 
-To test an `ActiveRecord::Migration` class (i.e., a
+To test an `ActiveRecord::Migration` class (for example, a
 regular migration `db/migrate` or a post-migration `db/post_migrate`), you
 must load the migration file by using the `require_migration!` helper
 method because it is not autoloaded by Rails.

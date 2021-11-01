@@ -57,7 +57,9 @@ RSpec.describe 'Two factor auths' do
 
         click_button 'Disable two-factor authentication'
 
-        page.accept_alert
+        page.within('[role="dialog"]') do
+          click_button 'Disable'
+        end
 
         expect(page).to have_content('You must provide a valid current password')
 
@@ -65,7 +67,9 @@ RSpec.describe 'Two factor auths' do
 
         click_button 'Disable two-factor authentication'
 
-        page.accept_alert
+        page.within('[role="dialog"]') do
+          click_button 'Disable'
+        end
 
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
         expect(page).to have_content('Enable two-factor authentication')
@@ -95,7 +99,9 @@ RSpec.describe 'Two factor auths' do
 
           click_button 'Disable two-factor authentication'
 
-          page.accept_alert
+          page.within('[role="dialog"]') do
+            click_button 'Disable'
+          end
 
           expect(page).to have_content('Two-factor authentication has been disabled successfully!')
           expect(page).to have_content('Enable two-factor authentication')

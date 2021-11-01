@@ -60,6 +60,10 @@ maximum of two directory levels from the repository's root. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
 
+<!-- markdownlint-disable MD044 -->
+<!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-markdownlint-tests -->
+
 The following languages and dependency managers are supported:
 
 <style>
@@ -245,6 +249,8 @@ table.supported-languages ul {
     </tr>
   </tbody>
 </table>
+
+<!-- markdownlint-enable MD044 -->
 
 ### Notes regarding supported languages and package managers
 

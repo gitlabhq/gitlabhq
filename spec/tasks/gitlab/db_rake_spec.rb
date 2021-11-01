@@ -201,9 +201,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   describe 'reindex' do
     let(:reindex) { double('reindex') }
     let(:indexes) { double('indexes') }
+    let(:databases) { Gitlab::Database.databases }
+    let(:databases_count) { databases.count }
 
     it 'cleans up any leftover indexes' do
-      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!)
+      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!).exactly(databases_count).times
 
       run_rake_task('gitlab:db:reindex')
     end
@@ -212,8 +214,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       it 'executes async index creation prior to any reindexing actions' do
         stub_feature_flags(database_async_index_creation: true)
 
-        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered
-        expect(Gitlab::Database::Reindexing).to receive(:perform).ordered
+        expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
+        expect(Gitlab::Database::Reindexing).to receive(:perform).ordered.exactly(databases_count).times
 
         run_rake_task('gitlab:db:reindex')
       end
@@ -231,8 +233,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
     context 'when no index_name is given' do
       it 'uses all candidate indexes' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
+        expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).exactly(databases_count).times.and_return(indexes)
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).exactly(databases_count).times
 
         run_rake_task('gitlab:db:reindex')
       end
@@ -247,7 +249,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
       it 'calls the index rebuilder with the proper arguments' do
         allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with([index]).ordered
+        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).ordered if databases.many?
 
         run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
       end
@@ -255,16 +258,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       context 'when database name is provided' do
         it 'calls the index rebuilder with the proper arguments when the database name match' do
           allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
-          expect(Gitlab::Database::Reindexing).to receive(:perform).with([index])
+          expect(Gitlab::Database::Reindexing).to receive(:perform).with([index]).ordered
+          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).ordered if databases.many?
 
           run_rake_task('gitlab:db:reindex', '[public.foo_idx,main]')
         end
 
         it 'ignores the index and uses all candidate indexes if database name does not match' do
-          expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
-          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes)
+          expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).exactly(databases_count).times.and_return(indexes)
+          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).exactly(databases_count).times
 
-          run_rake_task('gitlab:db:reindex', '[public.foo_idx,ci]')
+          run_rake_task('gitlab:db:reindex', '[public.foo_idx,no_such_database]')
         end
       end
 

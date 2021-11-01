@@ -4585,12 +4585,6 @@ msgstr ""
 msgid "Are you sure? The device will be signed out of GitLab and all remember me tokens revoked."
 msgstr ""
 
-msgid "Are you sure? This will invalidate your registered applications and U2F / WebAuthn devices."
-msgstr ""
-
-msgid "Are you sure? This will invalidate your registered applications and U2F devices."
-msgstr ""
-
 msgid "Arrange charts"
 msgstr ""
 
@@ -25747,6 +25741,9 @@ msgstr ""
 msgid "Please enter or upload a valid license."
 msgstr ""
 
+msgid "Please enter your current password."
+msgstr ""
+
 msgid "Please fill in a descriptive name for your group."
 msgstr ""
 
@@ -35336,6 +35333,12 @@ msgid "This user is the author of this %{noteable}."
 msgstr ""
 
 msgid "This variable can not be masked."
+msgstr ""
+
+msgid "This will invalidate your registered applications and U2F / WebAuthn devices."
+msgstr ""
+
+msgid "This will invalidate your registered applications and U2F devices."
 msgstr ""
 
 msgid "This will redirect you to an external sign in page."

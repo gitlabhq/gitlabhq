@@ -1,7 +1,6 @@
-import { within } from '@testing-library/dom';
-import { GlForm } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { GlForm, GlModal } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import ManageTwoFactorForm, {
   i18n,
 } from '~/authentication/two_factor_auth/components/manage_two_factor_form.vue';
@@ -17,100 +16,133 @@ describe('ManageTwoFactorForm', () => {
   let wrapper;
 
   const createComponent = (options = {}) => {
-    wrapper = extendedWrapper(
-      mount(ManageTwoFactorForm, {
-        provide: {
-          ...defaultProvide,
-          webauthnEnabled: options?.webauthnEnabled ?? false,
-          isCurrentPasswordRequired: options?.currentPasswordRequired ?? true,
-        },
-      }),
-    );
+    wrapper = mountExtended(ManageTwoFactorForm, {
+      provide: {
+        ...defaultProvide,
+        webauthnEnabled: options?.webauthnEnabled ?? false,
+        isCurrentPasswordRequired: options?.currentPasswordRequired ?? true,
+      },
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <slot></slot>
+              <slot name="modal-footer"></slot>
+            </div>`,
+        }),
+      },
+    });
   };
-
-  const queryByText = (text, options) => within(wrapper.element).queryByText(text, options);
-  const queryByLabelText = (text, options) =>
-    within(wrapper.element).queryByLabelText(text, options);
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findMethodInput = () => wrapper.findByTestId('test-2fa-method-field');
   const findDisableButton = () => wrapper.findByTestId('test-2fa-disable-button');
   const findRegenerateCodesButton = () => wrapper.findByTestId('test-2fa-regenerate-codes-button');
+  const findConfirmationModal = () => wrapper.findComponent(GlModal);
+
+  const itShowsConfirmationModal = (confirmText) => {
+    it('shows confirmation modal', async () => {
+      await wrapper.findByLabelText('Current password').setValue('foo bar');
+      await findDisableButton().trigger('click');
+
+      expect(findConfirmationModal().props('visible')).toBe(true);
+      expect(findConfirmationModal().html()).toContain(confirmText);
+    });
+  };
+
+  const itShowsValidationMessageIfCurrentPasswordFieldIsEmpty = (findButtonFunction) => {
+    it('shows validation message if `Current password` is empty', async () => {
+      await findButtonFunction().trigger('click');
+
+      expect(wrapper.findByText(i18n.currentPasswordInvalidFeedback).exists()).toBe(true);
+    });
+  };
 
   beforeEach(() => {
     createComponent();
   });
 
-  describe('Current password field', () => {
-    it('renders the current password field', () => {
-      expect(queryByLabelText(i18n.currentPassword).tagName).toEqual('INPUT');
-    });
-  });
-
-  describe('when current password is not required', () => {
-    beforeEach(() => {
-      createComponent({
-        currentPasswordRequired: false,
+  describe('`Current password` field', () => {
+    describe('when required', () => {
+      it('renders the current password field', () => {
+        expect(wrapper.findByLabelText(i18n.currentPassword).exists()).toBe(true);
       });
     });
 
-    it('does not render the current password field', () => {
-      expect(queryByLabelText(i18n.currentPassword)).toBe(null);
+    describe('when not required', () => {
+      beforeEach(() => {
+        createComponent({
+          currentPasswordRequired: false,
+        });
+      });
+
+      it('does not render the current password field', () => {
+        expect(wrapper.findByLabelText(i18n.currentPassword).exists()).toBe(false);
+      });
     });
   });
 
   describe('Disable button', () => {
     it('renders the component with correct attributes', () => {
       expect(findDisableButton().exists()).toBe(true);
-      expect(findDisableButton().attributes()).toMatchObject({
-        'data-confirm': i18n.confirm,
-        'data-form-action': defaultProvide.profileTwoFactorAuthPath,
-        'data-form-method': defaultProvide.profileTwoFactorAuthMethod,
-      });
     });
 
-    it('has the right confirm text', () => {
-      expect(findDisableButton().attributes('data-confirm')).toBe(i18n.confirm);
-    });
+    describe('when clicked', () => {
+      itShowsValidationMessageIfCurrentPasswordFieldIsEmpty(findDisableButton);
 
-    describe('when webauthnEnabled', () => {
-      beforeEach(() => {
-        createComponent({
-          webauthnEnabled: true,
+      itShowsConfirmationModal(i18n.confirm);
+
+      describe('when webauthnEnabled', () => {
+        beforeEach(() => {
+          createComponent({
+            webauthnEnabled: true,
+          });
         });
+
+        itShowsConfirmationModal(i18n.confirmWebAuthn);
       });
 
-      it('has the right confirm text', () => {
-        expect(findDisableButton().attributes('data-confirm')).toBe(i18n.confirmWebAuthn);
+      it('modifies the form action and method when submitted through the button', async () => {
+        const form = findForm();
+        const methodInput = findMethodInput();
+        const submitSpy = jest.spyOn(form.element, 'submit');
+
+        await wrapper.findByLabelText('Current password').setValue('foo bar');
+        await findDisableButton().trigger('click');
+
+        expect(form.attributes('action')).toBe(defaultProvide.profileTwoFactorAuthPath);
+        expect(methodInput.attributes('value')).toBe(defaultProvide.profileTwoFactorAuthMethod);
+
+        findConfirmationModal().vm.$emit('primary');
+
+        expect(submitSpy).toHaveBeenCalled();
       });
-    });
-
-    it('modifies the form action and method when submitted through the button', async () => {
-      const form = findForm();
-      const disableButton = findDisableButton().element;
-      const methodInput = findMethodInput();
-
-      await form.vm.$emit('submit', { submitter: disableButton });
-
-      expect(form.attributes('action')).toBe(defaultProvide.profileTwoFactorAuthPath);
-      expect(methodInput.attributes('value')).toBe(defaultProvide.profileTwoFactorAuthMethod);
     });
   });
 
   describe('Regenerate recovery codes button', () => {
     it('renders the button', () => {
-      expect(queryByText(i18n.regenerateRecoveryCodes)).toEqual(expect.any(HTMLElement));
+      expect(findRegenerateCodesButton().exists()).toBe(true);
     });
 
-    it('modifies the form action and method when submitted through the button', async () => {
-      const form = findForm();
-      const regenerateCodesButton = findRegenerateCodesButton().element;
-      const methodInput = findMethodInput();
+    describe('when clicked', () => {
+      itShowsValidationMessageIfCurrentPasswordFieldIsEmpty(findRegenerateCodesButton);
 
-      await form.vm.$emit('submit', { submitter: regenerateCodesButton });
+      it('modifies the form action and method when submitted through the button', async () => {
+        const form = findForm();
+        const methodInput = findMethodInput();
+        const submitSpy = jest.spyOn(form.element, 'submit');
 
-      expect(form.attributes('action')).toBe(defaultProvide.codesProfileTwoFactorAuthPath);
-      expect(methodInput.attributes('value')).toBe(defaultProvide.codesProfileTwoFactorAuthMethod);
+        await wrapper.findByLabelText('Current password').setValue('foo bar');
+        await findRegenerateCodesButton().trigger('click');
+
+        expect(form.attributes('action')).toBe(defaultProvide.codesProfileTwoFactorAuthPath);
+        expect(methodInput.attributes('value')).toBe(
+          defaultProvide.codesProfileTwoFactorAuthMethod,
+        );
+        expect(submitSpy).toHaveBeenCalled();
+      });
     });
   });
 });
