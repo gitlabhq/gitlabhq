@@ -60,6 +60,9 @@ that have the same problem.
 
 Primary keys problem will be tackled by our Database Team.
 
+Status: As of October 2021 the primary keys in CI tables have been migrated to
+big integers.
+
 ### The table is too large
 
 There is more than a billion rows in `ci_builds` table. We store more than 2
@@ -111,6 +114,12 @@ table that will accelerate SQL queries used to build
 queues](https://gitlab.com/gitlab-org/gitlab/-/issues/322766) and we want to
 explore them.
 
+Status: the new architecture [has been implemented on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908).
+
+The following epic tracks making it generally available: [Make the new pending
+builds architecture generally available](
+https://gitlab.com/groups/gitlab-org/-/epics/6954).
+
 ### Moving big amounts of data is challenging
 
 We store a significant amount of data in `ci_builds` table. Some of the columns
@@ -126,6 +135,8 @@ build mechanisms that will give us confidence in moving this data between
 columns, tables, partitions or database shards.
 
 Effort to improve background migrations will be owned by our Database Team.
+
+Status: In progress.
 
 ### Development velocity is negatively affected
 
@@ -168,7 +179,12 @@ target](https://gitlab.com/groups/gitlab-org/-/epics/5745) epic.
 
 ## Status
 
-In progress.
+|-------------|--------------|
+| Created at  | 21.01.2021   |
+| Approved at | 26.04.2021   |
+| Updated at  | 28.10.2021   |
+
+Status: In progress.
 
 ## Who
 
@@ -180,7 +196,7 @@ Proposal:
 |------------------------------|-------------------------|
 | Author                       | Grzegorz Bizon          |
 | Architecture Evolution Coach | Kamil Trzciński         |
-| Engineering Leader           | Darby Frey              |
+| Engineering Leader           | Cheryl Li               |
 | Product Manager              | Jackie Porter           |
 | Domain Expert / Verify       | Fabio Pitino            |
 | Domain Expert / Database     | Jose Finotto            |
@@ -190,7 +206,7 @@ DRIs:
 
 | Role                         | Who
 |------------------------------|------------------------|
-| Leadership                   | Darby Frey             |
+| Leadership                   | Cheryl Li              |
 | Product                      | Jackie Porter          |
 | Engineering                  | Grzegorz Bizon         |
 

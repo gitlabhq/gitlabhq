@@ -200,6 +200,28 @@ RSpec.describe API::API do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when there is an unhandled exception for an anonymous request' do
+      it 'logs all application context fields and the route' do
+        expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+          expect(data.stringify_keys)
+            .to include('correlation_id' => an_instance_of(String),
+                        'meta.caller_id' => 'GET /api/:version/broadcast_messages',
+                        'meta.remote_ip' => an_instance_of(String),
+                        'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+                        'meta.feature_category' => 'navigation',
+                        'route' => '/api/:version/broadcast_messages')
+
+          expect(data.stringify_keys).not_to include('meta.project', 'meta.root_namespace', 'meta.user')
+        end
+
+        expect(BroadcastMessage).to receive(:all).and_raise('An error!')
+
+        get(api('/broadcast_messages'))
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+      end
+    end
   end
 
   describe 'Marginalia comments' do

@@ -20,6 +20,15 @@ rendered to HTML when viewed:
 Interactive features, including JavaScript plots, don't work when viewed in
 GitLab.
 
+## Cleaner diffs 
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/epics/6589) in GitLab 14.5
+
+When commits include changes to Jupyter Notebook files, GitLab strips out the 
+noise and displays a cleaner version of the diff.
+
+![Jupyter Notebook Clean Diff](img/jupyter_notebook_diff.png)
+
 ## Jupyter Git integration
 
 Jupyter can be configured as an OAuth application with repository access, acting

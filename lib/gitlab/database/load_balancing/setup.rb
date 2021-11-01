@@ -22,17 +22,10 @@ module Gitlab
         def configure_connection
           db_config_object = @model.connection_db_config
 
-          hash =
-            if Gitlab::Utils.to_boolean(ENV["GITLAB_LB_CONFIGURE_CONNECTION"], default: true)
-              db_config_object.configuration_hash.merge(
-                prepared_statements: false,
-                pool: Gitlab::Database.default_pool_size
-              )
-            else
-              db_config_object.configuration_hash.merge(
-                prepared_statements: false
-              )
-            end
+          hash = db_config_object.configuration_hash.merge(
+            prepared_statements: false,
+            pool: Gitlab::Database.default_pool_size
+          )
 
           hash_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
             db_config_object.env_name,

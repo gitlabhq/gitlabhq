@@ -19493,19 +19493,19 @@ msgstr ""
 msgid "JiraRequest|An SSL error occurred while connecting to Jira: %{message}. Try your request again."
 msgstr ""
 
-msgid "JiraRequest|An error occurred while requesting data from Jira. Check your Jira integration configuration and try again."
+msgid "JiraRequest|An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again."
 msgstr ""
 
-msgid "JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your Jira integration configuration and try again."
+msgid "JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again."
 msgstr ""
 
 msgid "JiraRequest|The Jira API URL for connecting to Jira is not valid. Check your Jira integration API URL and try again."
 msgstr ""
 
-msgid "JiraRequest|The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again."
+msgid "JiraRequest|The credentials for accessing Jira are not allowed to access the data. Check your %{docs_link_start}Jira integration credentials%{docs_link_end} and try again."
 msgstr ""
 
-msgid "JiraRequest|The credentials for accessing Jira are not valid. Check your Jira integration credentials and try again."
+msgid "JiraRequest|The credentials for accessing Jira are not valid. Check your %{docs_link_start}Jira integration credentials%{docs_link_end} and try again."
 msgstr ""
 
 msgid "JiraService| on branch %{branch_link}"

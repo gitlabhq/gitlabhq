@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'ipynbdiff'
 
 class BlobPresenter < Gitlab::View::Presenter::Delegated
   include ApplicationHelper
@@ -15,6 +16,17 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     Gitlab::Highlight.highlight(
       blob.path,
       limited_blob_data(to: to),
+      language: language,
+      plain: plain
+    )
+  end
+
+  def highlight_transformed(plain: nil)
+    load_all_blob_data
+
+    Gitlab::Highlight.highlight(
+      blob.path,
+      transformed_blob_data,
       language: language,
       plain: plain
     )
@@ -106,5 +118,9 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def language
     blob.language_from_gitattributes
+  end
+
+  def transformed_blob_data
+    @transformed_blob ||= ( blob.path.ends_with?('.ipynb') && IpynbDiff.transform(blob.data, options: { include_metadata: false, cell_decorator: :percent }) ) || blob.data
   end
 end

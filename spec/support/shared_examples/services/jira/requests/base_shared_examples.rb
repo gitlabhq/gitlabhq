@@ -26,11 +26,14 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
 
       expect(subject).to be_a(ServiceResponse)
       expect(subject).to be_error
-      expect(subject.message).to include(expected_message)
+      expect(subject.message).to start_with(expected_message)
     end
   end
 
   context 'when the JSON in JIRA::HTTPError is unsafe' do
+    config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+    let(:docs_link_start) { '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url } }
+
     before do
       stub_client_and_raise(JIRA::HTTPError, error)
     end
@@ -39,7 +42,8 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
       let(:error) { '{"errorMessages":' }
 
       it 'returns the default error message' do
-        expect(subject.message).to eq('An error occurred while requesting data from Jira. Check your Jira integration configuration and try again.')
+        error_message = 'An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+        expect(subject.message).to eq(error_message)
       end
     end
 
@@ -47,7 +51,8 @@ RSpec.shared_examples 'a service that handles Jira API errors' do
       let(:error) { '{"errorMessages":["<script>alert(true)</script>foo"]}' }
 
       it 'sanitizes it' do
-        expect(subject.message).to eq('An error occurred while requesting data from Jira: foo. Check your Jira integration configuration and try again.')
+        error_message = 'An error occurred while requesting data from Jira: foo. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+        expect(subject.message).to eq(error_message)
       end
     end
   end

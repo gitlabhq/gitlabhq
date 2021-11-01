@@ -152,6 +152,9 @@ module Gitlab
         return [] unless blob
 
         blob.load_all_data!
+
+        return blob.present.highlight_transformed.lines if Feature.enabled?(:jupyter_clean_diffs, @project)
+
         blob.present.highlight.lines
       end
 

@@ -29,7 +29,7 @@ Commits in a project's [wiki](../project/wiki/index.md#track-wiki-events) are no
 
 ### Charts
 
-The data in the charts are updated soon after each commit in the default branch.
+The data in the charts are queued. Background workers update the charts 10 minutes after each commit in the default branch. Depending on the size of the GitLab installation, it may take longer for data to refresh due to variations in the size of background job queues.
 
 Available charts:
 

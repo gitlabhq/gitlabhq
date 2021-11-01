@@ -43,6 +43,8 @@ module Gitlab
         # Ensure items are collected in the the batch
         new_blob_lazy
         old_blob_lazy
+
+        preprocess_before_diff(diff) if Feature.enabled?(:jupyter_clean_diffs, @project)
       end
 
       def position(position_marker, position_type: :text)
@@ -446,6 +448,19 @@ module Gitlab
         return unless modified_file?
 
         find_renderable_viewer_class(classes)
+      end
+
+      def preprocess_before_diff(diff)
+        return unless diff.new_path.ends_with? '.ipynb'
+
+        from = old_blob_lazy&.data
+        to = new_blob_lazy&.data
+
+        new_diff = IpynbDiff.diff(from, to,
+                                  diff_opts: { context: 5, include_diff_info: true },
+                                  transform_options: { cell_decorator: :percent } )
+
+        diff.diff = new_diff.scan(/.*\n/)[2..-1].join('') if new_diff
       end
 
       def alternate_viewer_class

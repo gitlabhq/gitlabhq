@@ -86,7 +86,7 @@ module Gitlab
 
         # Returns only the merge requests that still have reviews to be imported.
         def merge_requests_to_import
-          project.merge_requests.where.not(id: already_imported_merge_requests) # rubocop: disable CodeReuse/ActiveRecord
+          project.merge_requests.id_not_in(already_imported_merge_requests)
         end
 
         def already_imported_merge_requests

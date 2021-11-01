@@ -488,7 +488,7 @@ module API
     def handle_api_exception(exception)
       if report_exception?(exception)
         define_params_for_grape_middleware
-        Gitlab::ApplicationContext.push(user: current_user)
+        Gitlab::ApplicationContext.push(user: current_user, remote_ip: request.ip)
         Gitlab::ErrorTracking.track_exception(exception)
       end
 

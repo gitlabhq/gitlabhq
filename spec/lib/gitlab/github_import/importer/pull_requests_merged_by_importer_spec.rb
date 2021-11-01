@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::PullRequestsMergedByImporter do
   let(:client) { double }
-  let(:project) { create(:project, import_source: 'http://somegithub.com') }
+
+  let_it_be(:project) { create(:project, import_source: 'http://somegithub.com') }
 
   subject { described_class.new(project, client) }
 
@@ -27,14 +28,11 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsMergedByImporter do
   end
 
   describe '#each_object_to_import', :clean_gitlab_redis_cache do
-    it 'fetchs the merged pull requests data' do
-      create(
-        :merged_merge_request,
-        iid: 999,
-        source_project: project,
-        target_project: project
-      )
+    let!(:merge_request) do
+      create(:merged_merge_request, iid: 999, source_project: project, target_project: project)
+    end
 
+    it 'fetches the merged pull requests data' do
       pull_request = double
 
       allow(client)
@@ -45,6 +43,17 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestsMergedByImporter do
 
       expect { |b| subject.each_object_to_import(&b) }
         .to yield_with_args(pull_request)
+
+      subject.each_object_to_import {}
+    end
+
+    it 'skips cached merge requests' do
+      Gitlab::Cache::Import::Caching.set_add(
+        "github-importer/already-imported/#{project.id}/pull_requests_merged_by",
+        merge_request.id
+      )
+
+      expect(client).not_to receive(:pull_request)
 
       subject.each_object_to_import {}
     end

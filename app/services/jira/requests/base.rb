@@ -67,9 +67,19 @@ module Jira
         ServiceResponse.error(message: error_message(e))
       end
 
+      def auth_docs_link_start
+        auth_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira', anchor: 'authentication-in-jira')
+        '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auth_docs_link_url }
+      end
+
+      def config_docs_link_start
+        config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+        '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url }
+      end
+
       def error_message(error)
         reportable_error_message(error) ||
-          s_('JiraRequest|An error occurred while requesting data from Jira. Check your Jira integration configuration and try again.')
+          s_('JiraRequest|An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again.').html_safe % { docs_link_start: config_docs_link_start, docs_link_end: '</a>'.html_safe }
       end
 
       # Returns a user-facing error message if possible, otherwise `nil`.
@@ -93,11 +103,11 @@ module Jira
       def reportable_jira_ruby_error_message(error)
         case error.message
         when 'Unauthorized'
-          s_('JiraRequest|The credentials for accessing Jira are not valid. Check your Jira integration credentials and try again.')
+          s_('JiraRequest|The credentials for accessing Jira are not valid. Check your %{docs_link_start}Jira integration credentials%{docs_link_end} and try again.').html_safe % { docs_link_start: auth_docs_link_start, docs_link_end: '</a>'.html_safe }
         when 'Forbidden'
-          s_('JiraRequest|The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.')
+          s_('JiraRequest|The credentials for accessing Jira are not allowed to access the data. Check your %{docs_link_start}Jira integration credentials%{docs_link_end} and try again.').html_safe % { docs_link_start: auth_docs_link_start, docs_link_end: '</a>'.html_safe }
         when 'Bad Request'
-          s_('JiraRequest|An error occurred while requesting data from Jira. Check your Jira integration configuration and try again.')
+          s_('JiraRequest|An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again.').html_safe % { docs_link_start: config_docs_link_start, docs_link_end: '</a>'.html_safe }
         when /errorMessages/
           jira_ruby_json_error_message(error.message)
         end
@@ -111,7 +121,7 @@ module Jira
           messages = Rails::Html::FullSanitizer.new.sanitize(messages).presence
           return unless messages
 
-          s_('JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your Jira integration configuration and try again.') % { messages: messages }
+          s_('JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again.').html_safe % { messages: messages, docs_link_start: config_docs_link_start, docs_link_end: '</a>'.html_safe }
         rescue JSON::ParserError
         end
       end
