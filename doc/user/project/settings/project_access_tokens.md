@@ -58,7 +58,9 @@ For the bot:
 
 - The name is set to the name of the token.
 - The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
-- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
+- The email is set to `project{project_id}_bot@example.com`, for example `project123_bot@example.com`.
+- For additional access tokens in the same project, the username is set to `project_{project_id}_bot{bot_count}`, for example `project_123_bot1`.
+- For additional acess tokens in the same project, the email is set to `project{project_id}_bot{bot_count}@example.com`, for example `project123_bot1@example.com`
 
 API calls made with a project access token are associated with the corresponding bot user.
 
