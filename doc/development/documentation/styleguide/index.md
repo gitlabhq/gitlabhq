@@ -317,8 +317,8 @@ create an issue or an MR to propose a change to the user interface text.
 
 #### Feature names
 
-- *Feature names are typically lowercase*.
-- *Some features are capitalized*, typically nouns naming GitLab-specific
+- Feature names are typically lowercase.
+- Some features are capitalized, typically nouns that name GitLab-specific
   capabilities or tools.
 
 See the [word list](word_list.md) for details.
@@ -404,13 +404,13 @@ Some contractions, however, should be avoided:
 
   | Do                                       | Don't                                   |
   |------------------------------------------|-----------------------------------------|
-  | Do *not* install X with Y.               | *Don't* install X with Y.               |
+  | Do not install X with Y.               | Don't install X with Y.               |
 
 - Do not use contractions in reference documentation. For example:
 
   | Do                                       | Don't                                   |
   |------------------------------------------|-----------------------------------------|
-  | Do *not* set a limit greater than 1000.  | *Don't* set a limit greater than 1000.  |
+  | Do not set a limit greater than 1000.  | Don't set a limit greater than 1000.  |
   | For `parameter1`, the default is 10.     | For `parameter1`, the default's 10.     |
 
 - Avoid contractions in error messages. Examples:
@@ -701,7 +701,7 @@ that's best described by a matrix, tables are the best choice.
 
 To keep tables accessible and scannable, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
-*N/A* (for 'not applicable') or *none*.
+**N/A** for 'not applicable' or **None**.
 
 To help tables be easier to maintain, consider adding additional spaces to the
 column widths to make them consistent. For example:

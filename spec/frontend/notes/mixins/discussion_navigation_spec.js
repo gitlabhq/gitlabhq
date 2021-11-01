@@ -226,16 +226,13 @@ describe('Discussion navigation mixin', () => {
       ${false}
       ${true}
     `('virtual scrolling feature is $diffsVirtualScrolling', ({ diffsVirtualScrolling }) => {
-      beforeEach(async () => {
+      beforeEach(() => {
         window.gon = { features: { diffsVirtualScrolling } };
 
         jest.spyOn(store, 'dispatch');
 
         store.state.notes.currentDiscussionId = 'a';
         window.location.hash = 'test';
-        wrapper.vm.jumpToNextDiscussion();
-
-        await nextTick();
       });
 
       afterEach(() => {
@@ -243,16 +240,34 @@ describe('Discussion navigation mixin', () => {
         window.location.hash = '';
       });
 
-      it('resets location hash if diffsVirtualScrolling flag is true', () => {
+      it('resets location hash if diffsVirtualScrolling flag is true', async () => {
+        wrapper.vm.jumpToNextDiscussion();
+
+        await nextTick();
+
         expect(window.location.hash).toBe(diffsVirtualScrolling ? '' : '#test');
       });
 
-      it(`calls scrollToFile with setHash as ${diffsVirtualScrolling ? 'false' : 'true'}`, () => {
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', {
-          path: 'test.js',
-          setHash: !diffsVirtualScrolling,
-        });
-      });
+      it.each`
+        tabValue   | hashValue
+        ${'diffs'} | ${false}
+        ${'show'}  | ${!diffsVirtualScrolling}
+        ${'other'} | ${!diffsVirtualScrolling}
+      `(
+        'calls scrollToFile with setHash as $hashValue when the tab is $tabValue',
+        async ({ hashValue, tabValue }) => {
+          window.mrTabs.currentAction = tabValue;
+
+          wrapper.vm.jumpToNextDiscussion();
+
+          await nextTick();
+
+          expect(store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', {
+            path: 'test.js',
+            setHash: hashValue,
+          });
+        },
+      );
     });
   });
 });

@@ -1,4 +1,4 @@
-import { GlTable } from '@gitlab/ui';
+import { GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StorageTable from '~/projects/storage_counter/components/storage_table.vue';
@@ -22,7 +22,7 @@ describe('StorageTable', () => {
     );
   };
 
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
 
   beforeEach(() => {
     createComponent();
@@ -37,6 +37,7 @@ describe('StorageTable', () => {
       ({ storageType: { id, name, description } }) => {
         expect(wrapper.findByTestId(`${id}-name`).text()).toBe(name);
         expect(wrapper.findByTestId(`${id}-description`).text()).toBe(description);
+        expect(wrapper.findByTestId(`${id}-icon`).props('name')).toBe(id);
         expect(wrapper.findByTestId(`${id}-help-link`).attributes('href')).toBe(
           defaultProvideValues.helpLinks[id.replace(`Size`, `HelpPagePath`)]
             .replace(`Size`, ``)

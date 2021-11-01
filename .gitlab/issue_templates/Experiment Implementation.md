@@ -1,4 +1,4 @@
-<!-- Title suggestion: Experiment: [description] -->
+<!-- Title suggestion: Experiment Implementation: [description] -->
 
 # Experiment Summary
 <!-- Quick rundown of what is being done -->

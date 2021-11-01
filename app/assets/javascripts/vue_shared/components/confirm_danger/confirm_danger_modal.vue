@@ -1,15 +1,17 @@
 <script>
-import { GlModal, GlFormGroup, GlFormInput, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlModal, GlFormGroup, GlFormInput, GlSprintf } from '@gitlab/ui';
 import {
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_TITLE,
   CONFIRM_DANGER_PHRASE_TEXT,
   CONFIRM_DANGER_WARNING,
+  CONFIRM_DANGER_MODAL_ERROR,
 } from './constants';
 
 export default {
   name: 'ConfirmDangerModal',
   components: {
+    GlAlert,
     GlModal,
     GlFormGroup,
     GlFormInput,
@@ -38,8 +40,8 @@ export default {
   },
   computed: {
     isValid() {
-      return (
-        this.confirmationPhrase.length && this.equalString(this.confirmationPhrase, this.phrase)
+      return Boolean(
+        this.confirmationPhrase.length && this.equalString(this.confirmationPhrase, this.phrase),
       );
     },
     actionPrimary() {
@@ -59,6 +61,7 @@ export default {
     CONFIRM_DANGER_MODAL_TITLE,
     CONFIRM_DANGER_WARNING,
     CONFIRM_DANGER_PHRASE_TEXT,
+    CONFIRM_DANGER_MODAL_ERROR,
   },
 };
 </script>
@@ -71,9 +74,15 @@ export default {
     :action-primary="actionPrimary"
     @primary="$emit('confirm')"
   >
-    <p v-if="confirmDangerMessage" class="text-danger" data-testid="confirm-danger-message">
+    <gl-alert
+      v-if="confirmDangerMessage"
+      variant="danger"
+      data-testid="confirm-danger-message"
+      :dismissible="false"
+      class="gl-mb-4"
+    >
       {{ confirmDangerMessage }}
-    </p>
+    </gl-alert>
     <p data-testid="confirm-danger-warning">{{ $options.i18n.CONFIRM_DANGER_WARNING }}</p>
     <p data-testid="confirm-danger-phrase">
       <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT">
@@ -82,8 +91,13 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <gl-form-group class="form-control" :state="isValid">
-      <gl-form-input v-model="confirmationPhrase" data-testid="confirm-danger-input" type="text" />
+    <gl-form-group :state="isValid" :invalid-feedback="$options.i18n.CONFIRM_DANGER_MODAL_ERROR">
+      <gl-form-input
+        v-model="confirmationPhrase"
+        class="form-control"
+        data-testid="confirm-danger-input"
+        type="text"
+      />
     </gl-form-group>
   </gl-modal>
 </template>

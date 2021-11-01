@@ -137,6 +137,19 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
         end
+
+        it 'shows correct runner when type is selected and search term is entered' do
+          create(:ci_runner, :instance, description: 'runner-connected', contacted_at: Time.now)
+          create(:ci_runner, :instance, description: 'runner-not-connected', contacted_at: nil)
+
+          visit admin_runners_path
+
+          # use the string "Not" to avoid using space and trigger an early selection
+          input_filtered_search_filter_is_only('Status', 'Not')
+
+          expect(page).not_to have_content 'runner-connected'
+          expect(page).to have_content 'runner-not-connected'
+        end
       end
 
       describe 'filter by type' do

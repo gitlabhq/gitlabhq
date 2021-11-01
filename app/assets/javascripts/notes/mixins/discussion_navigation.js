@@ -1,5 +1,6 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElementWithContext, scrollToElement } from '~/lib/utils/common_utils';
+import { updateHistory } from '../../lib/utils/url_utility';
 import eventHub from '../event_hub';
 
 const isDiffsVirtualScrollingEnabled = () => window.gon?.features?.diffsVirtualScrolling;
@@ -22,13 +23,43 @@ function scrollTo(selector, { withoutContext = false } = {}) {
   return false;
 }
 
+function updateUrlWithNoteId(noteId) {
+  const newHistoryEntry = {
+    state: null,
+    title: window.title,
+    url: `#note_${noteId}`,
+    replace: true,
+  };
+
+  if (noteId && isDiffsVirtualScrollingEnabled()) {
+    // Temporarily mask the ID to avoid the browser default
+    //    scrolling taking over which is broken with virtual
+    //    scrolling enabled.
+    const note = document.querySelector(`#note_${noteId}`);
+    note?.setAttribute('id', `masked::${note.id}`);
+
+    // Update the hash now that the ID "doesn't exist" in the page
+    updateHistory(newHistoryEntry);
+
+    // Unmask the note's ID
+    note?.setAttribute('id', `note_${noteId}`);
+  } else if (noteId) {
+    updateHistory(newHistoryEntry);
+  }
+}
+
 /**
  * @param {object} self Component instance with mixin applied
  * @param {string} id Discussion id we are jumping to
  */
-function diffsJump({ expandDiscussion }, id) {
+function diffsJump({ expandDiscussion }, id, firstNoteId) {
   const selector = `ul.notes[data-discussion-id="${id}"]`;
-  eventHub.$once('scrollToDiscussion', () => scrollTo(selector));
+
+  eventHub.$once('scrollToDiscussion', () => {
+    scrollTo(selector);
+    // Wait for the discussion scroll before updating to the more specific ID
+    setTimeout(() => updateUrlWithNoteId(firstNoteId), 0);
+  });
   expandDiscussion({ discussionId: id });
 }
 
@@ -60,12 +91,13 @@ function switchToDiscussionsTabAndJumpTo(self, id) {
  * @param {object} discussion Discussion we are jumping to
  */
 function jumpToDiscussion(self, discussion) {
-  const { id, diff_discussion: isDiffDiscussion } = discussion;
+  const { id, diff_discussion: isDiffDiscussion, notes } = discussion;
+  const firstNoteId = notes?.[0]?.id;
   if (id) {
     const activeTab = window.mrTabs.currentAction;
 
     if (activeTab === 'diffs' && isDiffDiscussion) {
-      diffsJump(self, id);
+      diffsJump(self, id, firstNoteId);
     } else if (activeTab === 'show') {
       discussionJump(self, id);
     } else {
@@ -83,6 +115,7 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   const isDiffView = window.mrTabs.currentAction === 'diffs';
   const targetId = fn(discussionId, isDiffView);
   const discussion = self.getDiscussion(targetId);
+  const setHash = !isDiffView && !isDiffsVirtualScrollingEnabled();
   const discussionFilePath = discussion?.diff_file?.file_path;
 
   if (isDiffsVirtualScrollingEnabled()) {
@@ -92,7 +125,7 @@ function handleDiscussionJump(self, fn, discussionId = self.currentDiscussionId)
   if (discussionFilePath) {
     self.scrollToFile({
       path: discussionFilePath,
-      setHash: !isDiffsVirtualScrollingEnabled(),
+      setHash,
     });
   }
 
