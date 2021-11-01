@@ -736,14 +736,13 @@ The group's new subgroups have push rules set for them based on either:
 
 ## Group approval rules **(PREMIUM)**
 
-> Introduced in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-per group, ask an administrator to [enable the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md).
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `group_merge_request_approval_settings_feature_flag`. On GitLab.com, this feature is available.
 
-Group approval rules are an in-development feature that provides an interface for managing
+Group approval rules provides an interface for managing 
 [project merge request approval rules](../project/merge_requests/approvals/index.md) at the
 top-level group level. When rules are configured [at the instance level](../admin_area/merge_requests_approvals.md),
 you can't edit locked rules.
