@@ -22,7 +22,6 @@ export default () => {
         return object.id || defaultDataIdFromObject(object);
       },
     },
-    assumeImmutableResults: true,
   });
 
   const { emptyStateImage, projectPath, accessTokensPath, terraformApiUrl, username } = el.dataset;

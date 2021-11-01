@@ -61,7 +61,6 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     defaultClient: createDefaultClient(resolvers, {
       typeDefs,
       useGet: true,
-      assumeImmutableResults: true,
     }),
   });
   const { cache } = apolloProvider.clients.defaultClient;

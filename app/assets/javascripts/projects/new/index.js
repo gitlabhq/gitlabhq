@@ -50,7 +50,7 @@ export function initNewProjectUrlSelect() {
       new Vue({
         el,
         apolloProvider: new VueApollo({
-          defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+          defaultClient: createDefaultClient(),
         }),
         provide: {
           namespaceFullPath: el.dataset.namespaceFullPath,

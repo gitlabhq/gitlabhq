@@ -26,6 +26,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry do
       "no matching runner" | 0 | { max: 2 } | :no_matching_runner | false
       "missing dependencies" | 0 | { max: 2 } | :missing_dependency_failure | false
       "forward deployment failure" | 0 | { max: 2 } | :forward_deployment_failure | false
+      "environment creation failure" | 0 | { max: 2 } | :environment_creation_failure | false
     end
 
     with_them do

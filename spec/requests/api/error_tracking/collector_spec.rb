@@ -96,6 +96,20 @@ RSpec.describe API::ErrorTracking::Collector do
       end
     end
 
+    context 'gzip body' do
+      let(:headers) do
+        {
+          'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}",
+          'HTTP_CONTENT_ENCODING' => 'gzip',
+          'CONTENT_TYPE' => 'application/x-sentry-envelope'
+        }
+      end
+
+      let(:params) { ActiveSupport::Gzip.compress(raw_event) }
+
+      it_behaves_like 'successful request'
+    end
+
     it_behaves_like 'successful request'
   end
 
@@ -131,7 +145,7 @@ RSpec.describe API::ErrorTracking::Collector do
         }
       end
 
-      let(:raw_event) { ActiveSupport::Gzip.compress(fixture_file('error_tracking/parsed_event.json')) }
+      let(:params) { ActiveSupport::Gzip.compress(raw_event) }
 
       it_behaves_like 'successful request'
     end

@@ -27,10 +27,10 @@ module Gitlab
       end
 
       def compressed_et_request?(env)
-        env['REQUEST_METHOD'] == 'POST' &&
-          env['HTTP_CONTENT_ENCODING'] == 'gzip' &&
-          env['CONTENT_TYPE'] == 'application/json' &&
-          env['PATH_INFO'].start_with?((File.join(relative_url, COLLECTOR_PATH)))
+        post_request?(env) &&
+          gzip_encoding?(env) &&
+          match_content_type?(env) &&
+          match_path?(env)
       end
 
       def too_large
@@ -43,6 +43,23 @@ module Gitlab
 
       def extract(input)
         Zlib::GzipReader.new(input).read(MAXIMUM_BODY_SIZE + 1)
+      end
+
+      def post_request?(env)
+        env['REQUEST_METHOD'] == 'POST'
+      end
+
+      def gzip_encoding?(env)
+        env['HTTP_CONTENT_ENCODING'] == 'gzip'
+      end
+
+      def match_content_type?(env)
+        env['CONTENT_TYPE'] == 'application/json' ||
+          env['CONTENT_TYPE'] == 'application/x-sentry-envelope'
+      end
+
+      def match_path?(env)
+        env['PATH_INFO'].start_with?((File.join(relative_url, COLLECTOR_PATH)))
       end
     end
   end

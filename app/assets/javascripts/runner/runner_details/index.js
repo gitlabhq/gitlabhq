@@ -15,12 +15,7 @@ export const initRunnerDetail = (selector = '#js-runner-details') => {
   const { runnerId } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

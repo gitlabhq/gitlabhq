@@ -6,7 +6,7 @@ import TerraformNotification from './components/terraform_notification.vue';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({}, { assumeImmtableResults: true }),
+  defaultClient: createDefaultClient(),
 });
 
 export default () => {

@@ -8,12 +8,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      assumeImmutableResults: true,
-    },
-  ),
+  defaultClient: createDefaultClient(),
 });
 
 export default (params = {}) => {

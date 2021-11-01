@@ -38,7 +38,6 @@ export default () => {
             return defaultDataIdFromObject(object);
           },
         },
-        assumeImmutableResults: true,
       },
     ),
   });

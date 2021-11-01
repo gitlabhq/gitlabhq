@@ -2,16 +2,12 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import environmentApp from './queries/environmentApp.query.graphql';
 import { resolvers } from './resolvers';
-import typedefs from './typedefs.graphql';
+import typeDefs from './typedefs.graphql';
 
 export const apolloProvider = (endpoint) => {
-  const defaultClient = createDefaultClient(
-    resolvers(endpoint),
-    {
-      assumeImmutableResults: true,
-    },
-    typedefs,
-  );
+  const defaultClient = createDefaultClient(resolvers(endpoint), {
+    typeDefs,
+  });
   const { cache } = defaultClient;
 
   cache.writeQuery({

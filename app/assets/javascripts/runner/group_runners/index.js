@@ -23,12 +23,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
   } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

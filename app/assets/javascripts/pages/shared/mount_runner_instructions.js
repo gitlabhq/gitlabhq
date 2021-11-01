@@ -9,12 +9,7 @@ export function initInstallRunner(componentId = 'js-install-runner') {
   const installRunnerEl = document.getElementById(componentId);
 
   if (installRunnerEl) {
-    const defaultClient = createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    );
+    const defaultClient = createDefaultClient();
 
     const apolloProvider = new VueApollo({
       defaultClient,

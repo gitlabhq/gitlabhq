@@ -103,7 +103,6 @@ Default client accepts two parameters: `resolvers` and `config`.
 - `config` parameter takes an object of configuration settings:
   - `cacheConfig` field accepts an optional object of settings to [customize Apollo cache](https://www.apollographql.com/docs/react/caching/cache-configuration/#configuring-the-cache)
   - `baseUrl` allows us to pass a URL for GraphQL endpoint different from our main endpoint (for example, `${gon.relative_url_root}/api/graphql`)
-  - `assumeImmutableResults` (set to `false` by default) - this setting, when set to `true`, assumes that every single operation on updating Apollo Cache is immutable. It also sets `freezeResults` to `true`, so any attempt on mutating Apollo Cache throws a console warning in development environment. Please ensure you're following the immutability pattern on cache update operations before setting this option to `true`.
   - `fetchPolicy` determines how you want your component to interact with the Apollo cache. Defaults to "cache-first".
 
 ### Multiple client queries for the same object
@@ -179,7 +178,7 @@ with a **new and updated** object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
-When possible, follow these conventions:
+Please, follow these conventions:
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
@@ -203,11 +202,6 @@ client.writeQuery({
 
 As shown in the code example by using `produce`, we can perform any kind of direct manipulation of the
 `draftState`. Besides, `immer` guarantees that a new state which includes the changes to `draftState` is generated.
-
-Finally, to verify whether the immutable cache update is working properly, we need to change
-`assumeImmutableResults` to `true` in the default client configuration. See [Apollo Client](#apollo-client) for more information.
-
-If everything is working properly `assumeImmutableResults` should remain set to `true`.
 
 ## Usage in Vue
 

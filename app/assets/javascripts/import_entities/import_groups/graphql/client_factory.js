@@ -376,8 +376,4 @@ export function createResolvers({ endpoints, sourceUrl, GroupsManager = SourceGr
 }
 
 export const createApolloClient = ({ sourceUrl, endpoints }) =>
-  createDefaultClient(
-    createResolvers({ sourceUrl, endpoints }),
-    { assumeImmutableResults: true },
-    typeDefs,
-  );
+  createDefaultClient(createResolvers({ sourceUrl, endpoints }), { typeDefs });

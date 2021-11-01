@@ -25,7 +25,7 @@ export default (containerId = 'js-project-storage-count-app') => {
   } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

@@ -14,7 +14,7 @@ import '~/sourcegraph/load';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+  defaultClient: createDefaultClient(),
 });
 
 const viewBlobEl = document.querySelector('#js-view-blob-app');

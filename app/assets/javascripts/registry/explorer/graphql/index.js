@@ -9,7 +9,6 @@ export const apolloProvider = new VueApollo({
     {},
     {
       batchMax: 1,
-      assumeImmutableResults: true,
     },
   ),
 });

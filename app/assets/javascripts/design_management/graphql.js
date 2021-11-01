@@ -88,7 +88,6 @@ const defaultClient = createDefaultClient(
       fragmentMatcher,
     },
     typeDefs,
-    assumeImmutableResults: true,
   },
 );
 

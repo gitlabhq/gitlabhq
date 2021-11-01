@@ -48,12 +48,7 @@ export default (elements) => {
     Vue.use(VueApollo);
 
     const apolloProvider = new VueApollo({
-      defaultClient: createDefaultClient(
-        {},
-        {
-          assumeImmutableResults: true,
-        },
-      ),
+      defaultClient: createDefaultClient(),
     });
     const listenerAddedAttr = 'data-mr-listener-added';
 

@@ -20,12 +20,7 @@ export default () => {
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   // eslint-disable-next-line no-new

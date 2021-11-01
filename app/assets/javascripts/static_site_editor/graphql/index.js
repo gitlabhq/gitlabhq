@@ -22,7 +22,6 @@ const createApolloProvider = (appData) => {
     },
     {
       typeDefs,
-      assumeImmutableResults: true,
     },
   );
 

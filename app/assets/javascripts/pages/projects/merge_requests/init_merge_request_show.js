@@ -28,7 +28,7 @@ export default function initMergeRequestShow() {
 
   const el = document.querySelector('.js-mr-status-box');
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+    defaultClient: createDefaultClient(),
   });
   // eslint-disable-next-line no-new
   new Vue({

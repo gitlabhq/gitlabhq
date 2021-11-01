@@ -59,6 +59,5 @@ export default new VueApollo({
     cacheConfig: {
       fragmentMatcher,
     },
-    assumeImmutableResults: true,
   }),
 });

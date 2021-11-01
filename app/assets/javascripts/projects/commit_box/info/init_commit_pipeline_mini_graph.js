@@ -5,12 +5,7 @@ import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      assumeImmutableResults: true,
-    },
-  ),
+  defaultClient: createDefaultClient(),
 });
 
 export const initCommitPipelineMiniGraph = async (selector = '.js-commit-pipeline-mini-graph') => {

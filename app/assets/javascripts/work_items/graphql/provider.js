@@ -4,6 +4,7 @@ import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import createDefaultClient from '~/lib/graphql';
 import workItemQuery from './work_item.query.graphql';
 import introspectionQueryResultData from './fragmentTypes.json';
+import typeDefs from './typedefs.graphql';
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData,
@@ -18,7 +19,7 @@ export function createApolloProvider() {
       cacheConfig: {
         fragmentMatcher,
       },
-      assumeImmutableResults: true,
+      typeDefs,
     },
   );
 

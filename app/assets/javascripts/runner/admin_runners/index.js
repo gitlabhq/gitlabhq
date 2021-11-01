@@ -19,12 +19,7 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
   const { activeRunnersCount, registrationToken, runnerInstallHelpPage } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

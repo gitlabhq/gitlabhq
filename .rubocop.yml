@@ -162,13 +162,16 @@ Naming/FileName:
     - SSE
     - JWT
     - HLL
-    - VSCode
     - GPG
     - OTP
     - GID
     - AR
     - RSpec
-    - Javascript
+    - ECDSA
+    - ED25519
+    - GitLab
+    - JavaScript
+    - VSCode
     # default ones:
     - CLI
     - DSL

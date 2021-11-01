@@ -12,12 +12,7 @@ export default () => {
     return null;
   }
 
-  const defaultClient = createDefaultClient(
-    {},
-    {
-      assumeImmutableResults: true,
-    },
-  );
+  const defaultClient = createDefaultClient();
   const { agentName, projectPath } = el.dataset;
 
   return new Vue({

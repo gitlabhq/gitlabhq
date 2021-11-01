@@ -6,7 +6,7 @@ import TokenAccess from './components/token_access.vue';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+  defaultClient: createDefaultClient(),
 });
 
 export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {

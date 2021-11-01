@@ -48,7 +48,6 @@ export const stripWhitespaceFromQuery = (url, path) => {
 
 export default (resolvers = {}, config = {}) => {
   const {
-    assumeImmutableResults,
     baseUrl,
     batchMax = 10,
     cacheConfig,
@@ -161,10 +160,10 @@ export default (resolvers = {}, config = {}) => {
     link: appLink,
     cache: new InMemoryCache({
       ...cacheConfig,
-      freezeResults: assumeImmutableResults,
+      freezeResults: true,
     }),
     resolvers,
-    assumeImmutableResults,
+    assumeImmutableResults: true,
     defaultOptions: {
       query: {
         fetchPolicy,

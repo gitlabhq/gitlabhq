@@ -374,6 +374,10 @@ func configureRoutes(u *upstream) {
 		// Geo API routes
 		u.route("", "^/api/v4/geo_nodes", defaultUpstream),
 		u.route("", "^/api/v4/geo_replication", defaultUpstream),
+		u.route("", "^/api/v4/geo/proxy_git_ssh", defaultUpstream),
+
+		// Internal API routes
+		u.route("", "^/api/v4/internal", defaultUpstream),
 
 		// Don't define a catch-all route. If a route does not match, then we know
 		// the request should be proxied.
