@@ -20,7 +20,6 @@ module Projects
       private
 
       def authorize_read_release_evidence!
-        access_denied! unless Feature.enabled?(:release_evidence, project, default_enabled: true)
         access_denied! unless can?(current_user, :read_release_evidence, evidence)
       end
 

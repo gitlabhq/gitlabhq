@@ -26,7 +26,7 @@ module WorkhorseAuthorization
   def file_is_valid?(file)
     return false unless file.is_a?(::UploadedFile)
 
-    file_extension_whitelist.include?(File.extname(file.original_filename).downcase.delete('.'))
+    file_extension_allowlist.include?(File.extname(file.original_filename).downcase.delete('.'))
   end
 
   def uploader_class
@@ -37,7 +37,7 @@ module WorkhorseAuthorization
     raise NotImplementedError
   end
 
-  def file_extension_whitelist
+  def file_extension_allowlist
     ImportExportUploader::EXTENSION_ALLOWLIST
   end
 end
