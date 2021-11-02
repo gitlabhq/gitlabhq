@@ -17,6 +17,34 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
 
     subject { described_class.new(requesting_project).execute }
 
+    shared_examples_for 'access_as' do
+      let(:config) { { access_as: { access_as => {} } } }
+
+      context 'agent' do
+        let(:access_as) { :agent }
+
+        it { is_expected.to match_array [authorization] }
+      end
+
+      context 'impersonate' do
+        let(:access_as) { :impersonate }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'ci_user' do
+        let(:access_as) { :ci_user }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'ci_job' do
+        let(:access_as) { :ci_job }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
     describe 'project authorizations' do
       context 'agent configuration project does not share a root namespace with the given project' do
         let(:unrelated_agent) { create(:cluster_agent) }
@@ -29,7 +57,7 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
       end
 
       context 'with project authorizations present' do
-        let!(:authorization) {create(:agent_project_authorization, agent: production_agent, project: requesting_project) }
+        let!(:authorization) { create(:agent_project_authorization, agent: production_agent, project: requesting_project) }
 
         it { is_expected.to match_array [authorization] }
       end
@@ -40,6 +68,10 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         let!(:group_authorization) { create(:agent_group_authorization, agent: agent, group: bottom_level_group) }
 
         it { is_expected.to match_array [project_authorization] }
+      end
+
+      it_behaves_like 'access_as' do
+        let!(:authorization) { create(:agent_project_authorization, agent: production_agent, project: requesting_project, config: config) }
       end
     end
 
@@ -82,6 +114,10 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         it 'picks the authorization for the closest group to the requesting project' do
           expect(subject).to contain_exactly(bottom_level_auth)
         end
+      end
+
+      it_behaves_like 'access_as' do
+        let!(:authorization) { create(:agent_group_authorization, agent: production_agent, group: top_level_group, config: config) }
       end
     end
   end

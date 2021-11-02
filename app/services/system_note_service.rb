@@ -327,6 +327,10 @@ module SystemNoteService
     ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).change_incident_severity
   end
 
+  def resolve_incident_status(incident, author)
+    ::SystemNotes::IncidentService.new(noteable: incident, project: incident.project, author: author).resolve_incident_status
+  end
+
   def log_resolving_alert(alert, monitoring_tool)
     ::SystemNotes::AlertManagementService.new(noteable: alert, project: alert.project).log_resolving_alert(monitoring_tool)
   end

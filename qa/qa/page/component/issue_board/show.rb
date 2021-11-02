@@ -24,14 +24,6 @@ module QA
             element :create_new_board_button
           end
 
-          view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue' do
-            element :labels_dropdown_content
-          end
-
-          view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_title.vue' do
-            element :labels_edit_button
-          end
-
           view 'app/assets/javascripts/boards/components/board_content.vue' do
             element :boards_list
           end
@@ -85,6 +77,7 @@ module QA
 
           def click_boards_config_button
             click_element(:boards_config_button)
+            wait_for_requests
           end
 
           def click_boards_dropdown_button
@@ -95,16 +88,6 @@ module QA
 
           def click_focus_mode_button
             click_element(:focus_mode_button)
-          end
-
-          def configure_by_label(label)
-            click_boards_config_button
-            click_element(:labels_edit_button)
-            find_element(:labels_dropdown_content).find('li', text: label).click
-            # Clicking the edit button again closes the dropdown and allows the save button to be clicked
-            click_element(:labels_edit_button)
-            click_element(:save_changes_button)
-            wait_boards_list_finish_loading
           end
 
           def create_new_board(board_name)

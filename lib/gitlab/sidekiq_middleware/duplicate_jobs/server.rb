@@ -5,7 +5,7 @@ module Gitlab
     module DuplicateJobs
       class Server
         def call(worker, job, queue, &block)
-          DuplicateJob.new(job, queue).perform(&block)
+          ::Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(job, queue).perform(&block)
         end
       end
     end

@@ -83,6 +83,14 @@ RSpec.describe Issues::CloseService do
       service.execute(issue)
     end
 
+    it 'does not change escalation status' do
+      resolved = IncidentManagement::Escalatable::STATUSES[:resolved]
+
+      expect { service.execute(issue) }
+        .to not_change { IncidentManagement::IssuableEscalationStatus.where(issue: issue).count }
+        .and not_change { IncidentManagement::IssuableEscalationStatus.where(status: resolved).count }
+    end
+
     context 'issue is incident type' do
       let(:issue) { create(:incident, project: project) }
       let(:current_user) { user }
@@ -90,6 +98,40 @@ RSpec.describe Issues::CloseService do
       subject { service.execute(issue) }
 
       it_behaves_like 'an incident management tracked event', :incident_management_incident_closed
+
+      it 'creates a new escalation resolved escalation status', :aggregate_failures do
+        expect { service.execute(issue) }.to change { IncidentManagement::IssuableEscalationStatus.where(issue: issue).count }.by(1)
+
+        expect(issue.incident_management_issuable_escalation_status).to be_resolved
+      end
+
+      context 'when there is an escalation status' do
+        before do
+          create(:incident_management_issuable_escalation_status, issue: issue)
+        end
+
+        it 'changes escalations status to resolved' do
+          expect { service.execute(issue) }.to change { issue.incident_management_issuable_escalation_status.reload.resolved? }.to(true)
+        end
+
+        it 'adds a system note', :aggregate_failures do
+          expect { service.execute(issue) }.to change { issue.notes.count }.by(1)
+
+          new_note = issue.notes.last
+          expect(new_note.note).to eq('changed the status to **Resolved** by closing the incident')
+          expect(new_note.author).to eq(user)
+        end
+
+        context 'when the escalation status did not change to resolved' do
+          let(:escalation_status) { instance_double('IncidentManagement::IssuableEscalationStatus', resolve: false) }
+
+          it 'does not create a system note' do
+            allow(issue).to receive(:incident_management_issuable_escalation_status).and_return(escalation_status)
+
+            expect { service.execute(issue) }.not_to change { issue.notes.count }
+          end
+        end
+      end
     end
   end
 
@@ -237,7 +279,7 @@ RSpec.describe Issues::CloseService do
 
       it 'verifies the number of queries' do
         recorded = ActiveRecord::QueryRecorder.new { close_issue }
-        expected_queries = 27
+        expected_queries = 32
 
         expect(recorded.count).to be <= expected_queries
         expect(recorded.cached_count).to eq(0)

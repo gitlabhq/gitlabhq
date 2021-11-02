@@ -2691,6 +2691,10 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
+## Project vulnerabilities
+
+Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
+
 ## Configure pull mirroring for a project **(PREMIUM)**
 
 > - Introduced in GitLab 11.

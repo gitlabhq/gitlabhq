@@ -62,6 +62,7 @@ module Issues
 
     def perform_incident_management_actions(issue)
       resolve_alert(issue)
+      resolve_incident(issue)
     end
 
     def close_external_issue(issue, closed_via)
@@ -89,6 +90,14 @@ module Issues
           alert_errors: alert.errors.messages
         )
       end
+    end
+
+    def resolve_incident(issue)
+      return unless issue.incident?
+
+      status = issue.incident_management_issuable_escalation_status || issue.build_incident_management_issuable_escalation_status
+
+      SystemNoteService.resolve_incident_status(issue, current_user) if status.resolve
     end
 
     def store_first_mentioned_in_commit_at(issue, merge_request, max_commit_lookup: 100)

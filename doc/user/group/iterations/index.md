@@ -13,7 +13,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Enabled on GitLab.com.
 > - Can be enabled or disabled per-group.
 > - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-iterations). **(PREMIUM ONLY)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-iterations).
 > - Moved to GitLab Premium in 13.9.
 
 Iterations are a way to track issues over a period of time. This allows teams
@@ -38,7 +38,7 @@ In GitLab, iterations are similar to milestones, with a few differences:
 > - Deployed behind a [feature flag](../../feature_flags.md), disabled by default.
 > - Disabled on GitLab.com.
 > - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-iteration-cadences). **(PREMIUM SELF)**
+> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-iteration-cadences).
 
 This in-development feature might not be available for your use. There can be
 [risks when enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).

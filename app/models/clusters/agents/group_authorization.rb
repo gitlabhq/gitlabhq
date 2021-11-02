@@ -3,6 +3,8 @@
 module Clusters
   module Agents
     class GroupAuthorization < ApplicationRecord
+      include ::Clusters::Agents::AuthorizationConfigScopes
+
       self.table_name = 'agent_group_authorizations'
 
       belongs_to :agent, class_name: 'Clusters::Agent', optional: false
