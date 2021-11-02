@@ -49,30 +49,62 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
     end
   end
 
-  context 'when the key is an array of only ActiveRecord models' do
-    let(:scope) { [user, project] }
+  describe '.throttled?' do
+    context 'when the key is invalid' do
+      context 'is provided as a Symbol' do
+        context 'but is not defined in the rate_limits Hash' do
+          it 'raises an InvalidKeyError exception' do
+            key = :key_not_in_rate_limits_hash
 
-    let(:cache_key) do
-      "application_rate_limiter:test_action:user:#{user.id}:project:#{project.id}"
+            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+          end
+        end
+      end
+
+      context 'is provided as a String' do
+        context 'and is a String representation of an existing key in rate_limits Hash' do
+          it 'raises an InvalidKeyError exception' do
+            key = rate_limits.keys[0].to_s
+
+            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+          end
+        end
+
+        context 'but is not defined in any form in the rate_limits Hash' do
+          it 'raises an InvalidKeyError exception' do
+            key = 'key_not_in_rate_limits_hash'
+
+            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+          end
+        end
+      end
     end
 
-    it_behaves_like 'action rate limiter'
-  end
+    context 'when the key is an array of only ActiveRecord models' do
+      let(:scope) { [user, project] }
 
-  context 'when they key a combination of ActiveRecord models and strings' do
-    let(:project) { create(:project, :public, :repository) }
-    let(:commit) { project.repository.commit }
-    let(:path) { 'app/controllers/groups_controller.rb' }
-    let(:scope) { [project, commit, path] }
+      let(:cache_key) do
+        "application_rate_limiter:test_action:user:#{user.id}:project:#{project.id}"
+      end
 
-    let(:cache_key) do
-      "application_rate_limiter:test_action:project:#{project.id}:commit:#{commit.sha}:#{path}"
+      it_behaves_like 'action rate limiter'
     end
 
-    it_behaves_like 'action rate limiter'
+    context 'when they key a combination of ActiveRecord models and strings' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:commit) { project.repository.commit }
+      let(:path) { 'app/controllers/groups_controller.rb' }
+      let(:scope) { [project, commit, path] }
+
+      let(:cache_key) do
+        "application_rate_limiter:test_action:project:#{project.id}:commit:#{commit.sha}:#{path}"
+      end
+
+      it_behaves_like 'action rate limiter'
+    end
   end
 
-  describe '#log_request' do
+  describe '.log_request' do
     let(:file_path) { 'master/README.md' }
     let(:type) { :raw_blob_request_limit }
     let(:fullpath) { "/#{project.full_path}/raw/#{file_path}" }

@@ -27,6 +27,7 @@ To view group-level Value Stream Analytics:
 
 Value Stream Analytics at the group level includes data for the selected group and its subgroups.
 
+NOTE:
 [Project-level Value Stream Analytics](../../analytics/value_stream_analytics.md) is also available.
 
 ## Default stages

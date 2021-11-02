@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 class PasswordsController < Devise::PasswordsController
+  include GitlabRecaptcha
+
   skip_before_action :require_no_authentication, only: [:edit, :update]
 
+  prepend_before_action :check_recaptcha, only: :create
+  before_action :load_recaptcha, only: :new
   before_action :resource_from_email, only: [:create]
   before_action :check_password_authentication_available, only: [:create]
   before_action :throttle_reset, only: [:create]
@@ -57,6 +61,12 @@ class PasswordsController < Devise::PasswordsController
 
     redirect_to after_sending_reset_password_instructions_path_for(resource_name),
       alert: _("Password authentication is unavailable.")
+  end
+
+  def check_recaptcha
+    return unless resource_params[:email].present?
+
+    super
   end
 
   def throttle_reset

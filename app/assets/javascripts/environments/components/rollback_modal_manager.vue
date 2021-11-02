@@ -15,7 +15,6 @@ export default {
   data() {
     return {
       environment: null,
-      retryPath: '',
       visible: false,
     };
   },
@@ -35,9 +34,9 @@ export default {
           name: environmentName,
           commitShortSha,
           commitUrl,
+          retryUrl: retryPath,
           isLastDeployment: parseBoolean(isLastDeployment),
         };
-        this.retryPath = retryPath;
         this.visible = true;
       });
     });
@@ -51,7 +50,5 @@ export default {
     v-model="visible"
     :environment="environment"
     :has-multiple-commits="false"
-    :retry-url="retryPath"
   />
-  <div v-else></div>
 </template>

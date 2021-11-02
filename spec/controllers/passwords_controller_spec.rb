@@ -91,4 +91,47 @@ RSpec.describe PasswordsController do
       end
     end
   end
+
+  describe '#create' do
+    let(:user) { create(:user) }
+
+    subject(:perform_request) { post(:create, params: { user: { email: user.email } }) }
+
+    context 'when reCAPTCHA is disabled' do
+      before do
+        stub_application_setting(recaptcha_enabled: false)
+      end
+
+      it 'successfully sends password reset when reCAPTCHA is not solved' do
+        perform_request
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:notice]).to include 'If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.'
+      end
+    end
+
+    context 'when reCAPTCHA is enabled' do
+      before do
+        stub_application_setting(recaptcha_enabled: true)
+      end
+
+      it 'displays an error when the reCAPTCHA is not solved' do
+        Recaptcha.configuration.skip_verify_env.delete('test')
+
+        perform_request
+
+        expect(response).to render_template(:new)
+        expect(flash[:alert]).to include 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+      end
+
+      it 'successfully sends password reset when reCAPTCHA is solved' do
+        Recaptcha.configuration.skip_verify_env << 'test'
+
+        perform_request
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:notice]).to include 'If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.'
+      end
+    end
+  end
 end

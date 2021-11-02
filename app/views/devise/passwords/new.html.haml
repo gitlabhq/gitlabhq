@@ -8,7 +8,12 @@
         = f.email_field :email, class: "form-control gl-form-input", required: true, value: params[:user_email], autofocus: true, title: _('Please provide a valid email address.')
         .form-text.text-muted
           = _('Requires your primary GitLab email address.')
-      .clearfix
+
+      %div
+      - if recaptcha_enabled?
+        = recaptcha_tags nonce: content_security_policy_nonce
+
+      .gl-mt-5
         = f.submit _("Reset password"), class: "gl-button btn-confirm btn"
 
 .clearfix.prepend-top-20

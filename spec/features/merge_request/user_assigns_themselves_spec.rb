@@ -15,7 +15,7 @@ RSpec.describe 'Merge request > User assigns themselves' do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'updates related issues', :js do
+    it 'updates related issues', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343006' do
       click_link 'Assign yourself to these issues'
 
       expect(page).to have_content '2 issues have been assigned to you'

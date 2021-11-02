@@ -11,6 +11,8 @@ module Gitlab
   #   redirect_to(edit_project_path(@project), status: :too_many_requests)
   # end
   class ApplicationRateLimiter
+    InvalidKeyError = Class.new(StandardError)
+
     def initialize(key, **options)
       @key = key
       @options = options
@@ -69,7 +71,7 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(key, **options)
-        return unless rate_limits[key]
+        raise InvalidKeyError unless rate_limits[key]
 
         return if scoped_user_in_allowlist?(options)
 
