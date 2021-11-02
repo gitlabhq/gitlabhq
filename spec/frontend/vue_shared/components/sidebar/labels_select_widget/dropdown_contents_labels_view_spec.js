@@ -10,7 +10,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
@@ -57,7 +56,6 @@ describe('DropdownContentsLabelsView', () => {
       propsData: {
         ...initialState,
         localSelectedLabels,
-        issuableType: IssuableType.Issue,
         searchKey,
         labelCreateType: 'project',
         workspaceType: 'project',

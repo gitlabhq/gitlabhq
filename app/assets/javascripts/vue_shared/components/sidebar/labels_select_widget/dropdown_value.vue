@@ -1,7 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
 import { sortBy } from 'lodash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
@@ -47,7 +46,7 @@ export default {
       return this.allowScopedLabels && isScopedLabel(label);
     },
     removeLabel(labelId) {
-      this.$emit('onLabelRemove', getIdFromGraphQLId(labelId));
+      this.$emit('onLabelRemove', labelId);
     },
   },
 };

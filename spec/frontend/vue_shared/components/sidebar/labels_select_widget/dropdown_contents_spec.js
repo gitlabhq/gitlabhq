@@ -39,7 +39,6 @@ describe('DropdownContent', () => {
         footerManageLabelTitle: 'manage',
         dropdownButtonText: 'Labels',
         variant: 'sidebar',
-        issuableType: 'issue',
         fullPath: 'test',
         workspaceType: 'project',
         labelCreateType: 'project',

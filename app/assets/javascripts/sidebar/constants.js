@@ -37,6 +37,7 @@ import epicLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widge
 import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
 import groupLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/group_labels.query.graphql';
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
+import mergeRequestLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/merge_request_labels.query.graphql';
 import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
 import getAlertAssignees from '~/vue_shared/components/sidebar/queries/get_alert_assignees.query.graphql';
 import getIssueAssignees from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
@@ -128,6 +129,7 @@ export const issuableLabelsQueries = {
     mutationName: 'updateIssue',
   },
   [IssuableType.MergeRequest]: {
+    issuableQuery: mergeRequestLabelsQuery,
     mutation: updateMergeRequestLabelsMutation,
     mutationName: 'mergeRequestSetLabels',
   },

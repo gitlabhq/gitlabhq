@@ -168,7 +168,7 @@ their color is `#428BCA`.
 `<Category Name>` is the category name as it is in the single source of truth for categories at
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml>.
 
-For instance, the "DevOps Report" category is represented by the
+For instance, the "DevOps Reports" category is represented by the
 ~"Category:DevOps Reports" label in the `gitlab-org` group since its
 `devops_reports.name` value is "DevOps Reports".
 

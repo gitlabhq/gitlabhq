@@ -45,7 +45,7 @@ export default {
       default: false,
     },
     selected: {
-      type: Object,
+      type: [Object, Array],
       required: false,
       default: () => {},
     },
@@ -53,6 +53,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    allowMultiselect: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -66,8 +71,14 @@ export default {
   methods: {
     selectOption(option) {
       this.$emit('set-option', option || null);
+      if (!this.allowMultiselect) {
+        this.$refs.dropdown.hide();
+      }
     },
     isSelected(option) {
+      if (Array.isArray(this.selected)) {
+        return this.selected.some((label) => label.title === option.title);
+      }
       return (
         this.selected &&
         ((option.name && this.selected.name === option.name) ||
@@ -78,7 +89,7 @@ export default {
       this.$refs.dropdown.show();
     },
     setFocus() {
-      this.$refs.search.focusInput();
+      this.$refs.search?.focusInput();
     },
     setSearchTerm(search) {
       this.$emit('set-search', search);
@@ -108,56 +119,60 @@ export default {
     @shown="setFocus"
   >
     <template #header>
-      <gl-search-box-by-type
-        ref="search"
-        :value="searchTerm"
-        :placeholder="searchText"
-        class="js-dropdown-input-field"
-        @input="setSearchTerm"
-      />
+      <slot name="header">
+        <gl-search-box-by-type
+          ref="search"
+          :value="searchTerm"
+          :placeholder="searchText"
+          class="js-dropdown-input-field"
+          @input="setSearchTerm"
+        />
+      </slot>
     </template>
-    <gl-dropdown-form class="gl-relative gl-min-h-7">
-      <gl-loading-icon
-        v-if="isLoading"
-        size="md"
-        class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
-      />
-      <template v-else>
-        <template v-if="isSearchEmpty && presetOptions.length > 0">
+    <slot name="default">
+      <gl-dropdown-form class="gl-relative gl-min-h-7">
+        <gl-loading-icon
+          v-if="isLoading"
+          size="md"
+          class="gl-absolute gl-left-0 gl-top-0 gl-right-0"
+        />
+        <template v-else>
+          <template v-if="isSearchEmpty && presetOptions.length > 0">
+            <gl-dropdown-item
+              v-for="option in presetOptions"
+              :key="option.id"
+              :is-checked="isSelected(option)"
+              :is-check-centered="true"
+              :is-check-item="true"
+              @click.native.capture.stop="selectOption(option)"
+            >
+              <slot name="preset-item" :item="option">
+                {{ option.title }}
+              </slot>
+            </gl-dropdown-item>
+            <gl-dropdown-divider />
+          </template>
           <gl-dropdown-item
-            v-for="option in presetOptions"
+            v-for="option in options"
             :key="option.id"
             :is-checked="isSelected(option)"
             :is-check-centered="true"
             :is-check-item="true"
-            @click="selectOption(option)"
+            :avatar-url="avatarUrl(option)"
+            :secondary-text="secondaryText(option)"
+            data-testid="unselected-option"
+            @click.native.capture.stop="selectOption(option)"
           >
-            <slot name="preset-item" :item="option">
+            <slot name="item" :item="option">
               {{ option.title }}
             </slot>
           </gl-dropdown-item>
-          <gl-dropdown-divider />
+          <gl-dropdown-item v-if="noOptionsFound" class="gl-pl-6!">
+            {{ $options.i18n.noMatchingResults }}
+          </gl-dropdown-item>
         </template>
-        <gl-dropdown-item
-          v-for="option in options"
-          :key="option.id"
-          :is-checked="isSelected(option)"
-          :is-check-centered="true"
-          :is-check-item="true"
-          :avatar-url="avatarUrl(option)"
-          :secondary-text="secondaryText(option)"
-          data-testid="unselected-option"
-          @click="selectOption(option)"
-        >
-          <slot name="item" :item="option">
-            {{ option.title }}
-          </slot>
-        </gl-dropdown-item>
-        <gl-dropdown-item v-if="noOptionsFound" class="gl-pl-6!">
-          {{ $options.i18n.noMatchingResults }}
-        </gl-dropdown-item>
-      </template>
-    </gl-dropdown-form>
+      </gl-dropdown-form>
+    </slot>
     <template #footer>
       <slot name="footer"></slot>
     </template>

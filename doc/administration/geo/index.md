@@ -131,12 +131,13 @@ and we recommend you use:
 
 The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo.
 
-| **Primary** site | **Secondary** site | Protocol     |
-|:-----------------|:-------------------|:-------------|
-| 80               | 80                 | HTTP         |
-| 443              | 443                | TCP or HTTPS |
-| 22               | 22                 | TCP          |
-| 5432             |                    | PostgreSQL   |
+| Source site | Source port | Destination site | Destination port | Protocol    |
+|-------------|-------------|------------------|------------------|-------------|
+| Primary     | Any         | Secondary        | 80               | TCP (HTTP)  |
+| Primary     | Any         | Secondary        | 443              | TCP (HTTPS) |
+| Secondary   | Any         | Primary          | 80               | TCP (HTTP)  |
+| Secondary   | Any         | Primary          | 443              | TCP (HTTPS) |
+| Secondary   | Any         | Primary          | 5432             | TCP         |
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 

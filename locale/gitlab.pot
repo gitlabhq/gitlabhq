@@ -5491,6 +5491,9 @@ msgstr ""
 msgid "BoardScope|An error occurred while getting milestones, please try again."
 msgstr ""
 
+msgid "BoardScope|An error occurred while searching for labels, please try again."
+msgstr ""
+
 msgid "BoardScope|An error occurred while searching for users, please try again."
 msgstr ""
 
@@ -5500,10 +5503,19 @@ msgstr ""
 msgid "BoardScope|Any assignee"
 msgstr ""
 
+msgid "BoardScope|Any label"
+msgstr ""
+
 msgid "BoardScope|Assignee"
 msgstr ""
 
+msgid "BoardScope|Choose labels"
+msgstr ""
+
 msgid "BoardScope|Edit"
+msgstr ""
+
+msgid "BoardScope|Labels"
 msgstr ""
 
 msgid "BoardScope|Milestone"
@@ -5516,6 +5528,9 @@ msgid "BoardScope|Search milestones"
 msgstr ""
 
 msgid "BoardScope|Select assignee"
+msgstr ""
+
+msgid "BoardScope|Select labels"
 msgstr ""
 
 msgid "BoardScope|Select milestone"
@@ -11765,7 +11780,7 @@ msgstr ""
 msgid "DevOps Adoption"
 msgstr ""
 
-msgid "DevOps Report"
+msgid "DevOps Reports"
 msgstr ""
 
 msgid "DevOps adoption"
@@ -18629,7 +18644,7 @@ msgstr ""
 msgid "Interval Pattern"
 msgstr ""
 
-msgid "Introducing Your DevOps Report"
+msgid "Introducing Your DevOps Reports"
 msgstr ""
 
 msgid "Invalid Insights config file detected"
@@ -39603,7 +39618,7 @@ msgstr ""
 msgid "Your CSV import for project"
 msgstr ""
 
-msgid "Your DevOps Report gives an overview of how you are using GitLab from a feature perspective. Use it to view how you compare with other organizations."
+msgid "Your DevOps Reports give an overview of how you are using GitLab from a feature perspective. Use them to view how you compare with other organizations, and how your teams compare against each other."
 msgstr ""
 
 msgid "Your GPG keys (%{count})"

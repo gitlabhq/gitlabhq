@@ -57,38 +57,15 @@ export default {
       type: Boolean,
       required: true,
     },
-    labelsPath: {
-      type: String,
-      required: true,
-    },
-    labelsWebUrl: {
-      type: String,
-      required: true,
-    },
     scopedIssueBoardFeatureEnabled: {
       type: Boolean,
       required: false,
       default: false,
     },
-    projectId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    groupId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     weights: {
       type: Array,
       required: false,
       default: () => [],
-    },
-    enableScopedLabels: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     currentBoard: {
       type: Object,
@@ -288,16 +265,7 @@ export default {
       this.board.iteration_id = iterationId;
     },
     setBoardLabels(labels) {
-      labels.forEach((label) => {
-        if (label.set && !this.board.labels.find((l) => l.id === label.id)) {
-          this.board.labels.push({
-            ...label,
-            textColor: label.text_color,
-          });
-        } else if (!label.set) {
-          this.board.labels = this.board.labels.filter((selected) => selected.id !== label.id);
-        }
-      });
+      this.board.labels = labels;
     },
     setAssignee(assigneeId) {
       this.$set(this.board, 'assignee', {
@@ -371,11 +339,6 @@ export default {
         :collapse-scope="isNewForm"
         :board="board"
         :can-admin-board="canAdminBoard"
-        :labels-path="labelsPath"
-        :labels-web-url="labelsWebUrl"
-        :enable-scoped-labels="enableScopedLabels"
-        :project-id="projectId"
-        :group-id="groupId"
         :weights="weights"
         @set-iteration="setIteration"
         @set-board-labels="setBoardLabels"

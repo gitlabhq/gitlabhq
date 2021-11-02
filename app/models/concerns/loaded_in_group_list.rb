@@ -41,9 +41,11 @@ module LoadedInGroupList
       namespaces = Namespace.arel_table
       children = namespaces.alias('children')
 
+      # TODO 6473: remove the filtering of the Namespaces::ProjectNamespace see https://gitlab.com/groups/gitlab-org/-/epics/6473
       namespaces.project(Arel.star.count.as('preloaded_subgroup_count'))
         .from(children)
         .where(children[:parent_id].eq(namespaces[:id]))
+        .where(children[:type].is_distinct_from(Namespaces::ProjectNamespace.sti_name))
     end
 
     def member_count_sql

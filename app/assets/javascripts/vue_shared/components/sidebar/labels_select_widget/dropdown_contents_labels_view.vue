@@ -23,10 +23,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    issuableType: {
-      type: String,
-      required: true,
-    },
     localSelectedLabels: {
       type: Array,
       required: true,
@@ -119,13 +115,7 @@ export default {
           ({ id }) => id !== getIdFromGraphQLId(label.id) && id !== label.id,
         );
       } else {
-        labels = [
-          ...this.localSelectedLabels,
-          {
-            ...label,
-            id: getIdFromGraphQLId(label.id),
-          },
-        ];
+        labels = [...this.localSelectedLabels, label];
       }
       this.$emit('input', labels);
     },

@@ -92,6 +92,7 @@ export const createLabelSuccessfulResponse = {
 export const workspaceLabelsQueryResponse = {
   data: {
     workspace: {
+      id: 'gid://gitlab/Project/126',
       labels: {
         nodes: [
           {

@@ -76,7 +76,13 @@ Mattermost. See the [full table for a complete list](#storage-specific-configura
 However, backups can be configured with [server side encryption](../raketasks/backup_restore.md#s3-encrypted-buckets) separately.
 
 Enabling consolidated object storage enables object storage for all object
-types. If you want to use local storage for specific object types, you can
+types. If not all buckets are specified, `sudo gitlab-ctl reconfigure` may fail with the error like:
+
+```plaintext
+Object storage for <object type> must have a bucket specified
+```
+
+If you want to use local storage for specific object types, you can
 [selectively disable object storages](#selectively-disabling-object-storage).
 
 Most types of objects, such as CI artifacts, LFS files, upload

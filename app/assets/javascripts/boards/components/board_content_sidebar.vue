@@ -54,6 +54,9 @@ export default {
     allowLabelEdit: {
       default: false,
     },
+    labelsFilterBasePath: {
+      default: '',
+    },
   },
   inheritAttrs: false,
   computed: {
@@ -89,6 +92,11 @@ export default {
     },
     labelType() {
       return this.isGroupBoard ? LabelType.group : LabelType.project;
+    },
+    labelsFilterPath() {
+      return this.isGroupBoard
+        ? this.labelsFilterBasePath.replace(':project_path', this.projectPathForActiveIssue)
+        : this.labelsFilterBasePath;
     },
   },
   methods: {
@@ -212,7 +220,7 @@ export default {
           :footer-create-label-title="createLabelTitle"
           :footer-manage-label-title="manageLabelTitle"
           :labels-create-title="createLabelTitle"
-          :labels-filter-base-path="projectPathForActiveIssue"
+          :labels-filter-base-path="labelsFilterPath"
           :attr-workspace-path="attrWorkspacePath"
           workspace-type="project"
           :issuable-type="issuableType"

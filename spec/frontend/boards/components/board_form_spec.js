@@ -1,7 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import BoardForm from '~/boards/components/board_form.vue';
@@ -31,8 +30,6 @@ const currentBoard = {
 
 const defaultProps = {
   canAdminBoard: false,
-  labelsPath: `${TEST_HOST}/labels/path`,
-  labelsWebUrl: `${TEST_HOST}/-/labels`,
   currentBoard,
   currentPage: '',
 };

@@ -25,3 +25,5 @@ To enable the Puma exporter:
    for the changes to take effect.
 
 Prometheus begins collecting performance data from the Puma exporter exposed at `localhost:8083`.
+
+For more information on using Puma with GitLab, see [Puma](../../operations/puma.md).

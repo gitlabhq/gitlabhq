@@ -32,11 +32,6 @@ export default {
       type: String,
       required: true,
     },
-    issuableType: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
     workspaceType: {
       type: String,
       required: true,

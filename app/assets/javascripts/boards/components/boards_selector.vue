@@ -64,22 +64,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    labelsPath: {
-      type: String,
-      required: true,
-    },
-    labelsWebUrl: {
-      type: String,
-      required: true,
-    },
-    projectId: {
-      type: Number,
-      required: true,
-    },
-    groupId: {
-      type: Number,
-      required: true,
-    },
     scopedIssueBoardFeatureEnabled: {
       type: Boolean,
       required: true,
@@ -87,11 +71,6 @@ export default {
     weights: {
       type: Array,
       required: true,
-    },
-    enabledScopedLabels: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -354,14 +333,9 @@ export default {
 
       <board-form
         v-if="currentPage"
-        :labels-path="labelsPath"
-        :labels-web-url="labelsWebUrl"
-        :project-id="projectId"
-        :group-id="groupId"
         :can-admin-board="canAdminBoard"
         :scoped-issue-board-feature-enabled="scopedIssueBoardFeatureEnabled"
         :weights="weights"
-        :enable-scoped-labels="enabledScopedLabels"
         :current-board="currentBoard"
         :current-page="currentPage"
         @cancel="cancel"

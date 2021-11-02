@@ -48,7 +48,7 @@ With DevOps Adoption you can:
 - Identify specific subgroups that are lagging in their adoption of GitLab, so you can help them along in their DevOps journey.
 - Find the subgroups that have adopted certain features, and can provide guidance to other subgroups on how to use those features.
 
-![DevOps Report](img/group_devops_adoption_v14_2.png)
+![DevOps Adoption](img/group_devops_adoption_v14_2.png)
 
 Feature adoption is based on usage in the previous calendar month. Data is updated on the first day
 of each month. If the monthly update fails, it tries again daily until successful.

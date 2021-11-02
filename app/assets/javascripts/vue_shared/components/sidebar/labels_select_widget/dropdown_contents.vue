@@ -53,10 +53,6 @@ export default {
       type: String,
       required: true,
     },
-    issuableType: {
-      type: String,
-      required: true,
-    },
     isVisible: {
       type: Boolean,
       required: false,
@@ -209,7 +205,6 @@ export default {
         v-model="localSelectedLabels"
         :search-key="searchKey"
         :allow-multiselect="allowMultiselect"
-        :issuable-type="issuableType"
         :full-path="fullPath"
         :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"

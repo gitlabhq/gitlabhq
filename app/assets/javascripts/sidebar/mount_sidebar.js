@@ -260,6 +260,10 @@ export function mountSidebarLabels() {
       variant: DropdownVariant.Sidebar,
       canUpdate: parseBoolean(el.dataset.canEdit),
       isClassicSidebar: true,
+      issuableType:
+        isInIssuePage() || isInIncidentPage() || isInDesignPage()
+          ? IssuableType.Issue
+          : IssuableType.MergeRequest,
     },
     render: (createElement) => createElement(SidebarLabels),
   });

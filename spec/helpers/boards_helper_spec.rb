@@ -23,14 +23,14 @@ RSpec.describe BoardsHelper do
       it 'returns correct path for base group' do
         assign(:board, group_board)
 
-        expect(helper.build_issue_link_base).to eq('/base/:project_path/issues')
+        expect(helper.build_issue_link_base).to eq('/:project_path/-/issues')
       end
 
       it 'returns correct path for subgroup' do
         subgroup = create(:group, parent: base_group, path: 'sub')
         assign(:board, create(:board, group: subgroup))
 
-        expect(helper.build_issue_link_base).to eq('/base/sub/:project_path/issues')
+        expect(helper.build_issue_link_base).to eq('/:project_path/-/issues')
       end
     end
   end
@@ -149,7 +149,7 @@ RSpec.describe BoardsHelper do
       end
 
       it 'returns correct path for base group' do
-        expect(helper.build_issue_link_base).to eq("/#{base_group.full_path}/:project_path/issues")
+        expect(helper.build_issue_link_base).to eq("/:project_path/-/issues")
       end
 
       it 'returns required label endpoints' do

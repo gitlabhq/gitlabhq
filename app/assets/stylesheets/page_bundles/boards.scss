@@ -470,6 +470,10 @@
   .labels-select-wrapper.is-embedded .labels-select-wrapper.is-embedded {
     width: auto;
   }
+
+  .show.dropdown .dropdown-menu {
+    @include gl-w-full;
+  }
 }
 
 .board-header-collapsed-info-icon:hover {

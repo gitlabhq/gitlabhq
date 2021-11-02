@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     focusInput() {
-      this.$refs.searchInput.focusInput();
+      this.$refs.searchInput?.focusInput();
     },
   },
 };

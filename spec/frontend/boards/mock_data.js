@@ -12,6 +12,7 @@ export const boardObj = {
   id: 1,
   name: 'test',
   milestone_id: null,
+  labels: [],
 };
 
 export const listObj = {
@@ -609,3 +610,43 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     unique: true,
   },
 ];
+
+export const mockLabel1 = {
+  id: 'gid://gitlab/GroupLabel/121',
+  title: 'To Do',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockLabel2 = {
+  id: 'gid://gitlab/GroupLabel/122',
+  title: 'Doing',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockProjectLabelsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      labels: {
+        nodes: [mockLabel1, mockLabel2],
+      },
+    },
+    __typename: 'Project',
+  },
+};
+
+export const mockGroupLabelsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/1',
+      labels: {
+        nodes: [mockLabel1, mockLabel2],
+      },
+    },
+    __typename: 'Group',
+  },
+};

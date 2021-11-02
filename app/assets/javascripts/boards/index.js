@@ -142,5 +142,7 @@ export default () => {
     fullPath: $boardApp.dataset.fullPath,
     rootPath: $boardApp.dataset.boardsEndpoint,
     recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+    allowScopedLabels: $boardApp.dataset.scopedLabels,
+    labelsManagePath: $boardApp.dataset.labelsManagePath,
   });
 };

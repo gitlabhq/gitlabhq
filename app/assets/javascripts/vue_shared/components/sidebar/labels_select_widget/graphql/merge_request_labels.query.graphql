@@ -1,0 +1,14 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
+query mergeRequestLabels($fullPath: ID!, $iid: String!) {
+  workspace: project(fullPath: $fullPath) {
+    issuable: mergeRequest(iid: $iid) {
+      id
+      labels {
+        nodes {
+          ...Label
+        }
+      }
+    }
+  }
+}
