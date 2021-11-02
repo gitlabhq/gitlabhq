@@ -1,0 +1,8 @@
+---
+name: prominent_create_board_btn
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72683"
+rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/343415"
+milestone: "14.5"
+type: experiment
+group: group::product planning
+default_enabled: false

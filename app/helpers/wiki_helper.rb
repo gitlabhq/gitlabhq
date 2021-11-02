@@ -9,7 +9,7 @@ module WikiHelper
     if page.persisted?
       titles << page.human_title
       breadcrumb_title(page.human_title)
-      wiki_breadcrumb_dropdown_links(page.slug)
+      wiki_breadcrumb_collapsed_links(page.slug)
     end
 
     titles << action if action
@@ -39,14 +39,14 @@ module WikiHelper
       .join(' / ')
   end
 
-  def wiki_breadcrumb_dropdown_links(page_slug)
+  def wiki_breadcrumb_collapsed_links(page_slug)
     page_slug_split = page_slug.split('/')
     page_slug_split.pop(1)
     current_slug = ""
     page_slug_split
       .map do |dir_or_page|
         current_slug = "#{current_slug}#{dir_or_page}/"
-        add_to_breadcrumb_dropdown link_to(WikiPage.unhyphenize(dir_or_page).capitalize, wiki_page_path(@wiki, current_slug)), location: :after
+        add_to_breadcrumb_collapsed_links link_to(WikiPage.unhyphenize(dir_or_page).capitalize, wiki_page_path(@wiki, current_slug)), location: :after
       end
   end
 

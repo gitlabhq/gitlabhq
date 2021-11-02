@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def options(group)
-        additional_features = Feature.enabled?(:additional_snowplow_tracking, group)
+        additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
         {
           namespace: SNOWPLOW_NAMESPACE,
           hostname: Gitlab::CurrentSettings.snowplow_collector_hostname,

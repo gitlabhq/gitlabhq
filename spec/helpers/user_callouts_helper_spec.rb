@@ -216,20 +216,6 @@ RSpec.describe UserCalloutsHelper do
       context 'when the invite_members_banner has not been dismissed' do
         it { is_expected.to eq(true) }
 
-        context 'when a user has dismissed this banner via cookies already' do
-          before do
-            helper.request.cookies["invite_#{group.id}_#{user.id}"] = 'true'
-          end
-
-          it { is_expected.to eq(false) }
-
-          it 'creates the callout from cookie', :aggregate_failures do
-            expect { subject }.to change { Users::GroupCallout.count }.by(1)
-            expect(Users::GroupCallout.last).to have_attributes(group_id: group.id,
-                                                        feature_name: described_class::INVITE_MEMBERS_BANNER)
-          end
-        end
-
         context 'when the group was just created' do
           before do
             flash[:notice] = "Group #{group.name} was successfully created"

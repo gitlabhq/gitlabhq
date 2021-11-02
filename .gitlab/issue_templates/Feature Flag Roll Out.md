@@ -148,5 +148,5 @@ codebase.
 /chatops run feature set <feature-flag-name> false
 ```
 
-/label ~"feature flag"
+/label ~"feature flag" ~"type::feature" ~"feature::addition"
 /assign DRI

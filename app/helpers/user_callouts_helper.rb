@@ -81,30 +81,9 @@ module UserCalloutsHelper
   def user_dismissed_for_group(feature_name, group, ignore_dismissal_earlier_than = nil)
     return false unless current_user
 
-    set_dismissed_from_cookie(group)
-
     current_user.dismissed_callout_for_group?(feature_name: feature_name,
                                               group: group,
                                               ignore_dismissal_earlier_than: ignore_dismissal_earlier_than)
-  end
-
-  def set_dismissed_from_cookie(group)
-    # bridge function for one milestone to try and not annoy users who might have already dismissed this alert
-    # remove in 14.4 or 14.5? https://gitlab.com/gitlab-org/gitlab/-/issues/340322
-    dismissed_key = "invite_#{group.id}_#{current_user.id}"
-
-    if cookies[dismissed_key].present?
-      params = {
-        feature_name: INVITE_MEMBERS_BANNER,
-        group_id: group.id
-      }
-
-      Users::DismissGroupCalloutService.new(
-        container: nil, current_user: current_user, params: params
-      ).execute
-
-      cookies.delete dismissed_key
-    end
   end
 
   def just_created?

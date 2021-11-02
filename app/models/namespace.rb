@@ -125,7 +125,7 @@ class Namespace < ApplicationRecord
   scope :user_namespaces, -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) }
   # TODO: this can be simplified with `type != 'Project'`  when working on issue
   #       https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  scope :without_project_namespaces, -> { where("type IS DISTINCT FROM ?", Namespaces::ProjectNamespace.sti_name) }
+  scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].is_distinct_from(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
@@ -192,9 +192,9 @@ class Namespace < ApplicationRecord
     # Returns an ActiveRecord::Relation.
     def search(query, include_parents: false)
       if include_parents
-        where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
+        without_project_namespaces.where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
       else
-        fuzzy_search(query, [:path, :name])
+        without_project_namespaces.fuzzy_search(query, [:path, :name])
       end
     end
 

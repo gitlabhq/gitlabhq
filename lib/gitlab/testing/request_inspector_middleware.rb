@@ -9,6 +9,8 @@ module Gitlab
       @@logged_requests = Concurrent::Array.new
       @@inject_headers = Concurrent::Hash.new
 
+      Request = Struct.new(:url, :status_code, :request_headers, :response_headers, :body, keyword_init: true)
+
       # Resets the current request log and starts logging requests
       def self.log_requests!(headers = {})
         @@inject_headers.replace(headers)
@@ -40,7 +42,7 @@ module Gitlab
         full_body = +''
         body.each { |b| full_body << b }
 
-        request = OpenStruct.new(
+        request = Request.new(
           url: url,
           status_code: status,
           request_headers: request_headers,

@@ -23,6 +23,30 @@ as much as possible.
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
 
+### Overview of the GitLab project test dependency
+
+To understand how the minimal test jobs are executed, we need to understand the dependency between
+GitLab code (frontend and backend) and the respective tests (Jest and RSpec).
+This dependency can be visualized in the following diagram:
+
+```mermaid
+flowchart LR
+    subgraph frontend
+    fe["Frontend code"]--tested with-->jest
+    end
+    subgraph backend
+    be["Backend code"]--tested with-->rspec
+    end
+    
+    be--generates-->fixtures["frontend fixtures"]
+    fixtures--used in-->jest
+```
+
+In summary:
+
+- RSpec tests are dependent on the backend code.
+- Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
+
 ### RSpec minimal jobs
 
 #### Determining related RSpec test files in a merge request
@@ -57,7 +81,7 @@ In this mode, `jest` would resolve all the dependencies of related to the change
 
 In addition, there are a few circumstances where we would always run the full Jest tests:
 
-- when the `pipeline:run-all-rspec` label is set on the merge request
+- when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)

@@ -12,6 +12,10 @@ class Projects::BoardsController < Projects::ApplicationController
     push_frontend_feature_flag(:board_multi_select, project, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, project&.group, default_enabled: :yaml)
     push_frontend_feature_flag(:labels_widget, project, default_enabled: :yaml)
+    experiment(:prominent_create_board_btn, subject: current_user) do |e|
+      e.use { }
+      e.try { }
+    end.run
   end
 
   feature_category :team_planning

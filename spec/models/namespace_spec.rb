@@ -559,6 +559,25 @@ RSpec.describe Namespace do
     it 'returns namespaces with a matching route path regardless of the casing' do
       expect(described_class.search('PARENT-PATH/NEW-PATH', include_parents: true)).to eq([second_group])
     end
+
+    context 'with project namespaces' do
+      let_it_be(:project) { create(:project, namespace: parent_group, path: 'some-new-path') }
+      let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+
+      it 'does not return project namespace' do
+        search_result = described_class.search('path')
+
+        expect(search_result).not_to include(project_namespace)
+        expect(search_result).to match_array([first_group, parent_group, second_group])
+      end
+
+      it 'does not return project namespace when including parents' do
+        search_result = described_class.search('path', include_parents: true)
+
+        expect(search_result).not_to include(project_namespace)
+        expect(search_result).to match_array([first_group, parent_group, second_group])
+      end
+    end
   end
 
   describe '.with_statistics' do

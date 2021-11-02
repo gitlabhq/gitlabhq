@@ -5624,6 +5624,9 @@ msgstr ""
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr ""
 
+msgid "Boards|New board"
+msgstr ""
+
 msgid "Boards|New epic"
 msgstr ""
 
@@ -23910,6 +23913,9 @@ msgstr ""
 msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the Add a rotation button. To enable notifications for this schedule, you must also create an %{linkStart}escalation policy%{linkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|Could not fetch on-demand scans. Please refresh the page, or try again later."
+msgstr ""
+
 msgid "OnDemandScans|Could not fetch scanner profiles. Please refresh the page, or try again later."
 msgstr ""
 
@@ -31611,6 +31617,9 @@ msgstr ""
 msgid "Show all activity"
 msgstr ""
 
+msgid "Show all breadcrumbs"
+msgstr ""
+
 msgid "Show all issues."
 msgstr ""
 
@@ -31663,12 +31672,6 @@ msgid "Show me how to add a pipeline"
 msgstr ""
 
 msgid "Show one file at a time"
-msgstr ""
-
-msgid "Show parent pages"
-msgstr ""
-
-msgid "Show parent subgroups"
 msgstr ""
 
 msgid "Show the Closed list"

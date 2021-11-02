@@ -2211,7 +2211,6 @@ Performance/OpenStruct:
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
-    - 'lib/gitlab/testing/request_inspector_middleware.rb'
     - 'lib/mattermost/session.rb'
 
 # WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/324629

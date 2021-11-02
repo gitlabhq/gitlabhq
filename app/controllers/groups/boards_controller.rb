@@ -12,6 +12,10 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:swimlanes_buffered_rendering, group, default_enabled: :yaml)
     push_frontend_feature_flag(:iteration_cadences, group, default_enabled: :yaml)
     push_frontend_feature_flag(:labels_widget, group, default_enabled: :yaml)
+    experiment(:prominent_create_board_btn, subject: current_user) do |e|
+      e.use { }
+      e.try { }
+    end.run
   end
 
   feature_category :team_planning

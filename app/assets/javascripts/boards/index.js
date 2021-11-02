@@ -16,6 +16,7 @@ import toggleFocusMode from '~/boards/toggle_focus';
 import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
 import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
+import initNewBoard from './new_board';
 import { gqlClient } from './graphql';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
@@ -130,6 +131,7 @@ export default () => {
   }
 
   boardConfigToggle();
+  initNewBoard();
 
   toggleFocusMode();
   toggleLabels();
