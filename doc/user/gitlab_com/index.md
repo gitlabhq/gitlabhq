@@ -158,7 +158,7 @@ If you are near or over the repository size limit, you can either
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
 Cloudflare. Git LFS and imports other than a file upload are not affected by
-this limit.
+this limit. Repository limits apply to both public and private projects.
 
 ## IP range
 

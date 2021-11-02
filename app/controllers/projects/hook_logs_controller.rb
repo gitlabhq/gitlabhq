@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::HookLogsController < Projects::ApplicationController
-  include HooksExecution
+  include ::Integrations::HooksExecution
 
   before_action :authorize_admin_project!
 

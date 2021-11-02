@@ -125,7 +125,7 @@ is rejected.
 
 NOTE:
 The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
-wiki, packages, or snippets.
+wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 

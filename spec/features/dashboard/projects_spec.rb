@@ -204,7 +204,7 @@ RSpec.describe 'Dashboard Projects' do
         visit dashboard_projects_path
 
         expect(page).to have_selector('[data-testid="project_topic_list"]')
-        expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
+        expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
       end
     end
 

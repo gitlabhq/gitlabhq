@@ -135,11 +135,11 @@ The Package Registry supports the following formats:
 
 | Package type | GitLab version | Status |
 | ------------ | -------------- |------- |
-| [Maven](../maven_repository/index.md) | 11.3+ | Stable |
-| [npm](../npm_registry/index.md) | 11.7+ | Stable |
-| [NuGet](../nuget_repository/index.md) | 12.8+ | Stable |
-| [PyPI](../pypi_repository/index.md) | 12.10+ | Stable |
-| [Generic packages](../generic_packages/index.md) | 13.5+ | Stable |
+| [Maven](../maven_repository/index.md) | 11.3+ | GA |
+| [npm](../npm_registry/index.md) | 11.7+ | GA |
+| [NuGet](../nuget_repository/index.md) | 12.8+ | GA |
+| [PyPI](../pypi_repository/index.md) | 12.10+ | GA |
+| [Generic packages](../generic_packages/index.md) | 13.5+ | GA |
 | [Composer](../composer_repository/index.md) | 13.2+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
 | [Conan](../conan_repository/index.md) | 12.6+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
 | [Helm](../helm_repository/index.md) | 14.1+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
@@ -147,11 +147,11 @@ The Package Registry supports the following formats:
 | [Go](../go_proxy/index.md) | 13.1+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
 | [Ruby gems](../rubygems_registry/index.md) | 13.10+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
-Status:
+[Status](https://about.gitlab.com/handbook/product/gitlab-the-product/#generally-available-ga):
 
 - Alpha: behind a feature flag and not officially supported.
 - Beta: several known issues that may prevent expected use.
-- Stable: ready for production use.
+- GA (Generally Available): ready for production use at any scale.
 
 You can also use the [API](../../../api/packages.md) to administer the Package Registry.
 

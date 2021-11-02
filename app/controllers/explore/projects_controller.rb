@@ -68,6 +68,15 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def topic
+    load_topic
+
+    return render_404 unless @topic
+
+    params[:topic] = @topic.name
+    @projects = load_projects
+  end
+
   private
 
   def load_project_counts
@@ -84,6 +93,10 @@ class Explore::ProjectsController < Explore::ApplicationController
     projects = projects.page(params[:page]).without_count
 
     prepare_projects_for_rendering(projects)
+  end
+
+  def load_topic
+    @topic = Projects::Topic.find_by_name(params[:topic_name])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

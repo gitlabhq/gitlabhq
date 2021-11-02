@@ -19,23 +19,23 @@ Using GitLab Group Migration, you can migrate existing top-level groups from Git
 
 The following resources are migrated to the target instance:
 
-- Groups ([Introduced in 13.7](https://gitlab.com/groups/gitlab-org/-/epics/4374))
+- Groups ([Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4374) in 13.7)
   - description
   - attributes
   - subgroups
-  - avatar ([Introduced in 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/322904))
-- Group Labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429))
+  - avatar ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322904) in 14.0)
+- Group Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) in 13.9)
   - title
   - description
   - color
-  - created_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
-  - updated_at ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/300007))
-- Members ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415))
+  - created_at ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300007) in 13.10)
+  - updated_at ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300007) in 13.10)
+- Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) in 13.9)
   Group members are associated with the imported group if:
   - The user already exists in the target GitLab instance and
   - The user has a public email in the source GitLab instance that matches a
     confirmed email in the target GitLab instance
-- Epics ([Introduced in 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281))
+- Epics ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) in 13.7)
   - title
   - description
   - state (open / closed)
@@ -43,12 +43,12 @@ The following resources are migrated to the target instance:
   - due date
   - epic order on boards
   - confidentiality
-  - labels ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297460))
-  - author ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/298745))
-  - parent epic ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297459))
-  - emoji award ([Introduced in 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/297466))
-  - events ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/297465))
-- Milestones ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427))
+  - labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297460) in 13.9)
+  - author ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298745) in 13.9)
+  - parent epic ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297459) in 13.9)
+  - emoji award ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297466) in 13.9)
+  - events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297465) in 13.10)
+- Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) in 13.10)
   - title
   - description
   - state (active / closed)
@@ -56,8 +56,8 @@ The following resources are migrated to the target instance:
   - due date
   - created at
   - updated at
-  - iid ([Introduced in 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/326157))
-- Iterations ([Introduced in 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428))
+  - iid ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326157) in 13.11)
+- Iterations ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) in 13.10)
   - iid
   - title
   - description
@@ -66,7 +66,7 @@ The following resources are migrated to the target instance:
   - due date
   - created at
   - updated at
-- Badges ([Introduced in 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431))
+- Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) in 13.11)
   - name
   - link URL
   - image URL

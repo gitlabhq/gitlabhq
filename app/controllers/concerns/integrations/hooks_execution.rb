@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module HooksExecution
+module Integrations::HooksExecution
   extend ActiveSupport::Concern
 
   private

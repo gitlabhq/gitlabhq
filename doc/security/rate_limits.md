@@ -128,5 +128,7 @@ To remove a blocked IP:
    keys *rack::attack*
    ```
 
+  By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis.html#renamed-commands).
+
 1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-rack-attack)
    to prevent it being denylisted again.

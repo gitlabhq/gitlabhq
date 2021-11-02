@@ -25525,9 +25525,6 @@ msgstr ""
 msgid "Pipeline|In progress"
 msgstr ""
 
-msgid "Pipeline|Key"
-msgstr ""
-
 msgid "Pipeline|Manual"
 msgstr ""
 
@@ -25616,9 +25613,6 @@ msgid "Pipeline|Trigger author"
 msgstr ""
 
 msgid "Pipeline|Triggerer"
-msgstr ""
-
-msgid "Pipeline|Value"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -27389,6 +27383,9 @@ msgid "Projects with medium vulnerabilities"
 msgstr ""
 
 msgid "Projects with no vulnerabilities and security scanning enabled"
+msgstr ""
+
+msgid "Projects with this topic"
 msgstr ""
 
 msgid "Projects with write access"

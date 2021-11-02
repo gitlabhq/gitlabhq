@@ -4,8 +4,6 @@ import { TEST_HOST } from 'helpers/test_constants';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
 import axios from '~/lib/utils/axios_utils';
 
-const { CancelToken } = axios;
-
 describe('custom metrics form fields component', () => {
   let wrapper;
   let mockAxios;
@@ -116,14 +114,14 @@ describe('custom metrics form fields component', () => {
 
     it('receives and validates a persisted value', () => {
       const query = 'persistedQuery';
-      const axiosPost = jest.spyOn(axios, 'post');
-      const source = CancelToken.source();
+      jest.spyOn(axios, 'post');
+
       mountComponent({ metricPersisted: true, ...makeFormData({ query }) });
 
-      expect(axiosPost).toHaveBeenCalledWith(
+      expect(axios.post).toHaveBeenCalledWith(
         validateQueryPath,
         { query },
-        { cancelToken: source.token },
+        expect.objectContaining({ cancelToken: expect.anything() }),
       );
       expect(getNamedInput(queryInputName).value).toBe(query);
       jest.runAllTimers();

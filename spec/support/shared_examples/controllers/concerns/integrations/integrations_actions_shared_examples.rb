@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples IntegrationsActions do
+RSpec.shared_examples Integrations::Actions do
   let(:integration) do
     create(:datadog_integration,
       integration_attributes.merge(

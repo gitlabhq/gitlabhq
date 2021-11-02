@@ -533,6 +533,7 @@ Plan.default.actual_limits.update!(pages_file_entries: 100)
 The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 3 months.
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
+If the limit value is set to zero, the limit is disabled.
 
 - GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
 - Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:

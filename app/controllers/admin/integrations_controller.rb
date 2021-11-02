@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::IntegrationsController < Admin::ApplicationController
-  include IntegrationsActions
+  include ::Integrations::Actions
 
   before_action :not_found, unless: -> { instance_level_integrations? }
 

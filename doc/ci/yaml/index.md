@@ -422,22 +422,36 @@ configurations. Local configurations in the `.gitlab-ci.yml` file override inclu
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
 > - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
+> - [Support for pipeline variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/337633) in GitLab 14.5.
 
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
-- `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md) in GitLab 14.2
-  and later.
-  - When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
-    ref path, like `refs/heads/branch-name`. In other cases, this variable returns only
-    the branch name, like `branch-name`.
-
-    To use `CI_COMMIT_REF_NAME` in `include:rules`, you might need to use `if: $CI_COMMIT_REF_NAME =~ /main/`
-    (not `== main`). [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/337633)
-    to align `CI_COMMIT_REF_NAME` behavior in all cases.
 - [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
 - [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
 - [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
-- Project [predefined variables](../variables/predefined_variables.md).
+- Project [predefined variables](../variables/predefined_variables.md)
+- In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
+
+  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
+  ref path, like `refs/heads/branch-name`. In `include:rules`, you might need to use
+  `if: $CI_COMMIT_REF_NAME =~ /main/` (not `== main`). This behavior is resolved in GitLab 14.5.
+
+In GitLab 14.5 and later, you can also use:
+
+- [Trigger variables](../triggers/index.md#making-use-of-trigger-variables).
+- [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+- [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
+- Pipeline [predefined variables](../variables/predefined_variables.md).
+
+  YAML files are parsed before the pipeline is created, so the following pipeline predefined variables
+  are **not** available:
+
+  - `CI_PIPELINE_ID`
+  - `CI_PIPELINE_URL`
+  - `CI_PIPELINE_IID`
+  - `CI_PIPELINE_CREATED_AT`
+
+For example:
 
 ```yaml
 include:
@@ -447,9 +461,6 @@ include:
 
 For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
 see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
-
-There is a [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337633)
-that proposes expanding this feature to support more variables.
 
 #### `rules` with `include`
 
@@ -468,6 +479,9 @@ include:
   - local: builds.yml
     rules:
       - if: '$INCLUDE_BUILDS == "true"'
+  - local: deploys.yml
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
 
 test:
   stage: test

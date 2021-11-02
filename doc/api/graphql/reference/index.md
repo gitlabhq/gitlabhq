@@ -1034,6 +1034,27 @@ Input type: `ConfigureSecretDetectionInput`
 | <a id="mutationconfiguresecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationconfiguresecretdetectionsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
 
+### `Mutation.corpusCreate`
+
+Available only when feature flag `corpus_management` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Input type: `CorpusCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcorpuscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcorpuscreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the corpus belongs to. |
+| <a id="mutationcorpuscreatepackageid"></a>`packageId` | [`PackagesPackageID!`](#packagespackageid) | ID of the corpus package. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcorpuscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcorpuscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.createAlertIssue`
 
 Input type: `CreateAlertIssueInput`

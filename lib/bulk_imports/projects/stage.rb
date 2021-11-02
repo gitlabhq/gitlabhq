@@ -31,6 +31,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::MergeRequestsPipeline,
             stage: 4
           },
+          external_pull_requests: {
+            pipeline: BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline,
+            stage: 4
+          },
           uploads: {
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 5

@@ -133,7 +133,7 @@ RSpec.describe 'Project' do
       visit path
 
       expect(page).to have_selector('[data-testid="project_topic_list"]')
-      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
+      expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
     end
 
     it 'shows up to 3 project topics' do
@@ -142,9 +142,9 @@ RSpec.describe 'Project' do
       visit path
 
       expect(page).to have_selector('[data-testid="project_topic_list"]')
-      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
-      expect(page).to have_link('topic2', href: explore_projects_path(topic: 'topic2'))
-      expect(page).to have_link('topic3', href: explore_projects_path(topic: 'topic3'))
+      expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
+      expect(page).to have_link('topic2', href: topic_explore_projects_path(topic_name: 'topic2'))
+      expect(page).to have_link('topic3', href: topic_explore_projects_path(topic_name: 'topic3'))
       expect(page).to have_content('+ 1 more')
     end
   end

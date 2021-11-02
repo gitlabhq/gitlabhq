@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Custom group-level project templates **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
 
 [Group owners](../permissions.md#group-members-permissions) can set a subgroup to
 be the source of project templates that are selectable when a new project is created

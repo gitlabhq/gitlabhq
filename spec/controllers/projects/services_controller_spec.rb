@@ -18,7 +18,7 @@ RSpec.describe Projects::ServicesController do
     project.add_maintainer(user)
   end
 
-  it_behaves_like IntegrationsActions do
+  it_behaves_like Integrations::Actions do
     let(:integration_attributes) { { project: project } }
 
     let(:routing_params) do

@@ -74,6 +74,13 @@ Possible version history entries are:
 > - [Generally available](issue-link) in GitLab X.Y. [Feature flag <flag name>](issue-link) removed.
 ```
 
+You can combine entries if they happened in the same release:
+
+```markdown
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+```
+
 ## Feature flag documentation examples
 
 The following examples show the progression of a feature flag.

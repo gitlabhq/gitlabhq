@@ -51,8 +51,8 @@ The following items are exported:
 - Subgroups (including all the aforementioned data)
 - Epics
 - Events
-- [Wikis](../../project/wiki/group.md) **(PREMIUM SELF)**
-  (Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247))
+- [Wikis](../../project/wiki/group.md)
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
 
 The following items are **not** exported:
 
