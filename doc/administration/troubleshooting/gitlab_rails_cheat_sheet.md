@@ -965,6 +965,9 @@ license.save
 License.current # check to make sure it applied
 ```
 
+This is needed for example in a known edge-case with
+[expired license and multiple LDAP servers](../auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).
+
 ### Remove licenses
 
 To clean up the [License History table](../../user/admin_area/license.md#license-history):
