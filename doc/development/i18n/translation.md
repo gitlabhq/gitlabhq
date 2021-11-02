@@ -48,10 +48,10 @@ Be sure to check the following guidelines before you translate any strings.
 
 ### Namespaced strings
 
-When an externalized string is prepended with a namespace (for example,
-`s_('OpenedNDaysAgo|Opened')`), the namespace should be removed from the final translation. For
-example, in French, `OpenedNDaysAgo|Opened` is translated to `Ouvert•e`, not
-`OpenedNDaysAgo|Ouvert•e`.
+A namespace precedes the string and is separated from it by a `|` (`namespace|string`). When you see
+a namespace before an externalized string, you should remove the namespace from the final
+translation. For example, in `OpenedNDaysAgo|Opened`, remove `OpenedNDaysAgo|`. If translating to
+French, translate `OpenedNDaysAgo|Opened` to `Ouvert•e`, not `OpenedNDaysAgo|Ouvert•e`.
 
 ### Technical terms
 
@@ -60,6 +60,12 @@ should always be in English are noted in the glossary when using
 [`translate.gitlab.com`](https://translate.gitlab.com).
 This helps maintain a logical connection and consistency between tools (for example, a Git client)
 and GitLab.
+
+To find the list of technical terms:
+
+1. Go to [`translate.gitlab.com`](https://translate.gitlab.com).
+1. Select the language to translate.
+1. Select **Glossary**.
 
 ### Formality
 

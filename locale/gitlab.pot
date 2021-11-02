@@ -11101,6 +11101,9 @@ msgstr ""
 msgid "Delete variable"
 msgstr ""
 
+msgid "DeleteProject|Delete %{name}"
+msgstr ""
+
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
 msgstr ""
 

@@ -382,6 +382,16 @@ module ProjectsHelper
     ""
   end
 
+  # Returns the confirm phrase the user needs to type in order to delete the project
+  #
+  # Occasionally a user will delete one project, believing it is a different (similar) one.
+  # Specifically, a user might delete an original project, believing it is a fork.
+  # Thus the phrase should be the project full name to include the namespace.
+  # Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/343591
+  def delete_confirm_phrase(project)
+    s_('DeleteProject|Delete %{name}') % { name: project.full_name }
+  end
+
   private
 
   def tab_ability_map

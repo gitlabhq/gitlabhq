@@ -477,15 +477,14 @@ subscriptions.
 Project features like wiki and issues can be hidden from users depending on
 which visibility level you select on project settings.
 
-- Disabled: disabled for everyone
-- Only team members: only team members will see even if your project is public or internal
-- Everyone with access: everyone can see depending on your project visibility level
-- Everyone: enabled for everyone (only available for GitLab Pages)
+- Disabled: disabled for everyone.
+- Only team members: only team members can see, even if your project is public or internal.
+- Everyone with access: everyone can see depending on your project visibility level.
+- Everyone: enabled for everyone (only available for GitLab Pages).
 
 ## GitLab CI/CD permissions
 
-GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
-roles:
+GitLab CI/CD permissions rely on the role the user has in GitLab:
 
 - Administrator
 - Maintainer

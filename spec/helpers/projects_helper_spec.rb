@@ -983,4 +983,12 @@ RSpec.describe ProjectsHelper do
       it { is_expected.not_to include('project-highlight-puc') }
     end
   end
+
+  describe "#delete_confirm_phrase" do
+    subject { helper.delete_confirm_phrase(project) }
+
+    it 'includes the project full name' do
+      expect(subject).to eq("Delete #{project.full_name}")
+    end
+  end
 end

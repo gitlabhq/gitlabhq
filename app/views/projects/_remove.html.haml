@@ -7,4 +7,4 @@
     = link_to _('Learn more.'), help_page_path('user/project/settings/index', anchor: 'removing-a-fork-relationship'), target: '_blank', rel: 'noopener noreferrer'
   %p
     %strong= _('Deleted projects cannot be restored!')
-  #js-project-delete-button{ data: { form_path: project_path(project), confirm_phrase: project.path } }
+  #js-project-delete-button{ data: { form_path: project_path(project), confirm_phrase: delete_confirm_phrase(project) } }

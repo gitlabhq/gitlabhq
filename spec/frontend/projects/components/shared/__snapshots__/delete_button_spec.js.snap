@@ -51,10 +51,10 @@ exports[`Project remove modal intialized matches the snapshot 1`] = `
         </code>
       </p>
        
-      <gl-form-input-stub
+      <gl-form-textarea-stub
         id="confirm_name_input"
         name="confirm_name_input"
-        type="text"
+        noresize="true"
       />
        
     </div>

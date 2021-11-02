@@ -202,13 +202,5 @@ RSpec.describe MembersFinder, '#execute' do
     end
 
     it_behaves_like 'with invited_groups param'
-
-    context 'when feature flag :linear_members_finder_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_members_finder_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'with invited_groups param'
-    end
   end
 end

@@ -70,16 +70,11 @@ class MembersFinder
   end
 
   def project_invited_groups
-    invited_groups_and_ancestors = if ::Feature.enabled?(:linear_members_finder_ancestor_scopes, current_user, default_enabled: :yaml)
-                                     project.invited_groups
-                                       .self_and_ancestors
-                                   else
-                                     Gitlab::ObjectHierarchy
-                                       .new(project.invited_groups)
-                                       .base_and_ancestors
-                                   end
-
-    invited_groups_ids_including_ancestors = invited_groups_and_ancestors.public_or_visible_to_user(current_user).select(:id)
+    invited_groups_ids_including_ancestors = project
+                                               .invited_groups
+                                               .self_and_ancestors
+                                               .public_or_visible_to_user(current_user)
+                                               .select(:id)
 
     GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
   end
