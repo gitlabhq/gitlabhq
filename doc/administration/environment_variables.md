@@ -20,7 +20,7 @@ You can use the following environment variables to override certain values:
 | Variable                                   | Type    | Description                                                                                             |
 |--------------------------------------------|---------|---------------------------------------------------------------------------------------------------------|
 | `DATABASE_URL`                             | string  | The database URL; is of the form: `postgresql://localhost/blog_development`.                            |
-| `ENABLE_BOOTSNAP`                          | string  | Enables Bootsnap for speeding up initial Rails boot (`1` to enable).                                    |
+| `ENABLE_BOOTSNAP`                          | string  | Toggles [Bootsnap](https://github.com/Shopify/bootsnap) for speeding up initial Rails boot. Enabled by default for non-production environments. Set to `0` to disable. |
 | `EXTERNAL_URL`                             | string  | Specify the external URL at the [time of installation](https://docs.gitlab.com/omnibus/settings/configuration.html#specifying-the-external-url-at-the-time-of-installation). |
 | `EXTERNAL_VALIDATION_SERVICE_TIMEOUT`      | integer | Timeout, in seconds, for an [external CI/CD pipeline validation service](external_pipeline_validation.md). Default is `5`. |
 | `EXTERNAL_VALIDATION_SERVICE_URL`          | string  | URL to an [external CI/CD pipeline validation service](external_pipeline_validation.md).                |

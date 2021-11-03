@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 6.1.4.1'
 
-gem 'bootsnap', '~> 1.4.6'
+gem 'bootsnap', '~> 1.9.1', require: false
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 3.0'

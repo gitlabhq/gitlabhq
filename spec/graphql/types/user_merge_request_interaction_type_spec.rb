@@ -78,7 +78,7 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
         merge_request.reviewers << user
       end
 
-      it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['UNREVIEWED'].value) }
+      it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['ATTENTION_REQUIRED'].value) }
 
       it 'implies not reviewed' do
         expect(resolve(:reviewed)).to be false
@@ -87,7 +87,8 @@ RSpec.describe GitlabSchema.types['UserMergeRequestInteraction'] do
 
     context 'when the user has provided a review' do
       before do
-        merge_request.merge_request_reviewers.create!(reviewer: user, state: MergeRequestReviewer.states['reviewed'])
+        reviewer = merge_request.merge_request_reviewers.create!(reviewer: user)
+        reviewer.update!(state: MergeRequestReviewer.states['reviewed'])
       end
 
       it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['REVIEWED'].value) }
