@@ -34,7 +34,7 @@ module Ci
 
         # This is executed outside of the transaction because it depends on Redis
         update_project_statistics! if update_stats
-        increment_monitoring_statistics(artifacts_count)
+        increment_monitoring_statistics(artifacts_count, artifacts_bytes)
 
         success(destroyed_artifacts_count: artifacts_count,
           statistics_updates: affected_project_statistics)
@@ -63,8 +63,9 @@ module Ci
         end
       end
 
-      def increment_monitoring_statistics(size)
-        metrics.increment_destroyed_artifacts(size)
+      def increment_monitoring_statistics(size, bytes)
+        metrics.increment_destroyed_artifacts_count(size)
+        metrics.increment_destroyed_artifacts_bytes(bytes)
       end
 
       def metrics
@@ -74,6 +75,12 @@ module Ci
       def artifacts_count
         strong_memoize(:artifacts_count) do
           @job_artifacts.count
+        end
+      end
+
+      def artifacts_bytes
+        strong_memoize(:artifacts_bytes) do
+          @job_artifacts.sum { |artifact| artifact.try(:size) || 0 }
         end
       end
     end

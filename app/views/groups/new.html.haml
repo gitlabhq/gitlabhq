@@ -10,7 +10,7 @@
 
   .row{ 'v-cloak': true }
     #create-group-pane.tab-pane
-      = form_for @group, html: { class: 'group-form gl-show-field-errors' } do |f|
+      = form_for @group, html: { class: 'group-form gl-show-field-errors gl-mt-3' } do |f|
         = render 'new_group_fields', f: f, group_name_id: 'create-group-name'
 
     #import-group-pane.tab-pane

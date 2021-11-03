@@ -549,6 +549,8 @@ NPM_TOKEN=<your_token> npm install
 
 If you get this error, ensure that:
 
+- The Package Registry is enabled in your project settings. Although the Package Registry is enabled
+  by default, it's possible to [disable it](../package_registry/#disable-the-package-registry).
 - Your token is not expired and has appropriate permissions.
 - A package with the same name or version doesn't already exist within the given scope.
 - Your NPM package name does not contain a dot `.`. This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/10248)

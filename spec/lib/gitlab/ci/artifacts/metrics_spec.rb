@@ -10,9 +10,9 @@ RSpec.describe Gitlab::Ci::Artifacts::Metrics, :prometheus do
       let(:counter) { metrics.send(:destroyed_artifacts_counter) }
 
       it 'increments a single counter' do
-        subject.increment_destroyed_artifacts(10)
-        subject.increment_destroyed_artifacts(20)
-        subject.increment_destroyed_artifacts(30)
+        subject.increment_destroyed_artifacts_count(10)
+        subject.increment_destroyed_artifacts_count(20)
+        subject.increment_destroyed_artifacts_count(30)
 
         expect(counter.get).to eq 60
         expect(counter.values.count).to eq 1

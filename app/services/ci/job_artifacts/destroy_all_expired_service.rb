@@ -24,7 +24,11 @@ module Ci
       # which is scheduled every 7 minutes.
       def execute
         in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
-          destroy_job_artifacts_with_slow_iteration(Time.current)
+          if ::Feature.enabled?(:ci_destroy_unlocked_job_artifacts)
+            destroy_unlocked_job_artifacts(Time.current)
+          else
+            destroy_job_artifacts_with_slow_iteration(Time.current)
+          end
         end
 
         @removed_artifacts_count
@@ -32,13 +36,21 @@ module Ci
 
       private
 
+      def destroy_unlocked_job_artifacts(start_at)
+        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
+          artifacts = Ci::JobArtifact.expired_before(start_at).artifact_unlocked.limit(BATCH_SIZE)
+          service_response = destroy_batch(artifacts)
+          @removed_artifacts_count += service_response[:destroyed_artifacts_count]
+        end
+      end
+
       def destroy_job_artifacts_with_slow_iteration(start_at)
         Ci::JobArtifact.expired_before(start_at).each_batch(of: BATCH_SIZE, column: :expire_at, order: :desc) do |relation, index|
           # For performance reasons, join with ci_pipelines after the batch is queried.
           # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47496
           artifacts = relation.unlocked
 
-          service_response = destroy_batch_async(artifacts)
+          service_response = destroy_batch(artifacts)
           @removed_artifacts_count += service_response[:destroyed_artifacts_count]
 
           break if loop_timeout?(start_at)
@@ -46,7 +58,7 @@ module Ci
         end
       end
 
-      def destroy_batch_async(artifacts)
+      def destroy_batch(artifacts)
         Ci::JobArtifacts::DestroyBatchService.new(artifacts).execute
       end
 

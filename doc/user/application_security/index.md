@@ -206,7 +206,7 @@ required when the latest security report in a merge request:
 - Contains vulnerabilities with severity levels (for example, `high`, `critical`, or `unknown`)
   matching the rule's severity levels.
 - Contains a vulnerability count higher than the rule allows.
-- Is not generated during pipeline execution.
+- Is not yet generated (until pipeline completion).
 
 An approval is optional when the security report:
 
