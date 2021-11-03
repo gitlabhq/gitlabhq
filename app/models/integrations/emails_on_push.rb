@@ -97,7 +97,7 @@ module Integrations
       return if recipients.blank?
 
       if self.class.valid_recipients(recipients).size > RECIPIENTS_LIMIT
-        errors.add(:recipients, s_("EmailsOnPushService|can't exceed %{recipients_limit}") % { recipients_limit: RECIPIENTS_LIMIT })
+        errors.add(:recipients, s_("Integrations|can't exceed %{recipients_limit}") % { recipients_limit: RECIPIENTS_LIMIT })
       end
     end
   end

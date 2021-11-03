@@ -810,11 +810,11 @@ RSpec.describe Projects::CreateService, '#execute' do
       ).to be_truthy
     end
 
-    it 'schedules authorization update for users with access to group' do
+    it 'schedules authorization update for users with access to group', :sidekiq_inline do
       expect(AuthorizedProjectsWorker).not_to(
         receive(:bulk_perform_async)
       )
-      expect(AuthorizedProjectUpdate::ProjectCreateWorker).to(
+      expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to(
         receive(:perform_async).and_call_original
       )
       expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker).to(
@@ -825,7 +825,11 @@ RSpec.describe Projects::CreateService, '#execute' do
           .and_call_original
       )
 
-      create_project(user, opts)
+      project = create_project(user, opts)
+
+      expect(
+        Ability.allowed?(other_user, :developer_access, project)
+      ).to be_truthy
     end
   end
 

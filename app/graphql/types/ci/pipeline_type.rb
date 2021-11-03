@@ -108,6 +108,11 @@ module Types
                  description: 'Name of the job.'
       end
 
+      field :job_artifacts,
+            null: true,
+            description: 'Job artifacts of the pipeline.',
+            resolver: ::Resolvers::Ci::PipelineJobArtifactsResolver
+
       field :source_job,
             type: Types::Ci::JobType,
             null: true,

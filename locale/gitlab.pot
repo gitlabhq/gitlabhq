@@ -12658,9 +12658,6 @@ msgstr ""
 msgid "EmailsOnPushService|Send notifications from the committer's email address if the domain matches the domain used by your GitLab instance (such as %{domains})."
 msgstr ""
 
-msgid "EmailsOnPushService|can't exceed %{recipients_limit}"
-msgstr ""
-
 msgid "EmailsOnPushService|tanuki@example.com gitlab@example.com"
 msgstr ""
 
@@ -16844,6 +16841,12 @@ msgstr ""
 msgid "Hashed storage can't be disabled anymore for new projects"
 msgstr ""
 
+msgid "Have a quick chat with us about your experience."
+msgstr ""
+
+msgid "Have more to say about GitLab?"
+msgstr ""
+
 msgid "Header cannot be associated with both a request and a response"
 msgstr ""
 
@@ -18621,6 +18624,9 @@ msgid "Integrations|You've activated every integration 🎉"
 msgstr ""
 
 msgid "Integrations|ZenTao issues display here when you create issues in your project in ZenTao."
+msgstr ""
+
+msgid "Integrations|can't exceed %{recipients_limit}"
 msgstr ""
 
 msgid "Interactive mode"
@@ -28271,6 +28277,12 @@ msgid "Rebase source branch on the target branch."
 msgstr ""
 
 msgid "Recaptcha verified?"
+msgstr ""
+
+msgid "Receive a $50 gift card as a thank you for your time."
+msgstr ""
+
+msgid "Receive a %{strongOpen}$50 gift card%{strongClose} as a thank you for your time."
 msgstr ""
 
 msgid "Receive alerts from manually configured Prometheus servers."
@@ -38350,9 +38362,6 @@ msgstr ""
 msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
-msgid "We love speaking to our users. Got more to say about your GitLab experiences?"
-msgstr ""
-
 msgid "We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device."
 msgstr ""
 
@@ -39924,6 +39933,9 @@ msgid "ZentaoIntegration|An error occurred while requesting data from the ZenTao
 msgstr ""
 
 msgid "ZentaoIntegration|Base URL of the ZenTao instance."
+msgstr ""
+
+msgid "ZentaoIntegration|Before you enable this integration, you must configure ZenTao. For more details, read the %{link_start}ZenTao integration documentation%{link_end}."
 msgstr ""
 
 msgid "ZentaoIntegration|Enter new ZenTao API token"

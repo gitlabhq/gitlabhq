@@ -12812,6 +12812,29 @@ CREATE SEQUENCE container_repositories_id_seq
 
 ALTER SEQUENCE container_repositories_id_seq OWNED BY container_repositories.id;
 
+CREATE TABLE content_blocked_states (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    commit_sha bytea NOT NULL,
+    blob_sha bytea NOT NULL,
+    path text NOT NULL,
+    container_identifier text NOT NULL,
+    CONSTRAINT check_023093d38f CHECK ((char_length(container_identifier) <= 255)),
+    CONSTRAINT check_1870100678 CHECK ((char_length(path) <= 2048))
+);
+
+COMMENT ON TABLE content_blocked_states IS 'JiHu-specific table';
+
+CREATE SEQUENCE content_blocked_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE content_blocked_states_id_seq OWNED BY content_blocked_states.id;
+
 CREATE TABLE conversational_development_index_metrics (
     id integer NOT NULL,
     leader_issues double precision NOT NULL,
@@ -21319,6 +21342,8 @@ ALTER TABLE ONLY compliance_management_frameworks ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY container_repositories ALTER COLUMN id SET DEFAULT nextval('container_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY content_blocked_states ALTER COLUMN id SET DEFAULT nextval('content_blocked_states_id_seq'::regclass);
+
 ALTER TABLE ONLY conversational_development_index_metrics ALTER COLUMN id SET DEFAULT nextval('conversational_development_index_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses ALTER COLUMN id SET DEFAULT nextval('coverage_fuzzing_corpuses_id_seq'::regclass);
@@ -22837,6 +22862,9 @@ ALTER TABLE ONLY container_expiration_policies
 
 ALTER TABLE ONLY container_repositories
     ADD CONSTRAINT container_repositories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY content_blocked_states
+    ADD CONSTRAINT content_blocked_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY conversational_development_index_metrics
     ADD CONSTRAINT conversational_development_index_metrics_pkey PRIMARY KEY (id);
@@ -25009,6 +25037,8 @@ CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repo
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON container_repositories USING btree (project_id, name);
 
 CREATE INDEX index_container_repository_on_name_trigram ON container_repositories USING gin (name gin_trgm_ops);
+
+CREATE UNIQUE INDEX index_content_blocked_states_on_container_id_commit_sha_path ON content_blocked_states USING btree (container_identifier, commit_sha, path);
 
 CREATE INDEX index_coverage_fuzzing_corpuses_on_package_id ON coverage_fuzzing_corpuses USING btree (package_id);
 

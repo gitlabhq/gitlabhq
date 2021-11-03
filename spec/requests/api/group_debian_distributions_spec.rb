@@ -26,6 +26,12 @@ RSpec.describe API::GroupDebianDistributions do
       it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^{.*"codename":"existing-codename",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/, authenticate_non_public: false
     end
 
+    describe 'GET groups/:id/-/debian_distributions/:codename/key.asc' do
+      let(:url) { "/groups/#{container.id}/-/debian_distributions/#{distribution.codename}/key.asc" }
+
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP PUBLIC KEY BLOCK-----/, authenticate_non_public: false
+    end
+
     describe 'PUT groups/:id/-/debian_distributions/:codename' do
       let(:method) { :put }
       let(:url) { "/groups/#{container.id}/-/debian_distributions/#{distribution.codename}" }

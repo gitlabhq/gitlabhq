@@ -32,6 +32,12 @@ RSpec.describe API::ProjectDebianDistributions do
       it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^{.*"codename":"existing-codename\",.*"components":\["existing-component"\],.*"architectures":\["all","existing-arch"\]/, authenticate_non_public: false
     end
 
+    describe 'GET projects/:id/debian_distributions/:codename/key.asc' do
+      let(:url) { "/projects/#{container.id}/debian_distributions/#{distribution.codename}/key.asc" }
+
+      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP PUBLIC KEY BLOCK-----/, authenticate_non_public: false
+    end
+
     describe 'PUT projects/:id/debian_distributions/:codename' do
       let(:method) { :put }
       let(:url) { "/projects/#{container.id}/debian_distributions/#{distribution.codename}" }

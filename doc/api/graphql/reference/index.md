@@ -8600,6 +8600,7 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cijobartifactdownloadpath"></a>`downloadPath` | [`String`](#string) | URL for downloading the artifact's file. |
 | <a id="cijobartifactfiletype"></a>`fileType` | [`JobArtifactFileType`](#jobartifactfiletype) | File type of the artifact. |
+| <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
 
 ### `CiJobTokenScopeType`
 
@@ -12472,6 +12473,7 @@ Represents a file or directory in the project repository that has been locked.
 | <a id="pipelinefinishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of the pipeline's completion. |
 | <a id="pipelineid"></a>`id` | [`ID!`](#id) | ID of the pipeline. |
 | <a id="pipelineiid"></a>`iid` | [`String!`](#string) | Internal ID of the pipeline. |
+| <a id="pipelinejobartifacts"></a>`jobArtifacts` | [`[CiJobArtifact!]`](#cijobartifact) | Job artifacts of the pipeline. |
 | <a id="pipelinepath"></a>`path` | [`String`](#string) | Relative path to the pipeline's page. |
 | <a id="pipelineproject"></a>`project` | [`Project`](#project) | Project the pipeline belongs to. |
 | <a id="pipelinequeuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the pipeline was queued before starting. |

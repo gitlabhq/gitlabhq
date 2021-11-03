@@ -895,10 +895,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/favicon-overlay/-/favicon-overlay-2.0.0.tgz#2f32d0b6a4d5b8ac44e2927083d9ab478a78c984"
   integrity sha512-GNcORxXJ98LVGzOT9dDYKfbheqH6lNgPDD72lyXRnQIH7CjgGyos8i17aSBPq1f4s3zF3PyedFiAR4YEZbva2Q==
 
-"@gitlab/stylelint-config@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-2.3.0.tgz#b27e8544ff52a4c5e23ff7a104c7efff1f7078f0"
-  integrity sha512-8aGdBjNO05xadeGb8GSCyRdr1QcRDaDTUTTjKlD2CfFqvAmaQpCk6NdFMMSHlWQpHHMxS5hQeWiC47sIWON4iQ==
+"@gitlab/stylelint-config@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-2.6.0.tgz#8c7d6c9d8e0a9a30eda98a2076dee222b88c840b"
+  integrity sha512-9rBMsvQg2IX7FRNtp+ajRk4Map2kBlkepvc/0CTfd84oLX8zadRqG+J62/Ox285vLnihsVM13SGOD7BWvrvQzw==
   dependencies:
     stylelint "13.9.0"
     stylelint-declaration-strict-value "1.7.7"

@@ -136,6 +136,7 @@ commit_user_mentions: :gitlab_main
 compliance_management_frameworks: :gitlab_main
 container_expiration_policies: :gitlab_main
 container_repositories: :gitlab_main
+content_blocked_states: :gitlab_main
 conversational_development_index_metrics: :gitlab_main
 coverage_fuzzing_corpuses: :gitlab_main
 csv_issue_imports: :gitlab_main

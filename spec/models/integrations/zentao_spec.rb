@@ -50,4 +50,10 @@ RSpec.describe Integrations::Zentao do
       expect(zentao_integration.test).to eq(test_response)
     end
   end
+
+  describe '#help' do
+    it 'renders prompt information' do
+      expect(zentao_integration.help).not_to be_empty
+    end
+  end
 end

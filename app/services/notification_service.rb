@@ -598,8 +598,8 @@ class NotificationService
       user.notification_email_for(pipeline.project.group)
     end
 
-    if recipients.any?
-      mailer.public_send(email_template, pipeline, recipients).deliver_later
+    recipients.each do |recipient|
+      mailer.public_send(email_template, pipeline, recipient).deliver_later
     end
   end
 

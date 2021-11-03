@@ -136,7 +136,7 @@ module Projects
             access_level: group_access_level)
         end
 
-        AuthorizedProjectUpdate::ProjectCreateWorker.perform_async(@project.id)
+        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(@project.id)
         # AuthorizedProjectsWorker uses an exclusive lease per user but
         # specialized workers might have synchronization issues. Until we
         # compare the inconsistency rates of both approaches, we still run

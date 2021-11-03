@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+require 'active_support/testing/time_helpers'
+
+RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
+
+  config.around(:example, :freeze_time) do |example|
+    freeze_time { example.run }
+  end
+
+  config.around(:example, :time_travel) do |example|
+    duration = example.metadata[:time_travel]
+
+    raise 'The time_travel RSpec metadata must have an ActiveSupport::Duration value (such as `30.days`).' unless duration.is_a?(ActiveSupport::Duration)
+
+    travel(duration) { example.run }
+  end
+
+  config.around(:example, :time_travel_to) do |example|
+    date_or_time = example.metadata[:time_travel_to]
+
+    unless date_or_time.respond_to?(:to_time) && date_or_time.to_time.present?
+      raise 'The time_travel_to RSpec metadata must have a Date or Time value.'
+    end
+
+    travel_to(date_or_time) { example.run }
+  end
+end

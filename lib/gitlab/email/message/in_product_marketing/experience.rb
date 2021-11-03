@@ -43,7 +43,9 @@ module Gitlab
               survey_id: EASE_SCORE_SURVEY_ID
             }
 
-            "#{Gitlab::Saas.com_url}/-/survey_responses?#{params.to_query}"
+            params[:show_incentive] = true if show_incentive?
+
+            "#{gitlab_com_root_url}/-/survey_responses?#{params.to_query}"
           end
 
           def feedback_ratings(rating)
@@ -70,8 +72,18 @@ module Gitlab
 
           def show_invite_link
             strong_memoize(:show_invite_link) do
-              group.member_count > 1 && group.max_member_access_for_user(user) >= GroupMember::DEVELOPER && user.preferred_language == 'en'
+              group.max_member_access_for_user(user) >= GroupMember::DEVELOPER && user.preferred_language == 'en'
             end
+          end
+
+          def show_incentive?
+            show_invite_link && group.member_count > 1
+          end
+
+          def gitlab_com_root_url
+            return root_url.chomp('/') if Rails.env.development?
+
+            Gitlab::Saas.com_url
           end
         end
       end

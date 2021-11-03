@@ -4,9 +4,12 @@ module Integrations
   class PipelinesEmail < Integration
     include NotificationBranchSelection
 
+    RECIPIENTS_LIMIT = 30
+
     prop_accessor :recipients, :branches_to_be_notified
     boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
     validates :recipients, presence: true, if: :validate_recipients?
+    validate :number_of_recipients_within_limit, if: :validate_recipients?
 
     def initialize_properties
       if properties.nil?
@@ -49,7 +52,7 @@ module Integrations
       return unless supported_events.include?(data[:object_kind])
       return unless force || should_pipeline_be_notified?(data)
 
-      all_recipients = retrieve_recipients(data)
+      all_recipients = retrieve_recipients
 
       return unless all_recipients.any?
 
@@ -99,8 +102,18 @@ module Integrations
       end
     end
 
-    def retrieve_recipients(data)
+    def retrieve_recipients
       recipients.to_s.split(/[,\r\n ]+/).reject(&:empty?)
+    end
+
+    private
+
+    def number_of_recipients_within_limit
+      return if recipients.blank?
+
+      if retrieve_recipients.size > RECIPIENTS_LIMIT
+        errors.add(:recipients, s_("Integrations|can't exceed %{recipients_limit}") % { recipients_limit: RECIPIENTS_LIMIT })
+      end
     end
   end
 end

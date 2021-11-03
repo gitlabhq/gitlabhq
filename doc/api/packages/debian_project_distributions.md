@@ -106,6 +106,43 @@ Example response:
 }
 ```
 
+## Single Debian project distribution key
+
+Gets a single Debian project distribution key.
+
+```plaintext
+GET /projects/:id/debian_distributions/:codename/key.asc
+```
+
+| Attribute  | Type           | Required | Description |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `codename` | integer        | yes      | The `codename` of a distribution. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable/key.asc"
+```
+
+Example response:
+
+```plaintext
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: Alice's OpenPGP certificate
+Comment: https://www.ietf.org/id/draft-bre-openpgp-samples-01.html
+
+mDMEXEcE6RYJKwYBBAHaRw8BAQdArjWwk3FAqyiFbFBKT4TzXcVBqPTB3gmzlC/U
+b7O1u120JkFsaWNlIExvdmVsYWNlIDxhbGljZUBvcGVucGdwLmV4YW1wbGU+iJAE
+ExYIADgCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQTrhbtfozp14V6UTmPy
+MVUMT0fjjgUCXaWfOgAKCRDyMVUMT0fjjukrAPoDnHBSogOmsHOsd9qGsiZpgRnO
+dypvbm+QtXZqth9rvwD9HcDC0tC+PHAsO7OTh1S1TC9RiJsvawAfCPaQZoed8gK4
+OARcRwTpEgorBgEEAZdVAQUBAQdAQv8GIa2rSTzgqbXCpDDYMiKRVitCsy203x3s
+E9+eviIDAQgHiHgEGBYIACAWIQTrhbtfozp14V6UTmPyMVUMT0fjjgUCXEcE6QIb
+DAAKCRDyMVUMT0fjjlnQAQDFHUs6TIcxrNTtEZFjUFm1M0PJ1Dng/cDW4xN80fsn
+0QEA22Kr7VkCjeAEC08VSTeV+QFsmz55/lntWkwYWhmvOgE=
+=iIGO
+-----END PGP PUBLIC KEY BLOCK-----
+```
+
 ## Create a Debian project distribution
 
 Creates a Debian project distribution.

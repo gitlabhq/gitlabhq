@@ -2,6 +2,8 @@
 
 module Integrations
   class Zentao < Integration
+    include Gitlab::Routing
+
     data_field :url, :api_url, :api_token, :zentao_product_xid
 
     validates :url, public_url: true, presence: true, if: :activated?
@@ -24,6 +26,14 @@ module Integrations
 
     def description
       s_("ZentaoIntegration|Use ZenTao as this project's issue tracker.")
+    end
+
+    def help
+      s_("ZentaoIntegration|Before you enable this integration, you must configure ZenTao. For more details, read the %{link_start}ZenTao integration documentation%{link_end}.") % {
+        link_start: '<a href="%{url}" target="_blank" rel="noopener noreferrer">'
+          .html_safe % { url: help_page_url('user/project/integrations/zentao') },
+        link_end: '</a>'.html_safe
+      }
     end
 
     def self.to_param
@@ -82,3 +92,5 @@ module Integrations
     end
   end
 end
+
+::Integrations::Zentao.prepend_mod

@@ -186,6 +186,69 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
     end
   end
 
+  describe '.job_artifacts' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:pipeline_job_1) { create(:ci_build, pipeline: pipeline, name: 'Job 1') }
+    let_it_be(:pipeline_job_artifact_1) { create(:ci_job_artifact, job: pipeline_job_1) }
+    let_it_be(:pipeline_job_2) { create(:ci_build, pipeline: pipeline, name: 'Job 2') }
+    let_it_be(:pipeline_job_artifact_2) { create(:ci_job_artifact, job: pipeline_job_2) }
+
+    let(:path) { %i[project pipelines nodes jobArtifacts] }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines {
+              nodes {
+                jobArtifacts {
+                  name
+                  downloadPath
+                  fileType
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      post_graphql(query, current_user: user)
+    end
+
+    it_behaves_like 'a working graphql query'
+
+    it 'returns the job_artifacts of a pipeline' do
+      job_artifacts_graphql_data = graphql_data_at(*path).flatten
+
+      expect(
+        job_artifacts_graphql_data.map { |pip| pip['name'] }
+      ).to contain_exactly(pipeline_job_artifact_1.filename, pipeline_job_artifact_2.filename)
+    end
+
+    it 'avoids N+1 queries' do
+      first_user = create(:user)
+      second_user = create(:user)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: first_user)
+      end
+
+      pipeline_2 = create(:ci_pipeline, project: project)
+      pipeline_2_job_1 = create(:ci_build, pipeline: pipeline_2, name: 'Pipeline 2 Job 1')
+      create(:ci_job_artifact, job: pipeline_2_job_1)
+      pipeline_2_job_2 = create(:ci_build, pipeline: pipeline_2, name: 'Pipeline 2 Job 2')
+      create(:ci_job_artifact, job: pipeline_2_job_2)
+
+      expect do
+        post_graphql(query, current_user: second_user)
+      end.not_to exceed_query_limit(control_count)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
   describe '.jobs(securityReportTypes)' do
     let_it_be(:query) do
       %(

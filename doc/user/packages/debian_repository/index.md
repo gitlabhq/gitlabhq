@@ -79,10 +79,10 @@ packages on the group level, create a distribution with the same `codename`.
 To create a project-level distribution:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=unstable"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=<codename>"
 ```
 
-Example response:
+Example response with `codename=unstable`:
 
 ```json
 {
@@ -146,10 +146,23 @@ To install a package:
       | sudo tee /etc/apt/auth.conf.d/gitlab_project.conf
     ```
 
+    Download your distribution key:
+
+    ```shell
+    sudo mkdir -p /usr/local/share/keyrings
+    curl --header "PRIVATE-TOKEN: <your_access_token>" \
+         "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
+         | \
+         gpg --dearmor \
+         | \
+         sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
+         > /dev/null
+    ```
+
     Add your project as a source:
 
     ```shell
-    echo 'deb [trusted=yes] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
+    echo 'deb [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
       | sudo tee /etc/apt/sources.list.d/gitlab_project.list
     sudo apt-get update
     ```

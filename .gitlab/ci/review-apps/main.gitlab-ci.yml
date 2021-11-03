@@ -35,6 +35,7 @@ review-build-cng:
   extends:
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  resource_group: "review/${CI_COMMIT_REF_NAME}"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -51,7 +52,6 @@ review-deploy:
     - .review:rules:review-deploy
   stage: deploy
   needs: ["review-build-cng"]
-  resource_group: "review/${CI_COMMIT_REF_NAME}"
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)

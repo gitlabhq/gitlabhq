@@ -3361,7 +3361,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     shared_examples 'sending a notification' do
       it 'sends an email', :sidekiq_might_not_need_inline do
-        should_only_email(pipeline.user, kind: :bcc)
+        should_only_email(pipeline.user)
       end
     end
 
