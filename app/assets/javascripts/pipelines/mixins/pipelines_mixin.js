@@ -4,7 +4,7 @@ import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/commo
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
 import { validateParams } from '~/pipelines/utils';
-import { CANCEL_REQUEST } from '../constants';
+import { CANCEL_REQUEST, TOAST_MESSAGE } from '../constants';
 import eventHub from '../event_hub';
 
 export default {
@@ -191,7 +191,10 @@ export default {
 
       this.service
         .runMRPipeline(options)
-        .then(() => this.updateTable())
+        .then(() => {
+          this.$toast.show(TOAST_MESSAGE);
+          this.updateTable();
+        })
         .catch(() => {
           createFlash({
             message: __(

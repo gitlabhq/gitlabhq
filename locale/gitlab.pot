@@ -8216,9 +8216,6 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
-msgid "Code Coverage: %{coveragePercentage}"
-msgstr ""
-
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
 msgstr ""
 
@@ -14075,6 +14072,12 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+msgid "ExternalIssueIntegration|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}%{trackerName}%{linkEnd}."
+msgstr ""
+
+msgid "ExternalIssueIntegration|This issue is synchronized with %{trackerName}"
+msgstr ""
+
 msgid "ExternalWikiService|External wiki"
 msgstr ""
 
@@ -19655,9 +19658,6 @@ msgstr ""
 msgid "JiraService|No available statuses"
 msgstr ""
 
-msgid "JiraService|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}Jira%{linkEnd}."
-msgstr ""
-
 msgid "JiraService|Open Jira"
 msgstr ""
 
@@ -19686,9 +19686,6 @@ msgid "JiraService|This is a Premium feature"
 msgstr ""
 
 msgid "JiraService|This is an Ultimate feature"
-msgstr ""
-
-msgid "JiraService|This issue is synchronized with Jira"
 msgstr ""
 
 msgid "JiraService|Transition Jira issues to their final state:"
@@ -25534,6 +25531,9 @@ msgstr ""
 msgid "Pipeline|Created"
 msgstr ""
 
+msgid "Pipeline|Creating pipeline."
+msgstr ""
+
 msgid "Pipeline|Date"
 msgstr ""
 
@@ -29002,6 +29002,9 @@ msgstr ""
 msgid "RepositoriesAnalytics|Average test coverage last 30 days"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Code Coverage: %{averageCoverage}"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Coverage"
 msgstr ""
 
@@ -29023,6 +29026,9 @@ msgstr ""
 msgid "RepositoriesAnalytics|Jobs with Coverage"
 msgstr ""
 
+msgid "RepositoriesAnalytics|Jobs with Coverage: %{coverageCount}"
+msgstr ""
+
 msgid "RepositoriesAnalytics|Last Update"
 msgstr ""
 
@@ -29039,6 +29045,9 @@ msgid "RepositoriesAnalytics|Please select projects to display."
 msgstr ""
 
 msgid "RepositoriesAnalytics|Projects with Coverage"
+msgstr ""
+
+msgid "RepositoriesAnalytics|Projects with Coverage: %{projectCount}"
 msgstr ""
 
 msgid "RepositoriesAnalytics|Test Code Coverage"
@@ -39914,13 +39923,7 @@ msgstr ""
 msgid "ZenTaoIntegration|Failed to load ZenTao issue. View the issue in ZenTao, or reload the page."
 msgstr ""
 
-msgid "ZenTaoIntegration|Not all data may be displayed here. To view more details or make changes to this issue, go to %{linkStart}ZenTao%{linkEnd}."
-msgstr ""
-
 msgid "ZenTaoIntegration|This is a ZenTao user."
-msgstr ""
-
-msgid "ZenTaoIntegration|This issue is synchronized with ZenTao"
 msgstr ""
 
 msgid "ZenTaoIntegration|ZenTao user"
@@ -40304,6 +40307,9 @@ msgstr ""
 msgid "ciReport|Failed to load %{reportName} report"
 msgstr ""
 
+msgid "ciReport|Failed to load Code Quality report"
+msgstr ""
+
 msgid "ciReport|Fixed"
 msgstr ""
 
@@ -40334,6 +40340,9 @@ msgid "ciReport|Load performance test metrics: No changes"
 msgstr ""
 
 msgid "ciReport|Loading %{reportName} report"
+msgstr ""
+
+msgid "ciReport|Loading Code Quality report"
 msgstr ""
 
 msgid "ciReport|Manage licenses"
@@ -40370,6 +40379,9 @@ msgid "ciReport|Security scanning"
 msgstr ""
 
 msgid "ciReport|Security scanning failed loading any results"
+msgstr ""
+
+msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"
 msgstr ""
 
 msgid "ciReport|Solution"

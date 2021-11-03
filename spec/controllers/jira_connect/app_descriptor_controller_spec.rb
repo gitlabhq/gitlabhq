@@ -90,17 +90,5 @@ RSpec.describe JiraConnect::AppDescriptorController do
         )
       )
     end
-
-    context 'when jira_connect_asymmetric_jwt is disabled' do
-      before do
-        stub_feature_flags(jira_connect_asymmetric_jwt: false)
-      end
-
-      specify do
-        get :show
-
-        expect(json_response).to include('apiMigrations' => include('signed-install' => false))
-      end
-    end
   end
 end

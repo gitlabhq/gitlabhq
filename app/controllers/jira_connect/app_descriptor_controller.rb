@@ -32,7 +32,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       apiVersion: 1,
       apiMigrations: {
         'context-qsh': true,
-        'signed-install': signed_install_active?,
+        'signed-install': true,
         gdpr: true
       }
     }

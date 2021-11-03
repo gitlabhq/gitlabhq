@@ -4,9 +4,9 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# GitLab Workflow VS Code extension **(FREE)**
+# GitLab Workflow extension for VS Code **(FREE)**
 
-The [GitLab VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+The [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 integrates GitLab with Visual Studio Code. You can decrease context switching and
 do more day-to-day tasks in Visual Studio Code, such as:
 

@@ -102,6 +102,13 @@ RSpec.describe API::Lint do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to have_key('merged_yaml')
         end
+
+        it 'outputs jobs' do
+          post api('/ci/lint', api_user), params: { content: yaml_content, include_jobs: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to have_key('jobs')
+        end
       end
 
       context 'with valid .gitlab-ci.yaml with warnings' do
@@ -136,6 +143,13 @@ RSpec.describe API::Lint do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to have_key('merged_yaml')
           end
+
+          it 'outputs jobs' do
+            post api('/ci/lint', api_user), params: { content: yaml_content, include_jobs: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to have_key('jobs')
+          end
         end
 
         context 'with invalid configuration' do
@@ -156,6 +170,13 @@ RSpec.describe API::Lint do
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to have_key('merged_yaml')
           end
+
+          it 'outputs jobs' do
+            post api('/ci/lint', api_user), params: { content: yaml_content, include_jobs: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to have_key('jobs')
+          end
         end
       end
 
@@ -171,10 +192,11 @@ RSpec.describe API::Lint do
   end
 
   describe 'GET /projects/:id/ci/lint' do
-    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run } }
+    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, include_jobs: include_jobs } }
 
     let(:project) { create(:project, :repository) }
     let(:dry_run) { nil }
+    let(:include_jobs) { nil }
 
     RSpec.shared_examples 'valid config with warnings' do
       it 'passes validation with warnings' do
@@ -359,6 +381,30 @@ RSpec.describe API::Lint do
           it_behaves_like 'valid config without warnings'
         end
 
+        context 'when running with include jobs' do
+          let(:include_jobs) { true }
+
+          it_behaves_like 'valid config without warnings'
+
+          it 'returns jobs key' do
+            ci_lint
+
+            expect(json_response).to have_key('jobs')
+          end
+        end
+
+        context 'when running without include jobs' do
+          let(:include_jobs) { false }
+
+          it_behaves_like 'valid config without warnings'
+
+          it 'does not return jobs key' do
+            ci_lint
+
+            expect(json_response).not_to have_key('jobs')
+          end
+        end
+
         context 'With warnings' do
           let(:yaml_content) { { job: { script: 'ls', rules: [{ when: 'always' }] } }.to_yaml }
 
@@ -386,15 +432,40 @@ RSpec.describe API::Lint do
 
           it_behaves_like 'invalid config'
         end
+
+        context 'when running with include jobs' do
+          let(:include_jobs) { true }
+
+          it_behaves_like 'invalid config'
+
+          it 'returns jobs key' do
+            ci_lint
+
+            expect(json_response).to have_key('jobs')
+          end
+        end
+
+        context 'when running without include jobs' do
+          let(:include_jobs) { false }
+
+          it_behaves_like 'invalid config'
+
+          it 'does not return jobs key' do
+            ci_lint
+
+            expect(json_response).not_to have_key('jobs')
+          end
+        end
       end
     end
   end
 
   describe 'POST /projects/:id/ci/lint' do
-    subject(:ci_lint) { post api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, content: yaml_content } }
+    subject(:ci_lint) { post api("/projects/#{project.id}/ci/lint", api_user), params: { dry_run: dry_run, content: yaml_content, include_jobs: include_jobs } }
 
     let(:project) { create(:project, :repository) }
     let(:dry_run) { nil }
+    let(:include_jobs) { nil }
 
     let_it_be(:api_user) { create(:user) }
 
@@ -562,6 +633,30 @@ RSpec.describe API::Lint do
 
           it_behaves_like 'valid project config'
         end
+
+        context 'when running with include jobs param' do
+          let(:include_jobs) { true }
+
+          it_behaves_like 'valid project config'
+
+          it 'contains jobs key' do
+            ci_lint
+
+            expect(json_response).to have_key('jobs')
+          end
+        end
+
+        context 'when running without include jobs param' do
+          let(:include_jobs) { false }
+
+          it_behaves_like 'valid project config'
+
+          it 'does not contain jobs key' do
+            ci_lint
+
+            expect(json_response).not_to have_key('jobs')
+          end
+        end
       end
 
       context 'with invalid .gitlab-ci.yml content' do
@@ -579,6 +674,30 @@ RSpec.describe API::Lint do
           let(:dry_run) { false }
 
           it_behaves_like 'invalid project config'
+        end
+
+        context 'when running with include jobs set to false' do
+          let(:include_jobs) { false }
+
+          it_behaves_like 'invalid project config'
+
+          it 'does not contain jobs key' do
+            ci_lint
+
+            expect(json_response).not_to have_key('jobs')
+          end
+        end
+
+        context 'when running with param include jobs' do
+          let(:include_jobs) { true }
+
+          it_behaves_like 'invalid project config'
+
+          it 'contains jobs key' do
+            ci_lint
+
+            expect(json_response).to have_key('jobs')
+          end
         end
       end
     end

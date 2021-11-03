@@ -6,7 +6,12 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
+import { TOAST_MESSAGE } from '~/pipelines/constants';
 import axios from '~/lib/utils/axios_utils';
+
+const $toast = {
+  show: jest.fn(),
+};
 
 describe('Pipelines table in Commits and Merge requests', () => {
   let wrapper;
@@ -29,6 +34,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           emptyStateSvgPath: 'foo',
           errorStateSvgPath: 'foo',
           ...props,
+        },
+        mocks: {
+          $toast,
         },
       }),
     );
@@ -176,6 +184,12 @@ describe('Pipelines table in Commits and Merge requests', () => {
         jest.spyOn(Api, 'postMergeRequestPipeline').mockReturnValue(Promise.resolve());
 
         await waitForPromises();
+      });
+
+      it('displays a toast message during pipeline creation', async () => {
+        await findRunPipelineBtn().trigger('click');
+
+        expect($toast.show).toHaveBeenCalledWith(TOAST_MESSAGE);
       });
 
       it('on desktop, shows a loading button', async () => {

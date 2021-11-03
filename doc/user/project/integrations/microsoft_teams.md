@@ -18,8 +18,8 @@ in Microsoft Teams. To integrate the services, you must:
 
 To configure Microsoft Teams to listen for notifications from GitLab:
 
-1. In Microsoft Teams, search for "incoming webhook" in the search bar, and select the
-   **Incoming Webhook** item:
+1. In Microsoft Teams, type `incoming webhook` in the search bar, and select
+   **Incoming Webhook**:
 
    ![Select Incoming Webhook](img/microsoft_teams_select_incoming_webhook.png)
 
@@ -34,11 +34,12 @@ To configure Microsoft Teams to listen for notifications from GitLab:
 After you configure Microsoft Teams to receive notifications, you must configure
 GitLab to send the notifications:
 
-1. Sign in to GitLab as a user with [Administrator](../../permissions.md) and go
-   to your project's page.
-1. Go to **Settings > Integrations** and select **Microsoft Teams Notification**.
-1. Select **Active** to enable the integration.
-1. Select the checkbox next to each **Trigger** to enable:
+1. Sign in to GitLab as an administrator.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Microsoft Teams notifications**.
+1. To enable the integration, select **Active**.
+1. In the **Trigger** section, select the checkbox next to each event to enable it:
    - Push
    - Issue
    - Confidential issue
@@ -46,11 +47,11 @@ GitLab to send the notifications:
    - Note
    - Confidential note
    - Tag push
-   - Pipeline - If you enable this trigger, you can also select **Notify only broken pipelines** to be notified only about failed pipelines.
+   - Pipeline
    - Wiki page
 1. In **Webhook**, paste the URL you copied when you
    [configured Microsoft Teams](#configure-microsoft-teams).
-1. (Optional) If you enabled the pipeline trigger, you can select the
+1. Optional. If you enable the pipeline trigger, select the
    **Notify only broken pipelines** checkbox to push notifications only when pipelines break.
 1. Select the branches you want to send notifications for.
 1. Select **Save changes**.

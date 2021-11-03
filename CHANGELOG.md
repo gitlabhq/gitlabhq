@@ -3064,6 +3064,13 @@ No changes.
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
 
+## 13.12.14 (2021-11-03)
+
+### Fixed (2 changes)
+
+- [Allow nil for remaining ci cd settings](gitlab-org/gitlab@896fd7ecf23714fa9f710efa4af245a26c677dce) ([merge request](gitlab-org/gitlab!73522))
+- [Allow nil on delegated CI/CD settings](gitlab-org/gitlab@d57a9ea79080fc473eb54c0ee696a50fd270e8a4) ([merge request](gitlab-org/gitlab!73522))
+
 ## 13.12.13 (2021-10-29)
 
 No changes.

@@ -66,7 +66,6 @@ module Gitlab
       # @param key [Symbol] Key attribute registered in `.rate_limits`
       # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       # @option threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
-      # @option interval [Integer] Optional interval value to override default one registered in `.rate_limits`
       # @option users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request should be throttled
@@ -77,7 +76,7 @@ module Gitlab
 
         threshold_value = options[:threshold] || threshold(key)
         threshold_value > 0 &&
-          increment(key, options[:scope], options[:interval]) > threshold_value
+          increment(key, options[:scope]) > threshold_value
       end
 
       # Increments the given cache key and increments the value by 1 with the
@@ -85,12 +84,13 @@ module Gitlab
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`
       # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
-      # @option interval [Integer] Optional interval value to override default one registered in `.rate_limits`
       #
       # @return [Integer] incremented value
-      def increment(key, scope, interval = nil)
+      def increment(key, scope)
+        return safe_increment(key, scope) if Feature.enabled?(:rate_limiter_safe_increment, default_enabled: :yaml)
+
         value = 0
-        interval_value = interval || interval(key)
+        interval_value = interval(key)
 
         ::Gitlab::Redis::RateLimiting.with do |redis|
           cache_key = action_key(key, scope)
@@ -99,6 +99,32 @@ module Gitlab
         end
 
         value
+      end
+
+      # Increments a cache key that is based on the current time and interval.
+      # So that when time passes to the next interval, the key changes and the count starts again from 0.
+      #
+      # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
+      #
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      #
+      # @return [Integer] incremented value
+      def safe_increment(key, scope)
+        interval_value = interval(key)
+
+        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
+
+        cache_key = "#{action_key(key, scope)}:#{period_key}"
+        # We add a 1 second buffer to avoid timing issues when we're at the end of a period
+        expiry = interval_value - time_elapsed_in_period + 1
+
+        ::Gitlab::Redis::RateLimiting.with do |redis|
+          redis.pipelined do
+            redis.incr(cache_key)
+            redis.expire(cache_key, expiry)
+          end.first
+        end
       end
 
       # Logs request using provided logger

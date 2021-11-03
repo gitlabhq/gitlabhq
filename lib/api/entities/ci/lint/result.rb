@@ -9,6 +9,7 @@ module API
           expose :errors
           expose :warnings
           expose :merged_yaml
+          expose :jobs, if: -> (result, options) { options[:include_jobs] }
         end
       end
     end

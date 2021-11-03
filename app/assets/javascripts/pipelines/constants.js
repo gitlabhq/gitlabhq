@@ -49,3 +49,5 @@ export const PipelineKeyOptions = [
     key: 'iid',
   },
 ];
+
+export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
