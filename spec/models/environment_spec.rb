@@ -39,7 +39,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     it 'ensures environment tier when a new object is created' do
       environment = build(:environment, name: 'gprd', tier: nil)
 
-      expect { environment.save }.to change { environment.tier }.from(nil).to('production')
+      expect { environment.save! }.to change { environment.tier }.from(nil).to('production')
     end
 
     it 'ensures environment tier when an existing object is updated' do
@@ -418,7 +418,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       context 'not in the same branch' do
         before do
-          deployment.update(sha: project.commit('feature').id)
+          deployment.update!(sha: project.commit('feature').id)
         end
 
         it 'returns false' do
@@ -496,7 +496,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     context 'when no other actions' do
       context 'environment is available' do
         before do
-          environment.update(state: :available)
+          environment.update!(state: :available)
         end
 
         it do
@@ -508,7 +508,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
 
       context 'environment is already stopped' do
         before do
-          environment.update(state: :stopped)
+          environment.update!(state: :stopped)
         end
 
         it do
@@ -1502,7 +1502,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       deployment = create(:deployment, :success, environment: environment, project: project)
       deployment.create_ref
 
-      expect { environment.destroy }.to change { project.commit(deployment.ref_path) }.to(nil)
+      expect { environment.destroy! }.to change { project.commit(deployment.ref_path) }.to(nil)
     end
   end
 
@@ -1517,7 +1517,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns the environments count grouped by state with zero value' do
-        environment2.update(state: 'stopped')
+        environment2.update!(state: 'stopped')
         expect(project.environments.count_by_state).to eq({ stopped: 3, available: 0 })
       end
     end

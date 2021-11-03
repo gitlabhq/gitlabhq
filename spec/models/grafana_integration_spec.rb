@@ -60,7 +60,7 @@ RSpec.describe GrafanaIntegration do
 
     context 'with grafana integration enabled' do
       it 'returns nil' do
-        grafana_integration.update(enabled: false)
+        grafana_integration.update!(enabled: false)
 
         expect(grafana_integration.client).to be(nil)
       end
@@ -81,8 +81,8 @@ RSpec.describe GrafanaIntegration do
       end
 
       it 'prevents overriding token value with its encrypted or masked version', :aggregate_failures do
-        expect { grafana_integration.update(token: grafana_integration.encrypted_token) }.not_to change { grafana_integration.reload.send(:token) }
-        expect { grafana_integration.update(token: grafana_integration.masked_token) }.not_to change { grafana_integration.reload.send(:token) }
+        expect { grafana_integration.update!(token: grafana_integration.encrypted_token) }.not_to change { grafana_integration.reload.send(:token) }
+        expect { grafana_integration.update!(token: grafana_integration.masked_token) }.not_to change { grafana_integration.reload.send(:token) }
       end
     end
   end

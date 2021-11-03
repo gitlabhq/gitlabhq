@@ -228,7 +228,7 @@ RSpec.describe Namespace do
 
           expect(namespace.path).to eq('j')
 
-          namespace.update(name: 'something new')
+          namespace.update!(name: 'something new')
 
           expect(namespace).to be_valid
           expect(namespace.name).to eq('something new')
@@ -240,7 +240,7 @@ RSpec.describe Namespace do
 
         it 'allows to update path to single char' do
           namespace = create(:project_namespace)
-          namespace.update(path: 'j')
+          namespace.update!(path: 'j')
 
           expect(namespace).to be_valid
         end
@@ -740,7 +740,7 @@ RSpec.describe Namespace do
       end
 
       it "moves dir if path changed" do
-        namespace.update(path: namespace.full_path + '_new')
+        namespace.update!(path: namespace.full_path + '_new')
 
         expect(gitlab_shell.repository_exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
@@ -751,7 +751,7 @@ RSpec.describe Namespace do
             expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
 
             expect do
-              namespace.update(path: namespace.full_path + '_new')
+              namespace.update!(path: namespace.full_path + '_new')
             end.to raise_error('foo')
           end
         end
@@ -768,7 +768,7 @@ RSpec.describe Namespace do
             end
             expect(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false) # like prod
 
-            namespace.update(path: namespace.full_path + '_new')
+            namespace.update!(path: namespace.full_path + '_new')
           end
         end
       end
@@ -998,7 +998,7 @@ RSpec.describe Namespace do
 
       it "repository directory remains unchanged if path changed" do
         before_disk_path = project.disk_path
-        namespace.update(path: namespace.full_path + '_new')
+        namespace.update!(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
         expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
@@ -1013,7 +1013,7 @@ RSpec.describe Namespace do
       let!(:legacy_project_in_subgroup) { create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3') }
 
       it 'updates project full path in .git/config' do
-        parent.update(path: 'mygroup_new')
+        parent.update!(path: 'mygroup_new')
 
         expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
         expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
@@ -1025,7 +1025,7 @@ RSpec.describe Namespace do
         repository_hashed_project_in_subgroup = hashed_project_in_subgroup.project_repository
         repository_legacy_project_in_subgroup = legacy_project_in_subgroup.project_repository
 
-        parent.update(path: 'mygroup_moved')
+        parent.update!(path: 'mygroup_moved')
 
         expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
         expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
@@ -1059,7 +1059,7 @@ RSpec.describe Namespace do
       it 'renames its dirs when deleted' do
         allow(GitlabShellWorker).to receive(:perform_in)
 
-        namespace.destroy
+        namespace.destroy!
 
         expect(File.exist?(deleted_path_in_dir)).to be(true)
       end
@@ -1067,7 +1067,7 @@ RSpec.describe Namespace do
       it 'schedules the namespace for deletion' do
         expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
-        namespace.destroy
+        namespace.destroy!
       end
 
       context 'in sub-groups' do
@@ -1081,7 +1081,7 @@ RSpec.describe Namespace do
         it 'renames its dirs when deleted' do
           allow(GitlabShellWorker).to receive(:perform_in)
 
-          child.destroy
+          child.destroy!
 
           expect(File.exist?(deleted_path_in_dir)).to be(true)
         end
@@ -1089,7 +1089,7 @@ RSpec.describe Namespace do
         it 'schedules the namespace for deletion' do
           expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
-          child.destroy
+          child.destroy!
         end
       end
     end
@@ -1102,7 +1102,7 @@ RSpec.describe Namespace do
 
         expect(File.exist?(path_in_dir)).to be(false)
 
-        namespace.destroy
+        namespace.destroy!
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
       end
@@ -1628,7 +1628,7 @@ RSpec.describe Namespace do
       it 'returns the path before last save' do
         group = create(:group)
 
-        group.update(parent: nil)
+        group.update!(parent: nil)
 
         expect(group.full_path_before_last_save).to eq(group.path_before_last_save)
       end
@@ -1639,7 +1639,7 @@ RSpec.describe Namespace do
         group = create(:group, parent: nil)
         parent = create(:group)
 
-        group.update(parent: parent)
+        group.update!(parent: parent)
 
         expect(group.full_path_before_last_save).to eq("#{group.path_before_last_save}")
       end
@@ -1650,7 +1650,7 @@ RSpec.describe Namespace do
         parent = create(:group)
         group = create(:group, parent: parent)
 
-        group.update(parent: nil)
+        group.update!(parent: nil)
 
         expect(group.full_path_before_last_save).to eq("#{parent.full_path}/#{group.path}")
       end
@@ -1662,7 +1662,7 @@ RSpec.describe Namespace do
         group = create(:group, parent: parent)
         new_parent = create(:group)
 
-        group.update(parent: new_parent)
+        group.update!(parent: new_parent)
 
         expect(group.full_path_before_last_save).to eq("#{parent.full_path}/#{group.path}")
       end

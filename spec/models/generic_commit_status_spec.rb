@@ -133,7 +133,7 @@ RSpec.describe GenericCommitStatus do
     before do
       generic_commit_status.context = nil
       generic_commit_status.stage = nil
-      generic_commit_status.save
+      generic_commit_status.save!
     end
 
     describe '#context' do

@@ -155,7 +155,7 @@ RSpec.describe Note do
         expect(note).to receive(:notify_after_destroy).and_call_original
         expect(note.noteable).to receive(:after_note_destroyed).with(note)
 
-        note.destroy
+        note.destroy!
       end
 
       it 'does not error if noteable is nil' do
@@ -163,7 +163,7 @@ RSpec.describe Note do
 
         expect(note).to receive(:notify_after_destroy).and_call_original
         expect(note).to receive(:noteable).at_least(:once).and_return(nil)
-        expect { note.destroy }.not_to raise_error
+        expect { note.destroy! }.not_to raise_error
       end
     end
   end
@@ -226,8 +226,8 @@ RSpec.describe Note do
 
     describe 'read' do
       before do
-        @p1.project_members.create(user: @u2, access_level: ProjectMember::GUEST)
-        @p2.project_members.create(user: @u3, access_level: ProjectMember::GUEST)
+        @p1.project_members.create!(user: @u2, access_level: ProjectMember::GUEST)
+        @p2.project_members.create!(user: @u3, access_level: ProjectMember::GUEST)
       end
 
       it { expect(Ability.allowed?(@u1, :read_note, @p1)).to be_falsey }
@@ -237,8 +237,8 @@ RSpec.describe Note do
 
     describe 'write' do
       before do
-        @p1.project_members.create(user: @u2, access_level: ProjectMember::DEVELOPER)
-        @p2.project_members.create(user: @u3, access_level: ProjectMember::DEVELOPER)
+        @p1.project_members.create!(user: @u2, access_level: ProjectMember::DEVELOPER)
+        @p2.project_members.create!(user: @u3, access_level: ProjectMember::DEVELOPER)
       end
 
       it { expect(Ability.allowed?(@u1, :create_note, @p1)).to be_falsey }
@@ -248,9 +248,9 @@ RSpec.describe Note do
 
     describe 'admin' do
       before do
-        @p1.project_members.create(user: @u1, access_level: ProjectMember::REPORTER)
-        @p1.project_members.create(user: @u2, access_level: ProjectMember::MAINTAINER)
-        @p2.project_members.create(user: @u3, access_level: ProjectMember::MAINTAINER)
+        @p1.project_members.create!(user: @u1, access_level: ProjectMember::REPORTER)
+        @p1.project_members.create!(user: @u2, access_level: ProjectMember::MAINTAINER)
+        @p2.project_members.create!(user: @u3, access_level: ProjectMember::MAINTAINER)
       end
 
       it { expect(Ability.allowed?(@u1, :admin_note, @p1)).to be_falsey }
@@ -1468,7 +1468,7 @@ RSpec.describe Note do
     shared_examples 'assignee check' do
       context 'when the provided user is one of the assignees' do
         before do
-          note.noteable.update(assignees: [user, create(:user)])
+          note.noteable.update!(assignees: [user, create(:user)])
         end
 
         it 'returns true' do
@@ -1480,7 +1480,7 @@ RSpec.describe Note do
     shared_examples 'author check' do
       context 'when the provided user is the author' do
         before do
-          note.noteable.update(author: user)
+          note.noteable.update!(author: user)
         end
 
         it 'returns true' do

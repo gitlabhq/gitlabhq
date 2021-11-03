@@ -20,9 +20,9 @@ RSpec.describe Operations::FeatureFlags::UserList do
       end
       with_them do
         it 'is valid with a string of comma separated values' do
-          user_list = described_class.create(user_xids: valid_value)
+          user_list = build(:operations_feature_flag_user_list, user_xids: valid_value)
 
-          expect(user_list.errors[:user_xids]).to be_empty
+          expect(user_list).to be_valid
         end
       end
 
@@ -31,9 +31,10 @@ RSpec.describe Operations::FeatureFlags::UserList do
       end
       with_them do
         it 'automatically casts values of other types' do
-          user_list = described_class.create(user_xids: typecast_value)
+          user_list = build(:operations_feature_flag_user_list, user_xids: typecast_value)
 
-          expect(user_list.errors[:user_xids]).to be_empty
+          expect(user_list).to be_valid
+
           expect(user_list.user_xids).to eq(typecast_value.to_s)
         end
       end
@@ -45,7 +46,9 @@ RSpec.describe Operations::FeatureFlags::UserList do
       end
       with_them do
         it 'is invalid' do
-          user_list = described_class.create(user_xids: invalid_value)
+          user_list = build(:operations_feature_flag_user_list, user_xids: invalid_value)
+
+          expect(user_list).to be_invalid
 
           expect(user_list.errors[:user_xids]).to include(
             'user_xids must be a string of unique comma separated values each 256 characters or less'
@@ -70,20 +73,20 @@ RSpec.describe Operations::FeatureFlags::UserList do
   describe '#destroy' do
     it 'deletes the model if it is not associated with any feature flag strategies' do
       project = create(:project)
-      user_list = described_class.create(project: project, name: 'My User List', user_xids: 'user1,user2')
+      user_list = described_class.create!(project: project, name: 'My User List', user_xids: 'user1,user2')
 
-      user_list.destroy
+      user_list.destroy!
 
       expect(described_class.count).to eq(0)
     end
 
     it 'does not delete the model if it is associated with a feature flag strategy' do
       project = create(:project)
-      user_list = described_class.create(project: project, name: 'My User List', user_xids: 'user1,user2')
+      user_list = described_class.create!(project: project, name: 'My User List', user_xids: 'user1,user2')
       feature_flag = create(:operations_feature_flag, :new_version_flag, project: project)
       strategy = create(:operations_strategy, feature_flag: feature_flag, name: 'gitlabUserList', user_list: user_list)
 
-      user_list.destroy
+      user_list.destroy # rubocop:disable Rails/SaveBang
 
       expect(described_class.count).to eq(1)
       expect(::Operations::FeatureFlags::StrategyUserList.count).to eq(1)

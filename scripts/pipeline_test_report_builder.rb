@@ -20,7 +20,7 @@ require_relative 'api/default_options'
 # Push into expected format for failed tests
 class PipelineTestReportBuilder
   def initialize(options)
-    @project = options.delete(:project)
+    @target_project = options.delete(:target_project)
     @mr_id = options.delete(:mr_id) || Host::DEFAULT_OPTIONS[:mr_id]
     @instance_base_url = options.delete(:instance_base_url) || Host::DEFAULT_OPTIONS[:instance_base_url]
     @output_file_path = options.delete(:output_file_path)
@@ -40,38 +40,38 @@ class PipelineTestReportBuilder
     end
   end
 
-  private
-
-  attr_reader :project, :mr_id, :instance_base_url, :output_file_path
-
-  def project_api_base_url
-    "#{instance_base_url}/api/v4/projects/#{CGI.escape(project)}"
-  end
-
-  def project_base_url
-    "#{instance_base_url}/#{project}"
-  end
-
   def previous_pipeline
     # Top of the list will always be the current pipeline
     # Second from top will be the previous pipeline
     pipelines_for_mr.sort_by { |a| -Time.parse(a['created_at']).to_i }[1]
   end
 
-  def pipelines_for_mr
-    fetch("#{project_api_base_url}/merge_requests/#{mr_id}/pipelines")
+  private
+
+  attr_reader :target_project, :mr_id, :instance_base_url, :output_file_path
+
+  def pipeline_project_api_base_url(pipeline)
+    "#{instance_base_url}/api/v4/projects/#{pipeline['project_id']}"
   end
 
-  def failed_builds_for_pipeline(pipeline_id)
-    fetch("#{project_api_base_url}/pipelines/#{pipeline_id}/jobs?scope=failed&per_page=100")
+  def target_project_api_base_url
+    "#{instance_base_url}/api/v4/projects/#{CGI.escape(target_project)}"
+  end
+
+  def pipelines_for_mr
+    fetch("#{target_project_api_base_url}/merge_requests/#{mr_id}/pipelines")
+  end
+
+  def failed_builds_for_pipeline(pipeline)
+    fetch("#{pipeline_project_api_base_url(pipeline)}/pipelines/#{pipeline['id']}/jobs?scope=failed&per_page=100")
   end
 
   # Method uses the test suite endpoint to gather test results for a particular build.
   # Here we request individual builds, even though it is possible to supply multiple build IDs.
   # The reason for this; it is possible to lose the job context and name when requesting multiple builds.
   # Please see for more info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053#note_709939709
-  def test_report_for_build(pipeline_id, build_id)
-    fetch("#{project_base_url}/-/pipelines/#{pipeline_id}/tests/suite.json?build_ids[]=#{build_id}")
+  def test_report_for_build(pipeline, build_id)
+    fetch("#{pipeline['web_url']}/tests/suite.json?build_ids[]=#{build_id}")
   end
 
   def build_test_report_json_for_pipeline(pipeline)
@@ -82,7 +82,7 @@ class PipelineTestReportBuilder
 
     puts "Discovered last failed pipeline (#{pipeline['id']}) for MR!#{mr_id}"
 
-    failed_builds_for_test_stage = failed_builds_for_pipeline(pipeline['id']).select do |failed_build|
+    failed_builds_for_test_stage = failed_builds_for_pipeline(pipeline).select do |failed_build|
       failed_build['stage'] == 'test'
     end
 
@@ -92,7 +92,7 @@ class PipelineTestReportBuilder
       test_report['suites'] ||= []
 
       failed_builds_for_test_stage.each do |failed_build|
-        test_report['suites'] << test_report_for_build(pipeline['id'], failed_build['id'])
+        test_report['suites'] << test_report_for_build(pipeline, failed_build['id'])
       end
     end
 
@@ -127,8 +127,8 @@ if $0 == __FILE__
   options = Host::DEFAULT_OPTIONS.dup
 
   OptionParser.new do |opts|
-    opts.on("-p", "--project PROJECT", String, "Project where to find the merge request(defaults to $CI_PROJECT_ID)") do |value|
-      options[:project] = value
+    opts.on("-t", "--target-project TARGET_PROJECT", String, "Project where to find the merge request") do |value|
+      options[:target_project] = value
     end
 
     opts.on("-m", "--mr-id MR_ID", String, "A merge request ID") do |value|

@@ -7,9 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migrate groups from another instance of GitLab **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7.
-> - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 
 NOTE:
 The importer migrates **only** the group data listed on this page. To leave feedback on this
@@ -77,19 +76,20 @@ Any other items are **not** migrated.
 
 ## Enable or disable GitLab Group Migration
 
-GitLab Migration is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md) can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:bulk_import)
-```
+GitLab Migration is deployed behind the `bulk_import` feature flag, which is **enabled by default**.
+[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
+can disable it.
 
 To disable it:
 
 ```ruby
 Feature.disable(:bulk_import)
+```
+
+To enable it:
+
+```ruby
+Feature.enable(:bulk_import)
 ```
 
 ## Import your groups into GitLab

@@ -58,7 +58,7 @@ To import bare repositories into a GitLab instance:
    - Omnibus Installation
 
    ```shell
-   sudo gitlab-rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")']
+   sudo gitlab-rake gitlab:import:repos["/var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")"]
    ```
 
    - Installation from source. Before running this command you need to change to the directory where
@@ -66,7 +66,7 @@ To import bare repositories into a GitLab instance:
 
    ```shell
    cd /home/git/gitlab
-   sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")'] RAILS_ENV=production
+   sudo -u git -H bundle exec rake gitlab:import:repos["/var/opt/gitlab/git-data/repository-import-$(date "+%Y-%m-%d")"] RAILS_ENV=production
    ```
 
 ## Example output

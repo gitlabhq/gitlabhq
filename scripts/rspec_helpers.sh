@@ -94,11 +94,14 @@ function retrieve_previous_failed_tests() {
   local rspec_pg_regex="${2}"
   local rspec_ee_pg_regex="${3}"
   local pipeline_report_path="test_results/previous/test_reports.json"
-  local project_path="gitlab-org/gitlab"
+
+  # Used to query merge requests. This variable reflects where the merge request has been created
+  local target_project_path="${CI_MERGE_REQUEST_PROJECT_PATH}"
+  local instance_url="${CI_SERVER_URL}"
 
   echo 'Attempting to build pipeline test report...'
 
-  scripts/pipeline_test_report_builder.rb --instance-base-url "https://gitlab.com" --project "${project_path}" --mr-id "${CI_MERGE_REQUEST_IID}" --output-file-path "${pipeline_report_path}"
+  scripts/pipeline_test_report_builder.rb --instance-base-url "${instance_url}" --target-project "${target_project_path}" --mr-id "${CI_MERGE_REQUEST_IID}" --output-file-path "${pipeline_report_path}"
 
   echo 'Generating failed tests lists...'
 

@@ -160,7 +160,7 @@ RSpec.describe Group do
       context 'when sub group is deleted' do
         it 'does not delete parent notification settings' do
           expect do
-            sub_group.destroy
+            sub_group.destroy!
           end.to change { NotificationSetting.count }.by(-1)
         end
       end
@@ -404,7 +404,7 @@ RSpec.describe Group do
 
       subject do
         recorded_queries.record do
-          group.update(parent: new_parent)
+          group.update!(parent: new_parent)
         end
       end
 
@@ -496,7 +496,7 @@ RSpec.describe Group do
       let!(:group) { create(:group, parent: parent_group) }
 
       before do
-        parent_group.update(parent: new_grandparent)
+        parent_group.update!(parent: new_grandparent)
       end
 
       it 'updates traversal_ids for all descendants' do
@@ -866,7 +866,7 @@ RSpec.describe Group do
       before do
         parent_group = create(:group)
         create(:group_member, :owner, group: parent_group)
-        group.update(parent: parent_group)
+        group.update!(parent: parent_group)
       end
 
       it { expect(group.last_owner?(@members[:owner])).to be_falsy }
@@ -923,7 +923,7 @@ RSpec.describe Group do
         before do
           parent_group = create(:group)
           create(:group_member, :owner, group: parent_group)
-          group.update(parent: parent_group)
+          group.update!(parent: parent_group)
         end
 
         it { expect(group.member_last_blocked_owner?(member)).to be(false) }
@@ -1971,7 +1971,7 @@ RSpec.describe Group do
           let(:environment) { 'foo%bar/test' }
 
           it 'matches literally for %' do
-            ci_variable.update(environment_scope: 'foo%bar/*')
+            ci_variable.update_attribute(:environment_scope, 'foo%bar/*')
 
             is_expected.to contain_exactly(ci_variable)
           end
@@ -2112,7 +2112,7 @@ RSpec.describe Group do
       let(:ancestor_group) { create(:group) }
 
       before do
-        group.update(parent: ancestor_group)
+        group.update!(parent: ancestor_group)
       end
 
       it 'returns all ancestor group ids' do
@@ -2629,7 +2629,7 @@ RSpec.describe Group do
       let_it_be(:project) { create(:project, group: group, service_desk_enabled: false) }
 
       before do
-        project.update(service_desk_enabled: false)
+        project.update!(service_desk_enabled: false)
       end
 
       it { is_expected.to eq(false) }

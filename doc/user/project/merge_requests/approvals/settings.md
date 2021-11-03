@@ -139,7 +139,7 @@ coverage.
 
 To learn more, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
 
-## Merge request approval settings cascading
+## Settings cascading
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.4. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -149,11 +149,13 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 
 You can also enforce merge request approval settings:
 
-- At the [instance level](../../../admin_area/merge_requests_approvals.md), which apply to all groups on an instance and, therefore, all
-  projects.
-- On a [top-level group](../../../group/index.md#group-approval-rules), which apply to all subgroups and projects.
+- At the [instance level](../../../admin_area/merge_requests_approvals.md), which apply to all groups
+  on an instance and, therefore, all projects.
+- On a [top-level group](../../../group/index.md#group-approval-rules), which apply to all subgroups
+  and projects.
 
-If the settings are inherited by a group or project, they cannot be overridden by the group or project that inherited them.
+If the settings are inherited by a group or project, they cannot be changed in the group or project
+that inherited them.
 
 ## Related links
 

@@ -742,12 +742,11 @@ The group's new subgroups have push rules set for them based on either:
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per group, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `group_merge_request_approval_settings_feature_flag`. On GitLab.com, this feature is available.
 
-Group approval rules provides an interface for managing 
-[project merge request approval rules](../project/merge_requests/approvals/index.md) at the
-top-level group level. When rules are configured [at the instance level](../admin_area/merge_requests_approvals.md),
-you can't edit locked rules.
+Group approval rules manage [project merge request approval rules](../project/merge_requests/approvals/index.md)
+at the top-level group level. These rules [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
 
-To view the merge request approval rules UI for a group:
+To view the merge request approval rules for a group:
 
 1. Go to the top-level group's **Settings > General** page.
 1. Expand the **Merge request approvals** section.

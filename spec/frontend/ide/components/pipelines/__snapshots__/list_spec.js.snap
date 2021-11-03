@@ -8,7 +8,7 @@ exports[`IDE pipelines list when loaded renders empty state when no latestPipeli
    
   <empty-state-stub
     cansetci="true"
-    class="mb-auto mt-auto"
+    class="gl-p-5"
     emptystatesvgpath="http://test.host"
   />
 </div>

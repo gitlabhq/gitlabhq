@@ -53,7 +53,7 @@ RSpec.describe SentryIssue do
       create(:sentry_issue)
       project = sentry_issue.issue.project
       sentry_issue_3 = build(:sentry_issue, issue: create(:issue, project: project), sentry_issue_identifier: sentry_issue.sentry_issue_identifier)
-      sentry_issue_3.save(validate: false)
+      sentry_issue_3.save!(validate: false)
 
       result = described_class.for_project_and_identifier(project, sentry_issue.sentry_issue_identifier)
 
