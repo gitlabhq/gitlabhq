@@ -526,19 +526,22 @@
 .qa:rules:package-and-qa:
   rules:
     - <<: *if-not-ee
-      when: never
+      when: manual
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
+      when: manual
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *qa-patterns
       allow_failure: true
+      when: manual
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+      when: manual
 
 ###############
 # Rails rules #

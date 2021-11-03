@@ -636,6 +636,47 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:allow_editing_commit_messages?).to(:project_setting) }
+
+    include_examples 'ci_cd_settings delegation' do
+      # Skip attributes defined in EE code
+      let(:exclude_attributes) do
+        %w(
+          merge_pipelines_enabled
+          merge_trains_enabled
+          auto_rollback_enabled
+        )
+      end
+    end
+
+    describe '#ci_forward_deployment_enabled?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :forward_deployment_enabled? }
+      end
+    end
+
+    describe '#restrict_user_defined_variables?' do
+      it_behaves_like 'a ci_cd_settings predicate method' do
+        let(:delegated_method) { :restrict_user_defined_variables? }
+      end
+    end
+
+    describe '#keep_latest_artifacts_available?' do
+      it_behaves_like 'a ci_cd_settings predicate method' do
+        let(:delegated_method) { :keep_latest_artifacts_available? }
+      end
+    end
+
+    describe '#keep_latest_artifact?' do
+      it_behaves_like 'a ci_cd_settings predicate method' do
+        let(:delegated_method) { :keep_latest_artifact? }
+      end
+    end
+
+    describe '#group_runners_enabled?' do
+      it_behaves_like 'a ci_cd_settings predicate method' do
+        let(:delegated_method) { :group_runners_enabled? }
+      end
+    end
   end
 
   describe 'reference methods' do

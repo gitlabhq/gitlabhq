@@ -444,16 +444,15 @@ class Project < ApplicationRecord
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
-  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
+  delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
   delegate :last_pipeline, to: :commit, allow_nil: true
   delegate :external_dashboard_url, to: :metrics_setting, allow_nil: true, prefix: true
   delegate :dashboard_timezone, to: :metrics_setting, allow_nil: true, prefix: true
-  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci
-  delegate :forward_deployment_enabled, :forward_deployment_enabled=, :forward_deployment_enabled?, to: :ci_cd_settings, prefix: :ci
-  delegate :keep_latest_artifact, :keep_latest_artifact=, :keep_latest_artifact?, :keep_latest_artifacts_available?, to: :ci_cd_settings
-  delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, :restrict_user_defined_variables?,
-    to: :ci_cd_settings
+  delegate :default_git_depth, :default_git_depth=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :forward_deployment_enabled, :forward_deployment_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
+  delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
+  delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
     :allow_merge_on_skipped_pipeline=, :has_confluence?, :allow_editing_commit_messages?,
@@ -2612,6 +2611,36 @@ class Project < ApplicationRecord
     return if pending_delete?
 
     ProjectStatistics.increment_statistic(self, statistic, delta)
+  end
+
+  def ci_forward_deployment_enabled?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.forward_deployment_enabled?
+  end
+
+  def restrict_user_defined_variables?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.restrict_user_defined_variables?
+  end
+
+  def keep_latest_artifacts_available?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.keep_latest_artifacts_available?
+  end
+
+  def keep_latest_artifact?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.keep_latest_artifact?
+  end
+
+  def group_runners_enabled?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.group_runners_enabled?
   end
 
   private
