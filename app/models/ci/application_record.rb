@@ -4,6 +4,10 @@ module Ci
   class ApplicationRecord < ::ApplicationRecord
     self.abstract_class = true
 
+    if Gitlab::Database.has_config?(:ci)
+      connects_to database: { writing: :ci, reading: :ci }
+    end
+
     def self.table_name_prefix
       'ci_'
     end

@@ -26,6 +26,7 @@
 .decomposed-database-rspec:
   variables:
     DECOMPOSED_DB: "true"
+    GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: "main"
 
 .rspec-base:
   extends: .rails-job-base

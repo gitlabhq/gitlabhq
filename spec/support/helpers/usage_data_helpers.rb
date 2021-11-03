@@ -162,6 +162,8 @@ module UsageDataHelpers
 
   def stub_usage_data_connections
     allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+    allow(::Ci::ApplicationRecord.connection).to receive(:transaction_open?).and_return(false) if ::Ci::ApplicationRecord.connection_class?
+
     allow(Gitlab::Prometheus::Internal).to receive(:prometheus_enabled?).and_return(false)
   end
 

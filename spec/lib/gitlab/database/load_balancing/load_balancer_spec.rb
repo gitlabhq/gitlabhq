@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
     it 'does not create conflicts with other load balancers when caching hosts' do
       ci_config = Gitlab::Database::LoadBalancing::Configuration
-        .new(Ci::CiDatabaseRecord, [db_host, db_host])
+        .new(Ci::ApplicationRecord, [db_host, db_host])
 
       lb1 = described_class.new(config)
       lb2 = described_class.new(ci_config)
@@ -455,7 +455,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   end
 
   describe 'primary connection re-use', :reestablished_active_record_base do
-    let(:model) { Ci::CiDatabaseRecord }
+    let(:model) { Ci::ApplicationRecord }
 
     before do
       # fake additional Database
@@ -483,7 +483,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
 
     describe '#read_write' do
-      it 'returns Ci::CiDatabaseRecord connection' do
+      it 'returns Ci::ApplicationRecord connection' do
         expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
           expect(args.pool.db_config.name).to eq('ci')
         end

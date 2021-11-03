@@ -88,16 +88,6 @@ test: &test
       statement_timeout: 120s
 ```
 
-### Migrations
-
-Place any migrations that affect `Ci::CiDatabaseRecord` models
-and their tables in two directories:
-
-- `db/migrate`
-- `db/ci_migrate`
-
-We aim to keep the schema for both tables the same across both databases.
-
 <!--
 NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
       the following heading in the code, so if you make a change to this heading, make sure to update

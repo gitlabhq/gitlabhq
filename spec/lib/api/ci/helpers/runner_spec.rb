@@ -15,7 +15,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'handles sticking of a build when a build ID is specified' do
       allow(helper).to receive(:params).and_return(id: build.id)
 
-      expect(ApplicationRecord.sticking)
+      expect(Ci::Build.sticking)
         .to receive(:stick_or_unstick_request)
         .with({}, :build, build.id)
 
@@ -25,7 +25,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'does not handle sticking if no build ID was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(ApplicationRecord.sticking)
+      expect(Ci::Build.sticking)
         .not_to receive(:stick_or_unstick_request)
 
       helper.current_job
@@ -44,7 +44,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'handles sticking of a runner if a token is specified' do
       allow(helper).to receive(:params).and_return(token: runner.token)
 
-      expect(ApplicationRecord.sticking)
+      expect(Ci::Runner.sticking)
         .to receive(:stick_or_unstick_request)
         .with({}, :runner, runner.token)
 
@@ -54,7 +54,7 @@ RSpec.describe API::Ci::Helpers::Runner do
     it 'does not handle sticking if no token was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(ApplicationRecord.sticking)
+      expect(Ci::Runner.sticking)
         .not_to receive(:stick_or_unstick_request)
 
       helper.current_runner

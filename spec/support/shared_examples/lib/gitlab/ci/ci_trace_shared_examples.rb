@@ -35,8 +35,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
       end
 
-      it 'calls ::ApplicationRecord.sticking.unstick_or_continue_sticking' do
-        expect(::ApplicationRecord.sticking).to receive(:unstick_or_continue_sticking)
+      it 'calls ::Ci::Build.sticking.unstick_or_continue_sticking' do
+        expect(::Ci::Build.sticking).to receive(:unstick_or_continue_sticking)
           .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
           .and_call_original
 
@@ -49,8 +49,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
       end
 
-      it 'does not call ::ApplicationRecord.sticking.unstick_or_continue_sticking' do
-        expect(::ApplicationRecord.sticking).not_to receive(:unstick_or_continue_sticking)
+      it 'does not call ::Ci::Build.sticking.unstick_or_continue_sticking' do
+        expect(::Ci::Build.sticking).not_to receive(:unstick_or_continue_sticking)
 
         trace.read { |stream| stream }
       end
@@ -305,8 +305,8 @@ RSpec.shared_examples 'common trace features' do
           stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
         end
 
-        it 'calls ::ApplicationRecord.sticking.stick' do
-          expect(::ApplicationRecord.sticking).to receive(:stick)
+        it 'calls ::Ci::Build.sticking.stick' do
+          expect(::Ci::Build.sticking).to receive(:stick)
             .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
             .and_call_original
 
@@ -319,8 +319,8 @@ RSpec.shared_examples 'common trace features' do
           stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
         end
 
-        it 'does not call ::ApplicationRecord.sticking.stick' do
-          expect(::ApplicationRecord.sticking).not_to receive(:stick)
+        it 'does not call ::Ci::Build.sticking.stick' do
+          expect(::Ci::Build.sticking).not_to receive(:stick)
 
           subject
         end

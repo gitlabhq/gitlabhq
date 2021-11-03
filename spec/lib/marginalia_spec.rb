@@ -59,14 +59,14 @@ RSpec.describe 'Marginalia spec' do
           "application"    => "test",
           "endpoint_id"    => "MarginaliaTestController#first_user",
           "correlation_id" => correlation_id,
-          "db_config_name" => "ci"
+          "db_config_name" => ENV['GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci'] == 'main' ? 'main' : 'ci'
         }
       end
 
-      before do |example|
+      before do
         skip_if_multiple_databases_not_setup
 
-        allow(User).to receive(:connection) { Ci::CiDatabaseRecord.connection }
+        allow(User).to receive(:connection) { Ci::ApplicationRecord.connection }
       end
 
       it 'generates a query that includes the component and value' do

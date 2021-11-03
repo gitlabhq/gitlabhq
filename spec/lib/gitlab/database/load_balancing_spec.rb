@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
       expect(models).to include(ActiveRecord::Base)
 
       if Gitlab::Database.has_config?(:ci)
-        expect(models).to include(Ci::CiDatabaseRecord)
+        expect(models).to include(Ci::ApplicationRecord)
       end
     end
 

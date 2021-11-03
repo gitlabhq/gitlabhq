@@ -351,7 +351,7 @@ RSpec.describe Ci::Build do
     it 'sticks the build if the status changed' do
       job = create(:ci_build, :pending)
 
-      expect(ApplicationRecord.sticking).to receive(:stick)
+      expect(described_class.sticking).to receive(:stick)
         .with(:build, job.id)
 
       job.update!(status: :running)

@@ -14,7 +14,7 @@ storage is either:
 - A `path`, which points directly to the directory where the repositories are stored. GitLab
   directly accessing a directory containing repositories
   [is deprecated](https://gitlab.com/gitlab-org/gitaly/-/issues/1690).
-  GitLab should be configured to access GitLab repositories though a `gitaly_address`.
+  GitLab should be configured to access GitLab repositories through a `gitaly_address`.
 
 GitLab allows you to define multiple repository storages to distribute the storage load between
 several mount points. For example:

@@ -59,7 +59,7 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
-        ci: ::Ci::CiDatabaseRecord.connection_class? ? ::Ci::CiDatabaseRecord : nil
+        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
       }.compact.freeze
     end
 

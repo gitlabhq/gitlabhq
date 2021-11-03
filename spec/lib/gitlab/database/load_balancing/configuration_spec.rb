@@ -195,7 +195,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
   end
 
   describe '#replica_db_config' do
-    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::CiDatabaseRecord') }
+    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::ApplicationRecord') }
     let(:config) { described_class.for_model(model) }
 
     it 'returns exactly db_config' do
@@ -212,12 +212,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
   end
 
   describe 'reuse_primary_connection!' do
-    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::CiDatabaseRecord') }
+    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::ApplicationRecord') }
     let(:config) { described_class.for_model(model) }
 
     context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_* not configured' do
       it 'the primary connection uses default specification' do
-        expect(config.primary_connection_specification_name).to eq('Ci::CiDatabaseRecord')
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', nil)
+
+        expect(config.primary_connection_specification_name).to eq('Ci::ApplicationRecord')
       end
     end
 
