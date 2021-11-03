@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import InputValidator from '~/validators/input_validator';
-import fetchGroupPathAvailability from './fetch_group_path_availability';
+import { getGroupPathAvailability } from '~/rest_api';
 
 const debounceTimeoutDuration = 1000;
 const invalidInputClass = 'gl-field-error-outline';
@@ -45,7 +45,7 @@ export default class GroupPathValidator extends InputValidator {
     if (inputDomElement.checkValidity() && groupPath.length > 1) {
       GroupPathValidator.setMessageVisibility(inputDomElement, pendingMessageSelector);
 
-      fetchGroupPathAvailability(groupPath, parentId)
+      getGroupPathAvailability(groupPath, parentId)
         .then(({ data }) => data)
         .then((data) => {
           GroupPathValidator.setInputState(inputDomElement, !data.exists);

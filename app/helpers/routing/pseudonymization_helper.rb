@@ -21,7 +21,7 @@ module Routing
           case key
           when :project_id
             [key, "project#{@project&.id}"]
-          when :namespace_id
+          when :namespace_id, :group_id
             namespace = @group || @project&.namespace
             [key, "namespace#{namespace&.id}"]
           when :id
@@ -31,10 +31,23 @@ module Routing
           end
         end
 
-        Gitlab::Routing.url_helpers.url_for(masked_params.merge(masked_query_params))
+        generate_url(masked_params.merge(masked_query_params))
       end
 
       private
+
+      def generate_url(masked_params)
+        # The below check is added since `project/insights` route does not
+        # work with Rails router `url_for` method.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/343551
+        if @request.path_parameters[:controller] == 'projects/insights'
+          default_root_url + "#{Gitlab::Routing.url_helpers.namespace_project_insights_path(masked_params)}"
+        elsif @request.path_parameters[:controller] == 'groups/insights'
+          default_root_url + "#{Gitlab::Routing.url_helpers.group_insights_path(masked_params)}"
+        else
+          Gitlab::Routing.url_helpers.url_for(masked_params.merge(masked_query_params))
+        end
+      end
 
       def mask_id(value)
         if @request.path_parameters[:controller] == 'projects/blob'
@@ -50,7 +63,7 @@ module Routing
 
       def has_maskable_params?
         request_params = @request.path_parameters.to_h
-        request_params.has_key?(:namespace_id) || request_params.has_key?(:project_id) || request_params.has_key?(:id) || @request.query_string.present?
+        request_params.key?(:namespace_id) || request_params.key?(:group_id) || request_params.key?(:project_id) || request_params.key?(:id) || @request.query_string.present?
       end
 
       def masked_query_params
@@ -79,7 +92,10 @@ module Routing
       current_project = project if defined?(project)
       mask_helper = MaskHelper.new(request, current_group, current_project)
       mask_helper.mask_params
-    rescue ActionController::RoutingError, URI::InvalidURIError => e
+
+    # We rescue all exception for time being till we test this helper extensively.
+    # Check https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72864#note_711515501
+    rescue => e # rubocop:disable Style/RescueStandardError
       Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
       nil
     end

@@ -255,8 +255,15 @@ module RuboCop
             ]
 
             # For EE additionally process `ee/` feature flags
-            if File.exist?(File.expand_path('../../../ee/app/models/license.rb', __dir__)) && !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
+            is_ee = File.exist?(File.expand_path('../../../ee/app/models/license.rb', __dir__)) && !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
+            if is_ee
               flags_paths << 'ee/config/feature_flags/**/*.yml'
+            end
+
+            # For JH additionally process `jh/` feature flags
+            is_jh = is_ee && Dir.exist?(File.expand_path('../../../jh', __dir__)) && !%w[true 1].include?(ENV['EE_ONLY'].to_s)
+            if is_jh
+              flags_paths << 'jh/config/feature_flags/**/*.yml'
             end
 
             flags_paths.each_with_object([]) do |flags_path, memo|

@@ -19,7 +19,7 @@ export default {
   computed: {
     filteredNamespaces() {
       return this.namespaces.filter((ns) =>
-        ns.toLowerCase().includes(this.searchTerm.toLowerCase()),
+        ns.fullPath.toLowerCase().includes(this.searchTerm.toLowerCase()),
       );
     },
   },

@@ -15,7 +15,7 @@ module Gitlab
     ].freeze
     HTTP_ERRORS = HTTP_TIMEOUT_ERRORS + [
       EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
-      Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH,
+      Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
       Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep
     ].freeze
 

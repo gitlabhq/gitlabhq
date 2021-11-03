@@ -128,17 +128,17 @@ export default {
               <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
               <gl-dropdown-item
                 v-for="ns in namespaces"
-                :key="ns"
+                :key="ns.fullPath"
                 data-qa-selector="target_group_dropdown_item"
-                :data-qa-group-name="ns"
-                @click="updateImportTarget({ targetNamespace: ns })"
+                :data-qa-group-name="ns.fullPath"
+                @click="updateImportTarget({ targetNamespace: ns.fullPath })"
               >
-                {{ ns }}
+                {{ ns.fullPath }}
               </gl-dropdown-item>
               <gl-dropdown-divider />
             </template>
             <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
-            <gl-dropdown-item @click="updateImportTarget({ targetNamespace: ns })">{{
+            <gl-dropdown-item @click="updateImportTarget({ targetNamespace: userNamespace })">{{
               userNamespace
             }}</gl-dropdown-item>
           </import-group-dropdown>

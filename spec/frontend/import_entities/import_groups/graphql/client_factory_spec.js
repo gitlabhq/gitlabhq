@@ -2,32 +2,27 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import MockAdapter from 'axios-mock-adapter';
 import { createMockClient } from 'mock-apollo-client';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
 import {
   clientTypenames,
   createResolvers,
 } from '~/import_entities/import_groups/graphql/client_factory';
-import addValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/add_validation_error.mutation.graphql';
+import { LocalStorageCache } from '~/import_entities/import_groups/graphql/services/local_storage_cache';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
-import removeValidationErrorMutation from '~/import_entities/import_groups/graphql/mutations/remove_validation_error.mutation.graphql';
-import setImportProgressMutation from '~/import_entities/import_groups/graphql/mutations/set_import_progress.mutation.graphql';
-import setImportTargetMutation from '~/import_entities/import_groups/graphql/mutations/set_import_target.mutation.graphql';
 import updateImportStatusMutation from '~/import_entities/import_groups/graphql/mutations/update_import_status.mutation.graphql';
 import availableNamespacesQuery from '~/import_entities/import_groups/graphql/queries/available_namespaces.query.graphql';
-import bulkImportSourceGroupQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_group.query.graphql';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
-import groupAndProjectQuery from '~/import_entities/import_groups/graphql/queries/group_and_project.query.graphql';
-import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
 
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import { statusEndpointFixture, availableNamespacesFixture } from './fixtures';
 
 jest.mock('~/flash');
-jest.mock('~/import_entities/import_groups/graphql/services/status_poller', () => ({
-  StatusPoller: jest.fn().mockImplementation(function mock() {
-    this.startPolling = jest.fn();
+jest.mock('~/import_entities/import_groups/graphql/services/local_storage_cache', () => ({
+  LocalStorageCache: jest.fn().mockImplementation(function mock() {
+    this.get = jest.fn();
+    this.set = jest.fn();
+    this.updateStatusByJobId = jest.fn();
   }),
 }));
 
@@ -37,13 +32,6 @@ const FAKE_ENDPOINTS = {
   createBulkImport: '/fake_create_bulk_import',
   jobs: '/fake_jobs',
 };
-
-const FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER = jest.fn().mockResolvedValue({
-  data: {
-    existingGroup: null,
-    existingProject: null,
-  },
-});
 
 describe('Bulk import resolvers', () => {
   let axiosMockAdapter;
@@ -58,14 +46,28 @@ describe('Bulk import resolvers', () => {
       resolvers: createResolvers({ endpoints: FAKE_ENDPOINTS, ...extraResolverArgs }),
     });
 
-    mockedClient.setRequestHandler(groupAndProjectQuery, FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER);
-
     return mockedClient;
   };
 
-  beforeEach(() => {
+  let results;
+  beforeEach(async () => {
     axiosMockAdapter = new MockAdapter(axios);
     client = createClient();
+
+    axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
+    axiosMockAdapter.onGet(FAKE_ENDPOINTS.availableNamespaces).reply(
+      httpStatus.OK,
+      availableNamespacesFixture.map((ns) => ({
+        id: ns.id,
+        full_path: ns.fullPath,
+      })),
+    );
+
+    client.watchQuery({ query: bulkImportSourceGroupsQuery }).subscribe(({ data }) => {
+      results = data.bulkImportSourceGroups.nodes;
+    });
+
+    return waitForPromises();
   });
 
   afterEach(() => {
@@ -74,104 +76,41 @@ describe('Bulk import resolvers', () => {
 
   describe('queries', () => {
     describe('availableNamespaces', () => {
-      let results;
-
+      let namespacesResults;
       beforeEach(async () => {
-        axiosMockAdapter
-          .onGet(FAKE_ENDPOINTS.availableNamespaces)
-          .reply(httpStatus.OK, availableNamespacesFixture);
-
         const response = await client.query({ query: availableNamespacesQuery });
-        results = response.data.availableNamespaces;
+        namespacesResults = response.data.availableNamespaces;
       });
 
       it('mirrors REST endpoint response fields', () => {
         const extractRelevantFields = (obj) => ({ id: obj.id, full_path: obj.full_path });
 
-        expect(results.map(extractRelevantFields)).toStrictEqual(
+        expect(namespacesResults.map(extractRelevantFields)).toStrictEqual(
           availableNamespacesFixture.map(extractRelevantFields),
         );
       });
     });
 
-    describe('bulkImportSourceGroup', () => {
-      beforeEach(async () => {
-        axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
-        axiosMockAdapter
-          .onGet(FAKE_ENDPOINTS.availableNamespaces)
-          .reply(httpStatus.OK, availableNamespacesFixture);
-
-        return client.query({
-          query: bulkImportSourceGroupsQuery,
-        });
-      });
-
-      it('returns group', async () => {
-        const { id } = statusEndpointFixture.importable_data[0];
-        const {
-          data: { bulkImportSourceGroup: group },
-        } = await client.query({
-          query: bulkImportSourceGroupQuery,
-          variables: { id: id.toString() },
-        });
-
-        expect(group).toMatchObject(statusEndpointFixture.importable_data[0]);
-      });
-    });
-
     describe('bulkImportSourceGroups', () => {
-      let results;
-
-      beforeEach(async () => {
-        axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
-        axiosMockAdapter
-          .onGet(FAKE_ENDPOINTS.availableNamespaces)
-          .reply(httpStatus.OK, availableNamespacesFixture);
-      });
-
       it('respects cached import state when provided by group manager', async () => {
-        const FAKE_JOB_ID = '1';
-        const FAKE_STATUS = 'DEMO_STATUS';
-        const FAKE_IMPORT_TARGET = {
-          new_name: 'test-name',
-          target_namespace: 'test-namespace',
+        const [localStorageCache] = LocalStorageCache.mock.instances;
+        const CACHED_DATA = {
+          progress: {
+            id: 'DEMO',
+            status: 'cached',
+          },
         };
-        const TARGET_INDEX = 0;
+        localStorageCache.get.mockReturnValueOnce(CACHED_DATA);
 
-        const clientWithMockedManager = createClient({
-          GroupsManager: jest.fn().mockImplementation(() => ({
-            getImportStateFromStorageByGroupId(groupId) {
-              if (groupId === statusEndpointFixture.importable_data[TARGET_INDEX].id) {
-                return {
-                  jobId: FAKE_JOB_ID,
-                  importState: {
-                    status: FAKE_STATUS,
-                    importTarget: FAKE_IMPORT_TARGET,
-                  },
-                };
-              }
-
-              return null;
-            },
-          })),
-        });
-
-        const clientResponse = await clientWithMockedManager.query({
+        const updatedResults = await client.query({
           query: bulkImportSourceGroupsQuery,
+          fetchPolicy: 'no-cache',
         });
-        const clientResults = clientResponse.data.bulkImportSourceGroups.nodes;
 
-        expect(clientResults[TARGET_INDEX].import_target).toStrictEqual(FAKE_IMPORT_TARGET);
-        expect(clientResults[TARGET_INDEX].progress.status).toBe(FAKE_STATUS);
-      });
-
-      it('populates each result instance with empty import_target when there are no available namespaces', async () => {
-        axiosMockAdapter.onGet(FAKE_ENDPOINTS.availableNamespaces).reply(httpStatus.OK, []);
-
-        const response = await client.query({ query: bulkImportSourceGroupsQuery });
-        results = response.data.bulkImportSourceGroups.nodes;
-
-        expect(results.every((r) => r.import_target.target_namespace === '')).toBe(true);
+        expect(updatedResults.data.bulkImportSourceGroups.nodes[0].progress).toStrictEqual({
+          __typename: clientTypenames.BulkImportProgress,
+          ...CACHED_DATA.progress,
+        });
       });
 
       describe('when called', () => {
@@ -181,37 +120,23 @@ describe('Bulk import resolvers', () => {
         });
 
         it('mirrors REST endpoint response fields', () => {
-          const MIRRORED_FIELDS = ['id', 'full_name', 'full_path', 'web_url'];
+          const MIRRORED_FIELDS = [
+            { from: 'id', to: 'id' },
+            { from: 'full_name', to: 'fullName' },
+            { from: 'full_path', to: 'fullPath' },
+            { from: 'web_url', to: 'webUrl' },
+          ];
           expect(
             results.every((r, idx) =>
               MIRRORED_FIELDS.every(
-                (field) => r[field] === statusEndpointFixture.importable_data[idx][field],
+                (field) => r[field.to] === statusEndpointFixture.importable_data[idx][field.from],
               ),
             ),
           ).toBe(true);
         });
 
-        it('populates each result instance with status default to none', () => {
-          expect(results.every((r) => r.progress.status === STATUSES.NONE)).toBe(true);
-        });
-
-        it('populates each result instance with import_target defaulted to first available namespace', () => {
-          expect(
-            results.every(
-              (r) => r.import_target.target_namespace === availableNamespacesFixture[0].full_path,
-            ),
-          ).toBe(true);
-        });
-
-        it('starts polling when request completes', async () => {
-          const [statusPoller] = StatusPoller.mock.instances;
-          expect(statusPoller.startPolling).toHaveBeenCalled();
-        });
-
-        it('requests validation status when request completes', async () => {
-          expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).not.toHaveBeenCalled();
-          jest.runOnlyPendingTimers();
-          expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).toHaveBeenCalled();
+        it('populates each result instance with empty status', () => {
+          expect(results.every((r) => r.progress === null)).toBe(true);
         });
       });
 
@@ -223,6 +148,7 @@ describe('Bulk import resolvers', () => {
       `(
         'properly passes GraphQL variable $variable as REST $queryParam query parameter',
         async ({ variable, queryParam, value }) => {
+          axiosMockAdapter.resetHistory();
           await client.query({
             query: bulkImportSourceGroupsQuery,
             variables: { [variable]: value },
@@ -237,275 +163,61 @@ describe('Bulk import resolvers', () => {
   });
 
   describe('mutations', () => {
-    const GROUP_ID = 1;
-
     beforeEach(() => {
-      client.writeQuery({
-        query: bulkImportSourceGroupsQuery,
-        data: {
-          bulkImportSourceGroups: {
-            nodes: [
-              {
-                __typename: clientTypenames.BulkImportSourceGroup,
-                id: GROUP_ID,
-                progress: {
-                  id: `test-${GROUP_ID}`,
-                  status: STATUSES.NONE,
-                },
-                web_url: 'https://fake.host/1',
-                full_path: 'fake_group_1',
-                full_name: 'fake_name_1',
-                import_target: {
-                  target_namespace: 'root',
-                  new_name: 'group1',
-                },
-                last_import_target: {
-                  target_namespace: 'root',
-                  new_name: 'group1',
-                },
-                validation_errors: [],
-              },
-            ],
-            pageInfo: {
-              page: 1,
-              perPage: 20,
-              total: 37,
-              totalPages: 2,
-            },
-          },
-        },
-      });
-    });
-
-    describe('setImportTarget', () => {
-      it('updates group target namespace and name', async () => {
-        const NEW_TARGET_NAMESPACE = 'target';
-        const NEW_NAME = 'new';
-
-        const {
-          data: {
-            setImportTarget: {
-              id: idInResponse,
-              import_target: { target_namespace: namespaceInResponse, new_name: newNameInResponse },
-            },
-          },
-        } = await client.mutate({
-          mutation: setImportTargetMutation,
-          variables: {
-            sourceGroupId: GROUP_ID,
-            targetNamespace: NEW_TARGET_NAMESPACE,
-            newName: NEW_NAME,
-          },
-        });
-
-        expect(idInResponse).toBe(GROUP_ID);
-        expect(namespaceInResponse).toBe(NEW_TARGET_NAMESPACE);
-        expect(newNameInResponse).toBe(NEW_NAME);
-      });
-
-      it('invokes validation', async () => {
-        const NEW_TARGET_NAMESPACE = 'target';
-        const NEW_NAME = 'new';
-
-        await client.mutate({
-          mutation: setImportTargetMutation,
-          variables: {
-            sourceGroupId: GROUP_ID,
-            targetNamespace: NEW_TARGET_NAMESPACE,
-            newName: NEW_NAME,
-          },
-        });
-
-        expect(FAKE_GROUP_AND_PROJECTS_QUERY_HANDLER).toHaveBeenCalledWith({
-          fullPath: `${NEW_TARGET_NAMESPACE}/${NEW_NAME}`,
-        });
-      });
+      axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
     });
 
     describe('importGroup', () => {
-      it('sets status to SCHEDULING when request initiates', async () => {
-        axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(() => new Promise(() => {}));
-
-        client.mutate({
+      it('sets import status to CREATED when request completes', async () => {
+        await client.mutate({
           mutation: importGroupsMutation,
-          variables: { sourceGroupIds: [GROUP_ID] },
-        });
-        await waitForPromises();
-
-        const {
-          bulkImportSourceGroups: { nodes: intermediateResults },
-        } = client.readQuery({
-          query: bulkImportSourceGroupsQuery,
-        });
-
-        expect(intermediateResults[0].progress.status).toBe(STATUSES.SCHEDULING);
-      });
-
-      describe('when request completes', () => {
-        let results;
-
-        beforeEach(() => {
-          client
-            .watchQuery({
-              query: bulkImportSourceGroupsQuery,
-              fetchPolicy: 'cache-only',
-            })
-            .subscribe(({ data }) => {
-              results = data.bulkImportSourceGroups.nodes;
-            });
+          variables: {
+            importRequests: [
+              {
+                sourceGroupId: statusEndpointFixture.importable_data[0].id,
+                newName: 'test',
+                targetNamespace: 'root',
+              },
+            ],
+          },
         });
 
-        it('sets import status to CREATED when request completes', async () => {
-          axiosMockAdapter.onPost(FAKE_ENDPOINTS.createBulkImport).reply(httpStatus.OK, { id: 1 });
-          await client.mutate({
-            mutation: importGroupsMutation,
-            variables: { sourceGroupIds: [GROUP_ID] },
-          });
-          await waitForPromises();
-
-          expect(results[0].progress.status).toBe(STATUSES.CREATED);
-        });
-
-        it('resets status to NONE if request fails', async () => {
-          axiosMockAdapter
-            .onPost(FAKE_ENDPOINTS.createBulkImport)
-            .reply(httpStatus.INTERNAL_SERVER_ERROR);
-
-          client
-            .mutate({
-              mutation: [importGroupsMutation],
-              variables: { sourceGroupIds: [GROUP_ID] },
-            })
-            .catch(() => {});
-          await waitForPromises();
-
-          expect(results[0].progress.status).toBe(STATUSES.NONE);
-        });
-      });
-
-      it('shows default error message when server error is not provided', async () => {
-        axiosMockAdapter
-          .onPost(FAKE_ENDPOINTS.createBulkImport)
-          .reply(httpStatus.INTERNAL_SERVER_ERROR);
-
-        client
-          .mutate({
-            mutation: importGroupsMutation,
-            variables: { sourceGroupIds: [GROUP_ID] },
-          })
-          .catch(() => {});
-        await waitForPromises();
-
-        expect(createFlash).toHaveBeenCalledWith({ message: 'Importing the group failed' });
-      });
-
-      it('shows provided error message when error is included in backend response', async () => {
-        const CUSTOM_MESSAGE = 'custom message';
-
-        axiosMockAdapter
-          .onPost(FAKE_ENDPOINTS.createBulkImport)
-          .reply(httpStatus.INTERNAL_SERVER_ERROR, { error: CUSTOM_MESSAGE });
-
-        client
-          .mutate({
-            mutation: importGroupsMutation,
-            variables: { sourceGroupIds: [GROUP_ID] },
-          })
-          .catch(() => {});
-        await waitForPromises();
-
-        expect(createFlash).toHaveBeenCalledWith({ message: CUSTOM_MESSAGE });
+        await axios.waitForAll();
+        expect(results[0].progress.status).toBe(STATUSES.CREATED);
       });
     });
 
-    it('setImportProgress updates group progress and sets import target', async () => {
+    it('updateImportStatus updates status', async () => {
       const NEW_STATUS = 'dummy';
-      const FAKE_JOB_ID = 5;
-      const IMPORT_TARGET = {
-        __typename: 'ClientBulkImportTarget',
-        new_name: 'fake_name',
-        target_namespace: 'fake_target',
-      };
-      const {
-        data: {
-          setImportProgress: { progress, last_import_target: lastImportTarget },
-        },
-      } = await client.mutate({
-        mutation: setImportProgressMutation,
+      await client.mutate({
+        mutation: importGroupsMutation,
         variables: {
-          sourceGroupId: GROUP_ID,
-          status: NEW_STATUS,
-          jobId: FAKE_JOB_ID,
-          importTarget: IMPORT_TARGET,
+          importRequests: [
+            {
+              sourceGroupId: statusEndpointFixture.importable_data[0].id,
+              newName: 'test',
+              targetNamespace: 'root',
+            },
+          ],
         },
       });
+      await axios.waitForAll();
+      await waitForPromises();
 
-      expect(lastImportTarget).toStrictEqual(IMPORT_TARGET);
+      const { id } = results[0].progress;
 
-      expect(progress).toStrictEqual({
-        __typename: clientTypenames.BulkImportProgress,
-        id: FAKE_JOB_ID,
-        status: NEW_STATUS,
-      });
-    });
-
-    it('updateImportStatus returns new status', async () => {
-      const NEW_STATUS = 'dummy';
-      const FAKE_JOB_ID = 5;
       const {
         data: { updateImportStatus: statusInResponse },
       } = await client.mutate({
         mutation: updateImportStatusMutation,
-        variables: { id: FAKE_JOB_ID, status: NEW_STATUS },
+        variables: { id, status: NEW_STATUS },
       });
 
       expect(statusInResponse).toStrictEqual({
         __typename: clientTypenames.BulkImportProgress,
-        id: FAKE_JOB_ID,
+        id,
         status: NEW_STATUS,
       });
-    });
-
-    it('addValidationError adds error to group', async () => {
-      const FAKE_FIELD = 'some-field';
-      const FAKE_MESSAGE = 'some-message';
-      const {
-        data: {
-          addValidationError: { validation_errors: validationErrors },
-        },
-      } = await client.mutate({
-        mutation: addValidationErrorMutation,
-        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD, message: FAKE_MESSAGE },
-      });
-
-      expect(validationErrors).toStrictEqual([
-        {
-          __typename: clientTypenames.BulkImportValidationError,
-          field: FAKE_FIELD,
-          message: FAKE_MESSAGE,
-        },
-      ]);
-    });
-
-    it('removeValidationError removes error from group', async () => {
-      const FAKE_FIELD = 'some-field';
-      const FAKE_MESSAGE = 'some-message';
-
-      await client.mutate({
-        mutation: addValidationErrorMutation,
-        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD, message: FAKE_MESSAGE },
-      });
-
-      const {
-        data: {
-          removeValidationError: { validation_errors: validationErrors },
-        },
-      } = await client.mutate({
-        mutation: removeValidationErrorMutation,
-        variables: { sourceGroupId: GROUP_ID, field: FAKE_FIELD },
-      });
-
-      expect(validationErrors).toStrictEqual([]);
     });
   });
 });

@@ -1,8 +1,6 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { STATUSES } from '~/import_entities/constants';
 import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
-import { generateFakeEntry } from '../graphql/fixtures';
 
 describe('import actions cell', () => {
   let wrapper;
@@ -10,7 +8,9 @@ describe('import actions cell', () => {
   const createComponent = (props) => {
     wrapper = shallowMount(ImportActionsCell, {
       propsData: {
-        groupPathRegex: /^[a-zA-Z]+$/,
+        isFinished: false,
+        isAvailableForImport: false,
+        isInvalid: false,
         ...props,
       },
     });
@@ -20,10 +20,9 @@ describe('import actions cell', () => {
     wrapper.destroy();
   });
 
-  describe('when import status is NONE', () => {
+  describe('when group is available for import', () => {
     beforeEach(() => {
-      const group = generateFakeEntry({ id: 1, status: STATUSES.NONE });
-      createComponent({ group });
+      createComponent({ isAvailableForImport: true });
     });
 
     it('renders import button', () => {
@@ -37,10 +36,9 @@ describe('import actions cell', () => {
     });
   });
 
-  describe('when import status is FINISHED', () => {
+  describe('when group is finished', () => {
     beforeEach(() => {
-      const group = generateFakeEntry({ id: 1, status: STATUSES.FINISHED });
-      createComponent({ group });
+      createComponent({ isAvailableForImport: true, isFinished: true });
     });
 
     it('renders re-import button', () => {
@@ -58,29 +56,22 @@ describe('import actions cell', () => {
     });
   });
 
-  it('does not render import button when group import is in progress', () => {
-    const group = generateFakeEntry({ id: 1, status: STATUSES.STARTED });
-    createComponent({ group });
+  it('does not render import button when group is not available for import', () => {
+    createComponent({ isAvailableForImport: false });
 
     const button = wrapper.findComponent(GlButton);
     expect(button.exists()).toBe(false);
   });
 
-  it('renders import button as disabled when there are validation errors', () => {
-    const group = generateFakeEntry({
-      id: 1,
-      status: STATUSES.NONE,
-      validation_errors: [{ field: 'new_name', message: 'something ' }],
-    });
-    createComponent({ group });
+  it('renders import button as disabled when group is invalid', () => {
+    createComponent({ isInvalid: true, isAvailableForImport: true });
 
     const button = wrapper.findComponent(GlButton);
     expect(button.props().disabled).toBe(true);
   });
 
   it('emits import-group event when import button is clicked', () => {
-    const group = generateFakeEntry({ id: 1, status: STATUSES.NONE });
-    createComponent({ group });
+    createComponent({ isAvailableForImport: true });
 
     const button = wrapper.findComponent(GlButton);
     button.vm.$emit('click');

@@ -1,6 +1,11 @@
-mutation importGroups($sourceGroupIds: [String!]!) {
-  importGroups(sourceGroupIds: $sourceGroupIds) @client {
+mutation importGroups($importRequests: [ImportGroupInput!]!) {
+  importGroups(importRequests: $importRequests) @client {
     id
+    lastImportTarget {
+      id
+      targetNamespace
+      newName
+    }
     progress {
       id
       status

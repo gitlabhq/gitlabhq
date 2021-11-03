@@ -5930,16 +5930,22 @@ msgstr ""
 msgid "BulkImport|Import groups from GitLab"
 msgstr ""
 
+msgid "BulkImport|Import is finished. Pick another name for re-import"
+msgstr ""
+
 msgid "BulkImport|Import selected"
 msgstr ""
 
-msgid "BulkImport|Importing the group failed"
+msgid "BulkImport|Importing the group failed."
 msgstr ""
 
 msgid "BulkImport|Last imported to %{link}"
 msgstr ""
 
 msgid "BulkImport|Name already exists."
+msgstr ""
+
+msgid "BulkImport|Name already used as a target for another group."
 msgstr ""
 
 msgid "BulkImport|New group"
@@ -19328,6 +19334,9 @@ msgstr ""
 msgid "Iterations|Automated scheduling"
 msgstr ""
 
+msgid "Iterations|Cadence configuration is invalid."
+msgstr ""
+
 msgid "Iterations|Cadence name"
 msgstr ""
 
@@ -19335,6 +19344,9 @@ msgid "Iterations|Couldn't find iteration cadence"
 msgstr ""
 
 msgid "Iterations|Create cadence"
+msgstr ""
+
+msgid "Iterations|Create cadence and start iteration"
 msgstr ""
 
 msgid "Iterations|Create iteration"
@@ -19434,6 +19446,9 @@ msgid "Iterations|Title"
 msgstr ""
 
 msgid "Iterations|Unable to find iteration."
+msgstr ""
+
+msgid "Iterations|Unable to save cadence. Please try again."
 msgstr ""
 
 msgid "Iteration|Dates cannot overlap with other existing Iterations within this group"
@@ -23018,6 +23033,9 @@ msgstr ""
 msgid "New milestone"
 msgstr ""
 
+msgid "New name"
+msgstr ""
+
 msgid "New password"
 msgstr ""
 
@@ -24710,6 +24728,9 @@ msgid "Page not found"
 msgstr ""
 
 msgid "Page settings"
+msgstr ""
+
+msgid "Page size"
 msgstr ""
 
 msgid "PagerDutySettings|Active"
@@ -36554,9 +36575,6 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
-msgstr ""
-
-msgid "Unable to save cadence. Please try again"
 msgstr ""
 
 msgid "Unable to save iteration. Please try again"

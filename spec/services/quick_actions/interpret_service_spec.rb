@@ -1326,14 +1326,25 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'confidential command' do
-      let(:content) { '/confidential' }
-      let(:issuable) { issue }
-    end
+    context '/confidential' do
+      it_behaves_like 'confidential command' do
+        let(:content) { '/confidential' }
+        let(:issuable) { issue }
+      end
 
-    it_behaves_like 'confidential command' do
-      let(:content) { '/confidential' }
-      let(:issuable) { create(:incident, project: project) }
+      it_behaves_like 'confidential command' do
+        let(:content) { '/confidential' }
+        let(:issuable) { create(:incident, project: project) }
+      end
+
+      context 'when non-member is creating a new issue' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'confidential command' do
+          let(:content) { '/confidential' }
+          let(:issuable) { build(:issue, project: project) }
+        end
+      end
     end
 
     it_behaves_like 'lock command' do

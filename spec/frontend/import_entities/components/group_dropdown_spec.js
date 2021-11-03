@@ -24,14 +24,21 @@ describe('Import entities group dropdown component', () => {
   });
 
   it('passes namespaces from props to default slot', () => {
-    const namespaces = ['ns1', 'ns2'];
+    const namespaces = [
+      { id: 1, fullPath: 'ns1' },
+      { id: 2, fullPath: 'ns2' },
+    ];
     createComponent({ namespaces });
 
     expect(namespacesTracker).toHaveBeenCalledWith({ namespaces });
   });
 
   it('filters namespaces based on user input', async () => {
-    const namespaces = ['match1', 'some unrelated', 'match2'];
+    const namespaces = [
+      { id: 1, fullPath: 'match1' },
+      { id: 2, fullPath: 'some unrelated' },
+      { id: 3, fullPath: 'match2' },
+    ];
     createComponent({ namespaces });
 
     namespacesTracker.mockReset();
@@ -39,6 +46,11 @@ describe('Import entities group dropdown component', () => {
 
     await nextTick();
 
-    expect(namespacesTracker).toHaveBeenCalledWith({ namespaces: ['match1', 'match2'] });
+    expect(namespacesTracker).toHaveBeenCalledWith({
+      namespaces: [
+        { id: 1, fullPath: 'match1' },
+        { id: 3, fullPath: 'match2' },
+      ],
+    });
   });
 });

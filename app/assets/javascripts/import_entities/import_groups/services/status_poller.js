@@ -32,4 +32,8 @@ export class StatusPoller {
   startPolling() {
     this.eTagPoll.makeRequest();
   }
+
+  stopPolling() {
+    this.eTagPoll.stop();
+  }
 }

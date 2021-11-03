@@ -1,24 +1,24 @@
+import { STATUSES } from '~/import_entities/constants';
 import { clientTypenames } from '~/import_entities/import_groups/graphql/client_factory';
 
 export const generateFakeEntry = ({ id, status, ...rest }) => ({
   __typename: clientTypenames.BulkImportSourceGroup,
-  web_url: `https://fake.host/${id}`,
-  full_path: `fake_group_${id}`,
-  full_name: `fake_name_${id}`,
-  import_target: {
-    target_namespace: 'root',
-    new_name: `group${id}`,
-  },
-  last_import_target: {
-    target_namespace: 'root',
-    new_name: `last-group${id}`,
+  webUrl: `https://fake.host/${id}`,
+  fullPath: `fake_group_${id}`,
+  fullName: `fake_name_${id}`,
+  lastImportTarget: {
+    id,
+    targetNamespace: 'root',
+    newName: `group${id}`,
   },
   id,
-  progress: {
-    id: `test-${id}`,
-    status,
-  },
-  validation_errors: [],
+  progress:
+    status === STATUSES.NONE || status === STATUSES.PENDING
+      ? null
+      : {
+          id,
+          status,
+        },
   ...rest,
 });
 
@@ -51,9 +51,9 @@ export const statusEndpointFixture = {
   ],
 };
 
-export const availableNamespacesFixture = [
-  { id: 24, full_path: 'Commit451' },
-  { id: 22, full_path: 'gitlab-org' },
-  { id: 23, full_path: 'gnuwget' },
-  { id: 25, full_path: 'jashkenas' },
-];
+export const availableNamespacesFixture = Object.freeze([
+  { id: 24, fullPath: 'Commit451' },
+  { id: 22, fullPath: 'gitlab-org' },
+  { id: 23, fullPath: 'gnuwget' },
+  { id: 25, fullPath: 'jashkenas' },
+]);

@@ -1,22 +1,25 @@
 import { STATUSES } from '../constants';
 import { NEW_NAME_FIELD } from './constants';
 
-export function isNameValid(group, validationRegex) {
-  return validationRegex.test(group.import_target[NEW_NAME_FIELD]);
+export function isNameValid(importTarget, validationRegex) {
+  return validationRegex.test(importTarget[NEW_NAME_FIELD]);
 }
 
-export function getInvalidNameValidationMessage(group) {
-  return group.validation_errors.find(({ field }) => field === NEW_NAME_FIELD)?.message;
-}
-
-export function isInvalid(group, validationRegex) {
-  return Boolean(!isNameValid(group, validationRegex) || getInvalidNameValidationMessage(group));
+export function getInvalidNameValidationMessage(importTarget) {
+  return importTarget.validationErrors?.find(({ field }) => field === NEW_NAME_FIELD)?.message;
 }
 
 export function isFinished(group) {
-  return group.progress.status === STATUSES.FINISHED;
+  return [STATUSES.FINISHED, STATUSES.FAILED].includes(group.progress?.status);
 }
 
 export function isAvailableForImport(group) {
-  return [STATUSES.NONE, STATUSES.FINISHED].some((status) => group.progress.status === status);
+  return !group.progress || isFinished(group);
+}
+
+export function isSameTarget(importTarget) {
+  return (target) =>
+    target !== importTarget &&
+    target.newName.toLowerCase() === importTarget.newName.toLowerCase() &&
+    target.targetNamespace.id === importTarget.targetNamespace.id;
 }

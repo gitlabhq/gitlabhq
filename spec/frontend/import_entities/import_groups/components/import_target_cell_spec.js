@@ -3,20 +3,20 @@ import { shallowMount } from '@vue/test-utils';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
-import { availableNamespacesFixture } from '../graphql/fixtures';
+import { generateFakeEntry, availableNamespacesFixture } from '../graphql/fixtures';
 
-const getFakeGroup = (status) => ({
-  web_url: 'https://fake.host/',
-  full_path: 'fake_group_1',
-  full_name: 'fake_name_1',
-  import_target: {
-    target_namespace: 'root',
-    new_name: 'group1',
-  },
-  id: 1,
-  validation_errors: [],
-  progress: { status },
-});
+const generateFakeTableEntry = ({ flags = {}, ...config }) => {
+  const entry = generateFakeEntry(config);
+
+  return {
+    ...entry,
+    importTarget: {
+      targetNamespace: availableNamespacesFixture[0],
+      newName: entry.lastImportTarget.newName,
+    },
+    flags,
+  };
+};
 
 describe('import target cell', () => {
   let wrapper;
@@ -31,7 +31,6 @@ describe('import target cell', () => {
       propsData: {
         availableNamespaces: availableNamespacesFixture,
         groupPathRegex: /.*/,
-        groupUrlErrorMessage: 'Please choose a group URL with no special characters or spaces.',
         ...props,
       },
     });
@@ -44,11 +43,11 @@ describe('import target cell', () => {
 
   describe('events', () => {
     beforeEach(() => {
-      group = getFakeGroup(STATUSES.NONE);
+      group = generateFakeTableEntry({ id: 1, status: STATUSES.NONE });
       createComponent({ group });
     });
 
-    it('invokes $event', () => {
+    it('emits update-new-name when input value is changed', () => {
       findNameInput().vm.$emit('input', 'demo');
       expect(wrapper.emitted('update-new-name')).toBeDefined();
       expect(wrapper.emitted('update-new-name')[0][0]).toBe('demo');
@@ -56,18 +55,23 @@ describe('import target cell', () => {
 
     it('emits update-target-namespace when dropdown option is clicked', () => {
       const dropdownItem = findNamespaceDropdown().findAllComponents(GlDropdownItem).at(2);
-      const dropdownItemText = dropdownItem.text();
 
       dropdownItem.vm.$emit('click');
 
       expect(wrapper.emitted('update-target-namespace')).toBeDefined();
-      expect(wrapper.emitted('update-target-namespace')[0][0]).toBe(dropdownItemText);
+      expect(wrapper.emitted('update-target-namespace')[0][0]).toBe(availableNamespacesFixture[1]);
     });
   });
 
   describe('when entity status is NONE', () => {
     beforeEach(() => {
-      group = getFakeGroup(STATUSES.NONE);
+      group = generateFakeTableEntry({
+        id: 1,
+        status: STATUSES.NONE,
+        flags: {
+          isAvailableForImport: true,
+        },
+      });
       createComponent({ group });
     });
 
@@ -78,7 +82,7 @@ describe('import target cell', () => {
 
   it('renders only no parent option if available namespaces list is empty', () => {
     createComponent({
-      group: getFakeGroup(STATUSES.NONE),
+      group: generateFakeTableEntry({ id: 1, status: STATUSES.NONE }),
       availableNamespaces: [],
     });
 
@@ -92,7 +96,7 @@ describe('import target cell', () => {
 
   it('renders both no parent option and available namespaces list when available namespaces list is not empty', () => {
     createComponent({
-      group: getFakeGroup(STATUSES.NONE),
+      group: generateFakeTableEntry({ id: 1, status: STATUSES.NONE }),
       availableNamespaces: availableNamespacesFixture,
     });
 
@@ -104,9 +108,12 @@ describe('import target cell', () => {
     expect(rest).toHaveLength(availableNamespacesFixture.length);
   });
 
-  describe('when entity status is SCHEDULING', () => {
+  describe('when entity is not available for import', () => {
     beforeEach(() => {
-      group = getFakeGroup(STATUSES.SCHEDULING);
+      group = generateFakeTableEntry({
+        id: 1,
+        flags: { isAvailableForImport: false },
+      });
       createComponent({ group });
     });
 
@@ -115,51 +122,14 @@ describe('import target cell', () => {
     });
   });
 
-  describe('when entity status is FINISHED', () => {
+  describe('when entity is available for import', () => {
     beforeEach(() => {
-      group = getFakeGroup(STATUSES.FINISHED);
+      group = generateFakeTableEntry({ id: 1, flags: { isAvailableForImport: true } });
       createComponent({ group });
     });
 
     it('renders namespace dropdown as enabled', () => {
       expect(findNamespaceDropdown().attributes('disabled')).toBe(undefined);
-    });
-  });
-
-  describe('validations', () => {
-    it('reports invalid group name when name is not matching regex', () => {
-      createComponent({
-        group: {
-          ...getFakeGroup(STATUSES.NONE),
-          import_target: {
-            target_namespace: 'root',
-            new_name: 'very`bad`name',
-          },
-        },
-        groupPathRegex: /^[a-zA-Z]+$/,
-      });
-
-      expect(wrapper.text()).toContain(
-        'Please choose a group URL with no special characters or spaces.',
-      );
-    });
-
-    it('reports invalid group name if relevant validation error exists', async () => {
-      const FAKE_ERROR_MESSAGE = 'fake error';
-
-      createComponent({
-        group: {
-          ...getFakeGroup(STATUSES.NONE),
-          validation_errors: [
-            {
-              field: 'new_name',
-              message: FAKE_ERROR_MESSAGE,
-            },
-          ],
-        },
-      });
-
-      expect(wrapper.text()).toContain(FAKE_ERROR_MESSAGE);
     });
   });
 });

@@ -2,19 +2,13 @@ import MockAdapter from 'axios-mock-adapter';
 import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import { STATUSES } from '~/import_entities/constants';
-import { StatusPoller } from '~/import_entities/import_groups/graphql/services/status_poller';
+import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 import axios from '~/lib/utils/axios_utils';
 import Poll from '~/lib/utils/poll';
 
 jest.mock('visibilityjs');
 jest.mock('~/flash');
 jest.mock('~/lib/utils/poll');
-jest.mock('~/import_entities/import_groups/graphql/services/source_groups_manager', () => ({
-  SourceGroupsManager: jest.fn().mockImplementation(function mock() {
-    this.setImportStatus = jest.fn();
-    this.findByImportId = jest.fn();
-  }),
-}));
 
 const FAKE_POLL_PATH = '/fake/poll/path';
 
@@ -81,6 +75,7 @@ describe('Bulk import status poller', () => {
     const [pollInstance] = Poll.mock.instances;
 
     poller.startPolling();
+    await Promise.resolve();
 
     expect(pollInstance.makeRequest).toHaveBeenCalled();
   });

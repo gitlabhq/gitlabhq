@@ -1,7 +1,5 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { joinPaths } from '~/lib/utils/url_utility';
-import { isFinished, isInvalid, isAvailableForImport } from '../utils';
 
 export default {
   components: {
@@ -12,32 +10,17 @@ export default {
     GlTooltip,
   },
   props: {
-    group: {
-      type: Object,
+    isFinished: {
+      type: Boolean,
       required: true,
     },
-    groupPathRegex: {
-      type: RegExp,
+    isAvailableForImport: {
+      type: Boolean,
       required: true,
     },
-  },
-  computed: {
-    fullLastImportPath() {
-      return this.group.last_import_target
-        ? `${this.group.last_import_target.target_namespace}/${this.group.last_import_target.new_name}`
-        : null;
-    },
-    absoluteLastImportPath() {
-      return joinPaths(gon.relative_url_root || '/', this.fullLastImportPath);
-    },
-    isAvailableForImport() {
-      return isAvailableForImport(this.group);
-    },
-    isFinished() {
-      return isFinished(this.group);
-    },
-    isInvalid() {
-      return isInvalid(this.group, this.groupPathRegex);
+    isInvalid: {
+      type: Boolean,
+      required: true,
     },
   },
 };
@@ -56,7 +39,7 @@ export default {
       {{ isFinished ? __('Re-import') : __('Import') }}
     </gl-button>
     <gl-icon
-      v-if="isFinished"
+      v-if="isAvailableForImport && isFinished"
       v-gl-tooltip
       :size="16"
       name="information-o"

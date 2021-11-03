@@ -360,6 +360,7 @@ db:check-migrations:
     - .db-job-base
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
+    - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
     - scripts/validate_migration_schema
   allow_failure: true
 

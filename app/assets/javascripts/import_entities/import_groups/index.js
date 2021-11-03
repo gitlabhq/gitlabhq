@@ -17,7 +17,6 @@ export function mountImportGroupsApp(mountElement) {
     jobsPath,
     sourceUrl,
     groupPathRegex,
-    groupUrlErrorMessage,
   } = mountElement.dataset;
   const apolloProvider = new VueApollo({
     defaultClient: createApolloClient({
@@ -26,7 +25,6 @@ export function mountImportGroupsApp(mountElement) {
         status: statusPath,
         availableNamespaces: availableNamespacesPath,
         createBulkImport: createBulkImportPath,
-        jobs: jobsPath,
       },
     }),
   });
@@ -38,8 +36,8 @@ export function mountImportGroupsApp(mountElement) {
       return createElement(ImportTable, {
         props: {
           sourceUrl,
+          jobsPath,
           groupPathRegex: new RegExp(`^(${groupPathRegex})$`),
-          groupUrlErrorMessage,
         },
       });
     },
