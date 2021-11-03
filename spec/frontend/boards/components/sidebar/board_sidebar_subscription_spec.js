@@ -14,8 +14,8 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
   let store;
 
   const findNotificationHeader = () => wrapper.find("[data-testid='notification-header-text']");
-  const findToggle = () => wrapper.find(GlToggle);
-  const findGlLoadingIcon = () => wrapper.find(GlLoadingIcon);
+  const findToggle = () => wrapper.findComponent(GlToggle);
+  const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const createComponent = (activeBoardItem = { ...mockActiveIssue }) => {
     store = createStore();
@@ -32,7 +32,6 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
     store = null;
     jest.clearAllMocks();
   });
@@ -104,7 +103,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
       expect(findGlLoadingIcon().exists()).toBe(false);
 
-      findToggle().trigger('click');
+      findToggle().vm.$emit('change');
 
       await wrapper.vm.$nextTick();
 
@@ -129,7 +128,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
 
       expect(findGlLoadingIcon().exists()).toBe(false);
 
-      findToggle().trigger('click');
+      findToggle().vm.$emit('change');
 
       await wrapper.vm.$nextTick();
 
@@ -152,7 +151,7 @@ describe('~/boards/components/sidebar/board_sidebar_subscription_spec.vue', () =
       });
       jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
 
-      findToggle().trigger('click');
+      findToggle().vm.$emit('change');
 
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.setError).toHaveBeenCalled();

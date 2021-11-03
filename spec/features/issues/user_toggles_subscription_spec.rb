@@ -45,7 +45,7 @@ RSpec.describe "User toggles subscription", :js do
 
       it 'is disabled' do
         expect(page).to have_content('Disabled by project owner')
-        expect(page).to have_button('Notifications', class: 'is-disabled')
+        expect(page).to have_selector('[data-testid="subscription-toggle"]', class: 'is-disabled')
       end
     end
   end

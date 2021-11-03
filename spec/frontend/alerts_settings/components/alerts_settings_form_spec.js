@@ -58,7 +58,6 @@ describe('AlertsSettingsForm', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 
@@ -69,7 +68,7 @@ describe('AlertsSettingsForm', () => {
 
   const enableIntegration = (index, value) => {
     findFormFields().at(index).setValue(value);
-    findFormToggle().trigger('click');
+    findFormToggle().vm.$emit('change', true);
   };
 
   describe('with default values', () => {

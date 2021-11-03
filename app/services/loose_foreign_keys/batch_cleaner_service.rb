@@ -7,6 +7,10 @@ module LooseForeignKeys
       @deleted_parent_records = deleted_parent_records
       @modification_tracker = modification_tracker
       @models_by_table_name = models_by_table_name
+      @deleted_records_counter = Gitlab::Metrics.counter(
+        :loose_foreign_key_processed_deleted_records,
+        'The number of processed loose foreign key deleted records'
+      )
     end
 
     def execute
@@ -21,13 +25,15 @@ module LooseForeignKeys
       return if modification_tracker.over_limit?
 
       # At this point, all associations are cleaned up, we can update the status of the parent records
-      LooseForeignKeys::DeletedRecord
+      update_count = LooseForeignKeys::DeletedRecord
         .mark_records_processed_for_table_between(deleted_parent_records.first.fully_qualified_table_name, deleted_parent_records.first, deleted_parent_records.last)
+
+      deleted_records_counter.increment({ table: parent_klass.table_name, db_config_name: LooseForeignKeys::DeletedRecord.connection.pool.db_config.name }, update_count)
     end
 
     private
 
-    attr_reader :parent_klass, :deleted_parent_records, :modification_tracker, :models_by_table_name
+    attr_reader :parent_klass, :deleted_parent_records, :modification_tracker, :models_by_table_name, :deleted_records_counter
 
     def record_result(cleaner, result)
       if cleaner.async_delete?

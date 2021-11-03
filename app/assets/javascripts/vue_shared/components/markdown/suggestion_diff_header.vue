@@ -1,11 +1,11 @@
 <script>
-import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import ApplySuggestion from './apply_suggestion.vue';
 
 export default {
-  components: { GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
+  components: { GlBadge, GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
   directives: { 'gl-tooltip': GlTooltipDirective },
   props: {
     batchSuggestionsCount: {
@@ -134,9 +134,9 @@ export default {
         <gl-icon name="question-o" css-classes="link-highlight" />
       </a>
     </div>
-    <div v-if="isApplied" class="badge badge-success" data-qa-selector="applied_badge">
+    <gl-badge v-if="isApplied" variant="success" data-qa-selector="applied_badge">
       {{ __('Applied') }}
-    </div>
+    </gl-badge>
     <div
       v-else-if="isApplying"
       class="d-flex align-items-center text-secondary"

@@ -56,9 +56,14 @@ RSpec.describe 'Group Dependency Proxy' do
           visit settings_path
           wait_for_requests
 
-          click_button 'Enable Proxy'
+          proxy_toggle = find('[data-testid="dependency-proxy-setting-toggle"]')
+          proxy_toggle_button = proxy_toggle.find('button')
 
-          expect(page).to have_button 'Enable Proxy', class: '!is-checked'
+          expect(proxy_toggle).to have_css("button.is-checked")
+
+          proxy_toggle_button.click
+
+          expect(proxy_toggle).not_to have_css("button.is-checked")
 
           visit path
 

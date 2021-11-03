@@ -17856,6 +17856,24 @@ CREATE SEQUENCE postgres_reindex_actions_id_seq
 
 ALTER SEQUENCE postgres_reindex_actions_id_seq OWNED BY postgres_reindex_actions.id;
 
+CREATE TABLE postgres_reindex_queued_actions (
+    id bigint NOT NULL,
+    index_identifier text NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT check_e4b01395c0 CHECK ((char_length(index_identifier) <= 255))
+);
+
+CREATE SEQUENCE postgres_reindex_queued_actions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE postgres_reindex_queued_actions_id_seq OWNED BY postgres_reindex_queued_actions.id;
+
 CREATE TABLE programming_languages (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -21756,6 +21774,8 @@ ALTER TABLE ONLY postgres_async_indexes ALTER COLUMN id SET DEFAULT nextval('pos
 
 ALTER TABLE ONLY postgres_reindex_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_actions_id_seq'::regclass);
 
+ALTER TABLE ONLY postgres_reindex_queued_actions ALTER COLUMN id SET DEFAULT nextval('postgres_reindex_queued_actions_id_seq'::regclass);
+
 ALTER TABLE ONLY product_analytics_events_experimental ALTER COLUMN id SET DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass);
 
 ALTER TABLE ONLY programming_languages ALTER COLUMN id SET DEFAULT nextval('programming_languages_id_seq'::regclass);
@@ -23582,6 +23602,9 @@ ALTER TABLE ONLY postgres_async_indexes
 
 ALTER TABLE ONLY postgres_reindex_actions
     ADD CONSTRAINT postgres_reindex_actions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY postgres_reindex_queued_actions
+    ADD CONSTRAINT postgres_reindex_queued_actions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY programming_languages
     ADD CONSTRAINT programming_languages_pkey PRIMARY KEY (id);
@@ -25704,8 +25727,6 @@ CREATE INDEX index_jira_imports_on_user_id ON jira_imports USING btree (user_id)
 
 CREATE INDEX index_jira_tracker_data_on_service_id ON jira_tracker_data USING btree (service_id);
 
-CREATE INDEX index_keys_on_expires_at_and_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), expiry_notification_delivered_at) WHERE (expiry_notification_delivered_at IS NULL);
-
 CREATE INDEX index_keys_on_expires_at_and_id ON keys USING btree (date(timezone('UTC'::text, expires_at)), id) WHERE (expiry_notification_delivered_at IS NULL);
 
 CREATE UNIQUE INDEX index_keys_on_fingerprint ON keys USING btree (fingerprint);
@@ -26263,6 +26284,8 @@ CREATE UNIQUE INDEX index_pool_repositories_on_source_project_id_and_shard_id ON
 CREATE UNIQUE INDEX index_postgres_async_indexes_on_name ON postgres_async_indexes USING btree (name);
 
 CREATE INDEX index_postgres_reindex_actions_on_index_identifier ON postgres_reindex_actions USING btree (index_identifier);
+
+CREATE INDEX index_postgres_reindex_queued_actions_on_state ON postgres_reindex_queued_actions USING btree (state);
 
 CREATE UNIQUE INDEX index_programming_languages_on_name ON programming_languages USING btree (name);
 

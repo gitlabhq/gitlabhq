@@ -15,11 +15,43 @@ module Gitlab
       # on e.g. vacuum.
       REMOVE_INDEX_RETRY_CONFIG = [[1.minute, 9.minutes]] * 30
 
-      # candidate_indexes: Array of Gitlab::Database::PostgresIndex
-      def self.perform(candidate_indexes, how_many: DEFAULT_INDEXES_PER_INVOCATION)
-        IndexSelection.new(candidate_indexes).take(how_many).each do |index|
+      # Performs automatic reindexing for a limited number of indexes per call
+      #  1. Consume from the explicit reindexing queue
+      #  2. Apply bloat heuristic to find most bloated indexes and reindex those
+      def self.automatic_reindexing(maximum_records: DEFAULT_INDEXES_PER_INVOCATION)
+        # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
+        cleanup_leftovers!
+
+        # Consume from the explicit reindexing queue first
+        done_counter = perform_from_queue(maximum_records: maximum_records)
+
+        return if done_counter >= maximum_records
+
+        # Execute reindexing based on bloat heuristic
+        perform_with_heuristic(maximum_records: maximum_records - done_counter)
+      end
+
+      # Reindex based on bloat heuristic for a limited number of indexes per call
+      #
+      # We use a bloat heuristic to estimate the index bloat and pick the
+      # most bloated indexes for reindexing.
+      def self.perform_with_heuristic(candidate_indexes = Gitlab::Database::PostgresIndex.reindexing_support, maximum_records: DEFAULT_INDEXES_PER_INVOCATION)
+        IndexSelection.new(candidate_indexes).take(maximum_records).each do |index|
           Coordinator.new(index).perform
         end
+      end
+
+      # Reindex indexes that have been explicitly enqueued (for a limited number of indexes per call)
+      def self.perform_from_queue(maximum_records: DEFAULT_INDEXES_PER_INVOCATION)
+        QueuedAction.in_queue_order.limit(maximum_records).each do |queued_entry|
+          Coordinator.new(queued_entry.index).perform
+
+          queued_entry.done!
+        rescue StandardError => e
+          queued_entry.failed!
+
+          Gitlab::AppLogger.error("Failed to perform reindexing action on queued entry #{queued_entry}: #{e}")
+        end.size
       end
 
       def self.cleanup_leftovers!

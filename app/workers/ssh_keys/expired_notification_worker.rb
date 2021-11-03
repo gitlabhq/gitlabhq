@@ -29,7 +29,7 @@ module SshKeys
         )
       ])
 
-      scope = Key.expired_and_not_notified.order(order)
+      scope = Key.expired_today_and_not_notified.order(order)
 
       iterator = Gitlab::Pagination::Keyset::Iterator.new(scope: scope, use_union_optimization: true)
       iterator.each_batch(of: BATCH_SIZE) do |relation|
@@ -37,7 +37,7 @@ module SshKeys
 
         users.each do |user|
           with_context(user: user) do
-            Keys::ExpiryNotificationService.new(user, { keys: user.expired_and_unnotified_keys, expiring_soon: false }).execute
+            Keys::ExpiryNotificationService.new(user, { keys: user.expired_today_and_unnotified_keys, expiring_soon: false }).execute
           end
         end
       end

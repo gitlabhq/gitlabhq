@@ -263,13 +263,27 @@ module Gitlab
         # A patch over ActiveRecord::Base.transaction that provides
         # observability into transactional methods.
         def transaction(**options, &block)
-          if options[:requires_new] && connection.transaction_open?
-            ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
-          end
+          transaction_type = get_transaction_type(connection.transaction_open?, options[:requires_new])
 
-          ActiveSupport::Notifications.instrument('transaction.active_record', { connection: connection }) do
+          ::Gitlab::Database::Metrics.subtransactions_increment(self.name) if transaction_type == :sub_transaction
+
+          payload = { connection: connection, transaction_type: transaction_type }
+
+          ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
             super(**options, &block)
           end
+        end
+
+        private
+
+        def get_transaction_type(transaction_open, requires_new_flag)
+          if transaction_open
+            return :sub_transaction if requires_new_flag
+
+            return :fake_transaction
+          end
+
+          :real_transaction
         end
       end
     end

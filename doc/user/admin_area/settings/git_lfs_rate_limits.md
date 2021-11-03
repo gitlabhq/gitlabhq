@@ -29,7 +29,7 @@ supersede the [general user and IP rate limits](user_and_ip_rate_limits.md):
 1. Enter a value for **Authenticated Git LFS rate limit period in seconds**.
 1. Select **Save changes**.
 
-## Resources
+## Related topics
 
 - [Rate limiting](../../../security/rate_limits.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)

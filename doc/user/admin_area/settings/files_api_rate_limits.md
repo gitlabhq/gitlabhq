@@ -49,7 +49,7 @@ To override the general user and IP rate limits for requests to the Repository f
    1. Select the **Max authenticated API requests per period per user**.
    1. Select the **Authenticated API rate limit period in seconds**.
 
-## Resources
+## Related topics
 
 - [Rate limits](../../../security/rate_limits.md)
 - [Repository files API](../../../api/repository_files.md)

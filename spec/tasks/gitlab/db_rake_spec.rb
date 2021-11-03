@@ -215,7 +215,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         stub_feature_flags(database_async_index_creation: true)
 
         expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
-        expect(Gitlab::Database::Reindexing).to receive(:perform).ordered.exactly(databases_count).times
+        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).ordered.once
 
         run_rake_task('gitlab:db:reindex')
       end
@@ -231,56 +231,30 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
       end
     end
 
-    context 'when no index_name is given' do
+    context 'calls automatic reindexing' do
       it 'uses all candidate indexes' do
-        expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).exactly(databases_count).times.and_return(indexes)
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).exactly(databases_count).times
+        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).once
 
         run_rake_task('gitlab:db:reindex')
       end
     end
+  end
 
-    context 'with index name given' do
-      let(:index) { double('index') }
+  describe 'enqueue_reindexing_action' do
+    let(:index_name) { 'public.users_pkey' }
 
-      before do
-        allow(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).and_return(indexes)
-      end
+    it 'creates an entry in the queue' do
+      expect do
+        run_rake_task('gitlab:db:enqueue_reindexing_action', "[#{index_name}, main]")
+      end.to change { Gitlab::Database::PostgresIndex.find(index_name).queued_reindexing_actions.size }.from(0).to(1)
+    end
 
-      it 'calls the index rebuilder with the proper arguments' do
-        allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with([index]).ordered
-        expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).ordered if databases.many?
+    it 'defaults to main database' do
+      expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(Gitlab::Database.main.scope.connection).and_call_original
 
-        run_rake_task('gitlab:db:reindex', '[public.foo_idx]')
-      end
-
-      context 'when database name is provided' do
-        it 'calls the index rebuilder with the proper arguments when the database name match' do
-          allow(indexes).to receive(:where).with(identifier: 'public.foo_idx').and_return([index])
-          expect(Gitlab::Database::Reindexing).to receive(:perform).with([index]).ordered
-          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).ordered if databases.many?
-
-          run_rake_task('gitlab:db:reindex', '[public.foo_idx,main]')
-        end
-
-        it 'ignores the index and uses all candidate indexes if database name does not match' do
-          expect(Gitlab::Database::PostgresIndex).to receive(:reindexing_support).exactly(databases_count).times.and_return(indexes)
-          expect(Gitlab::Database::Reindexing).to receive(:perform).with(indexes).exactly(databases_count).times
-
-          run_rake_task('gitlab:db:reindex', '[public.foo_idx,no_such_database]')
-        end
-      end
-
-      it 'raises an error if the index does not exist' do
-        allow(indexes).to receive(:where).with(identifier: 'public.absent_index').and_return([])
-
-        expect { run_rake_task('gitlab:db:reindex', '[public.absent_index]') }.to raise_error(/Index public.absent_index for main database not found or not supported/)
-      end
-
-      it 'raises an error if the index is not fully qualified with a schema' do
-        expect { run_rake_task('gitlab:db:reindex', '[foo_idx]') }.to raise_error(/Index name is not fully qualified/)
-      end
+      expect do
+        run_rake_task('gitlab:db:enqueue_reindexing_action', "[#{index_name}]")
+      end.to change { Gitlab::Database::PostgresIndex.find(index_name).queued_reindexing_actions.size }.from(0).to(1)
     end
   end
 

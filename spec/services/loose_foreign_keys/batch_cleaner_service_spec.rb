@@ -79,6 +79,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
   end
 
   context 'when parent records are deleted' do
+    let(:deleted_records_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records) }
+
     before do
       parent_record_1.delete
 
@@ -98,8 +100,15 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
       expect(loose_fk_child_table_2.where(parent_id_with_different_column: nil).count).to eq(2)
     end
 
-    it 'cleans up the parent DeletedRecord' do
+    it 'cleans up the pending parent DeletedRecord' do
       expect(LooseForeignKeys::DeletedRecord.status_pending.count).to eq(0)
+      expect(LooseForeignKeys::DeletedRecord.status_processed.count).to eq(1)
+    end
+
+    it 'records the DeletedRecord status updates', :prometheus do
+      counter = Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records)
+
+      expect(counter.get(table: parent_model.table_name, db_config_name: 'main')).to eq(1)
     end
 
     it 'does not delete unrelated records' do

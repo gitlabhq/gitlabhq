@@ -2,28 +2,37 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::GitlabSchema do
-  it 'matches all the tables in the database', :aggregate_failures do
-    # These tables do not need a gitlab_schema
-    excluded_tables = %w(ar_internal_metadata schema_migrations)
+  describe '.tables_to_schema' do
+    subject { described_class.tables_to_schema }
 
-    all_tables_in_database = ApplicationRecord.connection.tables
-
-    all_tables_with_gitlab_schema = described_class.tables_to_schema.keys
-
-    missing = []
-    all_tables_in_database.each do |table_in_database|
-      next if table_in_database.in?(excluded_tables)
-
-      missing << table_in_database unless all_tables_with_gitlab_schema.include?(table_in_database)
+    it 'all tables have assigned a known gitlab_schema' do
+      is_expected.to all(
+        match([be_a(String), be_in([:gitlab_shared, :gitlab_main, :gitlab_ci])])
+      )
     end
 
-    extras = []
-    all_tables_with_gitlab_schema.each do |table_with_gitlab_schema|
-      extras << table_with_gitlab_schema unless all_tables_in_database.include?(table_with_gitlab_schema)
+    # This being run across different databases indirectly also tests
+    # a general consistency of structure across databases
+    Gitlab::Database.database_base_models.each do |db_config_name, db_class|
+      let(:db_data_sources) { db_class.connection.data_sources }
+
+      context "for #{db_config_name} using #{db_class}" do
+        it 'new data sources are added' do
+          missing_tables = db_data_sources.to_set - subject.keys
+
+          expect(missing_tables).to be_empty, \
+            "Missing table(s) #{missing_tables.to_a} not found in #{described_class}.tables_to_schema. " \
+            "Any new tables must be added to lib/gitlab/database/gitlab_schemas.yml."
+        end
+
+        it 'non-existing data sources are removed' do
+          extra_tables = subject.keys.to_set - db_data_sources
+
+          expect(extra_tables).to be_empty, \
+            "Extra table(s) #{extra_tables.to_a} found in #{described_class}.tables_to_schema. " \
+            "Any removed or renamed tables must be removed from lib/gitlab/database/gitlab_schemas.yml."
+        end
+      end
     end
-
-    expect(missing).to be_empty, "Missing table(s) #{missing} not found in #{described_class}.tables_to_schema. Any new tables must be added to spec/support/database/gitlab_schemas.yml ."
-
-    expect(extras).to be_empty, "Extra table(s) #{extras} found in #{described_class}.tables_to_schema. Any removed or renamed tables must be removed from spec/support/database/gitlab_schemas.yml ."
   end
 end

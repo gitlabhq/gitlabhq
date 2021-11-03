@@ -103,6 +103,7 @@ export default {
           :disabled="isLoading"
           :label="$options.i18n.label"
           data-qa-selector="dependency_proxy_setting_toggle"
+          data-testid="dependency-proxy-setting-toggle"
         />
       </div>
     </template>

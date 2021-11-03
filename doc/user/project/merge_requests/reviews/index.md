@@ -211,7 +211,7 @@ These features are associated with merge requests:
   When viewing the commit details page, GitLab links to the merge request(s) containing that commit.
 - [Merge requests versions](../versions.md):
   Select and compare the different versions of merge request diffs
-- [Resolve conflicts](../resolve_conflicts.md):
+- [Resolve conflicts](../conflicts.md):
   GitLab can provide the option to resolve certain merge request conflicts in the GitLab UI.
 - [Revert changes](../revert_changes.md):
   Revert changes from any commit from a merge request.

@@ -39,7 +39,7 @@ you can [configure](https://marketplace.visualstudio.com/items?itemName=GitLab.g
 Report any issues, bugs, or feature requests in the
 [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
 
-## Resources
+## Related topics
 
 - [Download the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - [Extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md)

@@ -327,7 +327,7 @@ describe('Pipeline graph wrapper', () => {
         expect(getLinksLayer().exists()).toBe(true);
         expect(getLinksLayer().props('showLinks')).toBe(false);
         expect(getViewSelector().props('type')).toBe(LAYER_VIEW);
-        await getDependenciesToggle().trigger('click');
+        await getDependenciesToggle().vm.$emit('change', true);
         jest.runOnlyPendingTimers();
         await wrapper.vm.$nextTick();
         expect(wrapper.findComponent(LinksLayer).props('showLinks')).toBe(true);

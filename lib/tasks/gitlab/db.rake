@@ -160,37 +160,44 @@ namespace :gitlab do
       Rake::Task['gitlab:db:create_dynamic_partitions'].invoke
     end
 
-    desc 'reindex a regular index without downtime to eliminate bloat'
-    task :reindex, [:index_name, :database] => :environment do |_, args|
-      unless Feature.enabled?(:database_reindexing, type: :ops)
+    desc 'execute reindexing without downtime to eliminate bloat'
+    task reindex: :environment do
+      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
         puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
         exit
       end
 
       Gitlab::Database::EachDatabase.each_database_connection do |connection, connection_name|
-        indexes = Gitlab::Database::PostgresIndex.reindexing_support
-
-        if (identifier = args[:index_name]) && (args.fetch(:database, 'main') == connection_name)
-          raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
-
-          indexes = indexes.where(identifier: identifier)
-
-          raise "Index #{args[:index_name]} for #{connection_name} database not found or not supported" if indexes.empty?
-        end
-
         Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
-
-        # Cleanup leftover temporary indexes from previous, possibly aborted runs (if any)
-        Gitlab::Database::Reindexing.cleanup_leftovers!
 
         # Hack: Before we do actual reindexing work, create async indexes
         Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
 
-        Gitlab::Database::Reindexing.perform(indexes)
+        Gitlab::Database::Reindexing.automatic_reindexing
       end
     rescue StandardError => e
       Gitlab::AppLogger.error(e)
       raise
+    end
+
+    desc 'Enqueue an index for reindexing'
+    task :enqueue_reindexing_action, [:index_name, :database] => :environment do |_, args|
+      connection = Gitlab::Database.databases[args.fetch(:database, Gitlab::Database::PRIMARY_DATABASE_NAME)]
+
+      Gitlab::Database::SharedModel.using_connection(connection.scope.connection) do
+        queued_action = Gitlab::Database::PostgresIndex.find(args[:index_name]).queued_reindexing_actions.create!
+
+        puts "Queued reindexing action: #{queued_action}"
+        puts "There are #{Gitlab::Database::Reindexing::QueuedAction.queued.size} queued actions in total."
+      end
+
+      unless Feature.enabled?(:database_reindexing, type: :ops, default_enabled: :yaml)
+        puts <<~NOTE.color(:yellow)
+          Note: database_reindexing feature is currently disabled.
+
+          Enable with: Feature.enable(:database_reindexing)
+        NOTE
+      end
     end
 
     desc 'Check if there have been user additions to the database'

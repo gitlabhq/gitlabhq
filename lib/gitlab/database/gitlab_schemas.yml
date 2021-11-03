@@ -32,6 +32,7 @@ approval_project_rules_users: :gitlab_main
 approvals: :gitlab_main
 approver_groups: :gitlab_main
 approvers: :gitlab_main
+ar_internal_metadata: :gitlab_shared
 atlassian_identities: :gitlab_main
 audit_events_external_audit_event_destinations: :gitlab_main
 audit_events: :gitlab_main
@@ -171,7 +172,7 @@ design_management_designs: :gitlab_main
 design_management_designs_versions: :gitlab_main
 design_management_versions: :gitlab_main
 design_user_mentions: :gitlab_main
-detached_partitions: :gitlab_main
+detached_partitions: :gitlab_shared
 diff_note_positions: :gitlab_main
 dora_daily_metrics: :gitlab_main
 draft_notes: :gitlab_main
@@ -373,8 +374,14 @@ personal_access_tokens: :gitlab_main
 plan_limits: :gitlab_main
 plans: :gitlab_main
 pool_repositories: :gitlab_main
-postgres_async_indexes: :gitlab_main
-postgres_reindex_actions: :gitlab_main
+postgres_async_indexes: :gitlab_shared
+postgres_foreign_keys: :gitlab_shared
+postgres_index_bloat_estimates: :gitlab_shared
+postgres_indexes: :gitlab_shared
+postgres_partitioned_tables: :gitlab_shared
+postgres_partitions: :gitlab_shared
+postgres_reindex_actions: :gitlab_shared
+postgres_reindex_queued_actions: :gitlab_main
 product_analytics_events_experimental: :gitlab_main
 programming_languages: :gitlab_main
 project_access_tokens: :gitlab_main
@@ -438,6 +445,7 @@ reviews: :gitlab_main
 routes: :gitlab_main
 saml_group_links: :gitlab_main
 saml_providers: :gitlab_main
+schema_migrations: :gitlab_shared
 scim_identities: :gitlab_main
 scim_oauth_access_tokens: :gitlab_main
 security_findings: :gitlab_main

@@ -47,7 +47,7 @@ To override the general user and IP rate limits for requests to deprecated API e
    1. Select the **Maximum authenticated API requests per period per user**.
    1. Select the **Authenticated API rate limit period in seconds**.
 
-## Resources
+## Related topics
 
 - [Rate limits](../../../security/rate_limits.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)

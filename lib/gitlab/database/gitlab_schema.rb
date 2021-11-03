@@ -2,6 +2,13 @@
 
 # This module gathers information about table to schema mapping
 # to understand table affinity
+#
+# Each table / view needs to have assigned gitlab_schema. Names supported today:
+#
+# - gitlab_shared - defines a set of tables that are found on all databases (data accessed is dependent on connection)
+# - gitlab_main / gitlab_ci - defines a set of tables that can only exist on a given database
+#
+
 module Gitlab
   module Database
     module GitlabSchema

@@ -11,6 +11,7 @@ module Gitlab
 
       has_one :bloat_estimate, class_name: 'Gitlab::Database::PostgresIndexBloatEstimate', foreign_key: :identifier
       has_many :reindexing_actions, class_name: 'Gitlab::Database::Reindexing::ReindexAction', foreign_key: :index_identifier
+      has_many :queued_reindexing_actions, class_name: 'Gitlab::Database::Reindexing::QueuedAction', foreign_key: :index_identifier
 
       scope :by_identifier, ->(identifier) do
         raise ArgumentError, "Index name is not fully qualified with a schema: #{identifier}" unless identifier =~ /^\w+\.\w+$/
