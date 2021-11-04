@@ -7,7 +7,7 @@ import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
 import { reviewFile } from '~/diffs/store/actions';
-import { SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
+import { SET_DIFF_FILE_VIEWED, SET_MR_FILE_REVIEWS } from '~/diffs/store/mutation_types';
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -23,6 +23,7 @@ jest.mock('~/lib/utils/common_utils');
 const diffFile = Object.freeze(
   Object.assign(diffDiscussionsMockData.diff_file, {
     id: '123',
+    file_hash: 'xyz',
     file_identifier_hash: 'abc',
     edit_path: 'link:/to/edit/path',
     blob: {
@@ -58,7 +59,7 @@ describe('DiffFileHeader component', () => {
           toggleFileDiscussions: jest.fn(),
           toggleFileDiscussionWrappers: jest.fn(),
           toggleFullDiff: jest.fn(),
-          toggleActiveFileByHash: jest.fn(),
+          setCurrentFileHash: jest.fn(),
           setFileCollapsedByUser: jest.fn(),
           reviewFile: jest.fn(),
         },
@@ -553,7 +554,13 @@ describe('DiffFileHeader component', () => {
         reviewFile,
         { file, reviewed: true },
         {},
-        [{ type: SET_MR_FILE_REVIEWS, payload: { [file.file_identifier_hash]: [file.id] } }],
+        [
+          { type: SET_DIFF_FILE_VIEWED, payload: { id: file.file_hash, seen: true } },
+          {
+            type: SET_MR_FILE_REVIEWS,
+            payload: { [file.file_identifier_hash]: [file.id, `hash:${file.file_hash}`] },
+          },
+        ],
         [],
       );
     });

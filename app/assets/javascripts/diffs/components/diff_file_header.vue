@@ -221,7 +221,7 @@ export default {
       'toggleFileDiscussions',
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
-      'toggleActiveFileByHash',
+      'setCurrentFileHash',
       'reviewFile',
       'setFileCollapsedByUser',
     ]),
@@ -244,7 +244,7 @@ export default {
         scrollToElement(document.querySelector(selector));
         window.location.hash = selector;
         if (!this.viewDiffsFileByFile) {
-          this.toggleActiveFileByHash(this.diffFile.file_hash);
+          this.setCurrentFileHash(this.diffFile.file_hash);
         }
       }
     },

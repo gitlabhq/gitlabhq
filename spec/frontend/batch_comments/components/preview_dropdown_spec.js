@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 let wrapper;
 
-const toggleActiveFileByHash = jest.fn();
+const setCurrentFileHash = jest.fn();
 const scrollToDraft = jest.fn();
 
 function factory({ viewDiffsFileByFile = false, draftsCount = 1, sortedDrafts = [] } = {}) {
@@ -16,7 +16,7 @@ function factory({ viewDiffsFileByFile = false, draftsCount = 1, sortedDrafts = 
       diffs: {
         namespaced: true,
         actions: {
-          toggleActiveFileByHash,
+          setCurrentFileHash,
         },
         state: {
           viewDiffsFileByFile,
@@ -51,7 +51,7 @@ describe('Batch comments preview dropdown', () => {
 
       await Vue.nextTick();
 
-      expect(toggleActiveFileByHash).toHaveBeenCalledWith(expect.anything(), 'hash');
+      expect(setCurrentFileHash).toHaveBeenCalledWith(expect.anything(), 'hash');
       expect(scrollToDraft).toHaveBeenCalledWith(expect.anything(), { id: 1, file_hash: 'hash' });
     });
 

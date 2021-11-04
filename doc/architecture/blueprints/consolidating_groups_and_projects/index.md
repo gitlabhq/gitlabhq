@@ -139,7 +139,7 @@ The initial iteration will provide a framework to house features under `Namespac
 1. **Tier**: Is there any tier functionality that is differentiated by projects and groups?
 1. **Documentation**: Is the structure and content of documentation impacted by these changes at all?
 1. **Solution proposal**:
-   - Think big: This analysis provides a great opportunity to zoom out and consider the feature UX as a whole. How could you make this feature lovable based on the new structure, inheritance, and capabilities afforded by `Namespaces`? Is there any UI which doesn't comply with Pajamas? 
+   - Think big: This analysis provides a great opportunity to zoom out and consider the feature UX as a whole. How could you make this feature lovable based on the new structure, inheritance, and capabilities afforded by `Namespaces`? Is there any UI which doesn't comply with Pajamas?
    - Start small: What are the product changes that need to be made to assist with the migration?
    - Move fast: Prioritise these solution ideas, document in issues, and create a roadmap for implementation.
 
@@ -170,3 +170,7 @@ DRIs:
 | Design                       | Nick Post              |
 
 <!-- vale gitlab.Spelling = YES -->
+
+## Related topics
+
+- [Workspaces developer documentation](../../../development/workspaces/index.md)

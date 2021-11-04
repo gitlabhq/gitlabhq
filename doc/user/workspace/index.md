@@ -46,3 +46,7 @@ The following provide a preview to the Workspace concept.
 ![Admin Overview](img/Admin_Settings.png)
 
 ![Admin Overview](img/hardware_settings.png)
+
+## Related topics
+
+- [Workspaces developer documentation](../../development/workspaces/index.md)

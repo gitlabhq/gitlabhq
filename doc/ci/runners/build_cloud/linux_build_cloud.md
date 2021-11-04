@@ -31,6 +31,8 @@ Below are the runners' settings.
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`          | `false`    |
 
+These runners share a [distributed cache](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) through use of a Google Cloud Storage (GCS) bucket. Cache contents not updated within the last 14 days are automatically removed through use of an [object lifecycle management policy](https://cloud.google.com/storage/docs/lifecycle).
+
 ## Pre-clone script
 
 Build Cloud runners for Linux provide a way to run commands in a CI
