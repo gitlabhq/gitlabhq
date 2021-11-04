@@ -4,18 +4,18 @@ entry.
 
 ## 13.12.15 (2021-11-03)
 
-No changes.
-
-## 13.12.14 (2021-11-03)
-
 ### Fixed (2 changes)
 
 - [Allow nil for remaining ci cd settings](gitlab-org/gitlab@896fd7ecf23714fa9f710efa4af245a26c677dce) ([merge request](gitlab-org/gitlab!73522))
 - [Allow nil on delegated CI/CD settings](gitlab-org/gitlab@d57a9ea79080fc473eb54c0ee696a50fd270e8a4) ([merge request](gitlab-org/gitlab!73522))
 
+## 13.12.14 (2021-11-03)
+
+This version has been skipped due to QA problems.
+
 ## 13.12.13 (2021-10-29)
 
-No changes.
+This version has been skipped due to QA problems.
 
 ## 13.12.12 (2021-09-21)
 
