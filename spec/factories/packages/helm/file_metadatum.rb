@@ -9,7 +9,11 @@ FactoryBot.define do
     package_file { association(:helm_package_file, without_loaded_metadatum: true) }
     sequence(:channel) { |n| "#{FFaker::Lorem.word}-#{n}" }
     metadata do
-      { 'name': package_file.package.name, 'version': package_file.package.version, 'apiVersion': 'v2' }.tap do |defaults|
+      {
+        'name': package_file.package.name,
+        'version': package_file.package.version,
+        'apiVersion': 'v2'
+      }.tap do |defaults|
         defaults['description'] = description if description
       end
     end

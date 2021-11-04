@@ -1652,10 +1652,12 @@ docker build:
       - docker/scripts/*
       - dockerfiles/**/*
       - more_scripts/*.{rb,py,sh}
+      - "**/*.json"
 ```
 
 **Additional details**:
 
+- If any of the matching files are changed (an `OR` operation), `changes` resolves to `true`.
 - If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
   `changes` can't determine if a given file is new or old and always returns `true`.
 - If you use `only: changes` with other refs, jobs ignore the changes and always run.

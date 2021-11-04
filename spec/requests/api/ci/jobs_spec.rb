@@ -177,11 +177,16 @@ RSpec.describe API::Ci::Jobs do
   end
 
   describe 'GET /job/allowed_agents' do
-    let_it_be(:group_authorization) { create(:agent_group_authorization) }
-    let_it_be(:associated_agent) { create(:cluster_agent, project: project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_agent) { create(:cluster_agent, project: create(:project, group: group)) }
+    let_it_be(:group_authorization) { create(:agent_group_authorization, agent: group_agent, group: group) }
+    let_it_be(:project_agent) { create(:cluster_agent, project: project) }
 
-    let(:implicit_authorization) { Clusters::Agents::ImplicitAuthorization.new(agent: associated_agent) }
-    let(:authorizations_finder) { double(execute: [implicit_authorization, group_authorization]) }
+    before(:all) do
+      project.update!(group: group_authorization.group)
+    end
+
+    let(:implicit_authorization) { Clusters::Agents::ImplicitAuthorization.new(agent: project_agent) }
 
     let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user, status: job_status) }
@@ -193,44 +198,22 @@ RSpec.describe API::Ci::Jobs do
     end
 
     before do
-      allow(Clusters::AgentAuthorizationsFinder).to receive(:new).with(project).and_return(authorizations_finder)
-
       subject
     end
 
     context 'when token is valid and user is authorized' do
-      it 'returns agent info', :aggregate_failures do
-        expect(response).to have_gitlab_http_status(:ok)
-
-        expect(json_response.dig('job', 'id')).to eq(job.id)
-        expect(json_response.dig('pipeline', 'id')).to eq(job.pipeline_id)
-        expect(json_response.dig('project', 'id')).to eq(job.project_id)
-        expect(json_response.dig('user', 'username')).to eq(api_user.username)
-        expect(json_response['allowed_agents']).to match_array([
-          {
-            'id' => implicit_authorization.agent_id,
-            'config_project' => hash_including('id' => implicit_authorization.agent.project_id),
-            'configuration' => implicit_authorization.config
-          },
-          {
-            'id' => group_authorization.agent_id,
-            'config_project' => hash_including('id' => group_authorization.agent.project_id),
-            'configuration' => group_authorization.config
-          }
-        ])
-      end
-
-      context 'when passing the token as params' do
-        let(:headers) { {} }
-        let(:params) { { job_token: job.token } }
-
+      shared_examples_for 'valid allowed_agents request' do
         it 'returns agent info', :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response.dig('job', 'id')).to eq(job.id)
           expect(json_response.dig('pipeline', 'id')).to eq(job.pipeline_id)
           expect(json_response.dig('project', 'id')).to eq(job.project_id)
+          expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group_authorization.group.id }])
+          expect(json_response.dig('user', 'id')).to eq(api_user.id)
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
+          expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
+          expect(json_response).not_to include('environment')
           expect(json_response['allowed_agents']).to match_array([
             {
               'id' => implicit_authorization.agent_id,
@@ -239,11 +222,28 @@ RSpec.describe API::Ci::Jobs do
             },
             {
               'id' => group_authorization.agent_id,
-              'config_project' => a_hash_including('id' => group_authorization.agent.project_id),
+              'config_project' => hash_including('id' => group_authorization.agent.project_id),
               'configuration' => group_authorization.config
             }
           ])
         end
+      end
+
+      it_behaves_like 'valid allowed_agents request'
+
+      context 'when deployment' do
+        let(:job) { create(:ci_build, :artifacts, :with_deployment, environment: 'production', pipeline: pipeline, user: api_user, status: job_status) }
+
+        it 'includes environment slug' do
+          expect(json_response.dig('environment', 'slug')).to eq('production')
+        end
+      end
+
+      context 'when passing the token as params' do
+        let(:headers) { {} }
+        let(:params) { { job_token: job.token } }
+
+        it_behaves_like 'valid allowed_agents request'
       end
     end
 

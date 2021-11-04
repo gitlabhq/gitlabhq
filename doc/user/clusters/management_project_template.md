@@ -109,6 +109,6 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 
 #### How to customize your applications
 
-Each app has an `applications/{app}/values.yaml` file (`applicaton/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
+Each app has an `applications/{app}/values.yaml` file (`applications/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
 place where you can define default values for your app's Helm chart. Some apps already have defaults
 pre-defined by GitLab.

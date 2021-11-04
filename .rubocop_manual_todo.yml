@@ -2558,7 +2558,6 @@ Rails/IncludeUrlHelper:
 # TODO issue: https://gitlab.com/gitlab-org/gitlab/-/issues/344279
 Style/OpenStructUse:
   Exclude:
-    - 'Guardfile'
     - 'app/finders/snippets_finder.rb'
     - 'app/helpers/application_settings_helper.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'

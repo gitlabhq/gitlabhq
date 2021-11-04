@@ -169,5 +169,6 @@ You can do so by managing client keys with the [error tracking API](../api/error
 
 #### Limitations
 
-The Integrated Error Tracking feature was built and tested with Sentry SDK for Ruby. Other languages and frameworks
-are not tested and might not work. Check [the compatibility issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340178) for more information.
+The Integrated Error Tracking feature was built and tested with Sentry SDK for Ruby on Rails.
+Support for other languages and frameworks is not guaranteed. For up-to-date information, see the
+[compatibility issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340178).

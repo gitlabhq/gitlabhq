@@ -12,7 +12,6 @@
     "tags",
     "pipelines",
     "versions",
-    "metadata",
     "status",
     "canDestroy"
   ],
@@ -47,7 +46,8 @@
         "GENERIC",
         "GOLANG",
         "RUBYGEMS",
-        "DEBIAN"
+        "DEBIAN",
+        "HELM"
       ]
     },
     "tags": {

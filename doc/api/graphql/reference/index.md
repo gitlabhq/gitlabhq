@@ -10911,6 +10911,19 @@ Represents the Geo sync and verification state of a group wiki repository.
 | <a id="groupwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry. |
 
+### `HelmFileMetadata`
+
+Helm file metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="helmfilemetadatachannel"></a>`channel` | [`String!`](#string) | Channel of the Helm chart. |
+| <a id="helmfilemetadatacreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="helmfilemetadatametadata"></a>`metadata` | [`PackageHelmMetadataType!`](#packagehelmmetadatatype) | Metadata of the Helm chart. |
+| <a id="helmfilemetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
 ### `IncidentManagementOncallRotation`
 
 Describes an incident management on-call rotation.
@@ -12380,6 +12393,61 @@ Represents the Geo sync and verification state of a package file.
 | <a id="packagefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry should be resynced. |
 | <a id="packagefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry. |
 | <a id="packagefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry. |
+
+### `PackageHelmDependencyType`
+
+Represents a Helm dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagehelmdependencytypealias"></a>`alias` | [`String`](#string) | Alias of the dependency. |
+| <a id="packagehelmdependencytypecondition"></a>`condition` | [`String`](#string) | Condition of the dependency. |
+| <a id="packagehelmdependencytypeenabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates the dependency is enabled. |
+| <a id="packagehelmdependencytypeimportvalues"></a>`importValues` | [`[JSON!]`](#json) | Import-values of the dependency. |
+| <a id="packagehelmdependencytypename"></a>`name` | [`String`](#string) | Name of the dependency. |
+| <a id="packagehelmdependencytyperepository"></a>`repository` | [`String`](#string) | Repository of the dependency. |
+| <a id="packagehelmdependencytypetags"></a>`tags` | [`[String!]`](#string) | Tags of the dependency. |
+| <a id="packagehelmdependencytypeversion"></a>`version` | [`String`](#string) | Version of the dependency. |
+
+### `PackageHelmMaintainerType`
+
+Represents a Helm maintainer.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagehelmmaintainertypeemail"></a>`email` | [`String`](#string) | Email of the maintainer. |
+| <a id="packagehelmmaintainertypename"></a>`name` | [`String`](#string) | Name of the maintainer. |
+| <a id="packagehelmmaintainertypeurl"></a>`url` | [`String`](#string) | URL of the maintainer. |
+
+### `PackageHelmMetadataType`
+
+Represents the contents of a Helm Chart.yml file.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packagehelmmetadatatypeannotations"></a>`annotations` | [`JSON`](#json) | Annotations for the chart. |
+| <a id="packagehelmmetadatatypeapiversion"></a>`apiVersion` | [`String!`](#string) | API version of the chart. |
+| <a id="packagehelmmetadatatypeappversion"></a>`appVersion` | [`String`](#string) | App version of the chart. |
+| <a id="packagehelmmetadatatypecondition"></a>`condition` | [`String`](#string) | Condition for the chart. |
+| <a id="packagehelmmetadatatypedependencies"></a>`dependencies` | [`[PackageHelmDependencyType!]`](#packagehelmdependencytype) | Dependencies of the chart. |
+| <a id="packagehelmmetadatatypedeprecated"></a>`deprecated` | [`Boolean`](#boolean) | Indicates if the chart is deprecated. |
+| <a id="packagehelmmetadatatypedescription"></a>`description` | [`String`](#string) | Description of the chart. |
+| <a id="packagehelmmetadatatypehome"></a>`home` | [`String`](#string) | URL of the home page. |
+| <a id="packagehelmmetadatatypeicon"></a>`icon` | [`String`](#string) | URL to an SVG or PNG image for the chart. |
+| <a id="packagehelmmetadatatypekeywords"></a>`keywords` | [`[String!]`](#string) | Keywords for the chart. |
+| <a id="packagehelmmetadatatypekubeversion"></a>`kubeVersion` | [`String`](#string) | Kubernetes versions for the chart. |
+| <a id="packagehelmmetadatatypemaintainers"></a>`maintainers` | [`[PackageHelmMaintainerType!]`](#packagehelmmaintainertype) | Maintainers of the chart. |
+| <a id="packagehelmmetadatatypename"></a>`name` | [`String!`](#string) | Name of the chart. |
+| <a id="packagehelmmetadatatypesources"></a>`sources` | [`[String!]`](#string) | URLs of the source code for the chart. |
+| <a id="packagehelmmetadatatypetags"></a>`tags` | [`String`](#string) | Tags for the chart. |
+| <a id="packagehelmmetadatatypetype"></a>`type` | [`String`](#string) | Type of the chart. |
+| <a id="packagehelmmetadatatypeversion"></a>`version` | [`String!`](#string) | Version of the chart. |
 
 ### `PackageSettings`
 
@@ -17759,6 +17827,7 @@ Represents metadata associated with a Package file.
 Implementations:
 
 - [`ConanFileMetadata`](#conanfilemetadata)
+- [`HelmFileMetadata`](#helmfilemetadata)
 
 ##### Fields
 

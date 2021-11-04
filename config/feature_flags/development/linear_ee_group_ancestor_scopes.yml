@@ -1,8 +1,0 @@
----
-name: linear_ee_group_ancestor_scopes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70708
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341350
-milestone: '14.4'
-type: development
-group: group::access
-default_enabled: false

@@ -103,7 +103,23 @@
           "import-values": {
             "type": "array",
             "items": {
-
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "child": {
+                      "type": "string"
+                    },
+                    "parent": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
             }
           },
           "alias": {

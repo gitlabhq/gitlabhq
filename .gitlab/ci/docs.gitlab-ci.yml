@@ -71,6 +71,7 @@ ui-docs-links lint:
   extends:
     - .docs:rules:docs-lint
     - .static-analysis-base
+    - .ruby-cache
   stage: lint
   needs: []
   script:
