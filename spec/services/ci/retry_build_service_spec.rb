@@ -354,22 +354,6 @@ RSpec.describe Ci::RetryBuildService do
         it 'does not create a new environment' do
           expect { new_build }.not_to change { Environment.count }
         end
-
-        context 'when sticky_environments_in_job_retry feature flag is disabled' do
-          before do
-            stub_feature_flags(sticky_environments_in_job_retry: false)
-          end
-
-          it 'creates a new environment' do
-            expect { new_build }.to change { Environment.count }
-          end
-
-          it 'ignores the previous persisted environment' do
-            expect(build.persisted_environment.name).to eq("review/#{build.ref}-#{other_developer.id}")
-
-            expect(new_build.persisted_environment.name).to eq("review/#{build.ref}-#{developer.id}")
-          end
-        end
       end
 
       context 'when build has needs' do

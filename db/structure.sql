@@ -25173,6 +25173,8 @@ CREATE INDEX index_deployments_on_environment_id_and_id ON deployments USING btr
 
 CREATE INDEX index_deployments_on_environment_id_and_iid_and_project_id ON deployments USING btree (environment_id, iid, project_id);
 
+CREATE INDEX index_deployments_on_environment_id_and_ref ON deployments USING btree (environment_id, ref);
+
 CREATE INDEX index_deployments_on_environment_id_status_and_finished_at ON deployments USING btree (environment_id, status, finished_at);
 
 CREATE INDEX index_deployments_on_environment_id_status_and_id ON deployments USING btree (environment_id, status, id);

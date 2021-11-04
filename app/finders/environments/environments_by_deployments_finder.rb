@@ -23,12 +23,18 @@ module Environments
           deployments.none
         end
 
-      environment_ids = deployments
-        .group(:environment_id)
-        .select(:environment_id)
+      environments =
+        if Feature.enabled?(:environments_by_deployments_finder_exists_optimization, default_enabled: :yaml)
+          project.environments.available
+            .where('EXISTS (?)', deployments.where('environment_id = environments.id'))
+        else
+          environment_ids = deployments
+            .group(:environment_id)
+            .select(:environment_id)
 
-      environments = project.environments.available
-        .where(id: environment_ids)
+          project.environments.available
+            .where(id: environment_ids)
+        end
 
       if params[:find_latest]
         find_one(environments.order_by_last_deployed_at_desc)

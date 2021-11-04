@@ -15,7 +15,7 @@ module ErrorTracking
       )
 
       # The payload field contains all the data on error including stacktrace in jsonb.
-      # Together with occured_at these are 2 main attributes that we need to save here.
+      # Together with occurred_at these are 2 main attributes that we need to save here.
       error.events.create!(
         environment: event['environment'],
         description: exception['value'],

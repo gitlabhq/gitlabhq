@@ -124,12 +124,12 @@ Every four hours a scheduled pipeline builds and deploys the docs site. The pipe
 fetches the current docs from the main project's main branch, builds it with Nanoc
 and deploys it to <https://docs.gitlab.com>.
 
-If you need to build and deploy the site immediately (must have maintainer level permissions):
+To build and deploy the site immediately (must have the Maintainer role):
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Schedules**.
 1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
 
-Read more about the [deployment process](deployment_process.md).
+Read more about [documentation deployments](deployment_process.md).
 
 ## Using YAML data files
 

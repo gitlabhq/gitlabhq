@@ -112,7 +112,7 @@ RSpec.describe Gitlab::Git::ObjectPool do
 
         subject.fetch
 
-        expect(subject.repository.commit_count('refs/remotes/origin/master')).to eq(commit_count)
+        expect(subject.repository.commit_count('refs/remotes/origin/heads/master')).to eq(commit_count)
         expect(subject.repository.commit(new_commit_id).id).to eq(new_commit_id)
       end
     end

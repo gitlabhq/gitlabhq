@@ -77,13 +77,8 @@ module Ci
     end
 
     def deployment_attributes_for(new_build, old_build)
-      if Feature.enabled?(:sticky_environments_in_job_retry, project, default_enabled: :yaml)
-        ::Gitlab::Ci::Pipeline::Seed::Build
-          .deployment_attributes_for(new_build, old_build.persisted_environment)
-      else
-        ::Gitlab::Ci::Pipeline::Seed::Build
-          .deployment_attributes_for(new_build)
-      end
+      ::Gitlab::Ci::Pipeline::Seed::Build
+        .deployment_attributes_for(new_build, old_build.persisted_environment)
     end
   end
 end

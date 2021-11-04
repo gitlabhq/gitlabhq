@@ -48,7 +48,7 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :conflicts_docs_path do |merge_request|
-    help_page_path('user/project/merge_requests/resolve_conflicts.md')
+    help_page_path('user/project/merge_requests/conflicts.md')
   end
 
   expose :reviewing_and_managing_merge_requests_docs_path do |merge_request|

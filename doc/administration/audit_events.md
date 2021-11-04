@@ -186,9 +186,16 @@ successful sign-in events:
 After upgrading from GitLab Free to a paid tier, successful sign-in events are the only Audit
 Events visible in Audit Events views until more events are logged.
 
+### "Deleted User" events
+
+Audit events can be created for a user after the user is deleted. The user name associated with the event is set to 
+"Deleted User" because the actual user name is unknowable. For example, if a deleted user's access to a project is
+removed automatically due to expiration, the audit event is created for "Deleted User". We are [investigating](https://gitlab.com/gitlab-org/gitlab/-/issues/343933)
+whether this is avoidable.
+
 ### Missing events
 
-Some events are not tracked in Audit Events. See the following
+Some events are not tracked in audit events. See the following
 epics for more detail on which events are not being tracked, and our progress
 on adding these events into GitLab:
 
@@ -196,10 +203,12 @@ on adding these events into GitLab:
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475)
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476)
 
-Don't see the event you want in any of the epics linked above? You can use the **Audit Event
-Proposal** issue template to
-[create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal)
-to request it, or you can [add it yourself](../development/audit_event_guide/).
+Don't see the event you want in any of the epics linked above? You can either:
+
+- Use the **Audit Event Proposal** issue template to
+  [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to
+  request it.
+- [Add it yourself](../development/audit_event_guide/).
 
 ### Disabled events
 
@@ -251,7 +260,7 @@ Export to CSV allows customers to export the current filter view of your audit e
 CSV file, which stores tabular data in plain text. The data provides a comprehensive view with respect to
 audit events.
 
-To export the Audit Events to CSV:
+To export the audit events to CSV:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
@@ -284,5 +293,5 @@ The first row contains the headers, which are listed in the following table alon
 
 ### Limitation
 
-The Audit Events CSV file is limited to a maximum of `100,000` events.
+The audit events CSV file is limited to a maximum of `100,000` events.
 The remaining records are truncated when this limit is reached.
