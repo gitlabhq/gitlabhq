@@ -43,7 +43,7 @@ module Notes
     private
 
     def execute_quick_actions(note)
-      return yield(false) unless quick_actions_service.supported?(note)
+      return yield(false) unless quick_actions_supported?(note)
 
       content, update_params, message = quick_actions_service.execute(note, quick_action_options)
       only_commands = content.empty?
@@ -52,6 +52,10 @@ module Notes
       yield(only_commands)
 
       do_commands(note, update_params, message, only_commands)
+    end
+
+    def quick_actions_supported?(note)
+      quick_actions_service.supported?(note)
     end
 
     def quick_actions_service

@@ -9,13 +9,19 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
     ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(note)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(note)
+    expect(note_formatter.contains_suggestion?).to eq(false)
   end
 
   it 'handles nil value for note' do
     note = nil
 
-    expect(described_class.formatted_note_for(note: note)).to eq(note)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(note)
+    expect(note_formatter.contains_suggestion?).to eq(false)
   end
 
   it 'does not allow over 3 leading spaces for valid suggestion' do
@@ -26,7 +32,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(note)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(note)
+    expect(note_formatter.contains_suggestion?).to eq(false)
   end
 
   it 'allows up to 3 leading spaces' do
@@ -44,7 +53,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(expected)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 
   it 'does nothing when there is any text without space after the suggestion tag' do
@@ -53,7 +65,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
     ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(note)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(note)
+    expect(note_formatter.contains_suggestion?).to eq(false)
   end
 
   it 'formats single-line suggestions' do
@@ -71,7 +86,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(expected)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 
   it 'ignores text after suggestion tag on the same line' do
@@ -89,7 +107,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
     ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(expected)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 
   it 'formats multiple single-line suggestions' do
@@ -115,7 +136,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note)).to eq(expected)
+    note_formatter = described_class.new(note: note)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 
   it 'formats multi-line suggestions' do
@@ -133,7 +157,10 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note, start_line: 6, end_line: 8)).to eq(expected)
+    note_formatter = described_class.new(note: note, start_line: 6, end_line: 8)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 
   it 'formats multiple multi-line suggestions' do
@@ -159,6 +186,9 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormat
       ```
     BODY
 
-    expect(described_class.formatted_note_for(note: note, start_line: 6, end_line: 8)).to eq(expected)
+    note_formatter = described_class.new(note: note, start_line: 6, end_line: 8)
+
+    expect(note_formatter.formatted_note).to eq(expected)
+    expect(note_formatter.contains_suggestion?).to eq(true)
   end
 end

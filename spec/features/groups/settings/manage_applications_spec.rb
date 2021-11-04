@@ -6,6 +6,7 @@ RSpec.describe 'User manages applications' do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:new_application_path) { group_settings_applications_path(group) }
+  let_it_be(:index_path) { group_settings_applications_path(group) }
 
   before do
     group.add_owner(user)

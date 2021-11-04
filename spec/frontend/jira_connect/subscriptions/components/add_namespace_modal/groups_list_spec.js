@@ -3,10 +3,10 @@ import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
-import GroupsList from '~/jira_connect/subscriptions/components/groups_list.vue';
-import GroupsListItem from '~/jira_connect/subscriptions/components/groups_list_item.vue';
+import GroupsList from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list.vue';
+import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
 import { DEFAULT_GROUPS_PER_PAGE } from '~/jira_connect/subscriptions/constants';
-import { mockGroup1, mockGroup2 } from '../mock_data';
+import { mockGroup1, mockGroup2 } from '../../mock_data';
 
 const createMockGroup = (groupId) => {
   return {

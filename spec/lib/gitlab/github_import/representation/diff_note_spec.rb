@@ -9,16 +9,21 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
     +Hello world'
   end
 
+  let(:note_body) { 'Hello world' }
+  let(:start_line) { nil }
+  let(:end_line) { 23 }
+  let(:user_data) { { 'id' => 4, 'login' => 'alice' } }
+  let(:side) { 'RIGHT' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
-  shared_examples 'a DiffNote' do
+  shared_examples 'a DiffNote representation' do
     it 'returns an instance of DiffNote' do
       expect(note).to be_an_instance_of(described_class)
     end
 
     context 'the returned DiffNote' do
-      it 'includes the number of the note' do
+      it 'includes the number of the merge request' do
         expect(note.noteable_id).to eq(42)
       end
 
@@ -28,18 +33,6 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
 
       it 'includes the commit ID' do
         expect(note.commit_id).to eq('123abc')
-      end
-
-      it 'includes the user details' do
-        expect(note.author)
-          .to be_an_instance_of(Gitlab::GithubImport::Representation::User)
-
-        expect(note.author.id).to eq(4)
-        expect(note.author.login).to eq('alice')
-      end
-
-      it 'includes the note body' do
-        expect(note.note).to eq('Hello world')
       end
 
       it 'includes the created timestamp' do
@@ -57,203 +50,192 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
       it 'returns the noteable type' do
         expect(note.noteable_type).to eq('MergeRequest')
       end
+
+      describe '#diff_hash' do
+        it 'returns a Hash containing the diff details' do
+          expect(note.diff_hash).to eq(
+            diff: hunk,
+            new_path: 'README.md',
+            old_path: 'README.md',
+            a_mode: '100644',
+            b_mode: '100644',
+            new_file: false
+          )
+        end
+      end
+
+      describe '#diff_position' do
+        let(:diff_refs) { double(:refs, base_sha: 'base', start_sha: 'start', head_sha: 'head') }
+        let(:merge_request) { double(:merge_request, diff_refs: diff_refs) }
+
+        context 'when the diff is an addition' do
+          it 'returns a Gitlab::Diff::Position' do
+            expect(note.diff_position(merge_request).to_h).to eq(
+              base_sha: 'base',
+              head_sha: 'head',
+              line_range: nil,
+              new_line: 23,
+              new_path: 'README.md',
+              old_line: nil,
+              old_path: 'README.md',
+              position_type: 'text',
+              start_sha: 'start'
+            )
+          end
+        end
+
+        context 'when the diff is an deletion' do
+          let(:side) { 'LEFT' }
+
+          it 'returns a Gitlab::Diff::Position' do
+            expect(note.diff_position(merge_request).to_h).to eq(
+              base_sha: 'base',
+              head_sha: 'head',
+              line_range: nil,
+              old_line: 23,
+              new_path: 'README.md',
+              new_line: nil,
+              old_path: 'README.md',
+              position_type: 'text',
+              start_sha: 'start'
+            )
+          end
+        end
+      end
+
+      describe '#github_identifiers' do
+        it 'returns a hash with needed identifiers' do
+          expect(note.github_identifiers).to eq(
+            noteable_id: 42,
+            noteable_type: 'MergeRequest',
+            note_id: 1
+          )
+        end
+      end
+
+      describe '#line_code' do
+        it 'generates the proper line code' do
+          note = described_class.new(diff_hunk: hunk, file_path: 'README.md')
+
+          expect(note.line_code).to eq('8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_2_2')
+        end
+      end
+
+      describe '#note and #contains_suggestion?' do
+        it 'includes the note body' do
+          expect(note.note).to eq('Hello world')
+          expect(note.contains_suggestion?).to eq(false)
+        end
+
+        context 'when the note have a suggestion' do
+          let(:note_body) do
+            <<~BODY
+            ```suggestion
+            Hello World
+            ```
+            BODY
+          end
+
+          it 'returns the suggestion formatted in the note' do
+            expect(note.note).to eq <<~BODY
+            ```suggestion:-0+0
+            Hello World
+            ```
+            BODY
+            expect(note.contains_suggestion?).to eq(true)
+          end
+        end
+
+        context 'when the note have a multiline suggestion' do
+          let(:start_line) { 20 }
+          let(:end_line) { 23 }
+          let(:note_body) do
+            <<~BODY
+            ```suggestion
+            Hello World
+            ```
+            BODY
+          end
+
+          it 'returns the multi-line suggestion formatted in the note' do
+            expect(note.note).to eq <<~BODY
+            ```suggestion:-3+0
+            Hello World
+            ```
+            BODY
+            expect(note.contains_suggestion?).to eq(true)
+          end
+        end
+
+        describe '#author' do
+          it 'includes the user details' do
+            expect(note.author).to be_an_instance_of(
+              Gitlab::GithubImport::Representation::User
+            )
+
+            expect(note.author.id).to eq(4)
+            expect(note.author.login).to eq('alice')
+          end
+
+          context 'when the author is empty' do
+            let(:user_data) { nil }
+
+            it 'does not set the user if the response did not include a user' do
+              expect(note.author).to be_nil
+            end
+          end
+        end
+      end
     end
   end
 
   describe '.from_api_response' do
-    let(:response) do
-      double(
-        :response,
-        html_url: 'https://github.com/foo/bar/pull/42',
-        path: 'README.md',
-        commit_id: '123abc',
-        original_commit_id: 'original123abc',
-        diff_hunk: hunk,
-        user: double(:user, id: 4, login: 'alice'),
-        body: 'Hello world',
-        created_at: created_at,
-        updated_at: updated_at,
-        line: 23,
-        start_line: nil,
-        id: 1
-      )
-    end
+    it_behaves_like 'a DiffNote representation' do
+      let(:response) do
+        double(
+          :response,
+          id: 1,
+          html_url: 'https://github.com/foo/bar/pull/42',
+          path: 'README.md',
+          commit_id: '123abc',
+          original_commit_id: 'original123abc',
+          side: side,
+          user: user_data && double(:user, user_data),
+          diff_hunk: hunk,
+          body: note_body,
+          created_at: created_at,
+          updated_at: updated_at,
+          line: end_line,
+          start_line: start_line
+        )
+      end
 
-    it_behaves_like 'a DiffNote' do
-      let(:note) { described_class.from_api_response(response) }
-    end
-
-    it 'does not set the user if the response did not include a user' do
-      allow(response)
-        .to receive(:user)
-        .and_return(nil)
-
-      note = described_class.from_api_response(response)
-
-      expect(note.author).to be_nil
-    end
-
-    it 'formats a suggestion in the note body' do
-      allow(response)
-        .to receive(:body)
-        .and_return <<~BODY
-      ```suggestion
-      Hello World
-      ```
-      BODY
-
-      note = described_class.from_api_response(response)
-
-      expect(note.note).to eq <<~BODY
-      ```suggestion:-0+0
-      Hello World
-      ```
-      BODY
+      subject(:note) { described_class.from_api_response(response) }
     end
   end
 
   describe '.from_json_hash' do
-    let(:hash) do
-      {
-        'noteable_type' => 'MergeRequest',
-        'noteable_id' => 42,
-        'file_path' => 'README.md',
-        'commit_id' => '123abc',
-        'original_commit_id' => 'original123abc',
-        'diff_hunk' => hunk,
-        'author' => { 'id' => 4, 'login' => 'alice' },
-        'note' => 'Hello world',
-        'created_at' => created_at.to_s,
-        'updated_at' => updated_at.to_s,
-        'note_id' => 1
-      }
-    end
+    it_behaves_like 'a DiffNote representation' do
+      let(:hash) do
+        {
+          'note_id' => 1,
+          'noteable_type' => 'MergeRequest',
+          'noteable_id' => 42,
+          'file_path' => 'README.md',
+          'commit_id' => '123abc',
+          'original_commit_id' => 'original123abc',
+          'side' => side,
+          'author' => user_data,
+          'diff_hunk' => hunk,
+          'note' => note_body,
+          'created_at' => created_at.to_s,
+          'updated_at' => updated_at.to_s,
+          'end_line' => end_line,
+          'start_line' => start_line
+        }
+      end
 
-    it_behaves_like 'a DiffNote' do
-      let(:note) { described_class.from_json_hash(hash) }
-    end
-
-    it 'does not convert the author if it was not specified' do
-      hash.delete('author')
-
-      note = described_class.from_json_hash(hash)
-
-      expect(note.author).to be_nil
-    end
-
-    it 'formats a suggestion in the note body' do
-      hash['note'] = <<~BODY
-      ```suggestion
-      Hello World
-      ```
-      BODY
-
-      note = described_class.from_json_hash(hash)
-
-      expect(note.note).to eq <<~BODY
-      ```suggestion:-0+0
-      Hello World
-      ```
-      BODY
-    end
-  end
-
-  describe '#line_code' do
-    it 'returns a String' do
-      note = described_class.new(diff_hunk: hunk, file_path: 'README.md')
-
-      expect(note.line_code).to be_an_instance_of(String)
-    end
-  end
-
-  describe '#diff_hash' do
-    it 'returns a Hash containing the diff details' do
-      note = described_class.from_json_hash(
-        'noteable_type' => 'MergeRequest',
-        'noteable_id' => 42,
-        'file_path' => 'README.md',
-        'commit_id' => '123abc',
-        'original_commit_id' => 'original123abc',
-        'diff_hunk' => hunk,
-        'author' => { 'id' => 4, 'login' => 'alice' },
-        'note' => 'Hello world',
-        'created_at' => created_at.to_s,
-        'updated_at' => updated_at.to_s,
-        'note_id' => 1
-      )
-
-      expect(note.diff_hash).to eq(
-        diff: hunk,
-        new_path: 'README.md',
-        old_path: 'README.md',
-        a_mode: '100644',
-        b_mode: '100644',
-        new_file: false
-      )
-    end
-  end
-
-  describe '#github_identifiers' do
-    it 'returns a hash with needed identifiers' do
-      github_identifiers = {
-        noteable_id: 42,
-        noteable_type: 'MergeRequest',
-        note_id: 1
-      }
-      other_attributes = { something_else: '_something_else_' }
-      note = described_class.new(github_identifiers.merge(other_attributes))
-
-      expect(note.github_identifiers).to eq(github_identifiers)
-    end
-  end
-
-  describe '#note' do
-    it 'returns the given note' do
-      hash = {
-        'note': 'simple text'
-      }
-
-      note = described_class.new(hash)
-
-      expect(note.note).to eq 'simple text'
-    end
-
-    it 'returns the suggestion formatted in the note' do
-      hash = {
-        'note': <<~BODY
-        ```suggestion
-        Hello World
-        ```
-        BODY
-      }
-
-      note = described_class.new(hash)
-
-      expect(note.note).to eq <<~BODY
-      ```suggestion:-0+0
-      Hello World
-      ```
-      BODY
-    end
-
-    it 'returns the multi-line suggestion formatted in the note' do
-      hash = {
-        'start_line': 20,
-        'end_line': 23,
-        'note': <<~BODY
-        ```suggestion
-        Hello World
-        ```
-        BODY
-      }
-
-      note = described_class.new(hash)
-
-      expect(note.note).to eq <<~BODY
-      ```suggestion:-3+0
-      Hello World
-      ```
-      BODY
+      subject(:note) { described_class.from_json_hash(hash) }
     end
   end
 end

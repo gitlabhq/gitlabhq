@@ -4,9 +4,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
 import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
-import GroupsListItem from '~/jira_connect/subscriptions/components/groups_list_item.vue';
+import GroupsListItem from '~/jira_connect/subscriptions/components/add_namespace_modal/groups_list_item.vue';
 import { persistAlert, reloadPage } from '~/jira_connect/subscriptions/utils';
-import { mockGroup1 } from '../mock_data';
+import { mockGroup1 } from '../../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils');
 

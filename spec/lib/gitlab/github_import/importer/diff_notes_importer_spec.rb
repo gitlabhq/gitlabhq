@@ -20,6 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
       line: 23,
       start_line: nil,
       id: 1,
+      side: 'RIGHT',
       body: <<~BODY
         Hello World
 

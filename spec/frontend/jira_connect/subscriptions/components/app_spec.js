@@ -1,7 +1,8 @@
-import { GlAlert, GlButton, GlModal, GlLink } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
+import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { __ } from '~/locale';
@@ -18,7 +19,7 @@ describe('JiraConnectApp', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAlertLink = () => findAlert().findComponent(GlLink);
   const findGlButton = () => wrapper.findComponent(GlButton);
-  const findGlModal = () => wrapper.findComponent(GlModal);
+  const findAddNamespaceButton = () => wrapper.findComponent(AddNamespaceButton);
 
   const createComponent = ({ provide, mountFn = shallowMount } = {}) => {
     store = createStore();
@@ -45,7 +46,7 @@ describe('JiraConnectApp', () => {
 
       it('renders "Sign in" button', () => {
         expect(findGlButton().text()).toBe('Sign in to add namespaces');
-        expect(findGlModal().exists()).toBe(false);
+        expect(findAddNamespaceButton().exists()).toBe(false);
       });
     });
 
@@ -54,9 +55,8 @@ describe('JiraConnectApp', () => {
         createComponent();
       });
 
-      it('renders "Add" button and modal', () => {
-        expect(findGlButton().text()).toBe('Add namespace');
-        expect(findGlModal().exists()).toBe(true);
+      it('renders "Add namespace" button ', () => {
+        expect(findAddNamespaceButton().exists()).toBe(true);
       });
     });
 

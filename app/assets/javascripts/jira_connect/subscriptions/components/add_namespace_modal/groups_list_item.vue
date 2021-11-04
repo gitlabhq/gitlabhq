@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { addSubscription } from '~/jira_connect/subscriptions/api';
 import { persistAlert, reloadPage } from '~/jira_connect/subscriptions/utils';
 import { s__ } from '~/locale';
-import GroupItemName from './group_item_name.vue';
+import GroupItemName from '../group_item_name.vue';
 
 export default {
   components: {

@@ -39,6 +39,9 @@
 
     = render "shared/tokens/scopes_list", token: @application
 
-.form-actions
-  = link_to _('Edit'), edit_path, class: 'gl-button btn btn-confirm wide float-left'
-  = render 'shared/doorkeeper/applications/delete_form', path: delete_path, submit_btn_css: 'gl-button btn btn-danger gl-ml-3'
+.form-actions.gl-display-flex.gl-justify-content-space-between
+  %div
+    - if @created
+      = link_to _('Continue'), index_path, class: 'btn btn-confirm btn-md gl-button gl-mr-3'
+    = link_to _('Edit'), edit_path, class: 'btn btn-default btn-md gl-button'
+  = render 'shared/doorkeeper/applications/delete_form', path: delete_path, submit_btn_css: 'btn btn-danger btn-md gl-button btn-danger-secondary'

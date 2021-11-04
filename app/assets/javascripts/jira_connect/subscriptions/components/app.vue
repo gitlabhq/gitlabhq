@@ -1,11 +1,10 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { mapState, mapMutations } from 'vuex';
 import { retrieveAlert, getLocation } from '~/jira_connect/subscriptions/utils';
-import { __ } from '~/locale';
 import { SET_ALERT } from '../store/mutation_types';
-import GroupsList from './groups_list.vue';
 import SubscriptionsList from './subscriptions_list.vue';
+import AddNamespaceButton from './add_namespace_button.vue';
 
 export default {
   name: 'JiraConnectApp',
@@ -13,13 +12,9 @@ export default {
     GlAlert,
     GlButton,
     GlLink,
-    GlModal,
     GlSprintf,
-    GroupsList,
     SubscriptionsList,
-  },
-  directives: {
-    GlModalDirective,
+    AddNamespaceButton,
   },
   inject: {
     usersPath: {
@@ -42,11 +37,6 @@ export default {
     },
     shouldShowAlert() {
       return Boolean(this.alert?.message);
-    },
-  },
-  modal: {
-    cancelProps: {
-      text: __('Cancel'),
     },
   },
   created() {
@@ -101,22 +91,7 @@ export default {
           target="_blank"
           >{{ s__('Integrations|Sign in to add namespaces') }}</gl-button
         >
-        <template v-else>
-          <gl-button
-            v-gl-modal-directive="'add-namespace-modal'"
-            category="primary"
-            variant="info"
-            class="gl-align-self-center"
-            >{{ s__('Integrations|Add namespace') }}</gl-button
-          >
-          <gl-modal
-            modal-id="add-namespace-modal"
-            :title="s__('Integrations|Link namespaces')"
-            :action-cancel="$options.modal.cancelProps"
-          >
-            <groups-list />
-          </gl-modal>
-        </template>
+        <add-namespace-button v-else />
       </div>
 
       <subscriptions-list />

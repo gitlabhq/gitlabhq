@@ -10,15 +10,13 @@ module Gitlab
     module Representation
       module DiffNotes
         class SuggestionFormatter
+          include Gitlab::Utils::StrongMemoize
+
           # A github suggestion:
           # - the ```suggestion tag must be the first text of the line
           #   - it might have up to 3 spaces before the ```suggestion tag
           # - extra text on the ```suggestion tag line will be ignored
           GITHUB_SUGGESTION = /^\ {,3}(?<suggestion>```suggestion\b).*(?<eol>\R)/.freeze
-
-          def self.formatted_note_for(...)
-            new(...).formatted_note
-          end
 
           def initialize(note:, start_line: nil, end_line: nil)
             @note = note
@@ -26,24 +24,30 @@ module Gitlab
             @end_line = end_line
           end
 
+          # Returns a tuple with:
+          #   - a boolean indicating if the note has suggestions
+          #   - the note with the suggestion formatted for Gitlab
           def formatted_note
-            if contains_suggestion?
-              note.gsub(
-                GITHUB_SUGGESTION,
-                "\\k<suggestion>:#{suggestion_range}\\k<eol>"
-              )
-            else
-              note
+            @formatted_note ||=
+              if contains_suggestion?
+                note.gsub(
+                  GITHUB_SUGGESTION,
+                  "\\k<suggestion>:#{suggestion_range}\\k<eol>"
+                )
+              else
+                note
+              end
+          end
+
+          def contains_suggestion?
+            strong_memoize(:contain_suggestion) do
+              note.to_s.match?(GITHUB_SUGGESTION)
             end
           end
 
           private
 
           attr_reader :note, :start_line, :end_line
-
-          def contains_suggestion?
-            note.to_s.match?(GITHUB_SUGGESTION)
-          end
 
           # Github always saves the comment on the _last_ line of the range.
           # Therefore, the diff hunk will always be related to lines before
