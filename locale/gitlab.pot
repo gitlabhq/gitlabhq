@@ -1110,6 +1110,9 @@ msgstr ""
 msgid "(check progress)"
 msgstr ""
 
+msgid "(commits will be squashed)"
+msgstr ""
+
 msgid "(deleted)"
 msgstr ""
 
@@ -12424,6 +12427,9 @@ msgstr ""
 msgid "Edit comment"
 msgstr ""
 
+msgid "Edit commit message"
+msgstr ""
+
 msgid "Edit deploy freeze"
 msgstr ""
 
@@ -21586,6 +21592,9 @@ msgid "Merge commit SHA"
 msgstr ""
 
 msgid "Merge commit message"
+msgstr ""
+
+msgid "Merge details"
 msgstr ""
 
 msgid "Merge events"
@@ -32449,6 +32458,12 @@ msgstr ""
 msgid "Source branch"
 msgstr ""
 
+msgid "Source branch will be deleted."
+msgstr ""
+
+msgid "Source branch will not be deleted."
+msgstr ""
+
 msgid "Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}"
 msgstr ""
 
@@ -40956,7 +40971,7 @@ msgstr ""
 msgid "most recent deployment"
 msgstr ""
 
-msgid "mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}."
+msgid "mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}%{squashedCommits}."
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}."

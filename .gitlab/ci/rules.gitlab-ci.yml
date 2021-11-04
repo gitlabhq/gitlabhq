@@ -1258,7 +1258,7 @@
 
 .rails:rules:detect-tests:
   rules:
-    - changes: *code-backstage-patterns
+    - changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:detect-previous-failed-tests:

@@ -2172,20 +2172,6 @@ Cop/UserAdmin:
     - 'lib/gitlab/visibility_level.rb'
     - 'qa/qa/runtime/api/client.rb'
 
-# WIP https://gitlab.com/gitlab-org/gitlab/-/issues/325744
-Performance/OpenStruct:
-  Exclude:
-    - 'Guardfile'
-    - 'app/finders/snippets_finder.rb'
-    - 'app/helpers/application_settings_helper.rb'
-    - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
-    - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
-    - 'lib/api/wikis.rb'
-    - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/git/diff_collection.rb'
-    - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
-    - 'lib/mattermost/session.rb'
-
 # WIP: https://gitlab.com/gitlab-org/gitlab/-/issues/324629
 Gitlab/DelegatePredicateMethods:
   Exclude:

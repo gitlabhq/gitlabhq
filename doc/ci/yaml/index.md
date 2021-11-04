@@ -3941,20 +3941,24 @@ In this example, a new pipeline causes a running pipeline to be:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
-Sometimes running multiple jobs at the same time in an environment
-can lead to errors during the deployment.
+Use `resource_group` to create a [resource group](../resource_groups/index.md) that
+ensures a job is mutually exclusive across different pipelines for the same project.
 
-To avoid these errors, use the `resource_group` attribute to make sure that
-the runner doesn't run certain jobs concurrently. Resource groups behave similar
-to semaphores in other programming languages.
+For example, if multiple jobs that belong to the same resource group are queued simultaneously,
+only one of the jobs starts. The other jobs wait until the `resource_group` is free.
 
-When the `resource_group` keyword is defined for a job in the `.gitlab-ci.yml` file,
-job executions are mutually exclusive across different pipelines for the same project.
-If multiple jobs belonging to the same resource group are enqueued simultaneously,
-only one of the jobs is picked by the runner. The other jobs wait until the
-`resource_group` is free.
+Resource groups behave similar to semaphores in other programming languages.
 
-For example:
+You can define multiple resource groups per environment. For example,
+when deploying to physical devices, you might have multiple physical devices. Each device
+can be deployed to, but only one deployment can occur per device at any given time.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: Only letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
+It can't start or end with `/`.
+
+**Example of `resource_group`**:
 
 ```yaml
 deploy-to-production:
@@ -3962,71 +3966,12 @@ deploy-to-production:
   resource_group: production
 ```
 
-In this case, two `deploy-to-production` jobs in two separate pipelines can never run at the same time. As a result,
+In this example, two `deploy-to-production` jobs in two separate pipelines can never run at the same time. As a result,
 you can ensure that concurrent deployments never happen to the production environment.
 
-You can define multiple resource groups per environment. For example,
-when deploying to physical devices, you may have multiple physical devices. Each device
-can be deployed to, but there can be only one deployment per device at any given time.
+**Related topics**:
 
-The `resource_group` value can only contain letters, digits, `-`, `_`, `/`, `$`, `{`, `}`, `.`, and spaces.
-It can't start or end with `/`.
-
-For more information, see [Resource Group documentation](../resource_groups/index.md).
-
-#### Pipeline-level concurrency control with Cross-Project/Parent-Child pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
-
-You can define `resource_group` for downstream pipelines that are sensitive to concurrent
-executions. The [`trigger` keyword](#trigger) can trigger downstream pipelines. The
-[`resource_group` keyword](#resource_group) can co-exist with it. This is useful to control the
-concurrency for deployment pipelines, while running non-sensitive jobs concurrently.
-
-The following example has two pipeline configurations in a project. When a pipeline starts running,
-non-sensitive jobs are executed first and aren't affected by concurrent executions in other
-pipelines. However, GitLab ensures that there are no other deployment pipelines running before
-triggering a deployment (child) pipeline. If other deployment pipelines are running, GitLab waits
-until those pipelines finish before running another one.
-
-```yaml
-# .gitlab-ci.yml (parent pipeline)
-
-build:
-  stage: build
-  script: echo "Building..."
-
-test:
-  stage: test
-  script: echo "Testing..."
-
-deploy:
-  stage: deploy
-  trigger:
-    include: deploy.gitlab-ci.yml
-    strategy: depend
-  resource_group: AWS-production
-```
-
-```yaml
-# deploy.gitlab-ci.yml (child pipeline)
-
-stages:
-  - provision
-  - deploy
-
-provision:
-  stage: provision
-  script: echo "Provisioning..."
-
-deployment:
-  stage: deploy
-  script: echo "Deploying..."
-```
-
-You must define [`strategy: depend`](#triggerstrategy)
-with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
-finishes.
+- [Pipeline-level concurrency control with cross-project/parent-child pipelines](../resource_groups/index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines).
 
 ### `release`
 

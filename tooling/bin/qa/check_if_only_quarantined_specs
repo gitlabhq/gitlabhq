@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+
+# This script assumes the first argument is a directory of files containing diffs of changes from an MR. It exits with a
+# success code if all diffs add a line that quarantines a test. If any diffs are not specs, or they are specs that don't
+# quarantine a test, it exits with code 1 to indicate failure (i.e., there was _not_ only quarantined specs).
+
+abort("ERROR: Please specify the directory containing MR diffs.") if ARGV.empty?
+diffs_dir = Pathname.new(ARGV.shift).expand_path
+
+diffs_dir.glob('**/*').each do |path|
+  next if path.directory?
+
+  exit 1 unless path.to_s.end_with?('_spec.rb.diff')
+  exit 1 unless path.read.match?(/^\+.*, quarantine:/)
+end

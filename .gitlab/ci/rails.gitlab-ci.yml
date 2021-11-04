@@ -6,11 +6,6 @@
     - .default-before_script
     - .rails-cache
 
-.minimal-bundle-install:
-  script:
-    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:kerberos:metrics:omnibus:ed25519"
-    - bundle_install_script
-
 .base-script:
   script:
     # Only install knapsack after bundle install! Otherwise oddly some native
@@ -241,11 +236,11 @@ update-gitaly-binaries-cache:
 .coverage-base:
   extends:
     - .default-retry
-    - .default-before_script
     - .coverage-cache
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
+  before_script:
+    - source scripts/utils.sh
+    - export BUNDLE_WITHOUT="${BUNDLE_WITHOUT}:default:test:puma:kerberos:metrics:omnibus:ed25519"
+    - bundle_install_script
 
 rspec migration pg12:
   extends:
@@ -476,21 +471,38 @@ rspec:coverage:
   # so we use `dependencies` here.
   dependencies:
     - setup-test-env
+    # FOSS/EE jobs
     - rspec migration pg12
     - rspec unit pg12
     - rspec integration pg12
     - rspec system pg12
+    # FOSS/EE minimal jobs
+    - rspec migration pg12 minimal
+    - rspec unit pg12 minimal
+    - rspec integration pg12 minimal
+    - rspec system pg12 minimal
+    # EE jobs
     - rspec-ee migration pg12
     - rspec-ee unit pg12
     - rspec-ee integration pg12
     - rspec-ee system pg12
+    # EE minimal jobs
+    - rspec-ee migration pg12 minimal
+    - rspec-ee unit pg12 minimal
+    - rspec-ee integration pg12 minimal
+    - rspec-ee system pg12 minimal
+    # Geo jobs
     - rspec-ee unit pg12 geo
     - rspec-ee integration pg12 geo
     - rspec-ee system pg12 geo
+    # Geo minimal jobs
+    - rspec-ee unit pg12 geo minimal
+    - rspec-ee integration pg12 geo minimal
+    - rspec-ee system pg12 geo minimal
+    # Memory jobs
     - memory-static
     - memory-on-boot
   script:
-    - !reference [.minimal-bundle-install, script]
     - run_timed_command "bundle exec scripts/merge-simplecov"
     - run_timed_command "bundle exec scripts/gather-test-memory-data"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -515,7 +527,6 @@ rspec:feature-flags:
     - job: "haml-lint ee"
       optional: true
   script:
-    - !reference [.minimal-bundle-install, script]
     - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
         run_timed_command "bundle exec scripts/used-feature-flags" || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else

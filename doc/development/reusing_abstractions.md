@@ -145,7 +145,7 @@ Legacy classes inherited from `BaseService` for historical reasons.
 
 In Service classes the use of `execute` and `#execute` is preferred over `call` and `#call`.
 
-Classes that are not service objects should be [created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts, such as in `lib`.
+Classes that are not service objects should be [created elsewhere](directory_structure.md#use-namespaces-to-define-bounded-contexts), such as in `lib`.
 
 #### ServiceResponse
 

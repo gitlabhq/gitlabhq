@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { GlSprintf } from '@gitlab/ui';
 import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
 
@@ -6,7 +6,7 @@ describe('Commits header component', () => {
   let wrapper;
 
   const createComponent = (props) => {
-    wrapper = shallowMount(CommitsHeader, {
+    wrapper = mount(CommitsHeader, {
       stubs: {
         GlSprintf,
       },

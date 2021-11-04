@@ -9,7 +9,7 @@ exports[`New ready to merge state component renders permission text if canMerge 
   />
    
   <p
-    class="media-body gl-m-0! gl-font-weight-bold"
+    class="media-body gl-m-0! gl-font-weight-bold gl-text-gray-900!"
   >
     
       Ready to merge by members who can write to the target branch.
@@ -27,7 +27,7 @@ exports[`New ready to merge state component renders permission text if canMerge 
   />
    
   <p
-    class="media-body gl-m-0! gl-font-weight-bold"
+    class="media-body gl-m-0! gl-font-weight-bold gl-text-gray-900!"
   >
     
       Ready to merge!

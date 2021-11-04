@@ -55,8 +55,14 @@ update-qa-cache:
   before_script:
     - source scripts/utils.sh
     - install_gitlab_gem
+    - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
   script:
-    - ./scripts/trigger-build omnibus
+    - |
+      if tooling/bin/qa/check_if_only_quarantined_specs ${CHANGES_DIFFS_DIR}; then
+        exit 0
+      else
+        ./scripts/trigger-build omnibus
+      fi
   # These jobs often time out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
   tags:
     - prm
@@ -66,14 +72,19 @@ update-qa-cache:
       artifacts: false
     - job: build-assets-image
       artifacts: false
+    - detect-tests
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ${CHANGES_FILE}
+      - ${CHANGES_DIFFS_DIR}/*
+  variables:
+    CHANGES_FILE: tmp/changed_files.txt
+    CHANGES_DIFFS_DIR: tmp/diffs
 
 .package-and-qa-ff-base:
-  needs:
-    - detect-tests
-  variables:
-    CHANGED_FILES: tmp/changed_files.txt
   script:
-    - export GITLAB_QA_OPTIONS="--set-feature-flags $(scripts/changed-feature-flags --files $(cat $CHANGED_FILES | tr ' ' ',') --state $QA_FF_STATE)"
+    - export GITLAB_QA_OPTIONS="--set-feature-flags $(scripts/changed-feature-flags --files $(cat $CHANGES_FILE | tr ' ' ',') --state $QA_FF_STATE)"
     - echo $GITLAB_QA_OPTIONS
     - ./scripts/trigger-build omnibus
 

@@ -18,7 +18,9 @@ fragment ReadyToMerge on Project {
     commitCount
     diffHeadSha
     userPermissions {
+      canMerge
       removeSourceBranch
+      updateMergeRequest
     }
     targetBranch
     mergeError

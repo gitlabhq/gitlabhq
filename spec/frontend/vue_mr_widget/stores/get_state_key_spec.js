@@ -74,6 +74,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('nothingToMerge');
 
+    context.commitsCount = 1;
     context.branchMissing = true;
 
     expect(bound()).toEqual('missingBranch');

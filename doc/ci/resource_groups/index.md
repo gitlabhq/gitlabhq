@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Control the job concurrency in GitLab CI/CD
 ---
 
-# Resource Group **(FREE)**
+# Resource group **(FREE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
@@ -13,7 +13,7 @@ By default, pipelines in GitLab CI/CD run in parallel. The parallelization is an
 the feedback loop in merge requests, however, there are some situations that
 you may want to limit the concurrency on deployment
 jobs to run them one by one.
-Resource Group allows you to strategically control
+Use resource groups to strategically control
 the concurrency of the jobs for optimizing your continuous deployments workflow with safety.
 
 ## Add a resource group
@@ -139,9 +139,59 @@ Depending on the process mode of the resource group:
   - `deploy-1`, `deploy-2`, and `deploy-3` do not run in parallel.
   - `deploy-3` runs first, `deploy-2` runs second and `deploy-1` runs last.
 
-## Pipeline-level concurrency control with Cross-Project/Parent-Child pipelines
+## Pipeline-level concurrency control with cross-project/parent-child pipelines
 
-See the how to [control the pipeline concurrency in cross-project pipelines](../yaml/index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
+
+You can define `resource_group` for downstream pipelines that are sensitive to concurrent
+executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the
+[`resource_group` keyword](../yaml/index.md#resource_group) can co-exist with it. `resource_group` is useful to control the
+concurrency of deployment pipelines, while other jobs can continue to run concurrently.
+
+The following example has two pipeline configurations in a project. When a pipeline starts running,
+non-sensitive jobs are executed first and aren't affected by concurrent executions in other
+pipelines. However, GitLab ensures that there are no other deployment pipelines running before
+triggering a deployment (child) pipeline. If other deployment pipelines are running, GitLab waits
+until those pipelines finish before running another one.
+
+```yaml
+# .gitlab-ci.yml (parent pipeline)
+
+build:
+  stage: build
+  script: echo "Building..."
+
+test:
+  stage: test
+  script: echo "Testing..."
+
+deploy:
+  stage: deploy
+  trigger:
+    include: deploy.gitlab-ci.yml
+    strategy: depend
+  resource_group: AWS-production
+```
+
+```yaml
+# deploy.gitlab-ci.yml (child pipeline)
+
+stages:
+  - provision
+  - deploy
+
+provision:
+  stage: provision
+  script: echo "Provisioning..."
+
+deployment:
+  stage: deploy
+  script: echo "Deploying..."
+```
+
+You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
+with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
+finishes.
 
 ## API
 

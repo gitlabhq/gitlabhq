@@ -123,7 +123,7 @@ Naming/FileName:
     - 'ee/lib/generators/**/*'
     - 'scripts/**/*'
     - 'spec/**/*'
-    - 'tooling/bin/*'
+    - 'tooling/bin/**/*'
     - 'ee/spec/**/*'
     - 'jh/spec/**/*'
     - 'qa/bin/*'
@@ -706,10 +706,6 @@ Cop/UserAdmin:
     - 'app/policies/base_policy.rb'
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-
-Performance/OpenStruct:
-  Exclude:
     - 'ee/spec/**/*.rb'
 
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/327495

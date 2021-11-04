@@ -15,6 +15,8 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__, __ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
+import { formatDate } from '~/lib/utils/datetime_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '../../lib/utils/accessor';
 import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
@@ -40,7 +42,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   inject: {
     boardId: {
       default: '',
@@ -86,6 +88,13 @@ export default {
     listTitle() {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
+    listIterationPeriod() {
+      const iteration = this.list?.iteration;
+      return iteration ? this.getIterationPeriod(iteration) : '';
+    },
+    isIterationList() {
+      return this.listType === ListType.iteration;
+    },
     showListHeaderButton() {
       return !this.disabled && this.listType !== ListType.closed;
     },
@@ -96,7 +105,10 @@ export default {
       return this.listType === ListType.assignee && this.showListDetails;
     },
     showIterationListDetails() {
-      return this.listType === ListType.iteration && this.showListDetails;
+      return this.isIterationList && this.showListDetails;
+    },
+    iterationCadencesAvailable() {
+      return this.isIterationList && this.glFeatures.iterationCadences;
     },
     showListDetails() {
       return !this.list.collapsed || !this.isSwimlanesHeader;
@@ -208,6 +220,16 @@ export default {
     updateListFunction() {
       this.updateList({ listId: this.list.id, collapsed: this.list.collapsed });
     },
+    /**
+     * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
+     * This method also exists as a utility function in ee/../iterations/utils.js
+     * Remove the duplication when the EE code is separated from this compoment.
+     */
+    getIterationPeriod({ startDate, dueDate }) {
+      const start = formatDate(startDate, 'mmm d, yyyy', true);
+      const due = formatDate(dueDate, 'mmm d, yyyy', true);
+      return `${start} - ${due}`;
+    },
   },
 };
 </script>
@@ -307,6 +329,13 @@ export default {
           class="board-title-main-text gl-text-truncate"
         >
           {{ listTitle }}
+          <div
+            v-if="iterationCadencesAvailable"
+            class="gl-display-inline-block"
+            data-testid="board-list-iteration-period"
+          >
+            <time class="gl-text-gray-400">{{ listIterationPeriod }}</time>
+          </div>
         </span>
         <span
           v-if="listType === 'assignee'"

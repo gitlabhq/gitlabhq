@@ -1,4 +1,4 @@
-import { GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import { SQUASH_BEFORE_MERGE } from '~/vue_merge_request_widget/i18n';
@@ -77,7 +77,7 @@ describe('Squash before merge component', () => {
         value: false,
       });
 
-      const aboutLink = wrapper.find('a');
+      const aboutLink = wrapper.findComponent(GlLink);
 
       expect(aboutLink.exists()).toBe(false);
     });
@@ -88,7 +88,7 @@ describe('Squash before merge component', () => {
         helpPath: 'test-path',
       });
 
-      const aboutLink = wrapper.find('a');
+      const aboutLink = wrapper.findComponent(GlLink);
 
       expect(aboutLink.exists()).toBe(true);
     });
@@ -99,7 +99,7 @@ describe('Squash before merge component', () => {
         helpPath: 'test-path',
       });
 
-      const aboutLink = wrapper.find('a');
+      const aboutLink = wrapper.findComponent(GlLink);
 
       expect(aboutLink.attributes('href')).toEqual('test-path');
     });

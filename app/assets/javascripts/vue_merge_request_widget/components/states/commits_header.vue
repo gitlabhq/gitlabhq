@@ -1,15 +1,12 @@
 <script>
-import { GlButton, GlSprintf } from '@gitlab/ui';
-import { escape } from 'lodash';
-import { __, n__, s__ } from '~/locale';
-
-const mergeCommitCount = s__('mrWidgetCommitsAdded|1 merge commit');
+import { GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
+import AddedCommitMessage from '../added_commit_message.vue';
 
 export default {
-  mergeCommitCount,
   components: {
     GlButton,
-    GlSprintf,
+    AddedCommitMessage,
   },
   props: {
     isSquashEnabled: {
@@ -39,9 +36,6 @@ export default {
     collapseIcon() {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
-    commitsCountMessage() {
-      return n__('%d commit', '%d commits', this.isSquashEnabled ? 1 : this.commitsCount);
-    },
     modifyLinkMessage() {
       if (this.isFastForwardEnabled) return __('Modify commit message');
       else if (this.isSquashEnabled) return __('Modify commit messages');
@@ -49,16 +43,6 @@ export default {
     },
     ariaLabel() {
       return this.expanded ? __('Collapse') : __('Expand');
-    },
-    targetBranchEscaped() {
-      return escape(this.targetBranch);
-    },
-    message() {
-      return this.isFastForwardEnabled
-        ? s__('mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}.')
-        : s__(
-            'mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}.',
-          );
     },
   },
   methods: {
@@ -86,17 +70,12 @@ export default {
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
         <span class="vertical-align-middle">
-          <gl-sprintf :message="message">
-            <template #commitCount>
-              <strong class="commits-count-message">{{ commitsCountMessage }}</strong>
-            </template>
-            <template #mergeCommitCount>
-              <strong>{{ $options.mergeCommitCount }}</strong>
-            </template>
-            <template #targetBranch>
-              <span class="label-branch">{{ targetBranchEscaped }}</span>
-            </template>
-          </gl-sprintf>
+          <added-commit-message
+            :is-squash-enabled="isSquashEnabled"
+            :is-fast-forward-enabled="isFastForwardEnabled"
+            :commits-count="commitsCount"
+            :target-branch="targetBranch"
+          />
         </span>
         <gl-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}

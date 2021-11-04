@@ -24,6 +24,7 @@ You might receive notifications for one of the following reasons:
   or edit, or someone mentions you.
 - You've [enabled notifications in an issue, merge request, or epic](#notifications-on-issues-merge-requests-and-epics).
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
+- You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/overview.md).
 
 NOTE:
 Administrators can block notifications, preventing them from being sent.

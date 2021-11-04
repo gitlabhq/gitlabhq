@@ -1,14 +1,14 @@
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
-  if (this.hasMergeChecksFailed) {
+  if (!this.commitsCount) {
+    return stateKey.nothingToMerge;
+  } else if (this.hasMergeChecksFailed && !this.autoMergeEnabled) {
     return stateKey.mergeChecksFailed;
   } else if (this.projectArchived) {
     return stateKey.archived;
   } else if (this.branchMissing) {
     return stateKey.missingBranch;
-  } else if (!this.commitsCount) {
-    return stateKey.nothingToMerge;
   } else if (this.mergeStatus === 'unchecked' || this.mergeStatus === 'checking') {
     return stateKey.checking;
   } else if (this.hasConflicts) {
