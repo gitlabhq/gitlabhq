@@ -1,7 +1,7 @@
 {
   "description": "Error tracking event payload",
   "type": "object",
-  "required": [],
+  "required": ["exception"],
   "properties": {
     "environment": {
       "type": "string"
@@ -14,7 +14,7 @@
     },
     "exception": {
       "type": "object",
-      "required": [],
+      "required": ["values"],
       "properties": {
         "values": {
           "type": "array",

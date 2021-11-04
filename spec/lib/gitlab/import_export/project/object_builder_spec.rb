@@ -176,4 +176,118 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
       expect(found.email).to eq('alice@example.com')
     end
   end
+
+  context 'merge request diff commits' do
+    context 'when the "committer" object is present' do
+      it 'uses this object as the committer' do
+        user = MergeRequest::DiffCommitUser
+          .find_or_create('Alice', 'alice@example.com')
+
+        commit = described_class.build(
+          MergeRequestDiffCommit,
+          {
+            'committer' => user,
+            'committer_name' => 'Bla',
+            'committer_email' => 'bla@example.com',
+            'author_name' => 'Bla',
+            'author_email' => 'bla@example.com'
+          }
+        )
+
+        expect(commit.committer).to eq(user)
+      end
+    end
+
+    context 'when the "committer" object is missing' do
+      it 'creates one from the committer name and Email' do
+        commit = described_class.build(
+          MergeRequestDiffCommit,
+          {
+            'committer_name' => 'Alice',
+            'committer_email' => 'alice@example.com',
+            'author_name' => 'Alice',
+            'author_email' => 'alice@example.com'
+          }
+        )
+
+        expect(commit.committer.name).to eq('Alice')
+        expect(commit.committer.email).to eq('alice@example.com')
+      end
+    end
+
+    context 'when the "commit_author" object is present' do
+      it 'uses this object as the author' do
+        user = MergeRequest::DiffCommitUser
+          .find_or_create('Alice', 'alice@example.com')
+
+        commit = described_class.build(
+          MergeRequestDiffCommit,
+          {
+            'committer_name' => 'Alice',
+            'committer_email' => 'alice@example.com',
+            'commit_author' => user,
+            'author_name' => 'Bla',
+            'author_email' => 'bla@example.com'
+          }
+        )
+
+        expect(commit.commit_author).to eq(user)
+      end
+    end
+
+    context 'when the "commit_author" object is missing' do
+      it 'creates one from the author name and Email' do
+        commit = described_class.build(
+          MergeRequestDiffCommit,
+          {
+            'committer_name' => 'Alice',
+            'committer_email' => 'alice@example.com',
+            'author_name' => 'Alice',
+            'author_email' => 'alice@example.com'
+          }
+        )
+
+        expect(commit.commit_author.name).to eq('Alice')
+        expect(commit.commit_author.email).to eq('alice@example.com')
+      end
+    end
+  end
+
+  describe '#find_or_create_diff_commit_user' do
+    context 'when the user already exists' do
+      it 'returns the existing user' do
+        user = MergeRequest::DiffCommitUser
+          .find_or_create('Alice', 'alice@example.com')
+
+        found = described_class
+          .new(MergeRequestDiffCommit, {})
+          .send(:find_or_create_diff_commit_user, user.name, user.email)
+
+        expect(found).to eq(user)
+      end
+    end
+
+    context 'when the user does not exist' do
+      it 'creates the user' do
+        found = described_class
+          .new(MergeRequestDiffCommit, {})
+          .send(:find_or_create_diff_commit_user, 'Alice', 'alice@example.com')
+
+        expect(found.name).to eq('Alice')
+        expect(found.email).to eq('alice@example.com')
+      end
+    end
+
+    it 'caches the results' do
+      builder = described_class.new(MergeRequestDiffCommit, {})
+
+      builder.send(:find_or_create_diff_commit_user, 'Alice', 'alice@example.com')
+
+      record = ActiveRecord::QueryRecorder.new do
+        builder.send(:find_or_create_diff_commit_user, 'Alice', 'alice@example.com')
+      end
+
+      expect(record.count).to eq(1)
+    end
+  end
 end

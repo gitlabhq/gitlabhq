@@ -383,7 +383,7 @@ RSpec.describe UsersHelper do
     end
 
     context 'when `user.unconfirmed_email` is set' do
-      let(:user) { create(:user, unconfirmed_email: 'foo@bar.com') }
+      let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'foo@bar.com') }
 
       it 'sets `modal_attributes.messageHtml` correctly' do
         expect(Gitlab::Json.parse(confirm_user_data[:modal_attributes])['messageHtml']).to eq('This user has an unconfirmed email address (foo@bar.com). You may force a confirmation.')

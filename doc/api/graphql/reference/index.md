@@ -12646,7 +12646,6 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
-| <a id="projectdastprofiles"></a>`dastProfiles` | [`DastProfileConnection`](#dastprofileconnection) | DAST Profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
@@ -12884,7 +12883,24 @@ Returns [`DastProfile`](#dastprofile).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectdastprofilehasdastprofileschedule"></a>`hasDastProfileSchedule` | [`Boolean`](#boolean) | Filter DAST Profiles by whether or not they have a schedule. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="projectdastprofileid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the DAST Profile. |
+
+##### `Project.dastProfiles`
+
+DAST Profiles associated with the project.
+
+Returns [`DastProfileConnection`](#dastprofileconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdastprofileshasdastprofileschedule"></a>`hasDastProfileSchedule` | [`Boolean`](#boolean) | Filter DAST Profiles by whether or not they have a schedule. Will be ignored if `dast_view_scans` feature flag is disabled. |
 
 ##### `Project.dastSiteProfile`
 

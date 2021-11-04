@@ -1906,7 +1906,8 @@ RSpec.describe API::Users do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first['email']).to eq(email.email)
+        expect(json_response.first['email']).to eq(user.email)
+        expect(json_response.second['email']).to eq(email.email)
       end
 
       it "returns a 404 for invalid ID" do
@@ -2488,7 +2489,8 @@ RSpec.describe API::Users do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first["email"]).to eq(email.email)
+        expect(json_response.first['email']).to eq(user.email)
+        expect(json_response.second['email']).to eq(email.email)
       end
 
       context "scopes" do

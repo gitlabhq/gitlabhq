@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Spamcheck::Client do
     end
   end
 
-  describe '#build_user_proto_buf', :aggregate_failures do
+  describe '#build_user_protobuf', :aggregate_failures do
     it 'builds the expected protobuf object' do
       user_pb = described_class.new.send(:build_user_protobuf, user)
       expect(user_pb.username).to eq user.username

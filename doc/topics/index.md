@@ -1,24 +1,9 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+redirect_to: '../index.md'
+remove_date: '2022-02-03'
 ---
 
-# Topics
+This document was moved to [another location](../index.md).
 
-Welcome to Topics! We have organized our content resources into topics
-to get you started on areas of your interest. Each topic page
-consists of an index listing all related content. It guides
-you through better understanding GitLab concepts
-through our regular docs, and, when available, through articles (guides,
-tutorials, technical overviews, blog posts) and videos.
-
-- [Auto DevOps](autodevops/index.md)
-- [Authentication](authentication/index.md)
-- [Continuous Integration (GitLab CI/CD)](../ci/index.md)
-- [Cron](cron/index.md)
-- [Git](git/index.md)
-- [GitLab Flow](gitlab_flow.md)
-- [GitLab Installation](../install/index.md)
-- [GitLab Pages](../user/project/pages/index.md)
-- [Offline GitLab](offline/index.md)
+<!-- This redirect file can be deleted after <2022-02-03>. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/#move-or-rename-a-page -->

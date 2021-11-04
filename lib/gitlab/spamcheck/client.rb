@@ -69,6 +69,8 @@ module Gitlab
         user_pb.emails << build_email(user.email, user.confirmed?)
 
         user.emails.each do |email|
+          next if email.user_primary_email?
+
           user_pb.emails << build_email(email.email, email.confirmed?)
         end
 

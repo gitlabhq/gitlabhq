@@ -44,7 +44,7 @@
             %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Public email')
           - if @primary_email === current_user.notification_email_or_default
             %span.badge.badge-muted.badge-pill.gl-badge.badge-info= s_('Profiles|Default notification email')
-      - @emails.each do |email|
+      - @emails.reject(&:user_primary_email?).each do |email|
         %li{ data: { qa_selector: 'email_row_content' } }
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right

@@ -50,7 +50,8 @@ module QA
     "user_gpg" => "UserGPG",
     "smtp" => "SMTP",
     "otp" => "OTP",
-    "jira_api" => "JiraAPI"
+    "jira_api" => "JiraAPI",
+    "registry_tls" => "RegistryTLS"
   )
 
   loader.setup

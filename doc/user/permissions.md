@@ -486,12 +486,11 @@ which visibility level you select on project settings.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab:
 
-- Administrator
 - Maintainer
 - Developer
 - Guest/Reporter
 
-The Administrator role can perform any action on GitLab CI/CD in scope of the GitLab
+GitLab administrators can perform any action on GitLab CI/CD in scope of the GitLab
 instance and project.
 
 | Action                                | Guest, Reporter | Developer   |Maintainer| Administrator |

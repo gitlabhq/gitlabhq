@@ -136,6 +136,21 @@ RSpec.describe API::ErrorTracking::Collector do
       it_behaves_like 'bad request'
     end
 
+    context 'body with string instead of json' do
+      let(:params) { '"********"' }
+
+      it_behaves_like 'bad request'
+    end
+
+    context 'collector fails with validation error' do
+      before do
+        allow(::ErrorTracking::CollectErrorService)
+          .to receive(:new).and_raise(ActiveRecord::RecordInvalid)
+      end
+
+      it_behaves_like 'bad request'
+    end
+
     context 'gzip body' do
       let(:headers) do
         {

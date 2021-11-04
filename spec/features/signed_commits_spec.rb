@@ -11,6 +11,7 @@ RSpec.describe 'GPG signed commits' do
 
     perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      user.reload # necessary to reload the association with gpg_keys
     end
 
     visit project_commit_path(project, ref)

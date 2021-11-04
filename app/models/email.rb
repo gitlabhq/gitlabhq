@@ -29,7 +29,7 @@ class Email < ApplicationRecord
   end
 
   def unique_email
-    self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
+    self.errors.add(:email, 'has already been taken') if primary_email_of_another_user?
   end
 
   def validate_email_format
@@ -39,5 +39,15 @@ class Email < ApplicationRecord
   # once email is confirmed, update the gpg signatures
   def update_invalid_gpg_signatures
     user.update_invalid_gpg_signatures if confirmed?
+  end
+
+  def user_primary_email?
+    email.casecmp?(user.email)
+  end
+
+  private
+
+  def primary_email_of_another_user?
+    User.where(email: email).where.not(id: user_id).exists?
   end
 end

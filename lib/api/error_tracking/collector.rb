@@ -12,6 +12,10 @@ module API
     content_type :txt, 'text/plain'
     default_format :envelope
 
+    rescue_from ActiveRecord::RecordInvalid do |e|
+      render_api_error!(e.message, 400)
+    end
+
     before do
       not_found!('Project') unless project
       not_found! unless feature_enabled?
@@ -48,6 +52,12 @@ module API
           ::ErrorTracking::Collector::SentryAuthParser.parse(request)[:public_key]
         rescue StandardError
           bad_request!('Failed to parse sentry request')
+        end
+      end
+
+      def validate_payload(payload)
+        unless ::ErrorTracking::Collector::PayloadValidator.new.valid?(payload)
+          bad_request!('Unsupported sentry payload')
         end
       end
     end
@@ -88,6 +98,8 @@ module API
       # We don't have use for transaction request yet,
       # so we record only event one.
       if type == 'event'
+        validate_payload(parsed_request[:event])
+
         ::ErrorTracking::CollectErrorService
           .new(project, nil, event: parsed_request[:event])
           .execute
@@ -124,6 +136,8 @@ module API
       rescue StandardError
         bad_request!('Failed to parse sentry request')
       end
+
+      validate_payload(parsed_body)
 
       ::ErrorTracking::CollectErrorService
         .new(project, nil, event: parsed_body)

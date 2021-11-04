@@ -401,10 +401,6 @@ excluded_attributes:
     - :verification_checksum
     - :verification_failure
   merge_request_diff_commits:
-    - :author_name
-    - :author_email
-    - :committer_name
-    - :committer_email
     - :merge_request_diff_id
     - :commit_author_id
     - :committer_id

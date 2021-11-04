@@ -140,6 +140,8 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           key: GpgHelpers::User1.public_key,
           user: user
 
+        user.reload # necessary to reload the association with gpg_keys
+
         expect(invalid_gpg_signature.reload.verification_status).to eq 'unverified_key'
 
         # InvalidGpgSignatureUpdater is called by the after_update hook

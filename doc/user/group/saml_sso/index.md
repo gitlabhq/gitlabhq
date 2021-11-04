@@ -245,8 +245,9 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
-This affects users created on first sign-in via Group SAML. Existing users'
-attributes are not affected regardless of the values sent in the SAML response.
+Existing users will have these attributes updated if the user was originally
+provisioned by the group. Users are provisioned by the group when the account was
+created via [SCIM](scim_setup.md) or by first sign-in with SAML SSO for GitLab.com groups.
 
 #### Supported user attributes
 

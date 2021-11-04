@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Oauth::AuthorizationsController do
-  let(:user) { create(:user, confirmed_at: confirmed_at) }
-  let(:confirmed_at) { 1.hour.ago }
+  let(:user) { create(:user) }
   let!(:application) { create(:oauth_application, scopes: 'api read_user', redirect_uri: 'http://example.com') }
   let(:params) do
     {
@@ -40,7 +39,7 @@ RSpec.describe Oauth::AuthorizationsController do
     end
 
     context 'when the user is unconfirmed' do
-      let(:confirmed_at) { nil }
+      let(:user) { create(:user, :unconfirmed) }
 
       it 'returns 200 and renders error view' do
         subject
@@ -73,8 +72,6 @@ RSpec.describe Oauth::AuthorizationsController do
     include_examples "Implicit grant can't be used in confidential application"
 
     context 'when the user is confirmed' do
-      let(:confirmed_at) { 1.hour.ago }
-
       context 'when there is already an access token for the application with a matching scope' do
         before do
           scopes = Doorkeeper::OAuth::Scopes.from_string('api')

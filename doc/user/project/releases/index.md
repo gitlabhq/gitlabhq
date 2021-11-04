@@ -78,17 +78,172 @@ To create a new release through the GitLab UI:
    [release notes](#release-notes-description), or [assets links](#links).
 1. Click **Create release**.
 
-### Create release from GitLab CI
+## Create a release by using a CI/CD job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
 
-You can [create a release directly from the GitLab CI pipeline](../../../ci/yaml/index.md#release)
-by using a `release` node in the job definition.
+You can create a release directly as part of the GitLab CI/CD pipeline
+by using [the `release` keyword](../../../ci/yaml/index.md#release) in the job definition.
 
 The release is created only if the job processes without error. If the Rails API returns an error
 during release creation, the release job fails.
 
-### Upcoming releases
+### CI/CD example of the `release` keyword
+
+To create a release when you push a Git tag, or when you add a Git tag
+in the UI by going to **Repository > Tags**:
+
+```yaml
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
+  script:
+    - echo 'running release_job'
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION must be defined
+    tag_name: '$CI_COMMIT_TAG'                                       # elsewhere in the pipeline.
+    ref: '$CI_COMMIT_TAG'
+    milestones:
+      - 'm1'
+      - 'm2'
+      - 'm3'
+    released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
+    assets: # Optional, multiple asset links
+      links:
+        - name: 'asset1'
+          url: 'https://example.com/assets/1'
+        - name: 'asset2'
+          url: 'https://example.com/assets/2'
+          filepath: '/pretty/url/1' # optional
+          link_type: 'other' # optional
+```
+
+To create a release automatically when commits are pushed or merged to the default branch,
+using a new Git tag that is defined with variables:
+
+```yaml
+prepare_job:
+  stage: prepare                                              # This stage must run before the release stage
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never                                             # Do not run this job when a tag is created manually
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH             # Run this job when commits are pushed or merged to the default branch
+  script:
+    - echo "EXTRA_DESCRIPTION=some message" >> variables.env  # Generate the EXTRA_DESCRIPTION and TAG environment variables
+    - echo "TAG=v$(cat VERSION)" >> variables.env             # and append to the variables.env file
+  artifacts:
+    reports:
+      dotenv: variables.env                                   # Use artifacts:reports:dotenv to expose the variables to other jobs
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: prepare_job
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never                                  # Do not run this job when a tag is created manually
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
+  script:
+    - echo 'running release_job for $TAG'
+  release:
+    name: 'Release $TAG'
+    description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
+    tag_name: '$TAG'                                                 # variables must be defined elsewhere
+    ref: '$CI_COMMIT_SHA'                                            # in the pipeline. For example, in the
+    milestones:                                                      # prepare_job
+      - 'm1'
+      - 'm2'
+      - 'm3'
+    released_at: '2020-07-15T08:00:00Z'  # Optional, is auto generated if not defined, or can use a variable.
+    assets:
+      links:
+        - name: 'asset1'
+          url: 'https://example.com/assets/1'
+        - name: 'asset2'
+          url: 'https://example.com/assets/2'
+          filepath: '/pretty/url/1' # optional
+          link_type: 'other' # optional
+```
+
+NOTE:
+Environment variables set in `before_script` or `script` are not available for expanding
+in the same job. Read more about
+[potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
+
+### Use a custom SSL CA certificate authority
+
+You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
+which is used to verify the peer when the `release-cli` creates a release through the API using HTTPS with custom certificates.
+The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the
+[text representation of the X.509 PEM public-key certificate](https://tools.ietf.org/html/rfc7468#section-5.1)
+or the `path/to/file` containing the certificate authority.
+For example, to configure this value in the `.gitlab-ci.yml` file, use the following:
+
+```yaml
+release:
+  variables:
+    ADDITIONAL_CA_CERT_BUNDLE: |
+        -----BEGIN CERTIFICATE-----
+        MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+        ...
+        jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+        -----END CERTIFICATE-----
+  script:
+    - echo "Create release"
+  release:
+    name: 'My awesome release'
+    tag_name: '$CI_COMMIT_TAG'
+```
+
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a
+[custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables),
+either as a `file`, which requires the path to the certificate, or as a variable,
+which requires the text representation of the certificate.
+
+### `release-cli` command line
+
+The entries under the `release` node are transformed into a `bash` command line and sent
+to the Docker container, which contains the [release-cli](https://gitlab.com/gitlab-org/release-cli).
+You can also call the `release-cli` directly from a `script` entry.
+
+For example, if you use the YAML described previously:
+
+```shell
+release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "v${MAJOR}.${MINOR}.${REVISION}" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}
+```
+
+### Create multiple releases in a single pipeline
+
+A pipeline can have multiple `release` jobs, for example:
+
+```yaml
+ios-release:
+  script:
+    - echo 'iOS release job'
+  release:
+    tag_name: v1.0.0-ios
+    description: 'iOS release v1.0.0'
+
+android-release:
+  script:
+    - echo 'Android release job'
+  release:
+    tag_name: v1.0.0-android
+    description: 'Android release v1.0.0'
+```
+
+### Release assets as Generic packages
+
+You can use [Generic packages](../../packages/generic_packages/index.md) to host your release assets.
+For a complete example, see the [Release assets as Generic packages](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/)
+project.
+
+## Upcoming releases
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 

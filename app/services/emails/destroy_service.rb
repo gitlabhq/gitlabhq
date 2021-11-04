@@ -3,6 +3,8 @@
 module Emails
   class DestroyService < ::Emails::BaseService
     def execute(email)
+      raise StandardError, 'Cannot delete primary email' if email.user_primary_email?
+
       email.destroy && update_secondary_emails!(email.email)
     end
 
