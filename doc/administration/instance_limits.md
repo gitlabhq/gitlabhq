@@ -831,6 +831,17 @@ Set the limit to `0` to allow any file size.
 
 When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 versions.
 
+## Dependency Proxy Limits
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6396) in GitLab 14.5.
+
+The maximum file size for an image cached in the
+[Dependency Proxy](../user/packages/dependency_proxy/index.md)
+varies by file type:
+
+- Image blob: 5 GB
+- Image manifest: 10 MB
+
 ## Branch retargeting on merge
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.

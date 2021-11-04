@@ -13,5 +13,8 @@ RSpec.describe Analytics::CycleAnalytics::IssueStageEvent do
     expect(described_class.states).to eq(Issue.available_states)
   end
 
-  it_behaves_like 'StageEventModel'
+  it_behaves_like 'StageEventModel' do
+    let_it_be(:stage_event_factory) { :cycle_analytics_issue_stage_event }
+    let_it_be(:issuable_factory) { :issue }
+  end
 end

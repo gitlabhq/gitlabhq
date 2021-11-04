@@ -8,6 +8,7 @@ require 'uri'
 module Gitlab
   class Workhorse
     SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
+    SEND_DEPENDENCY_CONTENT_TYPE_HEADER = 'Workhorse-Proxy-Content-Type'
     VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
     INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
@@ -170,9 +171,9 @@ module Gitlab
         ]
       end
 
-      def send_dependency(token, url)
+      def send_dependency(headers, url)
         params = {
-          'Header' => { Authorization: ["Bearer #{token}"] },
+          'Header' => headers,
           'Url' => url
         }
 

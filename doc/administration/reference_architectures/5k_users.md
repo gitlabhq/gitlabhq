@@ -19,9 +19,10 @@ costly-to-operate environment by using the
 
 > - **Supported users (approximate):** 5,000
 > - **High Availability:** Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
-> - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
-> - **[Latest 5k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
+> - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+> - **Performance tested weekly with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
+>   - **Test requests per second (RPS) rates:** API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS
+>   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/5k)**
 
 | Service                                    | Nodes       | Configuration           | GCP             | AWS          | Azure    |
 |--------------------------------------------|-------------|-------------------------|-----------------|--------------|----------|

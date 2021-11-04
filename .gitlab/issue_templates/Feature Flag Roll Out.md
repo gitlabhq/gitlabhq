@@ -77,7 +77,10 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 ### Global rollout on production
 
-All `/chatops` commands that target production should be done in the `#production` slack channel for visibility.
+For visibility, all `/chatops` commands that target production should be:
+
+- Executed in the `#production` slack channel.
+- Cross-posted (with the command results) to the responsible team's slack channel (`#g_TEAM_NAME`).
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.

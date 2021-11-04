@@ -9,14 +9,13 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
   before do
     stub_env('CUSTOMER_PORTAL_URL', env_value)
-    stub_feature_flags(new_customersdot_staging_url: false)
   end
 
   describe '.default_subscriptions_url' do
     where(:test, :development, :result) do
       false | false | 'https://customers.gitlab.com'
-      false | true  | 'https://customers.stg.gitlab.com'
-      true  | false | 'https://customers.stg.gitlab.com'
+      false | true  | 'https://customers.staging.gitlab.com'
+      true  | false | 'https://customers.staging.gitlab.com'
     end
 
     before do
@@ -35,7 +34,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     subject { described_class.subscriptions_url }
 
     context 'when CUSTOMER_PORTAL_URL ENV is unset' do
-      it { is_expected.to eq('https://customers.stg.gitlab.com') }
+      it { is_expected.to eq('https://customers.staging.gitlab.com') }
     end
 
     context 'when CUSTOMER_PORTAL_URL ENV is set' do
@@ -55,15 +54,15 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
   context 'url methods' do
     where(:method_name, :result) do
-      :default_subscriptions_url         | 'https://customers.stg.gitlab.com'
-      :payment_form_url                  | 'https://customers.stg.gitlab.com/payment_forms/cc_validation'
-      :subscriptions_graphql_url         | 'https://customers.stg.gitlab.com/graphql'
-      :subscriptions_more_minutes_url    | 'https://customers.stg.gitlab.com/buy_pipeline_minutes'
-      :subscriptions_more_storage_url    | 'https://customers.stg.gitlab.com/buy_storage'
-      :subscriptions_manage_url          | 'https://customers.stg.gitlab.com/subscriptions'
-      :subscriptions_plans_url           | 'https://customers.stg.gitlab.com/plans'
-      :subscriptions_instance_review_url | 'https://customers.stg.gitlab.com/instance_review'
-      :subscriptions_gitlab_plans_url    | 'https://customers.stg.gitlab.com/gitlab_plans'
+      :default_subscriptions_url         | 'https://customers.staging.gitlab.com'
+      :payment_form_url                  | 'https://customers.staging.gitlab.com/payment_forms/cc_validation'
+      :subscriptions_graphql_url         | 'https://customers.staging.gitlab.com/graphql'
+      :subscriptions_more_minutes_url    | 'https://customers.staging.gitlab.com/buy_pipeline_minutes'
+      :subscriptions_more_storage_url    | 'https://customers.staging.gitlab.com/buy_storage'
+      :subscriptions_manage_url          | 'https://customers.staging.gitlab.com/subscriptions'
+      :subscriptions_plans_url           | 'https://customers.staging.gitlab.com/plans'
+      :subscriptions_instance_review_url | 'https://customers.staging.gitlab.com/instance_review'
+      :subscriptions_gitlab_plans_url    | 'https://customers.staging.gitlab.com/gitlab_plans'
     end
 
     with_them do
@@ -78,7 +77,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
     let(:group_id) { 153 }
 
-    it { is_expected.to eq("https://customers.stg.gitlab.com/gitlab/namespaces/#{group_id}/extra_seats") }
+    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/extra_seats") }
   end
 
   describe '.upgrade_subscription_url' do
@@ -87,7 +86,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
     let(:group_id) { 153 }
     let(:plan_id) { 5 }
 
-    it { is_expected.to eq("https://customers.stg.gitlab.com/gitlab/namespaces/#{group_id}/upgrade/#{plan_id}") }
+    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/upgrade/#{plan_id}") }
   end
 
   describe '.renew_subscription_url' do
@@ -95,6 +94,6 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
 
     let(:group_id) { 153 }
 
-    it { is_expected.to eq("https://customers.stg.gitlab.com/gitlab/namespaces/#{group_id}/renew") }
+    it { is_expected.to eq("https://customers.staging.gitlab.com/gitlab/namespaces/#{group_id}/renew") }
   end
 end

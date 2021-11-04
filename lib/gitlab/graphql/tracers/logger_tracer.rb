@@ -45,14 +45,12 @@ module Gitlab
           ::Gitlab::GraphqlLogger.info(info)
         end
 
-        def query_variables_for_logging(query)
-          clean_variables(query.provided_variables)
-        end
-
         def clean_variables(variables)
-          ActiveSupport::ParameterFilter
+          filtered = ActiveSupport::ParameterFilter
             .new(::Rails.application.config.filter_parameters)
             .filter(variables)
+
+          filtered&.to_s
         end
       end
     end

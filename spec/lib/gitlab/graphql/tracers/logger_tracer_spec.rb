@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
       query_fingerprint: query.fingerprint,
       query_string: query_string,
       trace_type: "execute_query",
-      variables: variables
+      variables: variables.to_s
     })
 
     dummy_schema.execute(query_string, variables: variables)

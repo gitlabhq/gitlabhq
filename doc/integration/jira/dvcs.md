@@ -86,6 +86,7 @@ you can set up this integration with your own account instead.
      `https://<gitlab.example.com>/-/jira/login/oauth/callback`.
 
 1. For **Scopes**, select `api` and clear any other checkboxes.
+   - The connector requires a _write-enabled_ `api` scope to automatically create and manage required webhooks.
 1. Select **Submit**.
 1. GitLab displays the generated **Application ID**
    and **Secret** values. Copy these values, as you need them to configure Jira.

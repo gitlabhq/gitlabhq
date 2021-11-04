@@ -113,8 +113,14 @@ func TestInject(t *testing.T) {
 func TestSuccessfullRequest(t *testing.T) {
 	content := []byte("result")
 	contentLength := strconv.Itoa(len(content))
+	contentType := "foo"
+	dockerContentDigest := "sha256:asdf1234"
+	overriddenHeader := "originResourceServer"
 	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Length", contentLength)
+		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("Docker-Content-Digest", dockerContentDigest)
+		w.Header().Set("Overridden-Header", overriddenHeader)
 		w.Write(content)
 	}))
 
@@ -131,12 +137,16 @@ func TestSuccessfullRequest(t *testing.T) {
 
 	require.Equal(t, "/target/upload", uploadHandler.request.URL.Path)
 	require.Equal(t, int64(6), uploadHandler.request.ContentLength)
+	require.Equal(t, contentType, uploadHandler.request.Header.Get("Workhorse-Proxy-Content-Type"))
+	require.Equal(t, dockerContentDigest, uploadHandler.request.Header.Get("Docker-Content-Digest"))
+	require.Equal(t, overriddenHeader, uploadHandler.request.Header.Get("Overridden-Header"))
 
 	require.Equal(t, content, uploadHandler.body)
 
 	require.Equal(t, 200, response.Code)
 	require.Equal(t, string(content), response.Body.String())
 	require.Equal(t, contentLength, response.Header().Get("Content-Length"))
+	require.Equal(t, dockerContentDigest, response.Header().Get("Docker-Content-Digest"))
 }
 
 func TestIncorrectSendData(t *testing.T) {
@@ -177,6 +187,7 @@ func TestFailedOriginServer(t *testing.T) {
 func makeRequest(injector *Injector, data string) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "/target", nil)
+	r.Header.Set("Overridden-Header", "request")
 
 	sendData := base64.StdEncoding.EncodeToString([]byte(data))
 	injector.Inject(w, r, sendData)

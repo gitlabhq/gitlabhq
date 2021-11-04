@@ -68,6 +68,11 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def topics
+    load_project_counts
+    load_topics
+  end
+
   def topic
     load_topic
 
@@ -93,6 +98,10 @@ class Explore::ProjectsController < Explore::ApplicationController
     projects = projects.page(params[:page]).without_count
 
     prepare_projects_for_rendering(projects)
+  end
+
+  def load_topics
+    @topics = Projects::TopicsFinder.new(params: params.permit(:search)).execute.page(params[:page]).without_count
   end
 
   def load_topic

@@ -124,6 +124,34 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
   end
 
+  shared_examples 'authorize action with permission' do
+    context 'with a valid user' do
+      before do
+        group.add_guest(user)
+      end
+
+      it 'sends Workhorse local file instructions', :aggregate_failures do
+        subject
+
+        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to eq(DependencyProxy::FileUploader.workhorse_local_upload_path)
+        expect(json_response['RemoteObject']).to be_nil
+        expect(json_response['MaximumSize']).to eq(maximum_size)
+      end
+
+      it 'sends Workhorse remote object instructions', :aggregate_failures do
+        stub_dependency_proxy_object_storage(direct_upload: true)
+
+        subject
+
+        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to be_nil
+        expect(json_response['RemoteObject']).not_to be_nil
+        expect(json_response['MaximumSize']).to eq(maximum_size)
+      end
+    end
+  end
+
   before do
     allow(Gitlab.config.dependency_proxy)
       .to receive(:enabled).and_return(true)
@@ -136,9 +164,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #manifest' do
-    let_it_be(:manifest) { create(:dependency_proxy_manifest) }
+    let_it_be(:manifest) { create(:dependency_proxy_manifest, group: group) }
 
     let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
+    let(:tag) { 'latest1' }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
@@ -146,7 +175,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       end
     end
 
-    subject { get_manifest }
+    subject { get_manifest(tag) }
 
     context 'feature enabled' do
       before do
@@ -207,11 +236,26 @@ RSpec.describe Groups::DependencyProxyForContainersController do
         it_behaves_like 'a successful manifest pull'
         it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
 
-        context 'with a cache entry' do
-          let(:pull_response) { { status: :success, manifest: manifest, from_cache: true } }
+        context 'with workhorse response' do
+          let(:pull_response) { { status: :success, manifest: nil, from_cache: false } }
 
-          it_behaves_like 'returning response status', :success
-          it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest_from_cache'
+          it 'returns Workhorse send-dependency instructions', :aggregate_failures do
+            subject
+
+            send_data_type, send_data = workhorse_send_data
+            header, url = send_data.values_at('Header', 'Url')
+
+            expect(send_data_type).to eq('send-dependency')
+            expect(header).to eq(
+              "Authorization" => ["Bearer abcd1234"],
+              "Accept" => ::ContainerRegistry::Client::ACCEPTED_TYPES
+            )
+            expect(url).to eq(DependencyProxy::Registry.manifest_url('alpine', tag))
+            expect(response.headers['Content-Type']).to eq('application/gzip')
+            expect(response.headers['Content-Disposition']).to eq(
+              ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: manifest.file_name)
+            )
+          end
         end
       end
 
@@ -237,8 +281,8 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
     it_behaves_like 'not found when disabled'
 
-    def get_manifest
-      get :manifest, params: { group_id: group.to_param, image: 'alpine', tag: '3.9.2' }
+    def get_manifest(tag)
+      get :manifest, params: { group_id: group.to_param, image: 'alpine', tag: tag }
     end
   end
 
@@ -383,40 +427,16 @@ RSpec.describe Groups::DependencyProxyForContainersController do
 
   describe 'GET #authorize_upload_blob' do
     let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
+    let(:maximum_size) { DependencyProxy::Blob::MAX_FILE_SIZE }
 
-    subject(:authorize_upload_blob) do
+    subject do
       request.headers.merge!(workhorse_internal_api_request_header)
 
       get :authorize_upload_blob, params: { group_id: group.to_param, image: 'alpine', sha: blob_sha }
     end
 
     it_behaves_like 'without permission'
-
-    context 'with a valid user' do
-      before do
-        group.add_guest(user)
-      end
-
-      it 'sends Workhorse local file instructions', :aggregate_failures do
-        authorize_upload_blob
-
-        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-        expect(json_response['TempPath']).to eq(DependencyProxy::FileUploader.workhorse_local_upload_path)
-        expect(json_response['RemoteObject']).to be_nil
-        expect(json_response['MaximumSize']).to eq(5.gigabytes)
-      end
-
-      it 'sends Workhorse remote object instructions', :aggregate_failures do
-        stub_dependency_proxy_object_storage(direct_upload: true)
-
-        authorize_upload_blob
-
-        expect(response.headers['Content-Type']).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-        expect(json_response['TempPath']).to be_nil
-        expect(json_response['RemoteObject']).not_to be_nil
-        expect(json_response['MaximumSize']).to eq(5.gigabytes)
-      end
-    end
+    it_behaves_like 'authorize action with permission'
   end
 
   describe 'GET #upload_blob' do
@@ -446,6 +466,48 @@ RSpec.describe Groups::DependencyProxyForContainersController do
       end
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_blob'
+    end
+  end
+
+  describe 'GET #authorize_upload_manifest' do
+    let(:maximum_size) { DependencyProxy::Manifest::MAX_FILE_SIZE }
+
+    subject do
+      request.headers.merge!(workhorse_internal_api_request_header)
+
+      get :authorize_upload_manifest, params: { group_id: group.to_param, image: 'alpine', tag: 'latest' }
+    end
+
+    it_behaves_like 'without permission'
+    it_behaves_like 'authorize action with permission'
+  end
+
+  describe 'GET #upload_manifest' do
+    let(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/manifest", 'application/json') }
+
+    subject do
+      request.headers.merge!(workhorse_internal_api_request_header)
+
+      get :upload_manifest, params: {
+        group_id: group.to_param,
+        image: 'alpine',
+        tag: 'latest',
+        file: file
+      }
+    end
+
+    it_behaves_like 'without permission'
+
+    context 'with a valid user' do
+      before do
+        group.add_guest(user)
+
+        expect_next_found_instance_of(Group) do |instance|
+          expect(instance).to receive_message_chain(:dependency_proxy_manifests, :create!)
+        end
+      end
+
+      it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
     end
   end
 

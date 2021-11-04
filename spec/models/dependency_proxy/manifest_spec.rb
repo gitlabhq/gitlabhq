@@ -31,18 +31,14 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     end
   end
 
-  describe '.find_or_initialize_by_file_name_or_digest' do
+  describe '.find_by_file_name_or_digest' do
     let_it_be(:file_name) { 'foo' }
     let_it_be(:digest) { 'bar' }
 
-    subject { DependencyProxy::Manifest.find_or_initialize_by_file_name_or_digest(file_name: file_name, digest: digest) }
+    subject { DependencyProxy::Manifest.find_by_file_name_or_digest(file_name: file_name, digest: digest) }
 
     context 'no manifest exists' do
-      it 'initializes a manifest' do
-        expect(DependencyProxy::Manifest).to receive(:new).with(file_name: file_name, digest: digest)
-
-        subject
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'manifest exists and matches file_name' do

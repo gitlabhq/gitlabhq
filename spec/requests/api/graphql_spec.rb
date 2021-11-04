@@ -32,7 +32,7 @@ RSpec.describe 'GraphQL' do
           # operation_fingerprint starts with operation name
           operation_fingerprint: %r{^anonymous\/},
           is_mutation: false,
-          variables: variables,
+          variables: variables.to_s,
           query_string: query
         }
       end

@@ -7,6 +7,8 @@ class DependencyProxy::Blob < ApplicationRecord
 
   belongs_to :group
 
+  MAX_FILE_SIZE = 5.gigabytes.freeze
+
   validates :group, presence: true
   validates :file, presence: true
   validates :file_name, presence: true

@@ -16,6 +16,7 @@ RSpec.describe Projects::Analytics::CycleAnalytics::StagesController do
   end
 
   before do
+    stub_feature_flags(use_vsa_aggregated_tables: false)
     sign_in(user)
   end
 

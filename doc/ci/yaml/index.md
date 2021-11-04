@@ -2755,51 +2755,42 @@ artifacts are restored after [caches](#cache).
 
 #### `dependencies`
 
-By default, all `artifacts` from previous stages
-are passed to each job. However, you can use the `dependencies` keyword to
-define a limited list of jobs to fetch artifacts from. You can also set a job to download no artifacts at all.
+Use the `dependencies` keyword to define a list of jobs to fetch artifacts from.
+You can also set a job to download no artifacts at all.
 
-To use this feature, define `dependencies` in context of the job and pass
-a list of all previous jobs the artifacts should be downloaded from.
+If you do not use `dependencies`, all `artifacts` from previous stages are passed to each job.
 
-You can define jobs from stages that were executed before the current one.
-An error occurs if you define jobs from the current or an upcoming stage.
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-To prevent a job from downloading artifacts, define an empty array.
+**Possible inputs**:
 
-When you use `dependencies`, the status of the previous job is not considered.
-If a job fails or it's a manual job that isn't triggered, no error occurs.
+- The names of jobs to fetch artifacts from.
+- An empty array (`[]`), to configure the job to not download any artifacts.
 
-The following example defines two jobs with artifacts: `build:osx` and
-`build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
-are downloaded and extracted in the context of the build. The same happens
-for `test:linux` and artifacts from `build:linux`.
-
-The job `deploy` downloads artifacts from all previous jobs because of
-the [stage](#stages) precedence:
+**Example of `dependencies`**:
 
 ```yaml
-build:osx:
+build osx:
   stage: build
   script: make build:osx
   artifacts:
     paths:
       - binaries/
 
-build:linux:
+build linux:
   stage: build
   script: make build:linux
   artifacts:
     paths:
       - binaries/
 
-test:osx:
+test osx:
   stage: test
   script: make test:osx
   dependencies:
     - build:osx
 
-test:linux:
+test linux:
   stage: test
   script: make test:linux
   dependencies:
@@ -2810,14 +2801,18 @@ deploy:
   script: make deploy
 ```
 
-##### When a dependent job fails
+In this example, two jobs have artifacts: `build osx` and `build linux`. When `test osx` is executed,
+the artifacts from `build osx` are downloaded and extracted in the context of the build.
+The same thing happens for `test linux` and artifacts from `build linux`.
 
-> Introduced in GitLab 10.3.
+The `deploy` job downloads artifacts from all previous jobs because of
+the [stage](#stages) precedence.
 
-If the artifacts of the job that is set as a dependency are
-[expired](#artifactsexpire_in) or
-[deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then
-the dependent job fails.
+**Additional details**:
+
+- The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
+- If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
+  [deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then the job fails.
 
 #### `artifacts:exclude`
 

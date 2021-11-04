@@ -31,6 +31,14 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
       end
     end
 
+    shared_examples 'returning no manifest' do
+      it 'returns a nil manifest' do
+        expect(subject[:status]).to eq(:success)
+        expect(subject[:from_cache]).to eq false
+        expect(subject[:manifest]).to be_nil
+      end
+    end
+
     context 'when no manifest exists' do
       let_it_be(:image) { 'new-image' }
 
@@ -40,7 +48,15 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           stub_manifest_download(image, tag, headers: headers)
         end
 
-        it_behaves_like 'downloading the manifest'
+        it_behaves_like 'returning no manifest'
+
+        context 'with dependency_proxy_manifest_workhorse feature disabled' do
+          before do
+            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
+          end
+
+          it_behaves_like 'downloading the manifest'
+        end
       end
 
       context 'failed head request' do
@@ -49,7 +65,15 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           stub_manifest_download(image, tag, headers: headers)
         end
 
-        it_behaves_like 'downloading the manifest'
+        it_behaves_like 'returning no manifest'
+
+        context 'with dependency_proxy_manifest_workhorse feature disabled' do
+          before do
+            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
+          end
+
+          it_behaves_like 'downloading the manifest'
+        end
       end
     end
 
@@ -60,7 +84,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
 
       shared_examples 'using the cached manifest' do
         it 'uses cached manifest instead of downloading one', :aggregate_failures do
-          expect { subject }.to change { dependency_proxy_manifest.reload.updated_at }
+          subject
 
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)
@@ -80,12 +104,20 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           stub_manifest_download(image, tag, headers: { 'docker-content-digest' => digest, 'content-type' => content_type })
         end
 
-        it 'downloads the new manifest and updates the existing record', :aggregate_failures do
-          expect(subject[:status]).to eq(:success)
-          expect(subject[:manifest]).to eq(dependency_proxy_manifest)
-          expect(subject[:manifest].content_type).to eq(content_type)
-          expect(subject[:manifest].digest).to eq(digest)
-          expect(subject[:from_cache]).to eq false
+        it_behaves_like 'returning no manifest'
+
+        context 'with dependency_proxy_manifest_workhorse feature disabled' do
+          before do
+            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
+          end
+
+          it 'downloads the new manifest and updates the existing record', :aggregate_failures do
+            expect(subject[:status]).to eq(:success)
+            expect(subject[:manifest]).to eq(dependency_proxy_manifest)
+            expect(subject[:manifest].content_type).to eq(content_type)
+            expect(subject[:manifest].digest).to eq(digest)
+            expect(subject[:from_cache]).to eq false
+          end
         end
       end
 
@@ -96,7 +128,15 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
           stub_manifest_download(image, tag, headers: headers)
         end
 
-        it_behaves_like 'downloading the manifest'
+        it_behaves_like 'returning no manifest'
+
+        context 'with dependency_proxy_manifest_workhorse feature disabled' do
+          before do
+            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
+          end
+
+          it_behaves_like 'downloading the manifest'
+        end
       end
 
       context 'failed connection' do

@@ -29,7 +29,11 @@ module Gitlab
 
         def median
           strong_memoize(:median) do
-            Median.new(stage: stage, query: query, params: params)
+            if use_aggregated_data_collector?
+              aggregated_data_collector.median
+            else
+              Median.new(stage: stage, query: query, params: params)
+            end
           end
         end
 
@@ -41,7 +45,11 @@ module Gitlab
 
         def count
           strong_memoize(:count) do
-            limit_count
+            if use_aggregated_data_collector?
+              aggregated_data_collector.count
+            else
+              limit_count
+            end
           end
         end
 
@@ -58,6 +66,14 @@ module Gitlab
         # COUNT < 1001, show the actual number on the UI
         def limit_count
           query.limit(MAX_COUNT).count
+        end
+
+        def aggregated_data_collector
+          @aggregated_data_collector ||= Aggregated::DataCollector.new(stage: stage, params: params)
+        end
+
+        def use_aggregated_data_collector?
+          params.fetch(:use_aggregated_data_collector, false)
         end
       end
     end

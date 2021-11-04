@@ -75,6 +75,19 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		helper.Fail500(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
 	saveFileRequest.Header = helper.HeaderClone(r.Header)
+
+	// forward headers from dependencyResponse to rails and client
+	for key, values := range dependencyResponse.Header {
+		saveFileRequest.Header.Del(key)
+		w.Header().Del(key)
+		for _, value := range values {
+			saveFileRequest.Header.Add(key, value)
+			w.Header().Add(key, value)
+		}
+	}
+
+	// workhorse hijack overwrites the Content-Type header, but we need this header value
+	saveFileRequest.Header.Set("Workhorse-Proxy-Content-Type", dependencyResponse.Header.Get("Content-Type"))
 	saveFileRequest.ContentLength = dependencyResponse.ContentLength
 
 	nrw := &nullResponseWriter{header: make(http.Header)}

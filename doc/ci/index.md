@@ -86,10 +86,10 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md)    | Quickly determine the browser performance impact of pending code changes.                                                      |
 | [Load Performance Testing](../user/project/merge_requests/load_performance_testing.md)          | Quickly determine the server performance impact of pending code changes.                                                       |
 | [CI services](services/index.md)                                                                | Link Docker containers with your base image.                                                                                   |
-| [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
 | [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)**       | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud.                                     |
 | [Interactive Web Terminals](interactive_web_terminal/index.md) **(FREE SELF)**                  | Open an interactive web terminal to debug the running jobs.                                                                    |
-| [Unit test reports](unit_test_reports.md)                                                       | Identify script failures directly on merge requests.                                                                           |
+| [Review Apps](review_apps/index.md)                                                             | Configure GitLab CI/CD to preview code changes.                                                                                |
+| [Unit test reports](unit_test_reports.md)                                                       | Identify test failures directly on merge requests.                                                                           |
 | [Using Docker images](docker/using_docker_images.md)                                            | Use GitLab and GitLab Runner with Docker to build and test applications.                                                       |
 |-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
 | **Release**                                                                                     |                                                                                                                                |
@@ -100,10 +100,10 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Feature Flags](../operations/feature_flags.md)                                                 | Deploy your features behind Feature Flags.                                                                                     |
 | [GitLab Pages](../user/project/pages/index.md)                                                  | Deploy static websites.                                                                                                        |
 | [GitLab Releases](../user/project/releases/index.md)                                            | Add release notes to Git tags.                                                                                                 |
-| [Review Apps](review_apps/index.md)                                                             | Configure GitLab CI/CD to preview code changes.                                                                                |
 | [Cloud deployment](cloud_deployment/index.md)                                                   | Deploy your application to a main cloud provider.                                                                              |
 |-------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------|
 | **Secure**                                                                                      |                                                                                                                                |
+| [Code Quality](../user/project/merge_requests/code_quality.md)                                  | Analyze your source code quality.                                                                                              |
 | [Container Scanning](../user/application_security/container_scanning/index.md) **(ULTIMATE)**   | Check your Docker containers for known vulnerabilities.                                                                        |
 | [Dependency Scanning](../user/application_security/dependency_scanning/index.md) **(ULTIMATE)** | Analyze your dependencies for known vulnerabilities.                                                                           |
 | [License Compliance](../user/compliance/license_compliance/index.md) **(ULTIMATE)**             | Search your project dependencies for their licenses.                                                                           |
@@ -147,6 +147,10 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 
 As GitLab CI/CD has evolved, certain breaking changes have
 been necessary.
+
+#### 14.0
+
+- No breaking changes.
 
 #### 13.0
 

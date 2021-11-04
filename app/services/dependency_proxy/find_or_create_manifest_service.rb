@@ -14,18 +14,18 @@ module DependencyProxy
     def execute
       @manifest = @group.dependency_proxy_manifests
                         .active
-                        .find_or_initialize_by_file_name_or_digest(file_name: @file_name, digest: @tag)
+                        .find_by_file_name_or_digest(file_name: @file_name, digest: @tag)
 
       head_result = DependencyProxy::HeadManifestService.new(@image, @tag, @token).execute
 
-      if cached_manifest_matches?(head_result)
-        @manifest.touch
+      return respond if cached_manifest_matches?(head_result)
 
-        return success(manifest: @manifest, from_cache: true)
+      if Feature.enabled?(:dependency_proxy_manifest_workhorse, @group, default_enabled: :yaml)
+        success(manifest: nil, from_cache: false)
+      else
+        pull_new_manifest
+        respond(from_cache: false)
       end
-
-      pull_new_manifest
-      respond(from_cache: false)
     rescue Timeout::Error, *Gitlab::HTTP::HTTP_ERRORS
       respond
     end
@@ -34,12 +34,19 @@ module DependencyProxy
 
     def pull_new_manifest
       DependencyProxy::PullManifestService.new(@image, @tag, @token).execute_with_manifest do |new_manifest|
-        @manifest.update!(
+        params = {
+          file_name: @file_name,
           content_type: new_manifest[:content_type],
           digest: new_manifest[:digest],
           file: new_manifest[:file],
           size: new_manifest[:file].size
-        )
+        }
+
+        if @manifest
+          @manifest.update!(params)
+        else
+          @manifest = @group.dependency_proxy_manifests.create!(params)
+        end
       end
     end
 
@@ -50,10 +57,7 @@ module DependencyProxy
     end
 
     def respond(from_cache: true)
-      if @manifest.persisted?
-        # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
-        @manifest.touch if from_cache
-
+      if @manifest
         success(manifest: @manifest, from_cache: from_cache)
       else
         error('Failed to download the manifest from the external registry', 503)

@@ -22,9 +22,10 @@ For a full list of reference architectures, see
 
 > - **Supported users (approximate):** 3,000
 > - **High Availability:** Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
-> - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
-> - **[Latest 3k weekly performance testing results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
+> - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+> - **Performance tested weekly with the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance)**:
+>   - **Test requests per second (RPS) rates:** API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
+>   - **[Latest Results](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k)**
 
 | Service                                    | Nodes       | Configuration         | GCP             | AWS          | Azure    |
 |--------------------------------------------|-------------|-----------------------|-----------------|--------------|----------|

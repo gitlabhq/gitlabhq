@@ -4,11 +4,7 @@ module Gitlab
   module SubscriptionPortal
     def self.default_subscriptions_url
       if ::Gitlab.dev_or_test_env?
-        if Feature.enabled?(:new_customersdot_staging_url, default_enabled: :yaml)
-          'https://customers.staging.gitlab.com'
-        else
-          'https://customers.stg.gitlab.com'
-        end
+        'https://customers.staging.gitlab.com'
       else
         'https://customers.gitlab.com'
       end

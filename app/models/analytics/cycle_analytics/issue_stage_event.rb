@@ -11,6 +11,12 @@ module Analytics
       alias_attribute :state, :state_id
       enum state: Issue.available_states, _suffix: true
 
+      scope :assigned_to, ->(user) do
+        assignees_class = IssueAssignee
+        condition = assignees_class.where(user_id: user).where(arel_table[:issue_id].eq(assignees_class.arel_table[:issue_id]))
+        where(condition.arel.exists)
+      end
+
       def self.issuable_id_column
         :issue_id
       end

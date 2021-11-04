@@ -11,6 +11,12 @@ module Analytics
       alias_attribute :state, :state_id
       enum state: MergeRequest.available_states, _suffix: true
 
+      scope :assigned_to, ->(user) do
+        assignees_class = MergeRequestAssignee
+        condition = assignees_class.where(user_id: user).where(arel_table[:merge_request_id].eq(assignees_class.arel_table[:merge_request_id]))
+        where(condition.arel.exists)
+      end
+
       def self.issuable_id_column
         :merge_request_id
       end

@@ -512,6 +512,24 @@ RSpec.describe Gitlab::Workhorse do
     end
   end
 
+  describe '.send_dependency' do
+    let(:headers) { { Accept: 'foo', Authorization: 'Bearer asdf1234' } }
+    let(:url) { 'https://foo.bar.com/baz' }
+
+    subject { described_class.send_dependency(headers, url) }
+
+    it 'sets the header correctly', :aggregate_failures do
+      key, command, params = decode_workhorse_header(subject)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("send-dependency")
+      expect(params).to eq({
+        'Header' => headers,
+        'Url' => url
+      }.deep_stringify_keys)
+    end
+  end
+
   describe '.send_git_snapshot' do
     let(:url) { 'http://example.com' }
 

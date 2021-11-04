@@ -85,6 +85,26 @@ RSpec.describe "Groups", "routing" do
       expect(get('/v2')).to route_to('groups/dependency_proxy_auth#authenticate')
     end
 
+    it 'routes to #upload_manifest' do
+      expect(post('v2/gitlabhq/dependency_proxy/containers/alpine/manifests/latest/upload'))
+        .to route_to('groups/dependency_proxy_for_containers#upload_manifest', group_id: 'gitlabhq', image: 'alpine', tag: 'latest')
+    end
+
+    it 'routes to #upload_blob' do
+      expect(post('v2/gitlabhq/dependency_proxy/containers/alpine/blobs/abc12345/upload'))
+        .to route_to('groups/dependency_proxy_for_containers#upload_blob', group_id: 'gitlabhq', image: 'alpine', sha: 'abc12345')
+    end
+
+    it 'routes to #upload_manifest_authorize' do
+      expect(post('v2/gitlabhq/dependency_proxy/containers/alpine/manifests/latest/upload/authorize'))
+        .to route_to('groups/dependency_proxy_for_containers#authorize_upload_manifest', group_id: 'gitlabhq', image: 'alpine', tag: 'latest')
+    end
+
+    it 'routes to #upload_blob_authorize' do
+      expect(post('v2/gitlabhq/dependency_proxy/containers/alpine/blobs/abc12345/upload/authorize'))
+        .to route_to('groups/dependency_proxy_for_containers#authorize_upload_blob', group_id: 'gitlabhq', image: 'alpine', sha: 'abc12345')
+    end
+
     context 'image name without namespace' do
       it 'routes to #manifest' do
         expect(get('/v2/gitlabhq/dependency_proxy/containers/ruby/manifests/2.3.6'))

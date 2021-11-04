@@ -188,6 +188,11 @@ RSpec.describe Nav::TopNavHelper do
                 href: '/explore',
                 id: 'explore',
                 title: 'Explore projects'
+              ),
+              ::Gitlab::Nav::TopNavMenuItem.build(
+                href: '/explore/projects/topics',
+                id: 'topics',
+                title: 'Explore topics'
               )
             ]
             expect(projects_view[:linksPrimary]).to eq(expected_links_primary)
