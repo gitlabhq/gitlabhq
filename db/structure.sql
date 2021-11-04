@@ -20194,7 +20194,7 @@ CREATE TABLE users (
     encrypted_otp_secret_salt character varying,
     otp_required_for_login boolean DEFAULT false NOT NULL,
     otp_backup_codes text,
-    public_email character varying DEFAULT ''::character varying NOT NULL,
+    public_email character varying,
     dashboard integer DEFAULT 0,
     project_view integer DEFAULT 0,
     consumed_timestep integer,

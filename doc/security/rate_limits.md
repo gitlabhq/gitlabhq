@@ -27,7 +27,7 @@ Most cases can be mitigated by limiting the rate of requests from a single IP ad
 Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
 
-## Admin Area settings
+## Configurable limits
 
 You can set these rate limits in the Admin Area of your instance:
 
@@ -41,6 +41,10 @@ You can set these rate limits in the Admin Area of your instance:
 - [Git LFS rate limits](../user/admin_area/settings/git_lfs_rate_limits.md)
 - [Files API rate limits](../user/admin_area/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../user/admin_area/settings/deprecated_api_rate_limits.md)
+
+You can set these rate limits using the Rails console:
+
+- [Webhook rate limit](../administration/instance_limits.md#webhook-rate-limit)
 
 ## Failed authentication ban for Git and container registry
 

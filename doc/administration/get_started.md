@@ -231,7 +231,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits for self-managed GitLab
 
-You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#admin-area-settings).
+You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
 - Define [issues rate limits](../user/admin_area/settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
 - Enforce [user and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
@@ -249,7 +249,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits for GitLab SaaS
 
-You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#admin-area-settings).
+You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
 
 - Review the rate limit page.
 - Read our [API page](../api/index.md) for more information about API and rate limiting.
