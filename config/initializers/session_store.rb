@@ -19,15 +19,31 @@ cookie_key = if Rails.env.development?
                "_gitlab_session"
              end
 
-sessions_config = Gitlab::Redis::SharedState.params
-sessions_config[:namespace] = Gitlab::Redis::SharedState::SESSION_NAMESPACE
+if Gitlab::Utils.to_boolean(ENV['GITLAB_REDIS_STORE_WITH_SESSION_STORE'], default: true)
+  store = Gitlab::Redis::SharedState.store(
+    namespace: Gitlab::Redis::SharedState::SESSION_NAMESPACE
+  )
 
-Gitlab::Application.config.session_store(
-  :redis_store, # Using the cookie_store would enable session replay attacks.
-  servers: sessions_config,
-  key: cookie_key,
-  secure: Gitlab.config.gitlab.https,
-  httponly: true,
-  expires_in: Settings.gitlab['session_expire_delay'] * 60,
-  path: Rails.application.config.relative_url_root.presence || '/'
-)
+  Gitlab::Application.config.session_store(
+    :redis_store, # Using the cookie_store would enable session replay attacks.
+    redis_store: store,
+    key: cookie_key,
+    secure: Gitlab.config.gitlab.https,
+    httponly: true,
+    expires_in: Settings.gitlab['session_expire_delay'] * 60,
+    path: Rails.application.config.relative_url_root.presence || '/'
+  )
+else
+  sessions_config = Gitlab::Redis::SharedState.params
+  sessions_config[:namespace] = Gitlab::Redis::SharedState::SESSION_NAMESPACE
+
+  Gitlab::Application.config.session_store(
+    :redis_store, # Using the cookie_store would enable session replay attacks.
+    servers: sessions_config,
+    key: cookie_key,
+    secure: Gitlab.config.gitlab.https,
+    httponly: true,
+    expires_in: Settings.gitlab['session_expire_delay'] * 60,
+    path: Rails.application.config.relative_url_root.presence || '/'
+  )
+end

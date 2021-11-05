@@ -1,4 +1,5 @@
 import AccessorUtilities from '~/lib/utils/accessor';
+import { objectToQuery } from '~/lib/utils/url_utility';
 import { ALERT_LOCALSTORAGE_KEY } from './constants';
 
 const isFunction = (fn) => typeof fn === 'function';
@@ -70,4 +71,18 @@ export const sizeToParent = () => {
   if (isFunction(AP?.sizeToParent)) {
     AP.sizeToParent();
   }
+};
+
+export const getGitlabSignInURL = async (signInURL) => {
+  const location = await getLocation();
+
+  if (location) {
+    const queryParams = {
+      return_to: location,
+    };
+
+    return `${signInURL}?${objectToQuery(queryParams)}`;
+  }
+
+  return signInURL;
 };

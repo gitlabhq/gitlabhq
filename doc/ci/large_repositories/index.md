@@ -250,12 +250,15 @@ concurrent = 4
 This makes the cloning configuration to be part of the given runner
 and does not require us to update each `.gitlab-ci.yml`.
 
-## Pre-clone step
+## Git fetch caching or pre-clone step
 
-> [An issue exists](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463) to remove the need for this optimization.
+For very active repositories with a large number of references and files, you can either (or both):
 
-For very active repositories with a large number of references and files, you can also
-optimize your CI jobs by seeding repository data with GitLab Runner's [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section).
-
-See [our development documentation](../../development/pipelines.md#pre-clone-step) for
-an overview of how we implemented this approach on GitLab.com for the main GitLab repository.
+- Consider using the [Gitaly pack-objects cache](../../administration/gitaly/configure_gitaly.md#pack-objects-cache) instead of a
+  pre-clone step. This is easier to set up and it benefits all repositories on your GitLab server, unlike the pre-clone step that
+  must be configured per-repository. The pack-objects cache also automatically works for forks. For `gitlab-org/gitlab` development
+  on GitLab.com, we stopped using a pre-clone step.
+- Optimize your CI/CD jobs by seeding repository data in a pre-clone step with the
+  [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) of GitLab Runner. See our
+  [development documentation](../../development/pipelines.md#pre-clone-step) for an overview of how we used to implement this approach on
+  GitLab.com for the main GitLab repository.

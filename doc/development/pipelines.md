@@ -793,19 +793,30 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
 
+### Git fetch caching
+
+Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+concurrent Git fetches of the same pipeline ref are deduplicated on
+the Gitaly server (always) and served from cache (when available).
+
+This works well for the following reasons:
+
+- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
+- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
+  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
+- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
+  history for every job.
+
 ### Pre-clone step
 
-The `gitlab-org/gitlab` project on GitLab.com uses a [pre-clone step](https://gitlab.com/gitlab-org/gitlab/-/issues/39134)
-to seed the project with a recent archive of the repository. This is done for
-several reasons:
-
-- It speeds up builds because a 800 MB download only takes seconds, as opposed to a full Git clone.
-- It significantly reduces load on the file server, as smaller deltas mean less time spent in `git pack-objects`.
+NOTE:
+We no longer use this optimization for `gitlab-org/gitlab` because the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache)
+allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching](#git-fetch-caching).
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
 [defined by GitLab.com shared runners](../ci/runners/build_cloud/linux_build_cloud.md#pre-clone-script).
 
-The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
+The `CI_PRE_CLONE_SCRIPT` is defined as a project CI/CD variable:
 
 ```shell
 (

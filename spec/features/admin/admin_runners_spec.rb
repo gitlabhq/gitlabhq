@@ -28,36 +28,33 @@ RSpec.describe "Admin Runners" do
         expect(page).to have_text "Runners currently online: 1"
       end
 
-      it 'with an instance runner shows an instance badge and no project count' do
+      it 'with an instance runner shows an instance badge' do
         runner = create(:ci_runner, :instance)
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'shared'
-          expect(page).to have_text 'n/a'
         end
       end
 
-      it 'with a group runner shows a group badge and no project count' do
+      it 'with a group runner shows a group badge' do
         runner = create(:ci_runner, :group, groups: [group])
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'group'
-          expect(page).to have_text 'n/a'
         end
       end
 
-      it 'with a project runner shows a project badge and project count' do
+      it 'with a project runner shows a project badge' do
         runner = create(:ci_runner, :project, projects: [project])
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'specific'
-          expect(page).to have_text '1'
         end
       end
 

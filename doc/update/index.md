@@ -305,9 +305,13 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 14.5.0
 
-When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
+- When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
 are using a source install, update paths to these binaries in your [systemd unit files](upgrading_from_source.md#configure-systemd-units)
 or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](upgrading_from_source.md).
+
+- Connections between Workhorse and Gitaly use the Gitaly `backchannel` protocol by default. If you deployed a gRPC proxy between Workhorse and Gitaly,
+  Workhorse can no longer connect. As a workaround, [disable the temporary `workhorse_use_sidechannel`](../administration/feature_flags.md#enable-or-disable-the-feature)
+  feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy.
 
 ### 14.4.0
 

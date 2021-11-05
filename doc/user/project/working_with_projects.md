@@ -29,8 +29,8 @@ is restricted, `/explore` is visible only to signed-in users.
 
 To create a project in GitLab:
 
-1. In your dashboard, click the green **New project** button or use the plus
-   icon in the navigation bar. This opens the **New project** page.
+1. In your dashboard, select **New project** or use the **New...** **{plus-square}** icon
+on the top bar. The **New project** page opens.
 1. On the **New project** page, choose if you want to:
    - Create a [blank project](#blank-projects).
    - Create a project using one of the available [project templates](#project-templates).

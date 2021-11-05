@@ -87,6 +87,43 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe '.store' do
+    let(:rails_env) { 'development' }
+
+    subject { described_class.new(rails_env).store }
+
+    shared_examples 'redis store' do
+      it 'instantiates Redis::Store' do
+        is_expected.to be_a(::Redis::Store)
+        expect(subject.to_s).to eq("Redis Client connected to #{host} against DB #{redis_database}")
+      end
+
+      context 'with the namespace' do
+        let(:namespace) { 'namespace_name' }
+
+        subject { described_class.new(rails_env).store(namespace: namespace) }
+
+        it "uses specified namespace" do
+          expect(subject.to_s).to eq("Redis Client connected to #{host} against DB #{redis_database} with namespace #{namespace}")
+        end
+      end
+    end
+
+    context 'with old format' do
+      it_behaves_like 'redis store' do
+        let(:config_file_name) { config_old_format_host }
+        let(:host) { "localhost:#{redis_port}" }
+      end
+    end
+
+    context 'with new format' do
+      it_behaves_like 'redis store' do
+        let(:config_file_name) { config_new_format_host }
+        let(:host) { "development-host:#{redis_port}" }
+      end
+    end
+  end
+
   describe '.params' do
     subject { described_class.new(rails_env).params }
 

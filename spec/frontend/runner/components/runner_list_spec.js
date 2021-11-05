@@ -1,6 +1,5 @@
 import { GlTable, GlSkeletonLoader } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerList from '~/runner/components/runner_list.vue';
@@ -47,8 +46,6 @@ describe('RunnerList', () => {
       'Runner',
       'Version',
       'IP Address',
-      'Projects',
-      'Jobs',
       'Tags',
       'Last contact',
       '', // actions has no label
@@ -76,8 +73,6 @@ describe('RunnerList', () => {
     // Other fields
     expect(findCell({ fieldKey: 'version' }).text()).toBe(version);
     expect(findCell({ fieldKey: 'ipAddress' }).text()).toBe(ipAddress);
-    expect(findCell({ fieldKey: 'projectCount' }).text()).toBe('1');
-    expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('0');
     expect(findCell({ fieldKey: 'tagList' }).text()).toBe('');
     expect(findCell({ fieldKey: 'contactedAt' }).text()).toEqual(expect.any(String));
 
@@ -86,54 +81,6 @@ describe('RunnerList', () => {
 
     expect(actions.findByTestId('edit-runner').exists()).toBe(true);
     expect(actions.findByTestId('toggle-active-runner').exists()).toBe(true);
-  });
-
-  describe('Table data formatting', () => {
-    let mockRunnersCopy;
-
-    beforeEach(() => {
-      mockRunnersCopy = cloneDeep(mockRunners);
-    });
-
-    it('Formats null project counts', () => {
-      mockRunnersCopy[0].projectCount = null;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
-
-      expect(findCell({ fieldKey: 'projectCount' }).text()).toBe('n/a');
-    });
-
-    it('Formats 0 project counts', () => {
-      mockRunnersCopy[0].projectCount = 0;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
-
-      expect(findCell({ fieldKey: 'projectCount' }).text()).toBe('0');
-    });
-
-    it('Formats big project counts', () => {
-      mockRunnersCopy[0].projectCount = 1000;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
-
-      expect(findCell({ fieldKey: 'projectCount' }).text()).toBe('1,000');
-    });
-
-    it('Formats job counts', () => {
-      mockRunnersCopy[0].jobCount = 1000;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000');
-    });
-
-    it('Formats big job counts with a plus symbol', () => {
-      mockRunnersCopy[0].jobCount = 1001;
-
-      createComponent({ props: { runners: mockRunnersCopy } }, mount);
-
-      expect(findCell({ fieldKey: 'jobCount' }).text()).toBe('1,000+');
-    });
   });
 
   it('Shows runner identifier', () => {

@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { getLocation } from '~/jira_connect/subscriptions/utils';
+import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
 import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -32,16 +32,14 @@ describe('SignInButton', () => {
   });
 
   describe.each`
-    getLocationValue           | expectedHref
-    ${''}                      | ${MOCK_USERS_PATH}
-    ${undefined}               | ${MOCK_USERS_PATH}
-    ${'https://test.jira.com'} | ${`${MOCK_USERS_PATH}?return_to=${encodeURIComponent('https://test.jira.com')}`}
-  `('when getLocation resolves with `$getLocationValue`', ({ getLocationValue, expectedHref }) => {
+    expectedHref
+    ${MOCK_USERS_PATH}
+    ${`${MOCK_USERS_PATH}?return_to=${encodeURIComponent('https://test.jira.com')}`}
+  `('when getGitlabSignInURL resolves with `$expectedHref`', ({ expectedHref }) => {
     it(`sets button href to ${expectedHref}`, async () => {
-      getLocation.mockResolvedValue(getLocationValue);
+      getGitlabSignInURL.mockResolvedValue(expectedHref);
       createComponent();
 
-      expect(getLocation).toHaveBeenCalled();
       await waitForPromises();
 
       expect(findButton().attributes('href')).toBe(expectedHref);

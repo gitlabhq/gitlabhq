@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { getLocation } from '~/jira_connect/subscriptions/utils';
-import { objectToQuery } from '~/lib/utils/url_utility';
+import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
 
 export default {
   components: {
@@ -15,34 +14,21 @@ export default {
   },
   data() {
     return {
-      location: '',
+      signInURL: '',
     };
   },
-  computed: {
-    usersPathWithReturnTo() {
-      if (this.location) {
-        const queryParams = {
-          return_to: this.location,
-        };
-
-        return `${this.usersPath}?${objectToQuery(queryParams)}`;
-      }
-
-      return this.usersPath;
-    },
-  },
   created() {
-    this.setLocation();
+    this.setSignInURL();
   },
   methods: {
-    async setLocation() {
-      this.location = await getLocation();
+    async setSignInURL() {
+      this.signInURL = await getGitlabSignInURL(this.usersPath);
     },
   },
 };
 </script>
 <template>
-  <gl-button category="primary" variant="info" :href="usersPathWithReturnTo" target="_blank">
+  <gl-button category="primary" variant="info" :href="signInURL" target="_blank">
     <slot>
       {{ s__('Integrations|Sign in to add namespaces') }}
     </slot>
