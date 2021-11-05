@@ -14,20 +14,20 @@ module QA
       let!(:api_client) { Runtime::API::Client.new(user: user) }
       let!(:personal_access_token) { api_client.personal_access_token }
 
-      let!(:sandbox) do
+      let(:sandbox) do
         Resource::Sandbox.fabricate_via_api! do |group|
           group.api_client = admin_api_client
         end
       end
 
-      let!(:source_group) do
+      let(:source_group) do
         Resource::Sandbox.fabricate_via_api! do |group|
           group.api_client = api_client
           group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
         end
       end
 
-      let!(:subgroup) do
+      let(:subgroup) do
         Resource::Group.fabricate_via_api! do |group|
           group.api_client = api_client
           group.sandbox = source_group
@@ -63,6 +63,10 @@ module QA
       before do
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
+        # create groups explicitly before connecting gitlab instance
+        source_group
+        subgroup
+
         Flow::Login.sign_in(as: user)
         Page::Main::Menu.perform(&:go_to_create_group)
         Page::Group::New.perform do |group|
@@ -73,6 +77,7 @@ module QA
 
       # Non blocking issues:
       # https://gitlab.com/gitlab-org/gitlab/-/issues/331252
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/333678 <- can cause 500 when creating user and group back to back
       it(
         'imports group with subgroups and labels',
         testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/issues/1785',
@@ -96,9 +101,9 @@ module QA
         Page::Group::BulkImport.perform do |import_page|
           import_page.import_group(source_group.path, sandbox.path)
 
-          aggregate_failures do
-            expect(import_page).to have_imported_group(source_group.path, wait: 180)
+          expect(import_page).to have_imported_group(source_group.path, wait: 180)
 
+          aggregate_failures do
             expect { imported_group.reload! }.to eventually_eq(source_group).within(duration: 10)
             expect { imported_group.labels }.to eventually_include(*source_group.labels).within(duration: 10)
 

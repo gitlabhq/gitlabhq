@@ -77,7 +77,9 @@ module QA
               reload: true,
               skip_finished_loading_check_on_refresh: true
             ) do
-              page.has_no_content?('Importing 1 repository')
+              # TODO: Refactor to explicitly wait for specific project import successful status
+              # This check can create false positive if main importing message appears with delay and check exits early
+              page.has_no_content?('Importing 1 repository', wait: 3)
             end
           end
 

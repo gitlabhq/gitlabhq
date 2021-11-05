@@ -169,6 +169,8 @@ module QA
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
         autoload :SSHTunnel, 'qa/scenario/test/integration/ssh_tunnel'
+        autoload :RegistryTLS, 'qa/scenario/test/integration/registry_tls'
+        autoload :Registry, 'qa/scenario/test/integration/registry'
       end
 
       module Sanity
