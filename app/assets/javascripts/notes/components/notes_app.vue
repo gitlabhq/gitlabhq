@@ -258,7 +258,13 @@ export default {
     getFetchDiscussionsConfig() {
       const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
 
-      if (doesHashExistInUrl(constants.NOTE_UNDERSCORE)) {
+      const currentFilter =
+        this.getNotesDataByProp('notesFilter') || constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
+
+      if (
+        doesHashExistInUrl(constants.NOTE_UNDERSCORE) &&
+        currentFilter !== constants.DISCUSSION_FILTERS_DEFAULT_VALUE
+      ) {
         return {
           ...defaultConfig,
           filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,

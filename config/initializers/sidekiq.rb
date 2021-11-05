@@ -116,3 +116,4 @@ Sidekiq.configure_client do |config|
 end
 
 Sidekiq::Client.prepend Gitlab::Patch::SidekiqClient
+Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller

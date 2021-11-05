@@ -2208,7 +2208,17 @@ In this example, the script:
 ### `environment`
 
 Use `environment` to define the [environment](../environments/index.md) that a job deploys to.
-For example:
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: The name of the environment the job deploys to, in one of these
+formats:
+
+- Plain text, including letters, digits, spaces and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
+- CI/CD variables, including predefined, secure, or variables defined in the
+  `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
+
+**Example of `environment`**:
 
 ```yaml
 deploy to production:
@@ -2217,20 +2227,27 @@ deploy to production:
   environment: production
 ```
 
-You can assign a value to the `environment` keyword by using:
+**Additional details**:
 
-- Plain text, like `production`.
-- Variables, including CI/CD variables, predefined, secure, or variables
-  defined in the `.gitlab-ci.yml` file.
-
-You can't use variables defined in a `script` section.
-
-If you specify an `environment` and no environment with that name exists,
-an environment is created.
+- If you specify an `environment` and no environment with that name exists, an environment is
+  created.
 
 #### `environment:name`
 
-Set a name for an [environment](../environments/index.md). For example:
+Set a name for an [environment](../environments/index.md).
+
+Common environment names are `qa`, `staging`, and `production`, but you can use any name.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: The name of the environment the job deploys to, in one of these
+formats:
+
+- Plain text, including letters, digits, spaces and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
+- CI/CD variables, including predefined, secure, or variables defined in the
+  `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
+
+**Example of `environment:name`**:
 
 ```yaml
 deploy to production:
@@ -2240,32 +2257,19 @@ deploy to production:
     name: production
 ```
 
-Common environment names are `qa`, `staging`, and `production`, but you can use any
-name you want.
-
-You can assign a value to the `name` keyword by using:
-
-- Plain text, like `staging`.
-- Variables, including CI/CD variables, predefined, secure, or variables
-  defined in the `.gitlab-ci.yml` file.
-
-You can't use variables defined in a `script` section.
-
-The environment `name` can contain:
-
-- Letters
-- Digits
-- Spaces
-- `-`
-- `_`
-- `/`
-- `$`
-- `{`
-- `}`
-
 #### `environment:url`
 
-Set a URL for an [environment](../environments/index.md). For example:
+Set a URL for an [environment](../environments/index.md).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A single URL, in one of these formats:
+
+- Plain text, like `https://prod.example.com`.
+- CI/CD variables, including predefined, secure, or variables defined in the
+  `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
+
+**Example of `environment:url`**:
 
 ```yaml
 deploy to production:
@@ -2276,16 +2280,10 @@ deploy to production:
     url: https://prod.example.com
 ```
 
-After the job completes, you can access the URL by using a button in the merge request,
-environment, or deployment pages.
+**Additional details**:
 
-You can assign a value to the `url` keyword by using:
-
-- Plain text, like `https://prod.example.com`.
-- Variables, including CI/CD variables, predefined, secure, or variables
-  defined in the `.gitlab-ci.yml` file.
-
-You can't use variables defined in a `script` section.
+- After the job completes, you can access the URL by selecting a button in the merge request,
+  environment, or deployment pages.
 
 #### `environment:on_stop`
 
@@ -2293,7 +2291,11 @@ Closing (stopping) environments can be achieved with the `on_stop` keyword
 defined under `environment`. It declares a different job that runs to close the
 environment.
 
-Read the `environment:action` section for an example.
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Additional details**:
+
+See [`environment:action`](#environmentaction) for more details and an example.
 
 #### `environment:action`
 
@@ -2364,10 +2366,19 @@ In the examples above, if the configuration is not identical:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
 
-The `auto_stop_in` keyword is for specifying the lifetime of the environment,
-that when expired, GitLab automatically stops them.
+The `auto_stop_in` keyword specifies the lifetime of the environment. When an environment expires, GitLab
+automatically stops it.
 
-For example,
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A period of time written in natural language. For example,
+these are all equivalent:
+
+- `168 hours`
+- `7 days`
+- `one week`
+
+**Example of `environment:auto_stop_in`**:
 
 ```yaml
 review_app:
@@ -2380,8 +2391,9 @@ review_app:
 When the environment for `review_app` is created, the environment's lifetime is set to `1 day`.
 Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
-For more information, see
-[the environments auto-stop documentation](../environments/index.md#stop-an-environment-after-a-certain-time-period)
+**Related topics**:
+
+- [Environments auto-stop documentation](../environments/index.md#stop-an-environment-after-a-certain-time-period).
 
 #### `environment:kubernetes`
 
@@ -2390,7 +2402,9 @@ For more information, see
 Use the `kubernetes` keyword to configure deployments to a
 [Kubernetes cluster](../../user/infrastructure/clusters/index.md) that is associated with your project.
 
-For example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Example of `environment:kubernetes`**:
 
 ```yaml
 deploy:
@@ -2406,20 +2420,34 @@ This configuration sets up the `deploy` job to deploy to the `production`
 environment, using the `production`
 [Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
 
-For more information, see
-[Available settings for `kubernetes`](../environments/index.md#configure-kubernetes-deployments-deprecated).
+**Additional details**:
 
-NOTE:
-Kubernetes configuration is not supported for Kubernetes clusters
-that are [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
-To follow progress on support for GitLab-managed clusters, see the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+- Kubernetes configuration is not supported for Kubernetes clusters
+  that are [managed by GitLab](../../user/project/clusters/gitlab_managed_clusters.md).
+  To follow progress on support for GitLab-managed clusters, see the
+  [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/38054).
+
+**Related topics**:
+
+- [Available settings for `kubernetes`](../environments/index.md#configure-kubernetes-deployments-deprecated).
 
 #### `environment:deployment_tier`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
-Use the `deployment_tier` keyword to specify the tier of the deployment environment:
+Use the `deployment_tier` keyword to specify the tier of the deployment environment.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: One of the following:
+
+- `production`
+- `staging`
+- `testing`
+- `development`
+- `other`
+
+**Example of `environment:deployment_tier`**:
 
 ```yaml
 deploy:
@@ -2429,8 +2457,9 @@ deploy:
     deployment_tier: production
 ```
 
-For more information,
-see [Deployment tier of environments](../environments/index.md#deployment-tier-of-environments).
+**Related topics**:
+
+- [Deployment tier of environments](../environments/index.md#deployment-tier-of-environments).
 
 #### Dynamic environments
 
@@ -3650,11 +3679,17 @@ test:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21480) in GitLab 11.5.
 
-Use `parallel` to configure how many instances of a job to run in parallel.
-The value can be from 2 to 50.
+Use `parallel` to run a job multiple times in parallel in a single pipeline.
 
-The `parallel` keyword creates N instances of the same job that run in parallel.
-They are named sequentially from `job_name 1/N` to `job_name N/N`:
+Multiple runners must exist, or a single runner must be configured to run multiple jobs concurrently.
+
+Parallel jobs are named sequentially from `job_name 1/N` to `job_name N/N`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A numeric value from `2` to `50`.
+
+**Example of `parallel`**:
 
 ```yaml
 test:
@@ -3662,47 +3697,32 @@ test:
   parallel: 5
 ```
 
-Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
-[predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
+This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`.
 
-Different languages and test suites have different methods to enable parallelization.
-For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
-and RSpec to run Ruby tests in parallel:
+**Additional details**:
 
-```ruby
-# Gemfile
-source 'https://rubygems.org'
+- Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
+  [predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
 
-gem 'rspec'
-gem 'semaphore_test_boosters'
-```
+**Related topics**:
 
-```yaml
-test:
-  parallel: 3
-  script:
-    - bundle
-    - bundle exec rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL
-```
+- [Parallelize large jobs](../jobs/job_control.md#parallelize-large-jobs).
 
-WARNING:
-Test Boosters reports usage statistics to the author.
-
-You can then navigate to the **Jobs** tab of a new pipeline build and see your RSpec
-job split into three separate jobs.
-
-#### Parallel `matrix` jobs
+#### `parallel:matrix`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15356) in GitLab 13.3.
+> - The job naming style was [improved in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/230452).
 
-Use `matrix:` to run a job multiple times in parallel in a single pipeline,
+Use `parallel:matrix` to run a job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
-There can be from 2 to 50 jobs.
 
-Jobs can only run in parallel if there are multiple runners, or a single runner is
-configured to run multiple jobs concurrently.
+Multiple runners must exist, or a single runner must be configured to run multiple jobs concurrently.
 
-Every job gets the same `CI_NODE_TOTAL` [CI/CD variable](../variables/index.md#predefined-cicd-variables) value, and a unique `CI_NODE_INDEX` value.
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A numeric value from `2` to `50`.
+
+**Example of `parallel:matrix`**:
 
 ```yaml
 deploystacks:
@@ -3722,7 +3742,7 @@ deploystacks:
         STACK: [data, processing]
 ```
 
-The following example generates 10 parallel `deploystacks` jobs, each with different values
+The example generates 10 parallel `deploystacks` jobs, each with different values
 for `PROVIDER` and `STACK`:
 
 ```plaintext
@@ -3738,74 +3758,10 @@ deploystacks: [vultr, data]
 deploystacks: [vultr, processing]
 ```
 
-The job naming style was [improved in GitLab 13.4](https://gitlab.com/gitlab-org/gitlab/-/issues/230452).
+**Related topics**:
 
-##### One-dimensional `matrix` jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
-
-You can also have one-dimensional matrices with a single job:
-
-```yaml
-deploystacks:
-  stage: deploy
-  script:
-    - bin/deploy
-  parallel:
-    matrix:
-      - PROVIDER: [aws, ovh, gcp, vultr]
-```
-
-##### Parallel `matrix` trigger jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
-
-Use `matrix:` to run a [trigger](#trigger) job multiple times in parallel in a single pipeline,
-but with different variable values for each instance of the job.
-
-```yaml
-deploystacks:
-  stage: deploy
-  trigger:
-    include: path/to/child-pipeline.yml
-  parallel:
-    matrix:
-      - PROVIDER: aws
-        STACK: [monitoring, app1]
-      - PROVIDER: ovh
-        STACK: [monitoring, backup]
-      - PROVIDER: [gcp, vultr]
-        STACK: [data]
-```
-
-This example generates 6 parallel `deploystacks` trigger jobs, each with different values
-for `PROVIDER` and `STACK`, and they create 6 different child pipelines with those variables.
-
-```plaintext
-deploystacks: [aws, monitoring]
-deploystacks: [aws, app1]
-deploystacks: [ovh, monitoring]
-deploystacks: [ovh, backup]
-deploystacks: [gcp, data]
-deploystacks: [vultr, data]
-```
-
-In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
-use the variables defined in `parallel: matrix` with the [`tags`](#tags) keyword for
-dynamic runner selection.
-
-```yaml
-deploystacks:
-  stage: deploy
-  parallel:
-    matrix:
-      - PROVIDER: aws
-        STACK: [monitoring, app1]
-      - PROVIDER: gcp
-        STACK: [data]
-  tags:
-    - ${PROVIDER}-${STACK}
-```
+- [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
+- [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 
 ### `trigger`
 

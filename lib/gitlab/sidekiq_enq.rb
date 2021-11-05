@@ -14,10 +14,17 @@ module Gitlab
     LUA_ZPOPBYSCORE_SHA = Digest::SHA1.hexdigest(LUA_ZPOPBYSCORE)
 
     def enqueue_jobs(now = Time.now.to_f.to_s, sorted_sets = Sidekiq::Scheduled::SETS)
-      if Feature.enabled?(:atomic_sidekiq_scheduler, default_enabled: :yaml)
-        atomic_find_jobs_and_enqueue(now, sorted_sets)
-      else
-        find_jobs_and_enqueue(now, sorted_sets)
+      Rails.application.reloader.wrap do
+        ::Gitlab::WithRequestStore.with_request_store do
+          if Feature.enabled?(:atomic_sidekiq_scheduler, default_enabled: :yaml)
+            atomic_find_jobs_and_enqueue(now, sorted_sets)
+          else
+            find_jobs_and_enqueue(now, sorted_sets)
+          end
+
+        ensure
+          ::Gitlab::Database::LoadBalancing.release_hosts
+        end
       end
     end
 

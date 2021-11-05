@@ -896,9 +896,6 @@ msgstr ""
 msgid "%{start} to %{end}"
 msgstr ""
 
-msgid "%{state} epics"
-msgstr ""
-
 msgid "%{strongOpen}Warning:%{strongClose} SAML group links can cause GitLab to automatically remove members from groups."
 msgstr ""
 

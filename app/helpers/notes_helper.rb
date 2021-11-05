@@ -188,7 +188,8 @@ module NotesHelper
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
-      lastFetchedAt: initial_last_fetched_at
+      lastFetchedAt: initial_last_fetched_at,
+      notesFilter: current_user&.notes_filter_for(issuable)
     }
 
     if issuable.is_a?(MergeRequest)

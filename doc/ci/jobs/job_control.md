@@ -640,6 +640,106 @@ This job can no longer be scheduled to run automatically. You can, however, exec
 To start a delayed job immediately, select **Play** (**{play}**).
 Soon GitLab Runner starts the job.
 
+## Parallelize large jobs
+
+To split a large job into multiple smaller jobs that run in parallel, use the
+[`parallel`](../yaml/index.md#parallel) keyword in your `.gitlab-ci.yml` file.
+
+Different languages and test suites have different methods to enable parallelization.
+For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
+and RSpec to run Ruby tests in parallel:
+
+```ruby
+# Gemfile
+source 'https://rubygems.org'
+
+gem 'rspec'
+gem 'semaphore_test_boosters'
+```
+
+```yaml
+test:
+  parallel: 3
+  script:
+    - bundle
+    - bundle exec rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL
+```
+
+You can then navigate to the **Jobs** tab of a new pipeline build and see your RSpec
+job split into three separate jobs.
+
+WARNING:
+Test Boosters reports usage statistics to the author.
+
+### Run a one-dimensional matrix of parallel jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
+
+You can create a one-dimensional matrix of parallel jobs:
+
+```yaml
+deploystacks:
+  stage: deploy
+  script:
+    - bin/deploy
+  parallel:
+    matrix:
+      - PROVIDER: [aws, ovh, gcp, vultr]
+```
+
+You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix).
+
+### Run a matrix of parallel trigger jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
+
+You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job.
+
+```yaml
+deploystacks:
+  stage: deploy
+  trigger:
+    include: path/to/child-pipeline.yml
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK: [monitoring, app1]
+      - PROVIDER: ovh
+        STACK: [monitoring, backup]
+      - PROVIDER: [gcp, vultr]
+        STACK: [data]
+```
+
+This example generates 6 parallel `deploystacks` trigger jobs, each with different values
+for `PROVIDER` and `STACK`, and they create 6 different child pipelines with those variables.
+
+```plaintext
+deploystacks: [aws, monitoring]
+deploystacks: [aws, app1]
+deploystacks: [ovh, monitoring]
+deploystacks: [ovh, backup]
+deploystacks: [gcp, data]
+deploystacks: [vultr, data]
+```
+
+In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/239737), you can
+use the variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags) keyword for
+dynamic runner selection.
+
+```yaml
+deploystacks:
+  stage: deploy
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK: [monitoring, app1]
+      - PROVIDER: gcp
+        STACK: [data]
+  tags:
+    - ${PROVIDER}-${STACK}
+```
+
 ## Use predefined CI/CD variables to run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose

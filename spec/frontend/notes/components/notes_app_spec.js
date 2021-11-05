@@ -2,7 +2,9 @@ import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Vue from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { setTestTimeout } from 'helpers/timeout';
+import waitForPromises from 'helpers/wait_for_promises';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import axios from '~/lib/utils/axios_utils';
@@ -428,6 +430,59 @@ describe('note_app', () => {
       expect(drafts.map((x) => x.props('draft'))).toEqual(
         mockData.draftComments.map(({ note }) => expect.objectContaining({ note })),
       );
+    });
+  });
+
+  describe('fetching discussions', () => {
+    describe('when note anchor is not present', () => {
+      it('does not include extra query params', async () => {
+        wrapper = shallowMount(NotesApp, { propsData, store: createStore() });
+        await waitForPromises();
+
+        expect(axiosMock.history.get[0].params).toBeUndefined();
+      });
+    });
+
+    describe('when note anchor is present', () => {
+      const mountWithNotesFilter = (notesFilter) =>
+        shallowMount(NotesApp, {
+          propsData: {
+            ...propsData,
+            notesData: {
+              ...propsData.notesData,
+              notesFilter,
+            },
+          },
+          store: createStore(),
+        });
+
+      beforeEach(() => {
+        setWindowLocation('#note_1');
+      });
+
+      it('does not include extra query params when filter is undefined', async () => {
+        wrapper = mountWithNotesFilter(undefined);
+        await waitForPromises();
+
+        expect(axiosMock.history.get[0].params).toBeUndefined();
+      });
+
+      it('does not include extra query params when filter is already set to default', async () => {
+        wrapper = mountWithNotesFilter(constants.DISCUSSION_FILTERS_DEFAULT_VALUE);
+        await waitForPromises();
+
+        expect(axiosMock.history.get[0].params).toBeUndefined();
+      });
+
+      it('includes extra query params when filter is not set to default', async () => {
+        wrapper = mountWithNotesFilter(constants.COMMENTS_ONLY_FILTER_VALUE);
+        await waitForPromises();
+
+        expect(axiosMock.history.get[0].params).toEqual({
+          notes_filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
+          persist_filter: false,
+        });
+      });
     });
   });
 });

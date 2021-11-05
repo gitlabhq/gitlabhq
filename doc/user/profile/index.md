@@ -49,7 +49,7 @@ Prerequisites:
 
 - Your namespace cannot contain a project with [Container Registry](../packages/container_registry/index.md) tags.
 - Your namespace cannot have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom).
+  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 
 To change your username:
 
