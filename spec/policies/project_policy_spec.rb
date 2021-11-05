@@ -955,6 +955,28 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'infrastructure google cloud feature' do
+    %w(guest reporter developer).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'disallows managing google cloud' do
+          expect_disallowed(:admin_project_google_cloud)
+        end
+      end
+    end
+
+    %w(maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it 'allows managing google cloud' do
+          expect_allowed(:admin_project_google_cloud)
+        end
+      end
+    end
+  end
+
   describe 'design permissions' do
     include DesignManagementTestHelpers
 

@@ -26,28 +26,6 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineService do
           pull_request.update!(source_branch: source_branch.name, source_sha: source_branch.target)
         end
 
-        context 'when the FF ci_create_external_pr_pipeline_async is disabled' do
-          before do
-            stub_feature_flags(ci_create_external_pr_pipeline_async: false)
-          end
-
-          it 'creates a pipeline for external pull request', :aggregate_failures do
-            pipeline = execute.payload
-
-            expect(execute).to be_success
-            expect(pipeline).to be_valid
-            expect(pipeline).to be_persisted
-            expect(pipeline).to be_external_pull_request_event
-            expect(pipeline).to eq(project.ci_pipelines.last)
-            expect(pipeline.external_pull_request).to eq(pull_request)
-            expect(pipeline.user).to eq(user)
-            expect(pipeline.status).to eq('created')
-            expect(pipeline.ref).to eq(pull_request.source_branch)
-            expect(pipeline.sha).to eq(pull_request.source_sha)
-            expect(pipeline.source_sha).to eq(pull_request.source_sha)
-          end
-        end
-
         it 'enqueues Ci::ExternalPullRequests::CreatePipelineWorker' do
           expect { execute }
             .to change { ::Ci::ExternalPullRequests::CreatePipelineWorker.jobs.count }

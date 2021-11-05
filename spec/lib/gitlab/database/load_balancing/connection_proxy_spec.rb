@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   describe '.insert_all!' do
     before do
       ActiveRecord::Schema.define do
-        create_table :connection_proxy_bulk_insert, force: true do |t|
+        create_table :_test_connection_proxy_bulk_insert, force: true do |t|
           t.string :name, null: true
         end
       end
@@ -93,13 +93,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
 
     after do
       ActiveRecord::Schema.define do
-        drop_table :connection_proxy_bulk_insert, force: true
+        drop_table :_test_connection_proxy_bulk_insert, force: true
       end
     end
 
     let(:model_class) do
       Class.new(ApplicationRecord) do
-        self.table_name = "connection_proxy_bulk_insert"
+        self.table_name = "_test_connection_proxy_bulk_insert"
       end
     end
 

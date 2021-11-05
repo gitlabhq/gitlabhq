@@ -149,39 +149,52 @@ gitops:
     - glob: '/**/*.yaml'
 ```
 
-## Authorize groups to use an Agent
+## Authorize projects and groups to use an Agent
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+> - Group authorization [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
+> - Project authorization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
 
-If you use the same cluster across multiple projects, you can set up the CI/CD Tunnel
-to grant the Agent access to one or more groups. This way, all the projects that belong
-to the authorized groups can access the same Agent. This enables you to save resources and
-have a scalable setup.
+If you use the same cluster across multiple projects, you can set up the [CI/CD Tunnel](ci_cd_tunnel.md)
+to grant access to an Agent from one or more projects or groups. This way, all the authorized
+projects can access the same Agent, which facilitates you to save resources and have a scalable setup.
 
-When you authorize a group, the agent's Kubernetes context is automatically injected
-into every project of the authorized group, and users can select the connection as
-described in the [CI/CD Tunnel documentation](ci_cd_tunnel.md).
-To authorize a group to access the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md),
-use the `ci_access` attribute in your `config.yaml` configuration file.
+When you authorize a project to use an agent through the [CI/CD Tunnel](ci_cd_tunnel.md),
+the selected Kubernetes context is automatically injected into CI/CD jobs, allowing you to
+run Kubernetes commands from your authorized projects' scripts. When you authorize a group,
+all the projects that belong to that group can access the selected agent.
 
-An Agent can only authorize groups in the same group hierarchy as the Agent's configuration project. At most
-100 groups can be authorized per Agent.
+An Agent can only authorize projects or groups in the same group hierarchy as the Agent's configuration
+project. You can authorize up to 100 projects and 100 groups per Agent.
 
-To authorize a group:
+### Authorize projects to use an Agent
 
-1. Edit your `config.yaml` file under the `.gitlab/agents/<agent name>` directory.
-1. Add the `ci_access` root attribute.
+To grant projects access to the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md):
+
+1. Go to your Agent's configuration project.
+1. Edit the Agent's configuration file (`config.yaml`).
+1. Add the `projects` attribute into `ci_access`.
+1. Identify the new project through its path:
+
+   ```yaml
+   ci_access:
+     projects:
+     - id: path/to/project
+   ```
+
+### Authorize groups to use an Agent
+
+To grant access to all projects within a group:
+
+1. Go to your Agent's configuration project.
+1. Edit the Agent's configuration file (`config.yaml`).
 1. Add the `groups` attribute into `ci_access`.
-1. Add the group `id` into `groups`, identifying the authorized group through its path.
+1. Identify the group or subgroup through its path:
 
-For example:
-
-```yaml
-ci_access:
-  # This agent is accessible from CI jobs in projects in these groups
-  groups:
-  - id: group/subgroup
-```
+   ```yaml
+   ci_access:
+     groups:
+     - id: path/to/group/subgroup
+   ```
 
 ## Surface network security alerts from cluster to GitLab **(ULTIMATE)**
 

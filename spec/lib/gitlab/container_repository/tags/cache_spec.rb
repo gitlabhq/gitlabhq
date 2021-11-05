@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Projects::ContainerRepository::CacheTagsCreatedAtService, :clean_gitlab_redis_cache do
+RSpec.describe ::Gitlab::ContainerRepository::Tags::Cache, :clean_gitlab_redis_cache do
   let_it_be(:dummy_tag_class) { Struct.new(:name, :created_at) }
   let_it_be(:repository) { create(:container_repository) }
 

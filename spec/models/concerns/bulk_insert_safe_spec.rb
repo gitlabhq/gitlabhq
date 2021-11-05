@@ -5,42 +5,42 @@ require 'spec_helper'
 RSpec.describe BulkInsertSafe do
   before(:all) do
     ActiveRecord::Schema.define do
-      create_table :bulk_insert_parent_items, force: true do |t|
+      create_table :_test_bulk_insert_parent_items, force: true do |t|
         t.string :name, null: false
       end
 
-      create_table :bulk_insert_items, force: true do |t|
+      create_table :_test_bulk_insert_items, force: true do |t|
         t.string :name, null: true
         t.integer :enum_value, null: false
         t.text :encrypted_secret_value, null: false
         t.string :encrypted_secret_value_iv, null: false
         t.binary :sha_value, null: false, limit: 20
         t.jsonb :jsonb_value, null: false
-        t.belongs_to :bulk_insert_parent_item, foreign_key: true, null: true
+        t.belongs_to :bulk_insert_parent_item, foreign_key: { to_table: :_test_bulk_insert_parent_items }, null: true
         t.timestamps null: true
 
         t.index :name, unique: true
       end
 
-      create_table :bulk_insert_items_with_composite_pk, id: false, force: true do |t|
+      create_table :_test_bulk_insert_items_with_composite_pk, id: false, force: true do |t|
         t.integer :id, null: true
         t.string :name, null: true
       end
 
-      execute("ALTER TABLE bulk_insert_items_with_composite_pk ADD PRIMARY KEY (id,name);")
+      execute("ALTER TABLE _test_bulk_insert_items_with_composite_pk ADD PRIMARY KEY (id,name);")
     end
   end
 
   after(:all) do
     ActiveRecord::Schema.define do
-      drop_table :bulk_insert_items, force: true
-      drop_table :bulk_insert_parent_items, force: true
-      drop_table :bulk_insert_items_with_composite_pk, force: true
+      drop_table :_test_bulk_insert_items, force: true
+      drop_table :_test_bulk_insert_parent_items, force: true
+      drop_table :_test_bulk_insert_items_with_composite_pk, force: true
     end
   end
 
   BulkInsertParentItem = Class.new(ActiveRecord::Base) do
-    self.table_name = :bulk_insert_parent_items
+    self.table_name = :_test_bulk_insert_parent_items
     self.inheritance_column = :_type_disabled
 
     def self.name
@@ -54,7 +54,7 @@ RSpec.describe BulkInsertSafe do
 
   let_it_be(:bulk_insert_item_class) do
     Class.new(ActiveRecord::Base) do
-      self.table_name = 'bulk_insert_items'
+      self.table_name = '_test_bulk_insert_items'
 
       include BulkInsertSafe
       include ShaAttribute
@@ -247,7 +247,7 @@ RSpec.describe BulkInsertSafe do
     context 'when a model with composite primary key is inserted' do
       let_it_be(:bulk_insert_items_with_composite_pk_class) do
         Class.new(ActiveRecord::Base) do
-          self.table_name = 'bulk_insert_items_with_composite_pk'
+          self.table_name = '_test_bulk_insert_items_with_composite_pk'
 
           include BulkInsertSafe
         end

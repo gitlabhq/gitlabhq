@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
   describe 'LoadBalancing integration tests', :database_replica, :delete do
     before(:all) do
       ActiveRecord::Schema.define do
-        create_table :load_balancing_test, force: true do |t|
+        create_table :_test_load_balancing_test, force: true do |t|
           t.string :name, null: true
         end
       end
@@ -113,13 +113,13 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
     after(:all) do
       ActiveRecord::Schema.define do
-        drop_table :load_balancing_test, force: true
+        drop_table :_test_load_balancing_test, force: true
       end
     end
 
     let(:model) do
       Class.new(ApplicationRecord) do
-        self.table_name = "load_balancing_test"
+        self.table_name = "_test_load_balancing_test"
       end
     end
 
@@ -443,7 +443,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
             elsif payload[:name] == 'SQL' # Custom query
               true
             else
-              keywords = %w[load_balancing_test]
+              keywords = %w[_test_load_balancing_test]
               keywords += %w[begin commit] if include_transaction
               keywords.any? { |keyword| payload[:sql].downcase.include?(keyword) }
             end

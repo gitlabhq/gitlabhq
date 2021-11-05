@@ -57,6 +57,7 @@
 - gitaly
 - gitlab_docs
 - global_search
+- google_cloud
 - helm_chart_registry
 - horse
 - importers

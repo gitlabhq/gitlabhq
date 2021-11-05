@@ -1,16 +1,29 @@
 # frozen_string_literal: true
 
 class Projects::GoogleCloudController < Projects::ApplicationController
-  before_action :authorize_can_manage_google_cloud_deployments!
+  feature_category :google_cloud
 
-  feature_category :release_orchestration
+  before_action :admin_project_google_cloud?
+  before_action :google_oauth2_enabled?
+  before_action :feature_flag_enabled?
 
   def index
   end
 
   private
 
-  def authorize_can_manage_google_cloud_deployments!
-    access_denied! unless can?(current_user, :manage_project_google_cloud, project)
+  def admin_project_google_cloud?
+    access_denied! unless can?(current_user, :admin_project_google_cloud, project)
+  end
+
+  def google_oauth2_enabled?
+    config = Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
+    if config.app_id.blank? || config.app_secret.blank?
+      access_denied! 'This GitLab instance not configured for Google Oauth2.'
+    end
+  end
+
+  def feature_flag_enabled?
+    access_denied! unless Feature.enabled?(:incubation_5mp_google_cloud)
   end
 end

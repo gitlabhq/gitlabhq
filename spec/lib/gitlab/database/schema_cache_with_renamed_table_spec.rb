@@ -11,12 +11,12 @@ RSpec.describe Gitlab::Database::SchemaCacheWithRenamedTable do
 
   let(:new_model) do
     Class.new(ActiveRecord::Base) do
-      self.table_name = 'projects_new'
+      self.table_name = '_test_projects_new'
     end
   end
 
   before do
-    stub_const('Gitlab::Database::TABLES_TO_BE_RENAMED', { 'projects' => 'projects_new' })
+    stub_const('Gitlab::Database::TABLES_TO_BE_RENAMED', { 'projects' => '_test_projects_new' })
   end
 
   context 'when table is not renamed yet' do
@@ -32,8 +32,8 @@ RSpec.describe Gitlab::Database::SchemaCacheWithRenamedTable do
 
   context 'when table is renamed' do
     before do
-      ActiveRecord::Base.connection.execute("ALTER TABLE projects RENAME TO projects_new")
-      ActiveRecord::Base.connection.execute("CREATE VIEW projects AS SELECT * FROM projects_new")
+      ActiveRecord::Base.connection.execute("ALTER TABLE projects RENAME TO _test_projects_new")
+      ActiveRecord::Base.connection.execute("CREATE VIEW projects AS SELECT * FROM _test_projects_new")
 
       old_model.reset_column_information
       ActiveRecord::Base.connection.schema_cache.clear!
@@ -54,14 +54,14 @@ RSpec.describe Gitlab::Database::SchemaCacheWithRenamedTable do
 
     it 'has the same indexes' do
       indexes_for_old_table = ActiveRecord::Base.connection.schema_cache.indexes('projects')
-      indexes_for_new_table = ActiveRecord::Base.connection.schema_cache.indexes('projects_new')
+      indexes_for_new_table = ActiveRecord::Base.connection.schema_cache.indexes('_test_projects_new')
 
       expect(indexes_for_old_table).to eq(indexes_for_new_table)
     end
 
     it 'has the same column_hash' do
       columns_hash_for_old_table = ActiveRecord::Base.connection.schema_cache.columns_hash('projects')
-      columns_hash_for_new_table = ActiveRecord::Base.connection.schema_cache.columns_hash('projects_new')
+      columns_hash_for_new_table = ActiveRecord::Base.connection.schema_cache.columns_hash('_test_projects_new')
 
       expect(columns_hash_for_old_table).to eq(columns_hash_for_new_table)
     end

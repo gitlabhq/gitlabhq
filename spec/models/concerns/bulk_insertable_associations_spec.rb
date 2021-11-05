@@ -6,42 +6,50 @@ RSpec.describe BulkInsertableAssociations do
   class BulkFoo < ApplicationRecord
     include BulkInsertSafe
 
+    self.table_name = '_test_bulk_foos'
+
     validates :name, presence: true
   end
 
   class BulkBar < ApplicationRecord
     include BulkInsertSafe
+
+    self.table_name = '_test_bulk_bars'
   end
 
-  SimpleBar = Class.new(ApplicationRecord)
+  SimpleBar = Class.new(ApplicationRecord) do
+    self.table_name = '_test_simple_bars'
+  end
 
   class BulkParent < ApplicationRecord
     include BulkInsertableAssociations
 
-    has_many :bulk_foos
+    self.table_name = '_test_bulk_parents'
+
+    has_many :bulk_foos, class_name: 'BulkFoo'
     has_many :bulk_hunks, class_name: 'BulkFoo'
-    has_many :bulk_bars
-    has_many :simple_bars # not `BulkInsertSafe`
+    has_many :bulk_bars, class_name: 'BulkBar'
+    has_many :simple_bars, class_name: 'SimpleBar' # not `BulkInsertSafe`
     has_one :bulk_foo # not supported
   end
 
   before(:all) do
     ActiveRecord::Schema.define do
-      create_table :bulk_parents, force: true do |t|
+      create_table :_test_bulk_parents, force: true do |t|
         t.string :name, null: true
       end
 
-      create_table :bulk_foos, force: true do |t|
-        t.string :name, null: true
-        t.belongs_to :bulk_parent, null: false
-      end
-
-      create_table :bulk_bars, force: true do |t|
+      create_table :_test_bulk_foos, force: true do |t|
         t.string :name, null: true
         t.belongs_to :bulk_parent, null: false
       end
 
-      create_table :simple_bars, force: true do |t|
+      create_table :_test_bulk_bars, force: true do |t|
+        t.string :name, null: true
+        t.belongs_to :bulk_parent, null: false
+      end
+
+      create_table :_test_simple_bars, force: true do |t|
         t.string :name, null: true
         t.belongs_to :bulk_parent, null: false
       end
@@ -50,10 +58,10 @@ RSpec.describe BulkInsertableAssociations do
 
   after(:all) do
     ActiveRecord::Schema.define do
-      drop_table :bulk_foos, force: true
-      drop_table :bulk_bars, force: true
-      drop_table :simple_bars, force: true
-      drop_table :bulk_parents, force: true
+      drop_table :_test_bulk_foos, force: true
+      drop_table :_test_bulk_bars, force: true
+      drop_table :_test_simple_bars, force: true
+      drop_table :_test_bulk_parents, force: true
     end
   end
 

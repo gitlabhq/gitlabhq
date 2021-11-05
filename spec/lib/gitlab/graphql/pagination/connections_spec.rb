@@ -8,7 +8,7 @@ RSpec.describe ::Gitlab::Graphql::Pagination::Connections do
 
   before(:all) do
     ActiveRecord::Schema.define do
-      create_table :testing_pagination_nodes, force: true do |t|
+      create_table :_test_testing_pagination_nodes, force: true do |t|
         t.integer :value, null: false
       end
     end
@@ -16,13 +16,13 @@ RSpec.describe ::Gitlab::Graphql::Pagination::Connections do
 
   after(:all) do
     ActiveRecord::Schema.define do
-      drop_table :testing_pagination_nodes, force: true
+      drop_table :_test_testing_pagination_nodes, force: true
     end
   end
 
   let_it_be(:node_model) do
     Class.new(ActiveRecord::Base) do
-      self.table_name = 'testing_pagination_nodes'
+      self.table_name = '_test_testing_pagination_nodes'
     end
   end
 

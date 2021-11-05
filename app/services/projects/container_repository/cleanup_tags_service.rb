@@ -140,7 +140,7 @@ module Projects
 
       def cache
         strong_memoize(:cache) do
-          ::Projects::ContainerRepository::CacheTagsCreatedAtService.new(@container_repository)
+          ::Gitlab::ContainerRepository::Tags::Cache.new(@container_repository)
         end
       end
 

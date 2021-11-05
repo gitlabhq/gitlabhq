@@ -161,7 +161,7 @@ module Namespaces
       def lineage(top: nil, bottom: nil, hierarchy_order: nil)
         raise UnboundedSearch, 'Must bound search by either top or bottom' unless top || bottom
 
-        skope = self.class.without_sti_condition
+        skope = self.class
 
         if top
           skope = skope.where("traversal_ids @> ('{?}')", top.id)
@@ -181,7 +181,6 @@ module Namespaces
           # standard SELECT to avoid mismatched attribute errors when trying to
           # chain future ActiveRelation commands, and retain the ordering.
           skope = self.class
-            .without_sti_condition
             .from(skope, self.class.table_name)
             .select(skope.arel_table[Arel.star])
             .order(depth: hierarchy_order)

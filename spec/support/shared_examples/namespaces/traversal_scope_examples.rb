@@ -25,26 +25,6 @@ RSpec.shared_examples 'namespace traversal scopes' do
     it { is_expected.to contain_exactly(group_1.id, group_2.id) }
   end
 
-  describe '.without_sti_condition' do
-    subject { described_class.where(type: 'Group').without_sti_condition }
-
-    context 'when include_sti_condition is enabled' do
-      before do
-        stub_feature_flags(include_sti_condition: true)
-      end
-
-      it { expect(subject.where_values_hash).to have_key('type') }
-    end
-
-    context 'when include_sti_condition is disabled' do
-      before do
-        stub_feature_flags(include_sti_condition: false)
-      end
-
-      it { expect(subject.where_values_hash).not_to have_key('type') }
-    end
-  end
-
   describe '.order_by_depth' do
     subject { described_class.where(id: [group_1, nested_group_1, deep_nested_group_1]).order_by_depth(direction) }
 

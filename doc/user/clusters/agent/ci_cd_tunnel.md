@@ -38,11 +38,11 @@ there isn't any context selected.
 Contexts are named in the following format: `<agent-configuration-project-path>:<agent-name>`.
 To get the list of available contexts, run `kubectl config get-contexts`.
 
-## Share the CI/CD Tunnel provided by an Agent with other projects and group
+## Share the CI/CD Tunnel provided by an Agent with other projects and groups
 
 The Agent can be configured to enable access to the CI/CD Tunnel to other projects or all the projects under a given group. This way you can have a single agent serving all the requests for several projects saving on resources and maintenance.
 
-You can read more on how to [authorize access to groups in the Agent configuration reference](repository.md#authorize-groups-to-use-an-agent).
+You can read more on how to [authorize access in the Agent configuration reference](repository.md#authorize-projects-and-groups-to-use-an-agent).
 
 ## Example for a `kubectl` command using the CI/CD Tunnel
 

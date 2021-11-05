@@ -215,7 +215,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
         stub_feature_flags(database_async_index_creation: true)
 
         expect(Gitlab::Database::AsyncIndexes).to receive(:create_pending_indexes!).ordered.exactly(databases_count).times
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).ordered.once
+        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
 
         run_rake_task('gitlab:db:reindex')
       end
@@ -233,7 +233,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
     context 'calls automatic reindexing' do
       it 'uses all candidate indexes' do
-        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).once
+        expect(Gitlab::Database::Reindexing).to receive(:automatic_reindexing).exactly(databases_count).times
 
         run_rake_task('gitlab:db:reindex')
       end

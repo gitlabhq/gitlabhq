@@ -8,69 +8,69 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
   def create_table_structure
     migration = ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers)
 
-    migration.create_table :loose_fk_parent_table_1
-    migration.create_table :loose_fk_parent_table_2
+    migration.create_table :_test_loose_fk_parent_table_1
+    migration.create_table :_test_loose_fk_parent_table_2
 
-    migration.create_table :loose_fk_child_table_1_1 do |t|
+    migration.create_table :_test_loose_fk_child_table_1_1 do |t|
       t.bigint :parent_id
     end
 
-    migration.create_table :loose_fk_child_table_1_2 do |t|
+    migration.create_table :_test_loose_fk_child_table_1_2 do |t|
       t.bigint :parent_id_with_different_column
     end
 
-    migration.create_table :loose_fk_child_table_2_1 do |t|
+    migration.create_table :_test_loose_fk_child_table_2_1 do |t|
       t.bigint :parent_id
     end
 
-    migration.track_record_deletions(:loose_fk_parent_table_1)
-    migration.track_record_deletions(:loose_fk_parent_table_2)
+    migration.track_record_deletions(:_test_loose_fk_parent_table_1)
+    migration.track_record_deletions(:_test_loose_fk_parent_table_2)
   end
 
   let!(:parent_model_1) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_parent_table_1'
+      self.table_name = '_test_loose_fk_parent_table_1'
 
       include LooseForeignKey
 
-      loose_foreign_key :loose_fk_child_table_1_1, :parent_id, on_delete: :async_delete
-      loose_foreign_key :loose_fk_child_table_1_2, :parent_id_with_different_column, on_delete: :async_nullify
+      loose_foreign_key :_test_loose_fk_child_table_1_1, :parent_id, on_delete: :async_delete
+      loose_foreign_key :_test_loose_fk_child_table_1_2, :parent_id_with_different_column, on_delete: :async_nullify
     end
   end
 
   let!(:parent_model_2) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_parent_table_2'
+      self.table_name = '_test_loose_fk_parent_table_2'
 
       include LooseForeignKey
 
-      loose_foreign_key :loose_fk_child_table_2_1, :parent_id, on_delete: :async_delete
+      loose_foreign_key :_test_loose_fk_child_table_2_1, :parent_id, on_delete: :async_delete
     end
   end
 
   let!(:child_model_1) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_child_table_1_1'
+      self.table_name = '_test_loose_fk_child_table_1_1'
     end
   end
 
   let!(:child_model_2) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_child_table_1_2'
+      self.table_name = '_test_loose_fk_child_table_1_2'
     end
   end
 
   let!(:child_model_3) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_child_table_2_1'
+      self.table_name = '_test_loose_fk_child_table_2_1'
     end
   end
 
-  let(:loose_fk_parent_table_1) { table(:loose_fk_parent_table_1) }
-  let(:loose_fk_parent_table_2) { table(:loose_fk_parent_table_2) }
-  let(:loose_fk_child_table_1_1) { table(:loose_fk_child_table_1_1) }
-  let(:loose_fk_child_table_1_2) { table(:loose_fk_child_table_1_2) }
-  let(:loose_fk_child_table_2_1) { table(:loose_fk_child_table_2_1) }
+  let(:loose_fk_parent_table_1) { table(:_test_loose_fk_parent_table_1) }
+  let(:loose_fk_parent_table_2) { table(:_test_loose_fk_parent_table_2) }
+  let(:loose_fk_child_table_1_1) { table(:_test_loose_fk_child_table_1_1) }
+  let(:loose_fk_child_table_1_2) { table(:_test_loose_fk_child_table_1_2) }
+  let(:loose_fk_child_table_2_1) { table(:_test_loose_fk_child_table_2_1) }
 
   before(:all) do
     create_table_structure
@@ -79,11 +79,11 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
   after(:all) do
     migration = ActiveRecord::Migration.new
 
-    migration.drop_table :loose_fk_parent_table_1
-    migration.drop_table :loose_fk_parent_table_2
-    migration.drop_table :loose_fk_child_table_1_1
-    migration.drop_table :loose_fk_child_table_1_2
-    migration.drop_table :loose_fk_child_table_2_1
+    migration.drop_table :_test_loose_fk_parent_table_1
+    migration.drop_table :_test_loose_fk_parent_table_2
+    migration.drop_table :_test_loose_fk_child_table_1_1
+    migration.drop_table :_test_loose_fk_child_table_1_2
+    migration.drop_table :_test_loose_fk_child_table_2_1
   end
 
   before do

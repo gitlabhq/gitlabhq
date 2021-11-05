@@ -286,7 +286,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner do
     let(:migration_wrapper) { Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper.new }
 
     let(:migration_helpers) { ActiveRecord::Migration.new }
-    let(:table_name) { :_batched_migrations_test_table }
+    let(:table_name) { :_test_batched_migrations_test_table }
     let(:column_name) { :some_id }
     let(:job_arguments) { [:some_id, :some_id_convert_to_bigint] }
 

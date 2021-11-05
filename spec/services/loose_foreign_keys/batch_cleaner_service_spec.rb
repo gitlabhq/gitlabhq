@@ -8,44 +8,44 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
   def create_table_structure
     migration = ActiveRecord::Migration.new.extend(Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers)
 
-    migration.create_table :loose_fk_parent_table
+    migration.create_table :_test_loose_fk_parent_table
 
-    migration.create_table :loose_fk_child_table_1 do |t|
+    migration.create_table :_test_loose_fk_child_table_1 do |t|
       t.bigint :parent_id
     end
 
-    migration.create_table :loose_fk_child_table_2 do |t|
+    migration.create_table :_test_loose_fk_child_table_2 do |t|
       t.bigint :parent_id_with_different_column
     end
 
-    migration.track_record_deletions(:loose_fk_parent_table)
+    migration.track_record_deletions(:_test_loose_fk_parent_table)
   end
 
   let(:parent_model) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_parent_table'
+      self.table_name = '_test_loose_fk_parent_table'
 
       include LooseForeignKey
 
-      loose_foreign_key :loose_fk_child_table_1, :parent_id, on_delete: :async_delete
-      loose_foreign_key :loose_fk_child_table_2, :parent_id_with_different_column, on_delete: :async_nullify
+      loose_foreign_key :_test_loose_fk_child_table_1, :parent_id, on_delete: :async_delete
+      loose_foreign_key :_test_loose_fk_child_table_2, :parent_id_with_different_column, on_delete: :async_nullify
     end
   end
 
   let(:child_model_1) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_child_table_1'
+      self.table_name = '_test_loose_fk_child_table_1'
     end
   end
 
   let(:child_model_2) do
     Class.new(ApplicationRecord) do
-      self.table_name = 'loose_fk_child_table_2'
+      self.table_name = '_test_loose_fk_child_table_2'
     end
   end
 
-  let(:loose_fk_child_table_1) { table(:loose_fk_child_table_1) }
-  let(:loose_fk_child_table_2) { table(:loose_fk_child_table_2) }
+  let(:loose_fk_child_table_1) { table(:_test_loose_fk_child_table_1) }
+  let(:loose_fk_child_table_2) { table(:_test_loose_fk_child_table_2) }
   let(:parent_record_1) { parent_model.create! }
   let(:other_parent_record) { parent_model.create! }
 
@@ -73,9 +73,9 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
 
   after(:all) do
     migration = ActiveRecord::Migration.new
-    migration.drop_table :loose_fk_parent_table
-    migration.drop_table :loose_fk_child_table_1
-    migration.drop_table :loose_fk_child_table_2
+    migration.drop_table :_test_loose_fk_parent_table
+    migration.drop_table :_test_loose_fk_child_table_1
+    migration.drop_table :_test_loose_fk_child_table_2
   end
 
   context 'when parent records are deleted' do
@@ -90,8 +90,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
       described_class.new(parent_klass: parent_model,
                           deleted_parent_records: LooseForeignKeys::DeletedRecord.status_pending.all,
                           models_by_table_name: {
-                            'loose_fk_child_table_1' => child_model_1,
-                            'loose_fk_child_table_2' => child_model_2
+                            '_test_loose_fk_child_table_1' => child_model_1,
+                            '_test_loose_fk_child_table_2' => child_model_2
                           }).execute
     end
 

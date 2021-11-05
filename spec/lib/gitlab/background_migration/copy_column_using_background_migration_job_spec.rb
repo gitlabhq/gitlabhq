@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob do
-  let(:table_name) { :copy_primary_key_test }
+  let(:table_name) { :_test_copy_primary_key_test }
   let(:test_table) { table(table_name) }
   let(:sub_batch_size) { 1000 }
   let(:pause_ms) { 0 }
