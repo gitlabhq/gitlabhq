@@ -8,8 +8,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
       setup = described_class.new(ActiveRecord::Base)
 
       expect(setup).to receive(:configure_connection)
-      expect(setup).to receive(:setup_load_balancer)
+      expect(setup).to receive(:setup_connection_proxy)
       expect(setup).to receive(:setup_service_discovery)
+      expect(setup).to receive(:setup_feature_flag_to_model_load_balancing)
 
       setup.setup
     end
@@ -44,7 +45,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
     end
   end
 
-  describe '#setup_load_balancer' do
+  describe '#setup_connection_proxy' do
     it 'sets up the load balancer' do
       model = Class.new(ActiveRecord::Base)
       setup = described_class.new(model)
@@ -58,7 +59,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         .with(setup.configuration)
         .and_return(lb)
 
-      setup.setup_load_balancer
+      setup.setup_connection_proxy
 
       expect(model.connection.load_balancer).to eq(lb)
       expect(model.sticking)
@@ -81,7 +82,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         model = ActiveRecord::Base
         setup = described_class.new(model)
         sv = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
-        lb = model.connection.load_balancer
 
         allow(setup.configuration)
           .to receive(:service_discovery_enabled?)
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
         allow(Gitlab::Database::LoadBalancing::ServiceDiscovery)
           .to receive(:new)
-          .with(lb, setup.configuration.service_discovery)
+          .with(setup.load_balancer, setup.configuration.service_discovery)
           .and_return(sv)
 
         expect(sv).to receive(:perform_service_discovery)
@@ -102,7 +102,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         model = ActiveRecord::Base
         setup = described_class.new(model, start_service_discovery: true)
         sv = instance_spy(Gitlab::Database::LoadBalancing::ServiceDiscovery)
-        lb = model.connection.load_balancer
 
         allow(setup.configuration)
           .to receive(:service_discovery_enabled?)
@@ -110,13 +109,181 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
         allow(Gitlab::Database::LoadBalancing::ServiceDiscovery)
           .to receive(:new)
-          .with(lb, setup.configuration.service_discovery)
+          .with(setup.load_balancer, setup.configuration.service_discovery)
           .and_return(sv)
 
         expect(sv).to receive(:perform_service_discovery)
         expect(sv).to receive(:start)
 
         setup.setup_service_discovery
+      end
+    end
+  end
+
+  describe '#setup_feature_flag_to_model_load_balancing', :reestablished_active_record_base do
+    using RSpec::Parameterized::TableSyntax
+
+    where do
+      {
+        "with model LB enabled it picks a dedicated CI connection" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: 'true',
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: false,
+          ff_use_model_load_balancing: nil,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'ci_replica', write: 'ci' }
+          }
+        },
+        "with model LB enabled and re-use of primary connection it uses CI connection for reads" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: 'true',
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
+          request_store_active: false,
+          ff_use_model_load_balancing: nil,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'ci_replica', write: 'main' }
+          }
+        },
+        "with model LB disabled it fallbacks to use main" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: 'false',
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: false,
+          ff_use_model_load_balancing: nil,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'main_replica', write: 'main' }
+          }
+        },
+        "with model LB disabled, but re-use configured it fallbacks to use main" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: 'false',
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
+          request_store_active: false,
+          ff_use_model_load_balancing: nil,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'main_replica', write: 'main' }
+          }
+        },
+        "with FF disabled without RequestStore it uses main" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: false,
+          ff_use_model_load_balancing: false,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'main_replica', write: 'main' }
+          }
+        },
+        "with FF enabled without RequestStore sticking of FF does not work, so it fallbacks to use main" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: false,
+          ff_use_model_load_balancing: true,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'main_replica', write: 'main' }
+          }
+        },
+        "with FF disabled with RequestStore it uses main" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: true,
+          ff_use_model_load_balancing: false,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'main_replica', write: 'main' }
+          }
+        },
+        "with FF enabled with RequestStore it sticks FF and uses CI connection" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: nil,
+          request_store_active: true,
+          ff_use_model_load_balancing: true,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'ci_replica', write: 'ci' }
+          }
+        },
+        "with re-use and FF enabled with RequestStore it sticks FF and uses CI connection for reads" => {
+          env_GITLAB_USE_MODEL_LOAD_BALANCING: nil,
+          env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci: 'main',
+          request_store_active: true,
+          ff_use_model_load_balancing: true,
+          expectations: {
+            main: { read: 'main_replica', write: 'main' },
+            ci: { read: 'ci_replica', write: 'main' }
+          }
+        }
+      }
+    end
+
+    with_them do
+      let(:ci_class) do
+        Class.new(ActiveRecord::Base) do
+          def self.name
+            'Ci::ApplicationRecordTemporary'
+          end
+
+          establish_connection ActiveRecord::DatabaseConfigurations::HashConfig.new(
+            Rails.env,
+            'ci',
+            ActiveRecord::Base.connection_db_config.configuration_hash
+          )
+        end
+      end
+
+      let(:models) do
+        {
+          main: ActiveRecord::Base,
+          ci: ci_class
+        }
+      end
+
+      around do |example|
+        if request_store_active
+          Gitlab::WithRequestStore.with_request_store do
+            RequestStore.clear!
+
+            example.run
+          end
+        else
+          example.run
+        end
+      end
+
+      before do
+        # Rewrite `class_attribute` to use rspec mocking and prevent modifying the objects
+        allow_next_instance_of(described_class) do |setup|
+          allow(setup).to receive(:configure_connection)
+
+          allow(setup).to receive(:setup_class_attribute) do |attribute, value|
+            allow(setup.model).to receive(attribute) { value }
+          end
+        end
+
+        stub_env('GITLAB_USE_MODEL_LOAD_BALANCING', env_GITLAB_USE_MODEL_LOAD_BALANCING)
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci)
+        stub_feature_flags(use_model_load_balancing: ff_use_model_load_balancing)
+      end
+
+      it 'results match expectations' do
+        result = models.transform_values do |model|
+          # Make load balancer to force init with a dedicated replicas connections
+          described_class.new(model).tap do |subject|
+            subject.configuration.hosts = [subject.configuration.replica_db_config.host]
+            subject.setup
+          end
+
+          load_balancer = model.connection.load_balancer
+
+          {
+            read: load_balancer.read { |connection| connection.pool.db_config.name },
+            write: load_balancer.read_write { |connection| connection.pool.db_config.name }
+          }
+        end
+
+        expect(result).to eq(expectations)
       end
     end
   end

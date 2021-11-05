@@ -1,7 +1,7 @@
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 import * as types from './mutation_types';
 
 const REQUEST_PAGE_COUNT = 100;
@@ -30,7 +30,7 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
     .catch(() => {
       dispatch('receiveDataError');
       createFlash({
-        message: s__('Something went wrong while fetching related merge requests.'),
+        message: __('Something went wrong while fetching related merge requests.'),
       });
     });
 };

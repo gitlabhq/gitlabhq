@@ -23,7 +23,7 @@ export default {
   translations: {
     createdTimeagoLabel: s__('UserList|created %{timeago}'),
     deleteListTitle: s__('UserList|Delete %{name}?'),
-    deleteListMessage: s__('User list %{name} will be removed. Are you sure?'),
+    deleteListMessage: __('User list %{name} will be removed. Are you sure?'),
     editUserListLabel: s__('FeatureFlags|Edit User List'),
   },
   modal: {

@@ -274,6 +274,14 @@ module Ci
     end
 
     def status
+      return :not_connected unless contacted_at
+
+      online? ? :online : :offline
+    end
+
+    # DEPRECATED
+    # TODO Remove in %15.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    def deprecated_rest_status
       if contacted_at.nil?
         :not_connected
       elsif active?

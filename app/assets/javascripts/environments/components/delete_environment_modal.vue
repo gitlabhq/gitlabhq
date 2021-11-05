@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlModal } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
 export default {
@@ -27,7 +27,7 @@ export default {
     },
     cancelProps() {
       return {
-        text: s__('Cancel'),
+        text: __('Cancel'),
       };
     },
     confirmDeleteMessage() {

@@ -2,7 +2,7 @@
 import { GlSprintf, GlModal } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import createFlash from '~/flash';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
 import BadgeList from './badge_list.vue';
@@ -25,13 +25,13 @@ export default {
     ...mapState(['badgeInModal', 'isEditing']),
     primaryProps() {
       return {
-        text: s__('Delete badge'),
+        text: __('Delete badge'),
         attributes: [{ category: 'primary' }, { variant: 'danger' }],
       };
     },
     cancelProps() {
       return {
-        text: s__('Cancel'),
+        text: __('Cancel'),
       };
     },
   },

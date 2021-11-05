@@ -3,7 +3,7 @@ import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import createFlash from '~/flash';
 import { number } from '~/lib/utils/unit_format';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import usageTrendsCountQuery from '../graphql/queries/usage_trends_count.query.graphql';
 
 const defaultPrecision = 0;
@@ -52,7 +52,7 @@ export default {
       mergeRequests: s__('UsageTrends|Merge requests'),
       pipelines: s__('UsageTrends|Pipelines'),
     },
-    loadCountsError: s__('Could not load usage counts. Please refresh the page to try again.'),
+    loadCountsError: __('Could not load usage counts. Please refresh the page to try again.'),
   },
 };
 </script>

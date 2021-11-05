@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import Cookies from 'js-cookie';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 const trackingMixin = Tracking.mixin();
@@ -69,7 +69,7 @@ export default {
     },
   },
   i18n: {
-    modalTitle: s__("That's it, well done!"),
+    modalTitle: __("That's it, well done!"),
     pipelinesButton: s__('MR widget|See your pipeline in action'),
     mergeRequestButton: s__('MR widget|Back to the Merge request'),
     bodyMessage: s__(

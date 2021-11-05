@@ -12,7 +12,7 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import {
@@ -83,7 +83,7 @@ export default {
           ),
         },
       },
-      feedbackTip: s__(
+      feedbackTip: __(
         'Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}.',
       ),
     },

@@ -83,6 +83,24 @@ request is as follows:
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, execute the migrations again once the review is complete.
 1. Write tests for more complex migrations.
+1. If your merge request adds new validations to existing models, to make sure the
+   data processing is backwards compatible:
+
+   - Ask in the [`#database`](https://gitlab.slack.com/archives/CNZ8E900G) Slack channel
+     for assistance to execute the database query that checks the existing rows to
+     ensure existing rows aren't impacted by the change.
+   - Add the necessary validation with a feature flag to be gradually rolled out
+     following [the rollout steps](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#rollout).
+
+   If this merge request is urgent, the code owners should make the final call on
+   whether reviewing existing rows should be included as an immediate follow-up task
+   to the merge request.
+
+   NOTE:
+   There isn't a way to know anything about our customers' data on their
+   [self-managed instances](../../subscriptions/self_managed/index.md), so keep
+   that in mind for any data implications with your merge request.
+   
 1. Merge requests **must** adhere to the [merge request performance guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara, read
    [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).

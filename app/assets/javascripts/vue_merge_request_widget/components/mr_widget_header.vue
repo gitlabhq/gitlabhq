@@ -151,7 +151,7 @@ export default {
           right
           data-qa-selector="download_dropdown"
         >
-          <gl-dropdown-section-header>{{ s__('Download as') }}</gl-dropdown-section-header>
+          <gl-dropdown-section-header>{{ __('Download as') }}</gl-dropdown-section-header>
           <gl-dropdown-item
             :href="mr.emailPatchesPath"
             class="js-download-email-patches"

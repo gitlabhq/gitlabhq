@@ -6,27 +6,30 @@ module Ci
 
     def runner_status_icon(runner, size: 16, icon_class: '')
       status = runner.status
+      active = runner.active
 
       title = ''
       icon = 'warning-solid'
       span_class = ''
 
       case status
+      when :online
+        if active
+          title = s_("Runners|Runner is online, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
+          icon = 'status-active'
+          span_class = 'gl-text-green-500'
+        else
+          title = s_("Runners|Runner is paused, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
+          icon = 'status-paused'
+          span_class = 'gl-text-gray-600'
+        end
       when :not_connected
         title = s_("Runners|New runner, has not connected yet")
         icon = 'warning-solid'
-      when :online
-        title = s_("Runners|Runner is online, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
-        icon = 'status-active'
-        span_class = 'gl-text-green-500'
       when :offline
         title = s_("Runners|Runner is offline, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
         icon = 'status-failed'
         span_class = 'gl-text-red-500'
-      when :paused
-        title = s_("Runners|Runner is paused, last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(runner.contacted_at) }
-        icon = 'status-paused'
-        span_class = 'gl-text-gray-600'
       end
 
       content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner_status_icon', qa_selector: "runner_status_#{status}_content" }) do

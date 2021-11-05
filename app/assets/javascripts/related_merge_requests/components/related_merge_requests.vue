@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import { sprintf, n__, s__ } from '~/locale';
+import { sprintf, __, n__ } from '~/locale';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import { parseIssuableData } from '../../issue_show/utils/parse_data';
 
@@ -40,7 +40,7 @@ export default {
         this.totalCount,
       );
 
-      return sprintf(s__('%{mrText}, this issue will be closed automatically.'), { mrText });
+      return sprintf(__('%{mrText}, this issue will be closed automatically.'), { mrText });
     },
   },
   mounted() {

@@ -30,7 +30,7 @@ export default {
     updatedFileDescription() {
       const { sourcePath } = this.appData;
 
-      return sprintf(s__('Update %{sourcePath} file'), { sourcePath });
+      return sprintf(__('Update %{sourcePath} file'), { sourcePath });
     },
   },
   created() {

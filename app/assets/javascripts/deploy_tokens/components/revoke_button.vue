@@ -62,7 +62,7 @@ export default {
       </gl-sprintf>
       {{ s__('DeployTokens|This action cannot be undone.') }}
       <template #modal-footer>
-        <gl-button category="secondary" @click="cancelHandler">{{ s__('Cancel') }}</gl-button>
+        <gl-button category="secondary" @click="cancelHandler">{{ __('Cancel') }}</gl-button>
         <gl-button
           category="primary"
           variant="danger"

@@ -38128,9 +38128,6 @@ msgstr ""
 msgid "VulnerabilityChart|Severity"
 msgstr ""
 
-msgid "VulnerabilityManagement, Fetching linked Jira issues"
-msgstr ""
-
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} %{timeago} by %{user}"
 msgstr ""
 
@@ -38156,6 +38153,9 @@ msgid "VulnerabilityManagement|Create Jira issue"
 msgstr ""
 
 msgid "VulnerabilityManagement|Detected"
+msgstr ""
+
+msgid "VulnerabilityManagement|Fetching linked Jira issues"
 msgstr ""
 
 msgid "VulnerabilityManagement|Needs triage"

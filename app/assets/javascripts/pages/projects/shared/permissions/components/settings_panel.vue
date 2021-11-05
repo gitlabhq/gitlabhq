@@ -2,7 +2,7 @@
 import { GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   visibilityOptions,
   visibilityLevelDescriptions,
@@ -31,7 +31,7 @@ export default {
     operationsLabel: s__('ProjectSettings|Operations'),
     packagesLabel: s__('ProjectSettings|Packages'),
     pagesLabel: s__('ProjectSettings|Pages'),
-    ciCdLabel: s__('CI/CD'),
+    ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
     requirementsLabel: s__('ProjectSettings|Requirements'),
     securityAndComplianceLabel: s__('ProjectSettings|Security & Compliance'),

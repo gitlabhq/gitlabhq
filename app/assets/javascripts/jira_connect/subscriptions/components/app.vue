@@ -1,55 +1,43 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { mapState, mapMutations } from 'vuex';
-import { retrieveAlert, getLocation } from '~/jira_connect/subscriptions/utils';
+import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import { SET_ALERT } from '../store/mutation_types';
 import SubscriptionsList from './subscriptions_list.vue';
 import AddNamespaceButton from './add_namespace_button.vue';
+import SignInButton from './sign_in_button.vue';
 
 export default {
   name: 'JiraConnectApp',
   components: {
     GlAlert,
-    GlButton,
     GlLink,
     GlSprintf,
     SubscriptionsList,
     AddNamespaceButton,
+    SignInButton,
   },
   inject: {
     usersPath: {
       default: '',
     },
   },
-  data() {
-    return {
-      location: '',
-    };
-  },
   computed: {
     ...mapState(['alert']),
-    usersPathWithReturnTo() {
-      if (this.location) {
-        return `${this.usersPath}?return_to=${this.location}`;
-      }
-
-      return this.usersPath;
-    },
     shouldShowAlert() {
       return Boolean(this.alert?.message);
+    },
+    userSignedIn() {
+      return Boolean(!this.usersPath);
     },
   },
   created() {
     this.setInitialAlert();
-    this.setLocation();
   },
   methods: {
     ...mapMutations({
       setAlert: SET_ALERT,
     }),
-    async setLocation() {
-      this.location = await getLocation();
-    },
     setInitialAlert() {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
@@ -82,15 +70,7 @@ export default {
 
     <div class="jira-connect-app-body gl-my-7 gl-px-5 gl-pb-4">
       <div class="gl-display-flex gl-justify-content-end">
-        <gl-button
-          v-if="usersPath"
-          category="primary"
-          variant="info"
-          class="gl-align-self-center"
-          :href="usersPathWithReturnTo"
-          target="_blank"
-          >{{ s__('Integrations|Sign in to add namespaces') }}</gl-button
-        >
+        <sign-in-button v-if="!userSignedIn" :users-path="usersPath" />
         <add-namespace-button v-else />
       </div>
 

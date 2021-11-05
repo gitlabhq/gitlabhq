@@ -203,7 +203,7 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.1",
-    "@gitlab/eslint-plugin": "9.4.0",
+    "@gitlab/eslint-plugin": "10.0.0",
     "@gitlab/stylelint-config": "2.6.0",
     "@testing-library/dom": "^7.16.2",
     "@vue/test-utils": "1.2.0",

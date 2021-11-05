@@ -6,7 +6,7 @@ import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import Poll from '../../lib/utils/poll';
 import { getParameterByName } from '../../lib/utils/url_utility';
-import { s__ } from '../../locale';
+import { s__, __ } from '../../locale';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import tablePagination from '../../vue_shared/components/pagination/table_pagination.vue';
 import container from '../components/container.vue';
@@ -207,13 +207,13 @@ export default {
     tabs() {
       return [
         {
-          name: s__('Available'),
+          name: __('Available'),
           scope: 'available',
           count: this.state.availableCounter,
           isActive: this.scope === 'available',
         },
         {
-          name: s__('Stopped'),
+          name: __('Stopped'),
           scope: 'stopped',
           count: this.state.stoppedCounter,
           isActive: this.scope === 'stopped',

@@ -58,7 +58,7 @@ export default {
       };
       this.isLoading = false;
       createFlash({
-        message: s__('Something went wrong on our end'),
+        message: __('Something went wrong on our end'),
       });
     },
     initPolling() {

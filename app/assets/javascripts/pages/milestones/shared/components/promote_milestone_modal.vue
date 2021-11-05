@@ -3,7 +3,7 @@ import { GlModal } from '@gitlab/ui';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -83,7 +83,7 @@ export default {
     attributes: [{ variant: 'warning' }],
   },
   cancelAction: {
-    text: s__('Cancel'),
+    text: __('Cancel'),
     attributes: [],
   },
 };

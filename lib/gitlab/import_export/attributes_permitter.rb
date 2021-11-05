@@ -44,7 +44,7 @@ module Gitlab
 
       # We want to use AttributesCleaner for these relations instead, in the future this should be removed to make sure
       # we are using AttributesPermitter for every imported relation.
-      DISABLED_RELATION_NAMES = %i[user author issuable_sla].freeze
+      DISABLED_RELATION_NAMES = %i[author issuable_sla].freeze
 
       def initialize(config: ImportExport::Config.new.to_h)
         @config = config

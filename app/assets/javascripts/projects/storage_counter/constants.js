@@ -51,7 +51,7 @@ export const ERROR_MESSAGE = s__(
   'UsageQuota|Something went wrong while fetching project storage statistics',
 );
 
-export const LEARN_MORE_LABEL = s__('Learn more.');
+export const LEARN_MORE_LABEL = __('Learn more.');
 export const USAGE_QUOTAS_LABEL = s__('UsageQuota|Usage Quotas');
 export const HELP_LINK_ARIA_LABEL = s__('UsageQuota|%{linkTitle} help link');
 export const TOTAL_USAGE_DEFAULT_TEXT = __('N/A');

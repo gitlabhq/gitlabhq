@@ -12,7 +12,7 @@ import { produce } from 'immer';
 import { fetchPolicies } from '~/lib/graphql';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   BRANCH_PAGINATION_LIMIT,
   BRANCH_SEARCH_DEBOUNCE,
@@ -25,9 +25,9 @@ import getLastCommitBranchQuery from '~/pipeline_editor/graphql/queries/client/l
 
 export default {
   i18n: {
-    dropdownHeader: s__('Switch branch'),
-    title: s__('Branches'),
-    fetchError: s__('Unable to fetch branch list for this project.'),
+    dropdownHeader: __('Switch branch'),
+    title: __('Branches'),
+    fetchError: __('Unable to fetch branch list for this project.'),
   },
   inputDebounce: BRANCH_SEARCH_DEBOUNCE,
   components: {

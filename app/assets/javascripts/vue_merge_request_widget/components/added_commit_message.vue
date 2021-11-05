@@ -67,8 +67,8 @@ export default {
       <template #targetBranch>
         <span class="label-branch">{{ targetBranchEscaped }}</span>
       </template>
-      <template v-if="glFeatures.restructuredMrWidget" #squashedCommits>
-        <template v-if="isSquashEnabled">
+      <template #squashedCommits>
+        <template v-if="glFeatures.restructuredMrWidget && isSquashEnabled">
           {{ __('(commits will be squashed)') }}</template
         ></template
       >

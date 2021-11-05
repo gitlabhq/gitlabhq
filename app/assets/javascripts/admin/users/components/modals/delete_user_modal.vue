@@ -138,7 +138,7 @@ export default {
       />
     </form>
     <template #modal-footer>
-      <gl-button @click="onCancel">{{ s__('Cancel') }}</gl-button>
+      <gl-button @click="onCancel">{{ __('Cancel') }}</gl-button>
       <gl-button
         :disabled="!canSubmit"
         category="secondary"

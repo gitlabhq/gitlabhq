@@ -78,8 +78,8 @@ export default {
         v-if="resolveAllDiscussionsIssuePath && !allResolved"
         v-gl-tooltip
         :href="resolveAllDiscussionsIssuePath"
-        :title="s__('Create issue to resolve all threads')"
-        :aria-label="s__('Create issue to resolve all threads')"
+        :title="__('Create issue to resolve all threads')"
+        :aria-label="__('Create issue to resolve all threads')"
         class="new-issue-for-discussion discussion-create-issue-btn"
         icon="issue-new"
       />

@@ -178,7 +178,7 @@ included_attributes:
     - :project_id
     - :key
     - :value
-  label:
+  label: &label_definition
     - :title
     - :color
     - :project_id
@@ -188,22 +188,13 @@ included_attributes:
     - :template
     - :description
     - :priority
-  labels:
-    - :title
-    - :color
-    - :project_id
-    - :group_id
-    - :created_at
-    - :updated_at
-    - :template
-    - :description
-    - :priority
+  labels: *label_definition
   priorities:
     - :project_id
     - :priority
     - :created_at
     - :updated_at
-  milestone:
+  milestone: &milestone_definition
     - :iid
     - :title
     - :project_id
@@ -214,17 +205,7 @@ included_attributes:
     - :updated_at
     - :start_date
     - :state
-  milestones:
-    - :iid
-    - :title
-    - :project_id
-    - :group_id
-    - :description
-    - :due_date
-    - :created_at
-    - :updated_at
-    - :start_date
-    - :state
+  milestones: *milestone_definition
   protected_branches:
     - :project_id
     - :name
@@ -315,6 +296,200 @@ included_attributes:
     - :project_id
     - :issue_template_key
     - :project_key
+  snippets:
+    - :title
+    - :content
+    - :author_id
+    - :project_id
+    - :created_at
+    - :updated_at
+    - :file_name
+    - :visibility_level
+    - :description
+  project_members:
+    - :access_level
+    - :source_type
+    - :user_id
+    - :notification_level
+    - :created_at
+    - :updated_at
+    - :created_by_id
+    - :invite_email
+    - :invite_accepted_at
+    - :requested_at
+    - :expires_at
+    - :ldap
+    - :override
+  merge_request: &merge_request_definition
+    - :target_branch
+    - :source_branch
+    - :source_project_id
+    - :author_id
+    - :assignee_id
+    - :title
+    - :created_at
+    - :updated_at
+    - :state
+    - :merge_status
+    - :target_project_id
+    - :iid
+    - :description
+    - :updated_by_id
+    - :merge_error
+    - :merge_params
+    - :merge_when_pipeline_succeeds
+    - :merge_user_id
+    - :merge_commit_sha
+    - :squash_commit_sha
+    - :in_progress_merge_commit_sha
+    - :lock_version
+    - :approvals_before_merge
+    - :rebase_commit_sha
+    - :time_estimate
+    - :squash
+    - :last_edited_at
+    - :last_edited_by_id
+    - :discussion_locked
+    - :allow_maintainer_to_push
+    - :merge_ref_sha
+    - :draft
+    - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
+  merge_requests: *merge_request_definition
+  award_emoji:
+    - :user_id
+    - :name
+    - :awardable_type
+    - :created_at
+    - :updated_at
+  commit_author:
+    - :name
+    - :email
+  committer:
+    - :name
+    - :email
+  events:
+    - :target_type
+    - :action
+    - :author_id
+    - :fingerprint
+    - :created_at
+    - :updated_at
+  label_links:
+    - :target_type
+    - :created_at
+    - :updated_at
+  merge_request_diff:
+    - :state
+    - :created_at
+    - :updated_at
+    - :base_commit_sha
+    - :real_size
+    - :head_commit_sha
+    - :start_commit_sha
+    - :commits_count
+    - :files_count
+    - :sorted
+    - :diff_type
+  merge_request_diff_commits:
+    - :relative_order
+    - :sha
+    - :authored_date
+    - :committed_date
+    - :message
+    - :trailers
+  merge_request_diff_files:
+    - :relative_order
+    - :new_file
+    - :renamed_file
+    - :deleted_file
+    - :new_path
+    - :old_path
+    - :a_mode
+    - :b_mode
+    - :too_large
+    - :binary
+    - :diff
+  metrics:
+    - :created_at
+    - :updated_at
+    - :latest_closed_by_id
+    - :latest_closed_at
+    - :merged_by_id
+    - :merged_at
+    - :latest_build_started_at
+    - :latest_build_finished_at
+    - :first_deployed_to_production_at
+    - :first_comment_at
+    - :first_commit_at
+    - :last_commit_at
+    - :diff_size
+    - :modified_paths_size
+    - :commits_count
+    - :first_approved_at
+    - :first_reassigned_at
+    - :added_lines
+    - :target_project_id
+    - :removed_lines
+  notes:
+    - :note
+    - :noteable_type
+    - :author_id
+    - :created_at
+    - :updated_at
+    - :project_id
+    - :attachment
+    - :line_code
+    - :commit_id
+    - :system
+    - :st_diff
+    - :updated_by_id
+    - :type
+    - :position
+    - :original_position
+    - :change_position
+    - :resolved_at
+    - :resolved_by_id
+    - :resolved_by_push
+    - :discussion_id
+    - :confidential
+    - :last_edited_at
+  push_event_payload:
+    - :commit_count
+    - :action
+    - :ref_type
+    - :commit_from
+    - :commit_to
+    - :ref
+    - :commit_title
+    - :ref_count
+  resource_label_events:
+    - :action
+    - :user_id
+    - :created_at
+  suggestions:
+    - :relative_order
+    - :applied
+    - :commit_id
+    - :from_content
+    - :to_content
+    - :outdated
+    - :lines_above
+    - :lines_below
+  system_note_metadata:
+    - :commit_count
+    - :action
+    - :created_at
+    - :updated_at
+  timelogs:
+    - :time_spent
+    - :user_id
+    - :project_id
+    - :spent_at
+    - :created_at
+    - :updated_at
+    - :summary
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -430,7 +605,7 @@ excluded_attributes:
     - :service_desk_reply_to
     - :upvotes_count
     - :work_item_type_id
-  merge_request:
+  merge_request: &merge_request_excluded_definition
     - :milestone_id
     - :sprint_id
     - :ref_fetched
@@ -439,15 +614,7 @@ excluded_attributes:
     - :latest_merge_request_diff_id
     - :head_pipeline_id
     - :state_id
-  merge_requests:
-    - :milestone_id
-    - :sprint_id
-    - :ref_fetched
-    - :merge_jid
-    - :rebase_jid
-    - :latest_merge_request_diff_id
-    - :head_pipeline_id
-    - :state_id
+  merge_requests: *merge_request_excluded_definition
   award_emoji:
     - :awardable_id
   statuses:
@@ -516,10 +683,9 @@ excluded_attributes:
     - :issue_id
   zoom_meetings:
     - :issue_id
-  design:
+  design: &design_excluded_definition
     - :issue_id
-  designs:
-    - :issue_id
+  designs: *design_excluded_definition
   design_versions:
     - :issue_id
   actions:

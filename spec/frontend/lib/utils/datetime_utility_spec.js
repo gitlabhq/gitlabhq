@@ -185,15 +185,15 @@ describe('dateInWords', () => {
   const date = new Date('07/01/2016');
 
   it('should return date in words', () => {
-    expect(datetimeUtility.dateInWords(date)).toEqual(s__('July 1, 2016'));
+    expect(datetimeUtility.dateInWords(date)).toEqual(__('July 1, 2016'));
   });
 
   it('should return abbreviated month name', () => {
-    expect(datetimeUtility.dateInWords(date, true)).toEqual(s__('Jul 1, 2016'));
+    expect(datetimeUtility.dateInWords(date, true)).toEqual(__('Jul 1, 2016'));
   });
 
   it('should return date in words without year', () => {
-    expect(datetimeUtility.dateInWords(date, true, true)).toEqual(s__('Jul 1'));
+    expect(datetimeUtility.dateInWords(date, true, true)).toEqual(__('Jul 1'));
   });
 });
 
@@ -201,11 +201,11 @@ describe('monthInWords', () => {
   const date = new Date('2017-01-20');
 
   it('returns month name from provided date', () => {
-    expect(datetimeUtility.monthInWords(date)).toBe(s__('January'));
+    expect(datetimeUtility.monthInWords(date)).toBe(__('January'));
   });
 
   it('returns abbreviated month name from provided date', () => {
-    expect(datetimeUtility.monthInWords(date, true)).toBe(s__('Jan'));
+    expect(datetimeUtility.monthInWords(date, true)).toBe(__('Jan'));
   });
 });
 

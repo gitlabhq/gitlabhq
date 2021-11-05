@@ -50,7 +50,7 @@ export default {
   mixins: [glFeatureFlagsMixin(), IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   i18n: {
     ...DIFF_FILE_HEADER,
-    compareButtonLabel: s__('Compare submodule commit revisions'),
+    compareButtonLabel: __('Compare submodule commit revisions'),
   },
   props: {
     discussionPath: {
@@ -130,7 +130,7 @@ export default {
         const truncatedOldSha = escape(truncateSha(this.diffFile.submodule_compare.old_sha));
         const truncatedNewSha = escape(truncateSha(this.diffFile.submodule_compare.new_sha));
         return sprintf(
-          s__('Compare %{oldCommitId}...%{newCommitId}'),
+          __('Compare %{oldCommitId}...%{newCommitId}'),
           {
             oldCommitId: `<span class="commit-sha">${truncatedOldSha}</span>`,
             newCommitId: `<span class="commit-sha">${truncatedNewSha}</span>`,

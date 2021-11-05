@@ -626,9 +626,48 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#status' do
-    let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
+    let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.status }
+
+    context 'never connected' do
+      before do
+        runner.contacted_at = nil
+      end
+
+      it { is_expected.to eq(:not_connected) }
+    end
+
+    context 'inactive but online' do
+      before do
+        runner.contacted_at = 1.second.ago
+        runner.active = false
+      end
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'contacted 1s ago' do
+      before do
+        runner.contacted_at = 1.second.ago
+      end
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'contacted long time ago' do
+      before do
+        runner.contacted_at = 1.year.ago
+      end
+
+      it { is_expected.to eq(:offline) }
+    end
+  end
+
+  describe '#deprecated_rest_status' do
+    let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
+
+    subject { runner.deprecated_rest_status }
 
     context 'never connected' do
       before do

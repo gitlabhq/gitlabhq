@@ -159,7 +159,7 @@ export default {
         )
       }}</span>
       <template #modal-footer>
-        <gl-button variant="secondary" @click="handleCancel">{{ s__('Cancel') }}</gl-button>
+        <gl-button variant="secondary" @click="handleCancel">{{ __('Cancel') }}</gl-button>
         <template v-if="confirmCleanup">
           <gl-button
             :disabled="!canSubmit"

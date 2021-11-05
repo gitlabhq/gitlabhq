@@ -4,7 +4,7 @@ import Visibility from 'visibilityjs';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import {
   IssuableStatus,
   IssuableStatusText,
@@ -250,7 +250,7 @@ export default {
       return false;
     },
     defaultErrorMessage() {
-      return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
+      return sprintf(__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
     isClosed() {
       return this.issuableStatus === IssuableStatus.Closed;
@@ -437,7 +437,7 @@ export default {
         })
         .catch(() => {
           createFlash({
-            message: sprintf(s__('Error deleting %{issuableType}'), {
+            message: sprintf(__('Error deleting %{issuableType}'), {
               issuableType: this.issuableType,
             }),
           });

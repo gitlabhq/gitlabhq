@@ -63,7 +63,7 @@ export default {
       return !(this.form.fileName && !this.form.fileName.endsWith('.yml'));
     },
     fileNameFeedback() {
-      return !this.fileNameState ? s__('The file name should have a .yml extension') : '';
+      return !this.fileNameState ? __('The file name should have a .yml extension') : '';
     },
   },
   mounted() {

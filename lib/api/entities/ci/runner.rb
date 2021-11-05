@@ -12,7 +12,9 @@ module API
         expose :runner_type
         expose :name
         expose :online?, as: :online
-        expose :status
+        # DEPRECATED
+        # TODO Remove in %15.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+        expose :status, as: :deprecated_rest_status
       end
     end
   end

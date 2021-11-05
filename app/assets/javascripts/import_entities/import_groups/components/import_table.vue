@@ -517,7 +517,7 @@ export default {
       <gl-empty-state
         v-else-if="!hasGroups"
         :title="s__('BulkImport|You have no groups to import')"
-        :description="s__('Check your source instance permissions.')"
+        :description="__('Check your source instance permissions.')"
       />
       <template v-else>
         <div

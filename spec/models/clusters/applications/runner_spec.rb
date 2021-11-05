@@ -162,12 +162,12 @@ RSpec.describe Clusters::Applications::Runner do
     it 'pauses associated runner' do
       active_runner = create(:ci_runner, contacted_at: 1.second.ago)
 
-      expect(active_runner.status).to eq(:online)
+      expect(active_runner.active).to be_truthy
 
       application_runner = create(:clusters_applications_runner, :scheduled, runner: active_runner)
       application_runner.prepare_uninstall
 
-      expect(active_runner.status).to eq(:paused)
+      expect(active_runner.active).to be_falsey
     end
   end
 

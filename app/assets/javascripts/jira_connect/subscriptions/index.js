@@ -11,6 +11,9 @@ import { getLocation, sizeToParent } from './utils';
 
 const store = createStore();
 
+/**
+ * Add `return_to` query param to all HAML-defined GitLab sign in links.
+ */
 const updateSignInLinks = async () => {
   const location = await getLocation();
   Array.from(document.querySelectorAll('.js-jira-connect-sign-in')).forEach((el) => {

@@ -1,15 +1,15 @@
-import { GlAlert, GlButton, GlLink } from '@gitlab/ui';
+import { GlAlert, GlLink } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 
 import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
+import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { __ } from '~/locale';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
   retrieveAlert: jest.fn().mockReturnValue({ message: 'error message' }),
-  getLocation: jest.fn(),
 }));
 
 describe('JiraConnectApp', () => {
@@ -18,7 +18,7 @@ describe('JiraConnectApp', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAlertLink = () => findAlert().findComponent(GlLink);
-  const findGlButton = () => wrapper.findComponent(GlButton);
+  const findSignInButton = () => wrapper.findComponent(SignInButton);
   const findAddNamespaceButton = () => wrapper.findComponent(AddNamespaceButton);
 
   const createComponent = ({ provide, mountFn = shallowMount } = {}) => {
@@ -35,28 +35,25 @@ describe('JiraConnectApp', () => {
   });
 
   describe('template', () => {
-    describe('when user is not logged in', () => {
+    describe.each`
+      scenario                   | usersPath    | expectSignInButton | expectNamespaceButton
+      ${'user is not signed in'} | ${'/users'}  | ${true}            | ${false}
+      ${'user is signed in'}     | ${undefined} | ${false}           | ${true}
+    `('when $scenario', ({ usersPath, expectSignInButton, expectNamespaceButton }) => {
       beforeEach(() => {
         createComponent({
           provide: {
-            usersPath: '/users',
+            usersPath,
           },
         });
       });
 
-      it('renders "Sign in" button', () => {
-        expect(findGlButton().text()).toBe('Sign in to add namespaces');
-        expect(findAddNamespaceButton().exists()).toBe(false);
-      });
-    });
-
-    describe('when user is logged in', () => {
-      beforeEach(() => {
-        createComponent();
+      it('renders sign in button as expected', () => {
+        expect(findSignInButton().exists()).toBe(expectSignInButton);
       });
 
-      it('renders "Add namespace" button ', () => {
-        expect(findAddNamespaceButton().exists()).toBe(true);
+      it('renders "Add Namespace" button as expected', () => {
+        expect(findAddNamespaceButton().exists()).toBe(expectNamespaceButton);
       });
     });
 
