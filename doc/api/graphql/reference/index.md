@@ -1009,6 +1009,31 @@ Input type: `ConfigureSastInput`
 | <a id="mutationconfiguresasterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationconfiguresastsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
 
+### `Mutation.configureSastIac`
+
+Enable SAST IaC for a project in a new or
+modified `.gitlab-ci.yml` file in a new branch. The new
+branch and a URL to create a merge request are a part of the
+response.
+
+Input type: `ConfigureSastIacInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguresastiacclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguresastiacprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationconfiguresastiacbranch"></a>`branch` | [`String`](#string) | Branch that has the new/modified `.gitlab-ci.yml` file. |
+| <a id="mutationconfiguresastiacclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationconfiguresastiacerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationconfiguresastiacsuccesspath"></a>`successPath` | [`String`](#string) | Redirect path to use when the response is successful. |
+
 ### `Mutation.configureSecretDetection`
 
 Configure Secret Detection for a project by enabling Secret Detection

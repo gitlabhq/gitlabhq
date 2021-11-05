@@ -4,9 +4,9 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Build Cloud runners for macOS (Beta) **(FREE SAAS)**
+# Runner Cloud for macOS (Beta) **(FREE SAAS)**
 
-The GitLab Build Cloud for macOS Beta provides on-demand runners integrated with GitLab SaaS [CI/CD](../../../ci/index.md).
+The Runner Cloud for macOS Beta provides on-demand runners integrated with GitLab SaaS [CI/CD](../../../ci/index.md).
 Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, tvOS). You can take advantage
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.

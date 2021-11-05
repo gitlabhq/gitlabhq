@@ -4,9 +4,9 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Build Cloud runners for Linux **(FREE)**
+# Runner Cloud for Linux **(FREE)**
 
-GitLab Build Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
+Runner Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
 
 Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each job, thus maximizing security. These shared runners are available on GitLab.com.
 

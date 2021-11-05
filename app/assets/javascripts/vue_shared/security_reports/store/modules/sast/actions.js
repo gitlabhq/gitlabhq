@@ -18,6 +18,7 @@ export const fetchDiff = ({ state, rootState, dispatch }) => {
   return fetchDiffData(rootState, state.paths.diffEndpoint, REPORT_TYPE_SAST)
     .then((data) => {
       dispatch('receiveDiffSuccess', data);
+      return data;
     })
     .catch(() => {
       dispatch('receiveDiffError');

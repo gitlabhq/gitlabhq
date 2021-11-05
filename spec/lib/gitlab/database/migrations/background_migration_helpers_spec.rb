@@ -583,12 +583,33 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   end
 
   describe '#finalized_background_migration' do
-    include_context 'background migration job class'
+    let(:job_coordinator) { Gitlab::BackgroundMigration::JobCoordinator.new(:main, BackgroundMigrationWorker) }
+
+    let!(:job_class_name) { 'TestJob' }
+    let!(:job_class) { Class.new }
+    let!(:job_perform_method) do
+      ->(*arguments) do
+        Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded(
+          # Value is 'TestJob' defined by :job_class_name in the let! above.
+          # Scoping prohibits us from directly referencing job_class_name.
+          RSpec.current_example.example_group_instance.job_class_name,
+          arguments
+        )
+      end
+    end
 
     let!(:tracked_pending_job) { create(:background_migration_job, class_name: job_class_name, status: :pending, arguments: [1]) }
     let!(:tracked_successful_job) { create(:background_migration_job, class_name: job_class_name, status: :succeeded, arguments: [2]) }
 
     before do
+      job_class.define_method(:perform, job_perform_method)
+
+      allow(Gitlab::BackgroundMigration).to receive(:coordinator_for_database)
+        .with(:main).and_return(job_coordinator)
+
+      expect(job_coordinator).to receive(:migration_class_for)
+        .with(job_class_name).at_least(:once) { job_class }
+
       Sidekiq::Testing.disable! do
         BackgroundMigrationWorker.perform_async(job_class_name, [1, 2])
         BackgroundMigrationWorker.perform_async(job_class_name, [3, 4])

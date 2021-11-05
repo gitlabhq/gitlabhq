@@ -8671,6 +8671,12 @@ msgstr ""
 msgid "Configure Prometheus"
 msgstr ""
 
+msgid "Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST IaC settings."
+msgstr ""
+
+msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr ""
 
@@ -13044,16 +13050,13 @@ msgstr ""
 msgid "EnvironmentsDashboard|More actions"
 msgstr ""
 
-msgid "EnvironmentsDashboard|More information"
-msgstr ""
-
 msgid "EnvironmentsDashboard|Remove"
 msgstr ""
 
 msgid "EnvironmentsDashboard|The environments dashboard provides a summary of each project's environments' status, including pipeline and alert statuses."
 msgstr ""
 
-msgid "EnvironmentsDashboard|This dashboard displays 3 environments per project, and is linked to the Operations Dashboard. When you add or remove a project from one dashboard, GitLab adds or removes the project from the other. %{readMoreLink}"
+msgid "EnvironmentsDashboard|This dashboard displays 3 environments per project, and is linked to the Operations Dashboard. When you add or remove a project from one dashboard, GitLab adds or removes the project from the other. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
 msgid "Environments|An error occurred while canceling the auto stop, please try again"

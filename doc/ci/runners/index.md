@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Build Cloud runners **(FREE)**
+# GitLab Runner Cloud **(FREE)**
 
 If you are using self-managed GitLab or you want to use your own runners on GitLab.com, you can
 [install and configure your own runners](https://docs.gitlab.com/runner/install/).
