@@ -58,6 +58,9 @@
 .if-merge-request-labels-run-decomposed: &if-merge-request-labels-run-decomposed
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
 
+.if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -447,6 +450,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
@@ -459,6 +463,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
@@ -540,6 +545,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *code-qa-patterns
 
@@ -1263,12 +1269,16 @@
 
 .rails:rules:detect-previous-failed-tests:
   rules:
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-patterns
 
 .rails:rules:rerun-previous-failed-tests:
   rules:
+    - <<: *if-security-merge-request
+      when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -1501,6 +1511,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1517,6 +1528,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1532,6 +1544,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1550,6 +1563,7 @@
       when: never
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1565,6 +1579,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
 
@@ -1572,6 +1587,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1586,11 +1602,17 @@
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
+# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
+# would start running before the qa jobs have started.
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-smoke-report:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_success
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: on_success
@@ -1618,6 +1640,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -1630,11 +1653,17 @@
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
+# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
+# would start running before the qa jobs have started.
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-all-report:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_success
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -1669,6 +1698,9 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       when: manual

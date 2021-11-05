@@ -234,9 +234,21 @@ If you need to add more than one task,
 consider using subsections for each distinct task.
 ```
 
+### Related topics
+
+If inline links are not sufficient, you can create a topic called **Related topics**
+and include a bulleted list of related topics. This topic should be above the Troubleshooting section.
+
+```markdown
+# Related topics
+
+- [Configure your pipeline](link-to-topic)
+- [Trigger a pipeline manually](link-to-topic)
+```
+
 ### Topics and resources pages
 
-This is a page with a list of links that point to important sections
+This page has a list of links that point to important sections
 of documentation for a specific GitLab feature or tool.
 
 We do not encourage the use of these types of pages.

@@ -10,8 +10,8 @@ import {
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import updateCurrentBranchMutation from '../../graphql/mutations/update_current_branch.mutation.graphql';
 import updateLastCommitBranchMutation from '../../graphql/mutations/update_last_commit_branch.mutation.graphql';
+import updatePipelineEtag from '../../graphql/mutations/update_pipeline_etag.mutation.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.graphql';
-import getPipelineEtag from '../../graphql/queries/client/pipeline_etag.graphql';
 
 import CommitForm from './commit_form.vue';
 
@@ -96,10 +96,10 @@ export default {
             content: this.ciFileContent,
             lastCommitId: this.commitSha,
           },
-          update(store, { data }) {
+          update(_, { data }) {
             const pipelineEtag = data?.commitCreate?.commit?.commitPipelinePath;
             if (pipelineEtag) {
-              store.writeQuery({ query: getPipelineEtag, data: { pipelineEtag } });
+              this.$apollo.mutate({ mutation: updatePipelineEtag, variables: pipelineEtag });
             }
           },
         });

@@ -181,6 +181,8 @@ that includes `rspec-profile` in their name.
 
 Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
 
+If you want to force a Review App to be deployed regardless of your changes, you can add the `pipeline:run-review-app` label to the merge request.
+
 ## As-if-FOSS jobs
 
 The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context

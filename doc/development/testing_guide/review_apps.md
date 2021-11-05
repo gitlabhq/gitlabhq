@@ -16,6 +16,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for merge requests with frontend changes
 - for merge requests with QA changes
 - for scheduled pipelines
+- the MR has the `pipeline:run-review-app` label set
 
 ## QA runs on Review Apps
 

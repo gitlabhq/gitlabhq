@@ -1,0 +1,3 @@
+mutation updatePipelineEtag($pipelineEtag: String) {
+  updatePipelineEtag(pipelineEtag: $pipelineEtag) @client
+}

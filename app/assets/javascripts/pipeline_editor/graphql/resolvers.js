@@ -2,6 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import getAppStatus from './queries/client/app_status.graphql';
 import getCurrentBranchQuery from './queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
+import getPipelineEtag from './queries/client/pipeline_etag.graphql';
 
 export const resolvers = {
   Mutation: {
@@ -47,6 +48,12 @@ export const resolvers = {
       cache.writeQuery({
         query: getLastCommitBranchQuery,
         data: { lastCommitBranch },
+      });
+    },
+    updatePipelineEtag: (_, { pipelineEtag }, { cache }) => {
+      cache.writeQuery({
+        query: getPipelineEtag,
+        data: { pipelineEtag },
       });
     },
   },

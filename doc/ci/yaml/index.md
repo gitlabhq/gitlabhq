@@ -4090,49 +4090,42 @@ assets:
       link_type: 'other' # optional
 ```
 
-### `secrets`
+### `secrets` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
-Use `secrets` to specify the [CI/CD Secrets](../secrets/index.md) the job needs. It should be a hash,
-and the keys should be the names of the variables that are made available to the job.
-The value of each secret is saved in a temporary file. This file's path is stored in these
-variables.
+Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
-#### `secrets:vault` **(PREMIUM)**
+- Retrieve from an external secrets provider.
+- Make available in the job as [CI/CD variables](../variables/index.md)
+  ([`file` type](../variables/index.md#cicd-variable-types) by default).
+
+This keyword must be used with `secrets:vault`.
+
+#### `secrets:vault`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 
-Use `vault` to specify secrets provided by [Hashicorp's Vault](https://www.vaultproject.io/).
+Use `secrets:vault` to specify secrets provided by a [Hashicorp Vault](https://www.vaultproject.io/).
 
-This syntax has multiple forms. The shortest form assumes the use of the
-[KV-V2](https://www.vaultproject.io/docs/secrets/kv/kv-v2) secrets engine,
-mounted at the default path `kv-v2`. The last part of the secret's path is the
-field to fetch the value for:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-```yaml
-job:
-  secrets:
-    DATABASE_PASSWORD:
-      vault: production/db/password  # translates to secret `kv-v2/data/production/db`, field `password`
-```
+**Possible inputs**:
 
-You can specify a custom secrets engine path by adding a suffix starting with `@`:
+- `engine:name`: Name of the secrets engine.
+- `engine:path`: Path to the secrets engine.
+- `path`: Path to the secret.
+- `field`: Name of the field where the password is stored.
 
-```yaml
-job:
-  secrets:
-    DATABASE_PASSWORD:
-      vault: production/db/password@ops  # translates to secret `ops/data/production/db`, field `password`
-```
+**Example of `secrets:vault`**:
 
-In the detailed form of the syntax, you can specify all details explicitly:
+To specify all details explicitly and use the [KV-V2](https://www.vaultproject.io/docs/secrets/kv/kv-v2) secrets engine:
 
 ```yaml
 job:
   secrets:
-    DATABASE_PASSWORD:      # translates to secret `ops/data/production/db`, field `password`
-      vault:
+    DATABASE_PASSWORD:  # Store the path to the secret in this CI/CD variable
+      vault:  # Translates to secret: `ops/data/production/db`, field: `password`
         engine:
           name: kv-v2
           path: ops
@@ -4140,16 +4133,43 @@ job:
         field: password
 ```
 
-#### `secrets:file` **(PREMIUM)**
+You can shorten this syntax. With the short syntax, `engine:name` and `engine:path`
+both default to `kv-v2`:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:  # Store the path to the secret in this CI/CD variable
+      vault: production/db/password  # Translates to secret: `kv-v2/data/production/db`, field: `password`
+```
+
+To specify a custom secrets engine path in the short syntax, add a suffix that starts with `@`:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:  # Store the path to the secret in this CI/CD variable
+      vault: production/db/password@ops  # Translates to secret: `ops/data/production/db`, field: `password`
+```
+
+#### `secrets:file`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
-By default, the secret is passed to the job context as a variable of type
-[`file`](../variables/index.md#cicd-variable-types). The value of the
-secret is stored in a file and the variable `DATABASE_PASSWORD` contains a path to the file.
+Use `secrets:file` to configure the secret to be stored as either a
+[`file` or `variable` type CI/CD variable](../variables/index.md#cicd-variable-types)
 
-However, some software does not work with file variables and might require the secret value to be stored
-directly in the environment variable. For that case, define a `file` setting:
+By default, the secret is passed to the job as a `file` type CI/CD variable. The value
+of the secret is stored in the file and the variable contains the path to the file.
+
+If your software can't use `file` type CI/CD variables, set `file: false` to store
+the secret value directly in the variable.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: `true` (default) or `false`.
+
+**Example of `secrets:file`**:
 
 ```yaml
 job:
@@ -4159,11 +4179,10 @@ job:
       file: false
 ```
 
-When you set `file: false`, no files are created for that variable. It contains the secret
-itself instead.
+**Additional details**:
 
-The `file` is a setting of the secret, so it belongs directly under the variable
-name level and not in the `vault` section.
+- The `file` keyword is a setting for the CI/CD variable and must be nested under
+  the CI/CD variable name, not in the `vault` section.
 
 ### `pages`
 
