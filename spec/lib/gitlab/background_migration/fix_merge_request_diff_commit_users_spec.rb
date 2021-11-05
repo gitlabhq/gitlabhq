@@ -49,6 +49,36 @@ RSpec.describe Gitlab::BackgroundMigration::FixMergeRequestDiffCommitUsers do
     end
   end
 
+  describe '#process' do
+    it 'processes the merge requests of the project' do
+      project = create(:project, :repository)
+      commit = project.commit
+      mr = create(
+        :merge_request_with_diffs,
+        source_project: project,
+        target_project: project
+      )
+
+      diff = mr.merge_request_diffs.first
+
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: diff,
+        sha: commit.sha,
+        relative_order: 9000
+      )
+
+      migration.process(project)
+
+      updated = diff
+        .merge_request_diff_commits
+        .find_by(sha: commit.sha, relative_order: 9000)
+
+      expect(updated.commit_author_id).not_to be_nil
+      expect(updated.committer_id).not_to be_nil
+    end
+  end
+
   describe '#update_commit' do
     let(:project) { create(:project, :repository) }
     let(:mr) do

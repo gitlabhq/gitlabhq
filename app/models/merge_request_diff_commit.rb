@@ -7,6 +7,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   include ShaAttribute
   include CachedCommit
   include IgnorableColumns
+  include FromUnion
 
   ignore_column %i[author_name author_email committer_name committer_email],
     remove_with: '14.6',

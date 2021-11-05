@@ -6,6 +6,7 @@ RSpec.describe User do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
+  include LdapHelpers
 
   it_behaves_like 'having unique enum values'
 
@@ -5808,7 +5809,7 @@ RSpec.describe User do
   end
 
   describe '#active_for_authentication?' do
-    subject { user.active_for_authentication? }
+    subject(:active_for_authentication?) { user.active_for_authentication? }
 
     let(:user) { create(:user) }
 
@@ -5818,6 +5819,14 @@ RSpec.describe User do
       end
 
       it { is_expected.to be false }
+
+      it 'does not check if LDAP is allowed' do
+        stub_ldap_setting(enabled: true)
+
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        active_for_authentication?
+      end
     end
 
     context 'when user is a ghost user' do
@@ -5826,6 +5835,28 @@ RSpec.describe User do
       end
 
       it { is_expected.to be false }
+    end
+
+    context 'when user is ldap_blocked' do
+      before do
+        user.ldap_block
+      end
+
+      it 'rechecks if LDAP is allowed when LDAP is enabled' do
+        stub_ldap_setting(enabled: true)
+
+        expect(Gitlab::Auth::Ldap::Access).to receive(:allowed?)
+
+        active_for_authentication?
+      end
+
+      it 'does not check if LDAP is allowed when LDAP is not enabled' do
+        stub_ldap_setting(enabled: false)
+
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        active_for_authentication?
+      end
     end
 
     context 'based on user type' do

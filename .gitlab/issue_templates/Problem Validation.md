@@ -1,3 +1,7 @@
+<!-- This template is used as a starting point for understing and articulating a customer problem.
+Learn more about it in the handbook: https://about.gitlab.com/handbook/product-development-flow/#validation-phase-2-problem-validation 
+-->
+
 ## Problem Statement
 
 <!-- What is the problem we hope to validate? Reference how to write a real customer problem statement at https://productcoalition.com/how-to-write-a-good-customer-problem-statement-a815f80189ba for guidance. -->
@@ -44,5 +48,9 @@ For example, if the solution will take a product manager, designer, and engineer
 - [ ] The problem is well understood by the PM to decide if they want to move forward with this idea or drop it
 - [ ] The problem is well described and detailed with necessary requirements for product design to understand the problem
 - [ ] The problem is well described and detailed with necessary requirements for engineering to understand the problem
+
+## Research Issue
+
+<!-- Link to the Problem Validation Research issue that will be executed by the UX Researcher. https://gitlab.com/gitlab-org/ux-research/ -->
 
 /label ~"workflow::validation backlog" ~devops:: ~category: ~group::

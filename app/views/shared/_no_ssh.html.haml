@@ -1,10 +1,10 @@
 - if show_no_ssh_key_message?
-  %div{ class: 'no-ssh-key-message gl-alert gl-alert-warning', role: 'alert' }
-    = sprite_icon('warning', css_class: 'gl-icon s16 gl-alert-icon gl-alert-icon-no-title')
-    %button{ class: 'gl-alert-dismiss hide-no-ssh-message', type: 'button', 'aria-label': _('Dismiss') }
-      = sprite_icon('close', css_class: 'gl-icon s16')
+  = render 'shared/global_alert',
+    variant: :warning,
+    alert_class: 'js-no-ssh-message',
+    close_button_class: 'js-hide-no-ssh-message' do
     .gl-alert-body
-      = s_("MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile")
+      = s_("MissingSSHKeyWarningLink|You can't push or pull repositories using SSH until you add an SSH key to your profile.")
     .gl-alert-actions
-      = link_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: "btn gl-alert-action btn-warning btn-md gl-button"
-      = link_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: {hide_no_ssh_key: true}), method: :put, role: 'button', class: 'btn gl-alert-action btn-md btn-warning gl-button btn-warning-secondary'
+      = link_to s_('MissingSSHKeyWarningLink|Add SSH key'), profile_keys_path, class: "gl-alert-action btn btn-confirm btn-md gl-button"
+      = link_to s_("MissingSSHKeyWarningLink|Don't show again"), profile_path(user: { hide_no_ssh_key: true }), method: :put, role: 'button', class: 'gl-alert-action btn btn-default btn-md gl-button'

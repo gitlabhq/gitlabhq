@@ -2914,6 +2914,9 @@ msgstr ""
 msgid "Advanced export options"
 msgstr ""
 
+msgid "AdvancedSearch|Reindex required"
+msgstr ""
+
 msgid "After a successful password update you will be redirected to login screen."
 msgstr ""
 
@@ -7400,6 +7403,9 @@ msgstr ""
 msgid "ClusterAgents|Registration token"
 msgstr ""
 
+msgid "ClusterAgents|Security"
+msgstr ""
+
 msgid "ClusterAgents|Select an Agent"
 msgstr ""
 
@@ -9742,6 +9748,9 @@ msgstr ""
 msgid "Create requirement"
 msgstr ""
 
+msgid "Create service account"
+msgstr ""
+
 msgid "Create snippet"
 msgstr ""
 
@@ -9773,9 +9782,6 @@ msgid "CreateGroup|You don’t have permission to create groups."
 msgstr ""
 
 msgid "CreateTag|Tag"
-msgstr ""
-
-msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
 msgid "CreateValueStreamForm|%{name} (default)"
@@ -11105,9 +11111,6 @@ msgid "Delete user list"
 msgstr ""
 
 msgid "Delete variable"
-msgstr ""
-
-msgid "DeleteProject|Delete %{name}"
 msgstr ""
 
 msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
@@ -16034,6 +16037,9 @@ msgstr ""
 msgid "Google Cloud"
 msgstr ""
 
+msgid "Google Cloud Project"
+msgstr ""
+
 msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
@@ -18645,6 +18651,9 @@ msgid "Internal users cannot be deactivated"
 msgstr ""
 
 msgid "Interval Pattern"
+msgstr ""
+
+msgid "Introduced in GitLab 13.1, before using %{reindexing_link_start}zero-downtime reindexing%{link_end} and %{migrations_link_start}Advanced Search migrations%{link_end}, you need to %{recreate_link_start}recreate your index%{link_end}."
 msgstr ""
 
 msgid "Introducing Your DevOps Reports"
@@ -22387,6 +22396,9 @@ msgstr ""
 msgid "MissingSSHKeyWarningLink|Don't show again"
 msgstr ""
 
+msgid "MissingSSHKeyWarningLink|You can't push or pull repositories using SSH until you add an SSH key to your profile."
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|You won't be able to pull or push repositories via SSH until you add an SSH key to your profile"
 msgstr ""
 
@@ -23366,6 +23378,9 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No service accounts"
+msgstr ""
+
 msgid "No severity matches the provided parameter"
 msgstr ""
 
@@ -23459,6 +23474,9 @@ msgid "Not available for protected branches"
 msgstr ""
 
 msgid "Not confidential"
+msgstr ""
+
+msgid "Not found"
 msgstr ""
 
 msgid "Not found."
@@ -31282,6 +31300,18 @@ msgstr ""
 msgid "Service"
 msgstr ""
 
+msgid "Service Account"
+msgstr ""
+
+msgid "Service Account Key"
+msgstr ""
+
+msgid "Service Accounts"
+msgstr ""
+
+msgid "Service Accounts keys authorize GitLab to deploy your Google Cloud project"
+msgstr ""
+
 msgid "Service Desk"
 msgstr ""
 
@@ -31334,6 +31364,9 @@ msgid "ServicePing|Turn on service ping"
 msgstr ""
 
 msgid "ServicePing|Turn on service ping to review instance-level analytics."
+msgstr ""
+
+msgid "Services"
 msgstr ""
 
 msgid "Session ID"
@@ -31472,9 +31505,6 @@ msgid "Set weight to %{weight}."
 msgstr ""
 
 msgid "Set what should be replicated by this secondary site."
-msgstr ""
-
-msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "SetStatusModal|Add status emoji"
@@ -35110,6 +35140,9 @@ msgstr ""
 msgid "This is a self-managed instance of GitLab."
 msgstr ""
 
+msgid "This is an experimental feature developed by GitLab Incubation Engineering."
+msgstr ""
+
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
@@ -37021,6 +37054,9 @@ msgstr ""
 msgid "UsageQuota|Learn more about usage quotas"
 msgstr ""
 
+msgid "UsageQuota|No CI minutes usage data available."
+msgstr ""
+
 msgid "UsageQuota|Packages"
 msgstr ""
 
@@ -38356,6 +38392,9 @@ msgstr ""
 msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
+msgid "We invite you to %{featureLinkStart}request a feature%{featureLinkEnd}, %{bugLinkStart}report a bug%{bugLinkEnd} or %{feedbackLinkStart}share feedback%{feedbackLinkEnd}"
+msgstr ""
+
 msgid "We recommend cloud-based mobile authenticator apps such as Authy, Duo Mobile, and LastPass. They can restore access if you lose your hardware device."
 msgstr ""
 
@@ -39552,9 +39591,6 @@ msgstr ""
 msgid "You won't be able to create new projects because you have reached your project limit."
 msgstr ""
 
-msgid "You won't be able to pull or push repositories via %{protocol} until you %{set_password_link} on your account"
-msgstr ""
-
 msgid "You'll be charged for %{true_up_link_start}users over license%{link_end} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
@@ -39703,6 +39739,12 @@ msgid "Your account has been deactivated by your administrator. Please log back 
 msgstr ""
 
 msgid "Your account has been deactivated. You will not be able to: "
+msgstr ""
+
+msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
+msgstr ""
+
+msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
 msgstr ""
 
 msgid "Your account is locked."

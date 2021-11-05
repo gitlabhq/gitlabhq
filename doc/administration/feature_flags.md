@@ -42,10 +42,14 @@ GitLab to an earlier version, the feature flag status may change.
 
 Features that are disabled by default may change or be removed without notice in a future version of GitLab.
 
-Data corruption, stability degradation, or performance degradation might occur if
+Data corruption, stability degradation, performance degradation, or security issues might occur if
 you enable a feature that's disabled by default. Problems caused by using a default
 disabled feature aren't covered by GitLab support, unless you were directed by GitLab
 to enable the feature.
+
+Security issues found in features that are disabled by default are patched in regular releases
+and do not follow our regular [maintenance policy](../policy/maintenance.md#security-releases)
+with regards to backporting the fix.
 
 ## Risks when disabling released features
 

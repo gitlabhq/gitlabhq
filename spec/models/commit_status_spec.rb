@@ -379,6 +379,22 @@ RSpec.describe CommitStatus do
     end
   end
 
+  describe '.retried_ordered' do
+    subject { described_class.retried_ordered.to_a }
+
+    let!(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    end
+
+    it 'returns retried statuses in order' do
+      is_expected.to eq(statuses.values_at(2, 0, 1))
+    end
+  end
+
   describe '.running_or_pending' do
     subject { described_class.running_or_pending.order(:id) }
 

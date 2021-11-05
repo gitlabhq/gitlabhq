@@ -2293,6 +2293,15 @@ entry.
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
 
+## 14.0.12 (2021-11-05)
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@ed34172e5c7425316480efb732a9429e93e81017) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@c0f2f40b98c4b9fc72c21c474a2224e045263ea2) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@6370a7258719d5eb0ad83c54383ecb7f4fd54fc2) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@1bcd41f28733b01286a42689857f6530c0805186) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+
 ## 14.0.11 (2021-09-23)
 
 ### Fixed (1 change)

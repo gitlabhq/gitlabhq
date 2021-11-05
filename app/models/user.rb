@@ -473,7 +473,11 @@ class User < ApplicationRecord
   end
 
   def active_for_authentication?
-    super && can?(:log_in)
+    return false unless super
+
+    check_ldap_if_ldap_blocked!
+
+    can?(:log_in)
   end
 
   # The messages for these keys are defined in `devise.en.yml`
@@ -2166,6 +2170,13 @@ class User < ApplicationRecord
 
   def ci_job_token_scope_cache_key
     "users:#{id}:ci:job_token_scope"
+  end
+
+  # An `ldap_blocked` user will be unblocked if LDAP indicates they are allowed.
+  def check_ldap_if_ldap_blocked!
+    return unless ::Gitlab::Auth::Ldap::Config.enabled? && ldap_blocked?
+
+    ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 end
 

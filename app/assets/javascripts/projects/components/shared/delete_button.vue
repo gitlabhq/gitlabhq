@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlModalDirective, GlFormTextarea, GlButton } from '@gitlab/ui';
+import { GlModal, GlModalDirective, GlFormInput, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
@@ -7,7 +7,7 @@ import { __ } from '~/locale';
 export default {
   components: {
     GlModal,
-    GlFormTextarea,
+    GlFormInput,
     GlButton,
   },
   directives: {
@@ -88,7 +88,12 @@ export default {
         <p>
           <code class="gl-white-space-pre-wrap">{{ confirmPhrase }}</code>
         </p>
-        <gl-form-textarea id="confirm_name_input" v-model="userInput" name="confirm_name_input" />
+        <gl-form-input
+          id="confirm_name_input"
+          v-model="userInput"
+          name="confirm_name_input"
+          type="text"
+        />
         <slot name="modal-footer"></slot>
       </div>
     </gl-modal>

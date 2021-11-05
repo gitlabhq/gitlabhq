@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
+import TermsApp from 'jh_else_ce/terms/components/app.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import TermsApp from './components/app.vue';
 
 export const initTermsApp = () => {
   const el = document.getElementById('js-terms-of-service');

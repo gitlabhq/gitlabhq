@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import AgentShowPage from './components/show.vue';
+import AgentShowPage from 'ee_else_ce/clusters/agents/components/show.vue';
 
 Vue.use(VueApollo);
 

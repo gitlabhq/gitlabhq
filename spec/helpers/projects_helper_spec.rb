@@ -268,7 +268,7 @@ RSpec.describe ProjectsHelper do
     end
   end
 
-  describe '#link_to_set_password' do
+  describe '#no_password_message' do
     let(:user) { create(:user, password_automatically_set: true) }
 
     before do
@@ -276,18 +276,18 @@ RSpec.describe ProjectsHelper do
     end
 
     context 'password authentication is enabled for Git' do
-      it 'returns link to set a password' do
+      it 'returns message prompting user to set password or set up a PAT' do
         stub_application_setting(password_authentication_enabled_for_git?: true)
 
-        expect(helper.link_to_set_password).to match %r{<a href="#{edit_profile_password_path}">set a password</a>}
+        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To <a href="/help/gitlab-basics/start-using-git#pull-and-push" target="_blank" rel="noopener noreferrer">push and pull</a> over HTTP with Git using this account, you must <a href="/-/profile/password/edit">set a password</a> or <a href="/-/profile/personal_access_tokens">set up a Personal Access Token</a> to use instead of a password. For more information, see <a href="/help/gitlab-basics/start-using-git#clone-with-https" target="_blank" rel="noopener noreferrer">Clone with HTTPS</a>.')
       end
     end
 
     context 'password authentication is disabled for Git' do
-      it 'returns link to create a personal access token' do
+      it 'returns message prompting user to set up a PAT' do
         stub_application_setting(password_authentication_enabled_for_git?: false)
 
-        expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
+        expect(helper.no_password_message).to eq('Your account is authenticated with SSO or SAML. To <a href="/help/gitlab-basics/start-using-git#pull-and-push" target="_blank" rel="noopener noreferrer">push and pull</a> over HTTP with Git using this account, you must <a href="/-/profile/personal_access_tokens">set up a Personal Access Token</a> to use instead of a password. For more information, see <a href="/help/gitlab-basics/start-using-git#clone-with-https" target="_blank" rel="noopener noreferrer">Clone with HTTPS</a>.')
       end
     end
   end
@@ -987,8 +987,8 @@ RSpec.describe ProjectsHelper do
   describe "#delete_confirm_phrase" do
     subject { helper.delete_confirm_phrase(project) }
 
-    it 'includes the project full name' do
-      expect(subject).to eq("Delete #{project.full_name}")
+    it 'includes the project path with namespace' do
+      expect(subject).to eq(project.path_with_namespace)
     end
   end
 end

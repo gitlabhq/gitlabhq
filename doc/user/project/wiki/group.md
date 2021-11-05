@@ -44,7 +44,22 @@ Users with the [Owner role](../../permissions.md) in a group can
 [import and export group wikis](../../group/settings/import_export.md) when importing
 or exporting a group.
 
-Content created in a group wiki is not deleted when an account is downgraded or a GitLab trial ends.
+Content created in a group wiki is not deleted when an account is downgraded or a
+GitLab trial ends. The group wiki data is exported whenever the group owner of
+the wiki is exported.
+
+To access the group wiki data from the export file if the feature is no longer
+available, you have to:
+
+1. Extract the [export file tarball](../../group/settings/import_export.md) with
+   this command, replacing `FILENAME` with your file's name:
+   `tar -xvzf FILENAME.tar.gz`
+1. Browse to the `repositories` directory. This directory contains a
+   [Git bundle](https://git-scm.com/docs/git-bundle) with the extension `.wiki.bundle`.
+1. Clone the Git bundle into a new repository, replacing `FILENAME` with
+   your bundle's name: `git clone FILENAME.wiki.bundle`
+
+All files in the wiki are available in this Git repository.
 
 ## Related topics
 

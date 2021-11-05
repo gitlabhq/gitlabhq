@@ -48,7 +48,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :ordered, -> { order(:name) }
   scope :ordered_by_stage, -> { order(stage_idx: :asc) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
-  scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
+  scope :retried_ordered, -> { retried.order(name: :asc, id: :desc).includes(project: :namespace) }
   scope :ordered_by_pipeline, -> { order(pipeline_id: :asc) }
   scope :before_stage, -> (index) { where('stage_idx < ?', index) }
   scope :for_stage, -> (index) { where(stage_idx: index) }

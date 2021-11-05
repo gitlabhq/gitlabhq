@@ -23,14 +23,14 @@ export default class Project {
       });
     }
 
-    $('.hide-no-ssh-message').on('click', function (e) {
+    $('.js-hide-no-ssh-message').on('click', function (e) {
       Cookies.set('hide_no_ssh_message', 'false');
-      $(this).parents('.no-ssh-key-message').remove();
+      $(this).parents('.js-no-ssh-key-message').remove();
       return e.preventDefault();
     });
-    $('.hide-no-password-message').on('click', function (e) {
+    $('.js-hide-no-password-message').on('click', function (e) {
       Cookies.set('hide_no_password_message', 'false');
-      $(this).parents('.no-password-message').remove();
+      $(this).parents('.js-no-password-message').remove();
       return e.preventDefault();
     });
     $('.hide-auto-devops-implicitly-enabled-banner').on('click', function (e) {

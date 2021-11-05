@@ -27,6 +27,7 @@ exports[`VersionRow renders 1`] = `
             >
               <span
                 class="gl-truncate"
+                data-testid="truncate-end-container"
                 title="@gitlab-org/package-15"
               >
                 <span

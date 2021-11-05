@@ -10,7 +10,10 @@ module Gitlab
     # this process needs Git/Gitaly access, and duplicating all that code is far
     # too much, this migration relies on global models such as Project,
     # MergeRequest, etc.
+    # rubocop: disable Metrics/ClassLength
     class FixMergeRequestDiffCommitUsers
+      BATCH_SIZE = 100
+
       def initialize
         @commits = {}
         @users = {}
@@ -33,22 +36,45 @@ module Gitlab
         # Loading everything using one big query may result in timeouts (e.g.
         # for projects the size of gitlab-org/gitlab). So instead we query
         # data on a per merge request basis.
-        project.merge_requests.each_batch do |mrs|
-          ::MergeRequestDiffCommit
-            .select([
-              :merge_request_diff_id,
-              :relative_order,
-              :sha,
-              :committer_id,
-              :commit_author_id
-            ])
-            .joins(merge_request_diff: :merge_request)
-            .where(merge_requests: { id: mrs.select(:id) })
-            .where('commit_author_id IS NULL OR committer_id IS NULL')
-            .each do |commit|
+        project.merge_requests.each_batch(column: :iid) do |mrs|
+          mrs.ids.each do |mr_id|
+            each_row_to_check(mr_id) do |commit|
               update_commit(project, commit)
             end
+          end
         end
+      end
+
+      def each_row_to_check(merge_request_id, &block)
+        columns = %w[merge_request_diff_id relative_order].map do |col|
+          Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: col,
+            order_expression: MergeRequestDiffCommit.arel_table[col.to_sym].asc,
+            nullable: :not_nullable,
+            distinct: false
+          )
+        end
+
+        order = Pagination::Keyset::Order.build(columns)
+        scope = MergeRequestDiffCommit
+          .joins(:merge_request_diff)
+          .where(merge_request_diffs: { merge_request_id: merge_request_id })
+          .where('commit_author_id IS NULL OR committer_id IS NULL')
+          .order(order)
+
+        Pagination::Keyset::Iterator
+          .new(scope: scope, use_union_optimization: true)
+          .each_batch(of: BATCH_SIZE) do |rows|
+            rows
+              .select([
+                :merge_request_diff_id,
+                :relative_order,
+                :sha,
+                :committer_id,
+                :commit_author_id
+              ])
+              .each(&block)
+          end
       end
 
       # rubocop: disable Metrics/AbcSize
@@ -125,5 +151,6 @@ module Gitlab
         MergeRequestDiffCommit.arel_table
       end
     end
+    # rubocop: enable Metrics/ClassLength
   end
 end

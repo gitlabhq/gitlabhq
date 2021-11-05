@@ -128,6 +128,7 @@ export default {
       </p>
 
       <gl-tabs>
+        <slot name="ee-security-tab"></slot>
         <gl-tab>
           <template #title>
             <span data-testid="cluster-agent-token-count">
