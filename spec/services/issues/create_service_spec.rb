@@ -15,8 +15,7 @@ RSpec.describe Issues::CreateService do
       expect(described_class.rate_limiter_scoped_and_keyed).to be_a(RateLimitedService::RateLimiterScopedAndKeyed)
 
       expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
-      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user])
-      expect(described_class.rate_limiter_scoped_and_keyed.opts[:users_allowlist].call).to eq(%w[support-bot])
+      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user external_author])
       expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter_klass).to eq(Gitlab::ApplicationRateLimiter)
     end
   end
@@ -287,6 +286,50 @@ RSpec.describe Issues::CreateService do
         expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+      end
+
+      context 'when rate limiting is in effect', :clean_gitlab_redis_cache do
+        let(:user) { create(:user) }
+
+        before do
+          stub_feature_flags(rate_limited_service_issues_create: true)
+          stub_application_setting(issues_create_limit: 1)
+        end
+
+        subject do
+          2.times { described_class.new(project: project, current_user: user, params: opts, spam_params: double).execute }
+        end
+
+        context 'when too many requests are sent by one user' do
+          it 'raises an error' do
+            freeze_time do
+              expect do
+                subject
+              end.to raise_error(RateLimitedService::RateLimitedError)
+            end
+          end
+
+          it 'creates 1 issue' do
+            freeze_time do
+              expect do
+                subject
+              rescue RateLimitedService::RateLimitedError
+              end.to change { Issue.count }.by(1)
+            end
+          end
+        end
+
+        context 'when limit is higher than counf of issues being created' do
+          before do
+            stub_application_setting(issues_create_limit: 3)
+          end
+
+          it 'creates 2 issues' do
+            freeze_time do
+              expect { subject }.to change { Issue.count }.by(2)
+            end
+          end
+        end
       end
 
       context 'after_save callback to store_mentions' do

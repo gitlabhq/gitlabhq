@@ -164,10 +164,10 @@ RSpec.describe Groups::DependencyProxyForContainersController do
   end
 
   describe 'GET #manifest' do
-    let_it_be(:manifest) { create(:dependency_proxy_manifest, group: group) }
+    let_it_be(:tag) { 'latest' }
+    let_it_be(:manifest) { create(:dependency_proxy_manifest, file_name: "alpine:#{tag}.json", group: group) }
 
     let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
-    let(:tag) { 'latest1' }
 
     before do
       allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|

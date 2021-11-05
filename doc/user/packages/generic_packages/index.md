@@ -35,7 +35,10 @@ When you publish a package file, if the package does not exist, it is created.
 
 Prerequisites:
 
-- You need to [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- You must [authenticate with the API](../../../api/index.md#authentication).
+  If authenticating with a deploy token, it must be configured with the `write_package_registry`
+  scope. If authenticating with a personal access token or project access token, it must be
+  configured with the `api` scope.
 
 ```plaintext
 PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status

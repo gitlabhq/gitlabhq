@@ -213,7 +213,7 @@ configuration block to your agent's `config.yaml` with no `filters`:
 
 ```yaml
 starboard:
-  vulnerability_reports:
+  vulnerability_report:
     filters: []
 ```
 
@@ -231,7 +231,7 @@ By adding filters, you can limit scans by:
 
 ```yaml
 starboard:
-  vulnerability_reports:
+  vulnerability_report:
     filters:
       - namespaces:
         - staging
@@ -256,7 +256,7 @@ names are scanned. In this example, a resource isn't scanned unless it has a con
 
 ```yaml
 starboard:
-  vulnerability_reports:
+  vulnerability_report:
     filters:
       - kinds:
         - Deployment
@@ -270,7 +270,7 @@ There is also a global `namespaces` field that applies to all filters:
 
 ```yaml
 starboard:
-  vulnerability_reports:
+  vulnerability_report:
     namespaces:
     - production
     filters:

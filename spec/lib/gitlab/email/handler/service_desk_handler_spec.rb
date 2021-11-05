@@ -11,6 +11,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
   end
 
   let(:email_raw) { email_fixture('emails/service_desk.eml') }
+  let(:author_email) { 'jake@adventuretime.ooo' }
   let_it_be(:group) { create(:group, :private, name: "email") }
 
   let(:expected_description) do
@@ -45,7 +46,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         receiver.execute
         new_issue = Issue.last
 
-        expect(new_issue.issue_email_participants.first.email).to eq("jake@adventuretime.ooo")
+        expect(new_issue.issue_email_participants.first.email).to eq(author_email)
       end
 
       it 'sends thank you email' do
@@ -256,13 +257,60 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
           it_behaves_like 'a new issue request'
         end
       end
+    end
 
-      context 'when rate limiting is in effect' do
-        it 'allows unlimited new issue creation' do
-          stub_application_setting(issues_create_limit: 1)
-          setup_attachment
+    context 'when rate limiting is in effect', :clean_gitlab_redis_cache do
+      let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
 
-          expect { 2.times { receiver.execute } }.to change { Issue.count }.by(2)
+      subject { 2.times { receiver.execute } }
+
+      before do
+        stub_feature_flags(rate_limited_service_issues_create: true)
+        stub_application_setting(issues_create_limit: 1)
+      end
+
+      context 'when too many requests are sent by one user' do
+        it 'raises an error' do
+          freeze_time do
+            expect { subject }.to raise_error(RateLimitedService::RateLimitedError)
+          end
+        end
+
+        it 'creates 1 issue' do
+          freeze_time do
+            expect do
+              subject
+            rescue RateLimitedService::RateLimitedError
+            end.to change { Issue.count }.by(1)
+          end
+        end
+
+        context 'when requests are sent by different users' do
+          let(:email_raw_2) { email_fixture('emails/service_desk_forwarded.eml') }
+          let(:receiver2) { Gitlab::Email::Receiver.new(email_raw_2) }
+
+          subject do
+            receiver.execute
+            receiver2.execute
+          end
+
+          it 'creates 2 issues' do
+            freeze_time do
+              expect { subject }.to change { Issue.count }.by(2)
+            end
+          end
+        end
+      end
+
+      context 'when limit is higher than sent emails' do
+        before do
+          stub_application_setting(issues_create_limit: 3)
+        end
+
+        it 'creates 2 issues' do
+          freeze_time do
+            expect { subject }.to change { Issue.count }.by(2)
+          end
         end
       end
     end
@@ -336,6 +384,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
     end
 
     context 'when the email is forwarded through an alias' do
+      let(:author_email) { 'jake.g@adventuretime.ooo' }
       let(:email_raw) { email_fixture('emails/service_desk_forwarded.eml') }
 
       it_behaves_like 'a new issue request'

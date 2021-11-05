@@ -99,6 +99,16 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
         end
 
         it_behaves_like 'action rate limiter'
+
+        context 'when a scope attribute is nil' do
+          let(:scope) { [user, nil] }
+
+          let(:cache_key) do
+            "application_rate_limiter:test_action:user:#{user.id}"
+          end
+
+          it_behaves_like 'action rate limiter'
+        end
       end
 
       context 'when the key is a combination of ActiveRecord models and strings' do
@@ -112,6 +122,16 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
         end
 
         it_behaves_like 'action rate limiter'
+
+        context 'when a scope attribute is nil' do
+          let(:scope) { [project, commit, nil] }
+
+          let(:cache_key) do
+            "application_rate_limiter:test_action:project:#{project.id}:commit:#{commit.sha}"
+          end
+
+          it_behaves_like 'action rate limiter'
+        end
       end
     end
 
