@@ -153,7 +153,12 @@ module Projects
       deleted_count = project.commit_statuses.delete_all
 
       if deleted_count > 0
-        Gitlab::AppLogger.info "Projects::DestroyService - Project #{project.id} - #{deleted_count} leftover commit statuses"
+        Gitlab::AppLogger.info(
+          class: 'Projects::DestroyService',
+          project_id: project.id,
+          message: 'leftover commit statuses',
+          orphaned_commit_status_count: deleted_count
+        )
       end
     end
 
