@@ -11,7 +11,10 @@ export default {
   components: { MembersTable, FilterSortContainer, GlAlert },
   provide() {
     return {
-      namespace: this.namespace,
+      // We can't use this.namespace due to bug in vue-apollo when
+      // provide is called in beforeCreate
+      // See https://github.com/vuejs/vue-apollo/pull/1153 for details
+      namespace: this.$options.propsData.namespace,
     };
   },
   props: {
