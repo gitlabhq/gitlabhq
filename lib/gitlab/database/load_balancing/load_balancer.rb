@@ -266,7 +266,10 @@ module Gitlab
         private
 
         def ensure_caching!
-          host.enable_query_cache! unless host.query_cache_enabled
+          return unless Rails.application.executor.active?
+          return if host.query_cache_enabled
+
+          host.enable_query_cache!
         end
 
         def request_cache

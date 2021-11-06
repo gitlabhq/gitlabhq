@@ -27,7 +27,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     Gitlab::Highlight.highlight(
       blob.path,
       transformed_blob_data,
-      language: language,
+      language: transformed_blob_language,
       plain: plain
     )
   end
@@ -118,6 +118,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def language
     blob.language_from_gitattributes
+  end
+
+  def transformed_blob_language
+    @transformed_blob_language ||= blob.path.ends_with?('.ipynb') ? 'md' : language
   end
 
   def transformed_blob_data

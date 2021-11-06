@@ -51,6 +51,34 @@ RSpec.describe Gitlab::Diff::File do
     project.commit(branch_name).diffs.diff_files.first
   end
 
+  describe 'initialize' do
+    context 'when file is ipynb' do
+      let(:commit) { project.commit("f6b7a707") }
+      let(:diff) { commit.raw_diffs.first }
+      let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
+
+      context 'and :jupyter_clean_diffs is enabled' do
+        before do
+          stub_feature_flags(jupyter_clean_diffs: true)
+        end
+
+        it 'recreates the diff by transforming the files' do
+          expect(diff_file.diff.diff).not_to include('"| Fake')
+        end
+      end
+
+      context 'but :jupyter_clean_diffs is disabled' do
+        before do
+          stub_feature_flags(jupyter_clean_diffs: false)
+        end
+
+        it 'does not recreate the diff' do
+          expect(diff_file.diff.diff).to include('"| Fake')
+        end
+      end
+    end
+  end
+
   describe '#diff_lines' do
     let(:diff_lines) { diff_file.diff_lines }
 

@@ -121,6 +121,43 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#highlight_transformed' do
+    context 'when blob is ipynb' do
+      let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
+      let(:git_blob) { blob.__getobj__ }
+
+      it 'uses md as the transformed language' do
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', anything, plain: nil, language: 'md')
+
+        presenter.highlight_transformed
+      end
+
+      it 'transforms the blob' do
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', include("%%"), plain: nil, language: 'md')
+
+        presenter.highlight_transformed
+      end
+    end
+
+    context 'when blob is other file type' do
+      let(:git_blob) { blob.__getobj__ }
+
+      before do
+        allow(git_blob)
+          .to receive(:data)
+                .and_return("line one\nline two\nline 3")
+
+        allow(blob).to receive(:language_from_gitattributes).and_return('ruby')
+      end
+
+      it 'does not transform the file' do
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
+
+        presenter.highlight_transformed
+      end
+    end
+  end
+
   describe '#raw_plain_data' do
     let(:blob) { repository.blob_at('HEAD', file) }
 

@@ -10453,6 +10453,10 @@ CREATE TABLE application_settings (
     throttle_authenticated_deprecated_api_period_in_seconds integer DEFAULT 3600 NOT NULL,
     throttle_authenticated_deprecated_api_enabled boolean DEFAULT false NOT NULL,
     dependency_proxy_ttl_group_policy_worker_capacity smallint DEFAULT 2 NOT NULL,
+    content_validation_endpoint_url text,
+    encrypted_content_validation_api_key bytea,
+    encrypted_content_validation_api_key_iv bytea,
+    content_validation_endpoint_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -10463,6 +10467,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_51700b31b5 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_57123c9593 CHECK ((char_length(help_page_documentation_base_url) <= 255)),
+    CONSTRAINT check_5a84c3ffdc CHECK ((char_length(content_validation_endpoint_url) <= 255)),
     CONSTRAINT check_718b4458ae CHECK ((char_length(personal_access_token_prefix) <= 20)),
     CONSTRAINT check_7227fad848 CHECK ((char_length(rate_limiting_response_text) <= 255)),
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
@@ -10475,6 +10480,14 @@ CREATE TABLE application_settings (
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
     CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255))
 );
+
+COMMENT ON COLUMN application_settings.content_validation_endpoint_url IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.encrypted_content_validation_api_key_iv IS 'JiHu-specific column';
+
+COMMENT ON COLUMN application_settings.content_validation_endpoint_enabled IS 'JiHu-specific column';
 
 CREATE SEQUENCE application_settings_id_seq
     START WITH 1

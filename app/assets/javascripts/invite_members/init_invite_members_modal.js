@@ -6,6 +6,10 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 Vue.use(GlToast);
 
 export default function initInviteMembersModal() {
+  // https://gitlab.com/gitlab-org/gitlab/-/issues/344955
+  // bug lying in wait here for someone to put group and project invite in same screen
+  // once that happens we'll need to mount these differently, perhaps split
+  // group/project to each mount one, with many ways to open it.
   const el = document.querySelector('.js-invite-members-modal');
 
   if (!el) {

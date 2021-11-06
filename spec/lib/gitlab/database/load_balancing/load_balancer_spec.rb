@@ -89,10 +89,25 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       host = double(:host)
 
       allow(lb).to receive(:host).and_return(host)
+      allow(Rails.application.executor).to receive(:active?).and_return(true)
       allow(host).to receive(:query_cache_enabled).and_return(false)
       allow(host).to receive(:connection).and_return(connection)
 
       expect(host).to receive(:enable_query_cache!).once
+
+      lb.read { 10 }
+    end
+
+    it 'does not enable query cache when outside Rails executor context' do
+      connection = double(:connection)
+      host = double(:host)
+
+      allow(lb).to receive(:host).and_return(host)
+      allow(Rails.application.executor).to receive(:active?).and_return(false)
+      allow(host).to receive(:query_cache_enabled).and_return(false)
+      allow(host).to receive(:connection).and_return(connection)
+
+      expect(host).not_to receive(:enable_query_cache!)
 
       lb.read { 10 }
     end

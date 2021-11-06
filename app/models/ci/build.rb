@@ -539,7 +539,6 @@ module Ci
           .concat(persisted_variables)
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
-          .concat(kubernetes_variables)
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
@@ -1158,22 +1157,6 @@ module Ci
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
-      end
-    end
-
-    def kubernetes_variables
-      ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
-        # A cluster deployemnt may also define a KUBECONFIG variable, so to keep existing
-        # configurations working we shouldn't overwrite it here.
-        # This check will be removed when Cluster and Agent configurations are
-        # merged in https://gitlab.com/gitlab-org/gitlab/-/issues/335089
-        break collection if deployment&.deployment_cluster
-
-        template = ::Ci::GenerateKubeconfigService.new(self).execute # rubocop: disable CodeReuse/ServiceClass
-
-        if template.valid?
-          collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
-        end
       end
     end
 

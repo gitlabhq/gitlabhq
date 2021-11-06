@@ -12,7 +12,7 @@ import {
   GlFormInput,
   GlFormCheckboxGroup,
 } from '@gitlab/ui';
-import { partition, isString, unescape } from 'lodash';
+import { partition, isString, unescape, uniqueId } from 'lodash';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { sanitize } from '~/lib/dompurify';
@@ -117,7 +117,7 @@ export default {
   data() {
     return {
       visible: true,
-      modalId: 'invite-members-modal',
+      modalId: uniqueId('invite-members-modal-'),
       selectedAccessLevel: this.defaultAccessLevel,
       inviteeType: 'members',
       newUsersToInvite: [],
@@ -444,6 +444,7 @@ export default {
     :modal-id="modalId"
     size="sm"
     data-qa-selector="invite_members_modal_content"
+    data-testid="invite-members-modal"
     :title="$options.labels[inviteeType].modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
     @hidden="resetFields"
@@ -597,21 +598,19 @@ export default {
     </div>
 
     <template #modal-footer>
-      <div class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0">
-        <gl-button data-testid="cancel-button" @click="closeModal">
-          {{ $options.labels.cancelButtonText }}
-        </gl-button>
-        <div class="gl-mr-3"></div>
-        <gl-button
-          :disabled="inviteDisabled"
-          :loading="isLoading"
-          variant="success"
-          data-qa-selector="invite_button"
-          data-testid="invite-button"
-          @click="sendInvite"
-          >{{ $options.labels.inviteButtonText }}</gl-button
-        >
-      </div>
+      <gl-button data-testid="cancel-button" @click="closeModal">
+        {{ $options.labels.cancelButtonText }}
+      </gl-button>
+      <gl-button
+        :disabled="inviteDisabled"
+        :loading="isLoading"
+        variant="success"
+        data-qa-selector="invite_button"
+        data-testid="invite-button"
+        @click="sendInvite"
+      >
+        {{ $options.labels.inviteButtonText }}
+      </gl-button>
     </template>
   </gl-modal>
 </template>
