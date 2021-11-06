@@ -36,7 +36,6 @@ The keywords available for jobs are:
 | [`except`](#only--except)                   | Control when jobs are not created. |
 | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
 | [`image`](#image)                           | Use Docker images. |
-| [`include`](#include)                       | Include external YAML files. |
 | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
 | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
 | [`needs`](#needs)                           | Execute jobs earlier than the stage ordering. |
@@ -382,126 +381,53 @@ does not block triggered pipelines.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
 
 Use `include` to include external YAML files in your CI/CD configuration.
-You can break down one long `.gitlab-ci.yml` file into multiple files to increase readability,
+You can split one long `.gitlab-ci.yml` file into multiple files to increase readability,
 or reduce duplication of the same configuration in multiple places.
 
-You can also store template files in a central repository and `include` them in projects.
-
-`include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
-otherwise the external file is not included.
-
-You can't use [YAML anchors](yaml_specific_features.md#anchors) across different YAML files sourced by `include`.
-You can only refer to anchors in the same file. To reuse configuration from different
-YAML files, use [`!reference` tags](yaml_specific_features.md#reference-tags) or the [`extends` keyword](#extends).
-
-`include` supports the following inclusion methods:
-
-| Keyword                          | Method                                                       |
-|:--------------------------------|:------------------------------------------------------------------|
-| [`local`](#includelocal)        | Include a file from the local project repository.                 |
-| [`file`](#includefile)          | Include a file from a different project repository.               |
-| [`remote`](#includeremote)      | Include a file from a remote URL. Must be publicly accessible.    |
-| [`template`](#includetemplate)  | Include templates that are provided by GitLab.                    |
-
-When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
-The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
-the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.
+You can also store template files in a central repository and include them in projects.
 
 The `include` files are:
 
-- Deep merged with those in the `.gitlab-ci.yml` file.
-- Always evaluated first and merged with the content of the `.gitlab-ci.yml` file,
+- Merged with those in the `.gitlab-ci.yml` file.
+- Always evaluated first and then merged with the content of the `.gitlab-ci.yml` file,
   regardless of the position of the `include` keyword.
 
-NOTE:
-Use merging to customize and override included CI/CD configurations with local
-configurations. Local configurations in the `.gitlab-ci.yml` file override included configurations.
+You can [nest](includes.md#use-nested-includes) up to 100 includes, but you can't have duplicate includes.
+In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28212),
+the time limit to resolve all files is 30 seconds.
 
-#### Variables with `include`
+**Keyword type**: Global keyword.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
-> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
-> - [Support for pipeline variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/337633) in GitLab 14.5.
+**Possible inputs**: The `include` subkeys:
 
-In `include` sections in your `.gitlab-ci.yml` file, you can use:
+- [`include:local`](#includelocal)
+- [`include:file`](#includefile)
+- [`include:remote`](#includeremote)
+- [`include:template`](#includetemplate)
 
-- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
-- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
-- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
-- Project [predefined variables](../variables/predefined_variables.md)
-- In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
+**Additional details**:
 
-  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
-  ref path, like `refs/heads/branch-name`. In `include:rules`, you might need to use
-  `if: $CI_COMMIT_REF_NAME =~ /main/` (not `== main`). This behavior is resolved in GitLab 14.5.
+- Use merging to customize and override included CI/CD configurations with local
+- You can override included configuration by having the same job name or global keyword
+  in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
+  configuration in the `.gitlab-ci.yml` file takes precedence over the included configuration.
 
-In GitLab 14.5 and later, you can also use:
+**Related topics**:
 
-- [Trigger variables](../triggers/index.md#making-use-of-trigger-variables).
-- [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
-- [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
-- Pipeline [predefined variables](../variables/predefined_variables.md).
-
-  YAML files are parsed before the pipeline is created, so the following pipeline predefined variables
-  are **not** available:
-
-  - `CI_PIPELINE_ID`
-  - `CI_PIPELINE_URL`
-  - `CI_PIPELINE_IID`
-  - `CI_PIPELINE_CREATED_AT`
-
-For example:
-
-```yaml
-include:
-  project: '$CI_PROJECT_PATH'
-  file: '.compliance-gitlab-ci.yml'
-```
-
-For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
-see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
-
-#### `rules` with `include`
-
-> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
-> - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
-
-You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
-You can only use [`if` rules](#rulesif) in `include`, and only with [certain variables](#variables-with-include).
-`rules` keywords such as `changes` and `exists` are not supported.
-
-```yaml
-include:
-  - local: builds.yml
-    rules:
-      - if: '$INCLUDE_BUILDS == "true"'
-  - local: deploys.yml
-    rules:
-      - if: $CI_COMMIT_BRANCH == "main"
-
-test:
-  stage: test
-  script: exit 0
-```
+- [Use variables with `include`](includes.md#use-variables-with-include).
+- [Use `rules` with `include`](includes.md#use-rules-with-include).
 
 #### `include:local`
 
 Use `include:local` to include a file that is in the same repository as the `.gitlab-ci.yml` file.
-Use a full path relative to the root directory (`/`).
+Use `include:local` instead of symbolic links.
 
-If you use `include:local`, make sure that both the `.gitlab-ci.yml` file and the local file
-are on the same branch.
+**Keyword type**: Global keyword.
 
-You can't include local files through Git submodules paths.
+**Possible inputs**: A full path relative to the root directory (`/`).
+The YAML file must have the extension `.yml` or `.yaml`. Wildcard paths (`*` and `**`) are supported.
 
-All [nested includes](#nested-includes) are executed in the scope of the same project,
-so it's possible to use local, project, remote, or template includes.
-
-Example:
+**Example of `include:local`**:
 
 ```yaml
 include:
@@ -514,44 +440,31 @@ You can also use shorter syntax to define the path:
 include: '.gitlab-ci-production.yml'
 ```
 
-Use local includes instead of symbolic links.
+**Additional details**:
 
-##### `include:local` with wildcard file paths
+- The `.gitlab-ci.yml` file and the local file must be on the same branch.
+- You can't include local files through Git submodules paths.
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the same project,
+  so you can use local, project, remote, or template includes.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
+**Related topics**:
 
-You can use wildcard paths (`*` and `**`) with `include:local`.
-
-Example:
-
-```yaml
-include: 'configs/*.yml'
-```
-
-When the pipeline runs, GitLab:
-
-- Adds all `.yml` files in the `configs` directory into the pipeline configuration.
-- Does not add `.yml` files in subfolders of the `configs` directory. To allow this,
-  add the following configuration:
-
-  ```yaml
-  # This matches all `.yml` files in `configs` and any subfolder in it.
-  include: 'configs/**.yml'
-
-  # This matches all `.yml` files only in subfolders of `configs`.
-  include: 'configs/**/*.yml'
-  ```
+- [Use `include:local` with wildcard file paths](includes.md#use-includelocal-with-wildcard-file-paths).
 
 #### `include:file`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53903) in GitLab 11.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53903) in GitLab 11.7.
+> - Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 To include files from another private project on the same GitLab instance,
 use `include:file`. You can use `include:file` in combination with `include:project` only.
-Use a full path, relative to the root directory (`/`).
 
-For example:
+**Keyword type**: Global keyword.
+
+**Possible inputs**: A full path, relative to the root directory (`/`).
+The YAML file must have the extension `.yml` or `.yaml`.
+
+**Example of `include:file`**:
 
 ```yaml
 include:
@@ -576,17 +489,6 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
-All [nested includes](#nested-includes) are executed in the scope of the target project.
-You can use local (relative to target project), project, remote, or template includes.
-
-NOTE:
-When including a YAML file from another private project, the user running the pipeline must be a member of both projects and have the appropriate permissions to run pipelines. A `not found or access denied` error may be shown if the user does not have access to any of the included files.
-
-##### Multiple files from a project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
-
 You can include multiple files from the same project:
 
 ```yaml
@@ -598,33 +500,54 @@ include:
       - '/templates/.tests.yml'
 ```
 
+**Additional details**:
+
+- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the target project.
+  You can use `local` (relative to the target project), `project`, `remote`, or `template` includes.
+- When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
+  The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
+  the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.
+- When you include a YAML file from another private project, the user running the pipeline
+  must be a member of both projects and have the appropriate permissions to run pipelines.
+  A `not found or access denied` error may be displayed if the user does not have access to any of the included files.
+
 #### `include:remote`
 
 Use `include:remote` with a full URL to include a file from a different location.
-The remote file must be publicly accessible by an HTTP/HTTPS `GET` request, because
-authentication in the remote URL is not supported. For example:
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: A public URL accessible by an HTTP/HTTPS `GET` request.
+Authentication with the remote URL is not supported.
+
+The YAML file must have the extension `.yml` or `.yaml`.
+
+**Example of `include:remote`**:
 
 ```yaml
 include:
   - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
 ```
 
-All [nested includes](#nested-includes) execute without context as a public user,
-so you can only `include` public projects or templates.
+**Additional details**:
 
-NOTE:
-Be careful when including a remote CI/CD configuration file. No pipelines or notifications
-trigger when external CI/CD configuration files change. From a security perspective,
-this is similar to pulling a third party dependency.
+- All [nested includes](includes.md#use-nested-includes) execute without context as a public user,
+  so you can only include public projects or templates.
+- Be careful when including a remote CI/CD configuration file. No pipelines or notifications
+  trigger when external CI/CD configuration files change. From a security perspective,
+  this is similar to pulling a third party dependency.
 
 #### `include:template`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53445) in GitLab 11.7.
 
-Use `include:template` to include `.gitlab-ci.yml` templates that are
-[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-For example:
+**Keyword type**: Global keyword.
+
+**Possible inputs**: [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+
+**Example of `include:template`**:
 
 ```yaml
 # File sourced from the GitLab template collection
@@ -640,23 +563,10 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 ```
 
-All [nested includes](#nested-includes) are executed only with the permission of the user,
-so it's possible to use project, remote or template includes.
+**Additional details**:
 
-#### Nested includes
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/56836) in GitLab 11.9.
-
-Use nested includes to compose a set of includes.
-
-You can have up to 100 includes, but you can't have duplicate includes.
-
-In [GitLab 12.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28212), the time limit
-to resolve all files is 30 seconds.
-
-#### Additional `includes` examples
-
-View [additional `includes` examples](includes.md).
+- All [nested includes](includes.md#use-nested-includes) are executed only with the permission of the user,
+  so it's possible to use `project`, `remote`, or `template` includes.
 
 ## Keyword details
 
@@ -1341,7 +1251,7 @@ job:
   all rules. You can't mix `when` at the job-level with `when` in rules.
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
-  - You can use `rules:if` with `include` to [conditionally include other configuration files](#rules-with-include).
+  - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
 
 **Related topics**:
 
@@ -3937,23 +3847,23 @@ you can ensure that concurrent deployments never happen to the production enviro
 
 Use `release` to create a [release](../../user/project/releases/index.md).
 
-The release job must have access to [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
-when it runs. When using a runner with:
+The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
+and your runner must be using one of these executors:
 
-- The [Docker executor](https://docs.gitlab.com/runner/executors/docker.html), use
-  [`image:`](#image) and a Docker image that includes `release-cli`. For example,
-  this image from the GitLab.com Container registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
+- If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
+  your [`image:`](#image) must include the `release-cli`. You can use this image from the GitLab
+  Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
-- The [Shell executor](https://docs.gitlab.com/runner/executors/shell.html), the server
-  where the runner is registered must [have `release-cli` installed](../../user/project/releases/release_cli.md).
+- If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html), the server
+  where the runner is registered must have the `release-cli` [installed](../../user/project/releases/release_cli.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**: The `release:` subkeys:
 
 - [`tag_name`](#releasetag_name)
-- [`description`](#releasedescription)
 - [`name`](#releasename) (optional)
+- [`description`](#releasedescription)
 - [`ref`](#releaseref) (optional)
 - [`milestones`](#releasemilestones) (optional)
 - [`released_at`](#releasereleased_at) (optional)
@@ -3981,16 +3891,19 @@ This example creates a release:
 
 **Additional details**:
 
-- All jobs except [trigger](#trigger) jobs must have the `script` keyword. A `release`
-  job can use the output from script commands, but you can use a placeholder script if
-  the script is not needed:
+- All release jobs, except [trigger](#trigger) jobs, must include the `script` keyword. A release
+  job can use the output from script commands. If you don't need the script, you can use a placeholder:
 
   ```yaml
   script:
     - echo 'release job'
   ```
 
-  An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223856) exists to remove this requirement in an upcoming version of GitLab.
+  An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223856) exists to remove this requirement.
+
+- The `release` section executes after the `script` keyword and before the `after_script`.
+- A release is created only if the job's main script succeeds.
+- If the release already exists, it is not updated and the job with the `release` keyword fails.
 
 **Related topics**:
 
@@ -4000,36 +3913,45 @@ This example creates a release:
 
 #### `release:tag_name`
 
-You must specify a `tag_name` for the release. The tag can refer to an existing Git tag or
-you can specify a new tag.
+Required. The Git tag for the release.
 
-When the specified tag doesn't exist in the repository, a new tag is created from the associated SHA of the pipeline.
+If the tag does not exist in the project yet, it is created at the same time as the release.
+New tags use the SHA associated with the pipeline.
 
-For example, when creating a release from a Git tag:
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A tag name. Can use [CI/CD variables](../variables/index.md).
+
+**Example of `release:tag_name`**:
+
+To create a release when a new tag is added to the project:
+
+- Use the `$CI_COMMIT_TAG` CI/CD variable as the `tag_name`.
+- Use [`rules:if`](#rulesif) or [`only: tags`](#onlyrefs--exceptrefs) to configure
+  the job to run only for new tags.
 
 ```yaml
 job:
+  script: echo 'Running the release job for the new tag.'
   release:
     tag_name: $CI_COMMIT_TAG
     description: 'Release description'
+  rules:
+    - if: $CI_COMMIT_TAG
 ```
 
-It is also possible for the release job to automatically create a new unique tag. In that case,
-do not use [`rules`](#rules) or [`only`](#only--except) to configure the job to
-only run for tags.
-
-A semantic versioning example:
+To create a release and a new tag at the same time, your [`rules`](#rules) or [`only`](#only--except)
+should **not** configure the job to run only for new tags. A semantic versioning example:
 
 ```yaml
 job:
+  script: echo 'Running the release job and creating a new tag.'
   release:
     tag_name: ${MAJOR}_${MINOR}_${REVISION}
     description: 'Release description'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 ```
-
-- The release is created only if the job's main script succeeds.
-- If the release already exists, it is not updated and the job with the `release` keyword fails.
-- The `release` section executes after the `script` tag and before the `after_script`.
 
 #### `release:name`
 
