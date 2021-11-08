@@ -69,7 +69,7 @@ You can include an array of configuration files:
 
 ## Use `default` configuration from an included configuration file
 
-You can define a [`default`](index.md#custom-default-keyword-values) section in a
+You can define a [`default`](index.md#default) section in a
 configuration file. When you use a `default` section with the `include` keyword, the defaults apply to
 all jobs in the pipeline.
 

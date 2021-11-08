@@ -62,7 +62,7 @@ job:
 ## Set a default `before_script` or `after_script` for all jobs
 
 You can use [`before_script`](index.md#before_script) and [`after_script`](index.md#after_script)
-with [`default`](index.md#custom-default-keyword-values):
+with [`default`](index.md#default):
 
 - Use `before_script` with `default` to define a default array of commands that
   should run before the `script` commands in all jobs.

@@ -82,6 +82,20 @@ For example:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
+## Unavailable names for jobs
+
+You can't use these keywords as job names:
+
+- `image`
+- `services`
+- `stages`
+- `types`
+- `before_script`
+- `after_script`
+- `variables`
+- `cache`
+- `include`
+
 ## Group jobs in a pipeline
 
 If you have many similar jobs, your [pipeline graph](../pipelines/index.md#visualize-pipelines) becomes long and hard

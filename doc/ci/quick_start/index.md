@@ -141,7 +141,7 @@ The pipeline starts when the commit is committed.
 - You can also use [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration) to
   view a graphical representation of your `.gitlab-ci.yml` file.
 - Each job contains scripts and stages:
-  - The [`default`](../yaml/index.md#custom-default-keyword-values) keyword is for
+  - The [`default`](../yaml/index.md#default) keyword is for
     custom defaults, for example with [`before_script`](../yaml/index.md#before_script)
     and [`after_script`](../yaml/index.md#after_script).
   - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.

@@ -35,7 +35,7 @@ These runners share a [distributed cache](https://docs.gitlab.com/runner/configu
 
 ## Pre-clone script
 
-Build Cloud runners for Linux provide a way to run commands in a CI
+Cloud runners for Linux provide a way to run commands in a CI
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The
 [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)

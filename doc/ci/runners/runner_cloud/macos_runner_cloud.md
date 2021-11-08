@@ -11,12 +11,12 @@ Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.
 
-Build Cloud runners for macOS are in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+Cloud runners for macOS are in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
 and shouldn't be relied upon for mission-critical production jobs.
 
 ## Quickstart
 
-To start using Build Cloud for macOS Beta, you must submit an access request [issue](https://gitlab.com/gitlab-com/macos-buildcloud-runners-beta/-/issues/new?issuable_template=beta_access_request). After your
+To start using Runner Cloud for macOS Beta, you must submit an access request [issue](https://gitlab.com/gitlab-com/macos-buildcloud-runners-beta/-/issues/new?issuable_template=beta_access_request). After your
 access has been granted and your build environment configured, you must configure your
 `.gitlab-ci.yml` pipeline file:
 

@@ -302,7 +302,7 @@ The GitLab Runner server requirements depend on:
 
 Since the nature of the jobs varies for each use case, you need to experiment by adjusting the job concurrency to get the optimum setting.
 
-For reference, the GitLab.com Build Cloud [auto-scaling runner for Linux](../ci/runners/build_cloud/linux_build_cloud.md) is configured so that a **single job** runs in a **single instance** with:
+For reference, the GitLab.com Runner Cloud [auto-scaling runner for Linux](../ci/runners/build_cloud/linux_build_cloud.md) is configured so that a **single job** runs in a **single instance** with:
 
 - 1 vCPU.
 - 3.75 GB of RAM.

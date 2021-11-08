@@ -8,6 +8,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import draftNote from '../../batch_comments/components/draft_note.vue';
+import { discussionIntersectionObserverHandlerFactory } from '../../diffs/utils/discussions';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
@@ -38,6 +39,9 @@ export default {
     TimelineEntryItem,
   },
   mixins: [glFeatureFlagsMixin()],
+  provide: {
+    discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+  },
   props: {
     noteableData: {
       type: Object,
