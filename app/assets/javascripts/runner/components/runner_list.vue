@@ -5,7 +5,7 @@ import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerActionsCell from './cells/runner_actions_cell.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
-import RunnerTypeCell from './cells/runner_type_cell.vue';
+import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
 const tableField = ({ key, label = '', width = 10 }) => {
@@ -36,7 +36,7 @@ export default {
     RunnerActionsCell,
     RunnerSummaryCell,
     RunnerTags,
-    RunnerTypeCell,
+    RunnerStatusCell,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -63,8 +63,8 @@ export default {
     },
   },
   fields: [
-    tableField({ key: 'type', label: __('Type/State') }),
-    tableField({ key: 'summary', label: s__('Runners|Runner'), width: 30 }),
+    tableField({ key: 'status', label: s__('Runners|Status') }),
+    tableField({ key: 'summary', label: s__('Runners|Runner ID'), width: 30 }),
     tableField({ key: 'version', label: __('Version') }),
     tableField({ key: 'ipAddress', label: __('IP Address') }),
     tableField({ key: 'tagList', label: __('Tags'), width: 20 }),
@@ -88,8 +88,8 @@ export default {
         <gl-skeleton-loader v-for="i in 4" :key="i" />
       </template>
 
-      <template #cell(type)="{ item }">
-        <runner-type-cell :runner="item" />
+      <template #cell(status)="{ item }">
+        <runner-status-cell :runner="item" />
       </template>
 
       <template #cell(summary)="{ item, index }">

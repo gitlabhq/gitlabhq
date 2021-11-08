@@ -9,17 +9,14 @@ const ALERT_DATA = {
     message: s__(
       'Runners|This runner is available to all groups and projects in your GitLab instance.',
     ),
-    variant: 'success',
     anchor: 'shared-runners',
   },
   [GROUP_TYPE]: {
     message: s__('Runners|This runner is available to all projects and subgroups in a group.'),
-    variant: 'success',
     anchor: 'group-runners',
   },
   [PROJECT_TYPE]: {
     message: s__('Runners|This runner is associated with one or more projects.'),
-    variant: 'info',
     anchor: 'specific-runners',
   },
 };
@@ -50,7 +47,7 @@ export default {
 };
 </script>
 <template>
-  <gl-alert v-if="alert" :variant="alert.variant" :dismissible="false">
+  <gl-alert v-if="alert" variant="info" :dismissible="false">
     {{ alert.message }}
     <gl-link :href="helpHref">{{ __('Learn more.') }}</gl-link>
   </gl-alert>

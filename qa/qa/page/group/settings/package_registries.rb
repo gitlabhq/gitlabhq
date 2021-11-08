@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module QA
   module Page
     module Group
@@ -20,22 +19,33 @@ module QA
 
           def set_allow_duplicates_disabled
             expand_content :package_registry_settings_content do
-              click_element(:allow_duplicates_toggle) if duplicates_enabled?
+              click_on_allow_duplicates_button if duplicates_enabled?
             end
           end
 
           def set_allow_duplicates_enabled
             expand_content :package_registry_settings_content do
-              click_element(:allow_duplicates_toggle) if duplicates_disabled?
+              click_on_allow_duplicates_button unless duplicates_enabled?
+            end
+          end
+
+          def click_on_allow_duplicates_button
+            with_allow_duplicates_button do |button|
+              button.click
             end
           end
 
           def duplicates_enabled?
-            has_element?(:allow_duplicates_label, text: 'Allow duplicates')
+            with_allow_duplicates_button do |button|
+              button[:class].include?('is-checked')
+            end
           end
 
-          def duplicates_disabled?
-            has_element?(:allow_duplicates_label, text: 'Do not allow duplicates')
+          def with_allow_duplicates_button
+            within_element :allow_duplicates_toggle do
+              toggle = find('button.gl-toggle')
+              yield(toggle)
+            end
           end
 
           def has_dependency_proxy_enabled?

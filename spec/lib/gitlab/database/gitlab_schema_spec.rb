@@ -35,4 +35,24 @@ RSpec.describe Gitlab::Database::GitlabSchema do
       end
     end
   end
+
+  describe '.table_schema' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:name, :classification) do
+      'ci_builds'                       | :gitlab_ci
+      'my_schema.ci_builds'             | :gitlab_ci
+      'information_schema.columns'      | :gitlab_shared
+      'audit_events_part_5fc467ac26'    | :gitlab_main
+      '_test_my_table'                  | :gitlab_shared
+      'pg_attribute'                    | :gitlab_shared
+      'my_other_table'                  | :undefined_my_other_table
+    end
+
+    with_them do
+      subject { described_class.table_schema(name) }
+
+      it { is_expected.to eq(classification) }
+    end
+  end
 end

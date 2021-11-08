@@ -59,8 +59,8 @@ module API
         expose :parents do |commit|
           commit.parent_ids.map { |id| { sha: id } }
         end
-        expose :files do |commit|
-          commit.diffs.diff_files.flat_map do |diff|
+        expose :files do |_commit, options|
+          options[:diff_files].flat_map do |diff|
             additions = diff.added_lines
             deletions = diff.removed_lines
 

@@ -3,7 +3,7 @@ import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { __, s__ } from '~/locale';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
-import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
+import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
 
 const i18n = {
@@ -71,7 +71,7 @@ export default {
             runnerUpdate: { errors },
           },
         } = await this.$apollo.mutate({
-          mutation: runnerUpdateMutation,
+          mutation: runnerActionsUpdateMutation,
           variables: {
             input: {
               id: this.runner.id,

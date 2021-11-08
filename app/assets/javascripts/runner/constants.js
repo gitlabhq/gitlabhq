@@ -6,11 +6,24 @@ export const GROUP_RUNNER_COUNT_LIMIT = 1000;
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_DETAILS_TITLE = s__('Runners|Runner #%{runner_id}');
 
+// Type
 export const I18N_INSTANCE_RUNNER_DESCRIPTION = s__('Runners|Available to all projects');
 export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
   'Runners|Available to all projects and subgroups in the group',
 );
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
+
+// Status
+export const I18N_ONLINE_RUNNER_DESCRIPTION = s__(
+  'Runners|Runner is online; last contact was %{timeAgo}',
+);
+export const I18N_OFFLINE_RUNNER_DESCRIPTION = s__(
+  'Runners|No recent contact from this runner; last contact was %{timeAgo}',
+);
+export const I18N_NOT_CONNECTED_RUNNER_DESCRIPTION = s__(
+  'Runners|This runner has never connected to this instance',
+);
+
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
 

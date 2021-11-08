@@ -16109,6 +16109,9 @@ msgstr ""
 msgid "GraphViewType|Stage"
 msgstr ""
 
+msgid "Graphs"
+msgstr ""
+
 msgid "Gravatar"
 msgstr ""
 
@@ -29691,6 +29694,9 @@ msgstr ""
 msgid "Runners|New runner, has not connected yet"
 msgstr ""
 
+msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
+msgstr ""
+
 msgid "Runners|Not available to run jobs"
 msgstr ""
 
@@ -29742,6 +29748,9 @@ msgstr ""
 msgid "Runners|Runner #%{runner_id}"
 msgstr ""
 
+msgid "Runners|Runner ID"
+msgstr ""
+
 msgid "Runners|Runner assigned to project."
 msgstr ""
 
@@ -29749,6 +29758,9 @@ msgid "Runners|Runner is offline, last contact was %{runner_contact} ago"
 msgstr ""
 
 msgid "Runners|Runner is online, last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner is online; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Runner is paused, last contact was %{runner_contact} ago"
@@ -29781,10 +29793,16 @@ msgstr ""
 msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
+msgid "Runners|Status"
+msgstr ""
+
 msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
 msgid "Runners|Tags"
+msgstr ""
+
+msgid "Runners|This runner has never connected to this instance"
 msgstr ""
 
 msgid "Runners|This runner is associated with one or more projects."
@@ -29851,6 +29869,15 @@ msgid "Runners|instance"
 msgstr ""
 
 msgid "Runners|locked"
+msgstr ""
+
+msgid "Runners|not connected"
+msgstr ""
+
+msgid "Runners|offline"
+msgstr ""
+
+msgid "Runners|online"
 msgstr ""
 
 msgid "Runners|paused"
@@ -34136,7 +34163,7 @@ msgstr ""
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
-msgid "The contact does not belong to the same group as the issue."
+msgid "The contact does not belong to the same group as the issue"
 msgstr ""
 
 msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."

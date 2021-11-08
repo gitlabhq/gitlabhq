@@ -2648,14 +2648,6 @@ RSpec.describe Group do
     end
 
     it_behaves_like 'returns namespaces with disabled email'
-
-    context 'when feature flag :linear_group_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_group_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'returns namespaces with disabled email'
-    end
   end
 
   describe '.timelogs' do

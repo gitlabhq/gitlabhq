@@ -6,7 +6,7 @@ RSpec.describe API::V3::Github do
   let_it_be(:user) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:project) { create(:project, :repository, creator: user) }
+  let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
   before do
     project.add_maintainer(user)
@@ -506,11 +506,18 @@ RSpec.describe API::V3::Github do
 
   describe 'GET /repos/:namespace/:project/commits/:sha' do
     let(:commit) { project.repository.commit }
-    let(:commit_id) { commit.id }
+
+    def call_api(commit_id: commit.id)
+      jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
+    end
+
+    def response_diff_files(response)
+      Gitlab::Json.parse(response.body)['files']
+    end
 
     context 'authenticated' do
-      it 'returns commit with github format' do
-        jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
+      it 'returns commit with github format', :aggregate_failures do
+        call_api
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('entities/github/commit')
@@ -519,36 +526,130 @@ RSpec.describe API::V3::Github do
       it 'returns 200 when project path include a dot' do
         project.update!(path: 'foo.bar')
 
-        jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
+        call_api
 
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'returns 200 when namespace path include a dot' do
-        group = create(:group, path: 'foo.bar')
-        project = create(:project, :repository, group: group)
-        project.add_reporter(user)
+      context 'when namespace path includes a dot' do
+        let(:group) { create(:group, path: 'foo.bar') }
+        let(:project) { create(:project, :repository, group: group) }
 
-        jira_get v3_api("/repos/#{group.path}/#{project.path}/commits/#{commit_id}", user)
+        it 'returns 200 when namespace path include a dot' do
+          project.add_reporter(user)
 
-        expect(response).to have_gitlab_http_status(:ok)
+          call_api
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the Gitaly `CommitDiff` RPC times out', :use_clean_rails_memory_store_caching do
+        let(:commit_diff_args) { [project.repository_storage, :diff_service, :commit_diff, any_args] }
+
+        before do
+          allow(Gitlab::GitalyClient).to receive(:call)
+            .and_call_original
+        end
+
+        it 'handles the error, logs it, and returns empty diff files', :aggregate_failures do
+          allow(Gitlab::GitalyClient).to receive(:call)
+            .with(*commit_diff_args)
+            .and_raise(GRPC::DeadlineExceeded)
+
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with an_instance_of(GRPC::DeadlineExceeded)
+
+          call_api
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response_diff_files(response)).to be_blank
+        end
+
+        it 'does not handle the error when feature flag is disabled', :aggregate_failures do
+          stub_feature_flags(api_v3_commits_skip_diff_files: false)
+
+          allow(Gitlab::GitalyClient).to receive(:call)
+            .with(*commit_diff_args)
+            .and_raise(GRPC::DeadlineExceeded)
+
+          call_api
+
+          expect(response).to have_gitlab_http_status(:error)
+        end
+
+        it 'only calls Gitaly once for all attempts within a period of time', :aggregate_failures do
+          expect(Gitlab::GitalyClient).to receive(:call)
+            .with(*commit_diff_args)
+            .once # <- once
+            .and_raise(GRPC::DeadlineExceeded)
+
+          3.times do
+            call_api
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response_diff_files(response)).to be_blank
+          end
+        end
+
+        it 'calls Gitaly again after a period of time', :aggregate_failures do
+          expect(Gitlab::GitalyClient).to receive(:call)
+            .with(*commit_diff_args)
+            .twice # <- twice
+            .and_raise(GRPC::DeadlineExceeded)
+
+          call_api
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response_diff_files(response)).to be_blank
+
+          travel_to((described_class::GITALY_TIMEOUT_CACHE_EXPIRY + 1.second).from_now) do
+            call_api
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response_diff_files(response)).to be_blank
+          end
+        end
+
+        it 'uses a unique cache key, allowing other calls to succeed' do
+          cache_key = [described_class::GITALY_TIMEOUT_CACHE_KEY, project.id, commit.cache_key].join(':')
+          Rails.cache.write(cache_key, 1)
+
+          expect(Gitlab::GitalyClient).to receive(:call)
+            .with(*commit_diff_args)
+            .once # <- once
+
+          call_api
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response_diff_files(response)).to be_blank
+
+          call_api(commit_id: commit.parent.id)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response_diff_files(response).length).to eq(1)
+        end
       end
     end
 
     context 'unauthenticated' do
+      let(:user) { nil }
+
       it 'returns 401' do
-        jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", nil)
+        call_api
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
     context 'unauthorized' do
-      it 'returns 404 when lower access level' do
-        project.add_guest(unauthorized_user)
+      let(:user) { unauthorized_user }
 
-        jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}",
-                   unauthorized_user)
+      it 'returns 404 when lower access level' do
+        project.add_guest(user)
+
+        call_api
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

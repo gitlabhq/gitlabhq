@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.4.2 (2021-11-08)
+
+### Fixed (3 changes)
+
+- [Skip retrying for reads on connection errors if primary only](gitlab-org/gitlab@8e1976ed75bd6c606d49c83863cf46bf3c4d5070) ([merge request](gitlab-org/gitlab!73919))
+- [Fix error 500 loading branch with UTF-8 characters with performance bar](gitlab-org/gitlab@67ddc428472d57bb3d8a4a84eb0750487a175f75) ([merge request](gitlab-org/gitlab!73919))
+- [Skip st_diff callback setting on LegacyDiffNote when importing](gitlab-org/gitlab@84f5c66321473cd702b3b671584054fcf3d141ae) ([merge request](gitlab-org/gitlab!73919))
+
+### Changed (1 change)
+
+- [Remove skip_legacy_diff_note_callback_on_import from legacy diff note](gitlab-org/gitlab@547a2ec29ea9e9299eab727899c3d90886ffc21c) ([merge request](gitlab-org/gitlab!73919))
+
+### Performance (1 change)
+
+- [Prevent Sidekiq size limiter middleware from running multiple times on the same job](gitlab-org/gitlab@294c01be38d400607536fb20a2038e098c0f0e28) ([merge request](gitlab-org/gitlab!73919))
+
 ## 14.4.1 (2021-10-28)
 
 ### Security (13 changes)

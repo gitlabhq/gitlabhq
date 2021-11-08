@@ -49,6 +49,7 @@ module Types
     mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
+    mount_mutation Mutations::Issues::SetCrmContacts
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetLocked
     mount_mutation Mutations::Issues::SetDueDate

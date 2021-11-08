@@ -42,8 +42,8 @@ describe('RunnerList', () => {
     const headerLabels = findHeaders().wrappers.map((w) => w.text());
 
     expect(headerLabels).toEqual([
-      'Type/State',
-      'Runner',
+      'Status',
+      'Runner ID',
       'Version',
       'IP Address',
       'Tags',
@@ -62,7 +62,7 @@ describe('RunnerList', () => {
     const { id, description, version, ipAddress, shortSha } = mockRunners[0];
 
     // Badges
-    expect(findCell({ fieldKey: 'type' }).text()).toMatchInterpolatedText('specific paused');
+    expect(findCell({ fieldKey: 'status' }).text()).toMatchInterpolatedText('not connected paused');
 
     // Runner summary
     expect(findCell({ fieldKey: 'summary' }).text()).toContain(

@@ -175,13 +175,13 @@ is similar to [`rules:` defined in jobs](#rules).
 You can use the [`workflow:rules` templates](#workflowrules-templates) to import
 a preconfigured `workflow: rules` entry.
 
-`workflow: rules` accepts these keywords:
+`workflow: rules` accepts some of the same keywords as [`rules`](#rules):
 
-- [`if`](#rulesif): Check this rule to determine when to run a pipeline.
-- [`when`](#when): Specify what to do when the `if` rule evaluates to true.
-  - To run a pipeline, set to `always`.
-  - To prevent pipelines from running, set to `never`.
-- [`variables`](#workflowrulesvariables): If not defined, uses the [variables defined elsewhere](#variables).
+- [`rules: if`](#rulesif).
+- [`rules: changes`](#ruleschanges).
+- [`rules: exists`](#rulesexists).
+- [`when`](#when), can only be `always` or `never` when used with `workflow`.
+- [`variables`](#workflowrulesvariables).
 
 When no rules evaluate to true, the pipeline does not run.
 

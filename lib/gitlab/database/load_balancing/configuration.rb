@@ -77,6 +77,10 @@ module Gitlab
           (@primary_model || @model).connection_specification_name
         end
 
+        def primary_db_config
+          (@primary_model || @model).connection_db_config
+        end
+
         def replica_db_config
           @model.connection_db_config
         end

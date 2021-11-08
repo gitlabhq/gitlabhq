@@ -284,7 +284,7 @@ RSpec.describe Namespace do
       end
     end
 
-    context 'creating a default Namespace' do
+    context 'creating a Namespace with nil type' do
       let(:namespace_type) { nil }
 
       it 'is the correct type of namespace' do
@@ -295,7 +295,7 @@ RSpec.describe Namespace do
     end
 
     context 'creating an unknown Namespace type' do
-      let(:namespace_type) { 'One' }
+      let(:namespace_type) { 'nonsense' }
 
       it 'creates a default Namespace' do
         expect(Namespace.find(namespace.id)).to be_a(Namespace)

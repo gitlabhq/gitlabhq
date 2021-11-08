@@ -1,6 +1,6 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import RunnerStatePausedBadge from '~/runner/components/runner_state_paused_badge.vue';
+import RunnerStatePausedBadge from '~/runner/components/runner_paused_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 describe('RunnerTypeBadge', () => {

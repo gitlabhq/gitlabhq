@@ -20,6 +20,9 @@ module API
       # Jira Server user agent format: Jira DVCS Connector/version
       JIRA_DVCS_CLOUD_USER_AGENT = 'Jira DVCS Connector Vertigo'
 
+      GITALY_TIMEOUT_CACHE_KEY = 'api:v3:Gitaly-timeout-cache-key'
+      GITALY_TIMEOUT_CACHE_EXPIRY = 1.day
+
       include PaginationParams
 
       feature_category :integrations
@@ -93,6 +96,32 @@ module API
           notes.select { |n| n.readable_by?(current_user) }
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        # Returns an empty Array instead of the Commit diff files for a period
+        # of time after a Gitaly timeout, to mitigate frequent Gitaly timeouts
+        # for some Commit diffs.
+        def diff_files(commit)
+          return commit.diffs.diff_files unless Feature.enabled?(:api_v3_commits_skip_diff_files, commit.project)
+
+          cache_key = [
+            GITALY_TIMEOUT_CACHE_KEY,
+            commit.project.id,
+            commit.cache_key
+          ].join(':')
+
+          return [] if Rails.cache.read(cache_key).present?
+
+          begin
+            commit.diffs.diff_files
+          rescue GRPC::DeadlineExceeded => error
+            # Gitaly fails to load diffs consistently for some commits. The other information
+            # is still valuable for Jira. So we skip the loading and respond with a 200 excluding diffs
+            # Remove this when https://gitlab.com/gitlab-org/gitaly/-/issues/3741 is fixed.
+            Rails.cache.write(cache_key, 1, expires_in: GITALY_TIMEOUT_CACHE_EXPIRY)
+            Gitlab::ErrorTracking.track_exception(error)
+            []
+          end
+        end
       end
 
       resource :orgs do
@@ -228,10 +257,9 @@ module API
           user_project = find_project_with_access(params)
 
           commit = user_project.commit(params[:sha])
-
           not_found! 'Commit' unless commit
 
-          present commit, with: ::API::Github::Entities::RepoCommit
+          present commit, with: ::API::Github::Entities::RepoCommit, diff_files: diff_files(commit)
         end
       end
     end

@@ -58,10 +58,13 @@ update-qa-cache:
     - tooling/bin/find_change_diffs ${CHANGES_DIFFS_DIR}
   script:
     - |
-      if tooling/bin/qa/check_if_only_quarantined_specs ${CHANGES_DIFFS_DIR}; then
-        exit 0
-      else
+      tooling/bin/qa/package_and_qa_check ${CHANGES_DIFFS_DIR} && exit_code=$?
+      if [ $exit_code -eq 0 ]; then
         ./scripts/trigger-build omnibus
+      elif [ $exit_code -eq 1 ]; then
+        exit 1
+      else
+        echo "Downstream jobs will not be triggered because package_and_qa_check exited with code: $exit_code"
       fi
   # These jobs often time out, so temporarily use private runners and a long timeout: https://gitlab.com/gitlab-org/gitlab/-/issues/238563
   tags:

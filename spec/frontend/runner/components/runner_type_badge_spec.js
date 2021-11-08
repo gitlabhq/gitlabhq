@@ -26,18 +26,18 @@ describe('RunnerTypeBadge', () => {
   });
 
   describe.each`
-    type             | text          | variant
-    ${INSTANCE_TYPE} | ${'shared'}   | ${'success'}
-    ${GROUP_TYPE}    | ${'group'}    | ${'success'}
-    ${PROJECT_TYPE}  | ${'specific'} | ${'info'}
-  `('displays $type runner', ({ type, text, variant }) => {
+    type             | text
+    ${INSTANCE_TYPE} | ${'shared'}
+    ${GROUP_TYPE}    | ${'group'}
+    ${PROJECT_TYPE}  | ${'specific'}
+  `('displays $type runner', ({ type, text }) => {
     beforeEach(() => {
       createComponent({ props: { type } });
     });
 
-    it(`as "${text}" with a ${variant} variant`, () => {
+    it(`as "${text}" with an "info" variant`, () => {
       expect(findBadge().text()).toBe(text);
-      expect(findBadge().props('variant')).toBe(variant);
+      expect(findBadge().props('variant')).toBe('info');
     });
 
     it('with a tooltip', () => {

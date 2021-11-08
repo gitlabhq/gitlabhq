@@ -15,6 +15,6 @@ class CustomerRelations::IssueContact < ApplicationRecord
     return unless issue&.project&.namespace_id
     return if contact.group_id == issue.project.namespace_id
 
-    errors.add(:base, _('The contact does not belong to the same group as the issue.'))
+    errors.add(:base, _('The contact does not belong to the same group as the issue'))
   end
 end

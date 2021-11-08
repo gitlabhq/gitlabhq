@@ -41,322 +41,320 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
   describe '#execute' do
     subject { service.execute }
 
-    shared_examples 'reading and removing tags' do |caching_enabled: true|
-      context 'when no params are specified' do
-        let(:params) { {} }
+    context 'when no params are specified' do
+      let(:params) { {} }
 
-        it 'does not remove anything' do
-          expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
-            .not_to receive(:execute)
+      it 'does not remove anything' do
+        expect_any_instance_of(Projects::ContainerRepository::DeleteTagsService)
+          .not_to receive(:execute)
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(before_truncate_size: 0, after_truncate_size: 0, before_delete_size: 0))
+      end
+    end
+
+    context 'when regex matching everything is specified' do
+      shared_examples 'removes all matches' do
+        it 'does remove all tags except latest' do
           expect_no_caching
 
-          is_expected.to eq(expected_service_response(before_truncate_size: 0, after_truncate_size: 0, before_delete_size: 0))
+          expect_delete(%w(A Ba Bb C D E))
+
+          is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C D E)))
         end
       end
 
-      context 'when regex matching everything is specified' do
-        shared_examples 'removes all matches' do
-          it 'does remove all tags except latest' do
-            expect_no_caching
+      let(:params) do
+        { 'name_regex_delete' => '.*' }
+      end
 
-            expect_delete(%w(A Ba Bb C D E))
+      it_behaves_like 'removes all matches'
 
-            is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C D E)))
-          end
-        end
-
+      context 'with deprecated name_regex param' do
         let(:params) do
-          { 'name_regex_delete' => '.*' }
+          { 'name_regex' => '.*' }
         end
 
         it_behaves_like 'removes all matches'
+      end
+    end
 
-        context 'with deprecated name_regex param' do
-          let(:params) do
-            { 'name_regex' => '.*' }
-          end
+    context 'with invalid regular expressions' do
+      shared_examples 'handling an invalid regex' do
+        it 'keeps all tags' do
+          expect_no_caching
 
-          it_behaves_like 'removes all matches'
+          expect(Projects::ContainerRepository::DeleteTagsService)
+            .not_to receive(:new)
+
+          subject
+        end
+
+        it { is_expected.to eq(status: :error, message: 'invalid regex') }
+
+        it 'calls error tracking service' do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
+
+          subject
         end
       end
 
-      context 'with invalid regular expressions' do
-        shared_examples 'handling an invalid regex' do
-          it 'keeps all tags' do
-            expect_no_caching
+      context 'when name_regex_delete is invalid' do
+        let(:params) { { 'name_regex_delete' => '*test*' } }
 
-            expect(Projects::ContainerRepository::DeleteTagsService)
-              .not_to receive(:new)
-
-            subject
-          end
-
-          it { is_expected.to eq(status: :error, message: 'invalid regex') }
-
-          it 'calls error tracking service' do
-            expect(Gitlab::ErrorTracking).to receive(:log_exception).and_call_original
-
-            subject
-          end
-        end
-
-        context 'when name_regex_delete is invalid' do
-          let(:params) { { 'name_regex_delete' => '*test*' } }
-
-          it_behaves_like 'handling an invalid regex'
-        end
-
-        context 'when name_regex is invalid' do
-          let(:params) { { 'name_regex' => '*test*' } }
-
-          it_behaves_like 'handling an invalid regex'
-        end
-
-        context 'when name_regex_keep is invalid' do
-          let(:params) { { 'name_regex_keep' => '*test*' } }
-
-          it_behaves_like 'handling an invalid regex'
-        end
+        it_behaves_like 'handling an invalid regex'
       end
 
-      context 'when delete regex matching specific tags is used' do
+      context 'when name_regex is invalid' do
+        let(:params) { { 'name_regex' => '*test*' } }
+
+        it_behaves_like 'handling an invalid regex'
+      end
+
+      context 'when name_regex_keep is invalid' do
+        let(:params) { { 'name_regex_keep' => '*test*' } }
+
+        it_behaves_like 'handling an invalid regex'
+      end
+    end
+
+    context 'when delete regex matching specific tags is used' do
+      let(:params) do
+        { 'name_regex_delete' => 'C|D' }
+      end
+
+      it 'does remove C and D' do
+        expect_delete(%w(C D))
+
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(deleted: %w(C D), before_truncate_size: 2, after_truncate_size: 2, before_delete_size: 2))
+      end
+
+      context 'with overriding allow regex' do
         let(:params) do
-          { 'name_regex_delete' => 'C|D' }
+          { 'name_regex_delete' => 'C|D',
+            'name_regex_keep' => 'C' }
         end
 
-        it 'does remove C and D' do
-          expect_delete(%w(C D))
+        it 'does not remove C' do
+          expect_delete(%w(D))
 
           expect_no_caching
 
-          is_expected.to eq(expected_service_response(deleted: %w(C D), before_truncate_size: 2, after_truncate_size: 2, before_delete_size: 2))
-        end
-
-        context 'with overriding allow regex' do
-          let(:params) do
-            { 'name_regex_delete' => 'C|D',
-              'name_regex_keep' => 'C' }
-          end
-
-          it 'does not remove C' do
-            expect_delete(%w(D))
-
-            expect_no_caching
-
-            is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
-          end
-        end
-
-        context 'with name_regex_delete overriding deprecated name_regex' do
-          let(:params) do
-            { 'name_regex' => 'C|D',
-              'name_regex_delete' => 'D' }
-          end
-
-          it 'does not remove C' do
-            expect_delete(%w(D))
-
-            expect_no_caching
-
-            is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
-          end
+          is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
         end
       end
 
-      context 'with allow regex value' do
+      context 'with name_regex_delete overriding deprecated name_regex' do
+        let(:params) do
+          { 'name_regex' => 'C|D',
+            'name_regex_delete' => 'D' }
+        end
+
+        it 'does not remove C' do
+          expect_delete(%w(D))
+
+          expect_no_caching
+
+          is_expected.to eq(expected_service_response(deleted: %w(D), before_truncate_size: 1, after_truncate_size: 1, before_delete_size: 1))
+        end
+      end
+    end
+
+    context 'with allow regex value' do
+      let(:params) do
+        { 'name_regex_delete' => '.*',
+          'name_regex_keep' => 'B.*' }
+      end
+
+      it 'does not remove B*' do
+        expect_delete(%w(A C D E))
+
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(deleted: %w(A C D E), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
+      end
+    end
+
+    context 'when keeping only N tags' do
+      let(:params) do
+        { 'name_regex' => 'A|B.*|C',
+          'keep_n' => 1 }
+      end
+
+      it 'sorts tags by date' do
+        expect_delete(%w(Bb Ba C))
+
+        expect_no_caching
+
+        expect(service).to receive(:order_by_date).and_call_original
+
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 3))
+      end
+    end
+
+    context 'when not keeping N tags' do
+      let(:params) do
+        { 'name_regex' => 'A|B.*|C' }
+      end
+
+      it 'does not sort tags by date' do
+        expect_delete(%w(A Ba Bb C))
+
+        expect_no_caching
+
+        expect(service).not_to receive(:order_by_date)
+
+        is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
+      end
+    end
+
+    context 'when removing keeping only 3' do
+      let(:params) do
+        { 'name_regex_delete' => '.*',
+          'keep_n' => 3 }
+      end
+
+      it 'does remove B* and C as they are the oldest' do
+        expect_delete(%w(Bb Ba C))
+
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
+      end
+    end
+
+    context 'when removing older than 1 day' do
+      let(:params) do
+        { 'name_regex_delete' => '.*',
+          'older_than' => '1 day' }
+      end
+
+      it 'does remove B* and C as they are older than 1 day' do
+        expect_delete(%w(Ba Bb C))
+
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(deleted: %w(Ba Bb C), before_delete_size: 3))
+      end
+    end
+
+    context 'when combining all parameters' do
+      let(:params) do
+        { 'name_regex_delete' => '.*',
+          'keep_n' => 1,
+          'older_than' => '1 day' }
+      end
+
+      it 'does remove B* and C' do
+        expect_delete(%w(Bb Ba C))
+
+        expect_no_caching
+
+        is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
+      end
+    end
+
+    context 'when running a container_expiration_policy' do
+      let(:user) { nil }
+
+      context 'with valid container_expiration_policy param' do
         let(:params) do
           { 'name_regex_delete' => '.*',
-            'name_regex_keep' => 'B.*' }
+            'keep_n' => 1,
+            'older_than' => '1 day',
+            'container_expiration_policy' => true }
         end
 
-        it 'does not remove B*' do
-          expect_delete(%w(A C D E))
+        it 'succeeds without a user' do
+          expect_delete(%w(Bb Ba C), container_expiration_policy: true)
 
-          expect_no_caching
-
-          is_expected.to eq(expected_service_response(deleted: %w(A C D E), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
-        end
-      end
-
-      context 'when keeping only N tags' do
-        let(:params) do
-          { 'name_regex' => 'A|B.*|C',
-            'keep_n' => 1 }
-        end
-
-        it 'sorts tags by date' do
-          expect_delete(%w(Bb Ba C))
-
-          expect_no_caching
-
-          expect(service).to receive(:order_by_date).and_call_original
-
-          is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 3))
-        end
-      end
-
-      context 'when not keeping N tags' do
-        let(:params) do
-          { 'name_regex' => 'A|B.*|C' }
-        end
-
-        it 'does not sort tags by date' do
-          expect_delete(%w(A Ba Bb C))
-
-          expect_no_caching
-
-          expect(service).not_to receive(:order_by_date)
-
-          is_expected.to eq(expected_service_response(deleted: %w(A Ba Bb C), before_truncate_size: 4, after_truncate_size: 4, before_delete_size: 4))
-        end
-      end
-
-      context 'when removing keeping only 3' do
-        let(:params) do
-          { 'name_regex_delete' => '.*',
-            'keep_n' => 3 }
-        end
-
-        it 'does remove B* and C as they are the oldest' do
-          expect_delete(%w(Bb Ba C))
-
-          expect_no_caching
+          expect_caching
 
           is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
         end
       end
 
-      context 'when removing older than 1 day' do
-        let(:params) do
-          { 'name_regex_delete' => '.*',
-            'older_than' => '1 day' }
-        end
-
-        it 'does remove B* and C as they are older than 1 day' do
-          expect_delete(%w(Ba Bb C))
-
-          expect_no_caching
-
-          is_expected.to eq(expected_service_response(deleted: %w(Ba Bb C), before_delete_size: 3))
-        end
-      end
-
-      context 'when combining all parameters' do
+      context 'without container_expiration_policy param' do
         let(:params) do
           { 'name_regex_delete' => '.*',
             'keep_n' => 1,
             'older_than' => '1 day' }
         end
 
-        it 'does remove B* and C' do
-          expect_delete(%w(Bb Ba C))
-
-          expect_no_caching
-
-          is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
-        end
-      end
-
-      context 'when running a container_expiration_policy' do
-        let(:user) { nil }
-
-        context 'with valid container_expiration_policy param' do
-          let(:params) do
-            { 'name_regex_delete' => '.*',
-              'keep_n' => 1,
-              'older_than' => '1 day',
-              'container_expiration_policy' => true }
-          end
-
-          it 'succeeds without a user' do
-            expect_delete(%w(Bb Ba C), container_expiration_policy: true)
-
-            caching_enabled ? expect_caching : expect_no_caching
-
-            is_expected.to eq(expected_service_response(deleted: %w(Bb Ba C), before_delete_size: 3))
-          end
-        end
-
-        context 'without container_expiration_policy param' do
-          let(:params) do
-            { 'name_regex_delete' => '.*',
-              'keep_n' => 1,
-              'older_than' => '1 day' }
-          end
-
-          it 'fails' do
-            is_expected.to eq(status: :error, message: 'access denied')
-          end
-        end
-      end
-
-      context 'truncating the tags list' do
-        let(:params) do
-          {
-            'name_regex_delete' => '.*',
-            'keep_n' => 1
-          }
-        end
-
-        shared_examples 'returning the response' do |status:, original_size:, before_truncate_size:, after_truncate_size:, before_delete_size:|
-          it 'returns the response' do
-            expect_no_caching
-
-            result = subject
-
-            service_response = expected_service_response(
-              status: status,
-              original_size: original_size,
-              before_truncate_size: before_truncate_size,
-              after_truncate_size: after_truncate_size,
-              before_delete_size: before_delete_size,
-              deleted: nil
-            )
-
-            expect(result).to eq(service_response)
-          end
-        end
-
-        where(:feature_flag_enabled, :max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
-          false | 10 | :success | :success | false
-          false | 10 | :error   | :error   | false
-          false | 3  | :success | :success | false
-          false | 3  | :error   | :error   | false
-          false | 0  | :success | :success | false
-          false | 0  | :error   | :error   | false
-          true  | 10 | :success | :success | false
-          true  | 10 | :error   | :error   | false
-          true  | 3  | :success | :error   | true
-          true  | 3  | :error   | :error   | true
-          true  | 0  | :success | :success | false
-          true  | 0  | :error   | :error   | false
-        end
-
-        with_them do
-          before do
-            stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
-            stub_application_setting(container_registry_cleanup_tags_service_max_list_size: max_list_size)
-            allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
-              expect(service).to receive(:execute).and_return(status: delete_tags_service_status)
-            end
-          end
-
-          original_size = 7
-          keep_n = 1
-
-          it_behaves_like(
-            'returning the response',
-            status: params[:expected_status],
-            original_size: original_size,
-            before_truncate_size: original_size - keep_n,
-            after_truncate_size: params[:expected_truncated] ? params[:max_list_size] + keep_n : original_size - keep_n,
-            before_delete_size: params[:expected_truncated] ? params[:max_list_size] : original_size - keep_n - 1 # one tag is filtered out with older_than filter
-          )
+        it 'fails' do
+          is_expected.to eq(status: :error, message: 'access denied')
         end
       end
     end
 
-    context 'caching' do
+    context 'truncating the tags list' do
+      let(:params) do
+        {
+          'name_regex_delete' => '.*',
+          'keep_n' => 1
+        }
+      end
+
+      shared_examples 'returning the response' do |status:, original_size:, before_truncate_size:, after_truncate_size:, before_delete_size:|
+        it 'returns the response' do
+          expect_no_caching
+
+          result = subject
+
+          service_response = expected_service_response(
+            status: status,
+            original_size: original_size,
+            before_truncate_size: before_truncate_size,
+            after_truncate_size: after_truncate_size,
+            before_delete_size: before_delete_size,
+            deleted: nil
+          )
+
+          expect(result).to eq(service_response)
+        end
+      end
+
+      where(:feature_flag_enabled, :max_list_size, :delete_tags_service_status, :expected_status, :expected_truncated) do
+        false | 10 | :success | :success | false
+        false | 10 | :error   | :error   | false
+        false | 3  | :success | :success | false
+        false | 3  | :error   | :error   | false
+        false | 0  | :success | :success | false
+        false | 0  | :error   | :error   | false
+        true  | 10 | :success | :success | false
+        true  | 10 | :error   | :error   | false
+        true  | 3  | :success | :error   | true
+        true  | 3  | :error   | :error   | true
+        true  | 0  | :success | :success | false
+        true  | 0  | :error   | :error   | false
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(container_registry_expiration_policies_throttling: feature_flag_enabled)
+          stub_application_setting(container_registry_cleanup_tags_service_max_list_size: max_list_size)
+          allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
+            expect(service).to receive(:execute).and_return(status: delete_tags_service_status)
+          end
+        end
+
+        original_size = 7
+        keep_n = 1
+
+        it_behaves_like(
+          'returning the response',
+          status: params[:expected_status],
+          original_size: original_size,
+          before_truncate_size: original_size - keep_n,
+          after_truncate_size: params[:expected_truncated] ? params[:max_list_size] + keep_n : original_size - keep_n,
+          before_delete_size: params[:expected_truncated] ? params[:max_list_size] : original_size - keep_n - 1 # one tag is filtered out with older_than filter
+        )
+      end
+    end
+
+    context 'caching', :freeze_time do
       let(:params) do
         {
           'name_regex_delete' => '.*',
@@ -381,15 +379,10 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
 
       before do
         expect_delete(%w(Bb Ba C), container_expiration_policy: true)
-        travel_to(Time.zone.local(2021, 9, 2, 12, 0, 0))
         # We froze time so we need to set the created_at stubs again
         stub_digest_config('sha256:configA', 1.hour.ago)
         stub_digest_config('sha256:configB', 5.days.ago)
         stub_digest_config('sha256:configC', 1.month.ago)
-      end
-
-      after do
-        travel_back
       end
 
       it 'caches the created_at values' do
@@ -449,32 +442,6 @@ RSpec.describe Projects::ContainerRepository::CleanupTagsService, :clean_gitlab_
         # The caching will use DateTime rfc3339
         DateTime.rfc3339(date_time.rfc3339).rfc3339
       end
-    end
-
-    context 'with container_registry_expiration_policies_caching enabled for the project' do
-      before do
-        stub_feature_flags(container_registry_expiration_policies_caching: project)
-      end
-
-      it_behaves_like 'reading and removing tags', caching_enabled: true
-    end
-
-    context 'with container_registry_expiration_policies_caching disabled' do
-      before do
-        stub_feature_flags(container_registry_expiration_policies_caching: false)
-      end
-
-      it_behaves_like 'reading and removing tags', caching_enabled: false
-    end
-
-    context 'with container_registry_expiration_policies_caching not enabled for the project' do
-      let_it_be(:another_project) { create(:project) }
-
-      before do
-        stub_feature_flags(container_registry_expiration_policies_caching: another_project)
-      end
-
-      it_behaves_like 'reading and removing tags', caching_enabled: false
     end
   end
 
