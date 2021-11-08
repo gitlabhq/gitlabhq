@@ -3520,9 +3520,6 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
-msgid "An empty index will be created if one does not already exist"
-msgstr ""
-
 msgid "An error has occurred"
 msgstr ""
 
@@ -3970,9 +3967,6 @@ msgid "Any Milestone"
 msgstr ""
 
 msgid "Any encrypted tokens"
-msgstr ""
-
-msgid "Any files larger than this limit only index the file name. The file content is neither indexed nor searchable."
 msgstr ""
 
 msgid "Any label"
@@ -6190,6 +6184,9 @@ msgstr ""
 msgid "Cadence is not automated"
 msgstr ""
 
+msgid "Calculate the number of slices during reindexing. The multiplier is applied to the number of shards per index. Learn more about %{slice_multiplier_link_start}slice multiplier configuration%{slice_multiplier_link_end}."
+msgstr ""
+
 msgid "Callback URL"
 msgstr ""
 
@@ -6538,9 +6535,6 @@ msgstr ""
 msgid "Changes are shown as if the %{b_open}source%{b_close} revision was being merged into the %{b_open}target%{b_close} revision."
 msgstr ""
 
-msgid "Changes are still tracked. Useful for cluster/index migrations."
-msgstr ""
-
 msgid "Changes saved."
 msgstr ""
 
@@ -6616,10 +6610,10 @@ msgstr ""
 msgid "Check out, review, and merge locally"
 msgstr ""
 
-msgid "Check the current instance configuration "
+msgid "Check the %{code_open}elasticsearch.log%{code_close} file to debug why the migration halted and make any changes before retrying the migration. When you fix the cause of the failure, select %{strong_open}Retry migration%{strong_close}, and the migration is scheduled to retry in the background."
 msgstr ""
 
-msgid "Check the elasticsearch.log file to debug why the migration was halted and make any changes before retrying the migration. When you fix the cause of the failure, click \"Retry migration\", and the migration will be scheduled to be retried in the background."
+msgid "Check the current instance configuration "
 msgstr ""
 
 msgid "Check with your administrator."
@@ -12044,6 +12038,9 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable Elasticsearch until indexing completes."
+msgstr ""
+
 msgid "Disable Two-factor Authentication"
 msgstr ""
 
@@ -12514,6 +12511,9 @@ msgstr ""
 msgid "Elasticsearch indexing started"
 msgstr ""
 
+msgid "Elasticsearch migration halted"
+msgstr ""
+
 msgid "Elasticsearch reindexing is already in progress"
 msgstr ""
 
@@ -12527,6 +12527,9 @@ msgid "Elasticsearch returned status code: %{status_code}"
 msgstr ""
 
 msgid "Elasticsearch zero-downtime reindexing"
+msgstr ""
+
+msgid "Elasticsearch's region."
 msgstr ""
 
 msgid "Elastic|None. Select namespaces to index."
@@ -12965,6 +12968,12 @@ msgid "Enter the name of your application, and we'll return a unique %{type}."
 msgstr ""
 
 msgid "Enter the number of seconds, or other human-readable input, like \"1 hour\". This timeout takes precedence over lower timeouts set for the project."
+msgstr ""
+
+msgid "Enter the password for password-protected Elasticsearch servers."
+msgstr ""
+
+msgid "Enter the username for password-protected Elasticsearch servers."
 msgstr ""
 
 msgid "Enter your Packagist server. Defaults to https://packagist.org."
@@ -14889,6 +14898,9 @@ msgid "For each job, re-use the project workspace. If the workspace doesn't exis
 msgstr ""
 
 msgid "For example, the application using the token or the purpose of the token."
+msgstr ""
+
+msgid "For files larger than this limit, only index the file name. The file content is neither indexed nor searchable."
 msgstr ""
 
 msgid "For general work"
@@ -17223,7 +17235,7 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
-msgid "If any indexed field exceeds this limit it will be truncated to this number of characters and the rest will not be indexed or searchable. This does not apply to repository and wiki indexing. Setting this to 0 means it is unlimited."
+msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
 msgstr ""
 
 msgid "If blank, defaults to %{code_open}Retry later%{code_close}."
@@ -17260,6 +17272,9 @@ msgid "If the YouTube URL is https://www.youtube.com/watch?v=0t1DgySidms then th
 msgstr ""
 
 msgid "If the number of active users exceeds the user limit, you will be charged for the number of %{users_over_license_link} at your next license reconciliation."
+msgstr ""
+
+msgid "If there isn't any existing index, GitLab creates one."
 msgstr ""
 
 msgid "If this email was added in error, you can remove it here:"
@@ -20323,7 +20338,7 @@ msgstr ""
 msgid "Learn more about groups."
 msgstr ""
 
-msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced search configuration%{configuration_link_end} documentation. Changes won't take place until the index is %{recreated_link_start}recreated%{recreated_link_end}."
+msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
 msgid "Learn more about signing commits"
@@ -20647,9 +20662,6 @@ msgstr ""
 msgid "Limit display of time tracking units to hours."
 msgstr ""
 
-msgid "Limit namespaces and projects that can be indexed"
-msgstr ""
-
 msgid "Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -20663,6 +20675,9 @@ msgid "Limit the number of inbound incident management alerts that can be sent t
 msgstr ""
 
 msgid "Limit the number of issues and epics per minute a user can create through web and API requests."
+msgstr ""
+
+msgid "Limit the number of namespaces and projects that can be indexed."
 msgstr ""
 
 msgid "Limit the size of Sidekiq jobs stored in Redis."
@@ -23697,7 +23712,7 @@ msgstr ""
 msgid "Nuget metadatum must have at least license_url, project_url or icon_url set"
 msgstr ""
 
-msgid "Number of Elasticsearch shards and replicas (per index)"
+msgid "Number of Elasticsearch shards and replicas per index:"
 msgstr ""
 
 msgid "Number of Git pushes after which %{code_start}git gc%{code_end} is run."
@@ -24099,6 +24114,9 @@ msgid "Only admins can delete project"
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
+msgstr ""
+
+msgid "Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
@@ -24833,9 +24851,6 @@ msgid "Passed on"
 msgstr ""
 
 msgid "Password"
-msgstr ""
-
-msgid "Password (for password-protected Elasticsearch servers)"
 msgstr ""
 
 msgid "Password (optional)"
@@ -25811,9 +25826,6 @@ msgid "Please migrate all existing projects to hashed storage to avoid security 
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
-msgstr ""
-
-msgid "Please only enable search after installing the plugin, enabling indexing and recreating the index"
 msgstr ""
 
 msgid "Please provide a name"
@@ -28389,9 +28401,6 @@ msgstr ""
 msgid "Regex pattern"
 msgstr ""
 
-msgid "Region that Elasticsearch is configured"
-msgstr ""
-
 msgid "Register"
 msgstr ""
 
@@ -29207,6 +29216,9 @@ msgid "Required approvals (%{approvals_given} given, you've approved)"
 msgstr ""
 
 msgid "Required in this project."
+msgstr ""
+
+msgid "Required only if you are not using role instance credentials."
 msgstr ""
 
 msgid "Requirement %{reference} has been added"
@@ -31453,6 +31465,9 @@ msgstr ""
 msgid "Set the iteration to %{iteration_reference}."
 msgstr ""
 
+msgid "Set the maximum number of slices allowed to run concurrently during Elasticsearch reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
+msgstr ""
+
 msgid "Set the maximum session time for a web terminal."
 msgstr ""
 
@@ -31583,9 +31598,6 @@ msgid "Setting saved successfully"
 msgid_plural "Settings saved successfully"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Setting this to 0 means using the system default timeout value."
-msgstr ""
 
 msgid "Settings"
 msgstr ""
@@ -34088,7 +34100,7 @@ msgstr ""
 msgid "The URL should start with http:// or https://"
 msgstr ""
 
-msgid "The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., \"http://localhost:9200, http://localhost:9201\")."
+msgid "The URLs for connecting to Elasticsearch. For clustering, add the URLs separated by commas."
 msgstr ""
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
@@ -34330,9 +34342,6 @@ msgstr ""
 msgid "The maximum number of pipeline minutes that a group can use on shared runners per month. 0 for unlimited."
 msgstr ""
 
-msgid "The maximum number of slices allowed to run concurrently during Elasticsearch reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
-msgstr ""
-
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
 msgstr ""
 
@@ -34522,6 +34531,9 @@ msgstr ""
 msgid "The vulnerability is no longer detected. Verify the vulnerability has been remediated before changing its status."
 msgstr ""
 
+msgid "There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
+msgstr ""
+
 msgid "There are currently no events."
 msgstr ""
 
@@ -34618,9 +34630,6 @@ msgstr ""
 msgid "There are no variables yet."
 msgstr ""
 
-msgid "There are pending advanced search migrations which require indexing to be paused. Indexing must remain paused until the migrations are completed."
-msgstr ""
-
 msgid "There are running deployments on the environment. Please retry later."
 msgstr ""
 
@@ -34631,9 +34640,6 @@ msgid "There are several rate limits in place to protect the system."
 msgstr ""
 
 msgid "There are several size limits in place."
-msgstr ""
-
-msgid "There is a halted Elasticsearch migration"
 msgstr ""
 
 msgid "There is already a repository with that name on disk"
@@ -36002,6 +36008,9 @@ msgstr ""
 msgid "To use the additional formats, you must start the required %{container_link_start}companion containers%{container_link_end}."
 msgstr ""
 
+msgid "To use the system's default, set this value to 0."
+msgstr ""
+
 msgid "To view all %{scannedResourcesCount} scanned URLs, %{linkStart}please download the CSV file%{linkEnd}"
 msgstr ""
 
@@ -36107,10 +36116,10 @@ msgstr ""
 msgid "Too many changes to show."
 msgstr ""
 
-msgid "Too many namespaces enabled. You will need to manage them via the console or the API."
+msgid "Too many namespaces enabled. Manage them through the console or the API."
 msgstr ""
 
-msgid "Too many projects enabled. You will need to manage them via the console or the API."
+msgid "Too many projects enabled. Manage them through the console or the API."
 msgstr ""
 
 msgid "TopNav|Go back"
@@ -36364,7 +36373,7 @@ msgstr ""
 msgid "Trigger cluster reindexing"
 msgstr ""
 
-msgid "Trigger cluster reindexing. This feature should be used with an index that was created after 13.0."
+msgid "Trigger cluster reindexing. Only use this with an index that was created in GitLab 13.0 or later."
 msgstr ""
 
 msgid "Trigger manual job"
@@ -37363,9 +37372,6 @@ msgstr ""
 msgid "Used programming language"
 msgstr ""
 
-msgid "Used to calculate the number of slices during reindexing. The multiplier will be applied to the number of shards per index. Learn more about %{slice_multiplier_link_start}slice multiplier configuration%{slice_multiplier_link_end}."
-msgstr ""
-
 msgid "Used to help configure your identity provider"
 msgstr ""
 
@@ -37667,9 +37673,6 @@ msgid "UserProfile|made a private contribution"
 msgstr ""
 
 msgid "Username"
-msgstr ""
-
-msgid "Username (for password-protected Elasticsearch servers)"
 msgstr ""
 
 msgid "Username (optional)"
@@ -38711,6 +38714,9 @@ msgid "When leaving the URL blank, classification labels can still be specified 
 msgstr ""
 
 msgid "When merge requests and commits in the default branch close, any issues they reference also close."
+msgstr ""
+
+msgid "When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
 msgid "When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."

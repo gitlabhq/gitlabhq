@@ -311,7 +311,7 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 - Connections between Workhorse and Gitaly use the Gitaly `backchannel` protocol by default. If you deployed a gRPC proxy between Workhorse and Gitaly,
   Workhorse can no longer connect. As a workaround, [disable the temporary `workhorse_use_sidechannel`](../administration/feature_flags.md#enable-or-disable-the-feature)
-  feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy.
+  feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy. If you have feedback about this change, please go to [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1301).
 
 ### 14.4.0
 
