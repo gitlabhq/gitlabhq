@@ -160,6 +160,8 @@ To export a project and its data, follow these steps:
 
 1. Select **Settings** in the sidebar.
 
+1. Scroll down and expand the **Advanced** section.
+
 1. Scroll down to find the **Export project** button:
 
    ![Export button](img/import_export_export_button.png)

@@ -1,9 +1,22 @@
 # frozen_string_literal: true
 
-require 'shellwords'
+require_relative 'dependencies'
 
 module Gitlab
   module SidekiqCluster
+    CHECK_TERMINATE_INTERVAL_SECONDS = 1
+
+    # How long to wait when asking for a clean termination.
+    # It maps the Sidekiq default timeout:
+    # https://github.com/mperham/sidekiq/wiki/Signals#term
+    #
+    # This value is passed to Sidekiq's `-t` if none
+    # is given through arguments.
+    DEFAULT_SOFT_TIMEOUT_SECONDS = 25
+
+    # After surpassing the soft timeout.
+    DEFAULT_HARD_TIMEOUT_SECONDS = 5
+
     # The signals that should terminate both the master and workers.
     TERMINATE_SIGNALS = %i(INT TERM).freeze
 
@@ -62,7 +75,7 @@ module Gitlab
     # directory - The directory of the Rails application.
     #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, timeout: CLI::DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
+    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
         start_sidekiq(pair, env: env,
                             directory: directory,

@@ -4,27 +4,21 @@ require 'optparse'
 require 'logger'
 require 'time'
 
+# In environments where code is preloaded and cached such as `spring`,
+# we may run into "already initialized" warnings, hence the check.
+require_relative '../lib/gitlab' unless Object.const_defined?('Gitlab')
+require_relative '../lib/gitlab/utils'
+require_relative '../lib/gitlab/sidekiq_config/cli_methods'
+require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
+require_relative '../lib/gitlab/sidekiq_logging/json_formatter'
+require_relative 'sidekiq_cluster'
+
 module Gitlab
   module SidekiqCluster
     class CLI
-      CHECK_TERMINATE_INTERVAL_SECONDS = 1
-
-      # How long to wait when asking for a clean termination.
-      # It maps the Sidekiq default timeout:
-      # https://github.com/mperham/sidekiq/wiki/Signals#term
-      #
-      # This value is passed to Sidekiq's `-t` if none
-      # is given through arguments.
-      DEFAULT_SOFT_TIMEOUT_SECONDS = 25
-
-      # After surpassing the soft timeout.
-      DEFAULT_HARD_TIMEOUT_SECONDS = 5
-
       CommandError = Class.new(StandardError)
 
       def initialize(log_output = $stderr)
-        require_relative '../../../lib/gitlab/sidekiq_logging/json_formatter'
-
         # As recommended by https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
         @max_concurrency = 50
         @min_concurrency = 0

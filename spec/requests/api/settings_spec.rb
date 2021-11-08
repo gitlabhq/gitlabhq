@@ -612,5 +612,46 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
         expect(json_response.slice(*settings.keys)).to eq(settings)
       end
     end
+
+    context 'Sentry settings' do
+      let(:settings) do
+        {
+          sentry_enabled: true,
+          sentry_dsn: 'http://sentry.example.com',
+          sentry_clientside_dsn: 'http://sentry.example.com',
+          sentry_environment: 'production'
+        }
+      end
+
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it 'includes the attributes in the API' do
+        get api('/application/settings', admin)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it 'allows updating the settings' do
+        put api('/application/settings', admin), params: settings
+
+        expect(response).to have_gitlab_http_status(:ok)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+
+      context 'missing sentry_dsn value when sentry_enabled is true' do
+        it 'returns a blank parameter error message' do
+          put api('/application/settings', admin), params: { sentry_enabled: true }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          message = json_response['message']
+          expect(message["sentry_dsn"]).to include(a_string_matching("can't be blank"))
+        end
+      end
+    end
   end
 end

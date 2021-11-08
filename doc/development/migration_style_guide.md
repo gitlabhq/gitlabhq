@@ -135,6 +135,7 @@ various database operations, such as:
 - [dropping and renaming columns](avoiding_downtime_in_migrations.md#dropping-columns)
 - [changing column constraints and types](avoiding_downtime_in_migrations.md#changing-column-constraints)
 - [adding and dropping indexes, tables, and foreign keys](avoiding_downtime_in_migrations.md#adding-indexes)
+- [migrating `integer` primary keys to `bigint`](avoiding_downtime_in_migrations.md#adding-indexes)
 
 and explains how to perform them without requiring downtime.
 

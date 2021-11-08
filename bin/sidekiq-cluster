@@ -1,13 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'optparse'
-require_relative '../lib/gitlab'
-require_relative '../lib/gitlab/utils'
-require_relative '../lib/gitlab/sidekiq_config/cli_methods'
-require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
-require_relative '../lib/gitlab/sidekiq_cluster'
-require_relative '../lib/gitlab/sidekiq_cluster/cli'
+require_relative '../sidekiq_cluster/cli'
 
 Thread.abort_on_exception = true
 

@@ -42,7 +42,7 @@ describe('MRWidgetMerging', () => {
         .trim()
         .replace(/\s\s+/g, ' ')
         .replace(/[\r\n]+/g, ' '),
-    ).toEqual('The changes will be merged into branch');
+    ).toEqual('Merges changes into branch');
 
     expect(wrapper.find('a').attributes('href')).toBe('/branch-path');
   });

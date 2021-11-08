@@ -12,6 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
+To manage cluster applications, use the [GitLab Kubernetes Agent](agent/index.md)
+with the [Cluster Management Project Template](management_project_template.md).
+
 A project can be designated as the management project for a cluster.
 A management project can be used to run deployment jobs with
 Kubernetes
@@ -41,8 +44,7 @@ Management projects are restricted to the following:
 To use a cluster management project to manage your cluster:
 
 1. Create a new project to serve as the cluster management project
-for your cluster. We recommend that you
-[create this project based on the Cluster Management project template](management_project_template.md#create-a-new-project-based-on-the-cluster-management-template).
+for your cluster.
 1. [Associate the cluster with the management project](#associate-the-cluster-management-project-with-the-cluster).
 1. [Configure your cluster's pipelines](#configuring-your-pipeline).
 1. [Set the environment scope](#setting-the-environment-scope).

@@ -177,10 +177,10 @@ export default {
         </h4>
         <section class="mr-info-list">
           <p v-if="shouldRemoveSourceBranch">
-            {{ s__('mrWidget|The source branch will be deleted') }}
+            {{ s__('mrWidget|Deletes the source branch') }}
           </p>
           <p v-else class="gl-display-flex">
-            <span class="gl-mr-3">{{ s__('mrWidget|The source branch will not be deleted') }}</span>
+            <span class="gl-mr-3">{{ s__('mrWidget|Does not delete the source branch') }}</span>
             <gl-button
               v-if="canRemoveSourceBranch"
               :loading="isRemovingSourceBranch"

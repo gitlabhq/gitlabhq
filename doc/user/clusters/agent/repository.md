@@ -173,7 +173,7 @@ To grant projects access to the Agent through the [CI/CD Tunnel](ci_cd_tunnel.md
 1. Go to your Agent's configuration project.
 1. Edit the Agent's configuration file (`config.yaml`).
 1. Add the `projects` attribute into `ci_access`.
-1. Identify the new project through its path:
+1. Identify the project through its path:
 
    ```yaml
    ci_access:

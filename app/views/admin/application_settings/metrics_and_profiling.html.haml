@@ -54,3 +54,15 @@
     = render 'usage'
 
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded_by_default?
+
+- if Feature.enabled?(:configure_sentry_in_application_settings, default_enabled: :yaml)
+  %section.settings.as-sentry.no-animate#js-sentry-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'sentry_settings_content' } }
+    .settings-header
+      %h4
+        = _('Sentry')
+      %button.btn.gl-button.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _('Configure Sentry integration for error tracking')
+    .settings-content
+      = render 'sentry'

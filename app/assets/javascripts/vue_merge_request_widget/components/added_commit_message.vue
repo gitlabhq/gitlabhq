@@ -40,9 +40,9 @@ export default {
     },
     message() {
       return this.isFastForwardEnabled
-        ? s__('mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}.')
+        ? s__('mrWidgetCommitsAdded|Adds %{commitCount} to %{targetBranch}.')
         : s__(
-            'mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}%{squashedCommits}.',
+            'mrWidgetCommitsAdded|Adds %{commitCount} and %{mergeCommitCount} to %{targetBranch}%{squashedCommits}.',
           );
     },
     textDecorativeComponent() {
@@ -69,7 +69,7 @@ export default {
       </template>
       <template #squashedCommits>
         <template v-if="glFeatures.restructuredMrWidget && isSquashEnabled">
-          {{ __('(commits will be squashed)') }}</template
+          {{ n__('(squashes %d commit)', '(squashes %d commits)', commitsCount) }}</template
         ></template
       >
     </gl-sprintf>

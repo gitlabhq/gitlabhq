@@ -710,10 +710,10 @@ export default {
                   </li>
                   <li class="gl-line-height-normal">
                     <template v-if="removeSourceBranch">
-                      {{ __('Source branch will be deleted.') }}
+                      {{ __('Deletes the source branch.') }}
                     </template>
                     <template v-else>
-                      {{ __('Source branch will not be deleted.') }}
+                      {{ __('Does not delete the source branch.') }}
                     </template>
                   </li>
                   <li v-if="mr.relatedLinks" class="gl-line-height-normal">

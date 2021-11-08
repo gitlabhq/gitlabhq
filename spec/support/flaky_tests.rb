@@ -2,7 +2,7 @@
 
 return unless ENV['CI']
 return unless ENV['SKIP_FLAKY_TESTS_AUTOMATICALLY'] == "true"
-return if ENV['CI_MERGE_REQUEST_LABELS'].include?(/pipeline:run-flaky-tests/)
+return if ENV['CI_MERGE_REQUEST_LABELS'].to_s.include?('pipeline:run-flaky-tests')
 
 require_relative '../tooling/rspec_flaky/report'
 

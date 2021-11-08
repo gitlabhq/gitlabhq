@@ -35,9 +35,10 @@ The following identity providers are supported:
 
 Once [Group Single Sign-On](index.md) has been configured, we can:
 
-1. Navigate to the group and click **Administration > SAML SSO**.
-1. Click on the **Generate a SCIM token** button.
-1. Save the token and URL so they can be used in the next step.
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > SAML SSO**.
+1. Select **Generate a SCIM token**.
+1. Save the token and URL for use in the next step.
 
 ![SCIM token configuration](img/scim_token_v13_3.png)
 
@@ -50,14 +51,14 @@ Once [Group Single Sign-On](index.md) has been configured, we can:
 
 The SAML application that was created during [Single sign-on](index.md) setup for [Azure](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal) now needs to be set up for SCIM.
 
-1. Set up automatic provisioning and administrative credentials by following the
+1. Enable automatic provisioning and administrative credentials by following the
    [Azure's SCIM setup documentation](https://docs.microsoft.com/en-us/azure/active-directory/app-provisioning/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim).
 
 During this configuration, note the following:
 
-- The `Tenant URL` and `secret token` are the ones retrieved in the
+- The `Tenant URL` and `secret token` are the items retrieved in the
   [previous step](#gitlab-configuration).
-- It is recommended to set a notification email and check the **Send an email notification when a failure occurs** checkbox.
+- We recommend setting a notification email and selecting the **Send an email notification when a failure occurs** checkbox.
 - For mappings, we only leave `Synchronize Azure Active Directory Users to AppName` enabled.
   `Synchronize Azure Active Directory Groups to AppName` is usually disabled. However, this
   does not mean Azure AD users cannot be provisioned in groups. Leaving it enabled does not break
@@ -113,29 +114,27 @@ Make sure that the Okta setup matches our documentation exactly, especially the 
 configuration. Otherwise, the Okta SCIM app may not work properly.
 
 1. Sign in to Okta.
-1. If you see an **Admin** button in the top right, click the button. This will
-   ensure you are in the Admin area.
+1. Ensure you are in the Admin section by selecting the **Admin** button located in the top right. The admin button is not visible from the admin page.
 
    NOTE:
-   If you're using the Developer Console, click **Developer Console** in the top
-   bar and select **Classic UI**. Otherwise, you may not see the buttons described
-   in the following steps:
+   If you're using the Developer Console, select **Developer Console** in the top
+   bar and then select **Classic UI**. Otherwise, you may not see the buttons described in the following steps:
 
-1. In the **Application** tab, click **Add Application**.
-1. Search for **GitLab**, find and click on the 'GitLab' application.
-1. On the GitLab application overview page, click **Add**.
+1. In the **Application** tab, select **Add Application**.
+1. Search for **GitLab**, find and select on the 'GitLab' application.
+1. On the GitLab application overview page, select **Add**.
 1. Under **Application Visibility** select both checkboxes. Currently the GitLab application does not support SAML authentication so the icon should not be shown to users.
-1. Click **Done** to finish adding the application.
-1. In the **Provisioning** tab, click **Configure API integration**.
+1. Select **Done** to finish adding the application.
+1. In the **Provisioning** tab, select **Configure API integration**.
 1. Select **Enable API integration**.
     - For **Base URL** enter the URL obtained from the GitLab SCIM configuration page
     - For **API Token** enter the SCIM token obtained from the GitLab SCIM configuration page
-1. Click 'Test API Credentials' to verify configuration.
-1. Click **Save** to apply the settings.
-1. After saving the API integration details, new settings tabs appear on the left. Choose **To App**.
-1. Click **Edit**.
-1. Check the box to **Enable** for both **Create Users** and **Deactivate Users**.
-1. Click **Save**.
+1. Select 'Test API Credentials' to verify configuration.
+1. Select **Save** to apply the settings.
+1. After saving the API integration details, new settings tabs appear on the left. Select **To App**.
+1. Select **Edit**.
+1. Select the **Enable** checkbox for both **Create Users** and **Deactivate Users**.
+1. Select **Save**.
 1. Assign users in the **Assignments** tab. Assigned users are created and
    managed in your GitLab group.
 
@@ -147,8 +146,8 @@ application described above.
 
 ### OneLogin
 
-OneLogin provides a "GitLab (SaaS)" app in their catalog, which includes a SCIM integration.
-As the app is developed by OneLogin, please reach out to OneLogin if you encounter issues.
+As the developers of this app, OneLogin provides a "GitLab (SaaS)" app in their catalog, which includes a SCIM integration.
+Please reach out to OneLogin if you encounter issues.
 
 ## User access and linking setup
 
@@ -177,8 +176,8 @@ As long as [Group SAML](index.md) has been configured, existing GitLab.com users
 - By following these steps:
 
   1. Sign in to GitLab.com if needed.
-  1. Click on the GitLab app in the identity provider's dashboard or visit the **GitLab single sign-on URL**.
-  1. Click on the **Authorize** button.
+  1. In the identity provider's dashboard select the GitLab app or visit the **GitLab single sign-on URL**.
+  1. Select the **Authorize**.
 
 We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
 

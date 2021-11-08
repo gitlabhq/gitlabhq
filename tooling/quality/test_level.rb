@@ -54,6 +54,7 @@ module Quality
         tooling
       ],
       integration: %w[
+        commands
         controllers
         mailers
         requests

@@ -10,7 +10,7 @@ If your organization uses [Jira](https://www.atlassian.com/software/jira) issues
 you can [migrate your issues from Jira](../../user/project/import/jira.md) and work
 exclusively in GitLab. However, if you'd like to continue to use Jira, you can
 integrate it with GitLab. GitLab offers two types of Jira integrations, and you
-can use one or both depending on the capabilities you need. It is recommended that you enable both.
+can use one or both depending on the capabilities you need. We recommend you enable both.
 
 ## Compare integrations
 
@@ -41,7 +41,7 @@ or the Jira DVCS (distributed version control system) connector,
 
 ### Direct feature comparison
 
-| Capability | Jira integration | Jira Development panel integration |
+| Capability | Jira integration | Jira development panel integration |
 |-|-|-|
 | Mention a Jira issue ID in a GitLab commit or merge request, and a link to the Jira issue is created. | Yes. | No. |
 | Mention a Jira issue ID in GitLab and the Jira issue shows the GitLab issue or merge request. | Yes. A Jira comment with the GitLab issue or MR title links to GitLab. The first mention is also added to the Jira issue under **Web links**. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
@@ -55,11 +55,11 @@ or the Jira DVCS (distributed version control system) connector,
 
 ## Authentication in Jira
 
-The process for configuring Jira depends on whether you host Jira on your own server or on
+The authentication method in Jira depends on whether you host Jira on your own server or on
 [Atlassian cloud](https://www.atlassian.com/cloud):
 
 - **Jira Server** supports basic authentication. When connecting, a **username and password** are
-  required. Connecting to Jira Server via CAS is not possible. For more information, read
+  required. Connecting to Jira Server using the Central Authentication Service (CAS) is not possible. For more information, read
   how to [set up a user in Jira Server](jira_server_configuration.md).
 - **Jira on Atlassian cloud** supports authentication through an API token. When connecting to Jira on
   Atlassian cloud, an email and API token are required. For more information, read
@@ -72,11 +72,16 @@ actions in GitLab issues and merge requests linked to a Jira issue leak informat
 about the private project to non-administrator Jira users. If your installation uses Jira Cloud,
 you can use the [GitLab.com for Jira Cloud app](connect-app.md) to avoid this risk.
 
+## Third-party Jira integrations
+
+Developers have built several third-party Jira integrations for GitLab that are
+listed on the [Atlassian Marketplace](https://marketplace.atlassian.com/search?product=jira&query=gitlab).
+
 ## Troubleshooting
 
 If these features do not work as expected, it is likely due to a problem with the way the integration settings were configured.
 
-### GitLab is unable to comment on a Jira issue
+### GitLab cannot comment on a Jira issue
 
 If GitLab cannot comment on Jira issues, make sure the Jira user you
 set up for the integration has permission to:
@@ -86,14 +91,16 @@ set up for the integration has permission to:
 
 Jira issue references and update comments do not work if the GitLab issue tracker is disabled.
 
-### GitLab is unable to close a Jira issue
+### GitLab cannot close a Jira issue
 
-Make sure the `Transition ID` you set in the Jira settings matches the one
-your project needs to close an issue.
+If GitLab cannot close a Jira issue:
 
-Make sure that the Jira issue is not already marked as resolved. That is,
-the Jira issue resolution field is not set, and the issue is not struck through in
-Jira lists.
+- Make sure the `Transition ID` you set in the Jira settings matches the one
+  your project needs to close an issue.
+
+- Make sure the Jira issue is not already marked as resolved:
+  - Check the Jira issue resolution field is not set.
+  - Check the issue is not struck through in Jira lists.
 
 ### CAPTCHA
 
@@ -104,8 +111,3 @@ authenticate with the Jira site.
 
 To fix this error, sign in to your Jira instance
 and complete the CAPTCHA.
-
-## Third-party Jira integrations
-
-Developers have built several third-party Jira integrations for GitLab that are
-listed on the [Atlassian Marketplace](https://marketplace.atlassian.com/search?product=jira&query=gitlab).

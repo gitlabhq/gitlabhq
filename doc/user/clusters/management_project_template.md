@@ -4,15 +4,17 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cluster Management project template **(FREE)**
+# Manage cluster applications **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) in GitLab 12.10 with Helmfile support via Helm v2.
 > - Helm v2 support was [dropped](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63577) in GitLab 14.0. Use Helm v3 instead.
+> - [Migrated](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/24) to the GitLab Kubernetes Agent in GitLab 14.5.
 
-With a [cluster management project](management_project.md) you can manage
-your cluster's deployment and applications through a repository in GitLab.
+Use a repository to install, manage, and deploy clusters applications through code.
 
-The Cluster Management project template provides you a baseline to get
+## Cluster Management Project Template
+
+The Cluster Management Project Template provides you a baseline to get
 started and flexibility to customize your project to your cluster's needs.
 For instance, you can:
 
@@ -21,49 +23,78 @@ For instance, you can:
 - Remove the built-in cluster applications you don't need.
 - Add other cluster applications using the same structure as the ones already available.
 
-The template contains the following [components](#available-components):
+The template contains the following [components](#configure-the-available-components):
 
-- A pre-configured GitLab CI/CD file so that you can configure deployment pipelines.
+- A pre-configured GitLab CI/CD file so that you can configure CI/CD pipelines using the [CI/CD Tunnel](agent/ci_cd_tunnel.md).
 - A pre-configured [Helmfile](https://github.com/roboll/helmfile) so that
 you can manage cluster applications with [Helm v3](https://helm.sh/).
 - An `applications` directory with a `helmfile.yaml` configured for each
 application available in the template.
 
-WARNING:
-If you used [GitLab Managed Apps](applications.md) to manage your
-cluster from GitLab, see how to [migrate from GitLab Managed Apps](migrating_from_gma_to_project_template.md) to the Cluster Management
-project.
+## Use the Kubernetes Agent with the Cluster Management Project Template
 
-## Set up the management project from the Cluster Management project template
+To use a new project created from the Cluster Management Project Template
+with a cluster connected to GitLab through the [GitLab Kubernetes Agent](agent/index.md),
+you have two options:
 
-To set up your cluster's management project off of the Cluster Management project template:
+- [Use one single project](#single-project) to configure the Agent and manage cluster applications.
+- [Use separate projects](#separate-projects) - one to configure the Agent and another to manage cluster applications.
 
-1. [Create a new project based on the Cluster Management template](#create-a-new-project-based-on-the-cluster-management-template).
-1. [Associate the cluster management project with your cluster](management_project.md#associate-the-cluster-management-project-with-the-cluster).
-1. Use the [available components](#available-components) to manage your cluster.
+### Single project
 
-### Create a new project based on the Cluster Management template
+This setup is particularly useful when you haven't connected your cluster
+to GitLab through the Agent yet and you want to use the Cluster Management
+Project Template to manage cluster applications.
+
+To use one single project to configure the Agent and to manage cluster applications:
+
+1. [Create a new project from the Cluster Management Project Template](#create-a-new-project-based-on-the-cluster-management-template).
+1. Configure the new project as the [Agent's configuration repository](agent/repository.md)
+(where the Agent is registered and its `config.yaml` is stored).
+1. From your project's settings, add a [new environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) `$KUBE_CONTEXT` and set it to `path/to/agent-configuration-project:your-agent-name`.
+1. [Configure the components](#configure-the-available-components) inherited from the template.
+
+### Separate projects
+
+This setup is particularly useful **when you already have a cluster** connected
+to GitLab through the Agent and want to use the Cluster Management
+Project Template to manage cluster applications.
+
+To use one project to configure the Agent ("project A") and another project to
+manage cluster applications ("project B"), follow the steps below.
+
+We assume that you already have a cluster connected through the Agent and
+[configured through the Agent's configuration repository](agent/repository.md)
+("project A").
+
+1. [Create a new project from the Cluster Management Project Template](#create-a-new-project-based-on-the-cluster-management-template).
+This new project is "project B".
+1. In your "project A", [grant the Agent access to the new project (B) through the CI/CD Tunnel](agent/repository.md#authorize-projects-to-use-an-agent).
+1. From the "project's B" settings, add a [new environment variable](../../ci/variables/index.md#add-a-cicd-variable-to-a-project) `$KUBE_CONTEXT` and set it to `path/to/agent-configuration-project:your-agent-name`.
+1. In "project B", [configure the components](#configure-the-available-components) inherited from the template.
+
+## Create a new project based on the Cluster Management Template
 
 To get started, create a new project based on the Cluster Management
 project template to use as a cluster management project.
 
-You can either create the [new project](../project/working_with_projects.md#create-a-project)
-from the template or import the project from the URL. Importing
-the project is useful if you are using a GitLab self-managed
-instance that may not have the latest version of the template.
+You can either create the new project from the template or import the
+project from the URL. Importing the project is useful if you are using
+a GitLab self-managed instance that may not have the latest version of
+the template.
 
-To create the new project:
+To [create the new project](../project/working_with_projects.md#create-a-project):
 
 - From the template: select the **GitLab Cluster Management** project template.
 - Importing from the URL: use `https://gitlab.com/gitlab-org/project-templates/cluster-management.git`.
 
-## Available components
+## Configure the available components
 
-Use the available components to configure your cluster:
+Use the available components to configure your cluster applications:
 
-- [A `.gitlab-ci.yml` file](#the-gitlab-ciyml-file).
-- [A main `helmfile.yml` file](#the-main-helmfileyml-file).
-- [A directory with built-in applications](#built-in-applications).
+- [The `.gitlab-ci.yml` file](#the-gitlab-ciyml-file).
+- [The main `helmfile.yml` file](#the-main-helmfileyml-file).
+- [The directory with built-in applications](#built-in-applications).
 
 ### The `.gitlab-ci.yml` file
 
@@ -107,7 +138,7 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 - [Sentry](../infrastructure/clusters/manage/management_project_applications/sentry.md)
 - [Vault](../infrastructure/clusters/manage/management_project_applications/vault.md)
 
-#### How to customize your applications
+#### Customize your applications
 
 Each app has an `applications/{app}/values.yaml` file (`applications/{app}/values.yaml.gotmpl` in case of GitLab Runner). This is the
 place where you can define default values for your app's Helm chart. Some apps already have defaults

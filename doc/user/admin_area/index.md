@@ -257,6 +257,10 @@ To edit a topic, select **Edit** in that topic's row.
 To search for topics by name, enter your criteria in the search box. The topic search is case
 insensitive, and applies partial matching.
 
+NOTE:
+Topics are public and visible to everyone, but assignments to projects are not.
+Do not include sensitive information in the name or description of a topic.
+
 ### Administering Jobs
 
 You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.

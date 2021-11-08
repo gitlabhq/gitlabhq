@@ -1,0 +1,22 @@
+= form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-sentry-settings'), html: { class: 'fieldset-form', id: 'sentry-settings' } do |f|
+  = form_errors(@application_setting)
+
+  %span.text-muted
+    = _('Changing any setting here requires an application restart')
+
+  %fieldset
+    .form-group
+      .form-check
+        = f.check_box :sentry_enabled, class: 'form-check-input'
+        = f.label :sentry_enabled, _('Enable Sentry error tracking'), class: 'form-check-label'
+    .form-group
+      = f.label :sentry_dsn, _('DSN'), class: 'label-light'
+      = f.text_field :sentry_dsn, class: 'form-control gl-form-input', placeholder: 'https://public@sentry.example.com/1'
+    .form-group
+      = f.label :sentry_clientside_dsn, _('Clientside DSN'), class: 'label-light'
+      = f.text_field :sentry_clientside_dsn, class: 'form-control gl-form-input', placeholder: 'https://public@sentry.example.com/2'
+    .form-group
+      = f.label :sentry_environment, _('Environment'), class: 'label-light'
+      = f.text_field :sentry_environment, class: 'form-control gl-form-input', placeholder: Rails.env
+
+  = f.submit _('Save changes'), class: 'gl-button btn btn-confirm'

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
 require 'rspec-parameterized'
 
-RSpec.describe Gitlab::SidekiqCluster do
+require_relative '../../sidekiq_cluster/sidekiq_cluster'
+
+RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
   describe '.trap_signals' do
     it 'traps the given signals' do
       expect(described_class).to receive(:trap).ordered.with(:INT)
