@@ -1,5 +1,5 @@
 ---
-key_path: <%= key_path %><%= metric_name_suggestion %>
+key_path: <%= args.second %><%= metric_name_suggestion(args.second) %>
 description:
 product_section:
 product_stage:

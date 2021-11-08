@@ -99,4 +99,15 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout do
       expect(YAML.safe_load(File.read(metric_definition_path))).to include("name" => "some name")
     end
   end
+
+  context 'with multiple file names' do
+    let(:key_paths) { ['counts_weekly.test_metric', 'counts_weekly.test1_metric'] }
+
+    it 'creates multiple files' do
+      described_class.new(key_paths, { 'dir' => dir }).invoke_all
+      files = Dir.glob(File.join(temp_dir, 'metrics/counts_7d/*_metric.yml'))
+
+      expect(files.count).to eq(2)
+    end
+  end
 end

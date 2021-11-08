@@ -45,7 +45,7 @@ module Projects
       if namespace_id
         # Find matching namespace and check if it allowed
         # for current user if namespace_id passed.
-        unless current_user.can?(:create_projects, project_namespace)
+        unless current_user.can?(:create_projects, parent_namespace)
           @project.namespace_id = nil
           deny_namespace
           return @project
@@ -227,14 +227,14 @@ module Projects
     def extra_attributes_for_measurement
       {
         current_user: current_user&.name,
-        project_full_path: "#{project_namespace&.full_path}/#{@params[:path]}"
+        project_full_path: "#{parent_namespace&.full_path}/#{@params[:path]}"
       }
     end
 
     private
 
-    def project_namespace
-      @project_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace
+    def parent_namespace
+      @parent_namespace ||= Namespace.find_by_id(@params[:namespace_id]) || current_user.namespace
     end
 
     def create_from_template?

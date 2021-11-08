@@ -93,6 +93,27 @@ is moved to NFS.
 We are investigating the use of
 [fast lookup as the default](https://gitlab.com/groups/gitlab-org/-/epics/3104).
 
+## Improving NFS performance with GitLab
+
+NFS performance with GitLab can in some cases be improved with
+[direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using
+[Rugged](https://github.com/libgit2/rugged).
+
+From GitLab 12.1, GitLab automatically detects if Rugged can and should be used per storage.
+If you previously enabled Rugged using the feature flag and you want to use automatic detection instead,
+you must unset the feature flag:
+
+```shell
+sudo gitlab-rake gitlab:features:unset_rugged
+```
+
+If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab uses the value explicitly set.
+
+From GitLab 12.7, Rugged is only automatically enabled for use with Puma
+if the [Puma thread count is set to `1`](../install/requirements.md#puma-settings).
+
+To use Rugged with a Puma thread count of more than `1`, enable Rugged using the [feature flag](../development/gitaly.md#legacy-rugged-code).
+
 ## NFS server
 
 Installing the `nfs-kernel-server` package allows you to share directories with
@@ -165,32 +186,6 @@ You may not need to disable NFS server delegation if you know you are using a ve
 the Linux kernel that has been fixed. That said, GitLab still encourages instance
 administrators to keep NFS server delegation disabled.
 
-### Improving NFS performance with GitLab
-
-NFS performance with GitLab can in some cases be improved with
-[direct Git access](gitaly/index.md#direct-access-to-git-in-gitlab) using
-[Rugged](https://github.com/libgit2/rugged).
-
-NOTE:
-From GitLab 12.1, it automatically detects if Rugged can and should be used per storage.
-
-If you previously enabled Rugged using the feature flag, you need to unset the feature flag by using:
-
-```shell
-sudo gitlab-rake gitlab:features:unset_rugged
-```
-
-If the Rugged feature flag is explicitly set to either `true` or `false`, GitLab uses the value explicitly set.
-
-#### Improving NFS performance with Puma
-
-NOTE:
-From GitLab 12.7, Rugged is not automatically enabled if Puma thread count is greater than `1`.
-
-If you want to use Rugged with Puma, [set Puma thread count to `1`](../install/requirements.md#puma-settings).
-
-If you want to use Rugged with Puma thread count more than `1`, Rugged can be enabled using the [feature flag](../development/gitaly.md#legacy-rugged-code).
-
 ## NFS client
 
 The `nfs-common` provides NFS functionality without installing server components which
@@ -232,7 +227,7 @@ Note there are several options that you should consider using:
 It's recommended that you use `hard` in your mount options, unless you have a specific
 reason to use `soft`.
 
-On GitLab.com, we use `soft` because there were times when we had NFS servers
+When GitLab.com used NFS, we used `soft` because there were times when we had NFS servers
 reboot and `soft` improved availability, but everyone's infrastructure is different.
 If your NFS is provided by on-premise storage arrays with redundant controllers,
 for example, you shouldn't need to worry about NFS server availability.
