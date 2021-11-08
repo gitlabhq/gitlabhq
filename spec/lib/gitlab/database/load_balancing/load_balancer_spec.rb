@@ -140,6 +140,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       lb.read { raise conflict_error }
     end
 
+    context 'only primary is configured' do
+      let(:lb) do
+        config = Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base)
+        allow(config).to receive(:load_balancing_enabled?).and_return(false)
+
+        described_class.new(config)
+      end
+
+      it 'does not retry a query on connection error if only the primary is configured' do
+        host = double(:host, query_cache_enabled: true)
+
+        allow(lb).to receive(:host).and_return(host)
+        allow(host).to receive(:connection).and_raise(PG::UnableToSend)
+
+        expect { lb.read }.to raise_error(PG::UnableToSend)
+      end
+    end
+
     it 'uses the primary if no secondaries are available' do
       allow(lb).to receive(:connection_error?).and_return(true)
 

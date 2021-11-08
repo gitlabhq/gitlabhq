@@ -48,7 +48,7 @@ module QA
           # with the attribute `data-qa-selector` since such element is not unique when the
           # `is-focused` class is not set, and it was not possible to find a better solution.
           def focused_board
-            find('.js-focus-mode-board.is-focused')
+            find('.issue-boards-content.js-focus-mode-board.is-focused')
           end
 
           def boards_dropdown

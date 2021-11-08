@@ -28,14 +28,20 @@ module Gitlab
         #
         # The worker classes aren't constants here, because that would force
         # Application Settings to be loaded earlier causing failures loading
-        # the environmant in rake tasks
+        # the environment in rake tasks
         EXEMPT_WORKER_NAMES = ["BackgroundMigrationWorker", "Database::BatchedBackgroundMigrationWorker"].to_set
+        JOB_STATUS_KEY = 'size_limiter'
 
         class << self
           def validate!(worker_class, job)
             return if EXEMPT_WORKER_NAMES.include?(worker_class.to_s)
+            return if validated?(job)
 
             new(worker_class, job).validate!
+          end
+
+          def validated?(job)
+            job.has_key?(JOB_STATUS_KEY)
           end
         end
 
@@ -64,6 +70,8 @@ module Gitlab
         end
 
         def validate!
+          @job[JOB_STATUS_KEY] = 'validated'
+
           job_args = compress_if_necessary(::Sidekiq.dump_json(@job['args']))
 
           return if @size_limit == 0
@@ -72,8 +80,10 @@ module Gitlab
 
           exception = exceed_limit_error(job_args)
           if compress_mode?
+            @job.delete(JOB_STATUS_KEY)
             raise exception
           else
+            @job[JOB_STATUS_KEY] = 'tracked'
             track(exception)
           end
         end

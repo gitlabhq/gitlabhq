@@ -52,7 +52,10 @@ module Gitlab
               connection = host.connection
               return yield connection
             rescue StandardError => error
-              if serialization_failure?(error)
+              if primary_only?
+                # If we only have primary configured, retrying is pointless
+                raise error
+              elsif serialization_failure?(error)
                 # This error can occur when a query conflicts. See
                 # https://www.postgresql.org/docs/current/static/hot-standby.html#HOT-STANDBY-CONFLICT
                 # for more information.

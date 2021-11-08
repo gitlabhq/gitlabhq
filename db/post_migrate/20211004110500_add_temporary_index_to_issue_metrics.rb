@@ -6,7 +6,9 @@ class AddTemporaryIndexToIssueMetrics < Gitlab::Database::Migration[1.0]
   INDEX_NAME = 'index_issue_metrics_first_mentioned_in_commit'
 
   def up
-    add_concurrent_index :issue_metrics, :issue_id, where: 'EXTRACT(YEAR FROM first_mentioned_in_commit_at) > 2019', name: INDEX_NAME
+    condition = Gitlab::BackgroundMigration::FixFirstMentionedInCommitAt::TmpIssueMetrics
+      .first_mentioned_in_commit_at_condition
+    add_concurrent_index :issue_metrics, :issue_id, where: condition, name: INDEX_NAME
   end
 
   def down

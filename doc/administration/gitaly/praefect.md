@@ -1581,11 +1581,29 @@ all state associated with a given repository including:
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -repository <repository>
 ```
 
-- `-virtual-storage` is the virtual storage the repository is located in.
-- `-repository` is the repository's relative path in the storage.
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
 
-Sometimes parts of the repository continue to exist after running `remove-repository`. This can be caused
-because of:
+  ```ruby
+  praefect['virtual_storages'] = {
+    'default' => {
+      ...
+    },
+    'storage-1' => {
+      ...
+    }
+  }
+  ```
+
+  In this example, the virtual storage to specify is `default` or `storage-1`.
+
+- `-repository` is the repository's relative path in the storage [beginning with `@hashed`](../repository_storage_types.md#hashed-storage).
+  For example:
+
+  ```plaintext
+  @hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git
+  ```
+
+Parts of the repository can continue to exist after running `remove-repository`. This can be because of:
 
 - A deletion error.
 - An in-flight RPC call targeting the repository.
@@ -1609,8 +1627,53 @@ The command outputs:
 Each entry is a complete JSON string with a newline at the end (configurable using the
 `-delimiter` flag). For example:
 
-```shell
+```plaintext
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories
 {"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567890.git"}
 {"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567891.git"}
 ```
+
+### Manually track repositories
+
+> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5658) in GitLab 14.4.
+
+The `track-repository` Praefect sub-command adds repositories on disk to the Praefect database to be tracked.
+
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -repository <repository>
+```
+
+- `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['virtual_storages]` and looks like the following:
+
+  ```ruby
+  praefect['virtual_storages'] = {
+    'default' => {
+      ...
+    },
+    'storage-1' => {
+      ...
+    }
+  }
+  ```
+
+  In this example, the virtual storage to specify is `default` or `storage-1`.
+
+- `-repository` is the repository's relative path in the storage [beginning with `@hashed`](../repository_storage_types.md#hashed-storage).
+  For example:
+
+  ```plaintext
+  @hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git
+  ```
+
+- `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
+  [per-repository replication](#configure-replication-factor) is set as the replication strategy.
+
+The command outputs:
+
+- Results to `STDOUT` and the command's logs.
+- Errors to `STDERR`.
+
+This command fails if:
+
+- The repository is already being tracked by the Praefect database.
+- The repository does not exist on disk.
