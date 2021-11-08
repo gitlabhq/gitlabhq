@@ -8,13 +8,17 @@ module Gitlab
 
       class << self
         def using_connection(connection)
-          raise 'cannot nest connection overrides for shared models' unless overriding_connection.nil?
+          previous_connection = self.overriding_connection
+
+          unless previous_connection.nil? || previous_connection.equal?(connection)
+            raise 'cannot nest connection overrides for shared models with different connections'
+          end
 
           self.overriding_connection = connection
 
           yield
         ensure
-          self.overriding_connection = nil
+          self.overriding_connection = nil unless previous_connection.equal?(self.overriding_connection)
         end
 
         def connection

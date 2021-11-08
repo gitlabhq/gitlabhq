@@ -261,6 +261,103 @@ under your project's settings:
 </settings>
 ```
 
+## Using a custom scanning stage
+
+When security scanning is enabled by including CI/CD templates as described in the
+[Security scanning without Auto DevOps](#security-scanning-without-auto-devops) section, the scanning jobs
+use the predefined `test` stage by default. If you specify a custom stage in your `.gitlab-ci.yml` file without
+including a `test` stage, an error occurs.
+
+For example, the following attempts to use a `unit-tests` stage:
+
+```yaml
+include:
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+stages:
+  - unit-tests
+
+custom job:
+  stage: unit-tests
+  script:
+    - echo "custom job"
+```
+
+The above `.gitlab-ci.yml` causes a linting error:
+
+```plaintext
+Found errors in your .gitlab-ci.yml:
+- dependency_scanning job: chosen stage does not exist; available stages are .pre
+- unit-tests
+- .post
+```
+
+This error appears because the `test` stage used by the security scanning jobs isn't declared in the `.gitlab-ci.yml` file.
+To fix this issue, you can either:
+
+- Add a `test` stage in your `.gitlab-ci.yml`:
+
+  ```yaml
+  include:
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Security/Secret-Detection.gitlab-ci.yml
+
+  stages:
+    - test
+    - unit-tests
+
+  custom job:
+    stage: unit-tests
+    script:
+      - echo "custom job"
+  ```
+
+- Override the default stage of each security job. For example, to use a pre-defined stage named `unit-tests`:
+
+  ```yaml
+  include:
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
+    - template: Security/SAST.gitlab-ci.yml
+    - template: Security/Secret-Detection.gitlab-ci.yml
+
+  stages:
+    - unit-tests
+
+  dependency_scanning:
+    stage: unit-tests
+
+  license_scanning:
+    stage: unit-tests
+
+  sast:
+    stage: unit-tests
+
+  .secret-analyzer:
+    stage: unit-tests
+
+  custom job:
+    stage: unit-tests
+    script:
+      - echo "custom job"
+  ```
+
+Learn more on overriding security jobs:
+
+- [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
+- [Overriding Dependency Scanning jobs](dependency_scanning/index.md#overriding-dependency-scanning-jobs).
+- [Overriding Container Scanning jobs](container_scanning/index.md#overriding-the-container-scanning-template).
+- [Overriding Secret Detection jobs](secret_detection/index.md#customizing-settings).
+- [Overriding DAST jobs](dast/index.md#customize-dast-settings).
+- [Overriding License Compliance jobs](../compliance/license_compliance/index.md#overriding-the-template).
+
+All the security scanning tools define their stage, so this error can occur with all of them.
+
 ## Security report validation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
@@ -378,51 +475,6 @@ shows that a security report is out of date, you must run a new pipeline on the 
 Select **new pipeline** to run a new pipeline.
 
 ![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
-
-### Getting error message `sast job: stage parameter should be [some stage name here]`
-
-When [including](../../ci/yaml/index.md#includetemplate) a `.gitlab-ci.yml` template
-like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
-the following error may occur, depending on your GitLab CI/CD configuration:
-
-```plaintext
-Found errors in your .gitlab-ci.yml:
-
-* sast job: stage parameter should be unit-tests
-```
-
-This error appears when the included job's stage (named `test`) isn't declared in `.gitlab-ci.yml`.
-
-To fix this issue, you can either:
-
-- Add a `test` stage in your `.gitlab-ci.yml`.
-- Override the default stage of each security job. For example, to use a pre-defined stage name `unit-tests`:
-
-  ```yaml
-  include:
-    - template: Security/Dependency-Scanning.gitlab-ci.yml
-    - template: Security/License-Scanning.gitlab-ci.yml
-    - template: Security/SAST.gitlab-ci.yml
-    - template: Security/Secret-Detection.gitlab-ci.yml
-
-  stages:
-    - unit-tests
-
-  dependency_scanning:
-    stage: unit-tests
-
-  license_scanning:
-    stage: unit-tests
-
-  sast:
-    stage: unit-tests
-
-  .secret-analyzer:
-    stage: unit-tests
-  ```
-
-[Learn more on overriding SAST jobs](sast/index.md#overriding-sast-jobs).
-All the security scanning tools define their stage, so this error can occur with all of them.
 
 ### Getting warning messages `… report.json: no matching files`
 

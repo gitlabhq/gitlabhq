@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :registry do
+  RSpec.describe 'Package', :orchestrated, :registry, only: { pipeline: :main } do
     describe 'Dependency Proxy' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|

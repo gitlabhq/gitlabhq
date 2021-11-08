@@ -3959,13 +3959,19 @@ The release name. If omitted, it is populated with the value of `release: tag_na
 
 #### `release:description`
 
-Specifies the long description of the release. You can also specify a file that contains the
-description.
+The long description of the release.
 
-In [GitLab 13.7 and later]((https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67)),
-you can specify a file in `$CI_PROJECT_DIR` that contains the description. The file must be relative
-to the project directory (`$CI_PROJECT_DIR`), and if the file is a symbolic link it can't reside
-outside of `$CI_PROJECT_DIR`. The `./path/to/file` and filename can't contain spaces.
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A string with the long description.
+- The path to a file that contains the description. Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67).
+  - The file location must be relative to the project directory (`$CI_PROJECT_DIR`).
+  - If the file is a symbolic link, it must be in the `$CI_PROJECT_DIR`.
+  - The `./path/to/file` and filename can't contain spaces.
+
+**Example of `release:description`**:
 
 ```yaml
 job:
@@ -3976,8 +3982,13 @@ job:
 
 #### `release:ref`
 
-If the `release: tag_name` doesn't exist yet, the release is created from `ref`.
-`ref` can be a commit SHA, another tag name, or a branch name.
+The `ref` for the release, if the `release: tag_name` doesn't exist yet.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A commit SHA, another tag name, or a branch name.
 
 #### `release:milestones`
 
@@ -3985,21 +3996,31 @@ The title of each milestone the release is associated with.
 
 #### `release:released_at`
 
-The date and time when the release is ready. Defaults to the current date and time if not
-defined. Should be enclosed in quotes and expressed in ISO 8601 format.
+The date and time when the release is ready.
 
-```json
+**Possible inputs**:
+
+- A date enclosed in quotes and expressed in ISO 8601 format.
+
+**Example of `release:released_at`**:
+
+```yaml
 released_at: '2021-03-15T08:00:00Z'
 ```
+
+**Additional details**:
+
+- If it is not defined, the current date and time is used.
 
 #### `release:assets:links`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
 
-Include [asset links](../../user/project/releases/index.md#release-assets) in the release.
+Use `release:assets:links` to include [asset links](../../user/project/releases/index.md#release-assets) in the release.
 
-NOTE:
-Requires `release-cli` version v0.4.0 or higher.
+Requires `release-cli` version v0.4.0 or later.
+
+**Example of `release:assets:links`**:
 
 ```yaml
 assets:

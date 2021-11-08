@@ -27,6 +27,38 @@ RSpec.describe Gitlab::Database::SharedModel do
       end
     end
 
+    context 'when multiple connection overrides are nested', :aggregate_failures do
+      let(:second_connection) { double('connection') }
+
+      it 'allows the nesting with the same connection object' do
+        expect_original_connection_around do
+          described_class.using_connection(new_connection) do
+            expect(described_class.connection).to be(new_connection)
+
+            described_class.using_connection(new_connection) do
+              expect(described_class.connection).to be(new_connection)
+            end
+
+            expect(described_class.connection).to be(new_connection)
+          end
+        end
+      end
+
+      it 'raises an error if the connection is changed' do
+        expect_original_connection_around do
+          described_class.using_connection(new_connection) do
+            expect(described_class.connection).to be(new_connection)
+
+            expect do
+              described_class.using_connection(second_connection) {}
+            end.to raise_error(/cannot nest connection overrides/)
+
+            expect(described_class.connection).to be(new_connection)
+          end
+        end
+      end
+    end
+
     context 'when the block raises an error', :aggregate_failures do
       it 're-raises the error, removing the overridden connection' do
         expect_original_connection_around do

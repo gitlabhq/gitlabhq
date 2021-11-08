@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated do
+  RSpec.describe 'Package', :orchestrated, only: { pipeline: :main } do
     describe 'Self-managed Container Registry' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
