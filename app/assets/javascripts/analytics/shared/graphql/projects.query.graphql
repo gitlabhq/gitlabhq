@@ -1,4 +1,4 @@
-query getGroupProjects(
+query analyticsGetGroupProjects(
   $groupFullPath: ID!
   $search: String!
   $first: Int!

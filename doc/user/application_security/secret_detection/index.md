@@ -165,7 +165,7 @@ by using the
 [`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
-declare a job with the same name as the SAST job to override. Place this new job after the template
+declare a job with the same name as the secret detection job to override. Place this new job after the template
 inclusion and specify any additional keys under it.
 
 WARNING:
@@ -348,6 +348,22 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
+### Set Secret Detection CI/CD variables to use the local Secret Detection analyzer container image
+
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
+```
+
+The Secret Detection job should now use the local copy of the Secret Detection analyzer Docker image to scan your code and generate
+security reports without requiring internet access.
+
 #### If support for Custom Certificate Authorities are needed
 
 Support for custom certificate authorities was introduced in the following versions.
@@ -370,22 +386,6 @@ variables:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
-
-### Set Secret Detection CI/CD variables to use local Secret Detection analyzer
-
-Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
-
-```yaml
-include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
-
-variables:
-  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
-```
-
-The Secret Detection job should now use local copies of the Secret Detection analyzer to scan your code and generate
-security reports without requiring internet access.
 
 ## Troubleshooting
 

@@ -142,8 +142,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           cache_context = [
             params[:serializer],
             current_user&.cache_key,
-            @merge_request.assignees.map(&:cache_key),
-            @merge_request.reviewers.map(&:cache_key)
+            @merge_request.merge_request_assignees.map(&:cache_key),
+            @merge_request.merge_request_reviewers.map(&:cache_key)
           ]
 
           render_cached(@merge_request,

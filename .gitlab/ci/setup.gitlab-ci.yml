@@ -129,6 +129,7 @@ add-jh-folder:
     - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/main-jh/gitlab-main-jh.tar.gz?path=jh"
     - tar -xf "jh-folder.tar.gz"
     - mv gitlab-main-jh-jh/jh/ ./
+    - cp Gemfile.lock jh/
     - ls -l jh/
   artifacts:
     expire_in: 2d

@@ -1,4 +1,4 @@
-query workInProgressQuery($projectPath: ID!, $iid: String!) {
+query mrUserPermission($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     mergeRequest(iid: $iid) {
       userPermissions {

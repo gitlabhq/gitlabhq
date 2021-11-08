@@ -9,4 +9,8 @@ class MergeRequestAssignee < ApplicationRecord
   validates :assignee, uniqueness: { scope: :merge_request_id }
 
   scope :in_projects, ->(project_ids) { joins(:merge_request).where(merge_requests: { target_project_id: project_ids }) }
+
+  def cache_key
+    [model_name.cache_key, id, state, assignee.cache_key]
+  end
 end

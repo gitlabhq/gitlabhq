@@ -1,4 +1,4 @@
-query projectMilestones(
+query boardProjectMilestones(
   $fullPath: ID!
   $state: MilestoneStateEnum
   $includeAncestors: Boolean

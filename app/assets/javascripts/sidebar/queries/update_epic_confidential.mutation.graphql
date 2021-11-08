@@ -1,4 +1,4 @@
-mutation updateEpic($input: UpdateEpicInput!) {
+mutation updateIssuableConfidential($input: UpdateEpicInput!) {
   issuableSetConfidential: updateEpic(input: $input) {
     issuable: epic {
       id

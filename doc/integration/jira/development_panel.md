@@ -89,7 +89,10 @@ This integration is not supported on GitLab instances under a
 [relative URL](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab).
 For example, `http://example.com/gitlab`.
 
-## Troubleshooting
+## Troubleshoot the Development Panel
+
+If you use Jira on your own server, go to the [Atlassian documentation](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html)
+for general troubleshooting information.
 
 ### Cookies for Oracle's Access Manager
 

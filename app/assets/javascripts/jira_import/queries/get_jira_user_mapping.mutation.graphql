@@ -1,4 +1,4 @@
-mutation($input: JiraImportUsersInput!) {
+mutation getJiraUserMapping($input: JiraImportUsersInput!) {
   jiraImportUsers(input: $input) {
     jiraUsers {
       jiraAccountId

@@ -1942,6 +1942,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def attention_required_enabled?
+    Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml)
+  end
+
   private
 
   def set_draft_status

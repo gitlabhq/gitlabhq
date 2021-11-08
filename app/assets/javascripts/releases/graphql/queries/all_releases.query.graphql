@@ -6,7 +6,7 @@
 # When the `releases_index_apollo_client` feature flag is
 # removed, this query should be removed entirely.
 
-query allReleases(
+query allReleasesDeprecated(
   $fullPath: ID!
   $first: Int
   $last: Int

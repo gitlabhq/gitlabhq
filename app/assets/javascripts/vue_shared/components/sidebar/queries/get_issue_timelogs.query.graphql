@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/issuable_timelogs.fragment.graphql"
 
-query timeTrackingReport($id: IssueID!) {
+query issueTimeTrackingReport($id: IssueID!) {
   issuable: issue(id: $id) {
     __typename
     id

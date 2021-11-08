@@ -1,6 +1,6 @@
 #import "./ready_to_merge.fragment.graphql"
 
-query readyToMergeQuery($projectPath: ID!, $iid: String!) {
+query readyToMerge($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     ...ReadyToMerge
   }

@@ -1,4 +1,4 @@
-mutation($environment: Environment) {
+mutation deleteEnvironment($environment: Environment) {
   deleteEnvironment(environment: $environment) @client {
     errors
   }

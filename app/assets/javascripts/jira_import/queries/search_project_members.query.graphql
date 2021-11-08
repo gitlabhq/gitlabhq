@@ -1,4 +1,4 @@
-query searchProjectMembers($fullPath: ID!, $search: String) {
+query jiraSearchProjectMembers($fullPath: ID!, $search: String) {
   project(fullPath: $fullPath) {
     projectMembers(search: $search) {
       nodes {
