@@ -166,6 +166,7 @@ function rspec_paralellized_job() {
     export SUITE_FLAKY_RSPEC_REPORT_PATH="${FLAKY_RSPEC_SUITE_REPORT_PATH}"
     export FLAKY_RSPEC_REPORT_PATH="rspec_flaky/all_${report_name}_report.json"
     export NEW_FLAKY_RSPEC_REPORT_PATH="rspec_flaky/new_${report_name}_report.json"
+    export SKIPPED_FLAKY_TESTS_REPORT_PATH="rspec_flaky/skipped_flaky_tests_${report_name}_report.txt"
 
     if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
       echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"

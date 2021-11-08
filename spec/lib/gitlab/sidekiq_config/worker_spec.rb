@@ -18,19 +18,26 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
       get_tags: attributes[:tags]
     )
 
-    described_class.new(inner_worker, ee: false)
+    described_class.new(inner_worker, ee: false, jh: false)
   end
 
   describe '#ee?' do
     it 'returns the EE status set on creation' do
-      expect(described_class.new(double, ee: true)).to be_ee
-      expect(described_class.new(double, ee: false)).not_to be_ee
+      expect(described_class.new(double, ee: true, jh: false)).to be_ee
+      expect(described_class.new(double, ee: false, jh: false)).not_to be_ee
+    end
+  end
+
+  describe '#jh?' do
+    it 'returns the JH status set on creation' do
+      expect(described_class.new(double, ee: false, jh: true)).to be_jh
+      expect(described_class.new(double, ee: false, jh: false)).not_to be_jh
     end
   end
 
   describe '#==' do
     def worker_with_yaml(yaml)
-      described_class.new(double, ee: false).tap do |worker|
+      described_class.new(double, ee: false, jh: false).tap do |worker|
         allow(worker).to receive(:to_yaml).and_return(yaml)
       end
     end
@@ -57,7 +64,7 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
 
         expect(worker).to receive(meth)
 
-        described_class.new(worker, ee: false).send(meth)
+        described_class.new(worker, ee: false, jh: false).send(meth)
       end
     end
   end

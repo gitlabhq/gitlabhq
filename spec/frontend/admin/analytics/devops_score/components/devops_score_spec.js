@@ -2,8 +2,8 @@ import { GlTable, GlBadge, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import DevopsScore from '~/analytics/devops_report/components/devops_score.vue';
-import DevopsScoreCallout from '~/analytics/devops_report/components/devops_score_callout.vue';
+import DevopsScore from '~/analytics/devops_reports/components/devops_score.vue';
+import DevopsScoreCallout from '~/analytics/devops_reports/components/devops_score_callout.vue';
 import { devopsScoreMetricsData, noDataImagePath, devopsScoreTableHeaders } from '../mock_data';
 
 describe('DevopsScore', () => {

@@ -4,25 +4,29 @@ require 'spec_helper'
 
 RSpec.describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
-  include FormHelper
 
   let_it_be(:project)   { create(:project) }
-  let_it_be(:user)      { create(:user)}
-  let_it_be(:user2)     { create(:user)}
+  let_it_be(:user)      { create(:user) }
+  let_it_be(:user2)     { create(:user) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
   let_it_be(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
+  let(:current_user) { user }
+
+  before_all do
+    project.add_maintainer(user)
+    project.add_maintainer(user2)
+  end
+
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
 
-    project.add_maintainer(user)
-    project.add_maintainer(user2)
-    sign_in(user)
+    sign_in(current_user)
   end
 
-  context 'new issue' do
+  describe 'new issue' do
     before do
       visit new_project_issue_path(project)
     end
@@ -235,29 +239,42 @@ RSpec.describe 'New/edit issue', :js do
     end
 
     describe 'displays issue type options in the dropdown' do
+      shared_examples 'type option is visible' do |label:, identifier:|
+        it "shows #{identifier} option", :aggregate_failures do
+          page.within('[data-testid="issue-type-select-dropdown"]') do
+            expect(page).to have_selector(%([data-testid="issue-type-#{identifier}-icon"]))
+            expect(page).to have_content(label)
+          end
+        end
+      end
+
       before do
         page.within('.issue-form') do
           click_button 'Issue'
         end
       end
 
-      it 'correctly displays the Issue type option with an icon', :aggregate_failures do
-        page.within('[data-testid="issue-type-select-dropdown"]') do
-          expect(page).to have_selector('[data-testid="issue-type-issue-icon"]')
-          expect(page).to have_content('Issue')
-        end
-      end
+      it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
+      it_behaves_like 'type option is visible', label: 'Incident', identifier: :incident
 
-      it 'correctly displays the Incident type option with an icon', :aggregate_failures do
-        page.within('[data-testid="issue-type-select-dropdown"]') do
-          expect(page).to have_selector('[data-testid="issue-type-incident-icon"]')
-          expect(page).to have_content('Incident')
+      context 'when user is guest' do
+        let_it_be(:guest) { create(:user) }
+
+        let(:current_user) { guest }
+
+        before_all do
+          project.add_guest(guest)
         end
+
+        it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
+        it_behaves_like 'type option is visible', label: 'Incident', identifier: :incident
       end
     end
 
     describe 'milestone' do
-      let!(:milestone) { create(:milestone, title: '">&lt;img src=x onerror=alert(document.domain)&gt;', project: project) }
+      let!(:milestone) do
+        create(:milestone, title: '">&lt;img src=x onerror=alert(document.domain)&gt;', project: project)
+      end
 
       it 'escapes milestone' do
         click_button 'Milestone'
@@ -274,7 +291,7 @@ RSpec.describe 'New/edit issue', :js do
     end
   end
 
-  context 'edit issue' do
+  describe 'edit issue' do
     before do
       visit edit_project_issue_path(project, issue)
     end
@@ -329,7 +346,7 @@ RSpec.describe 'New/edit issue', :js do
     end
   end
 
-  context 'inline edit' do
+  describe 'inline edit' do
     before do
       visit project_issue_path(project, issue)
     end

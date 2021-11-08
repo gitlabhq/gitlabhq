@@ -166,6 +166,13 @@ Our current RSpec tests parallelization setup is as follows:
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
+### Flaky tests
+
+Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are:
+
+- skipped if the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `true` (`false` by default)
+- run if `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is not set to `true` or if the `~"pipeline:run-flaky-tests"` label is set on the MR
+
 ### Monitoring
 
 The GitLab test suite is [monitored](performance.md#rspec-profiling) for the `main` branch, and any branch

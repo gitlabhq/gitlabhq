@@ -534,6 +534,50 @@ rspec:feature-flags:
         run_timed_command "bundle exec scripts/used-feature-flags";
       fi
 
+rspec:skipped-flaky-tests-report:
+  extends:
+    - .default-retry
+    - .rails:rules:skipped-flaky-tests-report
+  image: ruby:2.7-alpine
+  stage: post-test
+  # We cannot use needs since it would mean needing 84 jobs (since most are parallelized)
+  # so we use `dependencies` here.
+  dependencies:
+    # FOSS/EE jobs
+    - rspec migration pg12
+    - rspec unit pg12
+    - rspec integration pg12
+    - rspec system pg12
+    # FOSS/EE minimal jobs
+    - rspec migration pg12 minimal
+    - rspec unit pg12 minimal
+    - rspec integration pg12 minimal
+    - rspec system pg12 minimal
+    # EE jobs
+    - rspec-ee migration pg12
+    - rspec-ee unit pg12
+    - rspec-ee integration pg12
+    - rspec-ee system pg12
+    # EE minimal jobs
+    - rspec-ee migration pg12 minimal
+    - rspec-ee unit pg12 minimal
+    - rspec-ee integration pg12 minimal
+    - rspec-ee system pg12 minimal
+    # Geo jobs
+    - rspec-ee unit pg12 geo
+    - rspec-ee integration pg12 geo
+    - rspec-ee system pg12 geo
+    # Geo minimal jobs
+    - rspec-ee unit pg12 geo minimal
+    - rspec-ee integration pg12 geo minimal
+    - rspec-ee system pg12 geo minimal
+  script:
+    - cat rspec_flaky/skipped_flaky_tests_*_report.txt >> skipped_flaky_tests_report.txt
+  artifacts:
+    expire_in: 31d
+    paths:
+      - skipped_flaky_tests_report.txt
+
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################
 

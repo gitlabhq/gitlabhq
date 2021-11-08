@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module IssuesHelper
+  include Issues::IssueTypeHelpers
+
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?

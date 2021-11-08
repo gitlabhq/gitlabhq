@@ -107,9 +107,7 @@ RSpec.configure do |config|
         warn `curl -s -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
       end
     end
-  end
-
-  unless ENV['CI']
+  else
     # Allow running `:focus` examples locally,
     # falling back to all tests when there is no `:focus` example.
     config.filter_run focus: true

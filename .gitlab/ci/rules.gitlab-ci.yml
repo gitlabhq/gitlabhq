@@ -1352,6 +1352,13 @@
       when: never
     - changes: *code-backstage-patterns
 
+.rails:rules:skipped-flaky-tests-report:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true"'
+      changes: *code-backstage-patterns
+
 #########################
 # Static analysis rules #
 #########################

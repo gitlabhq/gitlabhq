@@ -1,9 +1,9 @@
 import { GlEmptyState, GlSprintf } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ServicePingDisabled from '~/analytics/devops_report/components/service_ping_disabled.vue';
+import ServicePingDisabled from '~/analytics/devops_reports/components/service_ping_disabled.vue';
 
-describe('~/analytics/devops_report/components/service_ping_disabled.vue', () => {
+describe('~/analytics/devops_reports/components/service_ping_disabled.vue', () => {
   let wrapper;
 
   afterEach(() => {

@@ -18,6 +18,7 @@ module Gitlab
       QUEUE_CONFIG_PATHS = begin
         result = %w[app/workers/all_queues.yml]
         result << 'ee/app/workers/all_queues.yml' if Gitlab.ee?
+        result << 'jh/app/workers/all_queues.yml' if Gitlab.jh?
         result
       end.freeze
 

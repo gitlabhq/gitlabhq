@@ -29,13 +29,12 @@ Learn more about how GitLab can help you run [Infrastructure as Code](iac/index.
 
 ## Integrated Kubernetes management
 
-GitLab has special integrations with Kubernetes to help you deploy, manage and troubleshoot
-third-party or custom applications in Kubernetes clusters. Auto DevOps provides a full
-DevSecOps pipeline by default targeted at Kubernetes based deployments. To support
-all the GitLab features, GitLab offers a cluster management project for easy onboarding.
-The deploy boards provide quick insights into your cluster, including pod logs tailing.
+The GitLab integration with Kubernetes helps you to install, configure, manage, deploy, and troubleshoot
+cluster applications. With the GitLab Kubernetes Agent, you can connect clusters behind a firewall,
+have real-time access to API endpoints, perform pull-beased or push-based deployments for production
+and non-production environments, and much more.
 
-Learn more about the [GitLab integration with Kubernetes](clusters/index.md).
+Learn more about the [GitLab Kubernetes Agent](../clusters/agent/index.md).
 
 ## Runbooks in GitLab
 

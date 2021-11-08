@@ -11,12 +11,12 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
     end
 
     def stub_exists(exists: true)
-      ['app/workers/all_queues.yml', 'ee/app/workers/all_queues.yml'].each do |path|
+      ['app/workers/all_queues.yml', 'ee/app/workers/all_queues.yml', 'jh/app/workers/all_queues.yml'].each do |path|
         allow(File).to receive(:exist?).with(expand_path(path)).and_return(exists)
       end
     end
 
-    def stub_contents(foss_queues, ee_queues)
+    def stub_contents(foss_queues, ee_queues, jh_queues)
       allow(YAML).to receive(:load_file)
                        .with(expand_path('app/workers/all_queues.yml'))
                        .and_return(foss_queues)
@@ -24,6 +24,10 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
       allow(YAML).to receive(:load_file)
                        .with(expand_path('ee/app/workers/all_queues.yml'))
                        .and_return(ee_queues)
+
+      allow(YAML).to receive(:load_file)
+                       .with(expand_path('jh/app/workers/all_queues.yml'))
+                       .and_return(jh_queues)
     end
 
     before do
@@ -45,8 +49,9 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
         end
 
         it 'flattens and joins the contents' do
-          expected_queues = %w[queue_a queue_b]
-          expected_queues = expected_queues.first(1) unless Gitlab.ee?
+          expected_queues = %w[queue_a]
+          expected_queues << 'queue_b' if Gitlab.ee?
+          expected_queues << 'queue_c' if Gitlab.jh?
 
           expect(described_class.worker_queues(dummy_root))
             .to match_array(expected_queues)
@@ -55,7 +60,7 @@ RSpec.describe Gitlab::SidekiqConfig::CliMethods do
 
       context 'when the file contains an array of hashes' do
         before do
-          stub_contents([{ name: 'queue_a' }], [{ name: 'queue_b' }])
+          stub_contents([{ name: 'queue_a' }], [{ name: 'queue_b' }], [{ name: 'queue_c' }])
         end
 
         include_examples 'valid file contents'

@@ -44,6 +44,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
+import { discussionIntersectionObserverHandlerFactory } from '../utils/discussions';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
@@ -85,6 +86,9 @@ export default {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
     ALERT_COLLAPSED_FILES,
+  },
+  provide: {
+    discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
   },
   props: {
     endpoint: {

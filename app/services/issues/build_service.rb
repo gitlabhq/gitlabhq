@@ -80,7 +80,7 @@ module Issues
       ]
 
       allowed_params << :milestone_id if can?(current_user, :admin_issue, project)
-      allowed_params << :issue_type if issue_type_allowed?(project)
+      allowed_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
 
       params.slice(*allowed_params)
     end

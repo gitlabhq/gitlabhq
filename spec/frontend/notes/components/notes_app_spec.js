@@ -9,6 +9,7 @@ import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtility from '~/lib/utils/url_utility';
+import { discussionIntersectionObserverHandlerFactory } from '~/diffs/utils/discussions';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import * as constants from '~/notes/constants';
@@ -78,6 +79,9 @@ describe('note_app', () => {
           </div>`,
         },
         {
+          provide: {
+            discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+          },
           propsData,
           store,
         },

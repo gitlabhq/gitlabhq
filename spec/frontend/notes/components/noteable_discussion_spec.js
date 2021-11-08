@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import { trimText } from 'helpers/text_helper';
 import mockDiffFile from 'jest/diffs/mock_data/diff_file';
+import { discussionIntersectionObserverHandlerFactory } from '~/diffs/utils/discussions';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
@@ -31,6 +32,9 @@ describe('noteable_discussion component', () => {
 
     wrapper = mount(NoteableDiscussion, {
       store,
+      provide: {
+        discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+      },
       propsData: { discussion: discussionMock },
     });
   });
@@ -167,6 +171,9 @@ describe('noteable_discussion component', () => {
 
         wrapper = mount(NoteableDiscussion, {
           store,
+          provide: {
+            discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+          },
           propsData: { discussion: discussionMock },
         });
       });
@@ -185,6 +192,9 @@ describe('noteable_discussion component', () => {
 
         wrapper = mount(NoteableDiscussion, {
           store,
+          provide: {
+            discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+          },
           propsData: { discussion: discussionMock },
         });
       });

@@ -85,6 +85,7 @@ the Agent in subsequent steps.
 
 In GitLab:
 
+1. Ensure that [GitLab CI/CD is enabled in your project](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
 1. Select the **GitLab Agent managed clusters** tab.
 1. Select **Integrate with the GitLab Agent**.

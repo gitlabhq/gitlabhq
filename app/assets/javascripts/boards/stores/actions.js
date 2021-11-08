@@ -36,13 +36,11 @@ import {
 } from '../boards_util';
 import { gqlClient } from '../graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
-import groupBoardIterationsQuery from '../graphql/group_board_iterations.query.graphql';
 import groupBoardMilestonesQuery from '../graphql/group_board_milestones.query.graphql';
 import groupProjectsQuery from '../graphql/group_projects.query.graphql';
 import issueCreateMutation from '../graphql/issue_create.mutation.graphql';
 import issueSetLabelsMutation from '../graphql/issue_set_labels.mutation.graphql';
 import listsIssuesQuery from '../graphql/lists_issues.query.graphql';
-import projectBoardIterationsQuery from '../graphql/project_board_iterations.query.graphql';
 import projectBoardMilestonesQuery from '../graphql/project_board_milestones.query.graphql';
 
 import * as types from './mutation_types';
@@ -199,52 +197,6 @@ export default {
       })
       .catch((e) => {
         commit(types.RECEIVE_LABELS_FAILURE);
-        throw e;
-      });
-  },
-
-  fetchIterations({ state, commit }, title) {
-    commit(types.RECEIVE_ITERATIONS_REQUEST);
-
-    const { fullPath, boardType } = state;
-
-    const variables = {
-      fullPath,
-      title,
-    };
-
-    let query;
-    if (boardType === BoardType.project) {
-      query = projectBoardIterationsQuery;
-    }
-    if (boardType === BoardType.group) {
-      query = groupBoardIterationsQuery;
-    }
-
-    if (!query) {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      throw new Error('Unknown board type');
-    }
-
-    return gqlClient
-      .query({
-        query,
-        variables,
-      })
-      .then(({ data }) => {
-        const errors = data[boardType]?.errors;
-        const iterations = data[boardType]?.iterations.nodes;
-
-        if (errors?.[0]) {
-          throw new Error(errors[0]);
-        }
-
-        commit(types.RECEIVE_ITERATIONS_SUCCESS, iterations);
-
-        return iterations;
-      })
-      .catch((e) => {
-        commit(types.RECEIVE_ITERATIONS_FAILURE);
         throw e;
       });
   },

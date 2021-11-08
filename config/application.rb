@@ -16,6 +16,8 @@ Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
+    config.load_defaults 6.1
+
     require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/utils')
     require_dependency Rails.root.join('lib/gitlab/action_cable/config')
@@ -36,8 +38,6 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/legacy_database_config')
-
-    config.autoloader = :zeitwerk
 
     # To be removed in 15.0
     # This preload is needed to convert legacy `database.yml`
@@ -190,11 +190,12 @@ module Gitlab
     # regardless if schema_search_path is set, or not.
     config.active_record.dump_schemas = :all
 
-    # Use new connection handling so that we can use Rails 6.1+ multiple
-    # database support.
-    config.active_record.legacy_connection_handling = false
-
-    config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
+    # Override default Active Record settings
+    # We cannot do this in an initializer because some models are already loaded by then
+    config.active_record.cache_versioning = false
+    config.active_record.collection_cache_versioning = false
+    config.active_record.has_many_inversing = false
+    config.active_record.belongs_to_required_by_default = false
 
     # Enable the asset pipeline
     config.assets.enabled = true
@@ -380,6 +381,7 @@ module Gitlab
     config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 
     config.active_job.queue_adapter = :sidekiq
+    config.action_mailer.deliver_later_queue_name = :mailers
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']

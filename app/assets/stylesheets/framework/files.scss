@@ -227,7 +227,7 @@
       // IMPORTANT PERFORMANCE OPTIMIZATION
       //
       // When viewinng a blame with many commits a lot of content is rendered on the page.
-      // Two selectors below ensure that we only render what is visible to the user, thus reducing TBT in the browser.
+      // content-visibility rules below ensure that we only render what is visible to the user, thus reducing TBT in the browser.
       .commit {
         content-visibility: auto;
         contain-intrinsic-size: 1px 3em;
@@ -236,6 +236,10 @@
       code .line {
         content-visibility: auto;
         contain-intrinsic-size: 1px 1.1875rem;
+      }
+
+      .line-numbers {
+        content-visibility: auto;
       }
     }
 

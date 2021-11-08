@@ -24,6 +24,7 @@ const IS_JH = require('./helpers/is_jh_env');
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const MonacoWebpackPlugin = require('./plugins/monaco_webpack');
+const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const SUPPORTED_BROWSERS = fs.readFileSync(path.join(ROOT_PATH, '.browserslistrc'), 'utf-8');
@@ -455,6 +456,8 @@ module.exports = {
     new MonacoWebpackPlugin({
       globalAPI: true,
     }),
+
+    new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
 
     // fix legacy jQuery plugins which depend on globals
     new webpack.ProvidePlugin({

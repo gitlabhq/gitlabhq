@@ -593,11 +593,16 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let_it_be_with_reload(:group) { create(:group, :private, parent: old_parent_group) }
           let_it_be(:new_group_member) { create(:user) }
           let_it_be(:old_group_member) { create(:user) }
+          let_it_be(:unique_subgroup_member) { create(:user) }
+          let_it_be(:direct_project_member) { create(:user) }
 
           before do
             new_parent_group.add_maintainer(new_group_member)
             old_parent_group.add_maintainer(old_group_member)
+            subgroup1.add_developer(unique_subgroup_member)
+            nested_project.add_developer(direct_project_member)
             group.refresh_members_authorized_projects
+            subgroup1.refresh_members_authorized_projects
           end
 
           it 'removes old project authorizations' do
@@ -613,7 +618,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           end
 
           it 'performs authorizations job immediately' do
-            expect(AuthorizedProjectsWorker).to receive(:bulk_perform_inline)
+            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_inline)
 
             transfer_service.execute(new_parent_group)
           end
@@ -630,14 +635,24 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
                 ProjectAuthorization.where(project_id: nested_project.id, user_id: new_group_member.id).size
               }.from(0).to(1)
             end
+
+            it 'preserves existing project authorizations for direct project members' do
+              expect { transfer_service.execute(new_parent_group) }.not_to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: direct_project_member.id).count
+              }
+            end
           end
 
-          context 'for groups with many members' do
-            before do
-              11.times do
-                new_parent_group.add_maintainer(create(:user))
-              end
+          context 'for nested groups with unique members' do
+            it 'preserves existing project authorizations' do
+              expect { transfer_service.execute(new_parent_group) }.not_to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: unique_subgroup_member.id).count
+              }
             end
+          end
+
+          context 'for groups with many projects' do
+            let_it_be(:project_list) { create_list(:project, 11, :repository, :private, namespace: group) }
 
             it 'adds new project authorizations for the user which makes a transfer' do
               transfer_service.execute(new_parent_group)
@@ -646,9 +661,21 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
               expect(ProjectAuthorization.where(project_id: nested_project.id, user_id: user.id).size).to eq(1)
             end
 
+            it 'adds project authorizations for users in the new hierarchy' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: new_group_member.id).size
+              }.from(0).to(project_list.count)
+            end
+
+            it 'removes project authorizations for users in the old hierarchy' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: old_group_member.id).size
+              }.from(project_list.count).to(0)
+            end
+
             it 'schedules authorizations job' do
-              expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
-                .with(array_including(new_parent_group.members_with_parents.pluck(:user_id).map {|id| [id, anything] }))
+              expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
+                .with(array_including(group.all_projects.ids.map { |id| [id, anything] }))
 
               transfer_service.execute(new_parent_group)
             end

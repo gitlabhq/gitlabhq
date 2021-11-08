@@ -41,8 +41,6 @@ module AlertEventLifecycle
     scope :firing, -> { where(status: status_value_for(:firing)) }
     scope :resolved, -> { where(status: status_value_for(:resolved)) }
 
-    scope :count_by_project_id, -> { group(:project_id).count }
-
     def self.status_value_for(name)
       state_machines[:status].states[name].value
     end

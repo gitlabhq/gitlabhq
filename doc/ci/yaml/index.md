@@ -1298,6 +1298,7 @@ docker build:
 
 - `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
 - You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
+- `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 
 #### `rules:exists`
 
@@ -1330,6 +1331,7 @@ job:
   file paths. After the 10,000th check, rules with patterned globs always match.
   In other words, the `exists` rule always assumes a match in projects with more
   than 10,000 files.
+- `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 
 #### `rules:allow_failure`
 
@@ -1567,7 +1569,7 @@ docker build:
 
 **Additional details**:
 
-- If any of the matching files are changed (an `OR` operation), `changes` resolves to `true`.
+- `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 - If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
   `changes` can't determine if a given file is new or old and always returns `true`.
 - If you use `only: changes` with other refs, jobs ignore the changes and always run.

@@ -82,8 +82,9 @@ RSpec.describe ContainerExpirationPolicies::CleanupContainerRepositoryWorker do
             nil | 10  | nil
             0   | 5   | nil
             10  | 0   | 0
-            10  | 5   | 0.5
-            3   | 10  | (10 / 3.to_f)
+            10  | 5   | 50.0
+            17  | 3   | 17.65
+            3   | 10  | 333.33
           end
 
           with_them do

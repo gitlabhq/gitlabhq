@@ -3,6 +3,7 @@
 module Issues
   class BaseService < ::IssuableBaseService
     include IncidentManagement::UsageData
+    include IssueTypeHelpers
 
     def hook_data(issue, action, old_associations: {})
       hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
@@ -44,7 +45,7 @@ module Issues
     def filter_params(issue)
       super
 
-      params.delete(:issue_type) unless issue_type_allowed?(issue)
+      params.delete(:issue_type) unless create_issue_type_allowed?(issue, params[:issue_type])
       filter_incident_label(issue) if params[:issue_type]
 
       moved_issue = params.delete(:moved_issue)
@@ -87,12 +88,6 @@ module Issues
       return unless milestone
 
       Milestones::IssuesCountService.new(milestone).delete_cache
-    end
-
-    # @param object [Issue, Project]
-    def issue_type_allowed?(object)
-      WorkItem::Type.base_types.key?(params[:issue_type]) &&
-        can?(current_user, :"create_#{params[:issue_type]}", object)
     end
 
     # @param issue [Issue]

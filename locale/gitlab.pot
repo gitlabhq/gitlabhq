@@ -4037,6 +4037,9 @@ msgid_plural "ApplicationSettings|Approve %d users"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ApplicationSettings|Approve users"
+msgstr ""
+
 msgid "ApplicationSettings|Approve users in the pending approval status?"
 msgstr ""
 
@@ -4044,6 +4047,9 @@ msgid "ApplicationSettings|By making this change, you will automatically approve
 msgid_plural "ApplicationSettings|By making this change, you will automatically approve %d users with the pending approval status."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ApplicationSettings|By making this change, you will automatically approve all users in pending approval status."
+msgstr ""
 
 msgid "ApplicationSettings|Denied domains for sign-ups"
 msgstr ""

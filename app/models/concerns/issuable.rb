@@ -92,7 +92,6 @@ module Issuable
     scope :recent, -> { reorder(id: :desc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :opened, -> { with_state(:opened) }
-    scope :only_opened, -> { with_state(:opened) }
     scope :closed, -> { with_state(:closed) }
 
     # rubocop:disable GitlabSecurity/SqlInjection
