@@ -7,7 +7,7 @@ module Gitlab
         def query(query)
           client_query(query)
           { valid: true }
-        rescue Gitlab::PrometheusClient::QueryError, Gitlab::HTTP::BlockedUrlError => ex
+        rescue Gitlab::PrometheusClient::QueryError, Gitlab::PrometheusClient::ConnectionError => ex
           { valid: false, error: ex.message }
         end
 

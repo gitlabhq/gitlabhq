@@ -4,7 +4,10 @@ import * as urlUtility from '~/lib/utils/url_utility';
 import SidebarService, { gqClient } from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import toast from '~/vue_shared/plugins/global_toast';
 import Mock from './mock_data';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Sidebar mediator', () => {
   const { mediator: mediatorMockData } = Mock;
@@ -114,5 +117,57 @@ describe('Sidebar mediator', () => {
       moveIssueSpy.mockRestore();
       urlSpy.mockRestore();
     });
+  });
+
+  describe('toggleAttentionRequired', () => {
+    let attentionRequiredService;
+
+    beforeEach(() => {
+      attentionRequiredService = jest
+        .spyOn(mediator.service, 'attentionRequired')
+        .mockResolvedValue();
+    });
+
+    it('calls attentionRequired service method', async () => {
+      mediator.store.reviewers = [{ id: 1, attention_required: false, username: 'root' }];
+
+      await mediator.toggleAttentionRequired('reviewer', {
+        user: { id: 1, username: 'root' },
+        callback: jest.fn(),
+      });
+
+      expect(attentionRequiredService).toHaveBeenCalledWith(1);
+    });
+
+    it.each`
+      type          | method
+      ${'reviewer'} | ${'findReviewer'}
+    `('finds $type', ({ type, method }) => {
+      const methodSpy = jest.spyOn(mediator.store, method);
+
+      mediator.toggleAttentionRequired(type, { user: { id: 1 }, callback: jest.fn() });
+
+      expect(methodSpy).toHaveBeenCalledWith({ id: 1 });
+    });
+
+    it.each`
+      attentionRequired | toastMessage
+      ${true}           | ${'Removed attention request from @root'}
+      ${false}          | ${'Requested attention from @root'}
+    `(
+      'it creates toast $toastMessage when attention_required is $attentionRequired',
+      async ({ attentionRequired, toastMessage }) => {
+        mediator.store.reviewers = [
+          { id: 1, attention_required: attentionRequired, username: 'root' },
+        ];
+
+        await mediator.toggleAttentionRequired('reviewer', {
+          user: { id: 1, username: 'root' },
+          callback: jest.fn(),
+        });
+
+        expect(toast).toHaveBeenCalledWith(toastMessage);
+      },
+    );
   });
 });

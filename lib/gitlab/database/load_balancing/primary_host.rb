@@ -49,6 +49,11 @@ module Gitlab
         end
 
         def offline!
+          ::Gitlab::Database::LoadBalancing::Logger.warn(
+            event: :host_offline,
+            message: 'Marking primary host as offline'
+          )
+
           nil
         end
 

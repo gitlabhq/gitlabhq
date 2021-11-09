@@ -96,6 +96,13 @@ retire-js-dependency_scanning:
 gemnasium-python-dependency_scanning:
   rules: !reference [".reports:rules:gemnasium-python-dependency_scanning", rules]
 
+yarn-audit-dependency_scanning:
+  extends: .ds-analyzer
+  image: "registry.gitlab.com/gitlab-org/security-products/analyzers/npm-audit:1.4.0"
+  variables:
+    TOOL: yarn
+  rules: !reference [".reports:rules:yarn-audit-dependency_scanning", rules]
+
 # Analyze dependencies for malicious behavior
 # See https://gitlab.com/gitlab-com/gl-security/security-research/package-hunter
 .package_hunter-base:

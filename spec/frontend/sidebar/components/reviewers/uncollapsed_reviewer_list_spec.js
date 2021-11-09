@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import AttentionRequiredToggle from '~/sidebar/components/attention_required_toggle.vue';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 import userDataMock from '../../user_data_mock';
@@ -9,7 +10,7 @@ describe('UncollapsedReviewerList component', () => {
 
   const reviewerApprovalIcons = () => wrapper.findAll('[data-testid="re-approved"]');
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, glFeatures = {}) {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
@@ -18,6 +19,9 @@ describe('UncollapsedReviewerList component', () => {
 
     wrapper = shallowMount(UncollapsedReviewerList, {
       propsData,
+      provide: {
+        glFeatures,
+      },
     });
   }
 
@@ -109,5 +113,19 @@ describe('UncollapsedReviewerList component', () => {
       expect(wrapper.findAll('[data-testid="re-request-success"]').length).toBe(1);
       expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
     });
+  });
+
+  it('hides re-request review button when attentionRequired feature flag is enabled', () => {
+    createComponent({ users: [userDataMock()] }, { mrAttentionRequests: true });
+
+    expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(0);
+  });
+
+  it('emits toggle-attention-required', () => {
+    createComponent({ users: [userDataMock()] }, { mrAttentionRequests: true });
+
+    wrapper.find(AttentionRequiredToggle).vm.$emit('toggle-attention-required', 'data');
+
+    expect(wrapper.emitted('toggle-attention-required')[0]).toEqual(['data']);
   });
 });

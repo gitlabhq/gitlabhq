@@ -139,8 +139,6 @@ module Clusters
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
     scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
-    scope :preload_elasticstack, -> { preload(:integration_elastic_stack) }
-    scope :preload_environments, -> { preload(:environments) }
 
     scope :managed, -> { where(managed: true) }
     scope :with_persisted_applications, -> { eager_load(*APPLICATIONS_ASSOCIATIONS) }

@@ -204,6 +204,8 @@ class Issue < ApplicationRecord
     before_transition closed: :opened do |issue|
       issue.closed_at = nil
       issue.closed_by = nil
+
+      issue.clear_closure_reason_references
     end
   end
 
@@ -377,6 +379,11 @@ class Issue < ApplicationRecord
 
   def duplicated?
     !duplicated_to_id.nil?
+  end
+
+  def clear_closure_reason_references
+    self.moved_to_id = nil
+    self.duplicated_to_id = nil
   end
 
   def can_move?(user, to_project = nil)

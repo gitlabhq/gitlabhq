@@ -10,7 +10,6 @@ import {
   toggleQueryPollingByVisibility,
 } from '~/pipelines/components/graph/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
@@ -37,7 +36,6 @@ export default {
     GlSprintf,
     PipelineEditorMiniGraph,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['projectFullPath'],
   props: {
     commitSha: {
@@ -172,11 +170,7 @@ export default {
         </span>
       </div>
       <div class="gl-display-flex gl-flex-wrap">
-        <pipeline-editor-mini-graph
-          v-if="glFeatures.pipelineEditorMiniGraph"
-          :pipeline="pipeline"
-          v-on="$listeners"
-        />
+        <pipeline-editor-mini-graph :pipeline="pipeline" v-on="$listeners" />
         <gl-button
           class="gl-mt-2 gl-md-mt-0"
           target="_blank"

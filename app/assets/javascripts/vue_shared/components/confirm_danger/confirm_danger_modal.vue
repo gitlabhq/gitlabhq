@@ -93,6 +93,7 @@ export default {
     </p>
     <gl-form-group :state="isValid" :invalid-feedback="$options.i18n.CONFIRM_DANGER_MODAL_ERROR">
       <gl-form-input
+        id="confirm_name_input"
         v-model="confirmationPhrase"
         class="form-control"
         data-testid="confirm-danger-input"

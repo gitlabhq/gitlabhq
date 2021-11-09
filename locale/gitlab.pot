@@ -28636,6 +28636,9 @@ msgstr ""
 msgid "Remove assignee"
 msgstr ""
 
+msgid "Remove attention request"
+msgstr ""
+
 msgid "Remove avatar"
 msgstr ""
 
@@ -28769,6 +28772,9 @@ msgid "Removed all labels."
 msgstr ""
 
 msgid "Removed an issue from an epic."
+msgstr ""
+
+msgid "Removed attention request from @%{username}"
 msgstr ""
 
 msgid "Removed group can not be restored!"
@@ -29199,6 +29205,12 @@ msgstr ""
 msgid "Request a new one"
 msgstr ""
 
+msgid "Request attention"
+msgstr ""
+
+msgid "Request attention to review"
+msgstr ""
+
 msgid "Request details"
 msgstr ""
 
@@ -29218,6 +29230,9 @@ msgid "Requested"
 msgstr ""
 
 msgid "Requested %{time_ago}"
+msgstr ""
+
+msgid "Requested attention from @%{username}"
 msgstr ""
 
 msgid "Requested design version does not exist."
@@ -30909,7 +30924,7 @@ msgstr ""
 msgid "SecurityReports|Take survey"
 msgstr ""
 
-msgid "SecurityReports|The Vulnerability Report shows the results of the lastest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
+msgid "SecurityReports|The Vulnerability Report shows the results of the latest successful pipeline on your project's default branch, as well as vulnerabilities from your latest container scan. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityReports|The security reports below contain one or more vulnerability findings that could not be parsed and were not recorded. Download the artifacts in the job output to investigate. Ensure any security report created conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
@@ -36988,6 +37003,9 @@ msgid "Updates"
 msgstr ""
 
 msgid "Updating"
+msgstr ""
+
+msgid "Updating the attention request for %{username} failed."
 msgstr ""
 
 msgid "Updating…"

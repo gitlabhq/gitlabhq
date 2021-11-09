@@ -39,6 +39,9 @@ export default {
     assignSelf() {
       this.$emit('assign-self');
     },
+    toggleAttentionRequired(data) {
+      this.$emit('toggle-attention-required', data);
+    },
   },
 };
 </script>
@@ -58,7 +61,12 @@ export default {
         </template>
       </span>
 
-      <uncollapsed-assignee-list v-else :users="sortedAssigness" :issuable-type="issuableType" />
+      <uncollapsed-assignee-list
+        v-else
+        :users="sortedAssigness"
+        :issuable-type="issuableType"
+        @toggle-attention-required="toggleAttentionRequired"
+      />
     </div>
   </div>
 </template>

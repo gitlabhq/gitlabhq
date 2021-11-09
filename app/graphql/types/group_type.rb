@@ -220,6 +220,10 @@ module Types
       group.container_repositories.size
     end
 
+    def dependency_proxy_manifests
+      group.dependency_proxy_manifests.order_id_desc
+    end
+
     def dependency_proxy_image_count
       group.dependency_proxy_manifests.count
     end

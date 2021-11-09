@@ -167,6 +167,7 @@
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
+  - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
 .python-patterns: &python-patterns
   - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
@@ -372,10 +373,6 @@
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
-
-.code-shell-patterns: &code-shell-patterns
-  - "bin/**/*"
-  - "tooling/**/*"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 .setup-test-env-patterns: &setup-test-env-patterns
@@ -1487,6 +1484,12 @@
       when: never
     - changes: *python-patterns
 
+.reports:rules:yarn-audit-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+      when: never
+    - changes: *nodejs-patterns
+
 .reports:rules:schedule-dast:
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
@@ -1778,13 +1781,6 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - changes: *code-backstage-qa-patterns
     - changes: *startup-css-patterns
-
-###############
-# Shell rules #
-###############
-.shell:rules:
-  rules:
-    - changes: *code-shell-patterns
 
 #######################
 # Test metadata rules #

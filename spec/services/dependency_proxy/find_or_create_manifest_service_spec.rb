@@ -13,7 +13,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
   let(:token) { Digest::SHA256.hexdigest('123') }
   let(:headers) do
     {
-      'docker-content-digest' => dependency_proxy_manifest.digest,
+      DependencyProxy::Manifest::DIGEST_HEADER => dependency_proxy_manifest.digest,
       'content-type' => dependency_proxy_manifest.content_type
     }
   end
@@ -100,8 +100,8 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
         let(:content_type) { 'new-content-type' }
 
         before do
-          stub_manifest_head(image, tag, headers: { 'docker-content-digest' => digest, 'content-type' => content_type })
-          stub_manifest_download(image, tag, headers: { 'docker-content-digest' => digest, 'content-type' => content_type })
+          stub_manifest_head(image, tag, headers: { DependencyProxy::Manifest::DIGEST_HEADER => digest, 'content-type' => content_type })
+          stub_manifest_download(image, tag, headers: { DependencyProxy::Manifest::DIGEST_HEADER => digest, 'content-type' => content_type })
         end
 
         it_behaves_like 'returning no manifest'

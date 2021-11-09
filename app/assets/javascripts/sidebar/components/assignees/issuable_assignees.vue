@@ -32,6 +32,11 @@ export default {
       return this.users.length === 0;
     },
   },
+  methods: {
+    toggleAttentionRequired(data) {
+      this.$emit('toggle-attention-required', data);
+    },
+  },
 };
 </script>
 
@@ -61,6 +66,7 @@ export default {
       :users="users"
       :issuable-type="issuableType"
       class="gl-text-gray-800 gl-mt-2 hide-collapsed"
+      @toggle-attention-required="toggleAttentionRequired"
     />
   </div>
 </template>

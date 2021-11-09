@@ -20,7 +20,13 @@ module DependencyProxy
           file.write(response.body)
           file.flush
 
-          yield(success(file: file, digest: response.headers['docker-content-digest'], content_type: response.headers['content-type']))
+          yield(
+            success(
+              file: file,
+              digest: response.headers[DependencyProxy::Manifest::DIGEST_HEADER],
+              content_type: response.headers['content-type']
+            )
+          )
         ensure
           file.close
           file.unlink

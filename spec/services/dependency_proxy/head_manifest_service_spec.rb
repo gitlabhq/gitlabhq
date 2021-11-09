@@ -11,7 +11,7 @@ RSpec.describe DependencyProxy::HeadManifestService do
   let(:content_type) { 'foo' }
   let(:headers) do
     {
-      'docker-content-digest' => digest,
+      DependencyProxy::Manifest::DIGEST_HEADER => digest,
       'content-type' => content_type
     }
   end

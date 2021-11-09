@@ -73,13 +73,23 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def upload_manifest
-    @group.dependency_proxy_manifests.create!(
+    attrs = {
       file_name: manifest_file_name,
       content_type: request.headers[Gitlab::Workhorse::SEND_DEPENDENCY_CONTENT_TYPE_HEADER],
-      digest: request.headers['Docker-Content-Digest'],
+      digest: request.headers[DependencyProxy::Manifest::DIGEST_HEADER],
       file: params[:file],
       size: params[:file].size
-    )
+    }
+
+    manifest = @group.dependency_proxy_manifests
+                     .active
+                     .find_by_file_name(manifest_file_name)
+
+    if manifest
+      manifest.update!(attrs)
+    else
+      @group.dependency_proxy_manifests.create!(attrs)
+    end
 
     event_name = tracking_event_name(object_type: :manifest, from_cache: false)
     track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
@@ -105,7 +115,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   def send_manifest(manifest, from_cache:)
     # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
     manifest.touch
-    response.headers['Docker-Content-Digest'] = manifest.digest
+    response.headers[DependencyProxy::Manifest::DIGEST_HEADER] = manifest.digest
     response.headers['Content-Length'] = manifest.size
     response.headers['Docker-Distribution-Api-Version'] = DependencyProxy::DISTRIBUTION_API_VERSION
     response.headers['Etag'] = "\"#{manifest.digest}\""

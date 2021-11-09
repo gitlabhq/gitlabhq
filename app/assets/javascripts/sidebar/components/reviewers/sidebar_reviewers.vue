@@ -88,6 +88,9 @@ export default {
     requestReview(data) {
       this.mediator.requestReview(data);
     },
+    toggleAttentionRequired(data) {
+      this.mediator.toggleAttentionRequired('reviewer', data);
+    },
   },
 };
 </script>
@@ -106,6 +109,7 @@ export default {
       :editable="store.editable"
       :issuable-type="issuableType"
       @request-review="requestReview"
+      @toggle-attention-required="toggleAttentionRequired"
     />
   </div>
 </template>

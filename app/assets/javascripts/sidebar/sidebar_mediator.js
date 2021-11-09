@@ -1,6 +1,6 @@
 import Store from 'ee_else_ce/sidebar/stores/sidebar_store';
 import createFlash from '~/flash';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { visitUrl } from '../lib/utils/url_utility';
 import Service from './services/sidebar_service';
@@ -56,11 +56,53 @@ export default class SidebarMediator {
     return this.service
       .requestReview(userId)
       .then(() => {
-        this.store.updateReviewer(userId);
+        this.store.updateReviewer(userId, 'reviewed');
         toast(__('Requested review'));
         callback(userId, true);
       })
       .catch(() => callback(userId, false));
+  }
+
+  async toggleAttentionRequired(type, { user, callback }) {
+    try {
+      const isReviewer = type === 'reviewer';
+      const reviewerOrAssignee = isReviewer
+        ? this.store.findReviewer(user)
+        : this.store.findAssignee(user);
+
+      if (reviewerOrAssignee.attention_required) {
+        toast(
+          sprintf(__('Removed attention request from @%{username}'), {
+            username: user.username,
+          }),
+        );
+      } else {
+        await this.service.attentionRequired(user.id);
+
+        toast(sprintf(__('Requested attention from @%{username}'), { username: user.username }));
+      }
+
+      if (isReviewer) {
+        this.store.updateReviewer(user.id, 'attention_required');
+      } else {
+        this.store.updateAssignee(user.id, 'attention_required');
+      }
+
+      callback();
+    } catch (error) {
+      callback();
+      createFlash({
+        message: sprintf(__('Updating the attention request for %{username} failed.'), {
+          username: user.username,
+        }),
+        error,
+        captureError: true,
+        actionConfig: {
+          title: __('Try again'),
+          clickHandler: () => this.toggleAttentionRequired(type, { user, callback }),
+        },
+      });
+    }
   }
 
   setMoveToProjectId(projectId) {

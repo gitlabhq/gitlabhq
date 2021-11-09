@@ -26,6 +26,11 @@ export default {
       type: String,
       required: true,
     },
+    buttonTestid: {
+      type: String,
+      required: false,
+      default: 'confirm-danger-button',
+    },
   },
   modalId: CONFIRM_DANGER_MODAL_ID,
 };
@@ -37,7 +42,7 @@ export default {
       class="gl-button"
       variant="danger"
       :disabled="disabled"
-      data-testid="confirm-danger-button"
+      :data-testid="buttonTestid"
       >{{ buttonText }}</gl-button
     >
     <confirm-danger-modal

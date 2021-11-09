@@ -1,0 +1,5 @@
+mutation mergeRequestAttentionRequired($projectPath: ID!, $iid: String!, $userId: ID!) {
+  mergeRequestAttentionRequired(input: { projectPath: $projectPath, iid: $iid, userId: $userId }) {
+    errors
+  }
+}

@@ -279,7 +279,7 @@ RSpec.describe ContainerRegistry::Client do
     it 'uploads the manifest and returns the digest' do
       stub_request(:put, "http://container-registry/v2/path/manifests/tagA")
         .with(body: "{\n  \"foo\": \"bar\"\n}", headers: manifest_headers)
-        .to_return(status: 200, body: "", headers: { 'docker-content-digest' => 'sha256:123' })
+        .to_return(status: 200, body: "", headers: { DependencyProxy::Manifest::DIGEST_HEADER => 'sha256:123' })
 
       expect_new_faraday(timeout: false)
 

@@ -2,7 +2,7 @@
 
 set -e
 
-cd "$(dirname "$0")/.."
+cd $(dirname $0)/..
 app_root=$(pwd)
 
 puma_pidfile="$app_root/tmp/pids/puma.pid"
@@ -25,12 +25,12 @@ get_puma_pid()
 
 start()
 {
-  spawn_puma "$@" &
+  spawn_puma &
 }
 
 start_foreground()
 {
-  spawn_puma "$@"
+  spawn_puma
 }
 
 stop()
@@ -46,10 +46,10 @@ reload()
 
 case "$1" in
   start)
-    start "$@"
+    start
     ;;
   start_foreground)
-    start_foreground "$@"
+    start_foreground
     ;;
   stop)
     stop

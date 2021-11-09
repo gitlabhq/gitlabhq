@@ -10,10 +10,12 @@ import projectSelect from '~/project_select';
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import setupTransferEdit from '~/transfer_edit';
+import initConfirmDanger from '~/init_confirm_danger';
 
 document.addEventListener('DOMContentLoaded', () => {
   initFilePickers();
   initConfirmDangerModal();
+  initConfirmDanger();
   initSettingsPanels();
   dirtySubmitFactory(
     document.querySelectorAll('.js-general-settings-form, .js-general-permissions-form'),

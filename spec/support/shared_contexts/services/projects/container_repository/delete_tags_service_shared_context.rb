@@ -31,14 +31,14 @@ RSpec.shared_context 'container repository delete tags service shared context' d
     end
   end
 
-  def stub_put_manifest_request(tag, status = 200, headers = { 'docker-content-digest' => 'sha256:dummy' })
+  def stub_put_manifest_request(tag, status = 200, headers = { DependencyProxy::Manifest::DIGEST_HEADER => 'sha256:dummy' })
     stub_request(:put, "http://registry.gitlab/v2/#{repository.path}/manifests/#{tag}")
       .to_return(status: status, body: '', headers: headers)
   end
 
   def stub_tag_digest(tag, digest)
     stub_request(:head, "http://registry.gitlab/v2/#{repository.path}/manifests/#{tag}")
-      .to_return(status: 200, body: '', headers: { 'docker-content-digest' => digest })
+      .to_return(status: 200, body: '', headers: { DependencyProxy::Manifest::DIGEST_HEADER => digest })
   end
 
   def stub_digest_config(digest, created_at)

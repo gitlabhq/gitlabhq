@@ -213,7 +213,7 @@ RSpec.describe ContainerRegistry::Tag do
     before do
       stub_request(:head, 'http://registry.gitlab/v2/group/test/manifests/tag')
         .with(headers: headers)
-        .to_return(status: 200, headers: { 'Docker-Content-Digest' => 'sha256:digest' })
+        .to_return(status: 200, headers: { DependencyProxy::Manifest::DIGEST_HEADER => 'sha256:digest' })
     end
 
     describe '#digest' do

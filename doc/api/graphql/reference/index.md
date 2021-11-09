@@ -9237,6 +9237,7 @@ Dependency proxy manifest.
 | <a id="dependencyproxymanifestcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="dependencyproxymanifestdigest"></a>`digest` | [`String!`](#string) | Digest of the manifest. |
 | <a id="dependencyproxymanifestfilename"></a>`fileName` | [`String!`](#string) | Name of the manifest. |
+| <a id="dependencyproxymanifestid"></a>`id` | [`DependencyProxyManifestID!`](#dependencyproxymanifestid) | ID of the manifest. |
 | <a id="dependencyproxymanifestimagename"></a>`imageName` | [`String!`](#string) | Name of the image. |
 | <a id="dependencyproxymanifestsize"></a>`size` | [`String!`](#string) | Size of the manifest file. |
 | <a id="dependencyproxymanifestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
@@ -17279,6 +17280,12 @@ An example `DastSiteValidationID` is: `"gid://gitlab/DastSiteValidation/1"`.
 ### `Date`
 
 Date represented in ISO 8601.
+
+### `DependencyProxyManifestID`
+
+A `DependencyProxyManifestID` is a global ID. It is encoded as a string.
+
+An example `DependencyProxyManifestID` is: `"gid://gitlab/DependencyProxy::Manifest/1"`.
 
 ### `DesignManagementDesignAtVersionID`
 

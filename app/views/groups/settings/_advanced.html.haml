@@ -1,3 +1,4 @@
+- remove_form_id = 'js-remove-group-form'
 = render 'groups/settings/export', group: @group
 
 .sub-section
@@ -26,6 +27,6 @@
     = f.submit s_('GroupSettings|Change group URL'), class: 'btn gl-button btn-warning'
 
 = render 'groups/settings/transfer', group: @group
-= render 'groups/settings/remove', group: @group
+= render 'groups/settings/remove', group: @group, remove_form_id: remove_form_id
 = render_if_exists 'groups/settings/restore', group: @group
-= render_if_exists 'groups/settings/immediately_remove', group: @group
+= render_if_exists 'groups/settings/immediately_remove', group: @group, remove_form_id: remove_form_id

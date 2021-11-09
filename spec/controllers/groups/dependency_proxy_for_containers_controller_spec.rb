@@ -425,28 +425,28 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
   end
 
-  describe 'GET #authorize_upload_blob' do
+  describe 'POST #authorize_upload_blob' do
     let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
     let(:maximum_size) { DependencyProxy::Blob::MAX_FILE_SIZE }
 
     subject do
       request.headers.merge!(workhorse_internal_api_request_header)
 
-      get :authorize_upload_blob, params: { group_id: group.to_param, image: 'alpine', sha: blob_sha }
+      post :authorize_upload_blob, params: { group_id: group.to_param, image: 'alpine', sha: blob_sha }
     end
 
     it_behaves_like 'without permission'
     it_behaves_like 'authorize action with permission'
   end
 
-  describe 'GET #upload_blob' do
+  describe 'POST #upload_blob' do
     let(:blob_sha) { 'a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4' }
     let(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/#{blob_sha}.gz", 'application/gzip') }
 
     subject do
       request.headers.merge!(workhorse_internal_api_request_header)
 
-      get :upload_blob, params: {
+      post :upload_blob, params: {
         group_id: group.to_param,
         image: 'alpine',
         sha: blob_sha,
@@ -469,31 +469,45 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     end
   end
 
-  describe 'GET #authorize_upload_manifest' do
+  describe 'POST #authorize_upload_manifest' do
     let(:maximum_size) { DependencyProxy::Manifest::MAX_FILE_SIZE }
 
     subject do
       request.headers.merge!(workhorse_internal_api_request_header)
 
-      get :authorize_upload_manifest, params: { group_id: group.to_param, image: 'alpine', tag: 'latest' }
+      post :authorize_upload_manifest, params: { group_id: group.to_param, image: 'alpine', tag: 'latest' }
     end
 
     it_behaves_like 'without permission'
     it_behaves_like 'authorize action with permission'
   end
 
-  describe 'GET #upload_manifest' do
-    let(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/manifest", 'application/json') }
+  describe 'POST #upload_manifest' do
+    let_it_be(:file) { fixture_file_upload("spec/fixtures/dependency_proxy/manifest", 'application/json') }
+    let_it_be(:image) { 'alpine' }
+    let_it_be(:tag) { 'latest' }
+    let_it_be(:content_type) { 'v2/manifest' }
+    let_it_be(:digest) { 'foo' }
+    let_it_be(:file_name) { "#{image}:#{tag}.json" }
 
     subject do
-      request.headers.merge!(workhorse_internal_api_request_header)
-
-      get :upload_manifest, params: {
+      request.headers.merge!(
+        workhorse_internal_api_request_header.merge!(
+          {
+            Gitlab::Workhorse::SEND_DEPENDENCY_CONTENT_TYPE_HEADER => content_type,
+            DependencyProxy::Manifest::DIGEST_HEADER => digest
+          }
+        )
+      )
+      params = {
         group_id: group.to_param,
-        image: 'alpine',
-        tag: 'latest',
-        file: file
+        image: image,
+        tag: tag,
+        file: file,
+        file_name: file_name
       }
+
+      post :upload_manifest, params: params
     end
 
     it_behaves_like 'without permission'
@@ -501,13 +515,30 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     context 'with a valid user' do
       before do
         group.add_guest(user)
-
-        expect_next_found_instance_of(Group) do |instance|
-          expect(instance).to receive_message_chain(:dependency_proxy_manifests, :create!)
-        end
       end
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_manifest'
+
+      context 'with no existing manifest' do
+        it 'creates a manifest' do
+          expect { subject }.to change { group.dependency_proxy_manifests.count }.by(1)
+
+          manifest = group.dependency_proxy_manifests.first.reload
+          expect(manifest.content_type).to eq(content_type)
+          expect(manifest.digest).to eq(digest)
+          expect(manifest.file_name).to eq(file_name)
+        end
+      end
+
+      context 'with existing stale manifest' do
+        let_it_be(:old_digest) { 'asdf' }
+        let_it_be_with_reload(:manifest) { create(:dependency_proxy_manifest, file_name: file_name, digest: old_digest, group: group) }
+
+        it 'updates the existing manifest' do
+          expect { subject }.to change { group.dependency_proxy_manifests.count }.by(0)
+            .and change { manifest.reload.digest }.from(old_digest).to(digest)
+        end
+      end
     end
   end
 

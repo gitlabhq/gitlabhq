@@ -37,6 +37,11 @@ module Sidebars
         def render?
           context.project.has_confluence?
         end
+
+        override :active_routes
+        def active_routes
+          { controller: :confluences }
+        end
       end
     end
   end

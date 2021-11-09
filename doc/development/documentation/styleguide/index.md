@@ -1055,15 +1055,19 @@ Guidance for each individual UI element is in [the word list](word_list.md).
 
 To be consistent, use this format when you write navigation steps in a task topic.
 
+```markdown
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
+```
 
 Another example:
 
+```markdown
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
+```
 
 An Admin Area example:
 
@@ -1092,7 +1096,7 @@ For example:
 If the UI text sufficiently explains the fields in a section, do not include a task step for every field.
 Instead, summarize multiple fields in a single task step.
 
-Use the phrase **Complete the fields**. 
+Use the phrase **Complete the fields**.
 
 For example:
 
