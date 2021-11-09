@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Database do
 
     context 'when replicas are configured', :database_replica do
       it 'returns the name for a replica' do
-        replica = ActiveRecord::Base.connection.load_balancer.host
+        replica = ActiveRecord::Base.load_balancer.host
 
         expect(described_class.db_config_name(replica)).to eq('main_replica')
       end

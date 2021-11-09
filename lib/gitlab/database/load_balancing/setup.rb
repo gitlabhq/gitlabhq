@@ -40,6 +40,7 @@ module Gitlab
         def setup_connection_proxy
           # We just use a simple `class_attribute` here so we don't need to
           # inject any modules and/or expose unnecessary methods.
+          setup_class_attribute(:load_balancer, load_balancer)
           setup_class_attribute(:connection, ConnectionProxy.new(load_balancer))
           setup_class_attribute(:sticking, Sticking.new(load_balancer))
         end
@@ -106,10 +107,6 @@ module Gitlab
           # rubocop:disable Database/MultipleDatabases
           def connection
             use_model_load_balancing? ? super : ActiveRecord::Base.connection
-          end
-
-          def sticking
-            use_model_load_balancing? ? super : ActiveRecord::Base.sticking
           end
           # rubocop:enable Database/MultipleDatabases
         end

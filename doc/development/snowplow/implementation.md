@@ -424,7 +424,7 @@ records the same events as the full Snowplow pipeline. To query events, use the 
 To install and run Snowplow Micro, complete these steps to modify the 
 [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit):
 
-1. Ensure Docker is installed and running.
+1. Ensure [Docker is installed](https://docs.docker.com/get-docker/) and running.
 
 1. To install Snowplow Micro, clone the settings in 
 [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration).
@@ -436,73 +436,18 @@ To install and run Snowplow Micro, complete these steps to modify the
    ./snowplow-micro.sh
    ```
 
-1. Use GDK to start the PostgreSQL terminal and connect 
-   to the `gitlabhq_development` database:
+1. Set the environment variable to tell the GDK to use Snowplow Micro in development. This overrides two `application_settings` options:
+   - `snowplow_enabled` setting will instead return `true` from `Gitlab::Tracking.enabled?`
+   - `snowplow_collector_hostname` setting will instead always return `localhost:9090` (or whatever is set for `SNOWPLOW_MICRO_URI`) from `Gitlab::Tracking.collector_hostname`.
 
    ```shell
-   gdk psql -d gitlabhq_development
+   export SNOWPLOW_MICRO_ENABLE=1
    ```
 
-1. Update your instance's settings to enable Snowplow events and 
-   point to the Snowplow Micro collector:
+   Optionally, you can set the URI for you Snowplow Micro instance as well (the default value is `http://localhost:9090`):
 
    ```shell
-   update application_settings set snowplow_collector_hostname='localhost:9090', snowplow_enabled=true, snowplow_cookie_domain='.gitlab.com';
-   ```
-
-1. Update `DEFAULT_SNOWPLOW_OPTIONS` in `app/assets/javascripts/tracking/constants.js` to remove `forceSecureTracker: true`:
-
-   ```diff
-   diff --git a/app/assets/javascripts/tracking/constants.js b/app/assets/javascripts/tracking/constants.js
-   index 598111e4086..eff38074d4c 100644
-   --- a/app/assets/javascripts/tracking/constants.js
-   +++ b/app/assets/javascripts/tracking/constants.js
-   @@ -7,7 +7,6 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
-      appId: '',
-      userFingerprint: false,
-      respectDoNotTrack: true,
-   -  forceSecureTracker: true,
-      eventMethod: 'post',
-      contexts: { webPage: true, performanceTiming: true },
-      formTracking: false,
-   ```
-
-1. Update `options` in `lib/gitlab/tracking.rb` to add `protocol` and `port`:
-
-   ```diff
-   diff --git a/lib/gitlab/tracking.rb b/lib/gitlab/tracking.rb
-   index 618e359211b..e9084623c43 100644
-   --- a/lib/gitlab/tracking.rb
-   +++ b/lib/gitlab/tracking.rb
-   @@ -41,7 +41,9 @@ def options(group)
-              cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
-              app_id: Gitlab::CurrentSettings.snowplow_app_id,
-              form_tracking: additional_features,
-   -          link_click_tracking: additional_features
-   +          link_click_tracking: additional_features,
-   +          protocol: 'http',
-   +          port: 9090
-            }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
-          end
-   ```
-
-1. Update `emitter` in `lib/gitlab/tracking/destinations/snowplow.rb` to change `protocol`:
-
-   ```diff
-   diff --git a/lib/gitlab/tracking/destinations/snowplow.rb b/lib/gitlab/tracking/destinations/snowplow.rb
-   index 4fa844de325..5dd9d0eacfb 100644
-   --- a/lib/gitlab/tracking/destinations/snowplow.rb
-   +++ b/lib/gitlab/tracking/destinations/snowplow.rb
-   @@ -40,7 +40,7 @@ def tracker
-            def emitter
-              SnowplowTracker::AsyncEmitter.new(
-                Gitlab::CurrentSettings.snowplow_collector_hostname,
-   -            protocol: 'https'
-   +            protocol: 'http'
-              )
-            end
-          end
-
+   export SNOWPLOW_MICRO_URI=https://127.0.0.1:8080
    ```
 
 1. Restart GDK:

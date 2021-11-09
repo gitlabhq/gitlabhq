@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => location } }
 
       it 'does not stick to the primary', :aggregate_failures do
-        expect(ActiveRecord::Base.connection.load_balancer)
+        expect(ActiveRecord::Base.load_balancer)
           .to receive(:select_up_to_date_host)
           .with(location)
           .and_return(true)
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'dedup_wal_locations' => wal_locations } }
 
         before do
-          allow(ActiveRecord::Base.connection.load_balancer)
+          allow(ActiveRecord::Base.load_balancer)
             .to receive(:select_up_to_date_host)
             .with(wal_locations[:main])
             .and_return(true)
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         let(:job) { { 'job_id' => 'a180b47c-3fd6-41b8-81e9-34da61c3400e', 'database_write_location' => '0/D525E3A8' } }
 
         before do
-          allow(ActiveRecord::Base.connection.load_balancer)
+          allow(ActiveRecord::Base.load_balancer)
             .to receive(:select_up_to_date_host)
             .with('0/D525E3A8')
             .and_return(true)

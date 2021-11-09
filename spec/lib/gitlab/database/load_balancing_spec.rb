@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
       context 'when a read connection is used' do
         it 'returns :replica' do
-          proxy.load_balancer.read do |connection|
+          load_balancer.read do |connection|
             expect(described_class.db_role_for_connection(connection)).to eq(:replica)
           end
         end
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Database::LoadBalancing do
 
       context 'when a read_write connection is used' do
         it 'returns :primary' do
-          proxy.load_balancer.read_write do |connection|
+          load_balancer.read_write do |connection|
             expect(described_class.db_role_for_connection(connection)).to eq(:primary)
           end
         end

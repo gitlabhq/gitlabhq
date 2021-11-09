@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   let(:sticking) do
-    described_class.new(ActiveRecord::Base.connection.load_balancer)
+    described_class.new(ActiveRecord::Base.load_balancer)
   end
 
   after do
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   describe '#all_caught_up?' do
-    let(:lb) { ActiveRecord::Base.connection.load_balancer }
+    let(:lb) { ActiveRecord::Base.load_balancer }
     let(:last_write_location) { 'foo' }
 
     before do
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   describe '#unstick_or_continue_sticking' do
-    let(:lb) { ActiveRecord::Base.connection.load_balancer }
+    let(:lb) { ActiveRecord::Base.load_balancer }
 
     it 'simply returns if no write location could be found' do
       allow(sticking)
@@ -182,13 +182,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
   RSpec.shared_examples 'sticking' do
     before do
-      allow(ActiveRecord::Base.connection.load_balancer)
+      allow(ActiveRecord::Base.load_balancer)
         .to receive(:primary_write_location)
         .and_return('foo')
     end
 
     it 'sticks an entity to the primary', :aggregate_failures do
-      allow(ActiveRecord::Base.connection.load_balancer)
+      allow(ActiveRecord::Base.load_balancer)
         .to receive(:primary_only?)
         .and_return(false)
 
@@ -227,11 +227,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
   describe '#mark_primary_write_location' do
     it 'updates the write location with the load balancer' do
-      allow(ActiveRecord::Base.connection.load_balancer)
+      allow(ActiveRecord::Base.load_balancer)
         .to receive(:primary_write_location)
         .and_return('foo')
 
-      allow(ActiveRecord::Base.connection.load_balancer)
+      allow(ActiveRecord::Base.load_balancer)
         .to receive(:primary_only?)
         .and_return(false)
 
@@ -291,7 +291,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis do
   end
 
   describe '#select_caught_up_replicas' do
-    let(:lb) { ActiveRecord::Base.connection.load_balancer }
+    let(:lb) { ActiveRecord::Base.load_balancer }
 
     context 'with no write location' do
       before do

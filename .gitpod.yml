@@ -19,6 +19,8 @@ tasks:
         # ensure gdk.yml has correct instance settings
         gdk config set gitlab.rails.port 443
         gdk config set gitlab.rails.https.enabled true
+        # make documentation builds available
+        gdk config set gitlab_docs.enabled true
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure
@@ -83,6 +85,8 @@ ports:
     onOpen: ignore
   - port: 3000  # rails-web
     onOpen: notify
+  - port: 3005  # gitlab-docs
+    onOpen: notify
   - port: 3010  # gitlab-pages
     onOpen: ignore
   - port: 3808  # webpack
@@ -102,3 +106,4 @@ vscode:
     - octref.vetur@0.34.1
     - dbaeumer.vscode-eslint@2.1.8
     - gitlab.gitlab-workflow@3.24.0
+    - DavidAnson.vscode-markdownlint@0.44.4

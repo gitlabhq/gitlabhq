@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
       setup.setup_connection_proxy
 
-      expect(model.connection.load_balancer).to eq(lb)
+      expect(model.load_balancer).to eq(lb)
       expect(model.sticking)
         .to be_an_instance_of(Gitlab::Database::LoadBalancing::Sticking)
     end
@@ -265,17 +265,19 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         stub_env('GITLAB_USE_MODEL_LOAD_BALANCING', env_GITLAB_USE_MODEL_LOAD_BALANCING)
         stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', env_GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci)
         stub_feature_flags(use_model_load_balancing: ff_use_model_load_balancing)
-      end
 
-      it 'results match expectations' do
-        result = models.transform_values do |model|
-          # Make load balancer to force init with a dedicated replicas connections
+        # Make load balancer to force init with a dedicated replicas connections
+        models.each do |_, model|
           described_class.new(model).tap do |subject|
             subject.configuration.hosts = [subject.configuration.replica_db_config.host]
             subject.setup
           end
+        end
+      end
 
-          load_balancer = model.connection.load_balancer
+      it 'results match expectations' do
+        result = models.transform_values do |model|
+          load_balancer = model.connection.instance_variable_get(:@load_balancer)
 
           {
             read: load_balancer.read { |connection| connection.pool.db_config.name },
@@ -284,6 +286,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
         end
 
         expect(result).to eq(expectations)
+      end
+
+      it 'does return load_balancer assigned to a given connection' do
+        models.each do |name, model|
+          expect(model.load_balancer.name).to eq(name)
+          expect(model.sticking.instance_variable_get(:@load_balancer)).to eq(model.load_balancer)
+        end
       end
     end
   end

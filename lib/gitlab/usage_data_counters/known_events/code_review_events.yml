@@ -249,3 +249,7 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_widget_nothing_merge_click_new_file
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

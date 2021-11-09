@@ -181,11 +181,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware do
     end
 
     context 'when worker data consistency is :delayed' do
-      include_examples  'mark data consistency location', :delayed
+      include_examples 'mark data consistency location', :delayed
     end
 
     context 'when worker data consistency is :sticky' do
-      include_examples  'mark data consistency location', :sticky
+      include_examples 'mark data consistency location', :sticky
     end
   end
 end

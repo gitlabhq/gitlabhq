@@ -20,7 +20,7 @@ Gitlab::Database::LoadBalancing.base_models.each do |model|
   Gitlab::Cluster::LifecycleEvents.on_before_fork do
     # When forking, we don't want to wait until the connections aren't in use
     # any more, as this could delay the boot cycle.
-    model.connection.load_balancer.disconnect!(timeout: 0)
+    model.load_balancer.disconnect!(timeout: 0)
   end
 
   # Service discovery only needs to run in the worker processes, as the main one
