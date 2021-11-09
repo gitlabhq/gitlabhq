@@ -90,8 +90,6 @@ module Gitlab
         end
 
         def sort_and_expand_all(project, keep_undefined: false)
-          return self if Feature.disabled?(:variable_inside_variable, project, default_enabled: :yaml)
-
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?
 

@@ -11,6 +11,7 @@ jest.mock('~/lib/utils/url_utility');
 
 const DeploymentFrequencyChartsStub = { name: 'DeploymentFrequencyCharts', render: () => {} };
 const LeadTimeChartsStub = { name: 'LeadTimeCharts', render: () => {} };
+const ProjectQualitySummaryStub = { name: 'ProjectQualitySummary', render: () => {} };
 
 describe('ProjectsPipelinesChartsApp', () => {
   let wrapper;
@@ -23,10 +24,12 @@ describe('ProjectsPipelinesChartsApp', () => {
         {
           provide: {
             shouldRenderDoraCharts: true,
+            shouldRenderQualitySummary: true,
           },
           stubs: {
             DeploymentFrequencyCharts: DeploymentFrequencyChartsStub,
             LeadTimeCharts: LeadTimeChartsStub,
+            ProjectQualitySummary: ProjectQualitySummaryStub,
           },
         },
         mountOptions,
@@ -44,6 +47,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   const findLeadTimeCharts = () => wrapper.find(LeadTimeChartsStub);
   const findDeploymentFrequencyCharts = () => wrapper.find(DeploymentFrequencyChartsStub);
   const findPipelineCharts = () => wrapper.find(PipelineCharts);
+  const findProjectQualitySummary = () => wrapper.find(ProjectQualitySummaryStub);
 
   describe('when all charts are available', () => {
     beforeEach(() => {
@@ -68,6 +72,10 @@ describe('ProjectsPipelinesChartsApp', () => {
 
     it('renders the lead time charts', () => {
       expect(findLeadTimeCharts().exists()).toBe(true);
+    });
+
+    it('renders the project quality summary', () => {
+      expect(findProjectQualitySummary().exists()).toBe(true);
     });
 
     it('sets the tab and url when a tab is clicked', async () => {
@@ -163,9 +171,11 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
   });
 
-  describe('when the dora charts are not available', () => {
+  describe('when the dora charts are not available and project quality summary is not available', () => {
     beforeEach(() => {
-      createComponent({ provide: { shouldRenderDoraCharts: false } });
+      createComponent({
+        provide: { shouldRenderDoraCharts: false, shouldRenderQualitySummary: false },
+      });
     });
 
     it('does not render tabs', () => {
@@ -174,6 +184,16 @@ describe('ProjectsPipelinesChartsApp', () => {
 
     it('renders the pipeline charts', () => {
       expect(findPipelineCharts().exists()).toBe(true);
+    });
+  });
+
+  describe('when the project quality summary is not available', () => {
+    beforeEach(() => {
+      createComponent({ provide: { shouldRenderQualitySummary: false } });
+    });
+
+    it('does not render the tab', () => {
+      expect(findProjectQualitySummary().exists()).toBe(false);
     });
   });
 });

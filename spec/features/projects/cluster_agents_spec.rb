@@ -24,7 +24,7 @@ RSpec.describe 'ClusterAgents', :js do
     it 'displays empty state', :aggregate_failures do
       click_link 'GitLab Agent managed clusters'
 
-      expect(page).to have_content('Integrate with the GitLab Agent')
+      expect(page).to have_content('Connect with a GitLab Agent')
       expect(page).to have_selector('.empty-state')
     end
   end

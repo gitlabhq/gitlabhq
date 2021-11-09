@@ -96,6 +96,9 @@ categories = Set.new(changes.keys - [:unknown])
 # Ensure to spin for database reviewer/maintainer when ~database is applied (e.g. to review SQL queries)
 categories << :database if helper.mr_labels.include?('database')
 
+# Ensure to spin for UX reviewer for community contributions when ~UX is applied (e.g. to review changes to the UI)
+categories << :ux if (["UX", "Community contribution"] - helper.mr_labels).empty?
+
 # Ensure to spin for Product Intelligence reviewer when ~"product intelligence::review pending" is applied
 categories << :product_intelligence if helper.mr_labels.include?("product intelligence::review pending")
 

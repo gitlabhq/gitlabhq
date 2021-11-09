@@ -85,20 +85,22 @@ describe('experiment Utilities', () => {
   });
 
   describe('experiment', () => {
+    const useSpy = jest.fn();
     const controlSpy = jest.fn();
+    const trySpy = jest.fn();
     const candidateSpy = jest.fn();
     const getUpStandUpSpy = jest.fn();
 
     const variants = {
-      use: controlSpy,
-      try: candidateSpy,
+      use: useSpy,
+      try: trySpy,
       get_up_stand_up: getUpStandUpSpy,
     };
 
     describe('when there is no experiment data', () => {
       it('calls control variant', () => {
         experimentUtils.experiment('marley', variants);
-        expect(controlSpy).toHaveBeenCalled();
+        expect(useSpy).toHaveBeenCalled();
       });
     });
 
@@ -107,7 +109,14 @@ describe('experiment Utilities', () => {
 
       it('calls the control variant', () => {
         experimentUtils.experiment('marley', variants);
-        expect(controlSpy).toHaveBeenCalled();
+        expect(useSpy).toHaveBeenCalled();
+      });
+
+      describe("when 'control' is provided instead of 'use'", () => {
+        it('calls the control variant', () => {
+          experimentUtils.experiment('marley', { control: controlSpy });
+          expect(controlSpy).toHaveBeenCalled();
+        });
       });
     });
 
@@ -116,7 +125,14 @@ describe('experiment Utilities', () => {
 
       it('calls the candidate variant', () => {
         experimentUtils.experiment('marley', variants);
-        expect(candidateSpy).toHaveBeenCalled();
+        expect(trySpy).toHaveBeenCalled();
+      });
+
+      describe("when 'candidate' is provided instead of 'try'", () => {
+        it('calls the control variant', () => {
+          experimentUtils.experiment('marley', { candidate: candidateSpy });
+          expect(candidateSpy).toHaveBeenCalled();
+        });
       });
     });
 

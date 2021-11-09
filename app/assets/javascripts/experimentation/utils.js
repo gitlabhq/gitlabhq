@@ -26,14 +26,14 @@ export function getExperimentVariant(experimentName) {
   return getExperimentData(experimentName)?.variant || DEFAULT_VARIANT;
 }
 
-export function experiment(experimentName, variants) {
+export function experiment(experimentName, { use, control, candidate, ...variants }) {
   const variant = getExperimentVariant(experimentName);
 
   switch (variant) {
     case DEFAULT_VARIANT:
-      return variants.use.call();
+      return (use || control).call();
     case CANDIDATE_VARIANT:
-      return variants.try.call();
+      return (variants.try || candidate).call();
     default:
       return variants[variant].call();
   }

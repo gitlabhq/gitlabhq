@@ -261,6 +261,24 @@ To resolve this, check that:
   that contain the included files. Users must also have the [permission](../user/permissions.md#job-permissions)
   to run CI/CD jobs in the same projects.
 
+### "The parsed YAML is too big" message
+
+This message displays when the YAML configuration is too large or nested too deeply.
+YAML files with a large number of includes, and thousands of lines overall, are
+more likely to hit this memory limit. For example, a YAML file that is 200kb is
+likely to hit the default memory limit.
+
+To reduce the configuration size, you can:
+
+- Check the length of the expanded CI/CD configuration in the pipeline editor's
+  [merged YAML](pipeline_editor/index.md#view-expanded-configuration) tab. Look for
+  duplicated configuration that can be removed or simplified.
+- Move long or repeated `script` sections into standalone scripts in the project.
+- Use [parent and child pipelines](pipelines/parent_child_pipelines.md) to move some
+  work to jobs in an independent child pipeline.
+
+On a self-managed instance, you can [increase the size limits](../administration/instance_limits.md#maximum-size-and-depth-of-cicd-configuration-yaml-files).
+
 ## Pipeline warnings
 
 Pipeline configuration warnings are shown when you:

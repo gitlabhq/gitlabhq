@@ -62,6 +62,10 @@ to the URL. For example:
 https://gitlab.example.com/-/profile/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
 ```
 
+WARNING:
+Personal access tokens must be treated carefully. Read our [token security considerations](../../security/token_overview.md#security-considerations)
+for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
+
 ## Revoke a personal access token
 
 At any time, you can revoke a personal access token.

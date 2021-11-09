@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Compliance report **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.8 as Compliance Dashboard.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36524) in GitLab 12.8 as Compliance Dashboard.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/299360) to compliance report in GitLab 14.2.
 
 Compliance report gives you the ability to see a group's merge request activity. It provides a
@@ -53,7 +53,7 @@ request:
 
 ## Approval status and separation of duties
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217939) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217939) in GitLab 13.3.
 
 We support a separation of duties policy between users who create and approve merge requests.
 The approval status column can help you identify violations of this policy.
@@ -75,9 +75,9 @@ This column has four states:
 
 If you see a non-success state, review the criteria for the merge request's project to ensure it complies with the separation of duties.
 
-## Chain of Custody report **(ULTIMATE)**
+## Chain of Custody report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213364) in GitLab 13.3.
 
 The Chain of Custody report allows customers to export a list of merge commits within the group.
 The data provides a comprehensive view with respect to merge commits. It includes the merge commit SHA,
@@ -90,9 +90,9 @@ To download the Chain of Custody report:
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. Select **List of all merge commits**.
 
-### Commit-specific Chain of Custody Report **(ULTIMATE)**
+### Commit-specific Chain of Custody Report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267629) in GitLab 13.6.
 
 You can generate a commit-specific Chain of Custody report for a given commit SHA.
 

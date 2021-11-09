@@ -338,17 +338,46 @@ rspec fast_spec_helper minimal:
     - .minimal-rspec-tests
     - .rails:rules:ee-and-foss-fast_spec_helper:minimal
 
+db:rollback:
+  extends: .db-job-base
+  script:
+    - bundle exec rake db:migrate VERSION=20181228175414
+    - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
+
 db:migrate:reset:
   extends: .db-job-base
   script:
     - bundle exec rake db:migrate:reset
 
+db:migrate-from-previous-major-version:
+  extends: .db-job-base
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+    SETUP_DB: "false"
+    PROJECT_TO_CHECKOUT: "gitlab-foss"
+    TAG_TO_CHECKOUT: "v13.12.9"
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
+    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
+    - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
+    - git checkout -f FETCH_HEAD
+    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
+    - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
+    - git checkout -f $CI_COMMIT_SHA
+    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
+  script:
+    - run_timed_command "bundle exec rake db:migrate"
+
 db:check-schema:
   extends:
-    - .db-job-base
+    - db:migrate-from-previous-major-version
     - .rails:rules:ee-mr-and-default-branch-only
+  variables:
+    TAG_TO_CHECKOUT: "v14.4.0"
   script:
-    - source scripts/schema_changed.sh
+    - run_timed_command "bundle exec rake db:migrate"
+    - scripts/schema_changed.sh
     - scripts/validate_migration_timestamps
 
 db:check-migrations:
@@ -359,30 +388,6 @@ db:check-migrations:
     - git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME:$CI_MERGE_REQUEST_TARGET_BRANCH_NAME --depth 20
     - scripts/validate_migration_schema
   allow_failure: true
-
-db:migrate-from-previous-major-version:
-  extends: .db-job-base
-  variables:
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    PROJECT_TO_CHECKOUT: "gitlab-foss"
-    TAG_TO_CHECKOUT: "v13.12.9"
-  script:
-    - '[[ -d "ee/" ]] || export PROJECT_TO_CHECKOUT="gitlab"'
-    - '[[ -d "ee/" ]] || export TAG_TO_CHECKOUT="${TAG_TO_CHECKOUT}-ee"'
-    - retry 'git fetch https://gitlab.com/gitlab-org/$PROJECT_TO_CHECKOUT.git $TAG_TO_CHECKOUT'
-    - git checkout -f FETCH_HEAD
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
-    - run_timed_command "bundle exec rake db:drop db:create db:structure:load db:migrate db:seed_fu"
-    - git checkout -f $CI_COMMIT_SHA
-    - SETUP_DB=false USE_BUNDLE_INSTALL=true bash scripts/prepare_build.sh
-    - run_timed_command "bundle exec rake db:migrate"
-
-db:rollback:
-  extends: .db-job-base
-  script:
-    - bundle exec rake db:migrate VERSION=20181228175414
-    - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
 
 db:gitlabcom-database-testing:
   extends: .rails:rules:db:gitlabcom-database-testing

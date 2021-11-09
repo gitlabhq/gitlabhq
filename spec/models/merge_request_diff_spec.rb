@@ -1080,6 +1080,22 @@ RSpec.describe MergeRequestDiff do
     end
   end
 
+  describe '#commits' do
+    include ProjectForksHelper
+
+    let_it_be(:target) { create(:project, :test_repo) }
+    let_it_be(:forked) { fork_project(target, nil, repository: true) }
+    let_it_be(:mr) { create(:merge_request, source_project: forked, target_project: target) }
+
+    it 'returns a CommitCollection whose container points to the target project' do
+      expect(mr.merge_request_diff.commits.container).to eq(target)
+    end
+
+    it 'returns a non-empty CommitCollection' do
+      expect(mr.merge_request_diff.commits.commits.size).to be > 0
+    end
+  end
+
   describe '.latest_diff_for_merge_requests' do
     let_it_be(:merge_request_1) { create(:merge_request_without_merge_request_diff) }
     let_it_be(:merge_request_1_diff_1) { create(:merge_request_diff, merge_request: merge_request_1, created_at: 3.days.ago) }

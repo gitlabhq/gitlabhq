@@ -69,7 +69,7 @@ RSpec.describe ClustersHelper do
     end
 
     it 'displays image path' do
-      expect(subject[:empty_state_image]).to match(%r(/illustrations/logos/clusters_empty|svg))
+      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
     end
 
     it 'displays project path' do
@@ -77,7 +77,7 @@ RSpec.describe ClustersHelper do
     end
 
     it 'generates docs urls' do
-      expect(subject[:agent_docs_url]).to eq(help_page_path('user/clusters/agent/index'))
+      expect(subject[:multiple_clusters_docs_url]).to eq(help_page_path('user/project/clusters/multiple_kubernetes_clusters'))
       expect(subject[:install_docs_url]).to eq(help_page_path('administration/clusters/kas'))
       expect(subject[:get_started_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'))
       expect(subject[:integration_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'))
@@ -114,7 +114,7 @@ RSpec.describe ClustersHelper do
     end
 
     it 'displays empty image path' do
-      expect(subject[:clusters_empty_state_image]).to match(%r(/illustrations/logos/clusters_empty|svg))
+      expect(subject[:clusters_empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-clusters|svg))
     end
 
     it 'displays create cluster using certificate path' do

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ContributionsCalendar do
   let(:contributor) { create(:user) }
   let(:user) { create(:user) }
+  let(:travel_time) { nil }
 
   let(:private_project) do
     create(:project, :private) do |project|
@@ -31,7 +32,7 @@ RSpec.describe Gitlab::ContributionsCalendar do
   let(:last_year) { today - 1.year }
 
   before do
-    travel_to Time.now.utc.end_of_day
+    travel_to travel_time || Time.now.utc.end_of_day
   end
 
   after do
@@ -89,7 +90,7 @@ RSpec.describe Gitlab::ContributionsCalendar do
       expect(calendar(contributor).activity_dates[today]).to eq(2)
     end
 
-    context "when events fall under different dates depending on the time zone" do
+    context "when events fall under different dates depending on the system time zone" do
       before do
         create_event(public_project, today, 1)
         create_event(public_project, today, 4)
@@ -112,6 +113,37 @@ RSpec.describe Gitlab::ContributionsCalendar do
 
       it "renders correct event counts within the US Central timezone" do
         Time.use_zone('Central Time (US & Canada)') do
+          expect(calendar.activity_dates).to eq(yesterday => 2, today => 3)
+        end
+      end
+    end
+
+    context "when events fall under different dates depending on the contributor's time zone" do
+      before do
+        create_event(public_project, today, 1)
+        create_event(public_project, today, 4)
+        create_event(public_project, today, 10)
+        create_event(public_project, today, 16)
+        create_event(public_project, today, 23)
+      end
+
+      it "renders correct event counts within the UTC timezone" do
+        Time.use_zone('UTC') do
+          contributor.timezone = 'UTC'
+          expect(calendar.activity_dates).to eq(today => 5)
+        end
+      end
+
+      it "renders correct event counts within the Sydney timezone" do
+        Time.use_zone('UTC') do
+          contributor.timezone = 'Sydney'
+          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 2)
+        end
+      end
+
+      it "renders correct event counts within the US Central timezone" do
+        Time.use_zone('UTC') do
+          contributor.timezone = 'Central Time (US & Canada)'
           expect(calendar.activity_dates).to eq(yesterday => 2, today => 3)
         end
       end
@@ -152,14 +184,38 @@ RSpec.describe Gitlab::ContributionsCalendar do
   end
 
   describe '#starting_year' do
-    it "is the start of last year" do
-      expect(calendar.starting_year).to eq(last_year.year)
+    let(:travel_time) { Time.find_zone('UTC').local(2020, 12, 31, 19, 0, 0) }
+
+    context "when the contributor's timezone is not set" do
+      it "is the start of last year in the system timezone" do
+        expect(calendar.starting_year).to eq(2019)
+      end
+    end
+
+    context "when the contributor's timezone is set to Sydney" do
+      let(:contributor) { create(:user, { timezone: 'Sydney' }) }
+
+      it "is the start of last year in Sydney" do
+        expect(calendar.starting_year).to eq(2020)
+      end
     end
   end
 
   describe '#starting_month' do
-    it "is the start of this month" do
-      expect(calendar.starting_month).to eq(today.month)
+    let(:travel_time) { Time.find_zone('UTC').local(2020, 12, 31, 19, 0, 0) }
+
+    context "when the contributor's timezone is not set" do
+      it "is the start of this month in the system timezone" do
+        expect(calendar.starting_month).to eq(12)
+      end
+    end
+
+    context "when the contributor's timezone is set to Sydney" do
+      let(:contributor) { create(:user, { timezone: 'Sydney' }) }
+
+      it "is the start of this month in Sydney" do
+        expect(calendar.starting_month).to eq(1)
+      end
     end
   end
 end

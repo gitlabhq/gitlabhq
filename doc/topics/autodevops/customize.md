@@ -93,6 +93,28 @@ Avoid passing secrets as Docker build arguments if possible, as they may be
 persisted in your image. See
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490) for details.
 
+## Custom container image
+
+By default, [Auto Deploy](stages.md#auto-deploy) deploys a container image built and pushed to the GitLab registry by [Auto Build](stages.md#auto-build).
+You can override this behavior by defining specific variables:
+
+| Entry | Default | Can be overridden by |
+| ----- | -----   | -----    |
+| Image Path | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` for branch pipelines. `$CI_REGISTRY_IMAGE` for tag pipelines. | `$CI_APPLICATION_REPOSITORY` |
+| Image Tag | `$CI_COMMIT_SHA` for branch pipelines. `$CI_COMMIT_TAG` for tag pipelines. | `$CI_APPLICATION_TAG` |
+
+These variables also affect Auto Build. If you don't want to build and push an image to 
+`$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, consider
+including only `Jobs/Deploy.gitlab-ci.yml`, or [disabling the `build` jobs](#disable-jobs).
+
+Here is an example setup in your `.gitlab-ci.yml`:
+
+```yaml
+variables:
+  CI_APPLICATION_REPOSITORY: <your-image-repository>
+  CI_APPLICATION_TAG: <the-tag>
+```
+
 ## Extend Auto DevOps with the API
 
 You can extend and manage your Auto DevOps configuration with GitLab APIs:
@@ -392,6 +414,8 @@ applications.
 | `CANARY_ENABLED`                        | From GitLab 11.0, used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
 | `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
+| `CI_APPLICATION_REPOSITORY`             | The repository of container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](#custom-container-image). |
+| `CI_APPLICATION_TAG`                    | The tag of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](#custom-container-image). |
 | `DAST_AUTO_DEPLOY_IMAGE_VERSION`        | Customize the image version used for DAST deployments on the default branch. Should usually be the same as `AUTO_DEPLOY_IMAGE_VERSION`. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](#custom-dockerfile) |
 | `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |

@@ -33,11 +33,7 @@ module Ci
     end
 
     def runner_variables
-      if Feature.enabled?(:variable_inside_variable, project, default_enabled: :yaml)
-        variables.sort_and_expand_all(project, keep_undefined: true).to_runner_variables
-      else
-        variables.to_runner_variables
-      end
+      variables.sort_and_expand_all(project, keep_undefined: true).to_runner_variables
     end
 
     def refspecs

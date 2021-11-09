@@ -710,7 +710,7 @@ class MergeRequestDiff < ApplicationRecord
     end
 
     CommitCollection
-      .new(merge_request.source_project, commits, merge_request.source_branch)
+      .new(merge_request.target_project, commits, merge_request.target_branch)
   end
 
   def save_diffs

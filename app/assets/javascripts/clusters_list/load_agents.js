@@ -14,7 +14,7 @@ export default (Vue, VueApollo) => {
     emptyStateImage,
     defaultBranchName,
     projectPath,
-    agentDocsUrl,
+    multipleClustersDocsUrl,
     installDocsUrl,
     getStartedDocsUrl,
     integrationDocsUrl,
@@ -27,7 +27,7 @@ export default (Vue, VueApollo) => {
     provide: {
       emptyStateImage,
       projectPath,
-      agentDocsUrl,
+      multipleClustersDocsUrl,
       installDocsUrl,
       getStartedDocsUrl,
       integrationDocsUrl,

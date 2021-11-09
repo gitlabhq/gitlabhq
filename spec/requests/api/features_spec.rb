@@ -256,6 +256,21 @@ RSpec.describe API::Features, stub_feature_flags: false do
         )
       end
 
+      it 'creates a feature with the given percentage of time if passed a float' do
+        post api("/features/#{feature_name}", admin), params: { value: '0.01' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to match(
+          'name' => feature_name,
+          'state' => 'conditional',
+          'gates' => [
+            { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'percentage_of_time', 'value' => 0.01 }
+          ],
+          'definition' => known_feature_flag_definition_hash
+        )
+      end
+
       it 'creates a feature with the given percentage of actors if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50', key: 'percentage_of_actors' }
 
@@ -266,6 +281,21 @@ RSpec.describe API::Features, stub_feature_flags: false do
           'gates' => [
             { 'key' => 'boolean', 'value' => false },
             { 'key' => 'percentage_of_actors', 'value' => 50 }
+          ],
+          'definition' => known_feature_flag_definition_hash
+        )
+      end
+
+      it 'creates a feature with the given percentage of actors if passed a float' do
+        post api("/features/#{feature_name}", admin), params: { value: '0.01', key: 'percentage_of_actors' }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to match(
+          'name' => feature_name,
+          'state' => 'conditional',
+          'gates' => [
+            { 'key' => 'boolean', 'value' => false },
+            { 'key' => 'percentage_of_actors', 'value' => 0.01 }
           ],
           'definition' => known_feature_flag_definition_hash
         )

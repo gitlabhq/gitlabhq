@@ -10,9 +10,9 @@ import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vu
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
+import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
-import { typeTokenConfig } from '../components/search_tokens/type_token_config';
 import {
   I18N_FETCH_ERROR,
   GROUP_FILTERED_SEARCH_NAMESPACE,
@@ -36,6 +36,7 @@ export default {
     RunnerList,
     RunnerName,
     RunnerPagination,
+    RunnerTypeTabs,
   },
   props: {
     registrationToken: {
@@ -112,7 +113,7 @@ export default {
       });
     },
     searchTokens() {
-      return [statusTokenConfig, typeTokenConfig];
+      return [statusTokenConfig];
     },
     filteredSearchNamespace() {
       return `${GROUP_FILTERED_SEARCH_NAMESPACE}/${this.groupFullPath}`;
@@ -144,7 +145,13 @@ export default {
 
 <template>
   <div>
-    <div class="gl-py-3 gl-display-flex">
+    <div class="gl-display-flex gl-align-items-center">
+      <runner-type-tabs
+        v-model="search"
+        content-class="gl-display-none"
+        nav-class="gl-border-none!"
+      />
+
       <registration-dropdown
         class="gl-ml-auto"
         :registration-token="registrationToken"

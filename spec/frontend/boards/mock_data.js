@@ -30,17 +30,27 @@ export const listObj = {
   },
 };
 
-export const listObjDuplicate = {
-  id: listObj.id,
-  position: 1,
-  title: 'Test',
-  list_type: 'label',
-  weight: 3,
-  label: {
-    id: listObj.label.id,
-    title: 'Test',
-    color: '#ff0000',
-    description: 'testing;',
+export const mockGroupBoardResponse = {
+  data: {
+    workspace: {
+      board: {
+        id: 'gid://gitlab/Board/1',
+        name: 'Development',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const mockProjectBoardResponse = {
+  data: {
+    workspace: {
+      board: {
+        id: 'gid://gitlab/Board/2',
+        name: 'Development',
+      },
+      __typename: 'Project',
+    },
   },
 };
 
@@ -634,8 +644,8 @@ export const mockProjectLabelsResponse = {
       labels: {
         nodes: [mockLabel1, mockLabel2],
       },
+      __typename: 'Project',
     },
-    __typename: 'Project',
   },
 };
 
@@ -646,7 +656,7 @@ export const mockGroupLabelsResponse = {
       labels: {
         nodes: [mockLabel1, mockLabel2],
       },
+      __typename: 'Group',
     },
-    __typename: 'Group',
   },
 };

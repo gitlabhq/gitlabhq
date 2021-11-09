@@ -259,12 +259,7 @@ RSpec.describe Ci::BuildRunnerPresenter do
   describe '#runner_variables' do
     subject { presenter.runner_variables }
 
-    let_it_be(:project_with_flag_disabled) { create(:project, :repository) }
-    let_it_be(:project_with_flag_enabled) { create(:project, :repository) }
-
-    before do
-      stub_feature_flags(variable_inside_variable: [project_with_flag_enabled])
-    end
+    let_it_be(:project) { create(:project, :repository) }
 
     shared_examples 'returns an array with the expected variables' do
       it 'returns an array' do
@@ -276,21 +271,11 @@ RSpec.describe Ci::BuildRunnerPresenter do
       end
     end
 
-    context 'when FF :variable_inside_variable is disabled' do
-      let(:sha) { project_with_flag_disabled.repository.commit.sha }
-      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project_with_flag_disabled) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:sha) { project.repository.commit.sha }
+    let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      it_behaves_like 'returns an array with the expected variables'
-    end
-
-    context 'when FF :variable_inside_variable is enabled' do
-      let(:sha) { project_with_flag_enabled.repository.commit.sha }
-      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project_with_flag_enabled) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      it_behaves_like 'returns an array with the expected variables'
-    end
+    it_behaves_like 'returns an array with the expected variables'
   end
 
   describe '#runner_variables subset' do
@@ -305,32 +290,12 @@ RSpec.describe Ci::BuildRunnerPresenter do
         create(:ci_pipeline_variable, key: 'C', value: 'value', pipeline: build.pipeline)
       end
 
-      context 'when FF :variable_inside_variable is disabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: false)
-        end
-
-        it 'returns non-expanded variables' do
-          is_expected.to eq [
-                              { key: 'A', value: 'refA-$B', public: false, masked: false },
-                              { key: 'B', value: 'refB-$C-$D', public: false, masked: false },
-                              { key: 'C', value: 'value', public: false, masked: false }
-                            ]
-        end
-      end
-
-      context 'when FF :variable_inside_variable is enabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: [build.project])
-        end
-
-        it 'returns expanded and sorted variables' do
-          is_expected.to eq [
-                              { key: 'C', value: 'value', public: false, masked: false },
-                              { key: 'B', value: 'refB-value-$D', public: false, masked: false },
-                              { key: 'A', value: 'refA-refB-value-$D', public: false, masked: false }
-                            ]
-        end
+      it 'returns expanded and sorted variables' do
+        is_expected.to eq [
+                            { key: 'C', value: 'value', public: false, masked: false },
+                            { key: 'B', value: 'refB-value-$D', public: false, masked: false },
+                            { key: 'A', value: 'refA-refB-value-$D', public: false, masked: false }
+                          ]
       end
     end
   end

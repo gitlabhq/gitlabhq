@@ -22,7 +22,6 @@ import {
   DEFAULT_SORT,
   INSTANCE_TYPE,
   PARAM_KEY_STATUS,
-  PARAM_KEY_RUNNER_TYPE,
   PARAM_KEY_TAG,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
@@ -127,10 +126,6 @@ describe('AdminRunnersApp', () => {
         options: expect.any(Array),
       }),
       expect.objectContaining({
-        type: PARAM_KEY_RUNNER_TYPE,
-        options: expect.any(Array),
-      }),
-      expect.objectContaining({
         type: PARAM_KEY_TAG,
         recentTokenValuesStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
@@ -155,9 +150,9 @@ describe('AdminRunnersApp', () => {
 
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
+        runnerType: INSTANCE_TYPE,
         filters: [
           { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
-          { type: 'runner_type', value: { data: INSTANCE_TYPE, operator: '=' } },
           { type: 'tag', value: { data: 'tag1', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
@@ -179,6 +174,7 @@ describe('AdminRunnersApp', () => {
   describe('when a filter is selected by the user', () => {
     beforeEach(() => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
+        runnerType: null,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
         sort: CREATED_ASC,
       });

@@ -11,9 +11,14 @@ export default {
     DeploymentFrequencyCharts: () =>
       import('ee_component/dora/components/deployment_frequency_charts.vue'),
     LeadTimeCharts: () => import('ee_component/dora/components/lead_time_charts.vue'),
+    ProjectQualitySummary: () => import('ee_component/project_quality_summary/app.vue'),
   },
   inject: {
     shouldRenderDoraCharts: {
+      type: Boolean,
+      default: false,
+    },
+    shouldRenderQualitySummary: {
       type: Boolean,
       default: false,
     },
@@ -29,6 +34,10 @@ export default {
 
       if (this.shouldRenderDoraCharts) {
         chartsToShow.push('deployment-frequency', 'lead-time');
+      }
+
+      if (this.shouldRenderQualitySummary) {
+        chartsToShow.push('project-quality');
       }
 
       return chartsToShow;
@@ -68,6 +77,9 @@ export default {
           <lead-time-charts />
         </gl-tab>
       </template>
+      <gl-tab v-if="shouldRenderQualitySummary" :title="s__('QualitySummary|Project quality')">
+        <project-quality-summary />
+      </gl-tab>
     </gl-tabs>
     <pipeline-charts v-else />
   </div>

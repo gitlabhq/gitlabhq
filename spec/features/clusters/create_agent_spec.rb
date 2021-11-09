@@ -26,7 +26,7 @@ RSpec.describe 'Cluster agent registration', :js do
   it 'allows the user to select an agent to install, and displays the resulting agent token' do
     click_link('GitLab Agent managed clusters')
 
-    click_button('Integrate with the GitLab Agent')
+    click_button('Connect with a GitLab Agent')
     expect(page).to have_content('Install new Agent')
 
     click_button('Select an Agent')

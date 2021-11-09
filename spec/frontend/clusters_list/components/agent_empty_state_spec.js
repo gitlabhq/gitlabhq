@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 const emptyStateImage = '/path/to/image';
 const projectPath = 'path/to/project';
-const agentDocsUrl = 'path/to/agentDocs';
+const multipleClustersDocsUrl = 'path/to/multipleClustersDocs';
 const installDocsUrl = 'path/to/installDocs';
 const getStartedDocsUrl = 'path/to/getStartedDocs';
 const integrationDocsUrl = 'path/to/integrationDocs';
@@ -18,14 +18,14 @@ describe('AgentEmptyStateComponent', () => {
   const provideData = {
     emptyStateImage,
     projectPath,
-    agentDocsUrl,
+    multipleClustersDocsUrl,
     installDocsUrl,
     getStartedDocsUrl,
     integrationDocsUrl,
   };
 
   const findConfigurationsAlert = () => wrapper.findComponent(GlAlert);
-  const findAgentDocsLink = () => wrapper.findByTestId('agent-docs-link');
+  const findMultipleClustersDocsLink = () => wrapper.findByTestId('multiple-clusters-docs-link');
   const findInstallDocsLink = () => wrapper.findByTestId('install-docs-link');
   const findIntegrationButton = () => wrapper.findByTestId('integration-primary-button');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -46,7 +46,7 @@ describe('AgentEmptyStateComponent', () => {
   });
 
   it('renders correct href attributes for the links', () => {
-    expect(findAgentDocsLink().attributes('href')).toBe(agentDocsUrl);
+    expect(findMultipleClustersDocsLink().attributes('href')).toBe(multipleClustersDocsUrl);
     expect(findInstallDocsLink().attributes('href')).toBe(installDocsUrl);
   });
 

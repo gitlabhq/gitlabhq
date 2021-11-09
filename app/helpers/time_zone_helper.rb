@@ -32,10 +32,16 @@ module TimeZoneHelper
     end
   end
 
+  def local_time_instance(timezone)
+    return Time.zone if timezone.blank?
+
+    ActiveSupport::TimeZone.new(timezone) || Time.zone
+  end
+
   def local_time(timezone)
     return if timezone.blank?
 
-    time_zone_instance = ActiveSupport::TimeZone.new(timezone) || Time.zone
+    time_zone_instance = local_time_instance(timezone)
     time_zone_instance.now.strftime("%-l:%M %p")
   end
 end

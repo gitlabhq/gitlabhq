@@ -30,6 +30,11 @@ can be started.
 > - [Sidekiq cluster moved](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/181) to GitLab Free in 12.10.
 > - [Sidekiq cluster became default](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4140) in GitLab 13.0.
 
+When starting multiple processes, the number of processes should
+equal (and **not** exceed) the number of CPU cores you want to
+dedicate to Sidekiq. Each Sidekiq process can use only 1 CPU
+core, subject to the available workload and concurrency settings.
+
 To start multiple processes:
 
 1. Using the `sidekiq['queue_groups']` array setting, specify how many processes to
@@ -166,23 +171,41 @@ one only processes imports and the other processes all other queues:
 
 ## Number of threads
 
-Each process defined under `sidekiq` starts with a
+By default each process defined under `sidekiq` starts with a
 number of threads that equals the number of queues, plus one spare thread.
 For example, a process that handles the `process_commit` and `post_receive`
 queues uses three threads in total.
 
-## Manage concurrency
+These thread run inside a single Ruby process, and each process
+can only use a single CPU core. The usefulness of threading depends
+on the work having some external dependencies to wait on, like database queries or
+HTTP requests. Most Sidekiq deployments benefit from this threading, and when
+running fewer queues in a process, increasing the thread count might be
+even more desirable to make the most effective use of CPU resources.
 
-When setting the maximum concurrency, keep in mind this normally should
-not exceed the number of CPU cores available. The values in the examples
-below are arbitrary and not particular recommendations.
+### Manage thread counts explicitly
+
+The correct maximum thread count (also called concurrency) depends on the workload.
+Typical values range from `1` for highly CPU-bound tasks to `15` or higher for mixed
+low-priority work. A reasonable starting range is `15` to `25` for a non-specialized
+deployment.
+
+You can find example values used by GitLab.com by searching for `concurrency:` in
+[the Helm charts](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/master/releases/gitlab/values/gprd.yaml.gotmpl).
+The values vary according to the work each specific deployment of Sidekiq does.
+Any other specialized deployments with processes dedicated to specific queues should
+have the concurrency tuned according to:
+have the concurrency tuned according to:
+
+- The CPU usage of each type of process.
+- The throughput achieved.
 
 Each thread requires a Redis connection, so adding threads may increase Redis
 latency and potentially cause client timeouts. See the [Sidekiq documentation
 about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis) for more
 details.
 
-### When running Sidekiq cluster (default)
+#### When running Sidekiq cluster (default)
 
 Running Sidekiq cluster is the default in GitLab 13.0 and later.
 
@@ -203,7 +226,7 @@ Running Sidekiq cluster is the default in GitLab 13.0 and later.
 the other. Setting `min_concurrency` to `0` disables the limit.
 
 For each queue group, let `N` be one more than the number of queues. The
-concurrency factor are set to:
+concurrency is set to:
 
 1. `N`, if it's between `min_concurrency` and `max_concurrency`.
 1. `max_concurrency`, if `N` exceeds this value.
@@ -215,7 +238,7 @@ regardless of the number of queues.
 When `min_concurrency` is greater than `max_concurrency`, it is treated as
 being equal to `max_concurrency`.
 
-### When running a single Sidekiq process
+#### When running a single Sidekiq process
 
 Running a single Sidekiq process is the default in GitLab 12.10 and earlier.
 

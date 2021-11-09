@@ -32,7 +32,6 @@ export default (params = {}) => {
     data() {
       const boardsSelectorProps = {
         ...dataset,
-        currentBoard: JSON.parse(dataset.currentBoard),
         hasMissingBoards: parseBoolean(dataset.hasMissingBoards),
         canAdminBoard: parseBoolean(dataset.canAdminBoard),
         multipleIssueBoardsAvailable: parseBoolean(dataset.multipleIssueBoardsAvailable),

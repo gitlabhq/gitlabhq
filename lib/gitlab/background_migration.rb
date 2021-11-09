@@ -42,5 +42,9 @@ module Gitlab
     def self.exists?(migration_class, additional_queues = [], database: :main)
       coordinator_for_database(database).exists?(migration_class, additional_queues) # rubocop:disable CodeReuse/ActiveRecord
     end
+
+    def self.remaining(database: :main)
+      coordinator_for_database(database).remaining
+    end
   end
 end

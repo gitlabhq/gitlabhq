@@ -88,8 +88,8 @@ module Gitlab
             @location = new_location
           end
 
-          def unsafe?(severity_levels)
-            severity.in?(severity_levels)
+          def unsafe?(severity_levels, report_types)
+            severity.to_s.in?(severity_levels) && (report_types.blank? || report_type.to_s.in?(report_types) )
           end
 
           def eql?(other)

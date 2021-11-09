@@ -14,7 +14,12 @@ module API
         when '0', 'false'
           false
         else
-          params[:value].to_i
+          # https://github.com/jnunemaker/flipper/blob/master/lib/flipper/typecast.rb#L47
+          if params[:value].to_s.include?('.')
+            params[:value].to_f
+          else
+            params[:value].to_i
+          end
         end
       end
 
@@ -59,7 +64,7 @@ module API
         success Entities::Feature
       end
       params do
-        requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
+        requires :value, type: String, desc: '`true` or `false` to enable/disable, a float for percentage of time'
         optional :key, type: String, desc: '`percentage_of_actors` or the default `percentage_of_time`'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'

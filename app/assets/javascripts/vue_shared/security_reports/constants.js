@@ -17,6 +17,7 @@ export const REPORT_FILE_TYPES = {
  * Security scan report types, as provided by the backend.
  */
 export const REPORT_TYPE_SAST = 'sast';
+export const REPORT_TYPE_SAST_IAC = 'sast_iac';
 export const REPORT_TYPE_DAST = 'dast';
 export const REPORT_TYPE_DAST_PROFILES = 'dast_profiles';
 export const REPORT_TYPE_SECRET_DETECTION = 'secret_detection';

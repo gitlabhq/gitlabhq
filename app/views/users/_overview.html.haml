@@ -2,7 +2,7 @@
 
 .row.d-none.d-sm-flex
   .col-12.calendar-block.gl-my-3
-    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
+    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_time_instance(@user.timezone).now.utc_offset } }
       .gl-spinner.gl-spinner-md.gl-my-8
       .user-calendar-error.invisible
         = _('There was an error loading users activity calendar.')

@@ -1,12 +1,21 @@
 import { GlDropdown, GlLoadingIcon, GlDropdownSectionHeader } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import Vuex from 'vuex';
 import { TEST_HOST } from 'spec/test_constants';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
+import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
+import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
+import defaultStore from '~/boards/stores';
 import axios from '~/lib/utils/axios_utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockGroupBoardResponse, mockProjectBoardResponse } from '../mock_data';
 
 const throttleDuration = 1;
+
+Vue.use(VueApollo);
 
 function boardGenerator(n) {
   return new Array(n).fill().map((board, index) => {
@@ -25,8 +34,26 @@ describe('BoardsSelector', () => {
   let allBoardsResponse;
   let recentBoardsResponse;
   let mock;
+  let fakeApollo;
+  let store;
   const boards = boardGenerator(20);
   const recentBoards = boardGenerator(5);
+
+  const createStore = ({ isGroupBoard = false, isProjectBoard = false } = {}) => {
+    store = new Vuex.Store({
+      ...defaultStore,
+      actions: {
+        setError: jest.fn(),
+      },
+      getters: {
+        isGroupBoard: () => isGroupBoard,
+        isProjectBoard: () => isProjectBoard,
+      },
+      state: {
+        boardType: isGroupBoard ? 'group' : 'project',
+      },
+    });
+  };
 
   const fillSearchBox = (filterTerm) => {
     const searchBox = wrapper.find({ ref: 'searchBox' });
@@ -40,40 +67,20 @@ describe('BoardsSelector', () => {
   const getLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findDropdown = () => wrapper.find(GlDropdown);
 
-  beforeEach(() => {
-    mock = new MockAdapter(axios);
-    const $apollo = {
-      queries: {
-        boards: {
-          loading: false,
-        },
-      },
-    };
+  const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
+  const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
 
-    allBoardsResponse = Promise.resolve({
-      data: {
-        group: {
-          boards: {
-            edges: boards.map((board) => ({ node: board })),
-          },
-        },
-      },
-    });
-    recentBoardsResponse = Promise.resolve({
-      data: recentBoards,
-    });
+  const createComponent = () => {
+    fakeApollo = createMockApollo([
+      [projectBoardQuery, projectBoardQueryHandlerSuccess],
+      [groupBoardQuery, groupBoardQueryHandlerSuccess],
+    ]);
 
     wrapper = mount(BoardsSelector, {
+      store,
+      apolloProvider: fakeApollo,
       propsData: {
         throttleDuration,
-        currentBoard: {
-          id: 1,
-          name: 'Development',
-          milestone_id: null,
-          weight: null,
-          assignee_id: null,
-          labels: [],
-        },
         boardBaseUrl: `${TEST_HOST}/board/base/url`,
         hasMissingBoards: false,
         canAdminBoard: true,
@@ -81,7 +88,6 @@ describe('BoardsSelector', () => {
         scopedIssueBoardFeatureEnabled: true,
         weights: [],
       },
-      mocks: { $apollo },
       attachTo: document.body,
       provide: {
         fullPath: '',
@@ -94,12 +100,7 @@ describe('BoardsSelector', () => {
         [options.loadingKey]: true,
       });
     });
-
-    mock.onGet(`${TEST_HOST}/recent`).replyOnce(200, recentBoards);
-
-    // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
-    findDropdown().vm.$emit('show');
-  });
+  };
 
   afterEach(() => {
     wrapper.destroy();
@@ -107,104 +108,158 @@ describe('BoardsSelector', () => {
     mock.restore();
   });
 
-  describe('loading', () => {
-    // we are testing loading state, so don't resolve responses until after the tests
-    afterEach(() => {
-      return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => nextTick());
-    });
+  describe('fetching all boards', () => {
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
 
-    it('shows loading spinner', () => {
-      expect(getDropdownHeaders()).toHaveLength(0);
-      expect(getDropdownItems()).toHaveLength(0);
-      expect(getLoadingIcon().exists()).toBe(true);
-    });
-  });
-
-  describe('loaded', () => {
-    beforeEach(async () => {
-      await wrapper.setData({
-        loadingBoards: false,
+      allBoardsResponse = Promise.resolve({
+        data: {
+          group: {
+            boards: {
+              edges: boards.map((board) => ({ node: board })),
+            },
+          },
+        },
       });
-      return Promise.all([allBoardsResponse, recentBoardsResponse]).then(() => nextTick());
+      recentBoardsResponse = Promise.resolve({
+        data: recentBoards,
+      });
+
+      createStore();
+      createComponent();
+
+      mock.onGet(`${TEST_HOST}/recent`).replyOnce(200, recentBoards);
     });
 
-    it('hides loading spinner', async () => {
-      await wrapper.vm.$nextTick();
-      expect(getLoadingIcon().exists()).toBe(false);
+    describe('loading', () => {
+      beforeEach(async () => {
+        // Wait for current board to be loaded
+        await nextTick();
+
+        // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
+        findDropdown().vm.$emit('show');
+      });
+
+      // we are testing loading state, so don't resolve responses until after the tests
+      afterEach(async () => {
+        await Promise.all([allBoardsResponse, recentBoardsResponse]);
+        await nextTick();
+      });
+
+      it('shows loading spinner', () => {
+        expect(getDropdownHeaders()).toHaveLength(0);
+        expect(getDropdownItems()).toHaveLength(0);
+        expect(getLoadingIcon().exists()).toBe(true);
+      });
     });
 
-    describe('filtering', () => {
-      beforeEach(() => {
-        wrapper.setData({
-          boards,
+    describe('loaded', () => {
+      beforeEach(async () => {
+        // Wait for current board to be loaded
+        await nextTick();
+
+        // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
+        findDropdown().vm.$emit('show');
+
+        await wrapper.setData({
+          loadingBoards: false,
+          loadingRecentBoards: false,
+        });
+        await Promise.all([allBoardsResponse, recentBoardsResponse]);
+        await nextTick();
+      });
+
+      it('hides loading spinner', async () => {
+        await nextTick();
+        expect(getLoadingIcon().exists()).toBe(false);
+      });
+
+      describe('filtering', () => {
+        beforeEach(async () => {
+          wrapper.setData({
+            boards,
+          });
+
+          await nextTick();
         });
 
-        return nextTick();
-      });
+        it('shows all boards without filtering', () => {
+          expect(getDropdownItems()).toHaveLength(boards.length + recentBoards.length);
+        });
 
-      it('shows all boards without filtering', () => {
-        expect(getDropdownItems()).toHaveLength(boards.length + recentBoards.length);
-      });
+        it('shows only matching boards when filtering', async () => {
+          const filterTerm = 'board1';
+          const expectedCount = boards.filter((board) => board.name.includes(filterTerm)).length;
 
-      it('shows only matching boards when filtering', () => {
-        const filterTerm = 'board1';
-        const expectedCount = boards.filter((board) => board.name.includes(filterTerm)).length;
+          fillSearchBox(filterTerm);
 
-        fillSearchBox(filterTerm);
-
-        return nextTick().then(() => {
+          await nextTick();
           expect(getDropdownItems()).toHaveLength(expectedCount);
         });
-      });
 
-      it('shows message if there are no matching boards', () => {
-        fillSearchBox('does not exist');
+        it('shows message if there are no matching boards', async () => {
+          fillSearchBox('does not exist');
 
-        return nextTick().then(() => {
+          await nextTick();
           expect(getDropdownItems()).toHaveLength(0);
           expect(wrapper.text().includes('No matching boards found')).toBe(true);
         });
       });
-    });
 
-    describe('recent boards section', () => {
-      it('shows only when boards are greater than 10', () => {
-        wrapper.setData({
-          boards,
-        });
+      describe('recent boards section', () => {
+        it('shows only when boards are greater than 10', async () => {
+          wrapper.setData({
+            boards,
+          });
 
-        return nextTick().then(() => {
+          await nextTick();
           expect(getDropdownHeaders()).toHaveLength(2);
         });
-      });
 
-      it('does not show when boards are less than 10', () => {
-        wrapper.setData({
-          boards: boards.slice(0, 5),
+        it('does not show when boards are less than 10', async () => {
+          wrapper.setData({
+            boards: boards.slice(0, 5),
+          });
+
+          await nextTick();
+          expect(getDropdownHeaders()).toHaveLength(0);
         });
 
-        return nextTick().then(() => {
+        it('does not show when recentBoards api returns empty array', async () => {
+          wrapper.setData({
+            recentBoards: [],
+          });
+
+          await nextTick();
+          expect(getDropdownHeaders()).toHaveLength(0);
+        });
+
+        it('does not show when search is active', async () => {
+          fillSearchBox('Random string');
+
+          await nextTick();
           expect(getDropdownHeaders()).toHaveLength(0);
         });
       });
+    });
+  });
 
-      it('does not show when recentBoards api returns empty array', () => {
-        wrapper.setData({
-          recentBoards: [],
-        });
-
-        return nextTick().then(() => {
-          expect(getDropdownHeaders()).toHaveLength(0);
-        });
+  describe('fetching current board', () => {
+    it.each`
+      boardType    | queryHandler                       | notCalledHandler
+      ${'group'}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
+      ${'project'} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    `('fetches $boardType board', async ({ boardType, queryHandler, notCalledHandler }) => {
+      createStore({
+        isProjectBoard: boardType === 'project',
+        isGroupBoard: boardType === 'group',
       });
+      createComponent();
 
-      it('does not show when search is active', () => {
-        fillSearchBox('Random string');
+      await nextTick();
 
-        return nextTick().then(() => {
-          expect(getDropdownHeaders()).toHaveLength(0);
-        });
-      });
+      expect(queryHandler).toHaveBeenCalled();
+      expect(notCalledHandler).not.toHaveBeenCalled();
     });
   });
 });

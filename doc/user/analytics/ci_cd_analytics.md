@@ -21,6 +21,12 @@ View pipeline duration history:
 
 ![Pipeline duration](img/pipelines_duration_chart.png)
 
+Pipeline statistics are gathered by collecting all available pipelines for the
+project regardless of status. The data available for each individual day is based
+on when the pipeline was created. The total pipeline calculation includes child
+pipelines and pipelines that failed with invalid YAML. If you are interested in
+filtering pipelines based on other attributes, consider using the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
+
 ## DevOps Research and Assessment (DORA) key metrics **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.

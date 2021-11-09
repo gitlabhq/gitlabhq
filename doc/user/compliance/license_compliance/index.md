@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # License Compliance **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in GitLab 11.0.
 
 If you're using [GitLab CI/CD](../../../ci/index.md), you can use License Compliance to search your
 project's dependencies for their licenses. You can then decide whether to allow or deny the use of
@@ -162,7 +162,7 @@ License Compliance can be configured using CI/CD variables.
 
 ### Installing custom dependencies
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
+> Introduced in GitLab 11.4.
 
 The `license_finder` image already embeds many auto-detection scripts, languages,
 and packages. Nevertheless, it's almost impossible to cover all cases for all projects.
@@ -277,7 +277,7 @@ License Compliance uses Java 8 by default. You can specify a different Java vers
 
 ### Selecting the version of Python
 
-> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in GitLab 12.0.
 > - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12032), Python 3.5 became the default.
 > - In [GitLab 12.7](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/101), Python 3.8 became the default.
 
@@ -710,7 +710,7 @@ Additional configuration may be needed for connecting to private registries for:
 
 ### SPDX license list name matching
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212388) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212388) in GitLab 13.3.
 
 Prior to GitLab 13.3, offline environments required an exact name match for [project policies](#policies).
 In GitLab 13.3 and later, GitLab matches the name of [project policies](#policies)
@@ -720,7 +720,7 @@ instance's administrator can manually update it with a [Rake task](../../../rake
 
 ## License list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13582) in GitLab 12.7.
 
 The License list allows you to see your project's licenses and key
 details about them.
@@ -744,7 +744,7 @@ The licenses are displayed, where:
 
 ## Policies
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22465) in GitLab 12.9.
 
 Policies allow you to specify licenses that are `allowed` or `denied` in a project. If a `denied`
 license is newly committed it blocks the merge request and instructs the developer to remove it.
@@ -767,7 +767,7 @@ Developers of the project can view the policies configured in a project.
 
 ## Enabling License Approvals within a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13067) in GitLab 12.3.
 
 Prerequisites:
 

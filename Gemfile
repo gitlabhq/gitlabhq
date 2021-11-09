@@ -24,7 +24,7 @@ gem 'faraday', '~> 1.0'
 gem 'marginalia', '~> 1.10.0'
 
 # Authorization
-gem 'declarative_policy', '~> 1.0.0'
+gem 'declarative_policy', '~> 1.1.0'
 
 # Authentication libraries
 gem 'devise', '~> 4.7.2'
@@ -399,7 +399,7 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 2.4.0', require: false
+  gem 'gitlab-dangerfiles', '~> 2.5.0', require: false
 end
 
 group :development, :test, :coverage do

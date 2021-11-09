@@ -12,7 +12,10 @@ on a [paid plan](https://about.gitlab.com/pricing/).
 GitLab system administrators can also take advantage of the logs located on the
 file system. See [the logs system documentation](logs.md#audit_jsonlog) for more details.
 
-You can generate an [Audit report](audit_reports.md) of audit events.
+You can:
+
+- Generate an [audit report](audit_reports.md) of audit events.
+- [Stream audit events](audit_event_streaming.md) to an external endpoint.
 
 ## Overview
 

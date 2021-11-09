@@ -1822,6 +1822,11 @@ build_job:
 
 You can't download artifacts from jobs that run in [`parallel:`](#parallel).
 
+When using `needs` to download artifacts from another pipeline, the job does not wait for
+the needed job to complete. [Directed acyclic graph](../directed_acyclic_graph/index.md)
+behavior is limited to jobs in the same pipeline. Make sure that the needed job in the other
+pipeline completes before the job that needs it tries to download the artifacts.
+
 To download artifacts between [parent-child pipelines](../pipelines/parent_child_pipelines.md),
 use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
 
@@ -3968,6 +3973,19 @@ job:
 #### `release:name`
 
 The release name. If omitted, it is populated with the value of `release: tag_name`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**: A text string.
+
+**Example of `release:name`**:
+
+```yaml
+  release_job:
+    stage: release
+    release:
+      name: 'Release $CI_COMMIT_TAG'
+```
 
 #### `release:description`
 

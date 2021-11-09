@@ -11,10 +11,6 @@ const canAddCluster = true;
 describe('ClustersEmptyStateComponent', () => {
   let wrapper;
 
-  const propsData = {
-    childComponent: false,
-  };
-
   const provideData = {
     clustersEmptyStateImage,
     emptyStateHelpText: null,
@@ -31,7 +27,6 @@ describe('ClustersEmptyStateComponent', () => {
   beforeEach(() => {
     wrapper = shallowMountExtended(ClustersEmptyState, {
       store: ClusterStore(entryData),
-      propsData,
       provide: provideData,
       stubs: { GlEmptyState },
     });
@@ -56,7 +51,6 @@ describe('ClustersEmptyStateComponent', () => {
       provideData.emptyStateHelpText = emptyStateHelpText;
       wrapper = shallowMountExtended(ClustersEmptyState, {
         store: ClusterStore(entryData),
-        propsData,
         provide: provideData,
       });
     });

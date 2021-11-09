@@ -26,6 +26,10 @@ module GraphHelper
   def should_render_dora_charts
     false
   end
+
+  def should_render_quality_summary
+    false
+  end
 end
 
 GraphHelper.prepend_mod_with('GraphHelper')

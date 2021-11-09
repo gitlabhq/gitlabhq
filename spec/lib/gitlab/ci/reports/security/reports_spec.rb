@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Reports do
   end
 
   describe "#violates_default_policy_against?" do
-    let(:high_severity_dast) { build(:ci_reports_security_finding, severity: 'high', report_type: :dast) }
+    let(:high_severity_dast) { build(:ci_reports_security_finding, severity: 'high', report_type: 'dast') }
     let(:vulnerabilities_allowed) { 0 }
     let(:severity_levels) { %w(critical high) }
     let(:vulnerability_states) { %w(newly_detected)}
@@ -106,6 +106,22 @@ RSpec.describe Gitlab::Ci::Reports::Security::Reports do
         before do
           target_reports.get_report('sast', artifact).add_finding(high_severity_dast)
         end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'with related report_types' do
+        let(:report_types) { %w(dast sast) }
+
+        subject { security_reports.violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels, vulnerability_states, report_types) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'with unrelated report_types' do
+        let(:report_types) { %w(dependency_scanning sast) }
+
+        subject { security_reports.violates_default_policy_against?(target_reports, vulnerabilities_allowed, severity_levels, vulnerability_states, report_types) }
 
         it { is_expected.to be(false) }
       end

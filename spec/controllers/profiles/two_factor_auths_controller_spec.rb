@@ -62,6 +62,32 @@ RSpec.describe Profiles::TwoFactorAuthsController do
         expect(flash[:alert]).to be_nil
       end
     end
+
+    context 'when password authentication is disabled' do
+      before do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+      end
+
+      it 'does not require the current password', :aggregate_failures do
+        go
+
+        expect(response).not_to redirect_to(redirect_path)
+        expect(flash[:alert]).to be_nil
+      end
+    end
+
+    context 'when the user is an LDAP user' do
+      before do
+        allow(user).to receive(:ldap_user?).and_return(true)
+      end
+
+      it 'does not require the current password', :aggregate_failures do
+        go
+
+        expect(response).not_to redirect_to(redirect_path)
+        expect(flash[:alert]).to be_nil
+      end
+    end
   end
 
   describe 'GET show' do

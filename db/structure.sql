@@ -10383,7 +10383,7 @@ CREATE TABLE application_settings (
     encrypted_cloud_license_auth_token_iv text,
     secret_detection_revocation_token_types_url text,
     disable_feed_token boolean DEFAULT false NOT NULL,
-    personal_access_token_prefix text,
+    personal_access_token_prefix text DEFAULT 'glpat-'::text,
     rate_limiting_response_text text,
     invisible_captcha_enabled boolean DEFAULT false NOT NULL,
     container_registry_cleanup_tags_service_max_list_size integer DEFAULT 200 NOT NULL,

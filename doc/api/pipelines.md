@@ -6,14 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pipelines API **(FREE)**
 
-## Single Pipeline Requests
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
-
-Endpoints that request information about a single pipeline return data for any pipeline.
-Before 13.3, requests for [child pipelines](../ci/pipelines/parent_child_pipelines.md) returned
-a 404 error.
-
 ## Pipelines pagination
 
 By default, `GET` requests return 20 results at a time because the API results
@@ -22,6 +14,9 @@ are paginated.
 Read more on [pagination](index.md#pagination).
 
 ## List project pipelines
+
+List pipelines in a project. Child pipelines are not included in the results,
+but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
 
 ```plaintext
 GET /projects/:id/pipelines
@@ -78,6 +73,11 @@ Example of response
 ```
 
 ## Get a single pipeline
+
+Get one pipeline from a project.
+
+You can also get a single [child pipeline](../ci/pipelines/parent_child_pipelines.md).
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36494) in GitLab 13.3.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id

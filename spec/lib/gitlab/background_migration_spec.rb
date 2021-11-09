@@ -34,7 +34,7 @@ RSpec.describe Gitlab::BackgroundMigration do
           .and_return(queue)
       end
 
-      it 'uses the job executor to steal jobs' do
+      it 'uses the coordinator to steal jobs' do
         expect(queue[0]).to receive(:delete).and_return(true)
 
         expect(coordinator).to receive(:steal).with('Foo', retry_dead_jobs: false).and_call_original
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::BackgroundMigration do
       stub_const("#{described_class.name}::Foo", migration)
     end
 
-    it 'uses the job executor to perform a background migration' do
+    it 'uses the coordinator to perform a background migration' do
       expect(coordinator).to receive(:perform).with('Foo', [10, 20]).and_call_original
       expect(migration).to receive(:perform).with(10, 20).once
 
@@ -108,25 +108,45 @@ RSpec.describe Gitlab::BackgroundMigration do
   end
 
   describe '.exists?', :redis do
-    context 'when there are enqueued jobs present' do
-      before do
-        Sidekiq::Testing.disable! do
-          MergeWorker.perform_async('Bar')
+    before do
+      Sidekiq::Testing.disable! do
+        MergeWorker.perform_async('Bar')
+        BackgroundMigrationWorker.perform_async('Foo')
+      end
+    end
+
+    it 'uses the coordinator to find if a job exists' do
+      expect(coordinator).to receive(:exists?).with('Foo', []).and_call_original
+
+      expect(described_class.exists?('Foo')).to eq(true)
+    end
+
+    it 'uses the coordinator to find a job does not exist' do
+      expect(coordinator).to receive(:exists?).with('Bar', []).and_call_original
+
+      expect(described_class.exists?('Bar')).to eq(false)
+    end
+  end
+
+  describe '.remaining', :redis do
+    before do
+      Sidekiq::Testing.disable! do
+        MergeWorker.perform_async('Foo')
+        MergeWorker.perform_in(10.minutes, 'Foo')
+
+        5.times do
           BackgroundMigrationWorker.perform_async('Foo')
         end
+        3.times do
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
+        end
       end
+    end
 
-      it 'uses the job executor to find if a job exists' do
-        expect(coordinator).to receive(:exists?).with('Foo', []).and_call_original
+    it 'uses the coordinator to find the number of remaining jobs' do
+      expect(coordinator).to receive(:remaining).and_call_original
 
-        expect(described_class.exists?('Foo')).to eq(true)
-      end
-
-      it 'uses the job executor to find a job does not exist' do
-        expect(coordinator).to receive(:exists?).with('Bar', []).and_call_original
-
-        expect(described_class.exists?('Bar')).to eq(false)
-      end
+      expect(described_class.remaining).to eq(8)
     end
   end
 end

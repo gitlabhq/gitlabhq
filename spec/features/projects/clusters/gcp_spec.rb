@@ -33,7 +33,7 @@ RSpec.describe 'Gcp Cluster', :js do
       before do
         visit project_clusters_path(project)
 
-        click_link 'Integrate with a cluster certificate'
+        click_link 'Connect with a certificate'
         click_link 'Create new cluster'
         click_link 'Google GKE'
       end
@@ -162,7 +162,7 @@ RSpec.describe 'Gcp Cluster', :js do
 
         it 'user sees creation form with the successful message' do
           expect(page).to have_content('Kubernetes cluster integration was successfully removed.')
-          expect(page).to have_link('Integrate with a cluster certificate')
+          expect(page).to have_link('Connect with a certificate')
         end
       end
     end
@@ -178,7 +178,7 @@ RSpec.describe 'Gcp Cluster', :js do
     end
 
     it 'user sees offer on cluster create page' do
-      click_link 'Integrate with a cluster certificate'
+      click_link 'Connect with a certificate'
 
       expect(page).to have_css('.gcp-signup-offer')
     end
@@ -195,7 +195,7 @@ RSpec.describe 'Gcp Cluster', :js do
       find('.gcp-signup-offer .js-close').click
       wait_for_requests
 
-      click_link 'Integrate with a cluster certificate'
+      click_link 'Connect with a certificate'
 
       expect(page).not_to have_css('.gcp-signup-offer')
     end

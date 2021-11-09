@@ -119,6 +119,10 @@ class AuditEventService
     event
   end
 
+  def stream_event_to_external_destinations(_event)
+    # Defined in EE
+  end
+
   def log_authentication_event_to_database
     return unless Gitlab::Database.read_write? && authentication_event?
 
@@ -130,6 +134,7 @@ class AuditEventService
 
   def save_or_track(event)
     event.save!
+    stream_event_to_external_destinations(event)
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(e, audit_event_type: event.class.to_s)
   end

@@ -19,7 +19,7 @@ RSpec.describe 'Clusters', :js do
     end
 
     it 'sees empty state' do
-      expect(page).to have_link('Integrate with a cluster certificate')
+      expect(page).to have_link('Connect with a certificate')
       expect(page).to have_selector('.empty-state')
     end
   end
@@ -214,7 +214,7 @@ RSpec.describe 'Clusters', :js do
     before do
       visit project_clusters_path(project)
 
-      click_link 'Integrate with a cluster certificate'
+      click_link 'Connect with a certificate'
       click_link 'Create new cluster'
     end
 

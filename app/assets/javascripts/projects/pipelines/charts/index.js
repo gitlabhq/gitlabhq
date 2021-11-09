@@ -14,6 +14,7 @@ const mountPipelineChartsApp = (el) => {
   const { projectPath } = el.dataset;
 
   const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
+  const shouldRenderQualitySummary = parseBoolean(el.dataset.shouldRenderQualitySummary);
 
   return new Vue({
     el,
@@ -25,6 +26,7 @@ const mountPipelineChartsApp = (el) => {
     provide: {
       projectPath,
       shouldRenderDoraCharts,
+      shouldRenderQualitySummary,
     },
     render: (createElement) => createElement(ProjectPipelinesCharts, {}),
   });

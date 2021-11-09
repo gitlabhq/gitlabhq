@@ -19,9 +19,9 @@ module ClustersHelper
   def js_cluster_agents_list_data(clusterable_project)
     {
       default_branch_name: clusterable_project.default_branch,
-      empty_state_image: image_path('illustrations/clusters_empty.svg'),
+      empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
       project_path: clusterable_project.full_path,
-      agent_docs_url: help_page_path('user/clusters/agent/index'),
+      multiple_clusters_docs_url: help_page_path('user/project/clusters/multiple_kubernetes_clusters'),
       install_docs_url: help_page_path('administration/clusters/kas'),
       get_started_docs_url: help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'),
       integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'),
@@ -38,7 +38,7 @@ module ClustersHelper
         default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
       },
-      clusters_empty_state_image: image_path('illustrations/clusters_empty.svg'),
+      clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
       empty_state_help_text: clusterable.empty_state_help_text,
       new_cluster_path: clusterable.new_path(tab: 'create'),
       can_add_cluster: clusterable.can_add_cluster?.to_s

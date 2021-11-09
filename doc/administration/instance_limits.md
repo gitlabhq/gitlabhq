@@ -584,20 +584,25 @@ Plan.default.actual_limits.update!(dast_profile_schedules: 50)
 
 ### Maximum size and depth of CI/CD configuration YAML files
 
-The default maximum size of a CI/CD configuration YAML file is 1 megabyte and the default depth is 100.
+The default maximum size of a CI/CD configuration YAML file is 1 megabyte and the
+default depth is 100.
 
-You can change these limits in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
-Update `max_yaml_size_bytes` with the new value in megabytes:
+You can change these limits in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
-```ruby
-ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
-```
+- To update the maximum YAML size, update `max_yaml_size_bytes` with the new value in megabytes:
 
-Update `max_yaml_depth` with the new value in megabytes:
+  ```ruby
+  ApplicationSetting.update!(max_yaml_size_bytes: 2.megabytes)
+  ```
 
-```ruby
-ApplicationSetting.update!(max_yaml_depth: 125)
-```
+  The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
+  but rather the memory allocated for the relevant objects.
+
+- To update the maximum YAML depth, update `max_yaml_depth` with the new value in megabytes:
+
+  ```ruby
+  ApplicationSetting.update!(max_yaml_depth: 125)
+  ```
 
 To disable this limitation entirely, disable the feature flag in the console:
 

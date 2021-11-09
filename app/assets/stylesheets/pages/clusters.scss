@@ -1,9 +1,13 @@
 .clusters-container {
-  .empty-state .svg-content img {
-    width: 145px;
+  .empty-state .svg-content {
+    @include gl-pb-0;
+
+    img {
+      width: 100px;
+    }
   }
 
-  .empty-state--agent {
+  .agents-empty-state {
     .text-content {
       @include gl-max-w-full;
       @include media-breakpoint-up(lg) {

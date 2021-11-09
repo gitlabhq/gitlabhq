@@ -1218,14 +1218,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         ]
       end
 
-      context 'when FF :variable_inside_variable is enabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: [project])
-        end
-
-        it "does not have errors" do
-          expect(subject.errors).to be_empty
-        end
+      it "does not have errors" do
+        expect(subject.errors).to be_empty
       end
     end
 
@@ -1238,36 +1232,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         ]
       end
 
-      context 'when FF :variable_inside_variable is disabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: false)
-        end
-
-        it "does not have errors" do
-          expect(subject.errors).to be_empty
-        end
+      it "returns an error" do
+        expect(subject.errors).to contain_exactly(
+          'rspec: circular variable reference detected: ["A", "B", "C"]')
       end
 
-      context 'when FF :variable_inside_variable is enabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: [project])
+      context 'with job:rules:[if:]' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
+
+        it "included? does not raise" do
+          expect { subject.included? }.not_to raise_error
         end
 
-        it "returns an error" do
-          expect(subject.errors).to contain_exactly(
-            'rspec: circular variable reference detected: ["A", "B", "C"]')
-        end
-
-        context 'with job:rules:[if:]' do
-          let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
-
-          it "included? does not raise" do
-            expect { subject.included? }.not_to raise_error
-          end
-
-          it "included? returns true" do
-            expect(subject.included?).to eq(true)
-          end
+        it "included? returns true" do
+          expect(subject.included?).to eq(true)
         end
       end
     end

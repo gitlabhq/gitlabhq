@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlLink } from '@gitlab/ui';
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
@@ -21,7 +22,6 @@ import {
   INSTANCE_TYPE,
   GROUP_TYPE,
   PARAM_KEY_STATUS,
-  PARAM_KEY_RUNNER_TYPE,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
 } from '~/runner/constants';
@@ -88,9 +88,8 @@ describe('GroupRunnersApp', () => {
   });
 
   it('shows the runners list', () => {
-    expect(findRunnerList().props('runners')).toEqual(
-      groupRunnersData.data.group.runners.edges.map(({ node }) => node),
-    );
+    const runners = findRunnerList().props('runners');
+    expect(runners).toEqual(groupRunnersData.data.group.runners.edges.map(({ node }) => node));
   });
 
   it('runner item links to the runner group page', async () => {
@@ -119,16 +118,15 @@ describe('GroupRunnersApp', () => {
   it('sets tokens in the filtered search', () => {
     createComponent({ mountFn: mount });
 
-    expect(findFilteredSearch().props('tokens')).toEqual([
+    const tokens = findFilteredSearch().props('tokens');
+
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0]).toEqual(
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
         options: expect.any(Array),
       }),
-      expect.objectContaining({
-        type: PARAM_KEY_RUNNER_TYPE,
-        options: expect.any(Array),
-      }),
-    ]);
+    );
   });
 
   describe('shows the active runner count', () => {
@@ -163,10 +161,8 @@ describe('GroupRunnersApp', () => {
 
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
-        filters: [
-          { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
-          { type: 'runner_type', value: { data: INSTANCE_TYPE, operator: '=' } },
-        ],
+        runnerType: INSTANCE_TYPE,
+        filters: [{ type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } }],
         sort: 'CREATED_DESC',
         pagination: { page: 1 },
       });
@@ -184,11 +180,14 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('when a filter is selected by the user', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
+        runnerType: null,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
         sort: CREATED_ASC,
       });
+
+      await nextTick();
     });
 
     it('updates the browser url', () => {

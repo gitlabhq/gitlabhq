@@ -2,10 +2,10 @@
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { TYPE_USER, TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getZeroBasedIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import { fullLabelId, fullBoardId } from '../boards_util';
+import { fullLabelId } from '../boards_util';
 import { formType } from '../constants';
 
 import createBoardMutation from '../graphql/board_create.mutation.graphql';
@@ -18,11 +18,11 @@ const boardDefaults = {
   name: '',
   labels: [],
   milestone: {},
-  iteration_id: undefined,
+  iteration: {},
   assignee: {},
   weight: null,
-  hide_backlog_list: false,
-  hide_closed_list: false,
+  hideBacklogList: false,
+  hideClosedList: false,
 };
 
 export default {
@@ -144,17 +144,16 @@ export default {
       return destroyBoardMutation;
     },
     baseMutationVariables() {
-      const { board } = this;
-      const variables = {
-        name: board.name,
-        hideBacklogList: board.hide_backlog_list,
-        hideClosedList: board.hide_closed_list,
-      };
+      const {
+        board: { name, hideBacklogList, hideClosedList, id },
+      } = this;
 
-      return board.id
+      const variables = { name, hideBacklogList, hideClosedList };
+
+      return id
         ? {
             ...variables,
-            id: fullBoardId(board.id),
+            id,
           }
         : {
             ...variables,
@@ -168,11 +167,13 @@ export default {
         assigneeId: this.board.assignee?.id
           ? convertToGraphQLId(TYPE_USER, this.board.assignee.id)
           : null,
+        // Temporarily converting to milestone ID due to https://gitlab.com/gitlab-org/gitlab/-/issues/344779
         milestoneId: this.board.milestone?.id
-          ? convertToGraphQLId(TYPE_MILESTONE, this.board.milestone.id)
+          ? convertToGraphQLId(TYPE_MILESTONE, getZeroBasedIdFromGraphQLId(this.board.milestone.id))
           : null,
-        iterationId: this.board.iteration_id
-          ? convertToGraphQLId(TYPE_ITERATION, this.board.iteration_id)
+        // Temporarily converting to iteration ID due to https://gitlab.com/gitlab-org/gitlab/-/issues/344779
+        iterationId: this.board.iteration?.id
+          ? convertToGraphQLId(TYPE_ITERATION, getZeroBasedIdFromGraphQLId(this.board.iteration.id))
           : null,
       };
     },
@@ -226,7 +227,7 @@ export default {
       await this.$apollo.mutate({
         mutation: this.deleteMutation,
         variables: {
-          id: fullBoardId(this.board.id),
+          id: this.board.id,
         },
       });
     },
@@ -262,7 +263,9 @@ export default {
       }
     },
     setIteration(iterationId) {
-      this.board.iteration_id = iterationId;
+      this.$set(this.board, 'iteration', {
+        id: iterationId,
+      });
     },
     setBoardLabels(labels) {
       this.board.labels = labels;
@@ -329,8 +332,8 @@ export default {
       </div>
 
       <board-configuration-options
-        :hide-backlog-list.sync="board.hide_backlog_list"
-        :hide-closed-list.sync="board.hide_closed_list"
+        :hide-backlog-list.sync="board.hideBacklogList"
+        :hide-closed-list.sync="board.hideClosedList"
         :readonly="readonly"
       />
 

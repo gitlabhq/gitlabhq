@@ -3,7 +3,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { MAX_REQUESTS } from '../constants';
 import * as types from './mutation_types';
 
@@ -65,7 +65,7 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
       commit(types.SET_LOADING_CLUSTERS, false);
       commit(types.SET_LOADING_NODES, false);
       createFlash({
-        message: __('Clusters|An error occurred while loading clusters'),
+        message: s__('Clusters|An error occurred while loading clusters'),
       });
 
       dispatch('reportSentryError', { error: response, tag: 'fetchClustersErrorCallback' });

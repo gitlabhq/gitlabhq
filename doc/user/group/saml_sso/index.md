@@ -538,6 +538,16 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not the identity provider.
 
+### Message: "Login to a GitLab account to link with your SAML identity"
+
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account).
+
+To resolve this problem, the user should check they are using the correct GitLab password to log in. They first need to
+[reset their password](https://gitlab.com/users/password/new) if both:
+
+- The account was provisioned by SCIM.
+- This is the first time the user has logged in the username and password.
+
 ### Stuck in a login "loop"
 
 Ensure that the **GitLab single sign-on URL** has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.

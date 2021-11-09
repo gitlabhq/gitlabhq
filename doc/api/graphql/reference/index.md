@@ -484,6 +484,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="queryvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="queryvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
@@ -10834,6 +10835,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="groupvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
@@ -13627,6 +13629,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
 | <a id="projectvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
@@ -16752,6 +16755,7 @@ Size of UI component in SAST configuration page.
 | <a id="securityreporttypeenumdast"></a>`DAST` | DAST scan report. |
 | <a id="securityreporttypeenumdependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report. |
 | <a id="securityreporttypeenumsast"></a>`SAST` | SAST scan report. |
+| <a id="securityreporttypeenumsast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenumsecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
 
 ### `SecurityScannerType`
@@ -16767,6 +16771,7 @@ The type of the security scanner.
 | <a id="securityscannertypedast"></a>`DAST` | DAST scanner. |
 | <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning scanner. |
 | <a id="securityscannertypesast"></a>`SAST` | SAST scanner. |
+| <a id="securityscannertypesast_iac"></a>`SAST_IAC` | Sast Iac scanner. |
 | <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection scanner. |
 
 ### `SentryErrorStatus`
