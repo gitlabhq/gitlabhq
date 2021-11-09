@@ -731,8 +731,8 @@ class Repository
     raw_repository.local_branches(sort_by: sort_by, pagination_params: pagination_params)
   end
 
-  def tags_sorted_by(value)
-    return raw_repository.tags(sort_by: value) if Feature.enabled?(:tags_finder_gitaly, project, default_enabled: :yaml)
+  def tags_sorted_by(value, pagination_params = nil)
+    return raw_repository.tags(sort_by: value, pagination_params: pagination_params) if Feature.enabled?(:tags_finder_gitaly, project, default_enabled: :yaml)
 
     tags_ruby_sort(value)
   end

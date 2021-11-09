@@ -77,8 +77,8 @@ module Gitlab
         consume_find_local_branches_response(response)
       end
 
-      def tags(sort_by: nil)
-        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+      def tags(sort_by: nil, pagination_params: nil)
+        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_tags_by_param(sort_by) if sort_by
 
         response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient.medium_timeout)

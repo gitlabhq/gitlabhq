@@ -1,15 +1,8 @@
 <script>
-import {
-  GlButton,
-  GlFormSelect,
-  GlToggle,
-  GlLoadingIcon,
-  GlSprintf,
-  GlFormInput,
-  GlLink,
-} from '@gitlab/ui';
+import { GlButton, GlToggle, GlLoadingIcon, GlSprintf, GlFormInput, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
 
 export default {
   i18n: {
@@ -18,12 +11,12 @@ export default {
   components: {
     ClipboardButton,
     GlButton,
-    GlFormSelect,
     GlToggle,
     GlLoadingIcon,
     GlSprintf,
     GlFormInput,
     GlLink,
+    ServiceDeskTemplateDropdown,
   },
   props: {
     isEnabled: {
@@ -49,6 +42,11 @@ export default {
       required: false,
       default: '',
     },
+    initialSelectedFileTemplateProjectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     initialOutgoingName: {
       type: String,
       required: false,
@@ -73,14 +71,13 @@ export default {
   data() {
     return {
       selectedTemplate: this.initialSelectedTemplate,
+      selectedFileTemplateProjectId: this.initialSelectedFileTemplateProjectId,
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
+      searchTerm: '',
     };
   },
   computed: {
-    templateOptions() {
-      return [''].concat(this.templates);
-    },
     hasProjectKeySupport() {
       return Boolean(this.customEmailEnabled);
     },
@@ -100,7 +97,12 @@ export default {
         selectedTemplate: this.selectedTemplate,
         outgoingName: this.outgoingName,
         projectKey: this.projectKey,
+        fileTemplateProjectId: this.selectedFileTemplateProjectId,
       });
+    },
+    templateChange({ selectedFileTemplateProjectId, selectedTemplate }) {
+      this.selectedFileTemplateProjectId = selectedFileTemplateProjectId;
+      this.selectedTemplate = selectedTemplate;
     },
   },
 };
@@ -193,12 +195,13 @@ export default {
         <label for="service-desk-template-select" class="mt-3">
           {{ __('Template to append to all Service Desk issues') }}
         </label>
-        <gl-form-select
-          id="service-desk-template-select"
-          v-model="selectedTemplate"
-          data-qa-selector="service_desk_template_dropdown"
-          :options="templateOptions"
+        <service-desk-template-dropdown
+          :selected-template="selectedTemplate"
+          :selected-file-template-project-id="selectedFileTemplateProjectId"
+          :templates="templates"
+          @change="templateChange"
         />
+
         <label for="service-desk-email-from-name" class="mt-3">
           {{ __('Email display name') }}
         </label>
@@ -210,6 +213,7 @@ export default {
           <gl-button
             variant="success"
             class="gl-mt-5"
+            data-testid="save_service_desk_settings_button"
             data-qa-selector="save_service_desk_settings_button"
             :disabled="isTemplateSaving"
             @click="onSaveTemplate"

@@ -7,7 +7,6 @@ import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
-  EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_VALID,
@@ -87,9 +86,8 @@ export default {
     },
   },
   computed: {
-    hasAppError() {
-      // Not an invalid config and with `mergedYaml` data missing
-      return this.appStatus === EDITOR_APP_STATUS_ERROR;
+    isMergedYamlAvailable() {
+      return this.ciConfigData?.mergedYaml;
     },
     isEmpty() {
       return this.appStatus === EDITOR_APP_STATUS_EMPTY;
@@ -183,7 +181,7 @@ export default {
       @click="setCurrentTab($options.tabConstants.MERGED_TAB)"
     >
       <gl-loading-icon v-if="isLoading" size="lg" class="gl-m-3" />
-      <gl-alert v-else-if="hasAppError" variant="danger" :dismissible="false">
+      <gl-alert v-else-if="!isMergedYamlAvailable" variant="danger" :dismissible="false">
         {{ $options.errorTexts.loadMergedYaml }}
       </gl-alert>
       <ci-config-merged-preview v-else :ci-config-data="ciConfigData" v-on="$listeners" />

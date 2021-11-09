@@ -5,10 +5,16 @@ export const CI_CONFIG_STATUS_VALID = 'VALID';
 // Values for EDITOR_APP_STATUS_* are frontend specifics and
 // represent the global state of the pipeline editor app.
 export const EDITOR_APP_STATUS_EMPTY = 'EMPTY';
-export const EDITOR_APP_STATUS_ERROR = 'ERROR';
 export const EDITOR_APP_STATUS_INVALID = CI_CONFIG_STATUS_INVALID;
 export const EDITOR_APP_STATUS_LOADING = 'LOADING';
 export const EDITOR_APP_STATUS_VALID = CI_CONFIG_STATUS_VALID;
+
+export const EDITOR_APP_VALID_STATUSES = [
+  EDITOR_APP_STATUS_EMPTY,
+  EDITOR_APP_STATUS_INVALID,
+  EDITOR_APP_STATUS_LOADING,
+  EDITOR_APP_STATUS_VALID,
+];
 
 export const COMMIT_FAILURE = 'COMMIT_FAILURE';
 export const COMMIT_SUCCESS = 'COMMIT_SUCCESS';

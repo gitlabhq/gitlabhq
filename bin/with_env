@@ -10,6 +10,7 @@ shift
 
 # Use set -a to export all variables defined in env_file.
 set -a
+# shellcheck disable=SC1090
 . "${env_file}"
 set +a
 

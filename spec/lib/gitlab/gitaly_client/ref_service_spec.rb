@@ -190,6 +190,22 @@ RSpec.describe Gitlab::GitalyClient::RefService do
         client.tags(sort_by: 'name_asc')
       end
     end
+
+    context 'with pagination option' do
+      it 'sends a correct find_all_tags message' do
+        expected_pagination = Gitaly::PaginationParameter.new(
+          limit: 5,
+          page_token: 'refs/tags/v1.0.0'
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:find_all_tags)
+          .with(gitaly_request_with_params(pagination_params: expected_pagination), kind_of(Hash))
+          .and_return([])
+
+        client.tags(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' })
+      end
+    end
   end
 
   describe '#branch_names_contains_sha' do

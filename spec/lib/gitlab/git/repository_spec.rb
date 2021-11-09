@@ -125,7 +125,22 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
       it 'gets tags from GitalyClient' do
         expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
-          expect(service).to receive(:tags).with(sort_by: 'name_asc')
+          expect(service).to receive(:tags).with(sort_by: 'name_asc', pagination_params: nil)
+        end
+
+        subject
+      end
+    end
+
+    context 'with pagination option' do
+      subject { repository.tags(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' }) }
+
+      it 'gets tags from GitalyClient' do
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service).to receive(:tags).with(
+            sort_by: nil,
+            pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' }
+          )
         end
 
         subject

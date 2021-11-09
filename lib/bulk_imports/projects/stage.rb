@@ -19,6 +19,10 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 2
           },
+          milestones: {
+            pipeline: BulkImports::Common::Pipelines::MilestonesPipeline,
+            stage: 2
+          },
           issues: {
             pipeline: BulkImports::Projects::Pipelines::IssuesPipeline,
             stage: 3

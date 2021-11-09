@@ -66,7 +66,7 @@ RSpec.describe Repository do
     it { is_expected.not_to include('v1.0.0') }
   end
 
-  describe 'tags_sorted_by' do
+  describe '#tags_sorted_by' do
     let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
     let(:feature_flag) { true }
 
@@ -87,7 +87,9 @@ RSpec.describe Repository do
     end
 
     context 'name_asc' do
-      subject { repository.tags_sorted_by('name_asc').map(&:name) & tags_to_compare }
+      subject { repository.tags_sorted_by('name_asc', pagination_params).map(&:name) & tags_to_compare }
+
+      let(:pagination_params) { nil }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
 
@@ -95,6 +97,44 @@ RSpec.describe Repository do
         let(:feature_flag) { false }
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
+      end
+
+      context 'with pagination' do
+        context 'with limit' do
+          let(:pagination_params) { { limit: 1 } }
+
+          it { is_expected.to eq(['v1.0.0']) }
+        end
+
+        context 'with page token and limit' do
+          let(:pagination_params) { { page_token: 'refs/tags/v1.0.0', limit: 1 } }
+
+          it { is_expected.to eq(['v1.1.0']) }
+        end
+
+        context 'with page token only' do
+          let(:pagination_params) { { page_token: 'refs/tags/v1.0.0' } }
+
+          it 'raises an ArgumentError' do
+            expect { subject }.to raise_error(ArgumentError)
+          end
+        end
+
+        context 'with negative limit' do
+          let(:pagination_params) { { limit: -1 } }
+
+          it 'returns all tags' do
+            is_expected.to eq(['v1.0.0', 'v1.1.0'])
+          end
+        end
+
+        context 'with unknown token' do
+          let(:pagination_params) { { page_token: 'unknown' } }
+
+          it 'raises an ArgumentError' do
+            expect { subject }.to raise_error(ArgumentError)
+          end
+        end
       end
     end
 

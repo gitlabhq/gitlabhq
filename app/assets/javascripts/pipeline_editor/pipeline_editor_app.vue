@@ -12,7 +12,7 @@ import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue
 import {
   COMMIT_SHA_POLL_INTERVAL,
   EDITOR_APP_STATUS_EMPTY,
-  EDITOR_APP_STATUS_ERROR,
+  EDITOR_APP_VALID_STATUSES,
   EDITOR_APP_STATUS_LOADING,
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
@@ -141,10 +141,10 @@ export default {
         return { ...ciConfig, stages };
       },
       result({ data }) {
-        this.setAppStatus(data?.ciConfig?.status || EDITOR_APP_STATUS_ERROR);
+        this.setAppStatus(data?.ciConfig?.status);
       },
-      error() {
-        this.reportFailure(LOAD_FAILURE_UNKNOWN);
+      error(err) {
+        this.reportFailure(LOAD_FAILURE_UNKNOWN, [String(err)]);
       },
       watchLoading(isLoading) {
         if (isLoading) {
@@ -242,8 +242,6 @@ export default {
       await this.$apollo.queries.initialCiFileContent.refetch();
     },
     reportFailure(type, reasons = []) {
-      this.setAppStatus(EDITOR_APP_STATUS_ERROR);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showFailure = true;
       this.failureType = type;
@@ -258,7 +256,9 @@ export default {
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
-      this.$apollo.mutate({ mutation: updateAppStatus, variables: { appStatus } });
+      if (EDITOR_APP_VALID_STATUSES.includes(appStatus)) {
+        this.$apollo.mutate({ mutation: updateAppStatus, variables: { appStatus } });
+      }
     },
     setNewEmptyCiConfigFile() {
       this.isNewCiConfigFile = true;

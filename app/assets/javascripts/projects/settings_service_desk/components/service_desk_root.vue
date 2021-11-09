@@ -31,6 +31,9 @@ export default {
     selectedTemplate: {
       default: '',
     },
+    selectedFileTemplateProjectId: {
+      default: null,
+    },
     outgoingName: {
       default: '',
     },
@@ -80,7 +83,7 @@ export default {
         });
     },
 
-    onSaveTemplate({ selectedTemplate, outgoingName, projectKey }) {
+    onSaveTemplate({ selectedTemplate, fileTemplateProjectId, outgoingName, projectKey }) {
       this.isTemplateSaving = true;
 
       const body = {
@@ -88,6 +91,7 @@ export default {
         outgoing_name: outgoingName,
         project_key: projectKey,
         service_desk_enabled: this.isEnabled,
+        file_template_project_id: fileTemplateProjectId,
       };
 
       return axios
@@ -132,6 +136,7 @@ export default {
       :custom-email="updatedCustomEmail"
       :custom-email-enabled="customEmailEnabled"
       :initial-selected-template="selectedTemplate"
+      :initial-selected-file-template-project-id="selectedFileTemplateProjectId"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"
       :templates="templates"

@@ -88,4 +88,22 @@ RSpec.describe BulkUpdateIntegrationService do
       described_class.new(group_integration, [integration]).execute
     end.to change { integration.reload.url }.to(group_integration.url)
   end
+
+  context 'with different foreign key of data_fields' do
+    let(:integration) { create(:zentao_integration, project: create(:project, group: group)) }
+    let(:group_integration) do
+      Integrations::Zentao.create!(
+        group: group,
+        url: 'https://group.zentao.net',
+        api_token: 'GROUP_TOKEN',
+        zentao_product_xid: '1'
+      )
+    end
+
+    it 'works with batch as an array of ActiveRecord objects' do
+      expect do
+        described_class.new(group_integration, [integration]).execute
+      end.to change { integration.reload.url }.to(group_integration.url)
+    end
+  end
 end

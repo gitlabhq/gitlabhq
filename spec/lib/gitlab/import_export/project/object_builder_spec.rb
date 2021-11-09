@@ -123,6 +123,24 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
       expect(milestone.persisted?).to be true
     end
+
+    context 'with clashing iid' do
+      it 'creates milestone and claims iid for the new milestone' do
+        clashing_iid = 1
+        create(:milestone, iid: clashing_iid, project: project)
+
+        milestone = described_class.build(Milestone,
+                                          'iid' => clashing_iid,
+                                          'title' => 'milestone',
+                                          'project' => project,
+                                          'group' => nil,
+                                          'group_id' => nil)
+
+        expect(milestone.persisted?).to be true
+        expect(Milestone.count).to eq(2)
+        expect(milestone.iid).to eq(clashing_iid)
+      end
+    end
   end
 
   context 'merge_request' do

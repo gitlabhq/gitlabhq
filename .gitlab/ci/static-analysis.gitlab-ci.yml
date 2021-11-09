@@ -107,3 +107,15 @@ feature-flags-usage:
     when: always
     paths:
       - tmp/feature_flags/
+
+shellcheck:
+  extends:
+    - .default-retry
+    - .shell:rules
+  stage: lint
+  needs: []
+  image:
+    name: koalaman/shellcheck-alpine
+    entrypoint: [""]
+  script:
+    - tooling/bin/shellcheck

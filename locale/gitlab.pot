@@ -19654,13 +19654,7 @@ msgstr ""
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
-msgid "JiraService|Failed to load Jira issue statuses. View the issue in Jira, or reload the page."
-msgstr ""
-
 msgid "JiraService|Failed to load Jira issue. View the issue in Jira, or reload the page."
-msgstr ""
-
-msgid "JiraService|Failed to update Jira issue status. View the issue in Jira, or reload the page."
 msgstr ""
 
 msgid "JiraService|Fetch issue types for this Jira project"
@@ -19709,9 +19703,6 @@ msgid "JiraService|Leave blank to use your current password or API token."
 msgstr ""
 
 msgid "JiraService|Move to Done"
-msgstr ""
-
-msgid "JiraService|No available statuses"
 msgstr ""
 
 msgid "JiraService|Open Jira"

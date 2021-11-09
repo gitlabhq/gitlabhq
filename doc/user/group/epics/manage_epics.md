@@ -135,6 +135,25 @@ link in the issue sidebar.
 
 ![containing epic](img/containing_epic.png)
 
+## View epics list
+
+In a group, the left sidebar displays the total count of open epics.
+This number indicates all epics associated with the group and its subgroups, including epics you
+might not have permission to view.
+
+To view epics in a group:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Epics**.
+
+### Cached epic count
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299540) in GitLab 13.11 [with a flag](../../../administration/feature_flags.md) named `cached_sidebar_open_epics_count`. Enabled by default.
+> - Enabled on self-managed and on GitLab.com in GitLab 14.0. [Feature flag `cached_sidebar_open_epics_count`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed.
+
+The total count of open epics displayed in the sidebar is cached if higher
+than 1000. The cached value is rounded to thousands or millions and updated every 24 hours.
+
 ## Search for an epic from epics list page
 
 > - Introduced in GitLab 10.5.
@@ -386,11 +405,3 @@ To remove a child epic from a parent epic:
 
 1. Select the <kbd>x</kbd> button in the parent epic's list of epics.
 1. Select **Remove** in the **Remove epic** warning message.
-
-## Cached epic count
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299540) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) in GitLab 14.0.
-
-In a group, the sidebar displays the total count of open epics and this value is cached if higher
-than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.

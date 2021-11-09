@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $(dirname $0)/.. || exit 1
+cd "$(dirname "$0")/.." || exit 1
 app_root=$(pwd)
 
 mail_room_pidfile="$app_root/tmp/pids/mail_room.pid"
@@ -9,8 +9,7 @@ mail_room_config="$app_root/config/mail_room.yml"
 
 get_mail_room_pid()
 {
-  local pid
-  pid=$(cat $mail_room_pidfile)
+  pid=$(cat "$mail_room_pidfile")
   if [ -z "$pid" ] ; then
     echo "Could not find a PID in $mail_room_pidfile"
     exit 1
@@ -20,13 +19,13 @@ get_mail_room_pid()
 
 start()
 {
-  bin/daemon_with_pidfile $mail_room_pidfile bundle exec mail_room --log-exit-as json -q -c $mail_room_config >> $mail_room_logfile 2>&1
+  bin/daemon_with_pidfile "$mail_room_pidfile" bundle exec mail_room --log-exit-as json -q -c "$mail_room_config" >> "$mail_room_logfile" 2>&1
 }
 
 stop()
 {
   get_mail_room_pid
-  kill -TERM $mail_room_pid
+  kill -TERM "$mail_room_pid"
 }
 
 restart()

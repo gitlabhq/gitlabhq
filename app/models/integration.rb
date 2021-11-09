@@ -373,7 +373,7 @@ class Integration < ApplicationRecord
   end
 
   def to_data_fields_hash
-    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id')
+    data_fields.as_json(only: data_fields.class.column_names).except('id', 'service_id', 'integration_id')
   end
 
   def event_channel_names

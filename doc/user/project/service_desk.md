@@ -137,15 +137,23 @@ You can use these placeholders to be automatically replaced in each email:
 
 #### New Service Desk issues
 
-You can select one [issue description template](description_templates.md#create-an-issue-template)
+You can select one [description template](description_templates.md#create-an-issue-template)
 **per project** to be appended to every new Service Desk issue's description.
-Issue description templates should reside in your repository's `.gitlab/issue_templates/` directory.
 
-To use a custom issue template with Service Desk, in your project:
+You can set description templates at various levels:
 
-1. [Create a description template](description_templates.md#create-an-issue-template)
-1. Go to **Settings > General > Service Desk**.
-1. From the dropdown **Template to append to all Service Desk issues**, select your template.
+- The entire [instance](description_templates.md#set-instance-level-description-templates).
+- A specific [group or subgroup](description_templates.md#set-group-level-description-templates).
+- A specific [project](description_templates.md#set-a-default-template-for-merge-requests-and-issues).
+
+The templates are inherited. For example, in a project, you can also access templates set for the instance or the project’s parent groups.
+
+To use a custom description template with Service Desk:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. [Create a description template](description_templates.md#create-an-issue-template).
+1. On the left sidebar, select **Settings > General > Service Desk**.
+1. From the dropdown **Template to append to all Service Desk issues**, search or select your template.
 
 ### Using a custom email display name
 
@@ -156,7 +164,8 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. In a project, go to **Settings > General > Service Desk**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General > Service Desk**.
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 

@@ -1,4 +1,4 @@
-import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
 export const mockProjectNamespace = 'user1';
@@ -391,6 +391,14 @@ export const mockLintResponse = {
       except: { refs: ['main@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
     },
   ],
+};
+
+export const mockLintResponseWithoutMerged = {
+  valid: false,
+  status: CI_CONFIG_STATUS_INVALID,
+  errors: ['error'],
+  warnings: [],
+  jobs: [],
 };
 
 export const mockJobs = [

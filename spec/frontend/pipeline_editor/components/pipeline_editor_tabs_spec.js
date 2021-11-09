@@ -9,7 +9,6 @@ import EditorTab from '~/pipeline_editor/components/ui/editor_tab.vue';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
-  EDITOR_APP_STATUS_ERROR,
   EDITOR_APP_STATUS_LOADING,
   EDITOR_APP_STATUS_INVALID,
   EDITOR_APP_STATUS_VALID,
@@ -18,7 +17,7 @@ import {
   TABS_INDEX,
 } from '~/pipeline_editor/constants';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
-import { mockLintResponse, mockCiYml } from '../mock_data';
+import { mockLintResponse, mockLintResponseWithoutMerged, mockCiYml } from '../mock_data';
 
 describe('Pipeline editor tabs component', () => {
   let wrapper;
@@ -143,7 +142,7 @@ describe('Pipeline editor tabs component', () => {
 
     describe('when there is a fetch error', () => {
       beforeEach(() => {
-        createComponent({ appStatus: EDITOR_APP_STATUS_ERROR });
+        createComponent({ props: { ciConfigData: mockLintResponseWithoutMerged } });
       });
 
       it('show an error message', () => {

@@ -178,6 +178,26 @@ RSpec.describe ::Routing::PseudonymizationHelper do
 
       it_behaves_like 'masked url'
     end
+
+    context 'when query string has keys with the same names as path params' do
+      let(:masked_url) { "http://localhost/dashboard/issues?action=foobar&scope=all&state=opened" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'dashboard',
+                action: 'issues'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: 'action=foobar&scope=all&state=opened')
+      end
+
+      before do
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
   end
 
   describe 'when url has no params to mask' do

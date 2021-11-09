@@ -373,6 +373,10 @@
   - ".dockerignore"
   - "qa/**/*"
 
+.code-shell-patterns: &code-shell-patterns
+  - "bin/**/*"
+  - "tooling/**/*"
+
 # .code-backstage-qa-patterns + .workhorse-patterns
 .setup-test-env-patterns: &setup-test-env-patterns
   - "{package.json,yarn.lock}"
@@ -1774,6 +1778,13 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - changes: *code-backstage-qa-patterns
     - changes: *startup-css-patterns
+
+###############
+# Shell rules #
+###############
+.shell:rules:
+  rules:
+    - changes: *code-shell-patterns
 
 #######################
 # Test metadata rules #

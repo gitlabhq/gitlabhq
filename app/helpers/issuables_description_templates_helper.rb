@@ -32,14 +32,17 @@ module IssuablesDescriptionTemplatesHelper
     @template_types[project.id][issuable_type] ||= TemplateFinder.all_template_names(project, issuable_type.pluralize)
   end
 
-  # Overriden on EE::IssuablesDescriptionTemplatesHelper to include inherited templates names
-  def issuable_templates_names(issuable, include_inherited_templates = false)
+  def selected_template(issuable)
     all_templates = issuable_templates(ref_project, issuable.to_ability_name)
-    all_templates.values.flatten.map { |tpl| tpl[:name] if tpl[:project_id] == ref_project.id }.compact.uniq
+
+    # Only local templates will be listed if licenses for inherited templates are not present
+    all_templates = all_templates.values.flatten.map { |tpl| tpl[:name] }.compact.uniq
+
+    all_templates.find { |tmpl_name| tmpl_name == params[:issuable_template] }
   end
 
-  def selected_template(issuable)
-    params[:issuable_template] if issuable_templates_names(issuable, true).any? { |tmpl_name| tmpl_name == params[:issuable_template] }
+  def available_service_desk_templates_for(project)
+    issuable_templates(project, 'issue').flatten.to_json
   end
 
   def template_names_path(parent, issuable)

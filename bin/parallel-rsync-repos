@@ -32,20 +32,20 @@ if [ -z "$RSYNC" ] ; then
   RSYNC=rsync
 fi
 
-if ! cd $SRC ; then
+if ! cd "$SRC" ; then
   echo "cd $SRC failed"
   exit 1
 fi
 
 rsyncjob() {
-  relative_dir="./${1#$SRC}"
+	relative_dir="./${1#"$SRC"}"
 
   if ! $RSYNC --delete --relative -a "$relative_dir" "$DEST" ; then
     echo "rsync $1 failed"
     return 1
   fi
 
-  echo "$1" >> $LOGFILE
+  echo "$1" >> "$LOGFILE"
 }
 
 export LOGFILE SRC DEST RSYNC

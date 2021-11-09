@@ -21,6 +21,7 @@ describe('ServiceDeskRoot', () => {
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
     selectedTemplate: 'Bug',
+    selectedFileTemplateProjectId: 42,
     templates: ['Bug', 'Documentation'],
   };
 
@@ -52,6 +53,7 @@ describe('ServiceDeskRoot', () => {
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
         initialSelectedTemplate: provideData.selectedTemplate,
+        initialSelectedFileTemplateProjectId: provideData.selectedFileTemplateProjectId,
         isEnabled: provideData.initialIsEnabled,
         isTemplateSaving: false,
         templates: provideData.templates,

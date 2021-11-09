@@ -122,3 +122,5 @@ class HelpController < ApplicationController
     end
   end
 end
+
+::HelpController.prepend_mod

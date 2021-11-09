@@ -1,0 +1,22 @@
+#!/bin/sh
+
+root="$(cd "$(dirname "$0")/../.." || exit ; pwd -P)"
+
+if [ $# -ne 0 ]; then
+	shellcheck --exclude=SC1071 --external-sources "$@"
+else
+	find \
+		"${root}/bin" \
+		"${root}/tooling" \
+		-type f \
+		-not -path "*.swp" \
+		-not -path "*.rb" \
+		-not -path "*.js" \
+		-not -path "*.md" \
+		-not -path "*.haml" \
+		-not -path "*/Gemfile*" \
+		-not -path '*/.bundle*' \
+		-not -path '*/Makefile*' \
+		-print0 \
+	| xargs -0 shellcheck --exclude=SC1071 --external-sources --
+fi
