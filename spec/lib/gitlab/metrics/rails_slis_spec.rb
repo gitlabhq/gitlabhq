@@ -10,10 +10,11 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
 
     allow(Gitlab::RequestEndpoints).to receive(:all_api_endpoints).and_return([api_route])
     allow(Gitlab::RequestEndpoints).to receive(:all_controller_actions).and_return([[ProjectsController, 'show']])
+    allow(Gitlab::Graphql::KnownOperations).to receive(:default).and_return(Gitlab::Graphql::KnownOperations.new(%w(foo bar)))
   end
 
   describe '.initialize_request_slis_if_needed!' do
-    it "initializes the SLI for all possible endpoints if they weren't" do
+    it "initializes the SLI for all possible endpoints if they weren't", :aggregate_failures do
       possible_labels = [
         {
           endpoint_id: "GET /api/:version/version",
@@ -27,14 +28,25 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
         }
       ]
 
+      possible_graphql_labels = ['graphql:foo', 'graphql:bar', 'graphql:unknown', 'graphql:anonymous'].map do |endpoint_id|
+        {
+          endpoint_id: endpoint_id,
+          feature_category: nil,
+          query_urgency: ::Gitlab::EndpointAttributes::DEFAULT_URGENCY.name
+        }
+      end
+
       expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:rails_request_apdex) { false }
+      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:graphql_query_apdex) { false }
       expect(Gitlab::Metrics::Sli).to receive(:initialize_sli).with(:rails_request_apdex, array_including(*possible_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli).to receive(:initialize_sli).with(:graphql_query_apdex, array_including(*possible_graphql_labels)).and_call_original
 
       described_class.initialize_request_slis_if_needed!
     end
 
-    it 'does not initialize the SLI if they were initialized already' do
+    it 'does not initialize the SLI if they were initialized already', :aggregate_failures do
       expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:rails_request_apdex) { true }
+      expect(Gitlab::Metrics::Sli).to receive(:initialized?).with(:graphql_query_apdex) { true }
       expect(Gitlab::Metrics::Sli).not_to receive(:initialize_sli)
 
       described_class.initialize_request_slis_if_needed!
@@ -46,6 +58,14 @@ RSpec.describe Gitlab::Metrics::RailsSlis do
       described_class.initialize_request_slis_if_needed!
 
       expect(described_class.request_apdex).to be_initialized
+    end
+  end
+
+  describe '.graphql_query_apdex' do
+    it 'returns the initialized request apdex SLI object' do
+      described_class.initialize_request_slis_if_needed!
+
+      expect(described_class.graphql_query_apdex).to be_initialized
     end
   end
 end

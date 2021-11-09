@@ -111,6 +111,12 @@ FactoryBot.define do
     end
   end
 
+  factory :shimo_integration, class: 'Integrations::Shimo' do
+    project
+    active { true }
+    external_wiki_url { 'https://shimo.example.com/desktop' }
+  end
+
   factory :confluence_integration, class: 'Integrations::Confluence' do
     project
     active { true }

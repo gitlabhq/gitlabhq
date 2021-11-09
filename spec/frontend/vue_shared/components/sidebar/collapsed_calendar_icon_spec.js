@@ -1,36 +1,68 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import collapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
+import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-describe('collapsedCalendarIcon', () => {
-  let vm;
-  beforeEach(() => {
-    const CollapsedCalendarIcon = Vue.extend(collapsedCalendarIcon);
-    vm = mountComponent(CollapsedCalendarIcon, {
-      containerClass: 'test-class',
-      text: 'text',
-      showIcon: false,
+import CollapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
+
+describe('CollapsedCalendarIcon', () => {
+  let wrapper;
+
+  const defaultProps = {
+    containerClass: 'test-class',
+    text: 'text',
+    tooltipText: 'tooltip text',
+    showIcon: false,
+  };
+
+  const createComponent = ({ props = {} } = {}) => {
+    wrapper = shallowMount(CollapsedCalendarIcon, {
+      propsData: { ...defaultProps, ...props },
+      directives: {
+        GlTooltip: createMockDirective(),
+      },
     });
+  };
+
+  beforeEach(() => {
+    createComponent();
   });
 
-  it('should add class to container', () => {
-    expect(vm.$el.classList.contains('test-class')).toEqual(true);
+  afterEach(() => {
+    wrapper.destroy();
   });
 
-  it('should hide calendar icon if showIcon', () => {
-    expect(vm.$el.querySelector('[data-testid="calendar-icon"]')).toBeNull();
+  const findGlIcon = () => wrapper.findComponent(GlIcon);
+  const getTooltip = () => getBinding(wrapper.element, 'gl-tooltip');
+
+  it('adds class to container', () => {
+    expect(wrapper.classes()).toContain(defaultProps.containerClass);
   });
 
-  it('should render text', () => {
-    expect(vm.$el.querySelector('span').innerText.trim()).toEqual('text');
+  it('does not render calendar icon when showIcon is false', () => {
+    expect(findGlIcon().exists()).toBe(false);
   });
 
-  it('should emit click event when container is clicked', () => {
-    const click = jest.fn();
-    vm.$on('click', click);
+  it('renders calendar icon when showIcon is true', () => {
+    createComponent({
+      props: { showIcon: true },
+    });
 
-    vm.$el.click();
+    expect(findGlIcon().exists()).toBe(true);
+  });
 
-    expect(click).toHaveBeenCalled();
+  it('renders text', () => {
+    expect(wrapper.text()).toBe(defaultProps.text);
+  });
+
+  it('renders tooltipText as tooltip', () => {
+    expect(getTooltip().value).toBe(defaultProps.tooltipText);
+  });
+
+  it('emits click event when container is clicked', async () => {
+    wrapper.trigger('click');
+
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('click')[0]).toBeDefined();
   });
 });

@@ -189,6 +189,7 @@ class Project < ApplicationRecord
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
+  has_one :shimo_integration, class_name: 'Integrations::Shimo'
   has_one :slack_integration, class_name: 'Integrations::Slack'
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
   has_one :teamcity_integration, class_name: 'Integrations::Teamcity'
@@ -1453,7 +1454,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    []
+    [:shimo]
   end
 
   def find_or_initialize_integration(name)

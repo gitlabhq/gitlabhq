@@ -25,10 +25,11 @@ To create an epic in the group you're in:
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
 1. Enter a title.
-1. Optional. Enter a description.
-1. Optional. To make the epic confidential, select the [Confidentiality checkbox](#make-an-epic-confidential).
-1. Optional. Choose labels.
-1. Optional. Select a start and due date, or [inherit](#start-and-due-date-inheritance) them.
+1. Complete the fields.
+   - Enter a description.
+   - To [make the epic confidential](#make-an-epic-confidential), select the checkbox under **Confidentiality**.
+   - Choose labels.
+   - Select a start and due date, or [inherit](#start-and-due-date-inheritance) them.
 1. Select **Create epic**.
 
 The newly created epic opens.
@@ -69,13 +70,13 @@ After you create an epic, you can edit the following details:
 
 To edit an epic's title or description:
 
-1. Select the **Edit title and description** **{pencil}** button.
+1. Select **Edit title and description** **{pencil}**.
 1. Make your changes.
 1. Select **Save changes**.
 
 To edit an epic's start date, due date, or labels:
 
-1. Select **Edit** next to each section in the epic sidebar.
+1. Next to each section in the right sidebar, select **Edit**.
 1. Select the dates or labels for your epic.
 
 ## Bulk edit epics
@@ -89,18 +90,21 @@ When bulk editing epics in a group, you can edit their labels.
 To update multiple epics at the same time:
 
 1. In a group, go to **Epics > List**.
-1. Click **Edit epics**. A sidebar on the right-hand side of your screen appears with editable fields.
-1. Check the checkboxes next to each epic you want to edit.
+1. Select **Edit epics**. A sidebar on the right appears with editable fields.
+1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Click **Update all**.
+1. Select **Update all**.
 
 ## Delete an epic
 
 NOTE:
-To delete an epic, you need to be an [Owner](../../permissions.md#group-members-permissions) of a group/subgroup.
+To delete an epic, you must be an [Owner](../../permissions.md#group-members-permissions) of a group
+or subgroup.
 
-When editing the description of an epic, select the **Delete** button to delete the epic.
-A modal appears to confirm your action.
+To delete the epic:
+
+1. Select **Edit title and description** **{pencil}**.
+1. Select **Delete**. A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
 
@@ -112,26 +116,26 @@ If you delete an epic, all its child epics and their descendants are deleted as 
 Whenever you decide that there is no longer need for that epic,
 close the epic by:
 
-- Selecting the **Close epic** button.
+- Selecting **Close epic**.
 
   ![close epic - button](img/button_close_epic.png)
 
-- Using a [quick action](../../project/quick_actions.md).
+- Using the `/close` [quick action](../../project/quick_actions.md).
 
 ## Reopen a closed epic
 
 You can reopen an epic that was closed by:
 
-- Clicking the **Reopen epic** button.
+- Selecting **Reopen epic**.
 
   ![reopen epic - button](img/button_reopen_epic.png)
 
-- Using a [quick action](../../project/quick_actions.md).
+- Using the `/reopen` [quick action](../../project/quick_actions.md).
 
 ## Go to an epic from an issue
 
-If an issue belongs to an epic, you can navigate to the containing epic with the
-link in the issue sidebar.
+If an issue belongs to an epic, you can go to the parent epic with the
+link in the right sidebar.
 
 ![containing epic](img/containing_epic.png)
 
@@ -156,13 +160,12 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 
 ## Search for an epic from epics list page
 
-> - Introduced in GitLab 10.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) from GitLab Ultimate to GitLab Premium in 12.8.
 > - Searching by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
 > - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
 
-You can search for an epic from the list of epics using filtered search bar (similar to
-that of issues and merge requests) based on following parameters:
+You can search for an epic from the list of epics using filtered search bar based on following
+parameters:
 
 - Title or description
 - Author name / username
@@ -171,10 +174,13 @@ that of issues and merge requests) based on following parameters:
 
 ![epics search](img/epics_search_v13_11.png)
 
-To search, go to the list of epics and select the field **Search or filter results**.
-It displays a dropdown menu, from which you can add an author. You can also enter plain
-text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
-keyboard to filter the list.
+To search:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Epics**.
+1. Select the field **Search or filter results**.
+1. From the dropdown menu, select the scope or enter plain text to search by epic title or description.
+1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
 
 You can also sort epics list by:
 
@@ -198,7 +204,7 @@ You can reverse the default order and interact with the activity feed sorted by 
 at the top. Your preference is saved via local storage and automatically applied to every epic and issue
 you view.
 
-To change the activity sort order, click the **Oldest first** dropdown menu and select either oldest
+To change the activity sort order, select the **Oldest first** dropdown menu and select either oldest
 or newest items to be shown first.
 
 ![Issue activity sort order dropdown button](img/epic_activity_sort_order_v13_2.png)
@@ -219,8 +225,8 @@ to learn how to create a confidential merge request.
 
 To make an epic confidential:
 
-- **When creating an epic:** select the checkbox **Make this epic confidential**.
-- **In an existing epic:** in the epic's sidebar, select **Edit** next to **Confidentiality** then
+- **When creating an epic:** select the checkbox under **Confidentiality**.
+- **In an existing epic:** on the right sidebar, select **Edit** next to **Confidentiality**, and then
   select **Turn on**.
 
 ## Manage issues assigned to an epic
@@ -252,7 +258,7 @@ current parent.
 
 To add a new issue to an epic:
 
-1. On the epic's page, under **Epics and Issues**, select the **Add** dropdown button.
+1. On the epic's page, under **Epics and Issues**, select **Add**.
 1. Select **Add an existing issue**.
 1. Identify the issue to be added, using either of the following methods:
    - Paste the link of the issue.
@@ -271,7 +277,7 @@ while dividing work into smaller parts.
 
 To create an issue from an epic:
 
-1. On the epic's page, under **Epics and Issues**, select the **Add** dropdown button.
+1. On the epic's page, under **Epics and Issues**, select **Add**.
 1. Select **Add a new issue**.
 1. Under **Title**, enter the title for the new issue.
 1. From the **Project** dropdown, select the project in which the issue should be created.
@@ -284,7 +290,7 @@ After you remove an issue from an epic, the issue is no longer associated with t
 
 To remove an issue from an epic:
 
-1. Select the **Remove** (**{close}**) button next to the issue you want to remove.
+1. Next to the issue you want to remove, select **Remove** (**{close}**).
    The **Remove issue** warning appears.
 1. Select **Remove**.
 
@@ -350,8 +356,6 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 ## Multi-level child epics **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8333) in GitLab 11.7.
-
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Epics and Issues** tab.
 
@@ -363,7 +367,7 @@ Epics can contain multiple nested child epics, up to a total of seven levels dee
 
 To add a child epic to an epic:
 
-1. Select the **Add** dropdown button.
+1. Select **Add**.
 1. Select **Add a new epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
@@ -403,5 +407,6 @@ To reorder child epics assigned to an epic:
 
 To remove a child epic from a parent epic:
 
-1. Select the <kbd>x</kbd> button in the parent epic's list of epics.
-1. Select **Remove** in the **Remove epic** warning message.
+1. Select **Remove** (**{close}**) in the parent epic's list of epics.
+   The **Remove epic** warning appears.
+1. Select **Remove**.

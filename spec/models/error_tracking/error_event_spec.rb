@@ -11,7 +11,10 @@ RSpec.describe ErrorTracking::ErrorEvent, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { is_expected.to validate_presence_of(:occurred_at) }
+    it { is_expected.to validate_length_of(:level).is_at_most(255) }
+    it { is_expected.to validate_length_of(:environment).is_at_most(255) }
   end
 
   describe '#stacktrace' do

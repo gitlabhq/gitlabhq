@@ -28,6 +28,8 @@ JS_CONSOLE_FILTER = Regexp.union([
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 
+SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 255 : 99
+
 # Run Workhorse on the given host and port, proxying to Puma on a UNIX socket,
 # for a closer-to-production experience
 Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
@@ -113,7 +115,7 @@ Capybara.enable_aria_label = true
 Capybara::Screenshot.append_timestamp = false
 
 Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-  example.full_description.downcase.parameterize(separator: "_")[0..99]
+  example.full_description.downcase.parameterize(separator: "_")[0..SCREENSHOT_FILENAME_LENGTH]
 end
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run

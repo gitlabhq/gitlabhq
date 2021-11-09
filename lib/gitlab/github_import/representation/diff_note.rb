@@ -7,14 +7,14 @@ module Gitlab
         include ToHash
         include ExposeAttribute
 
-        attr_reader :attributes
-
-        expose_attribute :noteable_type, :noteable_id, :commit_id, :file_path,
-                         :diff_hunk, :author, :created_at, :updated_at,
-                         :original_commit_id, :note_id, :end_line, :start_line,
-                         :side
-
+        NOTEABLE_TYPE = 'MergeRequest'
         NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i.freeze
+        DISCUSSION_CACHE_KEY = 'github-importer/discussion-id-map/%{project_id}/%{noteable_id}/%{original_note_id}'
+
+        expose_attribute :noteable_id, :commit_id, :file_path,
+          :diff_hunk, :author, :created_at, :updated_at,
+          :original_commit_id, :note_id, :end_line, :start_line,
+          :side, :in_reply_to_id
 
         # Builds a diff note from a GitHub API response.
         #
@@ -31,7 +31,6 @@ module Gitlab
 
           user = Representation::User.from_api_response(note.user) if note.user
           hash = {
-            noteable_type: 'MergeRequest',
             noteable_id: matches[:iid].to_i,
             file_path: note.path,
             commit_id: note.commit_id,
@@ -44,7 +43,8 @@ module Gitlab
             note_id: note.id,
             end_line: note.line,
             start_line: note.start_line,
-            side: note.side
+            side: note.side,
+            in_reply_to_id: note.in_reply_to_id
           }
 
           new(hash)
@@ -58,6 +58,8 @@ module Gitlab
           new(hash)
         end
 
+        attr_accessor :merge_request, :project
+
         # attributes - A Hash containing the raw note details. The keys of this
         #              Hash must be Symbols.
         def initialize(attributes)
@@ -68,6 +70,10 @@ module Gitlab
             start_line: attributes[:start_line],
             end_line: attributes[:end_line]
           )
+        end
+
+        def noteable_type
+          NOTEABLE_TYPE
         end
 
         def contains_suggestion?
@@ -102,7 +108,7 @@ module Gitlab
         end
 
         # Used when importing with DiffNote
-        def diff_position(merge_request)
+        def diff_position
           position_params = {
             diff_refs: merge_request.diff_refs,
             old_path: file_path,
@@ -120,7 +126,24 @@ module Gitlab
           }
         end
 
+        def discussion_id
+          if in_reply_to_id.present?
+            current_discussion_id
+          else
+            Discussion.discussion_id(
+              Struct
+              .new(:noteable_id, :noteable_type)
+              .new(merge_request.id, NOTEABLE_TYPE)
+            ).tap do |discussion_id|
+              cache_discussion_id(discussion_id)
+            end
+          end
+        end
+
         private
+
+        # Required by ExposeAttribute
+        attr_reader :attributes
 
         def diff_line_params
           if addition?
@@ -132,6 +155,22 @@ module Gitlab
 
         def addition?
           side == 'RIGHT'
+        end
+
+        def cache_discussion_id(discussion_id)
+          Gitlab::Cache::Import::Caching.write(discussion_id_cache_key(note_id), discussion_id)
+        end
+
+        def current_discussion_id
+          Gitlab::Cache::Import::Caching.read(discussion_id_cache_key(in_reply_to_id))
+        end
+
+        def discussion_id_cache_key(id)
+          DISCUSSION_CACHE_KEY % {
+            project_id: project.id,
+            noteable_id: merge_request.id,
+            original_note_id: id
+          }
         end
       end
     end

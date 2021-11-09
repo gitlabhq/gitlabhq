@@ -8,6 +8,28 @@ RSpec.describe Gitlab::Database::Partitioning do
 
   let(:connection) { ApplicationRecord.connection }
 
+  around do |example|
+    previously_registered_models = described_class.registered_models.dup
+    described_class.instance_variable_set('@registered_models', Set.new)
+
+    previously_registered_tables = described_class.registered_tables.dup
+    described_class.instance_variable_set('@registered_tables', Set.new)
+
+    example.run
+
+    described_class.instance_variable_set('@registered_models', previously_registered_models)
+    described_class.instance_variable_set('@registered_tables', previously_registered_tables)
+  end
+
+  describe '.register_models' do
+    context 'ensure that the registered models have partitioning strategy' do
+      it 'fails when partitioning_strategy is not specified for the model' do
+        model = Class.new(ApplicationRecord)
+        expect { described_class.register_models([model]) }.to raise_error /should have partitioning strategy defined/
+      end
+    end
+  end
+
   describe '.sync_partitions' do
     let(:table_names) { %w[partitioning_test1 partitioning_test2] }
     let(:models) do
@@ -40,24 +62,18 @@ RSpec.describe Gitlab::Database::Partitioning do
     end
 
     context 'when no partitioned models are given' do
-      let(:partition_manager_class) { described_class::PartitionManager }
-      let(:partition_manager) { double('partition manager') }
-      let(:model) { double('model') }
-
       it 'manages partitions for each registered model' do
-        registered_for_sync = described_class.__send__(:registered_for_sync)
+        described_class.register_models([models.first])
+        described_class.register_tables([
+          {
+            table_name: table_names.last,
+            partitioned_column: :created_at, strategy: :monthly
+          }
+        ])
 
-        allow(described_class).to receive(:registered_for_sync)
-          .and_return(registered_for_sync)
-
-        expect(Gitlab::Database::EachDatabase).to receive(:each_model_connection)
-          .with(registered_for_sync)
-          .and_yield(model)
-
-        expect(partition_manager_class).to receive(:new).with(model).and_return(partition_manager)
-        expect(partition_manager).to receive(:sync_partitions)
-
-        described_class.sync_partitions
+        expect { described_class.sync_partitions }
+          .to change { find_partitions(table_names.first).size }.from(0)
+          .and change { find_partitions(table_names.last).size }.from(0)
       end
     end
   end
@@ -123,12 +139,6 @@ RSpec.describe Gitlab::Database::Partitioning do
 
     def table_exists?(table_name)
       table_oid(table_name).present?
-    end
-  end
-
-  context 'ensure that the registered models have partitioning strategy' do
-    it 'fails when partitioning_strategy is not specified for the model' do
-      expect(described_class.__send__(:registered_models)).to all(respond_to(:partitioning_strategy))
     end
   end
 end

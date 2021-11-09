@@ -28,11 +28,28 @@ functionality of a project.
 
 Adjust your project's name, description, avatar, [default branch](../repository/branches/default.md), and topics:
 
-![general project settings](img/general_settings_v13_11.png)
-
 The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown).
 You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and
 [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+
+#### Topics
+
+Use topics to categorize projects and find similar new projects.
+
+To assign topics to a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings** > **General**.
+1. Under **Topics**, enter the project topics. Existing popular topics are suggested as you type.
+1. Select **Save changes**.
+
+For GitLab.com, explore popular topics on the [Explore topics page](https://gitlab.com/explore/projects/topics).
+When you select a topic, you can see relevant projects.
+
+NOTE:
+The assigned topics are visible only to everyone with access to the project,
+but everyone can see which topics exist at all on the GitLab instance.
+Do not include sensitive information in the name of a topic.
 
 #### Compliance frameworks **(PREMIUM)**
 

@@ -6,7 +6,9 @@ class ErrorTracking::ErrorEvent < ApplicationRecord
   validates :payload, json_schema: { filename: 'error_tracking_event_payload' }
 
   validates :error, presence: true
-  validates :description, presence: true
+  validates :description, presence: true, length: { maximum: 1024 }
+  validates :level, length: { maximum: 255 }
+  validates :environment, length: { maximum: 255 }
   validates :occurred_at, presence: true
 
   def stacktrace

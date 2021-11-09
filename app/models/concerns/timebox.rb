@@ -11,9 +11,7 @@ module Timebox
   include StripAttribute
   include FromUnion
 
-  TimeboxStruct = Struct.new(:title, :name, :id) do
-    include GlobalID::Identification
-
+  TimeboxStruct = Struct.new(:title, :name, :id, :class_name) do
     # Ensure these models match the interface required for exporting
     def serializable_hash(_opts = {})
       { title: title, name: name, id: id }
@@ -21,6 +19,10 @@ module Timebox
 
     def self.declarative_policy_class
       "TimeboxPolicy"
+    end
+
+    def to_global_id
+      ::Gitlab::GlobalId.build(self, model_name: class_name, id: id)
     end
   end
 
@@ -33,10 +35,10 @@ module Timebox
 
   included do
     # Defines the same constants above, but inside the including class.
-    const_set :None, TimeboxStruct.new("No #{self.name}", "No #{self.name}", 0)
-    const_set :Any, TimeboxStruct.new("Any #{self.name}", '', -1)
-    const_set :Upcoming, TimeboxStruct.new('Upcoming', '#upcoming', -2)
-    const_set :Started, TimeboxStruct.new('Started', '#started', -3)
+    const_set :None, TimeboxStruct.new("No #{self.name}", "No #{self.name}", 0, self.name)
+    const_set :Any, TimeboxStruct.new("Any #{self.name}", '', -1, self.name)
+    const_set :Upcoming, TimeboxStruct.new('Upcoming', '#upcoming', -2, self.name)
+    const_set :Started, TimeboxStruct.new('Started', '#started', -3, self.name)
 
     alias_method :timebox_id, :id
 

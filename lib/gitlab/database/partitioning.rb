@@ -20,7 +20,11 @@ module Gitlab
 
       class << self
         def register_models(models)
-          registered_models.merge(models)
+          models.each do |model|
+            raise "#{model} should have partitioning strategy defined" unless model.respond_to?(:partitioning_strategy)
+
+            registered_models << model
+          end
         end
 
         def register_tables(tables)
@@ -55,8 +59,6 @@ module Gitlab
           Gitlab::AppLogger.info(message: 'Finished dropping detached postgres partitions')
         end
 
-        private
-
         def registered_models
           @registered_models ||= Set.new
         end
@@ -64,6 +66,8 @@ module Gitlab
         def registered_tables
           @registered_tables ||= Set.new
         end
+
+        private
 
         def registered_for_sync
           registered_models + registered_tables.map do |table|

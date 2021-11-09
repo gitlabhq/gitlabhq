@@ -145,6 +145,11 @@ To rebase from the UI:
 GitLab schedules a rebase of the feature branch against the default branch and
 executes it as soon as possible.
 
+The user performing the rebase action is considered
+a user that added commits to the merge request. When the merge request approvals setting
+[**Prevent approvals by users who add commits**](../../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits)
+is enabled, this setting prevents the user from also approving the merge request.
+
 ### Interactive rebase
 
 You can use interactive rebase to modify commits. For example, amend a commit

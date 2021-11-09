@@ -28,7 +28,18 @@ module ErrorTracking
     private
 
     def event
-      params[:event]
+      @event ||= format_event(params[:event])
+    end
+
+    def format_event(event)
+      # Some SDK send exception payload as Array. For exmple Go lang SDK.
+      # We need to convert it to hash format we expect.
+      if event['exception'].is_a?(Array)
+        exception = event['exception']
+        event['exception'] = { 'values' => exception }
+      end
+
+      event
     end
 
     def exception

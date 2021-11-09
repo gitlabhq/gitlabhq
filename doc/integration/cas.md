@@ -28,7 +28,7 @@ configure CAS for back-channel logout.
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
+1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
 
 1. Add the provider configuration:
 

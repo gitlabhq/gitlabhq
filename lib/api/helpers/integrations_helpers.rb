@@ -530,6 +530,14 @@ module API
               desc: 'The Mattermost token'
             }
           ],
+          'shimo' => [
+            {
+              required: true,
+              name: :external_wiki_url,
+              type: String,
+              desc: 'Shimo workspace URL'
+            }
+          ],
           'slack-slash-commands' => [
             {
               required: true,

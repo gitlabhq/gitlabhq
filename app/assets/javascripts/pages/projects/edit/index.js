@@ -9,6 +9,7 @@ import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import setupTransferEdit from '~/transfer_edit';
 import UserCallout from '~/user_callout';
+import initTopicsTokenSelector from '~/projects/settings/topics';
 import initProjectPermissionsSettings from '../shared/permissions';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
 
@@ -28,3 +29,4 @@ setupTransferEdit('.js-project-transfer-form', 'select.select2');
 dirtySubmitFactory(document.querySelectorAll('.js-general-settings-form, .js-mr-settings-form'));
 
 initSearchSettings();
+initTopicsTokenSelector();

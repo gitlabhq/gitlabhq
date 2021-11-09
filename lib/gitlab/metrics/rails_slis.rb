@@ -5,16 +5,30 @@ module Gitlab
     module RailsSlis
       class << self
         def initialize_request_slis_if_needed!
-          return if Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
-
-          Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels)
+          Gitlab::Metrics::Sli.initialize_sli(:rails_request_apdex, possible_request_labels) unless Gitlab::Metrics::Sli.initialized?(:rails_request_apdex)
+          Gitlab::Metrics::Sli.initialize_sli(:graphql_query_apdex, possible_graphql_query_labels) unless Gitlab::Metrics::Sli.initialized?(:graphql_query_apdex)
         end
 
         def request_apdex
           Gitlab::Metrics::Sli[:rails_request_apdex]
         end
 
+        def graphql_query_apdex
+          Gitlab::Metrics::Sli[:graphql_query_apdex]
+        end
+
         private
+
+        def possible_graphql_query_labels
+          ::Gitlab::Graphql::KnownOperations.default.operations.map do |op|
+            {
+              endpoint_id: op.to_caller_id,
+              # We'll be able to correlate feature_category with https://gitlab.com/gitlab-org/gitlab/-/issues/328535
+              feature_category: nil,
+              query_urgency: op.query_urgency.name
+            }
+          end
+        end
 
         def possible_request_labels
           possible_controller_labels + possible_api_labels

@@ -1139,6 +1139,9 @@ msgstr ""
 msgid "* All times are in UTC unless specified"
 msgstr ""
 
+msgid "*Required"
+msgstr ""
+
 msgid "+ %{amount} more"
 msgstr ""
 
@@ -27216,6 +27219,9 @@ msgstr ""
 msgid "ProjectSettings|Requirements management system."
 msgstr ""
 
+msgid "ProjectSettings|Search for topic"
+msgstr ""
+
 msgid "ProjectSettings|Security & Compliance"
 msgstr ""
 
@@ -29190,7 +29196,7 @@ msgstr ""
 msgid "Repository update events"
 msgstr ""
 
-msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
+msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
 msgid "RepositorySettingsAccessLevel|Select"
@@ -31299,9 +31305,6 @@ msgstr ""
 msgid "Sep"
 msgstr ""
 
-msgid "Separate topics with commas."
-msgstr ""
-
 msgid "September"
 msgstr ""
 
@@ -31749,6 +31752,15 @@ msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
 msgstr ""
 
 msgid "Sherlock Transactions"
+msgstr ""
+
+msgid "Shimo|Link to a Shimo Workspace from the sidebar."
+msgstr ""
+
+msgid "Shimo|Shimo"
+msgstr ""
+
+msgid "Shimo|Shimo Workspace URL"
 msgstr ""
 
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."
@@ -36215,9 +36227,6 @@ msgid "Topic was successfully updated."
 msgstr ""
 
 msgid "Topics"
-msgstr ""
-
-msgid "Topics (optional)"
 msgstr ""
 
 msgid "Total"

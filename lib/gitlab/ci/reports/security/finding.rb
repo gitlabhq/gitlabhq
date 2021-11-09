@@ -141,6 +141,10 @@ module Gitlab
             scanner <=> other.scanner
           end
 
+          def has_signatures?
+            signatures.present?
+          end
+
           private
 
           def generate_project_fingerprint

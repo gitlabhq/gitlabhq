@@ -43,12 +43,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-gl-tooltip.left.viewport
-    :title="labelsList"
-    class="sidebar-collapsed-icon"
-    @click="handleClick"
-  >
+  <div v-gl-tooltip.left.viewport="labelsList" class="sidebar-collapsed-icon" @click="handleClick">
     <gl-icon name="labels" />
     <span>{{ labels.length }}</span>
   </div>

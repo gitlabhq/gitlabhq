@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <div v-gl-tooltip.left.viewport :class="containerClass" :title="tooltipText" @click="click">
+  <div v-gl-tooltip.left.viewport="tooltipText" :class="containerClass" @click="click">
     <gl-icon v-if="showIcon" name="calendar" />
     <slot>
       <span> {{ text }} </span>

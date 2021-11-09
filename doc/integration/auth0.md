@@ -48,7 +48,7 @@ application.
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Read [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
+1. Read [Configure initial settings](omniauth.md#configure-initial-settings)
    for initial settings.
 
 1. Add the provider configuration:

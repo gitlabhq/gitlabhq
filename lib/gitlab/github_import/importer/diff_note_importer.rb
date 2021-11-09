@@ -16,6 +16,9 @@ module Gitlab
         def execute
           return if merge_request_id.blank?
 
+          note.project = project
+          note.merge_request = merge_request
+
           build_author_attributes
 
           # Diff notes with suggestions are imported with DiffNote, which is
@@ -68,10 +71,10 @@ module Gitlab
           # allows us to efficiently insert data (even if it's just 1 row)
           # without having to use all sorts of hacks to disable callbacks.
           Gitlab::Database.main.bulk_insert(LegacyDiffNote.table_name, [{
-            noteable_type: 'MergeRequest',
+            noteable_type: note.noteable_type,
             system: false,
             type: 'LegacyDiffNote',
-            discussion_id: Discussion.discussion_id(note),
+            discussion_id: note.discussion_id,
             noteable_id: merge_request_id,
             project_id: project.id,
             author_id: author_id,
@@ -89,16 +92,17 @@ module Gitlab
           log_diff_note_creation('DiffNote')
 
           ::Import::Github::Notes::CreateService.new(project, author, {
-            noteable_type: 'MergeRequest',
+            noteable_type: note.noteable_type,
             system: false,
             type: 'DiffNote',
             noteable_id: merge_request_id,
             project_id: project.id,
             note: note_body,
+            discussion_id: note.discussion_id,
             commit_id: note.original_commit_id,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            position: note.diff_position(merge_request)
+            position: note.diff_position
           }).execute
         end
 

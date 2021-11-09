@@ -54,6 +54,14 @@ RSpec.describe Gitlab::Graphql::KnownOperations do
     end
   end
 
+  describe "Opeartion#query_urgency" do
+    it "returns the associated query urgency" do
+      query = ::GraphQL::Query.new(fake_schema, "query foo { helloWorld }")
+
+      expect(subject.from_query(query).query_urgency).to equal(::Gitlab::EndpointAttributes::DEFAULT_URGENCY)
+    end
+  end
+
   describe ".default" do
     it "returns a memoization of values from webpack", :aggregate_failures do
       # .default could have been referenced in another spec, so we need to clean it up here

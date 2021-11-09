@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ErrorTracking::CollectErrorService do
   let_it_be(:project) { create(:project) }
-  let_it_be(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/parsed_event.json')) }
+  let_it_be(:parsed_event_file) { 'error_tracking/parsed_event.json' }
+  let_it_be(:parsed_event) { Gitlab::Json.parse(fixture_file(parsed_event_file)) }
 
   subject { described_class.new(project, nil, event: parsed_event) }
 
@@ -70,6 +71,26 @@ RSpec.describe ErrorTracking::CollectErrorService do
 
           expect(event.occurred_at).to eq '2021-09-07T11:53:00.5'
         end
+      end
+    end
+
+    context 'go payload' do
+      let(:parsed_event) { Gitlab::Json.parse(fixture_file('error_tracking/go_parsed_event.json')) }
+
+      it 'has correct values set' do
+        subject.execute
+
+        event = ErrorTracking::ErrorEvent.last
+        error = event.error
+
+        expect(error.name).to eq '*errors.errorString'
+        expect(error.description).to start_with 'Hello world'
+        expect(error.platform).to eq 'go'
+
+        expect(event.description).to start_with 'Hello world'
+        expect(event.level).to eq 'error'
+        expect(event.environment).to eq 'Accumulate'
+        expect(event.payload).to eq parsed_event
       end
     end
   end

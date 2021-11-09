@@ -119,7 +119,7 @@ For most JSON requests, POST, PUT, PATCH, and DELETE are blocked, and the API re
 | POST | `/admin/session`, `/admin/session/destroy` | To allow [Administrator mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
 | POST | Paths ending with `/compare`| Git revision routes. |
 | POST | `.git/git-upload-pack` | To allow Git pull/clone. |
-| POST | `/api/v4/internal` | [internal API routes](../../development/internal_api.md) |
+| POST | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
 | POST | `/admin/sidekiq` | To allow management of background jobs in the Admin UI |
 | POST | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
 | POST | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |

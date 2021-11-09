@@ -426,8 +426,11 @@ Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
 
-**Possible inputs**: A full path relative to the root directory (`/`).
-The YAML file must have the extension `.yml` or `.yaml`. Wildcard paths (`*` and `**`) are supported.
+**Possible inputs**:
+
+- A full path relative to the root directory (`/`).
+- The YAML file must have the extension `.yml` or `.yaml`.
+- You can [use `*` and `**` wildcards in the file path](includes.md#use-includelocal-with-wildcard-file-paths).
 
 **Example of `include:local`**:
 
@@ -448,10 +451,6 @@ include: '.gitlab-ci-production.yml'
 - You can't include local files through Git submodules paths.
 - All [nested includes](includes.md#use-nested-includes) are executed in the scope of the same project,
   so you can use local, project, remote, or template includes.
-
-**Related topics**:
-
-- [Use `include:local` with wildcard file paths](includes.md#use-includelocal-with-wildcard-file-paths).
 
 #### `include:file`
 

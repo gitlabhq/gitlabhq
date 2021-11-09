@@ -12,6 +12,7 @@ class GitlabSchema < GraphQL::Schema
 
   # Tracers (order is important)
   use Gitlab::Graphql::Tracers::ApplicationContextTracer
+  use Gitlab::Graphql::Tracers::MetricsTracer
   use Gitlab::Graphql::Tracers::LoggerTracer
   use Gitlab::Graphql::GenericTracing # Old tracer which will be removed eventually
   use Gitlab::Graphql::Tracers::TimerTracer

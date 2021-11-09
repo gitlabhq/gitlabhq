@@ -55,7 +55,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings
+1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings
 
 1. Add the provider-specific configuration for your provider, as [described in the gem's README](https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example)
 

@@ -25,6 +25,7 @@ The following aspects of a project are imported:
 - Pull request "merged by" information (GitLab.com & 13.7+)
 - Regular issue and pull request comments
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md)
+- Pull request comments replies in discussions ([GitLab.com & 14.5+](https://gitlab.com/gitlab-org/gitlab/-/issues/336596))
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
 each imported repository maintains visibility level unless that [visibility

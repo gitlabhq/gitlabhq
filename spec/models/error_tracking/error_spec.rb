@@ -12,8 +12,12 @@ RSpec.describe ErrorTracking::Error, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_presence_of(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { is_expected.to validate_presence_of(:actor) }
+    it { is_expected.to validate_length_of(:actor).is_at_most(255) }
+    it { is_expected.to validate_length_of(:platform).is_at_most(255) }
   end
 
   describe '.report_error' do

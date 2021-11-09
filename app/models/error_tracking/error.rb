@@ -18,9 +18,10 @@ class ErrorTracking::Error < ApplicationRecord
   scope :for_status, -> (status) { where(status: status) }
 
   validates :project, presence: true
-  validates :name, presence: true
-  validates :description, presence: true
-  validates :actor, presence: true
+  validates :name, presence: true, length: { maximum: 255 }
+  validates :description, presence: true, length: { maximum: 1024 }
+  validates :actor, presence: true, length: { maximum: 255 }
+  validates :platform, length: { maximum: 255 }
   validates :status, presence: true
 
   enum status: {

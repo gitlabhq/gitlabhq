@@ -419,6 +419,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="querytimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="querytimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+### `Query.topics`
+
+Find project topics.
+
+Returns [`TopicConnection`](#topicconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querytopicssearch"></a>`search` | [`String`](#string) | Search query for topic name. |
+
 ### `Query.usageTrendsMeasurements`
 
 Get statistics on the instance.
@@ -5676,6 +5692,29 @@ The edge type for [`ContainerRepositoryTag`](#containerrepositorytag).
 | <a id="containerrepositorytagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerrepositorytagedgenode"></a>`node` | [`ContainerRepositoryTag`](#containerrepositorytag) | The item at the end of the edge. |
 
+#### `CoverageFuzzingCorpusConnection`
+
+The connection type for [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="coveragefuzzingcorpusconnectionedges"></a>`edges` | [`[CoverageFuzzingCorpusEdge]`](#coveragefuzzingcorpusedge) | A list of edges. |
+| <a id="coveragefuzzingcorpusconnectionnodes"></a>`nodes` | [`[CoverageFuzzingCorpus]`](#coveragefuzzingcorpus) | A list of nodes. |
+| <a id="coveragefuzzingcorpusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CoverageFuzzingCorpusEdge`
+
+The edge type for [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="coveragefuzzingcorpusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="coveragefuzzingcorpusedgenode"></a>`node` | [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus) | The item at the end of the edge. |
+
 #### `CustomEmojiConnection`
 
 The connection type for [`CustomEmoji`](#customemoji).
@@ -7690,6 +7729,29 @@ The edge type for [`Todo`](#todo).
 | <a id="todoedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="todoedgenode"></a>`node` | [`Todo`](#todo) | The item at the end of the edge. |
 
+#### `TopicConnection`
+
+The connection type for [`Topic`](#topic).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="topicconnectionedges"></a>`edges` | [`[TopicEdge]`](#topicedge) | A list of edges. |
+| <a id="topicconnectionnodes"></a>`nodes` | [`[Topic]`](#topic) | A list of nodes. |
+| <a id="topicconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `TopicEdge`
+
+The edge type for [`Topic`](#topic).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="topicedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="topicedgenode"></a>`node` | [`Topic`](#topic) | The item at the end of the edge. |
+
 #### `TreeConnection`
 
 The connection type for [`Tree`](#tree).
@@ -8990,6 +9052,17 @@ A tag from a container repository.
 | <a id="containerrepositorytagrevision"></a>`revision` | [`String`](#string) | Revision of the tag. |
 | <a id="containerrepositorytagshortrevision"></a>`shortRevision` | [`String`](#string) | Short revision of the tag. |
 | <a id="containerrepositorytagtotalsize"></a>`totalSize` | [`BigInt`](#bigint) | Size of the tag. |
+
+### `CoverageFuzzingCorpus`
+
+Corpus for a coverage fuzzing job.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="coveragefuzzingcorpusid"></a>`id` | [`AppSecFuzzingCoverageCorpusID!`](#appsecfuzzingcoveragecorpusid) | ID of the corpus. |
+| <a id="coveragefuzzingcorpuspackage"></a>`package` | [`PackageDetailsType!`](#packagedetailstype) | Package of the corpus. |
 
 ### `CurrentLicense`
 
@@ -12763,6 +12836,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
+| <a id="projectcorpuses"></a>`corpuses` | [`CoverageFuzzingCorpusConnection`](#coveragefuzzingcorpusconnection) | Find corpuses of the project. Available only when feature flag `corpus_management` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice. (see [Connections](#connections)) |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
@@ -14807,6 +14881,18 @@ Representing a to-do entry.
 | <a id="todostate"></a>`state` | [`TodoStateEnum!`](#todostateenum) | State of the to-do item. |
 | <a id="todotargettype"></a>`targetType` | [`TodoTargetEnum!`](#todotargetenum) | Target type of the to-do item. |
 
+### `Topic`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="topicavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the topic. |
+| <a id="topicdescription"></a>`description` | [`String`](#string) | Description of the topic. |
+| <a id="topicdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `description`. |
+| <a id="topicid"></a>`id` | [`ID!`](#id) | ID of the topic. |
+| <a id="topicname"></a>`name` | [`String!`](#string) | Name of the topic. |
+
 ### `Tree`
 
 #### Fields
@@ -16819,6 +16905,7 @@ State of a Sentry error.
 | <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | PrometheusService type. |
 | <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | PushoverService type. |
 | <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | RedmineService type. |
+| <a id="servicetypeshimo_service"></a>`SHIMO_SERVICE` | ShimoService type. |
 | <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
 | <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
 | <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | TeamcityService type. |
@@ -17136,6 +17223,12 @@ An example `AlertManagementHttpIntegrationID` is: `"gid://gitlab/AlertManagement
 A `AnalyticsDevopsAdoptionEnabledNamespaceID` is a global ID. It is encoded as a string.
 
 An example `AnalyticsDevopsAdoptionEnabledNamespaceID` is: `"gid://gitlab/Analytics::DevopsAdoption::EnabledNamespace/1"`.
+
+### `AppSecFuzzingCoverageCorpusID`
+
+A `AppSecFuzzingCoverageCorpusID` is a global ID. It is encoded as a string.
+
+An example `AppSecFuzzingCoverageCorpusID` is: `"gid://gitlab/AppSec::Fuzzing::Coverage::Corpus/1"`.
 
 ### `AuditEventsExternalAuditEventDestinationID`
 

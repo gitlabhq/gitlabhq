@@ -27,7 +27,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    sudo -u git -H editor config/gitlab.yml
    ```
 
-   See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings.
+   See [Configure initial settings](../../integration/omniauth.md#configure-initial-settings) for initial settings.
 
 1. Add the provider configuration.
 
@@ -228,7 +228,7 @@ Azure B2C [offers two ways of defining the business logic for logging in a user]
 
 While cumbersome to configure, custom policies are required because
 standard Azure B2C user flows [do not send the OpenID `email` claim](https://github.com/MicrosoftDocs/azure-docs/issues/16566). In
-other words, they do not work with the [`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#initial-omniauth-configuration).
+other words, they do not work with the [`allow_single_sign_on` or `auto_link_user` parameters](../../integration/omniauth.md#configure-initial-settings).
 With a standard Azure B2C policy, GitLab cannot create a new account or
 link to an existing one with an email address.
 

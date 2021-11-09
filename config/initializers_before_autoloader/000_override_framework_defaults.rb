@@ -12,7 +12,6 @@
 Rails.application.configure do
   # Rails 6.1
   config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
-  config.action_dispatch.ssl_default_redirect_status = nil # New default is 308
   ActiveSupport.utc_to_local_returns_utc_offset_times = false
   config.action_controller.urlsafe_csrf_tokens = false
   config.action_view.preload_links_header = false
@@ -31,5 +30,4 @@ Rails.application.configure do
   config.action_controller.per_form_csrf_tokens = false
   config.action_controller.forgery_protection_origin_check = false
   ActiveSupport.to_time_preserves_timezone = false
-  config.ssl_options = {} # New default is { hsts: { subdomains: true } }
 end

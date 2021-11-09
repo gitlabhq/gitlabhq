@@ -7,6 +7,11 @@ module Gitlab
         def to_caller_id
           "graphql:#{name}"
         end
+
+        def query_urgency
+          # We'll be able to actually correlate query_urgency with https://gitlab.com/gitlab-org/gitlab/-/issues/345141
+          ::Gitlab::EndpointAttributes::DEFAULT_URGENCY
+        end
       end
 
       ANONYMOUS = Operation.new("anonymous").freeze

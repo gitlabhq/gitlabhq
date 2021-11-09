@@ -2,16 +2,32 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
+RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_redis_shared_state do
   let(:hunk) do
     '@@ -1 +1 @@
     -Hello
     +Hello world'
   end
 
-  let(:note_body) { 'Hello world' }
+  let(:merge_request) do
+    double(
+      :merge_request,
+      id: 54,
+      diff_refs: double(
+        :refs,
+        base_sha: 'base',
+        start_sha: 'start',
+        head_sha: 'head'
+      )
+    )
+  end
+
+  let(:project) { double(:project, id: 836) }
+  let(:note_id) { 1 }
+  let(:in_reply_to_id) { nil }
   let(:start_line) { nil }
   let(:end_line) { 23 }
+  let(:note_body) { 'Hello world' }
   let(:user_data) { { 'id' => 4, 'login' => 'alice' } }
   let(:side) { 'RIGHT' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
@@ -44,7 +60,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
       end
 
       it 'includes the GitHub ID' do
-        expect(note.note_id).to eq(1)
+        expect(note.note_id).to eq(note_id)
       end
 
       it 'returns the noteable type' do
@@ -65,12 +81,21 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
       end
 
       describe '#diff_position' do
-        let(:diff_refs) { double(:refs, base_sha: 'base', start_sha: 'start', head_sha: 'head') }
-        let(:merge_request) { double(:merge_request, diff_refs: diff_refs) }
+        before do
+          note.merge_request = double(
+            :merge_request,
+            diff_refs: double(
+              :refs,
+              base_sha: 'base',
+              start_sha: 'start',
+              head_sha: 'head'
+            )
+          )
+        end
 
         context 'when the diff is an addition' do
           it 'returns a Gitlab::Diff::Position' do
-            expect(note.diff_position(merge_request).to_h).to eq(
+            expect(note.diff_position.to_h).to eq(
               base_sha: 'base',
               head_sha: 'head',
               line_range: nil,
@@ -88,7 +113,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
           let(:side) { 'LEFT' }
 
           it 'returns a Gitlab::Diff::Position' do
-            expect(note.diff_position(merge_request).to_h).to eq(
+            expect(note.diff_position.to_h).to eq(
               base_sha: 'base',
               head_sha: 'head',
               line_range: nil,
@@ -99,6 +124,47 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
               position_type: 'text',
               start_sha: 'start'
             )
+          end
+        end
+      end
+
+      describe '#discussion_id' do
+        before do
+          note.project = project
+          note.merge_request = merge_request
+        end
+
+        context 'when the note is a reply to a discussion' do
+          it 'uses the cached value as the discussion_id only when responding an existing discussion' do
+            expect(Discussion)
+              .to receive(:discussion_id)
+              .and_return('FIRST_DISCUSSION_ID', 'SECOND_DISCUSSION_ID')
+
+            # Creates the first discussion id and caches its value
+            expect(note.discussion_id)
+              .to eq('FIRST_DISCUSSION_ID')
+
+            reply_note = described_class.from_json_hash(
+              'note_id' => note.note_id + 1,
+              'in_reply_to_id' => note.note_id
+            )
+            reply_note.project = project
+            reply_note.merge_request = merge_request
+
+            # Reading from the cached value
+            expect(reply_note.discussion_id)
+              .to eq('FIRST_DISCUSSION_ID')
+
+            new_discussion_note = described_class.from_json_hash(
+              'note_id' => note.note_id + 2,
+              'in_reply_to_id' => nil
+            )
+            new_discussion_note.project = project
+            new_discussion_note.merge_request = merge_request
+
+            # Because it's a new discussion, it must not use the cached value
+            expect(new_discussion_note.discussion_id)
+              .to eq('SECOND_DISCUSSION_ID')
           end
         end
       end
@@ -194,7 +260,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
       let(:response) do
         double(
           :response,
-          id: 1,
+          id: note_id,
           html_url: 'https://github.com/foo/bar/pull/42',
           path: 'README.md',
           commit_id: '123abc',
@@ -206,7 +272,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
           created_at: created_at,
           updated_at: updated_at,
           line: end_line,
-          start_line: start_line
+          start_line: start_line,
+          in_reply_to_id: in_reply_to_id
         )
       end
 
@@ -218,7 +285,7 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
     it_behaves_like 'a DiffNote representation' do
       let(:hash) do
         {
-          'note_id' => 1,
+          'note_id' => note_id,
           'noteable_type' => 'MergeRequest',
           'noteable_id' => 42,
           'file_path' => 'README.md',
@@ -231,7 +298,8 @@ RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
           'created_at' => created_at.to_s,
           'updated_at' => updated_at.to_s,
           'end_line' => end_line,
-          'start_line' => start_line
+          'start_line' => start_line,
+          'in_reply_to_id' => in_reply_to_id
         }
       end
 
