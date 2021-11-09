@@ -56,7 +56,7 @@ module Namespaces
     def initialize(track, interval)
       @track = track
       @interval = interval
-      @in_product_marketing_email_records = []
+      @sent_email_records = InProductMarketingEmailRecords.new
     end
 
     def execute
@@ -71,17 +71,21 @@ module Namespaces
 
     private
 
-    attr_reader :track, :interval, :in_product_marketing_email_records
+    attr_reader :track, :interval, :sent_email_records
+
+    def send_email(user, group)
+      NotificationService.new.in_product_marketing(user.id, group.id, track, series)
+    end
 
     def send_email_for_group(group)
       users_for_group(group).each do |user|
         if can_perform_action?(user, group)
           send_email(user, group)
-          track_sent_email(user, track, series)
+          sent_email_records.add(user, track, series)
         end
       end
 
-      save_tracked_emails!
+      sent_email_records.save!
     end
 
     def groups_for_track
@@ -126,10 +130,6 @@ module Namespaces
       end
     end
 
-    def send_email(user, group)
-      NotificationService.new.in_product_marketing(user.id, group.id, track, series)
-    end
-
     def completed_actions
       TRACKS[track][:completed_actions]
     end
@@ -145,21 +145,6 @@ module Namespaces
 
     def series
       TRACKS[track][:interval_days].index(interval)
-    end
-
-    def save_tracked_emails!
-      Users::InProductMarketingEmail.bulk_insert!(in_product_marketing_email_records)
-      @in_product_marketing_email_records = []
-    end
-
-    def track_sent_email(user, track, series)
-      in_product_marketing_email_records << Users::InProductMarketingEmail.new(
-        user: user,
-        track: track,
-        series: series,
-        created_at: Time.zone.now,
-        updated_at: Time.zone.now
-      )
     end
   end
 end

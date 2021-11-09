@@ -211,6 +211,24 @@ snippet was created using the GitLab web interface the original line ending is W
 With snippets, you engage in a conversation about that piece of code,
 which can encourage user collaboration.
 
+## Mark snippet as spam **(FREE SELF)**
+
+Administrators on self-managed GitLab instances can mark snippets as spam.
+
+Prerequisites:
+
+- You must be the administrator for your instance.
+- [Akismet](../integration/akismet.md) spam protection must be enabled on the instance.
+
+To do this task:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Snippets**.
+1. Select the snippet you want to report as spam.
+1. Select **Submit as spam**.
+
+GitLab forwards the spam to Akismet.
+
 ## Troubleshooting
 
 ### Snippet limitations

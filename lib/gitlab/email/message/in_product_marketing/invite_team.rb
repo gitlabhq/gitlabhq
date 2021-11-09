@@ -40,6 +40,12 @@ module Gitlab
           def series?
             false
           end
+
+          private
+
+          def validate_series!
+            raise ArgumentError, "Only one email is sent for this track. Value of `series` should be 0." unless @series == 0
+          end
         end
       end
     end

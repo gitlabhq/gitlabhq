@@ -57,7 +57,10 @@ module Groups
     end
 
     def after_create_hook
-      # overridden in EE
+      if group.persisted? && group.root?
+        delay = Namespaces::InviteTeamEmailService::DELIVERY_DELAY_IN_MINUTES
+        Namespaces::InviteTeamEmailWorker.perform_in(delay, group.id, current_user.id)
+      end
     end
 
     def remove_unallowed_params

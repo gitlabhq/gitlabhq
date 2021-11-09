@@ -94,7 +94,7 @@ RSpec.describe Groups::EmailCampaignsController do
 
     describe 'track parameter' do
       context 'when valid' do
-        where(track: Namespaces::InProductMarketingEmailsService::TRACKS.keys.without(:experience))
+        where(track: [Namespaces::InProductMarketingEmailsService::TRACKS.keys.without(:experience), Namespaces::InviteTeamEmailService::TRACK].flatten)
 
         with_them do
           it_behaves_like 'track and redirect'
@@ -117,6 +117,10 @@ RSpec.describe Groups::EmailCampaignsController do
         with_them do
           it_behaves_like 'track and redirect'
         end
+
+        it_behaves_like 'track and redirect' do
+          let(:track) { Namespaces::InviteTeamEmailService::TRACK.to_s }
+        end
       end
 
       context 'when invalid' do
@@ -124,6 +128,10 @@ RSpec.describe Groups::EmailCampaignsController do
 
         with_them do
           it_behaves_like 'no track and 404'
+
+          it_behaves_like 'no track and 404' do
+            let(:track) { Namespaces::InviteTeamEmailService::TRACK.to_s }
+          end
         end
       end
     end

@@ -132,7 +132,7 @@ For example, [a pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/
 [`pages` job](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/1733948332).
 
 ```mermaid
-graph TD
+graph LR
   A{{"Container registry on gitlab-docs project"}}
   B[["Scheduled pipeline<br>`pages` and<br>`pages:deploy` job"]]
   C([docs.gitlab.com])

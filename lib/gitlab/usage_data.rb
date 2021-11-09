@@ -829,7 +829,13 @@ module Gitlab
 
         Users::InProductMarketingEmail.tracks.keys.each_with_object({}) do |track, result|
           # rubocop: enable UsageData/LargeTable:
-          series_amount = Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
+          series_amount =
+            if track.to_sym == Namespaces::InviteTeamEmailService::TRACK
+              0
+            else
+              Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
+            end
+
           0.upto(series_amount - 1).map do |series|
             # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
             sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails

@@ -19,6 +19,7 @@ You can report a user through their:
 - [Profile](#reporting-abuse-through-a-users-profile)
 - [Comments](#reporting-abuse-through-a-users-comment)
 - [Issues and Merge requests](#reporting-abuse-through-a-users-issue-or-merge-request)
+- [Snippets](snippets.md#mark-snippet-as-spam)
 
 ## Reporting abuse through a user's profile
 

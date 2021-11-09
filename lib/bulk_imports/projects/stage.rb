@@ -35,6 +35,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline,
             stage: 4
           },
+          wiki: {
+            pipeline: BulkImports::Common::Pipelines::WikiPipeline,
+            stage: 5
+          },
           uploads: {
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 5

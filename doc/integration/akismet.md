@@ -8,7 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab uses [Akismet](https://akismet.com/) to prevent the creation of
 spam issues on public projects. Issues created through the web UI or the API can be submitted to
-Akismet for review.
+Akismet for review, and instance administrators can
+[mark snippets as spam](../user/snippets.md#mark-snippet-as-spam).
 
 Detected spam is rejected, and an entry is added in the **Spam Log** section of the
 Admin page.

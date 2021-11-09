@@ -21,7 +21,8 @@ RSpec.describe Users::InProductMarketingEmail, type: :model do
 
   describe '.tracks' do
     it 'has an entry for every track' do
-      expect(Namespaces::InProductMarketingEmailsService::TRACKS.keys).to match_array(described_class.tracks.keys.map(&:to_sym))
+      tracks = [Namespaces::InviteTeamEmailService::TRACK, Namespaces::InProductMarketingEmailsService::TRACKS.keys].flatten
+      expect(tracks).to match_array(described_class.tracks.keys.map(&:to_sym))
     end
   end
 

@@ -3864,15 +3864,11 @@ you can ensure that concurrent deployments never happen to the production enviro
 
 Use `release` to create a [release](../../user/project/releases/index.md).
 
-The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
-and your runner must be using one of these executors:
+The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs),
+which must be in the `$PATH`.
 
-- If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
-  your [`image:`](#image) must include the `release-cli`. You can use this image from the GitLab
-  Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
-
-- If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html), the server
-  where the runner is registered must have the `release-cli` [installed](../../user/project/releases/release_cli.md).
+If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
+you can use this image from the GitLab Container Registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -3921,6 +3917,8 @@ This example creates a release:
 - The `release` section executes after the `script` keyword and before the `after_script`.
 - A release is created only if the job's main script succeeds.
 - If the release already exists, it is not updated and the job with the `release` keyword fails.
+- If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
+  [install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
 
 **Related topics**:
 

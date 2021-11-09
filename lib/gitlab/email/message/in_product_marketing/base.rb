@@ -177,8 +177,6 @@ module Gitlab
           end
 
           def validate_series!
-            return unless series?
-
             raise ArgumentError, "Only #{total_series} series available for this track." unless @series.between?(0, total_series - 1)
           end
         end
