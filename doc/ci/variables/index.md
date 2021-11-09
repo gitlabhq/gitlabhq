@@ -121,7 +121,7 @@ job1:
     - echo This job does not need any variables
 ```
 
-Use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
+Use the [`value` and `description`](../yaml/index.md#variablesdescription)
 keywords to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 

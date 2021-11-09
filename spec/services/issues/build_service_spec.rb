@@ -7,12 +7,14 @@ RSpec.describe Issues::BuildService do
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
 
   let(:user) { developer }
 
   before_all do
     project.add_developer(developer)
+    project.add_reporter(reporter)
     project.add_guest(guest)
   end
 
@@ -177,7 +179,8 @@ RSpec.describe Issues::BuildService do
         where(:issue_type, :current_user, :work_item_type_id, :resulting_issue_type) do
           nil           | ref(:guest)    | ref(:type_issue_id)       | 'issue'
           'issue'       | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'incident'    | ref(:guest)    | ref(:type_incident_id)    | 'incident'
+          'incident'    | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          'incident'    | ref(:reporter) | ref(:type_incident_id)    | 'incident'
           # update once support for test_case is enabled
           'test_case'   | ref(:guest)    | ref(:type_issue_id)       | 'issue'
           # update once support for requirement is enabled

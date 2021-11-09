@@ -45,7 +45,7 @@ To do this, you can use [`rules`](#use-rules-to-run-pipelines-for-merge-requests
 ### Use `rules` to run pipelines for merge requests
 
 GitLab recommends that you use the `rules` keyword, which is available in
-[`workflow:rules` templates](../yaml/index.md#workflowrules-templates).
+[`workflow:rules` templates](../yaml/workflow.md#workflowrules-templates).
 
 ### Use `only` or `except` to run pipelines for merge requests
 
@@ -199,7 +199,7 @@ If you are seeing two pipelines when using `only/except`, please see the caveats
 related to using `only/except` above (or, consider moving to `rules`).
 
 In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201845),
-you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/index.md#switch-between-branch-pipelines-and-merge-request-pipelines).
+you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
 ### Two pipelines created when pushing an invalid CI configuration file

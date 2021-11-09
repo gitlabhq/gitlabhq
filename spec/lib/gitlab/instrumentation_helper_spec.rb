@@ -147,6 +147,25 @@ RSpec.describe Gitlab::InstrumentationHelper do
         expect(payload).not_to include(:caught_up_replica_pick_fail)
       end
     end
+
+    context 'when there is an uploaded file' do
+      it 'adds upload data' do
+        uploaded_file = UploadedFile.from_params({
+          'name' => 'dir/foo.txt',
+          'sha256' => 'sha256',
+          'remote_url' => 'http://localhost/file',
+          'remote_id' => '1234567890',
+          'etag' => 'etag1234567890',
+          'upload_duration' => '5.05',
+          'size' => '123456'
+        }, nil)
+
+        subject
+
+        expect(payload[:uploaded_file_upload_duration_s]).to eq(uploaded_file.upload_duration)
+        expect(payload[:uploaded_file_size_bytes]).to eq(uploaded_file.size)
+      end
+    end
   end
 
   describe 'duration calculations' do

@@ -84,7 +84,7 @@ could not authorize you from Crowd because invalid credentials
 ```
 
 Ensure the Crowd users who need to sign in to GitLab are authorized to the
-[application](#configure-a-new-crowd-application) in the **Authorisation** step.
+[application](#configure-a-new-crowd-application) in the **Authorization** step.
 This could be verified by trying "Authentication test" for Crowd (as of 2.11).
 
-![Example Crowd application authorisation configuration](img/crowd_application_authorisation.png)
+![Example Crowd application authorization configuration](img/crowd_application_authorisation.png)

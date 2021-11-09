@@ -21,6 +21,7 @@ export default () => {
     authorUsernameQuery,
     assigneeUsernameQuery,
     slaFeatureAvailable,
+    canCreateIncident,
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
@@ -44,6 +45,7 @@ export default () => {
       authorUsernameQuery,
       assigneeUsernameQuery,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
+      canCreateIncident: parseBoolean(canCreateIncident),
     },
     apolloProvider,
     render(createElement) {

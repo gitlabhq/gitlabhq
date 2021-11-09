@@ -192,6 +192,7 @@ module IssuesHelper
 
     {
       can_create_issue: show_new_issue_link?(project).to_s,
+      can_create_incident: create_issue_type_allowed?(project, :incident).to_s,
       can_reopen_issue: can?(current_user, :reopen_issue, issuable).to_s,
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,

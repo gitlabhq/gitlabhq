@@ -168,16 +168,73 @@ file:
 
 - Start the job name with a dot (`.`) and it is not processed by GitLab CI/CD:
 
-```yaml
-.hidden_job:
-  script:
-    - run test
-```
+  ```yaml
+  .hidden_job:
+    script:
+      - run test
+  ```
 
 You can use hidden jobs that start with `.` as templates for reusable configuration with:
 
 - The [`extends` keyword](../yaml/index.md#extends).
 - [YAML anchors](../yaml/yaml_specific_features.md#anchors).
+
+## Control the inheritance of default keywords and global variables
+
+You can control the inheritance of:
+
+- [default keywords](../yaml/index.md#default) with [`inherit:default`](../yaml/index.md#inheritdefault).
+- [global variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
+
+For example:
+
+```yaml
+default:
+  image: 'ruby:2.4'
+  before_script:
+    - echo Hello World
+
+variables:
+  DOMAIN: example.com
+  WEBHOOK_URL: https://my-webhook.example.com
+
+rubocop:
+  inherit:
+    default: false
+    variables: false
+  script: bundle exec rubocop
+
+rspec:
+  inherit:
+    default: [image]
+    variables: [WEBHOOK_URL]
+  script: bundle exec rspec
+
+capybara:
+  inherit:
+    variables: false
+  script: bundle exec capybara
+
+karma:
+  inherit:
+    default: true
+    variables: [DOMAIN]
+  script: karma
+```
+
+In this example:
+
+- `rubocop`:
+  - inherits: Nothing.
+- `rspec`:
+  - inherits: the default `image` and the `WEBHOOK_URL` variable.
+  - does **not** inherit: the default `before_script` and the `DOMAIN` variable.
+- `capybara`:
+  - inherits: the default `before_script` and `image`.
+  - does **not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
+- `karma`:
+  - inherits: the default `image` and `before_script`, and the `DOMAIN` variable.
+  - does **not** inherit: `WEBHOOK_URL` variable.
 
 ## Specifying variables when running manual jobs
 

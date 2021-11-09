@@ -248,14 +248,20 @@ RSpec.describe 'New/edit issue', :js do
         end
       end
 
+      shared_examples 'type option is missing' do |label:, identifier:|
+        it "does not show #{identifier} option", :aggregate_failures do
+          page.within('[data-testid="issue-type-select-dropdown"]') do
+            expect(page).not_to have_selector(%([data-testid="issue-type-#{identifier}-icon"]))
+            expect(page).not_to have_content(label)
+          end
+        end
+      end
+
       before do
         page.within('.issue-form') do
           click_button 'Issue'
         end
       end
-
-      it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
-      it_behaves_like 'type option is visible', label: 'Incident', identifier: :incident
 
       context 'when user is guest' do
         let_it_be(:guest) { create(:user) }
@@ -264,6 +270,19 @@ RSpec.describe 'New/edit issue', :js do
 
         before_all do
           project.add_guest(guest)
+        end
+
+        it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue
+        it_behaves_like 'type option is missing', label: 'Incident', identifier: :incident
+      end
+
+      context 'when user is reporter' do
+        let_it_be(:reporter) { create(:user) }
+
+        let(:current_user) { reporter }
+
+        before_all do
+          project.add_reporter(reporter)
         end
 
         it_behaves_like 'type option is visible', label: 'Issue', identifier: :issue

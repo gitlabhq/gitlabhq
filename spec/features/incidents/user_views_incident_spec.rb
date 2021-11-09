@@ -22,12 +22,30 @@ RSpec.describe "User views incident" do
 
   it_behaves_like 'page meta description', ' Description header Lorem ipsum dolor sit amet'
 
-  it 'shows the merge request and incident actions', :js, :aggregate_failures do
-    click_button 'Incident actions'
+  describe 'user actions' do
+    it 'shows the merge request and incident actions', :js, :aggregate_failures do
+      click_button 'Incident actions'
 
-    expect(page).to have_link('New incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident', description: "Related to \##{incident.iid}.\n\n" } }))
-    expect(page).to have_button('Create merge request')
-    expect(page).to have_button('Close incident')
+      expect(page).to have_link('New incident', href: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident', description: "Related to \##{incident.iid}.\n\n" } }))
+      expect(page).to have_button('Create merge request')
+      expect(page).to have_button('Close incident')
+    end
+
+    context 'when user is a guest' do
+      before do
+        project.add_guest(user)
+
+        login_as(user)
+
+        visit(project_issues_incident_path(project, incident))
+      end
+
+      it 'does not show the incident action', :js, :aggregate_failures do
+        click_button 'Incident actions'
+
+        expect(page).not_to have_link('New incident')
+      end
+    end
   end
 
   context 'when the project is archived' do

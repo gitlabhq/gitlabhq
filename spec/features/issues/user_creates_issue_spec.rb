@@ -171,7 +171,7 @@ RSpec.describe "User creates issue" do
     end
 
     context 'form create handles issue creation by default' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       before do
         visit new_project_issue_path(project)
@@ -187,30 +187,22 @@ RSpec.describe "User creates issue" do
     end
 
     context 'form create handles incident creation' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       before do
         visit new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
       end
 
-      it 'pre-fills the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Incident')
-      end
-
-      it 'hides the epic select' do
-        expect(page).not_to have_selector('.epic-dropdown-container')
+      it 'does not pre-fill the issue type dropdown with incident type' do
+        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).not_to have_content('Incident')
       end
 
       it 'shows the milestone select' do
         expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
       end
 
-      it 'hides the weight input' do
-        expect(page).not_to have_selector('.qa-issuable-weight-input') # rubocop:disable QA/SelectorUsage
-      end
-
-      it 'shows the incident help text' do
-        expect(page).to have_text('A modified issue to guide the resolution of incidents.')
+      it 'hides the incident help text' do
+        expect(page).not_to have_text('A modified issue to guide the resolution of incidents.')
       end
     end
 
@@ -238,6 +230,44 @@ RSpec.describe "User creates issue" do
         fill_in 'issue_description', with: 'bug description'
 
         click_button 'Create issue'
+      end
+    end
+  end
+
+  context 'when signed in as reporter', :js do
+    let_it_be(:project) { create(:project) }
+
+    before_all do
+      project.add_reporter(user)
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    context 'form create handles incident creation' do
+      before do
+        visit new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+      end
+
+      it 'pre-fills the issue type dropdown with incident type' do
+        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Incident')
+      end
+
+      it 'hides the epic select' do
+        expect(page).not_to have_selector('.epic-dropdown-container')
+      end
+
+      it 'shows the milestone select' do
+        expect(page).to have_selector('.qa-issuable-milestone-dropdown') # rubocop:disable QA/SelectorUsage
+      end
+
+      it 'hides the weight input' do
+        expect(page).not_to have_selector('.qa-issuable-weight-input') # rubocop:disable QA/SelectorUsage
+      end
+
+      it 'shows the incident help text' do
+        expect(page).to have_text('A modified issue to guide the resolution of incidents.')
       end
     end
   end

@@ -179,7 +179,7 @@ job:
 ```
 
 You should not include both push and merge request pipelines in the same job without
-[`workflow:rules` that prevent duplicate pipelines](../yaml/index.md#switch-between-branch-pipelines-and-merge-request-pipelines):
+[`workflow:rules` that prevent duplicate pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines):
 
 ```yaml
 job:

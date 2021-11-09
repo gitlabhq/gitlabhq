@@ -22,9 +22,10 @@ located at `lib/tasks/gitlab/docs/compile_deprecations.rake`.
 
 Do not edit this page directly.
 
-To add a deprecation, follow the [deprecation item guidance](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry) and use the [`/data/deprecations/templates/example.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/data/deprecations/templates/example.yml) file as a template.
+To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
 
-To update this doc, follow the instructions in [Update the deprecations doc](https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
+To update this doc, run `bin/rake gitlab:docs:compile_deprecations`.
+To verify this doc is up to date, run `bin/rake gitlab:docs:check_deprecations`
 -->
 
 ## 14.4
@@ -84,6 +85,27 @@ This gem has not been maintained and has very little usage. We therefore plan to
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
 
 Announced: 2021-09-22
+
+### REST API Runner will not contain 'paused'
+
+Runner REST API will not return "paused" as a status in GitLab 15.0.
+
+REST API: Paused runners' status will only relate to runner contact status, such as:
+"online", "offline", "not_connected". Status "paused" will not appear when the runner is
+not active.
+
+When checking if a runner is "paused", API users are advised to check the boolean attribute
+"active" to be `false` instead.
+
+Announced: 
+
+### `AuthenticationType` for `[runners.cache.s3]` must be explicitly assigned
+
+In GitLab 15.0 and later, to access the AWS S3 cache, you must specify the `AuthenticationType` for [`[runners.cache.s3]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section). The `AuthenticationType` must be `IAM` or `credentials`.
+
+Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner chose a type for you. 
+
+Announced: 2021-11-22
 
 ## 15.2
 

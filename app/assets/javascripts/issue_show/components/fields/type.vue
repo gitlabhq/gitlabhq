@@ -2,7 +2,7 @@
 import { GlFormGroup, GlDropdown, GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { capitalize } from 'lodash';
 import { __ } from '~/locale';
-import { IssuableTypes } from '../../constants';
+import { IssuableTypes, IncidentType } from '../../constants';
 import getIssueStateQuery from '../../queries/get_issue_state.query.graphql';
 import updateIssueStateMutation from '../../queries/update_issue_state.mutation.graphql';
 
@@ -18,6 +18,14 @@ export default {
     GlIcon,
     GlDropdown,
     GlDropdownItem,
+  },
+  inject: {
+    canCreateIncident: {
+      default: false,
+    },
+    issueType: {
+      default: 'issue',
+    },
   },
   data() {
     return {
@@ -36,6 +44,9 @@ export default {
       } = this;
       return capitalize(issueType);
     },
+    shouldShowIncident() {
+      return this.issueType === IncidentType || this.canCreateIncident;
+    },
   },
   methods: {
     updateIssueType(issueType) {
@@ -46,6 +57,9 @@ export default {
           isDirty: true,
         },
       });
+    },
+    isShown(type) {
+      return type.value !== IncidentType || this.shouldShowIncident;
     },
   },
 };
@@ -68,6 +82,7 @@ export default {
     >
       <gl-dropdown-item
         v-for="type in $options.IssuableTypes"
+        v-show="isShown(type)"
         :key="type.value"
         :is-checked="issueState.issueType === type.value"
         is-check-item

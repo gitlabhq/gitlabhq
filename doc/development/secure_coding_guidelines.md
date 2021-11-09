@@ -595,7 +595,7 @@ response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ss
 
 ##### TLS 1.2
 
-**Golang** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorised ciphers:
+**Golang** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
 
 ```golang
 func secureCipherSuites() []uint16 {
@@ -694,69 +694,69 @@ Thank you for your contribution!
 
 Before Ruby 2.5.1, you could implement delegators using the `delegate` or `method_missing` methods. For example:
 
-```ruby  
-class User  
-  def initialize(attributes)  
-    @options = OpenStruct.new(attributes)  
+```ruby
+class User
+  def initialize(attributes)
+    @options = OpenStruct.new(attributes)
   end
 
-  def is_admin?  
+  def is_admin?
     name.eql?("Sid") # Note - never do this!
   end
 
-  def method_missing(method, *args)  
-    @options.send(method, *args)  
-  end  
-end  
+  def method_missing(method, *args)
+    @options.send(method, *args)
+  end
+end
 ```
 
 When a method was called on a `User` instance that didn't exist, it passed it along to the `@options` instance variable.
 
-```ruby  
-User.new({name: "Jeeves"}).is_admin?  
+```ruby
+User.new({name: "Jeeves"}).is_admin?
 # => false
 
-User.new(name: "Sid").is_admin?  
+User.new(name: "Sid").is_admin?
 # => true
 
-User.new(name: "Jeeves", "is_admin?" => true).is_admin?  
-# => false  
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?
+# => false
 ```
 
 Because the `is_admin?` method is already defined on the class, its behavior is not overridden when passing `is_admin?` to the initializer.
 
 This class can be refactored to use the `Forwardable` method and `def_delegators`:
 
-```ruby  
-class User  
+```ruby
+class User
   extend Forwardable
 
-  def initialize(attributes)  
+  def initialize(attributes)
     @options = OpenStruct.new(attributes)
 
-    self.class.instance_eval do  
-      def_delegators :@options, *attributes.keys  
-    end  
+    self.class.instance_eval do
+      def_delegators :@options, *attributes.keys
+    end
   end
 
-  def is_admin?  
+  def is_admin?
     name.eql?("Sid") # Note - never do this!
-  end 
-end  
+  end
+end
 ```
 
 It might seem like this example has the same behavior as the first code example. However, there's one crucial difference: **because the delegators are meta-programmed after the class is loaded, it can overwrite existing methods**:
 
-```ruby  
-User.new({name: "Jeeves"}).is_admin?  
+```ruby
+User.new({name: "Jeeves"}).is_admin?
 # => false
 
-User.new(name: "Sid").is_admin?  
+User.new(name: "Sid").is_admin?
 # => true
 
-User.new(name: "Jeeves", "is_admin?" => true).is_admin?  
-# => true  
-#     ^------------------ The method is overwritten! Sneaky Jeeves!  
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?
+# => true
+#     ^------------------ The method is overwritten! Sneaky Jeeves!
 ```
 
 In the example above, the `is_admin?` method is overwritten when passing it to the initializer.

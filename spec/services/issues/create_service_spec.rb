@@ -80,7 +80,7 @@ RSpec.describe Issues::CreateService do
 
       it_behaves_like 'not an incident issue'
 
-      context 'issue is incident type' do
+      context 'when issue is incident type' do
         before do
           opts.merge!(issue_type: 'incident')
         end
@@ -90,22 +90,36 @@ RSpec.describe Issues::CreateService do
 
         subject { issue }
 
-        it_behaves_like 'incident issue'
-        it_behaves_like 'has incident label'
+        context 'as reporter' do
+          let_it_be(:reporter) { create(:user) }
 
-        it 'does create an incident label' do
-          expect { subject }
-            .to change { Label.where(incident_label_attributes).count }.by(1)
+          let(:user) { reporter }
+
+          before_all do
+            project.add_reporter(reporter)
+          end
+
+          it_behaves_like 'incident issue'
+          it_behaves_like 'has incident label'
+
+          it 'does create an incident label' do
+            expect { subject }
+              .to change { Label.where(incident_label_attributes).count }.by(1)
+          end
+
+          context 'when invalid' do
+            before do
+              opts.merge!(title: '')
+            end
+
+            it 'does not apply an incident label prematurely' do
+              expect { subject }.to not_change(LabelLink, :count).and not_change(Issue, :count)
+            end
+          end
         end
 
-        context 'when invalid' do
-          before do
-            opts.merge!(title: '')
-          end
-
-          it 'does not apply an incident label prematurely' do
-            expect { subject }.to not_change(LabelLink, :count).and not_change(Issue, :count)
-          end
+        context 'as guest' do
+          it_behaves_like 'not an incident issue'
         end
       end
 

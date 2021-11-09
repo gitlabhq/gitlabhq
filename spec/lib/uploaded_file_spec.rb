@@ -15,7 +15,7 @@ RSpec.describe UploadedFile do
   end
 
   context 'from_params functions' do
-    RSpec.shared_examples 'using the file path' do |filename:, content_type:, sha256:, path_suffix:|
+    RSpec.shared_examples 'using the file path' do |filename:, content_type:, sha256:, path_suffix:, upload_duration:|
       it { is_expected.not_to be_nil }
 
       it 'sets properly the attributes' do
@@ -24,6 +24,7 @@ RSpec.describe UploadedFile do
         expect(subject.sha256).to eq(sha256)
         expect(subject.remote_id).to be_nil
         expect(subject.path).to end_with(path_suffix)
+        expect(subject.upload_duration).to eq(upload_duration)
       end
 
       it 'handles a blank path' do
@@ -37,16 +38,17 @@ RSpec.describe UploadedFile do
       end
     end
 
-    RSpec.shared_examples 'using the remote id' do |filename:, content_type:, sha256:, size:, remote_id:|
+    RSpec.shared_examples 'using the remote id' do |filename:, content_type:, sha256:, size:, remote_id:, upload_duration:|
       it { is_expected.not_to be_nil }
 
       it 'sets properly the attributes' do
         expect(subject.original_filename).to eq(filename)
-        expect(subject.content_type).to eq('application/octet-stream')
-        expect(subject.sha256).to eq('sha256')
+        expect(subject.content_type).to eq(content_type)
+        expect(subject.sha256).to eq(sha256)
         expect(subject.path).to be_nil
-        expect(subject.size).to eq(123456)
-        expect(subject.remote_id).to eq('1234567890')
+        expect(subject.size).to eq(size)
+        expect(subject.remote_id).to eq(remote_id)
+        expect(subject.upload_duration).to eq(upload_duration)
       end
     end
 
@@ -78,6 +80,7 @@ RSpec.describe UploadedFile do
               { 'path' => temp_file.path,
                 'name' => 'dir/my file&.txt',
                 'type' => 'my/type',
+                'upload_duration' => '5.05',
                 'sha256' => 'sha256' }
             end
 
@@ -85,7 +88,8 @@ RSpec.describe UploadedFile do
                             filename: 'my_file_.txt',
                             content_type: 'my/type',
                             sha256: 'sha256',
-                            path_suffix: 'test'
+                            path_suffix: 'test',
+                            upload_duration: 5.05
           end
 
           context 'with a remote id' do
@@ -96,6 +100,7 @@ RSpec.describe UploadedFile do
                 'remote_url' => 'http://localhost/file',
                 'remote_id' => '1234567890',
                 'etag' => 'etag1234567890',
+                'upload_duration' => '5.05',
                 'size' => '123456'
               }
             end
@@ -105,7 +110,8 @@ RSpec.describe UploadedFile do
                             content_type: 'application/octet-stream',
                             sha256: 'sha256',
                             size: 123456,
-                            remote_id: '1234567890'
+                            remote_id: '1234567890',
+                            upload_duration: 5.05
           end
 
           context 'with a path and a remote id' do
@@ -117,6 +123,7 @@ RSpec.describe UploadedFile do
                 'remote_url' => 'http://localhost/file',
                 'remote_id' => '1234567890',
                 'etag' => 'etag1234567890',
+                'upload_duration' => '5.05',
                 'size' => '123456'
               }
             end
@@ -126,7 +133,8 @@ RSpec.describe UploadedFile do
                             content_type: 'application/octet-stream',
                             sha256: 'sha256',
                             size: 123456,
-                            remote_id: '1234567890'
+                            remote_id: '1234567890',
+                            upload_duration: 5.05
           end
         end
       end
@@ -214,6 +222,44 @@ RSpec.describe UploadedFile do
         expect do
           described_class.new(nil, remote_id: 'id', size: 'not a number')
         end.to raise_error(UploadedFile::UnknownSizeError, 'Unable to determine file size')
+      end
+    end
+
+    context 'when upload_duration is not provided' do
+      it 'sets upload_duration to zero' do
+        file = described_class.new(temp_file.path)
+
+        expect(file.upload_duration).to be_zero
+      end
+    end
+
+    context 'when upload_duration is provided' do
+      let(:file) { described_class.new(temp_file.path, upload_duration: duration) }
+
+      context 'and upload_duration is a number' do
+        let(:duration) { 5.505 }
+
+        it 'sets the upload_duration' do
+          expect(file.upload_duration).to eq(duration)
+        end
+      end
+
+      context 'and upload_duration is a string' do
+        context 'and represents a number' do
+          let(:duration) { '5.505' }
+
+          it 'converts upload_duration to a number' do
+            expect(file.upload_duration).to eq(duration.to_f)
+          end
+        end
+
+        context 'and does not represent a number' do
+          let(:duration) { 'not a number' }
+
+          it 'sets upload_duration to zero' do
+            expect(file.upload_duration).to be_zero
+          end
+        end
       end
     end
   end

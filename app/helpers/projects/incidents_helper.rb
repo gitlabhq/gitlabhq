@@ -11,7 +11,8 @@ module Projects::IncidentsHelper
       'empty-list-svg-path' => image_path('illustrations/incident-empty-state.svg'),
       'text-query': params[:search],
       'author-username-query': params[:author_username],
-      'assignee-username-query': params[:assignee_username]
+      'assignee-username-query': params[:assignee_username],
+      'can-create-incident': create_issue_type_allowed?(project, :incident).to_s
     }
   end
 end

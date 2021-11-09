@@ -84,7 +84,7 @@ The following table lists project permissions available for each role:
 | [Incident Management](../operations/incident_management/index.md):<br>View [alerts](../operations/incident_management/alerts.md)                            |  | ✓ | ✓ | ✓ | ✓ |
 | [Incident Management](../operations/incident_management/index.md):<br>Assign an alert                                                                       | ✓| ✓ | ✓ | ✓ | ✓ |
 | [Incident Management](../operations/incident_management/index.md):<br>View [incident](../operations/incident_management/incidents.md)                       | ✓| ✓ | ✓ | ✓ | ✓ |
-| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                     | ✓| ✓ | ✓ | ✓ | ✓ |
+| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                     | (*17*) | ✓ | ✓ | ✓ | ✓ |
 | [Incident Management](../operations/incident_management/index.md):<br>View [on-call schedules](../operations/incident_management/oncall_schedules.md)       |  | ✓ | ✓ | ✓ | ✓ |
 | [Incident Management](../operations/incident_management/index.md):<br>Participate in on-call rotation                                                       | ✓| ✓ | ✓ | ✓ | ✓ |
 | [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)  |  | ✓ | ✓ | ✓ | ✓ |
@@ -226,6 +226,7 @@ The following table lists project permissions available for each role:
 1. Attached design files are moved together with the issue even if the user doesn't have the
    Developer role.
 1. Guest users can set metadata (for example, labels, assignees, or milestones) when creating an issue.
+1. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
 
 ## Project features permissions
 

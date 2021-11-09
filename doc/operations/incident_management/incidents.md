@@ -19,20 +19,22 @@ You can create an incident manually or automatically.
 
 ### Create incidents manually
 
-If you have at least Guest [permissions](../../user/permissions.md), to create an
-Incident, you have two options to do this manually.
+> [Permission changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336624) from Guest to Reporter in GitLab 14.5.
 
-**From the Incidents List:**
+If you have at least Reporter [permissions](../../user/permissions.md),
+you can create an incident manually from the Incidents List or the Issues List.
+
+To create an incident from the Incidents List:
 
 > [Moved](https://gitlab.com/gitlab-org/monitor/monitor/-/issues/24) to GitLab Free in 13.3.
 
-- Navigate to **Monitor > Incidents** and click **Create Incident**.
-- Create a new issue using the `incident` template available when creating it.
-- Create a new issue and assign the `incident` label to it.
+1. Navigate to **Monitor > Incidents** and click **Create Incident**.
+1. Create a new issue using the `incident` template available when creating it.
+1. Create a new issue and assign the `incident` label to it.
 
 ![Incident List Create](img/incident_list_create_v13_3.png)
 
-**From the Issues List:**
+To create an incident from the Issues List:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230857) in GitLab 13.4.
 

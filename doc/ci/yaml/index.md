@@ -114,6 +114,7 @@ a job-specific `image:` section:
   that keyword defined.
 - If a job already has one of the keywords configured, the configuration in the job
   takes precedence and is not replaced by the default.
+- Control inheritance of default keywords in jobs with [`inherit:default`](#inheritdefault).
 
 ### `stages`
 
@@ -170,14 +171,21 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29654) in GitLab 12.5
 
-Use `workflow:` to determine whether or not a pipeline is created.
-Define this keyword at the top level, with a single `rules:` keyword that
-is similar to [`rules:` defined in jobs](#rules).
+Use [`workflow`](workflow.md) to control pipeline behavior.
 
-You can use the [`workflow:rules` templates](#workflowrules-templates) to import
-a preconfigured `workflow: rules` entry.
+**Related topics**:
 
-`workflow: rules` accepts some of the same keywords as [`rules`](#rules):
+- [`workflow: rules` examples](workflow.md#workflow-rules-examples)
+- [Switch between branch pipelines and merge request pipelines](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
+
+#### `workflow:rules`
+
+The `rules` keyword in `workflow` is similar to [`rules:` defined in jobs](#rules),
+but controls whether or not a whole pipeline is created.
+
+When no rules evaluate to true, the pipeline does not run.
+
+**Possible inputs**: You can use some of the same keywords as job-level [`rules`](#rules):
 
 - [`rules: if`](#rulesif).
 - [`rules: changes`](#ruleschanges).
@@ -185,63 +193,54 @@ a preconfigured `workflow: rules` entry.
 - [`when`](#when), can only be `always` or `never` when used with `workflow`.
 - [`variables`](#workflowrulesvariables).
 
-When no rules evaluate to true, the pipeline does not run.
-
-Some example `if` clauses for `workflow: rules`:
-
-| Example rules                                        | Details                                                   |
-|------------------------------------------------------|-----------------------------------------------------------|
-| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run.                 |
-| `if: '$CI_PIPELINE_SOURCE == "push"'`                | Control when both branch pipelines and tag pipelines run. |
-| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
-| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
-
-See the [common `if` clauses for `rules`](../jobs/job_control.md#common-if-clauses-for-rules) for more examples.
-
-In the following example, pipelines run for all `push` events (changes to
-branches and new tags). Pipelines for push events with `-draft` in the commit message
-don't run, because they are set to `when: never`. Pipelines for schedules or merge requests
-don't run either, because no rules evaluate to true for them:
+**Example of `workflow:rules`:**
 
 ```yaml
 workflow:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /-draft$/
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-This example has strict rules, and pipelines do **not** run in any other case.
+In this example, pipelines run if the commit message does not have `-drafts` in it
+and the pipeline is for either:
 
-Alternatively, all of the rules can be `when: never`, with a final
-`when: always` rule. Pipelines that match the `when: never` rules do not run.
-All other pipeline types run:
+- A merge request
+- The default branch.
 
-```yaml
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: never
-    - when: always
-```
+**Additional details**:
 
-This example prevents pipelines for schedules or `push` (branches and tags) pipelines.
-The final `when: always` rule runs all other pipeline types, **including** merge
-request pipelines.
+- If your rules match both branch pipelines (other than the default branch) and merge request pipelines,
+  [duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines) can occur.
 
-If your rules match both branch pipelines and merge request pipelines,
-[duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines) can occur.
+**Related topics**:
+
+- You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
+  a preconfigured `workflow: rules` entry.
+- [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
 
 #### `workflow:rules:variables`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294232) in GitLab 13.11.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/300997) in GitLab 14.1.
 
-You can use [`variables`](#variables) in `workflow:rules:` to define variables for specific pipeline conditions.
+You can use [`variables`](#variables) in `workflow:rules:` to define variables for
+specific pipeline conditions.
 
-For example:
+When the condition matches, the variable is created and can be used by all jobs
+in the pipeline. If the variable is already defined at the global level, the `workflow`
+variable takes precedence and overrides the global variable.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: Variable name and value pairs:
+
+- The name can use only numbers, letters, and underscores (`_`).
+- The value must be a string.
+
+**Example of `workflow:rules:variables`:**
 
 ```yaml
 variables:
@@ -289,94 +288,6 @@ When the branch is something else:
 
 - job1's `DEPLOY_VARIABLE` is `job1-default-deploy`.
 - job2's `DEPLOY_VARIABLE` is `default-deploy`.
-
-#### `workflow:rules` templates
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
-
-GitLab provides templates that set up `workflow: rules`
-for common scenarios. These templates help prevent duplicate pipelines.
-
-The [`Branch-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/Branch-Pipelines.gitlab-ci.yml)
-makes your pipelines run for branches and tags.
-
-Branch pipeline status is displayed in merge requests that use the branch
-as a source. However, this pipeline type does not support any features offered by
-[merge request pipelines](../pipelines/merge_request_pipelines.md), like
-[pipelines for merged results](../pipelines/pipelines_for_merged_results.md)
-or [merge trains](../pipelines/merge_trains.md).
-This template intentionally avoids those features.
-
-To [include](#include) it:
-
-```yaml
-include:
-  - template: 'Workflows/Branch-Pipelines.gitlab-ci.yml'
-```
-
-The [`MergeRequest-Pipelines` template](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml)
-makes your pipelines run for the default branch, tags, and
-all types of merge request pipelines. Use this template if you use any of the
-the [pipelines for merge requests features](../pipelines/merge_request_pipelines.md).
-
-To [include](#include) it:
-
-```yaml
-include:
-  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
-```
-
-#### Switch between branch pipelines and merge request pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) in GitLab 13.8.
-
-To make the pipeline switch from branch pipelines to merge request pipelines after
-a merge request is created, add a `workflow: rules` section to your `.gitlab-ci.yml` file.
-
-If you use both pipeline types at the same time, [duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines)
-might run at the same time. To prevent duplicate pipelines, use the
-[`CI_OPEN_MERGE_REQUESTS` variable](../variables/predefined_variables.md).
-
-The following example is for a project that runs branch and merge request pipelines only,
-but does not run pipelines for any other case. It runs:
-
-- Branch pipelines when a merge request is not open for the branch.
-- Merge request pipelines when a merge request is open for the branch.
-
-```yaml
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
-      when: never
-    - if: '$CI_COMMIT_BRANCH'
-```
-
-If the pipeline is triggered by:
-
-- A merge request, run a merge request pipeline. For example, a merge request pipeline
-  can be triggered by a push to a branch with an associated open merge request.
-- A change to a branch, but a merge request is open for that branch, do not run a branch pipeline.
-- A change to a branch, but without any open merge requests, run a branch pipeline.
-
-You can also add a rule to an existing `workflow` section to switch from branch pipelines
-to merge request pipelines when a merge request is created.
-
-Add this rule to the top of the `workflow` section, followed by the other rules that
-were already present:
-
-```yaml
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - ...                # Previously defined workflow rules here
-```
-
-[Triggered pipelines](../triggers/index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
-set and could be blocked by a similar rule. Triggered pipelines have a pipeline source
-of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
-does not block triggered pipelines.
 
 ### `include`
 
@@ -810,7 +721,7 @@ job:
 Scripts you specify in `after_script` execute in a new shell, separate from any
 `before_script` or `script` commands. As a result, they:
 
-- Have the current working directory set back to the default (according to the [variables which define how the runner processes Git requests](#configure-runner-behavior-with-variables)).
+- Have the current working directory set back to the default (according to the [variables which define how the runner processes Git requests](../runners/configure_runners.md#configure-runner-behavior-with-variables)).
 - Don't have access to changes done by commands defined in the `before_script` or `script`,
   including:
   - Command aliases and variables exported in `script` scripts.
@@ -4191,104 +4102,101 @@ You must:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
 
-Use `inherit:` to control inheritance of globally-defined defaults
-and variables.
+Use `inherit:` to [control inheritance of globally-defined defaults and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
 
-To enable or disable the inheritance of all `default:` or `variables:` keywords, use:
+#### `inherit:default`
 
-- `default: true` or `default: false`
-- `variables: true` or `variables: false`
+Use `inherit:default` to control the inheritance of [default keywords](#default).
 
-To inherit only a subset of `default:` keywords or `variables:`, specify what
-you wish to inherit. Anything not listed is **not** inherited. Use
-one of the following formats:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-```yaml
-inherit:
-  default: [keyword1, keyword2]
-  variables: [VARIABLE1, VARIABLE2]
-```
+**Possible inputs**:
 
-Or:
+- `true` (default) or `false` to enable or disable the inheritance of all default keywords.
+- A list of specific default keywords to inherit.
 
-```yaml
-inherit:
-  default:
-    - keyword1
-    - keyword2
-  variables:
-    - VARIABLE1
-    - VARIABLE2
-```
-
-In the following example:
-
-- `rubocop`:
-  - inherits: Nothing.
-- `rspec`:
-  - inherits: the default `image` and the `WEBHOOK_URL` variable.
-  - does **not** inherit: the default `before_script` and the `DOMAIN` variable.
-- `capybara`:
-  - inherits: the default `before_script` and `image`.
-  - does **not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
-- `karma`:
-  - inherits: the default `image` and `before_script`, and the `DOMAIN` variable.
-  - does **not** inherit: `WEBHOOK_URL` variable.
+**Example of `inherit:default`:**
 
 ```yaml
 default:
-  image: 'ruby:2.4'
-  before_script:
-    - echo Hello World
+  retry: 2
+  image: ruby:3.0
+  interruptible: true
 
-variables:
-  DOMAIN: example.com
-  WEBHOOK_URL: https://my-webhook.example.com
-
-rubocop:
+job1:
+  script: echo "This job does not inherit any default keywords."
   inherit:
     default: false
-    variables: false
-  script: bundle exec rubocop
 
-rspec:
+job2:
+  script: echo "This job inherits only the two listed default keywords. It does not inherit 'interruptible'."
   inherit:
-    default: [image]
-    variables: [WEBHOOK_URL]
-  script: bundle exec rspec
-
-capybara:
-  inherit:
-    variables: false
-  script: bundle exec capybara
-
-karma:
-  inherit:
-    default: true
-    variables: [DOMAIN]
-  script: karma
+    default:
+      - retry
+      - image
 ```
+
+**Additional details:**
+
+- You can also list default keywords to inherit on one line: `default: [keyword1, keyword2]`
+
+#### `inherit:variables`
+
+Use `inherit:variables` to control the inheritance of [global variables](#variables) keywords.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `true` (default) or `false` to enable or disable the inheritance of all global variables.
+- A list of specific variables to inherit.
+
+**Example of `inherit:variables`:**
+
+```yaml
+variables:
+  VARIABLE1: "This is variable 1"
+  VARIABLE2: "This is variable 2"
+  VARIABLE3: "This is variable 3"
+
+job1:
+  script: echo "This job does not inherit any global variables."
+  inherit:
+    variables: false
+
+job2:
+  script: echo "This job inherits only the two listed global variables. It does not inherit 'VARIABLE3'."
+  inherit:
+    variables:
+      - VARIABLE1
+      - VARIABLE2
+```
+
+**Additional details:**
+
+- You can also list global variables to inherit on one line: `variables: [VARIABLE1, VARIABLE2]`
 
 ## `variables`
 
-> Introduced in GitLab Runner v0.5.0.
-
 [CI/CD variables](../variables/index.md) are configurable values that are passed to jobs.
-They can be set globally and per-job.
+Use `variables` to create [custom variables](../variables/index.md#custom-cicd-variables).
 
-There are two types of variables.
+Variables are always available in `script`, `before_script`, and `after_script` commands.
+You can also use variables as inputs in some job keywords.
 
-- [Custom variables](../variables/index.md#custom-cicd-variables):
-  You can define their values in the `.gitlab-ci.yml` file, in the GitLab UI,
-  or by using the API. You can also input variables in the GitLab UI when
-  [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
-- [Predefined variables](../variables/predefined_variables.md):
-  These values are set by the runner itself.
-  One example is `CI_COMMIT_REF_NAME`, which is the branch or tag the project is built for.
+**Keyword type**: Global and job keyword. You can use it at the global level,
+and also at the job level.
 
-After you define a variable, you can use it in all executed commands and scripts.
+If you define `variables` at the global level, each variable is copied to
+every job configuration when the pipeline is created. If the job already has that
+variable defined, the [job-level variable takes precedence](../variables/index.md#cicd-variable-precedence).
 
-Variables are meant for non-sensitive project configuration, for example:
+**Possible inputs**: Variable name and value pairs:
+
+- The name can use only numbers, letters, and underscores (`_`).
+- The value must be a string.
+
+**Examples of `variables`:**
 
 ```yaml
 variables:
@@ -4307,53 +4215,40 @@ deploy_review_job:
     - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
 ```
 
-You can use only integers and strings for the variable's name and value.
+**Additional details**:
 
-If you define a variable at the top level of the `.gitlab-ci.yml` file, it is global,
-meaning it applies to all jobs. If you define a variable in a job, it's available
-to that job only.
+- All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
+- YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
+  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
 
-If a variable of the same name is defined globally and for a specific job, the
-[job-specific variable overrides the global variable](../variables/index.md#cicd-variable-precedence).
+**Related topics**:
 
-All YAML-defined variables are also set to any linked
-[Docker service containers](../services/index.md).
+- You can use [YAML anchors for variables](yaml_specific_features.md#yaml-anchors-for-variables).
+- [Predefined variables](../variables/predefined_variables.md) are variables the runner
+  automatically creates and makes available in the job.
+- You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).
 
-You can use [YAML anchors for variables](yaml_specific_features.md#yaml-anchors-for-variables).
-
-### Prefill variables in manual pipelines
+### `variables:description`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-Use the `value` and `description` keywords to define [pipeline-level (global) variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
-when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually):
+Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
+when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
+
+Must be used with `value`, for the variable value.
+
+**Keyword type**: Global keyword. You cannot set job-level variables to be pre-filled when you run a pipeline manually.
+
+**Possible inputs**: A string.
+
+**Example of `variables:description`**:
 
 ```yaml
 variables:
   DEPLOY_ENVIRONMENT:
-    value: "staging"  # Deploy to staging by default
+    value: "staging"
     description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
 ```
-
-You cannot set job-level variables to be pre-filled when you run a pipeline manually.
-
-### Configure runner behavior with variables
-
-You can use [CI/CD variables](../variables/index.md) to configure how the runner processes Git requests:
-
-- [`GIT_STRATEGY`](../runners/configure_runners.md#git-strategy)
-- [`GIT_SUBMODULE_STRATEGY`](../runners/configure_runners.md#git-submodule-strategy)
-- [`GIT_CHECKOUT`](../runners/configure_runners.md#git-checkout)
-- [`GIT_CLEAN_FLAGS`](../runners/configure_runners.md#git-clean-flags)
-- [`GIT_FETCH_EXTRA_FLAGS`](../runners/configure_runners.md#git-fetch-extra-flags)
-- [`GIT_DEPTH`](../runners/configure_runners.md#shallow-cloning) (shallow cloning)
-- [`GIT_CLONE_PATH`](../runners/configure_runners.md#custom-build-directories) (custom build directories)
-- [`TRANSFER_METER_FREQUENCY`](../runners/configure_runners.md#artifact-and-cache-settings) (artifact/cache meter update frequency)
-- [`ARTIFACT_COMPRESSION_LEVEL`](../runners/configure_runners.md#artifact-and-cache-settings) (artifact archiver compression level)
-- [`CACHE_COMPRESSION_LEVEL`](../runners/configure_runners.md#artifact-and-cache-settings) (cache archiver compression level)
-
-You can also use variables to configure how many times a runner
-[attempts certain stages of job execution](../runners/configure_runners.md#job-stages-attempts).
 
 ## Deprecated keywords
 

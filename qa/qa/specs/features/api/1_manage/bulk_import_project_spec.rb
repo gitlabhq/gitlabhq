@@ -48,8 +48,10 @@ module QA
         imported_group.reload!.projects
       end
 
-      let(:import_details) do
-        imported_group.import_details.find { |entity| entity[:destination_name] == source_project.name }
+      let(:project_import_failures) do
+        imported_group.import_details
+          .find { |entity| entity[:destination_name] == source_project.name }
+          &.fetch(:failures)
       end
 
       before do
@@ -69,16 +71,20 @@ module QA
       end
 
       context 'with project' do
+        before do
+          imported_group # trigger import
+        end
+
         it(
           'successfully imports project',
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2297'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-          expect(import_details[:failures]).to be_empty, "Expected to not have import errors, was: #{import_details}"
+          expect(imported_projects.count).to eq(1), "Expected to have 1 imported project"
 
           aggregate_failures do
-            expect(imported_projects.count).to eq(1)
             expect(imported_projects.first).to eq(source_project)
+            expect(project_import_failures).to be_empty
           end
         end
       end
@@ -107,6 +113,7 @@ module QA
 
         before do
           source_issue # fabricate source group, project, issue
+          imported_group # trigger import
         end
 
         it(
@@ -114,11 +121,12 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2325'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-          expect(import_details[:failures]).to be_empty, "Expected to not have import errors, was: #{import_details}"
+          expect(imported_projects.count).to eq(1), "Expected to have 1 imported project"
 
           aggregate_failures do
             expect(imported_issues.count).to eq(1)
             expect(imported_issue.reload!).to eq(source_issue)
+            expect(project_import_failures).to be_empty
           end
         end
       end

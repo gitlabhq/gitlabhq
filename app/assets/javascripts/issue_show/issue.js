@@ -25,17 +25,22 @@ export function initIssuableApp(issuableData, store) {
 
   bootstrapApollo({ ...issueState, issueType: el.dataset.issueType });
 
+  const { canCreateIncident, ...issuableProps } = issuableData;
+
   return new Vue({
     el,
     apolloProvider,
     store,
+    provide: {
+      canCreateIncident,
+    },
     computed: {
       ...mapGetters(['getNoteableData']),
     },
     render(createElement) {
       return createElement(IssuableApp, {
         props: {
-          ...issuableData,
+          ...issuableProps,
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,

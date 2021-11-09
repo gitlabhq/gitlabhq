@@ -31,6 +31,7 @@ module Gitlab
       instrument_thread_memory_allocations(payload)
       instrument_load_balancing(payload)
       instrument_pid(payload)
+      instrument_uploads(payload)
     end
 
     def instrument_gitaly(payload)
@@ -114,6 +115,10 @@ module Gitlab
       load_balancing_payload = ::Gitlab::Metrics::Subscribers::LoadBalancing.load_balancing_payload
 
       payload.merge!(load_balancing_payload)
+    end
+
+    def instrument_uploads(payload)
+      payload.merge! ::Gitlab::Instrumentation::Uploads.payload
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

@@ -86,7 +86,7 @@ module Clusters
         if group_root_ancestor?
           root_ancestor.all_projects
         else
-          ::Project.none
+          ::Project.id_in(project.id)
         end
       end
 

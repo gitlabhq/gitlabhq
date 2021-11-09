@@ -155,7 +155,7 @@ The pipeline now executes the jobs as configured.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
+You can use the [`value` and `description`](../yaml/index.md#variablesdescription)
 keywords to define
 [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually.
@@ -164,7 +164,7 @@ In pipelines triggered manually, the **Run pipelines** page displays all top-lev
 with a `description` and `value` defined in the `.gitlab-ci.yml` file. The values
 can then be modified if needed, which overrides the value for that single pipeline run.
 
-The description is displayed below the variable. It can be used to explain what
+The description is displayed next to the variable. It can be used to explain what
 the variable is used for, what the acceptable values are, and so on:
 
 ```yaml
