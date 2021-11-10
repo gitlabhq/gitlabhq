@@ -1,7 +1,6 @@
 import {
   isGid,
   getIdFromGraphQLId,
-  getZeroBasedIdFromGraphQLId,
   convertToGraphQLId,
   convertToGraphQLIds,
   convertFromGraphQLIds,
@@ -54,7 +53,7 @@ describe('getIdFromGraphQLId', () => {
     },
     {
       input: 'gid://gitlab/Environments/0',
-      output: null,
+      output: 0,
     },
     {
       input: 'gid://gitlab/Environments/123',
@@ -67,55 +66,6 @@ describe('getIdFromGraphQLId', () => {
   ].forEach(({ input, output }) => {
     it(`getIdFromGraphQLId returns ${output} when passed ${input}`, () => {
       expect(getIdFromGraphQLId(input)).toBe(output);
-    });
-  });
-});
-
-describe('getZeroBasedIdFromGraphQLId', () => {
-  [
-    {
-      input: '',
-      output: null,
-    },
-    {
-      input: null,
-      output: null,
-    },
-    {
-      input: 2,
-      output: 2,
-    },
-    {
-      input: 'gid://',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/0',
-      output: 0,
-    },
-    {
-      input: 'gid://gitlab/Environments/123',
-      output: 123,
-    },
-    {
-      input: 'gid://gitlab/DesignManagement::Version/2',
-      output: 2,
-    },
-  ].forEach(({ input, output }) => {
-    it(`getZeroBasedIdFromGraphQLId returns ${output} when passed ${input}`, () => {
-      expect(getZeroBasedIdFromGraphQLId(input)).toBe(output);
     });
   });
 });

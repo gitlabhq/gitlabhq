@@ -268,12 +268,11 @@ export default {
 <template>
   <div class="boards-switcher js-boards-selector gl-mr-3">
     <span class="boards-selector-wrapper js-boards-selector-wrapper">
-      <gl-loading-icon v-if="isBoardLoading" size="md" class="gl-mt-2" />
       <gl-dropdown
-        v-else
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle js-dropdown-toggle"
         menu-class="flex-column dropdown-extended-height"
+        :loading="isBoardLoading"
         :text="board.name"
         @show="loadBoards"
       >

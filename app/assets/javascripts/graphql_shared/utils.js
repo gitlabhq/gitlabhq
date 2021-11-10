@@ -25,9 +25,7 @@ const parseGid = (gid) => parseInt(`${gid}`.replace(/gid:\/\/gitlab\/.*\//g, '')
  * @param {String} gid GraphQL global ID
  * @returns {Number}
  */
-export const getIdFromGraphQLId = (gid = '') => parseGid(gid) || null;
-
-export const getZeroBasedIdFromGraphQLId = (gid = '') => {
+export const getIdFromGraphQLId = (gid = '') => {
   const parsedGid = parseGid(gid);
   return Number.isInteger(parsedGid) ? parsedGid : null;
 };

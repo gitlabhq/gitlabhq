@@ -5,6 +5,8 @@ module Gitlab
     # The purpose of this class is to implement a various query analyzers based on `pg_query`
     # And process them all via `Gitlab::Database::QueryAnalyzers::*`
     class QueryAnalyzer
+      include ::Singleton
+
       ANALYZERS = [].freeze
 
       Parsed = Struct.new(

@@ -2,7 +2,7 @@
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { TYPE_USER, TYPE_ITERATION, TYPE_MILESTONE } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getZeroBasedIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { fullLabelId } from '../boards_util';
@@ -169,11 +169,11 @@ export default {
           : null,
         // Temporarily converting to milestone ID due to https://gitlab.com/gitlab-org/gitlab/-/issues/344779
         milestoneId: this.board.milestone?.id
-          ? convertToGraphQLId(TYPE_MILESTONE, getZeroBasedIdFromGraphQLId(this.board.milestone.id))
+          ? convertToGraphQLId(TYPE_MILESTONE, getIdFromGraphQLId(this.board.milestone.id))
           : null,
         // Temporarily converting to iteration ID due to https://gitlab.com/gitlab-org/gitlab/-/issues/344779
         iterationId: this.board.iteration?.id
-          ? convertToGraphQLId(TYPE_ITERATION, getZeroBasedIdFromGraphQLId(this.board.iteration.id))
+          ? convertToGraphQLId(TYPE_ITERATION, getIdFromGraphQLId(this.board.iteration.id))
           : null,
       };
     },

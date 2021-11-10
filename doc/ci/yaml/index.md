@@ -2599,33 +2599,12 @@ faster-test-job:
     - echo "Running tests..."
 ```
 
-### `artifacts`
+### `dependencies`
 
-Use `artifacts` to specify a list of files and directories that are
-attached to the job when it [succeeds, fails, or always](#artifactswhen).
-
-The artifacts are sent to GitLab after the job finishes. They are
-available for download in the GitLab UI if the size is not
-larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
-
-By default, jobs in later stages automatically download all the artifacts created
-by jobs in earlier stages. You can control artifact download behavior in jobs with
-[`dependencies`](#dependencies).
-
-When using the [`needs`](#artifact-downloads-with-needs) keyword, jobs can only download
-artifacts from the jobs defined in the `needs` configuration.
-
-Job artifacts are only collected for successful jobs by default, and
-artifacts are restored after [caches](#cache).
-
-[Read more about artifacts](../pipelines/job_artifacts.md).
-
-#### `dependencies`
-
-Use the `dependencies` keyword to define a list of jobs to fetch artifacts from.
+Use the `dependencies` keyword to define a list of jobs to fetch [artifacts](#artifacts) from.
 You can also set a job to download no artifacts at all.
 
-If you do not use `dependencies`, all `artifacts` from previous stages are passed to each job.
+If you do not use `dependencies`, all artifacts from previous stages are passed to each job.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2680,6 +2659,27 @@ the [stage](#stages) precedence.
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then the job fails.
+
+### `artifacts`
+
+Use `artifacts` to specify a list of files and directories that are
+attached to the job when it [succeeds, fails, or always](#artifactswhen).
+
+The artifacts are sent to GitLab after the job finishes. They are
+available for download in the GitLab UI if the size is not
+larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
+
+By default, jobs in later stages automatically download all the artifacts created
+by jobs in earlier stages. You can control artifact download behavior in jobs with
+[`dependencies`](#dependencies).
+
+When using the [`needs`](#artifact-downloads-with-needs) keyword, jobs can only download
+artifacts from the jobs defined in the `needs` configuration.
+
+Job artifacts are only collected for successful jobs by default, and
+artifacts are restored after [caches](#cache).
+
+[Read more about artifacts](../pipelines/job_artifacts.md).
 
 #### `artifacts:exclude`
 

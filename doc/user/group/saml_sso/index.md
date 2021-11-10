@@ -118,8 +118,9 @@ SSO has the following effects when enabled:
 
 - For groups, users can't share a project in the group outside the top-level group,
   even if the project is forked.
-- For a Git activity, users must be signed-in through SSO before they can push to or
-  pull from a GitLab repository.
+- For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
+  pull from a GitLab repository. 
+- Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
 

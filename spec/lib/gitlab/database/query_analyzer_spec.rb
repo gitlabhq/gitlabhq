@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer do
 
     def process_sql(sql)
       ApplicationRecord.load_balancer.read_write do |connection|
-        described_class.new.send(:process_sql, sql, connection)
+        described_class.instance.send(:process_sql, sql, connection)
       end
     end
   end

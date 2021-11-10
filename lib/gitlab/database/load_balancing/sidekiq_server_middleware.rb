@@ -13,7 +13,7 @@ module Gitlab
           job['load_balancing_strategy'] = strategy.to_s
 
           if use_primary?(strategy)
-            Session.current.use_primary!
+            ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
           elsif strategy == :retry
             raise JobReplicaNotUpToDate, "Sidekiq job #{worker_class} JID-#{job['jid']} couldn't use the replica."\
               "  Replica was not up to date."
@@ -29,8 +29,8 @@ module Gitlab
         private
 
         def clear
-          LoadBalancing.release_hosts
-          Session.clear_session
+          ::Gitlab::Database::LoadBalancing.release_hosts
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
         end
 
         def use_primary?(strategy)
@@ -66,7 +66,7 @@ module Gitlab
         def legacy_wal_location(job)
           wal_location = job['database_write_location'] || job['database_replica_location']
 
-          { Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
+          { ::Gitlab::Database::MAIN_DATABASE_NAME.to_sym => wal_location } if wal_location
         end
 
         def load_balancing_available?(worker_class)
@@ -90,7 +90,7 @@ module Gitlab
         end
 
         def databases_in_sync?(wal_locations)
-          LoadBalancing.each_load_balancer.all? do |lb|
+          ::Gitlab::Database::LoadBalancing.each_load_balancer.all? do |lb|
             if (location = wal_locations[lb.name])
               lb.select_up_to_date_host(location)
             else

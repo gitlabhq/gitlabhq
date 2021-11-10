@@ -8,6 +8,11 @@ class Projects::GoogleCloudController < Projects::ApplicationController
   before_action :feature_flag_enabled?
 
   def index
+    @js_data = {
+      serviceAccounts: GoogleCloud::ServiceAccountsService.new(project).find_for_project,
+      createServiceAccountUrl: '#mocked-url-create-service',
+      emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg')
+    }.to_json
   end
 
   private
