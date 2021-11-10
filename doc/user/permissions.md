@@ -33,8 +33,13 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-The Owner role is only available at the group or personal namespace level (and for instance administrators) and is inherited by its projects.
-While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner, or an instance administrator, who receives all permissions.
+A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
+available only:
+
+- For group owners. The role is inherited for a group's projects.
+- For Administrators.
+
+Personal namespace owners have the same permissions as an Owner, but are displayed with the Maintainer role on projects created in their personal namespace.
 For more information, see [projects members documentation](project/members/index.md).
 
 The following table lists project permissions available for each role:

@@ -20,7 +20,6 @@
 - "./ee/spec/services/app_sec/dast/profiles/update_service_spec.rb"
 - "./ee/spec/services/app_sec/dast/scans/create_service_spec.rb"
 - "./ee/spec/services/app_sec/dast/scans/run_service_spec.rb"
-- "./ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb"
 - "./ee/spec/services/ci/destroy_pipeline_service_spec.rb"
 - "./ee/spec/services/ci/retry_build_service_spec.rb"
 - "./ee/spec/services/ci/subscribe_bridge_service_spec.rb"

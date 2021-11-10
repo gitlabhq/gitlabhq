@@ -1022,7 +1022,7 @@ docker exec -it <name of container> gitlab-ctl stop sidekiq
 # Verify that the processes are all down before continuing
 docker exec -it <name of container> gitlab-ctl status
 
-# Run the restore
+# Run the restore. NOTE: "_gitlab_backup.tar" is omitted from the name
 docker exec -it <name of container> gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 
 # Restart the GitLab container

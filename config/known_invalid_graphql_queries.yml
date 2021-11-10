@@ -1,4 +1,3 @@
 ---
 filenames:
   - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/update_oncall_schedule_rotation.mutation.graphql
-  - ee/app/assets/javascripts/security_configuration/graphql/configure_iac.mutation.graphql

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedule do
-  let_it_be(:project) { create_default(:project) }
+  let_it_be_with_reload(:project) { create_default(:project) }
 
   subject { build(:ci_pipeline_schedule) }
 

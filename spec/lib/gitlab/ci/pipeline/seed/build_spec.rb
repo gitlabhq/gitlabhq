@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
 
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }

@@ -49,9 +49,8 @@ until the move has completed.
 
 To move repositories:
 
-1. Ensure all storages are accessible to the GitLab instance. Configure [local storage](../repository_storage_paths.md#example-configuration),
-   and [cluster storage](../repository_storage_paths.md). In this example, these are
-   `<original_storage_name>` and `<cluster_storage_name>`.
+1. Ensure all [local and cluster storages](../gitaly/configure_gitaly.md#mixed-configuration) are accessible to the GitLab instance. In
+   this example, these are `<original_storage_name>` and `<cluster_storage_name>`.
 1. [Configure repository storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored)
    so that the new storages receives all new projects. This stops new projects from being created
    on existing storages while the migration is in progress.

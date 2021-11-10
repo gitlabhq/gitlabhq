@@ -1,0 +1,6 @@
+mutation configureSastIac($input: ConfigureSastIacInput!) {
+  configureSastIac(input: $input) {
+    successPath
+    errors
+  }
+}

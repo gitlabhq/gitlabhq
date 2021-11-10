@@ -17,6 +17,7 @@ import {
 } from '~/vue_shared/security_reports/constants';
 
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
+import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
 
 /**
@@ -162,6 +163,11 @@ export const securityFeatures = [
           configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
           type: REPORT_TYPE_SAST_IAC,
 
+          // This field is currently hardcoded because SAST IaC is always available.
+          // It will eventually come from the Backend, the progress is tracked in
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
+          available: true,
+
           // This field will eventually come from the backend, the progress is
           // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
           canEnableByMergeRequest: true,
@@ -269,6 +275,21 @@ export const featureToMutationMap = {
       },
     }),
   },
+  ...(gon?.features?.configureIacScanningViaMr
+    ? {
+        [REPORT_TYPE_SAST_IAC]: {
+          mutationId: 'configureSastIac',
+          getMutationPayload: (projectPath) => ({
+            mutation: configureSastIacMutation,
+            variables: {
+              input: {
+                projectPath,
+              },
+            },
+          }),
+        },
+      }
+    : {}),
   [REPORT_TYPE_SECRET_DETECTION]: {
     mutationId: 'configureSecretDetection',
     getMutationPayload: (projectPath) => ({

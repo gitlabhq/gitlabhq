@@ -25,6 +25,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::StopDryRun,
                 Gitlab::Ci::Pipeline::Chain::Create,
+                Gitlab::Ci::Pipeline::Chain::CreateCrossDatabaseAssociations,
                 Gitlab::Ci::Pipeline::Chain::Limit::Activity,
                 Gitlab::Ci::Pipeline::Chain::Limit::JobActivity,
                 Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
