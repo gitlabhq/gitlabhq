@@ -25853,6 +25853,8 @@ CREATE INDEX index_events_on_author_id_and_created_at_merge_requests ON events U
 
 CREATE INDEX index_events_on_author_id_and_project_id ON events USING btree (author_id, project_id);
 
+CREATE INDEX index_events_on_created_at_and_id ON events USING btree (created_at, id) WHERE (created_at > '2021-08-27 00:00:00+00'::timestamp with time zone);
+
 CREATE INDEX index_events_on_group_id_partial ON events USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_events_on_project_id_and_created_at ON events USING btree (project_id, created_at);

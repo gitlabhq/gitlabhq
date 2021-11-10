@@ -52,6 +52,7 @@ export default {
       isFetchingCommitSha: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
+      shouldSkipStartScreen: false,
       showFailure: false,
       showStartScreen: false,
       showSuccess: false,
@@ -60,7 +61,6 @@ export default {
       successType: null,
     };
   },
-
   apollo: {
     initialCiFileContent: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
@@ -103,7 +103,11 @@ export default {
           }
 
           if (!hasCIFile) {
-            this.showStartScreen = true;
+            if (this.shouldSkipStartScreen) {
+              this.setNewEmptyCiConfigFile();
+            } else {
+              this.showStartScreen = true;
+            }
           } else if (fileContent.length) {
             // If the file content is > 0, then we make sure to reset the
             // start screen flag during a refetch
@@ -229,6 +233,7 @@ export default {
   },
   mounted() {
     this.loadTemplateFromURL();
+    this.checkShouldSkipStartScreen();
   },
   methods: {
     hideFailure() {
@@ -292,6 +297,10 @@ export default {
         this.starterTemplateName = templateName;
         this.setNewEmptyCiConfigFile();
       }
+    },
+    checkShouldSkipStartScreen() {
+      const params = queryToObject(window.location.search);
+      this.shouldSkipStartScreen = Boolean(params?.add_new_config_file);
     },
   },
 };

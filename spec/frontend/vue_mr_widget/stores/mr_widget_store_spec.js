@@ -129,7 +129,7 @@ describe('MergeRequestStore', () => {
     it('should set the add ci config path', () => {
       store.setPaths({ ...mockData });
 
-      expect(store.mergeRequestAddCiConfigPath).toBe('/group2/project2/new/pipeline');
+      expect(store.mergeRequestAddCiConfigPath).toBe('/root/group2/project2/-/ci/editor');
     });
 
     it('should set humanAccess=Maintainer when user has that role', () => {

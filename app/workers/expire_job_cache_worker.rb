@@ -14,9 +14,8 @@ class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
   deduplicate :until_executing, including_scheduled: true
   idempotent!
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(job_id)
-    job = CommitStatus.preload(:pipeline, :project).find_by(id: job_id)
+    job = CommitStatus.preload(:pipeline, :project).find_by_id(job_id) # rubocop: disable CodeReuse/ActiveRecord
     return unless job
 
     pipeline = job.pipeline
@@ -25,7 +24,6 @@ class ExpireJobCacheWorker # rubocop:disable Scalability/IdempotentWorker
     Gitlab::EtagCaching::Store.new.touch(project_job_path(project, job))
     ExpirePipelineCacheWorker.perform_async(pipeline.id)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

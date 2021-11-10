@@ -1,4 +1,4 @@
-type Environment {
+type LocalEnvironment {
   id: Int!
   globalId: ID!
   name: String!
@@ -9,14 +9,14 @@ type Environment {
   autoStopPath: String
 }
 
-type NestedEnvironment {
+type NestedLocalEnvironment {
   name: String!
   size: Int!
-  latest: Environment!
+  latest: LocalEnvironment!
 }
 
-type EnvironmentFolder {
-  environments: [Environment!]!
+type LocalEnvironmentFolder {
+  environments: [LocalEnvironment!]!
   availableCount: Int!
   stoppedCount: Int!
 }
@@ -27,9 +27,9 @@ type ReviewApp {
   reviewSnippet: String
 }
 
-type EnvironmentApp {
+type LocalEnvironmentApp {
   stoppedCount: Int!
   availableCount: Int!
-  environments: [NestedEnvironment!]!
+  environments: [NestedLocalEnvironment!]!
   reviewApp: ReviewApp!
 }

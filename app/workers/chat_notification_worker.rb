@@ -16,9 +16,8 @@ class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
   RESCHEDULE_INTERVAL = 2.seconds
   RESCHEDULE_TIMEOUT = 5.minutes
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id, reschedule_count = 0)
-    Ci::Build.find_by(id: build_id).try do |build|
+    Ci::Build.find_by_id(build_id).try do |build|
       send_response(build)
     end
   rescue Gitlab::Chat::Output::MissingBuildSectionError
@@ -30,7 +29,6 @@ class ChatNotificationWorker # rubocop:disable Scalability/IdempotentWorker
     # the job instead of producing an error.
     self.class.perform_in(RESCHEDULE_INTERVAL, build_id, reschedule_count + 1)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def send_response(build)
     Gitlab::Chat::Responder.responder_for(build).try do |responder|

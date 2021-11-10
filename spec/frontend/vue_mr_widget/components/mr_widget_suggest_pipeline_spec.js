@@ -1,4 +1,4 @@
-import { GlLink, GlSprintf } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
@@ -7,9 +7,7 @@ import MrWidgetIcon from '~/vue_merge_request_widget/components/mr_widget_icon.v
 import suggestPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import {
   SP_TRACK_LABEL,
-  SP_LINK_TRACK_EVENT,
   SP_SHOW_TRACK_EVENT,
-  SP_LINK_TRACK_VALUE,
   SP_SHOW_TRACK_VALUE,
   SP_HELP_URL,
 } from '~/vue_merge_request_widget/constants';
@@ -52,15 +50,8 @@ describe('MRWidgetSuggestPipeline', () => {
         mockAxios.restore();
       });
 
-      it('renders add pipeline file link', () => {
-        const link = wrapper.find(GlLink);
-
-        expect(link.exists()).toBe(true);
-        expect(link.attributes().href).toBe(suggestProps.pipelinePath);
-      });
-
       it('renders the expected text', () => {
-        const messageText = /\s*No pipeline\s*Add the .gitlab-ci.yml file\s*to create one./;
+        const messageText = /Looks like there's no pipeline here./;
 
         expect(wrapper.text()).toMatch(messageText);
       });
@@ -106,18 +97,6 @@ describe('MRWidgetSuggestPipeline', () => {
           expect(trackingSpy).toHaveBeenCalledWith(expectedCategory, expectedAction, {
             label: SP_TRACK_LABEL,
             property: suggestProps.humanAccess,
-          });
-        });
-
-        it('send an event when add pipeline link is clicked', () => {
-          mockTrackingOnWrapper();
-          const link = wrapper.find('[data-testid="add-pipeline-link"]');
-          triggerEvent(link.element);
-
-          expect(trackingSpy).toHaveBeenCalledWith('_category_', SP_LINK_TRACK_EVENT, {
-            label: SP_TRACK_LABEL,
-            property: suggestProps.humanAccess,
-            value: SP_LINK_TRACK_VALUE.toString(),
           });
         });
 

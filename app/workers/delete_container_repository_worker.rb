@@ -15,10 +15,9 @@ class DeleteContainerRepositoryWorker # rubocop:disable Scalability/IdempotentWo
 
   attr_reader :container_repository
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(current_user_id, container_repository_id)
-    current_user = User.find_by(id: current_user_id)
-    @container_repository = ContainerRepository.find_by(id: container_repository_id)
+    current_user = User.find_by_id(current_user_id)
+    @container_repository = ContainerRepository.find_by_id(container_repository_id)
     project = container_repository&.project
 
     return unless current_user && container_repository && project
@@ -29,7 +28,6 @@ class DeleteContainerRepositoryWorker # rubocop:disable Scalability/IdempotentWo
       Projects::ContainerRepository::DestroyService.new(project, current_user).execute(container_repository)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # For ExclusiveLeaseGuard concern
   def lease_key

@@ -9,17 +9,17 @@ class ExpireBuildInstanceArtifactsWorker # rubocop:disable Scalability/Idempoten
 
   feature_category :build_artifacts
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
+    # rubocop: disable CodeReuse/ActiveRecord
     build = Ci::Build
       .with_expired_artifacts
       .reorder(nil)
-      .find_by(id: build_id)
+      .find_by_id(build_id)
+    # rubocop: enable CodeReuse/ActiveRecord
 
     return unless build&.project && !build.project.pending_delete
 
     Gitlab::AppLogger.info("Removing artifacts for build #{build.id}...")
     build.erase_erasable_artifacts!
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

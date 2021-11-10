@@ -14,7 +14,7 @@ class BuildHooksWorker # rubocop:disable Scalability/IdempotentWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.includes({ runner: :tags })
-      .find_by(id: build_id)
+      .find_by_id(build_id)
       .try(:execute_hooks)
   end
   # rubocop: enable CodeReuse/ActiveRecord

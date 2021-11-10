@@ -233,7 +233,7 @@ export function insertMarkdownText({
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
     textToInsert = tag.replace(textPlaceholder, () =>
-      selected.replace(/\\n/g, '\n').replace('%br', '\\n'),
+      selected.replace(/\\n/g, '\n').replace(/%br/g, '\\n'),
     );
   } else {
     textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');

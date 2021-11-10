@@ -234,7 +234,7 @@ export const resolvedEnvironmentsApp = {
         canDelete: false,
         hasOpenedAlert: false,
       },
-      __typename: 'NestedEnvironment',
+      __typename: 'NestedLocalEnvironment',
     },
     {
       name: 'production',
@@ -368,7 +368,7 @@ export const resolvedEnvironmentsApp = {
         canDelete: false,
         hasOpenedAlert: false,
       },
-      __typename: 'NestedEnvironment',
+      __typename: 'NestedLocalEnvironment',
     },
     {
       name: 'staging',
@@ -398,7 +398,7 @@ export const resolvedEnvironmentsApp = {
         canDelete: false,
         hasOpenedAlert: false,
       },
-      __typename: 'NestedEnvironment',
+      __typename: 'NestedLocalEnvironment',
     },
   ],
   reviewApp: {
@@ -409,7 +409,7 @@ export const resolvedEnvironmentsApp = {
     __typename: 'ReviewApp',
   },
   stoppedCount: 0,
-  __typename: 'EnvironmentApp',
+  __typename: 'LocalEnvironmentApp',
 };
 
 export const folder = {
@@ -496,7 +496,7 @@ export const resolvedFolder = {
       enableAdvancedLogsQuerying: false,
       canDelete: false,
       hasOpenedAlert: false,
-      __typename: 'Environment',
+      __typename: 'LocalEnvironment',
     },
     {
       id: 41,
@@ -522,9 +522,9 @@ export const resolvedFolder = {
       enableAdvancedLogsQuerying: false,
       canDelete: false,
       hasOpenedAlert: false,
-      __typename: 'Environment',
+      __typename: 'LocalEnvironment',
     },
   ],
   stoppedCount: 0,
-  __typename: 'EnvironmentFolder',
+  __typename: 'LocalEnvironmentFolder',
 };

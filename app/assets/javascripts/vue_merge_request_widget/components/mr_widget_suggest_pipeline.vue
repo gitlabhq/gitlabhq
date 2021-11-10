@@ -4,9 +4,7 @@ import Tracking from '~/tracking';
 import DismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
 import {
   SP_TRACK_LABEL,
-  SP_LINK_TRACK_EVENT,
   SP_SHOW_TRACK_EVENT,
-  SP_LINK_TRACK_VALUE,
   SP_SHOW_TRACK_VALUE,
   SP_HELP_CONTENT,
   SP_HELP_URL,
@@ -20,9 +18,7 @@ export default {
   name: 'MRWidgetSuggestPipeline',
   SP_ICON_NAME,
   SP_TRACK_LABEL,
-  SP_LINK_TRACK_EVENT,
   SP_SHOW_TRACK_EVENT,
-  SP_LINK_TRACK_VALUE,
   SP_SHOW_TRACK_VALUE,
   SP_HELP_CONTENT,
   SP_HELP_URL,
@@ -81,28 +77,13 @@ export default {
       <div>
         <gl-sprintf
           :message="
-            s__(`mrWidget|%{prefixToLinkStart}No pipeline%{prefixToLinkEnd}
-          %{addPipelineLinkStart}Add the .gitlab-ci.yml file%{addPipelineLinkEnd}
-          to create one.`)
+            s__(`mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}`)
           "
         >
-          <template #prefixToLink="{ content }">
+          <template #boldHeader="{ content }">
             <strong>
               {{ content }}
             </strong>
-          </template>
-          <template #addPipelineLink="{ content }">
-            <gl-link
-              :href="pipelinePath"
-              class="gl-ml-1"
-              data-testid="add-pipeline-link"
-              :data-track-property="humanAccess"
-              :data-track-value="$options.SP_LINK_TRACK_VALUE"
-              :data-track-action="$options.SP_LINK_TRACK_EVENT"
-              :data-track-label="$options.SP_TRACK_LABEL"
-            >
-              {{ content }}
-            </gl-link>
           </template>
         </gl-sprintf>
       </div>
@@ -115,9 +96,6 @@ export default {
       </div>
       <div class="col-md-7 order-md-first col-12">
         <div class="ml-6 gl-pt-5">
-          <strong>
-            {{ s__('mrWidget|Are you adding technical debt or code vulnerabilities?') }}
-          </strong>
           <p class="gl-mt-2">
             <gl-sprintf :message="$options.SP_HELP_CONTENT">
               <template #link="{ content }">
@@ -142,7 +120,7 @@ export default {
             :data-track-action="$options.SP_SHOW_TRACK_EVENT"
             :data-track-label="$options.SP_TRACK_LABEL"
           >
-            {{ __('Show me how to add a pipeline') }}
+            {{ __('Try out GitLab Pipelines') }}
           </gl-button>
         </div>
       </div>

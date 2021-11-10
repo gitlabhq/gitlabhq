@@ -16,7 +16,7 @@ module Ci
     ARCHIVE_TRACES_IN = 2.minutes.freeze
 
     def perform(build_id)
-      return unless build = Ci::Build.find_by(id: build_id) # rubocop: disable CodeReuse/ActiveRecord
+      return unless build = Ci::Build.find_by_id(build_id)
       return unless build.project
       return if build.project.pending_delete?
 

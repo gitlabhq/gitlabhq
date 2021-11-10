@@ -26,16 +26,14 @@ class ClusterUpdateAppWorker # rubocop:disable Scalability/IdempotentWorker
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute(app_name, app_id, project_id, scheduled_time)
-    project = Project.find_by(id: project_id)
+    project = Project.find_by_id(project_id)
     return unless project
 
     find_application(app_name, app_id) do |app|
       update_prometheus(app, scheduled_time, project)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def update_prometheus(app, scheduled_time, project)
     return unless app.managed_prometheus?

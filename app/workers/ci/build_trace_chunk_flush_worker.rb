@@ -13,12 +13,10 @@ module Ci
 
     idempotent!
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def perform(id)
-      ::Ci::BuildTraceChunk.find_by(id: id).try do |chunk|
+      ::Ci::BuildTraceChunk.find_by_id(id).try do |chunk|
         chunk.persist_data!
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -12,11 +12,9 @@ class BuildQueueWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :cpu
   data_consistency :sticky
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
-    Ci::Build.find_by(id: build_id).try do |build|
+    Ci::Build.find_by_id(build_id).try do |build|
       Ci::UpdateBuildQueueService.new.tick(build)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

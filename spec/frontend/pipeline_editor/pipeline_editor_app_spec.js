@@ -411,4 +411,37 @@ describe('Pipeline editor app component', () => {
       expect(findEditorHome().exists()).toBe(true);
     });
   });
+
+  describe('when add_new_config_file query param is present', () => {
+    const originalLocation = window.location.href;
+
+    beforeEach(() => {
+      setWindowLocation('?add_new_config_file=true');
+
+      mockCiConfigData.mockResolvedValue(mockCiConfigQueryResponse);
+    });
+
+    afterEach(() => {
+      setWindowLocation(originalLocation);
+    });
+
+    describe('when CI config file does not exist', () => {
+      beforeEach(async () => {
+        mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
+        mockLatestCommitShaQuery.mockResolvedValue(mockEmptyCommitShaResults);
+        mockGetTemplate.mockResolvedValue(mockCiTemplateQueryResponse);
+
+        await createComponentWithApollo();
+
+        jest
+          .spyOn(wrapper.vm.$apollo.queries.commitSha, 'startPolling')
+          .mockImplementation(jest.fn());
+      });
+
+      it('skips empty state and shows editor home component', () => {
+        expect(findEmptyState().exists()).toBe(false);
+        expect(findEditorHome().exists()).toBe(true);
+      });
+    });
+  });
 });

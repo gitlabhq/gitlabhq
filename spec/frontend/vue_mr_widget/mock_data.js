@@ -51,7 +51,7 @@ export default {
   target_branch: 'main',
   target_project_id: 19,
   target_project_full_path: '/group2/project2',
-  merge_request_add_ci_config_path: '/group2/project2/new/pipeline',
+  merge_request_add_ci_config_path: '/root/group2/project2/-/ci/editor',
   is_dismissed_suggest_pipeline: false,
   user_callouts_path: 'some/callout/path',
   suggest_pipeline_feature_id: 'suggest_pipeline',

@@ -17,14 +17,12 @@ export const AUTO_MERGE_STRATEGIES = [MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY,
 
 // SP - "Suggest Pipelines"
 export const SP_TRACK_LABEL = 'no_pipeline_noticed';
-export const SP_LINK_TRACK_EVENT = 'click_link';
 export const SP_SHOW_TRACK_EVENT = 'click_button';
-export const SP_LINK_TRACK_VALUE = 30;
 export const SP_SHOW_TRACK_VALUE = 10;
 export const SP_HELP_CONTENT = s__(
-  `mrWidget|Use %{linkStart}CI pipelines to test your code%{linkEnd} by simply adding a GitLab CI configuration file to your project. It only takes a minute to make your code more secure and robust.`,
+  `mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file.`,
 );
-export const SP_HELP_URL = 'https://about.gitlab.com/blog/2019/07/12/guide-to-ci-cd-pipelines/';
+export const SP_HELP_URL = 'https://docs.gitlab.com/ee/ci/quick_start/';
 export const SP_ICON_NAME = 'status_notfound';
 
 export const MERGE_ACTIVE_STATUS_PHRASES = [

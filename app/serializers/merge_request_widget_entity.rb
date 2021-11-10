@@ -64,14 +64,12 @@ class MergeRequestWidgetEntity < Grape::Entity
   end
 
   expose :merge_request_add_ci_config_path, if: ->(mr, _) { can_add_ci_config_path?(mr) } do |merge_request|
-    project_new_blob_path(
-      merge_request.source_project,
-      merge_request.source_branch,
-      file_name: '.gitlab-ci.yml',
-      commit_message: s_("CommitMessage|Add %{file_name}") % { file_name: Gitlab::FileDetector::PATTERNS[:gitlab_ci] },
-      mr_path: merge_request_path(merge_request),
-      suggest_gitlab_ci_yml: true
-    )
+    project = merge_request.source_project
+    params = {
+      branch_name: merge_request.source_branch,
+      add_new_config_file: true
+    }
+    project_ci_pipeline_editor_path(project, params)
   end
 
   expose :user_callouts_path do |_merge_request|
@@ -177,7 +175,6 @@ class MergeRequestWidgetEntity < Grape::Entity
   def can_add_ci_config_path?(merge_request)
     merge_request.open? &&
       merge_request.source_branch_exists? &&
-      merge_request.source_project&.uses_default_ci_config? &&
       !merge_request.source_project.has_ci? &&
       merge_request.commits_count > 0 &&
       can?(current_user, :read_build, merge_request.source_project) &&

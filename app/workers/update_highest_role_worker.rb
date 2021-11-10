@@ -13,17 +13,15 @@ class UpdateHighestRoleWorker
 
   idempotent!
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(user_id)
-    user = User.find_by(id: user_id)
+    user = User.find_by_id(user_id)
 
     return unless user.present?
 
     if user.active? && user.human? && !user.internal?
       Users::UpdateHighestMemberRoleService.new(user).execute
     else
-      UserHighestRole.where(user_id: user_id).delete_all
+      UserHighestRole.where(user_id: user_id).delete_all # rubocop: disable CodeReuse/ActiveRecord
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

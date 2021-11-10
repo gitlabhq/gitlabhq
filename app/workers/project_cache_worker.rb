@@ -23,9 +23,8 @@ class ProjectCacheWorker
   #              refresh, if empty all columns will be refreshed
   # refresh_statistics - A boolean that determines whether project statistics should
   #                     be updated.
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, files = [], statistics = [], refresh_statistics = true)
-    project = Project.find_by(id: project_id)
+    project = Project.find_by_id(project_id)
 
     return unless project
 
@@ -37,7 +36,6 @@ class ProjectCacheWorker
 
     project.cleanup
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # NOTE: triggering both an immediate update and one in 15 minutes if we
   # successfully obtain the lease. That way, we only need to wait for the

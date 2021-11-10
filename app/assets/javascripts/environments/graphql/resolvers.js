@@ -3,12 +3,11 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 const mapNestedEnvironment = (env) => ({
   ...convertObjectPropsToCamelCase(env, { deep: true }),
-  __typename: 'NestedEnvironment',
+  __typename: 'NestedLocalEnvironment',
 });
 const mapEnvironment = (env) => ({
   ...convertObjectPropsToCamelCase(env),
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  __typename: 'Environment',
+  __typename: 'LocalEnvironment',
 });
 
 export const resolvers = (endpoint) => ({
@@ -22,7 +21,7 @@ export const resolvers = (endpoint) => ({
           __typename: 'ReviewApp',
         },
         stoppedCount: res.data.stopped_count,
-        __typename: 'EnvironmentApp',
+        __typename: 'LocalEnvironmentApp',
       }));
     },
     folder(_, { environment: { folderPath } }) {
@@ -30,7 +29,7 @@ export const resolvers = (endpoint) => ({
         availableCount: res.data.available_count,
         environments: res.data.environments.map(mapEnvironment),
         stoppedCount: res.data.stopped_count,
-        __typename: 'EnvironmentFolder',
+        __typename: 'LocalEnvironmentFolder',
       }));
     },
   },

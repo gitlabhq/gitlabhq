@@ -10,13 +10,11 @@ class InvalidGpgSignatureUpdateWorker # rubocop:disable Scalability/IdempotentWo
   feature_category :source_code_management
   weight 2
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(gpg_key_id)
-    gpg_key = GpgKey.find_by(id: gpg_key_id)
+    gpg_key = GpgKey.find_by_id(gpg_key_id)
 
     return unless gpg_key
 
     Gitlab::Gpg::InvalidGpgSignatureUpdater.new(gpg_key).run
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
