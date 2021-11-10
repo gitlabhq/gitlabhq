@@ -191,7 +191,7 @@ describe('MRWidgetMerged', () => {
   });
 
   it('shows button to copy commit SHA to clipboard', () => {
-    expect(selectors.copyMergeShaButton).toExist();
+    expect(selectors.copyMergeShaButton).not.toBe(null);
     expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(
       vm.mr.mergeCommitSha,
     );
@@ -201,14 +201,14 @@ describe('MRWidgetMerged', () => {
     vm.mr.mergeCommitSha = null;
 
     Vue.nextTick(() => {
-      expect(selectors.copyMergeShaButton).not.toExist();
+      expect(selectors.copyMergeShaButton).toBe(null);
       expect(vm.$el.querySelector('.mr-info-list').innerText).not.toContain('with');
       done();
     });
   });
 
   it('shows merge commit SHA link', () => {
-    expect(selectors.mergeCommitShaLink).toExist();
+    expect(selectors.mergeCommitShaLink).not.toBe(null);
     expect(selectors.mergeCommitShaLink.text).toContain(vm.mr.shortMergeCommitSha);
     expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });

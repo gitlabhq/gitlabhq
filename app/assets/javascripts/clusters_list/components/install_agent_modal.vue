@@ -55,12 +55,12 @@ export default {
       return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
     },
     basicInstallPath() {
-      return helpPagePath('user/clusters/agent/index', {
+      return helpPagePath('user/clusters/agent/install/index', {
         anchor: 'install-the-agent-into-the-cluster',
       });
     },
     advancedInstallPath() {
-      return helpPagePath('user/clusters/agent/index', { anchor: 'advanced-installation' });
+      return helpPagePath('user/clusters/agent/install/index', { anchor: 'advanced-installation' });
     },
   },
   methods: {

@@ -47,10 +47,12 @@ Object.assign(global, {
   setFixtures: setHTMLFixture,
 });
 
+const JQUERY_MATCHERS_TO_EXCLUDE = ['toHaveLength', 'toExist'];
+
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible
 Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
-  // Don't override existing Jest matcher
-  if (matcherName === 'toHaveLength') {
+  // Exclude these jQuery matchers
+  if (JQUERY_MATCHERS_TO_EXCLUDE.includes(matcherName)) {
     return;
   }
 

@@ -87,7 +87,7 @@ describe('Design management list item component', () => {
 
     describe('before image is loaded', () => {
       it('renders loading spinner', () => {
-        expect(wrapper.find(GlLoadingIcon)).toExist();
+        expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
       });
     });
 

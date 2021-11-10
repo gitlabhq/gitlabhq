@@ -213,6 +213,7 @@ export default {
     <div
       v-if="hasRotateError"
       class="gl-text-red-500 gl-display-flex gl-align-items-center gl-font-weight-normal gl-mb-3"
+      data-testid="rotate-error"
     >
       <gl-icon name="warning" class="gl-mr-2" />
       <span>{{ $options.translations.instanceIdRegenerateError }}</span>

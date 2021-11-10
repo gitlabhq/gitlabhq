@@ -1175,6 +1175,19 @@ For more information, see [Offline environments](../offline_deployments/index.md
 
 ## Troubleshooting
 
+### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+
+A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
+
+The version information can be found in the job details for the `apifuzzer_fuzz` job.
+
+If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+
+1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
+1. The full console output of the job.
+1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
+1. The `apifuzzer_fuzz` job definition from your `.gitlab-ci.yml` file.
+
 ### Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema
 
 At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors. Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.

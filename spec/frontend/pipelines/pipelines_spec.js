@@ -554,7 +554,7 @@ describe('Pipelines', () => {
       });
 
       it('renders the CI/CD templates', () => {
-        expect(wrapper.find(PipelinesCiTemplates)).toExist();
+        expect(wrapper.findComponent(PipelinesCiTemplates).exists()).toBe(true);
       });
 
       describe('when the code_quality_walkthrough experiment is active', () => {
@@ -568,7 +568,7 @@ describe('Pipelines', () => {
           });
 
           it('renders the CI/CD templates', () => {
-            expect(wrapper.find(PipelinesCiTemplates)).toExist();
+            expect(wrapper.findComponent(PipelinesCiTemplates).exists()).toBe(true);
           });
         });
 
@@ -597,7 +597,7 @@ describe('Pipelines', () => {
           });
 
           it('renders the CI/CD templates', () => {
-            expect(wrapper.find(PipelinesCiTemplates)).toExist();
+            expect(wrapper.findComponent(PipelinesCiTemplates).exists()).toBe(true);
           });
         });
 

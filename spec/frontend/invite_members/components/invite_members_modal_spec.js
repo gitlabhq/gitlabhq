@@ -198,7 +198,7 @@ describe('InviteMembersModal', () => {
 
     describe('rendering the access expiration date field', () => {
       it('renders the datepicker', () => {
-        expect(findDatepicker()).toExist();
+        expect(findDatepicker().exists()).toBe(true);
       });
     });
   });

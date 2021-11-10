@@ -450,6 +450,78 @@ The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-produc
 
 If the scanner report is small, less than 35 lines, then feel free to [inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77) rather than use a `testdata` directory.
 
+#### Test Diffs
+
+The [go-cmp]<https://github.com/google/go-cmp> package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
+
+```golang
+package main
+
+import (
+  "reflect"
+  "testing"
+
+  "github.com/google/go-cmp/cmp"
+)
+
+type Foo struct {
+  Desc  Bar
+  Point Baz
+}
+
+type Bar struct {
+  A string
+  B string
+}
+
+type Baz struct {
+  X int
+  Y int
+}
+
+func TestHelloWorld(t *testing.T) {
+  want := Foo{
+    Desc:  Bar{A: "a", B: "b"},
+    Point: Baz{X: 1, Y: 2},
+  }
+
+  got := Foo{
+    Desc:  Bar{A: "a", B: "b"},
+    Point: Baz{X: 2, Y: 2},
+  }
+
+  t.Log("reflect comparison:")
+  if !reflect.DeepEqual(got, want) {
+    t.Errorf("Wrong result. want:\n%v\nGot:\n%v", want, got)
+  }
+
+  t.Log("cmp comparison:")
+  if diff := cmp.Diff(want, got); diff != "" {
+    t.Errorf("Wrong result. (-want +got):\n%s", diff)
+  }
+}
+```
+
+The output demonstrates why `go-cmp` is far superior when comparing large structs. Even though you could spot the difference with this small difference, it quickly gets unwieldy as the data grows.
+
+```plaintext
+  main_test.go:36: reflect comparison:
+  main_test.go:38: Wrong result. want:
+      {{a b} {1 2}}
+      Got:
+      {{a b} {2 2}}
+  main_test.go:41: cmp comparison:
+  main_test.go:43: Wrong result. (-want +got):
+        main.Foo{
+              Desc: {A: "a", B: "b"},
+              Point: main.Baz{
+      -               X: 1,
+      +               X: 2,
+                      Y: 2,
+              },
+        }
+```
+
 ---
 
 [Return to Development documentation](../index.md).

@@ -201,8 +201,7 @@ To prevent a merge request introducing a security vulnerability in a project, en
 Vulnerability-Check rule. While this rule is enabled, an additional merge request approval is
 required when the latest security report in a merge request:
 
-- Contains vulnerabilities that are not present in the target branch. Note that approval is still
-  required for dismissed vulnerabilities.
+- Contains vulnerabilities with states (for example, `previously detected`, `dismissed`) matching the rule's vulnerability states. Only `newly detected` will be considered if the target branch differs from the project default branch.
 - Contains vulnerabilities with severity levels (for example, `high`, `critical`, or `unknown`)
   matching the rule's severity levels.
 - Contains a vulnerability count higher than the rule allows.
@@ -210,7 +209,7 @@ required when the latest security report in a merge request:
 
 An approval is optional when the security report:
 
-- Contains no new vulnerabilities when compared to the target branch.
+- Contains only vulnerabilities with states (for example, `newly detected`, `resolved`) **NOT** matching the rule's vulnerability states.
 - Contains only vulnerabilities with severity levels (for example, `low`, `medium`) **NOT** matching
   the rule's severity levels.
 - Contains a vulnerability count equal to or less than what the rule allows.

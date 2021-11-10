@@ -42,7 +42,7 @@ describe('MarkdownViewer', () => {
     it('renders an animation container while the markdown is loading', () => {
       createComponent();
 
-      expect(wrapper.find('.animation-container')).toExist();
+      expect(wrapper.find('.animation-container').exists()).toBe(true);
     });
 
     it('renders markdown preview preview renders and loads rendered markdown from server', () => {

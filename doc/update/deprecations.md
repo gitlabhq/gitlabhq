@@ -94,18 +94,18 @@ Note that we are not deprecating the Kerberos SPNEGO integration, only the old p
 
 Announced: 2021-09-22
 
-### REST API Runner will not contain 'paused'
+### REST API Runner will not contain `paused`
 
-Runner REST API will not return "paused" as a status in GitLab 15.0.
+Runner REST API will not return `paused` as a status in GitLab 15.0.
 
-REST API: Paused runners' status will only relate to runner contact status, such as:
-"online", "offline", "not_connected". Status "paused" will not appear when the runner is
+Paused runners' status will only relate to runner contact status, such as:
+`online`, `offline`, or `not_connected`. Status `paused` will not appear when the runner is
 not active.
 
-When checking if a runner is "paused", API users are advised to check the boolean attribute
-"active" to be `false` instead.
+When checking if a runner is `paused`, API users are advised to check the boolean attribute
+`active` to be `false` instead.
 
-Announced: 
+Announced: 2021-11-22
 
 ### `AuthenticationType` for `[runners.cache.s3]` must be explicitly assigned
 

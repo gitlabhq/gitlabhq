@@ -38,7 +38,7 @@ describe('Dropdown select component', () => {
   it('creates a hidden input if fieldName is provided', () => {
     mountDropdown({ fieldName: 'namespace-input' });
 
-    expect(findNamespaceInput()).toExist();
+    expect(findNamespaceInput().exists()).toBe(true);
     expect(findNamespaceInput().attributes('name')).toBe('namespace-input');
   });
 
@@ -57,9 +57,9 @@ describe('Dropdown select component', () => {
       // wait for dropdown options to populate
       await wrapper.vm.$nextTick();
 
-      expect(findDropdownOption('user: Administrator')).toExist();
-      expect(findDropdownOption('group: GitLab Org')).toExist();
-      expect(findDropdownOption('group: Foobar')).not.toExist();
+      expect(findDropdownOption('user: Administrator').exists()).toBe(true);
+      expect(findDropdownOption('group: GitLab Org').exists()).toBe(true);
+      expect(findDropdownOption('group: Foobar').exists()).toBe(false);
 
       findDropdownOption('user: Administrator').trigger('click');
       await wrapper.vm.$nextTick();

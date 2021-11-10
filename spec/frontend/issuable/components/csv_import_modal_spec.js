@@ -1,7 +1,8 @@
-import { GlButton, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CsvImportModal from '~/issuable/components/csv_import_modal.vue';
+import { __ } from '~/locale';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
@@ -36,7 +37,6 @@ describe('CsvImportModal', () => {
   });
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findPrimaryButton = () => wrapper.findComponent(GlButton);
   const findForm = () => wrapper.find('form');
   const findFileInput = () => wrapper.findByLabelText('Upload CSV file');
   const findAuthenticityToken = () => new FormData(findForm().element).get('authenticity_token');
@@ -64,11 +64,11 @@ describe('CsvImportModal', () => {
         expect(findForm().exists()).toBe(true);
         expect(findForm().attributes('action')).toBe(importCsvIssuesPath);
         expect(findAuthenticityToken()).toBe('mock-csrf-token');
-        expect(findFileInput()).toExist();
+        expect(findFileInput().exists()).toBe(true);
       });
 
       it('displays the correct primary button action text', () => {
-        expect(findPrimaryButton()).toExist();
+        expect(findModal().props('actionPrimary')).toEqual({ text: __('Import issues') });
       });
 
       it('submits the form when the primary action is clicked', () => {

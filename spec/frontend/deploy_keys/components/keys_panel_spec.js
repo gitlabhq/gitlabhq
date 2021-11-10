@@ -37,7 +37,7 @@ describe('Deploy keys panel', () => {
     mountComponent();
     const tableHeader = findTableRowHeader();
 
-    expect(tableHeader).toExist();
+    expect(tableHeader.exists()).toBe(true);
     expect(tableHeader.text()).toContain('Deploy key');
     expect(tableHeader.text()).toContain('Project usage');
     expect(tableHeader.text()).toContain('Created');

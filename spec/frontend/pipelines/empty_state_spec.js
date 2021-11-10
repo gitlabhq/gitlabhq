@@ -35,7 +35,7 @@ describe('Pipelines Empty State', () => {
     });
 
     it('should render the CI/CD templates', () => {
-      expect(pipelinesCiTemplates()).toExist();
+      expect(pipelinesCiTemplates().exists()).toBe(true);
     });
   });
 

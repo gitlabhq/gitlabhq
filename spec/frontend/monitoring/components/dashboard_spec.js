@@ -456,7 +456,7 @@ describe('Dashboard', () => {
 
     it('shows the links section', () => {
       expect(wrapper.vm.shouldShowLinksSection).toBe(true);
-      expect(wrapper.find(LinksSection)).toExist();
+      expect(wrapper.findComponent(LinksSection).exists()).toBe(true);
     });
   });
 

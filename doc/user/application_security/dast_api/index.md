@@ -1132,6 +1132,19 @@ For more information, see [Offline environments](../offline_deployments/index.md
 
 ## Troubleshooting
 
+### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+
+A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
+
+The version information can be found in the job details for the `dast_api` job.
+
+If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+
+1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
+1. The full console output of the job.
+1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
+1. The `dast_api` job definition from your `.gitlab-ci.yml` file.
+
 ### Failed to start scanner session (version header not found)
 
 The DAST API engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `DAST_API_API` variable from its default.

@@ -134,12 +134,12 @@ describe('App component', () => {
 
     it('renders main-heading with correct text', () => {
       const mainHeading = findMainHeading();
-      expect(mainHeading).toExist();
+      expect(mainHeading.exists()).toBe(true);
       expect(mainHeading.text()).toContain('Security Configuration');
     });
 
     it('renders GlTab Component ', () => {
-      expect(findTab()).toExist();
+      expect(findTab().exists()).toBe(true);
     });
 
     it('renders right amount of tabs with correct title ', () => {

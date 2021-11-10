@@ -40,7 +40,7 @@ describe('DeleteLabelModal', () => {
 
   it('starts with only js-containers', () => {
     expect(findJsHooks()).toHaveLength(buttons.length);
-    expect(findModal()).not.toExist();
+    expect(findModal()).toBe(null);
   });
 
   describe('when first button clicked', () => {
@@ -54,7 +54,7 @@ describe('DeleteLabelModal', () => {
     });
 
     it('renders GlModal', () => {
-      expect(findModal()).toExist();
+      expect(findModal()).not.toBe(null);
     });
   });
 
