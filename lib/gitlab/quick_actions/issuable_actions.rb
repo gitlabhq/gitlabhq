@@ -84,8 +84,7 @@ module Gitlab
         params '~label1 ~"label 2"'
         types Issuable
         condition do
-          parent &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", parent) &&
+          current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
             find_labels.any?
         end
         command :label do |labels_param|
@@ -107,7 +106,7 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             quick_action_target.labels.any? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", parent)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         command :unlabel, :remove_label do |labels_param = nil|
           if labels_param.present?
@@ -139,7 +138,7 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             quick_action_target.labels.any? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", parent)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         command :relabel do |labels_param|
           run_label_command(labels: find_labels(labels_param), command: :relabel, updates_key: :label_ids)

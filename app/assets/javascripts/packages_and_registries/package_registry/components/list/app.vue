@@ -8,7 +8,6 @@ import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
-  LIST_QUERY_DEBOUNCE_TIME,
   GRAPHQL_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
@@ -52,7 +51,9 @@ export default {
       update(data) {
         return data[this.graphqlResource].packages;
       },
-      debounce: LIST_QUERY_DEBOUNCE_TIME,
+      skip() {
+        return !this.sort;
+      },
     },
   },
   computed: {

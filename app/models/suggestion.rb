@@ -50,6 +50,7 @@ class Suggestion < ApplicationRecord
       next _("Can't apply as the source branch was deleted.") unless noteable.source_branch_exists?
       next outdated_reason if outdated?(cached: cached) || !note.active?
       next _("This suggestion already matches its content.") unless different_content?
+      next _("This file was modified for readability, and can't accept suggestions. Edit it directly.") if file_path.end_with? "ipynb"
     end
   end
 

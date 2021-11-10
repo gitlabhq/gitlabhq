@@ -21,10 +21,6 @@ end
 RSpec.shared_examples 'package details link' do |property|
   let(:package) { packages.first }
 
-  before do
-    stub_feature_flags(packages_details_one_column: false)
-  end
-
   it 'navigates to the correct url' do
     page.within(packages_table_selector) do
       click_link package.name
@@ -94,16 +90,24 @@ def packages_table_selector
 end
 
 def click_sort_option(option, ascending)
-  page.within('.gl-sorting') do
-    # Reset the sort direction
-    click_button 'Sort direction' if page.has_selector?('svg[aria-label="Sorting Direction: Ascending"]', wait: 0)
+  wait_for_requests
 
-    find('button.gl-dropdown-toggle').click
+  # Reset the sort direction
+  if page.has_selector?('button[aria-label="Sorting Direction: Ascending"]', wait: 0) && !ascending
+    click_button 'Sort direction'
 
-    page.within('.dropdown-menu') do
-      click_button option
-    end
+    wait_for_requests
+  end
 
-    click_button 'Sort direction' if ascending
+  find('button.gl-dropdown-toggle').click
+
+  page.within('.dropdown-menu') do
+    click_button option
+  end
+
+  if ascending
+    wait_for_requests
+
+    click_button 'Sort direction'
   end
 end

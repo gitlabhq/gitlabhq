@@ -58,6 +58,8 @@ repository.
 
 Calls are limited to 50 seconds each.
 
+This endpoint is covered in more detail on [its own page](internal_api_allowed.md), due to the scope of what it covers.
+
 ```plaintext
 POST /internal/allowed
 ```

@@ -43,7 +43,7 @@ module QA
 
           def with_allow_duplicates_button
             within_element :allow_duplicates_toggle do
-              toggle = find('button.gl-toggle')
+              toggle = find('button.gl-toggle:not(.is-disabled)')
               yield(toggle)
             end
           end

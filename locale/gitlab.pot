@@ -70,9 +70,6 @@ msgstr ""
 msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
-msgid "\"el\" parameter is required for createInstance()"
-msgstr ""
-
 msgid "#%{issueIid} (closed)"
 msgstr ""
 
@@ -32577,9 +32574,6 @@ msgstr ""
 msgid "Source Branch"
 msgstr ""
 
-msgid "Source Editor instance is required to set up an extension."
-msgstr ""
-
 msgid "Source IP"
 msgstr ""
 
@@ -32596,6 +32590,15 @@ msgid "Source is not available"
 msgstr ""
 
 msgid "Source project cannot be found."
+msgstr ""
+
+msgid "SourceEditor|\"el\" parameter is required for createInstance()"
+msgstr ""
+
+msgid "SourceEditor|Extension definition should be either a class or a function"
+msgstr ""
+
+msgid "SourceEditor|Source Editor instance is required to set up an extension."
 msgstr ""
 
 msgid "Sourcegraph"
@@ -35194,6 +35197,9 @@ msgid "This field is required"
 msgstr ""
 
 msgid "This field is required."
+msgstr ""
+
+msgid "This file was modified for readability, and can't accept suggestions. Edit it directly."
 msgstr ""
 
 msgid "This form is disabled in preview"

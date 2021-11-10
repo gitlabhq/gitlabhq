@@ -39,6 +39,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline,
             stage: 4
           },
+          protected_branches: {
+            pipeline: BulkImports::Projects::Pipelines::ProtectedBranchesPipeline,
+            stage: 4
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5

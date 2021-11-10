@@ -576,12 +576,16 @@ rspec:skipped-flaky-tests-report:
     - rspec-ee unit pg12 geo minimal
     - rspec-ee integration pg12 geo minimal
     - rspec-ee system pg12 geo minimal
+  variables:
+    SKIPPED_FLAKY_TESTS_REPORT: skipped_flaky_tests_report.txt
+  before_script:
+    - mkdir -p rspec_flaky
   script:
-    - cat rspec_flaky/skipped_flaky_tests_*_report.txt >> skipped_flaky_tests_report.txt
+    - find rspec_flaky/ -type f -name 'skipped_flaky_tests_*_report.txt' -exec cat {} + >> "${SKIPPED_FLAKY_TESTS_REPORT}"
   artifacts:
     expire_in: 31d
     paths:
-      - skipped_flaky_tests_report.txt
+      - ${SKIPPED_FLAKY_TESTS_REPORT}
 
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################

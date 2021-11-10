@@ -857,10 +857,14 @@ RSpec.describe Integrations::Jira do
     let_it_be(:user) { build_stubbed(:user) }
 
     let(:jira_issue) { ExternalIssue.new('JIRA-123', project) }
+    let(:success_message) { 'SUCCESS: Successfully posted to http://jira.example.com.' }
+    let(:favicon_path) { "http://localhost/assets/#{find_asset('favicon.png').digest_path}" }
 
     subject { jira_integration.create_cross_reference_note(jira_issue, resource, user) }
 
-    shared_examples 'creates a comment on Jira' do
+    shared_examples 'handles cross-references' do
+      let(:resource_name) { jira_integration.send(:noteable_name, resource) }
+      let(:resource_url) { jira_integration.send(:build_entity_url, resource_name, resource.to_param) }
       let(:issue_url) { "#{url}/rest/api/2/issue/JIRA-123" }
       let(:comment_url) { "#{issue_url}/comment" }
       let(:remote_link_url) { "#{issue_url}/remotelink" }
@@ -872,12 +876,65 @@ RSpec.describe Integrations::Jira do
         stub_request(:post, remote_link_url).with(basic_auth: [username, password])
       end
 
-      it 'creates a comment on Jira' do
-        subject
+      context 'when enabled' do
+        before do
+          allow(jira_integration).to receive(:can_cross_reference?) { true }
+        end
 
-        expect(WebMock).to have_requested(:post, comment_url).with(
-          body: /mentioned this issue.*on branch \[master/
-        ).once
+        it 'creates a comment and remote link' do
+          expect(subject).to eq(success_message)
+          expect(WebMock).to have_requested(:post, comment_url).with(body: comment_body).once
+          expect(WebMock).to have_requested(:post, remote_link_url).with(
+            body: hash_including(
+              GlobalID: 'GitLab',
+              relationship: 'mentioned on',
+              object: {
+                url: resource_url,
+                title: "#{resource.model_name.human} - #{resource.title}",
+                icon: { title: 'GitLab', url16x16: favicon_path },
+                status: { resolved: false }
+              }
+            )
+          ).once
+        end
+
+        context 'when comment already exists' do
+          before do
+            allow(jira_integration).to receive(:comment_exists?) { true }
+          end
+
+          it 'does not create a comment or remote link' do
+            expect(subject).to be_nil
+            expect(WebMock).not_to have_requested(:post, comment_url)
+            expect(WebMock).not_to have_requested(:post, remote_link_url)
+          end
+        end
+
+        context 'when remote link already exists' do
+          let(:link) { double(object: { 'url' => resource_url }) }
+
+          before do
+            allow(jira_integration).to receive(:find_remote_link).and_return(link)
+          end
+
+          it 'updates the remote link but does not create a comment' do
+            expect(link).to receive(:save!)
+            expect(subject).to eq(success_message)
+            expect(WebMock).not_to have_requested(:post, comment_url)
+          end
+        end
+      end
+
+      context 'when disabled' do
+        before do
+          allow(jira_integration).to receive(:can_cross_reference?) { false }
+        end
+
+        it 'does not create a comment or remote link' do
+          expect(subject).to eq("Events for #{resource_name.pluralize.humanize(capitalize: false)} are disabled.")
+          expect(WebMock).not_to have_requested(:post, comment_url)
+          expect(WebMock).not_to have_requested(:post, remote_link_url)
+        end
       end
 
       context 'with jira_use_first_ref_by_oid feature flag disabled' do
@@ -885,12 +942,10 @@ RSpec.describe Integrations::Jira do
           stub_feature_flags(jira_use_first_ref_by_oid: false)
         end
 
-        it 'creates a comment on Jira' do
-          subject
-
-          expect(WebMock).to have_requested(:post, comment_url).with(
-            body: /mentioned this issue.*on branch \[master/
-          ).once
+        it 'creates a comment and remote link on Jira' do
+          expect(subject).to eq(success_message)
+          expect(WebMock).to have_requested(:post, comment_url).with(body: comment_body).once
+          expect(WebMock).to have_requested(:post, remote_link_url).once
         end
       end
 
@@ -903,39 +958,38 @@ RSpec.describe Integrations::Jira do
       end
     end
 
-    context 'when resource is a commit' do
-      let(:resource) { project.commit('master') }
-
-      context 'when disabled' do
-        before do
-          allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:commit_events) { false }
-          end
-        end
-
-        it { is_expected.to eq('Events for commits are disabled.') }
-      end
-
-      context 'when enabled' do
-        it_behaves_like 'creates a comment on Jira'
+    context 'for commits' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { project.commit('master') }
+        let(:comment_body) { /mentioned this issue in \[a commit\|.* on branch \[master\|/ }
       end
     end
 
-    context 'when resource is a merge request' do
-      let(:resource) { build_stubbed(:merge_request, source_project: project) }
-
-      context 'when disabled' do
-        before do
-          allow_next_instance_of(described_class) do |instance|
-            allow(instance).to receive(:merge_requests_events) { false }
-          end
-        end
-
-        it { is_expected.to eq('Events for merge requests are disabled.') }
+    context 'for issues' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { build_stubbed(:issue, project: project) }
+        let(:comment_body) { /mentioned this issue in \[a issue\|/ }
       end
+    end
 
-      context 'when enabled' do
-        it_behaves_like 'creates a comment on Jira'
+    context 'for merge requests' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { build_stubbed(:merge_request, source_project: project) }
+        let(:comment_body) { /mentioned this issue in \[a merge request\|.* on branch \[master\|/ }
+      end
+    end
+
+    context 'for notes' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { build_stubbed(:note, project: project) }
+        let(:comment_body) { /mentioned this issue in \[a note\|/ }
+      end
+    end
+
+    context 'for snippets' do
+      it_behaves_like 'handles cross-references' do
+        let(:resource) { build_stubbed(:snippet, project: project) }
+        let(:comment_body) { /mentioned this issue in \[a snippet\|/ }
       end
     end
   end

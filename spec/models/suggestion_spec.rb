@@ -154,6 +154,14 @@ RSpec.describe Suggestion do
       it { is_expected.to eq("This suggestion already matches its content.") }
     end
 
+    context 'when file is .ipynb' do
+      before do
+        allow(suggestion).to receive(:file_path).and_return("example.ipynb")
+      end
+
+      it { is_expected.to eq(_("This file was modified for readability, and can't accept suggestions. Edit it directly.")) }
+    end
+
     context 'when applicable' do
       it { is_expected.to be_nil }
     end

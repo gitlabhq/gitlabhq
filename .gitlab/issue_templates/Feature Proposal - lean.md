@@ -1,4 +1,4 @@
-<!-- This issue template can be used as a great starting point for feature requests. The section "Release notes" can be used as a summary of the feature and is also required if you want to have your release post blog MR auto generated using the release post item generator:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator. The remaining sections are the backbone for every feature in GitLab. 
+<!-- This issue template can be used as a great starting point for feature requests. The section "Release notes" can be used as a summary of the feature and is also required if you want to have your release post blog MR auto generated using the release post item generator:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator. The remaining sections are the backbone for every feature in GitLab.
 
 The goal of this template is brevity for quick/smaller iterations. For a more thorough list of considerations for larger features or feature sets, you can leverage the detailed [feature proposal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md). -->
 
@@ -34,7 +34,7 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Allison (Application Ops)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#allison-application-ops)
 * [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#priyanka-platform-engineer)
 * [Dana (Data Analyst)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#dana-data-analyst)
-* [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor) 
+* [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
 
 -->
 
@@ -46,15 +46,10 @@ Create tracking issue using the Snowplow event tracking template. See https://gi
 
 -->
 
-/label ~"type::feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Free"/~"GitLab Premium"/~"GitLab Ultimate"
-
-<!--- Use the following resources to find the appropriate labels:
+<!-- Label reminders
+Use the following resources to find the appropriate labels:
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
-
-Consider adding related issues and epics to this issue. You can also reference the Feature Proposal Template (https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md) for additional details to consider adding to this issue. Additionally, as a data oriented organization, when your feature exits planning breakdown, consider adding the `What does success look like, and how can we measure that?` section.
-
 -->
 
-/label ~documentation
-/label ~direction
+/label ~"type::feature" ~"group::" ~"section::"  ~"Category::" ~"GitLab Free"/~"GitLab Premium"/~"GitLab Ultimate" ~documentation ~direction

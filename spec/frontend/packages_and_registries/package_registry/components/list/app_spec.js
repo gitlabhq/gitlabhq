@@ -15,7 +15,6 @@ import DeletePackage from '~/packages_and_registries/package_registry/components
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
-  LIST_QUERY_DEBOUNCE_TIME,
   GRAPHQL_PAGE_SIZE,
 } from '~/packages_and_registries/package_registry/constants';
 
@@ -86,15 +85,24 @@ describe('PackagesListApp', () => {
     wrapper.destroy();
   });
 
-  const waitForDebouncedApollo = () => {
-    jest.advanceTimersByTime(LIST_QUERY_DEBOUNCE_TIME);
+  const waitForFirstRequest = () => {
+    // emit a search update so the query is executed
+    findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });
     return waitForPromises();
   };
+
+  it('does not execute the query without sort being set', () => {
+    const resolver = jest.fn().mockResolvedValue(packagesListQuery());
+
+    mountComponent({ resolver });
+
+    expect(resolver).not.toHaveBeenCalled();
+  });
 
   it('renders', async () => {
     mountComponent();
 
-    await waitForDebouncedApollo();
+    await waitForFirstRequest();
 
     expect(wrapper.element).toMatchSnapshot();
   });
@@ -102,7 +110,7 @@ describe('PackagesListApp', () => {
   it('has a package title', async () => {
     mountComponent();
 
-    await waitForDebouncedApollo();
+    await waitForFirstRequest();
 
     expect(findPackageTitle().exists()).toBe(true);
     expect(findPackageTitle().props('count')).toBe(2);
@@ -121,8 +129,7 @@ describe('PackagesListApp', () => {
 
       findSearch().vm.$emit('update', searchPayload);
 
-      await waitForDebouncedApollo();
-      jest.advanceTimersByTime(LIST_QUERY_DEBOUNCE_TIME);
+      await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -140,7 +147,7 @@ describe('PackagesListApp', () => {
       resolver = jest.fn().mockResolvedValue(packagesListQuery());
       mountComponent({ resolver });
 
-      return waitForDebouncedApollo();
+      return waitForFirstRequest();
     });
 
     it('exists and has the right props', () => {
@@ -182,7 +189,7 @@ describe('PackagesListApp', () => {
       provide = { ...defaultProvide, isGroupPage };
       resolver = jest.fn().mockResolvedValue(packagesListQuery({ type }));
       mountComponent({ provide, resolver });
-      return waitForDebouncedApollo();
+      return waitForFirstRequest();
     });
 
     it('succeeds', () => {
@@ -191,7 +198,7 @@ describe('PackagesListApp', () => {
 
     it('calls the resolver with the right parameters', () => {
       expect(resolver).toHaveBeenCalledWith(
-        expect.objectContaining({ isGroupPage, [sortType]: '' }),
+        expect.objectContaining({ isGroupPage, [sortType]: 'NAME_DESC' }),
       );
     });
   });
@@ -201,7 +208,7 @@ describe('PackagesListApp', () => {
       const resolver = jest.fn().mockResolvedValue(packagesListQuery({ extend: { nodes: [] } }));
       mountComponent({ resolver });
 
-      return waitForDebouncedApollo();
+      return waitForFirstRequest();
     });
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
@@ -219,7 +226,7 @@ describe('PackagesListApp', () => {
     beforeEach(async () => {
       mountComponent();
 
-      await waitForDebouncedApollo();
+      await waitForFirstRequest();
 
       findSearch().vm.$emit('update', searchPayload);
 
@@ -236,7 +243,7 @@ describe('PackagesListApp', () => {
     it('exists and has the correct props', async () => {
       mountComponent();
 
-      await waitForDebouncedApollo();
+      await waitForFirstRequest();
 
       expect(findDeletePackage().props()).toMatchObject({
         refetchQueries: [{ query: getPackagesQuery, variables: {} }],
@@ -247,7 +254,7 @@ describe('PackagesListApp', () => {
     it('deletePackage is bound to package-list package:delete event', async () => {
       mountComponent();
 
-      await waitForDebouncedApollo();
+      await waitForFirstRequest();
 
       findListComponent().vm.$emit('package:delete', { id: 1 });
 
@@ -257,7 +264,7 @@ describe('PackagesListApp', () => {
     it('start and end event set loading correctly', async () => {
       mountComponent();
 
-      await waitForDebouncedApollo();
+      await waitForFirstRequest();
 
       findDeletePackage().vm.$emit('start');
 

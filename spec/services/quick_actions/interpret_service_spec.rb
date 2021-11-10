@@ -2553,4 +2553,32 @@ RSpec.describe QuickActions::InterpretService do
       end
     end
   end
+
+  describe '#available_commands' do
+    context 'when Guest is creating a new issue' do
+      let_it_be(:guest) { create(:user) }
+
+      let(:issue) { build(:issue, project: public_project) }
+      let(:service) { described_class.new(project, guest) }
+
+      before_all do
+        public_project.add_guest(guest)
+      end
+
+      it 'includes commands to set metadata' do
+        # milestone action is only available when project has a milestone
+        milestone
+
+        available_commands = service.available_commands(issue)
+
+        expect(available_commands).to include(
+          a_hash_including(name: :label),
+          a_hash_including(name: :milestone),
+          a_hash_including(name: :copy_metadata),
+          a_hash_including(name: :assign),
+          a_hash_including(name: :due)
+        )
+      end
+    end
+  end
 end

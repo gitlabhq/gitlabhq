@@ -2231,6 +2231,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: integrations_create_external_cross_reference
+  :worker_name: Integrations::CreateExternalCrossReferenceWorker
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: invalid_gpg_signature_update
   :worker_name: InvalidGpgSignatureUpdateWorker
   :feature_category: :source_code_management

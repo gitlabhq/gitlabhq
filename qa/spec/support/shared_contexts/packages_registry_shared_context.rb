@@ -43,7 +43,7 @@ module QA
 
     let(:project_deploy_token) do
       Resource::DeployToken.fabricate_via_browser_ui! do |deploy_token|
-        deploy_token.name = 'helm-package-deploy-token'
+        deploy_token.name = 'package-deploy-token'
         deploy_token.project = package_project
       end
     end

@@ -129,7 +129,7 @@ and we recommend you use:
 
 ### Firewall rules
 
-The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo.
+The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, we recommend opening ports in both directions.
 
 | Source site | Source port | Destination site | Destination port | Protocol    |
 |-------------|-------------|------------------|------------------|-------------|

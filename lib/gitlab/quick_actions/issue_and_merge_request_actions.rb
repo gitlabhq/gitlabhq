@@ -26,7 +26,7 @@ module Gitlab
         end
         types Issue, MergeRequest
         condition do
-          quick_action_target.supports_assignee? && current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+          quick_action_target.supports_assignee? && current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         parse_params do |assignee_param|
           extract_users(assignee_param)
@@ -66,7 +66,7 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             quick_action_target.assignees.any? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         parse_params do |unassign_param|
           # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
@@ -92,7 +92,7 @@ module Gitlab
         types Issue, MergeRequest
         condition do
           quick_action_target.supports_milestone? &&
-          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project) &&
+          current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target) &&
             find_milestones(project, state: 'active').any?
         end
         parse_params do |milestone_param|
@@ -115,7 +115,7 @@ module Gitlab
           quick_action_target.persisted? &&
             quick_action_target.milestone_id? &&
             quick_action_target.supports_milestone? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         command :remove_milestone do
           @updates[:milestone_id] = nil
@@ -128,7 +128,7 @@ module Gitlab
         params '#issue | !merge_request'
         types Issue, MergeRequest
         condition do
-          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
+          current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         parse_params do |issuable_param|
           extract_references(issuable_param, :issue).first ||
@@ -225,7 +225,7 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             !quick_action_target.discussion_locked? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         command :lock do
           @updates[:discussion_locked] = true
@@ -238,7 +238,7 @@ module Gitlab
         condition do
           quick_action_target.persisted? &&
             quick_action_target.discussion_locked? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
+            current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         command :unlock do
           @updates[:discussion_locked] = false

@@ -13,6 +13,7 @@ RSpec.describe BulkImports::Projects::Stage do
       [4, BulkImports::Common::Pipelines::BoardsPipeline],
       [4, BulkImports::Projects::Pipelines::MergeRequestsPipeline],
       [4, BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline],
+      [4, BulkImports::Projects::Pipelines::ProtectedBranchesPipeline],
       [5, BulkImports::Common::Pipelines::WikiPipeline],
       [5, BulkImports::Common::Pipelines::UploadsPipeline],
       [6, BulkImports::Common::Pipelines::EntityFinisher]
@@ -27,7 +28,7 @@ RSpec.describe BulkImports::Projects::Stage do
 
   describe '#pipelines' do
     it 'list all the pipelines with their stage number, ordered by stage' do
-      expect(subject.pipelines & pipelines).to eq(pipelines)
+      expect(subject.pipelines & pipelines).to contain_exactly(*pipelines)
       expect(subject.pipelines.last.last).to eq(BulkImports::Common::Pipelines::EntityFinisher)
     end
   end

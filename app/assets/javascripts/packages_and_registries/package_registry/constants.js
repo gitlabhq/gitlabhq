@@ -83,5 +83,4 @@ export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
 export const PROJECT_RESOURCE_TYPE = 'project';
 export const GROUP_RESOURCE_TYPE = 'group';
-export const LIST_QUERY_DEBOUNCE_TIME = 50;
 export const GRAPHQL_PAGE_SIZE = 20;

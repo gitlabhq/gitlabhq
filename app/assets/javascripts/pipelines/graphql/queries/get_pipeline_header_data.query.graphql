@@ -18,8 +18,11 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
       }
       createdAt
       user {
+        id
         name
+        username
         webPath
+        webUrl
         email
         avatarUrl
         status {

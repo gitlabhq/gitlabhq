@@ -6,10 +6,6 @@ module Groups
 
     feature_category :package_registry
 
-    before_action do
-      push_frontend_feature_flag(:package_list_apollo, default_enabled: :yaml)
-    end
-
     private
 
     def verify_packages_enabled!

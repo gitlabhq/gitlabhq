@@ -115,6 +115,9 @@
 .if-security-pipeline-merge-result: &if-security-pipeline-merge-result
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && $GITLAB_USER_LOGIN == "gitlab-release-tools-bot"'
 
+.if-skip-flaky-tests-automatically: &if-skip-flaky-tests-automatically
+  if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true"'
+
 ####################
 # Changes patterns #
 ####################
@@ -1357,8 +1360,9 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true"'
+    - <<: *if-skip-flaky-tests-automatically
       changes: *code-backstage-patterns
+    - changes: *ci-patterns
 
 #########################
 # Static analysis rules #

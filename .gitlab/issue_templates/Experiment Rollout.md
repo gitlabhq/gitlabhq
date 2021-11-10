@@ -110,8 +110,8 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 _Items to be considered if candidate experience is to become a permanent part of GitLab_
 
 <!-- 
-Add a list of items raised during MR review or otherwise that may need further thought/condideration
-before making it a permanent part of the product.
+Add a list of items raised during MR review or otherwise that may need further thought/consideration
+before becoming permanent parts of the product.
 
 Example: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70451#note_727246104
 -->

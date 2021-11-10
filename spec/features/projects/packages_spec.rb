@@ -27,10 +27,6 @@ RSpec.describe 'Packages' do
 
   context 'when feature is available', :js do
     before do
-      # we are simply setting the featrure flag to false because the new UI has nothing to test yet
-      # when the refactor is complete or almost complete we will turn on the feature tests
-      # see https://gitlab.com/gitlab-org/gitlab/-/issues/330846 for status of this work
-      stub_feature_flags(package_list_apollo: false)
       visit_project_packages
     end
 

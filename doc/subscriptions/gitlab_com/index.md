@@ -311,8 +311,8 @@ Your own runners can still be used even if you reach your limits.
 
 If you're using GitLab SaaS, you can purchase additional CI minutes so your
 pipelines aren't blocked after you have used all your CI minutes from your
-main quota. You can find pricing for additional CI/CD minutes in the
-[GitLab Customers Portal](https://customers.gitlab.com/plans). Additional minutes:
+main quota. You can find pricing for additional CI/CD minutes on the
+[GitLab Pricing page](https://about.gitlab.com/pricing/). Additional minutes:
 
 - Are only used after the shared quota included in your subscription runs out.
 - Roll over month to month.

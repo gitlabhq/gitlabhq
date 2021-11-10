@@ -347,6 +347,23 @@ RSpec.describe ::SystemNotes::IssuablesService do
           end
         end
       end
+
+      context 'with external issue' do
+        let(:noteable) { ExternalIssue.new('JIRA-123', project) }
+        let(:mentioner) { project.commit }
+
+        it 'queues a background worker' do
+          expect(Integrations::CreateExternalCrossReferenceWorker).to receive(:perform_async).with(
+            project.id,
+            'JIRA-123',
+            'Commit',
+            mentioner.id,
+            author.id
+          )
+
+          subject
+        end
+      end
     end
   end
 
