@@ -31,23 +31,10 @@ module Routing
           end
         end
 
-        generate_url(masked_params.merge(params: masked_query_params))
+        Gitlab::Routing.url_helpers.url_for(masked_params.merge(params: masked_query_params))
       end
 
       private
-
-      def generate_url(masked_params)
-        # The below check is added since `project/insights` route does not
-        # work with Rails router `url_for` method.
-        # See https://gitlab.com/gitlab-org/gitlab/-/issues/343551
-        if @request.path_parameters[:controller] == 'projects/insights'
-          default_root_url + "#{Gitlab::Routing.url_helpers.namespace_project_insights_path(masked_params)}"
-        elsif @request.path_parameters[:controller] == 'groups/insights'
-          default_root_url + "#{Gitlab::Routing.url_helpers.group_insights_path(masked_params)}"
-        else
-          Gitlab::Routing.url_helpers.url_for(masked_params)
-        end
-      end
 
       def mask_id(value)
         if @request.path_parameters[:controller] == 'projects/blob'

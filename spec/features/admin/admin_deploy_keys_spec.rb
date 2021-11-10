@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'admin deploy keys' do
+  let_it_be(:admin) { create(:admin) }
+
   let!(:deploy_key) { create(:deploy_key, public: true) }
   let!(:another_deploy_key) { create(:another_deploy_key, public: true) }
 
   before do
-    admin = create(:admin)
+    stub_feature_flags(admin_deploy_keys_vue: false)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
   end
@@ -82,6 +84,20 @@ RSpec.describe 'admin deploy keys' do
       page.within(find('.deploy-keys-list', match: :first)) do
         expect(page).not_to have_content(deploy_key.title)
       end
+    end
+  end
+
+  context 'when `admin_deploy_keys_vue` feature flag is enabled', :js do
+    before do
+      stub_feature_flags(admin_deploy_keys_vue: true)
+
+      visit admin_deploy_keys_path
+    end
+
+    it 'renders the Vue app', :aggregate_failures do
+      expect(page).to have_content('Public deploy keys')
+      expect(page).to have_selector('[data-testid="deploy-keys-list"]')
+      expect(page).to have_link('New deploy key', href: new_admin_deploy_key_path)
     end
   end
 end

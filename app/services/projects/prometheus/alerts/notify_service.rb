@@ -6,6 +6,7 @@ module Projects
       class NotifyService
         include Gitlab::Utils::StrongMemoize
         include ::IncidentManagement::Settings
+        include ::AlertManagement::Responses
 
         # This set of keys identifies a payload as a valid Prometheus
         # payload and thus processable by this service. See also
@@ -27,9 +28,9 @@ module Projects
           return unprocessable_entity unless self.class.processable?(payload)
           return unauthorized unless valid_alert_manager_token?(token, integration)
 
-          process_prometheus_alerts
+          alert_responses = process_prometheus_alerts
 
-          ServiceResponse.success
+          alert_response(alert_responses)
         end
 
         def self.processable?(payload)
@@ -128,23 +129,17 @@ module Projects
         end
 
         def process_prometheus_alerts
-          alerts.each do |alert|
+          alerts.map do |alert|
             AlertManagement::ProcessPrometheusAlertService
               .new(project, alert.to_h)
               .execute
           end
         end
 
-        def bad_request
-          ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
-        end
+        def alert_response(alert_responses)
+          alerts = alert_responses.map { |resp| resp.payload[:alert] }.compact
 
-        def unauthorized
-          ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized)
-        end
-
-        def unprocessable_entity
-          ServiceResponse.error(message: 'Unprocessable Entity', http_status: :unprocessable_entity)
+          success(alerts)
         end
       end
     end

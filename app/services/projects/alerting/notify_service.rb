@@ -5,6 +5,7 @@ module Projects
     class NotifyService
       extend ::Gitlab::Utils::Override
       include ::AlertManagement::AlertProcessing
+      include ::AlertManagement::Responses
 
       def initialize(project, payload)
         @project = project
@@ -23,7 +24,7 @@ module Projects
 
         complete_post_processing_tasks
 
-        ServiceResponse.success
+        success(alert)
       end
 
       private
@@ -45,18 +46,6 @@ module Projects
 
       def valid_token?(token)
         token == integration.token
-      end
-
-      def bad_request
-        ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
-      end
-
-      def unauthorized
-        ServiceResponse.error(message: 'Unauthorized', http_status: :unauthorized)
-      end
-
-      def forbidden
-        ServiceResponse.error(message: 'Forbidden', http_status: :forbidden)
       end
     end
   end

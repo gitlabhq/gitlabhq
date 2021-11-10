@@ -218,8 +218,7 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService do
             .to receive(:new)
             .with(project, kind_of(Hash))
             .exactly(3).times
-            .and_return(process_service)
-          expect(process_service).to receive(:execute).exactly(3).times
+            .and_call_original
 
           subject
         end

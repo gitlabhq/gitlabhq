@@ -365,7 +365,7 @@ module QA
           all_elements(:add_suggestion_batch_button, minimum: 1).first.click
         end
 
-        def has_suggestions_applied?(count)
+        def has_suggestions_applied?(count = 1)
           wait_until(reload: false) do
             has_no_element?(:applying_badge)
           end

@@ -290,3 +290,10 @@ $gl-line-height-42: px-to-rem(42px);
 .gl-focus-ring-border-1-gray-900\! {
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2476
+.gl-md-max-w-50p {
+  @include gl-media-breakpoint-up(md) {
+    max-width: 50%;
+  }
+}

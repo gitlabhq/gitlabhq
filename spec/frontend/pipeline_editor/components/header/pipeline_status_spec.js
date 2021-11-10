@@ -96,12 +96,13 @@ describe('Pipeline Status', () => {
       it('renders pipeline data', () => {
         const {
           id,
+          commit: { title },
           detailedStatus: { detailsPath },
         } = mockProjectPipeline().pipeline;
 
         expect(findStatusIcon().exists()).toBe(true);
         expect(findPipelineId().text()).toBe(`#${id.match(/\d+/g)[0]}`);
-        expect(findPipelineCommit().text()).toBe(mockCommitSha);
+        expect(findPipelineCommit().text()).toBe(`${mockCommitSha}: ${title}`);
         expect(findPipelineViewBtn().attributes('href')).toBe(detailsPath);
       });
 

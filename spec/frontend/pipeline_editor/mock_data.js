@@ -285,11 +285,14 @@ export const mockProjectPipeline = ({ hasStages = true } = {}) => {
 
   return {
     pipeline: {
-      commitPath: '/-/commit/aabbccdd',
       id: 'gid://gitlab/Ci::Pipeline/118',
       iid: '28',
       shortSha: mockCommitSha,
       status: 'SUCCESS',
+      commit: {
+        title: 'Update .gitlabe-ci.yml',
+        webPath: '/-/commit/aabbccdd',
+      },
       detailedStatus: {
         detailsPath: '/root/sample-ci-project/-/pipelines/118',
         group: 'success',

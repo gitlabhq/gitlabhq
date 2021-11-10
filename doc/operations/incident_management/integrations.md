@@ -196,6 +196,25 @@ WARNING:
 Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
 using one of the above header options if your tooling supports it.
 
+## Response Body
+
+The JSON response body contains a list of any alerts created within the request:
+
+```json
+[
+  {
+    "iid": 1,
+    "title": "Incident title"
+  },
+  {
+    "iid": 2,
+    "title": "Second Incident title"
+  }
+]
+```
+
+Successful responses return a `200` response code.
+
 ## Triggering test alerts
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab in 13.2.

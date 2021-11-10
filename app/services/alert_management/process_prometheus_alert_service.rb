@@ -4,6 +4,7 @@ module AlertManagement
   class ProcessPrometheusAlertService
     extend ::Gitlab::Utils::Override
     include ::AlertManagement::AlertProcessing
+    include ::AlertManagement::Responses
 
     def initialize(project, payload)
       @project = project
@@ -18,7 +19,7 @@ module AlertManagement
 
       complete_post_processing_tasks
 
-      ServiceResponse.success
+      success(alert)
     end
 
     private
@@ -39,10 +40,6 @@ module AlertManagement
     override :resolving_alert?
     def resolving_alert?
       incoming_payload.resolved?
-    end
-
-    def bad_request
-      ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
     end
   end
 end

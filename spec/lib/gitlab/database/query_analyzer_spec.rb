@@ -2,11 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::QueryAnalyzer do
+RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   let(:analyzer) { double(:query_analyzer) }
+  let(:disabled_analyzer) { double(:disabled_query_analyzer) }
 
   before do
-    stub_const('Gitlab::Database::QueryAnalyzer::ANALYZERS', [analyzer])
+    allow(described_class.instance).to receive(:all_analyzers).and_return([analyzer, disabled_analyzer])
+    allow(analyzer).to receive(:enabled?).and_return(true)
+    allow(analyzer).to receive(:begin!)
+    allow(analyzer).to receive(:end!)
+    allow(disabled_analyzer).to receive(:enabled?).and_return(false)
   end
 
   context 'the hook is enabled by default in specs' do
@@ -17,7 +22,57 @@ RSpec.describe Gitlab::Database::QueryAnalyzer do
         expect(parsed.pg.tables).to eq(%w[projects])
       end
 
-      Project.connection.execute("SELECT 1 FROM projects")
+      described_class.instance.within do
+        Project.connection.execute("SELECT 1 FROM projects")
+      end
+    end
+
+    it 'does prevent recursive execution' do
+      expect(analyzer).to receive(:enabled?).and_return(true)
+      expect(analyzer).to receive(:analyze) do
+        Project.connection.execute("SELECT 1 FROM projects")
+      end
+
+      described_class.instance.within do
+        Project.connection.execute("SELECT 1 FROM projects")
+      end
+    end
+  end
+
+  describe '#within' do
+    context 'when it is already initialized' do
+      around do |example|
+        described_class.instance.within do
+          example.run
+        end
+      end
+
+      it 'does not evaluate enabled? again do yield block' do
+        expect(analyzer).not_to receive(:enabled?)
+
+        expect { |b| described_class.instance.within(&b) }.to yield_control
+      end
+    end
+
+    context 'when initializer is enabled' do
+      before do
+        expect(analyzer).to receive(:enabled?).and_return(true)
+      end
+
+      it 'calls begin! and end!' do
+        expect(analyzer).to receive(:begin!)
+        expect(analyzer).to receive(:end!)
+
+        expect { |b| described_class.instance.within(&b) }.to yield_control
+      end
+
+      it 'when begin! raises the end! is not called' do
+        expect(analyzer).to receive(:begin!).and_raise('exception')
+        expect(analyzer).not_to receive(:end!)
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        expect { |b| described_class.instance.within(&b) }.to yield_control
+      end
     end
   end
 
@@ -63,9 +118,18 @@ RSpec.describe Gitlab::Database::QueryAnalyzer do
       expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
     end
 
+    it 'does call analyze only on enabled initializers' do
+      expect(analyzer).to receive(:analyze)
+      expect(disabled_analyzer).not_to receive(:analyze)
+
+      expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
+    end
+
     def process_sql(sql)
-      ApplicationRecord.load_balancer.read_write do |connection|
-        described_class.instance.send(:process_sql, sql, connection)
+      described_class.instance.within do
+        ApplicationRecord.load_balancer.read_write do |connection|
+          described_class.instance.process_sql(sql, connection)
+        end
       end
     end
   end

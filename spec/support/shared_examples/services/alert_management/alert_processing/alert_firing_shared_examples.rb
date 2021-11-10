@@ -3,7 +3,10 @@
 # This shared_example requires the following variables:
 # - `service`, the service which includes AlertManagement::AlertProcessing
 RSpec.shared_examples 'creates an alert management alert or errors' do
-  it { is_expected.to be_success }
+  specify do
+    expect(subject).to be_success
+    expect(subject.payload).to match(alerts: all(a_kind_of(AlertManagement::Alert)))
+  end
 
   it 'creates AlertManagement::Alert' do
     expect(Gitlab::AppLogger).not_to receive(:warn)
@@ -89,6 +92,7 @@ RSpec.shared_examples 'adds an alert management alert event' do
     expect { subject }.to change { alert.reload.events }.by(1)
 
     expect(subject).to be_success
+    expect(subject.payload).to match(alerts: all(a_kind_of(AlertManagement::Alert)))
   end
 
   it_behaves_like 'does not create an alert management alert'
