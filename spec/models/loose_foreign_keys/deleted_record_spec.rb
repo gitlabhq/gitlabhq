@@ -24,26 +24,9 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
     end
   end
 
-  describe '.mark_records_processed_for_table_between' do
-    it 'marks processed exactly one record' do
-      described_class.mark_records_processed_for_table_between(table, deleted_record_2, deleted_record_2)
-
-      expect(described_class.status_pending.count).to eq(3)
-      expect(described_class.status_processed.count).to eq(1)
-
-      processed_record = described_class.status_processed.first
-      expect(processed_record).to eq(deleted_record_2)
-    end
-
-    it 'deletes two records' do
-      described_class.mark_records_processed_for_table_between(table, deleted_record_2, deleted_record_4)
-
-      expect(described_class.status_pending.count).to eq(2)
-      expect(described_class.status_processed.count).to eq(2)
-    end
-
-    it 'deletes all records' do
-      described_class.mark_records_processed_for_table_between(table, deleted_record_1, deleted_record_4)
+  describe '.mark_records_processed' do
+    it 'updates all records' do
+      described_class.mark_records_processed([deleted_record_1, deleted_record_2, deleted_record_4])
 
       expect(described_class.status_pending.count).to eq(1)
       expect(described_class.status_processed.count).to eq(3)

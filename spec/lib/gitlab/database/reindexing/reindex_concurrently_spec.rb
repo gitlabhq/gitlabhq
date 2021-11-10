@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
 
   it 'recreates the index using REINDEX with a long statement timeout' do
     expect_to_execute_in_order(
-      "SET statement_timeout TO '32400s'",
+      "SET statement_timeout TO '86400s'",
       "REINDEX INDEX CONCURRENTLY \"public\".\"#{index.name}\"",
       "RESET statement_timeout"
     )
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
       it 'drops the dangling indexes while controlling lock_timeout' do
         expect_to_execute_in_order(
           # Regular index rebuild
-          "SET statement_timeout TO '32400s'",
+          "SET statement_timeout TO '86400s'",
           "REINDEX INDEX CONCURRENTLY \"public\".\"#{index_name}\"",
           "RESET statement_timeout",
           # Drop _ccnew index

@@ -66,6 +66,14 @@ We decided to remove the GitLab Serverless features as they never really resonat
 
 Announced: 2021-09-22
 
+### Known host required for GitLab Runner SSH executor
+
+In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3074), we added a configuration setting in the GitLab Runner `config.toml` file. This setting, [`[runners.ssh.disable_strict_host_key_checking]`](https://docs.gitlab.com/runner/executors/ssh.html#security), controls whether or not to use strict host key checking with the SSH executor.
+
+In GitLab 15.0 and later, the default value for this configuration option will change from `true` to `false`. This means that strict host key checking will be enforced when using the GitLab Runner SSH executor.
+
+Announced: 2021-11-22
+
 ### Legacy database configuration
 
 The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)

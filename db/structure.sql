@@ -1021,6 +1021,7 @@ CREATE TABLE loose_foreign_keys_deleted_records (
     status smallint DEFAULT 1 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     fully_qualified_table_name text NOT NULL,
+    consume_after timestamp with time zone DEFAULT now(),
     CONSTRAINT check_1a541f3235 CHECK ((char_length(fully_qualified_table_name) <= 150))
 )
 PARTITION BY LIST (partition);
@@ -1041,6 +1042,7 @@ CREATE TABLE gitlab_partitions_static.loose_foreign_keys_deleted_records_1 (
     status smallint DEFAULT 1 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     fully_qualified_table_name text NOT NULL,
+    consume_after timestamp with time zone DEFAULT now(),
     CONSTRAINT check_1a541f3235 CHECK ((char_length(fully_qualified_table_name) <= 150))
 );
 ALTER TABLE ONLY loose_foreign_keys_deleted_records ATTACH PARTITION gitlab_partitions_static.loose_foreign_keys_deleted_records_1 FOR VALUES IN ('1');
@@ -24073,6 +24075,10 @@ CREATE INDEX index_merge_request_stage_events_project_duration ON ONLY analytics
 
 CREATE INDEX index_006f943df6 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_16 USING btree (stage_event_hash_id, project_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
+CREATE INDEX index_loose_foreign_keys_deleted_records_for_partitioned_query ON ONLY loose_foreign_keys_deleted_records USING btree (partition, fully_qualified_table_name, consume_after, id) WHERE (status = 1);
+
+CREATE INDEX index_01e3390fac ON gitlab_partitions_static.loose_foreign_keys_deleted_records_1 USING btree (partition, fully_qualified_table_name, consume_after, id) WHERE (status = 1);
+
 CREATE INDEX index_02749b504c ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_11 USING btree (stage_event_hash_id, project_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
 CREATE INDEX index_merge_request_stage_events_group_duration ON ONLY analytics_cycle_analytics_merge_request_stage_events USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
@@ -24390,10 +24396,6 @@ CREATE INDEX index_89c79afe5c ON gitlab_partitions_static.analytics_cycle_analyt
 CREATE INDEX index_8a0fc3de4f ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_29 USING btree (stage_event_hash_id, project_id, start_event_timestamp, issue_id) WHERE ((end_event_timestamp IS NULL) AND (state_id = 1));
 
 CREATE INDEX index_8b9f9a19a4 ON gitlab_partitions_static.analytics_cycle_analytics_merge_request_stage_events_18 USING btree (stage_event_hash_id, group_id, end_event_timestamp, merge_request_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
-
-CREATE INDEX index_loose_foreign_keys_deleted_records_for_loading_records ON ONLY loose_foreign_keys_deleted_records USING btree (fully_qualified_table_name, id, primary_key_value, partition) WHERE (status = 1);
-
-CREATE INDEX index_8be8640437 ON gitlab_partitions_static.loose_foreign_keys_deleted_records_1 USING btree (fully_qualified_table_name, id, primary_key_value, partition) WHERE (status = 1);
 
 CREATE INDEX index_8fb48e72ce ON gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_26 USING btree (stage_event_hash_id, group_id, end_event_timestamp, issue_id, start_event_timestamp) WHERE (end_event_timestamp IS NOT NULL);
 
@@ -27911,6 +27913,8 @@ ALTER INDEX index_issue_stage_events_project_duration ATTACH PARTITION gitlab_pa
 
 ALTER INDEX index_merge_request_stage_events_project_duration ATTACH PARTITION gitlab_partitions_static.index_006f943df6;
 
+ALTER INDEX index_loose_foreign_keys_deleted_records_for_partitioned_query ATTACH PARTITION gitlab_partitions_static.index_01e3390fac;
+
 ALTER INDEX index_merge_request_stage_events_project_duration ATTACH PARTITION gitlab_partitions_static.index_02749b504c;
 
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_0287f5ba09;
@@ -28216,8 +28220,6 @@ ALTER INDEX index_issue_stage_events_group_duration ATTACH PARTITION gitlab_part
 ALTER INDEX index_issue_stage_events_project_in_progress_duration ATTACH PARTITION gitlab_partitions_static.index_8a0fc3de4f;
 
 ALTER INDEX index_merge_request_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_8b9f9a19a4;
-
-ALTER INDEX index_loose_foreign_keys_deleted_records_for_loading_records ATTACH PARTITION gitlab_partitions_static.index_8be8640437;
 
 ALTER INDEX index_issue_stage_events_group_duration ATTACH PARTITION gitlab_partitions_static.index_8fb48e72ce;
 

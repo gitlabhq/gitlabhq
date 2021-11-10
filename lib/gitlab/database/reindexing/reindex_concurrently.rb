@@ -8,7 +8,7 @@ module Gitlab
         ReindexError = Class.new(StandardError)
 
         TEMPORARY_INDEX_PATTERN = '\_ccnew[0-9]*'
-        STATEMENT_TIMEOUT = 9.hours
+        STATEMENT_TIMEOUT = 24.hours
         PG_MAX_INDEX_NAME_LENGTH = 63
 
         attr_reader :index, :logger

@@ -133,6 +133,7 @@ update-storybook-yarn-cache:
     paths:
       - tmp/tests/frontend/
       - knapsack/
+      - crystalball/
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.

@@ -25,8 +25,7 @@ module LooseForeignKeys
       return if modification_tracker.over_limit?
 
       # At this point, all associations are cleaned up, we can update the status of the parent records
-      update_count = LooseForeignKeys::DeletedRecord
-        .mark_records_processed_for_table_between(deleted_parent_records.first.fully_qualified_table_name, deleted_parent_records.first, deleted_parent_records.last)
+      update_count = LooseForeignKeys::DeletedRecord.mark_records_processed(deleted_parent_records)
 
       deleted_records_counter.increment({ table: parent_klass.table_name, db_config_name: LooseForeignKeys::DeletedRecord.connection.pool.db_config.name }, update_count)
     end
