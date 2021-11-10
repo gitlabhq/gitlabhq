@@ -12,7 +12,6 @@ module Clusters
       include CronjobQueue
       # rubocop:enable Scalability/CronWorkerContext
 
-      queue_namespace :incident_management
       feature_category :incident_management
       urgency :low
 

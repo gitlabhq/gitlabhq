@@ -13,9 +13,8 @@ module DependencyProxy
 
     def perform
       DependencyProxy::ImageTtlGroupPolicy.enabled.each do |policy|
-        # Technical Debt: change to read_before https://gitlab.com/gitlab-org/gitlab/-/issues/341536
-        qualified_blobs = policy.group.dependency_proxy_blobs.active.updated_before(policy.ttl)
-        qualified_manifests = policy.group.dependency_proxy_manifests.active.updated_before(policy.ttl)
+        qualified_blobs = policy.group.dependency_proxy_blobs.active.read_before(policy.ttl)
+        qualified_manifests = policy.group.dependency_proxy_manifests.active.read_before(policy.ttl)
 
         enqueue_blob_cleanup_job if expire_artifacts(qualified_blobs, DependencyProxy::Blob)
         enqueue_manifest_cleanup_job if expire_artifacts(qualified_manifests, DependencyProxy::Manifest)

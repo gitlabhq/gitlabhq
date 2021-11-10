@@ -23326,6 +23326,9 @@ msgstr ""
 msgid "No forks are available to you."
 msgstr ""
 
+msgid "No group provided"
+msgstr ""
+
 msgid "No grouping"
 msgstr ""
 
@@ -23375,6 +23378,9 @@ msgid "No matching results..."
 msgstr ""
 
 msgid "No members found"
+msgstr ""
+
+msgid "No memberships found"
 msgstr ""
 
 msgid "No merge requests found"
@@ -24440,6 +24446,9 @@ msgid "Package type must be Helm"
 msgstr ""
 
 msgid "Package type must be Maven"
+msgstr ""
+
+msgid "Package type must be NPM"
 msgstr ""
 
 msgid "Package type must be NuGet"
@@ -35112,6 +35121,9 @@ msgstr ""
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
 msgstr ""
 
+msgid "This commit was signed with %{strong_open}multiple%{strong_close} signatures."
+msgstr ""
+
 msgid "This commit was signed with a %{strong_open}verified%{strong_close} signature and the committer email is verified to belong to the same user."
 msgstr ""
 
@@ -39464,6 +39476,9 @@ msgstr ""
 msgid "You do not have permission to access dora metrics."
 msgstr ""
 
+msgid "You do not have permission to approve a member"
+msgstr ""
+
 msgid "You do not have permission to leave this %{namespaceType}."
 msgstr ""
 
@@ -41765,6 +41780,9 @@ msgid "started on %{timebox_start_date}"
 msgstr ""
 
 msgid "starts on %{timebox_start_date}"
+msgstr ""
+
+msgid "structure is too large"
 msgstr ""
 
 msgid "stuck"

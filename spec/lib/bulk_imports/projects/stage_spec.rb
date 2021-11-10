@@ -27,7 +27,8 @@ RSpec.describe BulkImports::Projects::Stage do
 
   describe '#pipelines' do
     it 'list all the pipelines with their stage number, ordered by stage' do
-      expect(subject.pipelines).to eq(pipelines)
+      expect(subject.pipelines & pipelines).to eq(pipelines)
+      expect(subject.pipelines.last.last).to eq(BulkImports::Common::Pipelines::EntityFinisher)
     end
   end
 end

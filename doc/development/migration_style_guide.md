@@ -588,8 +588,6 @@ class like so:
 
 ```ruby
 class MyMigration < Gitlab::Database::Migration[1.0]
-  include Gitlab::Database::MigrationHelpers
-
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -633,8 +631,6 @@ be used with a name option. For example:
 
 ```ruby
 class MyMigration < Gitlab::Database::Migration[1.0]
-  include Gitlab::Database::MigrationHelpers
-
   INDEX_NAME = 'index_name'
 
   def up

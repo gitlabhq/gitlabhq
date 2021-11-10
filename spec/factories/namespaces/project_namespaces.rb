@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :project_namespace, class: 'Namespaces::ProjectNamespace' do
-    project
+    association :project, factory: :project, strategy: :build
     parent { project.namespace }
     visibility_level { project.visibility_level }
     name { project.name }

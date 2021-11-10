@@ -39,7 +39,7 @@ RSpec.describe DependencyProxy::FindOrCreateBlobService do
     let(:blob_sha) { blob.file_name.sub('.gz', '') }
 
     it 'uses cached blob instead of downloading one' do
-      expect { subject }.to change { blob.reload.updated_at }
+      expect { subject }.to change { blob.reload.read_at }
 
       expect(subject[:status]).to eq(:success)
       expect(subject[:blob]).to be_a(DependencyProxy::Blob)

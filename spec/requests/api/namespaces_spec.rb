@@ -8,7 +8,7 @@ RSpec.describe API::Namespaces do
   let_it_be(:group1) { create(:group, name: 'group.one') }
   let_it_be(:group2) { create(:group, :nested) }
   let_it_be(:project) { create(:project, namespace: group2, name: group2.name, path: group2.path) }
-  let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+  let_it_be(:project_namespace) { project.project_namespace }
 
   describe "GET /namespaces" do
     context "when unauthenticated" do

@@ -15,7 +15,7 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model do
     # using delete rather than destroy due to `delete` skipping AR hooks/callbacks
     # so it's ensured to work at the DB level. Uses ON DELETE CASCADE on foreign key
     let_it_be(:project) { create(:project) }
-    let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+    let_it_be(:project_namespace) { project.project_namespace }
 
     it 'also deletes the associated project' do
       project_namespace.delete

@@ -268,7 +268,6 @@ class MergeRequest < ApplicationRecord
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
-  scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :open_and_closed, -> { with_states(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }

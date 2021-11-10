@@ -92,7 +92,7 @@ end
 ```
 
 When this code executes, the experiment is run, a variant is assigned, and (if within a
-controller or view) a `window.gon.experiment.pill_color` object will be available in the
+controller or view) a `window.gl.experiments.pill_color` object will be available in the
 client layer, with details like:
 
 - The assigned variant.
@@ -522,14 +522,14 @@ shared example: [tracks assignment and records the subject](https://gitlab.com/g
 
 This is in flux as of GitLab 13.10, and can't be documented just yet.
 
-Any experiment that's been run in the request lifecycle surfaces in `window.gon.experiment`,
+Any experiment that's been run in the request lifecycle surfaces in and `window.gl.experiments`,
 and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0)
 so you can use it when resolving some concepts around experimentation in the client layer.
 
 ### Use experiments in Vue
 
 With the `gitlab-experiment` component, you can define slots that match the name of the
-variants pushed to `window.gon.experiment`. For example, if we alter the `pill_color`
+variants pushed to `window.gl.experiments`. For example, if we alter the `pill_color`
 experiment to just use the default variants of `control` and `candidate` like so:
 
 ```ruby
@@ -587,7 +587,51 @@ For example, the Vue component for the previously-defined `pill_color` experimen
 ```
 
 NOTE:
-When there is no experiment data in the `window.gon.experiment` object for the given experiment name, the `control` slot will be used, if it exists.
+When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot will be used, if it exists.
+
+## Test with Jest
+
+### Stub Helpers
+
+You can stub experiments using the `stubExperiments` helper defined in `spec/frontend/__helpers__/experimentation_helper.js`.
+
+```javascript
+import { stubExperiments } from 'helpers/experimentation_helper';
+import { getExperimentData } from '~/experimentation/utils';
+
+describe('when my_experiment is enabled', () => {
+  beforeEach(() => {
+    stubExperiments({ my_experiment: 'candidate' });
+  });
+
+  it('sets the correct data', () => {
+    expect(getExperimentData('my_experiment')).toEqual({ experiment: 'my_experiment', variant: 'candidate' });
+  });
+});
+```
+
+NOTE:
+This method of stubbing in Jest specs will not automatically un-stub itself at the end of the test. We merge our stubbed experiment in with all the other global data in `window.gl`. If you need to remove the stubbed experiment(s) after your test or ensure a clean global object before your test, you'll need to manage the global object directly yourself:
+
+```javascript
+desribe('tests that care about global state', () => {
+  const originalObjects = [];
+
+  beforeEach(() => {
+    // For backwards compatibility for now, we're using both window.gon & window.gl
+    originalObjects.push(window.gon, window.gl);
+  });
+
+  afterEach(() => {
+    [window.gon, window.gl] = originalObjects;
+  });
+
+  it('stubs experiment in fresh global state', () => {
+    stubExperiment({ my_experiment: 'candidate' });
+    // ...
+  });
+})
+```
 
 ## Notes on feature flags
 

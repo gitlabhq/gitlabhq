@@ -164,7 +164,7 @@ export default class MergeRequestStore {
       this.projectArchived = data.project_archived;
       this.isSHAMismatch = this.sha !== data.diff_head_sha;
       this.shouldBeRebased = Boolean(data.should_be_rebased);
-      this.workInProgress = data.work_in_progress;
+      this.draft = data.draft;
     }
 
     const currentUser = data.current_user;
@@ -207,7 +207,7 @@ export default class MergeRequestStore {
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
     this.shouldBeRebased = mergeRequest.shouldBeRebased;
-    this.workInProgress = mergeRequest.workInProgress;
+    this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
 
     this.setState();

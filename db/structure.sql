@@ -13237,7 +13237,8 @@ CREATE TABLE dependency_proxy_blobs (
     file_store integer,
     file_name character varying NOT NULL,
     file text NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    read_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 CREATE SEQUENCE dependency_proxy_blobs_id_seq
@@ -13286,6 +13287,7 @@ CREATE TABLE dependency_proxy_manifests (
     digest text NOT NULL,
     content_type text,
     status smallint DEFAULT 0 NOT NULL,
+    read_at timestamp with time zone DEFAULT now() NOT NULL,
     CONSTRAINT check_079b293a7b CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_167a9a8a91 CHECK ((char_length(content_type) <= 255)),
     CONSTRAINT check_c579e3f586 CHECK ((char_length(file_name) <= 255)),
@@ -17198,6 +17200,12 @@ CREATE SEQUENCE packages_maven_metadata_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_maven_metadata_id_seq OWNED BY packages_maven_metadata.id;
+
+CREATE TABLE packages_npm_metadata (
+    package_id bigint NOT NULL,
+    package_json jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT chk_rails_e5cbc301ae CHECK ((char_length((package_json)::text) < 20000))
+);
 
 CREATE TABLE packages_nuget_dependency_link_metadata (
     dependency_link_id bigint NOT NULL,
@@ -23524,6 +23532,9 @@ ALTER TABLE ONLY packages_helm_file_metadata
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT packages_maven_metadata_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_npm_metadata
+    ADD CONSTRAINT packages_npm_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT packages_nuget_dependency_link_metadata_pkey PRIMARY KEY (dependency_link_id);
 
@@ -25637,13 +25648,13 @@ CREATE UNIQUE INDEX index_dep_prox_manifests_on_group_id_file_name_and_status ON
 
 CREATE INDEX index_dependency_proxy_blobs_on_group_id_and_file_name ON dependency_proxy_blobs USING btree (group_id, file_name);
 
-CREATE INDEX index_dependency_proxy_blobs_on_group_id_status_and_id ON dependency_proxy_blobs USING btree (group_id, status, id);
+CREATE INDEX index_dependency_proxy_blobs_on_group_id_status_read_at_id ON dependency_proxy_blobs USING btree (group_id, status, read_at, id);
 
 CREATE INDEX index_dependency_proxy_blobs_on_status ON dependency_proxy_blobs USING btree (status);
 
 CREATE INDEX index_dependency_proxy_group_settings_on_group_id ON dependency_proxy_group_settings USING btree (group_id);
 
-CREATE INDEX index_dependency_proxy_manifests_on_group_id_status_and_id ON dependency_proxy_manifests USING btree (group_id, status, id);
+CREATE INDEX index_dependency_proxy_manifests_on_group_id_status_read_at_id ON dependency_proxy_manifests USING btree (group_id, status, read_at, id);
 
 CREATE INDEX index_dependency_proxy_manifests_on_status ON dependency_proxy_manifests USING btree (status);
 
@@ -30778,6 +30789,9 @@ ALTER TABLE ONLY atlassian_identities
 
 ALTER TABLE ONLY serverless_domain_cluster
     ADD CONSTRAINT fk_rails_c09009dee1 FOREIGN KEY (pages_domain_id) REFERENCES pages_domains(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_npm_metadata
+    ADD CONSTRAINT fk_rails_c0e5fce6f3 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_rails_c1ac5161d8 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -157,16 +157,17 @@ class Gitlab::Seeder::CycleAnalytics
   end
 
   def create_new_vsm_project
+    namespace = FactoryBot.create(
+      :group,
+      name: "Value Stream Management Group #{suffix}",
+      path: "vsmg-#{suffix}"
+    )
     project = FactoryBot.create(
       :project,
       name: "Value Stream Management Project #{suffix}",
       path: "vsmp-#{suffix}",
       creator: admin,
-      namespace: FactoryBot.create(
-        :group,
-        name: "Value Stream Management Group #{suffix}",
-        path: "vsmg-#{suffix}"
-      )
+      namespace: namespace
     )
 
     project.create_repository

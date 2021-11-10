@@ -49,6 +49,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       it 'keeps them as specified' do
         expect(project.name).to eq('one')
         expect(project.path).to eq('two')
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
 
@@ -58,6 +59,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       it 'sets name == path' do
         expect(project.path).to eq('one.two_three-four')
         expect(project.name).to eq(project.path)
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
 
@@ -67,6 +69,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       it 'sets path == name' do
         expect(project.name).to eq('one.two_three-four')
         expect(project.path).to eq(project.name)
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
 
@@ -78,6 +81,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       it 'parameterizes the name' do
         expect(project.name).to eq('one.two_three-four and five')
         expect(project.path).to eq('one-two_three-four-and-five')
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
   end
@@ -111,13 +115,14 @@ RSpec.describe Projects::CreateService, '#execute' do
   end
 
   context 'user namespace' do
-    it do
+    it 'creates a project in user namespace' do
       project = create_project(user, opts)
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
       expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
+      expect(project.project_namespace).to be_in_sync_with_project(project)
     end
   end
 
@@ -151,6 +156,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(project.owner).to eq(user)
         expect(project.team.maintainers).to contain_exactly(user)
         expect(project.namespace).to eq(user.namespace)
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
 
@@ -160,6 +166,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         project = create_project(admin, opts)
 
         expect(project).not_to be_persisted
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
   end
@@ -183,6 +190,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project.namespace).to eq(group)
       expect(project.team.owners).to include(user)
       expect(user.authorized_projects).to include(project)
+      expect(project.project_namespace).to be_in_sync_with_project(project)
     end
   end
 
@@ -339,6 +347,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       end
 
       imported_project
+      expect(imported_project.project_namespace).to be_in_sync_with_project(imported_project)
     end
 
     it 'stores import data and URL' do
@@ -406,6 +415,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(project.visibility_level).to eq(project_level)
         expect(project).to be_saved
         expect(project).to be_valid
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
     end
   end
@@ -424,6 +434,7 @@ RSpec.describe Projects::CreateService, '#execute' do
         expect(project.errors.messages[:visibility_level].first).to(
           match('restricted by your GitLab administrator')
         )
+        expect(project.project_namespace).to be_in_sync_with_project(project)
       end
 
       it 'does not allow a restricted visibility level for admins when admin mode is disabled' do
@@ -493,6 +504,7 @@ RSpec.describe Projects::CreateService, '#execute' do
       expect(project).to be_valid
       expect(project.owner).to eq(user)
       expect(project.namespace).to eq(user.namespace)
+      expect(project.project_namespace).to be_in_sync_with_project(project)
     end
 
     context 'when another repository already exists on disk' do
@@ -522,6 +534,7 @@ RSpec.describe Projects::CreateService, '#execute' do
           expect(project).to respond_to(:errors)
           expect(project.errors.messages).to have_key(:base)
           expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+          expect(project.project_namespace).to be_in_sync_with_project(project)
         end
 
         it 'does not allow to import project when path matches existing repository on disk' do
@@ -531,6 +544,7 @@ RSpec.describe Projects::CreateService, '#execute' do
           expect(project).to respond_to(:errors)
           expect(project.errors.messages).to have_key(:base)
           expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+          expect(project.project_namespace).to be_in_sync_with_project(project)
         end
       end
 
@@ -555,6 +569,7 @@ RSpec.describe Projects::CreateService, '#execute' do
           expect(project).to respond_to(:errors)
           expect(project.errors.messages).to have_key(:base)
           expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+          expect(project.project_namespace).to be_in_sync_with_project(project)
         end
       end
     end
@@ -870,6 +885,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
             expect(project).to be_valid
             expect(project.shared_runners_enabled).to eq(expected_result_for_project)
+            expect(project.project_namespace).to be_in_sync_with_project(project)
           end
         end
       end
@@ -890,6 +906,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
             expect(project).to be_valid
             expect(project.shared_runners_enabled).to eq(expected_result_for_project)
+            expect(project.project_namespace).to be_in_sync_with_project(project)
           end
         end
       end
@@ -907,6 +924,7 @@ RSpec.describe Projects::CreateService, '#execute' do
             expect(project.persisted?).to eq(false)
             expect(project).to be_invalid
             expect(project.errors[:shared_runners_enabled]).to include('cannot be enabled because parent group does not allow it')
+            expect(project.project_namespace).to be_in_sync_with_project(project)
           end
         end
       end
@@ -926,6 +944,7 @@ RSpec.describe Projects::CreateService, '#execute' do
 
           expect(project).to be_valid
           expect(project.shared_runners_enabled).to eq(expected_result)
+          expect(project.project_namespace).to be_in_sync_with_project(project)
         end
       end
     end

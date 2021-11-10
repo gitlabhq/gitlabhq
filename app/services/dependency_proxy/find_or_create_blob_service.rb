@@ -30,8 +30,7 @@ module DependencyProxy
         blob.save!
       end
 
-      # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
-      blob.touch if from_cache
+      blob.read! if from_cache
       success(blob: blob, from_cache: from_cache)
     end
 

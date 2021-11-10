@@ -3,7 +3,12 @@ import { get } from 'lodash';
 import { DEFAULT_VARIANT, CANDIDATE_VARIANT, TRACKING_CONTEXT_SCHEMA } from './constants';
 
 function getExperimentsData() {
-  return get(window, ['gon', 'experiment'], {});
+  // Pull from deprecated window.gon.experiment
+  const experimentsFromGon = get(window, ['gon', 'experiment'], {});
+  // Pull from preferred window.gl.experiments
+  const experimentsFromGl = get(window, ['gl', 'experiments'], {});
+
+  return { ...experimentsFromGon, ...experimentsFromGl };
 }
 
 function convertExperimentDataToExperimentContext(experimentData) {

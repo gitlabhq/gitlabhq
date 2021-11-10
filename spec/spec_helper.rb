@@ -197,6 +197,14 @@ RSpec.configure do |config|
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+
+    # Do not retry controller tests because rspec-retry cannot properly
+    # reset the controller which may contain data from last attempt. See
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73360
+    config.around(:each, type: :controller) do |example|
+      example.run_with_retry(retry: 1)
+    end
+
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 

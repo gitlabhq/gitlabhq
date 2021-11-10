@@ -7,7 +7,7 @@ RSpec.describe 'jira_connect/subscriptions/index.html.haml' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    assign(:subscriptions, [])
+    assign(:subscriptions, create_list(:jira_connect_subscription, 1))
   end
 
   context 'when the user is signed in' do

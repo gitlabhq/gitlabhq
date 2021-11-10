@@ -23,7 +23,7 @@ RSpec.shared_examples 'namespace traversal' do
   let_it_be(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
   let_it_be(:groups) { [group, nested_group, deep_nested_group, very_deep_nested_group] }
   let_it_be(:project) { create(:project, group: nested_group) }
-  let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+  let_it_be(:project_namespace) { project.project_namespace }
 
   describe '#root_ancestor' do
     it 'returns the correct root ancestor' do

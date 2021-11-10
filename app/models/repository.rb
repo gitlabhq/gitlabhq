@@ -1091,6 +1091,13 @@ class Repository
     after_create
 
     true
+  rescue Gitlab::Git::Repository::RepositoryExists
+    # We do not want to call `#after_create` given that we didn't create the
+    # repo, but we obviously have a mismatch between what's in our exists cache
+    # and actual on-disk state as seen by Gitaly. Let's thus expire our caches.
+    expire_status_cache
+
+    nil
   end
 
   def create_from_bundle(bundle_path)

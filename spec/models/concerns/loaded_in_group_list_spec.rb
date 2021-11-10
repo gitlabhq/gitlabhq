@@ -25,7 +25,7 @@ RSpec.describe LoadedInGroupList do
     context 'with project namespaces' do
       let_it_be(:group1) { create(:group, parent: parent) }
       let_it_be(:group2) { create(:group, parent: parent) }
-      let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+      let_it_be(:project_namespace) { project.project_namespace }
 
       it 'does not include project_namespaces in the count of subgroups' do
         expect(found_group.preloaded_subgroup_count).to eq(3)

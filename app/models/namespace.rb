@@ -497,6 +497,10 @@ class Namespace < ApplicationRecord
     Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
   end
 
+  def project_namespace_creation_enabled?
+    Feature.enabled?(:create_project_namespace_on_project_create, self, default_enabled: :yaml)
+  end
+
   private
 
   def expire_child_caches

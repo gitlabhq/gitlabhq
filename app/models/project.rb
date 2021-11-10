@@ -98,7 +98,7 @@ class Project < ApplicationRecord
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_save :ensure_runners_token
-  before_save :ensure_project_namespace_in_sync
+  before_validation :ensure_project_namespace_in_sync
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -147,7 +147,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id'
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -476,6 +476,7 @@ class Project < ApplicationRecord
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
+  validates :project_namespace, presence: true, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
                                        ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
@@ -2919,12 +2920,28 @@ class Project < ApplicationRecord
   end
 
   def ensure_project_namespace_in_sync
-    if changes.keys & [:name, :path, :namespace_id, :visibility_level] && project_namespace.present?
-      project_namespace.name = name
-      project_namespace.path = path
-      project_namespace.parent = namespace
-      project_namespace.visibility_level = visibility_level
-    end
+    # create project_namespace when project is created if create_project_namespace_on_project_create FF is enabled
+    build_project_namespace if project_namespace_creation_enabled?
+
+    # regardless of create_project_namespace_on_project_create FF we need
+    # to keep project and project namespace in sync if there is one
+    sync_attributes(project_namespace) if sync_project_namespace?
+  end
+
+  def project_namespace_creation_enabled?
+    new_record? && !project_namespace && self.namespace && self.root_namespace.project_namespace_creation_enabled?
+  end
+
+  def sync_project_namespace?
+    (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
+  end
+
+  def sync_attributes(project_namespace)
+    project_namespace.name = name
+    project_namespace.path = path
+    project_namespace.parent = namespace
+    project_namespace.shared_runners_enabled = shared_runners_enabled
+    project_namespace.visibility_level = visibility_level
   end
 end
 

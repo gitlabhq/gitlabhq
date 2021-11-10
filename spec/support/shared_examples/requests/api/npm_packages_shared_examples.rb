@@ -8,6 +8,8 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
   let_it_be(:package_dependency_link3) { create(:packages_dependency_link, package: package, dependency_type: :bundleDependencies) }
   let_it_be(:package_dependency_link4) { create(:packages_dependency_link, package: package, dependency_type: :peerDependencies) }
 
+  let_it_be(:package_metadatum) { create(:npm_metadatum, package: package) }
+
   let(:headers) { {} }
 
   subject { get(url, headers: headers) }
@@ -38,6 +40,19 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
 
       # query count can slightly change between the examples so we're using a custom threshold
       expect { get(url, headers: headers) }.not_to exceed_query_limit(control).with_threshold(4)
+    end
+
+    context 'with packages_npm_abbreviated_metadata disabled' do
+      before do
+        stub_feature_flags(packages_npm_abbreviated_metadata: false)
+      end
+
+      it 'calls the presenter without including metadata' do
+        expect(::Packages::Npm::PackagePresenter)
+          .to receive(:new).with(anything, anything, include_metadata: false).and_call_original
+
+        subject
+      end
     end
   end
 

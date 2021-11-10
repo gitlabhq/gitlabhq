@@ -241,18 +241,19 @@ describe('DiffFileHeader component', () => {
   });
 
   describe('for any file', () => {
-    const otherModes = Object.keys(diffViewerModes).filter((m) => m !== 'mode_changed');
+    const allModes = Object.keys(diffViewerModes).map((m) => [m]);
 
-    it('for mode_changed file mode displays mode changes', () => {
+    it.each(allModes)('for %s file mode displays mode changes', (mode) => {
       createComponent({
         props: {
           diffFile: {
             ...diffFile,
+            mode_changed: true,
             a_mode: 'old-mode',
             b_mode: 'new-mode',
             viewer: {
               ...diffFile.viewer,
-              name: diffViewerModes.mode_changed,
+              name: diffViewerModes[mode],
             },
           },
         },
@@ -260,13 +261,14 @@ describe('DiffFileHeader component', () => {
       expect(findModeChangedLine().text()).toMatch(/old-mode.+new-mode/);
     });
 
-    it.each(otherModes.map((m) => [m]))(
+    it.each(allModes.filter((m) => m[0] !== 'mode_changed'))(
       'for %s file mode does not display mode changes',
       (mode) => {
         createComponent({
           props: {
             diffFile: {
               ...diffFile,
+              mode_changed: false,
               a_mode: 'old-mode',
               b_mode: 'new-mode',
               viewer: {

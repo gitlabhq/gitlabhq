@@ -21,6 +21,10 @@ module Packages
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute
         ::Packages::Npm::CreateTagService.new(package, dist_tag).execute
 
+        if Feature.enabled?(:packages_npm_abbreviated_metadata, project)
+          package.create_npm_metadatum!(package_json: version_data)
+        end
+
         package
       end
 

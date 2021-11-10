@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import NewBoardButton from '~/boards/components/new_board_button.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { assignGitlabExperiment } from 'helpers/experimentation_helper';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import eventHub from '~/boards/eventhub';
 
 const FEATURE = 'prominent_create_board_btn';
@@ -28,7 +28,9 @@ describe('NewBoardButton', () => {
   });
 
   describe('control variant', () => {
-    assignGitlabExperiment(FEATURE, 'control');
+    beforeAll(() => {
+      stubExperiments({ [FEATURE]: 'control' });
+    });
 
     it('renders nothing', () => {
       wrapper = createComponent();
@@ -38,7 +40,9 @@ describe('NewBoardButton', () => {
   });
 
   describe('candidate variant', () => {
-    assignGitlabExperiment(FEATURE, 'candidate');
+    beforeAll(() => {
+      stubExperiments({ [FEATURE]: 'candidate' });
+    });
 
     it('renders New board button when `candidate` variant', () => {
       wrapper = createComponent();

@@ -14,7 +14,6 @@ import {
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
-import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -181,7 +180,7 @@ export default {
       return this.diffFile.renamed_file;
     },
     isModeChanged() {
-      return this.diffFile.viewer.name === diffViewerModes.mode_changed;
+      return this.diffFile.mode_changed;
     },
     expandDiffToFullFileTitle() {
       if (this.diffFile.isShowingFullFile) {

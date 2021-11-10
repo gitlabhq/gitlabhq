@@ -113,8 +113,6 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   end
 
   def send_manifest(manifest, from_cache:)
-    # Technical debt: change to read_at https://gitlab.com/gitlab-org/gitlab/-/issues/341536
-    manifest.touch
     response.headers[DependencyProxy::Manifest::DIGEST_HEADER] = manifest.digest
     response.headers['Content-Length'] = manifest.size
     response.headers['Docker-Distribution-Api-Version'] = DependencyProxy::DISTRIBUTION_API_VERSION

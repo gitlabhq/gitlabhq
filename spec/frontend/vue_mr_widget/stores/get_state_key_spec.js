@@ -15,7 +15,7 @@ describe('getStateKey', () => {
       branchMissing: false,
       commitsCount: 2,
       hasConflicts: false,
-      workInProgress: false,
+      draft: false,
     };
     const bound = getStateKey.bind(context);
 
@@ -49,9 +49,9 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('unresolvedDiscussions');
 
-    context.workInProgress = true;
+    context.draft = true;
 
-    expect(bound()).toEqual('workInProgress');
+    expect(bound()).toEqual('draft');
 
     context.onlyAllowMergeIfPipelineSucceeds = true;
     context.isPipelineFailed = true;
@@ -99,7 +99,7 @@ describe('getStateKey', () => {
       branchMissing: false,
       commitsCount: 2,
       hasConflicts: false,
-      workInProgress: false,
+      draft: false,
     };
     const bound = getStateKey.bind(context);
 

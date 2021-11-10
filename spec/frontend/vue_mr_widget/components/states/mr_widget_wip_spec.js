@@ -46,7 +46,7 @@ describe('Wip', () => {
       is_new_mr_data: true,
     };
 
-    describe('handleRemoveWIP', () => {
+    describe('handleRemoveDraft', () => {
       it('should make a request to service and handle response', (done) => {
         const vm = createComponent();
 
@@ -59,7 +59,7 @@ describe('Wip', () => {
           }),
         );
 
-        vm.handleRemoveWIP();
+        vm.handleRemoveDraft();
         setImmediate(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
@@ -84,7 +84,7 @@ describe('Wip', () => {
       expect(el.innerText).toContain('This merge request is still a draft.');
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(el.querySelector('button').innerText).toContain('Merge');
-      expect(el.querySelector('.js-remove-wip').innerText.replace(/\s\s+/g, ' ')).toContain(
+      expect(el.querySelector('.js-remove-draft').innerText.replace(/\s\s+/g, ' ')).toContain(
         'Mark as ready',
       );
     });
@@ -93,7 +93,7 @@ describe('Wip', () => {
       vm.mr.removeWIPPath = '';
 
       Vue.nextTick(() => {
-        expect(el.querySelector('.js-remove-wip')).toEqual(null);
+        expect(el.querySelector('.js-remove-draft')).toEqual(null);
         done();
       });
     });

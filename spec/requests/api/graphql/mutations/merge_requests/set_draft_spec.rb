@@ -8,14 +8,14 @@ RSpec.describe 'Setting Draft status of a merge request' do
   let(:current_user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
-  let(:input) { { wip: true } }
+  let(:input) { { draft: true } }
 
   let(:mutation) do
     variables = {
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_set_wip, variables.merge(input),
+    graphql_mutation(:merge_request_set_draft, variables.merge(input),
                      <<-QL.strip_heredoc
                        clientMutationId
                        errors
@@ -28,7 +28,7 @@ RSpec.describe 'Setting Draft status of a merge request' do
   end
 
   def mutation_response
-    graphql_mutation_response(:merge_request_set_wip)
+    graphql_mutation_response(:merge_request_set_draft)
   end
 
   before do
@@ -58,7 +58,7 @@ RSpec.describe 'Setting Draft status of a merge request' do
   end
 
   context 'when passing Draft false as input' do
-    let(:input) { { wip: false } }
+    let(:input) { { draft: false } }
 
     it 'does not do anything if the merge reqeust was not marked draft' do
       post_graphql_mutation(mutation, current_user: current_user)

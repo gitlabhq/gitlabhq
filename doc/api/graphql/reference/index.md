@@ -3509,31 +3509,6 @@ Input type: `MergeRequestSetSubscriptionInput`
 | <a id="mutationmergerequestsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
-### `Mutation.mergeRequestSetWip`
-
-WARNING:
-**Deprecated** in 13.12.
-Use mergeRequestSetDraft.
-
-Input type: `MergeRequestSetWipInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetwipiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutationmergerequestsetwipprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestsetwipwip"></a>`wip` | [`Boolean!`](#boolean) | Whether or not to set the merge request as a draft. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestsetwipclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestsetwiperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestsetwipmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-
 ### `Mutation.mergeRequestUpdate`
 
 Update attributes of a merge request.
@@ -11583,7 +11558,6 @@ Maven metadata.
 | <a id="mergerequestusernotescount"></a>`userNotesCount` | [`Int`](#int) | User notes count of the merge request. |
 | <a id="mergerequestuserpermissions"></a>`userPermissions` | [`MergeRequestPermissions!`](#mergerequestpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestweburl"></a>`webUrl` | [`String`](#string) | Web URL of the merge request. |
-| <a id="mergerequestworkinprogress"></a>`workInProgress` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 13.12. Use `draft`. |
 
 #### Fields with arguments
 

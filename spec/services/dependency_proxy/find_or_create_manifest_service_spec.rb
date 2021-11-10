@@ -84,7 +84,7 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
 
       shared_examples 'using the cached manifest' do
         it 'uses cached manifest instead of downloading one', :aggregate_failures do
-          subject
+          expect { subject }.to change { dependency_proxy_manifest.reload.read_at }
 
           expect(subject[:status]).to eq(:success)
           expect(subject[:manifest]).to be_a(DependencyProxy::Manifest)

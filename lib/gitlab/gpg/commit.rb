@@ -48,7 +48,7 @@ module Gitlab
 
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-            clear_memoization(:verified_signature)
+            clear_memoization(:gpg_signatures)
           end
 
           yield gpg_key
@@ -56,16 +56,7 @@ module Gitlab
       end
 
       def verified_signature
-        strong_memoize(:verified_signature) { gpgme_signature }
-      end
-
-      def gpgme_signature
-        GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
-          # Return the first signature for now: https://gitlab.com/gitlab-org/gitlab-foss/issues/54932
-          break verified_signature
-        end
-      rescue GPGME::Error
-        nil
+        gpg_signatures.first
       end
 
       def create_cached_signature!
@@ -75,6 +66,24 @@ module Gitlab
 
           GpgSignature.safe_create!(attributes)
         end
+      end
+
+      def gpg_signatures
+        strong_memoize(:gpg_signatures) do
+          signatures = []
+
+          GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
+            signatures << verified_signature
+          end
+
+          signatures
+        rescue GPGME::Error
+          []
+        end
+      end
+
+      def multiple_signatures?
+        gpg_signatures.size > 1
       end
 
       def attributes(gpg_key)
@@ -93,6 +102,7 @@ module Gitlab
       end
 
       def verification_status(gpg_key)
+        return :multiple_signatures if multiple_signatures? && Feature.enabled?(:multiple_gpg_signatures, @commit.project, default_enabled: :yaml)
         return :unknown_key unless gpg_key
         return :unverified_key unless gpg_key.verified?
         return :unverified unless verified_signature&.valid?

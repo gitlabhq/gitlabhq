@@ -1,5 +1,6 @@
 <script>
-import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf, GlEmptyState } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import { mapState, mapMutations } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import { SET_ALERT } from '../store/mutation_types';
@@ -13,6 +14,7 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
+    GlEmptyState,
     SubscriptionsList,
     AddNamespaceButton,
     SignInButton,
@@ -21,11 +23,17 @@ export default {
     usersPath: {
       default: '',
     },
+    subscriptions: {
+      default: [],
+    },
   },
   computed: {
     ...mapState(['alert']),
     shouldShowAlert() {
       return Boolean(this.alert?.message);
+    },
+    hasSubscriptions() {
+      return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
       return Boolean(!this.usersPath);
@@ -66,15 +74,44 @@ export default {
       </template>
     </gl-alert>
 
-    <h2 class="gl-text-center">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
+    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
+    <div class="jira-connect-app-body gl-mx-auto gl-px-5 gl-mb-7">
+      <template v-if="hasSubscriptions">
+        <div class="gl-display-flex gl-justify-content-end">
+          <sign-in-button v-if="!userSignedIn" :users-path="usersPath" />
+          <add-namespace-button v-else />
+        </div>
 
-    <div class="jira-connect-app-body gl-my-7 gl-px-5 gl-pb-4">
-      <div class="gl-display-flex gl-justify-content-end">
-        <sign-in-button v-if="!userSignedIn" :users-path="usersPath" />
-        <add-namespace-button v-else />
-      </div>
-
-      <subscriptions-list />
+        <subscriptions-list />
+      </template>
+      <template v-else>
+        <div v-if="!userSignedIn" class="gl-text-center">
+          <p class="gl-mb-7">{{ s__('JiraService|Sign in to GitLab.com to get started.') }}</p>
+          <sign-in-button class="gl-mb-7" :users-path="usersPath">
+            {{ __('Sign in to GitLab') }}
+          </sign-in-button>
+          <p>
+            {{
+              s__(
+                'Integrations|Note: this integration only works with accounts on GitLab.com (SaaS).',
+              )
+            }}
+          </p>
+        </div>
+        <gl-empty-state
+          v-else
+          :title="s__('Integrations|No linked namespaces')"
+          :description="
+            s__(
+              'Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance.',
+            )
+          "
+        >
+          <template #actions>
+            <add-namespace-button />
+          </template>
+        </gl-empty-state>
+      </template>
     </div>
   </div>
 </template>

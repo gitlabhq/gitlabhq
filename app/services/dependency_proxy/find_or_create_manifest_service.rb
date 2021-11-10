@@ -58,6 +58,8 @@ module DependencyProxy
 
     def respond(from_cache: true)
       if @manifest
+        @manifest.read!
+
         success(manifest: @manifest, from_cache: from_cache)
       else
         error('Failed to download the manifest from the external registry', 503)

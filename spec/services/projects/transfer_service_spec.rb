@@ -66,8 +66,6 @@ RSpec.describe Projects::TransferService do
     end
 
     context 'when project has an associated project namespace' do
-      let!(:project_namespace) { create(:project_namespace, project: project) }
-
       it 'keeps project namespace in sync with project' do
         transfer_result = execute_transfer
 
@@ -272,8 +270,6 @@ RSpec.describe Projects::TransferService do
     end
 
     context 'when project has an associated project namespace' do
-      let!(:project_namespace) { create(:project_namespace, project: project) }
-
       it 'keeps project namespace in sync with project' do
         attempt_project_transfer
 
@@ -294,8 +290,6 @@ RSpec.describe Projects::TransferService do
     end
 
     context 'when project has an associated project namespace' do
-      let!(:project_namespace) { create(:project_namespace, project: project) }
-
       it 'keeps project namespace in sync with project' do
         transfer_result = execute_transfer
 

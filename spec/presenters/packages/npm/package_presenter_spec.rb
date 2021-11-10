@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::Npm::PackagePresenter do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
   let_it_be(:package_name) { "@#{project.root_namespace.path}/test" }
   let_it_be(:package1) { create(:npm_package, version: '2.0.4', project: project, name: package_name) }
@@ -13,42 +15,88 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
   let(:presenter) { described_class.new(package_name, packages) }
 
   describe '#versions' do
-    subject { presenter.versions }
-
-    context 'for packages without dependencies' do
-      it { is_expected.to be_a(Hash) }
-      it { expect(subject[package1.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
-      it { expect(subject[package2.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
-
-      ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-        it { expect(subject.dig(package1.version, dependency_type)).to be nil }
-        it { expect(subject.dig(package2.version, dependency_type)).to be nil }
-      end
-
-      it 'avoids N+1 database queries' do
-        check_n_plus_one(:versions) do
-          create_list(:npm_package, 5, project: project, name: package_name)
-        end
-      end
+    let_it_be('package_json') do
+      {
+        'name': package_name,
+        'version': '2.0.4',
+        'deprecated': 'warning!',
+        'bin': './cli.js',
+        'directories': ['lib'],
+        'engines': { 'npm': '^7.5.6' },
+        '_hasShrinkwrap': false,
+        'dist': {
+          'tarball': 'http://localhost/tarball.tgz',
+          'shasum': '1234567890'
+        },
+        'custom_field': 'foo_bar'
+      }
     end
 
-    context 'for packages with dependencies' do
-      ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-        let_it_be("package_dependency_link_for_#{dependency_type}") { create(:packages_dependency_link, package: package1, dependency_type: dependency_type) }
+    let(:presenter) { described_class.new(package_name, packages, include_metadata: include_metadata) }
+
+    subject { presenter.versions }
+
+    where(:has_dependencies, :has_metadatum, :include_metadata) do
+      true  | true  | true
+      false | true  | true
+      true  | false | true
+      false | false | true
+
+      # TODO : to remove along with packages_npm_abbreviated_metadata
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/344827
+      true  | true  | false
+      false | true  | false
+      true  | false | false
+      false | false | false
+    end
+
+    with_them do
+      if params[:has_dependencies]
+        ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
+          let_it_be("package_dependency_link_for_#{dependency_type}") { create(:packages_dependency_link, package: package1, dependency_type: dependency_type) }
+        end
+      end
+
+      if params[:has_metadatum]
+        let_it_be('package_metadatadum') { create(:npm_metadatum, package: package1, package_json: package_json) }
       end
 
       it { is_expected.to be_a(Hash) }
       it { expect(subject[package1.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
       it { expect(subject[package2.version].with_indifferent_access).to match_schema('public_api/v4/packages/npm_package_version') }
-      ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-        it { expect(subject.dig(package1.version, dependency_type.to_s)).to be_any }
+      it { expect(subject[package1.version]['custom_field']).to be_blank }
+
+      context 'dependencies' do
+        ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
+          if params[:has_dependencies]
+            it { expect(subject.dig(package1.version, dependency_type.to_s)).to be_any }
+          else
+            it { expect(subject.dig(package1.version, dependency_type)).to be nil }
+          end
+
+          it { expect(subject.dig(package2.version, dependency_type)).to be nil }
+        end
+      end
+
+      context 'metadatum' do
+        ::Packages::Npm::PackagePresenter::PACKAGE_JSON_ALLOWED_FIELDS.each do |metadata_field|
+          if params[:has_metadatum] && params[:include_metadata]
+            it { expect(subject.dig(package1.version, metadata_field)).not_to be nil }
+          else
+            it { expect(subject.dig(package1.version, metadata_field)).to be nil }
+          end
+
+          it { expect(subject.dig(package2.version, metadata_field)).to be nil }
+        end
       end
 
       it 'avoids N+1 database queries' do
         check_n_plus_one(:versions) do
           create_list(:npm_package, 5, project: project, name: package_name).each do |npm_package|
-            ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-              create(:packages_dependency_link, package: npm_package, dependency_type: dependency_type)
+            if has_dependencies
+              ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
+                create(:packages_dependency_link, package: npm_package, dependency_type: dependency_type)
+              end
             end
           end
         end

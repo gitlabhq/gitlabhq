@@ -185,9 +185,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
         context 'when projects have project namespaces' do
           let_it_be(:project1) { create(:project, :private, namespace: group) }
-          let_it_be(:project_namespace1) { create(:project_namespace, project: project1) }
           let_it_be(:project2) { create(:project, :private, namespace: group) }
-          let_it_be(:project_namespace2) { create(:project_namespace, project: project2) }
 
           it_behaves_like 'project namespace path is in sync with project path' do
             let(:group_full_path) { "#{group.path}" }
@@ -250,30 +248,39 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         let_it_be(:membership) { create(:group_member, :owner, group: new_parent_group, user: user) }
         let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
 
-        before do
-          group.update_attribute(:path, 'foo')
-        end
-
-        it 'returns false' do
-          expect(transfer_service.execute(new_parent_group)).to be_falsy
-        end
-
         it 'adds an error on group' do
-          transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
+          expect(transfer_service.execute(new_parent_group)).to be_falsy
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
 
-        context 'when projects have project namespaces' do
-          let!(:project_namespace) { create(:project_namespace, project: project) }
-
+        # currently when a project is created it gets a corresponding project namespace
+        # so we test the case where a project without a project namespace is transferred
+        # for backward compatibility
+        context 'without project namespace' do
           before do
-            transfer_service.execute(new_parent_group)
+            project_namespace = project.project_namespace
+            project.update_column(:project_namespace_id, nil)
+            project_namespace.delete
           end
 
-          it_behaves_like 'project namespace path is in sync with project path' do
-            let(:group_full_path) { "#{new_parent_group.full_path}" }
-            let(:projects_with_project_namespace) { [project] }
+          it 'adds an error on group' do
+            expect(project.reload.project_namespace).to be_nil
+            expect(transfer_service.execute(new_parent_group)).to be_falsy
+            expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
           end
+        end
+      end
+
+      context 'when projects have project namespaces' do
+        let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
+
+        before do
+          transfer_service.execute(new_parent_group)
+        end
+
+        it_behaves_like 'project namespace path is in sync with project path' do
+          let(:group_full_path) { "#{new_parent_group.full_path}" }
+          let(:projects_with_project_namespace) { [project] }
         end
       end
 
@@ -445,8 +452,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
       context 'when transferring a group with project descendants' do
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
-        let!(:project_namespace1) { create(:project_namespace, project: project1) }
-        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path
@@ -483,8 +488,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let!(:project1) { create(:project, :repository, :public, namespace: group) }
           let!(:project2) { create(:project, :repository, :public, namespace: group) }
           let!(:new_parent_group) { create(:group, :private) }
-          let!(:project_namespace1) { create(:project_namespace, project: project1) }
-          let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
           it 'updates projects visibility to match the new parent' do
             group.projects.each do |project|
@@ -504,8 +507,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:subgroup2) { create(:group, :internal, parent: group) }
-        let!(:project_namespace1) { create(:project_namespace, project: project1) }
-        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path

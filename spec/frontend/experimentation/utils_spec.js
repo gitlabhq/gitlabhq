@@ -1,4 +1,4 @@
-import { assignGitlabExperiment } from 'helpers/experimentation_helper';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import {
   DEFAULT_VARIANT,
   CANDIDATE_VARIANT,
@@ -7,15 +7,45 @@ import {
 import * as experimentUtils from '~/experimentation/utils';
 
 describe('experiment Utilities', () => {
-  const TEST_KEY = 'abc';
+  const ABC_KEY = 'abc';
+  const DEF_KEY = 'def';
+
+  let origGon;
+  let origGl;
+
+  beforeEach(() => {
+    origGon = window.gon;
+    origGl = window.gl;
+    window.gon.experiment = {};
+    window.gl.experiments = {};
+  });
+
+  afterEach(() => {
+    window.gon = origGon;
+    window.gl = origGl;
+  });
 
   describe('getExperimentData', () => {
+    const ABC_DATA = '_abc_data_';
+    const ABC_DATA2 = '_updated_abc_data_';
+    const DEF_DATA = '_def_data_';
+
     describe.each`
-      gon                     | input         | output
-      ${[TEST_KEY, '_data_']} | ${[TEST_KEY]} | ${{ variant: '_data_' }}
-      ${[]}                   | ${[TEST_KEY]} | ${undefined}
-    `('with input=$input and gon=$gon', ({ gon, input, output }) => {
-      assignGitlabExperiment(...gon);
+      gonData                | glData                  | input        | output
+      ${[ABC_KEY, ABC_DATA]} | ${[]}                   | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
+      ${[]}                  | ${[ABC_KEY, ABC_DATA]}  | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
+      ${[ABC_KEY, ABC_DATA]} | ${[DEF_KEY, DEF_DATA]}  | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
+      ${[ABC_KEY, ABC_DATA]} | ${[DEF_KEY, DEF_DATA]}  | ${[DEF_KEY]} | ${{ experiment: DEF_KEY, variant: DEF_DATA }}
+      ${[ABC_KEY, ABC_DATA]} | ${[ABC_KEY, ABC_DATA2]} | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA2 }}
+      ${[]}                  | ${[]}                   | ${[ABC_KEY]} | ${undefined}
+    `('with input=$input, gon=$gonData, & gl=$glData', ({ gonData, glData, input, output }) => {
+      beforeEach(() => {
+        const [gonKey, gonVariant] = gonData;
+        const [glKey, glVariant] = glData;
+
+        if (gonKey) window.gon.experiment[gonKey] = { experiment: gonKey, variant: gonVariant };
+        if (glKey) window.gl.experiments[glKey] = { experiment: glKey, variant: glVariant };
+      });
 
       it(`returns ${output}`, () => {
         expect(experimentUtils.getExperimentData(...input)).toEqual(output);
@@ -25,66 +55,47 @@ describe('experiment Utilities', () => {
 
   describe('getAllExperimentContexts', () => {
     const schema = TRACKING_CONTEXT_SCHEMA;
-    let origGon;
-
-    beforeEach(() => {
-      origGon = window.gon;
-    });
-
-    afterEach(() => {
-      window.gon = origGon;
-    });
 
     it('collects all of the experiment contexts into a single array', () => {
-      const experiments = [
-        { experiment: 'abc', variant: 'candidate' },
-        { experiment: 'def', variant: 'control' },
-        { experiment: 'ghi', variant: 'blue' },
-      ];
-      window.gon = {
-        experiment: experiments.reduce((collector, { experiment, variant }) => {
-          return { ...collector, [experiment]: { experiment, variant } };
-        }, {}),
-      };
+      const experiments = { [ABC_KEY]: 'candidate', [DEF_KEY]: 'control', ghi: 'blue' };
+
+      stubExperiments(experiments);
 
       expect(experimentUtils.getAllExperimentContexts()).toEqual(
-        experiments.map((data) => ({ schema, data })),
+        Object.entries(experiments).map(([experiment, variant]) => ({
+          schema,
+          data: { experiment, variant },
+        })),
       );
     });
 
     it('returns an empty array if there are no experiments', () => {
-      window.gon.experiment = {};
-
       expect(experimentUtils.getAllExperimentContexts()).toEqual([]);
-    });
-
-    it('includes all additional experiment data', () => {
-      const experiment = 'experimentWithCustomData';
-      const data = { experiment, variant: 'control', color: 'blue', style: 'rounded' };
-      window.gon.experiment[experiment] = data;
-
-      expect(experimentUtils.getAllExperimentContexts()).toContainEqual({ schema, data });
     });
   });
 
   describe('isExperimentVariant', () => {
     describe.each`
-      gon                            | input                            | output
-      ${[TEST_KEY, DEFAULT_VARIANT]} | ${[TEST_KEY, DEFAULT_VARIANT]}   | ${true}
-      ${[TEST_KEY, '_variant_name']} | ${[TEST_KEY, '_variant_name']}   | ${true}
-      ${[TEST_KEY, '_variant_name']} | ${[TEST_KEY, '_bogus_name']}     | ${false}
-      ${[TEST_KEY, '_variant_name']} | ${['boguskey', '_variant_name']} | ${false}
-      ${[]}                          | ${[TEST_KEY, '_variant_name']}   | ${false}
-    `('with input=$input and gon=$gon', ({ gon, input, output }) => {
-      assignGitlabExperiment(...gon);
+      experiment   | variant            | input                            | output
+      ${ABC_KEY}   | ${DEFAULT_VARIANT} | ${[ABC_KEY, DEFAULT_VARIANT]}    | ${true}
+      ${ABC_KEY}   | ${'_variant_name'} | ${[ABC_KEY, '_variant_name']}    | ${true}
+      ${ABC_KEY}   | ${'_variant_name'} | ${[ABC_KEY, '_bogus_name']}      | ${false}
+      ${ABC_KEY}   | ${'_variant_name'} | ${['boguskey', '_variant_name']} | ${false}
+      ${undefined} | ${undefined}       | ${[ABC_KEY, '_variant_name']}    | ${false}
+    `(
+      'with input=$input, experiment=$experiment, variant=$variant',
+      ({ experiment, variant, input, output }) => {
+        it(`returns ${output}`, () => {
+          if (experiment) stubExperiments({ [experiment]: variant });
 
-      it(`returns ${output}`, () => {
-        expect(experimentUtils.isExperimentVariant(...input)).toEqual(output);
-      });
-    });
+          expect(experimentUtils.isExperimentVariant(...input)).toEqual(output);
+        });
+      },
+    );
   });
 
   describe('experiment', () => {
+    const experiment = 'marley';
     const useSpy = jest.fn();
     const controlSpy = jest.fn();
     const trySpy = jest.fn();
@@ -98,49 +109,62 @@ describe('experiment Utilities', () => {
     };
 
     describe('when there is no experiment data', () => {
-      it('calls control variant', () => {
-        experimentUtils.experiment('marley', variants);
-        expect(useSpy).toHaveBeenCalled();
-      });
-    });
-
-    describe('when experiment variant is "control"', () => {
-      assignGitlabExperiment('marley', DEFAULT_VARIANT);
-
-      it('calls the control variant', () => {
-        experimentUtils.experiment('marley', variants);
+      it('calls the use variant', () => {
+        experimentUtils.experiment(experiment, variants);
         expect(useSpy).toHaveBeenCalled();
       });
 
       describe("when 'control' is provided instead of 'use'", () => {
         it('calls the control variant', () => {
-          experimentUtils.experiment('marley', { control: controlSpy });
+          experimentUtils.experiment(experiment, { control: controlSpy });
+          expect(controlSpy).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('when experiment variant is "control"', () => {
+      beforeEach(() => {
+        stubExperiments({ [experiment]: DEFAULT_VARIANT });
+      });
+
+      it('calls the use variant', () => {
+        experimentUtils.experiment(experiment, variants);
+        expect(useSpy).toHaveBeenCalled();
+      });
+
+      describe("when 'control' is provided instead of 'use'", () => {
+        it('calls the control variant', () => {
+          experimentUtils.experiment(experiment, { control: controlSpy });
           expect(controlSpy).toHaveBeenCalled();
         });
       });
     });
 
     describe('when experiment variant is "candidate"', () => {
-      assignGitlabExperiment('marley', CANDIDATE_VARIANT);
+      beforeEach(() => {
+        stubExperiments({ [experiment]: CANDIDATE_VARIANT });
+      });
 
-      it('calls the candidate variant', () => {
-        experimentUtils.experiment('marley', variants);
+      it('calls the try variant', () => {
+        experimentUtils.experiment(experiment, variants);
         expect(trySpy).toHaveBeenCalled();
       });
 
       describe("when 'candidate' is provided instead of 'try'", () => {
-        it('calls the control variant', () => {
-          experimentUtils.experiment('marley', { candidate: candidateSpy });
+        it('calls the candidate variant', () => {
+          experimentUtils.experiment(experiment, { candidate: candidateSpy });
           expect(candidateSpy).toHaveBeenCalled();
         });
       });
     });
 
     describe('when experiment variant is "get_up_stand_up"', () => {
-      assignGitlabExperiment('marley', 'get_up_stand_up');
+      beforeEach(() => {
+        stubExperiments({ [experiment]: 'get_up_stand_up' });
+      });
 
       it('calls the get-up-stand-up variant', () => {
-        experimentUtils.experiment('marley', variants);
+        experimentUtils.experiment(experiment, variants);
         expect(getUpStandUpSpy).toHaveBeenCalled();
       });
     });
@@ -148,14 +172,17 @@ describe('experiment Utilities', () => {
 
   describe('getExperimentVariant', () => {
     it.each`
-      gon                                                               | input         | output
-      ${{ experiment: { [TEST_KEY]: { variant: DEFAULT_VARIANT } } }}   | ${[TEST_KEY]} | ${DEFAULT_VARIANT}
-      ${{ experiment: { [TEST_KEY]: { variant: CANDIDATE_VARIANT } } }} | ${[TEST_KEY]} | ${CANDIDATE_VARIANT}
-      ${{}}                                                             | ${[TEST_KEY]} | ${DEFAULT_VARIANT}
-    `('with input=$input and gon=$gon, returns $output', ({ gon, input, output }) => {
-      window.gon = gon;
+      experiment   | variant              | input      | output
+      ${ABC_KEY}   | ${DEFAULT_VARIANT}   | ${ABC_KEY} | ${DEFAULT_VARIANT}
+      ${ABC_KEY}   | ${CANDIDATE_VARIANT} | ${ABC_KEY} | ${CANDIDATE_VARIANT}
+      ${undefined} | ${undefined}         | ${ABC_KEY} | ${DEFAULT_VARIANT}
+    `(
+      'with input=$input, experiment=$experiment, & variant=$variant; returns $output',
+      ({ experiment, variant, input, output }) => {
+        stubExperiments({ [experiment]: variant });
 
-      expect(experimentUtils.getExperimentVariant(...input)).toEqual(output);
-    });
+        expect(experimentUtils.getExperimentVariant(input)).toEqual(output);
+      },
+    );
   });
 });

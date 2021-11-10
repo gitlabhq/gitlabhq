@@ -20,6 +20,7 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
   end
 
   describe '.with_debian_codename' do

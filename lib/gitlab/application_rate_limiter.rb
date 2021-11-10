@@ -79,28 +79,6 @@ module Gitlab
           increment(key, options[:scope]) > threshold_value
       end
 
-      # Increments the given cache key and increments the value by 1 with the
-      # expiration interval defined in `.rate_limits`.
-      #
-      # @param key [Symbol] Key attribute registered in `.rate_limits`
-      # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
-      #
-      # @return [Integer] incremented value
-      def increment(key, scope)
-        return safe_increment(key, scope) if Feature.enabled?(:rate_limiter_safe_increment, default_enabled: :yaml)
-
-        value = 0
-        interval_value = interval(key)
-
-        ::Gitlab::Redis::RateLimiting.with do |redis|
-          cache_key = action_key(key, scope)
-          value     = redis.incr(cache_key)
-          redis.expire(cache_key, interval_value) if value == 1
-        end
-
-        value
-      end
-
       # Increments a cache key that is based on the current time and interval.
       # So that when time passes to the next interval, the key changes and the count starts again from 0.
       #
@@ -110,7 +88,7 @@ module Gitlab
       # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
       #
       # @return [Integer] incremented value
-      def safe_increment(key, scope)
+      def increment(key, scope)
         interval_value = interval(key)
 
         period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)

@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:clusters_integrations_check_prometheus_health
+  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
+  :feature_category: :incident_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -1087,15 +1096,6 @@
   :idempotent:
   :tags:
   - :needs_own_queue
-- :name: incident_management:clusters_integrations_check_prometheus_health
-  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
-  :feature_category: :incident_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: true
-  :tags: []
 - :name: incident_management:incident_management_add_severity_system_note
   :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management

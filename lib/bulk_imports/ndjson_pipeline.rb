@@ -13,7 +13,7 @@ module BulkImports
         relation_hash, relation_index = data
         relation_definition = import_export_config.top_relation_tree(relation)
 
-        deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|
+        relation_object = deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|
           relation_factory.create(
             relation_index: relation_index,
             relation_sym: key.to_sym,
@@ -25,6 +25,9 @@ module BulkImports
             excluded_keys: import_export_config.relation_excluded_keys(key)
           )
         end
+
+        relation_object.assign_attributes(portable_class_sym => portable)
+        relation_object
       end
 
       def load(_, object)
@@ -93,6 +96,10 @@ module BulkImports
 
       def members_mapper
         @members_mapper ||= BulkImports::UsersMapper.new(context: context)
+      end
+
+      def portable_class_sym
+        portable.class.to_s.downcase.to_sym
       end
     end
   end

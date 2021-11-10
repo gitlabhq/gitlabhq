@@ -10,8 +10,8 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import getStateQuery from '../../queries/get_state.query.graphql';
-import workInProgressQuery from '../../queries/states/work_in_progress.query.graphql';
-import removeWipMutation from '../../queries/toggle_wip.mutation.graphql';
+import draftQuery from '../../queries/states/draft.query.graphql';
+import removeDraftMutation from '../../queries/toggle_draft.mutation.graphql';
 import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
@@ -23,7 +23,7 @@ export default {
   mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
   apollo: {
     userPermissions: {
-      query: workInProgressQuery,
+      query: draftQuery,
       skip() {
         return !this.glFeatures.mergeRequestWidgetGraphql;
       },
@@ -53,25 +53,25 @@ export default {
     },
   },
   methods: {
-    removeWipMutation() {
+    removeDraftMutation() {
       const { mergeRequestQueryVariables } = this;
 
       this.isMakingRequest = true;
 
       this.$apollo
         .mutate({
-          mutation: removeWipMutation,
+          mutation: removeDraftMutation,
           variables: {
             ...mergeRequestQueryVariables,
-            wip: false,
+            draft: false,
           },
           update(
             store,
             {
               data: {
-                mergeRequestSetWip: {
+                mergeRequestSetDraft: {
                   errors,
-                  mergeRequest: { mergeableDiscussionsState, workInProgress, title },
+                  mergeRequest: { mergeableDiscussionsState, draft, title },
                 },
               },
             },
@@ -91,7 +91,7 @@ export default {
 
             const data = produce(sourceData, (draftState) => {
               draftState.project.mergeRequest.mergeableDiscussionsState = mergeableDiscussionsState;
-              draftState.project.mergeRequest.workInProgress = workInProgress;
+              draftState.project.mergeRequest.draft = draft;
               draftState.project.mergeRequest.title = title;
             });
 
@@ -104,14 +104,14 @@ export default {
           optimisticResponse: {
             // eslint-disable-next-line @gitlab/require-i18n-strings
             __typename: 'Mutation',
-            mergeRequestSetWip: {
+            mergeRequestSetDraft: {
               __typename: 'MergeRequestSetWipPayload',
               errors: [],
               mergeRequest: {
                 __typename: 'MergeRequest',
                 mergeableDiscussionsState: true,
                 title: this.mr.title,
-                workInProgress: false,
+                draft: false,
               },
             },
           },
@@ -119,7 +119,7 @@ export default {
         .then(
           ({
             data: {
-              mergeRequestSetWip: {
+              mergeRequestSetDraft: {
                 mergeRequest: { title },
               },
             },
@@ -137,9 +137,9 @@ export default {
           this.isMakingRequest = false;
         });
     },
-    handleRemoveWIP() {
+    handleRemoveDraft() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
-        this.removeWipMutation();
+        this.removeDraftMutation();
       } else {
         this.isMakingRequest = true;
         this.service
@@ -178,8 +178,8 @@ export default {
         size="small"
         :disabled="isMakingRequest"
         :loading="isMakingRequest"
-        class="js-remove-wip gl-ml-3"
-        @click="handleRemoveWIP"
+        class="js-remove-draft gl-ml-3"
+        @click="handleRemoveDraft"
       >
         {{ s__('mrWidget|Mark as ready') }}
       </gl-button>

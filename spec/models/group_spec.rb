@@ -566,7 +566,7 @@ RSpec.describe Group do
 
       context 'when project namespace exists in the group' do
         let!(:project) { create(:project, group: group) }
-        let!(:project_namespace) { create(:project_namespace, project: project) }
+        let!(:project_namespace) { project.project_namespace }
 
         it 'filters out project namespace' do
           expect(group.descendants.find_by_id(project_namespace.id)).to be_nil

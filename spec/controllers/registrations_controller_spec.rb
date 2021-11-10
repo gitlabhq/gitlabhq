@@ -499,13 +499,12 @@ RSpec.describe RegistrationsController do
       expect(User.last.name).to eq("#{base_user_params[:first_name]} #{base_user_params[:last_name]}")
     end
 
-    it 'sets the username and caller_id in the context' do
+    it 'sets the caller_id in the context' do
       expect(controller).to receive(:create).and_wrap_original do |m, *args|
         m.call(*args)
 
         expect(Gitlab::ApplicationContext.current)
-          .to include('meta.user' => base_user_params[:username],
-                      'meta.caller_id' => 'RegistrationsController#create')
+          .to include('meta.caller_id' => 'RegistrationsController#create')
       end
 
       subject

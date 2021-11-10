@@ -591,6 +591,9 @@ Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Datab
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances'] ||= Settingslogic.new({})
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['cron'] ||= '* 0/15 * * *'
 Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['job_class'] = 'Issues::RescheduleStuckIssueRebalancesWorker'
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['job_class'] = 'Clusters::Integrations::CheckPrometheusHealthWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})

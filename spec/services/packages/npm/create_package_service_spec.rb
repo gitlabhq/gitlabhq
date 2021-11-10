@@ -16,6 +16,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
 
   let(:override) { {} }
   let(:package_name) { "@#{namespace.path}/my-app" }
+  let(:version_data) { params.dig('versions', '1.0.1') }
 
   subject { described_class.new(project, user, params).execute }
 
@@ -25,6 +26,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
         .to change { Packages::Package.count }.by(1)
         .and change { Packages::Package.npm.count }.by(1)
         .and change { Packages::Tag.count }.by(1)
+        .and change { Packages::Npm::Metadatum.count }.by(1)
     end
 
     it_behaves_like 'assigns the package creator' do
@@ -40,6 +42,8 @@ RSpec.describe Packages::Npm::CreatePackageService do
       expect(package.version).to eq(version)
     end
 
+    it { expect(subject.npm_metadatum.package_json).to eq(version_data) }
+
     it { expect(subject.name).to eq(package_name) }
     it { expect(subject.version).to eq(version) }
 
@@ -52,6 +56,31 @@ RSpec.describe Packages::Npm::CreatePackageService do
 
       it 'creates a package file build info' do
         expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+      end
+    end
+
+    context 'with a too large metadata structure' do
+      before do
+        params[:versions][version][:test] = 'test' * 10000
+      end
+
+      it 'does not create the package' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
+        .and not_change { Packages::Package.count }
+        .and not_change { Packages::Package.npm.count }
+        .and not_change { Packages::Tag.count }
+        .and not_change { Packages::Npm::Metadatum.count }
+      end
+    end
+
+    context 'with packages_npm_abbreviated_metadata disabled' do
+      before do
+        stub_feature_flags(packages_npm_abbreviated_metadata: false)
+      end
+
+      it 'creates a package without metadatum' do
+        expect { subject }
+          .not_to change { Packages::Npm::Metadatum.count }
       end
     end
   end

@@ -207,7 +207,7 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
   service_desk_email:
     enabled: true
     address: "project_contact+%{key}@example.com"
-    user: "project_support@example.com"
+    user: "project_contact@example.com"
     password: "[REDACTED]"
     host: "imap.gmail.com"
     port: 993
@@ -224,7 +224,7 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
-  gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
+  gitlab_rails['service_desk_email_email'] = "project_contact@gmail.com"
   gitlab_rails['service_desk_email_password'] = "[REDACTED]"
   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
   gitlab_rails['service_desk_email_idle_timeout'] = 60

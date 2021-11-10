@@ -1,8 +1,0 @@
----
-name: rate_limiter_safe_increment
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73343
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/285352
-milestone: '14.5'
-type: development
-group: group::project management
-default_enabled: false

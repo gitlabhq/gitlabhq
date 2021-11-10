@@ -105,5 +105,16 @@ In this rollout issue, ensure the scoped `experiment::` label is kept accurate.
 /chatops run feature set <experiment-key> false
 ```
 
+## Experiment Successful Cleanup Concerns
+
+_Items to be considered if candidate experience is to become a permanent part of GitLab_
+
+<!-- 
+Add a list of items raised during MR review or otherwise that may need further thought/condideration
+before making it a permanent part of the product.
+
+Example: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70451#note_727246104
+-->
+
 /label ~"feature flag" ~"devops::growth" ~"growth experiment" ~"experiment-rollout" ~Engineering ~"workflow::scheduling" ~"experiment::pending"
 /milestone %"Next 1-3 releases" 

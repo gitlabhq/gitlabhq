@@ -365,8 +365,7 @@ include: '.gitlab-ci-production.yml'
 
 #### `include:file`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53903) in GitLab 11.7.
-> - Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
+> Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 To include files from another private project on the same GitLab instance,
 use `include:file`. You can use `include:file` in combination with `include:project` only.
@@ -450,8 +449,6 @@ include:
   this is similar to pulling a third party dependency.
 
 #### `include:template`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53445) in GitLab 11.7.
 
 Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
@@ -643,8 +640,7 @@ job2:
 
 **Additional details**:
 
-You might need to use single quotes (`'`) or double quotes (`"`) when using
-[special characters in `script`](script.md#use-special-characters-with-script).
+- When you use [these special characters in `script`](script.md#use-special-characters-with-script), you must use single quotes (`'`) or double quotes (`"`) .
 
 **Related topics**:
 
@@ -680,8 +676,8 @@ job:
 
 **Additional details**:
 
-Scripts you specify in `before_script` are concatenated with any scripts you specify
-in the main [`script`](#script). The combined scripts execute together in a single shell.
+- Scripts you specify in `before_script` are concatenated with any scripts you specify
+  in the main [`script`](#script). The combined scripts execute together in a single shell.
 
 **Related topics**:
 
@@ -799,7 +795,7 @@ job4:
 
 Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
 always the first stage in a pipeline. User-defined stages execute after `.pre`.
-You do not need to define `.pre` in [`stages`](#stages).
+You do not have to define `.pre` in [`stages`](#stages).
 
 You must have a job in at least one stage other than `.pre` or `.post`.
 
@@ -834,7 +830,7 @@ job2:
 
 Use the `.post` stage to make a job run at the end of a pipeline. `.post`
 is always the last stage in a pipeline. User-defined stages execute before `.post`.
-You do not need to define `.post` in [`stages`](#stages).
+You do not have to define `.post` in [`stages`](#stages).
 
 You must have a job in at least one stage other than `.pre` or `.post`.
 
@@ -864,8 +860,6 @@ job2:
 ```
 
 ### `extends`
-
-> Introduced in GitLab 11.3.
 
 Use `extends` to reuse configuration sections. It's an alternative to [YAML anchors](yaml_specific_features.md#anchors)
 and is a little more flexible and readable. You can use `extends` to reuse configuration
@@ -1356,7 +1350,7 @@ pipeline based on branch names or pipeline types.
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
   | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#authentication-tokens). |
-  | `web`                    | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
+  | `web`                    | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **CI/CD > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:
 
@@ -1439,8 +1433,6 @@ deploy:
 - [`only:variables` and `except:variables` examples](../jobs/job_control.md#only-variables--except-variables-examples).
 
 #### `only:changes` / `except:changes`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/19232) in GitLab 11.4.
 
 Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
 when a Git push event modifies a file.
@@ -2043,7 +2035,7 @@ Use `environment` to define the [environment](../environments/index.md) that a j
 **Possible inputs**: The name of the environment the job deploys to, in one of these
 formats:
 
-- Plain text, including letters, digits, spaces and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
+- Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
 - CI/CD variables, including predefined, secure, or variables defined in the
   `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
@@ -2072,7 +2064,7 @@ Common environment names are `qa`, `staging`, and `production`, but you can use 
 **Possible inputs**: The name of the environment the job deploys to, in one of these
 formats:
 
-- Plain text, including letters, digits, spaces and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
+- Plain text, including letters, digits, spaces, and these characters: `-`, `_`, `/`, `$`, `{`, `}`.
 - CI/CD variables, including predefined, secure, or variables defined in the
   `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
@@ -2124,7 +2116,7 @@ environment.
 
 **Additional details**:
 
-See [`environment:action`](#environmentaction) for more details and an example.
+- See [`environment:action`](#environmentaction) for more details and an example.
 
 #### `environment:action`
 
@@ -2392,7 +2384,7 @@ cache-job:
 
 **Additional details**:
 
-- If you use **Windows Batch** to run your shell scripts you need to replace
+- If you use **Windows Batch** to run your shell scripts you must replace
   `$` with `%`. For example: `key: %CI_COMMIT_REF_SLUG%`
 - The `cache:key` value can't contain:
 
@@ -2446,9 +2438,11 @@ these files changes, a new cache key is computed and a new cache is created. Any
 job runs that use the same `Gemfile.lock` and `package.json` with `cache:key:files`
 use the new cache, instead of rebuilding the dependencies.
 
-**Additional details**: The cache `key` is a SHA computed from the most recent commits
-that changed each listed file. If neither file is changed in any commits, the
-fallback key is `default`.
+**Additional details**:
+
+- The cache `key` is a SHA computed from the most recent commits
+that changed each listed file.
+  If neither file is changed in any commits, the fallback key is `default`.
 
 ##### `cache:key:prefix`
 
@@ -2485,8 +2479,9 @@ If a branch changes `Gemfile.lock`, that branch has a new SHA checksum for `cach
 A new cache key is generated, and a new cache is created for that key. If `Gemfile.lock`
 is not found, the prefix is added to `default`, so the key in the example would be `rspec-default`.
 
-**Additional details**: If no file in `cache:key:files` is changed in any commits,
-the prefix is added to the `default` key.
+**Additional details**:
+
+- If no file in `cache:key:files` is changed in any commits, the prefix is added to the `default` key.
 
 #### `cache:untracked`
 
@@ -2552,7 +2547,7 @@ This example stores the cache whether or not the job fails or succeeds.
 
 To change the upload and download behavior of a cache, use the `cache:policy` keyword.
 By default, the job downloads the cache when the job starts, and uploads changes
-to the cache when the job ends. This is the `pull-push` policy (default).
+to the cache when the job ends. This caching style is the `pull-push` policy (default).
 
 To set a job to only download the cache when the job starts, but never upload changes
 when the job finishes, use `cache:policy:pull`.
@@ -2766,7 +2761,7 @@ time is not defined, it defaults to the
 
 To override the expiration date and protect artifacts from being automatically deleted:
 
-- Use the **Keep** button on the job page.
+- Select **Keep** on the job page.
 - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
   `expire_in` to `never`.
 
@@ -2871,7 +2866,7 @@ job:
 
 ---
 
-If you use **Windows Batch** to run your shell scripts you need to replace
+If you use **Windows Batch** to run your shell scripts you must replace
 `$` with `%`:
 
 ```yaml
@@ -2882,7 +2877,7 @@ job:
       - binaries/
 ```
 
-If you use **Windows PowerShell** to run your shell scripts you need to replace
+If you use **Windows PowerShell** to run your shell scripts you must replace
 `$` with `$env:`:
 
 ```yaml
@@ -2900,9 +2895,8 @@ link outside it. You can use Wildcards that use [glob](https://en.wikipedia.org/
 patterns and:
 
 - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-[`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-- In GitLab Runner 12.10 and earlier,
-[`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+- In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
 To restrict which jobs a specific job fetches artifacts from, see [dependencies](#dependencies).
 
@@ -2983,9 +2977,6 @@ artifacts:
 
 #### `artifacts:reports`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2.
-> - Requires GitLab Runner 11.2 and above.
-
 Use [`artifacts:reports`](#artifactsreports) to:
 
 - Collect test reports, code quality reports, and security reports from jobs.
@@ -3041,9 +3032,7 @@ requests and the pipeline view. It's also used to provide data for security dash
 
 ##### `artifacts:reports:browser_performance` **(PREMIUM)**
 
-> - Introduced in GitLab 11.5.
-> - Requires GitLab Runner 11.5 and above.
-> - [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
+> [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
 The `browser_performance` report collects [Browser Performance Testing metrics](../../user/project/merge_requests/browser_performance_testing.md)
 as artifacts.
@@ -3064,8 +3053,7 @@ dashboards.
 
 ##### `artifacts:reports:cobertura`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
 The collected Cobertura coverage reports upload to GitLab as an artifact
@@ -3076,9 +3064,7 @@ third party ports for other languages like JavaScript, Python, Ruby, and so on.
 
 ##### `artifacts:reports:codequality`
 
-> - Introduced in GitLab 11.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
-> - Requires GitLab Runner 11.5 and above.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 
 The `codequality` report collects [Code Quality issues](../../user/project/merge_requests/code_quality.md)
 as artifacts.
@@ -3086,9 +3072,6 @@ as artifacts.
 The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
 
 ##### `artifacts:reports:container_scanning` **(ULTIMATE)**
-
-> - Introduced in GitLab 11.5.
-> - Requires GitLab Runner 11.5 and above.
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md)
 as artifacts.
@@ -3110,9 +3093,6 @@ requests and the pipeline view. It's also used to provide data for security dash
 
 ##### `artifacts:reports:dast` **(ULTIMATE)**
 
-> - Introduced in GitLab 11.5.
-> - Requires GitLab Runner 11.5 and above.
-
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md)
 as artifacts.
 
@@ -3120,9 +3100,6 @@ The collected DAST report uploads to GitLab as an artifact and is summarized in 
 dashboards.
 
 ##### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
-
-> - Introduced in GitLab 11.5.
-> - Requires GitLab Runner 11.5 and above.
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md)
 as artifacts.
@@ -3132,15 +3109,14 @@ dashboards.
 
 ##### `artifacts:reports:dotenv`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
-> - Requires GitLab Runner 11.5 and later.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17066) in GitLab 12.9.
 
 The `dotenv` report collects a set of environment variables as artifacts.
 
 The collected variables are registered as runtime-created variables of the job,
 which is useful to [set dynamic environment URLs after a job finishes](../environments/index.md#set-dynamic-environment-urls-after-a-job-finishes).
 
-There are a couple of exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules):
+The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
 
 - The variable key can contain only letters, digits, and underscores (`_`).
 - The maximum size of the `.env` file is 5 KB.
@@ -3153,9 +3129,6 @@ There are a couple of exceptions to the [original dotenv rules](https://github.c
 - Quote escaping during parsing (`key = 'value'` -> `{key: "value"}`) is not supported.
 
 ##### `artifacts:reports:junit`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20390) in GitLab 11.2.
-> - Requires GitLab Runner 11.2 and above.
 
 The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format)
 as artifacts. Although JUnit was originally developed in Java, there are many
@@ -3179,21 +3152,20 @@ rspec:
 The collected Unit test reports upload to GitLab as an artifact and display in merge requests.
 
 If the JUnit tool you use exports to multiple XML files, specify
-multiple test report paths within a single job to
+multiple test report paths in a single job to
 concatenate them into a single file. Use a filename pattern (`junit: rspec-*.xml`),
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 ##### `artifacts:reports:license_scanning` **(ULTIMATE)**
 
-> - Introduced in GitLab 12.8.
-> - Requires GitLab Runner 11.5 and above.
+> Introduced in GitLab 12.8.
 
 The `license_scanning` report collects [Licenses](../../user/compliance/license_compliance/index.md)
 as artifacts.
 
-The License Compliance report uploads to GitLab as an artifact and displays automatically in merge requests and the pipeline view, and provide data for security
-dashboards.
+The License Compliance report uploads to GitLab as an artifact and displays automatically
+in merge requests and the pipeline view. The report provides data for security dashboards.
 
 ##### `artifacts:reports:load_performance` **(PREMIUM)**
 
@@ -3208,8 +3180,6 @@ shown in merge requests automatically.
 
 ##### `artifacts:reports:metrics` **(PREMIUM)**
 
-> Introduced in GitLab 11.10.
-
 The `metrics` report collects [Metrics](../metrics_reports.md)
 as artifacts.
 
@@ -3218,7 +3188,6 @@ The collected Metrics report uploads to GitLab as an artifact and displays in me
 ##### `artifacts:reports:requirements` **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
-> - Requires GitLab Runner 11.5 and above.
 
 The `requirements` report collects `requirements.json` files as artifacts.
 
@@ -3228,9 +3197,7 @@ marked as Satisfied.
 
 ##### `artifacts:reports:sast`
 
-> - Introduced in GitLab 11.5.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
-> - Requires GitLab Runner 11.5 and above.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md)
 as artifacts.
@@ -3302,7 +3269,7 @@ failure.
 
 1. `on_success` (default): Upload artifacts only when the job succeeds.
 1. `on_failure`: Upload artifacts only when the job fails.
-1. `always`: Always upload artifacts. Useful, for example, when
+1. `always`: Always upload artifacts. For example, when
    [uploading artifacts](../unit_test_reports.md#viewing-junit-screenshots-on-gitlab) required to
    troubleshoot failing tests.
 
@@ -3393,8 +3360,6 @@ to select a specific site profile and scanner profile.
 - [Scanner profile](../../user/application_security/dast/index.md#scanner-profile).
 
 ### `retry`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3515) in GitLab 11.5, you can control which failures to retry on.
 
 Use `retry` to configure how many times a job is retried if it fails.
 If not defined, defaults to `0` and jobs do not retry.
@@ -3512,8 +3477,6 @@ test:
 ```
 
 ### `parallel`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/21480) in GitLab 11.5.
 
 Use `parallel` to run a job multiple times in parallel in a single pipeline.
 
@@ -3987,7 +3950,7 @@ This keyword must be used with `secrets:vault`.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 
-Use `secrets:vault` to specify secrets provided by a [Hashicorp Vault](https://www.vaultproject.io/).
+Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://www.vaultproject.io/).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

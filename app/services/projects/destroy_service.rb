@@ -152,14 +152,12 @@ module Projects
 
       deleted_count = project.commit_statuses.delete_all
 
-      if deleted_count > 0
-        Gitlab::AppLogger.info(
-          class: 'Projects::DestroyService',
-          project_id: project.id,
-          message: 'leftover commit statuses',
-          orphaned_commit_status_count: deleted_count
-        )
-      end
+      Gitlab::AppLogger.info(
+        class: 'Projects::DestroyService',
+        project_id: project.id,
+        message: 'leftover commit statuses',
+        orphaned_commit_status_count: deleted_count
+      )
     end
 
     # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.
