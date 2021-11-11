@@ -9,18 +9,6 @@ RSpec.describe 'time travel' do
     end
   end
 
-  describe ':time_travel' do
-    today = Date.current
-
-    it 'time-travels by the given duration', time_travel: 3.days do
-      expect(Date.current).to eq(today + 3.days)
-    end
-
-    it 'works with negative durations', time_travel: -5.days do
-      expect(Date.current).to eq(today - 5.days)
-    end
-  end
-
   describe ':time_travel_to' do
     it 'time-travels to the specified date', time_travel_to: '2020-01-01' do
       expect(Date.current).to eq(Date.new(2020, 1, 1))

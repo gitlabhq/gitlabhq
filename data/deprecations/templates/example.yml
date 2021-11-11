@@ -19,9 +19,7 @@
 
     This area supports markdown.  Delete this entire comment and replace it with your markdown content.
 
-    Make sure to run `bin/rake gitlab:docs:compile_deprecations` locally before committing and pushing your changes.
-
-    When ready, assign to your tech writer to review and merge.
+    When ready, assign to your tech writer for review. When ready, they will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
 
     END OF BODY COMMENT -->
 # The following items are not published on the docs page, but may be used in the future.

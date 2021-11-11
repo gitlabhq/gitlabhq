@@ -45,7 +45,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
 
         it 'returns error' do
           expect(subject[:status]).to eq(:error)
-          expect(subject[:message]).to eq("Dotenv Artifact Too Big. Maximum Allowable Size: #{described_class::MAX_ACCEPTABLE_DOTENV_SIZE}")
+          expect(subject[:message]).to eq("Dotenv Artifact Too Big. Maximum Allowable Size: #{service.send(:dotenv_size_limit)}")
           expect(subject[:http_status]).to eq(:bad_request)
         end
       end
@@ -186,7 +186,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
         context 'when more than limitated variables are specified in dotenv' do
           let(:blob) do
             StringIO.new.tap do |s|
-              (described_class::MAX_ACCEPTABLE_VARIABLES_COUNT + 1).times do |i|
+              (service.send(:dotenv_variable_limit) + 1).times do |i|
                 s << "KEY#{i}=VAR#{i}\n"
               end
             end.string
@@ -194,7 +194,7 @@ RSpec.describe Ci::ParseDotenvArtifactService do
 
           it 'returns error' do
             expect(subject[:status]).to eq(:error)
-            expect(subject[:message]).to eq("Dotenv files cannot have more than #{described_class::MAX_ACCEPTABLE_VARIABLES_COUNT} variables")
+            expect(subject[:message]).to eq("Dotenv files cannot have more than #{service.send(:dotenv_variable_limit)} variables")
             expect(subject[:http_status]).to eq(:bad_request)
           end
         end

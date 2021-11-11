@@ -126,13 +126,9 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
   def transformed_blob_data
     @transformed_blob ||= if blob.path.ends_with?('.ipynb')
-                            new_blob = IpynbDiff.transform(blob.data,
-                                                           raise_errors: true,
-                                                           options: { include_metadata: false, cell_decorator: :percent })
-
-                            Gitlab::AppLogger.info(new_blob ? 'IPYNBDIFF_BLOB_GENERATED' : 'IPYNBDIFF_BLOB_NIL')
-
-                            new_blob
+                            IpynbDiff.transform(blob.data,
+                                                raise_errors: true,
+                                                options: { include_metadata: false, cell_decorator: :percent })
                           end
 
     @transformed_blob ||= blob.data

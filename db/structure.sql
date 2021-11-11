@@ -17574,7 +17574,9 @@ CREATE TABLE plan_limits (
     ci_jobs_trace_size_limit integer DEFAULT 100 NOT NULL,
     pages_file_entries integer DEFAULT 200000 NOT NULL,
     dast_profile_schedules integer DEFAULT 1 NOT NULL,
-    external_audit_event_destinations integer DEFAULT 5 NOT NULL
+    external_audit_event_destinations integer DEFAULT 5 NOT NULL,
+    dotenv_variables integer DEFAULT 20 NOT NULL,
+    dotenv_size integer DEFAULT 5120 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

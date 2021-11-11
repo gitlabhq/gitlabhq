@@ -9,14 +9,6 @@ RSpec.configure do |config|
     freeze_time { example.run }
   end
 
-  config.around(:example, :time_travel) do |example|
-    duration = example.metadata[:time_travel]
-
-    raise 'The time_travel RSpec metadata must have an ActiveSupport::Duration value (such as `30.days`).' unless duration.is_a?(ActiveSupport::Duration)
-
-    travel(duration) { example.run }
-  end
-
   config.around(:example, :time_travel_to) do |example|
     date_or_time = example.metadata[:time_travel_to]
 

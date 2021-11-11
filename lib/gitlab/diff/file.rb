@@ -463,9 +463,7 @@ module Gitlab
 
         diff.diff = new_diff.scan(/.*\n/)[2..-1].join('') if new_diff
 
-        Gitlab::AppLogger.info({ message: new_diff ? 'IPYNB_DIFF_GENERATED' : 'IPYNB_DIFF_NIL',
-                                 from: from&.to_s, to: to&.to_s,
-                                 lib_version: Gem.loaded_specs["ipynbdiff"].version.version })
+        Gitlab::AppLogger.info({ message: new_diff ? 'IPYNB_DIFF_GENERATED' : 'IPYNB_DIFF_NIL' })
 
       rescue IpynbDiff::InvalidNotebookError => e
         Gitlab::ErrorTracking.track_exception(e, issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344676')
