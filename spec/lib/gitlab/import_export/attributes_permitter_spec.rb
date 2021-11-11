@@ -126,7 +126,6 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
       :project_feature             | true
       :prometheus_metrics          | true
       :service_desk_setting        | true
-      :project                     | true
     end
 
     with_them do

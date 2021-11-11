@@ -219,6 +219,12 @@ To set the busy status indicator, either:
 
 ## Set your time zone
 
+You can set your local time zone to:
+
+- Display your local time on your profile, and in places where hovering over your name shows information about you.
+- Align your contribution calendar with your local time to better reflect when your contributions were made
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335343) in GitLab 14.5).
+
 To set your time zone:
 
 1. On the top bar, in the top-right corner, select your avatar.

@@ -40,7 +40,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
        'icon' => '<custom_provider_icon>',
        'args' => {
          'name' => 'openid_connect',
-         'scope' => ['openid','profile'],
+         'scope' => ['openid','profile','email'],
          'response_type' => 'code',
          'issuer' => '<your_oidc_url>',
          'discovery' => true,
@@ -65,7 +65,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
          icon: '<custom_provider_icon>',
          args: {
            name: 'openid_connect',
-           scope: ['openid','profile'],
+           scope: ['openid','profile','email'],
            response_type: 'code',
            issuer: '<your_oidc_url>',
            discovery: true,

@@ -1,8 +1,4 @@
 - "./ee/spec/controllers/projects/settings/access_tokens_controller_spec.rb"
-- "./ee/spec/graphql/mutations/dast/profiles/create_spec.rb"
-- "./ee/spec/graphql/mutations/dast/profiles/run_spec.rb"
-- "./ee/spec/graphql/mutations/dast/profiles/update_spec.rb"
-- "./ee/spec/graphql/mutations/dast_on_demand_scans/create_spec.rb"
 - "./ee/spec/lib/gitlab/ci/templates/Jobs/dast_default_branch_gitlab_ci_yaml_spec.rb"
 - "./ee/spec/mailers/notify_spec.rb"
 - "./ee/spec/models/ci/bridge_spec.rb"

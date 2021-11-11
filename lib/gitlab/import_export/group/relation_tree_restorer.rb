@@ -106,7 +106,12 @@ module Gitlab
         def update_params!
           params = @importable_attributes.except(*relations.keys.map(&:to_s))
           params = params.merge(present_override_params)
-          params = filter_attributes(params)
+
+          # Cleaning all imported and overridden params
+          params = Gitlab::ImportExport::AttributeCleaner.clean(
+            relation_hash: params,
+            relation_class: importable_class,
+            excluded_keys: excluded_keys_for_relation(importable_class_sym))
 
           @importable.assign_attributes(params)
 
@@ -115,25 +120,6 @@ module Gitlab
           Gitlab::Timeless.timeless(@importable) do
             @importable.save!
           end
-        end
-
-        def filter_attributes(params)
-          if use_attributes_permitter? && attributes_permitter.permitted_attributes_defined?(importable_class_sym)
-            attributes_permitter.permit(importable_class_sym, params)
-          else
-            Gitlab::ImportExport::AttributeCleaner.clean(
-              relation_hash:  params,
-              relation_class: importable_class,
-              excluded_keys:  excluded_keys_for_relation(importable_class_sym))
-          end
-        end
-
-        def attributes_permitter
-          @attributes_permitter ||= Gitlab::ImportExport::AttributesPermitter.new
-        end
-
-        def use_attributes_permitter?
-          Feature.enabled?(:permitted_attributes_for_import_export, default_enabled: :yaml)
         end
 
         def present_override_params

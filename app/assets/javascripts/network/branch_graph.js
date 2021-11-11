@@ -272,6 +272,8 @@ export default class BranchGraph {
     return r
       .text(this.offsetX + this.unitSpace * this.mspace + 35, y, commit.message.split('\n')[0])
       .attr({
+        fill: 'currentColor',
+        class: 'gl-text-body',
         'text-anchor': 'start',
         font: '14px Monaco, monospace',
       });
