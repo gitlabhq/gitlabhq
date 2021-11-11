@@ -47,107 +47,95 @@ describe('getSuppressNetworkErrorsDuringNavigationLink', () => {
     subscription = link.request(mockOperation).subscribe(observer);
   };
 
-  describe('when disabled', () => {
-    it('returns null', () => {
-      expect(getSuppressNetworkErrorsDuringNavigationLink()).toBe(null);
+  it('returns an ApolloLink', () => {
+    expect(getSuppressNetworkErrorsDuringNavigationLink()).toEqual(expect.any(ApolloLink));
+  });
+
+  describe('suppression case', () => {
+    describe('when navigating away', () => {
+      beforeEach(() => {
+        isNavigatingAway.mockReturnValue(true);
+      });
+
+      describe('given a network error', () => {
+        it('does not forward the error', async () => {
+          const spy = jest.fn();
+
+          createSubscription(makeMockNetworkErrorLink(), {
+            next: spy,
+            error: spy,
+            complete: spy,
+          });
+
+          // It's hard to test for something _not_ happening. The best we can
+          // do is wait a bit to make sure nothing happens.
+          await waitForPromises();
+          expect(spy).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
-  describe('when enabled', () => {
-    beforeEach(() => {
-      window.gon = { features: { suppressApolloErrorsDuringNavigation: true } };
-    });
+  describe('non-suppression cases', () => {
+    describe('when not navigating away', () => {
+      beforeEach(() => {
+        isNavigatingAway.mockReturnValue(false);
+      });
 
-    it('returns an ApolloLink', () => {
-      expect(getSuppressNetworkErrorsDuringNavigationLink()).toEqual(expect.any(ApolloLink));
-    });
-
-    describe('suppression case', () => {
-      describe('when navigating away', () => {
-        beforeEach(() => {
-          isNavigatingAway.mockReturnValue(true);
+      it('forwards successful requests', (done) => {
+        createSubscription(makeMockSuccessLink(), {
+          next({ data }) {
+            expect(data).toEqual({ foo: { id: 1 } });
+          },
+          error: () => done.fail('Should not happen'),
+          complete: () => done(),
         });
+      });
 
-        describe('given a network error', () => {
-          it('does not forward the error', async () => {
-            const spy = jest.fn();
+      it('forwards GraphQL errors', (done) => {
+        createSubscription(makeMockGraphQLErrorLink(), {
+          next({ errors }) {
+            expect(errors).toEqual([{ message: 'foo' }]);
+          },
+          error: () => done.fail('Should not happen'),
+          complete: () => done(),
+        });
+      });
 
-            createSubscription(makeMockNetworkErrorLink(), {
-              next: spy,
-              error: spy,
-              complete: spy,
-            });
-
-            // It's hard to test for something _not_ happening. The best we can
-            // do is wait a bit to make sure nothing happens.
-            await waitForPromises();
-            expect(spy).not.toHaveBeenCalled();
-          });
+      it('forwards network errors', (done) => {
+        createSubscription(makeMockNetworkErrorLink(), {
+          next: () => done.fail('Should not happen'),
+          error: (error) => {
+            expect(error.message).toBe('NetworkError');
+            done();
+          },
+          complete: () => done.fail('Should not happen'),
         });
       });
     });
 
-    describe('non-suppression cases', () => {
-      describe('when not navigating away', () => {
-        beforeEach(() => {
-          isNavigatingAway.mockReturnValue(false);
-        });
+    describe('when navigating away', () => {
+      beforeEach(() => {
+        isNavigatingAway.mockReturnValue(true);
+      });
 
-        it('forwards successful requests', (done) => {
-          createSubscription(makeMockSuccessLink(), {
-            next({ data }) {
-              expect(data).toEqual({ foo: { id: 1 } });
-            },
-            error: () => done.fail('Should not happen'),
-            complete: () => done(),
-          });
-        });
-
-        it('forwards GraphQL errors', (done) => {
-          createSubscription(makeMockGraphQLErrorLink(), {
-            next({ errors }) {
-              expect(errors).toEqual([{ message: 'foo' }]);
-            },
-            error: () => done.fail('Should not happen'),
-            complete: () => done(),
-          });
-        });
-
-        it('forwards network errors', (done) => {
-          createSubscription(makeMockNetworkErrorLink(), {
-            next: () => done.fail('Should not happen'),
-            error: (error) => {
-              expect(error.message).toBe('NetworkError');
-              done();
-            },
-            complete: () => done.fail('Should not happen'),
-          });
+      it('forwards successful requests', (done) => {
+        createSubscription(makeMockSuccessLink(), {
+          next({ data }) {
+            expect(data).toEqual({ foo: { id: 1 } });
+          },
+          error: () => done.fail('Should not happen'),
+          complete: () => done(),
         });
       });
 
-      describe('when navigating away', () => {
-        beforeEach(() => {
-          isNavigatingAway.mockReturnValue(true);
-        });
-
-        it('forwards successful requests', (done) => {
-          createSubscription(makeMockSuccessLink(), {
-            next({ data }) {
-              expect(data).toEqual({ foo: { id: 1 } });
-            },
-            error: () => done.fail('Should not happen'),
-            complete: () => done(),
-          });
-        });
-
-        it('forwards GraphQL errors', (done) => {
-          createSubscription(makeMockGraphQLErrorLink(), {
-            next({ errors }) {
-              expect(errors).toEqual([{ message: 'foo' }]);
-            },
-            error: () => done.fail('Should not happen'),
-            complete: () => done(),
-          });
+      it('forwards GraphQL errors', (done) => {
+        createSubscription(makeMockGraphQLErrorLink(), {
+          next({ errors }) {
+            expect(errors).toEqual([{ message: 'foo' }]);
+          },
+          error: () => done.fail('Should not happen'),
+          complete: () => done(),
         });
       });
     });

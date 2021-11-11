@@ -7,31 +7,38 @@
     %h3.page-title.deploy-keys-title
       = _('Public deploy keys (%{deploy_keys_count})') % { deploy_keys_count: @deploy_keys.load.size }
       = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'float-right btn gl-button btn-confirm btn-md gl-button'
-    .table-holder.deploy-keys-list
-      %table.table
-        %thead
+    %table.table.b-table.gl-table.b-table-stacked-lg{ data: { testid: 'deploy-keys-list' } }
+      %thead
+        %tr
+          %th= _('Title')
+          %th= _('Fingerprint')
+          %th= _('Projects with write access')
+          %th= _('Created')
+          %th.gl-lg-w-1px.gl-white-space-nowrap
+            %span.gl-sr-only
+              = _('Actions')
+      %tbody
+        - @deploy_keys.each do |deploy_key|
           %tr
-            %th.col-sm-2= _('Title')
-            %th.col-sm-4= _('Fingerprint')
-            %th.col-sm-2= _('Projects with write access')
-            %th.col-sm-2= _('Added at')
-            %th.col-sm-2
-        %tbody
-          - @deploy_keys.each do |deploy_key|
-            %tr
-              %td
-                %strong= deploy_key.title
-              %td
-                %code.key-fingerprint= deploy_key.fingerprint
-              %td
+            %td{ data: { label: _('Title') } }
+              %div
+                = deploy_key.title
+            %td{ data: { label: _('Fingerprint') } }
+              %div
+                %code= deploy_key.fingerprint
+            %td{ data: { label: _('Projects with write access') } }
+              %div
                 - deploy_key.projects_with_write_access.each do |project|
-                  = link_to project.full_name, admin_project_path(project), class: 'label deploy-project-label'
-              %td
-                %span.cgray
-                  = _('added %{created_at_timeago}').html_safe % { created_at_timeago: time_ago_with_tooltip(deploy_key.created_at) }
-              %td
-                .float-right
-                  = link_to _('Edit'), edit_admin_deploy_key_path(deploy_key), class: 'btn gl-button btn-sm'
-                  = link_to _('Remove'), admin_deploy_key_path(deploy_key), data: { confirm: _('Are you sure?') }, method: :delete, class: 'gl-button btn btn-sm btn-danger delete-key'
+                  = link_to project.full_name, admin_project_path(project), class: 'gl-display-block'
+            %td{ data: { label: _('Created') } }
+              %div
+                = time_ago_with_tooltip(deploy_key.created_at)
+            %td.gl-lg-w-1px.gl-white-space-nowrap{ data: { label: _('Actions') } }
+              %div
+                = link_to edit_admin_deploy_key_path(deploy_key), class: 'btn btn-default btn-md gl-button btn-icon gl-mr-3', aria: { label: _('Edit deploy key') } do
+                  = sprite_icon('pencil', css_class: 'gl-button-icon')
+                = link_to admin_deploy_key_path(deploy_key), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn btn-danger btn-md gl-button btn-icon', aria: { label: _('Remove deploy key') } do
+                  = sprite_icon('remove', css_class: 'gl-button-icon')
+
   - else
     = render 'shared/empty_states/deploy_keys'

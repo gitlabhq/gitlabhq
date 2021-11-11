@@ -13,6 +13,7 @@ module LearnGitlabHelper
     urls_to_use = nil
 
     experiment(:change_continuous_onboarding_link_urls) do |e|
+      e.namespace = project.namespace
       e.use { urls_to_use = action_urls }
       e.try { urls_to_use = new_action_urls(project) }
     end

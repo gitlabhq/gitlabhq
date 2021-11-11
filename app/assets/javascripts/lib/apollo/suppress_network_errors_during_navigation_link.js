@@ -9,10 +9,6 @@ import { isNavigatingAway } from '~/lib/utils/is_navigating_away';
  * @returns {ApolloLink|null}
  */
 export const getSuppressNetworkErrorsDuringNavigationLink = () => {
-  if (!gon.features?.suppressApolloErrorsDuringNavigation) {
-    return null;
-  }
-
   return onError(({ networkError }) => {
     if (networkError && isNavigatingAway()) {
       // Return an observable that will never notify any subscribers with any

@@ -33,6 +33,7 @@ module QA
         Resource::Project.fabricate_via_api! do |project|
           project.api_client = api_client
           project.group = source_group
+          project.initialize_with_readme = true
         end
       end
 
@@ -60,7 +61,7 @@ module QA
 
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
-        source_project # fabricate source group and project
+        source_project.tap { |project| project.add_push_rules(member_check: true) } # fabricate source group and project
       end
 
       after do

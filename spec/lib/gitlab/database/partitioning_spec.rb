@@ -30,6 +30,39 @@ RSpec.describe Gitlab::Database::Partitioning do
     end
   end
 
+  describe '.sync_partitions_ignore_db_error' do
+    it 'calls sync_partitions' do
+      expect(described_class).to receive(:sync_partitions)
+
+      described_class.sync_partitions_ignore_db_error
+    end
+
+    [ActiveRecord::ActiveRecordError, PG::Error].each do |error|
+      context "when #{error} is raised" do
+        before do
+          expect(described_class).to receive(:sync_partitions)
+            .and_raise(error)
+        end
+
+        it 'ignores it' do
+          described_class.sync_partitions_ignore_db_error
+        end
+      end
+    end
+
+    context 'when DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP is set' do
+      before do
+        stub_env('DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP', '1')
+      end
+
+      it 'does not call sync_partitions' do
+        expect(described_class).to receive(:sync_partitions).never
+
+        described_class.sync_partitions_ignore_db_error
+      end
+    end
+  end
+
   describe '.sync_partitions' do
     let(:table_names) { %w[partitioning_test1 partitioning_test2] }
     let(:models) do

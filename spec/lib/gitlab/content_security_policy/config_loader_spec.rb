@@ -81,11 +81,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       end
 
       it 'adds CDN host to CSP' do
-        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://cdn.example.com")
+        expect(directives['script_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src + " https://cdn.example.com")
         expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
         expect(directives['font_src']).to eq("'self' https://cdn.example.com")
         expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
-        expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com https://cdn.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
         end
       end
 
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
         end
       end
     end

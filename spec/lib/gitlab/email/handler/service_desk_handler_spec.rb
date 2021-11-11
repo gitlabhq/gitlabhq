@@ -259,7 +259,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       end
     end
 
-    context 'when rate limiting is in effect', :clean_gitlab_redis_cache do
+    context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
       let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
 
       subject { 2.times { receiver.execute } }
@@ -271,18 +271,14 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
       context 'when too many requests are sent by one user' do
         it 'raises an error' do
-          freeze_time do
-            expect { subject }.to raise_error(RateLimitedService::RateLimitedError)
-          end
+          expect { subject }.to raise_error(RateLimitedService::RateLimitedError)
         end
 
         it 'creates 1 issue' do
-          freeze_time do
-            expect do
-              subject
-            rescue RateLimitedService::RateLimitedError
-            end.to change { Issue.count }.by(1)
-          end
+          expect do
+            subject
+          rescue RateLimitedService::RateLimitedError
+          end.to change { Issue.count }.by(1)
         end
 
         context 'when requests are sent by different users' do
@@ -295,9 +291,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
           end
 
           it 'creates 2 issues' do
-            freeze_time do
-              expect { subject }.to change { Issue.count }.by(2)
-            end
+            expect { subject }.to change { Issue.count }.by(2)
           end
         end
       end
@@ -308,9 +302,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         end
 
         it 'creates 2 issues' do
-          freeze_time do
-            expect { subject }.to change { Issue.count }.by(2)
-          end
+          expect { subject }.to change { Issue.count }.by(2)
         end
       end
     end

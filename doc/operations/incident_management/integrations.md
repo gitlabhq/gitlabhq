@@ -196,7 +196,9 @@ WARNING:
 Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
 using one of the above header options if your tooling supports it.
 
-## Response Body
+## Response body
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342730) in GitLab 14.5.
 
 The JSON response body contains a list of any alerts created within the request:
 

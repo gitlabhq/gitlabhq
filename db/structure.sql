@@ -27795,6 +27795,8 @@ CREATE UNIQUE INDEX vulnerability_feedback_unique_idx ON vulnerability_feedback 
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 
+CREATE INDEX vulnerability_occurrences_location_temp_index ON vulnerability_occurrences USING btree (id) WHERE (location IS NULL);
+
 CREATE UNIQUE INDEX work_item_types_namespace_id_and_name_unique ON work_item_types USING btree (namespace_id, btrim(lower(name)));
 
 ALTER INDEX analytics_cycle_analytics_issue_stage_events_pkey ATTACH PARTITION gitlab_partitions_static.analytics_cycle_analytics_issue_stage_events_00_pkey;

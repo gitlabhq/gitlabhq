@@ -47,6 +47,9 @@ class ProjectPolicy < BasePolicy
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.archived? }
 
+  desc "Project is in the process of being deleted"
+  condition(:pending_delete) { project.pending_delete? }
+
   condition(:default_issues_tracker, scope: :subject) { project.default_issues_tracker? }
 
   desc "Container registry is disabled"
@@ -457,7 +460,13 @@ class ProjectPolicy < BasePolicy
     prevent(*readonly_abilities)
 
     readonly_features.each do |feature|
-      prevent(*create_update_admin_destroy(feature))
+      prevent(*create_update_admin(feature))
+    end
+  end
+
+  rule { archived & ~pending_delete }.policy do
+    readonly_features.each do |feature|
+      prevent(:"destroy_#{feature}")
     end
   end
 

@@ -104,29 +104,71 @@ RSpec.describe ProjectPolicy do
   end
 
   context 'pipeline feature' do
-    let(:project) { private_project }
-
-    before do
-      private_project.add_developer(current_user)
-    end
-
-    describe 'for unconfirmed user' do
-      let(:current_user) { create(:user, confirmed_at: nil) }
-
-      it 'disallows to modify pipelines' do
-        expect_disallowed(:create_pipeline)
-        expect_disallowed(:update_pipeline)
-        expect_disallowed(:create_pipeline_schedule)
-      end
-    end
+    let(:project)      { private_project }
+    let(:current_user) { developer }
+    let(:pipeline)     { create(:ci_pipeline, project: project) }
 
     describe 'for confirmed user' do
-      let(:current_user) { developer }
-
       it 'allows modify pipelines' do
         expect_allowed(:create_pipeline)
         expect_allowed(:update_pipeline)
         expect_allowed(:create_pipeline_schedule)
+      end
+    end
+
+    describe 'for unconfirmed user' do
+      let(:current_user) { project.owner.tap { |u| u.update!(confirmed_at: nil) } }
+
+      it 'disallows to modify pipelines' do
+        expect_disallowed(:create_pipeline)
+        expect_disallowed(:update_pipeline)
+        expect_disallowed(:destroy_pipeline)
+        expect_disallowed(:create_pipeline_schedule)
+      end
+    end
+
+    describe 'destroy permission' do
+      describe 'for developers' do
+        it 'prevents :destroy_pipeline' do
+          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
+        end
+      end
+
+      describe 'for maintainers' do
+        let(:current_user) { maintainer }
+
+        it 'prevents :destroy_pipeline' do
+          project.add_maintainer(maintainer)
+          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
+        end
+      end
+
+      describe 'for project owner' do
+        let(:current_user) { project.owner }
+
+        it 'allows :destroy_pipeline' do
+          expect(current_user.can?(:destroy_pipeline, pipeline)).to be_truthy
+        end
+
+        context 'on archived projects' do
+          before do
+            project.update!(archived: true)
+          end
+
+          it 'prevents :destroy_pipeline' do
+            expect(current_user.can?(:destroy_pipeline, pipeline)).to be_falsey
+          end
+        end
+
+        context 'on archived pending_delete projects' do
+          before do
+            project.update!(archived: true, pending_delete: true)
+          end
+
+          it 'allows :destroy_pipeline' do
+            expect(current_user.can?(:destroy_pipeline, pipeline)).to be_truthy
+          end
+        end
       end
     end
   end

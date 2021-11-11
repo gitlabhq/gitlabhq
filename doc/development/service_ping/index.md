@@ -51,7 +51,7 @@ We use the following terminology to describe the Service Ping components:
   metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
 - **MAU**: monthly active users.
-- **WAU**: weekly active users. 
+- **WAU**: weekly active users.
 
 ### Why should we enable Service Ping?
 
@@ -64,29 +64,43 @@ We use the following terminology to describe the Service Ping components:
 - Service Ping is enabled by default. To disable it, see [Disable Service Ping](#disable-service-ping).
 - When Service Ping is enabled, you have the option to participate in our [Registration Features Program](#registration-features-program) and receive free paid features.
 
-#### Registration Features Program
+### Limitations
+
+- Service Ping does not track frontend events things like page views, link clicks, or user sessions.
+- Service Ping focuses only on aggregated backend events.
+
+Because of these limitations we recommend you:
+
+- Instrument your products with Snowplow for more detailed analytics on GitLab.com.
+- Use Service Ping to track aggregated backend events on self-managed instances.
+
+### Registration Features Program
 
 > Introduced in GitLab 14.1.
 
-Starting with GitLab version 14.1, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data via [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
+In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
 
-##### Features available in 14.1 and later
+#### Features available in 14.1 and later
 
 1. [Email from GitLab](../../tools/email.md).
 
-##### Features available in 14.4 and later
+#### Features available in 14.4 and later
 
 1. [Repository size limit](../../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit).
-
 1. [Restrict group access by IP address](../../user/group/index.md#restrict-group-access-by-ip-address).
 
 NOTE:
 Registration is not yet required for participation, but will be added in a future milestone.
 
-### Limitations
+#### Enable Registration Features
 
-- Service Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
-- Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Service Ping to track aggregated backend events on self-managed.
+1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. Expand the **Usage statistics** section.
+1. If not enabled, select the **Enable Service Ping** checkbox.
+1. Select the **Enable Registration Features** checkbox.
+1. Select **Save changes**.
 
 ## View the Service Ping payload **(FREE SELF)**
 

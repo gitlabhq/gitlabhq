@@ -946,7 +946,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.6.1.tgz#0d8f3ff9f51b05f7c80b9a107727703d48997e4e"
   integrity sha512-vY8K1igwZFoEOmU0h4E7XTLlilsQ4ylPr27O01UsSe6ZTKi6oEMREsRAEpNIUgRlxUARCsf+Opp4pgSFzFkFcw==
 
-"@graphql-eslint/eslint-plugin@^2.3.0":
+"@graphql-eslint/eslint-plugin@2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@graphql-eslint/eslint-plugin/-/eslint-plugin-2.3.0.tgz#4e500466fa56b64680c67d7639f1bdf11d890f8a"
   integrity sha512-YYTBKhadvdTO6myWFm3O8A8dP/ca5NsyB2FKYoHGUIToEl25xAMuj2yzvhIjIBwA/yhlLRPe9+EIQ+8f0kjBDg==
