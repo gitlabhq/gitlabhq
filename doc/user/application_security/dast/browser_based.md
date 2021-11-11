@@ -54,6 +54,7 @@ The browser-based crawler can be configured using CI/CD variables.
 | `DAST_BROWSER_SCAN`                          | boolean         | `true`                            | Configures DAST to use the browser-based crawler engine. |
 | `DAST_BROWSER_ALLOWED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. |
 | `DAST_BROWSER_EXCLUDED_HOSTS`                | List of strings | `site.com,another.com`            | Hostnames included in this variable are considered excluded and connections are forcibly dropped. |
+| `DAST_BROWSER_EXCLUDED_ELEMENTS`             | selector        | `a[href='2.html'],css:.no-follow` | Comma-separated list of selectors that are ignored when scanning. |
 | `DAST_BROWSER_IGNORED_HOSTS`                 | List of strings | `site.com,another.com`            | Hostnames included in this variable are accessed but not reported against. |
 | `DAST_BROWSER_MAX_ACTIONS`                   | number          | `10000`                           | The maximum number of actions that the crawler performs. For example, clicking a link, or filling a form.  |
 | `DAST_BROWSER_MAX_DEPTH`                     | number          | `10`                              | The maximum number of chained actions that the crawler takes. For example, `Click -> Form Fill -> Click` is a depth of three. |

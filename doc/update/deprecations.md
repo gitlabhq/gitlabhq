@@ -58,6 +58,12 @@ dramatically slow down GitLab instances. For this reason, they are being removed
 
 Announced: 2021-09-22
 
+### Converting an instance (shared) runner to a project (specific) runner is deprecated
+
+In GitLab 15.0, we will remove the feature that enables you to convert an instance (shared) runner to a project (specific) runner. Users who need to add a runner to only a particular project can register a runner to the project directly.
+
+Announced: 2021-11-22
+
 ### Deprecate `Versions` on base `PackageType`
 
 As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
@@ -101,6 +107,14 @@ This gem has not been maintained and has very little usage. We therefore plan to
 Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
 
 Announced: 2021-09-22
+
+### Package pipelines in API payload is paginated
+
+A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
+
+In milestone 15.0, we will remove the `pipelines` attribute from the API response.
+
+Announced: 2021-11-22
 
 ### REST API Runner will not contain `paused`
 

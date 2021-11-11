@@ -8704,6 +8704,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="ciminutesnamespacemonthlyusageminutes"></a>`minutes` | [`Int`](#int) | Total number of minutes used by all projects in the namespace. |
 | <a id="ciminutesnamespacemonthlyusagemonth"></a>`month` | [`String`](#string) | Month related to the usage data. |
 | <a id="ciminutesnamespacemonthlyusageprojects"></a>`projects` | [`CiMinutesProjectMonthlyUsageConnection`](#ciminutesprojectmonthlyusageconnection) | CI minutes usage data for projects in the namespace. (see [Connections](#connections)) |
+| <a id="ciminutesnamespacemonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total numbers of minutes used by the shared runners in the namespace. |
 
 ### `CiMinutesProjectMonthlyUsage`
 
