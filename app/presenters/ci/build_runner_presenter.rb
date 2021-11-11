@@ -33,7 +33,7 @@ module Ci
     end
 
     def runner_variables
-      variables.sort_and_expand_all(project, keep_undefined: true).to_runner_variables
+      variables.sort_and_expand_all(keep_undefined: true).to_runner_variables
     end
 
     def refspecs

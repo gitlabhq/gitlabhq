@@ -540,6 +540,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           delete :delete_attachment # rubocop:todo Cop/PutProjectRoutesUnderScope
           post :resolve # rubocop:todo Cop/PutProjectRoutesUnderScope
           delete :resolve, action: :unresolve # rubocop:todo Cop/PutProjectRoutesUnderScope
+          get :outdated_line_change # rubocop:todo Cop/PutProjectRoutesUnderScope
         end
       end
 

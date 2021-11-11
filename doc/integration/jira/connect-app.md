@@ -23,7 +23,7 @@ We recommend the GitLab.com for Jira Cloud app, because data is
 synchronized in real time. The DVCS connector updates data only once per hour.
 
 The user configuring the GitLab.com for Jira Cloud app must have
-at least the [Maintainer](../../user/permissions.md) role the GitLab.com namespace.
+at least the [Maintainer](../../user/permissions.md) role in the GitLab.com namespace.
 
 This integration method supports [Smart Commits](dvcs.md#smart-commits).
 

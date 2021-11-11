@@ -33,6 +33,6 @@ This setup is for when you have installed GitLab using the
 [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).
 
 All the tools that are needed like PostgreSQL, PgBouncer, and Patroni are bundled in
-the package, so you can it to set up the whole PostgreSQL infrastructure (primary, replica).
+the package, so you can use it to set up the whole PostgreSQL infrastructure (primary, replica).
 
 [> Read how to set up PostgreSQL replication and failover using Omnibus GitLab](replication_and_failover.md)

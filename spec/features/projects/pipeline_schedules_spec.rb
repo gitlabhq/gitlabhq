@@ -11,6 +11,7 @@ RSpec.describe 'Pipeline Schedules', :js do
 
   context 'logged in as maintainer' do
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       project.add_maintainer(user)
       gitlab_sign_in(user)
     end

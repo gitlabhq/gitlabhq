@@ -26,6 +26,7 @@ import {
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
+import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import initMRPopovers from '~/mr_popover/';
 import noteHeader from '~/notes/components/note_header.vue';
@@ -61,6 +62,9 @@ export default {
   data() {
     return {
       expanded: false,
+      lines: [],
+      showLines: false,
+      loadingDiff: false,
     };
   },
   computed: {
@@ -94,10 +98,25 @@ export default {
   },
   methods: {
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
+    async toggleDiff() {
+      this.showLines = !this.showLines;
+
+      if (!this.lines.length) {
+        this.loadingDiff = true;
+        const { data } = await axios.get(this.note.outdated_line_change_path);
+
+        this.lines = data.map((l) => ({
+          ...l,
+          rich_text: l.rich_text.replace(/^[+ -]/, ''),
+        }));
+        this.loadingDiff = false;
+      }
+    },
   },
   safeHtmlConfig: {
     ADD_TAGS: ['use'], // to support icon SVGs
   },
+  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 
@@ -112,15 +131,28 @@ export default {
       <div class="note-header">
         <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
           <span v-safe-html="actionTextHtml"></span>
-          <template v-if="canSeeDescriptionVersion" #extra-controls>
+          <template
+            v-if="canSeeDescriptionVersion || note.outdated_line_change_path"
+            #extra-controls
+          >
             &middot;
             <gl-button
+              v-if="canSeeDescriptionVersion"
               variant="link"
               :icon="descriptionVersionToggleIcon"
               data-testid="compare-btn"
               @click="toggleDescriptionVersion"
               >{{ __('Compare with previous version') }}</gl-button
             >
+            <gl-button
+              v-if="note.outdated_line_change_path"
+              :icon="showLines ? 'chevron-up' : 'chevron-down'"
+              variant="link"
+              data-testid="outdated-lines-change-btn"
+              @click="toggleDiff"
+            >
+              {{ __('Compare changes') }}
+            </gl-button>
           </template>
         </note-header>
       </div>
@@ -154,6 +186,37 @@ export default {
             @click="deleteDescriptionVersion"
           />
         </div>
+        <div
+          v-if="lines.length && showLines"
+          class="diff-content gl-border-solid gl-border-1 gl-border-gray-200 gl-mt-4 gl-rounded-small gl-overflow-hidden"
+        >
+          <table
+            :class="$options.userColorSchemeClass"
+            class="code js-syntax-highlight"
+            data-testid="outdated-lines"
+          >
+            <tr v-for="line in lines" v-once :key="line.line_code" class="line_holder">
+              <td
+                :class="line.type"
+                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0!"
+              >
+                {{ line.old_line }}
+              </td>
+              <td
+                :class="line.type"
+                class="diff-line-num new_line gl-border-bottom-0! gl-border-top-0!"
+              >
+                {{ line.new_line }}
+              </td>
+              <td
+                :class="line.type"
+                class="line_content gl-display-table-cell!"
+                v-html="line.rich_text /* eslint-disable-line vue/no-v-html */"
+              ></td>
+            </tr>
+          </table>
+        </div>
+        <gl-skeleton-loading v-else-if="showLines" class="gl-mt-4" />
       </div>
     </div>
   </timeline-entry-item>

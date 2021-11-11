@@ -358,8 +358,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
   end
 
   describe '#sort_and_expand_all' do
-    let_it_be(:project) { create(:project) }
-
     context 'table tests' do
       using RSpec::Parameterized::TableSyntax
 
@@ -550,7 +548,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
       with_them do
         let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
 
-        subject { collection.sort_and_expand_all(project, keep_undefined: keep_undefined) }
+        subject { collection.sort_and_expand_all(keep_undefined: keep_undefined) }
 
         it 'returns Collection' do
           is_expected.to be_an_instance_of(Gitlab::Ci::Variables::Collection)

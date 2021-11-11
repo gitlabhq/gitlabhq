@@ -75,6 +75,7 @@ export default {
       outgoingName: this.initialOutgoingName || __('GitLab Support Bot'),
       projectKey: this.initialProjectKey,
       searchTerm: '',
+      projectKeyError: null,
     };
   },
   computed: {
@@ -103,6 +104,14 @@ export default {
     templateChange({ selectedFileTemplateProjectId, selectedTemplate }) {
       this.selectedFileTemplateProjectId = selectedFileTemplateProjectId;
       this.selectedTemplate = selectedTemplate;
+    },
+    validateProjectKey() {
+      if (this.projectKey && !new RegExp(/^[a-z0-9_]+$/).test(this.projectKey)) {
+        this.projectKeyError = __('Only use lowercase letters, numbers, and underscores.');
+        return;
+      }
+
+      this.projectKeyError = null;
     },
   },
 };
@@ -169,8 +178,17 @@ export default {
           v-model.trim="projectKey"
           data-testid="project-suffix"
           class="form-control"
+          :state="!projectKeyError"
+          @blur="validateProjectKey"
         />
-        <span v-if="hasProjectKeySupport" class="form-text text-muted">
+        <span v-if="hasProjectKeySupport && projectKeyError" class="form-text text-danger">
+          {{ projectKeyError }}
+        </span>
+        <span
+          v-if="hasProjectKeySupport"
+          class="form-text text-muted"
+          :class="{ 'gl-mt-2!': hasProjectKeySupport && projectKeyError }"
+        >
           {{ __('A string appended to the project path to form the Service Desk email address.') }}
         </span>
         <span v-else class="form-text text-muted">

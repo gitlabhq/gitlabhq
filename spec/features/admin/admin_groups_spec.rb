@@ -252,6 +252,7 @@ RSpec.describe 'Admin Groups' do
 
   describe 'admin remove themself from a group', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/222342' do
     it 'removes admin from the group' do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       group.add_user(current_user, Gitlab::Access::DEVELOPER)
 
       visit group_group_members_path(group)

@@ -72,6 +72,7 @@ RSpec.describe 'Triggers', :js do
 
     describe 'trigger "Revoke" workflow' do
       before do
+        stub_feature_flags(bootstrap_confirmation_modals: false)
         create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
       end

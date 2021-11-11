@@ -14,6 +14,7 @@ RSpec.describe 'admin issues labels' do
 
   describe 'list' do
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       visit admin_labels_path
     end
 

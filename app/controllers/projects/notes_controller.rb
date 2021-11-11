@@ -55,6 +55,14 @@ class Projects::NotesController < Projects::ApplicationController
     end
   end
 
+  def outdated_line_change
+    diff_lines = Rails.cache.fetch(['note', note.id, 'oudated_line_change'], expires_in: 7.days) do
+      ::MergeRequests::OutdatedDiscussionDiffLinesService.new(project: @project, note: note).execute.to_json
+    end
+
+    render json: diff_lines
+  end
+
   private
 
   def render_json_with_notes_serializer

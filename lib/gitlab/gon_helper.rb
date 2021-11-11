@@ -58,6 +58,7 @@ module Gitlab
       push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
       push_frontend_feature_flag(:suppress_apollo_errors_during_navigation, current_user, default_enabled: :yaml)
       push_frontend_feature_flag(:configure_iac_scanning_via_mr, current_user, default_enabled: :yaml)
+      push_frontend_feature_flag(:bootstrap_confirmation_modals, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

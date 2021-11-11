@@ -89,7 +89,7 @@ module Gitlab
           end
         end
 
-        def sort_and_expand_all(project, keep_undefined: false)
+        def sort_and_expand_all(keep_undefined: false)
           sorted = Sort.new(self)
           return self.class.new(self, sorted.errors) unless sorted.valid?
 

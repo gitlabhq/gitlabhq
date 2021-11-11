@@ -11,6 +11,7 @@ RSpec.describe "User deletes comments on a commit", :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
     project.add_developer(user)
 

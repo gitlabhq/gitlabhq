@@ -24184,6 +24184,9 @@ msgstr ""
 msgid "Only reCAPTCHA v2 is supported:"
 msgstr ""
 
+msgid "Only use lowercase letters, numbers, and underscores."
+msgstr ""
+
 msgid "Only users from the specified IP address ranges are able to reach this group, including all subgroups, projects, and Git repositories."
 msgstr ""
 

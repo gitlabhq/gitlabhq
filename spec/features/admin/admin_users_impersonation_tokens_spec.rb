@@ -74,6 +74,7 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js do
     let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
 
     it "allows revocation of an active impersonation token" do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
       accept_confirm { click_on "Revoke" }

@@ -56,6 +56,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group
+  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group
+
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
 
@@ -755,14 +758,6 @@ class Group < Namespace
 
   def timelogs
     Timelog.in_group(self)
-  end
-
-  def organizations
-    ::CustomerRelations::Organization.where(group_id: self.id)
-  end
-
-  def contacts
-    ::CustomerRelations::Contact.where(group_id: self.id)
   end
 
   def dependency_proxy_image_ttl_policy

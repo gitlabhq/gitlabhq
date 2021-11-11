@@ -1007,6 +1007,35 @@ RSpec.describe Projects::NotesController do
     end
   end
 
+  describe 'GET outdated_line_change' do
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: note,
+        format: 'json'
+      }
+    end
+
+    before do
+      service = double
+      allow(service).to receive(:execute).and_return([{ line_text: 'Test' }])
+      allow(MergeRequests::OutdatedDiscussionDiffLinesService).to receive(:new).once.and_return(service)
+
+      sign_in(user)
+      project.add_developer(user)
+    end
+
+    it "successfully renders expected JSON response" do
+      get :outdated_line_change, params: request_params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an(Array)
+      expect(json_response.count).to eq(1)
+      expect(json_response.first).to include({ "line_text" => "Test" })
+    end
+  end
+
   # Convert a time to an integer number of microseconds
   def microseconds(time)
     (time.to_i * 1_000_000) + time.usec

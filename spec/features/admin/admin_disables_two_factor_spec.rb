@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin disables 2FA for a user' do
   it 'successfully', :js do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)

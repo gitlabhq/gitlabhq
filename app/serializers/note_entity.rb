@@ -51,6 +51,10 @@ class NoteEntity < API::Entities::Note
     SystemNoteHelper.system_note_icon_name(note)
   end
 
+  expose :outdated_line_change_path, if: -> (note, _) { note.system? && note.change_position&.line_range && Feature.enabled?(:display_outdated_line_diff, note.project, default_enabled: :yaml) } do |note|
+    outdated_line_change_namespace_project_note_path(namespace_id: note.project.namespace, project_id: note.project, id: note)
+  end
+
   expose :is_noteable_author do |note|
     note.noteable_author?(request.noteable)
   end

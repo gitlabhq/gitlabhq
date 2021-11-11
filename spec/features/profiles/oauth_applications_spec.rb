@@ -7,6 +7,7 @@ RSpec.describe 'Profile > Applications' do
   let(:application) { create(:oauth_application, owner: user) }
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 

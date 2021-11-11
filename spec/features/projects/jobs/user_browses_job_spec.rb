@@ -12,6 +12,7 @@ RSpec.describe 'User browses a job', :js do
   before do
     project.add_maintainer(user)
     project.enable_ci
+    stub_feature_flags(bootstrap_confirmation_modals: false)
 
     sign_in(user)
 

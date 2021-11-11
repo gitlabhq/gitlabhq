@@ -27,7 +27,7 @@ export const I18N_NOT_CONNECTED_RUNNER_DESCRIPTION = s__(
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
 export const I18N_PAUSED_RUNNER_DESCRIPTION = s__('Runners|Not available to run jobs');
 
-export const RUNNER_TAG_BADGE_VARIANT = 'info';
+export const RUNNER_TAG_BADGE_VARIANT = 'neutral';
 export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 
 // Filtered search parameter names

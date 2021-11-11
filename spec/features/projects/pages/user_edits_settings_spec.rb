@@ -176,6 +176,7 @@ RSpec.describe 'Pages edits pages settings', :js do
   describe 'Remove page' do
     context 'when pages are deployed' do
       before do
+        stub_feature_flags(bootstrap_confirmation_modals: false)
         project.mark_pages_as_deployed
       end
 

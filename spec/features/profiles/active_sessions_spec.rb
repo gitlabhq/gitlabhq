@@ -11,6 +11,10 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
 
   let(:admin) { create(:admin) }
 
+  before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
+  end
+
   it 'user sees their active sessions' do
     travel_to(Time.zone.parse('2018-03-12 09:06')) do
       Capybara::Session.new(:session1)

@@ -9,6 +9,7 @@ RSpec.describe 'Projects > Members > Member leaves project' do
   before do
     project.add_developer(user)
     sign_in(user)
+    stub_feature_flags(bootstrap_confirmation_modals: false)
   end
 
   it 'user leaves project' do

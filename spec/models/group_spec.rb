@@ -37,6 +37,8 @@ RSpec.describe Group do
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+    it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
+    it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
