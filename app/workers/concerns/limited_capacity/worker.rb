@@ -47,7 +47,7 @@ module LimitedCapacity
       # would be occupied by a job that will be performed in the distant future.
       # We let the cron worker enqueue new jobs, this could be seen as our retry and
       # back off mechanism because the job might fail again if executed immediately.
-      sidekiq_options retry: 0
+      sidekiq_options retry: 0, status_expiration: Gitlab::SidekiqStatus::DEFAULT_EXPIRATION
       deduplicate :none
     end
 

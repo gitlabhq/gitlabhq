@@ -60,6 +60,7 @@ RSpec.describe Import::GitlabGroupsController do
       end
 
       it 'imports the group data', :sidekiq_inline do
+        allow(GroupImportWorker).to receive(:with_status).and_return(GroupImportWorker)
         allow(GroupImportWorker).to receive(:perform_async).and_call_original
 
         import_request
@@ -67,7 +68,6 @@ RSpec.describe Import::GitlabGroupsController do
         group = Group.find_by(name: 'test-group-import')
 
         expect(GroupImportWorker).to have_received(:perform_async).with(user.id, group.id)
-
         expect(group.description).to eq 'A voluptate non sequi temporibus quam at.'
         expect(group.visibility_level).to eq Gitlab::VisibilityLevel::PRIVATE
       end

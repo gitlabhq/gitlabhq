@@ -55,6 +55,12 @@ module ApplicationWorker
       subclass.after_set_class_attribute { subclass.set_queue }
     end
 
+    def with_status
+      status_from_class = self.sidekiq_options_hash['status_expiration']
+
+      set(status_expiration: status_from_class || Gitlab::SidekiqStatus::DEFAULT_EXPIRATION)
+    end
+
     def generated_queue_name
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end

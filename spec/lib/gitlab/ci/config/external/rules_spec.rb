@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Rules do
   let(:rule_hashes) {}
@@ -32,6 +32,26 @@ RSpec.describe Gitlab::Ci::Config::External::Rules do
       end
     end
 
+    context 'when there is a rule with exists' do
+      let(:project) { create(:project, :repository) }
+      let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['test.md']) }
+      let(:rule_hashes) { [{ exists: 'Dockerfile' }] }
+
+      context 'when the file does not exist' do
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when the file exists' do
+        let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['Dockerfile']) }
+
+        before do
+          project.repository.create_file(project.owner, 'Dockerfile', "commit", message: 'test', branch_name: "master")
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+
     context 'when there is a rule with if and when' do
       let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
 
@@ -41,12 +61,12 @@ RSpec.describe Gitlab::Ci::Config::External::Rules do
       end
     end
 
-    context 'when there is a rule with exists' do
-      let(:rule_hashes) { [{ exists: ['$MY_VAR'] }] }
+    context 'when there is a rule with changes' do
+      let(:rule_hashes) { [{ changes: ['$MY_VAR'] }] }
 
       it 'raises an error' do
         expect { result }.to raise_error(described_class::InvalidIncludeRulesError,
-                                         'invalid include rule: {:exists=>["$MY_VAR"]}')
+                                         'invalid include rule: {:changes=>["$MY_VAR"]}')
       end
     end
   end

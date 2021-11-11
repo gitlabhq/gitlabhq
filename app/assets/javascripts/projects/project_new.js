@@ -43,6 +43,8 @@ const onProjectPathChange = ($projectNameInput, $projectPathInput, hasExistingPr
 };
 
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
+  const specialRepo = document.querySelector('.js-user-readme-repo');
+
   // eslint-disable-next-line @gitlab/no-global-event-off
   $projectNameInput.off('keyup change').on('keyup change', () => {
     onProjectNameChange($projectNameInput, $projectPathInput);
@@ -54,6 +56,11 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   $projectPathInput.off('keyup change').on('keyup change', () => {
     onProjectPathChange($projectNameInput, $projectPathInput, hasUserDefinedProjectName);
     hasUserDefinedProjectPath = $projectPathInput.val().trim().length > 0;
+
+    specialRepo.classList.toggle(
+      'gl-display-none',
+      $projectPathInput.val() !== $projectPathInput.data('username'),
+    );
   });
 };
 

@@ -1992,6 +1992,18 @@ class User < ApplicationRecord
     saved
   end
 
+  def user_project
+    strong_memoize(:user_project) do
+      personal_projects.find_by(path: username, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    end
+  end
+
+  def user_readme
+    strong_memoize(:user_readme) do
+      user_project&.repository&.readme
+    end
+  end
+
   protected
 
   # override, from Devise::Validatable

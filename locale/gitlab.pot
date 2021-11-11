@@ -815,6 +815,9 @@ msgstr ""
 msgid "%{primary} (%{secondary})"
 msgstr ""
 
+msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more.%{help_link_end}"
+msgstr ""
+
 msgid "%{ref} cannot be added: %{error}"
 msgstr ""
 
@@ -2311,6 +2314,9 @@ msgid "AdminArea|Latest users"
 msgstr ""
 
 msgid "AdminArea|Maintainer"
+msgstr ""
+
+msgid "AdminArea|Minimal access"
 msgstr ""
 
 msgid "AdminArea|New group"
@@ -11337,7 +11343,10 @@ msgstr ""
 msgid "DependencyProxy|Enable Proxy"
 msgstr ""
 
-msgid "DependencyProxy|Manifest list"
+msgid "DependencyProxy|Image list"
+msgstr ""
+
+msgid "DependencyProxy|There are no images in the cache"
 msgstr ""
 
 msgid "Depends on %d merge request being merged"
@@ -18547,10 +18556,16 @@ msgstr ""
 msgid "Integrations|Default settings are inherited from the instance level."
 msgstr ""
 
+msgid "Integrations|Edit project alias"
+msgstr ""
+
 msgid "Integrations|Enable GitLab.com slash commands in a Slack workspace."
 msgstr ""
 
 msgid "Integrations|Enable comments"
+msgstr ""
+
+msgid "Integrations|Enter your alias"
 msgstr ""
 
 msgid "Integrations|Failed to link namespace. Please try again."
@@ -18668,6 +18683,9 @@ msgid "Integrations|When you mention a Jira issue in a commit or merge request, 
 msgstr ""
 
 msgid "Integrations|You can now close this window and return to the GitLab for Jira application."
+msgstr ""
+
+msgid "Integrations|You can use this alias in your Slack commands"
 msgstr ""
 
 msgid "Integrations|You haven't activated any integrations yet."

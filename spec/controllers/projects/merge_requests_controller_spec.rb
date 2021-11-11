@@ -10,7 +10,7 @@ RSpec.describe Projects::MergeRequestsController do
   let_it_be_with_reload(:project_public_with_private_builds) { create(:project, :repository, :public, :builds_private) }
 
   let(:user) { project.owner }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: merge_request_source_project, allow_maintainer_to_push: false) }
+  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: merge_request_source_project, allow_collaboration: false) }
   let(:merge_request_source_project) { project }
 
   before do
@@ -507,6 +507,7 @@ RSpec.describe Projects::MergeRequestsController do
       end
 
       it 'starts the merge immediately with permitted params' do
+        allow(MergeWorker).to receive(:with_status).and_return(MergeWorker)
         expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'sha' => merge_request.diff_head_sha })
 
         merge_with_sha
@@ -2076,6 +2077,10 @@ RSpec.describe Projects::MergeRequestsController do
   describe 'POST #rebase' do
     def post_rebase
       post :rebase, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
+    end
+
+    before do
+      allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
     end
 
     def expect_rebase_worker_for(user)

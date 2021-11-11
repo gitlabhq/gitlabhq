@@ -21,7 +21,7 @@ export const pagination = (extend) => ({
   ...extend,
 });
 
-export const proxyDetailsQuery = ({ extendSettings = {} } = {}) => ({
+export const proxyDetailsQuery = ({ extendSettings = {}, extend } = {}) => ({
   data: {
     group: {
       ...proxyData(),
@@ -34,6 +34,7 @@ export const proxyDetailsQuery = ({ extendSettings = {} } = {}) => ({
         nodes: proxyManifests(),
         pageInfo: pagination(),
       },
+      ...extend,
     },
   },
 });

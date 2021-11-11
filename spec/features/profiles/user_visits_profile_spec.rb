@@ -21,6 +21,14 @@ RSpec.describe 'User visits their profile' do
     expect(page).to have_content "This information will appear on your profile"
   end
 
+  it 'shows user readme' do
+    create(:project, :repository, :public, path: user.username, namespace: user.namespace)
+
+    visit(user_path(user))
+
+    expect(find('.file-content')).to have_content('testme')
+  end
+
   context 'when user has groups' do
     let(:group) do
       create :group do |group|

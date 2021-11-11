@@ -37,10 +37,13 @@ export const SAST_IAC_SHORT_NAME = s__('ciReport|IaC Scanning');
 export const SAST_IAC_DESCRIPTION = __(
   'Analyze your infrastructure as code configuration files for known vulnerabilities.',
 );
-export const SAST_IAC_HELP_PATH = helpPagePath('user/application_security/sast/index');
-export const SAST_IAC_CONFIG_HELP_PATH = helpPagePath('user/application_security/sast/index', {
-  anchor: 'configuration',
-});
+export const SAST_IAC_HELP_PATH = helpPagePath('user/application_security/iac_scanning/index');
+export const SAST_IAC_CONFIG_HELP_PATH = helpPagePath(
+  'user/application_security/iac_scanning/index',
+  {
+    anchor: 'configuration',
+  },
+);
 
 export const DAST_NAME = __('Dynamic Application Security Testing (DAST)');
 export const DAST_SHORT_NAME = s__('ciReport|DAST');

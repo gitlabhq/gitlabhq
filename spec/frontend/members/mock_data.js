@@ -39,7 +39,7 @@ export const member = {
     Developer: 30,
     Maintainer: 40,
     Owner: 50,
-    'Minimal Access': 5,
+    'Minimal access': 5,
   },
 };
 

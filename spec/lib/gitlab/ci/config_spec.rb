@@ -597,7 +597,7 @@ RSpec.describe Gitlab::Ci::Config do
             job1: {
               script: ["echo 'hello from main file'"],
               variables: {
-                VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+               VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
               }
             }
           })
@@ -727,30 +727,70 @@ RSpec.describe Gitlab::Ci::Config do
       end
     end
 
-    context "when an 'include' has rules with a project variable" do
-      let(:gitlab_ci_yml) do
-        <<~HEREDOC
-        include:
-          - local: #{local_location}
-            rules:
-              - if: $CI_PROJECT_ID == "#{project_id}"
-        image: ruby:2.7
-        HEREDOC
-      end
+    context "when an 'include' has rules" do
+      context "when the rule is an if" do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            - local: #{local_location}
+              rules:
+                - if: $CI_PROJECT_ID == "#{project_id}"
+          image: ruby:2.7
+          HEREDOC
+        end
 
-      context 'when the rules condition is satisfied' do
-        let(:project_id) { project.id }
+        context 'when the rules condition is satisfied' do
+          let(:project_id) { project.id }
 
-        it 'includes the file' do
-          expect(config.to_hash).to include(local_location_hash)
+          it 'includes the file' do
+            expect(config.to_hash).to include(local_location_hash)
+          end
+        end
+
+        context 'when the rules condition is satisfied' do
+          let(:project_id) { non_existing_record_id }
+
+          it 'does not include the file' do
+            expect(config.to_hash).not_to include(local_location_hash)
+          end
         end
       end
 
-      context 'when the rules condition is satisfied' do
-        let(:project_id) { non_existing_record_id }
+      context "when the rule is an exists" do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            - local: #{local_location}
+              rules:
+                - exists: "#{filename}"
+          image: ruby:2.7
+          HEREDOC
+        end
 
-        it 'does not include the file' do
-          expect(config.to_hash).not_to include(local_location_hash)
+        before do
+          project.repository.create_file(
+            project.creator,
+            'my_builds.yml',
+            local_file_content,
+            message: 'Add my_builds.yml',
+            branch_name: '12345'
+          )
+        end
+
+        context 'when the exists file does not exist' do
+          let(:filename) { 'not_a_real_file.md' }
+
+          it 'does not include the file' do
+            expect(config.to_hash).not_to include(local_location_hash)
+          end
+        end
+
+        context 'when the exists file does exist' do
+          let(:filename) { 'my_builds.yml' }
+
+          it 'does include the file' do
+            expect(config.to_hash).to include(local_location_hash)
+          end
         end
       end
     end

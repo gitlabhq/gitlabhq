@@ -269,10 +269,11 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
 > - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
-You can only use [`if` rules](index.md#rulesif) in `include`, and only with [certain variables](#use-variables-with-include).
-`rules` keywords such as `changes` and `exists` are not supported.
+You can only use [`if` rules](index.md#rulesif) and [`exists` rules](index.md#rulesexists) in `include`, and only with
+[certain variables](#use-variables-with-include). `rules` keyword `changes` is not supported.
 
 ```yaml
 include:

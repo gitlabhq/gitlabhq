@@ -406,7 +406,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor do
     context 'when rules defined' do
       context 'when a rule is invalid' do
         let(:values) do
-          { include: [{ local: 'builds.yml', rules: [{ exists: ['$MY_VAR'] }] }] }
+          { include: [{ local: 'builds.yml', rules: [{ changes: ['$MY_VAR'] }] }] }
         end
 
         it 'raises IncludeError' do

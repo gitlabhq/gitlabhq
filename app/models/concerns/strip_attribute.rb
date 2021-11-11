@@ -2,7 +2,8 @@
 
 # == Strip Attribute module
 #
-# Contains functionality to clean attributes before validation
+# Contains functionality to remove leading and trailing
+# whitespace from the attribute before validation
 #
 # Usage:
 #

@@ -26,42 +26,56 @@ describe('Manifests List', () => {
   const findRows = () => wrapper.findAllComponents(ManifestRow);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   afterEach(() => {
     wrapper.destroy();
   });
 
   it('has the correct title', () => {
+    createComponent();
+
     expect(wrapper.text()).toContain(Component.i18n.listTitle);
   });
 
   it('shows a row for every manifest', () => {
+    createComponent();
+
     expect(findRows().length).toBe(defaultProps.manifests.length);
   });
 
   it('binds a manifest to each row', () => {
+    createComponent();
+
     expect(findRows().at(0).props()).toMatchObject({
       manifest: defaultProps.manifests[0],
     });
   });
 
   describe('pagination', () => {
+    it('is hidden when there is no next or prev pages', () => {
+      createComponent({ ...defaultProps, pagination: {} });
+
+      expect(findPagination().exists()).toBe(false);
+    });
+
     it('has the correct props', () => {
+      createComponent();
+
       expect(findPagination().props()).toMatchObject({
         ...defaultProps.pagination,
       });
     });
 
     it('emits the next-page event', () => {
+      createComponent();
+
       findPagination().vm.$emit('next');
 
       expect(wrapper.emitted('next-page')).toEqual([[]]);
     });
 
     it('emits the prev-page event', () => {
+      createComponent();
+
       findPagination().vm.$emit('prev');
 
       expect(wrapper.emitted('prev-page')).toEqual([[]]);

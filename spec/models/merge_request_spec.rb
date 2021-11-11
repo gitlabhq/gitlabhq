@@ -2920,6 +2920,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
       params = {}
       merge_jid = 'hash-123'
 
+      allow(MergeWorker).to receive(:with_status).and_return(MergeWorker)
+
       expect(merge_request).to receive(:expire_etag_cache)
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do
         merge_jid
@@ -2937,6 +2939,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:rebase_jid) { 'rebase-jid' }
 
     subject(:execute) { merge_request.rebase_async(user_id) }
+
+    before do
+      allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
+    end
 
     it 'atomically enqueues a RebaseWorker job and updates rebase_jid' do
       expect(RebaseWorker)

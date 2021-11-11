@@ -46,7 +46,8 @@ module API
             def finder_params
               {
                 package_type: :terraform_module,
-                package_name: "#{params[:module_name]}/#{params[:module_system]}"
+                package_name: "#{params[:module_name]}/#{params[:module_system]}",
+                exact_name: true
               }.tap do |finder_params|
                 finder_params[:package_version] = params[:module_version] if params.has_key?(:module_version)
               end

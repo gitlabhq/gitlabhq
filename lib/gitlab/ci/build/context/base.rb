@@ -5,6 +5,8 @@ module Gitlab
     module Build
       module Context
         class Base
+          include Gitlab::Utils::StrongMemoize
+
           attr_reader :pipeline
 
           def initialize(pipeline)
@@ -13,6 +15,26 @@ module Gitlab
 
           def variables
             raise NotImplementedError
+          end
+
+          def project
+            pipeline.project
+          end
+
+          def sha
+            pipeline.sha
+          end
+
+          def top_level_worktree_paths
+            strong_memoize(:top_level_worktree_paths) do
+              project.repository.tree(sha).blobs.map(&:path)
+            end
+          end
+
+          def all_worktree_paths
+            strong_memoize(:all_worktree_paths) do
+              project.repository.ls_files(sha)
+            end
           end
 
           protected

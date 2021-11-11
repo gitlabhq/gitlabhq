@@ -6225,4 +6225,31 @@ RSpec.describe User do
       expect(described_class.get_ids_by_username([user_name])).to match_array([user_id])
     end
   end
+
+  describe 'user_project' do
+    it 'returns users project matched by username and public visibility' do
+      user = create(:user)
+      public_project = create(:project, :public, path: user.username, namespace: user.namespace)
+      create(:project, namespace: user.namespace)
+
+      expect(user.user_project).to eq(public_project)
+    end
+  end
+
+  describe 'user_readme' do
+    it 'returns readme from user project' do
+      user = create(:user)
+      create(:project, :repository, :public, path: user.username, namespace: user.namespace)
+
+      expect(user.user_readme.name).to eq('README.md')
+      expect(user.user_readme.data).to include('testme')
+    end
+
+    it 'returns nil if project is private' do
+      user = create(:user)
+      create(:project, :repository, :private, path: user.username, namespace: user.namespace)
+
+      expect(user.user_readme).to be(nil)
+    end
+  end
 end

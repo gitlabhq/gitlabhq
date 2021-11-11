@@ -33,7 +33,6 @@ module TabHelper
   #   :item_active - Overrides the default state focing the "active" css classes (optional).
   #
   def gl_tab_link_to(name = nil, options = {}, html_options = {}, &block)
-    tab_class = 'nav-item'
     link_classes = %w[nav-link gl-tab-nav-item]
     active_link_classes = %w[active gl-tab-nav-item-active gl-tab-nav-item-active-indigo]
 
@@ -52,6 +51,8 @@ module TabHelper
     end
 
     html_options = html_options.except(:item_active)
+    extra_tab_classes = html_options.delete(:tab_class)
+    tab_class = %w[nav-item].push(*extra_tab_classes)
 
     content_tag(:li, class: tab_class, role: 'presentation') do
       if block_given?
@@ -215,6 +216,7 @@ def gl_tab_counter_badge(count, html_options = {})
   badge_classes = %w[badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge]
   content_tag(:span,
     count,
-    class: [*html_options[:class], badge_classes].join(' ')
+    class: [*html_options[:class], badge_classes].join(' '),
+    data: html_options[:data]
   )
 end

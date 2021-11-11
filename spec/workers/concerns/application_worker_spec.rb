@@ -598,4 +598,48 @@ RSpec.describe ApplicationWorker do
       end
     end
   end
+
+  describe '.with_status' do
+    around do |example|
+      Sidekiq::Testing.fake!(&example)
+    end
+
+    context 'when the worker does have status_expiration set' do
+      let(:status_expiration_worker) do
+        Class.new(worker) do
+          sidekiq_options status_expiration: 3
+        end
+      end
+
+      it 'uses status_expiration from the worker' do
+        status_expiration_worker.with_status.perform_async
+
+        expect(Sidekiq::Queues[status_expiration_worker.queue].first).to include('status_expiration' => 3)
+        expect(Sidekiq::Queues[status_expiration_worker.queue].length).to eq(1)
+      end
+
+      it 'uses status_expiration from the worker without with_status' do
+        status_expiration_worker.perform_async
+
+        expect(Sidekiq::Queues[status_expiration_worker.queue].first).to include('status_expiration' => 3)
+        expect(Sidekiq::Queues[status_expiration_worker.queue].length).to eq(1)
+      end
+    end
+
+    context 'when the worker does not have status_expiration set' do
+      it 'uses the default status_expiration' do
+        worker.with_status.perform_async
+
+        expect(Sidekiq::Queues[worker.queue].first).to include('status_expiration' => Gitlab::SidekiqStatus::DEFAULT_EXPIRATION)
+        expect(Sidekiq::Queues[worker.queue].length).to eq(1)
+      end
+
+      it 'does not set status_expiration without with_status' do
+        worker.perform_async
+
+        expect(Sidekiq::Queues[worker.queue].first).not_to include('status_expiration')
+        expect(Sidekiq::Queues[worker.queue].length).to eq(1)
+      end
+    end
+  end
 end

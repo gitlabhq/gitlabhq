@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
-      .value(config)
+                                  .value(config)
   end
 
   subject(:entry) { factory.create! }
@@ -21,6 +21,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
 
     context 'when specifying an if: clause' do
       let(:config) { { if: '$THIS || $THAT' } }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when specifying an exists: clause' do
+      let(:config) { { exists: './this.md' } }
 
       it { is_expected.to be_valid }
     end
@@ -84,6 +90,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule do
 
       it 'returns the config' do
         expect(subject).to eq(if: '$THIS || $THAT')
+      end
+    end
+
+    context 'when specifying an exists: clause' do
+      let(:config) { { exists: './test.md' } }
+
+      it 'returns the config' do
+        expect(subject).to eq(exists: './test.md')
       end
     end
   end

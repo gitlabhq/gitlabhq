@@ -100,6 +100,18 @@ When visiting the public page of a user, you can only see the projects which you
 If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to signed-in users.
 
+## User profile README
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
+
+You can add a README section to your profile that can include more information and formatting than
+your profile's bio.
+
+To add a README to your profile:
+
+1. Create a new public project with the same name as your GitLab username.
+1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
+
 ## Add external accounts to your user profile page
 
 You can add links to certain other external accounts you might have, like Skype and Twitter.

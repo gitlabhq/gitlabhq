@@ -662,7 +662,7 @@ class MergeRequest < ApplicationRecord
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params.to_h)
+    jid = MergeWorker.with_status.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
 
     # merge_ongoing? depends on merge_jid
@@ -681,7 +681,7 @@ class MergeRequest < ApplicationRecord
       # attribute is set *and* that the sidekiq job is still running. So a JID
       # for a completed RebaseWorker is equivalent to a nil JID.
       jid = Sidekiq::Worker.skipping_transaction_check do
-        RebaseWorker.perform_async(id, user_id, skip_ci)
+        RebaseWorker.with_status.perform_async(id, user_id, skip_ci)
       end
 
       update_column(:rebase_jid, jid)

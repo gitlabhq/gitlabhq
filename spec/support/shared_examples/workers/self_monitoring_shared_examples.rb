@@ -17,7 +17,7 @@ end
 
 RSpec.shared_examples 'returns in_progress based on Sidekiq::Status' do
   it 'returns true when job is enqueued' do
-    jid = described_class.perform_async
+    jid = described_class.with_status.perform_async
 
     expect(described_class.in_progress?(jid)).to eq(true)
   end

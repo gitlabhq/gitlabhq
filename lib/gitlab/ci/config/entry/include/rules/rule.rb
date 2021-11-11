@@ -9,9 +9,9 @@ module Gitlab
             include ::Gitlab::Config::Entry::Validatable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[if].freeze
+            ALLOWED_KEYS = %i[if exists].freeze
 
-            attributes :if
+            attributes :if, :exists
 
             validations do
               validates :config, presence: true
