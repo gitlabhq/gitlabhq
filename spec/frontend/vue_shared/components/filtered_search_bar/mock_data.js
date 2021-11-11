@@ -111,6 +111,18 @@ export const mockIterationToken = {
   fetchIterations: () => Promise.resolve(),
 };
 
+export const mockIterations = [
+  {
+    id: 1,
+    title: 'Iteration 1',
+    startDate: '2021-11-05',
+    dueDate: '2021-11-10',
+    iterationCadence: {
+      title: 'Cadence 1',
+    },
+  },
+];
+
 export const mockLabelToken = {
   type: 'label_name',
   icon: 'labels',

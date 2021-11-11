@@ -1,9 +1,13 @@
-import { GlFilteredSearchToken, GlFilteredSearchTokenSegment } from '@gitlab/ui';
+import {
+  GlFilteredSearchToken,
+  GlFilteredSearchTokenSegment,
+  GlFilteredSearchSuggestion,
+} from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
-import { mockIterationToken } from '../mock_data';
+import { mockIterationToken, mockIterations } from '../mock_data';
 
 jest.mock('~/flash');
 
@@ -11,10 +15,16 @@ describe('IterationToken', () => {
   const id = 123;
   let wrapper;
 
-  const createComponent = ({ config = mockIterationToken, value = { data: '' } } = {}) =>
+  const createComponent = ({
+    config = mockIterationToken,
+    value = { data: '' },
+    active = false,
+    stubs = {},
+    provide = {},
+  } = {}) =>
     mount(IterationToken, {
       propsData: {
-        active: false,
+        active,
         config,
         value,
       },
@@ -22,11 +32,37 @@ describe('IterationToken', () => {
         portalName: 'fake target',
         alignSuggestions: function fakeAlignSuggestions() {},
         suggestionsListClass: () => 'custom-class',
+        ...provide,
       },
+      stubs,
     });
 
   afterEach(() => {
     wrapper.destroy();
+  });
+
+  describe('when iteration cadence feature is available', () => {
+    beforeEach(async () => {
+      wrapper = createComponent({
+        active: true,
+        config: { ...mockIterationToken, initialIterations: mockIterations },
+        value: { data: 'i' },
+        stubs: { Portal: true },
+        provide: {
+          glFeatures: {
+            iterationCadences: true,
+          },
+        },
+      });
+
+      await wrapper.setData({ loading: false });
+    });
+
+    it('renders iteration start date and due date', () => {
+      const suggestions = wrapper.findAll(GlFilteredSearchSuggestion);
+
+      expect(suggestions.at(3).text()).toContain('Nov 5, 2021 - Nov 10, 2021');
+    });
   });
 
   it('renders iteration value', async () => {

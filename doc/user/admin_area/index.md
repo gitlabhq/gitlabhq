@@ -241,25 +241,27 @@ To [Create a new group](../group/index.md#create-a-group) click **New group**.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 
-You can administer all topics in the GitLab instance from the Admin Area's Topics page.
+You can administer all [topics](../project/settings/index.md#topics) in the GitLab instance from the
+Admin Area's Topics page.
 
 To access the Topics page:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Topics**.
 
-For each topic, the page displays their name and number of projects labeled with the topic.
+For each topic, the page displays its name and the number of projects labeled with the topic.
 
 To create a new topic, select **New topic**.
 
 To edit a topic, select **Edit** in that topic's row.
 
 To search for topics by name, enter your criteria in the search box. The topic search is case
-insensitive, and applies partial matching.
+insensitive and applies partial matching.
 
 NOTE:
-Topics are public and visible to everyone, but assignments to projects are not.
-Do not include sensitive information in the name or description of a topic.
+The assigned topics are visible only to everyone with access to the project,
+but everyone can see which topics exist at all on the GitLab instance.
+Do not include sensitive information in the name of a topic.
 
 ### Administering Jobs
 

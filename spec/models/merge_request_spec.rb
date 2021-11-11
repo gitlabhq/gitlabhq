@@ -1638,6 +1638,22 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(request.default_merge_commit_message)
         .not_to match("By removing all code\n\n")
     end
+
+    it 'uses template from target project' do
+      request = build(:merge_request, title: 'Fix everything')
+      subject.target_project.merge_commit_template = '%{title}'
+
+      expect(request.default_merge_commit_message)
+        .to eq('Fix everything')
+    end
+
+    it 'ignores template when include_description is true' do
+      request = build(:merge_request, title: 'Fix everything')
+      subject.target_project.merge_commit_template = '%{title}'
+
+      expect(request.default_merge_commit_message(include_description: true))
+        .to match("See merge request #{request.to_reference(full: true)}")
+    end
   end
 
   describe "#auto_merge_strategy" do

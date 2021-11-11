@@ -2560,7 +2560,6 @@ Style/OpenStructUse:
   Exclude:
     - 'app/finders/snippets_finder.rb'
     - 'app/helpers/application_settings_helper.rb'
-    - 'ee/lib/gitlab/graphql/aggregations/epics/epic_node.rb'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/finders/template_finder_spec.rb'
@@ -2622,7 +2621,6 @@ Style/OpenStructUse:
     - 'spec/presenters/packages/nuget/search_results_presenter_spec.rb'
     - 'spec/requests/api/graphql/mutations/design_management/delete_spec.rb'
     - 'spec/requests/api/import_github_spec.rb'
-    - 'spec/requests/api/internal/base_spec.rb'
     - 'spec/services/packages/nuget/metadata_extraction_service_spec.rb'
     - 'spec/services/projects/import_service_spec.rb'
     - 'spec/services/system_note_service_spec.rb'

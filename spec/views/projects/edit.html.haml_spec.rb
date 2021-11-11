@@ -57,6 +57,41 @@ RSpec.describe 'projects/edit' do
     end
   end
 
+  context 'merge commit template' do
+    it 'displays all possible variables' do
+      render
+
+      expect(rendered).to have_content('%{source_branch}')
+      expect(rendered).to have_content('%{target_branch}')
+      expect(rendered).to have_content('%{title}')
+      expect(rendered).to have_content('%{issues}')
+      expect(rendered).to have_content('%{description}')
+      expect(rendered).to have_content('%{reference}')
+    end
+
+    it 'displays a placeholder if none is set' do
+      render
+
+      expect(rendered).to have_field('project[merge_commit_template]', placeholder: <<~MSG.rstrip)
+        Merge branch '%{source_branch}' into '%{target_branch}'
+
+        %{title}
+
+        %{issues}
+
+        See merge request %{reference}
+      MSG
+    end
+
+    it 'displays the user entered value' do
+      project.update!(merge_commit_template: '%{title}')
+
+      render
+
+      expect(rendered).to have_field('project[merge_commit_template]', with: '%{title}')
+    end
+  end
+
   context 'forking' do
     before do
       assign(:project, project)

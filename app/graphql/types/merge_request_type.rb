@@ -99,7 +99,8 @@ module Types
     field :default_merge_commit_message, GraphQL::Types::String, null: true,
           description: 'Default merge commit message of the merge request.'
     field :default_merge_commit_message_with_description, GraphQL::Types::String, null: true,
-          description: 'Default merge commit message of the merge request with description.'
+          description: 'Default merge commit message of the merge request with description. Will have the same value as `defaultMergeCommitMessage` when project has `mergeCommitTemplate` set.',
+          deprecated: { reason: 'Define merge commit template in project and use `defaultMergeCommitMessage`', milestone: '14.5' }
     field :default_squash_commit_message, GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Default squash commit message of the merge request.'
     field :merge_ongoing, GraphQL::Types::Boolean, method: :merge_ongoing?, null: false,

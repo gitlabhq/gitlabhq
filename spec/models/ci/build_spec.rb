@@ -215,6 +215,26 @@ RSpec.describe Ci::Build do
     end
   end
 
+  describe '.license_management_jobs' do
+    subject { described_class.license_management_jobs }
+
+    let!(:management_build) { create(:ci_build, :success, name: :license_management) }
+    let!(:scanning_build) { create(:ci_build, :success, name: :license_scanning) }
+    let!(:another_build) { create(:ci_build, :success, name: :another_type) }
+
+    it 'returns license_scanning jobs' do
+      is_expected.to include(scanning_build)
+    end
+
+    it 'returns license_management jobs' do
+      is_expected.to include(management_build)
+    end
+
+    it 'doesnt return filtered out jobs' do
+      is_expected.not_to include(another_build)
+    end
+  end
+
   describe '.finished_before' do
     subject { described_class.finished_before(date) }
 

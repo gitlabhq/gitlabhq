@@ -4,30 +4,41 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
 type: reference
 ---
-# Jupyter Notebook Files **(FREE)**
+# Jupyter Notebook files **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/2508/) in GitLab 9.1.
+[Jupyter Notebook](https://jupyter.org/) (previously, IPython Notebook) files are used for
+interactive computing in many fields. They contain a complete record of the
+user's sessions and include:
 
-[Jupyter](https://jupyter.org/) Notebook (previously IPython Notebook) files are used for
-interactive computing in many fields and contain a complete record of the
-user's sessions and include code, narrative text, equations, and rich output.
+- Code.
+- Narrative text.
+- Equations.
+- Rich output.
 
-When added to a repository, Jupyter Notebooks with a `.ipynb` extension are
-rendered to HTML when viewed:
+When you add a Jupyter Notebook (with `.ipynb` extension) to your repository,
+it's rendered into HTML when you view it:
 
 ![Jupyter Notebook Rich Output](img/jupyter_notebook.png)
 
 Interactive features, including JavaScript plots, don't work when viewed in
 GitLab.
 
-## Cleaner diffs 
+## Cleaner diffs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/epics/6589) in GitLab 14.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/epics/6589) in GitLab 14.5 [with a flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`. Disabled by default.
 
-When commits include changes to Jupyter Notebook files, GitLab strips out the 
-noise and displays a cleaner version of the diff.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `jupyter_clean_diffs`.
+On GitLab.com, this feature is available.
 
-![Jupyter Notebook Clean Diff](img/jupyter_notebook_diff.png)
+When commits include changes to Jupyter Notebook files, GitLab:
+
+- Transforms the machine-readable `.ipynb` file into a human-readable Markdown file.
+- Displays a cleaner version of the diff that includes syntax highlighting.
+
+Code suggestions are not available on diffs and merge requests for `.ipynb` files.
+
+![Jupyter Notebook Clean Diff](img/jupyter_notebook_diff_v14_5.png)
 
 ## Jupyter Git integration
 

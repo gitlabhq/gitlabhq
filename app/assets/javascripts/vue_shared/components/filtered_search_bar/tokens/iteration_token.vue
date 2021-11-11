@@ -4,6 +4,8 @@ import createFlash from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { formatDate } from '~/lib/utils/datetime_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_ITERATIONS } from '../constants';
 
 export default {
@@ -13,6 +15,7 @@ export default {
     GlDropdownSectionHeader,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     active: {
       type: Boolean,
@@ -49,7 +52,11 @@ export default {
           return;
         }
         const { title } = iteration.iterationCadence;
-        const cadenceIteration = { id: iteration.id, title: iteration.title };
+        const cadenceIteration = {
+          id: iteration.id,
+          title: iteration.title,
+          period: this.getIterationPeriod(iteration),
+        };
         const cadence = cadences.find((cad) => cad.title === title);
         if (cadence) {
           cadence.iterations.push(cadenceIteration);
@@ -75,6 +82,16 @@ export default {
     },
     getValue(iteration) {
       return String(getIdFromGraphQLId(iteration.id));
+    },
+    /**
+     * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
+     * This method also exists as a utility function in ee/../iterations/utils.js
+     * Remove the duplication when iteration token is moved to EE.
+     */
+    getIterationPeriod({ startDate, dueDate }) {
+      const start = formatDate(startDate, 'mmm d, yyyy', true);
+      const due = formatDate(dueDate, 'mmm d, yyyy', true);
+      return `${start} - ${due}`;
     },
   },
 };
@@ -111,6 +128,9 @@ export default {
           :value="getValue(iteration)"
         >
           {{ iteration.title }}
+          <div v-if="glFeatures.iterationCadences" class="gl-text-gray-400">
+            {{ iteration.period }}
+          </div>
         </gl-filtered-search-suggestion>
       </template>
     </template>

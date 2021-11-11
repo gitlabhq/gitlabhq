@@ -329,13 +329,13 @@ export default {
           class="board-title-main-text gl-text-truncate"
         >
           {{ listTitle }}
-          <div
+          <span
             v-if="iterationCadencesAvailable"
-            class="gl-display-inline-block"
+            class="gl-display-inline-block gl-text-gray-400"
             data-testid="board-list-iteration-period"
           >
-            <time class="gl-text-gray-400">{{ listIterationPeriod }}</time>
-          </div>
+            {{ listIterationPeriod }}</span
+          >
         </span>
         <span
           v-if="listType === 'assignee'"

@@ -1,6 +1,8 @@
 fragment Iteration on Iteration {
   id
   title
+  startDate
+  dueDate
   iterationCadence {
     id
     title

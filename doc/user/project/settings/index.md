@@ -51,6 +51,9 @@ The assigned topics are visible only to everyone with access to the project,
 but everyone can see which topics exist at all on the GitLab instance.
 Do not include sensitive information in the name of a topic.
 
+If you're an instance administrator, see also
+[Administering topics](../../admin_area/index.md#administering-topics).
+
 #### Compliance frameworks **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
@@ -310,6 +313,7 @@ Set up your project's merge request settings:
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch).
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
+- Configure [merge commit message template](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Service Desk

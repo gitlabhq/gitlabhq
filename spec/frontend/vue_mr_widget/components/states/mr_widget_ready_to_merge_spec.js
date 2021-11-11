@@ -269,19 +269,6 @@ describe('ReadyToMerge', () => {
   });
 
   describe('methods', () => {
-    describe('updateMergeCommitMessage', () => {
-      it('should revert flag and change commitMessage', () => {
-        createComponent();
-
-        wrapper.vm.updateMergeCommitMessage(true);
-
-        expect(wrapper.vm.commitMessage).toEqual(commitMessageWithDescription);
-        wrapper.vm.updateMergeCommitMessage(false);
-
-        expect(wrapper.vm.commitMessage).toEqual(commitMessage);
-      });
-    });
-
     describe('handleMergeButtonClick', () => {
       const returnPromise = (status) =>
         new Promise((resolve) => {

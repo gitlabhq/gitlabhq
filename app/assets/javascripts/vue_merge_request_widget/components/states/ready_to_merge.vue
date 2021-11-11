@@ -18,9 +18,10 @@ import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests
 import createFlash from '~/flash';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import MergeRequest from '../../../merge_request';
 import {
   AUTO_MERGE_STRATEGIES,
@@ -178,6 +179,11 @@ export default {
       }
 
       return this.mr.canRemoveSourceBranch;
+    },
+    commitTemplateHelpPage() {
+      return helpPagePath('user/project/merge_requests/commit_templates.md', {
+        anchor: 'merge-commit-message-template',
+      });
     },
     commits() {
       if (this.glFeatures.mergeRequestWidgetGraphql) {
@@ -347,15 +353,6 @@ export default {
     updateGraphqlState() {
       return this.$apollo.queries.state.refetch();
     },
-    updateMergeCommitMessage(includeDescription) {
-      const commitMessage = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.defaultMergeCommitMessage
-        : this.mr.commitMessage;
-      const commitMessageWithDescription = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.defaultMergeCommitMessageWithDescription
-        : this.mr.commitMessageWithDescription;
-      this.commitMessage = includeDescription ? commitMessageWithDescription : commitMessage;
-    },
     handleMergeButtonClick(useAutoMerge, mergeImmediately = false, confirmationClicked = false) {
       if (this.showFailedPipelineModal && !confirmationClicked) {
         this.isPipelineFailedModalVisible = true;
@@ -507,6 +504,11 @@ export default {
           });
         });
     },
+  },
+  i18n: {
+    mergeCommitTemplateHintText: s__(
+      'mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}',
+    ),
   },
 };
 </script>
@@ -679,15 +681,20 @@ export default {
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"
                   >
-                    <template #checkbox>
-                      <label>
-                        <input
-                          id="include-description"
-                          type="checkbox"
-                          @change="updateMergeCommitMessage($event.target.checked)"
-                        />
-                        {{ __('Include merge request description') }}
-                      </label>
+                    <template #text-muted>
+                      <p class="form-text text-muted">
+                        <gl-sprintf :message="$options.i18n.mergeCommitTemplateHintText">
+                          <template #link="{ content }">
+                            <gl-link
+                              :href="commitTemplateHelpPage"
+                              class="inline-link"
+                              target="_blank"
+                            >
+                              {{ content }}
+                            </gl-link>
+                          </template>
+                        </gl-sprintf>
+                      </p>
                     </template>
                   </commit-edit>
                 </ul>
@@ -792,15 +799,16 @@ export default {
               :label="__('Merge commit message')"
               input-id="merge-message-edit"
             >
-              <template #checkbox>
-                <label>
-                  <input
-                    id="include-description"
-                    type="checkbox"
-                    @change="updateMergeCommitMessage($event.target.checked)"
-                  />
-                  {{ __('Include merge request description') }}
-                </label>
+              <template #text-muted>
+                <p class="form-text text-muted">
+                  <gl-sprintf :message="$options.i18n.mergeCommitTemplateHintText">
+                    <template #link="{ content }">
+                      <gl-link :href="commitTemplateHelpPage" class="inline-link" target="_blank">
+                        {{ content }}
+                      </gl-link>
+                    </template>
+                  </gl-sprintf>
+                </p>
               </template>
             </commit-edit>
           </ul>

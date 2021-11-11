@@ -1316,6 +1316,10 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_merge_commit_message(include_description: false)
+    if self.target_project.merge_commit_template.present? && !include_description
+      return ::Gitlab::MergeRequests::MergeCommitMessage.new(merge_request: self).message
+    end
+
     closes_issues_references = visible_closing_issues_for.map do |issue|
       issue.to_reference(target_project)
     end

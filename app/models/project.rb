@@ -452,6 +452,7 @@ class Project < ApplicationRecord
     :allow_merge_on_skipped_pipeline=, :has_confluence?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
+  delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
