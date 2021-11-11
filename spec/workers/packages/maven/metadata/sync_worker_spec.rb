@@ -8,6 +8,7 @@ RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
 
   let(:versions) { %w[1.2 1.1 2.1 3.0-SNAPSHOT] }
   let(:worker) { described_class.new }
+  let(:data_struct) { Struct.new(:release, :latest, :versions, keyword_init: true) }
 
   describe '#perform' do
     let(:user) { create(:user) }
@@ -197,7 +198,7 @@ RSpec.describe Packages::Maven::Metadata::SyncWorker, type: :worker do
   def versions_from(xml_content)
     xml_doc = Nokogiri::XML(xml_content)
 
-    OpenStruct.new(
+    data_struct.new(
       release: xml_doc.xpath('//metadata/versioning/release').first.content,
       latest: xml_doc.xpath('//metadata/versioning/latest').first.content,
       versions: xml_doc.xpath('//metadata/versioning/versions/version').map(&:content)

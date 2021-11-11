@@ -13,7 +13,8 @@ module LooseForeignKeys
     def perform
       return if Feature.disabled?(:loose_foreign_key_cleanup, default_enabled: :yaml)
 
-      in_lock(self.class.name.underscore, ttl: 1.hour, retries: 0) do
+      ttl = ModificationTracker::MAX_RUNTIME + 1.minute
+      in_lock(self.class.name.underscore, ttl: ttl, retries: 0) do
         # TODO: Iterate over the connections
         # https://gitlab.com/gitlab-org/gitlab/-/issues/341513
         stats = ProcessDeletedRecordsService.new(connection: ApplicationRecord.connection).execute

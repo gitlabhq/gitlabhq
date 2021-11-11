@@ -37,12 +37,6 @@
     :versions: []
     :when: 2016-05-02 05:31:54.498490000 Z
 - - :permit
-  - LGPL
-  - :who: Connor Shea
-    :why: http://www.gnu.org/licenses/license-list.html#LGPLv2.1
-    :versions: []
-    :when: 2016-05-02 05:32:48.645841000 Z
-- - :permit
   - ISC
   - :who: Connor Shea
     :why: http://www.gnu.org/licenses/license-list.html#ISC
@@ -55,23 +49,11 @@
     :versions: []
     :when: 2016-05-02 05:44:38.246021000 Z
 - - :permit
-  - LGPL-2.1+
-  - :who: Connor Shea
-    :why: Equivalent to LGPL.
-    :versions: []
-    :when: 2016-05-02 05:52:56.303239000 Z
-- - :permit
   - BSD
   - :who: Connor Shea
     :why: https://opensource.org/licenses/BSD-2-Clause
     :versions: []
     :when: 2016-05-02 05:55:09.796363000 Z
-- - :permit
-  - LGPLv2+
-  - :who: Stan Hu
-    :why: Equivalent to LGPLv2
-    :versions: []
-    :when: 2016-06-07 17:14:10.907682000 Z
 - - :permit
   - Artistic 2.0
   - :who: Josh Frye
@@ -211,13 +193,18 @@
     :why: https://github.com/pieroxy/lz-string/blob/master/LICENSE.txt
     :versions: []
     :when: 2018-08-03 08:22:44.973457000 Z
+- - :add_package
+  - smooshpack
+  - 0.0.62
+  - &1
+    :who: Phil Hughes
+    :why: https://github.com/codesandbox/codesandbox-client/blob/006adee03295b5d42bb311a526774747758fd1a0/standalone-packages/sandpack/LICENSE.md
+    :versions: []
+    :when: 2018-08-03 08:24:29.578991000 Z
 - - :license
   - smooshpack
   - LGPL
-  - :who: Phil Hughes
-    :why: https://github.com/CompuIves/codesandbox-client/blob/master/packages/sandpack/LICENSE.md
-    :versions: []
-    :when: 2018-08-03 08:24:29.578991000 Z
+  - *1
 - - :license
   - codesandbox-import-util-types
   - LGPL
@@ -317,3 +304,61 @@
     :why: https://github.com/xijo/reverse_markdown/blob/master/LICENSE
     :versions: []
     :when: 2021-02-03 08:47:28.792907000 Z
+- - :approve
+  - sidekiq
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:53:54.127540759 Z
+- - :approve
+  - gitlab-sidekiq-fetcher
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:54:27.222104249 Z
+- - :approve
+  - device_detector
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:54:52.533334287 Z
+- - :approve
+  - gpgme
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:54:43.878212822 Z
+- - :approve
+  - rchardet
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:54:35.324449740 Z
+- - :approve
+  - timfel-krb5-auth
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 13:55:10.859429290 Z
+- - :approve
+  - codesandbox-import-util-types
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 14:03:20.304435279 Z
+- - :approve
+  - codesandbox-import-utils
+  - :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-08 14:03:25.577163700 Z
+- - :approve
+  - smooshpack
+  - &2
+    :who: Sean McGivern
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/672
+    :versions: []
+    :when: 2021-11-10 10:09:31.584355110 Z
+- - :approve
+  - 0.0.62
+  - *2

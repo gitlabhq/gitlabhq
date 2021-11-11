@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin do
+  # run only base UI validation on staging because test requires top level group creation which is problematic
+  # on staging environment
+  RSpec.describe 'Manage', :requires_admin, except: { subdomain: :staging } do
     describe 'Bulk project import' do
-      let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
-
       let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:user) do
@@ -57,7 +57,6 @@ module QA
 
       before do
         Runtime::Feature.enable(:bulk_import_projects)
-        Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
 
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
@@ -68,7 +67,6 @@ module QA
         user.remove_via_api!
       ensure
         Runtime::Feature.disable(:bulk_import_projects)
-        Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
 
       context 'with project' do

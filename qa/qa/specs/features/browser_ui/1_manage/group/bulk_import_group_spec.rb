@@ -4,17 +4,16 @@ module QA
   RSpec.describe 'Manage', :requires_admin do
     describe 'Bulk group import' do
       let!(:staging?) { Runtime::Scenario.gitlab_address.include?('staging.gitlab.com') }
-
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-      let(:user) do
+      let!(:admin_api_client) { Runtime::API::Client.as_admin }
+      let!(:user) do
         Resource::User.fabricate_via_api! do |usr|
           usr.api_client = admin_api_client
           usr.hard_delete_on_api_removal = true
         end
       end
 
-      let(:api_client) { Runtime::API::Client.new(user: user) }
-      let(:personal_access_token) { api_client.personal_access_token }
+      let!(:api_client) { Runtime::API::Client.new(user: user) }
+      let!(:personal_access_token) { api_client.personal_access_token }
 
       let(:sandbox) do
         Resource::Sandbox.fabricate_via_api! do |group|
@@ -23,7 +22,9 @@ module QA
       end
 
       let(:source_group) do
-        Resource::Sandbox.fabricate_via_api! do |group|
+        # top level group can't be created on staging via api, create via UI
+        fabricate_method = staging? ? :fabricate_via_browser_ui! : :fabricate_via_api!
+        Resource::Sandbox.send(fabricate_method) do |group|
           group.api_client = api_client
           group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
         end
@@ -38,19 +39,21 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:top_level_group_creation_enabled) if staging?
-
         sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
 
-        # create groups explicitly before connecting gitlab instance
+        Flow::Login.sign_in(as: user)
+
         source_group
 
-        Flow::Login.sign_in(as: user)
         Page::Main::Menu.perform(&:go_to_create_group)
         Page::Group::New.perform do |group|
           group.switch_to_import_tab
           group.connect_gitlab_instance(Runtime::Scenario.gitlab_address, personal_access_token)
         end
+      end
+
+      after do
+        user.remove_via_api!
       end
 
       it(
@@ -71,12 +74,6 @@ module QA
             expect(group).to have_content(imported_group.path)
           end
         end
-      end
-
-      after do
-        user.remove_via_api!
-      ensure
-        Runtime::Feature.disable(:top_level_group_creation_enabled) if staging?
       end
     end
   end

@@ -62,6 +62,12 @@ module QA
             has_element? :job_log_content
           end
 
+          def has_status?(status, wait: 30)
+            wait_until(reload: false, max_duration: wait, sleep_interval: 1) do
+              status_badge == status
+            end
+          end
+
           private
 
           def loaded?(wait: 60)

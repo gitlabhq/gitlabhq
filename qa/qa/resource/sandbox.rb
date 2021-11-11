@@ -23,6 +23,7 @@ module QA
             groups_page.click_new_group
 
             Page::Group::New.perform do |group|
+              group.click_create_group
               group.set_path(path)
               group.set_visibility('Public')
               group.create

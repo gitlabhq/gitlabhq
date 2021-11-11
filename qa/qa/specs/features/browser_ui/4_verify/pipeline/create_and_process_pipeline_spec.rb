@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner do
+  RSpec.describe 'Verify', :smoke, :runner do
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
-      let(:max_wait) { 30 }
 
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -21,11 +20,10 @@ module QA
       end
 
       after do
-        runner.remove_via_api!
+        [runner, project].each(&:remove_via_api!)
       end
 
       it 'users creates a pipeline which gets processed', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1601' do
-        # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300909
         Flow::Login.sign_in
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
@@ -68,19 +66,21 @@ module QA
 
         Flow::Pipeline.visit_latest_pipeline
 
-        {
-          'test-success': :passed,
-          'test-failure': :failed,
-          'test-tags-mismatch': :pending,
-          'test-artifacts': :passed
-        }.each do |job, status|
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.click_job(job)
-          end
+        aggregate_failures do
+          {
+            'test-success': 'passed',
+            'test-failure': 'failed',
+            'test-tags-mismatch': 'pending',
+            'test-artifacts': 'passed'
+          }.each do |job, status|
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.click_job(job)
+            end
 
-          Page::Project::Job::Show.perform do |show|
-            expect(show).to public_send("be_#{status}")
-            show.click_element(:pipeline_path, Page::Project::Pipeline::Show)
+            Page::Project::Job::Show.perform do |show|
+              expect(show).to have_status(status), "Expected job status to be #{status} but got #{show.status_badge} instead."
+              show.click_element(:pipeline_path, Page::Project::Pipeline::Show)
+            end
           end
         end
       end

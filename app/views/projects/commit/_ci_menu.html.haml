@@ -1,12 +1,10 @@
 - any_pipelines = @commit.present(current_user: current_user).any_pipelines?
 
-%ul.nav-links.no-top.no-bottom.commit-ci-menu.nav.nav-tabs
-  = nav_link(path: 'commit#show') do
-    = link_to project_commit_path(@project, @commit.id) do
-      = _('Changes')
-      %span.badge.badge-pill= @diffs.size
+= gl_tabs_nav({ class: 'commit-ci-menu gl-display-flex gl-flex-grow-1'}) do
+  = gl_tab_link_to project_commit_path(@project, @commit.id) do
+    = _('Changes')
+    = gl_tab_counter_badge(@diffs.size)
   - if any_pipelines
-    = nav_link(path: 'commit#pipelines') do
-      = link_to pipelines_project_commit_path(@project, @commit.id) do
-        = _('Pipelines')
-        %span.badge.badge-pill.js-pipelines-mr-count= @commit.pipelines.size
+    = gl_tab_link_to pipelines_project_commit_path(@project, @commit.id) do
+      = _('Pipelines')
+      = gl_tab_counter_badge(@commit.pipelines.size, { class: 'js-pipelines-mr-count' })
