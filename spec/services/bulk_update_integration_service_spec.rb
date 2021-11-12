@@ -16,32 +16,19 @@ RSpec.describe BulkUpdateIntegrationService do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:group_integration) do
-    Integrations::Jira.create!(
-      group: group,
-      url: 'http://group.jira.com'
-    )
-  end
-
+  let_it_be(:group_integration) { create(:jira_integration, :group, group: group, url: 'http://group.jira.com') }
+  let_it_be(:excluded_integration) { create(:jira_integration, :group, group: create(:group), url: 'http://another.jira.com', push_events: false) }
   let_it_be(:subgroup_integration) do
-    Integrations::Jira.create!(
-      inherit_from_id: group_integration.id,
+    create(:jira_integration, :group,
       group: subgroup,
+      inherit_from_id: group_integration.id,
       url: 'http://subgroup.jira.com',
       push_events: true
     )
   end
 
-  let_it_be(:excluded_integration) do
-    Integrations::Jira.create!(
-      group: create(:group),
-      url: 'http://another.jira.com',
-      push_events: false
-    )
-  end
-
   let_it_be(:integration) do
-    Integrations::Jira.create!(
+    create(:jira_integration,
       project: create(:project, group: subgroup),
       inherit_from_id: subgroup_integration.id,
       url: 'http://project.jira.com',
@@ -92,7 +79,7 @@ RSpec.describe BulkUpdateIntegrationService do
   context 'with different foreign key of data_fields' do
     let(:integration) { create(:zentao_integration, project: create(:project, group: group)) }
     let(:group_integration) do
-      Integrations::Zentao.create!(
+      create(:zentao_integration, :group,
         group: group,
         url: 'https://group.zentao.net',
         api_token: 'GROUP_TOKEN',

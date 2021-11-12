@@ -10,6 +10,7 @@ module Gitlab
         return unless @merge_request.target_project.merge_commit_template.present?
 
         message = @merge_request.target_project.merge_commit_template
+        message = message.delete("\r")
 
         # Remove placeholders that correspond to empty values and are the last word in the line
         # along with all whitespace characters preceding them.

@@ -17,15 +17,23 @@ sole discretion of GitLab Inc.
 <!-- vale off -->
 
 <!--
+DO NOT EDIT THIS PAGE DIRECTLY
+
 This page is automatically generated from the YAML files in `/data/deprecations` by the rake task
 located at `lib/tasks/gitlab/docs/compile_deprecations.rake`.
 
-Do not edit this page directly.
+For deprecation authors (usually Product Managers and Engineering Managers):
 
-To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
+- To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
+- For more information about authoring deprecations, check the the deprecation item guidance:
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry
 
-To update this doc, run `bin/rake gitlab:docs:compile_deprecations`.
-To verify this doc is up to date, run `bin/rake gitlab:docs:check_deprecations`
+For deprecation reviewers (Technical Writers only):
+
+- To update the deprecation doc, run: `bin/rake gitlab:docs:compile_deprecations`
+- To verify the deprecations doc is up to date, run: `bin/rake gitlab:docs:check_deprecations`
+- For more information about updating the deprecation doc, see the deprecation doc update guidance:
+  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
 ## 14.4

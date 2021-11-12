@@ -84,7 +84,7 @@ RSpec.describe 'User uses inherited settings', :js do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:parent_settings) { { url: 'http://group.com', password: 'group' } }
-    let_it_be(:parent_integration) { create(:jira_integration, group: group, project: nil, **parent_settings) }
+    let_it_be(:parent_integration) { create(:jira_integration, :group, group: group, **parent_settings) }
 
     it_behaves_like 'inherited settings'
   end

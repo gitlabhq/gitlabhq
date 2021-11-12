@@ -522,8 +522,7 @@ module GraphqlHelpers
     end
   end
 
-  # See note at graphql_data about memoization and multiple requests
-  def graphql_errors(body = json_response)
+  def graphql_errors(body = fresh_response_data)
     case body
     when Hash # regular query
       body['errors']

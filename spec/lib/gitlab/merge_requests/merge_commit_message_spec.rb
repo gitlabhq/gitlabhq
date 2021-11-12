@@ -183,4 +183,37 @@ RSpec.describe Gitlab::MergeRequests::MergeCommitMessage do
       end
     end
   end
+
+  context 'when project has template with CRLF newlines' do
+    let(:merge_commit_template) do
+      "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{description}\r\n\r\nSee merge request %{reference}"
+    end
+
+    it 'converts it to LF newlines' do
+      expect(subject.message).to eq <<~MSG.rstrip
+        Merge branch 'feature' into 'master'
+
+        Bugfix
+
+        Merge Request Description
+        Next line
+
+        See merge request #{merge_request.to_reference(full: true)}
+      MSG
+    end
+
+    context 'when description is empty string' do
+      let(:merge_request_description) { '' }
+
+      it 'skips description placeholder and removes new line characters before it' do
+        expect(subject.message).to eq <<~MSG.rstrip
+          Merge branch 'feature' into 'master'
+
+          Bugfix
+
+          See merge request #{merge_request.to_reference(full: true)}
+        MSG
+      end
+    end
+  end
 end

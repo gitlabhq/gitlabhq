@@ -22,7 +22,7 @@ RSpec.describe PropagateIntegrationGroupWorker do
       end
 
       context 'with a group integration' do
-        let_it_be(:integration) { create(:redmine_integration, group: group, project: nil) }
+        let_it_be(:integration) { create(:redmine_integration, :group, group: group) }
 
         it 'calls to BulkCreateIntegrationService' do
           expect(BulkCreateIntegrationService).to receive(:new)

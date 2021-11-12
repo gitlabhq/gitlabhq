@@ -12,7 +12,7 @@ RSpec.describe HasIntegrations do
   before do
     create(:jira_integration, project: project_1, inherit_from_id: instance_integration.id)
     create(:jira_integration, project: project_2, inherit_from_id: nil)
-    create(:jira_integration, group: create(:group), project: nil, inherit_from_id: nil)
+    create(:jira_integration, :group, group: create(:group), inherit_from_id: nil)
     create(:jira_integration, project: project_3, inherit_from_id: nil)
     create(:integrations_slack, project: project_4, inherit_from_id: nil)
   end

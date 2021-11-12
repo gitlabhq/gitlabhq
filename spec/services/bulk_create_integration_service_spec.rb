@@ -74,7 +74,7 @@ RSpec.describe BulkCreateIntegrationService do
 
     context 'with a project association' do
       let!(:project) { create(:project, group: group) }
-      let(:integration) { create(:jira_integration, group: group, project: nil) }
+      let(:integration) { create(:jira_integration, :group, group: group) }
       let(:created_integration) { project.jira_integration }
       let(:batch) { Project.where(id: Project.minimum(:id)..Project.maximum(:id)).without_integration(integration).in_namespace(integration.group.self_and_descendants) }
       let(:association) { 'project' }
@@ -84,7 +84,7 @@ RSpec.describe BulkCreateIntegrationService do
       it_behaves_like 'updates inherit_from_id'
 
       context 'with different foreign key of data_fields' do
-        let(:integration) { create(:zentao_integration, group: group, project: nil) }
+        let(:integration) { create(:zentao_integration, :group, group: group) }
         let(:created_integration) { project.zentao_integration }
 
         it_behaves_like 'creates integration from batch ids'
@@ -94,7 +94,7 @@ RSpec.describe BulkCreateIntegrationService do
 
     context 'with a group association' do
       let!(:subgroup) { create(:group, parent: group) }
-      let(:integration) { create(:jira_integration, group: group, project: nil, inherit_from_id: instance_integration.id) }
+      let(:integration) { create(:jira_integration, :group, group: group, inherit_from_id: instance_integration.id) }
       let(:created_integration) { Integration.find_by(group: subgroup) }
       let(:batch) { Group.where(id: subgroup.id) }
       let(:association) { 'group' }
@@ -104,7 +104,7 @@ RSpec.describe BulkCreateIntegrationService do
       it_behaves_like 'updates inherit_from_id'
 
       context 'with different foreign key of data_fields' do
-        let(:integration) { create(:zentao_integration, group: group, project: nil, inherit_from_id: instance_integration.id) }
+        let(:integration) { create(:zentao_integration, :group, group: group, inherit_from_id: instance_integration.id) }
 
         it_behaves_like 'creates integration from batch ids'
         it_behaves_like 'updates inherit_from_id'

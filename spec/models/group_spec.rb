@@ -582,8 +582,8 @@ RSpec.describe Group do
     let(:instance_integration) { build(:jira_integration, :instance) }
 
     before do
-      create(:jira_integration, group: group, project: nil)
-      create(:integrations_slack, group: another_group, project: nil)
+      create(:jira_integration, :group, group: group)
+      create(:integrations_slack, :group, group: another_group)
     end
 
     it 'returns groups without integration' do

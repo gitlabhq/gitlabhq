@@ -165,6 +165,13 @@
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
+.docs-deprecations-patterns: &docs-deprecations-patterns
+  - "doc/deprecations/index.md"
+  - "data/deprecations/*.yml"
+  - "data/deprecations/templates/_deprecation_template.md.erb"
+  - "lib/tasks/gitlab/docs/compile_deprecations.rake"
+  - "tooling/deprecations/docs.rb"
+
 .bundler-patterns: &bundler-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
@@ -529,6 +536,11 @@
     - <<: *if-default-refs
       changes: *docs-patterns
       when: on_success
+
+.docs:rules:deprecations:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-deprecations-patterns
 
 ##################
 # GraphQL rules  #

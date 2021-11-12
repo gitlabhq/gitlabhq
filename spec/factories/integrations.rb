@@ -222,6 +222,11 @@ FactoryBot.define do
     template { true }
   end
 
+  trait :group do
+    group
+    project { nil }
+  end
+
   trait :instance do
     project { nil }
     instance { true }

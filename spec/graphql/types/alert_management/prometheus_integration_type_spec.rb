@@ -50,7 +50,7 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
 
     describe 'a group integration' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:integration) { create(:prometheus_integration, project: nil, group: group) }
+      let_it_be(:integration) { create(:prometheus_integration, :group, group: group) }
 
       # Since it is impossible to authorize the parent here, given that the
       # project is nil, all fields should be redacted:

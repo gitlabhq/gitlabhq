@@ -171,7 +171,7 @@ RSpec.describe Groups::CreateService, '#execute' do
 
       context 'with an active group-level integration' do
         let(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
-        let!(:group_integration) { create(:prometheus_integration, group: group, project: nil, api_url: 'https://prometheus.group.com/') }
+        let!(:group_integration) { create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/') }
         let(:group) do
           create(:group).tap do |group|
             group.add_owner(user)
@@ -186,7 +186,7 @@ RSpec.describe Groups::CreateService, '#execute' do
 
         context 'with an active subgroup' do
           let(:service) { described_class.new(user, group_params.merge(parent_id: subgroup.id)) }
-          let!(:subgroup_integration) { create(:prometheus_integration, group: subgroup, project: nil, api_url: 'https://prometheus.subgroup.com/') }
+          let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/') }
           let(:subgroup) do
             create(:group, parent: group).tap do |subgroup|
               subgroup.add_owner(user)
