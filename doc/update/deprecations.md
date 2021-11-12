@@ -66,6 +66,20 @@ dramatically slow down GitLab instances. For this reason, they are being removed
 
 Announced: 2021-09-22
 
+### Certificate-based integration with Kubernetes
+
+We are deprecating the certificate-based integration with Kubernetes and the features that rely on it.
+The timeline of removal of the integration from the product is not yet planned and we will communicate
+more details as they emerge. The certificate-based integration will continue to receive security and
+critical fixes, and features built on the integration will continue to work with supported Kubernetes
+versions. We will provide migration plans in a future iteration. See [the list of features affected by this deprecation](https://docs.gitlab.com/ee/user/infrastructure/clusters/#deprecated-features).
+For updates and details, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
+[Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+
+Announced: 2021-11-22
+
 ### Converting an instance (shared) runner to a project (specific) runner is deprecated
 
 In GitLab 15.0, we will remove the feature that enables you to convert an instance (shared) runner to a project (specific) runner. Users who need to add a runner to only a particular project can register a runner to the project directly.

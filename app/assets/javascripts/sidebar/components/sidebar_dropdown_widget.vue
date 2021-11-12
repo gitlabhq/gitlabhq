@@ -370,6 +370,7 @@ export default {
         :loading="loading"
         class="gl-w-full"
         toggle-class="gl-max-w-100"
+        block
         @shown="setFocus"
       >
         <gl-search-box-by-type ref="search" v-model="searchTerm" />
