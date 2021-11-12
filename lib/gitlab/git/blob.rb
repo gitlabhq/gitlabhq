@@ -24,7 +24,7 @@ module Gitlab
       LFS_POINTER_MIN_SIZE = 120.bytes
       LFS_POINTER_MAX_SIZE = 200.bytes
 
-      attr_accessor :size, :mode, :id, :commit_id, :loaded_size, :binary
+      attr_accessor :size, :mode, :id, :commit_id, :loaded_size, :binary, :transformed_for_diff
       attr_writer :name, :path, :data
 
       def self.gitlab_blob_truncated_true
@@ -127,6 +127,7 @@ module Gitlab
         # Retain the actual size before it is encoded
         @loaded_size = @data.bytesize if @data
         @loaded_all_data = @loaded_size == size
+        @transformed_for_diff = false
 
         record_metric_blob_size
         record_metric_truncated(truncated?)

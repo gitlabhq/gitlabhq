@@ -29,7 +29,7 @@ module API
           .new(user_project, params[:package_id]).execute
 
         files = package.package_files
-        files = files.preload_pipelines if Packages::Package.disable_cross_joins_to_pipelines?
+                       .preload_pipelines
 
         present paginate(files), with: ::API::Entities::PackageFile
       end

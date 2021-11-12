@@ -307,7 +307,7 @@ module Clusters
     end
 
     def kubeclient
-      platform_kubernetes.kubeclient if kubernetes?
+      platform_kubernetes&.kubeclient if kubernetes?
     end
 
     def elastic_stack_adapter

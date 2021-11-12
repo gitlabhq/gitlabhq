@@ -80,6 +80,11 @@ module QA
         enabled?(ENV['CHROME_REUSE_PROFILE'], default: false)
       end
 
+      # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
+      def disable_dev_shm?
+        running_in_ci? || enabled?(ENV['CHROME_DISABLE_DEV_SHM'], default: false)
+      end
+
       def accept_insecure_certs?
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end

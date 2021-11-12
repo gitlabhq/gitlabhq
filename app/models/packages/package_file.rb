@@ -15,7 +15,7 @@ class Packages::PackageFile < ApplicationRecord
 
   has_one :conan_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Conan::FileMetadatum'
   has_many :package_file_build_infos, inverse_of: :package_file, class_name: 'Packages::PackageFileBuildInfo'
-  has_many :pipelines, through: :package_file_build_infos, disable_joins: -> { Packages::Package.disable_cross_joins_to_pipelines? }
+  has_many :pipelines, through: :package_file_build_infos, disable_joins: true
   has_one :debian_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Debian::FileMetadatum'
   has_one :helm_file_metadatum, inverse_of: :package_file, class_name: 'Packages::Helm::FileMetadatum'
 

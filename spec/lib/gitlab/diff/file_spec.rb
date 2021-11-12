@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Diff::File do
   end
 
   describe 'initialize' do
-    context 'when file is ipynb' do
+    context 'when file is ipynb with a change after transformation' do
       let(:commit) { project.commit("f6b7a707") }
       let(:diff) { commit.raw_diffs.first }
       let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
@@ -75,6 +75,20 @@ RSpec.describe Gitlab::Diff::File do
         it 'does not recreate the diff' do
           expect(diff_file.diff.diff).to include('"| Fake')
         end
+      end
+    end
+
+    context 'when file is ipynb, but there only changes that are removed' do
+      let(:commit) { project.commit("2b5ef814") }
+      let(:diff) { commit.raw_diffs.first }
+      let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
+
+      before do
+        stub_feature_flags(jupyter_clean_diffs: true)
+      end
+
+      it 'does not recreate the diff' do
+        expect(diff_file.diff.diff).to include('execution_count')
       end
     end
   end

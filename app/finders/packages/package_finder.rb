@@ -9,7 +9,7 @@ module Packages
     def execute
       @project
         .packages
-        .load_pipelines
+        .preload_pipelines
         .including_project_route
         .including_tags
         .displayable

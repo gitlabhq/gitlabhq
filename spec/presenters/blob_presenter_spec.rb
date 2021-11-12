@@ -126,6 +126,10 @@ RSpec.describe BlobPresenter do
       let(:blob) { repository.blob_at('f6b7a707', 'files/ipython/markdown-table.ipynb') }
       let(:git_blob) { blob.__getobj__ }
 
+      before do
+        allow(git_blob).to receive(:transformed_for_diff).and_return(true)
+      end
+
       it 'uses md as the transformed language' do
         expect(Gitlab::Highlight).to receive(:highlight).with('files/ipython/markdown-table.ipynb', anything, plain: nil, language: 'md')
 

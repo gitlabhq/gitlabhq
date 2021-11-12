@@ -27,34 +27,6 @@ RSpec.describe API::PackageFiles do
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
-
-        context 'with pipelines' do
-          let(:package_file_build_info) { create(:package_file_build_info, :with_pipeline, package_file: package.package_files.first) }
-
-          it 'preloads the pipelines' do
-            expect(::Packages::PackageFile).to receive(:preload_pipelines).and_call_original
-
-            get api(url)
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          context 'with packages_remove_cross_joins_to_pipelines disabled' do
-            before do
-              stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
-            end
-
-            it 'does not preload the pipelines' do
-              expect(::Packages::PackageFile).not_to receive(:preload_pipelines)
-
-              ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342921') do
-                get api(url)
-              end
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
-          end
-        end
       end
 
       context 'project is private' do

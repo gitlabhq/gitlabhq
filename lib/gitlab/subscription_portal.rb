@@ -39,7 +39,7 @@ module Gitlab
     end
 
     def self.subscriptions_plans_url
-      "#{self.subscriptions_url}/plans"
+      Gitlab::Saas.about_pricing_url
     end
 
     def self.subscriptions_gitlab_plans_url

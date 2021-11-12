@@ -13,25 +13,6 @@ RSpec.shared_examples 'a package detail' do
     it_behaves_like 'a working graphql query' do
       it_behaves_like 'matching the package details schema'
     end
-
-    context 'with packages_remove_cross_joins_to_pipelines disabled' do
-      # subject is called in a before callback that is executed before the one below
-      # the callback below MUST be executed before the subject
-      # solution: nullify subject and manually call #post_graphql
-      subject {}
-
-      before do
-        stub_feature_flags(packages_remove_cross_joins_to_pipelines: false)
-
-        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/342921') do
-          post_graphql(query, current_user: user)
-        end
-      end
-
-      it_behaves_like 'a working graphql query' do
-        it_behaves_like 'matching the package details schema'
-      end
-    end
   end
 end
 

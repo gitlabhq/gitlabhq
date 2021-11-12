@@ -125,7 +125,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def transformed_blob_data
-    @transformed_blob ||= if blob.path.ends_with?('.ipynb')
+    @transformed_blob ||= if blob.path.ends_with?('.ipynb') && blob.transformed_for_diff
                             IpynbDiff.transform(blob.data,
                                                 raise_errors: true,
                                                 options: { include_metadata: false, cell_decorator: :percent })

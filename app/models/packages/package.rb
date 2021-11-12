@@ -41,7 +41,7 @@ class Packages::Package < ApplicationRecord
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
   has_many :build_infos, inverse_of: :package
-  has_many :pipelines, through: :build_infos, disable_joins: -> { disable_cross_joins_to_pipelines? }
+  has_many :pipelines, through: :build_infos, disable_joins: true
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
   has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
 
@@ -103,7 +103,6 @@ class Packages::Package < ApplicationRecord
   scope :with_status, ->(status) { where(status: status) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
   scope :installable, -> { with_status(INSTALLABLE_STATUSES) }
-  scope :including_build_info, -> { includes(pipelines: :user) }
   scope :including_project_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
@@ -137,7 +136,6 @@ class Packages::Package < ApplicationRecord
   scope :last_of_each_version, -> { where(id: all.select('MAX(id) AS id').group(:version)) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
-  scope :load_pipelines, -> { disable_cross_joins_to_pipelines? ? preload_pipelines : including_build_info }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
@@ -162,10 +160,6 @@ class Packages::Package < ApplicationRecord
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :desc)
 
     joins(:project).reorder(keyset_order)
-  end
-
-  def self.disable_cross_joins_to_pipelines?
-    ::Feature.enabled?(:packages_remove_cross_joins_to_pipelines, default_enabled: :yaml)
   end
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -253,7 +247,7 @@ class Packages::Package < ApplicationRecord
 
   def versions
     project.packages
-           .load_pipelines
+           .preload_pipelines
            .including_tags
            .with_name(name)
            .where.not(version: version)
