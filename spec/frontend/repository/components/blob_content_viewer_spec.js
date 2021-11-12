@@ -19,6 +19,7 @@ import TextViewer from '~/repository/components/blob_viewers/text_viewer.vue';
 import blobInfoQuery from '~/repository/queries/blob_info.query.graphql';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import {
   simpleViewerMock,
   richViewerMock,
@@ -72,13 +73,15 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
 
   const fakeApollo = createMockApollo([[blobInfoQuery, mockResolver]]);
 
-  wrapper = mountFn(BlobContentViewer, {
-    localVue,
-    apolloProvider: fakeApollo,
-    propsData: propsMock,
-    mixins: [{ data: () => ({ ref: refMock }) }],
-    provide: { ...inject },
-  });
+  wrapper = extendedWrapper(
+    mountFn(BlobContentViewer, {
+      localVue,
+      apolloProvider: fakeApollo,
+      propsData: propsMock,
+      mixins: [{ data: () => ({ ref: refMock }) }],
+      provide: { ...inject },
+    }),
+  );
 
   wrapper.setData({ project, isBinary });
 
@@ -89,6 +92,7 @@ describe('Blob content viewer component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findBlobHeader = () => wrapper.findComponent(BlobHeader);
   const findBlobEdit = () => wrapper.findComponent(BlobEdit);
+  const findPipelineEditor = () => wrapper.findByTestId('pipeline-editor');
   const findBlobContent = () => wrapper.findComponent(BlobContent);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
@@ -268,6 +272,15 @@ describe('Blob content viewer component', () => {
         webIdePath: ideEditPath,
         showEditButton: false,
       });
+    });
+
+    it('renders Pipeline Editor button for .gitlab-ci files', async () => {
+      const pipelineEditorPath = 'some/path/.gitlab-ce';
+      const blob = { ...simpleViewerMock, pipelineEditorPath };
+      await createComponent({ blob, inject: { BlobContent: true, BlobReplace: true } }, mount);
+
+      expect(findPipelineEditor().exists()).toBe(true);
+      expect(findPipelineEditor().attributes('href')).toBe(pipelineEditorPath);
     });
 
     describe('blob header binary file', () => {

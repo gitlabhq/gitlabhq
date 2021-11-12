@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
@@ -17,12 +17,16 @@ import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer, viewerProps } from './blob_viewers';
 
 export default {
+  i18n: {
+    pipelineEditor: __('Pipeline Editor'),
+  },
   components: {
     BlobHeader,
     BlobEdit,
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
+    GlButton,
     ForkSuggestion,
   },
   mixins: [getRefMixin],
@@ -105,6 +109,7 @@ export default {
                 rawPath: '',
                 externalStorageUrl: '',
                 replacePath: '',
+                pipelineEditorPath: '',
                 deletePath: '',
                 simpleViewer: {},
                 richViewer: null,
@@ -242,6 +247,18 @@ export default {
             :needs-to-fork="showForkSuggestion"
             @edit="editBlob"
           />
+
+          <gl-button
+            v-if="blobInfo.pipelineEditorPath"
+            class="gl-mr-3"
+            category="secondary"
+            variant="confirm"
+            data-testid="pipeline-editor"
+            :href="blobInfo.pipelineEditorPath"
+          >
+            {{ $options.i18n.pipelineEditor }}
+          </gl-button>
+
           <blob-button-group
             v-if="isLoggedIn"
             :path="path"

@@ -104,7 +104,7 @@ user profiles are only visible to signed-in users.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
-You can add a README section to your profile that can include more information and formatting than
+You can add a README section to your profile that can include more information and [formatting](../markdown.md) than
 your profile's bio.
 
 To add a README to your profile:

@@ -14,6 +14,7 @@ export const simpleViewerMock = {
   storedExternally: false,
   rawPath: 'some_file.js',
   replacePath: 'some_file.js/replace',
+  pipelineEditorPath: '',
   simpleViewer: {
     fileType: 'text',
     tooLarge: false,

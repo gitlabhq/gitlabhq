@@ -31,6 +31,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           storedExternally
           rawPath
           replacePath
+          pipelineEditorPath
           simpleViewer {
             fileType
             tooLarge

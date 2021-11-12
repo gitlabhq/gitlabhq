@@ -25170,6 +25170,9 @@ msgstr ""
 msgid "Pipeline %{label} for \"%{dataTitle}\""
 msgstr ""
 
+msgid "Pipeline Editor"
+msgstr ""
+
 msgid "Pipeline ID"
 msgstr ""
 

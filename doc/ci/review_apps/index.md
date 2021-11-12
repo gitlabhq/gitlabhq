@@ -98,6 +98,7 @@ The following are example projects that demonstrate Review App configuration:
 
 - [NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx).
 - [OpenShift](https://gitlab.com/gitlab-examples/review-apps-openshift).
+- [HashiCorp Nomad](https://gitlab.com/gitlab-examples/review-apps-nomad)
 
 Other examples of Review Apps:
 

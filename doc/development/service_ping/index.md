@@ -472,27 +472,56 @@ bin/rake gitlab:usage_data:dump_sql_in_json
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
 
-## Generating and troubleshooting Service Ping
+## Generate Service Ping
 
-This activity is to be done via a detached screen session on a remote server.
-
-Before you begin these steps, make sure the key is added to the SSH agent locally
-with the `ssh-add` command.
+To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a detached screen session on a remote server.
 
 ### Triggering
 
-1. Connect to bastion with agent forwarding: `$ ssh -A lb-bastion.gprd.gitlab.com`
-1. Create named screen: `$ screen -S <username>_usage_ping_<date>`
-1. Connect to console host: `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`
-1. Run `SubmitUsagePingService.new.execute`
-1. Detach from screen: `ctrl + a, ctrl + d`
-1. Exit from bastion: `$ exit`
+#### Trigger Service Ping with Teleport
+
+1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
+1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
+1. Run `ServicePing::SubmitService.new.execute`.
+
+#### Trigger Service Ping with a detached screen session
+
+1. Connect to bastion with agent forwarding:
+
+   `$ ssh -A lb-bastion.gprd.gitlab.com`.
+1. Create named screen:
+
+   `$ screen -S <username>_usage_ping_<date>`.
+1. Connect to console host:
+
+   `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`.
+1. Run `ServicePing::SubmitService.new.execute`
+1. Detach from screen:
+
+   `ctrl + a, ctrl + d`
+1. Exit from bastion:
+
+   `$ exit`
 
 ### Verification (After approx 30 hours)
 
-1. Reconnect to bastion: `$ ssh -A lb-bastion.gprd.gitlab.com`
-1. Find your screen session: `$ screen -ls`
-1. Attach to your screen session: `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
+#### Verify with a detached screen session
+
+1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
+1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
+1. Check the when the payload was sent: `RawUsageData.last.sent_at`
+
+#### Verify using detached screen session
+
+1. Reconnect to bastion:
+
+   `$ ssh -A lb-bastion.gprd.gitlab.com`
+1. Find your screen session:
+
+   `$ screen -ls`
+1. Attach to your screen session:
+
+   `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
 

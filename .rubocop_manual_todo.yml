@@ -468,7 +468,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/models/project_import_state_spec.rb'
     - 'ee/spec/models/push_rule_spec.rb'
     - 'ee/spec/presenters/ci/pipeline_presenter_spec.rb'
-    - 'ee/spec/presenters/projects/security/configuration_presenter_spec.rb'
     - 'ee/spec/requests/api/geo_nodes_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dast_on_demand_scans/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dast_site_profiles/delete_spec.rb'

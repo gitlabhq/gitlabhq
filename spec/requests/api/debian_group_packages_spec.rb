@@ -9,35 +9,36 @@ RSpec.describe API::DebianGroupPackages do
     context 'with invalid parameter' do
       let(:url) { "/groups/1/-/packages/debian/dists/with+space/InRelease" }
 
-      it_behaves_like 'Debian repository GET request', :bad_request, /^distribution is invalid$/
+      it_behaves_like 'Debian packages GET request', :bad_request, /^distribution is invalid$/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release.gpg' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/Release.gpg" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP SIGNATURE-----/
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNATURE-----/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/Release' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/Release" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^Codename: fixture-distribution\n$/
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Codename: fixture-distribution\n$/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/InRelease' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/InRelease" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
     end
 
     describe 'GET groups/:id/-/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages" }
 
-      it_behaves_like 'Debian repository read endpoint', 'GET request', :success, /Description: This is an incomplete Packages file/
+      it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
     end
 
     describe 'GET groups/:id/-/packages/debian/pool/:codename/:project_id/:letter/:package_name/:package_version/:file_name' do
       let(:url) { "/groups/#{container.id}/-/packages/debian/pool/#{package.debian_distribution.codename}/#{project.id}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
+      let(:file_name) { params[:file_name] }
 
       using RSpec::Parameterized::TableSyntax
 
@@ -51,9 +52,7 @@ RSpec.describe API::DebianGroupPackages do
       end
 
       with_them do
-        include_context 'with file_name', params[:file_name]
-
-        it_behaves_like 'Debian repository read endpoint', 'GET request', :success, params[:success_body]
+        it_behaves_like 'Debian packages read endpoint', 'GET', :success, params[:success_body]
       end
     end
   end

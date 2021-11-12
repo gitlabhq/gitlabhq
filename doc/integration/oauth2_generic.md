@@ -57,7 +57,40 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings
 
-1. Add the provider-specific configuration for your provider, as [described in the gem's README](https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example)
+1. Add the provider-specific configuration for your provider, for example:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     { 'name' => 'oauth2_generic',
+       'label' => '<your_oauth2_label>',
+       'app_id' => '<your_app_client_id>',
+       'app_secret' => '<your_app_client_secret>',
+       'args' => {
+         client_options: {
+          'site' => '<your_auth_server_url>',
+          'user_info_url' => '/oauth2/v1/userinfo',
+          'authorize_url' => '/oauth2/v1/authorize',
+          'token_url' => '/oauth2/v1/token'
+        },
+        user_response_structure: {
+          root_path: [],
+          id_path: ['sub'],
+          attributes: { 
+            email: 'email',
+            name: 'name'
+          } 
+      },
+      authorize_params: {
+        scope: 'openid profile email' 
+      },
+      strategy_class: "OmniAuth::Strategies::OAuth2Generic"
+         }
+       }
+     }
+   ]
+   ```
+
+   For more information about these settings, see [the gem's README](https://gitlab.com/satorix/omniauth-oauth2-generic#gitlab-config-example).
 
 1. Save the configuration file
 

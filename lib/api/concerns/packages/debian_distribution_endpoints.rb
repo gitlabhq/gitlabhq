@@ -51,8 +51,9 @@ module API
             end
 
             authenticate_with do |accept|
-              accept.token_types(:personal_access_token, :deploy_token, :job_token)
-                    .sent_through(:http_basic_auth)
+              accept.token_types(:personal_access_token).sent_through(:http_private_token_header)
+              accept.token_types(:deploy_token).sent_through(:http_deploy_token_header)
+              accept.token_types(:job_token).sent_through(:http_job_token_header)
             end
 
             content_type :json, 'application/json'

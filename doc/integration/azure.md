@@ -136,6 +136,8 @@ After you have created an application, follow the [Microsoft Quickstart document
 - `openid`
 - `profile`
 
+Alternatively, add the `User.Read.All` application permission.
+
 ### Configuring GitLab
 
 1. On your GitLab server, open the configuration file.

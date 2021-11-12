@@ -123,6 +123,8 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/projects/group%2Fproject/wikis/attachments`, false},
 		{"POST", `/api/v4/projects/group%2Fsubgroup%2Fproject/wikis/attachments`, false},
 		{"POST", `/api/graphql`, false},
+		{"POST", `/api/v4/topics`, false},
+		{"PUT", `/api/v4/topics`, false},
 		{"PUT", "/api/v4/projects/9001/packages/nuget/v1/files", true},
 		{"PUT", "/api/v4/projects/group%2Fproject/packages/nuget/v1/files", true},
 		{"PUT", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/nuget/v1/files", true},

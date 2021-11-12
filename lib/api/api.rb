@@ -284,6 +284,7 @@ module API
       mount ::API::Tags
       mount ::API::Templates
       mount ::API::Todos
+      mount ::API::Topics
       mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataQueries
