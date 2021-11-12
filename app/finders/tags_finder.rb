@@ -8,8 +8,6 @@ class TagsFinder < GitRefsFinder
   def execute
     tags = repository.tags_sorted_by(sort)
 
-    [by_search(tags), nil]
-  rescue Gitlab::Git::CommandError => e
-    [[], e]
+    by_search(tags)
   end
 end

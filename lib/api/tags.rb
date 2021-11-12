@@ -24,7 +24,7 @@ module API
         use :pagination
       end
       get ':id/repository/tags', feature_category: :source_code_management do
-        tags, _ = ::TagsFinder.new(user_project.repository,
+        tags = ::TagsFinder.new(user_project.repository,
                                 sort: "#{params[:order_by]}_#{params[:sort]}",
                                 search: params[:search]).execute
 
@@ -35,6 +35,9 @@ module API
         else
           present paginated_tags, with: Entities::Tag, project: user_project
         end
+
+      rescue Gitlab::Git::CommandError
+        service_unavailable!
       end
 
       desc 'Get a single repository tag' do

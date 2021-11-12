@@ -44,7 +44,7 @@ module Gitlab
         new_blob_lazy
         old_blob_lazy
 
-        preprocess_before_diff(diff) if Feature.enabled?(:jupyter_clean_diffs, repository.project)
+        preprocess_before_diff(diff) if Feature.enabled?(:jupyter_clean_diffs, repository.project, default_enabled: true)
       end
 
       def position(position_marker, position_type: :text)

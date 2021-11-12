@@ -14,18 +14,24 @@ class Projects::TagsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
-    params[:sort] = params[:sort].presence || sort_value_recently_updated
+    begin
+      params[:sort] = params[:sort].presence || sort_value_recently_updated
 
-    @sort = params[:sort]
+      @sort = params[:sort]
 
-    @tags, @tags_loading_error = TagsFinder.new(@repository, params).execute
+      @tags = TagsFinder.new(@repository, params).execute
 
-    @tags = Kaminari.paginate_array(@tags).page(params[:page])
-    tag_names = @tags.map(&:name)
-    @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
+      @tags = Kaminari.paginate_array(@tags).page(params[:page])
+      tag_names = @tags.map(&:name)
+      @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
-    @releases = project.releases.where(tag: tag_names)
-    @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
+      @releases = project.releases.where(tag: tag_names)
+      @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
+
+    rescue Gitlab::Git::CommandError => e
+      @tags = []
+      @tags_loading_error = e
+    end
 
     respond_to do |format|
       status = @tags_loading_error ? :service_unavailable : :ok

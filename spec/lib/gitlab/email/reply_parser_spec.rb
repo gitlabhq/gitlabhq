@@ -21,6 +21,30 @@ RSpec.describe Gitlab::Email::ReplyParser do
       expect(test_parse_body(fixture_file("emails/no_content_reply.eml"))).to eq("")
     end
 
+    context 'when allow_only_quotes is true' do
+      it "returns quoted text from email" do
+        text = test_parse_body(fixture_file("emails/no_content_reply.eml"), allow_only_quotes: true)
+
+        expect(text).to eq(
+          <<-BODY.strip_heredoc.chomp
+            >
+            >
+            >
+            > eviltrout posted in 'Adventure Time Sux' on Discourse Meta:
+            >
+            > ---
+            > hey guys everyone knows adventure time sucks!
+            >
+            > ---
+            > Please visit this link to respond: http://localhost:3000/t/adventure-time-sux/1234/3
+            >
+            > To unsubscribe from these emails, visit your [user preferences](http://localhost:3000/user_preferences).
+            >
+          BODY
+        )
+      end
+    end
+
     it "properly renders plaintext-only email" do
       expect(test_parse_body(fixture_file("emails/plaintext_only.eml")))
         .to eq(

@@ -197,6 +197,17 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         end
       end
 
+      context 'when all lines of email are quoted' do
+        let(:email_raw) { email_fixture('emails/service_desk_all_quoted.eml') }
+
+        it 'creates email with correct body' do
+          receiver.execute
+
+          issue = Issue.last
+          expect(issue.description).to include('> This is an empty quote')
+        end
+      end
+
       context 'when using custom service desk address' do
         let(:receiver) { Gitlab::Email::ServiceDeskReceiver.new(email_raw) }
 

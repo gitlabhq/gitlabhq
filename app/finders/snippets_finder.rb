@@ -42,12 +42,11 @@ class SnippetsFinder < UnionFinder
   include FinderMethods
   include Gitlab::Utils::StrongMemoize
 
-  attr_accessor :current_user, :params
-  delegate :explore, :only_personal, :only_project, :scope, :sort, to: :params
+  attr_reader :current_user, :params
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
-    @params = OpenStruct.new(params)
+    @params = params
 
     if project && author
       raise(
@@ -77,9 +76,9 @@ class SnippetsFinder < UnionFinder
   private
 
   def init_collection
-    if explore
+    if explore?
       snippets_for_explore
-    elsif only_personal
+    elsif only_personal?
       personal_snippets
     elsif project
       snippets_for_a_single_project
@@ -110,7 +109,7 @@ class SnippetsFinder < UnionFinder
   # over the resulting SQL query.
   def snippets_for_personal_and_multiple_projects
     queries = []
-    queries << personal_snippets unless only_project
+    queries << personal_snippets unless only_project?
 
     if Ability.allowed?(current_user, :read_cross_project)
       queries << snippets_of_visible_projects
@@ -171,7 +170,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def visibility_from_scope
-    case scope.to_s
+    case params[:scope].to_s
     when 'are_private'
       Snippet::PRIVATE
     when 'are_internal'
@@ -206,7 +205,19 @@ class SnippetsFinder < UnionFinder
   end
 
   def sort_param
-    sort.presence || 'id_desc'
+    params[:sort].presence || 'id_desc'
+  end
+
+  def explore?
+    params[:explore].present?
+  end
+
+  def only_personal?
+    params[:only_personal].present?
+  end
+
+  def only_project?
+    params[:only_project].present?
   end
 
   def prepared_union(queries)

@@ -3,48 +3,38 @@
     = sprite_icon('chevron-lg-left', size: 12)
   .fade-right
     = sprite_icon('chevron-lg-right', size: 12)
-  %ul.nav-links.nav.nav-tabs.scrolling-tabs
-    = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
-      = link_to admin_users_path do
-        = s_('AdminUsers|Active')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.active_without_ghosts)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
-      = link_to admin_users_path(filter: "admins") do
-        = s_('AdminUsers|Admins')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.admins)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
-      = link_to admin_users_path(filter: 'two_factor_enabled') do
-        = s_('AdminUsers|2FA Enabled')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.with_two_factor)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
-      = link_to admin_users_path(filter: 'two_factor_disabled') do
-        = s_('AdminUsers|2FA Disabled')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.without_two_factor)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
-      = link_to admin_users_path(filter: 'external') do
-        = s_('AdminUsers|External')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.external)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
-      = link_to admin_users_path(filter: "blocked") do
-        = s_('AdminUsers|Blocked')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.blocked)
+  = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1' }) do
+    = gl_tab_link_to admin_users_path, { item_active: active_when(params[:filter].nil?), class: 'gl-border-0!' } do
+      = s_('AdminUsers|Active')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.active_without_ghosts))
+    = gl_tab_link_to admin_users_path(filter: "admins"), { item_active: active_when(params[:filter] == 'admins'), class: 'gl-border-0!' } do
+      = s_('AdminUsers|Admins')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.admins))
+    = gl_tab_link_to admin_users_path(filter: 'two_factor_enabled'), { item_active: active_when(params[:filter] == 'two_factor_enabled'), class: 'filter-two-factor-enabled gl-border-0!' } do
+      = s_('AdminUsers|2FA Enabled')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.with_two_factor))
+    = gl_tab_link_to admin_users_path(filter: 'two_factor_disabled'), { item_active: active_when(params[:filter] == 'two_factor_disabled'), class: 'filter-two-factor-disabled gl-border-0!' } do
+      = s_('AdminUsers|2FA Disabled')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.without_two_factor))
+    = gl_tab_link_to admin_users_path(filter: 'external'), { item_active: active_when(params[:filter] == 'external'), class: 'gl-border-0!' } do
+      = s_('AdminUsers|External')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.external))
+    = gl_tab_link_to admin_users_path(filter: "blocked"), { item_active: active_when(params[:filter] == 'blocked'), class: 'gl-border-0!' } do
+      = s_('AdminUsers|Blocked')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked))
     - if ban_feature_available?
-      = nav_link(html_options: { class: active_when(params[:filter] == 'banned') }) do
-        = link_to admin_users_path(filter: "banned") do
-          = s_('AdminUsers|Banned')
-          %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.banned)
-    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'blocked_pending_approval')} filter-blocked-pending-approval" }) do
-      = link_to admin_users_path(filter: "blocked_pending_approval"), data: { qa_selector: 'pending_approval_tab' } do
-        = s_('AdminUsers|Pending approval')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.blocked_pending_approval)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
-      = link_to admin_users_path(filter: "deactivated") do
-        = s_('AdminUsers|Deactivated')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.deactivated)
-    = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
-      = link_to admin_users_path(filter: "wop") do
-        = s_('AdminUsers|Without projects')
-        %small.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm= limited_counter_with_delimiter(User.without_projects)
+      = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class: 'gl-border-0!' } do
+        = s_('AdminUsers|Banned')
+        = gl_tab_counter_badge(limited_counter_with_delimiter(User.banned))
+    = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] == 'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { qa_selector: 'pending_approval_tab' } } do
+      = s_('AdminUsers|Pending approval')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked_pending_approval))
+    = gl_tab_link_to admin_users_path(filter: "deactivated"), { item_active: active_when(params[:filter] == 'deactivated'), class: 'gl-border-0!' } do
+      = s_('AdminUsers|Deactivated')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.deactivated))
+    = gl_tab_link_to admin_users_path(filter: "wop"), { item_active: active_when(params[:filter] == 'wop'), class: 'gl-border-0!' } do
+      = s_('AdminUsers|Without projects')
+      = gl_tab_counter_badge(limited_counter_with_delimiter(User.without_projects))
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'
     = render_if_exists 'admin/users/admin_export_user_permissions'

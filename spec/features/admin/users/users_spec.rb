@@ -165,7 +165,7 @@ RSpec.describe 'Admin::Users' do
 
         visit admin_users_path
 
-        page.within('.filter-two-factor-enabled small') do
+        page.within('.filter-two-factor-enabled .gl-tab-counter-badge') do
           expect(page).to have_content('1')
         end
       end
@@ -182,7 +182,7 @@ RSpec.describe 'Admin::Users' do
       it 'counts users who have not enabled 2FA' do
         visit admin_users_path
 
-        page.within('.filter-two-factor-disabled small') do
+        page.within('.filter-two-factor-disabled .gl-tab-counter-badge') do
           expect(page).to have_content('2') # Including admin
         end
       end
@@ -201,7 +201,7 @@ RSpec.describe 'Admin::Users' do
 
         visit admin_users_path
 
-        page.within('.filter-blocked-pending-approval small') do
+        page.within('.filter-blocked-pending-approval .gl-tab-counter-badge') do
           expect(page).to have_content('2')
         end
       end

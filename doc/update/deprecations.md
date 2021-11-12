@@ -157,6 +157,14 @@ In milestone 15.0, we will remove the feature flag entirely. Moving forward, you
 
 Announced: 2021-11-22
 
+### Value Stream Analytics filtering calculation change
+
+We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out. 
+
+If you monitor Value Stream Analytics metrics and rely on the date filter, to avoid losing data, you must save the data prior to this change.
+
+Announced: 2021-11-22
+
 ### `AuthenticationType` for `[runners.cache.s3]` must be explicitly assigned
 
 In GitLab 15.0 and later, to access the AWS S3 cache, you must specify the `AuthenticationType` for [`[runners.cache.s3]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section). The `AuthenticationType` must be `IAM` or `credentials`.

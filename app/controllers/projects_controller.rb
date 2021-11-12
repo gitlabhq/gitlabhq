@@ -293,7 +293,11 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if find_tags && @repository.tag_count.nonzero?
-      tags, _ = TagsFinder.new(@repository, params).execute
+      tags = begin
+        TagsFinder.new(@repository, params).execute
+      rescue Gitlab::Git::CommandError
+        []
+      end
 
       options['Tags'] = tags.take(100).map(&:name)
     end

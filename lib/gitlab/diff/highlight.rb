@@ -153,7 +153,7 @@ module Gitlab
 
         blob.load_all_data!
 
-        return blob.present.highlight_transformed.lines if Feature.enabled?(:jupyter_clean_diffs, @project)
+        return blob.present.highlight_transformed.lines if Feature.enabled?(:jupyter_clean_diffs, @project, default_enabled: true)
 
         blob.present.highlight.lines
       end

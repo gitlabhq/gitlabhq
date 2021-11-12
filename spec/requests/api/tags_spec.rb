@@ -208,6 +208,20 @@ RSpec.describe API::Tags do
 
       it_behaves_like "get repository tags"
     end
+
+    context 'when gitaly is unavailable' do
+      let(:route) { "/projects/#{project_id}/repository/tags" }
+
+      before do
+        expect_next_instance_of(TagsFinder) do |finder|
+          allow(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError)
+        end
+      end
+
+      it_behaves_like '503 response' do
+        let(:request) { get api(route, user) }
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/tags/:tag_name' do

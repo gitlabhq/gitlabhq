@@ -2557,7 +2557,6 @@ Rails/IncludeUrlHelper:
 # TODO issue: https://gitlab.com/gitlab-org/gitlab/-/issues/344279
 Style/OpenStructUse:
   Exclude:
-    - 'app/finders/snippets_finder.rb'
     - 'app/helpers/application_settings_helper.rb'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'

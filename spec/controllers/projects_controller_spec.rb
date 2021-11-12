@@ -1143,6 +1143,22 @@ RSpec.describe ProjectsController do
       expect(json_response["Commits"]).to include("123456")
     end
 
+    context 'when gitaly is unavailable' do
+      before do
+        expect_next_instance_of(TagsFinder) do |finder|
+          allow(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError)
+        end
+      end
+
+      it 'gets an empty list of tags' do
+        get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+
+        expect(json_response["Branches"]).to include("master")
+        expect(json_response["Tags"]).to eq([])
+        expect(json_response["Commits"]).to include("123456")
+      end
+    end
+
     context "when preferred language is Japanese" do
       before do
         user.update!(preferred_language: 'ja')

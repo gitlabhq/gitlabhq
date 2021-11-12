@@ -76,3 +76,14 @@ RSpec.shared_examples '412 response' do
     end
   end
 end
+
+RSpec.shared_examples '503 response' do
+  before do
+    # Fires the request
+    request
+  end
+
+  it 'returns 503' do
+    expect(response).to have_gitlab_http_status(:service_unavailable)
+  end
+end

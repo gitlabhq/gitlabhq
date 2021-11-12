@@ -8,12 +8,7 @@ RSpec.describe TagsFinder do
   let_it_be(:repository) { project.repository }
 
   def load_tags(params)
-    tags_finder = described_class.new(repository, params)
-    tags, error = tags_finder.execute
-
-    expect(error).to eq(nil)
-
-    tags
+    described_class.new(repository, params).execute
   end
 
   describe '#execute' do
@@ -102,14 +97,12 @@ RSpec.describe TagsFinder do
     end
 
     context 'when Gitaly is unavailable' do
-      it 'returns empty list of tags' do
+      it 'raises an exception' do
         expect(Gitlab::GitalyClient).to receive(:call).and_raise(GRPC::Unavailable)
 
         tags_finder = described_class.new(repository, {})
-        tags, error = tags_finder.execute
 
-        expect(error).to be_a(Gitlab::Git::CommandError)
-        expect(tags).to eq([])
+        expect { tags_finder.execute }.to raise_error(Gitlab::Git::CommandError)
       end
     end
   end
