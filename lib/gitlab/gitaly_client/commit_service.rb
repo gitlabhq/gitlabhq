@@ -205,6 +205,8 @@ module Gitlab
       end
 
       def between(from, to)
+        return list_commits(["^" + from, to], reverse: true) if Feature.enabled?(:between_commits_via_list_commits)
+
         request = Gitaly::CommitsBetweenRequest.new(
           repository: @gitaly_repo,
           from: from,

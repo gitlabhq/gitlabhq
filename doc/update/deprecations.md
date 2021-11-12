@@ -157,6 +157,12 @@ Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner cho
 
 Announced: 2021-11-22
 
+### defaultMergeCommitMessageWithDescription GraphQL API field will be removed in GitLab 15.0
+
+The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
+
+Announced: 2021-11-22
+
 ## 15.2
 
 ### NFS for Git repository storage deprecated

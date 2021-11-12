@@ -160,7 +160,7 @@ module IssuableActions
 
     if issuable.is_a?(MergeRequest)
       render_cached(discussions, with: discussion_serializer, cache_context: -> (_) { discussion_cache_context }, context: self)
-    elsif issuable.is_a?(Issue) && Feature.enabled?(:issue_discussions_http_cache, default_enabled: :yaml)
+    elsif issuable.is_a?(Issue)
       render json: discussion_serializer.represent(discussions, context: self) if stale?(etag: [discussion_cache_context, discussions])
     else
       render json: discussion_serializer.represent(discussions, context: self)

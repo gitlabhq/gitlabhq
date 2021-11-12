@@ -14,31 +14,21 @@ RSpec.describe 'issue discussions' do
       project.add_maintainer(user)
     end
 
-    def get_discussions
-      get discussions_namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue.iid), headers: {
-        'If-None-Match' => @etag
-      }
+    context 'HTTP caching' do
+      def get_discussions
+        get discussions_namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue.iid), headers: {
+          'If-None-Match' => @etag
+        }
 
-      @etag = response.etag
-    end
+        @etag = response.etag
+      end
 
-    before do
-      sign_in(user)
-
-      get_discussions
-    end
-
-    shared_examples 'cache miss' do
-      it 'returns 200 and serializes JSON' do
-        expect(DiscussionSerializer).to receive(:new).and_call_original
+      before do
+        sign_in(user)
 
         get_discussions
-
-        expect(response).to have_gitlab_http_status(:ok)
       end
-    end
 
-    shared_examples 'cache hit' do
       it 'returns 304 without serializing JSON' do
         expect(DiscussionSerializer).not_to receive(:new)
 
@@ -46,22 +36,16 @@ RSpec.describe 'issue discussions' do
 
         expect(response).to have_gitlab_http_status(:not_modified)
       end
-    end
 
-    context 'when issue_discussions_http_cache is disabled' do
-      before do
-        stub_feature_flags(issue_discussions_http_cache: false)
+      shared_examples 'cache miss' do
+        it 'returns 200 and serializes JSON' do
+          expect(DiscussionSerializer).to receive(:new).and_call_original
+
+          get_discussions
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
-
-      it_behaves_like 'cache miss'
-    end
-
-    context 'when issue_discussions_http_cache is enabled' do
-      before do
-        stub_feature_flags(issue_discussions_http_cache: true)
-      end
-
-      it_behaves_like 'cache hit'
 
       context 'when user role changes' do
         before do

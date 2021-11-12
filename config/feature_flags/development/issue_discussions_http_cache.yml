@@ -1,8 +1,0 @@
----
-name: issue_discussions_http_cache
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72589
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343309
-milestone: '14.5'
-type: development
-group: group::project management
-default_enabled: false
