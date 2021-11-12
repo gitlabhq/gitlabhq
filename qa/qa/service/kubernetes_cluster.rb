@@ -41,6 +41,10 @@ module QA
         cluster_name
       end
 
+      def install_ingress
+        @provider.install_ingress
+      end
+
       def create_secret(secret, secret_name)
         shell("kubectl create secret generic #{secret_name} --from-literal=token='#{secret}'")
       end
@@ -70,7 +74,13 @@ module QA
       end
 
       def fetch_external_ip_for_ingress
-        `kubectl get svc --all-namespaces --no-headers=true -l  app.kubernetes.io/name=ingress-nginx -o custom-columns=:'status.loadBalancer.ingress[0].ip' | grep -v 'none'`
+        install_ingress
+
+        # need to wait since the ingress-nginx service has an initial delay set of 10 seconds
+        sleep 10
+        ingress_ip = `kubectl get svc --all-namespaces --no-headers=true -l  app.kubernetes.io/name=ingress-nginx -o custom-columns=:'status.loadBalancer.ingress[0].ip' | grep -v 'none'`
+        QA::Runtime::Logger.debug "Has ingress address set to: #{ingress_ip}"
+        ingress_ip
       end
 
       private
@@ -82,7 +92,6 @@ module QA
       def fetch_credentials
         return global_credentials unless rbac
 
-        @provider.set_credentials(admin_user)
         create_service_account(admin_user)
         account_credentials
       end

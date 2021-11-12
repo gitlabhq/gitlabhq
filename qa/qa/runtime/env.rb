@@ -403,7 +403,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v13.7.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.4.0')
       end
 
       def transient_trials

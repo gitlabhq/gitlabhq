@@ -5,6 +5,12 @@ const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 const SHA_REGEX = /[\da-f]{40}/gi;
 
+// About GitLab default host (overwrite in jh)
+export const PROMO_HOST = 'about.gitlab.com';
+
+// About Gitlab default url (overwrite in jh)
+export const PROMO_URL = `https://${PROMO_HOST}`;
+
 // Reset the cursor in a Regex so that multiple uses before a recompile don't fail
 function resetRegExp(regex) {
   regex.lastIndex = 0; /* eslint-disable-line no-param-reassign */

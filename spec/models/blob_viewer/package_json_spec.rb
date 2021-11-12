@@ -27,11 +27,55 @@ RSpec.describe BlobViewer::PackageJson do
     end
   end
 
-  describe '#package_url' do
-    it 'returns the package URL' do
-      expect(subject).to receive(:prepare!)
+  context 'yarn' do
+    let(:data) do
+      <<-SPEC.strip_heredoc
+        {
+          "name": "module-name",
+          "version": "10.3.1",
+          "engines": {
+            "yarn": "^2.4.0"
+          }
+        }
+      SPEC
+    end
 
-      expect(subject.package_url).to eq("https://www.npmjs.com/package/#{subject.package_name}")
+    let(:blob) { fake_blob(path: 'package.json', data: data) }
+
+    subject { described_class.new(blob) }
+
+    describe '#package_url' do
+      it 'returns the package URL', :aggregate_failures do
+        expect(subject).to receive(:prepare!)
+
+        expect(subject.package_url).to eq("https://yarnpkg.com/package/#{subject.package_name}")
+      end
+    end
+
+    describe '#manager_url' do
+      it 'returns the manager URL', :aggregate_failures do
+        expect(subject).to receive(:prepare!)
+
+        expect(subject.manager_url).to eq("https://yarnpkg.com/")
+      end
+    end
+  end
+
+  context 'npm' do
+    describe '#package_url' do
+      it 'returns the package URL', :aggregate_failures do
+        expect(subject).to receive(:prepare!)
+
+        expect(subject.package_url).to eq("https://www.npmjs.com/package/#{subject.package_name}")
+      end
+    end
+
+    describe '#manager_url' do
+      it 'returns the manager URL', :aggregate_failures do
+        expect(subject).to receive(:prepare!)
+
+        expect(subject.manager_url).to eq("https://www.npmjs.com/")
+      end
     end
   end
 

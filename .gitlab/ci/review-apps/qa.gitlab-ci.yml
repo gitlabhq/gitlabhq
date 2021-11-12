@@ -32,6 +32,20 @@
     expire_in: 7 days
     when: always
 
+.parallel-qa-base:
+  parallel: 5
+  script:
+    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
+    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
+    - |
+      bin/test "${QA_SCENARIO}" "${CI_ENVIRONMENT_URL}" \
+        -- \
+        --color --format documentation \
+        --format RspecJunitFormatter --out tmp/rspec.xml
+  artifacts:
+    reports:
+      junit: qa/tmp/rspec.xml
+
 .allure-report-base:
   image:
     name: ${GITLAB_DEPENDENCY_PROXY}andrcuns/allure-report-publisher:0.4.1
@@ -65,24 +79,23 @@ review-qa-smoke:
   script:
     - bin/test Test::Instance::Smoke "${CI_ENVIRONMENT_URL}"
 
+review-qa-reliable:
+  extends:
+    - .review-qa-base
+    - .review:rules:review-qa-reliable
+    - .parallel-qa-base
+  variables:
+    QA_RUN_TYPE: review-qa-reliable
+    QA_SCENARIO: Test::Instance::Reliable
+
 review-qa-all:
   extends:
     - .review-qa-base
     - .review:rules:review-qa-all
+    - .parallel-qa-base
   variables:
     QA_RUN_TYPE: review-qa-all
-  parallel: 5
-  script:
-    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
-    - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
-    - |
-      bin/test Test::Instance::All "${CI_ENVIRONMENT_URL}" \
-        -- \
-        --color --format documentation \
-        --format RspecJunitFormatter --out tmp/rspec.xml
-  artifacts:
-    reports:
-      junit: qa/tmp/rspec.xml
+    QA_SCENARIO: Test::Instance::All
 
 review-performance:
   extends:

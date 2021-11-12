@@ -199,8 +199,9 @@ security issues:
 ### Vulnerability-Check rule
 
 To prevent a merge request introducing a security vulnerability in a project, enable the
-Vulnerability-Check rule. While this rule is enabled, an additional merge request approval is
-required when the latest security report in a merge request:
+Vulnerability-Check rule. While this rule is enabled, additional merge request approval by
+[eligible approvers](../project/merge_requests/approvals/rules.md#eligible-approvers)
+is required when the latest security report in a merge request:
 
 - Contains vulnerabilities with states (for example, `previously detected`, `dismissed`) matching the rule's vulnerability states. Only `newly detected` will be considered if the target branch differs from the project default branch.
 - Contains vulnerabilities with severity levels (for example, `high`, `critical`, or `unknown`)
@@ -215,13 +216,12 @@ An approval is optional when the security report:
   the rule's severity levels.
 - Contains a vulnerability count equal to or less than what the rule allows.
 
+Project members assigned [at least the Maintainer role](../permissions.md#project-members-permissions) can enable or edit
+the Vulnerability-Check rule.
+
 #### Enable the Vulnerability-Check rule
 
-Prerequisites:
-
-- Maintainer or Owner [role](../permissions.md#project-members-permissions).
-
-To enable the `Vulnerability-Check` rule:
+To enable or edit the Vulnerability-Check rule:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.

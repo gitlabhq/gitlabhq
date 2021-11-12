@@ -24,8 +24,9 @@ class ProjectAuthorization < ApplicationRecord
       end
 
       connection.execute <<-EOF.strip_heredoc
-      INSERT INTO project_authorizations (user_id, project_id, access_level)
-      VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
+        INSERT INTO project_authorizations (user_id, project_id, access_level)
+        VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
+        ON CONFLICT DO NOTHING
       EOF
     end
   end

@@ -1666,6 +1666,11 @@
     - <<: *if-dot-com-ee-schedule-child-pipeline
       when: on_failure
 
+.review:rules:review-qa-reliable:
+  rules:
+    - when: on_success
+      allow_failure: true
+
 .review:rules:review-qa-all:
   rules:
     - <<: *if-not-ee

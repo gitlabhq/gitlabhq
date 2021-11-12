@@ -6,12 +6,12 @@ module QA
       module Infrastructure
         module Kubernetes
           class Index < Page::Base
-            view 'app/assets/javascripts/clusters_list/components/clusters_empty_state.vue' do
-              element :add_kubernetes_cluster_link
+            view 'app/views/clusters/clusters/_cluster_list.html.haml' do
+              element :integrate_kubernetes_cluster_button
             end
 
-            def add_kubernetes_cluster
-              click_element :add_kubernetes_cluster_link
+            def connect_cluster_with_certificate
+              find('.js-add-cluster').click
             end
 
             def has_cluster?(cluster)

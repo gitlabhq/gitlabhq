@@ -1100,17 +1100,15 @@ To test the logic of Apollo cache updates, we might want to mock an Apollo Clien
 
 To separate tests with mocked client from 'usual' unit tests, create an additional factory and pass the created `mockApollo` as an option to the `createComponent`-factory. This way we only create Apollo Client instance when it's necessary.
 
-We need to inject `VueApollo` to the Vue local instance and, likewise, it is recommended to call `localVue.use()` in `createMockApolloProvider()` to only load it when it is necessary.
+We need to inject `VueApollo` into the Vue instance by calling `Vue.use(VueApollo)`. This will install `VueApollo` globally for all the tests in the file. It is recommended to call `Vue.use(VueApollo)` just after the imports.
 
 ```javascript
 import VueApollo from 'vue-apollo';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 
-const localVue = createLocalVue();
+Vue.use(VueApollo);
 
 function createMockApolloProvider() {
-  localVue.use(VueApollo);
-
   return createMockApollo(requestHandlers);
 }
 
@@ -1118,7 +1116,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
   ...
   return shallowMount(..., {
-    localVue,
     apolloProvider: mockApollo,
     ...
   });
@@ -1188,7 +1185,6 @@ describe('Some component', () => {
     const { mockApollo } = options;
 
     return shallowMount(Index, {
-      localVue,
       apolloProvider: mockApollo,
     });
   }
@@ -1275,7 +1271,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
 
   return shallowMount(Index, {
-    localVue,
     apolloProvider: mockApollo,
   });
 }
@@ -1408,7 +1403,6 @@ const createComponentWithApollo = ({ props = {} } = {}) => {
   mockApollo = createMockApollo([], mockResolvers); // resolvers are the second parameter
 
   wrapper = shallowMount(MyComponent, {
-    localVue,
     propsData: {},
     apolloProvider: mockApollo,
     // ...
@@ -1476,7 +1470,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
 
   return shallowMount(Index, {
-    localVue,
     apolloProvider: mockApollo,
   });
 }

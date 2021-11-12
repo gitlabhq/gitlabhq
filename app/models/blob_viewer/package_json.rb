@@ -7,11 +7,15 @@ module BlobViewer
     self.file_types = %i(package_json)
 
     def manager_name
-      'npm'
+      yarn? ? 'yarn' : 'npm'
+    end
+
+    def yarn?
+      json_data['engines'].present? && json_data['engines']['yarn'].present?
     end
 
     def manager_url
-      'https://www.npmjs.com/'
+      yarn? ? 'https://yarnpkg.com/' : 'https://www.npmjs.com/'
     end
 
     def package_name
@@ -38,7 +42,11 @@ module BlobViewer
     end
 
     def npm_url
-      "https://www.npmjs.com/package/#{package_name}"
+      if yarn?
+        "https://yarnpkg.com/package/#{package_name}"
+      else
+        "https://www.npmjs.com/package/#{package_name}"
+      end
     end
   end
 end

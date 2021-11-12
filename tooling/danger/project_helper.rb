@@ -84,6 +84,7 @@ module Tooling
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
+        %r{\A(\.ruby-version\z|\.nvmrc\z|\.tool-versions\z)} => :tooling,
         %r{\A(\.gitlab-ci\.yml\z|\.gitlab\/ci)} => :tooling,
         %r{\A\.codeclimate\.yml\z} => :tooling,
         %r{\Alefthook.yml\z} => :tooling,

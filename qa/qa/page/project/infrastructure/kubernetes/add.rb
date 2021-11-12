@@ -11,7 +11,7 @@ module QA
             end
 
             def add_existing_cluster
-              click_element(:add_existing_cluster_tab)
+              page.find('.gl-tab-nav-item', text: 'Connect existing cluster').click
             end
           end
         end

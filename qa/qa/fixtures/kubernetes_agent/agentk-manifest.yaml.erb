@@ -24,8 +24,7 @@ spec:
           args:
             - --token-file=/config/token
             - --kas-address
-            - "<%= kas_wss_address %>" # Use this for GitLab chart deployments
-            # - "<%= kas_grpc_address %>" # Use this for GDK
+            - "<%= kas_wss_address %>"
           volumeMounts:
             - name: token-volume
               mountPath: /config

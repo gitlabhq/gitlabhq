@@ -24,16 +24,6 @@ module QA
           )
         end
 
-        def set_credentials(admin_user)
-          master_auth = JSON.parse(`gcloud container clusters describe #{cluster_name} --region #{@region} --format 'json(masterAuth.username, masterAuth.password)'`)
-
-          shell <<~CMD.tr("\n", ' ')
-            kubectl config set-credentials #{admin_user}
-              --username #{master_auth['masterAuth']['username']}
-              --password #{master_auth['masterAuth']['password']}
-          CMD
-        end
-
         def setup
           login_if_not_already_logged_in
           create_cluster
@@ -41,6 +31,12 @@ module QA
 
         def teardown
           delete_cluster
+        end
+
+        def install_ingress
+          QA::Runtime::Logger.info "Attempting to install Ingress on cluster #{cluster_name}"
+          shell 'kubectl create -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-0.31.0/deploy/static/provider/cloud/deploy.yaml'
+          wait_for_ingress
         end
 
         private
@@ -59,7 +55,7 @@ module QA
         end
 
         def attempt_login_with_env_vars
-          puts "No gcloud account. Attempting to login from env vars GCLOUD_ACCOUNT_EMAIL and GCLOUD_ACCOUNT_KEY."
+          QA::Runtime::Logger.debug("Logging in with GCLOUD_ACCOUNT_EMAIL and GCLOUD_ACCOUNT_KEY.")
           gcloud_account_key = Tempfile.new('gcloud-account-key')
           gcloud_account_key.write(Runtime::Env.gcloud_account_key)
           gcloud_account_key.close
@@ -80,7 +76,6 @@ module QA
             gcloud container clusters
             create #{cluster_name}
             #{auth_options}
-            --enable-basic-auth
             --region #{@region}
             --disk-size 10GB
             --num-nodes #{Runtime::Env.gcloud_num_nodes}
@@ -108,6 +103,18 @@ module QA
 
         def get_region
           Runtime::Env.gcloud_region || @available_regions.delete(@available_regions.sample)
+        end
+
+        def wait_for_ingress
+          QA::Runtime::Logger.info 'Waiting for Ingress controller pod to be initialized'
+
+          Support::Retrier.retry_until(max_attempts: 60, sleep_interval: 1) do
+            service_available?('kubectl get pods --all-namespaces -l app.kubernetes.io/component=controller | grep -o "ingress-nginx-controller.*1/1"')
+          end
+        end
+
+        def service_available?(command)
+          system("#{command} > /dev/null 2>&1")
         end
       end
     end

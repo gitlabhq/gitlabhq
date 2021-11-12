@@ -1060,4 +1060,12 @@ describe('URL utility', () => {
       },
     );
   });
+
+  describe('defaultPromoUrl', () => {
+    it('Gitlab about page url', () => {
+      const url = 'https://about.gitlab.com';
+
+      expect(urlUtils.PROMO_URL).toBe(url);
+    });
+  });
 });

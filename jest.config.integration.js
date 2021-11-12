@@ -3,6 +3,13 @@ const baseConfig = require('./jest.config.base');
 
 checkEnvironment();
 
+console.log(`
+PSA: Running into unexpected and/or strange frontend integration test errors?
+Please help improve our error logging by following the instructions on this issue:
+
+    https://gitlab.com/gitlab-org/gitlab/-/issues/345513
+`);
+
 module.exports = {
   ...baseConfig('spec/frontend_integration', {
     moduleNameMapper: {
