@@ -17,6 +17,7 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :set_commits, except: :commits_root
 
   feature_category :source_code_management
+  urgency :low, [:signatures, :show]
 
   def commits_root
     redirect_to project_commits_path(@project, @project.default_branch)

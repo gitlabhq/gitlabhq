@@ -23,7 +23,7 @@ module API
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
         use :pagination
       end
-      get ':id/repository/tags', feature_category: :source_code_management do
+      get ':id/repository/tags', feature_category: :source_code_management, urgency: :low do
         tags = ::TagsFinder.new(user_project.repository,
                                 sort: "#{params[:order_by]}_#{params[:sort]}",
                                 search: params[:search]).execute

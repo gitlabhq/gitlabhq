@@ -91,7 +91,7 @@ module API
         requires :name, type: String, desc: 'The name of the protected branch'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
+      delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS, urgency: :low do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
         destroy_conditionally!(protected_branch) do

@@ -329,9 +329,9 @@ RSpec.describe Issues::CreateService do
           end
         end
 
-        context 'when limit is higher than counf of issues being created' do
+        context 'when limit is higher than count of issues being created' do
           before do
-            stub_application_setting(issues_create_limit: 3)
+            stub_application_setting(issues_create_limit: 2)
           end
 
           it 'creates 2 issues' do

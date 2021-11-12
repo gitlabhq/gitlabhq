@@ -11,6 +11,7 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
 
   feature_category :source_code_management
+  urgency :low, [:new, :show, :index]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

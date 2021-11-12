@@ -24,7 +24,7 @@ module API
             requires :oid, type: String, desc: 'The object ID to query'
             requires :gl_repository, type: String, desc: "Project identifier (e.g. project-1)"
           end
-          get "/" do
+          get "/", urgency: :high do
             lfs_object = find_lfs_object(params[:oid])
 
             not_found! unless lfs_object

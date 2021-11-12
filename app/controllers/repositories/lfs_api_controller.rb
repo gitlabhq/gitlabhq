@@ -13,6 +13,7 @@ module Repositories
     # added here as a part of the refactor, will be removed
     # https://gitlab.com/gitlab-org/gitlab/-/issues/328692
     delegate :deploy_token, :user, to: :authentication_result, allow_nil: true
+    urgency :medium, [:batch]
 
     def batch
       unless objects.present?

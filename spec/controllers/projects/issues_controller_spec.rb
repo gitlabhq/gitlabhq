@@ -1410,12 +1410,12 @@ RSpec.describe Projects::IssuesController do
 
     context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
-        stub_application_setting(issues_create_limit: 5)
+        stub_application_setting(issues_create_limit: 1)
       end
 
       context 'when issue creation limits imposed' do
         it 'prevents from creating more issues', :request_store do
-          5.times { post_new_issue }
+          post_new_issue
 
           expect { post_new_issue }
             .to change { Gitlab::GitalyClient.get_request_count }.by(1) # creates 1 projects and 0 issues
@@ -1442,7 +1442,7 @@ RSpec.describe Projects::IssuesController do
           project.add_developer(user)
           sign_in(user)
 
-          6.times do
+          2.times do
             post :create, params: {
               namespace_id: project.namespace.to_param,
               project_id: project,

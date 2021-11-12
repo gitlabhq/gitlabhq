@@ -11,6 +11,7 @@ class Projects::NetworkController < Projects::ApplicationController
   before_action :assign_commit
 
   feature_category :source_code_management
+  urgency :low, [:show]
 
   def show
     @url = project_network_path(@project, @ref, @options.merge(format: :json))

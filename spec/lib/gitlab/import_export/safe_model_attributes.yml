@@ -693,6 +693,7 @@ ProjectCiCdSetting:
 ProjectSetting:
 - allow_merge_on_skipped_pipeline
 - has_confluence
+- has_shimo
 - has_vulnerabilities
 ProtectedEnvironment:
 - id

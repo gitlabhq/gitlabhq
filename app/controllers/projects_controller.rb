@@ -52,6 +52,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
   feature_category :code_review, [:unfoldered_environment_names]
+  urgency :low, [:refs]
 
   def index
     redirect_to(current_user ? root_path : explore_root_path)

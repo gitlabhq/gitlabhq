@@ -14,8 +14,6 @@
         = link_to s_('DashboardProjects|All'), dashboard_projects_path, class: params[:personal].present? ? inactive_class : active_class
         = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true), class: params[:personal].present? ? active_class : inactive_class
   - else
-    %ul.nav-links.mobile-separator.nav.nav-tabs
-      = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
-        = link_to s_('DashboardProjects|All'), dashboard_projects_path
-      = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
-        = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)
+    = gl_tabs_nav do
+      = gl_tab_link_to s_('DashboardProjects|All'), dashboard_projects_path, { item_active: params[:personal].blank? }
+      = gl_tab_link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true), { item_active: params[:personal].present? }

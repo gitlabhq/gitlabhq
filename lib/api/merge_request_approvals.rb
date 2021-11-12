@@ -25,7 +25,7 @@ module API
         # Examples:
         #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
         desc 'List approvals for merge request'
-        get 'approvals' do
+        get 'approvals', urgency: :low do
           not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
 
           merge_request = find_merge_request_with_access(params[:merge_request_iid])
@@ -47,7 +47,7 @@ module API
 
           use :ee_approval_params
         end
-        post 'approve' do
+        post 'approve', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
           check_sha_param!(params, merge_request)
@@ -63,7 +63,7 @@ module API
         end
 
         desc 'Remove an approval from a merge request'
-        post 'unapprove' do
+        post 'unapprove', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :approve_merge_request)
 
           success = ::MergeRequests::RemoveApprovalService

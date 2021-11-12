@@ -15,6 +15,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_fork_namespace!, only: [:create]
 
   feature_category :source_code_management
+  urgency :low, [:index]
 
   before_action do
     push_frontend_feature_flag(:fork_project_form, @project, default_enabled: :yaml)

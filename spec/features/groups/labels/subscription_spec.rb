@@ -71,7 +71,7 @@ RSpec.describe 'Labels subscription' do
     end
 
     it 'does not show subscribed tab' do
-      page.within('.nav-tabs') do
+      page.within('.gl-tabs-nav') do
         expect(page).not_to have_link 'Subscribed'
       end
     end
@@ -86,7 +86,7 @@ RSpec.describe 'Labels subscription' do
   end
 
   def click_subscribed_tab
-    page.within('.nav-tabs') do
+    page.within('.gl-tabs-nav') do
       click_link 'Subscribed'
     end
   end

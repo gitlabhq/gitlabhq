@@ -5,7 +5,7 @@ require "addressable/uri"
 module Integrations
   class Buildkite < BaseCi
     include HasWebHook
-    include ReactiveService
+    include ReactivelyCached
     extend Gitlab::Utils::Override
 
     ENDPOINT = "https://buildkite.com"

@@ -1,14 +1,10 @@
 - subscribed = params[:subscribed]
 
 .top-area.adjust
-  %ul.nav-links.nav.nav-tabs
-    %li{ class: active_when(subscribed != 'true') }>
-      = link_to labels_filter_path do
-        = _('All')
+  = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
+    = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' }
     - if current_user
-      %li{ class: active_when(subscribed == 'true') }>
-        = link_to labels_filter_path(subscribed: 'true') do
-          = _('Subscribed')
+      = gl_tab_link_to _('Subscribed'), labels_filter_path(subscribed: 'true'), { item_active: subscribed == 'true' }
   .nav-controls
     = form_tag labels_filter_path, method: :get do
       = hidden_field_tag :subscribed, params[:subscribed]

@@ -404,7 +404,7 @@ module API
         use :collection_params
         use :with_custom_attributes
       end
-      get ':id/forks', feature_category: :source_code_management do
+      get ':id/forks', feature_category: :source_code_management, urgency: :low do
         forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
 
         present_projects forks, request_scope: user_project
@@ -514,7 +514,7 @@ module API
       end
 
       desc 'Get languages in project repository'
-      get ':id/languages', feature_category: :source_code_management do
+      get ':id/languages', feature_category: :source_code_management, urgency: :medium do
         ::Projects::RepositoryLanguagesService
           .new(user_project, current_user)
           .execute.to_h { |lang| [lang.name, lang.share] }

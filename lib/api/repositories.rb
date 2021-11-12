@@ -79,7 +79,7 @@ module API
           optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
         end
       end
-      get ':id/repository/tree' do
+      get ':id/repository/tree', urgency: :low do
         tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false))
 
         not_found!("Tree") unless tree_finder.commit_exists?
@@ -144,7 +144,7 @@ module API
         optional :from_project_id, type: String, desc: 'The project to compare from'
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
-      get ':id/repository/compare' do
+      get ':id/repository/compare', urgency: :low do
         ff_enabled = Feature.enabled?(:api_caching_rate_limit_repository_compare, user_project, default_enabled: :yaml)
         target_project = fetch_target_project(current_user, user_project, params)
 

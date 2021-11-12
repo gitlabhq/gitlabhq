@@ -23,6 +23,7 @@ class Projects::TreeController < Projects::ApplicationController
   end
 
   feature_category :source_code_management
+  urgency :low, [:show]
 
   def show
     return render_404 unless @commit

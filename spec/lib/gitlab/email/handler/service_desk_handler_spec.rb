@@ -309,7 +309,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
       context 'when limit is higher than sent emails' do
         before do
-          stub_application_setting(issues_create_limit: 3)
+          stub_application_setting(issues_create_limit: 2)
         end
 
         it 'creates 2 issues' do

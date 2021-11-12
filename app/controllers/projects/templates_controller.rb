@@ -6,6 +6,7 @@ class Projects::TemplatesController < Projects::ApplicationController
   before_action :get_template_class
 
   feature_category :source_code_management
+  urgency :low, [:names]
 
   def index
     templates = @template_type.template_subsets(project)

@@ -137,6 +137,7 @@ project_setting:
   unexposed_attributes:
     - created_at
     - has_confluence
+    - has_shimo
     - has_vulnerabilities
     - prevent_merge_without_jira_issue
     - warn_about_potentially_unwanted_characters

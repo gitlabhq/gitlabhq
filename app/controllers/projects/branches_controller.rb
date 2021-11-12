@@ -14,6 +14,7 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :limit_diverging_commit_counts!, only: [:diverging_commit_counts]
 
   feature_category :source_code_management
+  urgency :low, [:index, :diverging_commit_counts, :create, :destroy]
 
   def index
     respond_to do |format|
