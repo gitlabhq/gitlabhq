@@ -102,3 +102,18 @@ After an administrator creates an alias for a project, you can use the alias to 
 repository. For example, if an administrator creates the alias `gitlab` for the project
 `https://gitlab.com/gitlab-org/gitlab`, you can clone the project with
 `git clone git@gitlab.com:gitlab.git` instead of `git clone git@gitlab.com:gitlab-org/gitlab.git`.
+
+## Automate group and project import **(PREMIUM)**
+
+The GitLab Professional Services team uses [Congregate](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/congregate)
+to orchestrate user, group, and project import API calls. With Congregate, you can migrate data to
+GitLab from:
+
+- Other GitLab instances
+- GitHub Enterprise
+- GitHub.com
+- Bitbucket Server
+- Bitbucket Data Center
+
+See the [Quick Start Guide](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/congregate/-/blob/master/docs/using-congregate.md#quick-start)
+to learn how to use this approach for migrating users, groups, and projects at scale.

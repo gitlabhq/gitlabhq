@@ -118,6 +118,11 @@ To import your Bitbucket repositories:
    You can filter projects by name and select the namespace
    each project will be imported for.
 
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](index.md#automate-group-and-project-import).
+
 ## Troubleshooting
 
 If the GUI-based import tool does not work, you can try to:

@@ -241,3 +241,8 @@ To disable the feature, run this command:
 # Disable
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
+
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](index.md#automate-group-and-project-import).

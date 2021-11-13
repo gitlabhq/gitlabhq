@@ -226,6 +226,11 @@ To help avoid abuse, by default, users are rate limited to:
 
 GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.
 
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](../import/index.md#automate-group-and-project-import).
+
 ## Troubleshooting
 
 ### Project fails to import due to mismatch
@@ -235,7 +240,7 @@ does not match between the exported project, and the project import, the project
 Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and either:
 
 - Ensure shared runners are enabled in both the source and destination projects.
-- Disable shared runners on the parent group when you import the project. 
+- Disable shared runners on the parent group when you import the project.
 
 ### Import workarounds for large repositories
 

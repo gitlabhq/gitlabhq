@@ -23,3 +23,8 @@ You can import your existing repositories by providing the Git URL:
 <!-- vale gitlab.SubstitutionWarning = YES -->
 
 ![Import project by repository URL](img/import_projects_from_repo_url.png)
+
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](index.md#automate-group-and-project-import).

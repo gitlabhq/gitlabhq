@@ -12,7 +12,15 @@ function getExperimentsData() {
 }
 
 function convertExperimentDataToExperimentContext(experimentData) {
-  return { schema: TRACKING_CONTEXT_SCHEMA, data: experimentData };
+  // Bandaid to allow-list only the properties which the current gitlab_experiment context schema suppports.
+  // See TRACKING_CONTEXT_SCHEMA for current version (1-0-0)
+  // https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0
+  const { experiment: experimentName, key, variant, migration_keys } = experimentData;
+
+  return {
+    schema: TRACKING_CONTEXT_SCHEMA,
+    data: { experiment: experimentName, key, variant, migration_keys },
+  };
 }
 
 export function getExperimentData(experimentName) {

@@ -171,6 +171,14 @@ In milestone 15.0, we will remove the feature flag entirely. Moving forward, you
 
 Announced: 2021-11-22
 
+### Update to the Container Registry group-level API
+
+In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
+
+The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
+
+Announced: 2021-11-22
+
 ### Value Stream Analytics filtering calculation change
 
 We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out. 

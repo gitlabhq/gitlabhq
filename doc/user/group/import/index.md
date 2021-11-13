@@ -130,3 +130,8 @@ Migration importer page. The remote groups you have the Owner role for are liste
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 ![Group Importer page](img/bulk_imports_v14_1.png)
+
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](../../project/import/index.md#automate-group-and-project-import).

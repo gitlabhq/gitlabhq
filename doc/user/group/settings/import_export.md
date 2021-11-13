@@ -109,6 +109,11 @@ The Enterprise Edition retains some group data that isn't part of the Community 
 
 Your newly imported group page appears after the operation completes.
 
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](../../project/import/index.md#automate-group-and-project-import).
+
 ## Version history
 
 ### 14.0+
