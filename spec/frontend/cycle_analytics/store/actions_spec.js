@@ -57,22 +57,12 @@ describe('Project Value Stream Analytics actions', () => {
 
   const mutationTypes = (arr) => arr.map(({ type }) => type);
 
-  const mockFetchStageDataActions = [
-    { type: 'setLoading', payload: true },
-    { type: 'fetchCycleAnalyticsData' },
-    { type: 'fetchStageData' },
-    { type: 'fetchStageMedians' },
-    { type: 'fetchStageCountValues' },
-    { type: 'setLoading', payload: false },
-  ];
-
   describe.each`
-    action                      | payload                            | expectedActions                                                              | expectedMutations
-    ${'setLoading'}             | ${true}                            | ${[]}                                                                        | ${[{ type: 'SET_LOADING', payload: true }]}
-    ${'setDateRange'}           | ${{ createdAfter, createdBefore }} | ${mockFetchStageDataActions}                                                 | ${[mockSetDateActionCommit]}
-    ${'setFilters'}             | ${[]}                              | ${mockFetchStageDataActions}                                                 | ${[]}
-    ${'setSelectedStage'}       | ${{ selectedStage }}               | ${[{ type: 'fetchStageData' }]}                                              | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
-    ${'setSelectedValueStream'} | ${{ selectedValueStream }}         | ${[{ type: 'fetchValueStreamStages' }, { type: 'fetchCycleAnalyticsData' }]} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}
+    action                      | payload                            | expectedActions                         | expectedMutations
+    ${'setDateRange'}           | ${{ createdAfter, createdBefore }} | ${[{ type: 'refetchStageData' }]}       | ${[mockSetDateActionCommit]}
+    ${'setFilters'}             | ${[]}                              | ${[{ type: 'refetchStageData' }]}       | ${[]}
+    ${'setSelectedStage'}       | ${{ selectedStage }}               | ${[{ type: 'refetchStageData' }]}       | ${[{ type: 'SET_SELECTED_STAGE', payload: { selectedStage } }]}
+    ${'setSelectedValueStream'} | ${{ selectedValueStream }}         | ${[{ type: 'fetchValueStreamStages' }]} | ${[{ type: 'SET_SELECTED_VALUE_STREAM', payload: { selectedValueStream } }]}
   `('$action', ({ action, payload, expectedActions, expectedMutations }) => {
     const types = mutationTypes(expectedMutations);
     it(`will dispatch ${expectedActions} and commit ${types}`, () =>
@@ -86,9 +76,18 @@ describe('Project Value Stream Analytics actions', () => {
   });
 
   describe('initializeVsa', () => {
-    let mockDispatch;
-    let mockCommit;
-    const payload = { endpoints: mockEndpoints };
+    const selectedAuthor = 'Author';
+    const selectedMilestone = 'Milestone 1';
+    const selectedAssigneeList = ['Assignee 1', 'Assignee 2'];
+    const selectedLabelList = ['Label 1', 'Label 2'];
+    const payload = {
+      endpoints: mockEndpoints,
+      selectedAuthor,
+      selectedMilestone,
+      selectedAssigneeList,
+      selectedLabelList,
+      selectedStage,
+    };
     const mockFilterEndpoints = {
       groupEndpoint: 'foo',
       labelsEndpoint: mockLabelsPath,
@@ -96,27 +95,63 @@ describe('Project Value Stream Analytics actions', () => {
       projectEndpoint: '/namespace/-/analytics/value_stream_analytics/value_streams',
     };
 
+    it('will dispatch fetchValueStreams actions and commit SET_LOADING and INITIALIZE_VSA', () => {
+      return testAction({
+        action: actions.initializeVsa,
+        state: {},
+        payload,
+        expectedMutations: [
+          { type: 'INITIALIZE_VSA', payload },
+          { type: 'SET_LOADING', payload: true },
+          { type: 'SET_LOADING', payload: false },
+        ],
+        expectedActions: [
+          { type: 'filters/setEndpoints', payload: mockFilterEndpoints },
+          {
+            type: 'filters/initialize',
+            payload: { selectedAuthor, selectedMilestone, selectedAssigneeList, selectedLabelList },
+          },
+          { type: 'fetchValueStreams' },
+          { type: 'setInitialStage', payload: selectedStage },
+        ],
+      });
+    });
+  });
+
+  describe('setInitialStage', () => {
     beforeEach(() => {
-      mockDispatch = jest.fn(() => Promise.resolve());
-      mockCommit = jest.fn();
+      state = { ...state, stages: allowedStages };
     });
 
-    it('will dispatch the setLoading and fetchValueStreams actions and commit INITIALIZE_VSA', async () => {
-      await actions.initializeVsa(
-        {
-          ...state,
-          dispatch: mockDispatch,
-          commit: mockCommit,
-        },
-        payload,
-      );
-      expect(mockCommit).toHaveBeenCalledWith('INITIALIZE_VSA', { endpoints: mockEndpoints });
+    describe('with a selected stage', () => {
+      it('will commit `SET_SELECTED_STAGE` and fetchValueStreamStageData actions', () => {
+        const fakeStage = { ...selectedStage, id: 'fake', name: 'fake-stae' };
+        return testAction({
+          action: actions.setInitialStage,
+          state,
+          payload: fakeStage,
+          expectedMutations: [
+            {
+              type: 'SET_SELECTED_STAGE',
+              payload: fakeStage,
+            },
+          ],
+          expectedActions: [{ type: 'fetchValueStreamStageData' }],
+        });
+      });
+    });
 
-      expect(mockDispatch).toHaveBeenCalledTimes(4);
-      expect(mockDispatch).toHaveBeenCalledWith('filters/setEndpoints', mockFilterEndpoints);
-      expect(mockDispatch).toHaveBeenCalledWith('setLoading', true);
-      expect(mockDispatch).toHaveBeenCalledWith('fetchValueStreams');
-      expect(mockDispatch).toHaveBeenCalledWith('setLoading', false);
+    describe('without a selected stage', () => {
+      it('will select the first stage from the value stream', () => {
+        const [firstStage] = allowedStages;
+        testAction({
+          action: actions.setInitialStage,
+          state,
+          payload: null,
+          expectedMutations: [{ type: 'SET_SELECTED_STAGE', payload: firstStage }],
+          expectedActions: [{ type: 'fetchValueStreamStageData' }],
+        });
+      });
     });
   });
 
@@ -270,12 +305,7 @@ describe('Project Value Stream Analytics actions', () => {
         state,
         payload: {},
         expectedMutations: [{ type: 'REQUEST_VALUE_STREAMS' }],
-        expectedActions: [
-          { type: 'receiveValueStreamsSuccess' },
-          { type: 'setSelectedStage' },
-          { type: 'fetchStageMedians' },
-          { type: 'fetchStageCountValues' },
-        ],
+        expectedActions: [{ type: 'receiveValueStreamsSuccess' }],
       }));
 
     describe('with a failing request', () => {
@@ -482,5 +512,35 @@ describe('Project Value Stream Analytics actions', () => {
           expectedActions: [],
         }));
     });
+  });
+
+  describe('refetchStageData', () => {
+    it('will commit SET_LOADING and dispatch fetchValueStreamStageData actions', () =>
+      testAction({
+        action: actions.refetchStageData,
+        state,
+        payload: {},
+        expectedMutations: [
+          { type: 'SET_LOADING', payload: true },
+          { type: 'SET_LOADING', payload: false },
+        ],
+        expectedActions: [{ type: 'fetchValueStreamStageData' }],
+      }));
+  });
+
+  describe('fetchValueStreamStageData', () => {
+    it('will dispatch the fetchCycleAnalyticsData, fetchStageData, fetchStageMedians and fetchStageCountValues actions', () =>
+      testAction({
+        action: actions.fetchValueStreamStageData,
+        state,
+        payload: {},
+        expectedMutations: [],
+        expectedActions: [
+          { type: 'fetchCycleAnalyticsData' },
+          { type: 'fetchStageData' },
+          { type: 'fetchStageMedians' },
+          { type: 'fetchStageCountValues' },
+        ],
+      }));
   });
 });

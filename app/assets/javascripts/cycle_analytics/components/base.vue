@@ -2,10 +2,12 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Cookies from 'js-cookie';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { toYmd } from '~/analytics/shared/utils';
 import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
 import StageTable from '~/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filters.vue';
 import ValueStreamMetrics from '~/cycle_analytics/components/value_stream_metrics.vue';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { __ } from '~/locale';
 import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
 
@@ -19,6 +21,7 @@ export default {
     StageTable,
     ValueStreamFilters,
     ValueStreamMetrics,
+    UrlSync,
   },
   props: {
     noDataSvgPath: {
@@ -54,6 +57,9 @@ export default {
       'pagination',
     ]),
     ...mapGetters(['pathNavigationData', 'filterParams']),
+    isLoaded() {
+      return !this.isLoading && !this.isLoadingStage;
+    },
     displayStageEvents() {
       const { selectedStageEvents, isLoadingStage, isEmptyStage } = this;
       return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
@@ -97,6 +103,16 @@ export default {
     },
     metricsRequests() {
       return this.features?.cycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
+    },
+    query() {
+      return {
+        created_after: toYmd(this.createdAfter),
+        created_before: toYmd(this.createdBefore),
+        stage_id: this.selectedStage?.id || null,
+        sort: this.pagination?.sort || null,
+        direction: this.pagination?.direction || null,
+        page: this.pagination?.page || null,
+      };
     },
   },
   methods: {
@@ -176,5 +192,6 @@ export default {
       :pagination="pagination"
       @handleUpdatePagination="onHandleUpdatePagination"
     />
+    <url-sync v-if="isLoaded" :query="query" />
   </div>
 </template>

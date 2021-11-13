@@ -6,8 +6,10 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   include CycleAnalyticsParams
   include GracefulTimeoutHandling
   include RedisTracking
+  extend ::Gitlab::Utils::Override
 
   before_action :authorize_read_cycle_analytics!
+  before_action :load_value_stream, only: :show
 
   track_redis_hll_event :show, name: 'p_analytics_valuestream'
 
@@ -19,6 +21,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   def show
     @cycle_analytics = Analytics::CycleAnalytics::ProjectLevel.new(project: @project, options: options(cycle_analytics_project_params))
+    @request_params ||= ::Gitlab::Analytics::CycleAnalytics::RequestParams.new(all_cycle_analytics_params)
 
     respond_to do |format|
       format.html do
@@ -33,6 +36,15 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   end
 
   private
+
+  override :all_cycle_analytics_params
+  def all_cycle_analytics_params
+    super.merge({ project: @project, value_stream: @value_stream })
+  end
+
+  def load_value_stream
+    @value_stream = Analytics::CycleAnalytics::ProjectValueStream.build_default_value_stream(@project)
+  end
 
   def cycle_analytics_json
     {

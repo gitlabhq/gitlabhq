@@ -1,12 +1,11 @@
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
-import { useFakeDate } from 'helpers/fake_date';
 import {
   transformStagesForPathNavigation,
   medianTimeToParsedSeconds,
   formatMedianValues,
   filterStagesByHiddenStatus,
-  calculateFormattedDayInPast,
   prepareTimeMetricsData,
+  buildCycleAnalyticsInitialData,
 } from '~/cycle_analytics/utils';
 import { slugify } from '~/lib/utils/text_utility';
 import {
@@ -90,14 +89,6 @@ describe('Value stream analytics utils', () => {
     });
   });
 
-  describe('calculateFormattedDayInPast', () => {
-    useFakeDate(1815, 11, 10);
-
-    it('will return 2 dates, now and past', () => {
-      expect(calculateFormattedDayInPast(5)).toEqual({ now: '1815-12-10', past: '1815-12-05' });
-    });
-  });
-
   describe('prepareTimeMetricsData', () => {
     let prepared;
     const [first, second] = metricsData;
@@ -123,6 +114,89 @@ describe('Value stream analytics utils', () => {
         { description: 'Is a value that is good' },
         { description: '' },
       ]);
+    });
+  });
+
+  describe('buildCycleAnalyticsInitialData', () => {
+    let res = null;
+    const projectId = '5';
+    const createdAfter = '2021-09-01';
+    const createdBefore = '2021-11-06';
+    const groupId = '146';
+    const groupPath = 'fake-group';
+    const fullPath = 'fake-group/fake-project';
+    const labelsPath = '/fake-group/fake-project/-/labels.json';
+    const milestonesPath = '/fake-group/fake-project/-/milestones.json';
+    const requestPath = '/fake-group/fake-project/-/value_stream_analytics';
+
+    const rawData = {
+      projectId,
+      createdBefore,
+      createdAfter,
+      fullPath,
+      requestPath,
+      labelsPath,
+      milestonesPath,
+      groupId,
+      groupPath,
+    };
+
+    describe('with minimal data', () => {
+      beforeEach(() => {
+        res = buildCycleAnalyticsInitialData(rawData);
+      });
+
+      it('sets the projectId', () => {
+        expect(res.projectId).toBe(parseInt(projectId, 10));
+      });
+
+      it('sets the date range', () => {
+        expect(res.createdBefore).toEqual(new Date(createdBefore));
+        expect(res.createdAfter).toEqual(new Date(createdAfter));
+      });
+
+      it('sets the endpoints', () => {
+        const { endpoints } = res;
+        expect(endpoints.fullPath).toBe(fullPath);
+        expect(endpoints.requestPath).toBe(requestPath);
+        expect(endpoints.labelsPath).toBe(labelsPath);
+        expect(endpoints.milestonesPath).toBe(milestonesPath);
+        expect(endpoints.groupId).toBe(parseInt(groupId, 10));
+        expect(endpoints.groupPath).toBe(groupPath);
+      });
+
+      it('returns null when there is no stage', () => {
+        expect(res.selectedStage).toBeNull();
+      });
+
+      it('returns false for missing features', () => {
+        expect(res.features.cycleAnalyticsForGroups).toBe(false);
+      });
+    });
+
+    describe('with a stage set', () => {
+      const jsonStage = '{"id":"fakeStage","title":"fakeStage"}';
+
+      it('parses the selectedStage data', () => {
+        res = buildCycleAnalyticsInitialData({ ...rawData, stage: jsonStage });
+
+        const { selectedStage: stage } = res;
+
+        expect(stage.id).toBe('fakeStage');
+        expect(stage.title).toBe('fakeStage');
+      });
+    });
+
+    describe('with features set', () => {
+      const fakeFeatures = { cycleAnalyticsForGroups: true };
+
+      it('sets the feature flags', () => {
+        res = buildCycleAnalyticsInitialData({
+          ...rawData,
+          gon: { licensed_features: fakeFeatures },
+        });
+        expect(res.features).toEqual(fakeFeatures);
+      });
     });
   });
 });

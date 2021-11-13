@@ -14,7 +14,7 @@ import * as types from './mutation_types';
 
 export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
   commit(types.SET_SELECTED_VALUE_STREAM, valueStream);
-  return Promise.all([dispatch('fetchValueStreamStages'), dispatch('fetchCycleAnalyticsData')]);
+  return dispatch('fetchValueStreamStages');
 };
 
 export const fetchValueStreamStages = ({ commit, state }) => {
@@ -46,10 +46,8 @@ export const fetchValueStreams = ({ commit, dispatch, state }) => {
   } = state;
   commit(types.REQUEST_VALUE_STREAMS);
 
-  const stageRequests = ['setSelectedStage', 'fetchStageMedians', 'fetchStageCountValues'];
   return getProjectValueStreams(fullPath)
     .then(({ data }) => dispatch('receiveValueStreamsSuccess', data))
-    .then(() => Promise.all(stageRequests.map((r) => dispatch(r))))
     .catch(({ response: { status } }) => {
       commit(types.RECEIVE_VALUE_STREAMS_ERROR, status);
     });
@@ -153,33 +151,36 @@ export const fetchStageCountValues = ({
     });
 };
 
-export const setSelectedStage = ({ dispatch, commit, state: { stages } }, selectedStage = null) => {
-  const stage = selectedStage || stages[0];
-  commit(types.SET_SELECTED_STAGE, stage);
-  return dispatch('fetchStageData');
+export const fetchValueStreamStageData = ({ dispatch }) =>
+  Promise.all([
+    dispatch('fetchCycleAnalyticsData'),
+    dispatch('fetchStageData'),
+    dispatch('fetchStageMedians'),
+    dispatch('fetchStageCountValues'),
+  ]);
+
+export const refetchStageData = async ({ dispatch, commit }) => {
+  commit(types.SET_LOADING, true);
+  await dispatch('fetchValueStreamStageData');
+  commit(types.SET_LOADING, false);
 };
 
-export const setLoading = ({ commit }, value) => commit(types.SET_LOADING, value);
-
-const refetchStageData = (dispatch) => {
-  return Promise.resolve()
-    .then(() => dispatch('setLoading', true))
-    .then(() =>
-      Promise.all([
-        dispatch('fetchCycleAnalyticsData'),
-        dispatch('fetchStageData'),
-        dispatch('fetchStageMedians'),
-        dispatch('fetchStageCountValues'),
-      ]),
-    )
-    .finally(() => dispatch('setLoading', false));
+export const setSelectedStage = ({ dispatch, commit }, selectedStage = null) => {
+  commit(types.SET_SELECTED_STAGE, selectedStage);
+  return dispatch('refetchStageData');
 };
 
-export const setFilters = ({ dispatch }) => refetchStageData(dispatch);
+export const setFilters = ({ dispatch }) => dispatch('refetchStageData');
 
 export const setDateRange = ({ dispatch, commit }, { createdAfter, createdBefore }) => {
   commit(types.SET_DATE_RANGE, { createdAfter, createdBefore });
-  return refetchStageData(dispatch);
+  return dispatch('refetchStageData');
+};
+
+export const setInitialStage = ({ dispatch, commit, state: { stages } }, stage) => {
+  const selectedStage = stage || stages[0];
+  commit(types.SET_SELECTED_STAGE, selectedStage);
+  return dispatch('fetchValueStreamStageData');
 };
 
 export const updateStageTablePagination = (
@@ -190,12 +191,18 @@ export const updateStageTablePagination = (
   return dispatch('fetchStageData', selectedStage.id);
 };
 
-export const initializeVsa = ({ commit, dispatch }, initialData = {}) => {
+export const initializeVsa = async ({ commit, dispatch }, initialData = {}) => {
   commit(types.INITIALIZE_VSA, initialData);
 
   const {
     endpoints: { fullPath, groupPath, milestonesPath = '', labelsPath = '' },
+    selectedAuthor,
+    selectedMilestone,
+    selectedAssigneeList,
+    selectedLabelList,
+    selectedStage = null,
   } = initialData;
+
   dispatch('filters/setEndpoints', {
     labelsEndpoint: labelsPath,
     milestonesEndpoint: milestonesPath,
@@ -203,7 +210,15 @@ export const initializeVsa = ({ commit, dispatch }, initialData = {}) => {
     projectEndpoint: fullPath,
   });
 
-  return dispatch('setLoading', true)
-    .then(() => dispatch('fetchValueStreams'))
-    .finally(() => dispatch('setLoading', false));
+  dispatch('filters/initialize', {
+    selectedAuthor,
+    selectedMilestone,
+    selectedAssigneeList,
+    selectedLabelList,
+  });
+
+  commit(types.SET_LOADING, true);
+  await dispatch('fetchValueStreams');
+  await dispatch('setInitialStage', selectedStage);
+  commit(types.SET_LOADING, false);
 };

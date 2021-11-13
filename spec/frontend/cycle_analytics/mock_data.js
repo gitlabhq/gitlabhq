@@ -9,7 +9,6 @@ import stagingStageFixtures from 'test_fixtures/projects/analytics/value_stream_
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   DEFAULT_VALUE_STREAM,
-  DEFAULT_DAYS_IN_PAST,
   PAGINATION_TYPE,
   PAGINATION_SORT_DIRECTION_DESC,
   PAGINATION_SORT_FIELD_END_EVENT,
@@ -17,6 +16,7 @@ import {
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 
+const DEFAULT_DAYS_IN_PAST = 30;
 export const createdBefore = new Date(2019, 0, 14);
 export const createdAfter = getDateInPast(createdBefore, DEFAULT_DAYS_IN_PAST);
 
