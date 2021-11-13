@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../qa_helpers'
-
 module RuboCop
   module Cop
     module QA
@@ -17,8 +15,6 @@ module RuboCop
       #   it 'some test', testcase: '(...)/quality/test_cases/1892'
       #   it 'another test, testcase: '(...)/quality/test_cases/1894'
       class DuplicateTestcaseLink < RuboCop::Cop::Cop
-        include QAHelpers
-
         MESSAGE = "Don't reuse the same testcase link in different tests. Replace one of `%s`."
 
         @testcase_set = Set.new
@@ -34,8 +30,6 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          return unless in_qa_file?(node)
-
           duplicate_testcase_link(node) do |link|
             break unless self.class.duplicate?(link)
 

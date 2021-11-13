@@ -93,6 +93,14 @@ rubocop:
   script:
     - run_timed_command "bundle exec rubocop --parallel"
 
+qa:testcases:
+  extends:
+    - .static-analysis-base
+    - .rubocop-job-cache
+    - .static-analysis:rules:ee-and-foss
+  script:
+    - run_timed_command "bundle exec rubocop qa/qa/specs/features/**/* --only QA/DuplicateTestcaseLink"
+
 feature-flags-usage:
   extends:
     - .static-analysis-base
