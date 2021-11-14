@@ -226,7 +226,7 @@ To enable or edit the Vulnerability-Check rule:
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Merge request approvals**.
-1. Select **Enable** or **Edit**.
+1. Select **Activate** or **Edit** of the Vulnerability-Check.
 1. Complete the fields. **Approvals required** must be at least 1.
 1. Select **Add approval rule**.
 

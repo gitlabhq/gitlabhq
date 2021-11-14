@@ -16,9 +16,8 @@ explains how 4 of the top 6 attacks were application based. Download it to learn
 organization.
 
 If you're using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
-Testing (SAST) to check your source code for known vulnerabilities. When a pipeline completes,
-the results of the SAST analysis are processed and shown in the pipeline's Security tab. If the
-pipeline is associated with a merge request, the SAST analysis is compared with the results of
+Testing (SAST) to check your source code for known vulnerabilities.
+If the pipeline is associated with a merge request, the SAST analysis is compared with the results of
 the target branch's analysis (if available). The results of that comparison are shown in the merge
 request. If the pipeline is running from the default branch, the results of the SAST
 analysis are available in the [security dashboards](../security_dashboard/index.md).

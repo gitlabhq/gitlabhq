@@ -159,9 +159,9 @@ deploy_prod:
   environment:
     name: production
     url: https://example.com
-  when: manual
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
 ```
 
 The `when: manual` action:
