@@ -135,86 +135,6 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
     end
 
     context 'when pipelines exist for the branch and merge request' do
-      shared_examples 'returns all pipelines for merge request' do
-        it 'returns merge request pipeline first' do
-          expect(subject.all).to eq([detached_merge_request_pipeline, branch_pipeline])
-        end
-
-        context 'when there are a branch pipeline and a merge request pipeline' do
-          let!(:branch_pipeline_2) do
-            create(:ci_pipeline, source: :push, project: project,
-                   ref: source_ref, sha: shas.first)
-          end
-
-          let!(:detached_merge_request_pipeline_2) do
-            create(:ci_pipeline, source: :merge_request_event, project: project,
-                   ref: source_ref, sha: shas.first, merge_request: merge_request)
-          end
-
-          it 'returns merge request pipelines first' do
-            expect(subject.all)
-              .to eq([detached_merge_request_pipeline_2,
-                      detached_merge_request_pipeline,
-                      branch_pipeline_2,
-                      branch_pipeline])
-          end
-        end
-
-        context 'when there are multiple merge request pipelines from the same branch' do
-          let!(:branch_pipeline_2) do
-            create(:ci_pipeline, source: :push, project: project,
-                   ref: source_ref, sha: shas.first)
-          end
-
-          let!(:branch_pipeline_with_sha_not_belonging_to_merge_request) do
-            create(:ci_pipeline, source: :push, project: project, ref: source_ref)
-          end
-
-          let!(:detached_merge_request_pipeline_2) do
-            create(:ci_pipeline, source: :merge_request_event, project: project,
-                   ref: source_ref, sha: shas.first, merge_request: merge_request_2)
-          end
-
-          let(:merge_request_2) do
-            create(:merge_request, source_project: project, source_branch: source_ref,
-                   target_project: project, target_branch: 'stable')
-          end
-
-          before do
-            shas.each.with_index do |sha, index|
-              create(:merge_request_diff_commit,
-                     merge_request_diff: merge_request_2.merge_request_diff,
-                     sha: sha, relative_order: index)
-            end
-          end
-
-          it 'returns only related merge request pipelines' do
-            expect(subject.all)
-              .to eq([detached_merge_request_pipeline,
-                      branch_pipeline_2,
-                      branch_pipeline])
-
-            expect(described_class.new(merge_request_2, nil).all)
-              .to match_array([detached_merge_request_pipeline_2, branch_pipeline_2, branch_pipeline])
-          end
-        end
-
-        context 'when detached merge request pipeline is run on head ref of the merge request' do
-          let!(:detached_merge_request_pipeline) do
-            create(:ci_pipeline, source: :merge_request_event, project: project,
-                   ref: merge_request.ref_path, sha: shas.second, merge_request: merge_request)
-          end
-
-          it 'sets the head ref of the merge request to the pipeline ref' do
-            expect(detached_merge_request_pipeline.ref).to match(%r{refs/merge-requests/\d+/head})
-          end
-
-          it 'includes the detached merge request pipeline even though the ref is custom path' do
-            expect(merge_request.all_pipelines).to include(detached_merge_request_pipeline)
-          end
-        end
-      end
-
       let(:source_ref) { 'feature' }
       let(:target_ref) { 'master' }
 
@@ -240,20 +160,76 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder do
       let(:project) { create(:project, :repository) }
       let(:shas) { project.repository.commits(source_ref, limit: 2).map(&:id) }
 
-      context 'when `decomposed_ci_query_in_pipelines_for_merge_request_finder` feature flag enabled' do
-        before do
-          stub_feature_flags(decomposed_ci_query_in_pipelines_for_merge_request_finder: merge_request.target_project)
-        end
-
-        it_behaves_like 'returns all pipelines for merge request'
+      it 'returns merge request pipeline first' do
+        expect(subject.all).to match_array([detached_merge_request_pipeline, branch_pipeline])
       end
 
-      context 'when `decomposed_ci_query_in_pipelines_for_merge_request_finder` feature flag disabled' do
-        before do
-          stub_feature_flags(decomposed_ci_query_in_pipelines_for_merge_request_finder: false)
+      context 'when there are a branch pipeline and a merge request pipeline' do
+        let!(:branch_pipeline_2) do
+          create(:ci_pipeline, source: :push, project: project,
+                 ref: source_ref, sha: shas.first)
         end
 
-        it_behaves_like 'returns all pipelines for merge request'
+        let!(:detached_merge_request_pipeline_2) do
+          create(:ci_pipeline, source: :merge_request_event, project: project,
+                 ref: source_ref, sha: shas.first, merge_request: merge_request)
+        end
+
+        it 'returns merge request pipelines first' do
+          expect(subject.all)
+            .to match_array([detached_merge_request_pipeline_2, detached_merge_request_pipeline, branch_pipeline_2, branch_pipeline])
+        end
+      end
+
+      context 'when there are multiple merge request pipelines from the same branch' do
+        let!(:branch_pipeline_2) do
+          create(:ci_pipeline, source: :push, project: project,
+                 ref: source_ref, sha: shas.first)
+        end
+
+        let!(:branch_pipeline_with_sha_not_belonging_to_merge_request) do
+          create(:ci_pipeline, source: :push, project: project, ref: source_ref)
+        end
+
+        let!(:detached_merge_request_pipeline_2) do
+          create(:ci_pipeline, source: :merge_request_event, project: project,
+                 ref: source_ref, sha: shas.first, merge_request: merge_request_2)
+        end
+
+        let(:merge_request_2) do
+          create(:merge_request, source_project: project, source_branch: source_ref,
+                 target_project: project, target_branch: 'stable')
+        end
+
+        before do
+          shas.each.with_index do |sha, index|
+            create(:merge_request_diff_commit,
+                   merge_request_diff: merge_request_2.merge_request_diff,
+                   sha: sha, relative_order: index)
+          end
+        end
+
+        it 'returns only related merge request pipelines' do
+          expect(subject.all).to match_array([detached_merge_request_pipeline, branch_pipeline_2, branch_pipeline])
+
+          expect(described_class.new(merge_request_2, nil).all)
+            .to match_array([detached_merge_request_pipeline_2, branch_pipeline_2, branch_pipeline])
+        end
+      end
+
+      context 'when detached merge request pipeline is run on head ref of the merge request' do
+        let!(:detached_merge_request_pipeline) do
+          create(:ci_pipeline, source: :merge_request_event, project: project,
+                 ref: merge_request.ref_path, sha: shas.second, merge_request: merge_request)
+        end
+
+        it 'sets the head ref of the merge request to the pipeline ref' do
+          expect(detached_merge_request_pipeline.ref).to match(%r{refs/merge-requests/\d+/head})
+        end
+
+        it 'includes the detached merge request pipeline even though the ref is custom path' do
+          expect(merge_request.all_pipelines).to include(detached_merge_request_pipeline)
+        end
       end
     end
   end
