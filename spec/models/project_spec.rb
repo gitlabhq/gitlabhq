@@ -1864,6 +1864,20 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '.without_integration' do
+    it 'returns projects without the integration' do
+      project_1, project_2, project_3, project_4 = create_list(:project, 4)
+      instance_integration = create(:jira_integration, :instance)
+      create(:jira_integration, project: project_1, inherit_from_id: instance_integration.id)
+      create(:jira_integration, project: project_2, inherit_from_id: nil)
+      create(:jira_integration, group: create(:group), project: nil, inherit_from_id: nil)
+      create(:jira_integration, project: project_3, inherit_from_id: nil)
+      create(:integrations_slack, project: project_4, inherit_from_id: nil)
+
+      expect(Project.without_integration(instance_integration)).to contain_exactly(project_4)
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

@@ -238,6 +238,9 @@ GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
 U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/)
 or [Google Titan Security Key](https://cloud.google.com/titan-security-key).
 
+NOTE:
+2FA must be configured before U2F.
+
 The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the
 following desktop browsers:
 

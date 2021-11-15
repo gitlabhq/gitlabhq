@@ -120,6 +120,20 @@ This deprecation mainly impacts users compiling GitLab from source because Omnib
 
 Announced: 2021-09-22
 
+### NFS for Git repository storage deprecated
+
+With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS in GitLab 15.0. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
+
+Gitaly Cluster offers tremendous benefits for our customers such as:
+
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+
+We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+
+Announced: 2021-06-22
+
 ### OmniAuth Kerberos gem
 
 The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15.0.
@@ -200,19 +214,3 @@ Announced: 2021-11-22
 The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
 
 Announced: 2021-11-22
-
-## 15.2
-
-### NFS for Git repository storage deprecated
-
-With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS in GitLab 15.0. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
-
-Gitaly Cluster offers tremendous benefits for our customers such as:
-
-- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
-- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
-- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
-
-We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
-
-Announced: 2021-06-22

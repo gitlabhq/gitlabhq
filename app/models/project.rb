@@ -19,7 +19,6 @@ class Project < ApplicationRecord
   include Presentable
   include HasRepository
   include HasWiki
-  include HasIntegrations
   include CanMoveRepositoryStorage
   include Routable
   include GroupDescendant
@@ -859,6 +858,18 @@ class Project < ApplicationRecord
       find_by_full_path(match.values_at(:namespace_id, :id).join("/"))
     rescue ActionController::RoutingError, URI::InvalidURIError
       nil
+    end
+
+    def without_integration(integration)
+      integrations = Integration
+        .select('1')
+        .where("#{Integration.table_name}.project_id = projects.id")
+        .where(type: integration.type)
+
+      Project
+        .where('NOT EXISTS (?)', integrations)
+        .where(pending_delete: false)
+        .where(archived: false)
     end
   end
 

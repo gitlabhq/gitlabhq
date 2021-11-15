@@ -3,8 +3,8 @@
 module Integrations
   class DroneCi < BaseCi
     include HasWebHook
+    include PushDataValidations
     include ReactivelyCached
-    include ServicePushDataValidations
     extend Gitlab::Utils::Override
 
     prop_accessor :drone_url, :token

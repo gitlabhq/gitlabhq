@@ -230,7 +230,8 @@ The following table lists project permissions available for each role:
    [project visibility](../public_access/public_access.md) is set to private.
 1. Attached design files are moved together with the issue even if the user doesn't have the
    Developer role.
-1. Guest users can set metadata (for example, labels, assignees, or milestones) when creating an issue.
+1. Guest users can only set metadata (for example, labels, assignees, or milestones)
+   when creating an issue. They cannot change the metadata on existing issues.
 1. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
 
 ## Project features permissions
