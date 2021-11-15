@@ -2,20 +2,20 @@
 
 require 'spec_helper'
 
-# oauth_discovery_keys      GET /oauth/discovery/keys(.:format)             doorkeeper/openid_connect/discovery#keys
-# oauth_discovery_provider  GET /.well-known/openid-configuration(.:format) doorkeeper/openid_connect/discovery#provider
-# oauth_discovery_webfinger GET /.well-known/webfinger(.:format)            doorkeeper/openid_connect/discovery#webfinger
+# oauth_discovery_keys      GET /oauth/discovery/keys(.:format)             jwks#keys
+# oauth_discovery_provider  GET /.well-known/openid-configuration(.:format) jwks#provider
+# oauth_discovery_webfinger GET /.well-known/webfinger(.:format)            jwks#webfinger
 RSpec.describe Doorkeeper::OpenidConnect::DiscoveryController, 'routing' do
   it "to #provider" do
-    expect(get('/.well-known/openid-configuration')).to route_to('doorkeeper/openid_connect/discovery#provider')
+    expect(get('/.well-known/openid-configuration')).to route_to('jwks#provider')
   end
 
   it "to #webfinger" do
-    expect(get('/.well-known/webfinger')).to route_to('doorkeeper/openid_connect/discovery#webfinger')
+    expect(get('/.well-known/webfinger')).to route_to('jwks#webfinger')
   end
 
   it "to #keys" do
-    expect(get('/oauth/discovery/keys')).to route_to('doorkeeper/openid_connect/discovery#keys')
+    expect(get('/oauth/discovery/keys')).to route_to('jwks#keys')
   end
 end
 

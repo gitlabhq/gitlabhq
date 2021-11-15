@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::SetMergeRequestDiffFilesCount, schema: 20200807152315 do
+RSpec.describe Gitlab::BackgroundMigration::SetMergeRequestDiffFilesCount, schema: 20181228175414 do
   let(:merge_request_diff_files) { table(:merge_request_diff_files) }
   let(:merge_request_diffs) { table(:merge_request_diffs) }
   let(:merge_requests) { table(:merge_requests) }

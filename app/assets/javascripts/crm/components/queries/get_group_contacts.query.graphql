@@ -1,0 +1,22 @@
+query contacts($groupFullPath: ID!) {
+  group(fullPath: $groupFullPath) {
+    __typename
+    id
+    contacts {
+      nodes {
+        __typename
+        id
+        firstName
+        lastName
+        email
+        phone
+        description
+        organization {
+          __typename
+          id
+          name
+        }
+      }
+    }
+  }
+}

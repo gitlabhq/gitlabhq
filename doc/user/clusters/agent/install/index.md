@@ -56,6 +56,8 @@ In your repository, add the Agent configuration file under:
 .gitlab/agents/<agent-name>/config.yaml
 ```
 
+Make sure that `<agent-name>` conforms to the [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
+
 Your `config.yaml` file specifies all configurations of the Agent, such as:
 
 - The manifest projects to synchronize.
@@ -87,9 +89,8 @@ In GitLab:
 
 1. Ensure that [GitLab CI/CD is enabled in your project](../../../../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 1. From your project's sidebar, select **Infrastructure > Kubernetes clusters**.
-1. Select the **GitLab Agent managed clusters** tab.
-1. Select **Integrate with the GitLab Agent**.
-1. From the **Select an Agent** dropdown menu, select the Agent you want to connect and select **Next** to access the installation form.
+1. Select **Actions**.
+1. From the **Select an Agent** dropdown, select the Agent you want to connect and select **Register Agent** to access the installation form.
 1. The form reveals your registration token. Securely store this secret token as you cannot view it again.
 1. Copy the command under **Recommended installation method**.
 
@@ -341,10 +342,10 @@ The following example projects can help you get started with the Kubernetes Agen
 
 Users with at least the [Developer](../../../permissions.md) can access the user interface
 for the GitLab Kubernetes Agent at **Infrastructure > Kubernetes clusters**, under the
-**GitLab Agent managed clusters** tab. This page lists all registered agents for
-the current project, and the configuration directory for each agent:
+**Agent** tab. This page lists all registered agents for the current project,
+and the configuration directory for each agent:
 
-![GitLab Kubernetes Agent list UI](../../img/kubernetes-agent-ui-list_v13_8.png)
+![GitLab Kubernetes Agent list UI](../../img/kubernetes-agent-ui-list_v14_5.png)
 
 Additional management interfaces are planned for the GitLab Kubernetes Agent.
 [Provide more feedback in the related epic](https://gitlab.com/groups/gitlab-org/-/epics/4739).

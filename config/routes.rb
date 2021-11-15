@@ -43,12 +43,15 @@ Rails.application.routes.draw do
 
   draw :oauth
 
-  use_doorkeeper_openid_connect
+  use_doorkeeper_openid_connect do
+    controllers discovery: 'jwks'
+  end
+
   # Add OPTIONS method for CORS preflight requests
   match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
-  match '/oauth/discovery/keys' => 'doorkeeper/openid_connect/discovery#keys', via: :options
-  match '/.well-known/openid-configuration' => 'doorkeeper/openid_connect/discovery#provider', via: :options
-  match '/.well-known/webfinger' => 'doorkeeper/openid_connect/discovery#webfinger', via: :options
+  match '/oauth/discovery/keys' => 'jwks#keys', via: :options
+  match '/.well-known/openid-configuration' => 'jwks#provider', via: :options
+  match '/.well-known/webfinger' => 'jwks#webfinger', via: :options
 
   match '/oauth/token' => 'oauth/tokens#create', via: :options
   match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options

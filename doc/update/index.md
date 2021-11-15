@@ -12,6 +12,11 @@ GitLab version is, if you're upgrading to a major version, and so on.
 
 Make sure to read the whole page as it contains information related to every upgrade method.
 
+NOTE:
+Upgrade GitLab to the latest available patch release, for example `13.8.8` rather than `13.8.0`.
+This includes [versions you must stop at on the upgrade path](#upgrade-paths) as there may
+be fixes for issues relating to the upgrade process.
+
 The [maintenance policy documentation](../policy/maintenance.md)
 has additional information about upgrading, including:
 
@@ -76,21 +81,43 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 
 ## Checking for background migrations before upgrading
 
-Certain major/minor releases may require different migrations to be
-finished before you update to the newer version.
+Certain releases may require different migrations to be
+finished before you update to the newer version. Additionally check
+[batched migrations](#batched-background-migrations) from GitLab 14.0.
 
 Decrease the time required to complete these migrations by increasing the number of
 [Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
 
-**For GitLab 14.0 and newer**
+**For Omnibus installations:**
 
-To check the status of [batched background migrations](../user/admin_area/monitoring/background_migrations.md):
+```shell
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```
+
+**For installations from source:**
+
+```shell
+cd /home/git/gitlab
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```
+
+### Batched background migrations
+
+GitLab 14.0 introduced [batched background migrations](../user/admin_area/monitoring/background_migrations.md).
+
+Some installations [may need to run GitLab 14.0 for at least a day](#1400) to complete the database changes introduced by that upgrade.
+
+#### Check the status of batched background migrations
+
+To check the status of batched background migrations:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Migrations**.
 
    ![queued batched background migrations table](img/batched_background_migrations_queued_v14_0.png)
+
+All migrations must have a `Finished` status before you upgrade GitLab.
 
 The status of batched background migrations can also be queried directly in the database.
 
@@ -102,20 +129,14 @@ The status of batched background migrations can also be queried directly in the 
    select job_class_name, table_name, column_name, job_arguments from batched_background_migrations where status <> 3;
    ```
 
-**For Omnibus installations**
+If the migrations are not finished and you try to update to a later version,
+GitLab prompts you with an error:
 
-You can also run:
-
-```shell
-sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+```plaintext
+Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
 ```
 
-**For installations from source**
-
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
-```
+If you get this error, [check the batched background migration options](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished) to complete the upgrade.
 
 ### What do I do if my background migrations are stuck?
 
@@ -147,6 +168,10 @@ scheduled_queue = Sidekiq::ScheduledSet.new
 pending_job_classes = scheduled_queue.select { |job| job["class"] == "BackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
+
+**Batched migrations (GitLab 14.0 and newer):**
+
+See [troubleshooting batched background migrations](../user/admin_area/monitoring/background_migrations.md#troubleshooting).
 
 ## Dealing with running CI/CD pipelines and jobs
 
@@ -197,7 +222,7 @@ Find where your version sits in the upgrade path below, and upgrade GitLab
 accordingly, while also consulting the
 [version-specific upgrade instructions](#version-specific-upgrading-instructions):
 
-`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [latest `13.12.Z`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
+`8.11.Z` -> `8.12.0` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> [`11.11.8`](#1200) -> `12.0.12` -> [`12.1.17`](#1210) -> `12.10.14` -> `13.0.14` -> [`13.1.11`](#1310) -> [`13.8.8`](#1388) -> [`13.12.15`](https://about.gitlab.com/releases/categories/releases/) -> [latest `14.0.Z`](#1400) -> [latest `14.1.Z`](#1410) -> [latest `14.Y.Z`](https://about.gitlab.com/releases/categories/releases/)
 
 The following table, while not exhaustive, shows some examples of the supported
 upgrade paths.
@@ -320,9 +345,11 @@ Git 2.33.x and later is required. We recommend you use the
 
 ### 14.3.0
 
+- [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).
+- Ensure [batched background migrations finish](#batched-background-migrations) before upgrading
+  to 14.3.Z from earlier GitLab 14 releases.
 - Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../install/installation.md#2-ruby)
 for how to proceed.
-
 - GitLab 14.3.0 contains post-deployment migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
 
   - [`ci_builds.id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70245)
@@ -343,13 +370,10 @@ for how to proceed.
 
 ### 14.2.0
 
-- Due to an issue where `BatchedBackgroundMigrationWorkers` were
-  [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
-  for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
-  to update to at least 14.1.0 that contains the same fix before you update to 14.2.
+- [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).
+- Ensure [batched background migrations finish](#batched-background-migrations) before upgrading
+  to 14.2.Z from earlier GitLab 14 releases.
 - GitLab 14.2.0 contains background migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
-
   - [`ci_build_needs`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65216)
   - [`ci_build_trace_chunks`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66123)
   - [`ci_builds_runner_session`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66433)
@@ -372,35 +396,24 @@ for how to proceed.
 
 ### 14.1.0
 
-Due to an issue where `BatchedBackgroundMigrationWorkers` were
-[not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
-for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-and a [14.0.Z](#1400) version was released. If you haven't updated to 14.0.5, you need
-to update to at least 14.1.0 that contains the same fix before you update to
-a later version.
-
-After you update to 14.1.0,
-[batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
-before you update to a later version.
-
-If the migrations are not finished and you try to update to a later version,
-you'll see an error like:
-
-```plaintext
-Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':
-```
-
-See how to [resolve this error](../user/admin_area/monitoring/background_migrations.md#database-migrations-failing-because-of-batched-background-migration-not-finished).
+- [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
+  but can upgrade to 14.1.Z.
+- It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
+  14.1 is included on the upgrade path for the broadest compatibility
+  with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
+  encounter issues with [batched background migrations](#batched-background-migrations).
 
 ### 14.0.0
 
+- Database changes made by the upgrade to GitLab 14.0 can take hours or days to complete on larger GitLab instances.
+  These [batched background migrations](#batched-background-migrations) update whole database tables to mitigate primary key overflow and must be finished before upgrading to GitLab 14.2 or higher.
 - Due to an issue where `BatchedBackgroundMigrationWorkers` were
   [not working](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2785#note_614738345)
   for self-managed instances, a [fix was created](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65106)
-  that requires an update to at least 14.0.5.
+  that requires an update to at least 14.0.5. The fix was also released in [14.1.0](#1410).
 
   After you update to 14.0.5 or a later 14.0 patch version,
-  [batched background migrations need to finish](../user/admin_area/monitoring/background_migrations.md#check-the-status-of-background-migrations)
+  [batched background migrations need to finish](#batched-background-migrations)
   before you update to a later version.
 
   If the migrations are not finished and you try to update to a later version,
@@ -418,6 +431,16 @@ See how to [resolve this error](../user/admin_area/monitoring/background_migrati
   when you upgrade or the pipelines might report the wrong status when the upgrade completes.
   You should instead follow a [supported upgrade path](#upgrade-paths).
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
+
+#### Upgrading to later 14.Y releases
+
+- Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later,
+  because of [batched background migrations](#batched-background-migrations).
+  1. Upgrade first to either:
+     - 14.0.5 or a later 14.0.Z patch release.
+     - 14.1.0 or a later 14.1.Z patch release.
+  1. [Batched background migrations need to finish](#batched-background-migrations)
+     before you update to a later version [and may take longer than usual](#1400).
 
 ### 13.11.0
 

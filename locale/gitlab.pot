@@ -236,6 +236,11 @@ msgid_plural "%d fixed test results"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d fork"
+msgid_plural "%d forks"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -283,6 +288,11 @@ msgstr[1] ""
 
 msgid "%d merge request that you don't have access to."
 msgid_plural "%d merge requests that you don't have access to."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d merge requests"
+msgid_plural "%d merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -348,6 +358,11 @@ msgstr[1] ""
 
 msgid "%d shard selected"
 msgid_plural "%d shards selected"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d star"
+msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -10075,6 +10090,9 @@ msgid "Credit card:"
 msgstr ""
 
 msgid "Critical vulnerabilities present"
+msgstr ""
+
+msgid "Crm|No contacts found"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -24170,7 +24188,7 @@ msgstr ""
 msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
 msgstr ""
 
-msgid "Once a project is permanently deleted, it cannot be recovered. You will lose this project's repository and all related resources, including issues and merge requests."
+msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. You will lose this project's repository and %{strongStart}all related resources%{strongEnd}, including issues and merge requests."
 msgstr ""
 
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
@@ -35289,6 +35307,9 @@ msgstr ""
 msgid "This file was modified for readability, and can't accept suggestions. Edit it directly."
 msgstr ""
 
+msgid "This forked project has the following:"
+msgstr ""
+
 msgid "This form is disabled in preview"
 msgstr ""
 
@@ -35539,6 +35560,9 @@ msgid "This project does not have a wiki homepage yet"
 msgstr ""
 
 msgid "This project has no active access tokens."
+msgstr ""
+
+msgid "This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:"
 msgstr ""
 
 msgid "This project is archived and cannot be commented on."

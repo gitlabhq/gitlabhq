@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::AddModifiedToApprovalMergeRequestRule, schema: 20200817195628 do
+RSpec.describe Gitlab::BackgroundMigration::AddModifiedToApprovalMergeRequestRule, schema: 20181228175414 do
   let(:determine_if_rules_are_modified) { described_class.new }
 
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab') }

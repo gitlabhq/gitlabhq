@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillMergeRequestCleanupSchedules, schema: 20201103110018 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillMergeRequestCleanupSchedules, schema: 20181228175414 do
   let(:merge_requests) { table(:merge_requests) }
   let(:cleanup_schedules) { table(:merge_request_cleanup_schedules) }
   let(:metrics) { table(:merge_request_metrics) }

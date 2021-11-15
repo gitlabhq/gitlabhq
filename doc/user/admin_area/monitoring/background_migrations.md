@@ -24,7 +24,7 @@ prevent integer overflow for some tables.
 ## Check the status of background migrations
 
 All migrations must have a `Finished` status before you [upgrade GitLab](../../../update/index.md).
-You can [check the status of existing migrations](../../../update/index.md#checking-for-background-migrations-before-upgrading).
+You can [check the status of existing migrations](../../../update/index.md#batched-background-migrations).
 
 ## Enable or disable batched background migrations
 

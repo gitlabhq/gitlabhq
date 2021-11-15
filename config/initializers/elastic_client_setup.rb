@@ -45,6 +45,23 @@ Gitlab.ee do
     end
   end
 
+  ### Modified from elasticsearch-model/lib/elasticsearch/model/searching.rb
+
+  module Elasticsearch
+    module Model
+      module Searching
+        class SearchRequest
+          def execute!
+            response = klass.client.search(@definition)
+            raise Elastic::TimeoutError if response['timed_out']
+
+            response
+          end
+        end
+      end
+    end
+  end
+
   ### Modified from elasticsearch-model/lib/elasticsearch/model.rb
 
   [

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid, schema: 20201110110454 do
+RSpec.describe Gitlab::BackgroundMigration::RecalculateVulnerabilitiesOccurrencesUuid, schema: 20181228175414 do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }

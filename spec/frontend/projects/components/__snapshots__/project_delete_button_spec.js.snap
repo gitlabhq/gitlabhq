@@ -52,9 +52,44 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
         title="You are about to permanently delete this project"
         variant="danger"
       >
-        <gl-sprintf-stub
-          message="Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
-        />
+        <p>
+          This project is 
+          <strong>
+            NOT
+          </strong>
+           a fork, and has the following:
+        </p>
+         
+        <ul>
+          <li>
+            1 issue
+          </li>
+           
+          <li>
+            2 merge requests
+          </li>
+           
+          <li>
+            3 forks
+          </li>
+           
+          <li>
+            4 stars
+          </li>
+        </ul>
+         Once a project is permanently deleted, it 
+        <strong>
+          cannot be recovered
+        </strong>
+        . Permanently deleting this project will 
+        <strong>
+          immediately delete
+        </strong>
+         its repositories and 
+        <strong>
+          all related resources
+        </strong>
+        , including issues, merge requests etc.
       </gl-alert-stub>
        
       <p

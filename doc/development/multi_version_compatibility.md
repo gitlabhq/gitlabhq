@@ -49,7 +49,15 @@ Is it ok that some nodes have the new Rails version, but some nodes have the old
 
 ## A walkthrough of an update
 
-Backwards compatibility problems during updates are often very subtle. This is why it is worth familiarizing yourself with [update instructions](../update/index.md), [reference architectures](../administration/reference_architectures/index.md), and [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/). But to illustrate how these problems arise, take a look at this example of a simple update.
+Backward compatibility problems during updates are often very subtle. This is why it is worth
+familiarizing yourself with:
+
+- [Update instructions](../update/index.md)
+- [Reference architectures](../administration/reference_architectures/index.md)
+- [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+- [GitLab.com's upgrade pipeline](https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/gitlab-com-deployer.md#upgrade-pipeline-default)
+
+To illustrate how these problems arise, take a look at this example:
 
 - 🚢 New version
 - 🙂 Old version

@@ -23,15 +23,17 @@ The Agent bootstraps with the GitLab installation URL and an authentication toke
 and you provide the rest of the configuration in your repository, following
 Infrastructure as Code (IaaC) best practices.
 
-A minimal repository layout looks like this, with `my_agent_1` as the name
+A minimal repository layout looks like this, with `my-agent-1` as the name
 of your Agent:
 
 ```plaintext
 |- .gitlab
     |- agents
-       |- my_agent_1
+       |- my-agent-1
           |- config.yaml
 ```
+
+Make sure that `<agent-name>` conforms to the [Agent's naming format](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/identity_and_auth.md#agent-identity-and-name).
 
 ## Synchronize manifest projects **(PREMIUM)**
 

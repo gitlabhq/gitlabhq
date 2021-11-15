@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizationsWithMinMaxUserId, schema: 20200204113224 do
+RSpec.describe Gitlab::BackgroundMigration::RecalculateProjectAuthorizationsWithMinMaxUserId, schema: 20181228175414 do
   let(:users_table) { table(:users) }
   let(:min) { 1 }
   let(:max) { 5 }
