@@ -241,8 +241,8 @@ To [Create a new group](../group/index.md#create-a-group) click **New group**.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 
-You can administer all [topics](../project/settings/index.md#topics) in the GitLab instance from the
-Admin Area's Topics page.
+You can administer all [topics](../project/working_with_projects.md#explore-topics) in the 
+GitLab instance from the Admin Area's Topics page.
 
 To access the Topics page:
 

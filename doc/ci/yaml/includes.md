@@ -272,22 +272,40 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 > - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
-You can only use [`if` rules](index.md#rulesif) and [`exists` rules](index.md#rulesexists) in `include`, and only with
-[certain variables](#use-variables-with-include). `rules` keyword `changes` is not supported.
 
-```yaml
-include:
-  - local: builds.yml
-    rules:
-      - if: '$INCLUDE_BUILDS == "true"'
-  - local: deploys.yml
-    rules:
-      - if: $CI_COMMIT_BRANCH == "main"
+You can only use the following rules with `include` (and only with [certain variables](#use-variables-with-include)):
 
-test:
-  stage: test
-  script: exit 0
-```
+- [`if` rules](index.md#rulesif). For example:
+
+  ```yaml
+  include:
+    - local: builds.yml
+      rules:
+        - if: '$INCLUDE_BUILDS == "true"'
+    - local: deploys.yml
+      rules:
+        - if: $CI_COMMIT_BRANCH == "main"
+
+  test:
+    stage: test
+    script: exit 0
+  ```
+
+- [`exists` rules](index.md#rulesexists). For example:
+
+  ```yaml
+  include:
+    - local: builds.yml
+      rules:
+        - exists:
+            - file.md
+
+  test:
+    stage: test
+    script: exit 0
+  ```
+
+`rules` keyword `changes` is not supported.
 
 ## Use `include:local` with wildcard file paths
 

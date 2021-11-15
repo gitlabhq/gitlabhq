@@ -152,7 +152,7 @@ class SearchController < ApplicationController
   def block_anonymous_global_searches
     return if params[:project_id].present? || params[:group_id].present?
     return if current_user
-    return unless ::Feature.enabled?(:block_anonymous_global_searches)
+    return unless ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
 
     store_location_for(:user, request.fullpath)
 

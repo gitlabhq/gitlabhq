@@ -15,6 +15,13 @@ module Namespaces
           select('namespaces.traversal_ids[array_length(namespaces.traversal_ids, 1)] AS id')
         end
 
+        def roots
+          return super unless use_traversal_ids_roots?
+
+          root_ids = all.select("#{quoted_table_name}.traversal_ids[1]").distinct
+          unscoped.where(id: root_ids)
+        end
+
         def self_and_ancestors(include_self: true, hierarchy_order: nil)
           return super unless use_traversal_ids_for_ancestor_scopes?
 
@@ -81,6 +88,11 @@ module Namespaces
 
         def use_traversal_ids?
           Feature.enabled?(:use_traversal_ids, default_enabled: :yaml)
+        end
+
+        def use_traversal_ids_roots?
+          Feature.enabled?(:use_traversal_ids_roots, default_enabled: :yaml) &&
+          use_traversal_ids?
         end
 
         def use_traversal_ids_for_ancestor_scopes?

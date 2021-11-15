@@ -43,7 +43,7 @@ To assign topics to a project:
 1. Under **Topics**, enter the project topics. Existing popular topics are suggested as you type.
 1. Select **Save changes**.
 
-For GitLab.com, explore popular topics on the [Explore topics page](https://gitlab.com/explore/projects/topics).
+For GitLab.com, explore popular topics on the [Explore topics page](../working_with_projects.md#explore-topics).
 When you select a topic, you can see relevant projects.
 
 NOTE:

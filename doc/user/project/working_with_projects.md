@@ -13,7 +13,7 @@ code are saved in projects, and most features are in the scope of projects.
 
 You can explore other popular projects available on GitLab. To explore projects:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Explore projects**.
 
 GitLab displays a list of projects, sorted by last updated date. To view
@@ -24,6 +24,21 @@ NOTE:
 By default, `/explore` is visible to unauthenticated users. However, if the
 [**Public** visibility level](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/explore` is visible only to signed-in users.
+
+## Explore topics
+
+You can explore popular project topics available on GitLab. To explore project topics:
+
+1. On the top bar, select **Menu > Projects**.
+1. Select **Explore topics**.
+
+GitLab displays a list of topics sorted by the number of associated projects.
+To view projects associated with a topic, select a topic from the list.
+
+You can assign topics to a project on the [Project Settings page](settings/index.md#topics).
+
+If you're an instance administrator, you can administer all project topics from the
+[Admin Area's Topics page](../admin_area/index.md#administering-topics).
 
 ## Create a project
 
@@ -213,7 +228,7 @@ To star a project:
 
 To view your starred projects:
 
-1. On the top bar, select **Menu > Project**.
+1. On the top bar, select **Menu > Projects**.
 1. Select **Starred Projects**.
 1. GitLab displays information about your starred projects, including:
 
