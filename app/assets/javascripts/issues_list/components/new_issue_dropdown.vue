@@ -71,8 +71,11 @@ export default {
     hasSelectedProject() {
       return this.selectedProject.id;
     },
+    projectsWithIssuesEnabled() {
+      return this.projects.filter((project) => project.issuesEnabled);
+    },
     showNoSearchResultsText() {
-      return !this.projects.length && this.search;
+      return !this.projectsWithIssuesEnabled.length && this.search;
     },
   },
   methods: {
@@ -110,7 +113,7 @@ export default {
     <gl-loading-icon v-if="$apollo.queries.projects.loading" />
     <template v-else>
       <gl-dropdown-item
-        v-for="project of projects"
+        v-for="project of projectsWithIssuesEnabled"
         :key="project.id"
         @click="selectProject(project)"
       >

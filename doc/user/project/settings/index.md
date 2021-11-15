@@ -258,7 +258,7 @@ Use the switches to enable or disable the following features:
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
-| **Operations**                   | ✓                         | Control access to [operations dashboard](../../../operations/index.md). |
+| **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
 
 Some features depend on others:

@@ -35286,7 +35286,7 @@ msgstr ""
 msgid "This is a private email address %{helpIcon} generated just for you. Anyone who has it can create issues or merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
-msgid "This is a security log of important events involving your account."
+msgid "This is a security log of authentication events involving your account."
 msgstr ""
 
 msgid "This is a self-managed instance of GitLab."

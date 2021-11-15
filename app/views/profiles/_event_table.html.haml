@@ -3,10 +3,11 @@
 
 %ul.content-list
   - events.each do |event|
-    %li
-      %span.description
-        = audit_icon(event.details[:with], css_class: 'gl-mr-2')
-        = _('Signed in with %{authentication} authentication') % { authentication: event.details[:with]}
-      %span.float-right= time_ago_with_tooltip(event.created_at)
+    - if event.success?
+      %li
+        %span.description
+          = audit_icon('key', css_class: 'gl-mr-2')
+          = _('Signed in with %{authentication} authentication') % { authentication: event.provider }
+        %span.float-right= time_ago_with_tooltip(event.created_at)
 
 = paginate events, theme: "gitlab"
