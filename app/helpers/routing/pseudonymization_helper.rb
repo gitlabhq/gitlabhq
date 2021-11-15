@@ -3,10 +3,7 @@
 module Routing
   module PseudonymizationHelper
     class MaskHelper
-      QUERY_PARAMS_TO_MASK = %w[
-        assignee_username
-        author_username
-      ].freeze
+      QUERY_PARAMS_TO_NOT_MASK = %w[].freeze
 
       def initialize(request_object, group, project)
         @request = request_object
@@ -58,10 +55,10 @@ module Routing
 
         query_string_hash = Rack::Utils.parse_nested_query(@request.query_string)
 
-        QUERY_PARAMS_TO_MASK.each do |maskable_attribute|
-          next unless query_string_hash.has_key?(maskable_attribute)
+        query_string_hash.keys.each do |key|
+          next if QUERY_PARAMS_TO_NOT_MASK.include?(key)
 
-          query_string_hash[maskable_attribute] = "masked_#{maskable_attribute}"
+          query_string_hash[key] = "masked_#{key}"
         end
 
         query_string_hash

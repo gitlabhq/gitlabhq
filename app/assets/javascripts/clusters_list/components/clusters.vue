@@ -57,30 +57,37 @@ export default {
       },
     },
     fields() {
+      const tdClass = 'gl-py-5!';
       return [
         {
           key: 'name',
           label: __('Kubernetes cluster'),
+          tdClass,
         },
         {
           key: 'environment_scope',
           label: __('Environment scope'),
+          tdClass,
         },
         {
           key: 'node_size',
           label: __('Nodes'),
+          tdClass,
         },
         {
           key: 'total_cpu',
           label: __('Total cores (CPUs)'),
+          tdClass,
         },
         {
           key: 'total_memory',
           label: __('Total memory (GB)'),
+          tdClass,
         },
         {
           key: 'cluster_type',
           label: __('Cluster level'),
+          tdClass,
           formatter: (value) => CLUSTER_TYPES[value],
         },
       ];
@@ -201,7 +208,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loadingClusters" size="md" class="gl-mt-3" />
+  <gl-loading-icon v-if="loadingClusters" size="md" />
 
   <section v-else>
     <ancestor-notice />
@@ -210,10 +217,11 @@ export default {
       v-if="hasClusters"
       :items="clusters"
       :fields="fields"
+      fixed
       stacked="md"
       head-variant="white"
-      thead-class="gl-border-b-solid gl-border-b-1 gl-border-b-gray-100"
-      class="qa-clusters-table"
+      thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
+      class="qa-clusters-table gl-mb-4!"
       data-testid="cluster_list_table"
     >
       <template #cell(name)="{ item }">

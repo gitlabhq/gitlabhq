@@ -8,11 +8,11 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
   end
 
   it 'retains the correct database name for the connection' do
-    previous_db_name = Gitlab::Database.main.scope.connection.pool.db_config.name
+    previous_db_name = ApplicationRecord.connection.pool.db_config.name
 
     subject
 
-    expect(Gitlab::Database.main.scope.connection.pool.db_config.name).to eq(previous_db_name)
+    expect(ApplicationRecord.connection.pool.db_config.name).to eq(previous_db_name)
   end
 
   it 'does not overwrite custom pool settings' do

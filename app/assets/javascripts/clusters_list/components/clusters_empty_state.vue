@@ -14,6 +14,7 @@ export default {
   },
   inject: ['emptyStateHelpText', 'clustersEmptyStateImage', 'newClusterPath'],
   learnMoreHelpUrl: helpPagePath('user/project/clusters/index'),
+  multipleClustersHelpUrl: helpPagePath('user/project/clusters/multiple_kubernetes_clusters'),
   computed: {
     ...mapState(['canAddCluster']),
   },

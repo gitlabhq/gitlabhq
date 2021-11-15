@@ -28,7 +28,7 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_current_path(project_package_path(package.project, package))
 
-    expect(page).to have_css('.packages-app h1[data-testid="title"]', text: package.name)
+    expect(page).to have_css('.packages-app h2[data-testid="title"]', text: package.name)
 
     expect(page).to have_content('Installation')
     expect(page).to have_content('Registry setup')

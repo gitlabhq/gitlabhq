@@ -446,7 +446,7 @@ include:
   so you can only include public projects or templates.
 - Be careful when including a remote CI/CD configuration file. No pipelines or notifications
   trigger when external CI/CD configuration files change. From a security perspective,
-  this is similar to pulling a third party dependency.
+  this is similar to pulling a third-party dependency.
 
 #### `include:template`
 
@@ -624,7 +624,7 @@ All jobs except [trigger jobs](#trigger) require a `script` keyword.
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
 
 **Example of `script`:**
 
@@ -662,7 +662,7 @@ Use `before_script` to define an array of commands that should run before each j
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
 
 **Example of `before_script`:**
 
@@ -700,7 +700,7 @@ Use `after_script` to define an array of commands that run after each job, inclu
 
 - Single line commands.
 - Long commands [split over multiple lines](script.md#split-long-commands).
-- [YAML anchors](yaml_specific_features.md#yaml-anchors-for-scripts).
+- [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
 
 **Example of `after_script`:**
 
@@ -861,16 +861,17 @@ job2:
 
 ### `extends`
 
-Use `extends` to reuse configuration sections. It's an alternative to [YAML anchors](yaml_specific_features.md#anchors)
-and is a little more flexible and readable. You can use `extends` to reuse configuration
-from [included configuration files](#use-extends-and-include-together).
+Use `extends` to reuse configuration sections. It's an alternative to [YAML anchors](yaml_optimization.md#anchors)
+and is a little more flexible and readable.
 
-In the following example, the `rspec` job uses the configuration from the `.tests` template job.
-GitLab:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-- Performs a reverse deep merge based on the keys.
-- Merges the `.tests` content with the `rspec` job.
-- Doesn't merge the values of the keys.
+**Possible inputs:**
+
+- The name of another job in the pipeline.
+- A list (array) of names of other jobs in the pipeline.
+
+**Example of `extends`:**
 
 ```yaml
 .tests:
@@ -888,6 +889,13 @@ rspec:
       - $RSPEC
 ```
 
+In this example, the `rspec` job uses the configuration from the `.tests` template job.
+When creating the pipeline, GitLab:
+
+- Performs a reverse deep merge based on the keys.
+- Merges the `.tests` content with the `rspec` job.
+- Doesn't merge the values of the keys.
+
 The result is this `rspec` job:
 
 ```yaml
@@ -901,182 +909,18 @@ rspec:
       - $RSPEC
 ```
 
-`.tests` in this example is a [hidden job](../jobs/index.md#hide-jobs), but it's
-possible to extend configuration from regular jobs as well.
+**Additional details:**
 
-`extends` supports multi-level inheritance. You should avoid using more than three levels,
-but you can use as many as eleven. The following example has two levels of inheritance:
+- In GitLab 12.0 and later, you can use multiple parents for `extends`.
+- The `extends` keyword supports up to eleven levels of inheritance, but you should
+  avoid using more than three levels.
+- In the example above, `.tests` is a [hidden job](../jobs/index.md#hide-jobs),
+  but you can extend configuration from regular jobs as well.
 
-```yaml
-.tests:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "push"
+**Related topics:**
 
-.rspec:
-  extends: .tests
-  script: rake rspec
-
-rspec 1:
-  variables:
-    RSPEC_SUITE: '1'
-  extends: .rspec
-
-rspec 2:
-  variables:
-    RSPEC_SUITE: '2'
-  extends: .rspec
-
-spinach:
-  extends: .tests
-  script: rake spinach
-```
-
-In GitLab 12.0 and later, it's also possible to use multiple parents for
-`extends`.
-
-#### Merge details
-
-You can use `extends` to merge hashes but not arrays.
-The algorithm used for merge is "closest scope wins," so
-keys from the last member always override anything defined on other
-levels. For example:
-
-```yaml
-.only-important:
-  variables:
-    URL: "http://my-url.internal"
-    IMPORTANT_VAR: "the details"
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH == "stable"
-  tags:
-    - production
-  script:
-    - echo "Hello world!"
-
-.in-docker:
-  variables:
-    URL: "http://docker-url.internal"
-  tags:
-    - docker
-  image: alpine
-
-rspec:
-  variables:
-    GITLAB: "is-awesome"
-  extends:
-    - .only-important
-    - .in-docker
-  script:
-    - rake rspec
-```
-
-The result is this `rspec` job:
-
-```yaml
-rspec:
-  variables:
-    URL: "http://docker-url.internal"
-    IMPORTANT_VAR: "the details"
-    GITLAB: "is-awesome"
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH == "stable"
-  tags:
-    - docker
-  image: alpine
-  script:
-    - rake rspec
-```
-
-In this example:
-
-- The `variables` sections merge, but `URL: "http://docker-url.internal"` overwrites `URL: "http://my-url.internal"`.
-- `tags: ['docker']` overwrites `tags: ['production']`.
-- `script` does not merge, but `script: ['rake rspec']` overwrites
-  `script: ['echo "Hello world!"']`. You can use [YAML anchors](yaml_specific_features.md#anchors) to merge arrays.
-
-##### Exclude a key from `extends`
-
-To exclude a key from the extended content, you must assign it to `null`, for example:
-
-```yaml
-.base:
-  script: test
-  variables:
-    VAR1: base var 1
-
-test1:
-  extends: .base
-  variables:
-    VAR1: test1 var 1
-    VAR2: test2 var 2
-
-test2:
-  extends: .base
-  variables:
-    VAR2: test2 var 2
-
-test3:
-  extends: .base
-  variables: {}
-
-test4:
-  extends: .base
-  variables: null
-```
-
-Merged configuration:
-
-```yaml
-test1:
-  script: test
-  variables:
-    VAR1: test1 var 1
-    VAR2: test2 var 2
-
-test2:
-  script: test
-  variables:
-    VAR1: base var 1
-    VAR2: test2 var 2
-
-test3:
-  script: test
-  variables:
-    VAR1: base var 1
-
-test4:
-  script: test
-  variables: null
-```
-
-#### Use `extends` and `include` together
-
-To reuse configuration from different configuration files,
-combine `extends` and [`include`](#include).
-
-In the following example, a `script` is defined in the `included.yml` file.
-Then, in the `.gitlab-ci.yml` file, `extends` refers
-to the contents of the `script`:
-
-- `included.yml`:
-
-  ```yaml
-  .template:
-    script:
-      - echo Hello!
-  ```
-
-- `.gitlab-ci.yml`:
-
-  ```yaml
-  include: included.yml
-
-  useTemplate:
-    image: alpine
-    extends: .template
-  ```
+- [Reuse configuration sections by using `extends`](yaml_optimization.md#use-extends-to-reuse-configuration-sections).
+- Use `extends` to reuse configuration from [included configuration files](yaml_optimization.md#use-extends-and-include-together).
 
 ### `rules`
 
@@ -1116,7 +960,7 @@ The job is not added to the pipeline:
 - If no rules match.
 - If a rule matches and has `when: never`.
 
-You can use [`!reference` tags](yaml_specific_features.md#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
+You can use [`!reference` tags](yaml_optimization.md#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
 in different jobs.
 
 #### `rules:if`
@@ -2162,7 +2006,7 @@ Also in the example, `GIT_STRATEGY` is set to `none`. If the
 the runner won't try to check out the code after the branch is deleted.
 
 The example also overwrites global variables. If your `stop` `environment` job depends
-on global variables, use [anchor variables](yaml_specific_features.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
+on global variables, use [anchor variables](yaml_optimization.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
 to change the job without overriding the global variables.
 
 The `stop_review_app` job is **required** to have the following keywords defined:
@@ -2979,45 +2823,37 @@ artifacts:
 
 Use [`artifacts:reports`](#artifactsreports) to:
 
-- Collect test reports, code quality reports, and security reports from jobs.
-- Expose these reports in merge requests, pipeline views, and security dashboards.
+- Collect test reports, code quality reports, security reports, and other artifacts generated by included templates in
+  jobs.
+- Some of these reports are used to display information in:
+  - Merge requests.
+  - Pipeline views.
+  - [Security dashboards](../../user/application_security/security_dashboard/index.md).
 
 The test reports are collected regardless of the job results (success or failure).
 You can use [`artifacts:expire_in`](#artifactsexpire_in) to set up an expiration
 date for their artifacts.
 
-Some `artifacts:reports` types can be generated by multiple jobs in the same pipeline, and used by merge request or pipeline features from each job.
+Some `artifacts:reports` types can be generated by multiple jobs in the same pipeline, and used by merge request or
+pipeline features from each job.
 
-| Keyword                                    | Multiple reports in the same pipeline? |
-|:-------------------------------------------|:--------------------------------------:|
-| `accessibility`          | **{check-circle}** Yes |
-| `api_fuzzing`            | **{check-circle}** Yes |
-| `browser_performance`    | **{dotted-circle}** No |
-| `cluster_image_scanning` | **{check-circle}** Yes |
-| `cobertura`              | **{check-circle}** Yes |
-| `codequality`            | Merge request widget: **{check-circle}** [Yes](https://gitlab.com/gitlab-org/gitlab/-/issues/271077#note_507239820).<br>Merge request diff annotations: **{dotted-circle}** [No](https://gitlab.com/gitlab-org/gitlab/-/issues/271077#note_507239820).<br>Full report: **{dotted-circle}** [No](https://gitlab.com/gitlab-org/gitlab/-/issues/9014). |
-| `container_scanning`     | **{check-circle}** Yes |
-| `coverage_fuzzing`       | **{check-circle}** Yes |
-| `dast`                   | **{check-circle}** Yes |
-| `dependency_scanning`    | **{check-circle}** Yes |
-| `dotenv`                 | Not applicable |
-| `junit`                  | **{check-circle}** Yes |
-| `license_management`     | [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36817) to `license_scanning` |
-| `license_scanning`       | **{check-circle}** Yes |
-| `load_performance`       | **{dotted-circle}** No |
-| `metrics`                | **{check-circle}** Yes |
-| `performance`            | **{dotted-circle}** No |
-| `requirements`           | **{check-circle}** Yes |
-| `sast`                   | **{check-circle}** Yes |
-| `secret_detection`       | **{check-circle}** Yes |
-| `terraform`              | **{check-circle}** Yes |
-
-If you also want to be able to browse the report output files, include the
-[`artifacts:paths`](#artifactspaths) keyword.
+To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword.
 
 NOTE:
-Reports from [child pipelines](../pipelines/parent_child_pipelines.md) aren't supported. Track
-progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
+Combined reports in parent pipelines using [artifacts from child pipelines](#artifact-downloads-to-child-pipelines) is
+not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
+
+##### `artifacts:reports:accessibility` **(FREE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 12.8.
+
+The `accessibility` report uses [pa11y](https://pa11y.org/) to report on the accessibility impact
+of changes introduced in merge requests.
+
+GitLab can display the results of one or more reports in the merge request
+[accessibility widget](../../user/project/merge_requests/accessibility_testing.md#accessibility-merge-request-widget).
+
+For more information, see [Accessibility testing](../../user/project/merge_requests/accessibility_testing.md).
 
 ##### `artifacts:reports:api_fuzzing` **(ULTIMATE)**
 
@@ -3027,8 +2863,12 @@ progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/
 The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/index.md)
 as artifacts.
 
-The collected API Fuzzing report uploads to GitLab as an artifact and is summarized in merge
-requests and the pipeline view. It's also used to provide data for security dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [security widget](../../user/application_security/api_fuzzing/index.md#view-details-of-an-api-fuzzing-vulnerability).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
+- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#pipeline-security).
+- The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
 ##### `artifacts:reports:browser_performance` **(PREMIUM)**
 
@@ -3037,75 +2877,103 @@ requests and the pipeline view. It's also used to provide data for security dash
 The `browser_performance` report collects [Browser Performance Testing metrics](../../user/project/merge_requests/browser_performance_testing.md)
 as artifacts.
 
-The collected Browser Performance report uploads to GitLab as an artifact and displays in merge requests.
+GitLab can display the results of one report in the merge request
+[browser performance testing widget](../../user/project/merge_requests/browser_performance_testing.md#how-browser-performance-testing-works).
+
+GitLab cannot display the combined results of multiple `browser_performance` reports.
 
 ##### `artifacts:reports:cluster_image_scanning` **(ULTIMATE)**
 
 > - Introduced in GitLab 14.1.
 > - Requires GitLab Runner 14.1 and above.
 
-The `cluster_image_scanning` report collects `CLUSTER_IMAGE_SCANNING` vulnerabilities
-as artifacts.
+The `cluster_image_scanning` report collects `CLUSTER_IMAGE_SCANNING` vulnerabilities. The collected
+`CLUSTER_IMAGE_SCANNING` report uploads to GitLab as an artifact.
 
-The collected `CLUSTER_IMAGE_SCANNING` report uploads to GitLab as an artifact and
-is summarized in the pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
 ##### `artifacts:reports:cobertura`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 
 The `cobertura` report collects [Cobertura coverage XML files](../../user/project/merge_requests/test_coverage_visualization.md).
-The collected Cobertura coverage reports upload to GitLab as an artifact
-and display in merge requests.
+The collected Cobertura coverage reports upload to GitLab as an artifact.
 
-Cobertura was originally developed for Java, but there are many
-third party ports for other languages like JavaScript, Python, Ruby, and so on.
+GitLab can display the results of one or more reports in the merge request
+[diff annotations](../../user/project/merge_requests/test_coverage_visualization.md).
+
+Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
+JavaScript, Python, and Ruby.
 
 ##### `artifacts:reports:codequality`
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
 
-The `codequality` report collects [Code Quality issues](../../user/project/merge_requests/code_quality.md)
-as artifacts.
+The `codequality` report collects [code quality issues](../../user/project/merge_requests/code_quality.md). The
+collected code quality report uploads to GitLab as an artifact.
 
-The collected Code Quality report uploads to GitLab as an artifact and is summarized in merge requests.
+GitLab can display the results of:
+
+- One or more reports in the merge request [code quality widget](../../user/project/merge_requests/code_quality.md#code-quality-widget).
+- Only one report in:
+  - The merge request [diff annotations](../../user/project/merge_requests/code_quality.md#code-quality-in-diff-view).
+    Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271077).
+  - The [full report](../metrics_reports.md). Track progress on adding support for multiple reports in
+    [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
 
 ##### `artifacts:reports:container_scanning` **(ULTIMATE)**
 
-The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md)
-as artifacts.
+The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
+The collected Container Scanning report uploads to GitLab as an artifact.
 
-The collected Container Scanning report uploads to GitLab as an artifact and
-is summarized in merge requests and the pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [container scanning widget](../../user/application_security/container_scanning/index.md).
+- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#pipeline-security).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
 ##### `artifacts:reports:coverage_fuzzing` **(ULTIMATE)**
 
 > - Introduced in GitLab 13.4.
 > - Requires GitLab Runner 13.4 or later.
 
-The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/index.md)
-as artifacts.
+The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/index.md).
+The collected coverage fuzzing report uploads to GitLab as an artifact.
+GitLab can display the results of one or more reports in:
 
-The collected coverage fuzzing report uploads to GitLab as an artifact and is summarized in merge
-requests and the pipeline view. It's also used to provide data for security dashboards.
+- The merge request [coverage fuzzing widget](../../user/application_security/coverage_fuzzing/index.md#interacting-with-the-vulnerabilities).
+- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#pipeline-security).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ##### `artifacts:reports:dast` **(ULTIMATE)**
 
-The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md)
-as artifacts.
+The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
+report uploads to GitLab as an artifact.
 
-The collected DAST report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [security widget](../../user/application_security/dast/index.md#view-details-of-a-vulnerability-detected-by-dast).
+- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#pipeline-security).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ##### `artifacts:reports:dependency_scanning` **(ULTIMATE)**
 
-The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md)
-as artifacts.
+The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
+The collected Dependency Scanning report uploads to GitLab as an artifact.
 
-The collected Dependency Scanning report uploads to GitLab as an artifact and is summarized in merge requests and the pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/index.md#overview).
+- The pipeline [**Security** tab](../../user/application_security/security_dashboard/index.md#pipeline-security).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
+- The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
+- The [dependency list](../../user/application_security/dependency_list/).
 
 ##### `artifacts:reports:dotenv`
 
@@ -3130,10 +2998,9 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
 
 ##### `artifacts:reports:junit`
 
-The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format)
-as artifacts. Although JUnit was originally developed in Java, there are many
-third party ports for other
-languages like JavaScript, Python, Ruby, and so on.
+The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format).
+The collected Unit test reports upload to GitLab as an artifact. Although JUnit was originally developed in Java, there
+are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
 See [Unit test reports](../unit_test_reports.md) for more details and examples.
 Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
@@ -3149,62 +3016,72 @@ rspec:
       junit: rspec.xml
 ```
 
-The collected Unit test reports upload to GitLab as an artifact and display in merge requests.
+GitLab can display the results of one or more reports in:
 
-If the JUnit tool you use exports to multiple XML files, specify
-multiple test report paths in a single job to
-concatenate them into a single file. Use a filename pattern (`junit: rspec-*.xml`),
-an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
-combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
+- The merge request [code quality widget](../../ci/unit_test_reports.md#how-it-works).
+- The [full report](../../ci/unit_test_reports.md#viewing-unit-test-reports-on-gitlab).
+
+Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
+concatenate them into a single file. Use either:
+
+- A filename pattern (`junit: rspec-*.xml`).
+- an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`).
+- A Combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 
 ##### `artifacts:reports:license_scanning` **(ULTIMATE)**
 
 > Introduced in GitLab 12.8.
 
-The `license_scanning` report collects [Licenses](../../user/compliance/license_compliance/index.md)
-as artifacts.
+The License Compliance report collects [Licenses](../../user/compliance/license_compliance/index.md). The License
+Compliance report uploads to GitLab as an artifact.
 
-The License Compliance report uploads to GitLab as an artifact and displays automatically
-in merge requests and the pipeline view. The report provides data for security dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [license compliance widget](../../user/compliance/license_compliance/index.md).
+- The [license list](../../user/compliance/license_compliance/index.md#license-list).
 
 ##### `artifacts:reports:load_performance` **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35260) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
 
-The `load_performance` report collects [Load Performance Testing metrics](../../user/project/merge_requests/load_performance_testing.md)
-as artifacts.
+The `load_performance` report collects [Load Performance Testing metrics](../../user/project/merge_requests/load_performance_testing.md).
+The report is uploaded to GitLab as an artifact.
 
-The report is uploaded to GitLab as an artifact and is
-shown in merge requests automatically.
+GitLab can display the results of only one report in the merge request
+[load testing widget](../../user/project/merge_requests/load_performance_testing.md#how-load-performance-testing-works).
+
+GitLab cannot display the combined results of multiple `load_performance` reports.
 
 ##### `artifacts:reports:metrics` **(PREMIUM)**
 
-The `metrics` report collects [Metrics](../metrics_reports.md)
-as artifacts.
+The `metrics` report collects [Metrics](../metrics_reports.md). The collected Metrics report uploads to GitLab as an
+artifact.
 
-The collected Metrics report uploads to GitLab as an artifact and displays in merge requests.
+GitLab can display the results of one or more reports in the merge request
+[metrics reports widget](../../ci/metrics_reports.md#metrics-reports).
 
 ##### `artifacts:reports:requirements` **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
 
-The `requirements` report collects `requirements.json` files as artifacts.
+The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
+artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
 
-The collected Requirements report uploads to GitLab as an artifact and
-existing [requirements](../../user/project/requirements/index.md) are
-marked as Satisfied.
+GitLab can display the results of one or more reports in the
+[project requirements](../../user/project/requirements/index.md#view-a-requirement).
 
 ##### `artifacts:reports:sast`
 
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
-The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md)
-as artifacts.
+The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md). The collected SAST
+report uploads to GitLab as an artifact.
 
-The collected SAST report uploads to GitLab as an artifact and is summarized
-in merge requests and the pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [SAST widget](../../user/application_security/sast/index.md#static-application-security-testing-sast).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ##### `artifacts:reports:secret_detection`
 
@@ -3212,22 +3089,27 @@ dashboards.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) to GitLab Free in 13.3.
 > - Requires GitLab Runner 11.5 and above.
 
-The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md)
-as artifacts.
+The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md).
+The collected Secret Detection report is uploaded to GitLab.
 
-The collected Secret Detection report is uploaded to GitLab as an artifact and summarized
-in the merge requests and pipeline view. It's also used to provide data for security
-dashboards.
+GitLab can display the results of one or more reports in:
+
+- The merge request [secret scanning widget](../../user/application_security/secret_detection/index.md).
+- The [pipeline **Security** tab](../../user/application_security/index.md#view-security-scan-information-in-the-pipeline-security-tab).
+- The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ##### `artifacts:reports:terraform`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207528) in GitLab 13.0.
 > - Requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 and above.
 
-The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/iac/mr_integration.md#configure-terraform-report-artifacts). The collected Terraform
-plan report uploads to GitLab as an artifact and displays
-in merge requests. For more information, see
-[Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).
+The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing required to remove credentials](../../user/infrastructure/iac/mr_integration.md#configure-terraform-report-artifacts).
+The collected Terraform plan report uploads to GitLab as an artifact.
+
+GitLab can display the results of one or more reports in the merge request
+[terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
+
+For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).
 
 #### `artifacts:untracked`
 
@@ -4186,7 +4068,7 @@ deploy_review_job:
 
 **Related topics**:
 
-- You can use [YAML anchors for variables](yaml_specific_features.md#yaml-anchors-for-variables).
+- You can use [YAML anchors for variables](yaml_optimization.md#yaml-anchors-for-variables).
 - [Predefined variables](../variables/predefined_variables.md) are variables the runner
   automatically creates and makes available in the job.
 - You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).

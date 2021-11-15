@@ -9,7 +9,7 @@ import {
 } from './constants';
 import createStore from './store';
 
-export default function initInviteMembersModal() {
+export default function initInviteMembersModal(primaryActionEventName) {
   const el = document.querySelector('.js-cherry-pick-commit-modal');
   if (!el) {
     return false;
@@ -52,6 +52,7 @@ export default function initInviteMembersModal() {
           openModal: OPEN_CHERRY_PICK_MODAL,
           modalId: CHERRY_PICK_MODAL_ID,
           isCherryPick: true,
+          primaryActionEventName,
         },
       }),
   });

@@ -170,7 +170,7 @@ namespace :gitlab do
       inverval = (ENV['MAX_DATABASE_CONNECTION_CHECK_INTERVAL'] || 10).to_f
 
       attempts.to_i.times do
-        unless Gitlab::Database.main.exists?
+        unless ApplicationRecord.database.exists?
           puts "Waiting until database is ready before continuing...".color(:yellow)
           sleep inverval
         end

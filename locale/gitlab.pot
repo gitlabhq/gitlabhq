@@ -7321,6 +7321,12 @@ msgstr ""
 msgid "ClusterAgents|Access tokens"
 msgstr ""
 
+msgid "ClusterAgents|Actions"
+msgstr ""
+
+msgid "ClusterAgents|Agent"
+msgstr ""
+
 msgid "ClusterAgents|Agent might not be connected to GitLab"
 msgstr ""
 
@@ -7339,10 +7345,19 @@ msgstr ""
 msgid "ClusterAgents|An unknown error occurred. Please try again."
 msgstr ""
 
+msgid "ClusterAgents|Certificate based"
+msgstr ""
+
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
+msgid "ClusterAgents|Connect with Agent"
+msgstr ""
+
 msgid "ClusterAgents|Connect with a GitLab Agent"
+msgstr ""
+
+msgid "ClusterAgents|Connect with certificate"
 msgstr ""
 
 msgid "ClusterAgents|Connected"
@@ -7352,6 +7367,9 @@ msgid "ClusterAgents|Connection status"
 msgstr ""
 
 msgid "ClusterAgents|Copy token"
+msgstr ""
+
+msgid "ClusterAgents|Create new cluster"
 msgstr ""
 
 msgid "ClusterAgents|Created by"
@@ -7369,16 +7387,10 @@ msgstr ""
 msgid "ClusterAgents|For alternative installation methods %{linkStart}go to the documentation%{linkEnd}."
 msgstr ""
 
-msgid "ClusterAgents|For more troubleshooting information go to"
-msgstr ""
-
 msgid "ClusterAgents|Go to the repository"
 msgstr ""
 
 msgid "ClusterAgents|If you are setting up multiple clusters and are using Auto DevOps, %{linkStart}read about using multiple Kubernetes clusters first.%{linkEnd}"
-msgstr ""
-
-msgid "ClusterAgents|Install a new GitLab Agent"
 msgstr ""
 
 msgid "ClusterAgents|Install new Agent"
@@ -7391,6 +7403,9 @@ msgid "ClusterAgents|Last contact"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to create an agent access token"
+msgstr ""
+
+msgid "ClusterAgents|Learn how to troubleshoot"
 msgstr ""
 
 msgid "ClusterAgents|Learn more about the GitLab Kubernetes Agent."
@@ -7415,6 +7430,9 @@ msgid "ClusterAgents|Read more about getting started"
 msgstr ""
 
 msgid "ClusterAgents|Recommended installation method"
+msgstr ""
+
+msgid "ClusterAgents|Register Agent"
 msgstr ""
 
 msgid "ClusterAgents|Registering Agent"
@@ -7603,9 +7621,6 @@ msgstr ""
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters. %{linkStart}More information%{linkEnd}"
 msgstr ""
 
-msgid "ClusterIntegration|Clusters connected with a certificate"
-msgstr ""
-
 msgid "ClusterIntegration|Connect cluster with certificate"
 msgstr ""
 
@@ -7739,9 +7754,6 @@ msgid "ClusterIntegration|Fetching projects"
 msgstr ""
 
 msgid "ClusterIntegration|Fetching zones"
-msgstr ""
-
-msgid "ClusterIntegration|GitLab Agent managed clusters"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"

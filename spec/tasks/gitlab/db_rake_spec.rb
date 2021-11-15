@@ -201,7 +201,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
   describe 'reindex' do
     let(:reindex) { double('reindex') }
     let(:indexes) { double('indexes') }
-    let(:databases) { Gitlab::Database.databases }
+    let(:databases) { Gitlab::Database.database_base_models }
     let(:databases_count) { databases.count }
 
     it 'cleans up any leftover indexes' do
@@ -250,7 +250,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
     end
 
     it 'defaults to main database' do
-      expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(Gitlab::Database.main.scope.connection).and_call_original
+      expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(ActiveRecord::Base.connection).and_call_original
 
       expect do
         run_rake_task('gitlab:db:enqueue_reindexing_action', "[#{index_name}]")

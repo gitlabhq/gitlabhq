@@ -10,21 +10,20 @@
           = s_('UserProfile|Retry')
     .user-calendar-activities
 - if @user.user_readme
-  .row
-    .col-12.gl-my-6
-      .gl-border-gray-100.gl-border-1.gl-border-solid.gl-rounded-small.gl-py-4.gl-px-6
-        .gl-display-flex
-          %ol.breadcrumb.gl-breadcrumb-list.gl-mb-4
-            %li.breadcrumb-item.gl-breadcrumb-item
-              = link_to @user.username, project_path(@user.user_project)
-              %span.gl-breadcrumb-separator
-                = sprite_icon("chevron-right", size: 16)
-            %li.breadcrumb-item.gl-breadcrumb-item
-              = link_to @user.user_readme.path, @user.user_project.readme_url
-          - if current_user == @user
-            .gl-ml-auto
-              = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
-        = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
+  .row.justify-content-center
+    .col-12.col-md-10.col-lg-8.gl-my-6
+      .gl-display-flex
+        %ol.breadcrumb.gl-breadcrumb-list.gl-mb-4
+          %li.breadcrumb-item.gl-breadcrumb-item
+            = link_to @user.username, project_path(@user.user_project)
+            %span.gl-breadcrumb-separator
+              = sprite_icon("chevron-right", size: 16)
+          %li.breadcrumb-item.gl-breadcrumb-item
+            = link_to @user.user_readme.path, @user.user_project.readme_url
+        - if current_user == @user
+          .gl-ml-auto
+            = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
+      = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
 .row
   %div{ class: activity_pane_class }
     - if can?(current_user, :read_cross_project)

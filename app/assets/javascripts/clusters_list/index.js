@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import loadClusters from './load_clusters';
-import loadAgents from './load_agents';
+import loadMainView from './load_main_view';
 
 Vue.use(VueApollo);
 
 export default () => {
   loadClusters(Vue);
-  loadAgents(Vue, VueApollo);
+  loadMainView(Vue, VueApollo);
 };

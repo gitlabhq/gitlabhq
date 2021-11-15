@@ -5,8 +5,8 @@ module Gitlab
     module EachDatabase
       class << self
         def each_database_connection
-          Gitlab::Database.databases.each_pair do |connection_name, connection_wrapper|
-            connection = connection_wrapper.scope.connection
+          Gitlab::Database.database_base_models.each_pair do |connection_name, model|
+            connection = model.connection
 
             with_shared_connection(connection, connection_name) do
               yield connection, connection_name

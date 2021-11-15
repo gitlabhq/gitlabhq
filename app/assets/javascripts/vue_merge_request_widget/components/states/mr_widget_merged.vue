@@ -1,6 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlLoadingIcon, GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import api from '~/api';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
@@ -83,6 +84,8 @@ export default {
     removeSourceBranch() {
       this.isMakingRequest = true;
 
+      api.trackRedisHllUserEvent('i_code_review_post_merge_delete_branch');
+
       this.service
         .removeSourceBranch()
         .then((res) => res.data)
@@ -103,9 +106,13 @@ export default {
         });
     },
     openRevertModal() {
+      api.trackRedisHllUserEvent('i_code_review_post_merge_click_revert');
+
       modalEventHub.$emit(OPEN_REVERT_MODAL);
     },
     openCherryPickModal() {
+      api.trackRedisHllUserEvent('i_code_review_post_merge_click_cherry_pick');
+
       modalEventHub.$emit(OPEN_CHERRY_PICK_MODAL);
     },
   },

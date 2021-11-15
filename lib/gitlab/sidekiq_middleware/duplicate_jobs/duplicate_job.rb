@@ -208,7 +208,12 @@ module Gitlab
         end
 
         def pg_wal_lsn_diff(connection_name)
-          Gitlab::Database.databases[connection_name].pg_wal_lsn_diff(job_wal_locations[connection_name], existing_wal_locations[connection_name])
+          model = Gitlab::Database.database_base_models[connection_name]
+
+          model.connection.load_balancer.wal_diff(
+            job_wal_locations[connection_name],
+            existing_wal_locations[connection_name]
+          )
         end
 
         def strategy

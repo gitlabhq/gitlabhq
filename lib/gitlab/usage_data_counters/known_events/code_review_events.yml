@@ -253,3 +253,23 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_post_merge_delete_branch
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_post_merge_click_revert
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_post_merge_click_cherry_pick
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_post_merge_submit_revert_modal
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
+- name: i_code_review_post_merge_submit_cherry_pick_modal
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly

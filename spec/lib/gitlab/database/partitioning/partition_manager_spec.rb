@@ -195,7 +195,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     # Postgres 11 does not support foreign keys to partitioned tables
-    if Gitlab::Database.main.version.to_f >= 12
+    if ApplicationRecord.database.version.to_f >= 12
       context 'when the model is the target of a foreign key' do
         before do
           connection.execute(<<~SQL)

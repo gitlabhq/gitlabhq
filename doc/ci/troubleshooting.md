@@ -16,12 +16,15 @@ This guide also lists common issues and possible solutions.
 An early source of problems can be incorrect syntax. The pipeline shows a `yaml invalid`
 badge and does not start running if any syntax or formatting problems are found.
 
-### Edit `gitlab-ci.yml` with the Web IDE
+### Edit `gitlab-ci.yml` with the pipeline editor
 
-The [GitLab Web IDE](../user/project/web_ide/index.md) offers advanced authoring tools,
-including syntax highlighting for the `.gitlab-ci.yml`, and is the recommended editing
-experience (rather than the single file editor). It offers code completion suggestions
-that ensure you are only using accepted keywords.
+The [pipeline editor](pipeline_editor/index.md) is the recommended editing
+experience (rather than the single file editor or the Web IDE). It includes:
+
+- Code completion suggestions that ensure you are only using accepted keywords.
+- Automatic syntax highlighting and validation.
+- The [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration),
+  a graphical representation of your `.gitlab-ci.yml` file.
 
 If you prefer to use another editor, you can use a schema like [the Schemastore `gitlab-ci` schema](https://json.schemastore.org/gitlab-ci)
 with your editor of choice.

@@ -60,18 +60,7 @@ module Gitlab
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
-      }.compact.freeze
-    end
-
-    def self.databases
-      @databases ||= database_base_models
-        .transform_values { |connection_class| Connection.new(connection_class) }
-        .with_indifferent_access
-        .freeze
-    end
-
-    def self.main
-      databases[PRIMARY_DATABASE_NAME]
+      }.compact.with_indifferent_access.freeze
     end
 
     # We configure the database connection pool size automatically based on the
@@ -110,8 +99,10 @@ module Gitlab
     def self.check_postgres_version_and_print_warning
       return if Gitlab::Runtime.rails_runner?
 
-      databases.each do |name, connection|
-        next if connection.postgresql_minimum_supported_version?
+      database_base_models.each do |name, model|
+        database = Gitlab::Database::Reflection.new(model)
+
+        next if database.postgresql_minimum_supported_version?
 
         Kernel.warn ERB.new(Rainbow.new.wrap(<<~EOS).red).result
 
@@ -122,7 +113,7 @@ module Gitlab
                      ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  
 
           ******************************************************************************
-            You are using PostgreSQL #{connection.version} for the #{name} database, but PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>
+            You are using PostgreSQL #{database.version} for the #{name} database, but PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>
             is required for this version of GitLab.
             <% if Rails.env.development? || Rails.env.test? %>
             If using gitlab-development-kit, please find the relevant steps here:

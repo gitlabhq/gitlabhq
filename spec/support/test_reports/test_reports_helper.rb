@@ -95,9 +95,9 @@ module TestReportsHelper
     <<-EOF.strip_heredoc
       junit.framework.AssertionFailedError: expected:&lt;1&gt; but was:&lt;3&gt;
       at CalculatorTest.subtractExpression(Unknown Source)
-      at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-      at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-      at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+      at java.base/jdk.internal.database.NativeMethodAccessorImpl.invoke0(Native Method)
+      at java.base/jdk.internal.database.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+      at java.base/jdk.internal.database.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
     EOF
   end
 end

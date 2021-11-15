@@ -6,7 +6,9 @@ RSpec.shared_examples 'a correct instrumented metric value' do |params|
   let(:metric) { described_class.new(time_frame: time_frame, options: options) }
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+    if described_class.respond_to?(:relation) && described_class.relation.respond_to?(:connection)
+      allow(described_class.relation.connection).to receive(:transaction_open?).and_return(false)
+    end
   end
 
   it 'has correct value' do

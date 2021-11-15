@@ -54,7 +54,6 @@ describe('Agents', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 
@@ -234,7 +233,11 @@ describe('Agents', () => {
     };
 
     beforeEach(() => {
-      wrapper = shallowMount(Agents, { mocks, propsData, provide: provideData });
+      wrapper = shallowMount(Agents, {
+        mocks,
+        propsData,
+        provide: provideData,
+      });
 
       return wrapper.vm.$nextTick();
     });

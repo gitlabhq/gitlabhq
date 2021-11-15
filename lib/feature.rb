@@ -6,6 +6,8 @@ require 'flipper/adapters/active_support_cache_store'
 class Feature
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
+    include DatabaseReflection
+
     # Using `self.table_name` won't work. ActiveRecord bug?
     superclass.table_name = 'features'
 
@@ -36,7 +38,7 @@ class Feature
     end
 
     def persisted_names
-      return [] unless Gitlab::Database.main.exists?
+      return [] unless ApplicationRecord.database.exists?
 
       # This loads names of all stored feature flags
       # and returns a stable Set in the following order:
@@ -73,7 +75,7 @@ class Feature
 
       # During setup the database does not exist yet. So we haven't stored a value
       # for the feature yet and return the default.
-      return default_enabled unless Gitlab::Database.main.exists?
+      return default_enabled unless ApplicationRecord.database.exists?
 
       feature = get(key)
 

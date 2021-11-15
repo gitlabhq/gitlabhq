@@ -70,7 +70,7 @@ module Gitlab
           # To work around this we're using bulk_insert with a single row. This
           # allows us to efficiently insert data (even if it's just 1 row)
           # without having to use all sorts of hacks to disable callbacks.
-          Gitlab::Database.main.bulk_insert(LegacyDiffNote.table_name, [{
+          ApplicationRecord.legacy_bulk_insert(LegacyDiffNote.table_name, [{
             noteable_type: note.noteable_type,
             system: false,
             type: 'LegacyDiffNote',

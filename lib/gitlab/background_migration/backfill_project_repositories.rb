@@ -189,7 +189,7 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        Gitlab::Database.main.bulk_insert(:project_repositories, project_repositories(start_id, stop_id)) # rubocop:disable Gitlab/BulkInsert
+        ApplicationRecord.legacy_bulk_insert(:project_repositories, project_repositories(start_id, stop_id)) # rubocop:disable Gitlab/BulkInsert
       end
 
       private

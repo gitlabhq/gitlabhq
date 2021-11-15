@@ -120,7 +120,10 @@ module Gitlab
       end
 
       def connection
-        @connection ||= Gitlab::Database.databases.fetch(database, Gitlab::Database.main).scope.connection
+        @connection ||= Gitlab::Database
+          .database_base_models
+          .fetch(database, Gitlab::Database::PRIMARY_DATABASE_NAME)
+          .connection
       end
     end
   end

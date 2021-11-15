@@ -1,6 +1,7 @@
 <script>
 import { GlModal, GlForm, GlFormCheckbox, GlSprintf, GlFormGroup } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
+import api from '~/api';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import csrf from '~/lib/utils/csrf';
 import eventHub from '../event_hub';
@@ -39,6 +40,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    primaryActionEventName: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -83,6 +89,10 @@ export default {
       this.$root.$emit(BV_SHOW_MODAL, this.modalId);
     },
     handlePrimary() {
+      if (this.primaryActionEventName) {
+        api.trackRedisHllUserEvent(this.primaryActionEventName);
+      }
+
       this.$refs.form.$el.submit();
     },
     resetModalHandler() {

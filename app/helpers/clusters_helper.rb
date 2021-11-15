@@ -16,19 +16,6 @@ module ClustersHelper
     clusterable.is_a?(Project)
   end
 
-  def js_cluster_agents_list_data(clusterable_project)
-    {
-      default_branch_name: clusterable_project.default_branch,
-      empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
-      project_path: clusterable_project.full_path,
-      multiple_clusters_docs_url: help_page_path('user/project/clusters/multiple_kubernetes_clusters'),
-      install_docs_url: help_page_path('administration/clusters/kas'),
-      get_started_docs_url: help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'),
-      integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'),
-      kas_address: Gitlab::Kas.external_url
-    }
-  end
-
   def js_clusters_list_data(clusterable)
     {
       ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
@@ -43,6 +30,16 @@ module ClustersHelper
       new_cluster_path: clusterable.new_path(tab: 'create'),
       can_add_cluster: clusterable.can_add_cluster?.to_s
     }
+  end
+
+  def js_clusters_data(clusterable)
+    {
+      default_branch_name: clusterable.default_branch,
+      empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
+      project_path: clusterable.full_path,
+      add_cluster_path: clusterable.new_path(tab: 'add'),
+      kas_address: Gitlab::Kas.external_url
+    }.merge(js_clusters_list_data(clusterable))
   end
 
   def js_cluster_form_data(cluster, can_edit)

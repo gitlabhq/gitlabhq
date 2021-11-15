@@ -182,9 +182,9 @@ namespace :gitlab do
 
     desc 'Enqueue an index for reindexing'
     task :enqueue_reindexing_action, [:index_name, :database] => :environment do |_, args|
-      connection = Gitlab::Database.databases[args.fetch(:database, Gitlab::Database::PRIMARY_DATABASE_NAME)]
+      model = Gitlab::Database.database_base_models[args.fetch(:database, Gitlab::Database::PRIMARY_DATABASE_NAME)]
 
-      Gitlab::Database::SharedModel.using_connection(connection.scope.connection) do
+      Gitlab::Database::SharedModel.using_connection(model.connection) do
         queued_action = Gitlab::Database::PostgresIndex.find(args[:index_name]).queued_reindexing_actions.create!
 
         puts "Queued reindexing action: #{queued_action}"

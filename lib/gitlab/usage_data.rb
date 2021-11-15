@@ -296,9 +296,11 @@ module Gitlab
             version: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_version }
           },
           database: {
-            adapter: alt_usage_data { Gitlab::Database.main.adapter_name },
-            version: alt_usage_data { Gitlab::Database.main.version },
-            pg_system_id: alt_usage_data { Gitlab::Database.main.system_id }
+            # rubocop: disable UsageData/LargeTable
+            adapter: alt_usage_data { ApplicationRecord.database.adapter_name },
+            version: alt_usage_data { ApplicationRecord.database.version },
+            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id }
+            # rubocop: enable UsageData/LargeTable
           },
           mail: {
             smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }

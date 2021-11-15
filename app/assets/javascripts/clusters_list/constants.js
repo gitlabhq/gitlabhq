@@ -3,8 +3,6 @@ import { __, s__, sprintf } from '~/locale';
 export const MAX_LIST_COUNT = 25;
 export const INSTALL_AGENT_MODAL_ID = 'install-agent';
 export const ACTIVE_CONNECTION_TIME = 480000;
-export const TROUBLESHOOTING_LINK =
-  'https://docs.gitlab.com/ee/user/clusters/agent/#troubleshooting';
 
 export const CLUSTER_ERRORS = {
   default: {
@@ -66,8 +64,8 @@ export const STATUSES = {
 };
 
 export const I18N_INSTALL_AGENT_MODAL = {
-  next: __('Next'),
-  done: __('Done'),
+  registerAgentButton: s__('ClusterAgents|Register Agent'),
+  close: __('Close'),
   cancel: __('Cancel'),
 
   modalTitle: s__('ClusterAgents|Install new Agent'),
@@ -167,4 +165,24 @@ export const I18N_CLUSTERS_EMPTY_STATE = {
   ),
   learnMoreLinkText: s__('ClusterIntegration|Learn more about the GitLab managed clusters'),
   buttonText: s__('ClusterIntegration|Connect with a certificate'),
+};
+
+export const CLUSTERS_TABS = [
+  {
+    title: s__('ClusterAgents|Agent'),
+    component: 'agents',
+    queryParamValue: 'agent',
+  },
+  {
+    title: s__('ClusterAgents|Certificate based'),
+    component: 'clusters',
+    queryParamValue: 'certificate_based',
+  },
+];
+
+export const CLUSTERS_ACTIONS = {
+  actionsButton: s__('ClusterAgents|Actions'),
+  createNewCluster: s__('ClusterAgents|Create new cluster'),
+  connectWithAgent: s__('ClusterAgents|Connect with Agent'),
+  connectExistingCluster: s__('ClusterAgents|Connect with certificate'),
 };

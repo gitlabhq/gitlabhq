@@ -88,7 +88,7 @@ module DesignManagement
 
         rows = design_actions.map { |action| action.row_attrs(version) }
 
-        Gitlab::Database.main.bulk_insert(::DesignManagement::Action.table_name, rows) # rubocop:disable Gitlab/BulkInsert
+        ApplicationRecord.legacy_bulk_insert(::DesignManagement::Action.table_name, rows) # rubocop:disable Gitlab/BulkInsert
         version.designs.reset
         version.validate!
         design_actions.each(&:performed)

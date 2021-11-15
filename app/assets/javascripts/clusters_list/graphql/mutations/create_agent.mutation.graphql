@@ -1,7 +1,9 @@
+#import "../fragments/cluster_agent.fragment.graphql"
+
 mutation createClusterAgent($input: CreateClusterAgentInput!) {
   createClusterAgent(input: $input) {
     clusterAgent {
-      id
+      ...ClusterAgentFragment
     }
     errors
   }

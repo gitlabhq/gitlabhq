@@ -13,7 +13,9 @@ RSpec.describe Gitlab::UsageDataMetrics do
     end
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
+        allow(batch_counter).to receive(:transaction_open?).and_return(false)
+      end
     end
 
     context 'with instrumentation_class' do

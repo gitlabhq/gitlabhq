@@ -698,7 +698,7 @@ then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
-and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_specific_features.md#anchors)
+and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_optimization.md#anchors)
 
 #### `if:` conditions
 

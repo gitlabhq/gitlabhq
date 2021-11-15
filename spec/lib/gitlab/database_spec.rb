@@ -15,13 +15,6 @@ RSpec.describe Gitlab::Database do
     end
   end
 
-  describe '.databases' do
-    it 'stores connections as a HashWithIndifferentAccess' do
-      expect(described_class.databases.has_key?('main')).to be true
-      expect(described_class.databases.has_key?(:main)).to be true
-    end
-  end
-
   describe '.default_pool_size' do
     before do
       allow(Gitlab::Runtime).to receive(:max_threads).and_return(7)
@@ -112,18 +105,30 @@ RSpec.describe Gitlab::Database do
   end
 
   describe '.check_postgres_version_and_print_warning' do
+    let(:reflect) { instance_spy(Gitlab::Database::Reflection) }
+
     subject { described_class.check_postgres_version_and_print_warning }
 
-    it 'prints a warning if not compliant with minimum postgres version' do
-      allow(described_class.main).to receive(:postgresql_minimum_supported_version?).and_return(false)
+    before do
+      allow(Gitlab::Database::Reflection)
+        .to receive(:new)
+        .and_return(reflect)
+    end
 
-      expect(Kernel).to receive(:warn).with(/You are using PostgreSQL/)
+    it 'prints a warning if not compliant with minimum postgres version' do
+      allow(reflect).to receive(:postgresql_minimum_supported_version?).and_return(false)
+
+      expect(Kernel)
+        .to receive(:warn)
+        .with(/You are using PostgreSQL/)
+        .exactly(Gitlab::Database.database_base_models.length)
+        .times
 
       subject
     end
 
     it 'doesnt print a warning if compliant with minimum postgres version' do
-      allow(described_class.main).to receive(:postgresql_minimum_supported_version?).and_return(true)
+      allow(reflect).to receive(:postgresql_minimum_supported_version?).and_return(true)
 
       expect(Kernel).not_to receive(:warn).with(/You are using PostgreSQL/)
 
@@ -131,7 +136,7 @@ RSpec.describe Gitlab::Database do
     end
 
     it 'doesnt print a warning in Rails runner environment' do
-      allow(described_class.main).to receive(:postgresql_minimum_supported_version?).and_return(false)
+      allow(reflect).to receive(:postgresql_minimum_supported_version?).and_return(false)
       allow(Gitlab::Runtime).to receive(:rails_runner?).and_return(true)
 
       expect(Kernel).not_to receive(:warn).with(/You are using PostgreSQL/)
@@ -140,13 +145,13 @@ RSpec.describe Gitlab::Database do
     end
 
     it 'ignores ActiveRecord errors' do
-      allow(described_class.main).to receive(:postgresql_minimum_supported_version?).and_raise(ActiveRecord::ActiveRecordError)
+      allow(reflect).to receive(:postgresql_minimum_supported_version?).and_raise(ActiveRecord::ActiveRecordError)
 
       expect { subject }.not_to raise_error
     end
 
     it 'ignores Postgres errors' do
-      allow(described_class.main).to receive(:postgresql_minimum_supported_version?).and_raise(PG::Error)
+      allow(reflect).to receive(:postgresql_minimum_supported_version?).and_raise(PG::Error)
 
       expect { subject }.not_to raise_error
     end

@@ -160,7 +160,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'when author_username is present' do
-      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=opened" }
+      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=masked_scope&state=masked_state" }
       let(:request) do
         double(:Request,
                path_parameters: {
@@ -179,8 +179,29 @@ RSpec.describe ::Routing::PseudonymizationHelper do
       it_behaves_like 'masked url'
     end
 
+    context 'when some query params are not required to be masked' do
+      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=masked_state" }
+      let(:request) do
+        double(:Request,
+               path_parameters: {
+                controller: 'dashboard',
+                action: 'issues'
+               },
+               protocol: 'http',
+               host: 'localhost',
+               query_string: 'author_username=root&scope=all&state=opened')
+      end
+
+      before do
+        stub_const('Routing::PseudonymizationHelper::MaskHelper::QUERY_PARAMS_TO_NOT_MASK', %w[scope].freeze)
+        allow(helper).to receive(:request).and_return(request)
+      end
+
+      it_behaves_like 'masked url'
+    end
+
     context 'when query string has keys with the same names as path params' do
-      let(:masked_url) { "http://localhost/dashboard/issues?action=foobar&scope=all&state=opened" }
+      let(:masked_url) { "http://localhost/dashboard/issues?action=masked_action&scope=masked_scope&state=masked_state" }
       let(:request) do
         double(:Request,
                path_parameters: {

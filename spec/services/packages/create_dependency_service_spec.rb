@@ -58,9 +58,9 @@ RSpec.describe Packages::CreateDependencyService do
         let_it_be(:rows) { [{ name: 'express', version_pattern: '^4.16.4' }] }
 
         it 'creates dependences and links' do
-          original_bulk_insert = ::Gitlab::Database.main.method(:bulk_insert)
-          expect(::Gitlab::Database.main)
-            .to receive(:bulk_insert) do |table, rows, return_ids: false, disable_quote: [], on_conflict: nil|
+          original_bulk_insert = ::ApplicationRecord.method(:legacy_bulk_insert)
+          expect(::ApplicationRecord)
+            .to receive(:legacy_bulk_insert) do |table, rows, return_ids: false, disable_quote: [], on_conflict: nil|
               call_count = table == Packages::Dependency.table_name ? 2 : 1
               call_count.times { original_bulk_insert.call(table, rows, return_ids: return_ids, disable_quote: disable_quote, on_conflict: on_conflict) }
             end.twice

@@ -25,7 +25,7 @@ module Suggestions
         end
 
       rows.in_groups_of(100, false) do |rows|
-        Gitlab::Database.main.bulk_insert('suggestions', rows) # rubocop:disable Gitlab/BulkInsert
+        ApplicationRecord.legacy_bulk_insert('suggestions', rows) # rubocop:disable Gitlab/BulkInsert
       end
 
       Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter.track_add_suggestion_action(note: @note)

@@ -99,7 +99,7 @@ module Issuable
             yield(event)
           end.compact
 
-          Gitlab::Database.main.bulk_insert(table_name, events) # rubocop:disable Gitlab/BulkInsert
+          ApplicationRecord.legacy_bulk_insert(table_name, events) # rubocop:disable Gitlab/BulkInsert
         end
       end
 

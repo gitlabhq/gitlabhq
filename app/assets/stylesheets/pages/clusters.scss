@@ -20,4 +20,23 @@
       @include gl-flex-wrap;
     }
   }
+
+  .gl-card-body {
+    @include media-breakpoint-up(sm) {
+      @include gl-pt-2;
+      min-height: 372px;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .nav-controls {
+      @include gl-w-full;
+      order: -1;
+
+      .gl-new-dropdown,
+      .split-content-button {
+        @include gl-w-full;
+      }
+    }
+  }
 }

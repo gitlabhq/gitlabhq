@@ -6,3 +6,7 @@ export function generateAgentRegistrationCommand(agentToken, kasAddress) {
     --agent-version stable \\
     --namespace gitlab-kubernetes-agent | kubectl apply -f -`;
 }
+
+export function getAgentConfigPath(clusterAgentName) {
+  return `.gitlab/agents/${clusterAgentName}`;
+}

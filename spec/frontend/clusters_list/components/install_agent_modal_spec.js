@@ -3,7 +3,8 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
-import { I18N_INSTALL_AGENT_MODAL } from '~/clusters_list/constants';
+import { I18N_INSTALL_AGENT_MODAL, MAX_LIST_COUNT } from '~/clusters_list/constants';
+import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
 import createAgentMutation from '~/clusters_list/graphql/mutations/create_agent.mutation.graphql';
 import createAgentTokenMutation from '~/clusters_list/graphql/mutations/create_agent_token.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -14,11 +15,15 @@ import {
   createAgentErrorResponse,
   createAgentTokenResponse,
   createAgentTokenErrorResponse,
+  getAgentResponse,
 } from '../mocks/apollo';
 import ModalStub from '../stubs';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
+
+const projectPath = 'path/to/project';
+const defaultBranchName = 'default';
 
 describe('InstallAgentModal', () => {
   let wrapper;
@@ -45,8 +50,12 @@ describe('InstallAgentModal', () => {
 
   const createWrapper = () => {
     const provide = {
-      projectPath: 'path/to/project',
+      projectPath,
       kasAddress: 'kas.example.com',
+    };
+
+    const propsData = {
+      defaultBranchName,
     };
 
     wrapper = shallowMount(InstallAgentModal, {
@@ -57,11 +66,26 @@ describe('InstallAgentModal', () => {
       localVue,
       apolloProvider,
       provide,
+      propsData,
+    });
+  };
+
+  const writeQuery = () => {
+    apolloProvider.clients.defaultClient.cache.writeQuery({
+      query: getAgentsQuery,
+      variables: {
+        projectPath,
+        defaultBranchName,
+        first: MAX_LIST_COUNT,
+        last: null,
+      },
+      data: getAgentResponse.data,
     });
   };
 
   const mockSelectedAgentResponse = () => {
     createWrapper();
+    writeQuery();
 
     wrapper.vm.setAgentName('agent-name');
     findActionButton().vm.$emit('click');
@@ -95,7 +119,7 @@ describe('InstallAgentModal', () => {
 
     it('renders a disabled next button', () => {
       expect(findActionButton().isVisible()).toBe(true);
-      expect(findActionButton().text()).toBe(i18n.next);
+      expect(findActionButton().text()).toBe(i18n.registerAgentButton);
       expectDisabledAttribute(findActionButton(), true);
     });
   });
@@ -126,7 +150,7 @@ describe('InstallAgentModal', () => {
 
     it('creates an agent and token', () => {
       expect(createAgentHandler).toHaveBeenCalledWith({
-        input: { name: 'agent-name', projectPath: 'path/to/project' },
+        input: { name: 'agent-name', projectPath },
       });
 
       expect(createAgentTokenHandler).toHaveBeenCalledWith({
@@ -134,9 +158,9 @@ describe('InstallAgentModal', () => {
       });
     });
 
-    it('renders a done button', () => {
+    it('renders a close button', () => {
       expect(findActionButton().isVisible()).toBe(true);
-      expect(findActionButton().text()).toBe(i18n.done);
+      expect(findActionButton().text()).toBe(i18n.close);
       expectDisabledAttribute(findActionButton(), false);
     });
 

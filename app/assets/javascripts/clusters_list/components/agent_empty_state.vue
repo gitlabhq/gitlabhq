@@ -1,10 +1,19 @@
 <script>
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlAlert, GlModalDirective } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { INSTALL_AGENT_MODAL_ID, I18N_AGENTS_EMPTY_STATE } from '../constants';
 
 export default {
   i18n: I18N_AGENTS_EMPTY_STATE,
   modalId: INSTALL_AGENT_MODAL_ID,
+  multipleClustersDocsUrl: helpPagePath('user/project/clusters/multiple_kubernetes_clusters'),
+  installDocsUrl: helpPagePath('administration/clusters/kas'),
+  getStartedDocsUrl: helpPagePath('user/clusters/agent/index', {
+    anchor: 'define-a-configuration-repository',
+  }),
+  integrationsDocsUrl: helpPagePath('user/clusters/agent/index', {
+    anchor: 'get-started-with-gitops-and-the-gitlab-agent',
+  }),
   components: {
     GlButton,
     GlEmptyState,
@@ -15,14 +24,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: [
-    'emptyStateImage',
-    'projectPath',
-    'multipleClustersDocsUrl',
-    'installDocsUrl',
-    'getStartedDocsUrl',
-    'integrationDocsUrl',
-  ],
+  inject: ['emptyStateImage', 'projectPath'],
   props: {
     hasConfigurations: {
       type: Boolean,
@@ -47,7 +49,7 @@ export default {
         <gl-sprintf :message="$options.i18n.multipleClustersText">
           <template #link="{ content }">
             <gl-link
-              :href="multipleClustersDocsUrl"
+              :href="$options.multipleClustersDocsUrl"
               target="_blank"
               data-testid="multiple-clusters-docs-link"
             >
@@ -58,7 +60,7 @@ export default {
       </p>
 
       <p class="mw-460 gl-mx-auto">
-        <gl-link :href="installDocsUrl" target="_blank" data-testid="install-docs-link">
+        <gl-link :href="$options.installDocsUrl" target="_blank" data-testid="install-docs-link">
           {{ $options.i18n.learnMoreText }}
         </gl-link>
       </p>
@@ -75,7 +77,7 @@ export default {
           <gl-button
             category="primary"
             variant="info"
-            :href="getStartedDocsUrl"
+            :href="$options.getStartedDocsUrl"
             target="_blank"
             class="gl-ml-0!"
           >

@@ -244,11 +244,11 @@ module ApplicationSettingImplementation
   end
 
   def home_page_url_column_exists?
-    ::Gitlab::Database.main.cached_column_exists?(:application_settings, :home_page_url)
+    ApplicationSetting.database.cached_column_exists?(:home_page_url)
   end
 
   def help_page_support_url_column_exists?
-    ::Gitlab::Database.main.cached_column_exists?(:application_settings, :help_page_support_url)
+    ApplicationSetting.database.cached_column_exists?(:help_page_support_url)
   end
 
   def disabled_oauth_sign_in_sources=(sources)

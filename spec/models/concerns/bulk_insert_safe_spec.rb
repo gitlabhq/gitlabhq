@@ -182,7 +182,7 @@ RSpec.describe BulkInsertSafe do
       context 'with returns option set' do
         let(:items) { bulk_insert_item_class.valid_list(1) }
 
-        subject(:bulk_insert) { bulk_insert_item_class.bulk_insert!(items, returns: returns) }
+        subject(:legacy_bulk_insert) { bulk_insert_item_class.bulk_insert!(items, returns: returns) }
 
         context 'when is set to :ids' do
           let(:returns) { :ids }

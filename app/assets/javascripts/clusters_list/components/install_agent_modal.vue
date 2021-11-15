@@ -12,9 +12,11 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import { generateAgentRegistrationCommand } from '../clusters_util';
-import { INSTALL_AGENT_MODAL_ID, I18N_INSTALL_AGENT_MODAL } from '../constants';
+import { INSTALL_AGENT_MODAL_ID, I18N_INSTALL_AGENT_MODAL, MAX_LIST_COUNT } from '../constants';
+import { addAgentToStore } from '../graphql/cache_update';
 import createAgent from '../graphql/mutations/create_agent.mutation.graphql';
 import createAgentToken from '../graphql/mutations/create_agent_token.mutation.graphql';
+import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import AvailableAgentsDropdown from './available_agents_dropdown.vue';
 
 export default {
@@ -33,12 +35,20 @@ export default {
     GlSprintf,
   },
   inject: ['projectPath', 'kasAddress'],
+  props: {
+    defaultBranchName: {
+      default: '.noBranch',
+      required: false,
+      type: String,
+    },
+  },
   data() {
     return {
       registering: false,
       agentName: null,
       agentToken: null,
       error: null,
+      clusterAgent: null,
     };
   },
   computed: {
@@ -62,20 +72,24 @@ export default {
     advancedInstallPath() {
       return helpPagePath('user/clusters/agent/install/index', { anchor: 'advanced-installation' });
     },
+    getAgentsQueryVariables() {
+      return {
+        defaultBranchName: this.defaultBranchName,
+        first: MAX_LIST_COUNT,
+        last: null,
+        projectPath: this.projectPath,
+      };
+    },
   },
   methods: {
     setAgentName(name) {
       this.agentName = name;
     },
-    cancelClicked() {
-      this.$refs.modal.hide();
-    },
-    doneClicked() {
-      this.$emit('agentRegistered');
+    closeModal() {
       this.$refs.modal.hide();
     },
     resetModal() {
-      this.registering = null;
+      this.registering = false;
       this.agentName = null;
       this.agentToken = null;
       this.error = null;
@@ -89,6 +103,14 @@ export default {
               name: this.agentName,
               projectPath: this.projectPath,
             },
+          },
+          update: (store, { data: { createClusterAgent } }) => {
+            addAgentToStore(
+              store,
+              createClusterAgent,
+              getAgentsQuery,
+              this.getAgentsQueryVariables,
+            );
           },
         })
         .then(({ data: { createClusterAgent } }) => createClusterAgent);
@@ -116,6 +138,8 @@ export default {
         if (agentErrors?.length > 0) {
           throw new Error(agentErrors[0]);
         }
+
+        this.clusterAgent = clusterAgent;
 
         const { errors: tokenErrors, secret } = await this.createAgentTokenMutation(
           clusterAgent.id,
@@ -240,10 +264,10 @@ export default {
     </template>
 
     <template #modal-footer>
-      <gl-button v-if="canCancel" @click="cancelClicked">{{ $options.i18n.cancel }} </gl-button>
+      <gl-button v-if="canCancel" @click="closeModal">{{ $options.i18n.cancel }} </gl-button>
 
-      <gl-button v-if="registered" variant="confirm" category="primary" @click="doneClicked"
-        >{{ $options.i18n.done }}
+      <gl-button v-if="registered" variant="confirm" category="primary" @click="closeModal"
+        >{{ $options.i18n.close }}
       </gl-button>
 
       <gl-button
@@ -252,7 +276,7 @@ export default {
         variant="confirm"
         category="primary"
         @click="registerAgent"
-        >{{ $options.i18n.next }}
+        >{{ $options.i18n.registerAgentButton }}
       </gl-button>
     </template>
   </gl-modal>

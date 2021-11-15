@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Database::PostgresHll::BatchDistinctCounter do
   end
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(in_transaction)
+    allow(model.connection).to receive(:transaction_open?).and_return(in_transaction)
   end
 
   context 'unit test for different counting parameters' do

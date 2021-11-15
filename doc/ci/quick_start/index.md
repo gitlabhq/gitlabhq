@@ -119,6 +119,11 @@ The pipeline starts when the commit is committed.
 
 #### `.gitlab-ci.yml` tips
 
+- After you create your first `.gitlab-ci.yml` file, use the [pipeline editor](../pipeline_editor/index.md)
+  for all future edits to the file. With the pipeline editor, you can:
+  - Edit the pipeline configuration with automatic syntax highlighting and validation.
+  - View the [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration),
+    a graphical representation of your `.gitlab-ci.yml` file.
 - If you want the runner to [use a Docker container to run the jobs](../docker/using_docker_images.md),
   edit the `.gitlab-ci.yml` file
   to include an image name:
@@ -136,10 +141,6 @@ The pipeline starts when the commit is committed.
   Your application does not need to be built as a Docker container to
   run CI/CD jobs in Docker containers.
 
-- To validate your `.gitlab-ci.yml` file, use the
-  [CI Lint tool](../lint.md), which is available in every project.
-- You can also use [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration) to
-  view a graphical representation of your `.gitlab-ci.yml` file.
 - Each job contains scripts and stages:
   - The [`default`](../yaml/index.md#default) keyword is for
     custom defaults, for example with [`before_script`](../yaml/index.md#before_script)

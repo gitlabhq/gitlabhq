@@ -12,13 +12,13 @@ necessary to add database (version) specific behavior.
 
 To facilitate this we have the following methods that you can use:
 
-- `Gitlab::Database.main.version`: returns the PostgreSQL version number as a string
+- `ApplicationRecord.database.version`: returns the PostgreSQL version number as a string
   in the format `X.Y.Z`.
 
 This allows you to write code such as:
 
 ```ruby
-if Gitlab::Database.main.version.to_f >= 11.7
+if ApplicationRecord.database.version.to_f >= 11.7
   run_really_fast_query
 else
   run_fast_query

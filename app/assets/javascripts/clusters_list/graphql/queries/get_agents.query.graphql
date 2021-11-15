@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+#import "../fragments/cluster_agent.fragment.graphql"
 
 query getAgents(
   $defaultBranchName: String!
@@ -13,14 +14,7 @@ query getAgents(
   project(fullPath: $projectPath) {
     clusterAgents(first: $first, last: $last, before: $beforeAgent, after: $afterAgent) {
       nodes {
-        id
-        name
-        webPath
-        tokens {
-          nodes {
-            lastUsedAt
-          }
-        }
+        ...ClusterAgentFragment
       }
 
       pageInfo {

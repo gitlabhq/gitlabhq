@@ -82,8 +82,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
     it 'does not import the note when a foreign key error is raised' do
       stub_user_finder(project.creator_id, false)
 
-      expect(Gitlab::Database.main)
-        .to receive(:bulk_insert)
+      expect(ApplicationRecord)
+        .to receive(:legacy_bulk_insert)
         .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 
       expect { subject.execute }
@@ -94,6 +94,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
   describe '#execute' do
     context 'when the merge request no longer exists' do
       it 'does not import anything' do
+        expect(ApplicationRecord).not_to receive(:legacy_bulk_insert)
+
         expect { subject.execute }
           .to not_change(DiffNote, :count)
           .and not_change(LegacyDiffNote, :count)

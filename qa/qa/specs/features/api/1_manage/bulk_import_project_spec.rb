@@ -83,7 +83,7 @@ module QA
 
           aggregate_failures do
             expect(imported_projects.first).to eq(source_project)
-            expect(project_import_failures).to be_empty
+            expect(project_import_failures).to be_empty, "Expected no errors, was: #{project_import_failures}"
           end
         end
       end
@@ -125,7 +125,7 @@ module QA
           aggregate_failures do
             expect(imported_issues.count).to eq(1)
             expect(imported_issue.reload!).to eq(source_issue)
-            expect(project_import_failures).to be_empty
+            expect(project_import_failures).to be_empty, "Expected no errors, was: #{project_import_failures}"
           end
         end
       end

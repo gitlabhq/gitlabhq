@@ -23,6 +23,7 @@ module Gitlab
               validates :config, presence: true
               validates :name, presence: true
               validates :name, type: Symbol
+              validates :name, length: { maximum: 255 }, if: -> { ::Feature.enabled?(:ci_validate_job_length, default_enabled: :yaml) }
 
               validates :config, disallowed_keys: {
                   in: %i[only except when start_in],

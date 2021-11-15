@@ -263,6 +263,21 @@ module Gitlab
           ) || raise(::ActiveRecord::ConnectionNotEstablished)
         end
 
+        def wal_diff(location1, location2)
+          read_write do |connection|
+            lsn1 = connection.quote(location1)
+            lsn2 = connection.quote(location2)
+
+            query = <<-SQL.squish
+            SELECT pg_wal_lsn_diff(#{lsn1}, #{lsn2})
+              AS result
+            SQL
+
+            row = connection.select_all(query).first
+            row['result'] if row
+          end
+        end
+
         private
 
         def ensure_caching!

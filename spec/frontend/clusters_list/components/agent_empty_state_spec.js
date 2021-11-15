@@ -1,13 +1,12 @@
 import { GlAlert, GlEmptyState, GlSprintf } from '@gitlab/ui';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 const emptyStateImage = '/path/to/image';
 const projectPath = 'path/to/project';
-const multipleClustersDocsUrl = 'path/to/multipleClustersDocs';
-const installDocsUrl = 'path/to/installDocs';
-const getStartedDocsUrl = 'path/to/getStartedDocs';
-const integrationDocsUrl = 'path/to/integrationDocs';
+const multipleClustersDocsUrl = helpPagePath('user/project/clusters/multiple_kubernetes_clusters');
+const installDocsUrl = helpPagePath('administration/clusters/kas');
 
 describe('AgentEmptyStateComponent', () => {
   let wrapper;
@@ -18,10 +17,6 @@ describe('AgentEmptyStateComponent', () => {
   const provideData = {
     emptyStateImage,
     projectPath,
-    multipleClustersDocsUrl,
-    installDocsUrl,
-    getStartedDocsUrl,
-    integrationDocsUrl,
   };
 
   const findConfigurationsAlert = () => wrapper.findComponent(GlAlert);
@@ -41,7 +36,6 @@ describe('AgentEmptyStateComponent', () => {
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
-      wrapper = null;
     }
   });
 

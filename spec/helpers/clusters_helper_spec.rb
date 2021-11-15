@@ -59,35 +59,6 @@ RSpec.describe ClustersHelper do
     end
   end
 
-  describe '#js_cluster_agents_list_data' do
-    let_it_be(:project) { build(:project, :repository) }
-
-    subject { helper.js_cluster_agents_list_data(project) }
-
-    it 'displays project default branch' do
-      expect(subject[:default_branch_name]).to eq(project.default_branch)
-    end
-
-    it 'displays image path' do
-      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
-    end
-
-    it 'displays project path' do
-      expect(subject[:project_path]).to eq(project.full_path)
-    end
-
-    it 'generates docs urls' do
-      expect(subject[:multiple_clusters_docs_url]).to eq(help_page_path('user/project/clusters/multiple_kubernetes_clusters'))
-      expect(subject[:install_docs_url]).to eq(help_page_path('administration/clusters/kas'))
-      expect(subject[:get_started_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'))
-      expect(subject[:integration_docs_url]).to eq(help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'))
-    end
-
-    it 'displays kas address' do
-      expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
-    end
-  end
-
   describe '#js_clusters_list_data' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:project) { build(:project) }
@@ -150,6 +121,34 @@ RSpec.describe ClustersHelper do
       it 'displays empty state help text' do
         expect(subject[:empty_state_help_text]).to eq(s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.'))
       end
+    end
+  end
+
+  describe '#js_clusters_data' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { build(:project) }
+    let_it_be(:clusterable) { ClusterablePresenter.fabricate(project, current_user: current_user) }
+
+    subject { helper.js_clusters_data(clusterable) }
+
+    it 'displays project default branch' do
+      expect(subject[:default_branch_name]).to eq(project.default_branch)
+    end
+
+    it 'displays image path' do
+      expect(subject[:empty_state_image]).to match(%r(/illustrations/empty-state/empty-state-agents|svg))
+    end
+
+    it 'displays project path' do
+      expect(subject[:project_path]).to eq(project.full_path)
+    end
+
+    it 'displays add cluster using certificate path' do
+      expect(subject[:add_cluster_path]).to eq("#{project_path(project)}/-/clusters/new?tab=add")
+    end
+
+    it 'displays kas address' do
+      expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
     end
   end
 

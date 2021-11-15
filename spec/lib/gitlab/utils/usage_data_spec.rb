@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     let(:relation) { double(:relation, connection: double(:connection)) }
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false) # rubocop: disable Database/MultipleDatabases
+      allow(relation.connection).to receive(:transaction_open?).and_return(false)
     end
 
     it 'delegates counting to counter class instance' do
@@ -122,7 +122,7 @@ RSpec.describe Gitlab::Utils::UsageData do
       let(:ci_builds_estimated_cardinality) { 2.0809220082170614 }
 
       before do
-        allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false) # rubocop: disable Database/MultipleDatabases
+        allow(model.connection).to receive(:transaction_open?).and_return(false)
       end
 
       context 'different counting parameters' do

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Database::BatchCount do
   end
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(in_transaction)
+    allow(model.connection).to receive(:transaction_open?).and_return(in_transaction)
   end
 
   def calculate_batch_size(batch_size)

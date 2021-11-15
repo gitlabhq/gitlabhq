@@ -42,7 +42,7 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
   describe '#with_shared_connection' do
     it 'yields to the block after properly configuring SharedModel' do
       expect(Gitlab::Database::SharedModel).to receive(:using_connection)
-        .with(Gitlab::Database.main.scope.connection).and_yield
+        .with(ActiveRecord::Base.connection).and_yield
 
       expect { |b| coordinator.with_shared_connection(&b) }.to yield_with_no_args
     end

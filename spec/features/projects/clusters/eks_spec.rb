@@ -19,6 +19,7 @@ RSpec.describe 'AWS EKS Cluster', :js do
     before do
       visit project_clusters_path(project)
 
+      click_link 'Certificate based'
       click_link 'Connect with a certificate'
     end
 

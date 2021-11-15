@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 module Packages
+  # rubocop: disable Gitlab/BulkInsert
   class CreateDependencyService < BaseService
     attr_reader :package, :dependencies
 
@@ -51,7 +52,7 @@ module Packages
         }
       end
 
-      ids = database.bulk_insert(Packages::Dependency.table_name, rows, return_ids: true, on_conflict: :do_nothing)
+      ids = ApplicationRecord.legacy_bulk_insert(Packages::Dependency.table_name, rows, return_ids: true, on_conflict: :do_nothing)
       return ids if ids.size == names_and_version_patterns.size
 
       Packages::Dependency.uncached do
@@ -72,11 +73,8 @@ module Packages
         }
       end
 
-      database.bulk_insert(Packages::DependencyLink.table_name, rows)
-    end
-
-    def database
-      ::Gitlab::Database.main
+      ApplicationRecord.legacy_bulk_insert(Packages::DependencyLink.table_name, rows)
     end
   end
+  # rubocop: enable Gitlab/BulkInsert
 end

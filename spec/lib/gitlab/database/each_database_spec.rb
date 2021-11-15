@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::EachDatabase do
-  describe '.each_database' do
+  describe '.each_database_connection' do
     let(:expected_connections) do
-      Gitlab::Database.databases.map { |name, wrapper| [wrapper.scope.connection, name] }
+      Gitlab::Database.database_base_models.map { |name, model| [model.connection, name] }
     end
 
     it 'yields each connection after connecting SharedModel' do

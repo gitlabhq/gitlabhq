@@ -1,4 +1,4 @@
-import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
+import { GlLink, GlIcon } from '@gitlab/ui';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import { ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -47,7 +47,6 @@ const propsData = {
     },
   ],
 };
-const provideData = { integrationDocsUrl: 'path/to/integrationDocs' };
 
 describe('AgentTable', () => {
   let wrapper;
@@ -60,7 +59,7 @@ describe('AgentTable', () => {
     wrapper.findAllByTestId('cluster-agent-configuration-link').at(at);
 
   beforeEach(() => {
-    wrapper = mountExtended(AgentTable, { propsData, provide: provideData });
+    wrapper = mountExtended(AgentTable, { propsData });
   });
 
   afterEach(() => {
@@ -68,10 +67,6 @@ describe('AgentTable', () => {
       wrapper.destroy();
       wrapper = null;
     }
-  });
-
-  it('displays header button', () => {
-    expect(wrapper.find(GlButton).text()).toBe('Install a new GitLab Agent');
   });
 
   describe('agent table', () => {

@@ -39,7 +39,7 @@ module X509SerialNumberAttribute
     end
 
     def database_exists?
-      Gitlab::Database.main.exists?
+      database.exists?
     end
   end
 end

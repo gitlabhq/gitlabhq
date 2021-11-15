@@ -82,7 +82,7 @@ For example:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
-## Unavailable names for jobs
+## Job name limitations
 
 You can't use these keywords as job names:
 
@@ -95,6 +95,10 @@ You can't use these keywords as job names:
 - `variables`
 - `cache`
 - `include`
+
+Job names must be 255 characters or less. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342800)
+in GitLab 14.5, [with a feature flag](../../administration/feature_flags.md) named `ci_validate_job_length`.
+Enabled by default. To disable it, ask an administrator to [disable the feature flag](../../administration/feature_flags.md).
 
 ## Group jobs in a pipeline
 
@@ -177,7 +181,7 @@ file:
 You can use hidden jobs that start with `.` as templates for reusable configuration with:
 
 - The [`extends` keyword](../yaml/index.md#extends).
-- [YAML anchors](../yaml/yaml_specific_features.md#anchors).
+- [YAML anchors](../yaml/yaml_optimization.md#anchors).
 
 ## Control the inheritance of default keywords and global variables
 

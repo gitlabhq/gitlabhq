@@ -33,6 +33,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
         end
       end
 
+      context 'when job name is more than 255' do
+        let(:entry) { node_class.new(config, name: ('a' * 256).to_sym) }
+
+        it 'shows a validation error' do
+          expect(entry.errors).to include "job name is too long (maximum is 255 characters)"
+        end
+      end
+
       context 'when job name is empty' do
         let(:entry) { node_class.new(config, name: ''.to_sym) }
 

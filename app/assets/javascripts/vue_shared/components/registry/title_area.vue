@@ -69,20 +69,23 @@ export default {
           />
 
           <div class="gl-display-flex gl-flex-direction-column">
-            <h1 class="gl-font-size-h1 gl-mt-3 gl-mb-2" data-testid="title">
+            <h2 class="gl-font-size-h1 gl-mt-3 gl-mb-0" data-testid="title">
               <slot name="title">{{ title }}</slot>
-            </h1>
+            </h2>
 
             <div
               v-if="$slots['sub-header']"
-              class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-1"
+              class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-mt-3"
             >
               <slot name="sub-header"></slot>
             </div>
           </div>
         </div>
 
-        <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3">
+        <div
+          v-if="metadataSlots.length > 0"
+          class="gl-display-flex gl-flex-wrap gl-align-items-center gl-mt-3"
+        >
           <template v-if="!metadataLoading">
             <div
               v-for="(row, metadataIndex) in metadataSlots"
