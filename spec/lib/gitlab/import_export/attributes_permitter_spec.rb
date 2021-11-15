@@ -126,6 +126,20 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter do
       :project_feature             | true
       :prometheus_metrics          | true
       :service_desk_setting        | true
+      :external_pull_request       | true
+      :external_pull_requests      | true
+      :statuses                    | true
+      :ci_pipelines                | true
+      :stages                      | true
+      :actions                     | true
+      :design                      | true
+      :designs                     | true
+      :design_versions             | true
+      :issue_assignees             | true
+      :sentry_issue                | true
+      :zoom_meetings               | true
+      :issues                      | true
+      :group_members               | true
     end
 
     with_them do

@@ -30,7 +30,15 @@ export default {
     // Tertiary action buttons that will take the user elsewhere
     // in the GitLab app
     tertiaryButtons() {
-      return [{ text: 'Full report', href: this.conflictsDocsPath, target: '_blank' }];
+      return [
+        {
+          text: 'Click me',
+          onClick() {
+            console.log('Hello world');
+          },
+        },
+        { text: 'Full report', href: this.conflictsDocsPath, target: '_blank' },
+      ];
     },
   },
   methods: {

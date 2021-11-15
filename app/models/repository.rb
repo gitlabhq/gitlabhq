@@ -732,9 +732,7 @@ class Repository
   end
 
   def tags_sorted_by(value, pagination_params = nil)
-    return raw_repository.tags(sort_by: value, pagination_params: pagination_params) if Feature.enabled?(:tags_finder_gitaly, project, default_enabled: :yaml)
-
-    tags_ruby_sort(value)
+    raw_repository.tags(sort_by: value, pagination_params: pagination_params)
   end
 
   # Params:
@@ -1168,34 +1166,6 @@ class Repository
 
   def request_store_cache
     @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
-  end
-
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
-  def tags_ruby_sort(value)
-    case value
-    when 'name_asc'
-      VersionSorter.sort(tags) { |tag| tag.name }
-    when 'name_desc'
-      VersionSorter.rsort(tags) { |tag| tag.name }
-    when 'updated_desc'
-      tags_sorted_by_committed_date.reverse
-    when 'updated_asc'
-      tags_sorted_by_committed_date
-    else
-      tags
-    end
-  end
-
-  # Deprecated: https://gitlab.com/gitlab-org/gitlab/-/issues/339741
-  def tags_sorted_by_committed_date
-    # Annotated tags can point to any object (e.g. a blob), but generally
-    # tags point to a commit. If we don't have a commit, then just default
-    # to putting the tag at the end of the list.
-    default = Time.current
-
-    tags.sort_by do |tag|
-      tag.dereferenced_target&.committed_date || default
-    end
   end
 
   def repository_event(event, tags = {})

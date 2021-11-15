@@ -6,6 +6,18 @@ module Database
       skip 'Skipping because multiple databases not set up' unless Gitlab::Database.has_config?(:ci)
     end
 
+    def reconfigure_db_connection(name: nil, config_hash: {}, model: ActiveRecord::Base, config_model: nil)
+      db_config = (config_model || model).connection_db_config
+
+      new_db_config = ActiveRecord::DatabaseConfigurations::HashConfig.new(
+        db_config.env_name,
+        name ? name.to_s : db_config.name,
+        db_config.configuration_hash.merge(config_hash)
+      )
+
+      model.establish_connection(new_db_config)
+    end
+
     # The usage of this method switches temporarily used `connection_handler`
     # allowing full manipulation of ActiveRecord::Base connections without
     # having side effects like:
@@ -53,6 +65,18 @@ end
 RSpec.configure do |config|
   config.around(:each, :reestablished_active_record_base) do |example|
     with_reestablished_active_record_base(reconnect: example.metadata.fetch(:reconnect, true)) do
+      example.run
+    end
+  end
+
+  config.around(:each, :mocked_ci_connection) do |example|
+    with_reestablished_active_record_base(reconnect: true) do
+      reconfigure_db_connection(
+        name: :ci,
+        model: Ci::ApplicationRecord,
+        config_model: ActiveRecord::Base
+      )
+
       example.run
     end
   end

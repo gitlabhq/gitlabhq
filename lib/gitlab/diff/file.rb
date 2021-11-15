@@ -470,7 +470,7 @@ module Gitlab
 
         Gitlab::AppLogger.info({ message: new_diff ? 'IPYNB_DIFF_GENERATED' : 'IPYNB_DIFF_NIL' })
       rescue IpynbDiff::InvalidNotebookError => e
-        Gitlab::ErrorTracking.track_exception(e, issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344676')
+        Gitlab::ErrorTracking.log_exception(e)
       end
 
       def strip_diff_frontmatter(diff_content)

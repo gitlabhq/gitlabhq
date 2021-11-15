@@ -375,9 +375,9 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     def omniauth_providers
       [
-        OpenStruct.new(name: 'google_oauth2'),
-        OpenStruct.new(name: 'ldapmain'),
-        OpenStruct.new(name: 'group_saml')
+        double('provider', name: 'google_oauth2'),
+        double('provider', name: 'ldapmain'),
+        double('provider', name: 'group_saml')
       ]
     end
   end

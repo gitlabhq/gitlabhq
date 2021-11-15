@@ -33,6 +33,12 @@ RSpec.describe QA::Support::Retrier do
 
       subject.retry_until(log: false)
     end
+
+    it 'sets custom error message' do
+      expect(subject).to receive(:repeat_until).with(hash_including(message: 'Custom message'))
+
+      subject.retry_until(message: 'Custom message')
+    end
   end
 
   describe '.retry_on_exception' do

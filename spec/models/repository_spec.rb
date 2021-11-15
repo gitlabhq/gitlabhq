@@ -68,22 +68,11 @@ RSpec.describe Repository do
 
   describe '#tags_sorted_by' do
     let(:tags_to_compare) { %w[v1.0.0 v1.1.0] }
-    let(:feature_flag) { true }
-
-    before do
-      stub_feature_flags(tags_finder_gitaly: feature_flag)
-    end
 
     context 'name_desc' do
       subject { repository.tags_sorted_by('name_desc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
-      end
     end
 
     context 'name_asc' do
@@ -92,12 +81,6 @@ RSpec.describe Repository do
       let(:pagination_params) { nil }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-      end
 
       context 'with pagination' do
         context 'with limit' do
@@ -153,24 +136,12 @@ RSpec.describe Repository do
         subject { repository.tags_sorted_by('updated_desc').map(&:name) & (tags_to_compare + [latest_tag]) }
 
         it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
-
-        context 'when feature flag is disabled' do
-          let(:feature_flag) { false }
-
-          it { is_expected.to eq([latest_tag, 'v1.1.0', 'v1.0.0']) }
-        end
       end
 
       context 'asc' do
         subject { repository.tags_sorted_by('updated_asc').map(&:name) & (tags_to_compare + [latest_tag]) }
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
-
-        context 'when feature flag is disabled' do
-          let(:feature_flag) { false }
-
-          it { is_expected.to eq(['v1.0.0', 'v1.1.0', latest_tag]) }
-        end
       end
 
       context 'annotated tag pointing to a blob' do
@@ -187,12 +158,6 @@ RSpec.describe Repository do
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
 
-        context 'when feature flag is disabled' do
-          let(:feature_flag) { false }
-
-          it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
-        end
-
         after do
           rugged_repo(repository).tags.delete(annotated_tag_name)
         end
@@ -203,12 +168,6 @@ RSpec.describe Repository do
       subject { repository.tags_sorted_by('unknown_desc').map(&:name) & tags_to_compare }
 
       it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag) { false }
-
-        it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
-      end
     end
   end
 

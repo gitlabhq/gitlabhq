@@ -51,13 +51,18 @@ eslint:
   extends:
     - .static-analysis-base
     - .yarn-cache
-    - .static-analysis:rules:ee
-  needs: []
+    - .frontend:rules:default-frontend-jobs
+  needs: ['graphql-schema-dump']
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
+    - yarn run apollo client:download-schema --config=config/apollo.config.js tmp/tests/graphql/gitlab_schema_apollo.graphql
     - run_timed_command "yarn run lint:eslint:all"
+  artifacts:
+    name: graphql-schema-apollo
+    paths:
+      - tmp/tests/graphql/gitlab_schema_apollo.graphql
 
 eslint as-if-foss:
   extends:

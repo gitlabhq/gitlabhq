@@ -256,8 +256,8 @@
     :when: 2019-09-11 13:08:28.431132000 Z
 - - :permit
   - "(MIT OR CC0-1.0)"
-  - :who: 
-    :why: 
+  - :who:
+    :why:
     :versions: []
     :when: 2019-11-08 10:03:31.787226000 Z
 - - :permit
@@ -362,3 +362,9 @@
 - - :approve
   - 0.0.62
   - *2
+- - :approve
+  - sha.js
+  - :who: Vitaly Slobodin
+    :why: Dual license BSD-3-Clause and MIT. See https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/686
+    :versions: []
+    :when: 2021-11-12 18:08:27.036400090 Z

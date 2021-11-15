@@ -1,5 +1,5 @@
 import '~/commons';
-import { GlTable } from '@gitlab/ui';
+import { GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -44,7 +44,7 @@ describe('Pipelines Table', () => {
     );
   };
 
-  const findGlTable = () => wrapper.findComponent(GlTable);
+  const findGlTableLite = () => wrapper.findComponent(GlTableLite);
   const findStatusBadge = () => wrapper.findComponent(CiBadge);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
   const findTriggerer = () => wrapper.findComponent(PipelineTriggerer);
@@ -77,7 +77,7 @@ describe('Pipelines Table', () => {
     });
 
     it('displays table', () => {
-      expect(findGlTable().exists()).toBe(true);
+      expect(findGlTableLite().exists()).toBe(true);
     });
 
     it('should render table head with correct columns', () => {

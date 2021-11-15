@@ -18,7 +18,8 @@ module QA
         sleep_interval: 0,
         raise_on_failure: true,
         retry_on_exception: false,
-        log: true
+        log: true,
+        message: nil
       )
         attempts = 0
         start = Time.now
@@ -63,11 +64,14 @@ module QA
           unless remaining_attempts?(attempts, max_attempts)
             raise(
               RetriesExceededError,
-              "Retry condition not met after #{max_attempts} #{'attempt'.pluralize(max_attempts)}"
+              "#{message || 'Retry'} failed after #{max_attempts} #{'attempt'.pluralize(max_attempts)}"
             )
           end
 
-          raise WaitExceededError, "Wait condition not met after #{max_duration} #{'second'.pluralize(max_duration)}"
+          raise(
+            WaitExceededError,
+            "#{message || 'Wait'} failed after #{max_duration} #{'second'.pluralize(max_duration)}"
+          )
         end
 
         log_completion(log, attempts)

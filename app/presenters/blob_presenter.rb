@@ -137,7 +137,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
 
     @transformed_blob ||= blob.data
   rescue IpynbDiff::InvalidNotebookError => e
-    Gitlab::ErrorTracking.track_exception(e, issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344676')
+    Gitlab::ErrorTracking.log_exception(e)
     blob.data
   end
 end

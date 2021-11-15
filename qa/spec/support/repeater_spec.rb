@@ -23,7 +23,7 @@ RSpec.describe QA::Support::Repeater do
       context 'when retry_on_exception is not provided (default: false)' do
         context 'when max_duration is provided' do
           context 'when max duration is reached' do
-            it 'raises an exception' do
+            it 'raises an exception with default message' do
               expect do
                 Timecop.freeze do
                   subject.repeat_until(max_duration: 1) do
@@ -31,7 +31,20 @@ RSpec.describe QA::Support::Repeater do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait condition not met after 1 second")
+              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
+            end
+
+            it 'raises an exception with custom message' do
+              message = 'Some custom action'
+
+              expect do
+                Timecop.freeze do
+                  subject.repeat_until(max_duration: 1, message: message) do
+                    Timecop.travel(2)
+                    false
+                  end
+                end
+              end.to raise_error(QA::Support::Repeater::WaitExceededError, "#{message} failed after 1 second")
             end
 
             it 'ignores attempts' do
@@ -70,14 +83,26 @@ RSpec.describe QA::Support::Repeater do
 
         context 'when max_attempts is provided' do
           context 'when max_attempts is reached' do
-            it 'raises an exception' do
+            it 'raises an exception with default message' do
               expect do
                 Timecop.freeze do
                   subject.repeat_until(max_attempts: 1) do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry condition not met after 1 attempt")
+              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
+            end
+
+            it 'raises an exception with custom message' do
+              message = 'Some custom action'
+
+              expect do
+                Timecop.freeze do
+                  subject.repeat_until(max_attempts: 1, message: message) do
+                    false
+                  end
+                end
+              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "#{message} failed after 1 attempt")
             end
 
             it 'ignores duration' do
@@ -126,7 +151,7 @@ RSpec.describe QA::Support::Repeater do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry condition not met after 1 attempt")
+              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
             end
           end
 
@@ -141,7 +166,7 @@ RSpec.describe QA::Support::Repeater do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait condition not met after 1 second")
+              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
             end
           end
         end
@@ -210,7 +235,7 @@ RSpec.describe QA::Support::Repeater do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry condition not met after 1 attempt")
+              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
             end
           end
 
@@ -225,7 +250,7 @@ RSpec.describe QA::Support::Repeater do
                     false
                   end
                 end
-              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait condition not met after 1 second")
+              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
             end
           end
         end

@@ -34,7 +34,7 @@ module QA
             click_element(:target_namespace_selector_dropdown)
             click_element(:target_group_dropdown_item, group_name: target_group_name)
 
-            retry_until do
+            retry_until(message: "Triggering import") do
               click_element(:import_group_button)
               # Make sure import started before waiting for completion
               has_no_element?(:import_status_indicator, text: "Not started", wait: 1)

@@ -494,6 +494,144 @@ included_attributes:
     - :created_at
     - :updated_at
     - :summary
+  external_pull_request: &external_pull_request_definition
+    - :created_at
+    - :updated_at
+    - :project_id
+    - :pull_request_iid
+    - :status
+    - :source_branch
+    - :target_branch
+    - :source_repository
+    - :target_repository
+    - :source_sha
+    - :target_sha
+  external_pull_requests: *external_pull_request_definition
+  statuses:
+    - :project_id
+    - :status
+    - :finished_at
+    - :created_at
+    - :updated_at
+    - :started_at
+    - :coverage
+    - :commit_id
+    - :name
+    - :options
+    - :allow_failure
+    - :stage
+    - :stage_idx
+    - :tag
+    - :ref
+    - :user_id
+    - :type
+    - :target_url
+    - :description
+    - :erased_at
+    - :artifacts_expire_at
+    - :environment
+    - :yaml_variables
+    - :queued_at
+    - :lock_version
+    - :coverage_regex
+    - :retried
+    - :protected
+    - :failure_reason
+    - :scheduled_at
+    - :scheduling_type
+  ci_pipelines:
+    - :ref
+    - :sha
+    - :before_sha
+    - :created_at
+    - :updated_at
+    - :tag
+    - :yaml_errors
+    - :committed_at
+    - :project_id
+    - :status
+    - :started_at
+    - :finished_at
+    - :duration
+    - :user_id
+    - :lock_version
+    - :source
+    - :protected
+    - :config_source
+    - :failure_reason
+    - :iid
+    - :source_sha
+    - :target_sha
+  stages:
+    - :name
+    - :status
+    - :position
+    - :lock_version
+    - :project_id
+    - :created_at
+    - :updated_at
+  actions:
+    - :event
+    - :image_v432x230
+  design: &design_definition
+    - :iid
+    - :project_id
+    - :filename
+    - :relative_position
+  designs: *design_definition
+  design_versions:
+    - :created_at
+    - :sha
+    - :author_id
+  issue_assignees:
+    - :user_id
+  sentry_issue:
+    - :sentry_issue_identifier
+  zoom_meetings:
+    - :project_id
+    - :issue_status
+    - :url
+    - :created_at
+    - :updated_at
+  issues:
+    - :title
+    - :author_id
+    - :project_id
+    - :created_at
+    - :updated_at
+    - :description
+    - :state
+    - :iid
+    - :updated_by_id
+    - :confidential
+    - :closed_at
+    - :closed_by_id
+    - :due_date
+    - :lock_version
+    - :weight
+    - :time_estimate
+    - :relative_position
+    - :external_author
+    - :last_edited_at
+    - :last_edited_by_id
+    - :discussion_locked
+    - :health_status
+    - :external_key
+    - :issue_type
+  group_members:
+    - :access_level
+    - :source_type
+    - :user_id
+    - :notification_level
+    - :created_at
+    - :updated_at
+    - :created_by_id
+    - :invite_email
+    - :invite_accepted_at
+    - :requested_at
+    - :expires_at
+    - :ldap
+    - :override
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:

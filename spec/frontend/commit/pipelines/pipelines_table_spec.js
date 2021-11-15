@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon, GlModal, GlTable } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlModal, GlTableLite } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
@@ -22,7 +22,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findRunPipelineBtnMobile = () => wrapper.findByTestId('run_pipeline_button_mobile');
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => wrapper.findComponent(GlTableLite);
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findModal = () => wrapper.findComponent(GlModal);
 
