@@ -11,6 +11,7 @@ module QA
         view 'app/views/profiles/two_factor_auths/show.html.haml' do
           element :otp_secret_content
           element :pin_code_field
+          element :current_password_field
           element :register_2fa_app_button
         end
 
@@ -31,6 +32,10 @@ module QA
 
         def set_pin_code(pin_code)
           fill_element(:pin_code_field, pin_code)
+        end
+
+        def set_current_password(password)
+          fill_element(:current_password_field, password)
         end
 
         def click_register_2fa_app_button
