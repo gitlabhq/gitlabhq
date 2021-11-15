@@ -390,6 +390,27 @@ Plan.default.actual_limits.update!(ci_project_subscriptions: 500)
 
 Set the limit to `0` to disable it.
 
+### Limit the number of pipeline triggers
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33696) in GitLab 14.6.
+
+You can set a limit on the maximum number of pipeline triggers per project. This
+limit is checked every time a new trigger is created.
+
+If a new trigger would cause the total number of pipeline triggers to exceed the
+limit, the trigger is considered invalid.
+
+Set the limit to `0` to disable it. Defaults to `0` on self-managed instances.
+
+To set this limit to `100` on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(pipeline_triggers: 100)
+```
+
+This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+
 ### Number of pipeline schedules
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29566) in GitLab 12.10.

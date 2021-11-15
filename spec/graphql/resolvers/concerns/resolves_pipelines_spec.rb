@@ -20,21 +20,35 @@ RSpec.describe ResolvesPipelines do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
+  let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
   let_it_be(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'awesome-feature') }
   let_it_be(:sha_pipeline) { create(:ci_pipeline, project: project, sha: 'deadbeef') }
+  let_it_be(:all_pipelines) do
+    [
+      pipeline,
+      failed_pipeline,
+      success_pipeline,
+      ref_pipeline,
+      sha_pipeline
+    ]
+  end
 
   before do
     project.add_developer(current_user)
   end
 
-  it { is_expected.to have_graphql_arguments(:status, :ref, :sha, :source) }
+  it { is_expected.to have_graphql_arguments(:status, :scope, :ref, :sha, :source) }
 
   it 'finds all pipelines' do
-    expect(resolve_pipelines).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline)
+    expect(resolve_pipelines).to contain_exactly(*all_pipelines)
   end
 
   it 'allows filtering by status' do
     expect(resolve_pipelines(status: 'failed')).to contain_exactly(failed_pipeline)
+  end
+
+  it 'allows filtering by scope' do
+    expect(resolve_pipelines(scope: 'finished')).to contain_exactly(failed_pipeline, success_pipeline)
   end
 
   it 'allows filtering by ref' do
@@ -54,7 +68,7 @@ RSpec.describe ResolvesPipelines do
       end
 
       it 'does not filter by source' do
-        expect(resolve_pipelines(source: 'web')).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline, source_pipeline)
+        expect(resolve_pipelines(source: 'web')).to contain_exactly(*all_pipelines, source_pipeline)
       end
     end
 
@@ -64,7 +78,7 @@ RSpec.describe ResolvesPipelines do
       end
 
       it 'returns all the pipelines' do
-        expect(resolve_pipelines).to contain_exactly(pipeline, failed_pipeline, ref_pipeline, sha_pipeline, source_pipeline)
+        expect(resolve_pipelines).to contain_exactly(*all_pipelines, source_pipeline)
       end
     end
   end

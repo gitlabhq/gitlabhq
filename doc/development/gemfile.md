@@ -56,7 +56,9 @@ to a gem, go through these steps:
 1. Once the gem is stable - we have been using it in production for a
    while with few, if any, changes - extract to its own project under
    the [`gitlab-org/ruby/gems` namespace](https://gitlab.com/gitlab-org/ruby/gems/).
-       1. When creating the project, follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/#creating-a-new-project).
+
+   - To create this project:
+       1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/#creating-a-new-project).
        1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/#cicd-configuration).
        1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/#publishing-a-project).
    - See [issue

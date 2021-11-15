@@ -1,4 +1,5 @@
 import { __, s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const MAX_LIST_COUNT = 25;
 export const INSTALL_AGENT_MODAL_ID = 'install-agent';
@@ -167,7 +168,40 @@ export const I18N_CLUSTERS_EMPTY_STATE = {
   buttonText: s__('ClusterIntegration|Connect with a certificate'),
 };
 
+export const AGENT_CARD_INFO = {
+  tabName: 'agent',
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} Agent based integrations')),
+  emptyTitle: s__('ClusterAgents|No Agent based integrations'),
+  tooltip: {
+    label: s__('ClusterAgents|Recommended'),
+    title: s__('ClusterAgents|GitLab Agents'),
+    text: sprintf(
+      s__(
+        'ClusterAgents|GitLab Agents provide an increased level of security when integrating with clusters. %{linkStart}Learn more about the GitLab Kubernetes Agent.%{linkEnd}',
+      ),
+    ),
+    link: helpPagePath('user/clusters/agent/index'),
+  },
+  actionText: s__('ClusterAgents|Install new Agent'),
+  footerText: sprintf(s__('ClusterAgents|View all %{number} Agent based integrations')),
+};
+
+export const CERTIFICATE_BASED_CARD_INFO = {
+  tabName: 'certificate_based',
+  title: sprintf(s__('ClusterAgents|%{number} of %{total} Certificate based integrations')),
+  emptyTitle: s__('ClusterAgents|No Certificate based integrations'),
+  actionText: s__('ClusterAgents|Connect existing cluster'),
+  footerText: sprintf(s__('ClusterAgents|View all %{number} Certificate based integrations')),
+};
+
+export const MAX_CLUSTERS_LIST = 6;
+
 export const CLUSTERS_TABS = [
+  {
+    title: s__('ClusterAgents|All'),
+    component: 'ClustersViewAll',
+    queryParamValue: 'all',
+  },
   {
     title: s__('ClusterAgents|Agent'),
     component: 'agents',
@@ -186,3 +220,6 @@ export const CLUSTERS_ACTIONS = {
   connectWithAgent: s__('ClusterAgents|Connect with Agent'),
   connectExistingCluster: s__('ClusterAgents|Connect with certificate'),
 };
+
+export const AGENT = 'agent';
+export const CERTIFICATE_BASED = 'certificate_based';

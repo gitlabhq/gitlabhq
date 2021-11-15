@@ -20,6 +20,9 @@ export default {
         this.updateTreeList(data);
         return data;
       },
+      result() {
+        this.emitAgentsLoaded();
+      },
     },
   },
   components: {
@@ -36,11 +39,21 @@ export default {
       required: false,
       type: String,
     },
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
+    },
+    limit: {
+      default: null,
+      required: false,
+      type: Number,
+    },
   },
   data() {
     return {
       cursor: {
-        first: MAX_LIST_COUNT,
+        first: this.limit ? this.limit : MAX_LIST_COUNT,
         last: null,
       },
       folderList: {},
@@ -68,7 +81,7 @@ export default {
       return this.$apollo.queries.agents.loading;
     },
     showPagination() {
-      return this.agentPageInfo.hasPreviousPage || this.agentPageInfo.hasNextPage;
+      return !this.limit && (this.agentPageInfo.hasPreviousPage || this.agentPageInfo.hasNextPage);
     },
     treePageInfo() {
       return this.agents?.project?.repository?.tree?.trees?.pageInfo || {};
@@ -128,6 +141,10 @@ export default {
       }
       return 'unused';
     },
+    emitAgentsLoaded() {
+      const count = this.agents?.project?.clusterAgents?.count;
+      this.$emit('onAgentsLoad', count);
+    },
   },
 };
 </script>
@@ -144,7 +161,11 @@ export default {
       </div>
     </div>
 
-    <agent-empty-state v-else :has-configurations="hasConfigurations" />
+    <agent-empty-state
+      v-else
+      :has-configurations="hasConfigurations"
+      :is-child-component="isChildComponent"
+    />
   </section>
 
   <gl-alert v-else variant="danger" :dismissible="false">

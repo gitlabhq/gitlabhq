@@ -57,4 +57,8 @@ RSpec.describe Ci::Trigger do
       it { is_expected.to eq(false) }
     end
   end
+
+  it_behaves_like 'includes Limitable concern' do
+    subject { build(:ci_trigger, owner: project.owner, project: project) }
+  end
 end

@@ -24,6 +24,7 @@ localVue.use(VueApollo);
 
 const projectPath = 'path/to/project';
 const defaultBranchName = 'default';
+const maxAgents = MAX_LIST_COUNT;
 
 describe('InstallAgentModal', () => {
   let wrapper;
@@ -56,6 +57,7 @@ describe('InstallAgentModal', () => {
 
     const propsData = {
       defaultBranchName,
+      maxAgents,
     };
 
     wrapper = shallowMount(InstallAgentModal, {

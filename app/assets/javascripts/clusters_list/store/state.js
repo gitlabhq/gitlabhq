@@ -5,7 +5,7 @@ export default (initialState = {}) => ({
   endpoint: initialState.endpoint,
   hasAncestorClusters: false,
   clusters: [],
-  clustersPerPage: 0,
+  clustersPerPage: 20,
   loadingClusters: true,
   loadingNodes: true,
   page: 1,

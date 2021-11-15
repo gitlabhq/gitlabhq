@@ -18,4 +18,7 @@ export default {
   [types.SET_PAGE](state, value) {
     state.page = Number(value) || 1;
   },
+  [types.SET_CLUSTERS_PER_PAGE](state, value) {
+    state.clustersPerPage = Number(value) || 1;
+  },
 };

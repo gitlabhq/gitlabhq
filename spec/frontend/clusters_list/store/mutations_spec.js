@@ -57,4 +57,12 @@ describe('Admin statistics panel mutations', () => {
       expect(state.page).toBe(123);
     });
   });
+
+  describe(`${types.SET_CLUSTERS_PER_PAGE}`, () => {
+    it('changes clustersPerPage value', () => {
+      mutations[types.SET_CLUSTERS_PER_PAGE](state, 123);
+
+      expect(state.clustersPerPage).toBe(123);
+    });
+  });
 });

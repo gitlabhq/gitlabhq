@@ -16,6 +16,7 @@ const pageInfo = {
   hasPreviousPage: false,
   startCursor: '',
 };
+const count = 1;
 
 export const createAgentResponse = {
   data: {
@@ -64,7 +65,7 @@ export const createAgentTokenErrorResponse = {
 export const getAgentResponse = {
   data: {
     project: {
-      clusterAgents: { nodes: [{ ...agent, tokens }], pageInfo },
+      clusterAgents: { nodes: [{ ...agent, tokens }], pageInfo, count },
       repository: {
         tree: {
           trees: { nodes: [{ ...agent, path: null }], pageInfo },

@@ -264,6 +264,27 @@ module Gitlab
           end
         end
 
+        desc _('Promote issue to incident')
+        explanation _('Promotes issue to incident')
+        types Issue
+        condition do
+          quick_action_target.persisted? &&
+            !quick_action_target.incident? &&
+            current_user.can?(:update_issue, quick_action_target)
+        end
+        command :promote_to_incident do
+          issue = ::Issues::UpdateService
+            .new(project: quick_action_target.project, current_user: current_user, params: { issue_type: 'incident' })
+            .execute(quick_action_target)
+
+          @execution_message[:promote_to_incident] =
+            if issue.incident?
+              _('Issue has been promoted to incident')
+            else
+              _('Failed to promote issue to incident')
+            end
+        end
+
         private
 
         def zoom_link_service

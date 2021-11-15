@@ -13,6 +13,13 @@ export default {
     GlSprintf,
   },
   inject: ['emptyStateHelpText', 'clustersEmptyStateImage', 'newClusterPath'],
+  props: {
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
+    },
+  },
   learnMoreHelpUrl: helpPagePath('user/project/clusters/index'),
   multipleClustersHelpUrl: helpPagePath('user/project/clusters/multiple_kubernetes_clusters'),
   computed: {
@@ -54,6 +61,7 @@ export default {
 
     <template #actions>
       <gl-button
+        v-if="!isChildComponent"
         data-testid="integration-primary-button"
         data-qa-selector="add_kubernetes_cluster_link"
         category="primary"

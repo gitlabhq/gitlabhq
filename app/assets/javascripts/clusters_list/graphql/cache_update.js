@@ -17,6 +17,7 @@ export function addAgentToStore(store, createClusterAgent, query, variables) {
     };
 
     draftData.project.clusterAgents.nodes.push(clusterAgent);
+    draftData.project.clusterAgents.count += 1;
     draftData.project.repository.tree.trees.nodes.push(configuration);
   });
 

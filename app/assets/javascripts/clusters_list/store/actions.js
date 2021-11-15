@@ -30,7 +30,13 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
   const poll = new Poll({
     resource: {
-      fetchClusters: (paginatedEndPoint) => axios.get(paginatedEndPoint),
+      fetchClusters: (paginatedEndPoint) =>
+        axios.get(paginatedEndPoint, {
+          params: {
+            page: state.page,
+            per_page: state.clustersPerPage,
+          },
+        }),
     },
     data: `${state.endpoint}?page=${state.page}`,
     method: 'fetchClusters',
@@ -77,4 +83,8 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
 export const setPage = ({ commit }, page) => {
   commit(types.SET_PAGE, page);
+};
+
+export const setClustersPerPage = ({ commit }, limit) => {
+  commit(types.SET_CLUSTERS_PER_PAGE, limit);
 };

@@ -12,7 +12,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import { generateAgentRegistrationCommand } from '../clusters_util';
-import { INSTALL_AGENT_MODAL_ID, I18N_INSTALL_AGENT_MODAL, MAX_LIST_COUNT } from '../constants';
+import { INSTALL_AGENT_MODAL_ID, I18N_INSTALL_AGENT_MODAL } from '../constants';
 import { addAgentToStore } from '../graphql/cache_update';
 import createAgent from '../graphql/mutations/create_agent.mutation.graphql';
 import createAgentToken from '../graphql/mutations/create_agent_token.mutation.graphql';
@@ -40,6 +40,10 @@ export default {
       default: '.noBranch',
       required: false,
       type: String,
+    },
+    maxAgents: {
+      required: true,
+      type: Number,
     },
   },
   data() {
@@ -75,7 +79,7 @@ export default {
     getAgentsQueryVariables() {
       return {
         defaultBranchName: this.defaultBranchName,
-        first: MAX_LIST_COUNT,
+        first: this.maxAgents,
         last: null,
         projectPath: this.projectPath,
       };

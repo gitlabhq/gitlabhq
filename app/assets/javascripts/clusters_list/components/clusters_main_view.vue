@@ -1,16 +1,18 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { CLUSTERS_TABS } from '../constants';
+import { CLUSTERS_TABS, MAX_CLUSTERS_LIST, MAX_LIST_COUNT, AGENT } from '../constants';
 import Agents from './agents.vue';
 import InstallAgentModal from './install_agent_modal.vue';
 import ClustersActions from './clusters_actions.vue';
 import Clusters from './clusters.vue';
+import ClustersViewAll from './clusters_view_all.vue';
 
 export default {
   components: {
     GlTabs,
     GlTab,
     ClustersActions,
+    ClustersViewAll,
     Clusters,
     Agents,
     InstallAgentModal,
@@ -26,11 +28,14 @@ export default {
   data() {
     return {
       selectedTabIndex: 0,
+      maxAgents: MAX_CLUSTERS_LIST,
     };
   },
   methods: {
     onTabChange(tabName) {
       this.selectedTabIndex = CLUSTERS_TABS.findIndex((tab) => tab.queryParamValue === tabName);
+
+      this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
     },
   },
 };
@@ -63,6 +68,6 @@ export default {
       </template>
     </gl-tabs>
 
-    <install-agent-modal :default-branch-name="defaultBranchName" />
+    <install-agent-modal :default-branch-name="defaultBranchName" :max-agents="maxAgents" />
   </div>
 </template>

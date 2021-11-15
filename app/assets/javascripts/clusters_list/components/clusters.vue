@@ -34,6 +34,18 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  props: {
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
+    },
+    limit: {
+      default: null,
+      required: false,
+      type: Number,
+    },
+  },
   computed: {
     ...mapState([
       'clusters',
@@ -100,10 +112,14 @@ export default {
     },
   },
   mounted() {
+    if (this.limit) {
+      this.setClustersPerPage(this.limit);
+    }
+
     this.fetchClusters();
   },
   methods: {
-    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage']),
+    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage', 'setClustersPerPage']),
     k8sQuantityToGb(quantity) {
       if (!quantity) {
         return 0;
@@ -312,10 +328,10 @@ export default {
       </template>
     </gl-table>
 
-    <clusters-empty-state v-else />
+    <clusters-empty-state v-else :is-child-component="isChildComponent" />
 
     <gl-pagination
-      v-if="hasClustersPerPage"
+      v-if="hasClustersPerPage && !limit"
       v-model="currentPage"
       :per-page="clustersPerPage"
       :total-items="totalClusters"

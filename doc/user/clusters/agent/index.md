@@ -103,7 +103,7 @@ configuration and manifest files, as follows:
   manifest files and another for configuration files), the manifests project must
   be public, while the configuration project can be either private or public.
 
-Support for private manifest repositories is tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
+Support for separated private manifest and configuration repositories is tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/220912).
 
 ## Kubernetes Network Security Alerts **(ULTIMATE)**
 

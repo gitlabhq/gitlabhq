@@ -44,5 +44,6 @@ RSpec.describe 'Issues > User uses quick actions', :js do
     it_behaves_like 'move quick action'
     it_behaves_like 'zoom quick actions'
     it_behaves_like 'clone quick action'
+    it_behaves_like 'promote_to_incident quick action'
   end
 end

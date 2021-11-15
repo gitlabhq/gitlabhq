@@ -8877,6 +8877,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="commitpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="commitpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="commitpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="commitpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="commitpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
@@ -11605,6 +11606,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="mergerequestpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="mergerequestpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="mergerequestpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="mergerequestpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
@@ -13497,6 +13499,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectpipelinesref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
+| <a id="projectpipelinesscope"></a>`scope` | [`PipelineScopeEnum`](#pipelinescopeenum) | Filter pipelines by scope. |
 | <a id="projectpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="projectpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. Will be ignored if `dast_view_scans` feature flag is disabled. |
 | <a id="projectpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
@@ -16700,6 +16703,16 @@ Values for sorting package.
 | <a id="pipelineconfigsourceenumrepository_source"></a>`REPOSITORY_SOURCE` | Repository source. |
 | <a id="pipelineconfigsourceenumunknown_source"></a>`UNKNOWN_SOURCE` | Unknown source. |
 | <a id="pipelineconfigsourceenumwebide_source"></a>`WEBIDE_SOURCE` | Webide source. |
+
+### `PipelineScopeEnum`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelinescopeenumbranches"></a>`BRANCHES` | Branches. |
+| <a id="pipelinescopeenumfinished"></a>`FINISHED` | Pipeline has completed. |
+| <a id="pipelinescopeenumpending"></a>`PENDING` | Pipeline has not started running yet. |
+| <a id="pipelinescopeenumrunning"></a>`RUNNING` | Pipeline is running. |
+| <a id="pipelinescopeenumtags"></a>`TAGS` | Tags. |
 
 ### `PipelineStatusEnum`
 

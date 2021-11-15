@@ -185,6 +185,17 @@ In milestone 15.0, we will remove the feature flag entirely. Moving forward, you
 
 Announced: 2021-11-22
 
+### Remove the `pipelines` field from the `version` field
+
+In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
+
+- The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
+- The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.
+
+To mitigate possible performance problems, we will remove the `versions` field's `pipelines` field in milestone 15.0. Although you will no longer be able to get all pipelines for all versions of a package, you can still get the pipelines of a single version through the remaining `pipelines` field for that version.
+
+Announced: 2021-11-22
+
 ### Update to the Container Registry group-level API
 
 In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).

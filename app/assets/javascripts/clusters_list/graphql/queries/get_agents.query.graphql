@@ -20,6 +20,8 @@ query getAgents(
       pageInfo {
         ...PageInfo
       }
+
+      count
     }
 
     repository {

@@ -1,7 +1,14 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ClustersMainView from '~/clusters_list/components/clusters_main_view.vue';
-import { CLUSTERS_TABS } from '~/clusters_list/constants';
+import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
+import {
+  AGENT,
+  CERTIFICATE_BASED,
+  CLUSTERS_TABS,
+  MAX_CLUSTERS_LIST,
+  MAX_LIST_COUNT,
+} from '~/clusters_list/constants';
 
 const defaultBranchName = 'default-branch';
 
@@ -26,6 +33,7 @@ describe('ClustersMainViewComponent', () => {
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabAtIndex = (index) => findAllTabs().at(index);
   const findComponent = () => wrapper.findByTestId('clusters-tab-component');
+  const findModal = () => wrapper.findComponent(InstallAgentModal);
 
   it('renders `GlTabs` with `syncActiveTabWithQueryParams` and `queryParamName` props set', () => {
     expect(findTabs().exists()).toBe(true);
@@ -40,11 +48,16 @@ describe('ClustersMainViewComponent', () => {
     expect(findComponent().props('defaultBranchName')).toBe(defaultBranchName);
   });
 
+  it('passes correct max-agents param to the modal', () => {
+    expect(findModal().props('maxAgents')).toBe(MAX_CLUSTERS_LIST);
+  });
+
   describe('tabs', () => {
     it.each`
-      tabTitle               | queryParamValue        | lineNumber
-      ${'Agent'}             | ${'agent'}             | ${0}
-      ${'Certificate based'} | ${'certificate_based'} | ${1}
+      tabTitle               | queryParamValue      | lineNumber
+      ${'All'}               | ${'all'}             | ${0}
+      ${'Agent'}             | ${AGENT}             | ${1}
+      ${'Certificate based'} | ${CERTIFICATE_BASED} | ${2}
     `(
       'renders correct tab title and query param value',
       ({ tabTitle, queryParamValue, lineNumber }) => {
@@ -52,5 +65,18 @@ describe('ClustersMainViewComponent', () => {
         expect(findGlTabAtIndex(lineNumber).props('queryParamValue')).toBe(queryParamValue);
       },
     );
+  });
+
+  describe('when the child component emits the tab change event', () => {
+    beforeEach(() => {
+      findComponent().vm.$emit('changeTab', AGENT);
+    });
+    it('changes the tab', () => {
+      expect(findTabs().attributes('value')).toBe('1');
+    });
+
+    it('passes correct max-agents param to the modal', () => {
+      expect(findModal().props('maxAgents')).toBe(MAX_LIST_COUNT);
+    });
   });
 });

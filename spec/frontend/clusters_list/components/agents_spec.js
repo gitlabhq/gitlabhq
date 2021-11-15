@@ -14,7 +14,7 @@ localVue.use(VueApollo);
 describe('Agents', () => {
   let wrapper;
 
-  const propsData = {
+  const defaultProps = {
     defaultBranchName: 'default',
   };
   const provideData = {
@@ -22,12 +22,12 @@ describe('Agents', () => {
     kasAddress: 'kas.example.com',
   };
 
-  const createWrapper = ({ agents = [], pageInfo = null, trees = [] }) => {
+  const createWrapper = ({ props = {}, agents = [], pageInfo = null, trees = [], count = 0 }) => {
     const provide = provideData;
     const apolloQueryResponse = {
       data: {
         project: {
-          clusterAgents: { nodes: agents, pageInfo, tokens: { nodes: [] } },
+          clusterAgents: { nodes: agents, pageInfo, tokens: { nodes: [] }, count },
           repository: { tree: { trees: { nodes: trees, pageInfo } } },
         },
       },
@@ -40,7 +40,10 @@ describe('Agents', () => {
     wrapper = shallowMount(Agents, {
       localVue,
       apolloProvider,
-      propsData,
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
       provide: provideData,
     });
 
@@ -79,6 +82,8 @@ describe('Agents', () => {
         },
       },
     ];
+
+    const count = 2;
 
     const trees = [
       {
@@ -120,7 +125,7 @@ describe('Agents', () => {
     ];
 
     beforeEach(() => {
-      return createWrapper({ agents, trees });
+      return createWrapper({ agents, count, trees });
     });
 
     it('should render agent table', () => {
@@ -130,6 +135,10 @@ describe('Agents', () => {
 
     it('should pass agent and folder info to table component', () => {
       expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
+    });
+
+    it('should emit agents count to the parent component', () => {
+      expect(wrapper.emitted().onAgentsLoad).toEqual([[count]]);
     });
 
     describe('when the agent has recently connected tokens', () => {
@@ -178,6 +187,20 @@ describe('Agents', () => {
 
       it('should pass pageInfo to the pagination component', () => {
         expect(findPaginationButtons().props()).toMatchObject(pageInfo);
+      });
+
+      describe('when limit is passed from the parent component', () => {
+        beforeEach(() => {
+          return createWrapper({
+            props: { limit: 6 },
+            agents,
+            pageInfo,
+          });
+        });
+
+        it('should not render pagination buttons', () => {
+          expect(findPaginationButtons().exists()).toBe(false);
+        });
       });
     });
   });
@@ -235,7 +258,7 @@ describe('Agents', () => {
     beforeEach(() => {
       wrapper = shallowMount(Agents, {
         mocks,
-        propsData,
+        propsData: defaultProps,
         provide: provideData,
       });
 

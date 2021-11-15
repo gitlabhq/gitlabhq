@@ -48,9 +48,9 @@ describe('Clusters', () => {
     mock.onGet(`${endpoint}?page=${header['x-page']}`).reply(response, body, header);
   };
 
-  const mountWrapper = () => {
+  const createWrapper = ({ propsData = {} }) => {
     store = ClusterStore(entryData);
-    wrapper = mount(Clusters, { provide: provideData, store, stubs: { GlTable } });
+    wrapper = mount(Clusters, { propsData, provide: provideData, store, stubs: { GlTable } });
     return axios.waitForAll();
   };
 
@@ -70,7 +70,7 @@ describe('Clusters', () => {
     mock = new MockAdapter(axios);
     mockPollingApi(200, apiData, paginationHeader());
 
-    return mountWrapper();
+    return createWrapper({});
   });
 
   afterEach(() => {
@@ -103,6 +103,16 @@ describe('Clusters', () => {
       });
       it('should render empty state', () => {
         expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('when is loaded as a child component', () => {
+      beforeEach(() => {
+        createWrapper({ limit: 6 });
+      });
+
+      it("shouldn't render pagination buttons", () => {
+        expect(findPaginatedButtons().exists()).toBe(false);
       });
     });
   });
@@ -248,7 +258,7 @@ describe('Clusters', () => {
 
     beforeEach(() => {
       mockPollingApi(200, apiData, paginationHeader(totalFirstPage, perPage, 1));
-      return mountWrapper();
+      return createWrapper({});
     });
 
     it('should load to page 1 with header values', () => {

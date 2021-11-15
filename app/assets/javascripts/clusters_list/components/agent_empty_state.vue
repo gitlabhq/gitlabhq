@@ -11,9 +11,6 @@ export default {
   getStartedDocsUrl: helpPagePath('user/clusters/agent/index', {
     anchor: 'define-a-configuration-repository',
   }),
-  integrationsDocsUrl: helpPagePath('user/clusters/agent/index', {
-    anchor: 'get-started-with-gitops-and-the-gitlab-agent',
-  }),
   components: {
     GlButton,
     GlEmptyState,
@@ -29,6 +26,11 @@ export default {
     hasConfigurations: {
       type: Boolean,
       required: true,
+    },
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
     },
   },
   computed: {
@@ -92,6 +94,7 @@ export default {
 
     <template #actions>
       <gl-button
+        v-if="!isChildComponent"
         v-gl-modal-directive="$options.modalId"
         :disabled="!hasConfigurations"
         data-testid="integration-primary-button"

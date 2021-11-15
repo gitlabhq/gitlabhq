@@ -17577,7 +17577,8 @@ CREATE TABLE plan_limits (
     dast_profile_schedules integer DEFAULT 1 NOT NULL,
     external_audit_event_destinations integer DEFAULT 5 NOT NULL,
     dotenv_variables integer DEFAULT 20 NOT NULL,
-    dotenv_size integer DEFAULT 5120 NOT NULL
+    dotenv_size integer DEFAULT 5120 NOT NULL,
+    pipeline_triggers integer DEFAULT 25000 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

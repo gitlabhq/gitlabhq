@@ -3,6 +3,10 @@
 module Ci
   class Trigger < Ci::ApplicationRecord
     include Presentable
+    include Limitable
+
+    self.limit_name = 'pipeline_triggers'
+    self.limit_scope = :project
 
     belongs_to :project
     belongs_to :owner, class_name: "User"
