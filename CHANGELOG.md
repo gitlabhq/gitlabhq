@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.1.8 (2021-11-15)
+
+### Fixed (1 change)
+
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@5abc66f89524b63873b0ce96b0f78c0acc2687f6) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@c23c94e9d791770fd169723845b12097b8512a9e) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@5aba12770829d43041ef4307049ed500c02b1d77) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@4d3a5798e1f136a027c0b7aab6a35afb3c207ce7) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@795271787c70b7c92a85daa253d2d61561603443) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+
 ## 14.1.7 (2021-09-30)
 
 ### Security (28 changes)
