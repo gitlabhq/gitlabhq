@@ -197,6 +197,7 @@ RSpec.describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        expect(response.parsed_body).to be_empty
       end
 
       it 'sets inline content disposition by default' do
@@ -274,6 +275,7 @@ RSpec.describe API::Repositories do
 
         expect(type).to eq('git-archive')
         expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.gz/)
+        expect(response.parsed_body).to be_empty
       end
 
       it 'returns the repository archive archive.zip' do

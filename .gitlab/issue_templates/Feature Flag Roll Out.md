@@ -30,6 +30,17 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- Describe the expected outcome when rolling out this feature -->
 
+### When is the feature viable?
+
+<!-- What are the settings we need to configure in order to have this feature viable? -->
+
+<!-- 
+Example below:
+ 
+1. Enable service ping collection
+   `ApplicationSetting.first.update(usage_ping_enabled: true)`
+-->
+
 ### What might happen if this goes wrong?
 
 <!-- Should the feature flag be turned off? Any MRs that need to be rolled back? Communication that needs to happen? What are some things you can think of that could go wrong - data loss or broken pages? -->

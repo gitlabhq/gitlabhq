@@ -36,38 +36,42 @@ module Gitlab
       end
 
       def steal(steal_class, retry_dead_jobs: false)
-        queues = [
-          Sidekiq::ScheduledSet.new,
-          Sidekiq::Queue.new(self.queue)
-        ]
+        with_shared_connection do
+          queues = [
+            Sidekiq::ScheduledSet.new,
+            Sidekiq::Queue.new(self.queue)
+          ]
 
-        if retry_dead_jobs
-          queues << Sidekiq::RetrySet.new
-          queues << Sidekiq::DeadSet.new
-        end
+          if retry_dead_jobs
+            queues << Sidekiq::RetrySet.new
+            queues << Sidekiq::DeadSet.new
+          end
 
-        queues.each do |queue|
-          queue.each do |job|
-            migration_class, migration_args = job.args
+          queues.each do |queue|
+            queue.each do |job|
+              migration_class, migration_args = job.args
 
-            next unless job.klass == worker_class.name
-            next unless migration_class == steal_class
-            next if block_given? && !(yield job)
+              next unless job.klass == worker_class.name
+              next unless migration_class == steal_class
+              next if block_given? && !(yield job)
 
-            begin
-              perform(migration_class, migration_args) if job.delete
-            rescue Exception # rubocop:disable Lint/RescueException
-              worker_class # enqueue this migration again
-                .perform_async(migration_class, migration_args)
+              begin
+                perform(migration_class, migration_args) if job.delete
+              rescue Exception # rubocop:disable Lint/RescueException
+                worker_class # enqueue this migration again
+                  .perform_async(migration_class, migration_args)
 
-              raise
+                raise
+              end
             end
           end
         end
       end
 
       def perform(class_name, arguments)
-        migration_class_for(class_name).new.perform(*arguments)
+        with_shared_connection do
+          migration_class_for(class_name).new.perform(*arguments)
+        end
       end
 
       def remaining

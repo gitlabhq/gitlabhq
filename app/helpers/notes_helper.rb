@@ -167,11 +167,11 @@ module NotesHelper
     }
   end
 
-  def discussions_path(issuable)
+  def discussions_path(issuable, **params)
     if issuable.is_a?(Issue)
-      discussions_project_issue_path(@project, issuable, format: :json)
+      discussions_project_issue_path(@project, issuable, params.merge(format: :json))
     else
-      discussions_project_merge_request_path(@project, issuable, format: :json)
+      discussions_project_merge_request_path(@project, issuable, params.merge(format: :json))
     end
   end
 

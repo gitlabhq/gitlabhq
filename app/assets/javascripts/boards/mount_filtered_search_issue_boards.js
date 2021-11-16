@@ -4,7 +4,7 @@ import store from '~/boards/stores';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 
-export default (apolloProvider) => {
+export default (apolloProvider, isSignedIn) => {
   const el = document.getElementById('js-issue-board-filtered-search');
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
@@ -20,6 +20,7 @@ export default (apolloProvider) => {
     el,
     provide: {
       initialFilterParams,
+      isSignedIn,
     },
     store, // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/324094
     apolloProvider,

@@ -13,7 +13,7 @@ import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import toggleFocusMode from '~/boards/toggle_focus';
-import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
+import { NavigationType, isLoggedIn, parseBoolean } from '~/lib/utils/common_utils';
 import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
 import initNewBoard from './new_board';
@@ -110,7 +110,7 @@ export default () => {
   });
 
   if (gon?.features?.issueBoardsFilteredSearch) {
-    initBoardsFilteredSearch(apolloProvider, parseBoolean($boardApp.dataset.epicFeatureAvailable));
+    initBoardsFilteredSearch(apolloProvider, isLoggedIn());
   }
 
   mountBoardApp($boardApp);

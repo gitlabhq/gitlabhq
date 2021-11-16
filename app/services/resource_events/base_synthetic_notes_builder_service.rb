@@ -24,8 +24,16 @@ module ResourceEvents
     private
 
     def apply_common_filters(events)
+      events = apply_pagination(events)
       events = apply_last_fetched_at(events)
       apply_fetch_until(events)
+    end
+
+    def apply_pagination(events)
+      return events if params[:paginated_notes].nil?
+      return events.none if params[:paginated_notes][table_name].blank?
+
+      events.id_in(params[:paginated_notes][table_name].map(&:id))
     end
 
     def apply_last_fetched_at(events)
@@ -46,6 +54,10 @@ module ResourceEvents
       strong_memoize(:resource_parent) do
         resource.project || resource.group
       end
+    end
+
+    def table_name
+      raise NotImplementedError
     end
   end
 end

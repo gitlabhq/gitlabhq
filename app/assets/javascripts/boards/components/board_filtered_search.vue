@@ -42,6 +42,7 @@ export default {
         types,
         weight,
         epicId,
+        myReactionEmoji,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -86,6 +87,13 @@ export default {
         filteredSearchValue.push({
           type: 'weight',
           value: { data: weight, operator: '=' },
+        });
+      }
+
+      if (myReactionEmoji) {
+        filteredSearchValue.push({
+          type: 'my_reaction_emoji',
+          value: { data: myReactionEmoji, operator: '=' },
         });
       }
 
@@ -147,6 +155,13 @@ export default {
         });
       }
 
+      if (this.filterParams['not[myReactionEmoji]']) {
+        filteredSearchValue.push({
+          type: 'my_reaction_emoji',
+          value: { data: this.filterParams['not[myReactionEmoji]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -163,6 +178,7 @@ export default {
         types,
         weight,
         epicId,
+        myReactionEmoji,
       } = this.filterParams;
 
       let notParams = {};
@@ -177,6 +193,7 @@ export default {
             'not[milestone_title]': this.filterParams.not.milestoneTitle,
             'not[weight]': this.filterParams.not.weight,
             'not[epic_id]': this.filterParams.not.epicId,
+            'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
           },
           undefined,
         );
@@ -192,6 +209,7 @@ export default {
         types,
         weight,
         epic_id: getIdFromGraphQLId(epicId),
+        my_reaction_emoji: myReactionEmoji,
       };
     },
   },
@@ -248,6 +266,9 @@ export default {
             break;
           case 'epic_id':
             filterParams.epicId = filter.value.data;
+            break;
+          case 'my_reaction_emoji':
+            filterParams.myReactionEmoji = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

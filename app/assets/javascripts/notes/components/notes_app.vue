@@ -98,15 +98,17 @@ export default {
       return this.noteableData.noteableType;
     },
     allDiscussions() {
+      let skeletonNotes = [];
+
       if (this.renderSkeleton || this.isLoading) {
         const prerenderedNotesCount = parseInt(this.notesData.prerenderedNotesCount, 10) || 0;
 
-        return new Array(prerenderedNotesCount).fill({
+        skeletonNotes = new Array(prerenderedNotesCount).fill({
           isSkeletonNote: true,
         });
       }
 
-      return this.discussions;
+      return this.discussions.concat(skeletonNotes);
     },
     canReply() {
       return this.userCanReply && !this.commentsDisabled && !this.timelineEnabled;

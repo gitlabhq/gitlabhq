@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # ZenTao product integration **(PREMIUM)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338178) in GitLab 14.5.
+
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
 
 ## Configure ZenTao

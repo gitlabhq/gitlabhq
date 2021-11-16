@@ -113,6 +113,7 @@ RSpec.describe API::Snippets, factory_default: :keep do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq 'text/plain'
       expect(headers['Content-Disposition']).to match(/^inline/)
+      expect(response.parsed_body).to be_empty
     end
 
     it 'returns 404 for invalid snippet id' do

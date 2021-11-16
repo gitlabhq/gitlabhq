@@ -149,8 +149,20 @@ module IssuableActions
                 .includes(:noteable)
                 .fresh
 
+    if paginated_discussions
+      paginated_discussions_by_type = paginated_discussions.records.group_by(&:table_name)
+
+      notes = if paginated_discussions_by_type['notes'].present?
+                notes.with_discussion_ids(paginated_discussions_by_type['notes'].map(&:discussion_id))
+              else
+                notes.none
+              end
+
+      response.headers['X-Next-Page-Cursor'] = paginated_discussions.cursor_for_next_page if paginated_discussions.has_next_page?
+    end
+
     if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
-      notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user).execute(notes)
+      notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user, paginated_notes: paginated_discussions_by_type).execute(notes)
     end
 
     notes = prepare_notes_for_rendering(notes)
@@ -169,6 +181,17 @@ module IssuableActions
   # rubocop:enable CodeReuse/ActiveRecord
 
   private
+
+  def paginated_discussions
+    return if params[:per_page].blank?
+    return unless issuable.instance_of?(Issue) && Feature.enabled?(:paginated_issue_discussions, project, default_enabled: :yaml)
+
+    strong_memoize(:paginated_discussions) do
+      issuable
+        .discussion_root_note_ids(notes_filter: notes_filter)
+        .keyset_paginate(cursor: params[:cursor], per_page: params[:per_page].to_i)
+    end
+  end
 
   def notes_filter
     strong_memoize(:notes_filter) do

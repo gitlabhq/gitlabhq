@@ -11,6 +11,8 @@ module API
 
       def send_git_snapshot(repository)
         header(*Gitlab::Workhorse.send_git_snapshot(repository))
+
+        body ''
       end
 
       def snapshot_project

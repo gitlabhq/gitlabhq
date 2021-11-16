@@ -73,6 +73,25 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
           coordinator.steal('Foo')
         end
 
+        it 'sets up the shared connection while stealing jobs' do
+          connection = double('connection')
+          allow(coordinator).to receive(:connection).and_return(connection)
+
+          expect(coordinator).to receive(:with_shared_connection).and_call_original
+
+          expect(queue[0]).to receive(:delete).and_return(true)
+
+          expect(coordinator).to receive(:perform).with('Foo', [10, 20]) do
+            expect(Gitlab::Database::SharedModel.connection).to be(connection)
+          end
+
+          coordinator.steal('Foo') do
+            expect(Gitlab::Database::SharedModel.connection).to be(connection)
+
+            true # the job is only performed if the block returns true
+          end
+        end
+
         it 'does not steal job that has already been taken' do
           expect(queue[0]).to receive(:delete).and_return(false)
 
@@ -194,13 +213,20 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
 
   describe '#perform' do
     let(:migration) { spy(:migration) }
+    let(:connection) { double('connection') }
 
     before do
       stub_const('Gitlab::BackgroundMigration::Foo', migration)
+
+      allow(coordinator).to receive(:connection).and_return(connection)
     end
 
-    it 'performs a background migration' do
-      expect(migration).to receive(:perform).with(10, 20).once
+    it 'performs a background migration with the configured shared connection' do
+      expect(coordinator).to receive(:with_shared_connection).and_call_original
+
+      expect(migration).to receive(:perform).with(10, 20).once do
+        expect(Gitlab::Database::SharedModel.connection).to be(connection)
+      end
 
       coordinator.perform('Foo', [10, 20])
     end

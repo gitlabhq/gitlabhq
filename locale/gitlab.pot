@@ -18859,7 +18859,7 @@ msgstr ""
 msgid "Invalid period"
 msgstr ""
 
-msgid "Invalid pin code"
+msgid "Invalid pin code."
 msgstr ""
 
 msgid "Invalid pod_name"
@@ -36649,6 +36649,9 @@ msgid "Try grouping with different labels"
 msgstr ""
 
 msgid "Try out GitLab Pipelines"
+msgstr ""
+
+msgid "Try the troubleshooting steps here."
 msgstr ""
 
 msgid "Try to fork again"

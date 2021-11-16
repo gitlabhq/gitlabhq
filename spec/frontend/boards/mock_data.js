@@ -4,6 +4,7 @@ import { ListType } from '~/boards/constants';
 import { __ } from '~/locale';
 import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
@@ -549,7 +550,16 @@ export const mockMoveData = {
   ...mockMoveIssueParams,
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
+export const mockEmojiToken = {
+  type: 'my_reaction_emoji',
+  icon: 'thumb-up',
+  title: 'My-Reaction',
+  unique: true,
+  token: EmojiToken,
+  fetchEmojis: expect.any(Function),
+};
+
+export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji) => [
   {
     icon: 'user',
     title: __('Assignee'),
@@ -590,6 +600,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     symbol: '~',
     fetchLabels,
   },
+  ...(hasEmoji ? [mockEmojiToken] : []),
   {
     icon: 'clock',
     title: __('Milestone'),

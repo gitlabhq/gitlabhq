@@ -47,6 +47,15 @@ RSpec.describe API::Files do
     "/projects/#{project.id}/repository/files/#{file_path}"
   end
 
+  def expect_to_send_git_blob(url, params)
+    expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+    get url, params: params
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(response.parsed_body).to be_empty
+  end
+
   context 'http headers' do
     it 'converts value into string' do
       helper.set_http_headers(test: 1)
@@ -257,11 +266,7 @@ RSpec.describe API::Files do
 
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
-
-        get api(url, api_user, **options), params: params
-
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_to_send_git_blob(api(url, api_user, **options), params)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
@@ -523,11 +528,8 @@ RSpec.describe API::Files do
 
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params: params
-
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_to_send_git_blob(api(url, current_user), params)
       end
 
       context 'when ref is not provided' do
@@ -537,39 +539,29 @@ RSpec.describe API::Files do
 
         it 'returns response :ok', :aggregate_failures do
           url = route(file_path) + "/raw"
-          expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-          get api(url, current_user), params: {}
-
-          expect(response).to have_gitlab_http_status(:ok)
+          expect_to_send_git_blob(api(url, current_user), {})
         end
       end
 
       it 'returns raw file info for files with dots' do
         url = route('.gitignore') + "/raw"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params: params
-
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_to_send_git_blob(api(url, current_user), params)
       end
 
       it 'returns file by commit sha' do
         # This file is deleted on HEAD
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
         params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(route(file_path) + "/raw", current_user), params: params
-
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_to_send_git_blob(api(route(file_path) + "/raw", current_user), params)
       end
 
       it 'sets no-cache headers' do
         url = route('.gitignore') + "/raw"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params: params
+        expect_to_send_git_blob(api(url, current_user), params)
 
         expect(response.headers["Cache-Control"]).to eq("max-age=0, private, must-revalidate, no-store, no-cache")
         expect(response.headers["Pragma"]).to eq("no-cache")
@@ -633,11 +625,9 @@ RSpec.describe API::Files do
         # This file is deleted on HEAD
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
         params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
-        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+        url = api(route(file_path) + "/raw", personal_access_token: token)
 
-        get api(route(file_path) + "/raw", personal_access_token: token), params: params
-
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_to_send_git_blob(url, params)
       end
     end
   end

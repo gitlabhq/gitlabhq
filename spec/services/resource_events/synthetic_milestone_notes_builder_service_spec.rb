@@ -24,5 +24,7 @@ RSpec.describe ResourceEvents::SyntheticMilestoneNotesBuilderService do
         'removed milestone'
       ])
     end
+
+    it_behaves_like 'filters by paginated notes', :resource_milestone_event
   end
 end

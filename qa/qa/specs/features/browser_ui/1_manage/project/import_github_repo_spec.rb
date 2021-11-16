@@ -4,7 +4,6 @@ module QA
   RSpec.describe 'Manage', :github, :requires_admin do
     describe 'Project import' do
       let(:github_repo) { 'gitlab-qa-github/test-project' }
-      let(:imported_project_name) { 'imported-project' }
       let(:api_client) { Runtime::API::Client.as_admin }
       let(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }
       let(:user) do
@@ -17,11 +16,10 @@ module QA
       let(:imported_project) do
         Resource::ProjectImportedFromGithub.init do |project|
           project.import = true
-          project.add_name_uuid = false
-          project.name = imported_project_name
           project.group = group
           project.github_personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = github_repo
+          project.api_client = api_client
         end
       end
 
@@ -43,7 +41,7 @@ module QA
       it 'imports a GitHub repo', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1607' do
         Page::Project::Import::Github.perform do |import_page|
           import_page.add_personal_access_token(Runtime::Env.github_access_token)
-          import_page.import!(github_repo, group.full_path, imported_project_name)
+          import_page.import!(github_repo, group.full_path, imported_project.name)
 
           aggregate_failures do
             expect(import_page).to have_imported_project(github_repo)
@@ -56,7 +54,7 @@ module QA
         imported_project.reload!.visit!
         Page::Project::Show.perform do |project|
           aggregate_failures do
-            expect(project).to have_content(imported_project_name)
+            expect(project).to have_content(imported_project.name)
             expect(project).to have_content('This test project is used for automated GitHub import by GitLab QA.')
           end
         end

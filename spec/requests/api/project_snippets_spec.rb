@@ -400,6 +400,7 @@ RSpec.describe API::ProjectSnippets do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq 'text/plain'
+      expect(response.parsed_body).to be_empty
     end
 
     it 'returns 404 for invalid snippet id' do

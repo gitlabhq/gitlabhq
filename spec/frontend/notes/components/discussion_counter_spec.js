@@ -53,7 +53,7 @@ describe('DiscussionCounter component', () => {
 
   describe('has no resolvable discussions', () => {
     it('does not render', () => {
-      store.commit(types.SET_INITIAL_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
+      store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [{ ...discussionMock, resolvable: false }]);
       store.dispatch('updateResolvableDiscussionsCounts');
       wrapper = shallowMount(DiscussionCounter, { store, localVue });
 
@@ -64,7 +64,7 @@ describe('DiscussionCounter component', () => {
   describe('has resolvable discussions', () => {
     const updateStore = (note = {}) => {
       discussionMock.notes[0] = { ...discussionMock.notes[0], ...note };
-      store.commit(types.SET_INITIAL_DISCUSSIONS, [discussionMock]);
+      store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussionMock]);
       store.dispatch('updateResolvableDiscussionsCounts');
     };
 
@@ -97,7 +97,7 @@ describe('DiscussionCounter component', () => {
     let toggleAllButton;
     const updateStoreWithExpanded = (expanded) => {
       const discussion = { ...discussionMock, expanded };
-      store.commit(types.SET_INITIAL_DISCUSSIONS, [discussion]);
+      store.commit(types.ADD_OR_UPDATE_DISCUSSIONS, [discussion]);
       store.dispatch('updateResolvableDiscussionsCounts');
       wrapper = shallowMount(DiscussionCounter, { store, localVue });
       toggleAllButton = wrapper.find('.toggle-all-discussions-btn');

@@ -578,6 +578,7 @@ RSpec.describe API::Ci::Jobs do
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.parsed_body).to be_empty
         end
 
         context 'when artifacts are locked' do
@@ -948,6 +949,7 @@ RSpec.describe API::Ci::Jobs do
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.parsed_body).to be_empty
         end
       end
 

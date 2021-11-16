@@ -119,7 +119,7 @@ describe('Actions Notes Store', () => {
         actions.setInitialNotes,
         [individualNote],
         { notes: [] },
-        [{ type: 'SET_INITIAL_DISCUSSIONS', payload: [individualNote] }],
+        [{ type: 'ADD_OR_UPDATE_DISCUSSIONS', payload: [individualNote] }],
         [],
         done,
       );
@@ -1391,6 +1391,95 @@ describe('Actions Notes Store', () => {
         null,
         [{ type: mutationTypes.SET_NOTES_FETCHING_STATE, payload: true }],
         [],
+        done,
+      );
+    });
+  });
+
+  describe('fetchDiscussions', () => {
+    const discussion = { notes: [] };
+
+    afterEach(() => {
+      window.gon = {};
+    });
+
+    it('updates the discussions and dispatches `updateResolvableDiscussionsCounts`', (done) => {
+      axiosMock.onAny().reply(200, { discussion });
+      testAction(
+        actions.fetchDiscussions,
+        {},
+        null,
+        [
+          { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
+          { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
+        ],
+        [{ type: 'updateResolvableDiscussionsCounts' }],
+        done,
+      );
+    });
+
+    it('dispatches `fetchDiscussionsBatch` action if `paginatedIssueDiscussions` feature flag is enabled', (done) => {
+      window.gon = { features: { paginatedIssueDiscussions: true } };
+
+      testAction(
+        actions.fetchDiscussions,
+        { path: 'test-path', filter: 'test-filter', persistFilter: 'test-persist-filter' },
+        null,
+        [],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: {
+              config: {
+                params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
+              },
+              path: 'test-path',
+              perPage: 20,
+            },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('fetchDiscussionsBatch', () => {
+    const discussion = { notes: [] };
+
+    const config = {
+      params: { notes_filter: 'test-filter', persist_filter: 'test-persist-filter' },
+    };
+
+    const actionPayload = { config, path: 'test-path', perPage: 20 };
+
+    it('updates the discussions and dispatches `updateResolvableDiscussionsCounts if there are no headers', (done) => {
+      axiosMock.onAny().reply(200, { discussion }, {});
+      testAction(
+        actions.fetchDiscussionsBatch,
+        actionPayload,
+        null,
+        [
+          { type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } },
+          { type: mutationTypes.SET_FETCHING_DISCUSSIONS, payload: false },
+        ],
+        [{ type: 'updateResolvableDiscussionsCounts' }],
+        done,
+      );
+    });
+
+    it('dispatches itself if there is `x-next-page-cursor` header', (done) => {
+      axiosMock.onAny().reply(200, { discussion }, { 'x-next-page-cursor': 1 });
+      testAction(
+        actions.fetchDiscussionsBatch,
+        actionPayload,
+        null,
+        [{ type: mutationTypes.ADD_OR_UPDATE_DISCUSSIONS, payload: { discussion } }],
+        [
+          {
+            type: 'fetchDiscussionsBatch',
+            payload: { ...actionPayload, perPage: 30, cursor: 1 },
+          },
+        ],
         done,
       );
     });

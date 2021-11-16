@@ -16,5 +16,9 @@ module ResourceEvents
       events = resource.resource_state_events.includes(user: :status) # rubocop: disable CodeReuse/ActiveRecord
       apply_common_filters(events)
     end
+
+    def table_name
+      'resource_state_events'
+    end
   end
 end

@@ -239,7 +239,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       def readable_discussion_notes(noteable, discussion_ids)
         notes = noteable.notes
-          .where(discussion_id: discussion_ids)
+          .with_discussion_ids(discussion_ids)
           .inc_relations_for_view
           .includes(:noteable)
           .fresh
