@@ -1,16 +1,8 @@
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 
-export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = s__(
-  'SourceEditor|"el" parameter is required for createInstance()',
-);
-
 export const URI_PREFIX = 'gitlab';
 export const CONTENT_UPDATE_DEBOUNCE = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
-
-export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = s__(
-  'SourceEditor|Source Editor instance is required to set up an extension.',
-);
 
 export const EDITOR_READY_EVENT = 'editor-ready';
 
@@ -20,8 +12,30 @@ export const EDITOR_TYPE_DIFF = 'vs.editor.IDiffEditor';
 export const EDITOR_CODE_INSTANCE_FN = 'createInstance';
 export const EDITOR_DIFF_INSTANCE_FN = 'createDiffInstance';
 
+export const SOURCE_EDITOR_INSTANCE_ERROR_NO_EL = s__(
+  'SourceEditor|"el" parameter is required for createInstance()',
+);
+export const ERROR_INSTANCE_REQUIRED_FOR_EXTENSION = s__(
+  'SourceEditor|Source Editor instance is required to set up an extension.',
+);
 export const EDITOR_EXTENSION_DEFINITION_ERROR = s__(
   'SourceEditor|Extension definition should be either a class or a function',
+);
+export const EDITOR_EXTENSION_NO_DEFINITION_ERROR = s__(
+  'SourceEditor|`definition` property is expected on the extension.',
+);
+export const EDITOR_EXTENSION_DEFINITION_TYPE_ERROR = s__(
+  'SourceEditor|Extension definition should be either class, function, or an Array of definitions.',
+);
+export const EDITOR_EXTENSION_NOT_SPECIFIED_FOR_UNUSE_ERROR = s__(
+  'SourceEditor|No extension for unuse has been specified.',
+);
+export const EDITOR_EXTENSION_NOT_REGISTERED_ERROR = s__('SourceEditor|%{name} is not registered.');
+export const EDITOR_EXTENSION_NAMING_CONFLICT_ERROR = s__(
+  'SourceEditor|Name conflict for "%{prop}()" method.',
+);
+export const EDITOR_EXTENSION_STORE_IS_MISSING_ERROR = s__(
+  'SourceEditor|Extensions Store is required to check for an extension.',
 );
 
 //

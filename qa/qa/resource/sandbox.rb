@@ -25,6 +25,8 @@ module QA
       alias_method :full_path, :path
 
       def fabricate!
+        Flow::Login.sign_in_unless_signed_in
+
         Page::Main::Menu.perform(&:go_to_groups)
 
         Page::Dashboard::Groups.perform do |groups_page|
@@ -39,6 +41,8 @@ module QA
               group.set_visibility('Public')
               group.create
             end
+
+            @id = Page::Group::Show.perform(&:group_id)
           end
         end
       end

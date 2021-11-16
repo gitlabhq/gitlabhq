@@ -32697,10 +32697,28 @@ msgstr ""
 msgid "SourceEditor|\"el\" parameter is required for createInstance()"
 msgstr ""
 
+msgid "SourceEditor|%{name} is not registered."
+msgstr ""
+
 msgid "SourceEditor|Extension definition should be either a class or a function"
 msgstr ""
 
+msgid "SourceEditor|Extension definition should be either class, function, or an Array of definitions."
+msgstr ""
+
+msgid "SourceEditor|Extensions Store is required to check for an extension."
+msgstr ""
+
+msgid "SourceEditor|Name conflict for \"%{prop}()\" method."
+msgstr ""
+
+msgid "SourceEditor|No extension for unuse has been specified."
+msgstr ""
+
 msgid "SourceEditor|Source Editor instance is required to set up an extension."
+msgstr ""
+
+msgid "SourceEditor|`definition` property is expected on the extension."
 msgstr ""
 
 msgid "Sourcegraph"

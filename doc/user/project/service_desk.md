@@ -86,10 +86,10 @@ To improve your project's security, we recommend the following:
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
-The unique internal email address is visible to project members with Maintainer (or higher)
-[permission level](../permissions.md)
-in your GitLab instance. However, when using an email alias externally, an end user
-(issue creator) cannot see the internal email address displayed in the information note.
+The unique internal email address is visible to project members at least
+the Reporter [role](../permissions.md) in your GitLab instance.
+An external user (issue creator) cannot see the internal email address
+displayed in the information note.
 
 ### Using customized email templates
 

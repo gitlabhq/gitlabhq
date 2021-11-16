@@ -1,37 +1,6 @@
 import EditorExtension from '~/editor/source_editor_extension';
 import { EDITOR_EXTENSION_DEFINITION_ERROR } from '~/editor/constants';
-
-class MyClassExtension {
-  // eslint-disable-next-line class-methods-use-this
-  provides() {
-    return {
-      shared: () => 'extension',
-      classExtMethod: () => 'class own method',
-    };
-  }
-}
-
-function MyFnExtension() {
-  return {
-    fnExtMethod: () => 'fn own method',
-    provides: () => {
-      return {
-        shared: () => 'extension',
-      };
-    },
-  };
-}
-
-const MyConstExt = () => {
-  return {
-    provides: () => {
-      return {
-        shared: () => 'extension',
-        constExtMethod: () => 'const own method',
-      };
-    },
-  };
-};
+import * as helpers from './helpers';
 
 describe('Editor Extension', () => {
   const dummyObj = { foo: 'bar' };
@@ -52,16 +21,16 @@ describe('Editor Extension', () => {
   );
 
   it.each`
-    definition          | setupOptions | expectedName
-    ${MyClassExtension} | ${undefined} | ${'MyClassExtension'}
-    ${MyClassExtension} | ${{}}        | ${'MyClassExtension'}
-    ${MyClassExtension} | ${dummyObj}  | ${'MyClassExtension'}
-    ${MyFnExtension}    | ${undefined} | ${'MyFnExtension'}
-    ${MyFnExtension}    | ${{}}        | ${'MyFnExtension'}
-    ${MyFnExtension}    | ${dummyObj}  | ${'MyFnExtension'}
-    ${MyConstExt}       | ${undefined} | ${'MyConstExt'}
-    ${MyConstExt}       | ${{}}        | ${'MyConstExt'}
-    ${MyConstExt}       | ${dummyObj}  | ${'MyConstExt'}
+    definition                  | setupOptions | expectedName
+    ${helpers.MyClassExtension} | ${undefined} | ${'MyClassExtension'}
+    ${helpers.MyClassExtension} | ${{}}        | ${'MyClassExtension'}
+    ${helpers.MyClassExtension} | ${dummyObj}  | ${'MyClassExtension'}
+    ${helpers.MyFnExtension}    | ${undefined} | ${'MyFnExtension'}
+    ${helpers.MyFnExtension}    | ${{}}        | ${'MyFnExtension'}
+    ${helpers.MyFnExtension}    | ${dummyObj}  | ${'MyFnExtension'}
+    ${helpers.MyConstExt}       | ${undefined} | ${'MyConstExt'}
+    ${helpers.MyConstExt}       | ${{}}        | ${'MyConstExt'}
+    ${helpers.MyConstExt}       | ${dummyObj}  | ${'MyConstExt'}
   `(
     'correctly creates extension for definition = $definition and setupOptions = $setupOptions',
     ({ definition, setupOptions, expectedName }) => {
@@ -81,10 +50,10 @@ describe('Editor Extension', () => {
 
   describe('api', () => {
     it.each`
-      definition          | expectedKeys
-      ${MyClassExtension} | ${['shared', 'classExtMethod']}
-      ${MyFnExtension}    | ${['shared']}
-      ${MyConstExt}       | ${['shared', 'constExtMethod']}
+      definition                  | expectedKeys
+      ${helpers.MyClassExtension} | ${['shared', 'classExtMethod']}
+      ${helpers.MyFnExtension}    | ${['fnExtMethod']}
+      ${helpers.MyConstExt}       | ${['constExtMethod']}
     `('correctly returns API for $definition', ({ definition, expectedKeys }) => {
       const extension = new EditorExtension({ definition });
       const expectedApi = Object.fromEntries(

@@ -90,9 +90,9 @@ This depends on the feature and what sort of impact it might have.
 
 Guidelines:
 
-1. If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
-1. For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
-1. For features that impact the user experience, consider notifying `#support_gitlab-com` beforehand.
+- Consider notifying `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
+- If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+- For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 
 #### Process
 

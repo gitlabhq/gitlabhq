@@ -618,9 +618,9 @@ module Gitlab
           todos: distinct_count(::Todo.where(time_period), :author_id),
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
-          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_cloud.where(time_period), :creator_id),
-          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_server.where(time_period), :creator_id)
+          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).where(time_period), :creator_id),
+          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_cloud.where(time_period), :creator_id),
+          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -915,7 +915,30 @@ module Gitlab
       end
 
       def projects_imported_count(from, time_period)
-        count(::Project.imported_from(from).where(time_period).where.not(import_type: nil)) # rubocop: disable CodeReuse/ActiveRecord
+        # rubocop:disable CodeReuse/ActiveRecord
+        relation = ::Project.imported_from(from).where.not(import_type: nil) # rubocop:disable UsageData/LargeTable
+        if time_period.empty?
+          count(relation)
+        else
+          @project_import_id ||= {}
+          start = time_period[:created_at].first
+          finish = time_period[:created_at].last
+
+          # can be nil values here if no records are in our range and it is possible the same instance
+          # is called with different time periods since it is passed in as a variable
+          unless @project_import_id.key?(start)
+            @project_import_id[start] = ::Project.select(:id).where(Project.arel_table[:created_at].gteq(start)) # rubocop:disable UsageData/LargeTable
+                                                 .order(created_at: :asc).limit(1).first&.id
+          end
+
+          unless @project_import_id.key?(finish)
+            @project_import_id[finish] = ::Project.select(:id).where(Project.arel_table[:created_at].lteq(finish)) # rubocop:disable UsageData/LargeTable
+                                                  .order(created_at: :desc).limit(1).first&.id
+          end
+
+          count(relation, start: @project_import_id[start], finish: @project_import_id[finish])
+        end
+        # rubocop:enable CodeReuse/ActiveRecord
       end
 
       def issue_imports(time_period)

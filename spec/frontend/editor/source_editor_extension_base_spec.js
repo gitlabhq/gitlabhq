@@ -148,7 +148,10 @@ describe('The basis for an Source Editor extension', () => {
       revealLineInCenter: revealSpy,
       deltaDecorations: decorationsSpy,
     };
-    const defaultDecorationOptions = { isWholeLine: true, className: 'active-line-text' };
+    const defaultDecorationOptions = {
+      isWholeLine: true,
+      className: 'active-line-text',
+    };
 
     useFakeRequestAnimationFrame();
 
@@ -157,18 +160,22 @@ describe('The basis for an Source Editor extension', () => {
     });
 
     it.each`
-      desc                                               | hash         | shouldReveal | expectedRange
-      ${'properly decorates a single line'}              | ${'#L10'}    | ${true}      | ${[10, 1, 10, 1]}
-      ${'properly decorates multiple lines'}             | ${'#L7-42'}  | ${true}      | ${[7, 1, 42, 1]}
-      ${'correctly highlights if lines are reversed'}    | ${'#L42-7'}  | ${true}      | ${[7, 1, 42, 1]}
-      ${'highlights one line if start/end are the same'} | ${'#L7-7'}   | ${true}      | ${[7, 1, 7, 1]}
-      ${'does not highlight if there is no hash'}        | ${''}        | ${false}     | ${null}
-      ${'does not highlight if the hash is undefined'}   | ${undefined} | ${false}     | ${null}
-      ${'does not highlight if hash is incomplete 1'}    | ${'#L'}      | ${false}     | ${null}
-      ${'does not highlight if hash is incomplete 2'}    | ${'#L-'}     | ${false}     | ${null}
-    `('$desc', ({ hash, shouldReveal, expectedRange } = {}) => {
+      desc                                                  | hash         | bounds          | shouldReveal | expectedRange
+      ${'properly decorates a single line'}                 | ${'#L10'}    | ${undefined}    | ${true}      | ${[10, 1, 10, 1]}
+      ${'properly decorates multiple lines'}                | ${'#L7-42'}  | ${undefined}    | ${true}      | ${[7, 1, 42, 1]}
+      ${'correctly highlights if lines are reversed'}       | ${'#L42-7'}  | ${undefined}    | ${true}      | ${[7, 1, 42, 1]}
+      ${'highlights one line if start/end are the same'}    | ${'#L7-7'}   | ${undefined}    | ${true}      | ${[7, 1, 7, 1]}
+      ${'does not highlight if there is no hash'}           | ${''}        | ${undefined}    | ${false}     | ${null}
+      ${'does not highlight if the hash is undefined'}      | ${undefined} | ${undefined}    | ${false}     | ${null}
+      ${'does not highlight if hash is incomplete 1'}       | ${'#L'}      | ${undefined}    | ${false}     | ${null}
+      ${'does not highlight if hash is incomplete 2'}       | ${'#L-'}     | ${undefined}    | ${false}     | ${null}
+      ${'highlights lines if bounds are passed'}            | ${undefined} | ${[17, 42]}     | ${true}      | ${[17, 1, 42, 1]}
+      ${'highlights one line if bounds has a single value'} | ${undefined} | ${[17]}         | ${true}      | ${[17, 1, 17, 1]}
+      ${'does not highlight if bounds is invalid'}          | ${undefined} | ${[Number.NaN]} | ${false}     | ${null}
+      ${'uses bounds if both hash and bounds exist'}        | ${'#L7-42'}  | ${[3, 5]}       | ${true}      | ${[3, 1, 5, 1]}
+    `('$desc', ({ hash, bounds, shouldReveal, expectedRange } = {}) => {
       window.location.hash = hash;
-      SourceEditorExtension.highlightLines(instance);
+      SourceEditorExtension.highlightLines(instance, bounds);
       if (!shouldReveal) {
         expect(revealSpy).not.toHaveBeenCalled();
         expect(decorationsSpy).not.toHaveBeenCalled();
@@ -192,6 +199,43 @@ describe('The basis for an Source Editor extension', () => {
       expect(instance.lineDecorations).toBeUndefined();
       SourceEditorExtension.highlightLines(instance);
       expect(instance.lineDecorations).toBe('foo');
+    });
+
+    it('replaces existing line highlights', () => {
+      const oldLineDecorations = [
+        {
+          range: new Range(1, 1, 20, 1),
+          options: { isWholeLine: true, className: 'active-line-text' },
+        },
+      ];
+      const newLineDecorations = [
+        {
+          range: new Range(7, 1, 10, 1),
+          options: { isWholeLine: true, className: 'active-line-text' },
+        },
+      ];
+      instance.lineDecorations = oldLineDecorations;
+      SourceEditorExtension.highlightLines(instance, [7, 10]);
+      expect(decorationsSpy).toHaveBeenCalledWith(oldLineDecorations, newLineDecorations);
+    });
+  });
+
+  describe('removeHighlights', () => {
+    const decorationsSpy = jest.fn();
+    const lineDecorations = [
+      {
+        range: new Range(1, 1, 20, 1),
+        options: { isWholeLine: true, className: 'active-line-text' },
+      },
+    ];
+    const instance = {
+      deltaDecorations: decorationsSpy,
+      lineDecorations,
+    };
+
+    it('removes all existing decorations', () => {
+      SourceEditorExtension.removeHighlights(instance);
+      expect(decorationsSpy).toHaveBeenCalledWith(lineDecorations, []);
     });
   });
 

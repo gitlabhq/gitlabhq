@@ -9,6 +9,7 @@ module QA
         view 'app/views/groups/_home_panel.html.haml' do
           element :new_project_button
           element :new_subgroup_button
+          element :group_id_content
         end
 
         view 'app/assets/javascripts/groups/constants.js' do
@@ -38,6 +39,10 @@ module QA
 
         def go_to_new_project
           click_element :new_project_button
+        end
+
+        def group_id
+          find_element(:group_id_content).text.delete('Group ID: ')
         end
 
         def leave_group

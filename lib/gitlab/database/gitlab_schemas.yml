@@ -284,7 +284,7 @@ lfs_objects_projects: :gitlab_main
 licenses: :gitlab_main
 lists: :gitlab_main
 list_user_preferences: :gitlab_main
-loose_foreign_keys_deleted_records: :gitlab_main
+loose_foreign_keys_deleted_records: :gitlab_shared
 member_tasks: :gitlab_main
 members: :gitlab_main
 merge_request_assignees: :gitlab_main
