@@ -1776,9 +1776,17 @@
       changes: *code-backstage-patterns
       when: on_success
 
-.setup:rules:no_ee_check:
+.setup:rules:no-ee-check:
   rules:
     - <<: *if-not-foss
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.setup:rules:no-jh-check:
+  rules:
+    - <<: *if-jh
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns

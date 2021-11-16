@@ -41,13 +41,21 @@ gitlab_git_test:
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
 
-no_ee_check:
+no-ee-check:
   extends:
     - .minimal-job
-    - .setup:rules:no_ee_check
+    - .setup:rules:no-ee-check
   stage: test
   script:
-    - scripts/no-ee-check
+    - scripts/no-dir-check ee
+
+no-jh-check:
+  extends:
+    - .minimal-job
+    - .setup:rules:no-jh-check
+  stage: test
+  script:
+    - scripts/no-dir-check jh
 
 verify-tests-yml:
   extends:

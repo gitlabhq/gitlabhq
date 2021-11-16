@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+dir_name = ARGV.first || abort('ERROR: Please specify a directory.')
+dir_path = File.expand_path(dir_name, "#{__dir__}/..")
+
+if Dir.exist?(dir_path)
+  abort("ERROR: This repository contains #{dir_name}/ directory. #{dir_name.upcase} changes should go to the corresponding repository.")
+end
