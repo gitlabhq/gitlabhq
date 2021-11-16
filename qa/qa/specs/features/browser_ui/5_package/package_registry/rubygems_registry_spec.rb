@@ -13,7 +13,7 @@ module QA
 
       let(:package) do
         Resource::Package.init do |package|
-          package.name = 'mygem'
+          package.name = "mygem-#{SecureRandom.hex(8)}"
           package.project = project
         end
       end
@@ -46,17 +46,9 @@ module QA
       it 'publishes and deletes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1906' do
         Flow::Login.sign_in
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
-          push.directory = Pathname
-            .new(__dir__)
-            .join('../../../../../fixtures/rubygems_package')
-          push.commit_message = 'RubyGems package'
-        end
-
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
-          commit.commit_message = 'Add mygem.gemspec'
+          commit.commit_message = 'Add package files'
           commit.add_files(
             [
               {
@@ -74,8 +66,8 @@ module QA
                           echo "#{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems: '${CI_JOB_TOKEN}'" >> ~/.gem/credentials
                         - chmod 0600 ~/.gem/credentials
                       script:
-                        - gem build mygem
-                        - gem push mygem-0.0.1.gem --host #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems
+                        - gem build #{package.name}
+                        - gem push #{package.name}-0.0.1.gem --host #{gitlab_address_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/rubygems
                       tags:
                         - "runner-for-#{project.name}"
                   YAML
@@ -89,6 +81,52 @@ module QA
                         puts "Hello world!"
                       end
                     end
+                  RUBY
+              },
+              {
+                file_path: "#{package.name}.gemspec",
+                content:
+                  <<~RUBY
+                    # frozen_string_literal: true
+
+                    Gem::Specification.new do |s|
+                      s.name = '#{package.name}'
+                      s.authors = ['Tanuki Steve', 'Hal 9000']
+                      s.author = 'Tanuki Steve'
+                      s.version = '0.0.1'
+                      s.date = '2011-09-29'
+                      s.summary = 'this is a test package'
+                      s.files = ['lib/hello_gem.rb']
+                      s.require_paths = ['lib']
+
+                      s.description = 'A test package for GitLab.'
+                      s.email = 'tanuki@not_real.com'
+                      s.homepage = 'https://gitlab.com/ruby-co/my-package'
+                      s.license = 'MIT'
+
+                      s.metadata = {
+                        'bug_tracker_uri' => 'https://gitlab.com/ruby-co/my-package/issues',
+                        'changelog_uri' => 'https://gitlab.com/ruby-co/my-package/CHANGELOG.md',
+                        'documentation_uri' => 'https://gitlab.com/ruby-co/my-package/docs',
+                        'mailing_list_uri' => 'https://gitlab.com/ruby-co/my-package/mailme',
+                        'source_code_uri' => 'https://gitlab.com/ruby-co/my-package'
+                      }
+
+                      s.bindir = 'bin'
+                      s.platform = Gem::Platform::RUBY
+                      s.post_install_message = 'Installed, thank you!'
+                      s.rdoc_options = ['--main']
+                      s.required_ruby_version = '>= 2.7.0'
+                      s.required_rubygems_version = '>= 1.8.11'
+                      s.requirements = 'A high powered server or calculator'
+                      s.rubygems_version = '1.8.09'
+
+                      s.add_dependency 'dependency_1', '~> 1.2.3'
+                      s.add_dependency 'dependency_2', '3.0.0'
+                      s.add_dependency 'dependency_3', '>= 1.0.0'
+                      s.add_dependency 'dependency_4'
+                    end
+
                   RUBY
               }
             ]

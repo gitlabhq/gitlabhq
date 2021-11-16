@@ -1,12 +1,12 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/components/details_page/empty_state.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
 import {
   NO_TAGS_TITLE,
   NO_TAGS_MESSAGE,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 
 describe('EmptyTagsState component', () => {
   let wrapper;

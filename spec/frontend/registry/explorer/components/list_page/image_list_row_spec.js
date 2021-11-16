@@ -2,9 +2,9 @@ import { GlIcon, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import DeleteButton from '~/registry/explorer/components/delete_button.vue';
-import CleanupStatus from '~/registry/explorer/components/list_page/cleanup_status.vue';
-import Component from '~/registry/explorer/components/list_page/image_list_row.vue';
+import DeleteButton from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
+import CleanupStatus from '~/packages_and_registries/container_registry/explorer/components/list_page/cleanup_status.vue';
+import Component from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list_row.vue';
 import {
   ROW_SCHEDULED_FOR_DELETION,
   LIST_DELETE_BUTTON_DISABLED,
@@ -12,7 +12,7 @@ import {
   IMAGE_DELETE_SCHEDULED_STATUS,
   SCHEDULED_STATUS,
   ROOT_IMAGE_TEXT,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { imagesListResponse } from '../../mock_data';

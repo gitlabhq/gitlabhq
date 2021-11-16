@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import component from '~/registry/explorer/components/delete_button.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/delete_button.vue';
 
 describe('delete_button', () => {
   let wrapper;

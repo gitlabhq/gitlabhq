@@ -1,7 +1,7 @@
 import { GlDropdown } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import QuickstartDropdown from '~/registry/explorer/components/list_page/cli_commands.vue';
+import QuickstartDropdown from '~/packages_and_registries/container_registry/explorer/components/list_page/cli_commands.vue';
 import {
   QUICK_START,
   LOGIN_COMMAND_LABEL,
@@ -10,7 +10,7 @@ import {
   COPY_BUILD_TITLE,
   PUSH_COMMAND_LABEL,
   COPY_PUSH_TITLE,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 import Tracking from '~/tracking';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 

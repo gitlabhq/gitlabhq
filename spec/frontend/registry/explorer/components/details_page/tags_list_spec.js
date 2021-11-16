@@ -4,12 +4,15 @@ import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import EmptyTagsState from '~/registry/explorer/components/details_page/empty_state.vue';
-import component from '~/registry/explorer/components/details_page/tags_list.vue';
-import TagsListRow from '~/registry/explorer/components/details_page/tags_list_row.vue';
-import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
-import { TAGS_LIST_TITLE, REMOVE_TAGS_BUTTON_TITLE } from '~/registry/explorer/constants/index';
-import getContainerRepositoryTagsQuery from '~/registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
+import EmptyTagsState from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
+import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
+import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
+import {
+  TAGS_LIST_TITLE,
+  REMOVE_TAGS_BUTTON_TITLE,
+} from '~/packages_and_registries/container_registry/explorer/constants/index';
+import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
 
 const localVue = createLocalVue();

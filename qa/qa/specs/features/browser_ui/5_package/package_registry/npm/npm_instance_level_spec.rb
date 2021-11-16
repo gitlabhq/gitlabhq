@@ -125,7 +125,7 @@ module QA
 
       let(:package) do
         Resource::Package.init do |package|
-          package.name = "@#{registry_scope}/#{project.name}"
+          package.name = "@#{registry_scope}/#{project.name}-#{SecureRandom.hex(8)}"
           package.project = project
         end
       end

@@ -11,7 +11,7 @@ module QA
 
       let(:package) do
         Resource::Package.init do |package|
-          package.name = "my_package"
+          package.name = "my_package-#{SecureRandom.hex(8)}"
           package.project = project
         end
       end
@@ -36,13 +36,13 @@ module QA
           upload:
             stage: upload
             script:
-              - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file file.txt ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt'
+              - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file file.txt ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/#{package.name}/0.0.1/file.txt'
             tags:
               - "runner-for-#{project.name}"
           download:
             stage: download
             script:
-              - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt -O file_downloaded.txt'
+              - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/#{package.name}/0.0.1/file.txt -O file_downloaded.txt'
             tags:
               - "runner-for-#{project.name}"
         YAML

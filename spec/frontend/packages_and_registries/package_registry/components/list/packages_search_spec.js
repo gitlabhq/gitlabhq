@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { sortableFields } from '~/packages/list/utils';
+import { sortableFields } from '~/packages_and_registries/package_registry/utils';
 import component from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageTypeToken from '~/packages_and_registries/package_registry/components/list/tokens/package_type_token.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';

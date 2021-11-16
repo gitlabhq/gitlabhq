@@ -1,7 +1,7 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Component from '~/registry/explorer/components/list_page/image_list.vue';
-import ImageListRow from '~/registry/explorer/components/list_page/image_list_row.vue';
+import Component from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list.vue';
+import ImageListRow from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list_row.vue';
 
 import { imagesListResponse, pageInfo as defaultPageInfo } from '../../mock_data';
 

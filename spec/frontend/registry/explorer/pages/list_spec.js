@@ -7,20 +7,20 @@ import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import CleanupPolicyEnabledAlert from '~/packages_and_registries/shared/components/cleanup_policy_enabled_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
-import DeleteImage from '~/registry/explorer/components/delete_image.vue';
-import CliCommands from '~/registry/explorer/components/list_page/cli_commands.vue';
-import GroupEmptyState from '~/registry/explorer/components/list_page/group_empty_state.vue';
-import ImageList from '~/registry/explorer/components/list_page/image_list.vue';
-import ProjectEmptyState from '~/registry/explorer/components/list_page/project_empty_state.vue';
-import RegistryHeader from '~/registry/explorer/components/list_page/registry_header.vue';
+import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
+import CliCommands from '~/packages_and_registries/container_registry/explorer/components/list_page/cli_commands.vue';
+import GroupEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/group_empty_state.vue';
+import ImageList from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list.vue';
+import ProjectEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/project_empty_state.vue';
+import RegistryHeader from '~/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue';
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
   SORT_FIELDS,
-} from '~/registry/explorer/constants';
-import deleteContainerRepositoryMutation from '~/registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
-import getContainerRepositoriesDetails from '~/registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
-import component from '~/registry/explorer/pages/list.vue';
+} from '~/packages_and_registries/container_registry/explorer/constants';
+import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
+import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
+import component from '~/packages_and_registries/container_registry/explorer/pages/list.vue';
 import Tracking from '~/tracking';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';

@@ -41,9 +41,15 @@ swap:
   developer access: the Developer role
   developer permission: the Developer role
   developer permissions: the Developer role
+  guest access: the Guest role
+  guest permission: the Guest role
+  guest permissions: the Guest role
   maintainer access: the Maintainer role
   maintainer permission: the Maintainer role
   maintainer permissions: the Maintainer role
   owner access: the Owner role
   owner permission: the Owner role
   owner permissions: the Owner role
+  reporter access: the Reporter role
+  reporter permission: the Reporter role
+  reporter permissions: the Reporter role

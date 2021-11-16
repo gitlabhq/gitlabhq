@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/pages/index.vue';
+import component from '~/packages_and_registries/container_registry/explorer/pages/index.vue';
 
 describe('List Page', () => {
   let wrapper;

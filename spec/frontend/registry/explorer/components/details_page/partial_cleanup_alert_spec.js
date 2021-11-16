@@ -1,7 +1,10 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
-import { DELETE_ALERT_TITLE, DELETE_ALERT_LINK_TEXT } from '~/registry/explorer/constants';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
+import {
+  DELETE_ALERT_TITLE,
+  DELETE_ALERT_LINK_TEXT,
+} from '~/packages_and_registries/container_registry/explorer/constants';
 
 describe('Partial Cleanup alert', () => {
   let wrapper;

@@ -1,6 +1,6 @@
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CleanupStatus from '~/registry/explorer/components/list_page/cleanup_status.vue';
+import CleanupStatus from '~/packages_and_registries/container_registry/explorer/components/list_page/cleanup_status.vue';
 import {
   CLEANUP_TIMED_OUT_ERROR_MESSAGE,
   CLEANUP_STATUS_SCHEDULED,
@@ -10,7 +10,7 @@ import {
   UNSCHEDULED_STATUS,
   SCHEDULED_STATUS,
   ONGOING_STATUS,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 
 describe('cleanup_status', () => {
   let wrapper;

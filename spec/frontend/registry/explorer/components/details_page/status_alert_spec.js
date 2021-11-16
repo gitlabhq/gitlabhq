@@ -1,6 +1,6 @@
 import { GlLink, GlSprintf, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/components/details_page/status_alert.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
 import {
   DELETE_SCHEDULED,
   DELETE_FAILED,
@@ -9,7 +9,7 @@ import {
   SCHEDULED_FOR_DELETION_STATUS_MESSAGE,
   FAILED_DELETION_STATUS_TITLE,
   FAILED_DELETION_STATUS_MESSAGE,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 
 describe('Status Alert', () => {
   let wrapper;

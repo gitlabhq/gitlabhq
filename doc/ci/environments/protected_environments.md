@@ -102,10 +102,9 @@ The group now has access and can be seen in the UI.
 
 ## Environment access by group membership
 
-A user may be granted access to protected environments as part of
-[group membership](../../user/group/index.md). Users with
-[Reporter permissions](../../user/permissions.md), can only be granted access to
-protected environments with this method.
+A user may be granted access to protected environments as part of [group membership](../../user/group/index.md). Users
+with the Reporter [role](../../user/permissions.md) can only be granted access to protected environments with this
+method.
 
 ## Deployment branch access
 
@@ -126,8 +125,8 @@ they have the following privileges:
 
 Users granted access to a protected environment, but not push or merge access
 to the branch deployed to it, are only granted access to deploy the environment. An individual in a
-group with the Reporter permission, or in groups added to the project with Reporter permissions,
-appears in the dropdown menu for deployment-only access.
+group with the Reporter [role](../../user/permissions.md), or in groups added to the project with the Reporter
+role, appears in the dropdown menu for deployment-only access.
 
 To add deployment-only access:
 
@@ -136,7 +135,8 @@ To add deployment-only access:
 1. Invite the group to be a project member.
 1. Follow the steps in [Protecting Environments](#protecting-environments).
 
-Note that deployment-only access is the only possible access level for groups with [Reporter permissions](../../user/permissions.md).
+Note that deployment-only access is the only possible access level for groups with the Reporter
+[role](../../user/permissions.md).
 
 ## Modifying and unprotecting environments
 

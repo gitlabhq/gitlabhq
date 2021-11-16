@@ -3,12 +3,12 @@ import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
-import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
   GRAPHQL_PAGE_SIZE,
+  DELETE_PACKAGE_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 

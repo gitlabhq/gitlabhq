@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import component from '~/registry/explorer/components/delete_image.vue';
-import { GRAPHQL_PAGE_SIZE } from '~/registry/explorer/constants/index';
-import deleteContainerRepositoryMutation from '~/registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
-import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
+import component from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
+import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/container_registry/explorer/constants/index';
+import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
+import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 
 describe('Delete Image', () => {
   let wrapper;

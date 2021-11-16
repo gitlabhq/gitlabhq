@@ -1,13 +1,13 @@
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/registry/explorer/components/details_page/delete_alert.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue';
 import {
   DELETE_TAG_SUCCESS_MESSAGE,
   DELETE_TAG_ERROR_MESSAGE,
   DELETE_TAGS_SUCCESS_MESSAGE,
   DELETE_TAGS_ERROR_MESSAGE,
   ADMIN_GARBAGE_COLLECTION_TIP,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 
 describe('Delete alert', () => {
   let wrapper;

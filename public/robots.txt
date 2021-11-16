@@ -44,6 +44,7 @@ User-Agent: *
 Disallow: /groups/*/analytics
 Disallow: /groups/*/contribution_analytics
 Disallow: /groups/*/group_members
+Disallow: /groups/*/-/saml/sso
 
 # Project details
 User-Agent: *

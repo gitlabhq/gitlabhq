@@ -716,11 +716,11 @@ In the API:
 
 ### View a release and download assets
 
-> [The Guest permission for read action was adjusted](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
+> [Changes were made to the Guest role access](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
-- Users with [Reporter role or above](../../../user/permissions.md#project-members-permissions)
+- Users with the [Reporter role or above](../../../user/permissions.md#project-members-permissions)
   have read and download access to the project releases.
-- Users with [Guest role](../../../user/permissions.md#project-members-permissions)
+- Users with the [Guest role](../../../user/permissions.md#project-members-permissions)
   have read and download access to the project releases.
   This includes associated Git-tag-names, release description, author information of the releases.
   However, other repository-related information, such as [source code](#source-code), [release evidence](#release-evidence) are redacted.

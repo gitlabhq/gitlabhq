@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GlDropdown } from 'jest/registry/explorer/stubs';
-import component from '~/registry/explorer/components/details_page/details_header.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue';
 import {
   UNSCHEDULED_STATUS,
   SCHEDULED_STATUS,
@@ -19,8 +19,8 @@ import {
   CLEANUP_UNFINISHED_TOOLTIP,
   ROOT_IMAGE_TEXT,
   ROOT_IMAGE_TOOLTIP,
-} from '~/registry/explorer/constants';
-import getContainerRepositoryTagCountQuery from '~/registry/explorer/graphql/queries/get_container_repository_tags_count.query.graphql';
+} from '~/packages_and_registries/container_registry/explorer/constants';
+import getContainerRepositoryTagCountQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags_count.query.graphql';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { imageTagsCountMock } from '../../mock_data';
 

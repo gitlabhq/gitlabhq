@@ -1,6 +1,6 @@
 <script>
 import { s__ } from '~/locale';
-import { sortableFields } from '~/packages/list/utils';
+import { sortableFields } from '~/packages_and_registries/package_registry/utils';
 import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/constants';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';

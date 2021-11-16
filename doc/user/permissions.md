@@ -434,7 +434,7 @@ Be aware that this regex could lead to a
 
 ## Free Guest users **(ULTIMATE)**
 
-When a user is given Guest permissions on a project, group, or both, and holds no
+When a user is given the Guest role on a project, group, or both, and holds no
 higher permission level on any other project or group on the GitLab instance,
 the user is considered a guest user by GitLab and does not consume a license seat.
 There is no other specific "guest" designation for newly created users.

@@ -2,11 +2,11 @@
 
 exports[`packages_list_app renders 1`] = `
 <div>
-  <div
-    help-url="foo"
+  <infrastructure-title-stub
+    helpurl="foo"
   />
    
-  <div />
+  <infrastructure-search-stub />
    
   <div>
     <section

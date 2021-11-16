@@ -17,7 +17,7 @@ module QA
 
       let(:package) do
         Resource::Package.init do |package|
-          package.name = 'conantest'
+          package.name = "conantest-#{SecureRandom.hex(8)}"
           package.project = project
         end
       end

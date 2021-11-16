@@ -3,6 +3,8 @@ import destroyPackageMutation from '~/packages_and_registries/package_registry/g
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
 
+import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/package_registry/constants';
+
 export default {
   props: {
     refetchQueries: {
@@ -18,7 +20,7 @@ export default {
   },
   i18n: {
     errorMessage: s__('PackageRegistry|Something went wrong while deleting the package.'),
-    successMessage: s__('PackageRegistry|Package deleted successfully'),
+    successMessage: DELETE_PACKAGE_SUCCESS_MESSAGE,
   },
   methods: {
     async deletePackage(packageEntity) {

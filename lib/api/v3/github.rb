@@ -101,7 +101,7 @@ module API
         # of time after a Gitaly timeout, to mitigate frequent Gitaly timeouts
         # for some Commit diffs.
         def diff_files(commit)
-          return commit.diffs.diff_files unless Feature.enabled?(:api_v3_commits_skip_diff_files, commit.project)
+          return commit.diffs.diff_files unless Feature.enabled?(:api_v3_commits_skip_diff_files, commit.project, default_enabled: :yaml)
 
           cache_key = [
             GITALY_TIMEOUT_CACHE_KEY,

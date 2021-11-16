@@ -12,7 +12,7 @@ module QA
 
       let(:package) do
         Resource::Package.init do |package|
-          package.name = 'mypypipackage'
+          package.name = "mypypipackage-#{SecureRandom.hex(8)}"
           package.project = project
         end
       end
@@ -57,7 +57,7 @@ module QA
                                       install:
                                         stage: install
                                         script:
-                                        - "pip install mypypipackage --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
+                                        - "pip install #{package.name} --no-deps --index-url #{uri.scheme}://#{personal_access_token}:#{personal_access_token}@#{gitlab_host_with_port}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple --trusted-host #{gitlab_host_with_port}"
                                         tags:
                                         - "runner-for-#{project.name}"
                                   
@@ -70,7 +70,7 @@ module QA
                                       import setuptools
 
                                       setuptools.setup(
-                                          name="mypypipackage",
+                                          name="#{package.name}",
                                           version="0.0.1",
                                           author="Example Author",
                                           author_email="author@example.com",

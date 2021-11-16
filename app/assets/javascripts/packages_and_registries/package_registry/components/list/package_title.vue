@@ -1,6 +1,5 @@
 <script>
-import { n__ } from '~/locale';
-import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '~/packages/list/constants';
+import { n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
@@ -29,11 +28,14 @@ export default {
       return n__(`%d Package`, `%d Packages`, this.count);
     },
     infoMessages() {
-      return [{ text: LIST_INTRO_TEXT, link: this.helpUrl }];
+      return [{ text: this.$options.i18n.LIST_INTRO_TEXT, link: this.helpUrl }];
     },
   },
   i18n: {
-    LIST_TITLE_TEXT,
+    LIST_TITLE_TEXT: s__('PackageRegistry|Package Registry'),
+    LIST_INTRO_TEXT: s__(
+      'PackageRegistry|Publish and share packages for a variety of common package managers. %{docLinkStart}More information%{docLinkEnd}',
+    ),
   },
 };
 </script>

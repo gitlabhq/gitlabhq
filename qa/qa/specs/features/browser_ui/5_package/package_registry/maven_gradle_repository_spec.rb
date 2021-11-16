@@ -8,7 +8,7 @@ module QA
       include_context 'packages registry qa scenario'
 
       let(:group_id) { 'com.gitlab.qa' }
-      let(:artifact_id) { 'maven_gradle' }
+      let(:artifact_id) { "maven_gradle-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven_gradle' }

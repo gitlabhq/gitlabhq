@@ -1,13 +1,13 @@
 import { GlSprintf, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import component from '~/registry/explorer/components/details_page/delete_modal.vue';
+import component from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_modal.vue';
 import {
   REMOVE_TAG_CONFIRMATION_TEXT,
   REMOVE_TAGS_CONFIRMATION_TEXT,
   DELETE_IMAGE_CONFIRMATION_TITLE,
   DELETE_IMAGE_CONFIRMATION_TEXT,
-} from '~/registry/explorer/constants';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 import { GlModal } from '../../stubs';
 
 describe('Delete Modal', () => {

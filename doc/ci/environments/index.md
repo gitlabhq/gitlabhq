@@ -27,7 +27,7 @@ You can even access a [web terminal](#web-terminals-deprecated) for your environ
 
 Prerequisites:
 
-- You must have a minimum of [Reporter permission](../../user/permissions.md#project-members-permissions).
+- You must have at least the Reporter [role](../../user/permissions.md#project-members-permissions).
 
 To view a list of environments and deployments:
 

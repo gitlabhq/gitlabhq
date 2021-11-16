@@ -78,6 +78,9 @@ RSpec.configure do |config|
       )
 
       example.run
+
+      # Cleanup connection_specification_name for Ci::ApplicationRecord
+      Ci::ApplicationRecord.remove_connection
     end
   end
 end

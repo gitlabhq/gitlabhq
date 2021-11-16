@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
-import { PACKAGE_TYPES } from '~/packages/list/constants';
+import { PACKAGE_TYPES } from '~/packages_and_registries/package_registry/constants';
 
 export default {
   components: {
@@ -17,9 +17,9 @@ export default {
       <gl-filtered-search-suggestion
         v-for="(type, index) in $options.PACKAGE_TYPES"
         :key="index"
-        :value="type.type"
+        :value="type"
       >
-        {{ type.title }}
+        {{ type }}
       </gl-filtered-search-suggestion>
     </template>
   </gl-filtered-search-token>

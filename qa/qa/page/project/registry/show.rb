@@ -5,15 +5,15 @@ module QA
     module Project
       module Registry
         class Show < QA::Page::Base
-          view 'app/assets/javascripts/registry/explorer/components/list_page/image_list_row.vue' do
+          view 'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/image_list_row.vue' do
             element :registry_image_content
           end
 
-          view 'app/assets/javascripts/registry/explorer/components/details_page/tags_list_row.vue' do
+          view 'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue' do
             element :more_actions_menu
           end
 
-          view 'app/assets/javascripts/registry/explorer/components/details_page/tags_list_row.vue' do
+          view 'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue' do
             element :tag_delete_button
           end
 

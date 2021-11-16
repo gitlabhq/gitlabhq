@@ -103,4 +103,4 @@ You can filter analytics based on a date range. To filter results:
 The **Productivity Analytics** dashboard can be accessed only:
 
 - On [GitLab Premium](https://about.gitlab.com/pricing/) and above.
-- By users with [Reporter access](../permissions.md) and above.
+- By users with at least the Reporter [role](../permissions.md).

@@ -315,11 +315,11 @@ To search runners' descriptions:
 
 You can also filter runners by status, type, and tag. To filter:
 
-1. Click in the **Search or filter results...** field.
-1. Select **Status**, **Type**, or **Tags**.
+1. Select a tab or the **Search or filter results...** field.
+1. Select any **Type**, or filter by **Status** or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_1.png)
+![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
 
 For each runner, the following attributes are listed:
 

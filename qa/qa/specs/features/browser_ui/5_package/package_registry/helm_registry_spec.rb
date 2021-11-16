@@ -6,7 +6,7 @@ module QA
       include Runtime::Fixtures
       include_context 'packages registry qa scenario'
 
-      let(:package_name) { 'gitlab_qa_helm' }
+      let(:package_name) { "gitlab_qa_helm-#{SecureRandom.hex(8)}" }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'helm' }
 

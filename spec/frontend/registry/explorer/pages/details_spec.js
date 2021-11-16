@@ -4,14 +4,14 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import DeleteImage from '~/registry/explorer/components/delete_image.vue';
-import DeleteAlert from '~/registry/explorer/components/details_page/delete_alert.vue';
-import DetailsHeader from '~/registry/explorer/components/details_page/details_header.vue';
-import EmptyTagsState from '~/registry/explorer/components/details_page/empty_state.vue';
-import PartialCleanupAlert from '~/registry/explorer/components/details_page/partial_cleanup_alert.vue';
-import StatusAlert from '~/registry/explorer/components/details_page/status_alert.vue';
-import TagsList from '~/registry/explorer/components/details_page/tags_list.vue';
-import TagsLoader from '~/registry/explorer/components/details_page/tags_loader.vue';
+import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
+import DeleteAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/delete_alert.vue';
+import DetailsHeader from '~/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue';
+import EmptyTagsState from '~/packages_and_registries/container_registry/explorer/components/details_page/empty_state.vue';
+import PartialCleanupAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/partial_cleanup_alert.vue';
+import StatusAlert from '~/packages_and_registries/container_registry/explorer/components/details_page/status_alert.vue';
+import TagsList from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list.vue';
+import TagsLoader from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_loader.vue';
 
 import {
   UNFINISHED_STATUS,
@@ -19,11 +19,11 @@ import {
   ALERT_DANGER_IMAGE,
   MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   ROOT_IMAGE_TEXT,
-} from '~/registry/explorer/constants';
-import deleteContainerRepositoryTagsMutation from '~/registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
-import getContainerRepositoryDetailsQuery from '~/registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
+} from '~/packages_and_registries/container_registry/explorer/constants';
+import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
+import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 
-import component from '~/registry/explorer/pages/details.vue';
+import component from '~/packages_and_registries/container_registry/explorer/pages/details.vue';
 import Tracking from '~/tracking';
 
 import {
