@@ -28,3 +28,5 @@ module Projects
     end
   end
 end
+
+::Projects::Topic.prepend_mod_with('Projects::Topic')

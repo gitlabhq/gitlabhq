@@ -2601,7 +2601,6 @@ Style/OpenStructUse:
     - 'spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/exception_logger_spec.rb'
-    - 'spec/lib/gitlab/grape_logging/loggers/perf_logger_spec.rb'
     - 'spec/lib/gitlab/graphql/pagination/keyset/connection_generic_keyset_spec.rb'
     - 'spec/lib/gitlab/graphql/pagination/keyset/connection_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'

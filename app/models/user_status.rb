@@ -33,3 +33,5 @@ class UserStatus < ApplicationRecord
     self.clear_status_at = CLEAR_STATUS_QUICK_OPTIONS[value]&.from_now
   end
 end
+
+UserStatus.prepend_mod_with('UserStatus')

@@ -73,6 +73,17 @@ From there, you can see the following actions:
 - Group changed visibility.
 - User was added to group and with which [permissions](../user/permissions.md).
 - User sign-in via [Group SAML](../user/group/saml_sso/index.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8071) in GitLab 14.5, changes to the following
+  [group SAML](../user/group/saml_sso/index.md) configuration:
+  - Enabled status.
+  - Enforcing SSO-only authentication for web activity.
+  - Enforcing SSO-only authentication for Git and Dependency Proxy activity.
+  - Enforcing users to have dedicated group-managed accounts.
+  - Prohibiting outer forks.
+  - Identity provider SSO URL.
+  - Certificate fingerprint.
+  - Default membership role.
+  - SSO-SAML group sync configuration.
 - Permissions changes of a user assigned to a group.
 - Removed user from group.
 - Project repository imported into group.
