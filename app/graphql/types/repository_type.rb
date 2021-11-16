@@ -16,8 +16,7 @@ module Types
           description: 'Tree of the repository.'
     field :paginated_tree, Types::Tree::TreeType.connection_type, null: true, resolver: Resolvers::PaginatedTreeResolver, calls_gitaly: true,
           max_page_size: 100,
-          description: 'Paginated tree of the repository.',
-          feature_flag: :paginated_tree_graphql_query
+          description: 'Paginated tree of the repository.'
     field :blobs, Types::Repository::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
           description: 'Blobs contained within the repository'
     field :branch_names, [GraphQL::Types::String], null: true, calls_gitaly: true,

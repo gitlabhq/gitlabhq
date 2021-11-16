@@ -298,6 +298,7 @@ after the limits change in January, 2021:
 | **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute | **2,000** requests per minute |
 | **Issue creation**                                                        |                             | **300** requests per minute   | **300** requests per minute   |
 | **Note creation** (on issues and merge requests)                          |                             | **300** requests per minute   | **60** requests per minute    |
+| **Advanced, project, and group search** API (for a given **IP address**)   |                             |    | **10** requests per minute    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw

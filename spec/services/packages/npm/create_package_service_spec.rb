@@ -73,6 +73,23 @@ RSpec.describe Packages::Npm::CreatePackageService do
       end
     end
 
+    described_class::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
+      context "with not allowed #{field} field" do
+        before do
+          params[:versions][version][field] = 'test'
+        end
+
+        it 'is persisted without the field' do
+          expect { subject }
+            .to change { Packages::Package.count }.by(1)
+            .and change { Packages::Package.npm.count }.by(1)
+            .and change { Packages::Tag.count }.by(1)
+            .and change { Packages::Npm::Metadatum.count }.by(1)
+          expect(subject.npm_metadatum.package_json[field]).to be_blank
+        end
+      end
+    end
+
     context 'with packages_npm_abbreviated_metadata disabled' do
       before do
         stub_feature_flags(packages_npm_abbreviated_metadata: false)

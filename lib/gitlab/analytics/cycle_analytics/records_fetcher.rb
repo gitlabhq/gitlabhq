@@ -8,22 +8,10 @@ module Gitlab
         include StageQueryHelpers
         include Gitlab::CycleAnalytics::MetricsTables
 
-        MAX_RECORDS = 20
-
-        MAPPINGS = {
-          Issue => {
-            serializer_class: AnalyticsIssueSerializer,
-            includes_for_query: { project: { namespace: [:route] }, author: [] },
-            columns_for_select: %I[title iid id created_at author_id project_id]
-          },
-          MergeRequest => {
-            serializer_class: AnalyticsMergeRequestSerializer,
-            includes_for_query: { target_project: [:namespace], author: [] },
-            columns_for_select: %I[title iid id created_at author_id state_id target_project_id]
-          }
-        }.freeze
-
         delegate :subject_class, to: :stage
+
+        MAX_RECORDS = Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher::MAX_RECORDS
+        MAPPINGS = Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher::MAPPINGS
 
         def initialize(stage:, query:, params: {})
           @stage = stage

@@ -9,7 +9,7 @@ FactoryBot.define do
     metadata_version { 'sast:1.0' }
     name { 'Cipher with no integrity' }
     report_type { :sast }
-    raw_metadata do
+    original_data do
       {
         description: "The cipher does not provide data integrity update 1",
         solution: "GCM mode introduces an HMAC into the resulting encrypted data, providing integrity of the result.",
@@ -26,7 +26,7 @@ FactoryBot.define do
             url: "https://crypto.stackexchange.com/questions/31428/pbewithmd5anddes-cipher-does-not-check-for-integrity-first"
           }
         ]
-      }.to_json
+      }.deep_stringify_keys
     end
     scanner factory: :ci_reports_security_scanner
     severity { :high }

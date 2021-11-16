@@ -90,7 +90,7 @@ The following examples show the progression of a feature flag.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `forti_token_cloud`.
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
 The feature is not ready for production use.
 ```
 

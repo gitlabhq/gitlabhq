@@ -20,6 +20,10 @@ module Analytics
       def self.issuable_id_column
         :issue_id
       end
+
+      def self.issuable_model
+        ::Issue
+      end
     end
   end
 end

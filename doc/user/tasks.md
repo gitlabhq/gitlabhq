@@ -14,7 +14,7 @@ For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitl
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `work_items`.
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items`.
 The feature is not ready for production use.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.

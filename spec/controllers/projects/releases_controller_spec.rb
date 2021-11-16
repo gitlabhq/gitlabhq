@@ -207,7 +207,18 @@ RSpec.describe Projects::ReleasesController do
       let(:project) { private_project }
       let(:user) { guest }
 
-      it_behaves_like 'not found'
+      it_behaves_like 'successful request'
+    end
+
+    context 'when user is an external user for the project' do
+      let(:project) { private_project }
+      let(:user) { create(:user) }
+
+      it 'behaves like not found' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
   end
 

@@ -63,12 +63,6 @@ RSpec.describe ReleasePresenter do
     it 'returns its own url' do
       is_expected.to eq(project_release_url(project, release))
     end
-
-    context 'when user is guest' do
-      let(:user) { guest }
-
-      it { is_expected.to be_nil }
-    end
   end
 
   describe '#opened_merge_requests_url' do
@@ -146,14 +140,6 @@ RSpec.describe ReleasePresenter do
 
     it 'returns the release name' do
       is_expected.to eq release.name
-    end
-
-    context "when a user is not allowed to access any repository information" do
-      let(:presenter) { described_class.new(release, current_user: guest) }
-
-      it 'returns a replacement name to avoid potentially leaking tag information' do
-        is_expected.to eq "Release-#{release.id}"
-      end
     end
   end
 end

@@ -18,6 +18,10 @@ module Analytics
         scope :end_event_is_not_happened_yet, -> { where(end_event_timestamp: nil) }
       end
 
+      def issuable_id
+        attributes[self.class.issuable_id_column.to_s]
+      end
+
       class_methods do
         def upsert_data(data)
           upsert_values = data.map do |row|
@@ -26,8 +30,8 @@ module Analytics
               :issuable_id,
               :group_id,
               :project_id,
-              :author_id,
               :milestone_id,
+              :author_id,
               :state_id,
               :start_event_timestamp,
               :end_event_timestamp

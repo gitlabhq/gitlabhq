@@ -393,14 +393,6 @@ The release title can be customized using the **Release title** field when
 creating or editing a release. If no title is provided, the release's tag name
 is used instead.
 
-Guest users of private projects are allowed to view the **Releases** page
-but are _not_ allowed to view details about the Git repository (in particular,
-tag names). Because of this, release titles are replaced with a generic
-title like "Release-1234" for Guest users to avoid leaking tag name information.
-
-See the [Release permissions](#release-permissions) section for
-more information about permissions.
-
 ### Tag name
 
 The release tag name should include the release version. GitLab uses [Semantic Versioning](https://semver.org/)
@@ -724,11 +716,14 @@ In the API:
 
 ### View a release and download assets
 
+> [The Guest permission for read action was adjusted](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
+
 - Users with [Reporter role or above](../../../user/permissions.md#project-members-permissions)
   have read and download access to the project releases.
 - Users with [Guest role](../../../user/permissions.md#project-members-permissions)
-  have read and download access to the project releases, however,
-  repository-related information are redacted (for example the Git tag name).
+  have read and download access to the project releases.
+  This includes associated Git-tag-names, release description, author information of the releases.
+  However, other repository-related information, such as [source code](#source-code), [release evidence](#release-evidence) are redacted.
 
 ### Create, update, and delete a release and its assets
 

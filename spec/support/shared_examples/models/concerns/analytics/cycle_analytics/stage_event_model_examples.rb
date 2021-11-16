@@ -36,8 +36,8 @@ RSpec.shared_examples 'StageEventModel' do
         described_class.issuable_id_column,
         :group_id,
         :project_id,
-        :milestone_id,
         :author_id,
+        :milestone_id,
         :state_id,
         :start_event_timestamp,
         :end_event_timestamp

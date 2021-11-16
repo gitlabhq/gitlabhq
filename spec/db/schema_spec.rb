@@ -29,6 +29,7 @@ RSpec.describe 'Database schema' do
     ci_builds: %w[erased_by_id runner_id trigger_request_id user_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipelines: %w[user_id],
+    ci_pipeline_chat_data: %w[chat_name_id], # it uses the loose foreign key featue
     ci_runner_projects: %w[runner_id],
     ci_trigger_requests: %w[commit_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],

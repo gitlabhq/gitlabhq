@@ -23,6 +23,17 @@ they found that "ARIA correlated to higher detectable errors".
 It is likely that *misuse* of ARIA is a big cause of increased errors,
 so when in doubt don't use `aria-*`, `role`, and `tabindex` and stick with semantic HTML.
 
+## Enable keyboard navigation on macOS
+
+By default, macOS limits the <kbd>tab</kbd> key to **Text boxes and lists only**. To enable full keyboard navigation:
+
+1. Open **System Preferences**.
+1. Select **Keyboard**.
+1. Open the **Shortcuts** tab.
+1. Enable the setting **Use keyboard navigation to move focus between controls**.
+
+You can read more about enabling browser-specific keyboard navigation on [a11yproject](https://www.a11yproject.com/posts/2017-12-29-macos-browser-keyboard-navigation/).
+
 ## Quick checklist
 
 - [Text](#text-inputs-with-accessible-names),

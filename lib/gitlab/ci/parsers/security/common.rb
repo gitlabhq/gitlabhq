@@ -114,7 +114,7 @@ module Gitlab
                 flags: flags,
                 links: links,
                 remediations: remediations,
-                raw_metadata: data.to_json,
+                original_data: data,
                 metadata_version: report_version,
                 details: data['details'] || {},
                 signatures: signatures,

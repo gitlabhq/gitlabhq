@@ -306,7 +306,7 @@ module Types
           null: true,
           description: 'A single release of the project.',
           resolver: Resolvers::ReleasesResolver.single,
-          authorize: :download_code
+          authorize: :read_release
 
     field :container_expiration_policy,
           Types::ContainerExpirationPolicyType,

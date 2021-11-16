@@ -17,7 +17,6 @@ module Gitlab
           attr_reader :name
           attr_reader :old_location
           attr_reader :project_fingerprint
-          attr_reader :raw_metadata
           attr_reader :report_type
           attr_reader :scanner
           attr_reader :scan
@@ -28,10 +27,13 @@ module Gitlab
           attr_reader :details
           attr_reader :signatures
           attr_reader :project_id
+          attr_reader :original_data
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, metadata_version:, name:, raw_metadata:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
+          alias_method :cve, :compare_key
+
+          def initialize(compare_key:, identifiers:, flags: [], links: [], remediations: [], location:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false) # rubocop:disable Metrics/ParameterLists
             @compare_key = compare_key
             @confidence = confidence
             @identifiers = identifiers
@@ -40,7 +42,7 @@ module Gitlab
             @location = location
             @metadata_version = metadata_version
             @name = name
-            @raw_metadata = raw_metadata
+            @original_data = original_data
             @report_type = report_type
             @scanner = scanner
             @scan = scan
@@ -74,6 +76,10 @@ module Gitlab
               uuid
               details
               signatures
+              description
+              message
+              cve
+              solution
             ].each_with_object({}) do |key, hash|
               hash[key] = public_send(key) # rubocop:disable GitlabSecurity/PublicSend
             end
@@ -143,6 +149,26 @@ module Gitlab
 
           def has_signatures?
             signatures.present?
+          end
+
+          def raw_metadata
+            @raw_metadata ||= original_data.to_json
+          end
+
+          def description
+            original_data['description']
+          end
+
+          def message
+            original_data['message']
+          end
+
+          def solution
+            original_data['solution']
+          end
+
+          def location_data
+            original_data['location']
           end
 
           private

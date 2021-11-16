@@ -37,7 +37,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:refactor_text_viewer, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project, default_enabled: :yaml)
-    push_frontend_feature_flag(:paginated_tree_graphql_query, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:new_dir_modal, @project, default_enabled: :yaml)
   end
 

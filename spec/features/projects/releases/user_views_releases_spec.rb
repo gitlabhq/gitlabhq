@@ -123,11 +123,11 @@ RSpec.describe 'User views releases', :js do
 
         within('.release-block', match: :first) do
           expect(page).to have_content(release_v3.description)
+          expect(page).to have_content(release_v3.tag)
+          expect(page).to have_content(release_v3.name)
 
           # The following properties (sometimes) include Git info,
           # so they are not rendered for Guest users
-          expect(page).not_to have_content(release_v3.name)
-          expect(page).not_to have_content(release_v3.tag)
           expect(page).not_to have_content(release_v3.commit.short_id)
         end
       end

@@ -30,6 +30,12 @@ module Gitlab
             strong_memoize(:count) { limit_count }
           end
 
+          def records_fetcher
+            strong_memoize(:records_fetcher) do
+              RecordsFetcher.new(stage: stage, query: query, params: params)
+            end
+          end
+
           private
 
           attr_reader :stage, :params

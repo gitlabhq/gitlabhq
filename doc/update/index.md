@@ -338,6 +338,23 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
   Workhorse can no longer connect. As a workaround, [disable the temporary `workhorse_use_sidechannel`](../administration/feature_flags.md#enable-or-disable-the-feature)
   feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy. If you have feedback about this change, please go to [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1301).
 
+- In 14.1 we introduced a background migration that changes how we store merge request diff commits
+  in order to significantly reduce the amount of storage needed.
+  In 14.5 we introduce a set of migrations that wrap up this process by making sure
+  that all remaining jobs over the `merge_request_diff_commits` table are completed.
+  These jobs will have already been processed in most cases so that no extra time is necessary during an upgrade to 14.5.
+  But if there are remaining jobs, the deployment may take a few extra minutes to complete.
+
+  All merge request diff commits will automatically incorporate these changes, and there are no
+  additional requirements to perform the upgrade.
+  Existing data in the `merge_request_diff_commits` table remains unpacked until you run `VACUUM FULL merge_request_diff_commits`.
+  But note that the `VACUUM FULL` operation locks and rewrites the entire `merge_request_diff_commits` table,
+  so the operation takes some time to complete and it blocks access to this table until the end of the process.
+  We advise you to only run this command while GitLab is not actively used or it is taken offline for the duration of the process.
+  The time it takes to complete depends on the size of the table, which can be obtained by using `select pg_size_pretty(pg_total_relation_size('merge_request_diff_commits'));`.
+
+  For more information, refer to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331823).
+
 ### 14.4.0
 
 Git 2.33.x and later is required. We recommend you use the

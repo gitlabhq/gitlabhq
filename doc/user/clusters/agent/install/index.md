@@ -70,7 +70,8 @@ synchronizations is:
 ```yaml
 gitops:
   manifest_projects:
-  - id: "path-to/your-manifest-project-1"
+  # The `id` is the path to the Git repository holding your manifest files
+  - id: "path/to/your-manifest-project-1"
     paths:
     - glob: '/**/*.{yaml,yml,json}'
 ```

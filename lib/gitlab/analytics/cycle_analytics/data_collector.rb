@@ -23,7 +23,11 @@ module Gitlab
 
         def records_fetcher
           strong_memoize(:records_fetcher) do
-            RecordsFetcher.new(stage: stage, query: query, params: params)
+            if use_aggregated_data_collector?
+              aggregated_data_collector.records_fetcher
+            else
+              RecordsFetcher.new(stage: stage, query: query, params: params)
+            end
           end
         end
 

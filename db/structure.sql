@@ -31078,9 +31078,6 @@ ALTER TABLE ONLY snippet_repositories
 ALTER TABLE ONLY elastic_reindexing_subtasks
     ADD CONSTRAINT fk_rails_f2cc190164 FOREIGN KEY (elastic_reindexing_task_id) REFERENCES elastic_reindexing_tasks(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_pipeline_chat_data
-    ADD CONSTRAINT fk_rails_f300456b63 FOREIGN KEY (chat_name_id) REFERENCES chat_names(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_rails_f365da8250 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 

@@ -11,7 +11,6 @@ import {
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
-import filesQuery from 'shared_queries/repository/files.query.graphql';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
@@ -178,8 +177,7 @@ export default {
       return this.isFolder ? this.loadFolder() : this.loadBlob();
     },
     loadFolder() {
-      const query = this.glFeatures.paginatedTreeGraphqlQuery ? paginatedTreeQuery : filesQuery;
-      this.apolloQuery(query, {
+      this.apolloQuery(paginatedTreeQuery, {
         projectPath: this.projectPath,
         ref: this.ref,
         path: this.path,

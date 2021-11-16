@@ -135,11 +135,7 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def label_link_query(target_model, label_ids: nil, label_names: nil)
-      relation = LabelLink
-        .where(target_type: target_model.name)
-        .where(LabelLink.arel_table['target_id'].eq(target_model.arel_table['id']))
-
-      relation = relation.where(label_id: label_ids) if label_ids
+      relation = LabelLink.by_target_for_exists_query(target_model.name, target_model.arel_table['id'], label_ids)
       relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
 
       relation

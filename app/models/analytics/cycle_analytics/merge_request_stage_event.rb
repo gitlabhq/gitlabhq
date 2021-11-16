@@ -20,6 +20,10 @@ module Analytics
       def self.issuable_id_column
         :merge_request_id
       end
+
+      def self.issuable_model
+        ::MergeRequest
+      end
     end
   end
 end

@@ -63,23 +63,12 @@ module Gitlab
           def filter_label_names(query)
             return query if params[:label_name].blank?
 
-            all_label_ids = Issuables::LabelFilter
-              .new(group: root_ancestor, project: nil, params: { label_name: params[:label_name] })
-              .find_label_ids(params[:label_name])
-
-            return query.none if params[:label_name].size != all_label_ids.size
-
-            all_label_ids.each do |label_ids|
-              relation = LabelLink
-                .where(target_type: stage.subject_class.name)
-                .where(LabelLink.arel_table['target_id'].eq(query.model.arel_table[query.model.issuable_id_column]))
-
-              relation = relation.where(label_id: label_ids)
-
-              query = query.where(relation.arel.exists)
-            end
-
-            query
+            LabelFilter.new(
+              stage: stage,
+              params: params,
+              project: nil,
+              group: root_ancestor
+            ).filter(query)
           end
 
           def filter_assignees(query)
