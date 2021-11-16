@@ -1,9 +1,9 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { formatNumber, sprintf, __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -14,7 +14,13 @@ import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
-import { ADMIN_FILTERED_SEARCH_NAMESPACE, INSTANCE_TYPE, I18N_FETCH_ERROR } from '../constants';
+import {
+  ADMIN_FILTERED_SEARCH_NAMESPACE,
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_FETCH_ERROR,
+} from '../constants';
 import getRunnersQuery from '../graphql/get_runners.query.graphql';
 import {
   fromUrlQueryToSearch,
@@ -26,6 +32,7 @@ import { captureException } from '../sentry_utils';
 export default {
   name: 'AdminRunnersApp',
   components: {
+    GlBadge,
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
@@ -35,11 +42,27 @@ export default {
     RunnerTypeTabs,
   },
   props: {
-    activeRunnersCount: {
-      type: Number,
+    registrationToken: {
+      type: String,
       required: true,
     },
-    registrationToken: {
+    activeRunnersCount: {
+      type: String,
+      required: true,
+    },
+    allRunnersCount: {
+      type: String,
+      required: true,
+    },
+    instanceRunnersCount: {
+      type: String,
+      required: true,
+    },
+    groupRunnersCount: {
+      type: String,
+      required: true,
+    },
+    projectRunnersCount: {
       type: String,
       required: true,
     },
@@ -89,7 +112,7 @@ export default {
     },
     activeRunnersMessage() {
       return sprintf(__('Runners currently online: %{active_runners_count}'), {
-        active_runners_count: formatNumber(this.activeRunnersCount),
+        active_runners_count: this.activeRunnersCount,
       });
     },
     searchTokens() {
@@ -118,6 +141,20 @@ export default {
     this.reportToSentry(error);
   },
   methods: {
+    tabCount({ runnerType }) {
+      switch (runnerType) {
+        case null:
+          return this.allRunnersCount;
+        case INSTANCE_TYPE:
+          return this.instanceRunnersCount;
+        case GROUP_TYPE:
+          return this.groupRunnersCount;
+        case PROJECT_TYPE:
+          return this.projectRunnersCount;
+        default:
+          return null;
+      }
+    },
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });
     },
@@ -128,15 +165,25 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center">
+    <div
+      class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
+    >
       <runner-type-tabs
         v-model="search"
+        class="gl-w-full"
         content-class="gl-display-none"
         nav-class="gl-border-none!"
-      />
+      >
+        <template #title="{ tab }">
+          {{ tab.title }}
+          <gl-badge v-if="tabCount(tab)" class="gl-ml-1" size="sm">
+            {{ tabCount(tab) }}
+          </gl-badge>
+        </template>
+      </runner-type-tabs>
 
       <registration-dropdown
-        class="gl-ml-auto"
+        class="gl-w-full gl-sm-w-auto gl-mr-auto"
         :registration-token="registrationToken"
         :type="$options.INSTANCE_TYPE"
         right

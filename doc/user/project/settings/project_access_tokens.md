@@ -34,7 +34,7 @@ For examples of how you can use a project access token to authenticate with the 
 [relevant section from our API Docs](../../../api/index.md#personalproject-access-tokens).
 
 NOTE:
-For GitLab.com and new self-managed instances, the default prefix is `glpat-`.
+For GitLab.com and self-managed instances, the default prefix is `glpat-`.
 
 ## Creating a project access token
 

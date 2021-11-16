@@ -53,7 +53,7 @@ RSpec.describe "deleting designs" do
 
   context 'the designs list contains filenames we cannot find' do
     it_behaves_like 'a failed request' do
-      let(:designs) { %w/foo bar baz/.map { |fn| OpenStruct.new(filename: fn) } }
+      let(:designs) { %w/foo bar baz/.map { |fn| instance_double('file', filename: fn) } }
       let(:the_error) { a_string_matching %r/filenames were not found/ }
     end
   end

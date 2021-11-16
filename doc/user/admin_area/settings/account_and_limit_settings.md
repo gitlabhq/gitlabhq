@@ -68,7 +68,7 @@ You can set a global prefix for all generated Personal Access Tokens.
 A prefix can help you identify PATs visually, as well as with automation tools.
 
 NOTE:
-For GitLab.com and new self-managed instances, the default prefix is `glpat-`.
+For GitLab.com and self-managed instances, the default prefix is `glpat-`.
 
 ### Set a prefix
 

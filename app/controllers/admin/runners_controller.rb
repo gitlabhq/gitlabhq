@@ -8,7 +8,6 @@ class Admin::RunnersController < Admin::ApplicationController
   feature_category :runner
 
   def index
-    @active_runners_count = Ci::Runner.online.count
   end
 
   def show

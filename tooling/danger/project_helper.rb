@@ -44,6 +44,28 @@ module Tooling
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
 
+        %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:integrations_be, :database, :backend],
+        [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:integrations_be, :database, :migration],
+        [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\b(Integrations::|\.execute_(integrations|hooks))\b}] => [:integrations_be, :backend],
+        %r{\A(
+          ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |
+          ((ee|jh)/)?app/((?!.*search).+/)?project_service.+ |
+          ((ee|jh)/)?app/(models|helpers|workers|services|controllers)/(.+/)?(jira_connect.+|.*hook.+) |
+          ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
+          ((ee|jh)/)?app/services/(.+/)?jira.+ |
+          ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |
+          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data)/.+ |
+          ((ee|jh)/)?lib/(.+/)?.*integration.+ |
+          ((ee|jh)/)?lib/(.+/)?api/v3/github\.rb |
+          ((ee|jh)/)?lib/(.+/)?api/github/entities\.rb
+        )\z}x => [:integrations_be, :backend],
+
+        %r{\A(
+          ((ee|jh)/)?app/(views|assets)/((?!.*clusters)(?!.*alerts_settings).+/)?integration.+ |
+          ((ee|jh)/)?app/(views|assets)/(.+/)?jira_connect.+ |
+          ((ee|jh)/)?app/(views|assets)/((?!.*filtered_search).+/)?hooks?.+
+        )\z}x => [:integrations_fe, :frontend],
+
         %r{\A(
           app/assets/javascripts/tracking/.*\.js |
           spec/frontend/tracking/.*\.js |

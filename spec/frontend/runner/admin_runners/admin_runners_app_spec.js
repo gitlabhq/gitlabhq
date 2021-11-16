@@ -10,6 +10,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
+import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
 import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
@@ -33,7 +34,11 @@ import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered
 import { runnersData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
-const mockActiveRunnersCount = 2;
+const mockActiveRunnersCount = '2';
+const mockAllRunnersCount = '6';
+const mockInstanceRunnersCount = '3';
+const mockGroupRunnersCount = '2';
+const mockProjectRunnersCount = '1';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -50,6 +55,7 @@ describe('AdminRunnersApp', () => {
   let mockRunnersQuery;
 
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
+  const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
@@ -65,8 +71,12 @@ describe('AdminRunnersApp', () => {
       localVue,
       apolloProvider: createMockApollo(handlers),
       propsData: {
-        activeRunnersCount: mockActiveRunnersCount,
         registrationToken: mockRegistrationToken,
+        activeRunnersCount: mockActiveRunnersCount,
+        allRunnersCount: mockAllRunnersCount,
+        instanceRunnersCount: mockInstanceRunnersCount,
+        groupRunnersCount: mockGroupRunnersCount,
+        projectRunnersCount: mockProjectRunnersCount,
         ...props,
       },
     });
@@ -83,6 +93,16 @@ describe('AdminRunnersApp', () => {
   afterEach(() => {
     mockRunnersQuery.mockReset();
     wrapper.destroy();
+  });
+
+  it('shows the runner tabs with a runner count', async () => {
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
+      `All ${mockAllRunnersCount} Instance ${mockInstanceRunnersCount} Group ${mockGroupRunnersCount} Project ${mockProjectRunnersCount}`,
+    );
   });
 
   it('shows the runner setup instructions', () => {

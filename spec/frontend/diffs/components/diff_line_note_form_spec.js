@@ -1,9 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import { createStore } from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock } from '../../notes/mock_data';
 import diffFileMockData from '../mock_data/diff_file';
+
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
+  return {
+    confirmAction: jest.fn(),
+  };
+});
 
 describe('DiffLineNoteForm', () => {
   let wrapper;
@@ -36,49 +44,56 @@ describe('DiffLineNoteForm', () => {
     });
   };
 
+  const findNoteForm = () => wrapper.findComponent(NoteForm);
+
   describe('methods', () => {
     beforeEach(() => {
       wrapper = createComponent();
     });
 
     describe('handleCancelCommentForm', () => {
+      afterEach(() => {
+        confirmAction.mockReset();
+      });
+
       it('should ask for confirmation when shouldConfirm and isDirty passed as truthy', () => {
-        jest.spyOn(window, 'confirm').mockReturnValue(false);
+        confirmAction.mockResolvedValueOnce(false);
 
-        wrapper.vm.handleCancelCommentForm(true, true);
+        findNoteForm().vm.$emit('cancelForm', true, true);
 
-        expect(window.confirm).toHaveBeenCalled();
+        expect(confirmAction).toHaveBeenCalled();
       });
 
-      it('should ask for confirmation when one of the params false', () => {
-        jest.spyOn(window, 'confirm').mockReturnValue(false);
+      it('should not ask for confirmation when one of the params false', () => {
+        confirmAction.mockResolvedValueOnce(false);
 
-        wrapper.vm.handleCancelCommentForm(true, false);
+        findNoteForm().vm.$emit('cancelForm', true, false);
 
-        expect(window.confirm).not.toHaveBeenCalled();
+        expect(confirmAction).not.toHaveBeenCalled();
 
-        wrapper.vm.handleCancelCommentForm(false, true);
+        findNoteForm().vm.$emit('cancelForm', false, true);
 
-        expect(window.confirm).not.toHaveBeenCalled();
+        expect(confirmAction).not.toHaveBeenCalled();
       });
 
-      it('should call cancelCommentForm with lineCode', (done) => {
-        jest.spyOn(window, 'confirm').mockImplementation(() => {});
+      it('should call cancelCommentForm with lineCode', async () => {
+        confirmAction.mockResolvedValueOnce(true);
         jest.spyOn(wrapper.vm, 'cancelCommentForm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'resetAutoSave').mockImplementation(() => {});
-        wrapper.vm.handleCancelCommentForm();
 
-        expect(window.confirm).not.toHaveBeenCalled();
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.cancelCommentForm).toHaveBeenCalledWith({
-            lineCode: diffLines[1].line_code,
-            fileHash: wrapper.vm.diffFileHash,
-          });
+        findNoteForm().vm.$emit('cancelForm', true, true);
 
-          expect(wrapper.vm.resetAutoSave).toHaveBeenCalled();
+        await nextTick();
 
-          done();
+        expect(confirmAction).toHaveBeenCalled();
+
+        await nextTick();
+
+        expect(wrapper.vm.cancelCommentForm).toHaveBeenCalledWith({
+          lineCode: diffLines[1].line_code,
+          fileHash: wrapper.vm.diffFileHash,
         });
+        expect(wrapper.vm.resetAutoSave).toHaveBeenCalled();
       });
     });
 

@@ -201,8 +201,8 @@ RSpec.configure do |config|
     # Do not retry controller tests because rspec-retry cannot properly
     # reset the controller which may contain data from last attempt. See
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73360
-    config.around(:each, type: :controller) do |example|
-      example.run_with_retry(retry: 1)
+    config.prepend_before(:each, type: :controller) do |example|
+      example.metadata[:retry] = 1
     end
 
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]

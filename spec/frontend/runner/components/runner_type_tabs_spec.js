@@ -14,11 +14,16 @@ describe('RunnerTypeTabs', () => {
       .filter((tab) => tab.attributes('active') === 'true')
       .at(0);
 
-  const createComponent = ({ value = mockSearch } = {}) => {
+  const createComponent = ({ props, ...options } = {}) => {
     wrapper = shallowMount(RunnerTypeTabs, {
       propsData: {
-        value,
+        value: mockSearch,
+        ...props,
       },
+      stubs: {
+        GlTab,
+      },
+      ...options,
     });
   };
 
@@ -31,7 +36,7 @@ describe('RunnerTypeTabs', () => {
   });
 
   it('Renders options to filter runners', () => {
-    expect(findTabs().wrappers.map((tab) => tab.attributes('title'))).toEqual([
+    expect(findTabs().wrappers.map((tab) => tab.text())).toEqual([
       'All',
       'Instance',
       'Group',
@@ -40,18 +45,20 @@ describe('RunnerTypeTabs', () => {
   });
 
   it('"All" is selected by default', () => {
-    expect(findActiveTab().attributes('title')).toBe('All');
+    expect(findActiveTab().text()).toBe('All');
   });
 
   it('Another tab can be preselected by the user', () => {
     createComponent({
-      value: {
-        ...mockSearch,
-        runnerType: INSTANCE_TYPE,
+      props: {
+        value: {
+          ...mockSearch,
+          runnerType: INSTANCE_TYPE,
+        },
       },
     });
 
-    expect(findActiveTab().attributes('title')).toBe('Instance');
+    expect(findActiveTab().text()).toBe('Instance');
   });
 
   describe('When the user selects a tab', () => {
@@ -72,7 +79,31 @@ describe('RunnerTypeTabs', () => {
       const newValue = emittedValue();
       await wrapper.setProps({ value: newValue });
 
-      expect(findActiveTab().attributes('title')).toBe('Group');
+      expect(findActiveTab().text()).toBe('Group');
+    });
+  });
+
+  describe('When using a custom slot', () => {
+    const mockContent = 'content';
+
+    beforeEach(() => {
+      createComponent({
+        scopedSlots: {
+          title: `
+          <span>
+            {{props.tab.title}} ${mockContent}
+          </span>`,
+        },
+      });
+    });
+
+    it('Renders tabs with additional information', () => {
+      expect(findTabs().wrappers.map((tab) => tab.text())).toEqual([
+        `All ${mockContent}`,
+        `Instance ${mockContent}`,
+        `Group ${mockContent}`,
+        `Project ${mockContent}`,
+      ]);
     });
   });
 });

@@ -66,11 +66,11 @@ RSpec.describe "Admin Runners" do
           visit admin_runners_path
         end
 
-        it 'runner type can be selected' do
-          expect(page).to have_link('All')
-          expect(page).to have_link('Instance')
-          expect(page).to have_link('Group')
-          expect(page).to have_link('Project')
+        it 'runner types tabs have total counts and can be selected' do
+          expect(page).to have_link('All 2')
+          expect(page).to have_link('Instance 2')
+          expect(page).to have_link('Group 0')
+          expect(page).to have_link('Project 0')
         end
 
         it 'shows runners' do
@@ -162,10 +162,12 @@ RSpec.describe "Admin Runners" do
           create(:ci_runner, :group, description: 'runner-group', groups: [group])
         end
 
-        it 'shows correct runner when type matches' do
+        it '"All" tab is selected by default' do
           visit admin_runners_path
 
-          expect(page).to have_link('All', class: 'active')
+          page.within('[data-testid="runner-type-tabs"]') do
+            expect(page).to have_link('All', class: 'active')
+          end
         end
 
         it 'shows correct runner when type matches' do
@@ -174,9 +176,11 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
 
-          click_on 'Project'
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on('Project')
 
-          expect(page).to have_link('Project', class: 'active')
+            expect(page).to have_link('Project', class: 'active')
+          end
 
           expect(page).to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
@@ -185,9 +189,11 @@ RSpec.describe "Admin Runners" do
         it 'shows no runner when type does not match' do
           visit admin_runners_path
 
-          click_on 'Instance'
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Instance'
 
-          expect(page).to have_link('Instance', class: 'active')
+            expect(page).to have_link('Instance', class: 'active')
+          end
 
           expect(page).not_to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
@@ -200,7 +206,9 @@ RSpec.describe "Admin Runners" do
 
           visit admin_runners_path
 
-          click_on 'Project'
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Project'
+          end
 
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-2-project'
@@ -224,7 +232,9 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-group'
           expect(page).not_to have_content 'runner-paused-project'
 
-          click_on 'Project'
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Project'
+          end
 
           expect(page).to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'

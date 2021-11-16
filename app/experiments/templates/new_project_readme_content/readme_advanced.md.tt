@@ -23,13 +23,14 @@ git push -uf origin <%= @project.default_branch_or_main %>
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](<%= redirect("https://docs.gitlab.com/ee/user/project/integrations/") %>)
+- [ ] [Set up project integrations](<%= redirect(project_settings_integrations_url(@project)) %>)
 
 ## Collaborate with your team
 
 - [ ] [Invite team members and collaborators](<%= redirect("https://docs.gitlab.com/ee/user/project/members/") %>)
 - [ ] [Create a new merge request](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html") %>)
 - [ ] [Automatically close issues from merge requests](<%= redirect("https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically") %>)
+- [ ] [Enable merge request approvals](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/approvals/") %>)
 - [ ] [Automatically merge when pipeline succeeds](<%= redirect("https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html") %>)
 
 ## Test and Deploy
@@ -40,6 +41,7 @@ Use the built-in continuous integration in GitLab.
 - [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](<%= redirect("https://docs.gitlab.com/ee/user/application_security/sast/") %>)
 - [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](<%= redirect("https://docs.gitlab.com/ee/topics/autodevops/requirements.html") %>)
 - [ ] [Use pull-based deployments for improved Kubernetes management](<%= redirect("https://docs.gitlab.com/ee/user/clusters/agent/") %>)
+- [ ] [Set up protected environments](<%= redirect("https://docs.gitlab.com/ee/ci/environments/protected_environments.html") %>)
 
 ***
 

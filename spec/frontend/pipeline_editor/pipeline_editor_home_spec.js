@@ -152,4 +152,27 @@ describe('Pipeline editor home wrapper', () => {
       expect(findCommitSection().exists()).toBe(true);
     });
   });
+
+  describe('WalkthroughPopover events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    describe('when "walkthrough-popover-cta-clicked" is emitted from pipeline editor tabs', () => {
+      it('passes down `scrollToCommitForm=true` to commit section', async () => {
+        expect(findCommitSection().props('scrollToCommitForm')).toBe(false);
+        await findPipelineEditorTabs().vm.$emit('walkthrough-popover-cta-clicked');
+        expect(findCommitSection().props('scrollToCommitForm')).toBe(true);
+      });
+    });
+
+    describe('when "scrolled-to-commit-form" is emitted from commit section', () => {
+      it('passes down `scrollToCommitForm=false` to commit section', async () => {
+        await findPipelineEditorTabs().vm.$emit('walkthrough-popover-cta-clicked');
+        expect(findCommitSection().props('scrollToCommitForm')).toBe(true);
+        await findCommitSection().vm.$emit('scrolled-to-commit-form');
+        expect(findCommitSection().props('scrollToCommitForm')).toBe(false);
+      });
+    });
+  });
 });

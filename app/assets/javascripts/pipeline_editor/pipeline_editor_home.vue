@@ -58,6 +58,7 @@ export default {
   data() {
     return {
       currentTab: CREATE_TAB,
+      scrollToCommitForm: false,
       shouldLoadNewBranch: false,
       showSwitchBranchModal: false,
     };
@@ -80,6 +81,9 @@ export default {
     },
     setCurrentTab(tabName) {
       this.currentTab = tabName;
+    },
+    setScrollToCommitForm(newValue = true) {
+      this.scrollToCommitForm = newValue;
     },
   },
 };
@@ -117,8 +121,10 @@ export default {
       :ci-config-data="ciConfigData"
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"
+      :is-new-ci-config-file="isNewCiConfigFile"
       v-on="$listeners"
       @set-current-tab="setCurrentTab"
+      @walkthrough-popover-cta-clicked="setScrollToCommitForm"
     />
     <commit-section
       v-if="showCommitForm"
@@ -126,6 +132,8 @@ export default {
       :ci-file-content="ciFileContent"
       :commit-sha="commitSha"
       :is-new-ci-config-file="isNewCiConfigFile"
+      :scroll-to-commit-form="scrollToCommitForm"
+      @scrolled-to-commit-form="setScrollToCommitForm(false)"
       v-on="$listeners"
     />
     <pipeline-editor-drawer />

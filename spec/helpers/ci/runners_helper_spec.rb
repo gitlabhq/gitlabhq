@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnersHelper do
-  let_it_be(:user, refind: true) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
@@ -12,22 +12,22 @@ RSpec.describe Ci::RunnersHelper do
   describe '#runner_status_icon', :clean_gitlab_redis_cache do
     it "returns - not contacted yet" do
       runner = create(:ci_runner)
-      expect(runner_status_icon(runner)).to include("not connected yet")
+      expect(helper.runner_status_icon(runner)).to include("not connected yet")
     end
 
     it "returns offline text" do
       runner = create(:ci_runner, contacted_at: 1.day.ago, active: true)
-      expect(runner_status_icon(runner)).to include("Runner is offline")
+      expect(helper.runner_status_icon(runner)).to include("Runner is offline")
     end
 
     it "returns online text" do
       runner = create(:ci_runner, contacted_at: 1.second.ago, active: true)
-      expect(runner_status_icon(runner)).to include("Runner is online")
+      expect(helper.runner_status_icon(runner)).to include("Runner is online")
     end
 
     it "returns paused text" do
       runner = create(:ci_runner, contacted_at: 1.second.ago, active: false)
-      expect(runner_status_icon(runner)).to include("Runner is paused")
+      expect(helper.runner_status_icon(runner)).to include("Runner is paused")
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe Ci::RunnersHelper do
 
     context 'without sorting' do
       it 'returns cached value' do
-        expect(runner_contacted_at(runner)).to eq(contacted_at_cached)
+        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_cached)
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe Ci::RunnersHelper do
       end
 
       it 'returns cached value' do
-        expect(runner_contacted_at(runner)).to eq(contacted_at_cached)
+        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_cached)
       end
     end
 
@@ -62,8 +62,30 @@ RSpec.describe Ci::RunnersHelper do
       end
 
       it 'returns stored value' do
-        expect(runner_contacted_at(runner)).to eq(contacted_at_stored)
+        expect(helper.runner_contacted_at(runner)).to eq(contacted_at_stored)
       end
+    end
+  end
+
+  describe '#admin_runners_data_attributes' do
+    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+    let_it_be(:project_runner) { create(:ci_runner, :project ) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(admin)
+    end
+
+    it 'returns the data in format' do
+      expect(helper.admin_runners_data_attributes).to eq({
+        runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
+        registration_token: Gitlab::CurrentSettings.runners_registration_token,
+        active_runners_count: '0',
+        all_runners_count: '2',
+        instance_runners_count: '1',
+        group_runners_count: '0',
+        project_runners_count: '1'
+      })
     end
   end
 
@@ -86,7 +108,7 @@ RSpec.describe Ci::RunnersHelper do
         parent_shared_runners_availability: nil
       }.merge(runner_constants)
 
-      expect(group_shared_runners_settings_data(parent)).to eq result
+      expect(helper.group_shared_runners_settings_data(parent)).to eq result
     end
 
     it 'returns group data for child group' do
@@ -96,7 +118,7 @@ RSpec.describe Ci::RunnersHelper do
         parent_shared_runners_availability: Namespace::SR_ENABLED
       }.merge(runner_constants)
 
-      expect(group_shared_runners_settings_data(group)).to eq result
+      expect(helper.group_shared_runners_settings_data(group)).to eq result
     end
   end
 
@@ -104,7 +126,7 @@ RSpec.describe Ci::RunnersHelper do
     let(:group) { create(:group) }
 
     it 'returns group data to render a runner list' do
-      data = group_runners_data_attributes(group)
+      data = helper.group_runners_data_attributes(group)
 
       expect(data[:registration_token]).to eq(group.runners_token)
       expect(data[:group_id]).to eq(group.id)

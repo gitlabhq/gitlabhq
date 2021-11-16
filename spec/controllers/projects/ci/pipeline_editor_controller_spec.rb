@@ -6,6 +6,8 @@ RSpec.describe Projects::Ci::PipelineEditorController do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
+  subject(:show_request) { get :show, params: { namespace_id: project.namespace, project_id: project } }
+
   before do
     sign_in(user)
   end
@@ -14,8 +16,7 @@ RSpec.describe Projects::Ci::PipelineEditorController do
     context 'with enough privileges' do
       before do
         project.add_developer(user)
-
-        get :show, params: { namespace_id: project.namespace, project_id: project }
+        show_request
       end
 
       it { expect(response).to have_gitlab_http_status(:ok) }
@@ -28,12 +29,26 @@ RSpec.describe Projects::Ci::PipelineEditorController do
     context 'without enough privileges' do
       before do
         project.add_reporter(user)
-
-        get :show, params: { namespace_id: project.namespace, project_id: project }
+        show_request
       end
 
       it 'responds with 404' do
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    describe 'pipeline_editor_walkthrough experiment' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'tracks the assignment', :experiment do
+        expect(experiment(:pipeline_editor_walkthrough))
+          .to track(:assignment)
+          .with_context(actor: user)
+          .on_next_instance
+
+        show_request
       end
     end
   end

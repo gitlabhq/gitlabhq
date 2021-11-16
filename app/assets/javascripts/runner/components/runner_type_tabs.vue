@@ -51,13 +51,16 @@ export default {
 };
 </script>
 <template>
-  <gl-tabs v-bind="$attrs">
+  <gl-tabs v-bind="$attrs" data-testid="runner-type-tabs">
     <gl-tab
       v-for="tab in $options.tabs"
       :key="`${tab.runnerType}`"
       :active="isTabActive(tab)"
-      :title="tab.title"
       @click="onTabSelected(tab)"
-    />
+    >
+      <template #title>
+        <slot name="title" :tab="tab">{{ tab.title }}</slot>
+      </template>
+    </gl-tab>
   </gl-tabs>
 </template>

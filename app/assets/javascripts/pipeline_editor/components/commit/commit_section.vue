@@ -45,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    scrollToCommitForm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -146,6 +151,8 @@ export default {
     :current-branch="currentBranch"
     :default-message="defaultCommitMessage"
     :is-saving="isSaving"
+    :scroll-to-commit-form="scrollToCommitForm"
+    v-on="$listeners"
     @cancel="onCommitCancel"
     @submit="onCommitSubmit"
   />

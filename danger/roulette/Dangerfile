@@ -48,10 +48,18 @@ Please consider creating a merge request to
 for them.
 MARKDOWN
 
+def group_not_available_template(slack_channel, gitlab_group)
+  <<~TEMPLATE
+    No engineer is available for automated assignment, please reach out to `#{slack_channel}` slack channel or mention `#{gitlab_group}` for assistance.
+  TEMPLATE
+end
+
 OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
 NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
-  product_intelligence: "No engineer is available for automated assignment, please reach out to `#g_product_intelligence` slack channel or mention `@gitlab-org/growth/product-intelligence/engineers` for assistance."
+  product_intelligence: group_not_available_template('#g_product_intelligence', '@gitlab-org/growth/product-intelligence/engineers'),
+  integrations_be: group_not_available_template('#g_ecosystem_integrations', '@gitlab-org/ecosystem-stage/integrations'),
+  integrations_fe: group_not_available_template('#g_ecosystem_integrations', '@gitlab-org/ecosystem-stage/integrations')
 }.freeze
 
 def note_for_spins_role(spins, role, category)

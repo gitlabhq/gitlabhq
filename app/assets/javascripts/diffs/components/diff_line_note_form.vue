@@ -2,6 +2,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '../../notes/components/multiline_comment_form.vue';
 import {
@@ -177,16 +178,16 @@ export default {
       'saveDiffDiscussion',
       'setSuggestPopoverDismissed',
     ]),
-    handleCancelCommentForm(shouldConfirm, isDirty) {
+    async handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
 
-        // eslint-disable-next-line no-alert
-        if (!window.confirm(msg)) {
+        const confirmed = await confirmAction(msg);
+
+        if (!confirmed) {
           return;
         }
       }
-
       this.cancelCommentForm({
         lineCode: this.line.line_code,
         fileHash: this.diffFileHash,

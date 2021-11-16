@@ -1,24 +1,8 @@
 import Vue from 'vue';
 
-export function confirmViaGlModal(message, element) {
+export function confirmAction(message, { primaryBtnVariant, primaryBtnText } = {}) {
   return new Promise((resolve) => {
     let confirmed = false;
-
-    const props = {};
-
-    const confirmBtnVariant = element.getAttribute('data-confirm-btn-variant');
-
-    if (confirmBtnVariant) {
-      props.primaryVariant = confirmBtnVariant;
-    }
-    const screenReaderText =
-      element.querySelector('.gl-sr-only')?.textContent ||
-      element.querySelector('.sr-only')?.textContent ||
-      element.getAttribute('aria-label');
-
-    if (screenReaderText) {
-      props.primaryText = screenReaderText;
-    }
 
     const component = new Vue({
       components: {
@@ -28,7 +12,10 @@ export function confirmViaGlModal(message, element) {
         return h(
           'confirm-modal',
           {
-            props,
+            props: {
+              primaryVariant: primaryBtnVariant,
+              primaryText: primaryBtnText,
+            },
             on: {
               confirmed() {
                 confirmed = true;
@@ -44,4 +31,25 @@ export function confirmViaGlModal(message, element) {
       },
     }).$mount();
   });
+}
+
+export function confirmViaGlModal(message, element) {
+  const primaryBtnConfig = {};
+
+  const confirmBtnVariant = element.getAttribute('data-confirm-btn-variant');
+
+  if (confirmBtnVariant) {
+    primaryBtnConfig.primaryBtnVariant = confirmBtnVariant;
+  }
+
+  const screenReaderText =
+    element.querySelector('.gl-sr-only')?.textContent ||
+    element.querySelector('.sr-only')?.textContent ||
+    element.getAttribute('aria-label');
+
+  if (screenReaderText) {
+    primaryBtnConfig.primaryBtnText = screenReaderText;
+  }
+
+  return confirmAction(message, primaryBtnConfig);
 }

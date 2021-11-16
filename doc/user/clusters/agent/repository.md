@@ -198,6 +198,87 @@ To grant access to all projects within a group:
      - id: path/to/group/subgroup
    ```
 
+### Use impersonation to restrict project and group access **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
+
+By default, the [CI/CD Tunnel](ci_cd_tunnel.md) inherits all the permissions from the service account used to install the
+Agent in the cluster.
+To restrict access to your cluster, you can use [impersonation](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
+
+To specify impersonations, use the `access_as` attribute in your Agent's configuration file and use Kubernetes RBAC rules to manage impersonated account permissions.
+
+You can impersonate:
+
+- The Agent itself (default).
+- The CI job that accesses the cluster.
+- A specific user or system account defined within the cluster.
+
+#### Impersonate the Agent
+
+The Agent is impersonated by default. You don't need to do anything to impersonate it.
+
+#### Impersonate the CI job that accesses the cluster
+
+To impersonate the CI job that accesses the cluster, add the `ci_job: {}` key-value
+under the `access_as` key.
+
+When the agent makes the request to the actual Kubernetes API, it sets the
+impersonation credentials in the following way:
+
+- `UserName` is set to `gitlab:ci_job:<job id>`. Example: `gitlab:ci_job:1074499489`.
+- `Groups` is set to:
+  - `gitlab:ci_job` to identify all requests coming from CI jobs.
+  - The list of IDs of groups the project is in.
+  - The project ID.
+  - The slug of the environment this job belongs to.
+
+    Example: for a CI job in `group1/group1-1/project1` where:
+
+    - Group `group1` has ID 23.
+    - Group `group1/group1-1` has ID 25.
+    - Project `group1/group1-1/project1` has ID 150.
+    - Job running in a prod environment.
+
+   Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group:25, gitlab:project:150, gitlab:project_env:150:prod]`.
+
+- `Extra` carries extra information about the request. The following properties are set on the impersonated identity:
+
+| Property | Description |
+| -------- | ----------- |
+| `agent.gitlab.com/id` | Contains the agent ID. |
+| `agent.gitlab.com/config_project_id` | Contains the agent's configuration project ID. |
+| `agent.gitlab.com/project_id` | Contains the CI project ID. |
+| `agent.gitlab.com/ci_pipeline_id` | Contains the CI pipeline ID. |
+| `agent.gitlab.com/ci_job_id` | Contains the CI job ID. |
+| `agent.gitlab.com/username` | Contains the username of the user the CI job is running as. |
+| `agent.gitlab.com/environment_slug` | Contains the slug of the environment. Only set if running in an environment. |
+
+Example to restrict access by the CI job's identity:
+
+```yaml
+ci_access:
+  projects:
+  - id: path/to/project
+    access_as:
+      ci_job: {}
+```
+
+#### Impersonate a static identity
+
+For the given CI/CD Tunnel connection, you can use a static identity for the impersonation.
+
+Add the `impersonate` key under the `access_as` key to make the request using the provided identity.
+
+The identity can be specified with the following keys:
+
+- `username` (required)
+- `uid`
+- `groups`
+- `extra`
+
+See the [official Kubernetes documentation for more details](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation) on the usage of these keys.
+
 ## Surface network security alerts from cluster to GitLab **(ULTIMATE)**
 
 The GitLab Agent provides an [integration with Cilium](index.md#kubernetes-network-security-alerts).

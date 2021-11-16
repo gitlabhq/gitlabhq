@@ -252,6 +252,30 @@ RSpec.describe Import::BitbucketController do
           end
         end
       end
+
+      context "when exceptions occur" do
+        shared_examples "handles exceptions" do
+          it "logs an exception" do
+            expect(Bitbucket::Client).to receive(:new).and_raise(error)
+            expect(controller).to receive(:log_exception)
+
+            post :create, format: :json
+          end
+        end
+
+        context "for OAuth2 errors" do
+          let(:fake_response) { double('Faraday::Response', headers: {}, body: '', status: 403) }
+          let(:error) { OAuth2::Error.new(OAuth2::Response.new(fake_response)) }
+
+          it_behaves_like "handles exceptions"
+        end
+
+        context "for Bitbucket errors" do
+          let(:error) { Bitbucket::Error::Unauthorized.new("error") }
+
+          it_behaves_like "handles exceptions"
+        end
+      end
     end
 
     context 'user has chosen an existing nested namespace and name for the project' do

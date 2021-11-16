@@ -238,8 +238,10 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    accept_confirm do
-      find('.js-close-discussion-note-form').click
+    find('.js-close-discussion-note-form').click
+
+    page.within('.modal') do
+      click_button 'OK'
     end
 
     assert_comment_dismissal(line_holder)

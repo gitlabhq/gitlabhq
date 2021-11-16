@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -22,6 +23,7 @@ import CiEditorHeader from './editor/ci_editor_header.vue';
 import TextEditor from './editor/text_editor.vue';
 import CiLint from './lint/ci_lint.vue';
 import EditorTab from './ui/editor_tab.vue';
+import WalkthroughPopover from './walkthrough_popover.vue';
 
 export default {
   i18n: {
@@ -63,6 +65,8 @@ export default {
     GlTabs,
     PipelineGraph,
     TextEditor,
+    GitlabExperiment,
+    WalkthroughPopover,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -78,6 +82,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    isNewCiConfigFile: {
+      type: Boolean,
+      required: true,
     },
   },
   apollo: {
@@ -136,11 +144,17 @@ export default {
   >
     <editor-tab
       class="gl-mb-3"
+      title-link-class="js-walkthrough-popover-target"
       :title="$options.i18n.tabEdit"
       lazy
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
+      <gitlab-experiment name="pipeline_editor_walkthrough">
+        <template #candidate>
+          <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
+        </template>
+      </gitlab-experiment>
       <ci-editor-header />
       <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />
     </editor-tab>

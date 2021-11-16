@@ -141,8 +141,8 @@ describe('Pipeline editor branch switcher', () => {
       createComponentWithApollo();
     });
 
-    it('does not render dropdown', () => {
-      expect(findDropdown().exists()).toBe(false);
+    it('disables the dropdown', () => {
+      expect(findDropdown().props('disabled')).toBe(true);
     });
   });
 
@@ -189,7 +189,7 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('does not render dropdown', () => {
-      expect(findDropdown().exists()).toBe(false);
+      expect(findDropdown().props('disabled')).toBe(true);
     });
 
     it('shows an error message', () => {

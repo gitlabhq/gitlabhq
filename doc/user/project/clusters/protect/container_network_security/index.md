@@ -6,6 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container Network Security **(FREE)**
 
+NOTE:
+In GitLab 14.5, using a certificate to connect GitLab to a Kubernetes cluster is [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+You can continue using Container Network Security, even though it relies on this certificate-based
+method. The work to allow all aspects of Container Network Security to function through the [GitLab Kubernetes Agent](../../../../clusters/agent/index.md)
+instead of the certificate-based method can be tracked [in this GitLab issue](https://gitlab.com/gitlab-org/gitlab/-/issues/299350) and [this GitLab Epic](https://gitlab.com/groups/gitlab-org/-/epics/7057).
+
 Container Network Security in GitLab provides basic firewall functionality by leveraging Cilium
 NetworkPolicies to filter traffic going in and out of the cluster as well as traffic between pods
 inside the cluster. Container Network Security can be used to enforce L3, L4, and L7 policies and

@@ -277,4 +277,16 @@ describe('Pipeline Editor | Commit section', () => {
       expect(wrapper.emitted('resetContent')).toHaveLength(1);
     });
   });
+
+  it('sets listeners on commit form', () => {
+    const handler = jest.fn();
+    createComponent({ options: { listeners: { event: handler } } });
+    findCommitForm().vm.$emit('event');
+    expect(handler).toHaveBeenCalled();
+  });
+
+  it('passes down scroll-to-commit-form prop to commit form', () => {
+    createComponent({ props: { 'scroll-to-commit-form': true } });
+    expect(findCommitForm().props('scrollToCommitForm')).toBe(true);
+  });
 });

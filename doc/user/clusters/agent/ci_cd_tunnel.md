@@ -41,6 +41,10 @@ The Agent can be configured to enable access to the CI/CD Tunnel to other projec
 
 You can read more on how to [authorize access in the Agent configuration reference](repository.md#authorize-projects-and-groups-to-use-an-agent).
 
+## Restrict access of authorized projects and groups **(PREMIUM)**
+
+You can [configure various impersonations](repository.md#use-impersonation-to-restrict-project-and-group-access) to restrict the permissions of a shared CI/CD Tunnel.
+
 ## Example for a `kubectl` command using the CI/CD Tunnel
 
 The following example shows a CI/CD job that runs a `kubectl` command using the CI/CD Tunnel.

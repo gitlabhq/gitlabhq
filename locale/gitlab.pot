@@ -41698,6 +41698,18 @@ msgstr ""
 msgid "pipeline schedules documentation"
 msgstr ""
 
+msgid "pipelineEditorWalkthrough|Let's do this!"
+msgstr ""
+
+msgid "pipelineEditorWalkthrough|See how GitLab pipelines work"
+msgstr ""
+
+msgid "pipelineEditorWalkthrough|This %{codeStart}.gitlab-ci.yml%{codeEnd} file creates a simple test pipeline."
+msgstr ""
+
+msgid "pipelineEditorWalkthrough|Use the %{boldStart}commit changes%{boldEnd} button at the bottom of the page to run the pipeline."
+msgstr ""
+
 msgid "pod_name can contain only lowercase letters, digits, '-', and '.' and must start and end with an alphanumeric character"
 msgstr ""
 

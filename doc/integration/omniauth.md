@@ -115,32 +115,28 @@ your chosen [provider](#supported-providers).
 
 ## Enable OmniAuth for an existing user
 
-Existing users can enable OmniAuth for specific providers after the account is
-created. For example, if the user originally signed in with LDAP, an OmniAuth
-provider such as Twitter can be enabled. Follow the steps below to enable an
-OmniAuth provider for an existing user.
+If you're an existing user, after your GitLab account is
+created, you can activate an OmniAuth provider. For example, if you originally signed in with LDAP, you can enable an OmniAuth
+provider like Twitter.
 
-1. Sign in normally - whether standard sign in, LDAP, or another OmniAuth provider.
-1. In the top-right corner, select your avatar.
+1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
+1. On the top bar, in the top right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Account**.
-1. In the **Connected Accounts** section, select the desired OmniAuth provider, such as Twitter.
-1. The user is redirected to the provider. After the user authorizes GitLab,
-   they are redirected back to GitLab.
+1. In the **Connected Accounts** section, select the OmniAuth provider, such as Twitter.
+1. You are redirected to the provider. After you authorize GitLab,
+   you are redirected back to GitLab.
 
-The chosen OmniAuth provider is now active and can be used to sign in to GitLab from then on.
+You can now use your chosen OmniAuth provider to sign in to GitLab.
 
 ## Link existing users to OmniAuth users
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
 
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
-Automatic linking using this method works for all providers
-[except the SAML provider](https://gitlab.com/gitlab-org/gitlab/-/issues/338293). For automatic
-linking using the SAML provider, see [SAML-specific](saml.md#general-setup) instructions.
 
-As an example, the following configuration is used to enable the auto link
-feature for both an **OpenID Connect provider** and a **Twitter OAuth provider**.
+The following example enables automatic linking
+for the OpenID Connect provider and the Twitter OAuth provider.
 
 - **For Omnibus installations**
 
@@ -155,18 +151,23 @@ feature for both an **OpenID Connect provider** and a **Twitter OAuth provider**
     auto_link_user: ["openid_connect", "twitter"]
   ```
 
-## Configure OmniAuth providers as external
+This method of enabling automatic linking works for all providers
+[except SAML](https://gitlab.com/gitlab-org/gitlab/-/issues/338293).
+To enable automatic linking for SAML, see the [SAML setup instructions](saml.md#general-setup).
 
-You can define which OmniAuth providers you want to be `external`. Users
-creating accounts, or logging in by using these `external` providers cannot have
-access to internal projects. You must use the full name of the provider,
-like `google_oauth2` for Google. Refer to the examples for the full names of the
-supported providers.
+## Create an external providers list
+
+You can define a list of external OmniAuth providers.
+Users who create accounts or sign in to GitLab through the listed providers do not get access to [internal projects](../public_access/public_access.md#internal-projects-and-groups).
+
+To define the external providers list, use the full name of the provider,
+for example, `google_oauth2` for Google. For provider names, see the
+**OmniAuth provider name** column in the [supported providers table](#supported-providers).
 
 NOTE:
-If you decide to remove an OmniAuth provider from the external providers list,
-you must manually update the users that use this method to sign in if you want
-their accounts to be upgraded to full internal accounts.
+If you remove an OmniAuth provider from the external providers list,
+you must manually update the users that use this sign-in method so their
+accounts are upgraded to full internal accounts.
 
 - **For Omnibus installations**
 
@@ -184,70 +185,67 @@ their accounts to be upgraded to full internal accounts.
 ## Use a custom OmniAuth provider
 
 NOTE:
-The following information only applies for installations from source.
+The following information only applies to installations from source.
 
-GitLab uses [OmniAuth](https://github.com/omniauth/omniauth) for authentication and already ships
-with a few providers pre-installed, such as LDAP, GitHub, and Twitter. You may also
-have to integrate with other authentication solutions. For
-these cases, you can use the OmniAuth provider.
+If you have to integrate with an authentication solution other than the [OmniAuth](https://github.com/omniauth/omniauth) providers included with GitLab,
+you can use a custom OmniAuth provider.
 
-These steps are fairly general and you must figure out the exact details
-from the OmniAuth provider's documentation.
+These steps are general. Read the OmniAuth provider's documentation for the exact
+implementation details.
 
-- Stop GitLab:
+1. Stop GitLab:
 
-  ```shell
-  sudo service gitlab stop
-  ```
+   ```shell
+   sudo service gitlab stop
+   ```
 
-- Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/Gemfile):
+1. Add the gem to your [`Gemfile`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/Gemfile):
 
-  ```shell
-  gem "omniauth-your-auth-provider"
-  ```
+   ```shell
+   gem "omniauth-your-auth-provider"
+   ```
 
-- Install the new OmniAuth provider gem by running the following command:
+1. Install the new OmniAuth provider gem:
 
-  ```shell
-  sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
-  ```
+   ```shell
+   sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
+   ```
 
-  > These are the same commands you used during initial installation in the [Install Gems section](../install/installation.md#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+   These commands are the same as the commands for [installing gems](../install/installation.md#install-gems)
+   during initial installation, with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
-- Start GitLab:
+1. Start GitLab:
 
-  ```shell
-  sudo service gitlab start
-  ```
+   ```shell
+   sudo service gitlab start
+   ```
 
 ### Custom OmniAuth provider examples
 
-If you have successfully set up a provider that is not shipped with GitLab itself,
-please let us know.
+If you have successfully set up a provider that is not already integrated with GitLab,
+let us know.
 
-While we can't officially support every possible authentication mechanism out there,
-we'd like to at least help those with specific needs.
+We can't officially support every possible authentication mechanism available,
+but we'd like to at least help those with specific needs.
 
 ## Enable or disable sign-in with an OmniAuth provider without disabling import sources
 
-Administrators are able to enable or disable **Sign In** by using some OmniAuth providers.
+Administrators can enable or disable sign-in for some OmniAuth providers.
 
 NOTE:
-By default, **Sign In** is enabled by using all the OAuth Providers that have been configured in `config/gitlab.yml`.
+By default, sign-in is enabled for all the OAuth providers configured in `config/gitlab.yml`.
 
-To enable/disable an OmniAuth provider:
+To enable or disable an OmniAuth provider:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, go to **Settings**.
-1. Scroll to the **Sign-in Restrictions** section, and click **Expand**.
-1. Below **Enabled OAuth Sign-In sources**, select the checkbox for each provider you want to enable or disable.
-
-   ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources_v13_10.png)
+1. On the left sidebar, select **Settings**.
+1. Expand **Sign-in restrictions**.
+1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
 
 ## Disable OmniAuth
 
-Starting from version 11.4 of GitLab, OmniAuth is enabled by default. This only
-has an effect if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
+In GitLab 11.4 and later, OmniAuth is enabled by default. However, OmniAuth only works
+if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
 
 If OmniAuth providers are causing problems even when individually disabled, you
 can disable the entire OmniAuth subsystem by modifying the configuration file:
@@ -267,7 +265,8 @@ can disable the entire OmniAuth subsystem by modifying the configuration file:
 
 ## Keep OmniAuth user profiles up to date
 
-You can enable profile syncing from selected OmniAuth providers and for all or for specific user information.
+You can enable profile syncing from selected OmniAuth providers. You can sync
+all or specific user information.
 
 When authenticating using LDAP, the user's name and email are always synced.
 
@@ -288,13 +287,20 @@ When authenticating using LDAP, the user's name and email are always synced.
 
 ## Bypass two-factor authentication
 
-In GitLab 12.3 or later, users can sign in with specified providers _without_
-using two factor authentication.
+> Introduced in GitLab 12.3.
 
-Define the allowed providers using an array (for example, `["twitter", 'google_oauth2']`),
-or as `true` or `false` to allow all providers (or none). This option should be
-configured only for providers which already have two factor authentication
-(default: false). This configuration doesn't apply to SAML.
+With certain OmniAuth providers, users can sign in without
+using two-factor authentication.
+
+To bypass two-factor authentication, you can either:
+
+- Define the allowed providers using an array (for example, `['twitter', 'google_oauth2']`).
+- Specify `true` to allow all providers, or `false` to allow none.
+
+This option should be configured only for providers that already have
+two-factor authentication. The default is `false`.
+
+This configuration doesn't apply to SAML.
 
 - **For Omnibus package**
 
@@ -313,10 +319,10 @@ configured only for providers which already have two factor authentication
 
 You can add the `auto_sign_in_with_provider` setting to your GitLab
 configuration to redirect login requests to your OmniAuth provider for
-authentication. This removes the need to click a button before actually signing in.
+authentication. This removes the need to select the provider before signing in.
 
-For example, when using the [Azure v2 integration](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2), set the following to enable auto
-sign-in:
+For example, to enable automatic sign-in for the
+[Azure v2 integration](azure.md#microsoft-azure-oauth-20-omniauth-provider-v2):
 
 - **For Omnibus package**
 
@@ -332,10 +338,10 @@ sign-in:
   ```
 
 Keep in mind that every sign-in attempt is redirected to the OmniAuth
-provider; you can't sign in using local credentials. Ensure at least
-one of the OmniAuth users has an administrator role.
+provider, so you can't sign in using local credentials. Ensure at least
+one of the OmniAuth users is an administrator.
 
-You may also bypass the auto sign in feature by browsing to
+You can also bypass automatic sign-in by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ## Passwords for users created via OmniAuth
@@ -344,11 +350,12 @@ The [Generated passwords for users created through integrated authentication](..
 guide provides an overview about how GitLab generates and sets passwords for
 users created with OmniAuth.
 
-## Custom OmniAuth provider icon
+## Use a custom OmniAuth provider icon
 
 Most supported providers include a built-in icon for the rendered sign-in button.
-After you ensure your image is optimized for rendering at 64 x 64 pixels,
-you can override this icon in one of two ways:
+
+To use your own icon, ensure your image is optimized for rendering at 64 x 64 pixels,
+then override the icon in one of two ways:
 
 - **Provide a custom image path**:
 
@@ -359,11 +366,11 @@ you can override this icon in one of two ways:
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)
      for an example for the OpenID Connect provider.
 
-- **Directly embed an image in a configuration file**: This example creates a Base64-encoded
+- **Embed an image directly in a configuration file**: This example creates a Base64-encoded
   version of your image you can serve through a
   [Data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs):
 
-  1. Encode your image file with GNU `base64` command (such as `base64 -w 0 <logo.png>`)
+  1. Encode your image file with a GNU `base64` command (such as `base64 -w 0 <logo.png>`)
      which returns a single-line `<base64-data>` string.
   1. Add the Base64-encoded data to a custom `icon` parameter in your GitLab
      configuration file:
