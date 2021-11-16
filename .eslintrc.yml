@@ -119,7 +119,6 @@ overrides:
       - '@graphql-eslint'
     parserOptions:
       parser: '@graphql-eslint/eslint-plugin'
-      schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql'
       operations:
          - '{,ee/,jh/}app/**/*.graphql'
       # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line

@@ -231,10 +231,6 @@ We also collect metrics specific to [Geo](../../administration/geo/index.md) sec
        "repositories_replication_enabled"=>true,
        "repositories_synced_count"=>24,
        "repositories_failed_count"=>0,
-       "attachments_replication_enabled"=>true,
-       "attachments_count"=>1,
-       "attachments_synced_count"=>1,
-       "attachments_failed_count"=>0,
        "git_fetch_event_count_weekly"=>nil,
        "git_push_event_count_weekly"=>nil,
        ... other geo node status fields

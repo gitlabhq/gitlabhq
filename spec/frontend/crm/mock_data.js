@@ -45,3 +45,37 @@ export const getGroupContactsQueryResponse = {
     },
   },
 };
+
+export const getGroupOrganizationsQueryResponse = {
+  data: {
+    group: {
+      __typename: 'Group',
+      id: 'gid://gitlab/Group/26',
+      organizations: {
+        nodes: [
+          {
+            __typename: 'CustomerRelationsOrganization',
+            id: 'gid://gitlab/CustomerRelations::Organization/1',
+            name: 'Test Inc',
+            defaultRate: 100,
+            description: null,
+          },
+          {
+            __typename: 'CustomerRelationsOrganization',
+            id: 'gid://gitlab/CustomerRelations::Organization/2',
+            name: 'ABC Company',
+            defaultRate: 110,
+            description: 'VIP',
+          },
+          {
+            __typename: 'CustomerRelationsOrganization',
+            id: 'gid://gitlab/CustomerRelations::Organization/3',
+            name: 'GitLab',
+            defaultRate: 120,
+            description: null,
+          },
+        ],
+      },
+    },
+  },
+};

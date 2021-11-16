@@ -14170,7 +14170,6 @@ CREATE TABLE geo_event_log (
     hashed_storage_migrated_event_id bigint,
     lfs_object_deleted_event_id bigint,
     hashed_storage_attachments_event_id bigint,
-    upload_deleted_event_id bigint,
     job_artifact_deleted_event_id bigint,
     reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
@@ -14300,9 +14299,6 @@ CREATE TABLE geo_node_statuses (
     lfs_objects_count integer,
     lfs_objects_synced_count integer,
     lfs_objects_failed_count integer,
-    attachments_count integer,
-    attachments_synced_count integer,
-    attachments_failed_count integer,
     last_event_id integer,
     last_event_date timestamp without time zone,
     cursor_last_event_id integer,
@@ -14327,7 +14323,6 @@ CREATE TABLE geo_node_statuses (
     wikis_verification_failed_count integer,
     lfs_objects_synced_missing_on_primary_count integer,
     job_artifacts_synced_missing_on_primary_count integer,
-    attachments_synced_missing_on_primary_count integer,
     repositories_checksummed_count integer,
     repositories_checksum_failed_count integer,
     repositories_checksum_mismatch_count integer,
@@ -14495,24 +14490,6 @@ CREATE SEQUENCE geo_reset_checksum_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_reset_checksum_events_id_seq OWNED BY geo_reset_checksum_events.id;
-
-CREATE TABLE geo_upload_deleted_events (
-    id bigint NOT NULL,
-    upload_id integer NOT NULL,
-    file_path character varying NOT NULL,
-    model_id integer NOT NULL,
-    model_type character varying NOT NULL,
-    uploader character varying NOT NULL
-);
-
-CREATE SEQUENCE geo_upload_deleted_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_upload_deleted_events_id_seq OWNED BY geo_upload_deleted_events.id;
 
 CREATE TABLE gitlab_subscription_histories (
     id bigint NOT NULL,
@@ -21510,8 +21487,6 @@ ALTER TABLE ONLY geo_repository_updated_events ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY geo_reset_checksum_events ALTER COLUMN id SET DEFAULT nextval('geo_reset_checksum_events_id_seq'::regclass);
 
-ALTER TABLE ONLY geo_upload_deleted_events ALTER COLUMN id SET DEFAULT nextval('geo_upload_deleted_events_id_seq'::regclass);
-
 ALTER TABLE ONLY gitlab_subscription_histories ALTER COLUMN id SET DEFAULT nextval('gitlab_subscription_histories_id_seq'::regclass);
 
 ALTER TABLE ONLY gitlab_subscriptions ALTER COLUMN id SET DEFAULT nextval('gitlab_subscriptions_id_seq'::regclass);
@@ -23128,9 +23103,6 @@ ALTER TABLE ONLY geo_repository_updated_events
 
 ALTER TABLE ONLY geo_reset_checksum_events
     ADD CONSTRAINT geo_reset_checksum_events_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_upload_deleted_events
-    ADD CONSTRAINT geo_upload_deleted_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY gitlab_subscription_histories
     ADD CONSTRAINT gitlab_subscription_histories_pkey PRIMARY KEY (id);
@@ -25950,8 +25922,6 @@ CREATE INDEX index_geo_event_log_on_repository_updated_event_id ON geo_event_log
 
 CREATE INDEX index_geo_event_log_on_reset_checksum_event_id ON geo_event_log USING btree (reset_checksum_event_id) WHERE (reset_checksum_event_id IS NOT NULL);
 
-CREATE INDEX index_geo_event_log_on_upload_deleted_event_id ON geo_event_log USING btree (upload_deleted_event_id) WHERE (upload_deleted_event_id IS NOT NULL);
-
 CREATE INDEX index_geo_hashed_storage_attachments_events_on_project_id ON geo_hashed_storage_attachments_events USING btree (project_id);
 
 CREATE INDEX index_geo_hashed_storage_migrated_events_on_project_id ON geo_hashed_storage_migrated_events USING btree (project_id);
@@ -25987,8 +25957,6 @@ CREATE INDEX index_geo_repository_updated_events_on_project_id ON geo_repository
 CREATE INDEX index_geo_repository_updated_events_on_source ON geo_repository_updated_events USING btree (source);
 
 CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum_events USING btree (project_id);
-
-CREATE INDEX index_geo_upload_deleted_events_on_upload_id ON geo_upload_deleted_events USING btree (upload_id);
 
 CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
 
@@ -29351,9 +29319,6 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_c1f241c70d FOREIGN KEY (upload_deleted_event_id) REFERENCES geo_upload_deleted_events(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_project_stages
     ADD CONSTRAINT fk_c3339bdfc9 FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;

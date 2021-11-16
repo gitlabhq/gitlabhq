@@ -22,9 +22,7 @@ module QA
       end
 
       let(:source_group) do
-        # top level group can't be created on staging via api, create via UI
-        fabricate_method = staging? ? :fabricate_via_browser_ui! : :fabricate_via_api!
-        Resource::Sandbox.send(fabricate_method) do |group|
+        Resource::Sandbox.fabricate! do |group|
           group.api_client = api_client
           group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
         end

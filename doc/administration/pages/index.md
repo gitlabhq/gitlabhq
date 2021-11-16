@@ -259,7 +259,8 @@ control over how the Pages daemon runs and serves content in your environment.
 | `FF_ENABLE_REDIRECTS`                   | Feature flag to enable/disable redirects (enabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-redirects) for more information. |
 | `FF_ENABLE_PLACEHOLDERS`                | Feature flag to enable/disable rewrites (disabled by default). Read the [redirects documentation](../../user/project/pages/redirects.md#feature-flag-for-rewrites) for more information.  |
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
-
+| `rate_limit_source_ip`                  | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
+| `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
 ---
 
 ## Advanced configuration
@@ -1031,6 +1032,38 @@ GitLab Pages are part of the [regular backup](../../raketasks/backup_restore.md)
 
 You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
+
+### Rate limits
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
+
+You can enforce source-IP rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
+uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
+requests that exceed the specified limits are reported but not rejected.
+
+Source-IP rate limits are enforced using the following:
+
+- `rate_limit_source_ip`: Set the maximum threshold in number of requests per second. Set to 0 to disable this feature.
+- `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests.
+  For example, when you load a web page that loads a number of resources at the same time.
+
+#### Enable source-IP rate limits
+
+1. Set rate limits in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['rate_limit_source_ip'] = 20.0
+   gitlab_pages['rate_limit_source_ip_burst'] = 600
+   ```
+
+1. To reject requests that exceed the specified limits, enable the `FF_ENABLE_RATE_LIMITER` feature flag in
+   `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['env'] = {'FF_ENABLE_RATE_LIMITER' => 'true'}
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 <!-- ## Troubleshooting
 

@@ -20,7 +20,7 @@ module Resolvers
                description: 'Filter by permissions the user has on groups.'
 
       before_connection_authorization do |nodes, current_user|
-        Preloaders::UserMaxAccessLevelInGroupsPreloader.new(nodes, current_user).execute
+        Preloaders::GroupPolicyPreloader.new(nodes, current_user).execute
       end
 
       def ready?(**args)

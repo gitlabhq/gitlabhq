@@ -10095,6 +10095,9 @@ msgstr ""
 msgid "Crm|No contacts found"
 msgstr ""
 
+msgid "Crm|No organizations found"
+msgstr ""
+
 msgid "Cron Timezone"
 msgstr ""
 
@@ -15337,9 +15340,6 @@ msgstr ""
 msgid "Geo|Could not remove tracking entry for an existing project."
 msgstr ""
 
-msgid "Geo|Could not remove tracking entry for an existing upload."
-msgstr ""
-
 msgid "Geo|Data replication lag"
 msgstr ""
 
@@ -15611,9 +15611,6 @@ msgid "Geo|Tracking database entry will be removed. Are you sure?"
 msgstr ""
 
 msgid "Geo|Tracking entry for project (%{project_id}) was successfully removed."
-msgstr ""
-
-msgid "Geo|Tracking entry for upload (%{type}/%{id}) was successfully removed."
 msgstr ""
 
 msgid "Geo|URL can't be blank"
@@ -28891,9 +28888,6 @@ msgstr ""
 msgid "Removed %{reviewer_text} %{reviewer_references}."
 msgstr ""
 
-msgid "Removed %{type} with id %{id}"
-msgstr ""
-
 msgid "Removed all labels."
 msgstr ""
 
@@ -28916,6 +28910,9 @@ msgid "Removed the due date."
 msgstr ""
 
 msgid "Removed time estimate."
+msgstr ""
+
+msgid "Removed upload with id %{id}"
 msgstr ""
 
 msgid "RemovedProjects|Projects which are removed and are yet to be permanently removed are visible here."
@@ -37204,9 +37201,6 @@ msgid "UploadLink|click to upload"
 msgstr ""
 
 msgid "Uploading changes to terminal"
-msgstr ""
-
-msgid "Uploads"
 msgstr ""
 
 msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. Until that time:"

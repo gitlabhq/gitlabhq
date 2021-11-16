@@ -63,9 +63,9 @@
           "items": {
             "type": "object",
             "properties": {
-              "if": {
-                "type": "string"
-              },
+              "if": { "$ref": "#/definitions/if" },
+              "changes": { "$ref": "#/definitions/changes" },
+              "exists": { "$ref": "#/definitions/exists" },
               "variables": { "$ref": "#/definitions/variables" },
               "when": {
                 "type": "string",
@@ -497,24 +497,9 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "if": {
-            "type": "string",
-            "description": "Expression to evaluate whether additional attributes should be provided to the job"
-          },
-          "changes": {
-            "type": "array",
-            "description": "Additional attributes will be provided to job if any of the provided paths matches a modified file",
-            "items": {
-              "type": "string"
-            }
-          },
-          "exists": {
-            "type": "array",
-            "description": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository",
-            "items": {
-              "type": "string"
-            }
-          },
+          "if": { "$ref": "#/definitions/if" },
+          "changes": { "$ref": "#/definitions/changes" },
+          "exists": { "$ref": "#/definitions/exists" },
           "variables": { "$ref": "#/definitions/variables" },
           "when": { "$ref": "#/definitions/when" },
           "start_in": { "$ref": "#/definitions/start_in" },
@@ -539,6 +524,24 @@
             }
           }
         ]
+      }
+    },
+    "if": {
+      "type": "string",
+      "description": "Expression to evaluate whether additional attributes should be provided to the job"
+    },
+    "changes": {
+      "type": "array",
+      "description": "Additional attributes will be provided to job if any of the provided paths matches a modified file",
+      "items": {
+        "type": "string"
+      }
+    },
+    "exists": {
+      "type": "array",
+      "description": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository",
+      "items": {
+        "type": "string"
       }
     },
     "variables": {
