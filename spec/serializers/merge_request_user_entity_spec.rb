@@ -19,7 +19,7 @@ RSpec.describe MergeRequestUserEntity do
       is_expected.to include(
         :id, :name, :username, :state, :avatar_url, :web_url,
         :can_merge, :can_update_merge_request, :reviewed, :approved,
-        :attention_required
+        :attention_requested
       )
     end
 
@@ -57,8 +57,8 @@ RSpec.describe MergeRequestUserEntity do
       end
     end
 
-    context 'attention_required' do
-      it { is_expected.to include(attention_required: true ) }
+    context 'attention_requested' do
+      it { is_expected.to include(attention_requested: true ) }
     end
 
     describe 'performance' do

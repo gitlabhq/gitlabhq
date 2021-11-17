@@ -7,8 +7,10 @@ require 'danger/plugins/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'
+require_relative '../../../spec/support/helpers/stub_env'
 
 RSpec.describe Tooling::Danger::ProjectHelper do
+  include StubENV
   include_context "with dangerfile"
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
@@ -338,6 +340,70 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       expect(project_helper).to receive(:ee?) { false }
 
       is_expected.to eq('gitlab-foss')
+    end
+  end
+
+  describe '#ee?' do
+    subject { project_helper.__send__(:ee?) }
+
+    let(:ee_dir) { File.expand_path('../../../ee', __dir__) }
+
+    context 'when ENV["CI_PROJECT_NAME"] is set' do
+      before do
+        stub_env('CI_PROJECT_NAME', ci_project_name)
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab' do
+        let(:ci_project_name) { 'gitlab' }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab-ee' do
+        let(:ci_project_name) { 'gitlab-ee' }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab-foss' do
+        let(:ci_project_name) { 'gitlab-foss' }
+
+        it 'resolves to Dir.exist?' do
+          expected = Dir.exist?(ee_dir)
+
+          expect(Dir).to receive(:exist?).with(ee_dir).and_call_original
+
+          is_expected.to eq(expected)
+        end
+      end
+    end
+
+    context 'when ENV["CI_PROJECT_NAME"] is absent' do
+      before do
+        stub_env('CI_PROJECT_NAME', nil)
+
+        expect(Dir).to receive(:exist?).with(ee_dir).and_return(has_ee_dir)
+      end
+
+      context 'when ee/ directory exists' do
+        let(:has_ee_dir) { true }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ee/ directory does not exist' do
+        let(:has_ee_dir) { false }
+
+        it 'returns false' do
+          is_expected.to eq(false)
+        end
+      end
     end
   end
 

@@ -30609,7 +30609,7 @@ msgstr ""
 msgid "SecurityConfiguration|Available with Ultimate"
 msgstr ""
 
-msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the Merge Request."
+msgid "SecurityConfiguration|By default, all analyzers are applied in order to cover all languages across your project, and only run if the language is detected in the merge request."
 msgstr ""
 
 msgid "SecurityConfiguration|Compliance"
@@ -30636,7 +30636,7 @@ msgstr ""
 msgid "SecurityConfiguration|Could not retrieve configuration data. Please refresh the page, or try again later."
 msgstr ""
 
-msgid "SecurityConfiguration|Create Merge Request"
+msgid "SecurityConfiguration|Create merge request"
 msgstr ""
 
 msgid "SecurityConfiguration|Customize common SAST settings to suit your requirements. Configuration changes made here override those provided by GitLab and are excluded from updates. For details of more advanced configuration options, see the %{linkStart}GitLab SAST documentation%{linkEnd}."
@@ -33042,7 +33042,7 @@ msgstr ""
 msgid "StatusCheck|Apply this status check to all branches or a specific protected branch."
 msgstr ""
 
-msgid "StatusCheck|Check for a status response in Merge Requests. Failures do not block merges. %{link_start}Learn more%{link_end}."
+msgid "StatusCheck|Check for a status response in merge requests. Failures do not block merges. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "StatusCheck|Examples: QA, Security."

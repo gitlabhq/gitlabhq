@@ -50,6 +50,7 @@ exports[`Settings Block renders the correct markup 1`] = `
     class="settings-content"
     id="settings_content_3"
     role="region"
+    style="display: none;"
     tabindex="-1"
   >
     <div

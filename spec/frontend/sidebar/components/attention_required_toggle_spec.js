@@ -1,11 +1,11 @@
 import { GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import AttentionRequiredToggle from '~/sidebar/components/attention_required_toggle.vue';
+import AttentionRequestedToggle from '~/sidebar/components/attention_requested_toggle.vue';
 
 let wrapper;
 
 function factory(propsData = {}) {
-  wrapper = mount(AttentionRequiredToggle, { propsData });
+  wrapper = mount(AttentionRequestedToggle, { propsData });
 }
 
 const findToggle = () => wrapper.findComponent(GlButton);
@@ -16,52 +16,52 @@ describe('Attention require toggle', () => {
   });
 
   it('renders button', () => {
-    factory({ type: 'reviewer', user: { attention_required: false } });
+    factory({ type: 'reviewer', user: { attention_requested: false } });
 
     expect(findToggle().exists()).toBe(true);
   });
 
   it.each`
-    attentionRequired | icon
-    ${true}           | ${'star'}
-    ${false}          | ${'star-o'}
+    attentionRequested | icon
+    ${true}            | ${'star'}
+    ${false}           | ${'star-o'}
   `(
-    'renders $icon icon when attention_required is $attentionRequired',
-    ({ attentionRequired, icon }) => {
-      factory({ type: 'reviewer', user: { attention_required: attentionRequired } });
+    'renders $icon icon when attention_requested is $attentionRequested',
+    ({ attentionRequested, icon }) => {
+      factory({ type: 'reviewer', user: { attention_requested: attentionRequested } });
 
       expect(findToggle().props('icon')).toBe(icon);
     },
   );
 
   it.each`
-    attentionRequired | variant
-    ${true}           | ${'warning'}
-    ${false}          | ${'default'}
+    attentionRequested | variant
+    ${true}            | ${'warning'}
+    ${false}           | ${'default'}
   `(
-    'renders button with variant $variant when attention_required is $attentionRequired',
-    ({ attentionRequired, variant }) => {
-      factory({ type: 'reviewer', user: { attention_required: attentionRequired } });
+    'renders button with variant $variant when attention_requested is $attentionRequested',
+    ({ attentionRequested, variant }) => {
+      factory({ type: 'reviewer', user: { attention_requested: attentionRequested } });
 
       expect(findToggle().props('variant')).toBe(variant);
     },
   );
 
-  it('emits toggle-attention-required on click', async () => {
-    factory({ type: 'reviewer', user: { attention_required: true } });
+  it('emits toggle-attention-requested on click', async () => {
+    factory({ type: 'reviewer', user: { attention_requested: true } });
 
     await findToggle().trigger('click');
 
-    expect(wrapper.emitted('toggle-attention-required')[0]).toEqual([
+    expect(wrapper.emitted('toggle-attention-requested')[0]).toEqual([
       {
-        user: { attention_required: true },
+        user: { attention_requested: true },
         callback: expect.anything(),
       },
     ]);
   });
 
   it('sets loading on click', async () => {
-    factory({ type: 'reviewer', user: { attention_required: true } });
+    factory({ type: 'reviewer', user: { attention_requested: true } });
 
     await findToggle().trigger('click');
 
@@ -69,14 +69,14 @@ describe('Attention require toggle', () => {
   });
 
   it.each`
-    type          | attentionRequired | tooltip
-    ${'reviewer'} | ${true}           | ${AttentionRequiredToggle.i18n.removeAttentionRequired}
-    ${'reviewer'} | ${false}          | ${AttentionRequiredToggle.i18n.attentionRequiredReviewer}
-    ${'assignee'} | ${false}          | ${AttentionRequiredToggle.i18n.attentionRequiredAssignee}
+    type          | attentionRequested | tooltip
+    ${'reviewer'} | ${true}            | ${AttentionRequestedToggle.i18n.removeAttentionRequested}
+    ${'reviewer'} | ${false}           | ${AttentionRequestedToggle.i18n.attentionRequestedReviewer}
+    ${'assignee'} | ${false}           | ${AttentionRequestedToggle.i18n.attentionRequestedAssignee}
   `(
-    'sets tooltip as $tooltip when attention_required is $attentionRequired and type is $type',
-    ({ type, attentionRequired, tooltip }) => {
-      factory({ type, user: { attention_required: attentionRequired } });
+    'sets tooltip as $tooltip when attention_requested is $attentionRequested and type is $type',
+    ({ type, attentionRequested, tooltip }) => {
+      factory({ type, user: { attention_requested: attentionRequested } });
 
       expect(findToggle().attributes('aria-label')).toBe(tooltip);
     },

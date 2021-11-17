@@ -224,7 +224,7 @@ module Tooling
 
       def ee?
         # Support former project name for `dev` and support local Danger run
-        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?(File.expand_path('../../../ee', __dir__))
+        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?(File.expand_path('../../ee', __dir__))
       end
     end
   end

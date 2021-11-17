@@ -18,7 +18,7 @@ class Todo < ApplicationRecord
   DIRECTLY_ADDRESSED  = 7
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
   REVIEW_REQUESTED    = 9
-  ATTENTION_REQUIRED  = 10
+  ATTENTION_REQUESTED = 10
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -30,7 +30,7 @@ class Todo < ApplicationRecord
     UNMERGEABLE => :unmergeable,
     DIRECTLY_ADDRESSED => :directly_addressed,
     MERGE_TRAIN_REMOVED => :merge_train_removed,
-    ATTENTION_REQUIRED => :attention_required
+    ATTENTION_REQUESTED => :attention_requested
   }.freeze
 
   belongs_to :author, class_name: "User"
@@ -191,8 +191,8 @@ class Todo < ApplicationRecord
     action == REVIEW_REQUESTED
   end
 
-  def attention_required?
-    action == ATTENTION_REQUIRED
+  def attention_requested?
+    action == ATTENTION_REQUESTED
   end
 
   def merge_train_removed?

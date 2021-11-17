@@ -39,8 +39,8 @@ export default {
     assignSelf() {
       this.$emit('assign-self');
     },
-    toggleAttentionRequired(data) {
-      this.$emit('toggle-attention-required', data);
+    toggleAttentionRequested(data) {
+      this.$emit('toggle-attention-requested', data);
     },
   },
 };
@@ -65,7 +65,7 @@ export default {
         v-else
         :users="sortedAssigness"
         :issuable-type="issuableType"
-        @toggle-attention-required="toggleAttentionRequired"
+        @toggle-attention-requested="toggleAttentionRequested"
       />
     </div>
   </div>

@@ -2,7 +2,7 @@
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IssuableType } from '~/issue_show/constants';
 import { __, sprintf } from '~/locale';
-import AttentionRequiredToggle from '../attention_required_toggle.vue';
+import AttentionRequestedToggle from '../attention_requested_toggle.vue';
 import AssigneeAvatarLink from './assignee_avatar_link.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
 
@@ -10,7 +10,7 @@ const DEFAULT_RENDER_COUNT = 5;
 
 export default {
   components: {
-    AttentionRequiredToggle,
+    AttentionRequestedToggle,
     AssigneeAvatarLink,
     UserNameWithStatus,
   },
@@ -82,8 +82,8 @@ export default {
       }
       return u?.status?.availability || '';
     },
-    toggleAttentionRequired(data) {
-      this.$emit('toggle-attention-required', data);
+    toggleAttentionRequested(data) {
+      this.$emit('toggle-attention-requested', data);
     },
   },
 };
@@ -113,11 +113,11 @@ export default {
         }"
         class="gl-display-inline-block"
       >
-        <attention-required-toggle
+        <attention-requested-toggle
           v-if="showVerticalList && user.can_update_merge_request"
           :user="user"
           type="assignee"
-          @toggle-attention-required="toggleAttentionRequired"
+          @toggle-attention-requested="toggleAttentionRequested"
         />
         <assignee-avatar-link
           :user="user"

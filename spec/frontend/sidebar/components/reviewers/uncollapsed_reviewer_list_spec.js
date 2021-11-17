@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import AttentionRequiredToggle from '~/sidebar/components/attention_required_toggle.vue';
+import AttentionRequestedToggle from '~/sidebar/components/attention_requested_toggle.vue';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 import userDataMock from '../../user_data_mock';
@@ -121,11 +121,11 @@ describe('UncollapsedReviewerList component', () => {
     expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(0);
   });
 
-  it('emits toggle-attention-required', () => {
+  it('emits toggle-attention-requested', () => {
     createComponent({ users: [userDataMock()] }, { mrAttentionRequests: true });
 
-    wrapper.find(AttentionRequiredToggle).vm.$emit('toggle-attention-required', 'data');
+    wrapper.find(AttentionRequestedToggle).vm.$emit('toggle-attention-requested', 'data');
 
-    expect(wrapper.emitted('toggle-attention-required')[0]).toEqual(['data']);
+    expect(wrapper.emitted('toggle-attention-requested')[0]).toEqual(['data']);
   });
 });

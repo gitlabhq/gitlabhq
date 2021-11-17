@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf, s__ } from '~/locale';
-import AttentionRequiredToggle from '../attention_required_toggle.vue';
+import AttentionRequestedToggle from '../attention_requested_toggle.vue';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -16,7 +16,7 @@ export default {
     GlButton,
     GlIcon,
     ReviewerAvatarLink,
-    AttentionRequiredToggle,
+    AttentionRequestedToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -80,8 +80,8 @@ export default {
         this.loadingStates[userId] = null;
       }
     },
-    toggleAttentionRequired(data) {
-      this.$emit('toggle-attention-required', data);
+    toggleAttentionRequested(data) {
+      this.$emit('toggle-attention-requested', data);
     },
   },
   LOADING_STATE,
@@ -97,11 +97,11 @@ export default {
       :class="{ 'gl-mb-3': index !== users.length - 1 }"
       data-testid="reviewer"
     >
-      <attention-required-toggle
+      <attention-requested-toggle
         v-if="glFeatures.mrAttentionRequests && user.can_update_merge_request"
         :user="user"
         type="reviewer"
-        @toggle-attention-required="toggleAttentionRequired"
+        @toggle-attention-requested="toggleAttentionRequested"
       />
       <reviewer-avatar-link :user="user" :root-path="rootPath" :issuable-type="issuableType">
         <div class="gl-ml-3 gl-line-height-normal gl-display-grid">

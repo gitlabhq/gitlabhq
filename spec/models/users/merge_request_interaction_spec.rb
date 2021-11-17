@@ -61,7 +61,7 @@ RSpec.describe ::Users::MergeRequestInteraction do
         merge_request.reviewers << user
       end
 
-      it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['ATTENTION_REQUIRED'].value) }
+      it { is_expected.to eq(Types::MergeRequestReviewStateEnum.values['ATTENTION_REQUESTED'].value) }
 
       it 'implies not reviewed' do
         expect(interaction).not_to be_reviewed

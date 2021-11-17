@@ -3313,29 +3313,6 @@ Input type: `MergeRequestAcceptInput`
 | <a id="mutationmergerequestaccepterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
-### `Mutation.mergeRequestAttentionRequired`
-
-Available only when feature flag `mr_attention_requests` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
-
-Input type: `MergeRequestAttentionRequiredInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestattentionrequiredclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestattentionrequirediid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutationmergerequestattentionrequiredprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
-| <a id="mutationmergerequestattentionrequireduserid"></a>`userId` | [`UserID!`](#userid) | User ID for the user that has their attention requested. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationmergerequestattentionrequiredclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationmergerequestattentionrequirederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationmergerequestattentionrequiredmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
-
 ### `Mutation.mergeRequestCreate`
 
 Input type: `MergeRequestCreateInput`
@@ -3508,6 +3485,29 @@ Input type: `MergeRequestSetSubscriptionInput`
 | <a id="mutationmergerequestsetsubscriptionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestsetsubscriptionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestsetsubscriptionmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
+### `Mutation.mergeRequestToggleAttentionRequested`
+
+Available only when feature flag `mr_attention_requests` is enabled. This flag is disabled by default, because the feature is experimental and is subject to change without notice.
+
+Input type: `MergeRequestToggleAttentionRequestedInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequesttoggleattentionrequestedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequesttoggleattentionrequestediid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequesttoggleattentionrequestedprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequesttoggleattentionrequesteduserid"></a>`userId` | [`UserID!`](#userid) | User ID for the user to toggle attention requested. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequesttoggleattentionrequestedclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequesttoggleattentionrequestederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequesttoggleattentionrequestedmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestUpdate`
 
@@ -16474,7 +16474,7 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergerequestreviewstateattention_required"></a>`ATTENTION_REQUIRED` | The merge request is attention_required. |
+| <a id="mergerequestreviewstateattention_requested"></a>`ATTENTION_REQUESTED` | The merge request is attention_requested. |
 | <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | The merge request is reviewed. |
 | <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | The merge request is unreviewed. |
 

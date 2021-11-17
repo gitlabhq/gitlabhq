@@ -7,7 +7,7 @@ module MergeRequestReviewerState
     enum state: {
       unreviewed: 0,
       reviewed: 1,
-      attention_required: 2
+      attention_requested: 2
     }
 
     validates :state,
@@ -18,7 +18,7 @@ module MergeRequestReviewerState
 
     def set_state
       if Feature.enabled?(:mr_attention_requests, self.merge_request&.project, default_enabled: :yaml)
-        self.state = :attention_required
+        self.state = :attention_requested
       end
     end
   end

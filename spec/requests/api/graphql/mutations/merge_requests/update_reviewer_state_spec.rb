@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting attention required for reviewer' do
+RSpec.describe 'Toggle attention requested for reviewer' do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
@@ -16,7 +16,7 @@ RSpec.describe 'Setting attention required for reviewer' do
       project_path: project.full_path,
       iid: merge_request.iid.to_s
     }
-    graphql_mutation(:merge_request_attention_required, variables.merge(input),
+    graphql_mutation(:merge_request_toggle_attention_requested, variables.merge(input),
                      <<-QL.strip_heredoc
                        clientMutationId
                        errors
@@ -25,7 +25,7 @@ RSpec.describe 'Setting attention required for reviewer' do
   end
 
   def mutation_response
-    graphql_mutation_response(:merge_request_attention_required)
+    graphql_mutation_response(:merge_request_toggle_attention_requested)
   end
 
   def mutation_errors

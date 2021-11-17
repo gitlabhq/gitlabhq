@@ -33,8 +33,8 @@ export default {
     },
   },
   methods: {
-    toggleAttentionRequired(data) {
-      this.$emit('toggle-attention-required', data);
+    toggleAttentionRequested(data) {
+      this.$emit('toggle-attention-requested', data);
     },
   },
 };
@@ -66,7 +66,7 @@ export default {
       :users="users"
       :issuable-type="issuableType"
       class="gl-text-gray-800 gl-mt-2 hide-collapsed"
-      @toggle-attention-required="toggleAttentionRequired"
+      @toggle-attention-requested="toggleAttentionRequested"
     />
   </div>
 </template>

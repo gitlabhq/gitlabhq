@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MergeRequests
-  class AttentionRequiredService < MergeRequests::BaseService
+  class ToggleAttentionRequestedService < MergeRequests::BaseService
     attr_accessor :merge_request, :user
 
     def initialize(project:, current_user:, merge_request:, user:)
@@ -15,10 +15,12 @@ module MergeRequests
       return error("Invalid permissions") unless can?(current_user, :update_merge_request, merge_request)
 
       if reviewer || assignee
-        reviewer&.update(state: :attention_required)
-        assignee&.update(state: :attention_required)
+        update_state(reviewer)
+        update_state(assignee)
 
-        notity_user
+        if reviewer&.attention_requested? || assignee&.attention_requested?
+          notity_user
+        end
 
         success
       else
@@ -29,7 +31,7 @@ module MergeRequests
     private
 
     def notity_user
-      todo_service.create_attention_required_todo(merge_request, current_user, user)
+      todo_service.create_attention_requested_todo(merge_request, current_user, user)
     end
 
     def assignee
@@ -38,6 +40,10 @@ module MergeRequests
 
     def reviewer
       merge_request.find_reviewer(user)
+    end
+
+    def update_state(reviewer_or_assignee)
+      reviewer_or_assignee&.update(state: reviewer_or_assignee&.attention_requested? ? :reviewed : :attention_requested)
     end
   end
 end

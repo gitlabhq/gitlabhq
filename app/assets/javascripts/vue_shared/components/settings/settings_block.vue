@@ -24,10 +24,13 @@ export default {
     },
   },
   data() {
+    const forceOpen = !this.collapsible || this.defaultExpanded;
     return {
       // Non-collapsible sections should always be expanded.
       // For collapsible sections, fall back to defaultExpanded.
-      sectionExpanded: !this.collapsible || this.defaultExpanded,
+      sectionExpanded: forceOpen,
+      initialised: forceOpen,
+      animating: false,
     };
   },
   computed: {
@@ -53,7 +56,12 @@ export default {
     toggleSectionExpanded() {
       this.sectionExpanded = !this.sectionExpanded;
 
+      if (!this.initialised) {
+        this.initialised = true;
+      }
+
       if (this.sectionExpanded) {
+        this.animating = true;
         this.$refs.settingsContent.focus();
       }
     },
@@ -68,7 +76,10 @@ export default {
 </script>
 
 <template>
-  <section class="settings" :class="{ 'no-animate': !slideAnimated, expanded: sectionExpanded }">
+  <section
+    class="settings"
+    :class="{ 'no-animate': !slideAnimated, expanded: sectionExpanded, animating }"
+  >
     <div class="settings-header">
       <h4>
         <span
@@ -103,12 +114,14 @@ export default {
       </p>
     </div>
     <div
+      v-show="initialised"
       :id="settingsContentId"
       ref="settingsContent"
       :aria-labelledby="settingsLabelId"
       tabindex="-1"
       role="region"
       class="settings-content"
+      @animationend="animating = false"
     >
       <slot></slot>
     </div>

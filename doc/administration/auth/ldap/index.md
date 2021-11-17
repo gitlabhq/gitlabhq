@@ -37,7 +37,27 @@ If an existing GitLab user wants to enable LDAP sign-in for themselves, they sho
 1. Check that their GitLab email address matches their LDAP email address.
 1. Sign in to GitLab by using their LDAP credentials.
 
-## Security risks
+## Security
+
+GitLab has multiple mechanisms to verify a user is still active in LDAP. If the user is no longer active in
+LDAP, they are placed in an `ldap_blocked` status and are signed out. They are unable to sign in using any authentication provider until they are
+reactivated in LDAP. 
+
+Users are considered inactive in LDAP when they:
+
+- Are removed from the directory completely.
+- Reside outside the configured `base` DN or `user_filter` search.
+- Are marked as disabled or deactivated in Active Directory through the user account control attribute. This means attribute
+  `userAccountControl:1.2.840.113556.1.4.803` has bit 2 set.
+
+Status is checked for all LDAP users:
+
+- When signing in using any authentication provider.
+- Once per hour for active web sessions or Git requests using tokens or SSH keys.
+- When performing Git over HTTP requests using LDAP username and password.
+- Once per day during [User Sync](ldap_synchronization.md#user-sync).
+
+### Security risks
 
 You should only use LDAP integration if your LDAP users cannot:
 

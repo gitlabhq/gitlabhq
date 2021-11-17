@@ -649,7 +649,7 @@ To override the global maximum pages size for a specific group:
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on
-your main application server.
+your main application server. This configuration does not support mutual TLS (mTLS). See the [corresponding feature proposal](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) for more information.
 
 To configure GitLab Pages on a separate server:
 

@@ -5,9 +5,9 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 export default {
   i18n: {
-    attentionRequiredReviewer: __('Request attention to review'),
-    attentionRequiredAssignee: __('Request attention'),
-    removeAttentionRequired: __('Remove attention request'),
+    attentionRequestedReviewer: __('Request attention to review'),
+    attentionRequestedAssignee: __('Request attention'),
+    removeAttentionRequested: __('Remove attention request'),
   },
   components: {
     GlButton,
@@ -32,13 +32,13 @@ export default {
   },
   computed: {
     tooltipTitle() {
-      if (this.user.attention_required) {
-        return this.$options.i18n.removeAttentionRequired;
+      if (this.user.attention_requested) {
+        return this.$options.i18n.removeAttentionRequested;
       }
 
       return this.type === 'reviewer'
-        ? this.$options.i18n.attentionRequiredReviewer
-        : this.$options.i18n.attentionRequiredAssignee;
+        ? this.$options.i18n.attentionRequestedReviewer
+        : this.$options.i18n.attentionRequestedAssignee;
     },
   },
   methods: {
@@ -47,7 +47,7 @@ export default {
 
       this.$root.$emit(BV_HIDE_TOOLTIP);
       this.loading = true;
-      this.$emit('toggle-attention-required', {
+      this.$emit('toggle-attention-requested', {
         user: this.user,
         callback: this.toggleAttentionRequiredComplete,
       });
@@ -63,8 +63,8 @@ export default {
   <span v-gl-tooltip.left.viewport="tooltipTitle">
     <gl-button
       :loading="loading"
-      :variant="user.attention_required ? 'warning' : 'default'"
-      :icon="user.attention_required ? 'star' : 'star-o'"
+      :variant="user.attention_requested ? 'warning' : 'default'"
+      :icon="user.attention_requested ? 'star' : 'star-o'"
       :aria-label="tooltipTitle"
       size="small"
       category="tertiary"

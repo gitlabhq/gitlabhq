@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequests::AttentionRequiredService do
+RSpec.describe MergeRequests::ToggleAttentionRequestedService do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
   let(:assignee_user) { create(:user) }
@@ -39,6 +39,10 @@ RSpec.describe MergeRequests::AttentionRequiredService do
     end
 
     context 'reviewer exists' do
+      before do
+        reviewer.update!(state: :reviewed)
+      end
+
       it 'returns success' do
         expect(result[:status]).to eq :success
       end
@@ -47,11 +51,11 @@ RSpec.describe MergeRequests::AttentionRequiredService do
         service.execute
         reviewer.reload
 
-        expect(reviewer.state).to eq 'attention_required'
+        expect(reviewer.state).to eq 'attention_requested'
       end
 
       it 'creates a new todo for the reviewer' do
-        expect(todo_service).to receive(:create_attention_required_todo).with(merge_request, current_user, user)
+        expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
 
         service.execute
       end
@@ -59,6 +63,10 @@ RSpec.describe MergeRequests::AttentionRequiredService do
 
     context 'assignee exists' do
       let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: assignee_user) }
+
+      before do
+        assignee.update!(state: :reviewed)
+      end
 
       it 'returns success' do
         expect(result[:status]).to eq :success
@@ -68,11 +76,11 @@ RSpec.describe MergeRequests::AttentionRequiredService do
         service.execute
         assignee.reload
 
-        expect(assignee.state).to eq 'attention_required'
+        expect(assignee.state).to eq 'attention_requested'
       end
 
       it 'creates a new todo for the reviewer' do
-        expect(todo_service).to receive(:create_attention_required_todo).with(merge_request, current_user, assignee_user)
+        expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
 
         service.execute
       end
@@ -83,13 +91,37 @@ RSpec.describe MergeRequests::AttentionRequiredService do
       let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: user) }
       let(:assignee) { merge_request.find_assignee(user) }
 
+      before do
+        reviewer.update!(state: :reviewed)
+        assignee.update!(state: :reviewed)
+      end
+
       it 'updates reviewers and assignees state' do
         service.execute
         reviewer.reload
         assignee.reload
 
-        expect(reviewer.state).to eq 'attention_required'
-        expect(assignee.state).to eq 'attention_required'
+        expect(reviewer.state).to eq 'attention_requested'
+        expect(assignee.state).to eq 'attention_requested'
+      end
+    end
+
+    context 'state is attention_requested' do
+      before do
+        reviewer.update!(state: :attention_requested)
+      end
+
+      it 'toggles state to reviewed' do
+        service.execute
+        reviewer.reload
+
+        expect(reviewer.state).to eq "reviewed"
+      end
+
+      it 'does not create a new todo for the reviewer' do
+        expect(todo_service).not_to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
+
+        service.execute
       end
     end
   end

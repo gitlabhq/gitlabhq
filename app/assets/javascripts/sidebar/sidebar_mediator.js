@@ -63,30 +63,27 @@ export default class SidebarMediator {
       .catch(() => callback(userId, false));
   }
 
-  async toggleAttentionRequired(type, { user, callback }) {
+  async toggleAttentionRequested(type, { user, callback }) {
     try {
       const isReviewer = type === 'reviewer';
       const reviewerOrAssignee = isReviewer
         ? this.store.findReviewer(user)
         : this.store.findAssignee(user);
 
-      if (reviewerOrAssignee.attention_required) {
+      await this.service.toggleAttentionRequested(user.id);
+
+      if (reviewerOrAssignee.attention_requested) {
         toast(
           sprintf(__('Removed attention request from @%{username}'), {
             username: user.username,
           }),
         );
       } else {
-        await this.service.attentionRequired(user.id);
-
         toast(sprintf(__('Requested attention from @%{username}'), { username: user.username }));
       }
 
-      if (isReviewer) {
-        this.store.updateReviewer(user.id, 'attention_required');
-      } else {
-        this.store.updateAssignee(user.id, 'attention_required');
-      }
+      this.store.updateReviewer(user.id, 'attention_requested');
+      this.store.updateAssignee(user.id, 'attention_requested');
 
       callback();
     } catch (error) {

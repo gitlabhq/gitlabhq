@@ -1,0 +1,7 @@
+mutation mergeRequestToggleAttentionRequested($projectPath: ID!, $iid: String!, $userId: ID!) {
+  mergeRequestToggleAttentionRequested(
+    input: { projectPath: $projectPath, iid: $iid, userId: $userId }
+  ) {
+    errors
+  }
+}

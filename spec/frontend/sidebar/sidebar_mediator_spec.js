@@ -119,19 +119,19 @@ describe('Sidebar mediator', () => {
     });
   });
 
-  describe('toggleAttentionRequired', () => {
+  describe('toggleAttentionRequested', () => {
     let attentionRequiredService;
 
     beforeEach(() => {
       attentionRequiredService = jest
-        .spyOn(mediator.service, 'attentionRequired')
+        .spyOn(mediator.service, 'toggleAttentionRequested')
         .mockResolvedValue();
     });
 
     it('calls attentionRequired service method', async () => {
-      mediator.store.reviewers = [{ id: 1, attention_required: false, username: 'root' }];
+      mediator.store.reviewers = [{ id: 1, attention_requested: false, username: 'root' }];
 
-      await mediator.toggleAttentionRequired('reviewer', {
+      await mediator.toggleAttentionRequested('reviewer', {
         user: { id: 1, username: 'root' },
         callback: jest.fn(),
       });
@@ -145,23 +145,23 @@ describe('Sidebar mediator', () => {
     `('finds $type', ({ type, method }) => {
       const methodSpy = jest.spyOn(mediator.store, method);
 
-      mediator.toggleAttentionRequired(type, { user: { id: 1 }, callback: jest.fn() });
+      mediator.toggleAttentionRequested(type, { user: { id: 1 }, callback: jest.fn() });
 
       expect(methodSpy).toHaveBeenCalledWith({ id: 1 });
     });
 
     it.each`
-      attentionRequired | toastMessage
-      ${true}           | ${'Removed attention request from @root'}
-      ${false}          | ${'Requested attention from @root'}
+      attentionRequested | toastMessage
+      ${true}            | ${'Removed attention request from @root'}
+      ${false}           | ${'Requested attention from @root'}
     `(
-      'it creates toast $toastMessage when attention_required is $attentionRequired',
-      async ({ attentionRequired, toastMessage }) => {
+      'it creates toast $toastMessage when attention_requested is $attentionRequested',
+      async ({ attentionRequested, toastMessage }) => {
         mediator.store.reviewers = [
-          { id: 1, attention_required: attentionRequired, username: 'root' },
+          { id: 1, attention_requested: attentionRequested, username: 'root' },
         ];
 
-        await mediator.toggleAttentionRequired('reviewer', {
+        await mediator.toggleAttentionRequested('reviewer', {
           user: { id: 1, username: 'root' },
           callback: jest.fn(),
         });
