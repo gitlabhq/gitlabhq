@@ -2133,6 +2133,9 @@ msgstr ""
 msgid "Add variable"
 msgstr ""
 
+msgid "Add vulnerability finding"
+msgstr ""
+
 msgid "Add webhook"
 msgstr ""
 
@@ -38397,6 +38400,9 @@ msgstr ""
 msgid "VulnerabilityManagement|A true-positive and will fix"
 msgstr ""
 
+msgid "VulnerabilityManagement|Add vulnerability finding"
+msgstr ""
+
 msgid "VulnerabilityManagement|Change status"
 msgstr ""
 
@@ -38410,6 +38416,9 @@ msgid "VulnerabilityManagement|Detected"
 msgstr ""
 
 msgid "VulnerabilityManagement|Fetching linked Jira issues"
+msgstr ""
+
+msgid "VulnerabilityManagement|Manually add a vulnerability entry into the vulnerability report."
 msgstr ""
 
 msgid "VulnerabilityManagement|Needs triage"

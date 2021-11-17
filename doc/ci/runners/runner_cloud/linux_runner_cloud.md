@@ -52,12 +52,66 @@ can be used for:
 To use this feature, define a [CI/CD variable](../../../ci/variables/index.md#custom-cicd-variables) called
 `CI_PRE_CLONE_SCRIPT` that contains a bash script.
 
-[This example](../../../development/pipelines.md#pre-clone-step)
-demonstrates how you might use a pre-clone step to seed the build
-directory.
-
 NOTE:
 The `CI_PRE_CLONE_SCRIPT` variable does not work on Windows runners.
+
+### Pre-clone script example
+
+This example was used in the `gitlab-org/gitlab` project until November 2021.
+The project no longer uses this optimization because the [pack-objects cache](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
+lets Gitaly serve the full CI/CD fetch traffic. See [Git fetch caching](../../../development/pipelines.md#git-fetch-caching).
+
+The `CI_PRE_CLONE_SCRIPT` was defined as a project CI/CD variable:
+
+```shell
+(
+  echo "Downloading archived master..."
+  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
+
+  if [ ! -f /tmp/gitlab.tar.gz ]; then
+      echo "Repository cache not available, cloning a new directory..."
+      exit
+  fi
+
+  rm -rf $CI_PROJECT_DIR
+  echo "Extracting tarball into $CI_PROJECT_DIR..."
+  mkdir -p $CI_PROJECT_DIR
+  cd $CI_PROJECT_DIR
+  tar xzf /tmp/gitlab.tar.gz
+  rm -f /tmp/gitlab.tar.gz
+  chmod a+w $CI_PROJECT_DIR
+)
+```
+
+The first step of the script downloads `gitlab-master.tar.gz` from Google Cloud Storage.
+There was a [GitLab CI/CD job named `cache-repo`](https://gitlab.com/gitlab-org/gitlab/-/blob/5fb40526c8c8aaafc5f92eab36d5bbddaca3893d/.gitlab/ci/cache-repo.gitlab-ci.yml)
+that was responsible for keeping that archive up-to-date. Every two hours on a scheduled pipeline,
+it did the following:
+
+1. Create a fresh clone of the `gitlab-org/gitlab` repository on GitLab.com.
+1. Save the data as a `.tar.gz`.
+1. Upload it into the Google Cloud Storage bucket.
+
+When a job ran with this configuration, the output looked similar to:
+
+```shell
+$ eval "$CI_PRE_CLONE_SCRIPT"
+Downloading archived master...
+Extracting tarball into /builds/gitlab-org/gitlab...
+Fetching changes...
+Reinitialized existing Git repository in /builds/gitlab-org/gitlab/.git/
+```
+
+The `Reinitialized existing Git repository` message shows that
+the pre-clone step worked. The runner runs `git init`, which
+overwrites the Git configuration with the appropriate settings to fetch
+from the GitLab repository.
+
+`CI_REPO_CACHE_CREDENTIALS` must contain the Google Cloud service account
+JSON for uploading to the `gitlab-ci-git-repo-cache` bucket.
+
+Note that this bucket should be located in the same continent as the
+runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
 
 ## `config.toml`
 

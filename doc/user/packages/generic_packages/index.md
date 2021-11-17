@@ -108,7 +108,7 @@ API or the UI.
 
 #### Do not allow duplicate Generic packages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab Free 13.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab 13.12.
 
 To prevent users from publishing duplicate generic packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings)
 or the UI.

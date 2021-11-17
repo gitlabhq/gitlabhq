@@ -730,7 +730,6 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_optimizat
 | `if-dot-com-gitlab-org-and-security-merge-request`           | Limit jobs creation to merge requests for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
 | `if-dot-com-gitlab-org-and-security-tag`                     | Limit jobs creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
 | `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
-| `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
 | `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 
 <!-- vale gitlab.Substitutions = YES -->
@@ -822,60 +821,6 @@ allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching]
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
 [defined by GitLab.com shared runners](../ci/runners/runner_cloud/linux_runner_cloud.md#pre-clone-script).
-
-The `CI_PRE_CLONE_SCRIPT` is defined as a project CI/CD variable:
-
-```shell
-(
-  echo "Downloading archived master..."
-  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-
-  if [ ! -f /tmp/gitlab.tar.gz ]; then
-      echo "Repository cache not available, cloning a new directory..."
-      exit
-  fi
-
-  rm -rf $CI_PROJECT_DIR
-  echo "Extracting tarball into $CI_PROJECT_DIR..."
-  mkdir -p $CI_PROJECT_DIR
-  cd $CI_PROJECT_DIR
-  tar xzf /tmp/gitlab.tar.gz
-  rm -f /tmp/gitlab.tar.gz
-  chmod a+w $CI_PROJECT_DIR
-)
-```
-
-The first step of the script downloads `gitlab-master.tar.gz` from
-Google Cloud Storage. There is a [GitLab CI job named `cache-repo`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/cache-repo.gitlab-ci.yml#L5)
-that is responsible for keeping that archive up-to-date. Every two hours
-on a scheduled pipeline, it does the following:
-
-1. Creates a fresh clone of the `gitlab-org/gitlab` repository on GitLab.com.
-1. Saves the data as a `.tar.gz`.
-1. Uploads it into the Google Cloud Storage bucket.
-
-When a CI job runs with this configuration, the output looks something like this:
-
-```shell
-$ eval "$CI_PRE_CLONE_SCRIPT"
-Downloading archived master...
-Extracting tarball into /builds/group/project...
-Fetching changes...
-Reinitialized existing Git repository in /builds/group/project/.git/
-```
-
-Note that the `Reinitialized existing Git repository` message shows that
-the pre-clone step worked. The runner runs `git init`, which
-overwrites the Git configuration with the appropriate settings to fetch
-from the GitLab repository.
-
-`CI_REPO_CACHE_CREDENTIALS` contains the Google Cloud service account
-JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you're a
-GitLab Team Member, find credentials in the
-[GitLab shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
-
-Note that this bucket should be located in the same continent as the
-runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
 
 ---
 

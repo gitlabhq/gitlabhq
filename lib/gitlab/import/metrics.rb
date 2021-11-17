@@ -69,11 +69,7 @@ module Gitlab
       end
 
       def observe_histogram
-        if project.github_import?
-          duration_histogram.observe({ project: project.full_path }, duration)
-        else
-          duration_histogram.observe({ importer: importer }, duration)
-        end
+        duration_histogram.observe({ importer: importer }, duration)
       end
 
       def track_finish_metric

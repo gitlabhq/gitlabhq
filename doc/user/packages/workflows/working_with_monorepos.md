@@ -4,7 +4,7 @@ group: Package
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Monorepo package management workflows
+# Monorepo package management workflows **(FREE)**
 
 One project or Git repository can contain multiple different subprojects or submodules that are all
 packaged and published individually.

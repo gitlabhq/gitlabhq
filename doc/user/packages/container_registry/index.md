@@ -157,7 +157,7 @@ To use CI/CD to authenticate, you can use:
 - A [CI job token](../../../ci/jobs/ci_job_token.md).
 
   ```shell
-  docker login -u $CI_JOB_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
   ```
 
 - A [deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token) with the minimum scope of:

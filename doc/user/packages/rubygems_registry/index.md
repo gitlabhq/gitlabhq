@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Ruby gems in the Package Registry **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in [GitLab Free](https://about.gitlab.com/pricing/) 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in GitLab 13.10.
 
 WARNING:
 The Ruby gems package registry for GitLab is under development and isn't ready for production use due to

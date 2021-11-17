@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # npm packages in the Package Registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5934) in GitLab Premium 11.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5934) in GitLab 11.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 Publish npm packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -164,8 +164,8 @@ If you encounter an error with [Yarn](https://classic.yarnpkg.com/en/), view
 
 ### Authenticate with a CI job token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9104) in GitLab Premium 12.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9104) in GitLab 12.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 If you're using npm with GitLab CI/CD, a CI job token can be used instead of a personal access token or deploy token.
 The token inherits the permissions of the user that generates the pipeline.
@@ -442,8 +442,8 @@ and use your organization's URL. The name is case-sensitive and must match the n
 
 ### npm metadata
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11867) in GitLab Premium 12.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11867) in GitLab 12.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/330929) in GitLab 14.5.
 
 The GitLab Package Registry exposes the following attributes to the npm client.
@@ -466,8 +466,8 @@ These are similar to the [abbreviated metadata format](https://github.com/npm/re
 
 ## Add npm distribution tags
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab Premium 12.8.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9425) in GitLab 12.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 You can add [distribution tags](https://docs.npmjs.com/cli/dist-tag/) to newly-published packages.
 Tags are optional and can be assigned to only one package at a time.

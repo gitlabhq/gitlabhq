@@ -94,9 +94,6 @@
 .if-dot-com-ee-nightly-schedule-child-pipeline: &if-dot-com-ee-nightly-schedule-child-pipeline
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY == "nightly"'
 
-.if-cache-credentials-schedule: &if-cache-credentials-schedule
-  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
-
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
@@ -481,14 +478,6 @@
     - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
-
-####################
-# Cache repo rules #
-####################
-.cache-repo:rules:
-  rules:
-    - <<: *if-cache-credentials-schedule
-      allow_failure: true
 
 #############
 # CNG rules #
