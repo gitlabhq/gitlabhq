@@ -4,6 +4,7 @@ module Sidebars
   class Panel
     extend ::Gitlab::Utils::Override
     include ::Sidebars::Concerns::PositionableList
+    include Gitlab::Experiment::Dsl
 
     attr_reader :context, :scope_menu, :hidden_menu
 

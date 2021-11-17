@@ -16,7 +16,6 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Linear
   include EachBatch
 
-  ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
   # Temporary column used for back-filling project namespaces.
   # Remove it once the back-filling of all project namespaces is done.
   ignore_column :tmp_project_id, remove_with: '14.7', remove_after: '2022-01-22'

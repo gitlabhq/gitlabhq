@@ -95,8 +95,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.declarative_enum(enum_mod)
-    values = enum_mod.definition.transform_values { |v| v[:value] }
-    enum(enum_mod.key => values)
+    enum(enum_mod.key => enum_mod.values)
   end
 
   def self.cached_column_list

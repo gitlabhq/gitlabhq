@@ -323,7 +323,6 @@ oauth_access_tokens: :gitlab_main
 oauth_applications: :gitlab_main
 oauth_openid_requests: :gitlab_main
 onboarding_progresses: :gitlab_main
-open_project_tracker_data: :gitlab_main
 operations_feature_flags_clients: :gitlab_main
 operations_feature_flag_scopes: :gitlab_main
 operations_feature_flags: :gitlab_main

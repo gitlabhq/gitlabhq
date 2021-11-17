@@ -5,7 +5,15 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(GlToast);
 
+let initedInviteMembersModal;
+
 export default function initInviteMembersModal() {
+  if (initedInviteMembersModal) {
+    // if we already loaded this in another part of the dom, we don't want to do it again
+    // else we will stack the modals
+    return false;
+  }
+
   // https://gitlab.com/gitlab-org/gitlab/-/issues/344955
   // bug lying in wait here for someone to put group and project invite in same screen
   // once that happens we'll need to mount these differently, perhaps split
@@ -15,6 +23,8 @@ export default function initInviteMembersModal() {
   if (!el) {
     return false;
   }
+
+  initedInviteMembersModal = true;
 
   return new Vue({
     el,

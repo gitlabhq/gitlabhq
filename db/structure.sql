@@ -16583,30 +16583,6 @@ CREATE SEQUENCE onboarding_progresses_id_seq
 
 ALTER SEQUENCE onboarding_progresses_id_seq OWNED BY onboarding_progresses.id;
 
-CREATE TABLE open_project_tracker_data (
-    id bigint NOT NULL,
-    service_id integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    encrypted_url character varying(255),
-    encrypted_url_iv character varying(255),
-    encrypted_api_url character varying(255),
-    encrypted_api_url_iv character varying(255),
-    encrypted_token character varying(255),
-    encrypted_token_iv character varying(255),
-    closed_status_id character varying(5),
-    project_identifier_code character varying(100)
-);
-
-CREATE SEQUENCE open_project_tracker_data_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE open_project_tracker_data_id_seq OWNED BY open_project_tracker_data.id;
-
 CREATE TABLE operations_feature_flag_scopes (
     id bigint NOT NULL,
     feature_flag_id bigint NOT NULL,
@@ -21663,8 +21639,6 @@ ALTER TABLE ONLY oauth_openid_requests ALTER COLUMN id SET DEFAULT nextval('oaut
 
 ALTER TABLE ONLY onboarding_progresses ALTER COLUMN id SET DEFAULT nextval('onboarding_progresses_id_seq'::regclass);
 
-ALTER TABLE ONLY open_project_tracker_data ALTER COLUMN id SET DEFAULT nextval('open_project_tracker_data_id_seq'::regclass);
-
 ALTER TABLE ONLY operations_feature_flag_scopes ALTER COLUMN id SET DEFAULT nextval('operations_feature_flag_scopes_id_seq'::regclass);
 
 ALTER TABLE ONLY operations_feature_flags ALTER COLUMN id SET DEFAULT nextval('operations_feature_flags_id_seq'::regclass);
@@ -23418,9 +23392,6 @@ ALTER TABLE ONLY oauth_openid_requests
 
 ALTER TABLE ONLY onboarding_progresses
     ADD CONSTRAINT onboarding_progresses_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY open_project_tracker_data
-    ADD CONSTRAINT open_project_tracker_data_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY operations_feature_flag_scopes
     ADD CONSTRAINT operations_feature_flag_scopes_pkey PRIMARY KEY (id);
@@ -26608,8 +26579,6 @@ CREATE UNIQUE INDEX index_onboarding_progresses_on_namespace_id ON onboarding_pr
 
 CREATE INDEX index_oncall_shifts_on_rotation_id_and_starts_at_and_ends_at ON incident_management_oncall_shifts USING btree (rotation_id, starts_at, ends_at);
 
-CREATE INDEX index_open_project_tracker_data_on_service_id ON open_project_tracker_data USING btree (service_id);
-
 CREATE INDEX index_operations_feature_flags_issues_on_issue_id ON operations_feature_flags_issues USING btree (issue_id);
 
 CREATE UNIQUE INDEX index_operations_feature_flags_on_project_id_and_iid ON operations_feature_flags USING btree (project_id, iid);
@@ -29723,9 +29692,6 @@ ALTER TABLE ONLY bulk_import_failures
 
 ALTER TABLE ONLY group_wiki_repositories
     ADD CONSTRAINT fk_rails_19755e374b FOREIGN KEY (shard_id) REFERENCES shards(id) ON DELETE RESTRICT;
-
-ALTER TABLE ONLY open_project_tracker_data
-    ADD CONSTRAINT fk_rails_1987546e48 FOREIGN KEY (service_id) REFERENCES integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY gpg_signatures
     ADD CONSTRAINT fk_rails_19d4f1c6f9 FOREIGN KEY (gpg_key_subkey_id) REFERENCES gpg_key_subkeys(id) ON DELETE SET NULL;

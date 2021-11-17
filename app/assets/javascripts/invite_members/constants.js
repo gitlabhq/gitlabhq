@@ -25,3 +25,5 @@ export const API_MESSAGES = {
 };
 export const USERS_FILTER_ALL = 'all';
 export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';
+export const TRIGGER_ELEMENT_BUTTON = 'button';
+export const TRIGGER_ELEMENT_SIDE_NAV = 'side-nav';

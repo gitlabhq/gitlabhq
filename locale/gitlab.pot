@@ -19597,6 +19597,9 @@ msgstr ""
 msgid "Iterations|Title"
 msgstr ""
 
+msgid "Iterations|Unable to find iteration cadence."
+msgstr ""
+
 msgid "Iterations|Unable to find iteration."
 msgstr ""
 
