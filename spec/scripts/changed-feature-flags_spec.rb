@@ -6,8 +6,6 @@ load File.expand_path('../../scripts/changed-feature-flags', __dir__)
 
 RSpec.describe 'scripts/changed-feature-flags' do
   describe GetFeatureFlagsFromFiles do
-    let(:ff_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, 'feature_flags', 'development')) }
-
     let(:feature_flag_definition1) do
       file = Tempfile.new('foo.yml', ff_dir)
       file.write(<<~YAML)
@@ -30,43 +28,51 @@ RSpec.describe 'scripts/changed-feature-flags' do
       file
     end
 
-    let(:feature_flag_definition_invalid_path) do
-      file = Tempfile.new('foobar.yml')
-      file.write(<<~YAML)
-        ---
-        name: not a feature flag
-      YAML
-      file.rewind
-      file
-    end
-
     after do
       FileUtils.remove_entry(ff_dir, true)
     end
 
     describe '.extracted_flags' do
-      it 'returns feature flags' do
-        subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path] })
+      shared_examples 'extract feature flags' do
+        it 'returns feature flags on their own' do
+          subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path] })
 
-        expect(subject.extracted_flags).to eq('foo_flag,bar_flag')
+          expect(subject.extracted_flags).to eq('foo_flag,bar_flag')
+        end
+
+        it 'returns feature flags and their state as enabled' do
+          subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path], state: 'enabled' })
+
+          expect(subject.extracted_flags).to eq('foo_flag=enabled,bar_flag=enabled')
+        end
+
+        it 'returns feature flags and their state as disabled' do
+          subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path], state: 'disabled' })
+
+          expect(subject.extracted_flags).to eq('foo_flag=disabled,bar_flag=disabled')
+        end
       end
 
-      it 'returns feature flags and their state as enabled' do
-        subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path], state: 'enabled' })
+      context 'with definition files in the development directory' do
+        let(:ff_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, 'feature_flags', 'development')) }
 
-        expect(subject.extracted_flags).to eq('foo_flag=enabled,bar_flag=enabled')
+        it_behaves_like 'extract feature flags'
       end
 
-      it 'returns feature flags and their state as disabled' do
-        subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path], state: 'disabled' })
+      context 'with definition files in the ops directory' do
+        let(:ff_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, 'feature_flags', 'ops')) }
 
-        expect(subject.extracted_flags).to eq('foo_flag=disabled,bar_flag=disabled')
+        it_behaves_like 'extract feature flags'
       end
 
-      it 'ignores files that are not in the feature_flags/development directory' do
-        subject = described_class.new({ files: [feature_flag_definition_invalid_path.path] })
+      context 'with definition files in the experiment directory' do
+        let(:ff_dir) { FileUtils.mkdir_p(File.join(Dir.tmpdir, 'feature_flags', 'experiment')) }
 
-        expect(subject.extracted_flags).to eq('')
+        it 'ignores the files' do
+          subject = described_class.new({ files: [feature_flag_definition1.path, feature_flag_definition2.path] })
+
+          expect(subject.extracted_flags).to eq('')
+        end
       end
     end
   end

@@ -19,7 +19,7 @@ class GetFeatureFlagsFromFiles
 
   def extracted_flags
     files.each_with_object([]) do |file_path, all|
-      next unless file_path =~ %r{/feature_flags/development/.*\.yml}
+      next unless file_path =~ %r{/feature_flags/(development|ops)/.*\.yml}
       next unless File.exist?(file_path)
 
       ff_yaml = YAML.safe_load(File.read(file_path))

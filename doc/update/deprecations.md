@@ -36,7 +36,7 @@ For deprecation reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
-## 14.4
+## 14.5
 
 ### Rename Task Runner pod to Toolbox
 
@@ -91,6 +91,12 @@ Announced: 2021-11-22
 As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
 
 In milestone 15.0, we will completely remove `Version` from `PackageType`.
+
+Announced: 2021-11-22
+
+### Deprecate support for SLES 12 SP2
+
+Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.
 
 Announced: 2021-11-22
 

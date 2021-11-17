@@ -438,7 +438,7 @@
   - "vendor/assets/javascripts/**/*"
 
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
-  - "{,ee/}config/feature_flags/development/*.yml"
+  - "{,ee/}config/feature_flags/{development,ops}/*.yml"
 
 ################
 # Shared rules #

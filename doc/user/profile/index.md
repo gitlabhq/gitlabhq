@@ -129,7 +129,7 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../index.md#user-contribution-events) to private projects.
 
 To show private contributions:
 
