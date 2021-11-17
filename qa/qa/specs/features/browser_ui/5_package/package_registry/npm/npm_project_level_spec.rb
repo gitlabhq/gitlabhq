@@ -133,7 +133,7 @@ module QA
           end
         end
 
-        it "push and pull a npm package via CI using a #{params[:token_name]}" do
+        it "push and pull a npm package via CI using a #{params[:token_name]}", quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344537', type: :investigating } do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'

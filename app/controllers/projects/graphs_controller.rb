@@ -11,8 +11,10 @@ class Projects::GraphsController < Projects::ApplicationController
 
   track_redis_hll_event :charts, name: 'p_analytics_repo'
 
-  feature_category :source_code_management
+  feature_category :source_code_management, [:show, :commits, :languages, :charts]
   urgency :low, [:show]
+
+  feature_category :continuous_integration, [:ci]
 
   def show
     respond_to do |format|

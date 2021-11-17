@@ -1,8 +1,3 @@
-- "./ee/spec/requests/api/ci/minutes_spec.rb"
-- "./ee/spec/services/ci/minutes/additional_packs/change_namespace_service_spec.rb"
-- "./ee/spec/services/ci/minutes/additional_packs/create_service_spec.rb"
-- "./ee/spec/services/ci/minutes/refresh_cached_data_service_spec.rb"
-- "./spec/features/projects/infrastructure_registry_spec.rb"
 - "./spec/lib/gitlab/background_migration/copy_ci_builds_columns_to_security_scans_spec.rb"
 - "./spec/lib/gitlab/background_migration/migrate_pages_metadata_spec.rb"
 - "./spec/migrations/20210907211557_finalize_ci_builds_bigint_conversion_spec.rb"

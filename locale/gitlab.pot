@@ -1590,9 +1590,6 @@ msgstr ""
 msgid "APIFuzzing|Choose a profile"
 msgstr ""
 
-msgid "APIFuzzing|Code snippet could not be generated. Try again later."
-msgstr ""
-
 msgid "APIFuzzing|Configure HTTP basic authentication values. Other authentication methods are supported. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
