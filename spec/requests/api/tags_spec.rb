@@ -17,6 +17,10 @@ RSpec.describe API::Tags do
   end
 
   describe 'GET /projects/:id/repository/tags' do
+    before do
+      stub_feature_flags(tag_list_keyset_pagination: false)
+    end
+
     shared_examples "get repository tags" do
       let(:route) { "/projects/#{project_id}/repository/tags" }
 
@@ -141,6 +145,55 @@ RSpec.describe API::Tags do
           expected_tag = json_response.find { |r| r['name'] == tag_name }
           expect(expected_tag['message']).to eq(tag_message)
           expect(expected_tag['release']['description']).to eq(description)
+        end
+      end
+
+      context 'with keyset pagination on', :aggregate_errors do
+        before do
+          stub_feature_flags(tag_list_keyset_pagination: true)
+        end
+
+        context 'with keyset pagination option' do
+          let(:base_params) { { pagination: 'keyset' } }
+
+          context 'with gitaly pagination params' do
+            context 'with high limit' do
+              let(:params) { base_params.merge(per_page: 100) }
+
+              it 'returns all repository tags' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to match_response_schema('public_api/v4/tags')
+                expect(response.headers).not_to include('Link')
+                tag_names = json_response.map { |x| x['name'] }
+                expect(tag_names).to match_array(project.repository.tag_names)
+              end
+            end
+
+            context 'with low limit' do
+              let(:params) { base_params.merge(per_page: 2) }
+
+              it 'returns limited repository tags' do
+                get api(route, user), params: params
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to match_response_schema('public_api/v4/tags')
+                expect(response.headers).to include('Link')
+                tag_names = json_response.map { |x| x['name'] }
+                expect(tag_names).to match_array(%w(v1.1.0 v1.1.1))
+              end
+            end
+
+            context 'with missing page token' do
+              let(:params) { base_params.merge(page_token: 'unknown') }
+
+              it_behaves_like '422 response' do
+                let(:request) { get api(route, user), params: params }
+                let(:message) { 'Invalid page token: refs/tags/unknown' }
+              end
+            end
+          end
         end
       end
     end

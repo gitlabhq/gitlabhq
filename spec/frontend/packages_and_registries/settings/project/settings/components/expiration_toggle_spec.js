@@ -1,6 +1,6 @@
 import { GlToggle, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { GlFormGroup } from 'jest/registry/shared/stubs';
+import { GlFormGroup } from 'jest/packages_and_registries/shared/stubs';
 import component from '~/packages_and_registries/settings/project/components/expiration_toggle.vue';
 import {
   ENABLED_TOGGLE_DESCRIPTION,

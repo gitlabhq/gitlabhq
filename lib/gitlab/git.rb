@@ -17,6 +17,7 @@ module Gitlab
     OSError = Class.new(BaseError)
     UnknownRef = Class.new(BaseError)
     CommandTimedOut = Class.new(CommandError)
+    InvalidPageToken = Class.new(BaseError)
 
     class << self
       include Gitlab::EncodingHelper

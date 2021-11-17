@@ -10,7 +10,7 @@ type: reference, howto
 GitLab encourages communication through comments, threads, and
 [code suggestions](../project/merge_requests/reviews/suggestions.md).
 
-There are two types of comments:
+Two types of comments are available:
 
 - A standard comment.
 - A comment in a thread, which can be [resolved](#resolve-a-thread).
@@ -141,8 +141,6 @@ You can also make an [entire issue confidential](../project/issues/confidential_
 
 ## Show only comments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
-
 For issues and merge requests with many comments, you can filter the page to show comments only.
 
 1. Open a merge request's **Discussion** tab, or epic or issue's **Overview** tab.
@@ -170,8 +168,6 @@ You can assign an issue to a user who made a comment.
 
 ## Create a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9.
-
 When you reply to a standard comment, you create a thread.
 
 Prerequisites:
@@ -185,7 +181,7 @@ To create a thread by replying to a comment:
 
    ![Reply to comment button](img/reply_to_comment_button.png)
 
-   The reply area is displayed.
+   The reply section is displayed.
 
 1. Enter your reply.
 1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
@@ -214,8 +210,7 @@ A threaded comment is created.
 
 ## Resolve a thread
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5022) in GitLab 8.11.
-> - Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
+> Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
 
 In a merge request, you can resolve a thread when you want to finish a conversation.
 

@@ -84,7 +84,11 @@ module Gitlab
           Sidekiq.redis do |redis|
             redis.multi do |multi|
               job_wal_locations.each do |connection_name, location|
-                multi.eval(LUA_SET_WAL_SCRIPT, keys: [wal_location_key(connection_name)], argv: [location, pg_wal_lsn_diff(connection_name).to_i, WAL_LOCATION_TTL])
+                multi.eval(
+                  LUA_SET_WAL_SCRIPT,
+                  keys: [wal_location_key(connection_name)],
+                  argv: [location, pg_wal_lsn_diff(connection_name).to_i, WAL_LOCATION_TTL]
+                )
               end
             end
           end

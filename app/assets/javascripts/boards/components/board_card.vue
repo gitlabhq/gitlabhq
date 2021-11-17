@@ -83,7 +83,7 @@ export default {
     :data-item-path="item.referencePath"
     data-testid="board_card"
     class="board-card gl-p-5 gl-rounded-base"
-    @mouseup="toggleIssue($event)"
+    @click="toggleIssue($event)"
   >
     <board-card-inner :list="list" :item="item" :update-filters="true" />
   </li>

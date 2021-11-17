@@ -7,8 +7,8 @@ RSpec.describe TagsFinder do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:repository) { project.repository }
 
-  def load_tags(params)
-    described_class.new(repository, params).execute
+  def load_tags(params, gitaly_pagination: false)
+    described_class.new(repository, params).execute(gitaly_pagination: gitaly_pagination)
   end
 
   describe '#execute' do
@@ -92,6 +92,72 @@ RSpec.describe TagsFinder do
         it 'filters tags by name' do
           expect(subject.first.name).to eq('v1.0.0')
           expect(subject.count).to eq(2)
+        end
+      end
+    end
+
+    context 'with Gitaly pagination' do
+      subject { load_tags(params, gitaly_pagination: true) }
+
+      context 'by page_token and per_page' do
+        let(:params) { { page_token: 'v1.0.0', per_page: 1 } }
+
+        it 'filters tags' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(v1.1.0))
+        end
+      end
+
+      context 'by next page_token and per_page' do
+        let(:params) { { page_token: 'v1.1.0', per_page: 2 } }
+
+        it 'filters branches' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(v1.1.1))
+        end
+      end
+
+      context 'by per_page only' do
+        let(:params) { { per_page: 2 } }
+
+        it 'filters branches' do
+          result = subject
+
+          expect(result.map(&:name)).to eq(%w(v1.0.0 v1.1.0))
+        end
+      end
+
+      context 'by page_token only' do
+        let(:params) { { page_token: 'feature' } }
+
+        it 'raises an error' do
+          expect do
+            subject
+          end.to raise_error(Gitlab::Git::InvalidPageToken, 'Invalid page token: refs/tags/feature')
+        end
+      end
+
+      context 'pagination and sort' do
+        context 'by per_page' do
+          let(:params) { { sort: 'updated_desc', per_page: 5 } }
+
+          it 'filters branches' do
+            result = subject
+
+            expect(result.map(&:name)).to eq(%w(v1.1.1 v1.1.0 v1.0.0))
+          end
+        end
+
+        context 'by page_token and per_page' do
+          let(:params) { { sort: 'updated_desc', page_token: 'v1.1.1', per_page: 2 } }
+
+          it 'filters branches' do
+            result = subject
+
+            expect(result.map(&:name)).to eq(%w(v1.1.0 v1.0.0))
+          end
         end
       end
     end

@@ -20748,9 +20748,6 @@ msgstr ""
 msgid "Licenses|Detected licenses that are out-of-compliance with the project's assigned policies"
 msgstr ""
 
-msgid "Licenses|Disallow Merge request if detected and will instruct the developer to remove"
-msgstr ""
-
 msgid "Licenses|Displays licenses detected in the project, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
@@ -20776,6 +20773,9 @@ msgid "Licenses|Specified policies in this project"
 msgstr ""
 
 msgid "Licenses|The license list details information about the licenses used within your project."
+msgstr ""
+
+msgid "Licenses|Unacceptable license, if detected it will disallow a merge request until it's removed"
 msgstr ""
 
 msgid "Licenses|View license details for your project"

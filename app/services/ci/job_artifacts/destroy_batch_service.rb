@@ -26,11 +26,14 @@ module Ci
       def execute(update_stats: true)
         return success(destroyed_artifacts_count: 0, statistics_updates: {}) if @job_artifacts.empty?
 
+        destroy_related_records(@job_artifacts)
+
         Ci::DeletedObject.transaction do
           Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
           Ci::JobArtifact.id_in(@job_artifacts.map(&:id)).delete_all
-          destroy_related_records(@job_artifacts)
         end
+
+        after_batch_destroy_hook(@job_artifacts)
 
         # This is executed outside of the transaction because it depends on Redis
         update_project_statistics! if update_stats
@@ -43,8 +46,11 @@ module Ci
 
       private
 
-      # This method is implemented in EE and it must do only database work
+      # Overriden in EE
       def destroy_related_records(artifacts); end
+
+      # Overriden in EE
+      def after_batch_destroy_hook(artifacts); end
 
       # using ! here since this can't be called inside a transaction
       def update_project_statistics!

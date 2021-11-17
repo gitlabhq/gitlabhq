@@ -21,14 +21,17 @@ module API
         optional :order_by, type: String, values: %w[name updated], default: 'updated',
                             desc: 'Return tags ordered by `name` or `updated` fields.'
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
+        optional :page_token, type: String, desc: 'Name of tag to start the paginaition from'
         use :pagination
       end
       get ':id/repository/tags', feature_category: :source_code_management, urgency: :low do
-        tags = ::TagsFinder.new(user_project.repository,
+        tags_finder = ::TagsFinder.new(user_project.repository,
                                 sort: "#{params[:order_by]}_#{params[:sort]}",
-                                search: params[:search]).execute
+                                search: params[:search],
+                                page_token: params[:page_token],
+                                per_page: params[:per_page])
 
-        paginated_tags = paginate(::Kaminari.paginate_array(tags))
+        paginated_tags = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tags_finder)
 
         if Feature.enabled?(:api_caching_tags, user_project, type: :development)
           present_cached paginated_tags, with: Entities::Tag, project: user_project, cache_context: -> (_tag) { user_project.cache_key }
@@ -36,6 +39,8 @@ module API
           present paginated_tags, with: Entities::Tag, project: user_project
         end
 
+      rescue Gitlab::Git::InvalidPageToken => e
+        unprocessable_entity!(e.message)
       rescue Gitlab::Git::CommandError
         service_unavailable!
       end

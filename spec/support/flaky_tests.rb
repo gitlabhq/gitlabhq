@@ -4,7 +4,7 @@ return unless ENV['CI']
 return unless ENV['SKIP_FLAKY_TESTS_AUTOMATICALLY'] == "true"
 return if ENV['CI_MERGE_REQUEST_LABELS'].to_s.include?('pipeline:run-flaky-tests')
 
-require_relative '../tooling/rspec_flaky/report'
+require_relative '../../tooling/rspec_flaky/report'
 
 RSpec.configure do |config|
   $flaky_test_example_ids = begin # rubocop:disable Style/GlobalVars

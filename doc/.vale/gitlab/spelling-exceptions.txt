@@ -187,6 +187,7 @@ downvotes
 Dpl
 Dreamweaver
 Ecto
+ElastiCache
 Elasticsearch
 enablement
 enqueued

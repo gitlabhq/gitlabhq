@@ -159,6 +159,7 @@ function rspec_paralellized_job() {
   fi
 
   echo "KNAPSACK_TEST_FILE_PATTERN: ${KNAPSACK_TEST_FILE_PATTERN}"
+  echo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY}"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"

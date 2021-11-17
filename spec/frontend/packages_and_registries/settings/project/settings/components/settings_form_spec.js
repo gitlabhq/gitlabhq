@@ -2,7 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlCard, GlLoadingIcon } from 'jest/registry/shared/stubs';
+import { GlCard, GlLoadingIcon } from 'jest/packages_and_registries/shared/stubs';
 import component from '~/packages_and_registries/settings/project/components/settings_form.vue';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,

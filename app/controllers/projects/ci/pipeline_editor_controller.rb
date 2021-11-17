@@ -19,8 +19,9 @@ class Projects::Ci::PipelineEditorController < Projects::ApplicationController
   end
 
   def setup_walkthrough_experiment
-    experiment(:pipeline_editor_walkthrough, actor: current_user) do |e|
+    experiment(:pipeline_editor_walkthrough, namespace: @project.namespace, sticky_to: current_user) do |e|
       e.candidate {}
+      e.record!
     end
   end
 end

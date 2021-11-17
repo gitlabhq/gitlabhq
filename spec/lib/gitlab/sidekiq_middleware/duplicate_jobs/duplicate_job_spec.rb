@@ -174,26 +174,21 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
   end
 
   describe '#update_latest_wal_location!' do
-    let(:offset) { '1024' }
-
     before do
-      allow(duplicate_job).to receive(:pg_wal_lsn_diff).with(:main).and_return(offset)
-      allow(duplicate_job).to receive(:pg_wal_lsn_diff).with(:ci).and_return(offset)
-    end
+      allow(Gitlab::Database).to receive(:database_base_models).and_return(
+        { main: ::ActiveRecord::Base,
+          ci: ::ActiveRecord::Base })
 
-    shared_examples 'updates wal location' do
-      it 'updates a wal location to redis with an offset' do
-        expect { duplicate_job.update_latest_wal_location! }
-          .to change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
-                .from(existing_wal_with_offset[:main])
-                .to(new_wal_with_offset[:main])
-          .and change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
-                .from(existing_wal_with_offset[:ci])
-                .to(new_wal_with_offset[:ci])
-      end
+      set_idempotency_key(existing_wal_location_key(idempotency_key, :main), existing_wal[:main])
+      set_idempotency_key(existing_wal_location_key(idempotency_key, :ci), existing_wal[:ci])
+
+      # read existing_wal_locations
+      duplicate_job.check!
     end
 
     context 'when preserve_latest_wal_locations_for_idempotent_jobs feature flag is disabled' do
+      let(:existing_wal) { {} }
+
       before do
         stub_feature_flags(preserve_latest_wal_locations_for_idempotent_jobs: false)
       end
@@ -214,42 +209,107 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
 
     context "when the key doesn't exists in redis" do
-      include_examples 'updates wal location' do
-        let(:existing_wal_with_offset) { { main: [], ci: [] } }
-        let(:new_wal_with_offset) { wal_locations.transform_values { |v| [v, offset] } }
+      let(:existing_wal) do
+        {
+          main: '0/D525E3A0',
+          ci: 'AB/12340'
+        }
+      end
+
+      let(:new_wal_location_with_offset) do
+        {
+          # offset is relative to `existing_wal`
+          main: ['0/D525E3A8', '8'],
+          ci: ['AB/12345', '5']
+        }
+      end
+
+      let(:wal_locations) { new_wal_location_with_offset.transform_values(&:first) }
+
+      it 'stores a wal location to redis with an offset relative to existing wal location' do
+        expect { duplicate_job.update_latest_wal_location! }
+          .to change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
+                .from([])
+                .to(new_wal_location_with_offset[:main])
+          .and change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
+                .from([])
+                .to(new_wal_location_with_offset[:ci])
       end
     end
 
     context "when the key exists in redis" do
-      let(:existing_offset) { '1023'}
-      let(:existing_wal_locations) do
-        {
-          main: '0/D525E3NM',
-          ci: 'AB/111112'
-        }
+      before do
+        rpush_to_redis_key(wal_location_key(idempotency_key, :main), *stored_wal_location_with_offset[:main])
+        rpush_to_redis_key(wal_location_key(idempotency_key, :ci), *stored_wal_location_with_offset[:ci])
       end
 
-      before do
-        rpush_to_redis_key(wal_location_key(idempotency_key, :main), existing_wal_locations[:main], existing_offset)
-        rpush_to_redis_key(wal_location_key(idempotency_key, :ci), existing_wal_locations[:ci], existing_offset)
-      end
+      let(:wal_locations) { new_wal_location_with_offset.transform_values(&:first) }
 
       context "when the new offset is bigger then the existing one" do
-        include_examples 'updates wal location' do
-          let(:existing_wal_with_offset) { existing_wal_locations.transform_values { |v| [v, existing_offset] } }
-          let(:new_wal_with_offset) { wal_locations.transform_values { |v| [v, offset] } }
+        let(:existing_wal) do
+          {
+            main: '0/D525E3A0',
+            ci: 'AB/12340'
+          }
+        end
+
+        let(:stored_wal_location_with_offset) do
+          {
+            # offset is relative to `existing_wal`
+            main: ['0/D525E3A3', '3'],
+            ci: ['AB/12342', '2']
+          }
+        end
+
+        let(:new_wal_location_with_offset) do
+          {
+            # offset is relative to `existing_wal`
+            main: ['0/D525E3A8', '8'],
+            ci: ['AB/12345', '5']
+          }
+        end
+
+        it 'updates a wal location to redis with an offset' do
+          expect { duplicate_job.update_latest_wal_location! }
+            .to change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
+                  .from(stored_wal_location_with_offset[:main])
+                  .to(new_wal_location_with_offset[:main])
+            .and change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
+                  .from(stored_wal_location_with_offset[:ci])
+                  .to(new_wal_location_with_offset[:ci])
         end
       end
 
       context "when the old offset is not bigger then the existing one" do
-        let(:existing_offset) { offset }
+        let(:existing_wal) do
+          {
+            main: '0/D525E3A0',
+            ci: 'AB/12340'
+          }
+        end
+
+        let(:stored_wal_location_with_offset) do
+          {
+            # offset is relative to `existing_wal`
+            main: ['0/D525E3A8', '8'],
+            ci: ['AB/12345', '5']
+          }
+        end
+
+        let(:new_wal_location_with_offset) do
+          {
+            # offset is relative to `existing_wal`
+            main: ['0/D525E3A2', '2'],
+            ci: ['AB/12342', '2']
+          }
+        end
 
         it "does not update a wal location to redis with an offset" do
           expect { duplicate_job.update_latest_wal_location! }
             .to not_change { read_range_from_redis(wal_location_key(idempotency_key, :main)) }
-                  .from([existing_wal_locations[:main], existing_offset])
+                  .from(stored_wal_location_with_offset[:main])
             .and not_change { read_range_from_redis(wal_location_key(idempotency_key, :ci)) }
-                   .from([existing_wal_locations[:ci], existing_offset])
+                   .from(stored_wal_location_with_offset[:ci])
         end
       end
     end
@@ -619,12 +679,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
     end
   end
 
-  def existing_wal_location_key(idempotency_key, config_name)
-    "#{idempotency_key}:#{config_name}:existing_wal_location"
+  def existing_wal_location_key(idempotency_key, connection_name)
+    "#{idempotency_key}:#{connection_name}:existing_wal_location"
   end
 
-  def wal_location_key(idempotency_key, config_name)
-    "#{idempotency_key}:#{config_name}:wal_location"
+  def wal_location_key(idempotency_key, connection_name)
+    "#{idempotency_key}:#{connection_name}:wal_location"
   end
 
   def set_idempotency_key(key, value = '1')

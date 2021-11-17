@@ -77,6 +77,24 @@ RSpec.shared_examples '412 response' do
   end
 end
 
+RSpec.shared_examples '422 response' do
+  let(:message) { nil }
+
+  before do
+    # Fires the request
+    request
+  end
+
+  it 'returns 422' do
+    expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    expect(json_response).to be_an Object
+
+    if message.present?
+      expect(json_response['message']).to eq(message)
+    end
+  end
+end
+
 RSpec.shared_examples '503 response' do
   before do
     # Fires the request

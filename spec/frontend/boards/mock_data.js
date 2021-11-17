@@ -615,7 +615,6 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
     icon: 'issues',
     title: __('Type'),
     type: 'types',
-    operators: [{ value: '=', description: 'is' }],
     token: GlFilteredSearchToken,
     unique: true,
     options: [

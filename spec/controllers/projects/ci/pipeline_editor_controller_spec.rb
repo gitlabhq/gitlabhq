@@ -42,13 +42,10 @@ RSpec.describe Projects::Ci::PipelineEditorController do
         project.add_developer(user)
       end
 
-      it 'tracks the assignment', :experiment do
-        expect(experiment(:pipeline_editor_walkthrough))
-          .to track(:assignment)
-          .with_context(actor: user)
-          .on_next_instance
+      subject(:action) { show_request }
 
-        show_request
+      it_behaves_like 'tracks assignment and records the subject', :pipeline_editor_walkthrough, :namespace do
+        subject { project.namespace }
       end
     end
   end

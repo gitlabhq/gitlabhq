@@ -1,11 +1,11 @@
 import { GlDropdownItem, GlIcon } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { GlDropdown } from 'jest/packages_and_registries/container_registry/explorer/stubs';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
-import { GlDropdown } from 'jest/registry/explorer/stubs';
 import component from '~/packages_and_registries/container_registry/explorer/components/details_page/details_header.vue';
 import {
   UNSCHEDULED_STATUS,

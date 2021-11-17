@@ -579,6 +579,7 @@ rspec:skipped-flaky-tests-report:
   variables:
     SKIPPED_FLAKY_TESTS_REPORT: skipped_flaky_tests_report.txt
   before_script:
+    - 'echo "SKIP_FLAKY_TESTS_AUTOMATICALLY: $SKIP_FLAKY_TESTS_AUTOMATICALLY"'
     - mkdir -p rspec_flaky
   script:
     - find rspec_flaky/ -type f -name 'skipped_flaky_tests_*_report.txt' -exec cat {} + >> "${SKIPPED_FLAKY_TESTS_REPORT}"

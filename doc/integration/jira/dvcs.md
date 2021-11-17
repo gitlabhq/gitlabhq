@@ -111,12 +111,12 @@ it completes, refreshes every 60 minutes:
 1. To create a new integration, select the appropriate value for **Host**:
    - *For Jira versions 8.14 and later:* Select **GitLab** or
      **GitLab Self-Managed**.
-   - *For Jira versions 8.13 and earlier:* Select **GitHub Enterprise**.
+   - *For Jira Cloud or Jira versions 8.13 and earlier:* Select **GitHub Enterprise**.
 1. For **Team or User Account**, enter either:
    - *For Jira versions 8.14 and later:*
       - The relative path of a top-level GitLab group that
         [the GitLab user](#configure-a-gitlab-application-for-dvcs) has access to.
-   - *For Jira versions 8.13 and earlier:*
+   - *For Jira Cloud or Jira versions 8.13 and earlier:*
       - The relative path of a top-level GitLab group that
         [the GitLab user](#configure-a-gitlab-application-for-dvcs) has access to.
       - The relative path of your personal namespace.

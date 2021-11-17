@@ -13,15 +13,14 @@ module Gitlab
         WriteInsideReadOnlyTransactionError = Class.new(StandardError)
         READ_ONLY_TRANSACTION_KEY = :load_balacing_read_only_transaction
 
-        # The load balancer is intentionally not exposed since the returned instance
-        # might be different `model.connection.load_balancer` vs `model.load_balancer`
+        # The load balancer returned by connection might be different
+        # between `model.connection.load_balancer` vs `model.load_balancer`
         #
         # The used `model.connection` is dependent on `use_model_load_balancing`.
         # See more in: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73949.
         #
         # Always use `model.load_balancer` or `model.sticking`.
-        #
-        # attr_reader :load_balancer
+        attr_reader :load_balancer
 
         # These methods perform writes after which we need to stick to the
         # primary.

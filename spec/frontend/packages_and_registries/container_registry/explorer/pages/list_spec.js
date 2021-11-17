@@ -25,7 +25,7 @@ import Tracking from '~/tracking';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
-import { $toast } from '../../shared/mocks';
+import { $toast } from 'jest/packages_and_registries/shared/mocks';
 import {
   graphQLImageListMock,
   graphQLImageDeleteMock,
