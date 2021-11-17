@@ -157,11 +157,11 @@ describe('content_editor/extensions/attachment', () => {
           });
         });
 
-        it('emits an error event that includes an error message', (done) => {
+        it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: imageFile });
 
-          tiptapEditor.on('error', ({ error }) => {
-            expect(error).toBe('An error occurred while uploading the image. Please try again.');
+          tiptapEditor.on('alert', ({ message }) => {
+            expect(message).toBe('An error occurred while uploading the image. Please try again.');
             done();
           });
         });
@@ -233,11 +233,11 @@ describe('content_editor/extensions/attachment', () => {
           });
         });
 
-        it('emits an error event that includes an error message', (done) => {
+        it('emits an alert event that includes an error message', (done) => {
           tiptapEditor.commands.uploadAttachment({ file: attachmentFile });
 
-          tiptapEditor.on('error', ({ error }) => {
-            expect(error).toBe('An error occurred while uploading the file. Please try again.');
+          tiptapEditor.on('alert', ({ message }) => {
+            expect(message).toBe('An error occurred while uploading the file. Please try again.');
             done();
           });
         });

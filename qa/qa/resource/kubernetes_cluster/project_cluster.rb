@@ -24,7 +24,7 @@ module QA
             &:go_to_infrastructure_kubernetes)
 
           Page::Project::Infrastructure::Kubernetes::Index.perform(
-            &:connect_cluster_with_certificate)
+            &:connect_existing_cluster)
 
           Page::Project::Infrastructure::Kubernetes::Add.perform(
             &:add_existing_cluster)

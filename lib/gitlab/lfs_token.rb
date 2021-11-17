@@ -96,23 +96,14 @@ module Gitlab
       attr_reader :actor
 
       def secret
-        salt + key
-      end
-
-      def salt
         case actor
         when DeployKey, Key
-          actor.fingerprint.delete(':').first(16)
+          # Since fingerprint is based on the public key, let's take more bytes from attr_encrypted_db_key_base
+          actor.fingerprint.delete(':').first(16) + Settings.attr_encrypted_db_key_base_32
         when User
           # Take the last 16 characters as they're more unique than the first 16
-          actor.id.to_s + actor.encrypted_password.last(16)
+          actor.id.to_s + actor.encrypted_password.last(16) + Settings.attr_encrypted_db_key_base.first(16)
         end
-      end
-
-      def key
-        # Take 16 characters of attr_encrypted_db_key_base, as that's what the
-        # cipher needs exactly
-        Settings.attr_encrypted_db_key_base.first(16)
       end
     end
   end

@@ -9,11 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
 
 NOTE:
-This SLI is not yet used in
-[error budgets for stage groups](../stage_group_dashboards.md#error-budget)
-or service monitoring. To learn more about this work, read about how we are
-[incorporating custom SLIs](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/573)
-into error budgets and the service catalog.
+This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_dashboards.md#error-budget)
+by default. You can [opt in](#error-budget-attribution-and-ownership).
 
 The request Apdex SLI (Service Level Indicator) is [an SLI defined in the application](index.md).
 It measures the duration of successful requests as an indicator for
@@ -223,8 +220,18 @@ end
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage groups](../stage_group_dashboards.md#error-budget) when
-opting in. For more information, read the epic for
+[error budget for stage
+groups](../stage_group_dashboards.md#error-budget). For this
+particular SLI, we have opted everyone out by default to give time to
+set the correct urgencies on endpoints before it affects a group's
+error budget.
+
+To include this SLI in the error budget, remove the `rails_requests`
+from the `ignored_components` array in the entry for your group. Read
+more about what is configurable in the
+[runbooks documentation](https://gitlab.com/gitlab-com/runbooks/-/tree/master/services#teamsyml).
+
+For more information, read the epic for
 [defining custom SLIs and incorporating them into error budgets](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525)).
 The endpoints for the SLI feed into a group's error budget based on the
 [feature category declared on it](../feature_categorization/index.md).

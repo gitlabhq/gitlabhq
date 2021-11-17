@@ -2614,6 +2614,5 @@ Style/OpenStructUse:
     - 'spec/support/helpers/repo_helpers.rb'
     - 'spec/support/shared_examples/controllers/githubish_import_controller_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/nuget_packages_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/pypi_packages_shared_examples.rb'
     - 'spec/tooling/rspec_flaky/flaky_example_spec.rb'
     - 'tooling/rspec_flaky/flaky_example.rb'

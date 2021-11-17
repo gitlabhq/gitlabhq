@@ -11,13 +11,13 @@ jest.mock('prosemirror-tables');
 describe('content/components/wrappers/table_cell_base', () => {
   let wrapper;
   let editor;
-  let getPos;
+  let node;
 
   const createWrapper = async (propsData = { cellType: 'td' }) => {
     wrapper = shallowMountExtended(TableCellBaseWrapper, {
       propsData: {
         editor,
-        getPos,
+        node,
         ...propsData,
       },
     });
@@ -36,7 +36,7 @@ describe('content/components/wrappers/table_cell_base', () => {
   const setCurrentPositionInCell = () => {
     const { $cursor } = editor.state.selection;
 
-    getPos.mockReturnValue($cursor.pos - $cursor.parentOffset - 1);
+    jest.spyOn($cursor, 'node').mockReturnValue(node);
   };
   const mockDropdownHide = () => {
     /*
@@ -48,7 +48,7 @@ describe('content/components/wrappers/table_cell_base', () => {
   };
 
   beforeEach(() => {
-    getPos = jest.fn();
+    node = {};
     editor = createTestEditor({});
   });
 

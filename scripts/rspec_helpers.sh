@@ -26,6 +26,8 @@ function retrieve_tests_metadata() {
     fi
 
     if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
+      # Fixed ID to get the report back to a good state after https://gitlab.com/gitlab-org/gitlab/-/issues/345798 / https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74617
+      test_metadata_job_id=1766932099
       scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
     fi
   fi

@@ -6,19 +6,19 @@ import { createTestEditor } from '../../test_utils';
 describe('content/components/wrappers/table_cell_body', () => {
   let wrapper;
   let editor;
-  let getPos;
+  let node;
 
   const createWrapper = async () => {
     wrapper = shallowMount(TableCellBodyWrapper, {
       propsData: {
         editor,
-        getPos,
+        node,
       },
     });
   };
 
   beforeEach(() => {
-    getPos = jest.fn();
+    node = {};
     editor = createTestEditor({});
   });
 
@@ -30,7 +30,7 @@ describe('content/components/wrappers/table_cell_body', () => {
     createWrapper();
     expect(wrapper.findComponent(TableCellBaseWrapper).props()).toEqual({
       editor,
-      getPos,
+      node,
       cellType: 'td',
     });
   });

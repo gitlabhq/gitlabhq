@@ -261,7 +261,6 @@ control over how the Pages daemon runs and serves content in your environment.
 | `use_legacy_storage`                    | Temporarily-introduced parameter allowing to use legacy domain configuration source and storage. [Removed in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6166). |
 | `rate_limit_source_ip`                  | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
----
 
 ## Advanced configuration
 

@@ -1,5 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: 'v2.14.0'
+  AUTO_DEPLOY_IMAGE_VERSION: 'v2.17.0'
 
 .auto-deploy:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"
@@ -11,6 +11,7 @@ review:
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
@@ -38,6 +39,7 @@ stop_review:
   variables:
     GIT_STRATEGY: none
   script:
+    - auto-deploy use_kube_context || true
     - auto-deploy initialize_tiller
     - auto-deploy delete
   environment:
@@ -66,6 +68,7 @@ staging:
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
@@ -91,6 +94,7 @@ canary:
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
@@ -114,6 +118,7 @@ canary:
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
@@ -168,6 +173,7 @@ production_manual:
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
+    - auto-deploy use_kube_context || true
     - auto-deploy ensure_namespace
     - auto-deploy initialize_tiller
     - auto-deploy create_secret

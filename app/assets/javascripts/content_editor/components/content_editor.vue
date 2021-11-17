@@ -3,7 +3,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { LOADING_CONTENT_EVENT, LOADING_SUCCESS_EVENT, LOADING_ERROR_EVENT } from '../constants';
 import { createContentEditor } from '../services/create_content_editor';
-import ContentEditorError from './content_editor_error.vue';
+import ContentEditorAlert from './content_editor_alert.vue';
 import ContentEditorProvider from './content_editor_provider.vue';
 import EditorStateObserver from './editor_state_observer.vue';
 import FormattingBubbleMenu from './formatting_bubble_menu.vue';
@@ -12,7 +12,7 @@ import TopToolbar from './top_toolbar.vue';
 export default {
   components: {
     GlLoadingIcon,
-    ContentEditorError,
+    ContentEditorAlert,
     ContentEditorProvider,
     TiptapEditorContent,
     TopToolbar,
@@ -92,7 +92,7 @@ export default {
   <content-editor-provider :content-editor="contentEditor">
     <div>
       <editor-state-observer @docUpdate="notifyChange" @focus="focus" @blur="blur" />
-      <content-editor-error />
+      <content-editor-alert />
       <div
         data-testid="content-editor"
         data-qa-selector="content_editor_container"

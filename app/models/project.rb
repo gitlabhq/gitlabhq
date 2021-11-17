@@ -494,6 +494,7 @@ class Project < ApplicationRecord
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :suggestion_commit_message, length: { maximum: 255 }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }

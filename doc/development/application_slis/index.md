@@ -110,21 +110,79 @@ will also be incremented:
 gitlab_sli:received_email:success_total{ feature_category='service_desk', email_type='service_desk' }
 ```
 
+So far, only tracking `apdex` using a success rate is supported. If you
+need to track errors this way, please upvote
+[this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1395)
+and leave a comment so we can prioritize this.
+
 ## Using the SLI in service monitoring and alerts
 
-When the application is emitting metrics for the new SLI, those need
-to be consumed in the service catalog to result in alerts, and be
-included in the error budget for stage groups and GitLab.com's overall
-availability.
+When the application is emitting metrics for a new SLI, they need
+to be consumed from the [metrics catalog](https://gitlab.com/gitlab-com/runbooks/-/tree/master/metrics-catalog)
+to result in alerts, and included in the error budget for stage
+groups and GitLab.com's overall availability.
 
-This is currently being worked on in [this
-project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/573). As
-part of [this
-issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1307)
-we will update the documentation.
+Start by adding the new SLI to the
+[Application-SLI library](https://gitlab.com/gitlab-com/runbooks/-/blob/d109886dfd5170793eeb8de3d69aafd4a9da78f6/metrics-catalog/gitlab-slis/library.libsonnet#L4).
+After that, add the following information:
 
-For any question, please don't hesitate to createan issue in [the
-Scalability issue
-tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues)
+- `name`: the name of the SLI as defined in code. For example
+  `received_email`.
+- `significantLabels`: an array of Prometheus labels that belong to the
+  metrics. For example: `["email_type"]`. If the significant labels
+  for the SLI include `feature_category`, the metrics will also
+  feed into the
+  [error budgets for stage groups](../stage_group_dashboards.md#error-budget).
+- `featureCategory`: if the SLI applies to a single feature category,
+  you can specify it statically through this field to feed the SLI
+  into the error budgets for stage groups.
+- `description`: a Markdown string explaining the SLI. It will
+  be shown on dashboards and alerts.
+- `kind`: the kind of indicator. Only `sliDefinition.apdexKind` is supported at the moment.
+  Reach out in
+  [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1395)
+  if you want to implement an SLI for success or error rates.
+
+When done, run `make generate` to generate recording rules for
+the new SLI. This command creates recordings for all services
+emitting these metrics aggregated over `significantLabels`.
+
+Open up a merge request with these changes and request review from a Scalability
+team member.
+
+When these changes are merged, and the aggregations in
+[Thanos](https://thanos.gitlab.net) recorded, query Thanos to see
+the success ratio of the new aggregated metrics. For example:
+
+```prometheus
+sum by (environment, stage, type)(gitlab_sli_aggregation:rails_request_apdex:apdex:success:rate_1h)
+/
+sum by (environment, stage, type)(gitlab_sli_aggregation:rails_request_apdex:apdex:weight:rate_1h)
+```
+
+This shows the success ratio, which can guide you to set an
+appropriate SLO when adding this SLI to a service.
+
+Then, add the SLI to the appropriate service
+catalog file. For example, the [`web` service](https://gitlab.com/gitlab-com/runbooks/-/blob/2b7be37a006c236bd684a4e6a1fbf4c66158292a/metrics-catalog/services/web.jsonnet#L198):
+
+```jsonnet
+rails_requests:
+  sliLibrary.get('rails_request_apdex')
+    .generateServiceLevelIndicator({ job: 'gitlab-rails' })
+```
+
+To pass extra selectors and override properties of the SLI, see the
+[service monitoring documentation](https://gitlab.com/gitlab-com/runbooks/blob/master/metrics-catalog/README.md).
+
+SLIs with statically defined feature categories can already receive
+alerts about the SLI in specified Slack channels. For more information, read the
+[alert routing documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/alert-routing.md).
+In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
+we are extending this so alerts for SLIs with a `feature_category`
+label in the souce metrics can also be routed.
+
+For any question, please don't hesitate to create an issue in
+[the Scalability issue tracker](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues)
 or come find us in
 [#g_scalability](https://gitlab.slack.com/archives/CMMF8TKR9) on Slack.

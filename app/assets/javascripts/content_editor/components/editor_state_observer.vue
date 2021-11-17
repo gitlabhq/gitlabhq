@@ -7,7 +7,7 @@ export const tiptapToComponentMap = {
   transaction: 'transaction',
   focus: 'focus',
   blur: 'blur',
-  error: 'error',
+  alert: 'alert',
 };
 
 const getComponentEventName = (tiptapEventName) => tiptapToComponentMap[tiptapEventName];

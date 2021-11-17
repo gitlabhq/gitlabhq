@@ -78,7 +78,7 @@ For updates and details, follow this [epic](https://gitlab.com/groups/gitlab-org
 For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
 [Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
 
-Announced: 2021-11-22
+Announced: 2021-11-15
 
 ### Converting an instance (shared) runner to a project (specific) runner is deprecated
 

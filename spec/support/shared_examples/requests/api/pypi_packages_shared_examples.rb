@@ -167,7 +167,7 @@ end
 
 RSpec.shared_examples 'rejects PyPI access with unknown project id' do
   context 'with an unknown project' do
-    let(:project) { OpenStruct.new(id: 1234567890) }
+    let(:project) { double('access', id: 1234567890) }
 
     it_behaves_like 'unknown PyPI scope id'
   end
@@ -175,7 +175,7 @@ end
 
 RSpec.shared_examples 'rejects PyPI access with unknown group id' do
   context 'with an unknown project' do
-    let(:group) { OpenStruct.new(id: 1234567890) }
+    let(:group) { double('access', id: 1234567890) }
 
     it_behaves_like 'unknown PyPI scope id'
   end

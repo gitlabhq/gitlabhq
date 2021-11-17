@@ -101,6 +101,9 @@ export default {
         ? this.pipeline.details.status
         : {};
     },
+    artifacts() {
+      return this.pipeline?.details?.artifacts;
+    },
     hasStages() {
       return this.pipeline?.details?.stages?.length > 0;
     },
@@ -285,7 +288,7 @@ export default {
               />
             </span>
             <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
-            <pipeline-artifacts :pipeline-id="pipeline.id" class="gl-ml-3" />
+            <pipeline-artifacts :pipeline-id="pipeline.id" :artifacts="artifacts" class="gl-ml-3" />
           </span>
         </div>
       </div>

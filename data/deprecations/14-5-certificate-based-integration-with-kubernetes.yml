@@ -1,7 +1,7 @@
 - name: "Certificate-based integration with Kubernetes"
   announcement_milestone: "14.5" # MIGHT CHANGE IF WE RELEASE THE ANNOUNCEMENT BLOG POST BEFORE THE 22ND
-  announcement_date: "2021-11-22" # UPDATE WITH THE BLOG POST'S PUBLISHING DATE
-  removal_milestone: "15.0" # The milestone when this feature is planned to be removed
+  announcement_date: "2021-11-15"
+  removal_milestone: "15.0"
   body: |
     We are deprecating the certificate-based integration with Kubernetes and the features that rely on it.
     The timeline of removal of the integration from the product is not yet planned and we will communicate

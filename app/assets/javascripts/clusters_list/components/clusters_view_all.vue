@@ -205,6 +205,7 @@ export default {
             ></gl-link
           ><gl-button
             category="secondary"
+            data-qa-selector="connect_existing_cluster_button"
             variant="confirm"
             class="gl-ml-4"
             :href="addClusterPath"

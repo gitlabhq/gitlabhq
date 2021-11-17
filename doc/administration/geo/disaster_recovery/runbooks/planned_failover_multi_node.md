@@ -66,13 +66,13 @@ promote a Geo replica and perform a failover.
 NOTE:
 GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses will appear to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
-On the **secondary** node:
+On the **secondary** site:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Geo > Nodes** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
-   objects aren't yet replicated (shown in gray), consider giving the node more
+   objects aren't yet replicated (shown in gray), consider giving the site more
    time to complete.
 
    ![Replication status](../../replication/img/geo_dashboard_v14_0.png)
@@ -85,20 +85,20 @@ You can use the
 [Geo status API](../../../../api/geo_nodes.md#retrieve-project-sync-or-verification-failures-that-occurred-on-the-current-node)
 to review failed objects and the reasons for failure.
 A common cause of replication failures is the data being missing on the
-**primary** node - you can resolve these failures by restoring the data from backup,
+**primary** site - you can resolve these failures by restoring the data from backup,
 or removing references to the missing data.
 
 The maintenance window won't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
-If the **secondary** node is still replicating data from the **primary** node,
+If the **secondary** site is still replicating data from the **primary** site,
 follow these steps to avoid unnecessary data loss:
 
 1. Until a [read-only mode](https://gitlab.com/gitlab-org/gitlab/-/issues/14609)
    is implemented, updates must be prevented from happening manually to the
-   **primary**. Your **secondary** node still needs read-only
-   access to the **primary** node during the maintenance window:
+   **primary**. Your **secondary** site still needs read-only
+   access to the **primary** site during the maintenance window:
 
    1. At the scheduled time, using your cloud provider or your node's firewall, block
       all HTTP, HTTPS and SSH traffic to/from the **primary** node, **except** for your IP and
@@ -121,18 +121,18 @@ follow these steps to avoid unnecessary data loss:
       ```
 
       From this point, users are unable to view their data or make changes on the
-      **primary** node. They are also unable to log in to the **secondary** node.
+      **primary** site. They are also unable to log in to the **secondary** site.
       However, existing sessions need to work for the remainder of the maintenance period, and
       so public data is accessible throughout.
 
-   1. Verify the **primary** node is blocked to HTTP traffic by visiting it in browser via
+   1. Verify the **primary** site is blocked to HTTP traffic by visiting it in browser via
       another IP. The server should refuse connection.
 
-   1. Verify the **primary** node is blocked to Git over SSH traffic by attempting to pull an
+   1. Verify the **primary** site is blocked to Git over SSH traffic by attempting to pull an
       existing Git repository with an SSH remote URL. The server should refuse
       connection.
 
-   1. On the **primary** node:
+   1. On the **primary** site:
       1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dhasboard, select **Cron**.
@@ -150,7 +150,7 @@ follow these steps to avoid unnecessary data loss:
    1. If you are manually replicating any
       [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
       trigger the final replication process now.
-   1. On the **primary** node:
+   1. On the **primary** site:
       1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
@@ -165,7 +165,7 @@ follow these steps to avoid unnecessary data loss:
          - Database replication lag is 0ms.
          - The Geo log cursor is up to date (0 events behind).
 
-   1. On the **secondary** node:
+   1. On the **secondary** site:
       1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
@@ -173,14 +173,14 @@ follow these steps to avoid unnecessary data loss:
       1. [Run an integrity check](../../../raketasks/check.md) to verify the integrity
          of CI artifacts, LFS objects, and uploads in file storage.
 
-   At this point, your **secondary** node contains an up-to-date copy of everything the
-   **primary** node has, meaning nothing is lost when you fail over.
+   At this point, your **secondary** site contains an up-to-date copy of everything the
+   **primary** site has, meaning nothing is lost when you fail over.
 
-1. In this final step, you need to permanently disable the **primary** node.
+1. In this final step, you need to permanently disable the **primary** site.
 
    WARNING:
-   When the **primary** node goes offline, there may be data saved on the **primary** node
-   that has not been replicated to the **secondary** node. This data should be treated
+   When the **primary** site goes offline, there may be data saved on the **primary** site
+   that has not been replicated to the **secondary** site. This data should be treated
    as lost if you proceed.
 
    NOTE:
@@ -189,9 +189,9 @@ follow these steps to avoid unnecessary data loss:
 
    When performing a failover, we want to avoid a split-brain situation where
    writes can occur in two different GitLab instances. So to prepare for the
-   failover, you must disable the **primary** node:
+   failover, you must disable the **primary** site:
 
-   - If you have SSH access to the **primary** node, stop and disable GitLab:
+   - If you have SSH access to the **primary** site, stop and disable GitLab:
 
      ```shell
      sudo gitlab-ctl stop
@@ -214,19 +214,58 @@ follow these steps to avoid unnecessary data loss:
      from starting if the machine reboots as `root` with
      `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
 
-   - If you do not have SSH access to the **primary** node, take the machine offline and
+   - If you do not have SSH access to the **primary** site, take the machine offline and
      prevent it from rebooting. Since there are many ways you may prefer to accomplish
      this, we avoid a single recommendation. You may need to:
 
      - Reconfigure the load balancers.
      - Change DNS records (for example, point the **primary** DNS record to the
-       **secondary** node to stop using the **primary** node).
+       **secondary** site to stop using the **primary** site).
      - Stop the virtual servers.
      - Block traffic through a firewall.
-     - Revoke object storage permissions from the **primary** node.
+     - Revoke object storage permissions from the **primary** site.
      - Physically disconnect a machine.
 
-### Promoting the **secondary** node
+### Promoting the **secondary** site running GitLab 14.5 and later
+
+1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+
+   - To promote the secondary node to primary:
+
+     ```shell
+     sudo gitlab-ctl geo promote
+     ```
+
+   - To promote the secondary node to primary **without any further confirmation**:
+
+     ```shell
+     sudo gitlab-ctl geo promote --force
+     ```
+
+1. SSH into each Rails node on your **secondary** site and run one of the following commands:
+
+   - To promote the secondary node to primary:
+
+     ```shell
+     sudo gitlab-ctl geo promote
+     ```
+
+   - To promote the secondary node to primary **without any further confirmation**:
+
+     ```shell
+     sudo gitlab-ctl geo promote --force
+     ```
+
+1. Verify you can connect to the newly promoted **primary** site using the URL used
+   previously for the **secondary** site.
+1. If successful, the **secondary** site is now promoted to the **primary** site.
+
+### Promoting the **secondary** site running GitLab 14.4 and earlier
+
+WARNING:
+The `gitlab-ctl promote-to-primary-node` and `gitlab-ctl promoted-db` commands are
+deprecated in GitLab 14.5 and later, and are scheduled to [be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
+Use `gitlab-ctl geo promote` instead.
 
 NOTE:
 A new **secondary** should not be added at this time. If you want to add a new
@@ -243,13 +282,13 @@ perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.
 
 WARNING:
-In GitLab 13.2 and 13.3, promoting a secondary node to a primary while the
+In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the
 secondary is paused fails. Do not pause replication before promoting a
-secondary. If the node is paused, be sure to resume before promoting. This
+secondary. If the site is paused, be sure to resume before promoting. This
 issue has been fixed in GitLab 13.4 and later.
 
 WARNING:
-   If the secondary node [has been paused](../../../geo/index.md#pausing-and-resuming-replication), this performs
+If the secondary site [has been paused](../../../geo/index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused is lost.
 
@@ -291,6 +330,6 @@ Data that was created on the primary while the secondary was paused is lost.
 ### Next steps
 
 To regain geographic redundancy as quickly as possible, you should
-[add a new **secondary** node](../../setup/index.md). To
+[add a new **secondary** site](../../setup/index.md). To
 do that, you can re-add the old **primary** as a new secondary and bring it back
 online.

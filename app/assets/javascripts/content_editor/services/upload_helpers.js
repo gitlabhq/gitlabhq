@@ -72,8 +72,9 @@ const uploadImage = async ({ editor, file, uploadsPath, renderMarkdown }) => {
     );
   } catch (e) {
     editor.commands.deleteRange({ from: position, to: position + 1 });
-    editor.emit('error', {
-      error: __('An error occurred while uploading the image. Please try again.'),
+    editor.emit('alert', {
+      message: __('An error occurred while uploading the image. Please try again.'),
+      variant: 'danger',
     });
   }
 };
@@ -102,8 +103,9 @@ const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown }) =
     );
   } catch (e) {
     editor.commands.deleteRange({ from, to: from + 1 });
-    editor.emit('error', {
-      error: __('An error occurred while uploading the file. Please try again.'),
+    editor.emit('alert', {
+      message: __('An error occurred while uploading the file. Please try again.'),
+      variant: 'danger',
     });
   }
 };

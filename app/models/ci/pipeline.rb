@@ -652,8 +652,15 @@ module Ci
     end
 
     def batch_lookup_report_artifact_for_file_type(file_type)
+      batch_lookup_report_artifact_for_file_types([file_type])
+    end
+
+    def batch_lookup_report_artifact_for_file_types(file_types)
+      file_types_to_search = []
+      file_types.each { |file_type| file_types_to_search.append(*::Ci::JobArtifact.associated_file_types_for(file_type.to_s)) }
+
       latest_report_artifacts
-        .values_at(*::Ci::JobArtifact.associated_file_types_for(file_type.to_s))
+        .values_at(*file_types_to_search.uniq)
         .flatten
         .compact
         .last

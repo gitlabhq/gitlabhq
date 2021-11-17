@@ -92,9 +92,16 @@ module StubGitlabCalls
   end
 
   def stub_commonmark_sourcepos_disabled
+    render_options =
+      if Feature.enabled?(:use_cmark_renderer)
+        Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS_C
+      else
+        Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS_RUBY
+      end
+
     allow_any_instance_of(Banzai::Filter::MarkdownEngines::CommonMark)
       .to receive(:render_options)
-      .and_return(Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS)
+      .and_return(render_options)
   end
 
   private

@@ -11,8 +11,8 @@ export default {
       type: Object,
       required: true,
     },
-    getPos: {
-      type: Function,
+    node: {
+      type: Object,
       required: true,
     },
   },
