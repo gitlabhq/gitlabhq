@@ -54,6 +54,16 @@ The [release-cli](https://gitlab.com/gitlab-org/release-cli) will be released as
 
 Announced: 2021-08-22
 
+## 14.8
+
+### openSUSE Leap 15.2 packages
+
+Distribution support and security updates for openSUSE Leap 15.2 are [ending December 2021](https://en.opensuse.org/Lifetime#openSUSE_Leap).
+
+Starting in 14.5 we are providing packages for openSUSE Leap 15.3, and will stop providing packages for openSUSE Leap 15.2 in the 14.8 milestone.
+
+Announced: 2021-11-22
+
 ## 15.0
 
 ### Audit events for repository push events
@@ -68,7 +78,7 @@ Announced: 2021-09-22
 
 ### Certificate-based integration with Kubernetes
 
-We are deprecating the certificate-based integration with Kubernetes and the features that rely on it.
+[We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
 The timeline of removal of the integration from the product is not yet planned and we will communicate
 more details as they emerge. The certificate-based integration will continue to receive security and
 critical fixes, and features built on the integration will continue to work with supported Kubernetes

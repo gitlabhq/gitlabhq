@@ -12,6 +12,8 @@ class Deployment < ApplicationRecord
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)
 
+  ARCHIVABLE_OFFSET = 50_000
+
   belongs_to :project, required: true
   belongs_to :environment, required: true
   belongs_to :cluster, class_name: 'Clusters::Cluster', optional: true
@@ -100,6 +102,10 @@ class Deployment < ApplicationRecord
       deployment.run_after_commit do
         Deployments::UpdateEnvironmentWorker.perform_async(id)
         Deployments::LinkMergeRequestWorker.perform_async(id)
+
+        if ::Feature.enabled?(:deployments_archive, deployment.project, default_enabled: :yaml)
+          Deployments::ArchiveInProjectWorker.perform_async(deployment.project_id)
+        end
       end
     end
 
@@ -132,6 +138,14 @@ class Deployment < ApplicationRecord
     canceled: 4,
     skipped: 5
   }
+
+  def self.archivables_in(project, limit:)
+    start_iid = project.deployments.order(iid: :desc).limit(1)
+      .select("(iid - #{ARCHIVABLE_OFFSET}) AS start_iid")
+
+    project.deployments.preload(:environment).where('iid <= (?)', start_iid)
+      .where(archived: false).limit(limit)
+  end
 
   def self.last_for_environment(environment)
     ids = self

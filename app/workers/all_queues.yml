@@ -723,6 +723,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: deployment:deployments_archive_in_project
+  :worker_name: Deployments::ArchiveInProjectWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
+  :idempotent: true
+  :tags: []
 - :name: deployment:deployments_drop_older_deployments
   :worker_name: Deployments::DropOlderDeploymentsWorker
   :feature_category: :continuous_delivery

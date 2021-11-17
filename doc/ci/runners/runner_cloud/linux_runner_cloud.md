@@ -12,10 +12,13 @@ Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs fo
 
 GitLab offers Ultimate tier capabilities and included CI/CD minutes per group per month for our [Open Source](https://about.gitlab.com/solutions/open-source/join/), [Education](https://about.gitlab.com/solutions/education/), and [Startups](https://about.gitlab.com/solutions/startups/) programs. For private projects, GitLab offers various [plans](https://about.gitlab.com/pricing/), starting with a Free tier.
 
-All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, CoreOS and the latest Docker Engine
+All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, Google COS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
 Each instance is used only for one job. This ensures that any sensitive data left on the system can't be accessed by other people's CI/CD jobs.
+
+NOTE:
+The final disk space your jobs can use will be less than 25GB. Some disk space allocated to the instance will be occupied by the operating system, the Docker image, and a copy of your cloned repository.  
 
 The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They don't run untagged jobs and unlike the general fleet of shared runners, the instances are re-used up to 40 times.
 

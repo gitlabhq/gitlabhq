@@ -13375,7 +13375,8 @@ CREATE TABLE deployments (
     status smallint NOT NULL,
     finished_at timestamp with time zone,
     cluster_id integer,
-    deployable_id bigint
+    deployable_id bigint,
+    archived boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE deployments_id_seq
@@ -25624,6 +25625,8 @@ CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USIN
 CREATE UNIQUE INDEX index_deployment_clusters_on_cluster_id_and_deployment_id ON deployment_clusters USING btree (cluster_id, deployment_id);
 
 CREATE INDEX index_deployment_merge_requests_on_merge_request_id ON deployment_merge_requests USING btree (merge_request_id);
+
+CREATE INDEX index_deployments_on_archived_project_id_iid ON deployments USING btree (archived, project_id, iid);
 
 CREATE INDEX index_deployments_on_cluster_id_and_status ON deployments USING btree (cluster_id, status);
 

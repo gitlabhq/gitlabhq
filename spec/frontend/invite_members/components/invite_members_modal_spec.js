@@ -15,11 +15,19 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
+import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import {
   INVITE_MEMBERS_IN_COMMENT,
   MEMBER_AREAS_OF_FOCUS,
   INVITE_MEMBERS_FOR_TASK,
+  CANCEL_BUTTON_TEXT,
+  INVITE_BUTTON_TEXT,
+  MEMBERS_MODAL_CELEBRATE_INTRO,
+  MEMBERS_MODAL_CELEBRATE_TITLE,
+  MEMBERS_MODAL_DEFAULT_TITLE,
+  MEMBERS_PLACEHOLDER,
+  MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import axios from '~/lib/utils/axios_utils';
@@ -74,6 +82,7 @@ const user4 = {
   avatar_url: '',
 };
 const sharedGroup = { id: '981' };
+const GlEmoji = { template: '<img/>' };
 
 const createComponent = (data = {}, props = {}) => {
   wrapper = shallowMountExtended(InviteMembersModal, {
@@ -104,6 +113,7 @@ const createComponent = (data = {}, props = {}) => {
       }),
       GlDropdown: true,
       GlDropdownItem: true,
+      GlEmoji,
       GlSprintf,
       GlFormGroup: stubComponent(GlFormGroup, {
         props: ['state', 'invalidFeedback', 'description'],
@@ -158,6 +168,7 @@ describe('InviteMembersModal', () => {
   const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
   const findProjectSelect = () => wrapper.findByTestId('invite-members-modal-project-select');
   const findNoProjectsAlert = () => wrapper.findByTestId('invite-members-modal-no-projects-alert');
+  const findCelebrationEmoji = () => wrapper.findComponent(GlModal).find(GlEmoji);
 
   describe('rendering the modal', () => {
     beforeEach(() => {
@@ -165,15 +176,15 @@ describe('InviteMembersModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite members');
+      expect(wrapper.findComponent(GlModal).props('title')).toBe(MEMBERS_MODAL_DEFAULT_TITLE);
     });
 
     it('renders the Cancel button text correctly', () => {
-      expect(findCancelButton().text()).toBe('Cancel');
+      expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
     });
 
     it('renders the Invite button text correctly', () => {
-      expect(findInviteButton().text()).toBe('Invite');
+      expect(findInviteButton().text()).toBe(INVITE_BUTTON_TEXT);
     });
 
     it('renders the Invite button modal without isLoading', () => {
@@ -342,11 +353,40 @@ describe('InviteMembersModal', () => {
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
       describe('when inviting members', () => {
-        it('includes the correct invitee, type, and formatted name', () => {
+        beforeEach(() => {
           createInviteMembersToProjectWrapper();
+        });
 
+        it('renders the modal without confetti', () => {
+          expect(wrapper.findComponent(ModalConfetti).exists()).toBe(false);
+        });
+
+        it('includes the correct invitee, type, and formatted name', () => {
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
-          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
+          expect(findCelebrationEmoji().exists()).toBe(false);
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
+        });
+      });
+
+      describe('when inviting members with celebration', () => {
+        beforeEach(() => {
+          createComponent({ mode: 'celebrate', inviteeType: 'members' }, { isProject: true });
+        });
+
+        it('renders the modal with confetti', () => {
+          expect(wrapper.findComponent(ModalConfetti).exists()).toBe(true);
+        });
+
+        it('renders the modal with the correct title', () => {
+          expect(wrapper.findComponent(GlModal).props('title')).toBe(MEMBERS_MODAL_CELEBRATE_TITLE);
+        });
+
+        it('includes the correct celebration text and emoji', () => {
+          expect(findIntroText()).toBe(
+            `${MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT}  ${MEMBERS_MODAL_CELEBRATE_INTRO}`,
+          );
+          expect(findCelebrationEmoji().exists()).toBe(true);
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
         });
       });
 
@@ -366,7 +406,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name group.");
-          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
         });
       });
 

@@ -557,7 +557,7 @@ they can be used in job scripts.
 1. Save the `.env` file as an [`artifacts:reports:dotenv`](../yaml/index.md#artifactsreportsdotenv)
 artifact.
 1. Set a job in a later stage to receive the artifact by using the [`dependencies`](../yaml/index.md#dependencies)
-   or the [`needs`](../yaml/index.md#artifact-downloads-with-needs) keywords.
+   or the [`needs`](../yaml/index.md#needs) keywords.
 1. The later job can then [use the variable in scripts](#use-cicd-variables-in-job-scripts).
 
 For example, with the [`dependencies`](../yaml/index.md#dependencies) keyword:
@@ -579,7 +579,7 @@ deploy:
     - build
 ```
 
-For example, with the [`needs`](../yaml/index.md#artifact-downloads-with-needs) keyword:
+For example, with the [`needs:artifacts`](../yaml/index.md#needsartifacts) keyword:
 
 ```yaml
 build:

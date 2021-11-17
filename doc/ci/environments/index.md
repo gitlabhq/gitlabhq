@@ -714,6 +714,29 @@ fetch line:
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
+### Archive Old Deployments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628) in GitLab 14.5.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `deployments_archive`. On GitLab.com, this feature will be rolled out gradually.
+
+When a new deployment happens in your project,
+GitLab creates [a special Git-ref to the deployment](#check-out-deployments-locally).
+Since these Git-refs are populated from the remote GitLab repository,
+you could find that some Git operations, such as `git-fetch` and `git-pull`,
+become slower as the number of deployments in your project increases.
+
+To maintain the efficiency of your Git operations, GitLab keeps
+only recent deployment refs (up to 50,000) and deletes the rest of the old deployment refs.
+Archived deployments are still available, in the UI or by using the API, for auditing purposes.
+Also, you can still fetch the deployed commit from the repository
+with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
+
+NOTE:
+GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/reducing_the_repo_size_using_git.md)
+so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
+
 ### Scope environments with specs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
@@ -911,3 +934,19 @@ To fix this, use one of the following solutions:
     script: deploy review app
     environment: review/$CI_COMMIT_REF_SLUG
   ```
+
+### Deployment refs are not found
+
+Starting from GitLab 14.5, GitLab [deletes old deployment refs](#archive-old-deployments)
+to keep your Git repository performant.
+
+If you have to restore archived Git-refs, please ask an administrator of your self-managed GitLab instance
+to execute the following command on Rails console:
+
+```ruby
+Project.find_by_full_path(<your-project-full-path>).deployments.where(archived: true).each(&:create_ref)
+```
+
+Please note that GitLab could drop this support in the future for the performance concern.
+You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
+to discuss the behavior of this feature.

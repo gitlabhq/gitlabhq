@@ -7,22 +7,18 @@ type: howto
 
 # GitLab CI/CD instance configuration **(FREE SELF)**
 
-GitLab CI/CD is enabled by default in all new projects on an instance. You can configure
-the instance to have [GitLab CI/CD disabled by default](#disable-gitlab-cicd-in-new-projects)
-in new projects.
-
-You can still choose to [enable GitLab CI/CD in individual projects](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project)
-at any time.
+GitLab administrators can manage the GitLab CI/CD configuration for their instance.
 
 ## Disable GitLab CI/CD in new projects
 
-You can set GitLab CI/CD to be disabled by default in all new projects by modifying the settings in:
+GitLab CI/CD is enabled by default in all new projects on an instance. You can set
+CI/CD to be disabled by default in new projects by modifying the settings in:
 
 - `gitlab.yml` for source installations.
 - `gitlab.rb` for Omnibus GitLab installations.
 
 Existing projects that already had CI/CD enabled are unchanged. Also, this setting only changes
-the project default, so project owners can still enable CI/CD in the project settings.
+the project default, so project owners [can still enable CI/CD in the project settings](../ci/enable_or_disable_ci.md#enable-cicd-in-a-project).
 
 For installations from source:
 
@@ -61,6 +57,19 @@ For Omnibus GitLab installations:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+## Set the `needs:` job limit **(FREE SELF)**
+
+The maximum number of jobs that can be defined in `needs:` defaults to 50.
+
+A GitLab administrator with [access to the GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session)
+can choose a custom limit. For example, to set the limit to `100`:
+
+```ruby
+Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
+```
+
+To disable directed acyclic graphs (DAG), set the limit to `0`.
 
 <!-- ## Troubleshooting
 

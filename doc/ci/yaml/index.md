@@ -1364,16 +1364,14 @@ that use `needs` can be visualized as a [directed acyclic graph](../directed_acy
 You can ignore stage ordering and run some jobs without waiting for others to complete.
 Jobs in multiple stages can run concurrently.
 
-The following example creates four paths of execution:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-- Linter: the `lint` job runs immediately without waiting for the `build` stage
-  to complete because it has no needs (`needs: []`).
-- Linux path: the `linux:rspec` and `linux:rubocop` jobs runs as soon as the `linux:build`
-  job finishes without waiting for `mac:build` to finish.
-- macOS path: the `mac:rspec` and `mac:rubocop` jobs runs as soon as the `mac:build`
-  job finishes, without waiting for `linux:build` to finish.
-- The `production` job runs as soon as all previous jobs finish; in this case:
-  `linux:build`, `linux:rspec`, `linux:rubocop`, `mac:build`, `mac:rspec`, `mac:rubocop`.
+**Possible inputs**:
+
+- An array of jobs.
+- An empty array (`[]`), to set the job to start as soon as the pipeline is created.
+
+**Example of `needs`**:
 
 ```yaml
 linux:build:
@@ -1394,32 +1392,33 @@ linux:rspec:
   needs: ["linux:build"]
   script: echo "Running rspec on linux..."
 
-linux:rubocop:
-  stage: test
-  needs: ["linux:build"]
-  script: echo "Running rubocop on linux..."
-
 mac:rspec:
   stage: test
   needs: ["mac:build"]
   script: echo "Running rspec on mac..."
-
-mac:rubocop:
-  stage: test
-  needs: ["mac:build"]
-  script: echo "Running rubocop on mac..."
 
 production:
   stage: deploy
   script: echo "Running production..."
 ```
 
-#### Requirements and limitations
+This example creates four paths of execution:
 
-- The maximum number of jobs that a single job can need in the `needs:` array is limited:
+- Linter: The `lint` job runs immediately without waiting for the `build` stage
+  to complete because it has no needs (`needs: []`).
+- Linux path: The `linux:rspec` job runs as soon as the `linux:build`
+  job finishes, without waiting for `mac:build` to finish.
+- macOS path: The `mac:rspec` jobs runs as soon as the `mac:build`
+  job finishes, without waiting for `linux:build` to finish.
+- The `production` job runs as soon as all previous jobs finish:
+  `linux:build`, `linux:rspec`, `mac:build`, `mac:rspec`.
+
+**Additional details**:
+
+- The maximum number of jobs that a single job can have in the `needs:` array is limited:
   - For GitLab.com, the limit is 50. For more information, see our
     [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/7541).
-  - For self-managed instances, the default limit is 50. This limit [can be changed](#changing-the-needs-job-limit).
+  - For self-managed instances, the default limit is 50. This limit [can be changed](../../administration/cicd.md#set-the-needs-job-limit).
 - If `needs:` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same
@@ -1434,20 +1433,7 @@ production:
 - In GitLab 13.9 and older, if `needs:` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create.
 
-##### Changing the `needs:` job limit **(FREE SELF)**
-
-The maximum number of jobs that can be defined in `needs:` defaults to 50.
-
-A GitLab administrator with [access to the GitLab Rails console](../../administration/feature_flags.md)
-can choose a custom limit. For example, to set the limit to 100:
-
-```ruby
-Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
-```
-
-To disable directed acyclic graphs (DAG), set the limit to `0`.
-
-#### Artifact downloads with `needs`
+#### `needs:artifacts`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.6.
 
@@ -1458,55 +1444,72 @@ by default, because jobs with `needs` can start before earlier stages complete. 
 Use `artifacts: true` (default) or `artifacts: false` to control when artifacts are
 downloaded in jobs that use `needs`.
 
-In the following example, the `rspec` job downloads the `build_job` artifacts, but the
-`rubocop` job does not:
+**Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
+
+**Possible inputs**:
+
+- `true` (default) or `false`.
+
+**Example of `needs:artifacts`**:
 
 ```yaml
-build_job:
-  stage: build
-  artifacts:
-    paths:
-      - binaries/
-
-rspec:
+test-job1:
   stage: test
   needs:
-    - job: build_job
+    - job: build_job1
       artifacts: true
 
-rubocop:
+test-job2:
   stage: test
   needs:
-    - job: build_job
+    - job: build_job2
       artifacts: false
-```
 
-In the following example, the `rspec` job downloads the artifacts from all three `build_jobs`.
-`artifacts` is:
-
-- Set to true for `build_job_1`.
-- Defaults to true for both `build_job_2` and `build_job_3`.
-
-```yaml
-rspec:
+test-job3:
   needs:
-    - job: build_job_1
+    - job: build_job1
       artifacts: true
-    - job: build_job_2
-    - build_job_3
+    - job: build_job2
+    - build_job3
 ```
 
-In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
-with `needs`.
+In this example:
 
-#### Cross project artifact downloads with `needs` **(PREMIUM)**
+- The `test-job1` job downloads the `build_job1` artifacts
+- The `test-job2` job does not download the `build_job2` artifacts.
+- The `test-job3` job downloads the artifacts from all three `build_jobs`, because
+  `artifacts:` is `true`, or defaults to `true`, for all three needed jobs.
+
+**Additional details**:
+
+- In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
+  with `needs`.
+
+#### `needs:project` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
-Use `needs` to download artifacts from up to five jobs in pipelines:
+Use `needs:project` to download artifacts from up to five jobs in other pipelines.
+The artifacts are downloaded from the latest successful pipeline for the specified ref.
 
-- [On other refs in the same project](#artifact-downloads-between-pipelines-in-the-same-project).
-- In different projects, groups and namespaces.
+If there is a pipeline running for the specified ref, a job with `needs:project`
+does not wait for the pipeline to complete. Instead, the job downloads the artifact
+from the latest pipeline that completed successfully.
+
+`needs:project` must be used with `job:`, `ref:`, and `artifacts:`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `needs:project`: A full project path, including namespace and group. If the
+  project is in the same group or namespace, you can omit them from the `project:`
+  keyword. For example: `project: group/project-name` or `project: project-name`.
+- `job`: The job to download artifacts from.
+- `ref`: The ref to download artifacts from.
+- `artifacts`: Must be `true` to download artifacts.
+
+**Examples of `needs:project`**:
 
 ```yaml
 build_job:
@@ -1520,39 +1523,11 @@ build_job:
       artifacts: true
 ```
 
-`build_job` downloads the artifacts from the latest successful `build-1` job
-on the `main` branch in the `group/project-name` project. If the project is in the
-same group or namespace, you can omit them from the `project:` keyword. For example,
-`project: group/project-name` or `project: project-name`.
+In this example, `build_job` downloads the artifacts from the latest successful `build-1` job
+on the `main` branch in the `group/project-name` project.
 
-The user running the pipeline must have at least `reporter` access to the group or project, or the group/project must have public visibility.
-
-You cannot use cross project artifact downloads in the same job as [`trigger`](#trigger).
-
-##### Artifact downloads between pipelines in the same project
-
-Use `needs` to download artifacts from different pipelines in the current project.
-Set the `project` keyword as the current project's name, and specify a ref.
-
-In the following example, `build_job` downloads the artifacts for the latest successful
-`build-1` job with the `other-ref` ref:
-
-```yaml
-build_job:
-  stage: build
-  script:
-    - ls -lhR
-  needs:
-    - project: group/same-project-name
-      job: build-1
-      ref: other-ref
-      artifacts: true
-```
-
-CI/CD variable support for `project:`, `job:`, and `ref` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093)
-in GitLab 13.3. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235761) in GitLab 13.4.
-
-For example:
+In GitLab 13.3 and later, you can use [CI/CD variables](../variables/index.md) in `needs:project`,
+for example:
 
 ```yaml
 build_job:
@@ -1566,62 +1541,83 @@ build_job:
       artifacts: true
 ```
 
-You can't download artifacts from jobs that run in [`parallel:`](#parallel).
+**Additional details**:
 
-When using `needs` to download artifacts from another pipeline, the job does not wait for
-the needed job to complete. [Directed acyclic graph](../directed_acyclic_graph/index.md)
-behavior is limited to jobs in the same pipeline. Make sure that the needed job in the other
-pipeline completes before the job that needs it tries to download the artifacts.
+- To download artifacts from a different pipeline in the current project, set `project:`
+  to be the same as the current project, but use a different ref than the current pipeline.
+  Concurrent pipelines running on the same ref could override the artifacts.
+- The user running the pipeline must have at least the Reporter role for the group or project,
+  or the group/project must have public visibility.
+- You can't use `needs:project` in the same job as [`trigger`](#trigger).
+- When using `needs:project` to download artifacts from another pipeline, the job does not wait for
+  the needed job to complete. [Directed acyclic graph](../directed_acyclic_graph/index.md)
+  behavior is limited to jobs in the same pipeline. Make sure that the needed job in the other
+  pipeline completes before the job that needs it tries to download the artifacts.
+- You can't download artifacts from jobs that run in [`parallel:`](#parallel).
+- Support for [CI/CD variables](../variables/index.md) in `project`, `job`, and `ref` was
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202093) in GitLab 13.3.
+  [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235761) in GitLab 13.4.
 
-To download artifacts between [parent-child pipelines](../pipelines/parent_child_pipelines.md),
-use [`needs:pipeline`](#artifact-downloads-to-child-pipelines).
+**Related topics**:
 
-You should not download artifacts from the same ref as a running pipeline. Concurrent
-pipelines running on the same ref could override the artifacts.
+- To download artifacts between [parent-child pipelines](../pipelines/parent_child_pipelines.md),
+  use [`needs:pipeline:job`](#needspipelinejob).
 
-#### Artifact downloads to child pipelines
+#### `needs:pipeline:job`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab 13.7.
 
 A [child pipeline](../pipelines/parent_child_pipelines.md) can download artifacts from a job in
 its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
 
-For example, with the following parent pipeline that has a job that creates some artifacts:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-```yaml
-create-artifact:
-  stage: build
-  script: echo 'sample artifact' > artifact.txt
-  artifacts:
-    paths: [artifact.txt]
+**Possible inputs**:
 
-child-pipeline:
-  stage: test
-  trigger:
-    include: child.yml
-    strategy: depend
-  variables:
-    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
-```
+- `needs:pipeline`: A pipeline ID. Must be a pipeline present in the same parent-child pipeline hierarchy.
+- `job:`: The job to download artifacts from.
 
-A job in the child pipeline can download artifacts from the `create-artifact` job in
-the parent pipeline:
+**Example of `needs:pipeline:job`**:
 
-```yaml
-use-artifact:
-  script: cat artifact.txt
-  needs:
-    - pipeline: $PARENT_PIPELINE_ID
-      job: create-artifact
-```
+- Parent pipeline (`.gitlab-ci.yml`):
 
-The `pipeline` attribute accepts a pipeline ID and it must be a pipeline present
-in the same parent-child pipeline hierarchy of the given pipeline.
+  ```yaml
+  create-artifact:
+    stage: build
+    script: echo 'sample artifact' > artifact.txt
+    artifacts:
+      paths: [artifact.txt]
 
-The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
-To download artifacts from a job in the current pipeline, use the basic form of [`needs`](#artifact-downloads-with-needs).
+  child-pipeline:
+    stage: test
+    trigger:
+      include: child.yml
+      strategy: depend
+    variables:
+      PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  ```
 
-#### Optional `needs`
+- Child pipeline (`child.yml`):
+
+  ```yaml
+  use-artifact:
+    script: cat artifact.txt
+    needs:
+      - pipeline: $PARENT_PIPELINE_ID
+        job: create-artifact
+  ```
+
+In this example, the `create-artifact` job in the parent pipeline creates some artifacts.
+The `child-pipeline` job triggers a child pipeline, and passes the `CI_PIPELINE_ID`
+variable to the child pipeline as a new `PARENT_PIPELINE_ID` variable. The child pipeline
+can use that variable in `needs:pipeline` to download artifacts from the parent pipeline.
+
+**Additional details**:
+
+- The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
+  To download artifacts from a job in the current pipeline, use [`needs`](#needsartifacts).
+
+#### `needs:optional`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30680) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323891) in GitLab 14.0.
@@ -1630,20 +1626,21 @@ To need a job that sometimes does not exist in the pipeline, add `optional: true
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
 Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except), might
-not always exist in a pipeline. When the pipeline starts, it checks the `needs`
-relationships before running. Without `optional: true`, needs relationships that
+not always exist in a pipeline. When the pipeline is created, GitLab checks the `needs`
+relationships before starting it. Without `optional: true`, needs relationships that
 point to a job that does not exist stops the pipeline from starting and causes a pipeline
 error similar to:
 
 - `'job1' job needs 'job2' job, but it was not added to the pipeline`
 
-In this example:
+**Keyword type**: Job keyword. You can use it only as part of a job.
 
-- When the branch is the default branch, the `build` job exists in the pipeline, and the `rspec`
-  job waits for it to complete before starting.
-- When the branch is not the default branch, the `build` job does not exist in the pipeline.
-  The `rspec` job runs immediately (similar to `needs: []`) because its `needs`
-  relationship to the `build` job is optional.
+**Possible inputs**:
+
+- `job:`: The job to make optional.
+- `true` or `false` (default).
+
+**Example of `needs:optional`**:
 
 ```yaml
 build:
@@ -1657,6 +1654,42 @@ rspec:
     - job: build
       optional: true
 ```
+
+In this example:
+
+- When the branch is the default branch, the `build` job exists in the pipeline, and the `rspec`
+  job waits for it to complete before starting.
+- When the branch is not the default branch, the `build` job does not exist in the pipeline.
+  The `rspec` job runs immediately (similar to `needs: []`) because its `needs`
+  relationship to the `build` job is optional.
+
+#### `needs:pipeline`
+
+You can mirror the pipeline status from an upstream pipeline to a bridge job by
+using the `needs:pipeline` keyword. The latest pipeline status from the default branch is
+replicated to the bridge job.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A full project path, including namespace and group. If the
+  project is in the same group or namespace, you can omit them from the `project:`
+  keyword. For example: `project: group/project-name` or `project: project-name`.
+
+**Example of `needs:pipeline`**:
+
+```yaml
+upstream_bridge:
+  stage: test
+  needs:
+    pipeline: other/project
+```
+
+**Additional details**:
+
+- If you add the `job` keyword to `needs:pipeline`, the job no longer mirrors the
+  pipeline status. The behavior changes to [`needs:pipeline:job`](#needspipelinejob).
 
 ### `tags`
 
@@ -2512,7 +2545,7 @@ By default, jobs in later stages automatically download all the artifacts create
 by jobs in earlier stages. You can control artifact download behavior in jobs with
 [`dependencies`](#dependencies).
 
-When using the [`needs`](#artifact-downloads-with-needs) keyword, jobs can only download
+When using the [`needs`](#needs) keyword, jobs can only download
 artifacts from the jobs defined in the `needs` configuration.
 
 Job artifacts are only collected for successful jobs by default, and
@@ -2840,7 +2873,7 @@ pipeline features from each job.
 To be able to browse the report output files, include the [`artifacts:paths`](#artifactspaths) keyword.
 
 NOTE:
-Combined reports in parent pipelines using [artifacts from child pipelines](#artifact-downloads-to-child-pipelines) is
+Combined reports in parent pipelines using [artifacts from child pipelines](#needspipelinejob) is
 not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
 
 ##### `artifacts:reports:accessibility` **(FREE)**

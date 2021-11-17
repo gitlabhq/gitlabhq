@@ -589,6 +589,43 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
+## Approve a member for a group 
+
+Approves a pending user for a group and its subgroups and projects. 
+
+```plaintext
+PUT /groups/:id/members/:user_id/approve
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](index.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer | yes   | The user ID of the member |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/approve"
+```
+
+## Approve all pending members for a group 
+
+Approves all pending users for a group and its subgroups and projects.
+
+```plaintext
+POST /groups/:id/members/approve_all
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the root group](index.md#namespaced-path-encoding) owned by the authenticated user |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/approve_all"
+```
+
 ## Give a group access to a project
 
 See [share project with group](projects.md#share-project-with-group)

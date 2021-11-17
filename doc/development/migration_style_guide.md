@@ -313,12 +313,8 @@ A better strategy is to split the migration, so that we only need to acquire one
 ```ruby
 enable_lock_retries!
 
-def up
-  remove_column :users, :full_name
-end
-
-def down
-  add_column :users, :full_name, :string
+def change
+  remove_column :users, :full_name, :string
 end
 ```
 

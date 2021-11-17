@@ -74,9 +74,9 @@ giving you powerful options for parallelization within your pipeline.
 ## Limitations
 
 A directed acyclic graph is a complicated feature, and as of the initial MVC there
-are certain use cases that you may need to work around. For more information:
+are certain use cases that you may need to work around. For more information, check the:
 
-- [`needs` requirements and limitations](../yaml/index.md#requirements-and-limitations).
+- [`needs` additional details](../yaml/index.md#needs).
 - Related epic [tracking planned improvements](https://gitlab.com/groups/gitlab-org/-/epics/1716).
 
 ## Needs Visualization

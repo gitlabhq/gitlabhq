@@ -385,6 +385,43 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '.archivables_in' do
+    subject { described_class.archivables_in(project, limit: limit) }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment_1) { create(:deployment, project: project) }
+    let_it_be(:deployment_2) { create(:deployment, project: project) }
+    let_it_be(:deployment_3) { create(:deployment, project: project) }
+
+    let(:limit) { 100 }
+
+    context 'when there are no archivable deployments in the project' do
+      it 'returns nothing' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when there are archivable deployments in the project' do
+      before do
+        stub_const("::Deployment::ARCHIVABLE_OFFSET", 1)
+      end
+
+      it 'returns all archivable deployments' do
+        expect(subject.count).to eq(2)
+        expect(subject).to contain_exactly(deployment_1, deployment_2)
+      end
+
+      context 'with limit' do
+        let(:limit) { 1 }
+
+        it 'takes the limit into account' do
+          expect(subject.count).to eq(1)
+          expect(subject.take).to be_in([deployment_1, deployment_2])
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     describe 'last_for_environment' do
       let(:production) { create(:environment) }
@@ -774,6 +811,7 @@ RSpec.describe Deployment do
     it 'schedules workers when finishing a deploy' do
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+      expect(Deployments::ArchiveInProjectWorker).to receive(:perform_async)
       expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(deploy.update_status('success')).to eq(true)

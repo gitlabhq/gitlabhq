@@ -77,7 +77,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
             4 stars
           </li>
         </ul>
-         Once a project is permanently deleted, it 
+         After a project is permanently deleted, it 
         <strong>
           cannot be recovered
         </strong>

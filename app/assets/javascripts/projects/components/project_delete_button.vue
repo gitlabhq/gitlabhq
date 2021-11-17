@@ -42,7 +42,7 @@ export default {
   strings: {
     alertTitle: __('You are about to permanently delete this project'),
     alertBody: __(
-      'Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc.',
+      'After a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc.',
     ),
     isNotForkMessage: __(
       'This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:',

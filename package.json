@@ -109,6 +109,7 @@
     "babel-plugin-lodash": "^3.3.4",
     "bootstrap": "4.5.3",
     "cache-loader": "^4.1.0",
+    "canvas-confetti": "^1.4.0",
     "clipboard": "^1.7.1",
     "codemirror": "^5.48.4",
     "codesandbox-api": "0.0.23",

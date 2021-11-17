@@ -2394,7 +2394,7 @@ msgstr ""
 msgid "AdminDashboard|Error loading the statistics. Please try again"
 msgstr ""
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
+msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
 msgid "AdminProjects|Delete"
@@ -2932,6 +2932,12 @@ msgid "Advanced export options"
 msgstr ""
 
 msgid "AdvancedSearch|Reindex required"
+msgstr ""
+
+msgid "After a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
+msgstr ""
+
+msgid "After a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. You will lose this project's repository and %{strongStart}all related resources%{strongEnd}, including issues and merge requests."
 msgstr ""
 
 msgid "After a successful password update you will be redirected to login screen."
@@ -19003,13 +19009,22 @@ msgstr ""
 msgid "InviteMembersModal|Configure security features"
 msgstr ""
 
+msgid "InviteMembersModal|Congratulations on creating your project, you're almost there!"
+msgstr ""
+
 msgid "InviteMembersModal|Contribute to the codebase"
 msgstr ""
 
 msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
 msgstr ""
 
+msgid "InviteMembersModal|GitLab is better with colleagues!"
+msgstr ""
+
 msgid "InviteMembersModal|GitLab member or email address"
+msgstr ""
+
+msgid "InviteMembersModal|How about inviting a colleague or two to join you?"
 msgstr ""
 
 msgid "InviteMembersModal|Invite"
@@ -24180,12 +24195,6 @@ msgid "OnDemandScans|Use existing site profile"
 msgstr ""
 
 msgid "OnDemandScans|You must create a repository within your project to run an on-demand scan."
-msgstr ""
-
-msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. Permanently deleting this project will %{strongStart}immediately delete%{strongEnd} its repositories and %{strongStart}all related resources%{strongEnd}, including issues, merge requests etc."
-msgstr ""
-
-msgid "Once a project is permanently deleted, it %{strongStart}cannot be recovered%{strongEnd}. You will lose this project's repository and %{strongStart}all related resources%{strongEnd}, including issues and merge requests."
 msgstr ""
 
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_start}here%{link_end}."
