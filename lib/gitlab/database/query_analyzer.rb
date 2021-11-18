@@ -58,6 +58,8 @@ module Gitlab
         return unless parsed
 
         analyzers.each do |analyzer|
+          next if analyzer.suppressed?
+
           analyzer.analyze(parsed)
         rescue StandardError => e
           # We catch all standard errors to prevent validation errors to introduce fatal errors in production

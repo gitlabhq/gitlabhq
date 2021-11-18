@@ -1,0 +1,15 @@
+test-reliability-report:
+  extends:
+    - .qa:rules:reliable-reports:schedule
+  image:
+    name: ${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_DEFAULT_BRANCH}
+    entrypoint: [""]
+  before_script:
+    - cd /home/gitlab/qa
+  script:
+    - echo "Generate report for 'staging-full' runs"
+    - bundle exec rake "reliable_spec_report[staging-full,30,true]"
+    - bundle exec rake "unreliable_spec_report[staging-full,30,true]"
+    - echo "Generate report for 'package-and-qa' runs"
+    - bundle exec rake "reliable_spec_report[package-and-qa,30,true]"
+    - bundle exec rake "unreliable_spec_report[package-and-qa,30,true]"

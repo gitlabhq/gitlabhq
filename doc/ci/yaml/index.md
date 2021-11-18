@@ -2953,7 +2953,7 @@ GitLab can display the results of:
 - One or more reports in the merge request [code quality widget](../../user/project/merge_requests/code_quality.md#code-quality-widget).
 - Only one report in:
   - The merge request [diff annotations](../../user/project/merge_requests/code_quality.md#code-quality-in-diff-view).
-    Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/271077).
+    Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328257).
   - The [full report](../metrics_reports.md). Track progress on adding support for multiple reports in
     [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
 

@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
   before do
     allow(described_class.instance).to receive(:all_analyzers).and_return([analyzer, disabled_analyzer])
     allow(analyzer).to receive(:enabled?).and_return(true)
+    allow(analyzer).to receive(:suppressed?).and_return(false)
     allow(analyzer).to receive(:begin!)
     allow(analyzer).to receive(:end!)
     allow(disabled_analyzer).to receive(:enabled?).and_return(false)
@@ -121,6 +122,13 @@ RSpec.describe Gitlab::Database::QueryAnalyzer, query_analyzers: false do
     it 'does call analyze only on enabled initializers' do
       expect(analyzer).to receive(:analyze)
       expect(disabled_analyzer).not_to receive(:analyze)
+
+      expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
+    end
+
+    it 'does not call analyze on suppressed analyzers' do
+      expect(analyzer).to receive(:suppressed?).and_return(true)
+      expect(analyzer).not_to receive(:analyze)
 
       expect { process_sql("SELECT 1 FROM projects") }.not_to raise_error
     end

@@ -418,20 +418,22 @@ connect to your project's feature flags, run the following command:
 
 ```shell
 docker run \
-  -e UNLEASH_PROXY_SECRET=<secret> \
-  -e UNLEASH_PROXY_URL=<project feature flags URL> \
-  -e UNLEASH_PROXY_INSTANCE_ID=<project feature flags instance ID> \
-  -e UNLEASH_PROXY_APP_NAME=<project environment> \
-  -e UNLEASH_PROXY_API_TOKEN=<token>
+  -e UNLEASH_PROXY_SECRETS=<secret> \
+  -e UNLEASH_URL=<project feature flags URL> \
+  -e UNLEASH_INSTANCE_ID=<project feature flags instance ID> \
+  -e UNLEASH_APP_NAME=<project environment> \
+  -e UNLEASH_API_TOKEN=<tokenNotUsed> \
+  -p 3000:3000 \
+  unleashorg/unleash-proxy
 ```
 
 | Variable                    | Value                                                                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `UNLEASH_PROXY_SECRET`      | Shared secret used to configure an [Unleash Proxy client](https://docs.getunleash.io/sdks/unleash-proxy#how-to-connect-to-the-proxy). |
-| `UNLEASH_PROXY_URL`         | Your project's API URL. For more details, read [Get access credentials](#get-access-credentials). |
-| `UNLEASH_PROXY_INSTANCE_ID` | Your project's Instance ID. For more details, read [Get access credentials](#get-access-credentials). |
-| `UNLEASH_PROXY_APP_NAME`    | The name of the environment the application runs in. For more details, read [Get access credentials](#get-access-credentials). |
-| `UNLEASH_PROXY_API_TOKEN`   | Required to start the Unleash Proxy, but not used to connect to GitLab. Can be set to any value. |
+| `UNLEASH_PROXY_SECRETS`      | Shared secret used to configure an [Unleash Proxy client](https://docs.getunleash.io/sdks/unleash-proxy#how-to-connect-to-the-proxy). |
+| `UNLEASH_URL`         | Your project's API URL. For more details, read [Get access credentials](#get-access-credentials). |
+| `UNLEASH_INSTANCE_ID` | Your project's Instance ID. For more details, read [Get access credentials](#get-access-credentials). |
+| `UNLEASH_APP_NAME`    | The name of the environment the application runs in. For more details, read [Get access credentials](#get-access-credentials). |
+| `UNLEASH_API_TOKEN`   | Required to start the Unleash Proxy, but not used to connect to GitLab. Can be set to any value. |
 
 ## Feature Flag Related Issues **(PREMIUM)**
 

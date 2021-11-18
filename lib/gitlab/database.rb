@@ -168,18 +168,6 @@ module Gitlab
       yield
     end
 
-    # This method will allow cross database modifications within the block
-    # Example:
-    #
-    # allow_cross_database_modification_within_transaction(url: 'url-to-an-issue') do
-    #   create(:build) # inserts ci_build and project record in one transaction
-    # end
-    def self.allow_cross_database_modification_within_transaction(url:)
-      # this method will be overridden in:
-      # spec/support/database/cross_database_modification_check.rb
-      yield
-    end
-
     def self.add_post_migrate_path_to_rails(force: false)
       return if ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'] && !force
 
