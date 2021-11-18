@@ -1,5 +1,7 @@
 <script>
 import { GlLink, GlIcon } from '@gitlab/ui';
+import { isExperimentVariant } from '~/experimentation/utils';
+import eventHub from '~/invite_members/event_hub';
 import { s__ } from '~/locale';
 import { ACTION_LABELS } from '../constants';
 
@@ -24,6 +26,20 @@ export default {
     trialOnly() {
       return ACTION_LABELS[this.action].trialRequired;
     },
+    showInviteModalLink() {
+      return (
+        this.action === 'userAdded' && isExperimentVariant('invite_for_help_continuous_onboarding')
+      );
+    },
+  },
+  methods: {
+    openModal() {
+      eventHub.$emit('openModal', {
+        inviteeType: 'members',
+        source: 'learn_gitlab',
+        tasksToBeDoneEnabled: true,
+      });
+    },
   },
 };
 </script>
@@ -33,18 +49,27 @@ export default {
       <gl-icon name="check-circle-filled" :size="16" data-testid="completed-icon" />
       {{ $options.i18n.ACTION_LABELS[action].title }}
     </span>
-    <span v-else>
-      <gl-link
-        target="_blank"
-        :href="value.url"
-        data-track-action="click_link"
-        :data-track-label="$options.i18n.ACTION_LABELS[action].title"
-        data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-        data-track-experiment="change_continuous_onboarding_link_urls"
-      >
-        {{ $options.i18n.ACTION_LABELS[action].title }}
-      </gl-link>
-    </span>
+    <gl-link
+      v-else-if="showInviteModalLink"
+      data-track-action="click_link"
+      :data-track-label="$options.i18n.ACTION_LABELS[action].title"
+      data-track-property="Growth::Activation::Experiment::InviteForHelpContinuousOnboarding"
+      data-testid="invite-for-help-continuous-onboarding-experiment-link"
+      @click="openModal"
+    >
+      {{ $options.i18n.ACTION_LABELS[action].title }}
+    </gl-link>
+    <gl-link
+      v-else
+      target="_blank"
+      :href="value.url"
+      data-track-action="click_link"
+      :data-track-label="$options.i18n.ACTION_LABELS[action].title"
+      data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+      data-track-experiment="change_continuous_onboarding_link_urls"
+    >
+      {{ $options.i18n.ACTION_LABELS[action].title }}
+    </gl-link>
     <span v-if="trialOnly" class="gl-font-style-italic gl-text-gray-500" data-testid="trial-only">
       - {{ $options.i18n.trialOnly }}
     </span>

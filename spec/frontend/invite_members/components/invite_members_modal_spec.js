@@ -28,6 +28,7 @@ import {
   MEMBERS_MODAL_DEFAULT_TITLE,
   MEMBERS_PLACEHOLDER,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
+  LEARN_GITLAB,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import axios from '~/lib/utils/axios_utils';
@@ -268,6 +269,14 @@ describe('InviteMembersModal', () => {
 
         expect(findTasksToBeDone().exists()).toBe(false);
       });
+
+      describe('when opened from the Learn GitLab page', () => {
+        it('does render the tasks to be done', () => {
+          setupComponent({ source: LEARN_GITLAB }, {}, []);
+
+          expect(findTasksToBeDone().exists()).toBe(true);
+        });
+      });
     });
 
     describe('rendering the tasks', () => {
@@ -465,7 +474,6 @@ describe('InviteMembersModal', () => {
 
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
-          jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
         });
 
         it('includes the non-default selected areas of focus', () => {
@@ -492,7 +500,23 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+              onComplete: expect.any(Function),
+            });
+          });
+        });
+
+        describe('when opened from a Learn GitLab page', () => {
+          it('emits the `showSuccessfulInvitationsAlert` event', async () => {
+            eventHub.$emit('openModal', { inviteeType: 'members', source: LEARN_GITLAB });
+
+            jest.spyOn(eventHub, '$emit').mockImplementation();
+
+            clickInviteButton();
+
+            await waitForPromises();
+
+            expect(eventHub.$emit).toHaveBeenCalledWith('showSuccessfulInvitationsAlert');
           });
         });
       });
@@ -649,7 +673,6 @@ describe('InviteMembersModal', () => {
 
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
-          jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
         });
 
         it('includes the non-default selected areas of focus', () => {
@@ -672,7 +695,9 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+              onComplete: expect.any(Function),
+            });
           });
         });
       });
@@ -711,13 +736,14 @@ describe('InviteMembersModal', () => {
         it('displays the successful toast message when email has already been invited', async () => {
           mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_TAKEN);
           wrapper.vm.$toast = { show: jest.fn() };
-          jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
 
           clickInviteButton();
 
           await waitForPromises();
 
-          expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+            onComplete: expect.any(Function),
+          });
           expect(findMembersSelect().props('validationState')).toBe(null);
         });
 
@@ -782,7 +808,6 @@ describe('InviteMembersModal', () => {
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
-          jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
           jest.spyOn(wrapper.vm, 'trackInvite');
         });
 
@@ -800,7 +825,9 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+            expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+              onComplete: expect.any(Function),
+            });
           });
         });
 
@@ -855,7 +882,6 @@ describe('InviteMembersModal', () => {
           wrapper.setData({ inviteeType: 'group' });
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'groupShareWithGroup').mockResolvedValue({ data: groupPostData });
-          jest.spyOn(wrapper.vm, 'showToastMessageSuccess');
 
           clickInviteButton();
         });
@@ -865,7 +891,9 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the successful toastMessage', () => {
-          expect(wrapper.vm.showToastMessageSuccess).toHaveBeenCalled();
+          expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added', {
+            onComplete: expect.any(Function),
+          });
         });
       });
 
@@ -928,6 +956,13 @@ describe('InviteMembersModal', () => {
 
         expect(ExperimentTracking).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.name);
         expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.view);
+      });
+
+      it('tracks the view for learn_gitlab source', () => {
+        eventHub.$emit('openModal', { inviteeType: 'members', source: LEARN_GITLAB });
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(LEARN_GITLAB);
       });
 
       it('tracks the invite for areas_of_focus', () => {

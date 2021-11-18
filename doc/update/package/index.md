@@ -188,7 +188,7 @@ For the GitLab Community Edition, replace `gitlab-ee` with
 
 ### GitLab 13.7 and later unavailable on Amazon Linux 2
 
-Amazon Linux 2 is not an [officially supported operating system](../../administration/package_information/deprecated_os.md#supported-operating-systems).
+Amazon Linux 2 is not an [officially supported operating system](../../administration/package_information/supported_os.md).
 However, in past the [official package installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)
 installed the `el/6` package repository if run on Amazon Linux. From GitLab 13.7, we no longer
 provide `el/6` packages so administrators must run the [installation script](https://packages.gitlab.com/gitlab/gitlab-ee/install)

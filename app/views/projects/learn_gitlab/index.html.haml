@@ -4,9 +4,10 @@
 - data = learn_gitlab_data(@project)
 - invite_members_open = session.delete(:confetti_post_signup)
 
+= render 'projects/invite_members_modal', project: @project
+
 - experiment(:confetti_post_signup, actor: current_user) do |e|
   - e.control do
     #js-learn-gitlab-app{ data: data }
   - e.candidate do
-    = render 'projects/invite_members_modal', project: @project
     #js-learn-gitlab-app{ data: data.merge(invite_members_open: invite_members_open) }

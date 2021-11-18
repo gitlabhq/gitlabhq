@@ -30,7 +30,7 @@ export function getAllExperimentContexts() {
   return Object.values(getExperimentsData()).map(createGitlabExperimentContext);
 }
 
-export function isExperimentVariant(experimentName, variantName) {
+export function isExperimentVariant(experimentName, variantName = CANDIDATE_VARIANT) {
   return getExperimentData(experimentName)?.variant === variantName;
 }
 

@@ -35,7 +35,7 @@ For the installation options, see [the main installation page](index.md).
 Installation of GitLab on these operating systems is possible, but not supported.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/install/) for more information.
 
-Please see [OS versions that are no longer supported](../administration/package_information/deprecated_os.md) for Omnibus installs page
+Please see [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) for Omnibus installs page
 for a list of supported and unsupported OS versions as well as the last support GitLab version for that OS.
 
 ### Microsoft Windows

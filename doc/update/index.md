@@ -82,12 +82,17 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 ## Checking for background migrations before upgrading
 
 Certain releases may require different migrations to be
-finished before you update to the newer version. Additionally check
-[batched migrations](#batched-background-migrations) from GitLab 14.0.
+finished before you update to the newer version. 
+
+[Batched migrations](#batched-background-migrations) are a migration type available in GitLab 14.0 and later.
+Background migrations and batched migrations not the same, so you should check that both are 
+complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of
 [Sidekiq workers](../administration/operations/extra_sidekiq_processes.md)
 that can process jobs in the `background_migration` queue.
+
+### Background migrations
 
 **For Omnibus installations:**
 

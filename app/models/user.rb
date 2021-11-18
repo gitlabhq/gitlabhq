@@ -1614,8 +1614,14 @@ class User < ApplicationRecord
         .joins(:runner)
         .select('ci_runners.*')
 
+      base_and_descendants = if Feature.enabled?(:linear_user_ci_owned_runners, self, default_enabled: :yaml)
+                               owned_groups.self_and_descendant_ids
+                             else
+                               Gitlab::ObjectHierarchy.new(owned_groups).base_and_descendants.select(:id)
+                             end
+
       group_runners = Ci::RunnerNamespace
-        .where(namespace_id: Gitlab::ObjectHierarchy.new(owned_groups).base_and_descendants.select(:id))
+        .where(namespace_id: base_and_descendants)
         .joins(:runner)
         .select('ci_runners.*')
 

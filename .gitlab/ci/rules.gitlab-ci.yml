@@ -766,11 +766,6 @@
       changes: *feature-flag-development-config-patterns
       allow_failure: true
 
-.qa:rules:reliable-reports:schedule:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $QA_RELIABLE_REPORT == "true"'
-      allow_failure: true
-
 ###############
 # Rails rules #
 ###############

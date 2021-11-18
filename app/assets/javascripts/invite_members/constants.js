@@ -144,3 +144,5 @@ export const MODAL_LABELS = {
   headerCloseLabel: HEADER_CLOSE_LABEL,
   areasOfFocusLabel: AREAS_OF_FOCUS_LABEL,
 };
+
+export const LEARN_GITLAB = 'learn_gitlab';

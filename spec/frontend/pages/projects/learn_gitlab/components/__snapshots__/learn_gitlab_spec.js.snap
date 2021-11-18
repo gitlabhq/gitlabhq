@@ -2,6 +2,8 @@
 
 exports[`Learn GitLab renders correctly 1`] = `
 <div>
+  <!---->
+   
   <div
     class="row"
   >
@@ -131,66 +133,60 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Set up CI/CD"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Set up CI/CD
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Set up CI/CD"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Set up CI/CD
+  
+            </a>
              
             <!---->
           </div>
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Start a free Ultimate trial"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Start a free Ultimate trial
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Start a free Ultimate trial"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Start a free Ultimate trial
+  
+            </a>
              
             <!---->
           </div>
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Add code owners"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Add code owners
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Add code owners"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Add code owners
+  
+            </a>
              
             <span
               class="gl-font-style-italic gl-text-gray-500"
@@ -204,22 +200,20 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Add merge request approval"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Add merge request approval
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Add merge request approval"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Add merge request approval
+  
+            </a>
              
             <span
               class="gl-font-style-italic gl-text-gray-500"
@@ -269,44 +263,40 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Create an issue"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Create an issue
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Create an issue"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Create an issue
+  
+            </a>
              
             <!---->
           </div>
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Submit a merge request"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Submit a merge request
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Submit a merge request"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Submit a merge request
+  
+            </a>
              
             <!---->
           </div>
@@ -349,22 +339,20 @@ exports[`Learn GitLab renders correctly 1`] = `
           <div
             class="gl-mb-4"
           >
-            <span>
-              <a
-                class="gl-link"
-                data-track-action="click_link"
-                data-track-experiment="change_continuous_onboarding_link_urls"
-                data-track-label="Run a Security scan using CI/CD"
-                data-track-property="Growth::Conversion::Experiment::LearnGitLab"
-                href="http://example.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                
-      Run a Security scan using CI/CD
-    
-              </a>
-            </span>
+            <a
+              class="gl-link"
+              data-track-action="click_link"
+              data-track-experiment="change_continuous_onboarding_link_urls"
+              data-track-label="Run a Security scan using CI/CD"
+              data-track-property="Growth::Conversion::Experiment::LearnGitLab"
+              href="http://example.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              
+    Run a Security scan using CI/CD
+  
+            </a>
              
             <!---->
           </div>

@@ -57,3 +57,7 @@ export const testSections = {
     svg: 'plan.svg',
   },
 };
+
+export const testProject = {
+  name: 'test-project',
+};

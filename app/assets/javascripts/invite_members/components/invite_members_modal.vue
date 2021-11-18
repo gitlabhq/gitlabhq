@@ -26,6 +26,7 @@ import {
   MEMBER_AREAS_OF_FOCUS,
   INVITE_MEMBERS_FOR_TASK,
   MODAL_LABELS,
+  LEARN_GITLAB,
 } from '../constants';
 import eventHub from '../event_hub';
 import {
@@ -200,7 +201,8 @@ export default {
     },
     tasksToBeDoneEnabled() {
       return (
-        getParameterValues('open_modal')[0] === 'invite_members_for_task' &&
+        (getParameterValues('open_modal')[0] === 'invite_members_for_task' ||
+          this.isOnLearnGitlab) &&
         this.tasksToBeDoneOptions.length
       );
     },
@@ -221,11 +223,18 @@ export default {
         ? this.selectedTaskProject.id
         : '';
     },
+    isOnLearnGitlab() {
+      return this.source === LEARN_GITLAB;
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
-      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
+      if (this.isOnLearnGitlab) {
+        this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, this.source);
+      } else {
+        this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
+      }
     });
 
     if (this.tasksToBeDoneEnabled) {
@@ -303,7 +312,7 @@ export default {
         : Api.groupShareWithGroup.bind(Api);
 
       apiShareWithGroup(this.id, this.shareWithGroupPostData(this.groupToBeSharedWith.id))
-        .then(this.showToastMessageSuccess)
+        .then(this.showSuccessMessage)
         .catch(this.showInvalidFeedbackMessage);
     },
     submitInviteMembers() {
@@ -332,7 +341,7 @@ export default {
       this.trackinviteMembersForTask();
 
       Promise.all(promises)
-        .then(this.conditionallyShowToastSuccess)
+        .then(this.conditionallyShowSuccessMessage)
         .catch(this.showInvalidFeedbackMessage);
     },
     inviteByEmailPostData(usersToInviteByEmail) {
@@ -364,11 +373,11 @@ export default {
         group_access: this.selectedAccessLevel,
       };
     },
-    conditionallyShowToastSuccess(response) {
+    conditionallyShowSuccessMessage(response) {
       const message = this.unescapeMsg(responseMessageFromSuccess(response));
 
       if (message === '') {
-        this.showToastMessageSuccess();
+        this.showSuccessMessage();
 
         return;
       }
@@ -376,8 +385,12 @@ export default {
       this.invalidFeedbackMessage = message;
       this.isLoading = false;
     },
-    showToastMessageSuccess() {
-      this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
+    showSuccessMessage() {
+      if (this.isOnLearnGitlab) {
+        eventHub.$emit('showSuccessfulInvitationsAlert');
+      } else {
+        this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);
+      }
       this.closeModal();
     },
     showInvalidFeedbackMessage(response) {

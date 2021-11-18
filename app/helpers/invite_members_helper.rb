@@ -42,7 +42,7 @@ module InviteMembersHelper
       e.candidate { dataset.merge!(areas_of_focus_options: member_areas_of_focus_options.to_json, no_selection_areas_of_focus: ['no_selection']) }
     end
 
-    if show_invite_members_for_task?
+    if show_invite_members_for_task?(source)
       dataset.merge!(
         tasks_to_be_done_options: tasks_to_be_done_options.to_json,
         projects: projects_for_source(source).to_json,
@@ -80,10 +80,12 @@ module InviteMembersHelper
     {}
   end
 
-  def show_invite_members_for_task?
-    return unless current_user && experiment(:invite_members_for_task).enabled?
+  def show_invite_members_for_task?(source)
+    return unless current_user
 
-    params[:open_modal] == 'invite_members_for_task'
+    invite_members_for_task_experiment = experiment(:invite_members_for_task).enabled? && params[:open_modal] == 'invite_members_for_task'
+    invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).variant.name == 'candidate'
+    invite_members_for_task_experiment || invite_for_help_continuous_onboarding
   end
 
   def tasks_to_be_done_options

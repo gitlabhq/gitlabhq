@@ -99,12 +99,13 @@ describe('experiment Utilities', () => {
 
   describe('isExperimentVariant', () => {
     describe.each`
-      experiment   | variant            | input                            | output
-      ${ABC_KEY}   | ${DEFAULT_VARIANT} | ${[ABC_KEY, DEFAULT_VARIANT]}    | ${true}
-      ${ABC_KEY}   | ${'_variant_name'} | ${[ABC_KEY, '_variant_name']}    | ${true}
-      ${ABC_KEY}   | ${'_variant_name'} | ${[ABC_KEY, '_bogus_name']}      | ${false}
-      ${ABC_KEY}   | ${'_variant_name'} | ${['boguskey', '_variant_name']} | ${false}
-      ${undefined} | ${undefined}       | ${[ABC_KEY, '_variant_name']}    | ${false}
+      experiment   | variant              | input                            | output
+      ${ABC_KEY}   | ${CANDIDATE_VARIANT} | ${[ABC_KEY]}                     | ${true}
+      ${ABC_KEY}   | ${DEFAULT_VARIANT}   | ${[ABC_KEY, DEFAULT_VARIANT]}    | ${true}
+      ${ABC_KEY}   | ${'_variant_name'}   | ${[ABC_KEY, '_variant_name']}    | ${true}
+      ${ABC_KEY}   | ${'_variant_name'}   | ${[ABC_KEY, '_bogus_name']}      | ${false}
+      ${ABC_KEY}   | ${'_variant_name'}   | ${['boguskey', '_variant_name']} | ${false}
+      ${undefined} | ${undefined}         | ${[ABC_KEY, '_variant_name']}    | ${false}
     `(
       'with input=$input, experiment=$experiment, variant=$variant',
       ({ experiment, variant, input, output }) => {

@@ -24,6 +24,16 @@ RSpec.describe Groups::CreateService, '#execute' do
     end
   end
 
+  context 'when `setup_for_company:true` is passed' do
+    let(:params) { group_params.merge(setup_for_company: true) }
+    let(:service) { described_class.new(user, params) }
+    let(:created_group) { service.execute }
+
+    it 'creates group with the specified setup_for_company' do
+      expect(created_group.setup_for_company).to eq(true)
+    end
+  end
+
   context 'creating a group with `default_branch_protection` attribute' do
     let(:params) { group_params.merge(default_branch_protection: Gitlab::Access::PROTECTION_NONE) }
     let(:service) { described_class.new(user, params) }

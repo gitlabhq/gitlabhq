@@ -199,7 +199,7 @@ module QA
           Page::Project::Artifact::Show.perform do |artifacts|
             artifacts.go_to_directory('node_modules')
             artifacts.go_to_directory("@#{registry_scope}")
-            expect(artifacts).to have_content( "#{project.name}")
+            expect(artifacts).to have_content("#{project.name}")
           end
 
           project.visit!

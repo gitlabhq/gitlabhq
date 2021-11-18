@@ -91,7 +91,7 @@ module QA
           file_path: 'package.json',
           content: <<~JSON
             {
-              "name": "@#{registry_scope}/mypackage",
+              "name": "#{package.name}",
               "version": "1.0.0",
               "description": "Example package for GitLab npm registry",
               "publishConfig": {
@@ -133,7 +133,7 @@ module QA
           end
         end
 
-        it "push and pull a npm package via CI using a #{params[:token_name]}", quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344537', type: :investigating } do
+        it "push and pull a npm package via CI using a #{params[:token_name]}" do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project
             commit.commit_message = 'Add .gitlab-ci.yml'
@@ -168,7 +168,7 @@ module QA
           Page::Project::Artifact::Show.perform do |artifacts|
             artifacts.go_to_directory('node_modules')
             artifacts.go_to_directory("@#{registry_scope}")
-            expect(artifacts).to have_content("mypackage")
+            expect(artifacts).to have_content('mypackage')
           end
 
           project.visit!

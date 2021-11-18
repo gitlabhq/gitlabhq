@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::ExceptionLogger do
-  let(:mock_request) { OpenStruct.new(env: {}) }
+  let(:mock_request) { double('env', env: {}) }
   let(:response_body) { nil }
 
   describe ".parameters" do
@@ -76,7 +76,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::ExceptionLogger do
     describe 'when an exception is available' do
       let(:exception) { RuntimeError.new('This is a test') }
       let(:mock_request) do
-        OpenStruct.new(
+        double('env',
           env: {
             ::API::Helpers::API_EXCEPTION_ENV => exception
           }

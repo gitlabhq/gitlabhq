@@ -11,12 +11,12 @@ RSpec.describe API::ImportGithub do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:provider_username) { user.username }
-    let(:provider_user) { OpenStruct.new(login: provider_username) }
+    let(:provider_user) { double('provider', login: provider_username) }
     let(:provider_repo) do
-      OpenStruct.new(
+      double('provider',
         name: 'vim',
         full_name: "#{provider_username}/vim",
-        owner: OpenStruct.new(login: provider_username)
+        owner: double('provider', login: provider_username)
       )
     end
 

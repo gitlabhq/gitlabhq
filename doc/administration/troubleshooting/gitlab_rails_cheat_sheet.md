@@ -618,7 +618,7 @@ users.count
 # If that count looks sane:
 
 # You can either block the users:
-users.each { |user| user.block! }
+users.each { |user|  user.blocked? ? nil  : user.block! }
 
 # Or you can delete them:
   # need 'current user' (your user) for auditing purposes

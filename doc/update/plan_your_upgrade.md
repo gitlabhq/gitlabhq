@@ -18,7 +18,7 @@ General notes:
   to create your plan, share details of your architecture, including:
   - How is GitLab installed?
   - What is the operating system of the node?
-    (check [OS versions that are no longer supported](../administration/package_information/deprecated_os.md) to confirm that later updates are available).
+    (check [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported) to confirm that later updates are available).
   - Is it a single-node or a multi-node setup? If multi-node, share any architectural details about each node with us.
   - Are you using [GitLab Geo](../administration/geo/index.md)? If so, share any architectural details about each secondary node.
   - What else might be unique or interesting in your setup that might be important for us to understand?
@@ -112,7 +112,7 @@ to your instance and then upgrade it for any relevant features you're using.
   - [Determine what upgrade path](index.md#upgrade-paths) to follow.
   - Account for any [version-specific update instructions](index.md#version-specific-upgrading-instructions).
   - Account for any [version-specific changes](package/index.md#version-specific-changes).
-  - Check the [OS compatibility with the target GitLab version](../administration/package_information/deprecated_os.md).
+  - Check the [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 - Due to background migrations, plan to pause any further upgrades after upgrading
   to a new major version.
   [All migrations must finish running](index.md#checking-for-background-migrations-before-upgrading)

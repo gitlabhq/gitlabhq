@@ -1,0 +1,8 @@
+---
+name: linear_user_ci_owned_runners
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68848
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339435
+milestone: '14.6'
+type: development
+group: group::access
+default_enabled: false

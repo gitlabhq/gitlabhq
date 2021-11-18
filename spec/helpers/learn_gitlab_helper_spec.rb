@@ -60,6 +60,7 @@ RSpec.describe LearnGitlabHelper do
 
     let(:onboarding_actions_data) { Gitlab::Json.parse(learn_gitlab_data[:actions]).deep_symbolize_keys }
     let(:onboarding_sections_data) { Gitlab::Json.parse(learn_gitlab_data[:sections]).deep_symbolize_keys }
+    let(:onboarding_project_data) { Gitlab::Json.parse(learn_gitlab_data[:project]).deep_symbolize_keys }
 
     shared_examples 'has all data' do
       it 'has all actions' do
@@ -81,6 +82,11 @@ RSpec.describe LearnGitlabHelper do
       it 'has all section data', :aggregate_failures do
         expect(onboarding_sections_data.keys).to contain_exactly(:deploy, :plan, :workspace)
         expect(onboarding_sections_data.values.map { |section| section.keys }).to match_array([[:svg]] * 3)
+      end
+
+      it 'has all project data', :aggregate_failures do
+        expect(onboarding_project_data.keys).to contain_exactly(:name)
+        expect(onboarding_project_data.values).to match_array([project.name])
       end
     end
 

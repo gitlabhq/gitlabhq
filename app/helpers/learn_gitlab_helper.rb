@@ -10,7 +10,8 @@ module LearnGitlabHelper
   def learn_gitlab_data(project)
     {
       actions: onboarding_actions_data(project).to_json,
-      sections: onboarding_sections_data.to_json
+      sections: onboarding_sections_data.to_json,
+      project: onboarding_project_data(project).to_json
     }
   end
 
@@ -54,6 +55,10 @@ module LearnGitlabHelper
         svg: image_path("learn_gitlab/section_deploy.svg")
       }
     }
+  end
+
+  def onboarding_project_data(project)
+    { name: project.name }
   end
 
   def action_urls
