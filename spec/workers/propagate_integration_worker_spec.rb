@@ -18,7 +18,7 @@ RSpec.describe PropagateIntegrationWorker do
     end
 
     it 'calls the propagate service with the integration' do
-      expect(Admin::PropagateIntegrationService).to receive(:propagate).with(integration)
+      expect(Integrations::PropagateService).to receive(:propagate).with(integration)
 
       subject.perform(integration.id)
     end

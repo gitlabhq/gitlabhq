@@ -46,8 +46,8 @@ RSpec.describe 'Merge request > User sees draft help message' do
           'It looks like you have some draft commits in this branch'
         )
         expect(page).to have_text(
-          "Start the title with Draft: to prevent a merge request that is a \
-work in progress from being merged before it's ready."
+          "Start the title with Draft: to prevent a merge request draft \
+from merging before it's ready."
         )
       end
     end

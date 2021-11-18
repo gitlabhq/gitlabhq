@@ -16,7 +16,7 @@ class PropagateServiceTemplateWorker # rubocop:disable Scalability/IdempotentWor
   def perform(template_id)
     return unless try_obtain_lease_for(template_id)
 
-    Admin::PropagateServiceTemplate.propagate(Integration.find_by_id(template_id))
+    ::Integrations::PropagateTemplateService.propagate(Integration.find_by_id(template_id))
   end
 
   private

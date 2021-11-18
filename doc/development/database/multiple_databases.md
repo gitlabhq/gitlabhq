@@ -557,6 +557,22 @@ Don't hesitate to reach out to the
 [sharding group](https://about.gitlab.com/handbook/engineering/development/enablement/sharding/)
 for advice.
 
+##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases
+
+There may be cases where we want to use `dependent: :nullify` or `dependent: :destroy`
+across databases. This is technically possible, but it's problematic because
+these hooks run in the context of an outer transaction from the call to
+`#destroy`, which creates a cross-database transaction and we are trying to
+avoid that. Cross-database transactions caused this way could lead to confusing
+outcomes when we switch to decomposed, because now you have some queries
+happening outside the transaction and they may be partially applied while the
+outer transaction fails, which could lead to surprising bugs.
+
+If you need to do some cleanup after a `destroy` you will need to choose
+from some of the options above. If all you need to do is cleanup the child
+records themselves from PostgreSQL then you could consider using ["loose foreign
+keys"](loose_foreign_keys.md).
+
 ## `config/database.yml`
 
 GitLab will support running multiple databases in the future, for example to [separate tables for the continuous integration features](https://gitlab.com/groups/gitlab-org/-/epics/6167) from the main database. In order to prepare for this change, we [validate the structure of the configuration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67877) in `database.yml` to ensure that only known databases are used.
@@ -603,3 +619,15 @@ production:
     database: gitlabhq_production_ci
     ...
 ```
+
+## Foreign keys that cross databases
+
+There are many places where we use foreign keys that reference across the two
+databases. This is not possible to do with two separate PostgreSQL
+databases, so we need to replicate the behavior we get from PostgreSQL in a
+performant way. We can't, and shouldn't, try to replicate the data guarantees
+given by PostgreSQL which prevent creating invalid references, but we still need a
+way to replace cascading deletes so we don't end up with orphaned data
+or records that point to nowhere, which might lead to bugs. As such we created
+["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
+process of cleaning up orphaned records.

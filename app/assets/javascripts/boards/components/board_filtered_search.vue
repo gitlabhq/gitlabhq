@@ -39,6 +39,7 @@ export default {
         assigneeUsername,
         search,
         milestoneTitle,
+        iterationId,
         types,
         weight,
         epicId,
@@ -83,6 +84,13 @@ export default {
         });
       }
 
+      if (iterationId) {
+        filteredSearchValue.push({
+          type: 'iteration',
+          value: { data: iterationId, operator: '=' },
+        });
+      }
+
       if (weight) {
         filteredSearchValue.push({
           type: 'weight',
@@ -115,6 +123,13 @@ export default {
         filteredSearchValue.push({
           type: 'milestone_title',
           value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[iteration_id]']) {
+        filteredSearchValue.push({
+          type: 'iteration_id',
+          value: { data: this.filterParams['not[iteration_id]'], operator: '!=' },
         });
       }
 
@@ -179,8 +194,8 @@ export default {
         weight,
         epicId,
         myReactionEmoji,
+        iterationId,
       } = this.filterParams;
-
       let notParams = {};
 
       if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
@@ -194,6 +209,7 @@ export default {
             'not[weight]': this.filterParams.not.weight,
             'not[epic_id]': this.filterParams.not.epicId,
             'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
+            'not[iteration_id]': this.filterParams.not.iterationId,
           },
           undefined,
         );
@@ -205,6 +221,7 @@ export default {
         'label_name[]': labelName,
         assignee_username: assigneeUsername,
         milestone_title: milestoneTitle,
+        iteration_id: iterationId,
         search,
         types,
         weight,
@@ -260,6 +277,9 @@ export default {
             break;
           case 'milestone_title':
             filterParams.milestoneTitle = filter.value.data;
+            break;
+          case 'iteration':
+            filterParams.iterationId = filter.value.data;
             break;
           case 'weight':
             filterParams.weight = filter.value.data;

@@ -373,7 +373,6 @@ export default {
     commit(types.REQUEST_ITEMS_FOR_LIST, { listId, fetchNext });
 
     const { fullPath, fullBoardId, boardType, filterParams } = state;
-
     const variables = {
       fullPath,
       boardId: fullBoardId,

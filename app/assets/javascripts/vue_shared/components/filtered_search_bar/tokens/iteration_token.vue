@@ -1,7 +1,6 @@
 <script>
 import { GlDropdownDivider, GlDropdownSectionHeader, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -43,7 +42,7 @@ export default {
   },
   methods: {
     getActiveIteration(iterations, data) {
-      return iterations.find((iteration) => this.getValue(iteration) === data);
+      return iterations.find((iteration) => iteration.id === data);
     },
     groupIterationsByCadence(iterations) {
       const cadences = [];
@@ -79,9 +78,6 @@ export default {
         .finally(() => {
           this.loading = false;
         });
-    },
-    getValue(iteration) {
-      return String(getIdFromGraphQLId(iteration.id));
     },
     /**
      * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
@@ -125,7 +121,7 @@ export default {
         <gl-filtered-search-suggestion
           v-for="iteration in cadence.iterations"
           :key="iteration.id"
-          :value="getValue(iteration)"
+          :value="iteration.id"
         >
           {{ iteration.title }}
           <div v-if="glFeatures.iterationCadences" class="gl-text-gray-400">

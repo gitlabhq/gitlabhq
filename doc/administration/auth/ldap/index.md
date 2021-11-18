@@ -52,7 +52,8 @@ Users are considered inactive in LDAP when they:
 
 Status is checked for all LDAP users:
 
-- When signing in using any authentication provider.
+- When signing in using any authentication provider. [In GitLab 14.4 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/343298), status was
+  checked only when signing in using LDAP directly.
 - Once per hour for active web sessions or Git requests using tokens or SSH keys.
 - When performing Git over HTTP requests using LDAP username and password.
 - Once per day during [User Sync](ldap_synchronization.md#user-sync).

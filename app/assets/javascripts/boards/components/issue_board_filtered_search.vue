@@ -12,6 +12,7 @@ import { __ } from '~/locale';
 import {
   DEFAULT_MILESTONES_GRAPHQL,
   TOKEN_TITLE_MY_REACTION,
+  OPERATOR_IS_AND_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -35,8 +36,6 @@ export default {
     issue: __('Issue'),
     milestone: __('Milestone'),
     weight: __('Weight'),
-    is: __('is'),
-    isNot: __('is not'),
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn'],
@@ -62,8 +61,6 @@ export default {
     tokensCE() {
       const {
         label,
-        is,
-        isNot,
         author,
         assignee,
         issue,
@@ -84,10 +81,7 @@ export default {
           icon: 'user',
           title: assignee,
           type: 'assignee_username',
-          operators: [
-            { value: '=', description: is },
-            { value: '!=', description: isNot },
-          ],
+          operators: OPERATOR_IS_AND_IS_NOT,
           token: AuthorToken,
           unique: true,
           fetchAuthors,
@@ -97,10 +91,7 @@ export default {
           icon: 'pencil',
           title: author,
           type: 'author_username',
-          operators: [
-            { value: '=', description: is },
-            { value: '!=', description: isNot },
-          ],
+          operators: OPERATOR_IS_AND_IS_NOT,
           symbol: '@',
           token: AuthorToken,
           unique: true,
@@ -111,10 +102,7 @@ export default {
           icon: 'labels',
           title: label,
           type: 'label_name',
-          operators: [
-            { value: '=', description: is },
-            { value: '!=', description: isNot },
-          ],
+          operators: OPERATOR_IS_AND_IS_NOT,
           token: LabelToken,
           unique: false,
           symbol: '~',

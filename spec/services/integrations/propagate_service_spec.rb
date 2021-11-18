@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::PropagateIntegrationService do
+RSpec.describe Integrations::PropagateService do
   describe '.propagate' do
     include JiraServiceHelper
 

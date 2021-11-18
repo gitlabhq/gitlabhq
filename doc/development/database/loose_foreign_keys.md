@@ -180,3 +180,11 @@ end
 NOTE:
 This example is unlikely in GitLab, because we usually look up the parent models to perform
 permission checks.
+
+## A note on `dependent: :destroy` and `dependent: :nullify`
+
+We considered using these Rails features as an alternative to foreign keys but there are several problems which include:
+
+1. These run on a different connection in the context of a transaction [which we do not allow](multiple_databases.md#removing-cross-database-transactions).
+1. These can lead to severe performance degredation as we load all records from PostgreSQL, loop over them in Ruby, and call individual `DELETE` queries.
+1. These can miss data as they only cover the case when the `destroy` method is called directly on the model. There are other cases including `delete_all` and cascading deletes from another parent table that could mean these are missed.

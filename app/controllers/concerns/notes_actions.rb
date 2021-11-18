@@ -341,3 +341,5 @@ module NotesActions
     noteable.discussions_rendered_on_frontend?
   end
 end
+
+NotesActions.prepend_mod_with('NotesActions')
