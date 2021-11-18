@@ -18,7 +18,7 @@ review-cleanup:
 
 start-review-app-pipeline:
   extends:
-    - .review:rules:review-app-pipeline
+    - .review:rules:start-review-app-pipeline
   stage: review
   needs:
     - job: build-assets-image

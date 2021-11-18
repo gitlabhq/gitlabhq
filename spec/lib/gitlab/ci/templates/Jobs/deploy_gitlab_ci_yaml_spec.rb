@@ -27,9 +27,9 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
   end
 
   describe 'the created pipeline' do
-    let(:project) { create(:project, :repository) }
-    let(:user) { project.owner }
+    let_it_be(:project, refind: true) { create(:project, :repository) }
 
+    let(:user) { project.owner }
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
@@ -43,23 +43,23 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 
-    context 'with no cluster' do
+    context 'with no cluster or agent' do
       it 'does not create any kubernetes deployment jobs' do
         expect(build_names).to eq %w(placeholder)
       end
     end
 
     context 'with only a disabled cluster' do
-      let!(:cluster) { create(:cluster, :project, :provided_by_gcp, enabled: false, projects: [project]) }
+      before do
+        create(:cluster, :project, :provided_by_gcp, enabled: false, projects: [project])
+      end
 
       it 'does not create any kubernetes deployment jobs' do
         expect(build_names).to eq %w(placeholder)
       end
     end
 
-    context 'with an active cluster' do
-      let!(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
-
+    shared_examples_for 'pipeline with deployment jobs' do
       context 'on master' do
         it 'by default' do
           expect(build_names).to include('production')
@@ -217,6 +217,22 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
           expect(build_names).to be_empty
         end
       end
+    end
+
+    context 'with an agent' do
+      before do
+        create(:cluster_agent, project: project)
+      end
+
+      it_behaves_like 'pipeline with deployment jobs'
+    end
+
+    context 'with a cluster' do
+      before do
+        create(:cluster, :project, :provided_by_gcp, projects: [project])
+      end
+
+      it_behaves_like 'pipeline with deployment jobs'
     end
   end
 end

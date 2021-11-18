@@ -198,7 +198,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('clicking "removeStatus" clears the emoji and message fields', async () => {
-        findModal().vm.$emit('cancel');
+        findModal().vm.$emit('secondary');
         await wrapper.vm.$nextTick();
 
         expect(findFormField('message').element.value).toBe('');
@@ -206,7 +206,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('clicking "setStatus" submits the user status', async () => {
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         // set the availability status
@@ -215,7 +215,7 @@ describe('SetStatusModalWrapper', () => {
         // set the currentClearStatusAfter to 30 minutes
         wrapper.find('[data-testid="thirtyMinutes"]').vm.$emit('click');
 
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         const commonParams = {
@@ -237,7 +237,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('calls the "onUpdateSuccess" handler', async () => {
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.onUpdateSuccess).toHaveBeenCalled();
@@ -253,7 +253,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('displays a toast success message', async () => {
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         expect($toast.show).toHaveBeenCalledWith('Status updated');
@@ -270,7 +270,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('calls the "onUpdateFail" handler', async () => {
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         expect(wrapper.vm.onUpdateFail).toHaveBeenCalled();
@@ -286,7 +286,7 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('flashes an error message', async () => {
-        findModal().vm.$emit('ok');
+        findModal().vm.$emit('primary');
         await wrapper.vm.$nextTick();
 
         expect(createFlash).toHaveBeenCalledWith({

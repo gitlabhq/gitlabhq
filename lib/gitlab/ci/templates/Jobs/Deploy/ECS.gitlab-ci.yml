@@ -42,7 +42,7 @@ review_ecs:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -58,7 +58,7 @@ stop_review_ecs:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -77,7 +77,7 @@ review_fargate:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -93,7 +93,7 @@ stop_review_fargate:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -107,7 +107,7 @@ production_ecs:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "ECS"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never
@@ -118,7 +118,7 @@ production_fargate:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "FARGATE"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never

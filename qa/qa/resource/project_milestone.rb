@@ -20,6 +20,10 @@ module QA
         @description = "My awesome project milestone."
       end
 
+      def api_delete_path
+        "/projects/#{project.id}/milestones/#{id}"
+      end
+
       def api_get_path
         "/projects/#{project.id}/milestones/#{id}"
       end

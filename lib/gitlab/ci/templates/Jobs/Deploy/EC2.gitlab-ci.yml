@@ -16,7 +16,7 @@ review_ec2:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "EC2"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$REVIEW_DISABLED'
       when: never
@@ -32,7 +32,7 @@ production_ec2:
   rules:
     - if: '$AUTO_DEVOPS_PLATFORM_TARGET != "EC2"'
       when: never
-    - if: '$CI_KUBERNETES_ACTIVE'
+    - if: '$CI_KUBERNETES_ACTIVE || $KUBECONFIG'
       when: never
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
       when: never

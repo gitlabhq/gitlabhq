@@ -76,9 +76,6 @@
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
-.if-dot-com-gitlab-org-schedule-child-pipeline: &if-dot-com-gitlab-org-schedule-child-pipeline
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY'
-
 .if-dot-com-ee-schedule: &if-dot-com-ee-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -1537,7 +1534,7 @@
 ################
 # Review rules #
 ################
-.review:rules:review-app-pipeline:
+.review:rules:start-review-app-pipeline:
   rules:
     - <<: *if-not-ee
       when: never
@@ -1556,79 +1553,29 @@
 
 .review:rules:review-build-cng:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
+    - when: always
 
 .review:rules:review-deploy:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
-      allow_failure: true
+    - when: on_success
 
 .review:rules:review-performance:
   rules:
     - if: '$DAST_RUN == "true"'  # Skip this job when DAST is run
       when: never
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-merge-request-labels-run-review-app  # we explicitely don't allow the job to fail in that case
+    - <<: *if-dot-com-gitlab-org-merge-request  # we explicitely don't allow the job to fail in that case
       changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
+    - when: on_success
       allow_failure: true
 
 .review:rules:review-delete-deployment:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
+    - when: on_success
 
 .review:rules:review-qa-smoke:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      allow_failure: true
-    - <<: *if-dot-com-ee-schedule-child-pipeline
-      allow_failure: true
+    - when: on_success
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
@@ -1637,34 +1584,8 @@
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-smoke-report:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-      when: on_success
-    - <<: *if-merge-request-labels-run-review-app
-      when: on_failure
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: on_success
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *ci-review-patterns
-      when: on_failure
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-      when: on_success
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *frontend-patterns
-      when: on_failure
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      when: on_success
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      when: on_failure
-    - <<: *if-dot-com-ee-schedule-child-pipeline
-      when: on_success
-    - <<: *if-dot-com-ee-schedule-child-pipeline
-      when: on_failure
+    - when: on_success
+    - when: on_failure
 
 .review:rules:review-qa-reliable:
   rules:
@@ -1673,17 +1594,12 @@
 
 .review:rules:review-qa-all:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-labels-run-review-app  # we explicitely don't allow the job to fail in that case
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-      allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
+      allow_failure: true # manual jobs needs to be allowd to fail, otherwise they block the pipeline
+    - when: on_success
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
@@ -1693,29 +1609,9 @@
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-all-report:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-      when: on_success
-    - <<: *if-merge-request-labels-run-review-app
-      when: on_failure
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-patterns
-      when: manual
+    - when: on_success
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-      when: on_success
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *qa-patterns
-      when: on_failure
-      allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
-      when: on_success
-      allow_failure: true
-    - <<: *if-dot-com-ee-nightly-schedule-child-pipeline
-      when: on_failure
+    - when: on_failure
       allow_failure: true
 
 .review:rules:review-cleanup:
@@ -1731,23 +1627,16 @@
 
 .review:rules:review-stop:
   rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-run-review-app
-      when: manual
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
-      when: manual
+    - when: manual
       allow_failure: true
 
 .review:rules:danger:
   rules:
-    - if: '$CI_MERGE_REQUEST_IID'
+    - <<: *if-merge-request
 
 .review:rules:danger-local:
   rules:
-    - if: '$CI_MERGE_REQUEST_IID'
+    - <<: *if-merge-request
       changes: *danger-patterns
 
 ###############

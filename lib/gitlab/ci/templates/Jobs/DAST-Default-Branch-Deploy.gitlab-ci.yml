@@ -30,7 +30,7 @@ dast_environment_deploy:
     - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $CI_KUBERNETES_ACTIVE &&
+          ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
           $GITLAB_FEATURES =~ /\bdast\b/
 
 stop_dast_environment:
@@ -54,6 +54,6 @@ stop_dast_environment:
     - if: $DAST_WEBSITE  # we don't need to create a review app if a URL is already given
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          $CI_KUBERNETES_ACTIVE &&
+          ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
           $GITLAB_FEATURES =~ /\bdast\b/
       when: always
