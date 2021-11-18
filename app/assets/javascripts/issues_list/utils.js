@@ -21,9 +21,13 @@ import {
   RELATIVE_POSITION_ASC,
   SPECIAL_FILTER,
   SPECIAL_FILTER_VALUES,
+  TITLE_ASC,
+  TITLE_DESC,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   UPDATED_ASC,
   UPDATED_DESC,
@@ -113,11 +117,19 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
         descending: RELATIVE_POSITION_ASC,
       },
     },
+    {
+      id: 9,
+      title: __('Title'),
+      sortDirection: {
+        ascending: TITLE_ASC,
+        descending: TITLE_DESC,
+      },
+    },
   ];
 
   if (hasIssueWeightsFeature) {
     sortOptions.push({
-      id: 9,
+      id: sortOptions.length + 1,
       title: __('Weight'),
       sortDirection: {
         ascending: WEIGHT_ASC,
@@ -128,7 +140,7 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
 
   if (hasBlockedIssuesFeature) {
     sortOptions.push({
-      id: 10,
+      id: sortOptions.length + 1,
       title: __('Blocking'),
       sortDirection: {
         ascending: BLOCKING_ISSUES_DESC,
@@ -193,17 +205,23 @@ const getFilterType = (data, tokenType = '') =>
     ? SPECIAL_FILTER
     : NORMAL_FILTER;
 
+const wildcardTokens = [TOKEN_TYPE_ITERATION, TOKEN_TYPE_MILESTONE, TOKEN_TYPE_RELEASE];
+
 const isWildcardValue = (tokenType, value) =>
-  (tokenType === TOKEN_TYPE_ITERATION || tokenType === TOKEN_TYPE_MILESTONE) &&
-  SPECIAL_FILTER_VALUES.includes(value);
+  wildcardTokens.includes(tokenType) && SPECIAL_FILTER_VALUES.includes(value);
 
 const requiresUpperCaseValue = (tokenType, value) =>
   tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
 
-const formatData = (token) =>
-  requiresUpperCaseValue(token.type, token.value.data)
-    ? token.value.data.toUpperCase()
-    : token.value.data;
+const formatData = (token) => {
+  if (requiresUpperCaseValue(token.type, token.value.data)) {
+    return token.value.data.toUpperCase();
+  }
+  if (token.type === TOKEN_TYPE_CONFIDENTIAL) {
+    return token.value.data === 'yes';
+  }
+  return token.value.data;
+};
 
 export const convertToApiParams = (filterTokens) => {
   const params = {};

@@ -1,5 +1,5 @@
 import AccessorUtilities from '../../lib/utils/accessor';
-import { MAX_FREQUENT_ITEMS, MAX_FREQUENCY } from './constants';
+import { MAX_FREQUENT_ITEMS, MAX_FREQUENCY, SIDEBAR_PARAMS } from './constants';
 
 function extractKeys(object, keyList) {
   return Object.fromEntries(keyList.map((key) => [key, object[key]]));
@@ -78,5 +78,15 @@ export const mergeById = (inflatedData, storedData) => {
   return inflatedData.map((data) => {
     const stored = storedData?.find((d) => d.id === data.id) || {};
     return { ...stored, ...data };
+  });
+};
+
+export const isSidebarDirty = (currentQuery, urlQuery) => {
+  return SIDEBAR_PARAMS.some((param) => {
+    // userAddParam ensures we don't get a false dirty from null !== undefined
+    const userAddedParam = !urlQuery[param] && currentQuery[param];
+    const userChangedExistingParam = urlQuery[param] && urlQuery[param] !== currentQuery[param];
+
+    return userAddedParam || userChangedExistingParam;
   });
 };

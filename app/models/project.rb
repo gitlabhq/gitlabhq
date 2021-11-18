@@ -19,7 +19,6 @@ class Project < ApplicationRecord
   include Presentable
   include HasRepository
   include HasWiki
-  include HasIntegrations
   include CanMoveRepositoryStorage
   include Routable
   include GroupDescendant
@@ -98,7 +97,7 @@ class Project < ApplicationRecord
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
   before_save :ensure_runners_token
-  before_save :ensure_project_namespace_in_sync
+  before_validation :ensure_project_namespace_in_sync
 
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
@@ -147,7 +146,7 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id'
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -189,6 +188,7 @@ class Project < ApplicationRecord
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
   has_one :pushover_integration, class_name: 'Integrations::Pushover'
   has_one :redmine_integration, class_name: 'Integrations::Redmine'
+  has_one :shimo_integration, class_name: 'Integrations::Shimo'
   has_one :slack_integration, class_name: 'Integrations::Slack'
   has_one :slack_slash_commands_integration, class_name: 'Integrations::SlackSlashCommands'
   has_one :teamcity_integration, class_name: 'Integrations::Teamcity'
@@ -451,6 +451,7 @@ class Project < ApplicationRecord
     :allow_merge_on_skipped_pipeline=, :has_confluence?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
+  delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
@@ -475,6 +476,7 @@ class Project < ApplicationRecord
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
+  validates :project_namespace, presence: true, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
                                        ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
@@ -492,6 +494,7 @@ class Project < ApplicationRecord
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
   validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
+  validates :suggestion_commit_message, length: { maximum: 255 }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -856,6 +859,18 @@ class Project < ApplicationRecord
       find_by_full_path(match.values_at(:namespace_id, :id).join("/"))
     rescue ActionController::RoutingError, URI::InvalidURIError
       nil
+    end
+
+    def without_integration(integration)
+      integrations = Integration
+        .select('1')
+        .where("#{Integration.table_name}.project_id = projects.id")
+        .where(type: integration.type)
+
+      Project
+        .where('NOT EXISTS (?)', integrations)
+        .where(pending_delete: false)
+        .where(archived: false)
     end
   end
 
@@ -1453,7 +1468,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    [:zentao]
+    [:shimo]
   end
 
   def find_or_initialize_integration(name)
@@ -1777,10 +1792,12 @@ class Project < ApplicationRecord
 
   def all_runners
     Ci::Runner.from_union([runners, group_runners, shared_runners])
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
   def all_available_runners
     Ci::Runner.from_union([runners, group_runners, available_shared_runners])
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/339937')
   end
 
   # Once issue 339937 is fixed, please search for all mentioned of
@@ -2051,14 +2068,16 @@ class Project < ApplicationRecord
   end
 
   def predefined_variables
-    Gitlab::Ci::Variables::Collection.new
-      .concat(predefined_ci_server_variables)
-      .concat(predefined_project_variables)
-      .concat(pages_variables)
-      .concat(container_registry_variables)
-      .concat(dependency_proxy_variables)
-      .concat(auto_devops_variables)
-      .concat(api_variables)
+    strong_memoize(:predefined_variables) do
+      Gitlab::Ci::Variables::Collection.new
+        .concat(predefined_ci_server_variables)
+        .concat(predefined_project_variables)
+        .concat(pages_variables)
+        .concat(container_registry_variables)
+        .concat(dependency_proxy_variables)
+        .concat(auto_devops_variables)
+        .concat(api_variables)
+    end
   end
 
   def predefined_project_variables
@@ -2579,16 +2598,19 @@ class Project < ApplicationRecord
     config = Gitlab.config.incoming_email
     wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
 
-    config.address&.gsub(wildcard, "#{full_path_slug}-#{id}-issue-")
+    config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end
 
   def service_desk_custom_address
     return unless Gitlab::ServiceDeskEmail.enabled?
 
-    key = service_desk_setting&.project_key
-    return unless key.present?
+    key = service_desk_setting&.project_key || default_service_desk_suffix
 
     Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+  end
+
+  def default_service_desk_suffix
+    "#{id}-issue-"
   end
 
   def root_namespace
@@ -2911,12 +2933,28 @@ class Project < ApplicationRecord
   end
 
   def ensure_project_namespace_in_sync
-    if changes.keys & [:name, :path, :namespace_id, :visibility_level] && project_namespace.present?
-      project_namespace.name = name
-      project_namespace.path = path
-      project_namespace.parent = namespace
-      project_namespace.visibility_level = visibility_level
-    end
+    # create project_namespace when project is created if create_project_namespace_on_project_create FF is enabled
+    build_project_namespace if project_namespace_creation_enabled?
+
+    # regardless of create_project_namespace_on_project_create FF we need
+    # to keep project and project namespace in sync if there is one
+    sync_attributes(project_namespace) if sync_project_namespace?
+  end
+
+  def project_namespace_creation_enabled?
+    new_record? && !project_namespace && self.namespace && self.root_namespace.project_namespace_creation_enabled?
+  end
+
+  def sync_project_namespace?
+    (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
+  end
+
+  def sync_attributes(project_namespace)
+    project_namespace.name = name
+    project_namespace.path = path
+    project_namespace.parent = namespace
+    project_namespace.shared_runners_enabled = shared_runners_enabled
+    project_namespace.visibility_level = visibility_level
   end
 end
 

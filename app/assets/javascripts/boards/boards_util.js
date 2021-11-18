@@ -1,4 +1,5 @@
 import { sortBy, cloneDeep } from 'lodash';
+import { isGid } from '~/graphql_shared/utils';
 import { ListType, MilestoneIDs } from './constants';
 
 export function getMilestone() {
@@ -95,6 +96,9 @@ export function fullMilestoneId(id) {
 }
 
 export function fullLabelId(label) {
+  if (isGid(label.id)) {
+    return label.id;
+  }
   if (label.project_id && label.project_id !== null) {
     return `gid://gitlab/ProjectLabel/${label.id}`;
   }

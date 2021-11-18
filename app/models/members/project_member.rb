@@ -94,7 +94,6 @@ class ProjectMember < Member
 
   override :refresh_member_authorized_projects
   def refresh_member_authorized_projects(blocking:)
-    return super unless Feature.enabled?(:specialized_service_for_project_member_auth_refresh)
     return unless user
 
     # rubocop:disable CodeReuse/ServiceClass

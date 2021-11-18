@@ -65,5 +65,31 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
         expect_graphql_errors_to_be_empty
       end
     end
+
+    context 'project storage count query' do
+      before do
+        project.statistics.update!(
+          repository_size: 3900000,
+          lfs_objects_size: 4800000,
+          build_artifacts_size: 400000,
+          pipeline_artifacts_size: 400000,
+          wiki_size: 300000,
+          packages_size: 3800000,
+          uploads_size: 900000
+        )
+      end
+
+      base_input_path = 'projects/storage_counter/queries/'
+      base_output_path = 'graphql/projects/storage_counter/'
+      query_name = 'project_storage.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: user, variables: { fullPath: project.full_path })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 end

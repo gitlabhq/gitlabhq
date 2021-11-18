@@ -37,11 +37,9 @@ module QA
         namespace_path ||= user.name
 
         # Sign out as admin and sign is as the fork user
-        Page::Main::Menu.perform(&:sign_out)
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform do |login|
-          login.sign_in_using_credentials(user: user)
-        end
+        Flow::Login.sign_in(as: user)
+
+        @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
 
         upstream.visit!
 

@@ -268,7 +268,6 @@ class MergeRequest < ApplicationRecord
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
-  scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :open_and_closed, -> { with_states(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
@@ -663,7 +662,7 @@ class MergeRequest < ApplicationRecord
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params.to_h)
+    jid = MergeWorker.with_status.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
 
     # merge_ongoing? depends on merge_jid
@@ -682,7 +681,7 @@ class MergeRequest < ApplicationRecord
       # attribute is set *and* that the sidekiq job is still running. So a JID
       # for a completed RebaseWorker is equivalent to a nil JID.
       jid = Sidekiq::Worker.skipping_transaction_check do
-        RebaseWorker.perform_async(id, user_id, skip_ci)
+        RebaseWorker.with_status.perform_async(id, user_id, skip_ci)
       end
 
       update_column(:rebase_jid, jid)
@@ -1317,6 +1316,10 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_merge_commit_message(include_description: false)
+    if self.target_project.merge_commit_template.present? && !include_description
+      return ::Gitlab::MergeRequests::MergeCommitMessage.new(merge_request: self).message
+    end
+
     closes_issues_references = visible_closing_issues_for.map do |issue|
       issue.to_reference(target_project)
     end
@@ -1409,7 +1412,15 @@ class MergeRequest < ApplicationRecord
   def environments
     return Environment.none unless actual_head_pipeline&.merge_request?
 
-    actual_head_pipeline.environments
+    build_for_actual_head_pipeline = Ci::Build.latest.where(pipeline: actual_head_pipeline)
+
+    environments = build_for_actual_head_pipeline.joins(:metadata)
+                                                .where.not('ci_builds_metadata.expanded_environment_name' => nil)
+                                                .distinct('ci_builds_metadata.expanded_environment_name')
+                                                .limit(100)
+                                                .pluck(:expanded_environment_name)
+
+    Environment.where(project: project, name: environments)
   end
 
   def fetch_ref!
@@ -1907,6 +1918,10 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def find_assignee(user)
+    merge_request_assignees.find_by(user_id: user.id)
+  end
+
   def find_reviewer(user)
     merge_request_reviewers.find_by(user_id: user.id)
   end
@@ -1928,6 +1943,10 @@ class MergeRequest < ApplicationRecord
     strong_memoize(:context_commits_diff) do
       ContextCommitsDiff.new(self)
     end
+  end
+
+  def attention_requested_enabled?
+    Feature.enabled?(:mr_attention_requests, project, default_enabled: :yaml)
   end
 
   private

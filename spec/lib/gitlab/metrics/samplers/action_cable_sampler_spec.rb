@@ -23,64 +23,46 @@ RSpec.describe Gitlab::Metrics::Samplers::ActionCableSampler do
       allow(pool).to receive(:queue_length).and_return(6)
     end
 
-    shared_examples 'collects metrics' do |expected_labels|
-      it 'includes active connections' do
-        expect(subject.metrics[:active_connections]).to receive(:set).with(expected_labels, 0)
+    it 'includes active connections' do
+      expect(subject.metrics[:active_connections]).to receive(:set).with({}, 0)
 
-        subject.sample
-      end
-
-      it 'includes minimum worker pool size' do
-        expect(subject.metrics[:pool_min_size]).to receive(:set).with(expected_labels, 1)
-
-        subject.sample
-      end
-
-      it 'includes maximum worker pool size' do
-        expect(subject.metrics[:pool_max_size]).to receive(:set).with(expected_labels, 2)
-
-        subject.sample
-      end
-
-      it 'includes current worker pool size' do
-        expect(subject.metrics[:pool_current_size]).to receive(:set).with(expected_labels, 3)
-
-        subject.sample
-      end
-
-      it 'includes largest worker pool size' do
-        expect(subject.metrics[:pool_largest_size]).to receive(:set).with(expected_labels, 4)
-
-        subject.sample
-      end
-
-      it 'includes worker pool completed task count' do
-        expect(subject.metrics[:pool_completed_tasks]).to receive(:set).with(expected_labels, 5)
-
-        subject.sample
-      end
-
-      it 'includes worker pool pending task count' do
-        expect(subject.metrics[:pool_pending_tasks]).to receive(:set).with(expected_labels, 6)
-
-        subject.sample
-      end
+      subject.sample
     end
 
-    context 'for in-app mode' do
-      before do
-        expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(true)
-      end
+    it 'includes minimum worker pool size' do
+      expect(subject.metrics[:pool_min_size]).to receive(:set).with({}, 1)
 
-      it_behaves_like 'collects metrics', server_mode: 'in-app'
+      subject.sample
     end
 
-    context 'for standalone mode' do
-      before do
-        expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(false)
-      end
+    it 'includes maximum worker pool size' do
+      expect(subject.metrics[:pool_max_size]).to receive(:set).with({}, 2)
 
-      it_behaves_like 'collects metrics', server_mode: 'standalone'
+      subject.sample
+    end
+
+    it 'includes current worker pool size' do
+      expect(subject.metrics[:pool_current_size]).to receive(:set).with({}, 3)
+
+      subject.sample
+    end
+
+    it 'includes largest worker pool size' do
+      expect(subject.metrics[:pool_largest_size]).to receive(:set).with({}, 4)
+
+      subject.sample
+    end
+
+    it 'includes worker pool completed task count' do
+      expect(subject.metrics[:pool_completed_tasks]).to receive(:set).with({}, 5)
+
+      subject.sample
+    end
+
+    it 'includes worker pool pending task count' do
+      expect(subject.metrics[:pool_pending_tasks]).to receive(:set).with({}, 6)
+
+      subject.sample
     end
   end
 end

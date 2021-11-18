@@ -77,18 +77,6 @@ RSpec.describe JiraConnect::EventsController do
       expect(installation.base_url).to eq('https://test.atlassian.net')
     end
 
-    context 'when jira_connect_asymmetric_jwt is disabled' do
-      before do
-        stub_feature_flags(jira_connect_asymmetric_jwt: false)
-      end
-
-      it 'saves the jira installation data without JWT validation' do
-        expect(Atlassian::JiraConnect::AsymmetricJwt).not_to receive(:new)
-
-        expect { subject }.to change { JiraConnectInstallation.count }.by(1)
-      end
-    end
-
     context 'when it is a version update and shared_secret is not sent' do
       let(:params) do
         {
@@ -109,22 +97,6 @@ RSpec.describe JiraConnect::EventsController do
         it 'validates the JWT token in authorization header and returns 200 without creating a new installation' do
           expect { subject }.not_to change { JiraConnectInstallation.count }
           expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        context 'when jira_connect_asymmetric_jwt is disabled' do
-          before do
-            stub_feature_flags(jira_connect_asymmetric_jwt: false)
-          end
-
-          it 'decodes the JWT token in authorization header and returns 200 without creating a new installation' do
-            request.headers["Authorization"] = "Bearer #{Atlassian::Jwt.encode({ iss: client_key }, shared_secret)}"
-
-            expect(Atlassian::JiraConnect::AsymmetricJwt).not_to receive(:new)
-
-            expect { subject }.not_to change { JiraConnectInstallation.count }
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
       end
     end
@@ -153,23 +125,6 @@ RSpec.describe JiraConnect::EventsController do
       it 'does not delete the installation' do
         expect { post_uninstalled }.not_to change { JiraConnectInstallation.count }
       end
-
-      context 'when jira_connect_asymmetric_jwt is disabled' do
-        before do
-          stub_feature_flags(jira_connect_asymmetric_jwt: false)
-          request.headers['Authorization'] = 'JWT invalid token'
-        end
-
-        it 'returns 403' do
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'does not delete the installation' do
-          expect { post_uninstalled }.not_to change { JiraConnectInstallation.count }
-        end
-      end
     end
 
     context 'when JWT is valid' do
@@ -196,36 +151,6 @@ RSpec.describe JiraConnect::EventsController do
         post_uninstalled
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      end
-
-      context 'when jira_connect_asymmetric_jwt is disabled' do
-        before do
-          stub_feature_flags(jira_connect_asymmetric_jwt: false)
-
-          request.headers['Authorization'] = "JWT #{Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret)}"
-        end
-
-        let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/events/uninstalled', 'POST', 'https://gitlab.test') }
-
-        it 'calls the DestroyService and returns ok in case of success' do
-          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
-            expect(destroy_service).to receive(:execute).and_return(true)
-          end
-
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it 'calls the DestroyService and returns unprocessable_entity in case of failure' do
-          expect_next_instance_of(JiraConnectInstallations::DestroyService, installation, jira_base_path, jira_event_path) do |destroy_service|
-            expect(destroy_service).to receive(:execute).and_return(false)
-          end
-
-          post_uninstalled
-
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        end
       end
     end
   end

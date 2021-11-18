@@ -179,6 +179,7 @@
   }
 
   .block,
+  .sidebar-contained-width,
   .issuable-sidebar-header {
     @include clearfix;
     padding: $gl-padding 0;
@@ -317,6 +318,7 @@
     padding: 0;
 
     .block,
+    .sidebar-contained-width,
     .issuable-sidebar-header {
       width: $gutter-collapsed-width - 2px;
       padding: 0;

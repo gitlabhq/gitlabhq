@@ -1,9 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import { createStore } from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock } from '../../notes/mock_data';
 import diffFileMockData from '../mock_data/diff_file';
+
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => {
+  return {
+    confirmAction: jest.fn(),
+  };
+});
 
 describe('DiffLineNoteForm', () => {
   let wrapper;
@@ -24,13 +32,19 @@ describe('DiffLineNoteForm', () => {
     return shallowMount(DiffLineNoteForm, {
       store,
       propsData: {
-        diffFileHash: diffFile.file_hash,
-        diffLines,
-        line: diffLines[0],
-        noteTargetLine: diffLines[0],
+        ...{
+          diffFileHash: diffFile.file_hash,
+          diffLines,
+          line: diffLines[1],
+          range: { start: diffLines[0], end: diffLines[1] },
+          noteTargetLine: diffLines[1],
+        },
+        ...(args.props || {}),
       },
     });
   };
+
+  const findNoteForm = () => wrapper.findComponent(NoteForm);
 
   describe('methods', () => {
     beforeEach(() => {
@@ -38,43 +52,48 @@ describe('DiffLineNoteForm', () => {
     });
 
     describe('handleCancelCommentForm', () => {
+      afterEach(() => {
+        confirmAction.mockReset();
+      });
+
       it('should ask for confirmation when shouldConfirm and isDirty passed as truthy', () => {
-        jest.spyOn(window, 'confirm').mockReturnValue(false);
+        confirmAction.mockResolvedValueOnce(false);
 
-        wrapper.vm.handleCancelCommentForm(true, true);
+        findNoteForm().vm.$emit('cancelForm', true, true);
 
-        expect(window.confirm).toHaveBeenCalled();
+        expect(confirmAction).toHaveBeenCalled();
       });
 
-      it('should ask for confirmation when one of the params false', () => {
-        jest.spyOn(window, 'confirm').mockReturnValue(false);
+      it('should not ask for confirmation when one of the params false', () => {
+        confirmAction.mockResolvedValueOnce(false);
 
-        wrapper.vm.handleCancelCommentForm(true, false);
+        findNoteForm().vm.$emit('cancelForm', true, false);
 
-        expect(window.confirm).not.toHaveBeenCalled();
+        expect(confirmAction).not.toHaveBeenCalled();
 
-        wrapper.vm.handleCancelCommentForm(false, true);
+        findNoteForm().vm.$emit('cancelForm', false, true);
 
-        expect(window.confirm).not.toHaveBeenCalled();
+        expect(confirmAction).not.toHaveBeenCalled();
       });
 
-      it('should call cancelCommentForm with lineCode', (done) => {
-        jest.spyOn(window, 'confirm').mockImplementation(() => {});
+      it('should call cancelCommentForm with lineCode', async () => {
+        confirmAction.mockResolvedValueOnce(true);
         jest.spyOn(wrapper.vm, 'cancelCommentForm').mockImplementation(() => {});
         jest.spyOn(wrapper.vm, 'resetAutoSave').mockImplementation(() => {});
-        wrapper.vm.handleCancelCommentForm();
 
-        expect(window.confirm).not.toHaveBeenCalled();
-        wrapper.vm.$nextTick(() => {
-          expect(wrapper.vm.cancelCommentForm).toHaveBeenCalledWith({
-            lineCode: diffLines[0].line_code,
-            fileHash: wrapper.vm.diffFileHash,
-          });
+        findNoteForm().vm.$emit('cancelForm', true, true);
 
-          expect(wrapper.vm.resetAutoSave).toHaveBeenCalled();
+        await nextTick();
 
-          done();
+        expect(confirmAction).toHaveBeenCalled();
+
+        await nextTick();
+
+        expect(wrapper.vm.cancelCommentForm).toHaveBeenCalledWith({
+          lineCode: diffLines[1].line_code,
+          fileHash: wrapper.vm.diffFileHash,
         });
+        expect(wrapper.vm.resetAutoSave).toHaveBeenCalled();
       });
     });
 
@@ -88,13 +107,13 @@ describe('DiffLineNoteForm', () => {
           start: {
             line_code: wrapper.vm.commentLineStart.line_code,
             type: wrapper.vm.commentLineStart.type,
-            new_line: 1,
+            new_line: 2,
             old_line: null,
           },
           end: {
             line_code: wrapper.vm.line.line_code,
             type: wrapper.vm.line.type,
-            new_line: 1,
+            new_line: 2,
             old_line: null,
           },
         };
@@ -118,9 +137,25 @@ describe('DiffLineNoteForm', () => {
     });
   });
 
+  describe('created', () => {
+    it('should use the provided `range` of lines', () => {
+      wrapper = createComponent();
+
+      expect(wrapper.vm.lines.start).toBe(diffLines[0]);
+      expect(wrapper.vm.lines.end).toBe(diffLines[1]);
+    });
+
+    it("should fill the internal `lines` data with the provided `line` if there's no provided `range", () => {
+      wrapper = createComponent({ props: { range: null } });
+
+      expect(wrapper.vm.lines.start).toBe(diffLines[1]);
+      expect(wrapper.vm.lines.end).toBe(diffLines[1]);
+    });
+  });
+
   describe('mounted', () => {
     it('should init autosave', () => {
-      const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
+      const key = 'autosave/Note/Issue/98//DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2';
       wrapper = createComponent();
 
       expect(wrapper.vm.autosave).toBeDefined();

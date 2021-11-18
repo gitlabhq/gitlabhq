@@ -34,6 +34,7 @@ module Types
           null: true,
           method: :project_creation_level_str,
           description: 'Permission level required to create projects in the group.'
+
     field :subgroup_creation_level,
           type: GraphQL::Types::String,
           null: true,
@@ -44,6 +45,7 @@ module Types
           type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if all users in this group are required to set up two-factor authentication.'
+
     field :two_factor_grace_period,
           type: GraphQL::Types::Int,
           null: true,
@@ -220,12 +222,16 @@ module Types
       group.container_repositories.size
     end
 
+    def dependency_proxy_manifests
+      group.dependency_proxy_manifests.order_id_desc
+    end
+
     def dependency_proxy_image_count
-      group.dependency_proxy_manifests.count
+      group.dependency_proxy_manifests.size
     end
 
     def dependency_proxy_blob_count
-      group.dependency_proxy_blobs.count
+      group.dependency_proxy_blobs.size
     end
 
     def dependency_proxy_total_size

@@ -9,6 +9,7 @@ module QA
         include Page::Component::Breadcrumbs
         include Page::Project::SubMenus::Settings
         include Page::File::Shared::CommitMessage
+        prepend Mobile::Page::Project::Show if Runtime::Env.mobile_layout?
 
         view 'app/assets/javascripts/repository/components/preview/index.vue' do
           element :blob_viewer_content
@@ -117,7 +118,7 @@ module QA
         end
 
         def go_to_new_issue
-          click_element :new_menu_toggle
+          click_element(:new_menu_toggle)
           click_element(:new_issue_link)
         end
 
@@ -151,6 +152,10 @@ module QA
 
         def open_web_ide!
           click_element(:web_ide_button)
+        end
+
+        def open_web_ide_via_shortcut
+          page.driver.send_keys('.')
         end
 
         def has_edit_fork_button?

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('schedule_populate_topics_total_projects_count_cache')
+require_migration!
 
 RSpec.describe SchedulePopulateTopicsTotalProjectsCountCache do
   let(:topics) { table(:topics) }

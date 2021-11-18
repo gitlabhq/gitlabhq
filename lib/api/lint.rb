@@ -9,6 +9,7 @@ module API
       params do
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
         optional :include_merged_yaml, type: Boolean, desc: 'Whether or not to include merged CI config yaml in the response'
+        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
       post '/lint' do
         unauthorized! if (Gitlab::CurrentSettings.signup_disabled? || Gitlab::CurrentSettings.signup_limited?) && current_user.nil?
@@ -17,7 +18,7 @@ module API
           .validate(params[:content], dry_run: false)
 
         status 200
-        Entities::Ci::Lint::Result.represent(result, current_user: current_user).serializable_hash.tap do |presented_result|
+        Entities::Ci::Lint::Result.represent(result, current_user: current_user, include_jobs: params[:include_jobs]).serializable_hash.tap do |presented_result|
           presented_result[:status] = presented_result[:valid] ? 'valid' : 'invalid'
           presented_result.delete(:merged_yaml) unless params[:include_merged_yaml]
         end
@@ -30,6 +31,7 @@ module API
       end
       params do
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
+        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
       get ':id/ci/lint' do
         authorize! :download_code, user_project
@@ -39,7 +41,7 @@ module API
           .new(project: user_project, current_user: current_user)
           .validate(content, dry_run: params[:dry_run])
 
-        present result, with: Entities::Ci::Lint::Result, current_user: current_user
+        present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]
       end
     end
 
@@ -50,6 +52,7 @@ module API
       params do
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
+        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
       post ':id/ci/lint' do
         authorize! :create_pipeline, user_project
@@ -59,7 +62,7 @@ module API
           .validate(params[:content], dry_run: params[:dry_run])
 
         status 200
-        present result, with: Entities::Ci::Lint::Result, current_user: current_user
+        present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]
       end
     end
   end

@@ -10,7 +10,12 @@ function deploy_exists() {
   helm status --namespace "${namespace}" "${release}" >/dev/null 2>&1
   deploy_exists=$?
 
-  echoinfo "Deployment status for ${release} is ${deploy_exists}"
+  if [ $deploy_exists -eq 0 ]; then
+    echoinfo "Previous deployment for ${release} found."
+  else
+    echoerr "Previous deployment for ${release} NOT found."
+  fi
+
   return $deploy_exists
 }
 

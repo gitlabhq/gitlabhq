@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['ReleaseLinks'] do
-  it { expect(described_class).to require_graphql_authorizations(:download_code) }
+  it { expect(described_class).to require_graphql_authorizations(:read_release) }
 
   it 'has the expected fields' do
     expected_fields = %w[
@@ -17,5 +17,47 @@ RSpec.describe GitlabSchema.types['ReleaseLinks'] do
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
+  end
+
+  context 'individual field authorization' do
+    def fetch_authorizations(field_name)
+      described_class.fields.dig(field_name).instance_variable_get(:@authorize)
+    end
+
+    describe 'openedMergeRequestsUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('openedMergeRequestsUrl')).to include(:download_code)
+      end
+    end
+
+    describe 'mergedMergeRequestsUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('mergedMergeRequestsUrl')).to include(:download_code)
+      end
+    end
+
+    describe 'closedMergeRequestsUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('closedMergeRequestsUrl')).to include(:download_code)
+      end
+    end
+
+    describe 'openedIssuesUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('openedIssuesUrl')).to include(:download_code)
+      end
+    end
+
+    describe 'closedIssuesUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('closedIssuesUrl')).to include(:download_code)
+      end
+    end
+
+    describe 'editUrl' do
+      it 'has valid authorization' do
+        expect(fetch_authorizations('editUrl')).to include(:update_release)
+      end
+    end
   end
 end

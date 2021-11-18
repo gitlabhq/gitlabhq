@@ -89,7 +89,6 @@ module Integrations
         site: URI.join(url, '/').to_s.delete_suffix('/'), # Intended to find the root
         context_path: (url.path.presence || '/').delete_suffix('/'),
         auth_type: :basic,
-        read_timeout: 120,
         use_cookies: true,
         additional_cookies: ['OBBasicAuth=fromDialog'],
         use_ssl: url.scheme == 'https'
@@ -303,6 +302,14 @@ module Integrations
 
     private
 
+    def branch_name(noteable)
+      if Feature.enabled?(:jira_use_first_ref_by_oid, project, default_enabled: :yaml)
+        noteable.first_ref_by_oid(project.repository)
+      else
+        noteable.ref_names(project.repository).first
+      end
+    end
+
     def server_info
       strong_memoize(:server_info) do
         client_url.present? ? jira_request { client.ServerInfo.all.attrs } : nil
@@ -496,7 +503,7 @@ module Integrations
         {
           id: noteable.short_id,
           description: noteable.safe_message,
-          branch: noteable.ref_names(project.repository).first
+          branch: branch_name(noteable)
         }
       elsif noteable.is_a?(MergeRequest)
         {
@@ -521,7 +528,9 @@ module Integrations
       yield
     rescue StandardError => error
       @error = error
-      log_error("Error sending message", client_url: client_url, error: @error.message)
+      payload = { client_url: client_url }
+      Gitlab::ExceptionLogFormatter.format!(error, payload)
+      log_error("Error sending message", payload)
       nil
     end
 

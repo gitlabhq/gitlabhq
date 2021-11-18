@@ -12,6 +12,7 @@ module QA
         deploy_token = Resource::DeployToken.fabricate_via_browser_ui! do |resource|
           resource.name = deploy_token_name
           resource.expires_at = one_week_from_now
+          resource.scopes = [:read_repository]
         end
 
         expect(deploy_token.username.length).to be > 0

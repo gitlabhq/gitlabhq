@@ -21,6 +21,7 @@ import CiIcon from './ci_icon.vue';
  * - Job show view - header
  * - MR widget
  * - Terraform table
+ * - On-demand scans list
  */
 
 export default {

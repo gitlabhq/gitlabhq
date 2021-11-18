@@ -16,7 +16,7 @@ RSpec.describe 'Project' do
 
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       it "is created from template", :js do
-        find('[data-qa-panel-name="create_from_template"]').click # rubocop:disable QA/SelectorUsage
+        click_link 'Create from template'
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
         fill_in("project_name", with: template.name)
@@ -133,7 +133,7 @@ RSpec.describe 'Project' do
       visit path
 
       expect(page).to have_selector('[data-testid="project_topic_list"]')
-      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
+      expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
     end
 
     it 'shows up to 3 project topics' do
@@ -142,9 +142,9 @@ RSpec.describe 'Project' do
       visit path
 
       expect(page).to have_selector('[data-testid="project_topic_list"]')
-      expect(page).to have_link('topic1', href: explore_projects_path(topic: 'topic1'))
-      expect(page).to have_link('topic2', href: explore_projects_path(topic: 'topic2'))
-      expect(page).to have_link('topic3', href: explore_projects_path(topic: 'topic3'))
+      expect(page).to have_link('topic1', href: topic_explore_projects_path(topic_name: 'topic1'))
+      expect(page).to have_link('topic2', href: topic_explore_projects_path(topic_name: 'topic2'))
+      expect(page).to have_link('topic3', href: topic_explore_projects_path(topic_name: 'topic3'))
       expect(page).to have_content('+ 1 more')
     end
   end
@@ -257,7 +257,7 @@ RSpec.describe 'Project' do
     end
 
     it 'deletes a project', :sidekiq_inline do
-      expect { remove_with_confirm('Delete project', project.path, 'Yes, delete project') }.to change { Project.count }.by(-1)
+      expect { remove_with_confirm('Delete project', project.path_with_namespace, 'Yes, delete project') }.to change { Project.count }.by(-1)
       expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty

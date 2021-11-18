@@ -6,9 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Project import/export administration **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/3050) in GitLab 8.9.
-> - From GitLab 11.3, import/export can use object storage automatically.
-
 GitLab provides Rake tasks relating to project import and export. For more information, see:
 
 - [Project import/export documentation](../../user/project/settings/import_export.md).

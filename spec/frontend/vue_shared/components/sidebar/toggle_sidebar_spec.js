@@ -1,31 +1,45 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import toggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
+import { GlButton } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 
-describe('toggleSidebar', () => {
-  let vm;
-  beforeEach(() => {
-    const ToggleSidebar = Vue.extend(toggleSidebar);
-    vm = mountComponent(ToggleSidebar, {
-      collapsed: true,
+import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
+
+describe('ToggleSidebar', () => {
+  let wrapper;
+
+  const defaultProps = {
+    collapsed: true,
+  };
+
+  const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
+    wrapper = mountFn(ToggleSidebar, {
+      propsData: { ...defaultProps, ...props },
     });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
+  const findGlButton = () => wrapper.findComponent(GlButton);
+
   it('should render the "chevron-double-lg-left" icon when collapsed', () => {
-    expect(vm.$el.querySelector('[data-testid="chevron-double-lg-left-icon"]')).not.toBeNull();
+    createComponent();
+
+    expect(findGlButton().props('icon')).toBe('chevron-double-lg-left');
   });
 
   it('should render the "chevron-double-lg-right" icon when expanded', async () => {
-    vm.collapsed = false;
-    await Vue.nextTick();
-    expect(vm.$el.querySelector('[data-testid="chevron-double-lg-right-icon"]')).not.toBeNull();
+    createComponent({ props: { collapsed: false } });
+
+    expect(findGlButton().props('icon')).toBe('chevron-double-lg-right');
   });
 
-  it('should emit toggle event when button clicked', () => {
-    const toggle = jest.fn();
-    vm.$on('toggle', toggle);
-    vm.$el.click();
+  it('should emit toggle event when button clicked', async () => {
+    createComponent({ mountFn: mount });
 
-    expect(toggle).toHaveBeenCalled();
+    findGlButton().trigger('click');
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('toggle')[0]).toBeDefined();
   });
 });

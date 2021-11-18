@@ -2,6 +2,7 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { experiment } from '~/experimentation/utils';
 import { DRAWER_EXPANDED_KEY } from '../../constants';
 import FirstPipelineCard from './cards/first_pipeline_card.vue';
 import GettingStartedCard from './cards/getting_started_card.vue';
@@ -53,12 +54,23 @@ export default {
   },
   methods: {
     setInitialExpandState() {
+      let isExpanded;
+
+      experiment('pipeline_editor_walkthrough', {
+        control: () => {
+          isExpanded = true;
+        },
+        candidate: () => {
+          isExpanded = false;
+        },
+      });
+
       // We check in the local storage and if no value is defined, we want the default
       // to be true. We want to explicitly set it to true here so that the drawer
       // animates to open on load.
       const localValue = localStorage.getItem(this.$options.localDrawerKey);
       if (localValue === null) {
-        this.isExpanded = true;
+        this.isExpanded = isExpanded;
       }
     },
     setTopPosition() {

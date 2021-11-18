@@ -7,7 +7,7 @@ class ExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :issue_tracking
+  feature_category :team_planning
   worker_resource_boundary :cpu
   loggable_arguments 2
 

@@ -10,7 +10,7 @@ type: reference, howto
 GitLab encourages communication through comments, threads, and
 [code suggestions](../project/merge_requests/reviews/suggestions.md).
 
-There are two types of comments:
+Two types of comments are available:
 
 - A standard comment.
 - A comment in a thread, which can be [resolved](#resolve-a-thread).
@@ -119,16 +119,15 @@ Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
 
-## Mark a comment as confidential
+## Mark a comment as confidential **(FREE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to enable it. **(FREE SELF)**
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
 
-WARNING:
-This feature might not be available to you. Check the **version history** note above for details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `confidential_notes`.
+On GitLab.com, this feature is not available.
+You should not use this feature for production environments.
 
 You can make a comment confidential, so that it is visible only to project members
 who have at least the Reporter role.
@@ -141,8 +140,6 @@ who have at least the Reporter role.
 You can also make an [entire issue confidential](../project/issues/confidential_issues.md).
 
 ## Show only comments
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26723) in GitLab 11.5.
 
 For issues and merge requests with many comments, you can filter the page to show comments only.
 
@@ -171,14 +168,12 @@ You can assign an issue to a user who made a comment.
 
 ## Create a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30299) in GitLab 11.9.
-
 When you reply to a standard comment, you create a thread.
 
 Prerequisites:
 
 - You must have at least the [Guest role](../permissions.md#project-members-permissions).
-- You must be in an issue, merge request, or epic. Commits and snippets threads are not supported.
+- You must be in an issue, merge request, or epic. Threads in commits and snippets are not supported.
 
 To create a thread by replying to a comment:
 
@@ -186,7 +181,7 @@ To create a thread by replying to a comment:
 
    ![Reply to comment button](img/reply_to_comment_button.png)
 
-   The reply area is displayed.
+   The reply section is displayed.
 
 1. Enter your reply.
 1. Select **Comment** or **Add comment now** (depending on where in the UI you are replying).
@@ -215,8 +210,7 @@ A threaded comment is created.
 
 ## Resolve a thread
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5022) in GitLab 8.11.
-> - Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
+> Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
 
 In a merge request, you can resolve a thread when you want to finish a conversation.
 
@@ -286,22 +280,3 @@ with a new push.
 
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
-
-## Enable or disable confidential comments **(FREE SELF)**
-
-Confidential comments are under development and not ready for production use. The feature is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:confidential_notes)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:confidential_notes)
-```

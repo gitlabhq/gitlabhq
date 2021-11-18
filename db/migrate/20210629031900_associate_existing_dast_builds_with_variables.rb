@@ -20,7 +20,6 @@ class AssociateExistingDastBuildsWithVariables < ActiveRecord::Migration[6.1]
   class Build < ApplicationRecord
     self.table_name = 'ci_builds'
     self.inheritance_column = :_type_disabled
-    self.gitlab_schema = :gitlab_ci
 
     default_scope { where(name: :dast, stage: :dast) } # rubocop:disable Cop/DefaultScope
   end

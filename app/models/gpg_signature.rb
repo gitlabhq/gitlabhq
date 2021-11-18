@@ -12,7 +12,8 @@ class GpgSignature < ApplicationRecord
     same_user_different_email: 2,
     other_user: 3,
     unverified_key: 4,
-    unknown_key: 5
+    unknown_key: 5,
+    multiple_signatures: 6
   }
 
   belongs_to :project

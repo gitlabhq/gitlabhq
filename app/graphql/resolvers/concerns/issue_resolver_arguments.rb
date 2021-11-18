@@ -55,8 +55,8 @@ module IssueResolverArguments
              description: 'Filter issues by the given issue types.',
              required: false
     argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
-              required: false,
-              description: 'Filter issues by milestone ID wildcard.'
+             required: false,
+             description: 'Filter issues by milestone ID wildcard.'
     argument :my_reaction_emoji, GraphQL::Types::String,
              required: false,
              description: 'Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported.'
@@ -83,6 +83,7 @@ module IssueResolverArguments
     args[:attempt_project_search_optimizations] = true if args[:search].present?
 
     prepare_assignee_username_params(args)
+    prepare_release_tag_params(args)
 
     finder = IssuesFinder.new(current_user, args)
 
@@ -93,6 +94,7 @@ module IssueResolverArguments
     params_not_mutually_exclusive(args, mutually_exclusive_assignee_username_args)
     params_not_mutually_exclusive(args, mutually_exclusive_milestone_args)
     params_not_mutually_exclusive(args.fetch(:not, {}), mutually_exclusive_milestone_args)
+    params_not_mutually_exclusive(args, mutually_exclusive_release_tag_args)
     validate_anonymous_search_access! if args[:search].present?
 
     super
@@ -105,9 +107,29 @@ module IssueResolverArguments
 
       complexity
     end
+
+    def accept_release_tag
+      argument :release_tag, [GraphQL::Types::String],
+               required: false,
+               description: "Release tag associated with the issue's milestone."
+      argument :release_tag_wildcard_id, Types::ReleaseTagWildcardIdEnum,
+               required: false,
+               description: 'Filter issues by release tag ID wildcard.'
+    end
   end
 
   private
+
+  def prepare_release_tag_params(args)
+    release_tag_wildcard = args.delete(:release_tag_wildcard_id)
+    return if release_tag_wildcard.blank?
+
+    args[:release_tag] ||= release_tag_wildcard
+  end
+
+  def mutually_exclusive_release_tag_args
+    [:release_tag, :release_tag_wildcard_id]
+  end
 
   def prepare_assignee_username_params(args)
     args[:assignee_username] = args.delete(:assignee_usernames) if args[:assignee_usernames].present?

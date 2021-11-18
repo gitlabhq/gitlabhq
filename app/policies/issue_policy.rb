@@ -12,6 +12,9 @@ class IssuePolicy < IssuablePolicy
     @user && IssueCollection.new([@subject]).visible_to(@user).any?
   end
 
+  desc "User can read contacts belonging to the issue group"
+  condition(:can_read_crm_contacts, scope: :subject) { @user.can?(:read_crm_contact, @subject.project.group) }
+
   desc "Issue is confidential"
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
@@ -76,6 +79,10 @@ class IssuePolicy < IssuablePolicy
 
   rule { ~persisted & can?(:create_issue) }.policy do
     enable :set_confidentiality
+  end
+
+  rule { can?(:set_issue_metadata) & can_read_crm_contacts }.policy do
+    enable :set_issue_crm_contacts
   end
 end
 

@@ -69,7 +69,7 @@ You can include an array of configuration files:
 
 ## Use `default` configuration from an included configuration file
 
-You can define a [`default`](index.md#custom-default-keyword-values) section in a
+You can define a [`default`](index.md#default) section in a
 configuration file. When you use a `default` section with the `include` keyword, the defaults apply to
 all jobs in the pipeline.
 
@@ -216,3 +216,120 @@ default:
   after_script:
     - echo "Job complete."
 ```
+
+## Use variables with `include`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
+> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
+> - [Support for pipeline variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/337633) in GitLab 14.5.
+
+In `include` sections in your `.gitlab-ci.yml` file, you can use:
+
+- [Project variables](../variables/index.md#add-a-cicd-variable-to-a-project)
+- [Group variables](../variables/index.md#add-a-cicd-variable-to-a-group)
+- [Instance variables](../variables/index.md#add-a-cicd-variable-to-an-instance)
+- Project [predefined variables](../variables/predefined_variables.md)
+- In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
+
+  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
+  ref path, like `refs/heads/branch-name`. In `include:rules`, you might need to use
+  `if: $CI_COMMIT_REF_NAME =~ /main/` (not `== main`). This behavior is resolved in GitLab 14.5.
+
+In GitLab 14.5 and later, you can also use:
+
+- [Trigger variables](../triggers/index.md#making-use-of-trigger-variables).
+- [Scheduled pipeline variables](../pipelines/schedules.md#using-variables).
+- [Manual pipeline run variables](../variables/index.md#override-a-variable-when-running-a-pipeline-manually).
+- Pipeline [predefined variables](../variables/predefined_variables.md).
+
+  YAML files are parsed before the pipeline is created, so the following pipeline predefined variables
+  are **not** available:
+
+  - `CI_PIPELINE_ID`
+  - `CI_PIPELINE_URL`
+  - `CI_PIPELINE_IID`
+  - `CI_PIPELINE_CREATED_AT`
+
+For example:
+
+```yaml
+include:
+  project: '$CI_PROJECT_PATH'
+  file: '.compliance-gitlab-ci.yml'
+```
+
+For an example of how you can include these predefined variables, and the variables' impact on CI/CD jobs,
+see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
+
+## Use `rules` with `include`
+
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) GitLab 14.3.
+> - [Feature flag `ci_include_rules` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4.
+> - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
+
+You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
+
+You can only use the following rules with `include` (and only with [certain variables](#use-variables-with-include)):
+
+- [`if` rules](index.md#rulesif). For example:
+
+  ```yaml
+  include:
+    - local: builds.yml
+      rules:
+        - if: '$INCLUDE_BUILDS == "true"'
+    - local: deploys.yml
+      rules:
+        - if: $CI_COMMIT_BRANCH == "main"
+
+  test:
+    stage: test
+    script: exit 0
+  ```
+
+- [`exists` rules](index.md#rulesexists). For example:
+
+  ```yaml
+  include:
+    - local: builds.yml
+      rules:
+        - exists:
+            - file.md
+
+  test:
+    stage: test
+    script: exit 0
+  ```
+
+`rules` keyword `changes` is not supported.
+
+## Use `include:local` with wildcard file paths
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
+
+You can use wildcard paths (`*` and `**`) with `include:local`.
+
+Example:
+
+```yaml
+include: 'configs/*.yml'
+```
+
+When the pipeline runs, GitLab:
+
+- Adds all `.yml` files in the `configs` directory into the pipeline configuration.
+- Does not add `.yml` files in subfolders of the `configs` directory. To allow this,
+  add the following configuration:
+
+  ```yaml
+  # This matches all `.yml` files in `configs` and any subfolder in it.
+  include: 'configs/**.yml'
+
+  # This matches all `.yml` files only in subfolders of `configs`.
+  include: 'configs/**/*.yml'
+  ```

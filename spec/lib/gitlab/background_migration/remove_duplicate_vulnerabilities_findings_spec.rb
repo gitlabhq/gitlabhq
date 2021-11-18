@@ -5,9 +5,9 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }
-  let(:project) { table(:projects).create!(id: 123, namespace_id: namespace.id) }
+  let(:project) { table(:projects).create!(id: 14219619, namespace_id: namespace.id) }
   let(:scanners) { table(:vulnerability_scanners) }
-  let!(:scanner) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
+  let!(:scanner1) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
   let!(:scanner2) { scanners.create!(project_id: project.id, external_id: 'test 2', name: 'test scanner 2') }
   let!(:scanner3) { scanners.create!(project_id: project.id, external_id: 'test 3', name: 'test scanner 3') }
   let!(:unrelated_scanner) { scanners.create!(project_id: project.id, external_id: 'unreleated_scanner', name: 'unrelated scanner') }
@@ -16,43 +16,68 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
   let(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
   let(:vulnerability_identifier) do
     vulnerability_identifiers.create!(
+      id: 1244459,
       project_id: project.id,
       external_type: 'vulnerability-identifier',
       external_id: 'vulnerability-identifier',
-      fingerprint: '7e394d1b1eb461a7406d7b1e08f057a1cf11287a',
+      fingerprint: '0a203e8cd5260a1948edbedc76c7cb91ad6a2e45',
       name: 'vulnerability identifier')
   end
 
-  let!(:first_finding) do
+  let!(:vulnerability_for_first_duplicate) do
+    create_vulnerability!(
+      project_id: project.id,
+      author_id: user.id
+    )
+  end
+
+  let!(:first_finding_duplicate) do
     create_finding!(
-      uuid: "test1",
-      vulnerability_id: nil,
+      id: 5606961,
+      uuid: "bd95c085-71aa-51d7-9bb6-08ae669c262e",
+      vulnerability_id: vulnerability_for_first_duplicate.id,
       report_type: 0,
-      location_fingerprint: '2bda3014914481791847d8eca38d1a8d13b6ad76',
+      location_fingerprint: '00049d5119c2cb3bfb3d1ee1f6e031fe925aed75',
       primary_identifier_id: vulnerability_identifier.id,
-      scanner_id: scanner.id,
+      scanner_id: scanner1.id,
       project_id: project.id
     )
   end
 
-  let!(:first_duplicate) do
+  let!(:vulnerability_for_second_duplicate) do
+    create_vulnerability!(
+      project_id: project.id,
+      author_id: user.id
+    )
+  end
+
+  let!(:second_finding_duplicate) do
     create_finding!(
-      uuid: "test2",
-      vulnerability_id: nil,
+      id: 8765432,
+      uuid: "5b714f58-1176-5b26-8fd5-e11dfcb031b5",
+      vulnerability_id: vulnerability_for_second_duplicate.id,
       report_type: 0,
-      location_fingerprint: '2bda3014914481791847d8eca38d1a8d13b6ad76',
+      location_fingerprint: '00049d5119c2cb3bfb3d1ee1f6e031fe925aed75',
       primary_identifier_id: vulnerability_identifier.id,
       scanner_id: scanner2.id,
       project_id: project.id
     )
   end
 
-  let!(:second_duplicate) do
+  let!(:vulnerability_for_third_duplicate) do
+    create_vulnerability!(
+      project_id: project.id,
+      author_id: user.id
+    )
+  end
+
+  let!(:third_finding_duplicate) do
     create_finding!(
-      uuid: "test3",
-      vulnerability_id: nil,
+      id: 8832995,
+      uuid: "cfe435fa-b25b-5199-a56d-7b007cc9e2d4",
+      vulnerability_id: vulnerability_for_third_duplicate.id,
       report_type: 0,
-      location_fingerprint: '2bda3014914481791847d8eca38d1a8d13b6ad76',
+      location_fingerprint: '00049d5119c2cb3bfb3d1ee1f6e031fe925aed75',
       primary_identifier_id: vulnerability_identifier.id,
       scanner_id: scanner3.id,
       project_id: project.id
@@ -61,6 +86,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
 
   let!(:unrelated_finding) do
     create_finding!(
+      id: 9999999,
       uuid: "unreleated_finding",
       vulnerability_id: nil,
       report_type: 1,
@@ -71,7 +97,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
     )
   end
 
-  subject { described_class.new.perform(first_finding.id, unrelated_finding.id) }
+  subject { described_class.new.perform(first_finding_duplicate.id, unrelated_finding.id) }
 
   before do
     stub_const("#{described_class}::DELETE_BATCH_SIZE", 1)
@@ -82,7 +108,15 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
 
     expect { subject }.to change { vulnerability_findings.count }.from(4).to(2)
 
-    expect(vulnerability_findings.pluck(:id)).to eq([second_duplicate.id, unrelated_finding.id])
+    expect(vulnerability_findings.pluck(:id)).to match_array([third_finding_duplicate.id, unrelated_finding.id])
+  end
+
+  it "removes vulnerabilites without findings" do
+    expect(vulnerabilities.count).to eq(3)
+
+    expect { subject }.to change { vulnerabilities.count }.from(3).to(1)
+
+    expect(vulnerabilities.pluck(:id)).to match_array([vulnerability_for_third_duplicate.id])
   end
 
   private
@@ -100,11 +134,12 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
 
   # rubocop:disable Metrics/ParameterLists
   def create_finding!(
+    id: nil,
     vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:,
                       name: "test", severity: 7, confidence: 7, report_type: 0,
                       project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
                       metadata_version: 'test', raw_metadata: 'test', uuid: 'test')
-    vulnerability_findings.create!(
+    params = {
       vulnerability_id: vulnerability_id,
       project_id: project_id,
       name: name,
@@ -118,7 +153,9 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateVulnerabilitiesFindin
       metadata_version: metadata_version,
       raw_metadata: raw_metadata,
       uuid: uuid
-    )
+    }
+    params[:id] = id unless id.nil?
+    vulnerability_findings.create!(params)
   end
   # rubocop:enable Metrics/ParameterLists
 

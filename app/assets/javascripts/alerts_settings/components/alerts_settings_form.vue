@@ -16,6 +16,7 @@ import {
 import * as Sentry from '@sentry/browser';
 import { isEqual, isEmpty, omit } from 'lodash';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import {
   integrationTypes,
   integrationSteps,
@@ -129,6 +130,7 @@ export default {
         name: true,
         apiUrl: true,
       },
+      pricingLink: `${PROMO_URL}/pricing`,
     };
   },
   computed: {
@@ -436,7 +438,7 @@ export default {
             disabled="true"
             class="gl-display-inline-block gl-my-4"
             :message="$options.i18n.integrationFormSteps.selectType.enterprise"
-            link="https://about.gitlab.com/pricing"
+            :link="pricingLink"
             data-testid="multi-integrations-not-supported"
           />
         </gl-form-group>

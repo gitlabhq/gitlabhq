@@ -7,11 +7,15 @@ module Gitlab
   # To check if a job has been completed, simply pass the job ID to the
   # `completed?` method:
   #
-  #     job_id = SomeWorker.perform_async(...)
+  #     job_id = SomeWorker.with_status.perform_async(...)
   #
   #     if Gitlab::SidekiqStatus.completed?(job_id)
   #       ...
   #     end
+  #
+  # If you do not use `with_status`, and the worker class does not declare
+  # `status_expiration` in its `sidekiq_options`, then this status will not be
+  # stored.
   #
   # For each job ID registered a separate key is stored in Redis, making lookups
   # much faster than using Sidekiq's built-in job finding/status API. These keys

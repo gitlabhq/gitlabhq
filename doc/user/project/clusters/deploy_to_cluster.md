@@ -4,13 +4,14 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Deploy to a Kubernetes cluster with cluster certificates
+# Deploy to a Kubernetes cluster with cluster certificates (DEPRECATED) **(FREE)**
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
-The process described on this page uses cluster certificates to deploy to your cluster
-from GitLab. Although this method still works, it is **no longer recommended**.
-To deploy to your cluster from GitLab, we **recommend** using the [GitLab Kubernetes Agent](../../clusters/agent/index.md)
-instead. **(PREMIUM)**
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+To connect your cluster to GitLab, use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
+To deploy with the Agent, use the [CI/CD Tunnel](../../clusters/agent/ci_cd_tunnel.md).
 
 A Kubernetes cluster can be the destination for a deployment job. If
 
@@ -77,7 +78,7 @@ You can customize the deployment namespace in a few ways:
 - For **non-managed** clusters, the auto-generated namespace is set in the `KUBECONFIG`,
   but the user is responsible for ensuring its existence. You can fully customize
   this value using
-  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments)
+  [`environment:kubernetes:namespace`](../../../ci/environments/index.md#configure-kubernetes-deployments-deprecated)
   in `.gitlab-ci.yml`.
 
 When you customize the namespace, existing environments remain linked to their current
@@ -100,7 +101,7 @@ combined with *one* of the following:
 
 > Introduced in GitLab 8.15.
 
-The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals)
+The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
 support to your [environments](../../../ci/environments/index.md). This is based
 on the `exec` functionality found in Docker and Kubernetes, so you get a new
 shell session in your existing containers. To use this integration, you

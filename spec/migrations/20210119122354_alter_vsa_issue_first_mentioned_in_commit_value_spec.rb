@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('alter_vsa_issue_first_mentioned_in_commit_value')
+require_migration!
 
 RSpec.describe AlterVsaIssueFirstMentionedInCommitValue, schema: 20210114033715 do
   let(:group_stages) { table(:analytics_cycle_analytics_group_stages) }

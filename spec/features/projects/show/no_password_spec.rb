@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'No Password Alert' do
+  let_it_be(:message_password_auth_enabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set a password or set up a Personal Access Token to use instead of a password. For more information, see Clone with HTTPS.' }
+  let_it_be(:message_password_auth_disabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set up a Personal Access Token to use instead of a password. For more information, see Clone with HTTPS.' }
+
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   context 'with internal auth enabled' do
@@ -15,7 +18,7 @@ RSpec.describe 'No Password Alert' do
       let(:user) { create(:user) }
 
       it 'shows no alert' do
-        expect(page).not_to have_content "You won't be able to pull or push repositories via HTTP until you set a password on your account"
+        expect(page).not_to have_content message_password_auth_enabled
       end
     end
 
@@ -23,7 +26,7 @@ RSpec.describe 'No Password Alert' do
       let(:user) { create(:user, password_automatically_set: true) }
 
       it 'shows a password alert' do
-        expect(page).to have_content "You won't be able to pull or push repositories via HTTP until you set a password on your account"
+        expect(page).to have_content message_password_auth_enabled
       end
     end
   end
@@ -41,7 +44,7 @@ RSpec.describe 'No Password Alert' do
         gitlab_sign_in_via('saml', user, 'my-uid')
         visit project_path(project)
 
-        expect(page).to have_content "You won't be able to pull or push repositories via HTTP until you create a personal access token on your account"
+        expect(page).to have_content message_password_auth_disabled
       end
     end
 
@@ -51,7 +54,7 @@ RSpec.describe 'No Password Alert' do
         gitlab_sign_in_via('saml', user, 'my-uid')
         visit project_path(project)
 
-        expect(page).not_to have_content "You won't be able to pull or push repositories via HTTP until you create a personal access token on your account"
+        expect(page).not_to have_content message_password_auth_disabled
       end
     end
   end

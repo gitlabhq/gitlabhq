@@ -23,6 +23,7 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::RepositoryMenu.new(context))
         add_menu(Sidebars::Projects::Menus::IssuesMenu.new(context))
         add_menu(Sidebars::Projects::Menus::ExternalIssueTrackerMenu.new(context))
+        add_menu(Sidebars::Projects::Menus::ZentaoMenu.new(context))
         add_menu(Sidebars::Projects::Menus::MergeRequestsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SecurityComplianceMenu.new(context))
@@ -35,6 +36,14 @@ module Sidebars
         add_menu(Sidebars::Projects::Menus::ExternalWikiMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SnippetsMenu.new(context))
         add_menu(Sidebars::Projects::Menus::SettingsMenu.new(context))
+        add_invite_members_menu
+      end
+
+      def add_invite_members_menu
+        experiment(:invite_members_in_side_nav, group: context.project.group) do |e|
+          e.control {}
+          e.candidate { add_menu(Sidebars::Projects::Menus::InviteTeamMembersMenu.new(context)) }
+        end
       end
 
       def confluence_or_wiki_menu

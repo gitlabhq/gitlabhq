@@ -37,7 +37,7 @@ module API
 
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces(owned_only: owned_only)
 
-        namespaces = namespaces.include_route
+        namespaces = namespaces.without_project_namespaces.include_route
 
         namespaces = namespaces.include_gitlab_subscription_with_hosted_plan if Gitlab.ee?
 
@@ -70,7 +70,7 @@ module API
       get ':namespace/exists', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         namespace_path = params[:namespace]
 
-        exists = Namespace.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?
+        exists = Namespace.without_project_namespaces.by_parent(params[:parent_id]).filter_by_path(namespace_path).exists?
         suggestions = exists ? [Namespace.clean_path(namespace_path)] : []
 
         present :exists, exists

@@ -142,7 +142,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
           expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
           merge_request = MergeRequest.first
-          expect(merge_request.author).to eq(pull_request_author)
+          expect(merge_request.author).to eq(expected_author)
         end
       end
 
@@ -151,7 +151,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
           stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
         end
 
-        include_examples 'imports pull requests'
+        context 'when email is not present' do
+          before do
+            allow(pull_request).to receive(:author_email).and_return(nil)
+          end
+
+          let(:expected_author) { project_creator }
+
+          include_examples 'imports pull requests'
+        end
+
+        context 'when email is present' do
+          before do
+            allow(pull_request).to receive(:author_email).and_return(pull_request_author.email)
+          end
+
+          let(:expected_author) { pull_request_author }
+
+          include_examples 'imports pull requests'
+        end
       end
 
       context 'when bitbucket_server_user_mapping_by_username feature flag is enabled' do
@@ -159,19 +177,24 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
           stub_feature_flags(bitbucket_server_user_mapping_by_username: true)
         end
 
-        include_examples 'imports pull requests' do
-          context 'when username is not present' do
-            before do
-              allow(pull_request).to receive(:author_username).and_return(nil)
-            end
-
-            it 'maps by email' do
-              expect { subject.execute }.to change { MergeRequest.count }.by(1)
-
-              merge_request = MergeRequest.first
-              expect(merge_request.author).to eq(pull_request_author)
-            end
+        context 'when username is not present' do
+          before do
+            allow(pull_request).to receive(:author_username).and_return(nil)
           end
+
+          let(:expected_author) { project_creator }
+
+          include_examples 'imports pull requests'
+        end
+
+        context 'when username is present' do
+          before do
+            allow(pull_request).to receive(:author_username).and_return(pull_request_author.username)
+          end
+
+          let(:expected_author) { pull_request_author }
+
+          include_examples 'imports pull requests'
         end
       end
 
@@ -228,7 +251,23 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
             allow(subject.client).to receive(:activities).and_return([pr_comment])
           end
 
-          it 'maps by email' do
+          it 'defaults to import user' do
+            expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+            merge_request = MergeRequest.first
+            expect(merge_request.notes.count).to eq(1)
+            note = merge_request.notes.first
+            expect(note.author).to eq(project_creator)
+          end
+        end
+
+        context 'when username is present' do
+          before do
+            allow(pr_note).to receive(:author_username).and_return(note_author.username)
+            allow(subject.client).to receive(:activities).and_return([pr_comment])
+          end
+
+          it 'maps by username' do
             expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
             merge_request = MergeRequest.first
@@ -241,7 +280,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
     end
 
     context 'metrics' do
-      let(:histogram) { double(:histogram) }
+      let(:histogram) { double(:histogram).as_null_object }
       let(:counter) { double('counter', increment: true) }
 
       before do
@@ -276,7 +315,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
         )
 
         expect(counter).to receive(:increment)
-        allow(histogram).to receive(:observe).with({ importer: :bitbucket_server_importer }, anything)
 
         subject.execute
       end
@@ -384,13 +422,13 @@ RSpec.describe Gitlab::BitbucketServerImport::Importer do
               allow(inline_note).to receive(:author_username).and_return(nil)
             end
 
-            it 'maps by email' do
+            it 'defaults to import user' do
               expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
               notes = MergeRequest.first.notes.order(:id).to_a
 
-              expect(notes.first.author).to eq(inline_note_author)
-              expect(notes.last.author).to eq(reply_author)
+              expect(notes.first.author).to eq(project_creator)
+              expect(notes.last.author).to eq(project_creator)
             end
           end
         end

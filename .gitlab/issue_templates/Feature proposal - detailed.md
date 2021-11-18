@@ -31,6 +31,14 @@ Personas are described at https://about.gitlab.com/handbook/marketing/product-ma
 * [Eddie (Content Editor)](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/#eddie-content-editor)
 -->
 
+### Metrics 
+
+<!-- How are you going to track uage of this feature? Think about user behavior and their interaction with the product. What indicates someone is getting value from it?
+
+Create tracking issue using the Snowplow event tracking template. See https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Snowplow%20event%20tracking.md
+
+-->
+
 ### User experience goal
 
 <!-- What is the single user experience workflow this problem addresses?
@@ -112,6 +120,4 @@ Use the following resources to find the appropriate labels:
 -->
 /label ~devops:: ~group: ~Category:
 /label  ~"GitLab Free"/~"GitLab Premium"/~"GitLab Ultimate"
-/label ~feature
-/label ~documentation
-/label ~direction
+/label ~"type::feature" ~documentation ~direction

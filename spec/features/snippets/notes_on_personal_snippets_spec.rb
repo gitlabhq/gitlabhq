@@ -18,6 +18,7 @@ RSpec.describe 'Comments on personal snippets', :js do
   end
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in user
     visit snippet_path(snippet)
 

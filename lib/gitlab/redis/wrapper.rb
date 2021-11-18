@@ -17,7 +17,7 @@ module Gitlab
   module Redis
     class Wrapper
       class << self
-        delegate :params, :url, to: :new
+        delegate :params, :url, :store, to: :new
 
         def with
           pool.with { |redis| yield redis }
@@ -124,6 +124,10 @@ module Gitlab
 
       def sentinels?
         sentinels && !sentinels.empty?
+      end
+
+      def store(extras = {})
+        ::Redis::Store::Factory.create(redis_store_options.merge(extras))
       end
 
       private

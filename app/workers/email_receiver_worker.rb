@@ -7,7 +7,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :issue_tracking
+  feature_category :team_planning
   urgency :high
   weight 2
 
@@ -118,7 +118,9 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
       end
 
     if reason
-      EmailRejectionMailer.rejection(reason, raw, can_retry).deliver_later
+      receiver.mail.body = nil
+
+      EmailRejectionMailer.rejection(reason, receiver.mail.encoded, can_retry).deliver_later
     end
   end
 end

@@ -70,7 +70,7 @@ browser_performance:
     reports:
       browser_performance: browser-performance.json
   rules:
-    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+    - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
     - if: '$BROWSER_PERFORMANCE_DISABLED'
       when: never

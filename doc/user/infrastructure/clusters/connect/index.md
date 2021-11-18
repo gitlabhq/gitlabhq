@@ -6,62 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Connect a cluster to GitLab **(FREE)**
 
-You can create new or connect existing clusters to GitLab through different [levels](#cluster-levels),
-using different [methods](#methods-to-connect-a-cluster-to-gitlab).
+The [certificate-based Kubernetes integration with GitLab](../index.md)
+was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
+in GitLab 14.5. To connect your clusters, use the [GitLab Kubernetes Agent](../../../clusters/agent/index.md).
 
-Before getting started:
-
-1. Check the [supported Kubernetes cluster versions](#supported-cluster-versions).
-1. Define the [cluster level](#cluster-levels) according to your case.
-
-After that:
-
-1. Choose the [method](#methods-to-connect-a-cluster-to-gitlab)
-to connect your cluster according to your case.
-1. [View your clusters](#view-your-clusters) connected to GitLab.
-
-## Methods to connect a cluster to GitLab
-
-GitLab offers three methods to connect existing and create new clusters:
-
-- **GitLab Kubernetes Agent**: the best solution to
-[connect existing clusters](#connect-existing-clusters-to-gitlab).
-- **Infrastructure as Code**: it's a broader infrastructure management
-toolset that includes managing your cluster. It's the recommended
-solution to [create a new cluster](#create-new-clusters-from-gitlab)
-from GitLab.
-- **Certificate-based method**: our first and legacy solution uses
-cluster certificates to connect your cluster to GitLab. It is no longer
-recommended for [security implications](#security-implications-for-clusters-connected-with-certificates).
-
-### Connect existing clusters to GitLab
-
-To safely connect and configure an existing cluster on the **project level**,
-we **recommend** using the [GitLab Kubernetes Agent](../../../clusters/agent/index.md).
-We are working to support [the Agent for connecting a cluster at the group level](https://gitlab.com/groups/gitlab-org/-/epics/5784).
-
-Alternatively, you can use [cluster certificates](../../../project/clusters/add_existing_cluster.md)
-to connect clusters in all levels (projects, group, instance). However,
-for [security implications](#security-implications-for-clusters-connected-with-certificates),
-we don't recommend using this method.
-
-### Create new clusters from GitLab
-
-To safely create new clusters from GitLab, use
-[Infrastructure as Code](../../iac/index.md#create-a-new-cluster-through-iac).
-
-The [certificate-based method to create a new cluster](../../../project/clusters/add_remove_clusters.md)
-is still available through the GitLab UI but was **deprecated** in GitLab 14.0.
-If possible, we don't recommend using this method.
-
-### Connect multiple clusters to a single project
-
-To connect multiple clusters to a single project in GitLab,
-we **recommend** using the [GitLab Kubernetes Agent](../../../clusters/agent/index.md).
-
-You can also use the [certificate-based method](../../../project/clusters/multiple_kubernetes_clusters.md),
-but, for [security implications](#security-implications-for-clusters-connected-with-certificates),
-we don't recommend using this method.
+<!-- TBA: (We need to resolve https://gitlab.com/gitlab-org/gitlab/-/issues/343660 before adding this line)
+If you don't have a cluster yet, create one and connect it to GitLab through the Agent.
+You can also create a new cluster from GitLab using [Infrastructure as Code](../../iac/index.md#create-a-new-cluster-through-iac).
+-->
 
 ## Supported cluster versions
 
@@ -85,7 +37,13 @@ Kubernetes version to any supported version at any time:
 
 Some GitLab features may support versions outside the range provided here.
 
-## Cluster levels
+## Cluster levels (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+The [concept of cluster levels was deprecated](../index.md#cluster-levels)
+in GitLab 14.5.
 
 Choose your cluster's level according to its purpose:
 
@@ -117,6 +75,8 @@ your cluster's level.
 1. On the left sidebar, select **Kubernetes**.
 
 ## Security implications for clusters connected with certificates
+
+> Connecting clusters to GitLab through cluster certificates was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 The whole cluster security is based on a model where [developers](../../../permissions.md)

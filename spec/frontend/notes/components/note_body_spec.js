@@ -58,7 +58,6 @@ describe('issue_note_body component', () => {
     it('adds autosave', () => {
       const autosaveKey = `autosave/Note/${note.noteable_type}/${note.id}`;
 
-      expect(vm.autosave).toExist();
       expect(vm.autosave.key).toEqual(autosaveKey);
     });
   });

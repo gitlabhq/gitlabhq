@@ -29,5 +29,5 @@
 
 ### Team
 
-- [ ] Add ~"workflow::planning breakdown" ~feature and the corresponding `~devops::<stage>` and `~group::<group>` labels.
+- [ ] Add ~"workflow::planning breakdown" ~"type::feature" and the corresponding `~devops::<stage>` and `~group::<group>` labels.
 - [ ] Ping the PM and EM.

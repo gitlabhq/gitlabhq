@@ -29,7 +29,7 @@ describe('monitoring/pages/dashboard_page', () => {
     });
   };
 
-  const findDashboardComponent = () => wrapper.find(Dashboard);
+  const findDashboardComponent = () => wrapper.findComponent(Dashboard);
 
   beforeEach(() => {
     buildRouter();
@@ -60,7 +60,7 @@ describe('monitoring/pages/dashboard_page', () => {
       smallEmptyState: false,
     };
 
-    expect(findDashboardComponent()).toExist();
+    expect(findDashboardComponent().exists()).toBe(true);
     expect(allProps).toMatchObject(findDashboardComponent().props());
   });
 });

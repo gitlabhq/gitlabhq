@@ -2,6 +2,7 @@
 import { cloneDeep } from 'lodash';
 import { __ } from '~/locale';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import { searchValidator } from '~/runner/runner_search_utils';
 import { CREATED_DESC, CREATED_ASC, CONTACTED_DESC, CONTACTED_ASC } from '../constants';
 
 const sortOptions = [
@@ -31,9 +32,12 @@ export default {
     value: {
       type: Object,
       required: true,
-      validator(val) {
-        return Array.isArray(val?.filters) && typeof val?.sort === 'string';
-      },
+      validator: searchValidator,
+    },
+    tokens: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
     namespace: {
       type: String,
@@ -43,7 +47,7 @@ export default {
   data() {
     // filtered_search_bar_root.vue may mutate the inital
     // filters. Use `cloneDeep` to prevent those mutations
-    //  from affecting this component
+    // from affecting this component
     const { filters, sort } = cloneDeep(this.value);
     return {
       initialFilterValue: filters,
@@ -52,19 +56,17 @@ export default {
   },
   methods: {
     onFilter(filters) {
-      const { sort } = this.value;
-
+      // Apply new filters, from page 1
       this.$emit('input', {
+        ...this.value,
         filters,
-        sort,
         pagination: { page: 1 },
       });
     },
     onSort(sort) {
-      const { filters } = this.value;
-
+      // Apply new sort, from page 1
       this.$emit('input', {
-        filters,
+        ...this.value,
         sort,
         pagination: { page: 1 },
       });
@@ -74,13 +76,16 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div
+    class="gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1"
+  >
     <filtered-search
       v-bind="$attrs"
       :namespace="namespace"
       recent-searches-storage-key="runners-search"
       :sort-options="$options.sortOptions"
       :initial-filter-value="initialFilterValue"
+      :tokens="tokens"
       :initial-sort-by="initialSortBy"
       :search-input-placeholder="__('Search or filter results...')"
       data-testid="runners-filtered-search"

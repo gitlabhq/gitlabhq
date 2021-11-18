@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('delete_legacy_operations_feature_flags')
+require_migration!
 
 RSpec.describe DeleteLegacyOperationsFeatureFlags do
   let(:namespace) { table(:namespaces).create!(name: 'foo', path: 'bar') }

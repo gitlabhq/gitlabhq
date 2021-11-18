@@ -12,33 +12,34 @@ module ClustersHelper
     end
   end
 
-  def display_cluster_agents?(_clusterable)
-    false
+  def display_cluster_agents?(clusterable)
+    clusterable.is_a?(Project)
   end
 
-  def js_cluster_agents_list_data(clusterable_project)
-    {
-      default_branch_name: clusterable_project.default_branch,
-      empty_state_image: image_path('illustrations/clusters_empty.svg'),
-      project_path: clusterable_project.full_path,
-      agent_docs_url: help_page_path('user/clusters/agent/index'),
-      install_docs_url: help_page_path('administration/clusters/kas'),
-      get_started_docs_url: help_page_path('user/clusters/agent/index', anchor: 'define-a-configuration-repository'),
-      integration_docs_url: help_page_path('user/clusters/agent/index', anchor: 'get-started-with-gitops-and-the-gitlab-agent'),
-      kas_address: Gitlab::Kas.external_url
-    }
-  end
-
-  def js_clusters_list_data(path = nil)
+  def js_clusters_list_data(clusterable)
     {
       ancestor_help_path: help_page_path('user/group/clusters/index', anchor: 'cluster-precedence'),
-      endpoint: path,
+      endpoint: clusterable.index_path(format: :json),
       img_tags: {
         aws: { path: image_path('illustrations/logos/amazon_eks.svg'), text: s_('ClusterIntegration|Amazon EKS') },
         default: { path: image_path('illustrations/logos/kubernetes.svg'), text: _('Kubernetes Cluster') },
         gcp: { path: image_path('illustrations/logos/google_gke.svg'), text: s_('ClusterIntegration|Google GKE') }
-      }
+      },
+      clusters_empty_state_image: image_path('illustrations/empty-state/empty-state-clusters.svg'),
+      empty_state_help_text: clusterable.empty_state_help_text,
+      new_cluster_path: clusterable.new_path(tab: 'create'),
+      can_add_cluster: clusterable.can_add_cluster?.to_s
     }
+  end
+
+  def js_clusters_data(clusterable)
+    {
+      default_branch_name: clusterable.default_branch,
+      empty_state_image: image_path('illustrations/empty-state/empty-state-agents.svg'),
+      project_path: clusterable.full_path,
+      add_cluster_path: clusterable.new_path(tab: 'add'),
+      kas_address: Gitlab::Kas.external_url
+    }.merge(js_clusters_list_data(clusterable))
   end
 
   def js_cluster_form_data(cluster, can_edit)

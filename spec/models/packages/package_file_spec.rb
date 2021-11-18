@@ -14,7 +14,6 @@ RSpec.describe Packages::PackageFile, type: :model do
     it { is_expected.to belong_to(:package) }
     it { is_expected.to have_one(:conan_file_metadatum) }
     it { is_expected.to have_many(:package_file_build_infos).inverse_of(:package_file) }
-    it { is_expected.to have_many(:pipelines).through(:package_file_build_infos) }
     it { is_expected.to have_one(:debian_file_metadatum).inverse_of(:package_file).class_name('Packages::Debian::FileMetadatum') }
     it { is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file).class_name('Packages::Helm::FileMetadatum') }
   end
@@ -203,6 +202,28 @@ RSpec.describe Packages::PackageFile, type: :model do
       it 'returns the most recent package for the selected channel' do
         expect(subject).to contain_exactly(helm_package_file2)
       end
+    end
+  end
+
+  describe '#pipelines' do
+    let_it_be_with_refind(:package_file) { create(:package_file) }
+
+    subject { package_file.pipelines }
+
+    context 'package_file without pipeline' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'package_file with pipeline' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+      let_it_be(:pipeline2) { create(:ci_pipeline) }
+
+      before do
+        package_file.package_file_build_infos.create!(pipeline: pipeline)
+        package_file.package_file_build_infos.create!(pipeline: pipeline2)
+      end
+
+      it { is_expected.to contain_exactly(pipeline, pipeline2) }
     end
   end
 

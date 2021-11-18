@@ -26,6 +26,8 @@ function retrieve_tests_metadata() {
     fi
 
     if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
+      # Fixed ID to get the report back to a good state after https://gitlab.com/gitlab-org/gitlab/-/issues/345798 / https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74617
+      test_metadata_job_id=1766932099
       scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
     fi
   fi
@@ -89,6 +91,25 @@ function crystalball_rspec_data_exists() {
   compgen -G "crystalball/rspec*.yml" >/dev/null
 }
 
+function retrieve_previous_failed_tests() {
+  local directory_for_output_reports="${1}"
+  local rspec_pg_regex="${2}"
+  local rspec_ee_pg_regex="${3}"
+  local pipeline_report_path="test_results/previous/test_reports.json"
+
+  # Used to query merge requests. This variable reflects where the merge request has been created
+  local target_project_path="${CI_MERGE_REQUEST_PROJECT_PATH}"
+  local instance_url="${CI_SERVER_URL}"
+
+  echo 'Attempting to build pipeline test report...'
+
+  scripts/pipeline_test_report_builder.rb --instance-base-url "${instance_url}" --target-project "${target_project_path}" --mr-id "${CI_MERGE_REQUEST_IID}" --output-file-path "${pipeline_report_path}"
+
+  echo 'Generating failed tests lists...'
+
+  scripts/failed_tests.rb --previous-tests-report-path "${pipeline_report_path}" --output-directory "${directory_for_output_reports}" --rspec-pg-regex "${rspec_pg_regex}" --rspec-ee-pg-regex "${rspec_ee_pg_regex}"
+}
+
 function rspec_simple_job() {
   local rspec_opts="${1}"
 
@@ -140,6 +161,7 @@ function rspec_paralellized_job() {
   fi
 
   echo "KNAPSACK_TEST_FILE_PATTERN: ${KNAPSACK_TEST_FILE_PATTERN}"
+  echo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY}"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"
@@ -147,6 +169,7 @@ function rspec_paralellized_job() {
     export SUITE_FLAKY_RSPEC_REPORT_PATH="${FLAKY_RSPEC_SUITE_REPORT_PATH}"
     export FLAKY_RSPEC_REPORT_PATH="rspec_flaky/all_${report_name}_report.json"
     export NEW_FLAKY_RSPEC_REPORT_PATH="rspec_flaky/new_${report_name}_report.json"
+    export SKIPPED_FLAKY_TESTS_REPORT_PATH="rspec_flaky/skipped_flaky_tests_${report_name}_report.txt"
 
     if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
       echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
@@ -170,6 +193,25 @@ function rspec_paralellized_job() {
   fi
 
   date
+}
+
+function rspec_rerun_previous_failed_tests() {
+  local test_file_count_threshold=${RSPEC_PREVIOUS_FAILED_TEST_FILE_COUNT_THRESHOLD:-10}
+  local matching_tests_file=${1}
+  local rspec_opts=${2}
+  local test_files="$(cat "${matching_tests_file}")"
+  local test_file_count=$(wc -w "${matching_tests_file}" | awk {'print $1'})
+
+  if [[ "${test_file_count}" -gt "${test_file_count_threshold}" ]]; then
+    echo "This job is intentionally exited because there are more than ${test_file_count_threshold} test files to rerun."
+    exit 0
+  fi
+
+  if [[ -n $test_files ]]; then
+    rspec_simple_job "${test_files}"
+  else
+    echo "No failed test files to rerun"
+  fi
 }
 
 function rspec_fail_fast() {

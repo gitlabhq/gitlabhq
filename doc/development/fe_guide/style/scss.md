@@ -133,6 +133,40 @@ Before adding a new variable for a color or a size, guarantee:
 - There isn't an existing one.
 - There isn't a similar one we can use instead.
 
+### Using `extend` at-rule
+
+Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab.com/gitlab-org/gitlab/-/issues/323021) and [the rule doesn't work as it should to](https://sass-lang.com/documentation/breaking-changes/extend-compound). Use mixins instead:
+
+```scss
+// Bad
+.gl-pt-3 {
+  padding-top: 12px;
+}
+
+.my-element {
+  @extend .gl-pt-3;
+}
+
+// compiles to
+.gl-pt-3, .my-element {
+  padding-top: 12px;
+}
+
+// Good
+@mixing gl-pt-3 {
+  padding-top: 12px;
+}
+
+.my-element {
+  @include gl-pt-3;
+}
+
+// compiles to
+.my-element {
+  padding-top: 12px;
+}
+```
+
 ## Linting
 
 We use [stylelint](https://stylelint.io) to check for style guide conformity. It uses the

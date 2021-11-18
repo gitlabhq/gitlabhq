@@ -35,6 +35,7 @@ RSpec.describe "User deletes branch", :js do
 
   context 'when the feature flag :delete_branch_confirmation_modals is disabled' do
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       stub_feature_flags(delete_branch_confirmation_modals: false)
     end
 

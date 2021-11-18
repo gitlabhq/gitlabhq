@@ -86,12 +86,12 @@ describe('Multi-file store mutations', () => {
       mutations.SET_EMPTY_STATE_SVGS(localState, {
         emptyStateSvgPath: 'emptyState',
         noChangesStateSvgPath: 'noChanges',
-        committedStateSvgPath: 'commited',
+        committedStateSvgPath: 'committed',
       });
 
       expect(localState.emptyStateSvgPath).toBe('emptyState');
       expect(localState.noChangesStateSvgPath).toBe('noChanges');
-      expect(localState.committedStateSvgPath).toBe('commited');
+      expect(localState.committedStateSvgPath).toBe('committed');
     });
   });
 

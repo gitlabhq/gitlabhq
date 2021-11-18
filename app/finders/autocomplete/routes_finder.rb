@@ -30,7 +30,7 @@ module Autocomplete
 
     class NamespacesOnly < self
       def routables
-        return Namespace.all if current_user.admin?
+        return Namespace.without_project_namespaces if current_user.admin?
 
         current_user.namespaces
       end

@@ -29,6 +29,7 @@ RSpec.describe API::ProjectSnapshots do
           repository: repository.gitaly_repository
         ).to_json
       )
+      expect(response.parsed_body).to be_empty
     end
 
     it 'returns authentication error as project owner' do

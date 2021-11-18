@@ -9,7 +9,7 @@
 
 .md-area.position-relative
   .md-header
-    %ul.nav.nav-tabs.nav-links.clearfix
+    = gl_tabs_nav({ class: 'clearfix nav-links'}) do
       %li.md-header-tab.active
         %button.js-md-write-button
           = _("Write")

@@ -351,6 +351,21 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
+  context 'when updating any field except the file' do
+    let(:artifact) { create(:ci_job_artifact, :unarchived_trace_artifact, file_store: 2) }
+
+    before do
+      stub_artifacts_object_storage(direct_upload: true)
+      artifact.file.object_store = 1
+    end
+
+    it 'the `after_commit` hook does not update `file_store`' do
+      artifact.update!(expire_at: Time.current)
+
+      expect(artifact.file_store).to be(2)
+    end
+  end
+
   describe 'validates file format' do
     subject { artifact }
 
@@ -504,6 +519,53 @@ RSpec.describe Ci::JobArtifact do
       artifact.expire_in = '0'
 
       is_expected.to be_nil
+    end
+  end
+
+  describe '#store_after_commit?' do
+    let(:file_type) { :archive }
+    let(:artifact) { build(:ci_job_artifact, file_type) }
+
+    context 'when direct upload is enabled' do
+      before do
+        stub_artifacts_object_storage(direct_upload: true)
+      end
+
+      context 'when the artifact is a trace' do
+        let(:file_type) { :trace }
+
+        context 'when ci_store_trace_outside_transaction is enabled' do
+          it 'returns true' do
+            expect(artifact.store_after_commit?).to be_truthy
+          end
+        end
+
+        context 'when ci_store_trace_outside_transaction is disabled' do
+          before do
+            stub_feature_flags(ci_store_trace_outside_transaction: false)
+          end
+
+          it 'returns false' do
+            expect(artifact.store_after_commit?).to be_falsey
+          end
+        end
+      end
+
+      context 'when the artifact is not a trace' do
+        it 'returns false' do
+          expect(artifact.store_after_commit?).to be_falsey
+        end
+      end
+    end
+
+    context 'when direct upload is disabled' do
+      before do
+        stub_artifacts_object_storage(direct_upload: false)
+      end
+
+      it 'returns false' do
+        expect(artifact.store_after_commit?).to be_falsey
+      end
     end
   end
 

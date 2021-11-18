@@ -18,8 +18,8 @@ RSpec.describe 'Database schema' do
     approvals: %w[user_id],
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
-    analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id project_id stage_event_hash_id],
-    analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id stage_event_hash_id],
+    analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id project_id stage_event_hash_id state_id],
+    analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id stage_event_hash_id state_id],
     audit_events: %w[author_id entity_id target_id],
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
@@ -29,6 +29,7 @@ RSpec.describe 'Database schema' do
     ci_builds: %w[erased_by_id runner_id trigger_request_id user_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipelines: %w[user_id],
+    ci_pipeline_chat_data: %w[chat_name_id], # it uses the loose foreign key featue
     ci_runner_projects: %w[runner_id],
     ci_trigger_requests: %w[commit_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
@@ -48,7 +49,6 @@ RSpec.describe 'Database schema' do
     geo_node_statuses: %w[last_event_id cursor_last_event_id],
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
-    geo_upload_deleted_events: %w[upload_id model_id],
     gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
     identities: %w[user_id],
     import_failures: %w[project_id],
@@ -66,7 +66,6 @@ RSpec.describe 'Database schema' do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
-    open_project_tracker_data: %w[closed_status_id],
     packages_build_infos: %w[pipeline_id],
     packages_package_file_build_infos: %w[pipeline_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
@@ -210,7 +209,7 @@ RSpec.describe 'Database schema' do
 
   # We are skipping GEO models for now as it adds up complexity
   describe 'for jsonb columns' do
-    it 'uses json schema validator' do
+    it 'uses json schema validator', :eager_load do
       columns_name_with_jsonb.each do |hash|
         next if models_by_table_name[hash["table_name"]].nil?
 

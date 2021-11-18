@@ -147,7 +147,7 @@ as well as these:
 | Variable | Description |
 |-|-|
 | `QA_SCENARIO` | The scenario to run (default `Test::Instance::Image`) |
-| `QA_TESTS` | The test(s) to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, e.g., `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
+| `QA_TESTS` | The test(s) to run (no default, which means run all the tests in the scenario). Use file paths as you would when running tests via RSpec, for example, `qa/specs/features/ee/browser_ui` would include all the `EE` UI tests. |
 | `QA_RSPEC_TAGS` | The RSpec tags to add (no default) |
 
 For now [manual jobs with custom variables don't use the same variable

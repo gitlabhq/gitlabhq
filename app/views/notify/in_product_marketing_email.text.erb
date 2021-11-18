@@ -21,6 +21,10 @@
 
 <%= @message.feedback_thanks %>
 <% end %>
+<% if @message.invite_members? %>
+<%= @message.invite_text %>
+<%= @message.invite_link %>
+<% end %>
 
 
 

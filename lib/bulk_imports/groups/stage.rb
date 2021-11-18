@@ -28,7 +28,7 @@ module BulkImports
             stage: 1
           },
           milestones: {
-            pipeline: BulkImports::Groups::Pipelines::MilestonesPipeline,
+            pipeline: BulkImports::Common::Pipelines::MilestonesPipeline,
             stage: 1
           },
           badges: {

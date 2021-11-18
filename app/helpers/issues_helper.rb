@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module IssuesHelper
+  include Issues::IssueTypeHelpers
+
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?
@@ -190,6 +192,7 @@ module IssuesHelper
 
     {
       can_create_issue: show_new_issue_link?(project).to_s,
+      can_create_incident: create_issue_type_allowed?(project, :incident).to_s,
       can_reopen_issue: can?(current_user, :reopen_issue, issuable).to_s,
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,
@@ -233,6 +236,7 @@ module IssuesHelper
       new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.try(:id) }),
       project_import_jira_path: project_import_jira_path(project),
       quick_actions_help_path: help_page_path('user/project/quick_actions'),
+      releases_path: project_releases_path(project, format: :json),
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
       show_new_issue_link: show_new_issue_link?(project).to_s
     )

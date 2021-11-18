@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def current_transaction
-          ::Gitlab::Metrics::Transaction.current
+          ::Gitlab::Metrics::WebTransaction.current
         end
       end
     end

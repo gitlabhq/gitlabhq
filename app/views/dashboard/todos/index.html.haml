@@ -10,19 +10,13 @@
 
 - if current_user.todos.any?
   .top-area
-    %ul.nav-links.mobile-separator.nav.nav-tabs
-      %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
-        = link_to todos_filter_path(state: 'pending') do
-          %span
-            To Do
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-            = number_with_delimiter(todos_pending_count)
-      %li.todos-done{ class: active_when(params[:state] == 'done') }>
-        = link_to todos_filter_path(state: 'done') do
-          %span
-            Done
-          %span.badge.gl-tab-counter-badge.badge-muted.badge-pill.gl-badge.sm
-            = number_with_delimiter(todos_done_count)
+    = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
+      = gl_tab_link_to todos_filter_path(state: 'pending'), item_active: params[:state].blank? || params[:state] == 'pending', class: "js-todos-pending" do
+        = _("To Do")
+        = gl_tab_counter_badge number_with_delimiter(todos_pending_count)
+      = gl_tab_link_to todos_filter_path(state: 'done'), item_active: params[:state] == 'done', class: "js-todos-done" do
+        = _("Done")
+        = gl_tab_counter_badge number_with_delimiter(todos_done_count)
 
     .nav-controls
       - if @allowed_todos.any?(&:pending?)

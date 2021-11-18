@@ -6,7 +6,7 @@ module Members
 
     included do
       class << self
-        def add_users(source, users, access_level, current_user: nil, expires_at: nil)
+        def add_users(source, users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
           return [] unless users.present?
 
           emails, users, existing_members = parse_users_list(source, users)
@@ -18,7 +18,9 @@ module Members
                   access_level,
                   existing_members: existing_members,
                   current_user: current_user,
-                  expires_at: expires_at)
+                  expires_at: expires_at,
+                  tasks_to_be_done: tasks_to_be_done,
+                  tasks_project_id: tasks_project_id)
                 .execute
             end
           end

@@ -8,7 +8,7 @@ import IssuableApp from '~/issue_show/components/app.vue';
 import DescriptionComponent from '~/issue_show/components/description.vue';
 import IncidentTabs from '~/issue_show/components/incidents/incident_tabs.vue';
 import PinnedLinks from '~/issue_show/components/pinned_links.vue';
-import { IssuableStatus, IssuableStatusText } from '~/issue_show/constants';
+import { IssuableStatus, IssuableStatusText, POLLING_DELAY } from '~/issue_show/constants';
 import eventHub from '~/issue_show/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -641,6 +641,42 @@ describe('Issuable output', () => {
       it('does not add a border below the header', () => {
         expect(findPinnedLinks().attributes('class')).not.toContain(borderClass);
       });
+    });
+  });
+
+  describe('taskListUpdateStarted', () => {
+    it('stops polling', () => {
+      jest.spyOn(wrapper.vm.poll, 'stop');
+
+      wrapper.vm.taskListUpdateStarted();
+
+      expect(wrapper.vm.poll.stop).toHaveBeenCalled();
+    });
+  });
+
+  describe('taskListUpdateSucceeded', () => {
+    it('enables polling', () => {
+      jest.spyOn(wrapper.vm.poll, 'enable');
+      jest.spyOn(wrapper.vm.poll, 'makeDelayedRequest');
+
+      wrapper.vm.taskListUpdateSucceeded();
+
+      expect(wrapper.vm.poll.enable).toHaveBeenCalled();
+      expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
+    });
+  });
+
+  describe('taskListUpdateFailed', () => {
+    it('enables polling and calls updateStoreState', () => {
+      jest.spyOn(wrapper.vm.poll, 'enable');
+      jest.spyOn(wrapper.vm.poll, 'makeDelayedRequest');
+      jest.spyOn(wrapper.vm, 'updateStoreState');
+
+      wrapper.vm.taskListUpdateFailed();
+
+      expect(wrapper.vm.poll.enable).toHaveBeenCalled();
+      expect(wrapper.vm.poll.makeDelayedRequest).toHaveBeenCalledWith(POLLING_DELAY);
+      expect(wrapper.vm.updateStoreState).toHaveBeenCalled();
     });
   });
 });

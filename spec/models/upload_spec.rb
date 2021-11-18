@@ -19,7 +19,7 @@ RSpec.describe Upload do
       it 'schedules checksum calculation' do
         stub_const('UploadChecksumWorker', spy)
 
-        upload = described_class.create(
+        upload = described_class.create!(
           path: __FILE__,
           size: described_class::CHECKSUM_THRESHOLD + 1.kilobyte,
           model: build_stubbed(:user),
@@ -42,7 +42,7 @@ RSpec.describe Upload do
           store: ObjectStorage::Store::LOCAL
         )
 
-        expect { upload.save }
+        expect { upload.save! }
           .to change { upload.checksum }.from(nil)
           .to(a_string_matching(/\A\h{64}\z/))
       end
@@ -55,7 +55,7 @@ RSpec.describe Upload do
         it 'calls delete_file!' do
           is_expected.to receive(:delete_file!)
 
-          subject.destroy
+          subject.destroy!
         end
       end
     end
@@ -79,6 +79,18 @@ RSpec.describe Upload do
       upload.absolute_path
 
       expect(uploader).to have_received(:absolute_path).with(upload)
+    end
+  end
+
+  describe '#relative_path' do
+    it "delegates to the uploader's relative_path method" do
+      uploader = spy('FakeUploader')
+      upload = described_class.new(path: '/tmp/secret/file.jpg', store: ObjectStorage::Store::LOCAL)
+      expect(upload).to receive(:uploader_class).and_return(uploader)
+
+      upload.relative_path
+
+      expect(uploader).to have_received(:relative_path).with(upload)
     end
   end
 

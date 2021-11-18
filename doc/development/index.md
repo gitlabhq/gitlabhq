@@ -122,7 +122,7 @@ In these cases, use the following workflow:
    - [User Experience (UX)](https://about.gitlab.com/handbook/engineering/ux/)
    - [Security](https://about.gitlab.com/handbook/engineering/security/)
    - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
-     - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity-team/)
+     - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/)
    - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
    - [Technical Writing](https://about.gitlab.com/handbook/engineering/ux/technical-writing/)
 
@@ -181,6 +181,7 @@ the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/rev
 - [Avoid modules with instance variables](module_with_instance_variables.md), if
   possible
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
+- [Ruby 3 gotchas](ruby3_gotchas.md)
 
 ### Rails Framework related
 

@@ -9,9 +9,7 @@ module IconsHelper
 
   def custom_icon(icon_name, size: DEFAULT_ICON_SIZE)
     memoized_icon("#{icon_name}_#{size}") do
-      # We can't simply do the below, because there are some .erb SVGs.
-      #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
-      render "shared/icons/#{icon_name}.svg", size: size
+      render partial: "shared/icons/#{icon_name}", formats: :svg, locals: { size: size }
     end
   end
 

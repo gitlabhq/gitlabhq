@@ -1,20 +1,23 @@
 - redirect_params = { redirect: @redirect } if @redirect
 - accept_term_link = accept_term_path(@term, redirect_params)
 
-.card-body.rendered-terms{ data: { qa_selector: 'terms_content' } }
-  = markdown_field(@term, :terms)
-- if current_user
-  = render_if_exists 'devise/shared/form_phone_verification', accept_term_link: accept_term_link, inline: true
-  .card-footer.footer-block.clearfix
-    - if can?(current_user, :accept_terms, @term)
-      .float-right
-        = button_to accept_term_link, class: 'gl-button btn btn-confirm gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
-          = _('Accept terms')
-    - else
-      .float-right
-        = link_to root_path, class: 'gl-button btn btn-confirm gl-ml-3' do
-          = _('Continue')
-    - if can?(current_user, :decline_terms, @term)
-      .float-right
-        = button_to decline_term_path(@term, redirect_params), class: 'gl-button btn btn-default gl-ml-3' do
-          =  _('Decline and sign out')
+- if Feature.enabled?(:terms_of_service_vue, current_user, default_enabled: :yaml)
+  #js-terms-of-service{ data: { terms_data: terms_data(@term, @redirect) } }
+- else
+  .card-body.rendered-terms{ data: { qa_selector: 'terms_content' } }
+    = markdown_field(@term, :terms)
+  - if current_user
+    = render_if_exists 'devise/shared/form_phone_verification', accept_term_link: accept_term_link, inline: true
+    .card-footer.footer-block.clearfix
+      - if can?(current_user, :accept_terms, @term)
+        .float-right
+          = button_to accept_term_link, class: 'gl-button btn btn-confirm gl-ml-3', data: { qa_selector: 'accept_terms_button' } do
+            = _('Accept terms')
+      - else
+        .float-right
+          = link_to root_path, class: 'gl-button btn btn-confirm gl-ml-3' do
+            = _('Continue')
+      - if can?(current_user, :decline_terms, @term)
+        .float-right
+          = button_to decline_term_path(@term, redirect_params), class: 'gl-button btn btn-default gl-ml-3' do
+            =  _('Decline and sign out')

@@ -218,6 +218,54 @@ RSpec.describe Resolvers::MergeRequestsResolver do
       end
     end
 
+    context 'with created_after and created_before arguments' do
+      before do
+        merge_request_1.update!(created_at: 4.days.ago)
+      end
+
+      let(:all_mrs) do
+        [merge_request_1, merge_request_2, merge_request_3, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone]
+      end
+
+      it 'returns merge requests created within a given period' do
+        result = resolve_mr(project, created_after: 5.days.ago, created_before: 2.days.ago)
+
+        expect(result).to contain_exactly(
+          merge_request_1
+        )
+      end
+
+      it 'returns some values filtered with created_before' do
+        result = resolve_mr(project, created_before: 1.day.ago)
+
+        expect(result).to contain_exactly(merge_request_1)
+      end
+
+      it 'returns some values filtered with created_after' do
+        result = resolve_mr(project, created_after: 3.days.ago)
+
+        expect(result).to match_array(all_mrs - [merge_request_1])
+      end
+
+      it 'does not return anything for dates (even in the future) not matching any MRs' do
+        result = resolve_mr(project, created_after: 5.days.from_now)
+
+        expect(result).to be_empty
+      end
+
+      it 'does not return anything for dates not matching any MRs' do
+        result = resolve_mr(project, created_before: 15.days.ago)
+
+        expect(result).to be_empty
+      end
+
+      it 'does not return any values for an impossible set' do
+        result = resolve_mr(project, created_after: 5.days.ago, created_before: 6.days.ago)
+
+        expect(result).to be_empty
+      end
+    end
+
     context 'with milestone argument' do
       it 'filters merge requests by milestone title' do
         result = resolve_mr(project, milestone_title: milestone.title)

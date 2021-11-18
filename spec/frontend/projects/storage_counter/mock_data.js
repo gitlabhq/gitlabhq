@@ -1,23 +1,6 @@
-export const mockGetProjectStorageCountGraphQLResponse = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/20',
-      statistics: {
-        buildArtifactsSize: 400000.0,
-        pipelineArtifactsSize: 25000.0,
-        lfsObjectsSize: 4800000.0,
-        packagesSize: 3800000.0,
-        repositorySize: 3900000.0,
-        snippetsSize: 1200000.0,
-        storageSize: 15300000.0,
-        uploadsSize: 900000.0,
-        wikiSize: 300000.0,
-        __typename: 'ProjectStatistics',
-      },
-      __typename: 'Project',
-    },
-  },
-};
+import mockGetProjectStorageCountGraphQLResponse from 'test_fixtures/graphql/projects/storage_counter/project_storage.query.graphql.json';
+
+export { mockGetProjectStorageCountGraphQLResponse };
 
 export const mockEmptyResponse = { data: { project: null } };
 
@@ -37,7 +20,7 @@ export const defaultProvideValues = {
 
 export const projectData = {
   storage: {
-    totalUsage: '14.6 MiB',
+    totalUsage: '13.8 MiB',
     storageTypes: [
       {
         storageType: {
@@ -45,7 +28,7 @@ export const projectData = {
           name: 'Artifacts',
           description: 'Pipeline artifacts and job artifacts, created with CI/CD.',
           warningMessage:
-            'There is a known issue with Artifact storage where the total could be incorrect for some projects. More details and progress are available in %{warningLinkStart}the epic%{warningLinkEnd}.',
+            'Because of a known issue, the artifact total for some projects may be incorrect. For more details, read %{warningLinkStart}the epic%{warningLinkEnd}.',
           helpPath: '/build-artifacts',
         },
         value: 400000,
@@ -53,7 +36,7 @@ export const projectData = {
       {
         storageType: {
           id: 'lfsObjectsSize',
-          name: 'LFS Storage',
+          name: 'LFS storage',
           description: 'Audio samples, videos, datasets, and graphics.',
           helpPath: '/lsf-objects',
         },
@@ -72,7 +55,7 @@ export const projectData = {
         storageType: {
           id: 'repositorySize',
           name: 'Repository',
-          description: 'Git repository, managed by the Gitaly service.',
+          description: 'Git repository.',
           helpPath: '/repository',
         },
         value: 3900000,
@@ -84,7 +67,7 @@ export const projectData = {
           description: 'Shared bits of code and text.',
           helpPath: '/snippets',
         },
-        value: 1200000,
+        value: 0,
       },
       {
         storageType: {

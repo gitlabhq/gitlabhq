@@ -12,7 +12,6 @@ class CreateCommitSignatureWorker
   idempotent!
   loggable_arguments 0
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)
     # Older versions of Git::BranchPushService may push a single commit ID on
     # the stack. We need this to be backwards compatible.
@@ -20,7 +19,7 @@ class CreateCommitSignatureWorker
 
     return if commit_shas.empty?
 
-    project = Project.find_by(id: project_id)
+    project = Project.find_by_id(project_id)
     return unless project
 
     commits = project.commits_by(oids: commit_shas)
@@ -44,5 +43,4 @@ class CreateCommitSignatureWorker
       Gitlab::AppLogger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -79,7 +79,8 @@ module Gitlab
             sort: sort&.to_sym,
             direction: direction&.to_sym,
             page: page,
-            end_event_filter: end_event_filter.to_sym
+            end_event_filter: end_event_filter.to_sym,
+            use_aggregated_data_collector: Feature.enabled?(:use_vsa_aggregated_tables, group || project, default_enabled: :yaml)
           }.merge(attributes.symbolize_keys.slice(*FINDER_PARAM_NAMES))
         end
 

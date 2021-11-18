@@ -28,11 +28,15 @@ module ProjectForksHelper
     unless params[:target_project] || params[:using_service]
       target_level = [project.visibility_level, namespace.visibility_level].min
       visibility_level = Gitlab::VisibilityLevel.closest_allowed_level(target_level)
+      # Builds and MRs can't have higher visibility level than repository access level.
+      builds_access_level = [project.builds_access_level, project.repository_access_level].min
 
       params[:target_project] =
         create(:project,
           (:repository if create_repository),
-          visibility_level: visibility_level, creator: user, namespace: namespace)
+          visibility_level: visibility_level,
+          builds_access_level: builds_access_level,
+          creator: user, namespace: namespace)
     end
 
     service = Projects::ForkService.new(project, user, params)

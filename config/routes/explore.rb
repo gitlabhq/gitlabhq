@@ -5,6 +5,8 @@ namespace :explore do
     collection do
       get :trending
       get :starred
+      get :topics
+      get 'topics/:topic_name', action: :topic, as: :topic, constraints: { topic_name: /.+/ }
     end
   end
 

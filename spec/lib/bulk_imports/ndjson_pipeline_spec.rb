@@ -111,6 +111,7 @@ RSpec.describe BulkImports::NdjsonPipeline do
       context = double(portable: group, current_user: user, import_export_config: config, bulk_import: import_double, entity: entity_double)
       allow(subject).to receive(:import_export_config).and_return(config)
       allow(subject).to receive(:context).and_return(context)
+      relation_object = double
 
       expect(Gitlab::ImportExport::Group::RelationFactory)
         .to receive(:create)
@@ -124,6 +125,8 @@ RSpec.describe BulkImports::NdjsonPipeline do
           user: user,
           excluded_keys: nil
         )
+        .and_return(relation_object)
+      expect(relation_object).to receive(:assign_attributes).with(group: group)
 
       subject.transform(context, data)
     end

@@ -60,7 +60,13 @@ export default marks.map((name) =>
     },
 
     addInputRules() {
-      return [markInputRule(markInputRegex(name), this.type, extractMarkAttributesFromMatch)];
+      return [
+        markInputRule({
+          find: markInputRegex(name),
+          type: this.type,
+          getAttributes: extractMarkAttributesFromMatch,
+        }),
+      ];
     },
   }),
 );

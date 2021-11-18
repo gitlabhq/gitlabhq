@@ -2,12 +2,15 @@
 
 module Gitlab
   class ContributionsCalendar
+    include TimeZoneHelper
+
     attr_reader :contributor
     attr_reader :current_user
     attr_reader :projects
 
     def initialize(contributor, current_user = nil)
       @contributor = contributor
+      @contributor_time_instance = local_time_instance(contributor.timezone)
       @current_user = current_user
       @projects = if @contributor.include_private_contributions?
                     ContributedProjectsFinder.new(@contributor).execute(@contributor)
@@ -22,7 +25,7 @@ module Gitlab
 
       # Can't use Event.contributions here because we need to check 3 different
       # project_features for the (currently) 3 different contribution types
-      date_from = 1.year.ago
+      date_from = @contributor_time_instance.now.years_ago(1)
       repo_events = event_counts(date_from, :repository)
         .having(action: :pushed)
       issue_events = event_counts(date_from, :issues)
@@ -47,19 +50,21 @@ module Gitlab
     def events_by_date(date)
       return Event.none unless can_read_cross_project?
 
+      date_in_time_zone = date.in_time_zone(@contributor_time_instance)
+
       Event.contributions.where(author_id: contributor.id)
-        .where(created_at: date.beginning_of_day..date.end_of_day)
+        .where(created_at: date_in_time_zone.beginning_of_day..date_in_time_zone.end_of_day)
         .where(project_id: projects)
         .with_associations
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def starting_year
-      1.year.ago.year
+      @contributor_time_instance.now.years_ago(1).year
     end
 
     def starting_month
-      Date.current.month
+      @contributor_time_instance.today.month
     end
 
     private
@@ -82,10 +87,10 @@ module Gitlab
         .select(:id)
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
-        .and(t[:created_at].lteq(Date.current.end_of_day))
+        .and(t[:created_at].lteq(@contributor_time_instance.today.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
-      date_interval = "INTERVAL '#{Time.zone.now.utc_offset} seconds'"
+      date_interval = "INTERVAL '#{@contributor_time_instance.now.utc_offset} seconds'"
 
       Event.reorder(nil)
         .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')

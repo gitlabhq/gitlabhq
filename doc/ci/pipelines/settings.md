@@ -78,7 +78,7 @@ To avoid this scenario:
 1. Select the **Skip outdated deployment jobs** checkbox.
 1. Select **Save changes**.
 
-Older deployment job are skipped when a new deployment starts.
+Older deployment jobs are skipped when a new deployment starts.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md).
 

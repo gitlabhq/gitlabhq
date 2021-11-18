@@ -24,13 +24,20 @@ export default {
       return sprintf(__('%{widget} options'), { widget: this.widget });
     },
   },
+  methods: {
+    onClickAction(action) {
+      if (action.onClick) {
+        action.onClick();
+      }
+    },
+  },
 };
 </script>
 
 <template>
   <div>
     <gl-dropdown
-      v-if="tertiaryButtons"
+      v-if="tertiaryButtons.length"
       :text="dropdownLabel"
       icon="ellipsis_v"
       no-caret
@@ -47,6 +54,7 @@ export default {
         :key="index"
         :href="btn.href"
         :target="btn.target"
+        @click="onClickAction(btn)"
       >
         {{ btn.text }}
       </gl-dropdown-item>
@@ -57,11 +65,12 @@ export default {
         :key="index"
         :href="btn.href"
         :target="btn.target"
-        :class="{ 'gl-mr-3': index > 1 }"
+        :class="{ 'gl-mr-3': index !== tertiaryButtons.length - 1 }"
         category="tertiary"
         variant="confirm"
         size="small"
-        class="gl-display-none gl-md-display-block"
+        class="gl-display-none gl-md-display-block gl-float-left"
+        @click="onClickAction(btn)"
       >
         {{ btn.text }}
       </gl-button>

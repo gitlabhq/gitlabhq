@@ -36,7 +36,7 @@ RSpec.describe 'Setting Due Date of an issue' do
   end
 
   it 'returns an error if the user is not allowed to update the issue' do
-    error = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+    error = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
     post_graphql_mutation(mutation, current_user: create(:user))
 
     expect(graphql_errors).to include(a_hash_including('message' => error))

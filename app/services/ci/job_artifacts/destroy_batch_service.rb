@@ -26,15 +26,18 @@ module Ci
       def execute(update_stats: true)
         return success(destroyed_artifacts_count: 0, statistics_updates: {}) if @job_artifacts.empty?
 
+        destroy_related_records(@job_artifacts)
+
         Ci::DeletedObject.transaction do
           Ci::DeletedObject.bulk_import(@job_artifacts, @pick_up_at)
           Ci::JobArtifact.id_in(@job_artifacts.map(&:id)).delete_all
-          destroy_related_records(@job_artifacts)
         end
+
+        after_batch_destroy_hook(@job_artifacts)
 
         # This is executed outside of the transaction because it depends on Redis
         update_project_statistics! if update_stats
-        increment_monitoring_statistics(artifacts_count)
+        increment_monitoring_statistics(artifacts_count, artifacts_bytes)
 
         success(destroyed_artifacts_count: artifacts_count,
           statistics_updates: affected_project_statistics)
@@ -43,8 +46,11 @@ module Ci
 
       private
 
-      # This method is implemented in EE and it must do only database work
+      # Overriden in EE
       def destroy_related_records(artifacts); end
+
+      # Overriden in EE
+      def after_batch_destroy_hook(artifacts); end
 
       # using ! here since this can't be called inside a transaction
       def update_project_statistics!
@@ -63,8 +69,9 @@ module Ci
         end
       end
 
-      def increment_monitoring_statistics(size)
-        metrics.increment_destroyed_artifacts(size)
+      def increment_monitoring_statistics(size, bytes)
+        metrics.increment_destroyed_artifacts_count(size)
+        metrics.increment_destroyed_artifacts_bytes(bytes)
       end
 
       def metrics
@@ -74,6 +81,12 @@ module Ci
       def artifacts_count
         strong_memoize(:artifacts_count) do
           @job_artifacts.count
+        end
+      end
+
+      def artifacts_bytes
+        strong_memoize(:artifacts_bytes) do
+          @job_artifacts.sum { |artifact| artifact.try(:size) || 0 }
         end
       end
     end

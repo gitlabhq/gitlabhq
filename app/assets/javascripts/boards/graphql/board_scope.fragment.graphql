@@ -1,0 +1,6 @@
+fragment BoardScopeFragment on Board {
+  id
+  name
+  hideBacklogList
+  hideClosedList
+}

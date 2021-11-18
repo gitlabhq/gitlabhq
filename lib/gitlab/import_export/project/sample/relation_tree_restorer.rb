@@ -4,7 +4,7 @@ module Gitlab
   module ImportExport
     module Project
       module Sample
-        class RelationTreeRestorer < ImportExport::RelationTreeRestorer
+        class RelationTreeRestorer < ImportExport::Project::RelationTreeRestorer
           def initialize(...)
             super(...)
 
@@ -18,10 +18,10 @@ module Gitlab
           end
 
           def dates
-            return [] if relation_reader.legacy?
+            return [] if @relation_reader.legacy?
 
             RelationFactory::DATE_MODELS.flat_map do |tag|
-              relation_reader.consume_relation(@importable_path, tag, mark_as_consumed: false).map do |model|
+              @relation_reader.consume_relation(@importable_path, tag, mark_as_consumed: false).map do |model|
                 model.first['due_date']
               end
             end

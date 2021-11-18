@@ -283,7 +283,7 @@ RSpec.describe DesignManagement::Version do
     it 'retrieves author from the Commit if author_id is nil and version has been persisted' do
       author = create(:user)
       version = create(:design_version, :committed, author: author)
-      author.destroy
+      author.destroy!
       version.reload
       commit = version.issue.project.design_repository.commit(version.sha)
       commit_user = create(:user, email: commit.author_email, name: commit.author_name)

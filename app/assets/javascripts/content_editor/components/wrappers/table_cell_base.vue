@@ -26,8 +26,8 @@ export default {
       type: Object,
       required: true,
     },
-    getPos: {
-      type: Function,
+    node: {
+      type: Object,
       required: true,
     },
   },
@@ -61,7 +61,17 @@ export default {
       const { state } = this.editor;
       const { $cursor } = state.selection;
 
-      this.displayActionsDropdown = $cursor?.pos - $cursor?.parentOffset - 1 === this.getPos();
+      if (!$cursor) return;
+
+      this.displayActionsDropdown = false;
+
+      for (let level = 0; level < $cursor.depth; level += 1) {
+        if ($cursor.node(level) === this.node) {
+          this.displayActionsDropdown = true;
+          break;
+        }
+      }
+
       if (this.displayActionsDropdown) {
         this.selectedRect = getSelectedRect(state);
       }
@@ -99,7 +109,11 @@ export default {
     :as="cellType"
     @click="hideDropdown"
   >
-    <span v-if="displayActionsDropdown" class="gl-absolute gl-right-0 gl-top-0">
+    <span
+      v-if="displayActionsDropdown"
+      contenteditable="false"
+      class="gl-absolute gl-right-0 gl-top-0"
+    >
       <gl-dropdown
         ref="dropdown"
         dropup

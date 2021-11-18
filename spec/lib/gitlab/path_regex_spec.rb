@@ -425,6 +425,9 @@ RSpec.describe Gitlab::PathRegex do
     it { is_expected.not_to match('gitlab.org/') }
     it { is_expected.not_to match('/gitlab.org') }
     it { is_expected.not_to match('gitlab git') }
+    it { is_expected.not_to match('gitlab?') }
+    it { is_expected.to match('gitlab.org-') }
+    it { is_expected.to match('gitlab.org_') }
   end
 
   describe '.project_path_format_regex' do
@@ -437,6 +440,14 @@ RSpec.describe Gitlab::PathRegex do
     it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match('git lab') }
     it { is_expected.not_to match('gitlab.git') }
+    it { is_expected.not_to match('gitlab?') }
+    it { is_expected.not_to match('gitlab git') }
+    it { is_expected.to match('gitlab.org') }
+    it { is_expected.to match('gitlab.org-') }
+    it { is_expected.to match('gitlab.org_') }
+    it { is_expected.to match('gitlab.org.') }
+    it { is_expected.not_to match('gitlab.org/') }
+    it { is_expected.not_to match('/gitlab.org') }
   end
 
   context 'repository routes' do

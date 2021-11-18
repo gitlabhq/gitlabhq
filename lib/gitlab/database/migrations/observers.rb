@@ -9,7 +9,8 @@ module Gitlab
             TotalDatabaseSizeChange,
             QueryStatistics,
             QueryLog,
-            QueryDetails
+            QueryDetails,
+            TransactionDuration
           ]
         end
       end

@@ -47,22 +47,31 @@ RSpec.describe Emails::InProductMarketing do
     end
 
     where(:track, :series) do
-      :create     | 0
-      :create     | 1
-      :create     | 2
-      :verify     | 0
-      :verify     | 1
-      :verify     | 2
-      :trial      | 0
-      :trial      | 1
-      :trial      | 2
-      :team       | 0
-      :team       | 1
-      :team       | 2
-      :experience | 0
+      :create       | 0
+      :create       | 1
+      :create       | 2
+      :verify       | 0
+      :verify       | 1
+      :verify       | 2
+      :trial        | 0
+      :trial        | 1
+      :trial        | 2
+      :team         | 0
+      :team         | 1
+      :team         | 2
+      :experience   | 0
+      :team_short   | 0
+      :trial_short  | 0
+      :admin_verify | 0
+      :invite_team  | 0
     end
 
     with_them do
+      before do
+        stub_experiments(invite_members_for_task: :candidate)
+        group.add_owner(user)
+      end
+
       it 'has the correct subject and content' do
         message = Gitlab::Email::Message::InProductMarketing.for(track).new(group: group, user: user, series: series)
 
@@ -75,6 +84,20 @@ RSpec.describe Emails::InProductMarketing do
             is_expected.to have_body_text(CGI.unescapeHTML(message.feedback_link(1)))
           else
             is_expected.to have_body_text(CGI.unescapeHTML(message.cta_link))
+          end
+
+          if track =~ /(create|verify)/
+            is_expected.to have_body_text(message.invite_text)
+            is_expected.to have_body_text(CGI.unescapeHTML(message.invite_link))
+          else
+            is_expected.not_to have_body_text(message.invite_text)
+            is_expected.not_to have_body_text(CGI.unescapeHTML(message.invite_link))
+          end
+
+          if track == :invite_team
+            is_expected.not_to have_body_text(/This is email \d of \d/)
+          else
+            is_expected.to have_body_text(message.progress)
           end
         end
       end

@@ -1,86 +1,103 @@
-import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper';
-import collapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
+import { shallowMount } from '@vue/test-utils';
 
-describe('collapsedGroupedDatePicker', () => {
-  let vm;
-  beforeEach(() => {
-    const CollapsedGroupedDatePicker = Vue.extend(collapsedGroupedDatePicker);
-    vm = mountComponent(CollapsedGroupedDatePicker, {
-      showToggleSidebar: true,
+import CollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
+import CollapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
+
+describe('CollapsedGroupedDatePicker', () => {
+  let wrapper;
+
+  const defaultProps = {
+    showToggleSidebar: true,
+  };
+
+  const minDate = new Date('07/17/2016');
+  const maxDate = new Date('07/17/2017');
+
+  const createComponent = ({ props = {} } = {}) => {
+    wrapper = shallowMount(CollapsedGroupedDatePicker, {
+      propsData: { ...defaultProps, ...props },
     });
+  };
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
+  const findCollapsedCalendarIcon = () => wrapper.findComponent(CollapsedCalendarIcon);
+  const findAllCollapsedCalendarIcons = () => wrapper.findAllComponents(CollapsedCalendarIcon);
+
   describe('toggleCollapse events', () => {
-    beforeEach((done) => {
-      jest.spyOn(vm, 'toggleSidebar').mockImplementation(() => {});
-      vm.minDate = new Date('07/17/2016');
-      Vue.nextTick(done);
-    });
-
     it('should emit when collapsed-calendar-icon is clicked', () => {
-      vm.$el.querySelector('.sidebar-collapsed-icon').click();
+      createComponent();
 
-      expect(vm.toggleSidebar).toHaveBeenCalled();
+      findCollapsedCalendarIcon().trigger('click');
+
+      expect(wrapper.emitted('toggleCollapse')[0]).toBeDefined();
     });
   });
 
   describe('minDate and maxDate', () => {
-    beforeEach((done) => {
-      vm.minDate = new Date('07/17/2016');
-      vm.maxDate = new Date('07/17/2017');
-      Vue.nextTick(done);
-    });
-
     it('should render both collapsed-calendar-icon', () => {
-      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+      createComponent({
+        props: {
+          minDate,
+          maxDate,
+        },
+      });
 
-      expect(icons.length).toEqual(2);
-      expect(icons[0].innerText.trim()).toEqual('Jul 17 2016');
-      expect(icons[1].innerText.trim()).toEqual('Jul 17 2017');
+      const icons = findAllCollapsedCalendarIcons();
+
+      expect(icons.length).toBe(2);
+      expect(icons.at(0).text()).toBe('Jul 17 2016');
+      expect(icons.at(1).text()).toBe('Jul 17 2017');
     });
   });
 
   describe('minDate', () => {
-    beforeEach((done) => {
-      vm.minDate = new Date('07/17/2016');
-      Vue.nextTick(done);
-    });
-
     it('should render minDate in collapsed-calendar-icon', () => {
-      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+      createComponent({
+        props: {
+          minDate,
+        },
+      });
 
-      expect(icons.length).toEqual(1);
-      expect(icons[0].innerText.trim()).toEqual('From Jul 17 2016');
+      const icons = findAllCollapsedCalendarIcons();
+
+      expect(icons.length).toBe(1);
+      expect(icons.at(0).text()).toBe('From Jul 17 2016');
     });
   });
 
   describe('maxDate', () => {
-    beforeEach((done) => {
-      vm.maxDate = new Date('07/17/2017');
-      Vue.nextTick(done);
-    });
-
     it('should render maxDate in collapsed-calendar-icon', () => {
-      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+      createComponent({
+        props: {
+          maxDate,
+        },
+      });
+      const icons = findAllCollapsedCalendarIcons();
 
-      expect(icons.length).toEqual(1);
-      expect(icons[0].innerText.trim()).toEqual('Until Jul 17 2017');
+      expect(icons.length).toBe(1);
+      expect(icons.at(0).text()).toBe('Until Jul 17 2017');
     });
   });
 
   describe('no dates', () => {
-    it('should render None', () => {
-      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+    beforeEach(() => {
+      createComponent();
+    });
 
-      expect(icons.length).toEqual(1);
-      expect(icons[0].innerText.trim()).toEqual('None');
+    it('should render None', () => {
+      const icons = findAllCollapsedCalendarIcons();
+
+      expect(icons.length).toBe(1);
+      expect(icons.at(0).text()).toBe('None');
     });
 
     it('should have tooltip as `Start and due date`', () => {
-      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+      const icons = findAllCollapsedCalendarIcons();
 
-      expect(icons[0].title).toBe('Start and due date');
+      expect(icons.at(0).props('tooltipText')).toBe('Start and due date');
     });
   });
 });

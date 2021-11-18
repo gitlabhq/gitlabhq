@@ -15,6 +15,7 @@
     .d-flex.flex-column.flex-md-row.flex-grow-1.mb-lg-0.mb-md-2.mb-sm-0.w-100
       - if type == :boards
         = render "shared/boards/switcher", board: board
+        .js-new-board{ data: { multiple_issue_boards_available: parent.multiple_issue_boards_available?.to_s, can_admin_board: can?(current_user, :admin_issue_board, parent).to_s, } }
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form w-100' do
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]

@@ -12,6 +12,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
+    include LooseForeignKey
 
     add_authentication_token_field :token, encrypted: :optional
 
@@ -82,7 +83,9 @@ module Ci
         groups = Gitlab::ObjectHierarchy.new(groups).base_and_ancestors
       end
 
-      joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: groups })
+      joins(:runner_namespaces)
+        .where(ci_runner_namespaces: { namespace_id: groups })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :belonging_to_group_or_project, -> (group_id, project_id) {
@@ -94,13 +97,16 @@ module Ci
       union_sql = ::Gitlab::SQL::Union.new([group_runners, project_runners]).to_sql
 
       from("(#{union_sql}) #{table_name}")
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
       hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
-      joins(:groups).where(namespaces: { id: hierarchy_groups })
+      joins(:groups)
+        .where(namespaces: { id: hierarchy_groups })
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 
     scope :owned_or_instance_wide, -> (project_id) do
@@ -111,7 +117,7 @@ module Ci
           instance_type
         ],
         remove_duplicates: false
-      )
+      ).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     end
 
     scope :assignable_for, ->(project) do
@@ -161,6 +167,8 @@ module Ci
                       message: 'needs to be non-negative' }
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
+
+    loose_foreign_key :clusters_applications_runners, :runner_id, on_delete: :async_nullify
 
     # Searches for runners matching the given query.
     #
@@ -266,6 +274,14 @@ module Ci
     end
 
     def status
+      return :not_connected unless contacted_at
+
+      online? ? :online : :offline
+    end
+
+    # DEPRECATED
+    # TODO Remove in %15.0 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/344648
+    def deprecated_rest_status
       if contacted_at.nil?
         :not_connected
       elsif active?
@@ -436,10 +452,8 @@ module Ci
     end
 
     def no_groups
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        if groups.any?
-          errors.add(:runner, 'cannot have groups assigned')
-        end
+      if runner_namespaces.any?
+        errors.add(:runner, 'cannot have groups assigned')
       end
     end
 
@@ -450,10 +464,8 @@ module Ci
     end
 
     def exactly_one_group
-      ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
-        unless groups.one?
-          errors.add(:runner, 'needs to be assigned to exactly one group')
-        end
+      unless runner_namespaces.one?
+        errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end
 

@@ -3,7 +3,7 @@
   .card-header
     %h5
       = hook_class.underscore.humanize.titleize.pluralize
-      (#{hooks.load.size})
+      (#{hooks.size})
 
   - if hooks.any?
     %ul.content-list

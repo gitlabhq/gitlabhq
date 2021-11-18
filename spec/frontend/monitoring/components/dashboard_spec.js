@@ -46,7 +46,6 @@ describe('Dashboard', () => {
       stubs: {
         DashboardHeader,
       },
-      provide: { hasManagedPrometheus: false },
       ...options,
     });
   };
@@ -59,9 +58,6 @@ describe('Dashboard', () => {
         'graph-group': true,
         'dashboard-panel': true,
         'dashboard-header': DashboardHeader,
-      },
-      provide: {
-        hasManagedPrometheus: false,
       },
       ...options,
     });
@@ -412,7 +408,7 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('when all requests have been commited by the store', () => {
+  describe('when all requests have been committed by the store', () => {
     beforeEach(() => {
       store.commit(`monitoringDashboard/${types.SET_INITIAL_STATE}`, {
         currentEnvironmentName: 'production',
@@ -460,7 +456,7 @@ describe('Dashboard', () => {
 
     it('shows the links section', () => {
       expect(wrapper.vm.shouldShowLinksSection).toBe(true);
-      expect(wrapper.find(LinksSection)).toExist();
+      expect(wrapper.findComponent(LinksSection).exists()).toBe(true);
     });
   });
 
@@ -806,30 +802,5 @@ describe('Dashboard', () => {
 
       expect(dashboardPanel.exists()).toBe(true);
     });
-  });
-
-  describe('alerts deprecation', () => {
-    beforeEach(() => {
-      setupStoreWithData(store);
-    });
-
-    const findDeprecationNotice = () => wrapper.findByTestId('alerts-deprecation-warning');
-
-    it.each`
-      managedAlertsDeprecation | hasManagedPrometheus | isVisible
-      ${false}                 | ${false}             | ${false}
-      ${false}                 | ${true}              | ${true}
-      ${true}                  | ${false}             | ${false}
-      ${true}                  | ${true}              | ${false}
-    `(
-      'when the deprecation feature flag is $managedAlertsDeprecation and has managed prometheus is $hasManagedPrometheus',
-      ({ hasManagedPrometheus, managedAlertsDeprecation, isVisible }) => {
-        createMountedWrapper(
-          {},
-          { provide: { hasManagedPrometheus, glFeatures: { managedAlertsDeprecation } } },
-        );
-        expect(findDeprecationNotice().exists()).toBe(isVisible);
-      },
-    );
   });
 });

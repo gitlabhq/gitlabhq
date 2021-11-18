@@ -74,6 +74,9 @@ gemnasium-maven-dependency_scanning:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-maven:$DS_MAJOR_VERSION"
+    # Stop reporting Gradle as "maven".
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
+    DS_REPORT_PACKAGE_MANAGER_MAVEN_WHEN_JAVA: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never
@@ -97,6 +100,9 @@ gemnasium-python-dependency_scanning:
     # override the analyzer image with a custom value. This may be subject to change or
     # breakage across GitLab releases.
     DS_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gemnasium-python:$DS_MAJOR_VERSION"
+    # Stop reporting Pipenv and Setuptools as "pip".
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/338252
+    DS_REPORT_PACKAGE_MANAGER_PIP_WHEN_PYTHON: "false"
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED
       when: never

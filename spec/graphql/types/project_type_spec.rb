@@ -34,7 +34,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       container_repositories container_repositories_count
       pipeline_analytics squash_read_only sast_ci_configuration
       cluster_agent cluster_agents agent_configurations
-      ci_template timelogs
+      ci_template timelogs merge_commit_template
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -296,6 +296,8 @@ RSpec.describe GitlabSchema.types['Project'] do
                                             :last,
                                             :merged_after,
                                             :merged_before,
+                                            :created_after,
+                                            :created_before,
                                             :author_username,
                                             :assignee_username,
                                             :reviewer_username,

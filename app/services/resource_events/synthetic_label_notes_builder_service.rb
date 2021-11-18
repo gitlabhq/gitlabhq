@@ -23,5 +23,9 @@ module ResourceEvents
 
       events.group_by { |event| event.discussion_id }
     end
+
+    def table_name
+      'resource_label_events'
+    end
   end
 end

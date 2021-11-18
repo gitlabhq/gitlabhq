@@ -67,10 +67,8 @@ module Users
     def update_authorizations(remove = [], add = [])
       log_refresh_details(remove, add)
 
-      User.transaction do
-        user.remove_project_authorizations(remove) unless remove.empty?
-        ProjectAuthorization.insert_authorizations(add) unless add.empty?
-      end
+      user.remove_project_authorizations(remove) unless remove.empty?
+      ProjectAuthorization.insert_authorizations(add) unless add.empty?
 
       # Since we batch insert authorization rows, Rails' associations may get
       # out of sync. As such we force a reload of the User object.

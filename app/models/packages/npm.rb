@@ -9,5 +9,9 @@ module Packages
 
       package_name.match(Gitlab::Regex.npm_package_name_regex)&.captures&.first
     end
+
+    def self.table_name_prefix
+      'packages_npm_'
+    end
   end
 end

@@ -94,20 +94,6 @@ RSpec.describe Gitlab::Import::Metrics, :aggregate_failures do
         expect(histogram).to have_received(:observe).with({ importer: :test_importer }, anything)
       end
     end
-
-    context 'when project is a github import' do
-      before do
-        project.import_type = 'github'
-      end
-
-      it 'emits importer metrics' do
-        expect(subject).to receive(:track_usage_event).with(:github_import_project_success, project.id)
-
-        subject.track_finished_import
-
-        expect(histogram).to have_received(:observe).with({ project: project.full_path }, anything)
-      end
-    end
   end
 
   describe '#issues_counter' do

@@ -7,7 +7,6 @@ module Ci
     include ::Checksummable
     include ::Gitlab::ExclusiveLeaseHelpers
     include ::Gitlab::OptimisticLocking
-    include IgnorableColumns
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 

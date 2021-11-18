@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape as lodashEscape, sortBy, template } from 'lodash';
+import { escape as lodashEscape, sortBy, template, escapeRegExp } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __, sprintf } from '~/locale';
@@ -64,6 +64,17 @@ export function membersBeforeSave(members) {
     };
   });
 }
+
+export const highlighter = (li, query) => {
+  // override default behaviour to escape dot character
+  // see https://github.com/ichord/At.js/pull/576
+  if (!query) {
+    return li;
+  }
+  const escapedQuery = escapeRegExp(query);
+  const regexp = new RegExp(`>\\s*([^<]*?)(${escapedQuery})([^<]*)\\s*<`, 'ig');
+  return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
+};
 
 export const defaultAutocompleteConfig = {
   emojis: true,
@@ -664,16 +675,7 @@ class GfmAutoComplete {
         }
         return null;
       },
-      highlighter(li, query) {
-        // override default behaviour to escape dot character
-        // see https://github.com/ichord/At.js/pull/576
-        if (!query) {
-          return li;
-        }
-        const escapedQuery = query.replace(/[.+]/, '\\$&');
-        const regexp = new RegExp(`>\\s*([^<]*?)(${escapedQuery})([^<]*)\\s*<`, 'ig');
-        return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
-      },
+      highlighter,
     };
   }
 

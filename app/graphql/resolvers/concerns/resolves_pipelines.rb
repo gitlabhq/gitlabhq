@@ -9,6 +9,9 @@ module ResolvesPipelines
              Types::Ci::PipelineStatusEnum,
              required: false,
              description: "Filter pipelines by their status."
+    argument :scope, ::Types::Ci::PipelineScopeEnum,
+             required: false,
+             description: 'Filter pipelines by scope.'
     argument :ref,
              GraphQL::Types::String,
              required: false,

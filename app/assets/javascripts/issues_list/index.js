@@ -24,7 +24,7 @@ export function mountJiraIssuesListApp() {
   }
 
   Vue.use(VueApollo);
-  const defaultClient = createDefaultClient({}, { assumeImmutableResults: true });
+  const defaultClient = createDefaultClient();
   const apolloProvider = new VueApollo({
     defaultClient,
   });
@@ -103,7 +103,7 @@ export function mountIssuesListApp() {
     },
   };
 
-  const defaultClient = createDefaultClient(resolvers, { assumeImmutableResults: true });
+  const defaultClient = createDefaultClient(resolvers);
   const apolloProvider = new VueApollo({
     defaultClient,
   });
@@ -137,6 +137,7 @@ export function mountIssuesListApp() {
     newIssuePath,
     projectImportJiraPath,
     quickActionsHelpPath,
+    releasesPath,
     resetPath,
     rssPath,
     showNewIssueLink,
@@ -164,6 +165,7 @@ export function mountIssuesListApp() {
       isSignedIn: parseBoolean(isSignedIn),
       jiraIntegrationPath,
       newIssuePath,
+      releasesPath,
       rssPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
       signInPath,

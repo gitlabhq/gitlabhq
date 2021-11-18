@@ -15,12 +15,20 @@ module Uploads
     end
 
     def delete_keys(keys)
-      keys.each do |key|
-        connection.delete_object(bucket_name, key)
-      end
+      keys.each { |key| delete_object(key) }
     end
 
     private
+
+    def delete_object(key)
+      connection.delete_object(bucket_name, key)
+
+    # So far, only GoogleCloudStorage raises an exception when the file is not found.
+    # Other providers support idempotent requests and does not raise an error
+    # when the file is missing.
+    rescue ::Google::Apis::ClientError => e
+      Gitlab::ErrorTracking.log_exception(e)
+    end
 
     def object_store
       Gitlab.config.uploads.object_store

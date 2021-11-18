@@ -2,14 +2,17 @@
 
 module Gitlab
   module Metrics
+    # Exclusive transaction-type metrics for background jobs (Sidekiq). One
+    # instance of this class is created for each job going through the Sidekiq
+    # metric middleware. Any metrics dispatched with this instance include
+    # metadata such as endpoint_id, queue, and feature category.
     class BackgroundTransaction < Transaction
-      # Separate web transaction instance and background transaction instance
-      BACKGROUND_THREAD_KEY = :_gitlab_metrics_background_transaction
-      BACKGROUND_BASE_LABEL_KEYS = %i(endpoint_id feature_category).freeze
+      THREAD_KEY = :_gitlab_metrics_background_transaction
+      BASE_LABEL_KEYS = %i(queue endpoint_id feature_category).freeze
 
       class << self
         def current
-          Thread.current[BACKGROUND_THREAD_KEY]
+          Thread.current[THREAD_KEY]
         end
 
         def prometheus_metric(name, type, &block)
@@ -19,17 +22,17 @@ module Gitlab
 
             evaluate(&block)
             # always filter sensitive labels and merge with base ones
-            label_keys BACKGROUND_BASE_LABEL_KEYS | (label_keys - ::Gitlab::Metrics::Transaction::FILTERED_LABEL_KEYS)
+            label_keys BASE_LABEL_KEYS | (label_keys - ::Gitlab::Metrics::Transaction::FILTERED_LABEL_KEYS)
           end
         end
       end
 
       def run
-        Thread.current[BACKGROUND_THREAD_KEY] = self
+        Thread.current[THREAD_KEY] = self
 
         yield
       ensure
-        Thread.current[BACKGROUND_THREAD_KEY] = nil
+        Thread.current[THREAD_KEY] = nil
       end
 
       def labels

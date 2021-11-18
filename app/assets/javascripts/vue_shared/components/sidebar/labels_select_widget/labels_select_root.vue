@@ -1,9 +1,12 @@
 <script>
+import { debounce } from 'lodash';
+import { MutationOperationMode, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createFlash from '~/flash';
+import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { labelsQueries } from '~/sidebar/constants';
-import { DropdownVariant } from './constants';
+import { issuableLabelsQueries } from '~/sidebar/constants';
+import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
@@ -50,16 +53,6 @@ export default {
       required: false,
       default: DropdownVariant.Sidebar,
     },
-    selectedLabels: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    labelsSelectInProgress: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     labelsFilterBasePath: {
       type: String,
       required: false,
@@ -95,36 +88,44 @@ export default {
       required: false,
       default: __('Manage group labels'),
     },
-    isEditing: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     issuableType: {
+      type: String,
+      required: true,
+    },
+    workspaceType: {
       type: String,
       required: true,
     },
     attrWorkspacePath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
+    },
+    labelCreateType: {
+      type: String,
+      required: true,
     },
   },
   data() {
     return {
       contentIsOnViewport: true,
       issuableLabels: [],
+      labelsSelectInProgress: false,
+      oldIid: null,
+      sidebarExpandedOnClick: false,
     };
   },
   computed: {
     isLoading() {
       return this.labelsSelectInProgress || this.$apollo.queries.issuableLabels.loading;
     },
+    issuableLabelIds() {
+      return this.issuableLabels.map((label) => label.id);
+    },
   },
   apollo: {
     issuableLabels: {
       query() {
-        return labelsQueries[this.issuableType].issuableQuery;
+        return issuableLabelsQueries[this.issuableType].issuableQuery;
       },
       skip() {
         return !isDropdownVariantSidebar(this.variant);
@@ -143,16 +144,140 @@ export default {
       },
     },
   },
+  watch: {
+    iid(_, oldVal) {
+      this.oldIid = oldVal;
+    },
+  },
+  mounted() {
+    document.addEventListener('toggleSidebarRevealLabelsDropdown', this.handleCollapsedValueClick);
+  },
+  beforeDestroy() {
+    document.removeEventListener(
+      'toggleSidebarRevealLabelsDropdown',
+      this.handleCollapsedValueClick,
+    );
+  },
   methods: {
     handleDropdownClose(labels) {
-      this.$emit('updateSelectedLabels', labels);
+      if (this.iid !== '') {
+        this.updateSelectedLabels(this.getUpdateVariables(labels));
+      } else {
+        this.$emit('updateSelectedLabels', { labels });
+      }
+
       this.collapseEditableItem();
     },
     collapseEditableItem() {
       this.$refs.editable?.collapse();
+      if (this.sidebarExpandedOnClick) {
+        this.sidebarExpandedOnClick = false;
+        this.$emit('toggleCollapse');
+      }
     },
     handleCollapsedValueClick() {
+      this.sidebarExpandedOnClick = true;
       this.$emit('toggleCollapse');
+      debounce(() => {
+        this.$refs.editable.toggle();
+        this.$refs.dropdownContents.showDropdown();
+      }, DEBOUNCE_DROPDOWN_DELAY)();
+    },
+    getUpdateVariables(labels) {
+      let labelIds = [];
+
+      labelIds = labels.map(({ id }) => id);
+      const currentIid = this.oldIid || this.iid;
+
+      const updateVariables = {
+        iid: currentIid,
+        projectPath: this.fullPath,
+        labelIds,
+      };
+
+      switch (this.issuableType) {
+        case IssuableType.Issue:
+          return updateVariables;
+        case IssuableType.MergeRequest:
+          return {
+            ...updateVariables,
+            operationMode: MutationOperationMode.Replace,
+          };
+        case IssuableType.Epic:
+          return {
+            iid: currentIid,
+            groupPath: this.fullPath,
+            addLabelIds: labelIds.map((id) => getIdFromGraphQLId(id)),
+            removeLabelIds: this.issuableLabelIds
+              .filter((id) => !labelIds.includes(id))
+              .map((id) => getIdFromGraphQLId(id)),
+          };
+        default:
+          return {};
+      }
+    },
+    updateSelectedLabels(inputVariables) {
+      this.labelsSelectInProgress = true;
+
+      this.$apollo
+        .mutate({
+          mutation: issuableLabelsQueries[this.issuableType].mutation,
+          variables: { input: inputVariables },
+        })
+        .then(({ data }) => {
+          const { mutationName } = issuableLabelsQueries[this.issuableType];
+
+          if (data[mutationName]?.errors?.length) {
+            throw new Error();
+          }
+
+          this.$emit('updateSelectedLabels', {
+            id: data[mutationName]?.[this.issuableType]?.id,
+            labels: data[mutationName]?.[this.issuableType]?.labels?.nodes,
+          });
+        })
+        .catch((error) =>
+          createFlash({
+            message: __('An error occurred while updating labels.'),
+            captureError: true,
+            error,
+          }),
+        )
+        .finally(() => {
+          this.labelsSelectInProgress = false;
+        });
+    },
+    getRemoveVariables(labelId) {
+      const removeVariables = {
+        iid: this.iid,
+        projectPath: this.fullPath,
+      };
+
+      switch (this.issuableType) {
+        case IssuableType.Issue:
+          return {
+            ...removeVariables,
+            removeLabelIds: [labelId],
+          };
+        case IssuableType.MergeRequest:
+          return {
+            ...removeVariables,
+            labelIds: [labelId],
+            operationMode: MutationOperationMode.Remove,
+          };
+        case IssuableType.Epic:
+          return {
+            iid: this.iid,
+            removeLabelIds: [getIdFromGraphQLId(labelId)],
+            groupPath: this.fullPath,
+          };
+        default:
+          return {};
+      }
+    },
+    handleLabelRemove(labelId) {
+      this.updateSelectedLabels(this.getRemoveVariables(labelId));
+      this.$emit('onLabelRemove', labelId);
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -180,6 +305,7 @@ export default {
         :title="__('Labels')"
         :loading="isLoading"
         :can-edit="allowLabelEdit"
+        @open="oldIid = null"
       >
         <template #collapsed>
           <dropdown-value
@@ -188,7 +314,7 @@ export default {
             :allow-label-remove="allowLabelRemove"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
-            @onLabelRemove="$emit('onLabelRemove', $event)"
+            @onLabelRemove="handleLabelRemove"
           >
             <slot></slot>
           </dropdown-value>
@@ -201,23 +327,25 @@ export default {
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
             class="gl-mb-2"
-            @onLabelRemove="$emit('onLabelRemove', $event)"
+            @onLabelRemove="handleLabelRemove"
           >
             <slot></slot>
           </dropdown-value>
           <dropdown-contents
+            ref="dropdownContents"
             :dropdown-button-text="dropdownButtonText"
             :allow-multiselect="allowMultiselect"
             :labels-list-title="labelsListTitle"
             :footer-create-label-title="footerCreateLabelTitle"
             :footer-manage-label-title="footerManageLabelTitle"
             :labels-create-title="labelsCreateTitle"
-            :selected-labels="selectedLabels"
+            :selected-labels="issuableLabels"
             :variant="variant"
-            :issuable-type="issuableType"
             :is-visible="edit"
             :full-path="fullPath"
+            :workspace-type="workspaceType"
             :attr-workspace-path="attrWorkspacePath"
+            :label-create-type="labelCreateType"
             @setLabels="handleDropdownClose"
             @closeDropdown="collapseEditableItem"
           />
@@ -233,10 +361,12 @@ export default {
       :footer-create-label-title="footerCreateLabelTitle"
       :footer-manage-label-title="footerManageLabelTitle"
       :labels-create-title="labelsCreateTitle"
-      :selected-labels="selectedLabels"
+      :selected-labels="issuableLabels"
       :variant="variant"
-      :issuable-type="issuableType"
       :full-path="fullPath"
+      :workspace-type="workspaceType"
+      :attr-workspace-path="attrWorkspacePath"
+      :label-create-type="labelCreateType"
       @setLabels="handleDropdownClose"
     />
   </div>

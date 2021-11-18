@@ -38,7 +38,8 @@ RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy do
       it 'returns nil counts for inherited tables' do
         models.each { |model| expect(model).not_to receive(:count) }
 
-        expect(subject).to eq({ Namespace => 3 })
+        # 3 Namespaces as parents for each Project and 3 ProjectNamespaces(for each Project)
+        expect(subject).to eq({ Namespace => 6 })
       end
     end
 

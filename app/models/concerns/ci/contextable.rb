@@ -10,11 +10,14 @@ module Ci
     # Variables in the environment name scope.
     #
     def scoped_variables(environment: expanded_environment_name, dependencies: true)
-      Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.concat(predefined_variables)
+      track_duration do
+        variables = pipeline.variables_builder.scoped_variables(self, environment: environment, dependencies: dependencies)
+
+        variables.concat(predefined_variables) unless pipeline.predefined_vars_in_builder_enabled?
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runnable? && runner
+        variables.concat(kubernetes_variables)
         variables.concat(deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
@@ -25,7 +28,21 @@ module Ci
         variables.concat(trigger_request.user_variables) if trigger_request
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
+
+        variables
       end
+    end
+
+    def track_duration
+      start_time = ::Gitlab::Metrics::System.monotonic_time
+      result = yield
+      duration = ::Gitlab::Metrics::System.monotonic_time - start_time
+
+      ::Gitlab::Ci::Pipeline::Metrics
+        .pipeline_builder_scoped_variables_histogram
+        .observe({}, duration.seconds)
+
+      result
     end
 
     ##
@@ -69,6 +86,18 @@ module Ci
         variables.append(key: 'CI_BUILD_STAGE', value: stage)
         variables.append(key: 'CI_BUILD_TRIGGERED', value: 'true') if trigger_request
         variables.append(key: 'CI_BUILD_MANUAL', value: 'true') if action?
+      end
+    end
+
+    def kubernetes_variables
+      ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
+        # Should get merged with the cluster kubeconfig in deployment_variables, see
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/335089
+        template = ::Ci::GenerateKubeconfigService.new(self).execute
+
+        if template.valid?
+          collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
+        end
       end
     end
 

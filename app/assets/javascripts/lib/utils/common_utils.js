@@ -220,16 +220,16 @@ export const scrollToElement = (element, options = {}) => {
     // In the previous implementation, jQuery naturally deferred this scrolling.
     // Unfortunately, we're quite coupled to this implementation detail now.
     defer(() => {
-      const { duration = 200, offset = 0 } = options;
+      const { duration = 200, offset = 0, behavior = duration ? 'smooth' : 'auto' } = options;
       const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
-      window.scrollTo({ top: y, behavior: duration ? 'smooth' : 'auto' });
+      window.scrollTo({ top: y, behavior });
     });
   }
 };
 
-export const scrollToElementWithContext = (element) => {
+export const scrollToElementWithContext = (element, options) => {
   const offsetMultiplier = -0.1;
-  return scrollToElement(element, { offset: window.innerHeight * offsetMultiplier });
+  return scrollToElement(element, { ...options, offset: window.innerHeight * offsetMultiplier });
 };
 
 /**
@@ -688,17 +688,20 @@ export const searchBy = (query = '', searchSpace = {}) => {
  */
 export const isScopedLabel = ({ title = '' } = {}) => title.includes(SCOPED_LABEL_DELIMITER);
 
+const scopedLabelRegex = new RegExp(`(.*)${SCOPED_LABEL_DELIMITER}.*`);
+
 /**
- * Returns the base value of the scoped label
+ * Returns the key of a scoped label.
+ * For example:
+ * - returns `scoped` if the label is `scoped::value`.
+ * - returns `scoped::label` if the label is `scoped::label::value`.
  *
- * Expected Label to be an Object with `title` as a key:
- *   { title: 'LabelTitle', ...otherProperties };
- *
- * @param {Object} label
- * @returns String
+ * @param {Object} label object containing `title` property
+ * @returns String scoped label key, or full label if it is not a scoped label
  */
-export const scopedLabelKey = ({ title = '' }) =>
-  isScopedLabel({ title }) && title.split(SCOPED_LABEL_DELIMITER)[0];
+export const scopedLabelKey = ({ title = '' }) => {
+  return title.replace(scopedLabelRegex, '$1');
+};
 
 // Methods to set and get Cookie
 export const setCookie = (name, value) => Cookies.set(name, value, { expires: 365 });

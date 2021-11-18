@@ -3,7 +3,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import { MAX_REQUESTS } from '../constants';
 import * as types from './mutation_types';
 
@@ -30,7 +30,13 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
   const poll = new Poll({
     resource: {
-      fetchClusters: (paginatedEndPoint) => axios.get(paginatedEndPoint),
+      fetchClusters: (paginatedEndPoint) =>
+        axios.get(paginatedEndPoint, {
+          params: {
+            page: state.page,
+            per_page: state.clustersPerPage,
+          },
+        }),
     },
     data: `${state.endpoint}?page=${state.page}`,
     method: 'fetchClusters',
@@ -65,7 +71,7 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
       commit(types.SET_LOADING_CLUSTERS, false);
       commit(types.SET_LOADING_NODES, false);
       createFlash({
-        message: __('Clusters|An error occurred while loading clusters'),
+        message: s__('Clusters|An error occurred while loading clusters'),
       });
 
       dispatch('reportSentryError', { error: response, tag: 'fetchClustersErrorCallback' });
@@ -77,4 +83,8 @@ export const fetchClusters = ({ state, commit, dispatch }) => {
 
 export const setPage = ({ commit }, page) => {
   commit(types.SET_PAGE, page);
+};
+
+export const setClustersPerPage = ({ commit }, limit) => {
+  commit(types.SET_CLUSTERS_PER_PAGE, limit);
 };

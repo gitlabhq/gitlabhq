@@ -24,7 +24,6 @@ module Gitlab
       end
     end
 
-    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m.freeze
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Gitlab::Runtime.sidekiq? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -57,33 +56,15 @@ module Gitlab
       # https://gitlab.com/gitlab-org/gitaly/-/blob/bf9f52bc/client/dial.go#L78
       {
         'grpc.keepalive_time_ms': 20000,
-        'grpc.keepalive_permit_without_calls': 1
+        'grpc.keepalive_permit_without_calls': 1,
+        'grpc.http2.max_pings_without_data': 0
       }
     end
     private_class_method :channel_args
 
-    def self.stub_cert_paths
-      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
-      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
-      cert_paths
-    end
-
-    def self.stub_certs
-      return @certs if @certs
-
-      @certs = stub_cert_paths.flat_map do |cert_file|
-        File.read(cert_file).scan(PEM_REGEX).map do |cert|
-          OpenSSL::X509::Certificate.new(cert).to_pem
-        rescue OpenSSL::OpenSSLError => e
-          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, cert_file: cert_file)
-          nil
-        end.compact
-      end.uniq.join("\n")
-    end
-
     def self.stub_creds(storage)
       if URI(address(storage)).scheme == 'tls'
-        GRPC::Core::ChannelCredentials.new stub_certs
+        GRPC::Core::ChannelCredentials.new ::Gitlab::X509::Certificate.ca_certs_bundle
       else
         :this_channel_is_insecure
       end

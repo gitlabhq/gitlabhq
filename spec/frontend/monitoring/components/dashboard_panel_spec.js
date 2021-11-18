@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import { setTestTimeout } from 'helpers/timeout';
 import axios from '~/lib/utils/axios_utils';
 import invalidUrl from '~/lib/utils/invalid_url';
-import AlertWidget from '~/monitoring/components/alert_widget.vue';
 
 import MonitorAnomalyChart from '~/monitoring/components/charts/anomaly.vue';
 import MonitorBarChart from '~/monitoring/components/charts/bar.vue';
@@ -28,7 +27,6 @@ import {
   barGraphData,
 } from '../graph_data';
 import {
-  mockAlert,
   mockLogsHref,
   mockLogsPath,
   mockNamespace,
@@ -56,7 +54,6 @@ describe('Dashboard Panel', () => {
   const findCtxMenu = () => wrapper.find({ ref: 'contextualMenu' });
   const findMenuItems = () => wrapper.findAll(GlDropdownItem);
   const findMenuItemByText = (text) => findMenuItems().filter((i) => i.text() === text);
-  const findAlertsWidget = () => wrapper.find(AlertWidget);
 
   const createWrapper = (props, { mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(DashboardPanel, {
@@ -79,9 +76,6 @@ describe('Dashboard Panel', () => {
       },
     });
   };
-
-  const setMetricsSavedToDb = (val) =>
-    monitoringDashboard.getters.metricsSavedToDb.mockReturnValue(val);
 
   beforeEach(() => {
     setTestTimeout(1000);
@@ -601,42 +595,6 @@ describe('Dashboard Panel', () => {
     });
   });
 
-  describe('panel alerts', () => {
-    beforeEach(() => {
-      mockGetterReturnValue('metricsSavedToDb', []);
-
-      createWrapper();
-    });
-
-    describe.each`
-      desc                                              | metricsSavedToDb                   | props                                   | isShown
-      ${'with permission and no metrics in db'}         | ${[]}                              | ${{}}                                   | ${false}
-      ${'with permission and related metrics in db'}    | ${[graphData.metrics[0].metricId]} | ${{}}                                   | ${true}
-      ${'without permission and related metrics in db'} | ${[graphData.metrics[0].metricId]} | ${{ prometheusAlertsAvailable: false }} | ${false}
-      ${'with permission and unrelated metrics in db'}  | ${['another_metric_id']}           | ${{}}                                   | ${false}
-    `('$desc', ({ metricsSavedToDb, isShown, props }) => {
-      const showsDesc = isShown ? 'shows' : 'does not show';
-
-      beforeEach(() => {
-        setMetricsSavedToDb(metricsSavedToDb);
-        createWrapper({
-          alertsEndpoint: '/endpoint',
-          prometheusAlertsAvailable: true,
-          ...props,
-        });
-        return wrapper.vm.$nextTick();
-      });
-
-      it(`${showsDesc} alert widget`, () => {
-        expect(findAlertsWidget().exists()).toBe(isShown);
-      });
-
-      it(`${showsDesc} alert configuration`, () => {
-        expect(findMenuItemByText('Alerts').exists()).toBe(isShown);
-      });
-    });
-  });
-
   describe('When graphData contains links', () => {
     const findManageLinksItem = () => wrapper.find({ ref: 'manageLinksItem' });
     const mockLinks = [
@@ -730,13 +688,6 @@ describe('Dashboard Panel', () => {
 
   describe('Runbook url', () => {
     const findRunbookLinks = () => wrapper.findAll('[data-testid="runbookLink"]');
-    const { metricId } = graphData.metrics[0];
-    const { alert_path: alertPath } = mockAlert;
-
-    const mockRunbookAlert = {
-      ...mockAlert,
-      metricId,
-    };
 
     beforeEach(() => {
       mockGetterReturnValue('metricsSavedToDb', []);
@@ -746,63 +697,6 @@ describe('Dashboard Panel', () => {
       createWrapper();
 
       expect(findRunbookLinks().length).toBe(0);
-    });
-
-    describe('when alerts are present', () => {
-      beforeEach(() => {
-        setMetricsSavedToDb([metricId]);
-
-        createWrapper({
-          alertsEndpoint: '/endpoint',
-          prometheusAlertsAvailable: true,
-        });
-      });
-
-      it('does not show a runbook link when a runbook is not set', async () => {
-        findAlertsWidget().vm.$emit('setAlerts', alertPath, {
-          ...mockRunbookAlert,
-          runbookUrl: '',
-        });
-
-        await wrapper.vm.$nextTick();
-
-        expect(findRunbookLinks().length).toBe(0);
-      });
-
-      it('shows a runbook link when a runbook is set', async () => {
-        findAlertsWidget().vm.$emit('setAlerts', alertPath, mockRunbookAlert);
-
-        await wrapper.vm.$nextTick();
-
-        expect(findRunbookLinks().length).toBe(1);
-        expect(findRunbookLinks().at(0).attributes('href')).toBe(invalidUrl);
-      });
-    });
-
-    describe('managed alert deprecation feature flag', () => {
-      beforeEach(() => {
-        setMetricsSavedToDb([metricId]);
-      });
-
-      it('shows alerts when alerts are not deprecated', () => {
-        createWrapper(
-          { alertsEndpoint: '/endpoint', prometheusAlertsAvailable: true },
-          { provide: { glFeatures: { managedAlertsDeprecation: false } } },
-        );
-
-        expect(findAlertsWidget().exists()).toBe(true);
-        expect(findMenuItemByText('Alerts').exists()).toBe(true);
-      });
-
-      it('hides alerts when alerts are deprecated', () => {
-        createWrapper(
-          { alertsEndpoint: '/endpoint', prometheusAlertsAvailable: true },
-          { provide: { glFeatures: { managedAlertsDeprecation: true } } },
-        );
-
-        expect(findAlertsWidget().exists()).toBe(false);
-        expect(findMenuItemByText('Alerts').exists()).toBe(false);
-      });
     });
   });
 });

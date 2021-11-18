@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Container Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3672) in GitLab 10.4.
 
 Your application's Docker image may itself be based on Docker images that contain known
 vulnerabilities. By including an extra job in your pipeline that scans for those vulnerabilities and
@@ -148,7 +148,7 @@ Support depends on the scanner:
 
 #### UBI-based images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 14.1.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in GitLab 14.1.
 
 GitLab also offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the container-scanning images. You can therefore replace standard images with UBI-based

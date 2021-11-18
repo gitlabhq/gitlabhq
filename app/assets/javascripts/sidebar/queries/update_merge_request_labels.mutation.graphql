@@ -2,6 +2,7 @@ mutation mergeRequestSetLabels($input: MergeRequestSetLabelsInput!) {
   mergeRequestSetLabels(input: $input) {
     errors
     mergeRequest {
+      id
       labels {
         nodes {
           color

@@ -53,4 +53,4 @@ See also:
 -->
 
 /label ~"infradev"
-/label ~"bug"
+/label ~"type::bug"

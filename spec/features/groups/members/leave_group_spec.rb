@@ -10,6 +10,7 @@ RSpec.describe 'Groups > Members > Leave group' do
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 

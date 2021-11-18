@@ -77,7 +77,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/index.md#custom-cicd-variables).
 
-### Ref Specs for Runners
+### Ref specs for runners
 
 When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
 which indicate which ref (branch, tag, and so on) and commit (SHA1) are checked out from your
@@ -87,9 +87,9 @@ This table lists the refspecs injected for each pipeline type:
 
 | Pipeline type                                                      | Refspecs                                                                                       |
 |---------------                                                     |----------------------------------------                                                        |
-| Pipeline for Branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for Tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [Pipeline for Merge Requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
+| pipeline for branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
+| [pipeline for merge requests](../pipelines/merge_request_pipelines.md) | `+<sha>:refs/pipelines/<id>`                                                     |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
@@ -127,6 +127,11 @@ you can filter the pipeline list by:
 [Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
 pipeline column to display the pipeline ID or the pipeline IID.
 
+If you use VS Code to edit your GitLab CI/CD configuration, the
+[GitLab Workflow VS Code extension](../../user/project/repository/vscode.md) helps you
+[validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
+and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+
 ### Run a pipeline manually
 
 Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
@@ -150,7 +155,7 @@ The pipeline now executes the jobs as configured.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
-You can use the [`value` and `description`](../yaml/index.md#prefill-variables-in-manual-pipelines)
+You can use the [`value` and `description`](../yaml/index.md#variablesdescription)
 keywords to define
 [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually.
@@ -159,7 +164,7 @@ In pipelines triggered manually, the **Run pipelines** page displays all top-lev
 with a `description` and `value` defined in the `.gitlab-ci.yml` file. The values
 can then be modified if needed, which overrides the value for that single pipeline run.
 
-The description is displayed below the variable. It can be used to explain what
+The description is displayed next to the variable. It can be used to explain what
 the variable is used for, what the acceptable values are, and so on:
 
 ```yaml
@@ -228,6 +233,15 @@ This functionality is only available:
 
 - For users with at least the Developer role.
 - If the stage contains [manual actions](#add-manual-interaction-to-your-pipeline).
+
+### Skip a pipeline
+
+To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
+capitalization, to your commit message.
+
+Alternatively, if you are using Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+The `ci.skip` push option does not skip merge request
+pipelines.
 
 ### Delete a pipeline
 
@@ -391,6 +405,7 @@ be found when you go to:
 - The pipelines index page.
 - A single commit page.
 - A merge request page.
+- The [pipeline editor](../pipeline_editor/index.md), [in GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) and later.
 
 Pipeline mini graphs allow you to see all related jobs for a single commit and the net result
 of each stage of your pipeline. This allows you to quickly see what failed and

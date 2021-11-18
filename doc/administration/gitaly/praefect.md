@@ -851,6 +851,10 @@ of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
+WARNING:
+Long-running background jobs can maintain an idle connection with Praefect for up 6 hours. Set your load balancer timeout to be at least
+6 hours long.
+
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
 | 2305    | 2305         | TCP      |

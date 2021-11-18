@@ -37,7 +37,7 @@ For example, when using the [GDK](https://gitlab.com/gitlab-org/gitlab-developme
 this can be done with the following command:
 
 ```shell
-GITLAB_CHAOS_SECRET=secret gdk run
+GITLAB_CHAOS_SECRET=secret gdk start
 ```
 
 Replace `secret` with your own secret token.

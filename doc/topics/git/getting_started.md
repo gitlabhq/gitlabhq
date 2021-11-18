@@ -21,6 +21,12 @@ comments: false
   git clone <url>
   ```
 
+NOTE:
+You can also clone GitLab projects with the
+[GitLab Workflow VS Code extension](../../user/project/repository/vscode.md).
+To learn more, read about the extension's
+[`Git: Clone` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#clone-gitlab-projects).
+
 ## Central Repositories
 
 - To instantiate a central repository a `--bare` flag is required.

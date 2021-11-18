@@ -1,12 +1,15 @@
-import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import * as JiraConnectApi from '~/jira_connect/subscriptions/api';
+import GroupItemName from '~/jira_connect/subscriptions/components/group_item_name.vue';
+
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { reloadPage } from '~/jira_connect/subscriptions/utils';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils');
@@ -15,11 +18,13 @@ describe('SubscriptionsList', () => {
   let wrapper;
   let store;
 
-  const createComponent = ({ mountFn = shallowMount, provide = {} } = {}) => {
+  const createComponent = () => {
     store = createStore();
 
-    wrapper = mountFn(SubscriptionsList, {
-      provide,
+    wrapper = mount(SubscriptionsList, {
+      provide: {
+        subscriptions: [mockSubscription],
+      },
       store,
     });
   };
@@ -28,28 +33,28 @@ describe('SubscriptionsList', () => {
     wrapper.destroy();
   });
 
-  const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findGlTable = () => wrapper.findComponent(GlTable);
-  const findUnlinkButton = () => findGlTable().findComponent(GlButton);
+  const findUnlinkButton = () => wrapper.findComponent(GlButton);
   const clickUnlinkButton = () => findUnlinkButton().trigger('click');
 
   describe('template', () => {
-    it('renders GlEmptyState when subscriptions is empty', () => {
+    beforeEach(() => {
       createComponent();
-
-      expect(findGlEmptyState().exists()).toBe(true);
-      expect(findGlTable().exists()).toBe(false);
     });
 
-    it('renders GlTable when subscriptions are present', () => {
-      createComponent({
-        provide: {
-          subscriptions: [mockSubscription],
-        },
-      });
+    it('renders "name" cell correctly', () => {
+      const groupItemNames = wrapper.findAllComponents(GroupItemName);
+      expect(groupItemNames.wrappers).toHaveLength(1);
 
-      expect(findGlEmptyState().exists()).toBe(false);
-      expect(findGlTable().exists()).toBe(true);
+      const item = groupItemNames.at(0);
+      expect(item.props('group')).toBe(mockSubscription.group);
+    });
+
+    it('renders "created at" cell correctly', () => {
+      const timeAgoTooltips = wrapper.findAllComponents(TimeagoTooltip);
+      expect(timeAgoTooltips.wrappers).toHaveLength(1);
+
+      const item = timeAgoTooltips.at(0);
+      expect(item.props('time')).toBe(mockSubscription.created_at);
     });
   });
 
@@ -57,12 +62,7 @@ describe('SubscriptionsList', () => {
     let removeSubscriptionSpy;
 
     beforeEach(() => {
-      createComponent({
-        mountFn: mount,
-        provide: {
-          subscriptions: [mockSubscription],
-        },
-      });
+      createComponent();
       removeSubscriptionSpy = jest.spyOn(JiraConnectApi, 'removeSubscription').mockResolvedValue();
     });
 

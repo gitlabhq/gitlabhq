@@ -23,8 +23,8 @@ export default function initMrNotes() {
   initNotesApp();
 
   document.addEventListener('merged:UpdateActions', () => {
-    initRevertCommitModal();
-    initCherryPickCommitModal();
+    initRevertCommitModal('i_code_review_post_merge_submit_revert_modal');
+    initCherryPickCommitModal('i_code_review_post_merge_submit_cherry_pick_modal');
   });
 
   requestIdleCallback(() => {

@@ -107,6 +107,22 @@ You can combine the filter options. For example, to list only public projects wi
 1. Click the **Public** tab.
 1. Enter `score` in the **Filter by name...** input box.
 
+#### Deleted projects **(PREMIUM SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
+
+When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-removal),
+projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
+
+1. On the top bar, select **Menu > Projects > Explore projects**.
+1. Select the **Deleted projects** tab.
+
+Listed for each project is:
+
+- The time the project was marked for deletion.
+- The time the project is scheduled for final deletion.
+- A **Restore** link to stop the project being eventually deleted.
+
 ### Administering Users
 
 You can administer all users in the GitLab instance from the Admin Area's Users page:
@@ -241,21 +257,27 @@ To [Create a new group](../group/index.md#create-a-group) click **New group**.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 
-You can administer all topics in the GitLab instance from the Admin Area's Topics page.
+You can administer all [topics](../project/working_with_projects.md#explore-topics) in the 
+GitLab instance from the Admin Area's Topics page.
 
 To access the Topics page:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Topics**.
 
-For each topic, the page displays their name and number of projects labeled with the topic.
+For each topic, the page displays its name and the number of projects labeled with the topic.
 
 To create a new topic, select **New topic**.
 
 To edit a topic, select **Edit** in that topic's row.
 
 To search for topics by name, enter your criteria in the search box. The topic search is case
-insensitive, and applies partial matching.
+insensitive and applies partial matching.
+
+NOTE:
+The assigned topics are visible only to everyone with access to the project,
+but everyone can see which topics exist at all on the GitLab instance.
+Do not include sensitive information in the name of a topic.
 
 ### Administering Jobs
 
@@ -309,11 +331,11 @@ To search runners' descriptions:
 
 You can also filter runners by status, type, and tag. To filter:
 
-1. Click in the **Search or filter results...** field.
-1. Select **Status**, **Type**, or **Tags**.
+1. Select a tab or the **Search or filter results...** field.
+1. Select any **Type**, or filter by **Status** or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_1.png)
+![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
 
 For each runner, the following attributes are listed:
 

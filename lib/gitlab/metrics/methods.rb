@@ -13,8 +13,12 @@ module Gitlab
       end
 
       class_methods do
-        def reload_metric!(name)
-          @@_metrics_provider_cache.delete(name)
+        def reload_metric!(name = nil)
+          if name.nil?
+            @@_metrics_provider_cache = {}
+          else
+            @@_metrics_provider_cache.delete(name)
+          end
         end
 
         private

@@ -13,6 +13,8 @@ else
 	BUILD_TIME := $(shell date -u "$(DATE_FMT)")
 endif
 GOBUILD := go build -ldflags "-X main.Version=$(VERSION_STRING) -X main.BuildTime=$(BUILD_TIME)"
+GITALY  := tmp/tests/gitaly/_build/bin/gitaly
+GITALY_PID_FILE := gitaly.pid
 EXE_ALL := gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhorse
 INSTALL := install
 BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
@@ -63,7 +65,16 @@ install: $(EXE_ALL)
 .PHONY:	test
 test: prepare-tests
 	$(call message,$@)
-	@go test -tags "$(BUILD_TAGS)" ./...
+	go test -tags "$(BUILD_TAGS)" ./... ;\
+	status="$$?" ;\
+	if [ -f "$(GITALY_PID_FILE)" ] ; then \
+		echo "Clean up Gitaly server for workhorse integration test" ;\
+		kill -9 $$(cat $(GITALY_PID_FILE)) ;\
+		rm $(GITALY_PID_FILE) ;\
+	else \
+		echo "Gitaly integration test not running" ;\
+	fi ;\
+	exit "$$status"
 	@echo SUCCESS
 
 .PHONY:	clean
@@ -82,8 +93,26 @@ clean-build:
 	rm -rf $(TARGET_DIR)
 
 .PHONY:	prepare-tests
+prepare-tests:	run-gitaly
 prepare-tests:	testdata/data/group/test.git $(EXE_ALL)
 prepare-tests:	testdata/scratch
+
+.PHONY: run-gitaly
+run-gitaly: gitaly.pid
+
+$(GITALY_PID_FILE): gitaly.toml
+	@{ \
+	if [ -z "$${GITALY_ADDRESS+x}" ] ; then \
+		echo "To run gitaly integration tests set GITALY_ADDRESS=tcp://127.0.0.1:8075" ; \
+	else \
+		cd .. ; \
+		GITALY_TESTING_NO_GIT_HOOKS=1 GITALY_PID_FILE=workhorse/$(GITALY_PID_FILE) $(GITALY) workhorse/gitaly.toml ; \
+	fi \
+	} &
+
+gitaly.toml: ../tmp/tests/gitaly/config.toml
+	sed -e 's/^socket_path.*$$/listen_addr = "0.0.0.0:8075"/;s/^\[auth\]$$//;s/^token.*$$//;s/^internal_socket_dir.*$$//' \
+		$< > $@
 
 testdata/data/group/test.git:
 	$(call message,$@)

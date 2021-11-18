@@ -16,7 +16,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/workflow.html'
 1. Create branch with your feature:
 
    ```shell
-   git checkout -b $feature_name
+   git checkout -b feature_name
    ```
 
 1. Write code. Commit changes:
@@ -28,7 +28,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/workflow.html'
 1. Push your branch to GitLab:
 
    ```shell
-   git push origin $feature_name
+   git push origin feature_name
    ```
 
 1. Review your code on commits page.

@@ -55,6 +55,7 @@ export default {
         v-gl-tooltip="{ title: newDropdownViewModel.title }"
         :view-model="newDropdownViewModel"
         class="gl-ml-3"
+        data-qa-selector="mobile_new_dropdown"
       />
     </header>
     <top-nav-menu-sections class="gl-h-full" :sections="menuSections" v-on="$listeners" />

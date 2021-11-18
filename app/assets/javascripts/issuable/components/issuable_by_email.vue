@@ -166,7 +166,7 @@ export default {
         </gl-sprintf>
       </p>
       <template #modal-footer>
-        <gl-button category="secondary" @click="cancelHandler">{{ s__('Cancel') }}</gl-button>
+        <gl-button category="secondary" @click="cancelHandler">{{ __('Cancel') }}</gl-button>
       </template>
     </gl-modal>
   </div>

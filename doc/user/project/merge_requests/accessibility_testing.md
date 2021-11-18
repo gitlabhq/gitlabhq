@@ -21,6 +21,9 @@ measuring the accessibility of web sites, and has built a simple
 This job outputs accessibility violations, warnings, and notices for each page
 analyzed to a file called `accessibility`.
 
+From [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73309), the version of `pa11y` uses
+[WCAG 2.1 rules](https://www.w3.org/TR/WCAG21/#new-features-in-wcag-2-1), which may report more issues.
+
 ## Accessibility merge request widget
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39425) in GitLab 13.0 behind the disabled [feature flag](../../../administration/feature_flags.md) `:accessibility_report_view`.

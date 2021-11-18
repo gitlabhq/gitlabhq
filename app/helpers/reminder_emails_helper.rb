@@ -7,7 +7,8 @@ module ReminderEmailsHelper
       s_('InviteReminderEmail|Invitation pending')
     when 1
       if format == :html
-        s_('InviteReminderEmail|Hey there %{wave_emoji}').html_safe % { wave_emoji: Gitlab::Emoji.gl_emoji_tag('wave') }
+        wave_emoji_tag = Gitlab::Emoji.gl_emoji_tag(TanukiEmoji.find_by_alpha_code('wave'))
+        s_('InviteReminderEmail|Hey there %{wave_emoji}').html_safe % { wave_emoji: wave_emoji_tag }
       else
         s_('InviteReminderEmail|Hey there!')
       end

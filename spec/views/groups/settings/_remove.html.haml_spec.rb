@@ -9,8 +9,8 @@ RSpec.describe 'groups/settings/_remove.html.haml' do
 
       render 'groups/settings/remove', group: group
 
-      expect(rendered).to have_selector '[data-testid="remove-group-button"]'
-      expect(rendered).not_to have_selector '[data-testid="remove-group-button"].disabled'
+      expect(rendered).to have_selector '[data-button-testid="remove-group-button"]'
+      expect(rendered).not_to have_selector '[data-button-testid="remove-group-button"].disabled'
       expect(rendered).not_to have_selector '[data-testid="group-has-linked-subscription-alert"]'
     end
   end

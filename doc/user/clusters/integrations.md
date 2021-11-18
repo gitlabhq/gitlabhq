@@ -4,14 +4,19 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Cluster integrations **(FREE)**
+# Cluster integrations (DEPRECATED) **(FREE)**
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 GitLab provides several ways to integrate applications to your
 Kubernetes cluster.
 
 To enable cluster integrations, first add a Kubernetes cluster to a GitLab
 [project](../project/clusters/add_remove_clusters.md) or
-[group](../group/clusters/index.md#group-level-kubernetes-clusters) or
+[group](../group/clusters/index.md) or
 [instance](../instance/clusters/index.md).
 
 You can install your applications manually as shown in the following sections, or use the
@@ -25,9 +30,21 @@ or [Enable Elastic Stack integration for your cluster](#enable-elastic-stack-int
 depending on which application you are installing. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/326565)
 to automate this step.
 
+Prometheus and Elastic Stack cluster integrations can only be enabled for clusters [connected through cluster certificates](../project/clusters/add_existing_cluster.md).
+
+To enable Prometheus for your cluster connected through the [GitLab Kubernetes Agent](agent/index.md), you can [integrate it manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
+
+There is no option to enable Elastic Stack for your cluster if it is connected with the GitLab Kubernetes Agent.
+Follow this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/300230) for updates.
+
 ## Prometheus cluster integration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55244) in GitLab 13.11.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. However, you can **still use** Prometheus
+for Kubernetes clusters connected to GitLab through the
+[GitLab Kubernetes Agent](agent/index.md) by [enabling Prometheus manually](../project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
 You can integrate your Kubernetes cluster with
 [Prometheus](https://prometheus.io/) for monitoring key metrics of your

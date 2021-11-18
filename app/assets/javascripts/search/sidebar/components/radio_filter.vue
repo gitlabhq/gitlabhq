@@ -1,7 +1,7 @@
 <script>
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'RadioFilter',
@@ -49,7 +49,7 @@ export default {
     ...mapActions(['setQuery']),
     radioLabel(filter) {
       return filter.value === this.ANY.value
-        ? sprintf(s__('Any %{header}'), { header: this.filterData.header.toLowerCase() })
+        ? sprintf(__('Any %{header}'), { header: this.filterData.header.toLowerCase() })
         : filter.label;
     },
   },

@@ -72,6 +72,16 @@ describe('Global Search Store Mutations', () => {
     });
   });
 
+  describe('SET_SIDEBAR_DIRTY', () => {
+    const value = true;
+
+    it('sets sidebarDirty to the value', () => {
+      mutations[types.SET_SIDEBAR_DIRTY](state, value);
+
+      expect(state.sidebarDirty).toBe(value);
+    });
+  });
+
   describe('LOAD_FREQUENT_ITEMS', () => {
     it('sets frequentItems[key] to data', () => {
       const payload = { key: 'test-key', data: [1, 2, 3] };

@@ -10,7 +10,7 @@ import {
 } from './constants';
 import createStore from './store';
 
-export default function initInviteMembersModal() {
+export default function initInviteMembersModal(primaryActionEventName) {
   const el = document.querySelector('.js-revert-commit-modal');
   if (!el) {
     return false;
@@ -49,6 +49,7 @@ export default function initInviteMembersModal() {
           i18n: { ...I18N_REVERT_MODAL, ...I18N_MODAL },
           openModal: OPEN_REVERT_MODAL,
           modalId: REVERT_MODAL_ID,
+          primaryActionEventName,
         },
       }),
   });

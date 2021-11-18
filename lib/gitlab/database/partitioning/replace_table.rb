@@ -9,7 +9,8 @@ module Gitlab
         attr_reader :original_table, :replacement_table, :replaced_table, :primary_key_column,
           :sequence, :original_primary_key, :replacement_primary_key, :replaced_primary_key
 
-        def initialize(original_table, replacement_table, replaced_table, primary_key_column)
+        def initialize(connection, original_table, replacement_table, replaced_table, primary_key_column)
+          @connection = connection
           @original_table = original_table
           @replacement_table = replacement_table
           @replaced_table = replaced_table
@@ -29,10 +30,8 @@ module Gitlab
 
         private
 
+        attr_reader :connection
         delegate :execute, :quote_table_name, :quote_column_name, to: :connection
-        def connection
-          @connection ||= ActiveRecord::Base.connection
-        end
 
         def default_sequence(table, column)
           "#{table}_#{column}_seq"

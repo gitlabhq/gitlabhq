@@ -1,3 +1,4 @@
+- hidden_topics_field_id = 'project_topic_list_field'
 = form_for [@project], html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
   %input{ name: 'update_section', type: 'hidden', value: 'js-general-settings' }
 
@@ -15,9 +16,9 @@
 
     .row
       .form-group.col-md-9
-        = f.label :topics, _('Topics (optional)'), class: 'label-bold'
-        = f.text_field :topics, value: @project.topic_list.join(', '), maxlength: 2000, class: "form-control gl-form-input"
-        %p.form-text.text-muted= _('Separate topics with commas.')
+        = f.label :topics, _('Topics'), class: 'label-bold'
+        .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id } }
+        = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 
     .row
       .form-group.col-md-9

@@ -2,22 +2,15 @@
 
 fragment BulkImportSourceGroupItem on ClientBulkImportSourceGroup {
   id
-  web_url
-  full_path
-  full_name
+  webUrl
+  fullPath
+  fullName
+  lastImportTarget {
+    id
+    targetNamespace
+    newName
+  }
   progress {
     ...BulkImportSourceGroupProgress
-  }
-  import_target {
-    target_namespace
-    new_name
-  }
-  last_import_target {
-    target_namespace
-    new_name
-  }
-  validation_errors {
-    field
-    message
   }
 }

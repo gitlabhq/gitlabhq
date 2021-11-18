@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+require 'pathname'
+
+# This script saves the diffs of changes in an MR to the directory specified as the first argument
+#
+# It exits with a success code if diffs are found and saved, or if there are no changes, including if the script runs in
+# a pipeline that is not for a merge request.
+
+gitlab_token = ENV.fetch('PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE')
+gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
+mr_project_path = ENV['CI_MERGE_REQUEST_PROJECT_PATH']
+mr_iid = ENV['CI_MERGE_REQUEST_IID']
+
+puts "CI_MERGE_REQUEST_PROJECT_PATH is missing." if mr_project_path.to_s.empty?
+puts "CI_MERGE_REQUEST_IID is missing." if mr_iid.to_s.empty?
+
+unless mr_project_path && mr_iid
+  puts "Exiting as this does not appear to be a merge request pipeline."
+  exit
+end
+
+abort("ERROR: Please specify a directory to write MR diffs into.") if ARGV.empty?
+output_diffs_dir = Pathname.new(ARGV.shift).expand_path
+
+Gitlab.configure do |config|
+  config.endpoint       = gitlab_endpoint
+  config.private_token  = gitlab_token
+end
+
+Gitlab.merge_request_changes(mr_project_path, mr_iid).changes.each do |change|
+  next if change['diff'].empty?
+
+  output_diffs_dir.join(File.dirname(change['new_path'])).mkpath
+  output_diffs_dir.join("#{change['new_path']}.diff").write(change['diff'])
+end

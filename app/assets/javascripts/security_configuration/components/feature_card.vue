@@ -66,6 +66,11 @@ export default {
       return Boolean(name && description && configurationText);
     },
   },
+  methods: {
+    onError(message) {
+      this.$emit('error', message);
+    },
+  },
   i18n: {
     enabled: s__('SecurityConfiguration|Enabled'),
     notEnabled: s__('SecurityConfiguration|Not enabled'),
@@ -129,6 +134,7 @@ export default {
         category="primary"
         class="gl-mt-5"
         :data-qa-selector="`${feature.type}_mr_button`"
+        @error="onError"
       />
 
       <gl-button

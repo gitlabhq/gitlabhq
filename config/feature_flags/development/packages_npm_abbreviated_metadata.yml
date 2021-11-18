@@ -1,0 +1,8 @@
+---
+name: packages_npm_abbreviated_metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73639
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344827
+milestone: '14.5'
+type: development
+group: group::package
+default_enabled: true

@@ -54,7 +54,7 @@ Then fill in the integration configuration:
   To change the bot's username, provide a value.
 - **Notify only broken pipelines**: If you enable the **Pipeline** event, and you want
   notifications about failed pipelines only.
-- **Branches to be notified**: The branches to send notifications for.
+- **Branches for which notifications are to be sent**: The branches to send notifications for.
 - **Labels to be notified**: (Optional) Labels required for the issue or merge request
   to trigger a notification. Leave blank to notify for all issues and merge requests.
 - **Labels to be notified behavior**: When you use the **Labels to be notified** filter,

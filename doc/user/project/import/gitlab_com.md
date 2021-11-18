@@ -26,3 +26,8 @@ for permission to access your projects. After accepting, you are automatically r
 
 To import a project, click "Import". The importer imports your repository and issues.
 Once the importer is done, a new GitLab project is created with your imported data.
+
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](index.md#automate-group-and-project-import).

@@ -12,10 +12,15 @@ module IssuableLinks
     end
 
     def execute
-      serializer.new(current_user: current_user, issuable: issuable).represent(child_issuables)
+      serializer.new(current_user: current_user, issuable: issuable)
+        .represent(child_issuables, serializer_options)
     end
 
     private
+
+    def serializer_options
+      {}
+    end
 
     def serializer
       raise NotImplementedError

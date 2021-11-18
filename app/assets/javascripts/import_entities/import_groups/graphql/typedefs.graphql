@@ -1,11 +1,11 @@
 type ClientBulkImportAvailableNamespace {
   id: ID!
-  full_path: String!
+  fullPath: String!
 }
 
 type ClientBulkImportTarget {
-  target_namespace: String!
-  new_name: String!
+  targetNamespace: String!
+  newName: String!
 }
 
 type ClientBulkImportSourceGroupConnection {
@@ -14,7 +14,7 @@ type ClientBulkImportSourceGroupConnection {
 }
 
 type ClientBulkImportProgress {
-  id: ID
+  id: ID!
   status: String!
 }
 
@@ -25,13 +25,11 @@ type ClientBulkImportValidationError {
 
 type ClientBulkImportSourceGroup {
   id: ID!
-  web_url: String!
-  full_path: String!
-  full_name: String!
-  progress: ClientBulkImportProgress!
-  import_target: ClientBulkImportTarget!
-  last_import_target: ClientBulkImportTarget
-  validation_errors: [ClientBulkImportValidationError!]!
+  webUrl: String!
+  fullPath: String!
+  fullName: String!
+  lastImportTarget: ClientBulkImportTarget
+  progress: ClientBulkImportProgress
 }
 
 type ClientBulkImportPageInfo {
@@ -41,8 +39,13 @@ type ClientBulkImportPageInfo {
   totalPages: Int!
 }
 
+type ClientBulkImportNamespaceSuggestion {
+  id: ID!
+  exists: Boolean!
+  suggestions: [String!]!
+}
+
 extend type Query {
-  bulkImportSourceGroup(id: ID!): ClientBulkImportSourceGroup
   bulkImportSourceGroups(
     page: Int!
     perPage: Int!
@@ -51,26 +54,13 @@ extend type Query {
   availableNamespaces: [ClientBulkImportAvailableNamespace!]!
 }
 
-input InputTargetInput {
-  target_namespace: String!
-  new_name: String!
+input ImportRequestInput {
+  sourceGroupId: ID!
+  targetNamespace: String!
+  newName: String!
 }
 
 extend type Mutation {
-  setNewName(newName: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
-  setTargetNamespace(targetNamespace: String, sourceGroupId: ID!): ClientBulkImportSourceGroup!
-  importGroups(sourceGroupIds: [ID!]!): [ClientBulkImportSourceGroup!]!
-  setImportProgress(
-    id: ID
-    status: String!
-    jobId: String
-    importTarget: ImportTargetInput!
-  ): ClientBulkImportSourceGroup!
-  updateImportProgress(id: ID, status: String!): ClientBulkImportProgress
-  addValidationError(
-    sourceGroupId: ID!
-    field: String!
-    message: String!
-  ): ClientBulkImportSourceGroup!
-  removeValidationError(sourceGroupId: ID!, field: String!): ClientBulkImportSourceGroup!
+  importGroups(importRequests: [ImportRequestInput!]!): [ClientBulkImportSourceGroup!]!
+  updateImportStatus(id: ID, status: String!): ClientBulkImportProgress
 }

@@ -67,7 +67,8 @@ Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
             env["BUNDLE_DEPLOYMENT"] = 'false'
           end
 
-          Gitlab::Popen.popen([make_cmd], nil, env)
+          output, status = Gitlab::Popen.popen([make_cmd, 'all', 'git'], nil, env)
+          raise "Gitaly failed to compile: #{output}" unless status&.zero?
         end
       end
     end

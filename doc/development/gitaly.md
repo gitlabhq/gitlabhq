@@ -53,7 +53,7 @@ immediately after the Gitaly one. This allows you to test your changes before
 they are merged.
 
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
-- In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
+- In GDK run `gdk install` and restart GDK using `gdk restart` to use a locally modified Gitaly version for development
 
 ### `gitaly-ruby`
 

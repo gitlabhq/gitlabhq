@@ -7,8 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secret Detection **(FREE)**
 
-> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.9.
-> - Made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) in 13.3.
+> - [Introduced](https://about.gitlab.com/releases/2019/03/22/gitlab-11-9-released/#detect-secrets-and-credentials-in-the-repository) in GitLab 11.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/222788) from GitLab Ultimate to GitLab Free in 13.3.
 
 A recurring problem when developing applications is that developers may unintentionally commit
 secrets and credentials to their remote repositories. If other people have access to the source,
@@ -138,9 +138,9 @@ The results are saved as a
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest Secret Detection artifact available.
 
-### Enable Secret Detection via an automatic merge request **(FREE)**
+### Enable Secret Detection via an automatic merge request
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, behind a feature flag, enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
 To enable Secret Detection in a project, you can create a merge request
@@ -165,7 +165,7 @@ by using the
 [`variables`](../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
 
 To override a job definition, (for example, change properties like `variables` or `dependencies`),
-declare a job with the same name as the SAST job to override. Place this new job after the template
+declare a job with the same name as the secret detection job to override. Place this new job after the template
 inclusion and specify any additional keys under it.
 
 WARNING:
@@ -202,8 +202,9 @@ Secret Detection can be customized by defining available CI/CD variables:
 
 | CI/CD variable                    | Default value | Description |
 |-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_COMMIT_FROM`    | -             | The commit a Gitleaks scan starts at. |
-| `SECRET_DETECTION_COMMIT_TO`      | -             | The commit a Gitleaks scan ends at. |
+| `SECRET_DETECTION_COMMIT_FROM`    | -             | The commit a Gitleaks scan starts at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
+| `SECRET_DETECTION_COMMIT_TO`      | -             | The commit a Gitleaks scan ends at. [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. Replaced with `SECRET_DETECTION_COMMITS`. |
+| `SECRET_DETECTION_COMMITS`        | -             | The list of commits that Gitleaks should scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243564) in GitLab 13.5. |
 | `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
 
@@ -348,6 +349,22 @@ For details on saving and transporting Docker images as a file, see Docker's doc
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
+### Set Secret Detection CI/CD variables to use the local Secret Detection analyzer container image
+
+Add the following configuration to your `.gitlab-ci.yml` file. You must replace
+`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
+```
+
+The Secret Detection job should now use the local copy of the Secret Detection analyzer Docker image to scan your code and generate
+security reports without requiring internet access.
+
 #### If support for Custom Certificate Authorities are needed
 
 Support for custom certificate authorities was introduced in the following versions.
@@ -370,22 +387,6 @@ variables:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#custom-cicd-variables), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
-
-### Set Secret Detection CI/CD variables to use local Secret Detection analyzer
-
-Add the following configuration to your `.gitlab-ci.yml` file. You must replace
-`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry:
-
-```yaml
-include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
-
-variables:
-  SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
-```
-
-The Secret Detection job should now use local copies of the Secret Detection analyzer to scan your code and generate
-security reports without requiring internet access.
 
 ## Troubleshooting
 

@@ -11,7 +11,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
-  feature_category :issue_tracking
+  feature_category :team_planning
 
   def delete_attachment
     note.remove_attachment!
@@ -53,6 +53,14 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
       }
     end
+  end
+
+  def outdated_line_change
+    diff_lines = Rails.cache.fetch(['note', note.id, 'oudated_line_change'], expires_in: 7.days) do
+      ::MergeRequests::OutdatedDiscussionDiffLinesService.new(project: @project, note: note).execute.to_json
+    end
+
+    render json: diff_lines
   end
 
   private

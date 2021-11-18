@@ -79,6 +79,7 @@ RSpec.describe 'Admin::Hooks' do
     let(:hook_url) { generate(:url) }
 
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       create(:system_hook, url: hook_url)
     end
 

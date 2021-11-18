@@ -1,0 +1,16 @@
+- max_topic_name_length = 30
+- detail_page_link = topic_explore_projects_path(topic_name: topic.name)
+
+.col-lg-3.col-md-4.col-sm-12
+  .gl-card.gl-mb-5
+    .gl-card-body.gl-display-flex.gl-align-items-center
+      .avatar-container.rect-avatar.s40.gl-flex-shrink-0
+        = link_to detail_page_link do
+          = topic_icon(topic, class: "avatar s40")
+      = link_to detail_page_link do
+        - if topic.name.length > max_topic_name_length
+          %h5.str-truncated.has-tooltip{ title: topic.name }
+            = truncate(topic.name, length: max_topic_name_length)
+        - else
+          %h5
+            = topic.name

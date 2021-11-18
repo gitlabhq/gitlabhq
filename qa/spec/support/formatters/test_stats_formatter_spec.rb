@@ -20,6 +20,8 @@ describe QA::Support::Formatters::TestStatsFormatter do
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
   let(:stage) { '1_manage' }
   let(:file_path) { "./qa/specs/features/#{stage}/subfolder/some_spec.rb" }
+  let(:ui_fabrication) { 0 }
+  let(:api_fabrication) { 0 }
 
   let(:influx_client_args) do
     {
@@ -48,6 +50,9 @@ describe QA::Support::Formatters::TestStatsFormatter do
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',
         run_time: 0,
+        api_fabrication: api_fabrication * 1000,
+        ui_fabrication: ui_fabrication * 1000,
+        total_fabrication: (api_fabrication + ui_fabrication) * 1000,
         retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
@@ -68,6 +73,11 @@ describe QA::Support::Formatters::TestStatsFormatter do
   around do |example|
     RSpec::Core::Sandbox.sandboxed do |config|
       config.formatter = QA::Support::Formatters::TestStatsFormatter
+
+      config.append_after do |example|
+        example.metadata[:api_fabrication] = Thread.current[:api_fabrication]
+        example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
+      end
 
       config.before(:context) { RSpec.current_example = nil }
 
@@ -166,6 +176,22 @@ describe QA::Support::Formatters::TestStatsFormatter do
       end
 
       it 'exports data to influxdb with correct run type' do
+        run_spec
+
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with fabrication runtimes' do
+      let(:ui_fabrication) { 10 }
+      let(:api_fabrication) { 4 }
+
+      before do
+        Thread.current[:api_fabrication] = api_fabrication
+        Thread.current[:browser_ui_fabrication] = ui_fabrication
+      end
+
+      it 'exports data to influxdb with fabrication times' do
         run_spec
 
         expect(influx_write_api).to have_received(:write).with(data: [data])

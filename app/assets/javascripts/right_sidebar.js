@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { hide, fixTitle } from '~/tooltips';
+import { DEBOUNCE_DROPDOWN_DELAY } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import createFlash from './flash';
 import axios from './lib/utils/axios_utils';
 import { sprintf, s__, __ } from './locale';
@@ -130,8 +131,10 @@ Sidebar.prototype.openDropdown = function (blockOrName) {
   // Wait for the sidebar to trigger('click') open
   // so it doesn't cause our dropdown to close preemptively
   setTimeout(() => {
-    $block.find('.js-sidebar-dropdown-toggle').trigger('click');
-  });
+    if (!gon.features?.labelsWidget && !$block.hasClass('labels-select-wrapper')) {
+      $block.find('.js-sidebar-dropdown-toggle').trigger('click');
+    }
+  }, DEBOUNCE_DROPDOWN_DELAY);
 };
 
 Sidebar.prototype.setCollapseAfterUpdate = function ($block) {

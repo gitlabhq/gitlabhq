@@ -380,12 +380,18 @@ You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)
 in a comment or description field.
 
-## Real-time sidebar **(FREE SELF)**
+## Real-time sidebar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3413) in GitLab 13.9.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.5.
 
-Assignees in the sidebar are updated in real time. This feature is **disabled by default**.
-To enable it, you need to enable [Action Cable in-app mode](https://docs.gitlab.com/omnibus/settings/actioncable.html).
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, ask an administrator to
+[disable the feature flags](../../../administration/feature_flags.md) named `real_time_issue_sidebar` and `broadcast_issue_updates`.
+On GitLab.com, this feature is available.
+
+Assignees in the sidebar are updated in real time.
 
 ## Similar issues
 

@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe NamespacePolicy do
   let_it_be(:parent) { create(:namespace) }
-  let_it_be(:namespace) { create(:project_namespace, parent: parent) }
+  let_it_be(:project) { create(:project, namespace: parent) }
+  let_it_be(:namespace) { project.project_namespace }
 
   let(:permissions) do
     [:owner_access, :create_projects, :admin_namespace, :read_namespace,

@@ -50,7 +50,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
       expect(directives.has_key?('report_uri')).to be_truthy
       expect(directives['report_uri']).to be_nil
-      expect(directives['child_src']).to eq(directives['frame_src'])
+      expect(directives['child_src']).to eq("#{directives['frame_src']} #{directives['worker_src']}")
     end
 
     context 'adds all websocket origins to support Safari' do
@@ -77,13 +77,15 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
 
     context 'when CDN host is defined' do
       before do
-        stub_config_setting(cdn_host: 'https://example.com')
+        stub_config_setting(cdn_host: 'https://cdn.example.com')
       end
 
       it 'adds CDN host to CSP' do
-        expect(directives['script_src']).to eq("'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net https://apis.google.com https://example.com")
-        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://example.com")
-        expect(directives['font_src']).to eq("'self' https://example.com")
+        expect(directives['script_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src + " https://cdn.example.com")
+        expect(directives['style_src']).to eq("'self' 'unsafe-inline' https://cdn.example.com")
+        expect(directives['font_src']).to eq("'self' https://cdn.example.com")
+        expect(directives['worker_src']).to eq('http://localhost/assets/ blob: data: https://cdn.example.com')
+        expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " https://cdn.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
       end
     end
 
@@ -99,8 +101,10 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
     end
 
     context 'when CUSTOMER_PORTAL_URL is set' do
+      let(:customer_portal_url) { 'https://customers.example.com' }
+
       before do
-        stub_env('CUSTOMER_PORTAL_URL', 'https://customers.example.com')
+        stub_env('CUSTOMER_PORTAL_URL', customer_portal_url)
       end
 
       context 'when in production' do
@@ -109,7 +113,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'does not add CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
         end
       end
 
@@ -119,7 +123,36 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         end
 
         it 'adds CUSTOMER_PORTAL_URL to CSP' do
-          expect(directives['frame_src']).to eq("'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com https://customers.example.com")
+          expect(directives['frame_src']).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src + " http://localhost/rails/letter_opener/ https://customers.example.com http://localhost/admin/sidekiq http://localhost/admin/sidekiq/ http://localhost/-/speedscope/index.html")
+        end
+      end
+    end
+
+    context 'letter_opener applicaiton URL' do
+      let(:gitlab_url) { 'http://gitlab.example.com' }
+      let(:letter_opener_url) { "#{gitlab_url}/rails/letter_opener/" }
+
+      before do
+        stub_config_setting(url: gitlab_url)
+      end
+
+      context 'when in production' do
+        before do
+          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+        end
+
+        it 'does not add letter_opener to CSP' do
+          expect(directives['frame_src']).not_to include(letter_opener_url)
+        end
+      end
+
+      context 'when in development' do
+        before do
+          allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+        end
+
+        it 'adds letter_opener to CSP' do
+          expect(directives['frame_src']).to include(letter_opener_url)
         end
       end
     end

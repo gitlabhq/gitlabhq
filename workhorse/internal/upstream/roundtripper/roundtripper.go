@@ -32,19 +32,23 @@ func NewBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout
 }
 
 func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout time.Duration, developmentMode bool, tlsConf *tls.Config) http.RoundTripper {
-	// Copied from the definition of http.DefaultTransport. We can't literally copy http.DefaultTransport because of its hidden internal state.
-	transport, dialer := newBackendTransport()
+	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.ResponseHeaderTimeout = proxyHeadersTimeout
 	transport.TLSClientConfig = tlsConf
+
+	// Puma does not support http/2, there's no point in reconnecting
+	transport.ForceAttemptHTTP2 = false
+
+	dial := transport.DialContext
 
 	if backend != nil && socket == "" {
 		address := mustParseAddress(backend.Host, backend.Scheme)
 		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
-			return dialer.DialContext(ctx, "tcp", address)
+			return dial(ctx, "tcp", address)
 		}
 	} else if socket != "" {
 		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
-			return dialer.DialContext(ctx, "unix", socket)
+			return dial(ctx, "unix", socket)
 		}
 	} else {
 		panic("backend is nil and socket is empty")

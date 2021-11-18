@@ -13,32 +13,47 @@ RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader do
 
   shared_examples 'executes N max member permission queries to the DB' do
     it 'executes the specified max membership queries' do
-      queries = ActiveRecord::QueryRecorder.new do
-        groups.each { |group| user.can?(:read_group, group) }
+      expect { groups.each { |group| user.can?(:read_group, group) } }.to make_queries_matching(max_query_regex, expected_query_count)
+    end
+
+    it 'caches the correct access_level for each group' do
+      groups.each do |group|
+        access_level_from_db = group.members_with_parents.where(user_id: user.id).group(:user_id).maximum(:access_level)[user.id] || Gitlab::Access::NO_ACCESS
+        cached_access_level = group.max_member_access_for_user(user)
+
+        expect(cached_access_level).to eq(access_level_from_db)
       end
-
-      max_queries = queries.log.grep(max_query_regex)
-
-      expect(max_queries.count).to eq(expected_query_count)
     end
   end
 
   context 'when the preloader is used', :request_store do
-    before do
-      described_class.new(groups, user).execute
-    end
+    context 'when user has indirect access to groups' do
+      let_it_be(:child_maintainer) { create(:group, :private, parent: group1).tap {|g| g.add_maintainer(user)} }
+      let_it_be(:child_indirect_access) { create(:group, :private, parent: group1) }
 
-    it_behaves_like 'executes N max member permission queries to the DB' do
-      # Will query all groups where the user is not already a member
-      let(:expected_query_count) { 1 }
-    end
+      let(:groups) { [group1, group2, group3, child_maintainer, child_indirect_access] }
 
-    context 'when user has access but is not a direct member of the group' do
-      let(:groups) { [group1, group2, group3, create(:group, :private, parent: group1)] }
+      context 'when traversal_ids feature flag is disabled' do
+        it_behaves_like 'executes N max member permission queries to the DB' do
+          before do
+            stub_feature_flags(use_traversal_ids: false)
+            described_class.new(groups, user).execute
+          end
 
-      it_behaves_like 'executes N max member permission queries to the DB' do
-        # One query for group with no access and another one where the user is not a direct member
-        let(:expected_query_count) { 2 }
+          # One query for group with no access and another one per group where the user is not a direct member
+          let(:expected_query_count) { 2 }
+        end
+      end
+
+      context 'when traversal_ids feature flag is enabled' do
+        it_behaves_like 'executes N max member permission queries to the DB' do
+          before do
+            stub_feature_flags(use_traversal_ids: true)
+            described_class.new(groups, user).execute
+          end
+
+          let(:expected_query_count) { 0 }
+        end
       end
     end
   end

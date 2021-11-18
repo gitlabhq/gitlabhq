@@ -6,7 +6,7 @@ module CustomerRelations
       private
 
       def allowed?
-        current_user&.can?(:admin_organization, group)
+        current_user&.can?(:admin_crm_organization, group)
       end
 
       def error(message)

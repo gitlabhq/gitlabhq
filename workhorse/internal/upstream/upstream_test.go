@@ -88,16 +88,6 @@ func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 }
 
 func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
-
-	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
-
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
-
 	testCases := []testCase{
 		{"push from secondary is forwarded", "/-/push_from_secondary/foo/bar.git/info/refs", "Geo primary received request to path /-/push_from_secondary/foo/bar.git/info/refs"},
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
@@ -106,7 +96,7 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 		{"unknown route is forwarded", "/anything", "Geo primary received request to path /anything"},
 	}
 
-	runTestCases(t, ws, testCases)
+	runTestCasesWithGeoProxyEnabled(t, testCases)
 }
 
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
@@ -227,6 +217,20 @@ func runTestCases(t *testing.T, ws *httptest.Server, testCases []testCase) {
 	}
 }
 
+func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
+	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
+	defer rsDeferredClose()
+
+	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_proxy_url":"%v"}`, remoteServer.URL)
+	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
+	defer deferredClose()
+
+	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
+	defer wsDeferredClose()
+
+	runTestCases(t, ws, testCases)
+}
+
 func newUpstreamConfig(authBackend string) *config.Config {
 	return &config.Config{
 		Version:            "123",
@@ -284,8 +288,12 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 	}
 	cfg := newUpstreamConfig(railsServerURL)
 	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes)
-	ws := httptest.NewServer(upstreamHandler)
+
+	// Secret should be configured before the first Geo API poll happens on server start
+	// to prevent race conditions where the first API call happens without a secret path
 	testhelper.ConfigureSecret()
+
+	ws := httptest.NewServer(upstreamHandler)
 
 	waitForNextApiPoll := func() {}
 

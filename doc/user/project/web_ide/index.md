@@ -15,7 +15,8 @@ projects by providing an advanced editor with commit staging.
 
 ## Open the Web IDE
 
-You can open the Web IDE when viewing a file, from the repository file list,
+Use the <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md) to open the Web IDE.
+You can also open the Web IDE when viewing a file, from the repository file list,
 and from merge requests:
 
 - *When viewing a file, or the repository file list* -
@@ -100,12 +101,13 @@ same core features for highlighting and linking to particular lines in the edite
 
 ## Schema based validation
 
-> - Support for validation based on predefined schemas [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) in GitLab 13.2.
-> - It was deployed behind a feature flag, disabled by default.
-> - It's enabled on GitLab.com.
-> - It cannot be enabled or disabled per-project.
-> - For GitLab self-managed instances, GitLab administrators can opt to [enable it](#enable-or-disable-validation-based-on-predefined-schemas).
-> - Support for validation based on custom schemas [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/226982) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218472) validation based on predefined schemas in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `schema_linting`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `schema_linting`.
+This feature cannot be enabled or disabled per-project.
+On GitLab.com, this feature is available.
+You should not use this feature for production environments.
 
 The Web IDE provides validation support for certain JSON and YAML files using schemas
 based on the [JSON Schema Store](https://www.schemastore.org/json/).
@@ -115,28 +117,9 @@ based on the [JSON Schema Store](https://www.schemastore.org/json/).
 The Web IDE has validation for certain files built in. This feature is only supported for
 the `*.gitlab-ci.yml` files.
 
-#### Enable or disable validation based on predefined schemas **(FREE SELF)**
-
-Validation based on predefined schemas is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default** for self-managed instances,
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can enable it for your instance.
-
-To enable it:
-
-```ruby
-Feature.enable(:schema_linting)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:schema_linting)
-```
-
 ### Custom schemas **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/226982) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/226982) in GitLab 13.4.
 
 The Web IDE also allows you to define custom schemas for certain JSON/YAML files in your project.
 You can do so by defining a `schemas` entry in the `.gitlab/.gitlab-webide.yml` file inside the

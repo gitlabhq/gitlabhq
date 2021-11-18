@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../../event_hub';
 import PipelineMiniGraph from './pipeline_mini_graph.vue';
@@ -18,7 +18,7 @@ const DEFAULT_TH_CLASSES =
 
 export default {
   components: {
-    GlTable,
+    GlTableLite,
     LinkedPipelinesMiniList: () =>
       import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
     PipelinesCommit,
@@ -156,7 +156,7 @@ export default {
 </script>
 <template>
   <div class="ci-table">
-    <gl-table
+    <gl-table-lite
       :fields="tableFields"
       :items="pipelines"
       tbody-tr-class="commit"
@@ -225,7 +225,7 @@ export default {
       <template #cell(actions)="{ item }">
         <pipeline-operations :pipeline="item" :canceling-pipeline="cancelingPipeline" />
       </template>
-    </gl-table>
+    </gl-table-lite>
 
     <pipeline-stop-modal :pipeline="pipeline" @submit="onSubmit" />
   </div>

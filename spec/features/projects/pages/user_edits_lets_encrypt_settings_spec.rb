@@ -14,6 +14,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
     stub_lets_encrypt_settings
+    stub_feature_flags(bootstrap_confirmation_modals: false)
 
     project.add_role(user, role)
     sign_in(user)

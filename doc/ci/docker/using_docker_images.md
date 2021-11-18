@@ -132,16 +132,7 @@ For example, the following two definitions are equal:
 
 When a CI job runs in a Docker container, the `before_script`, `script`, and `after_script` commands run in the `/builds/<project-path>/` directory. Your image may have a different default `WORKDIR` defined. To move to your `WORKDIR`, save the `WORKDIR` as an environment variable so you can reference it in the container during the job's runtime.
 
-### Available settings for `image`
-
-> Introduced in GitLab and GitLab Runner 9.4.
-
-| Setting    | Required | Description |
-|------------|----------| ----------- |
-| `name`     | Yes, when used with any other option. | Full name of the image. It should contain the registry part if needed. |
-| `entrypoint` | No.     | Command or script to execute as the container's entrypoint. It's translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
-
-### Overriding the entrypoint of an image
+### Override the entrypoint of an image
 
 > Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
 

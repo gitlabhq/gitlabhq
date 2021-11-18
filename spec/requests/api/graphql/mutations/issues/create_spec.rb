@@ -48,5 +48,9 @@ RSpec.describe 'Create an issue' do
       expect(mutation_response['issue']).to include('discussionLocked' => true)
       expect(Issue.last.work_item_type.base_type).to eq('issue')
     end
+
+    it_behaves_like 'has spam protection' do
+      let(:mutation_class) { ::Mutations::Issues::Create }
+    end
   end
 end

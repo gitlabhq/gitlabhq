@@ -1,5 +1,12 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlLink,
+  GlButton,
+  GlButtonGroup,
+  GlLoadingIcon,
+  GlSafeHtmlDirective,
+} from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
@@ -23,6 +30,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -96,6 +104,9 @@ export default {
     },
   },
   defaultAvatarUrl,
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
+  },
 };
 </script>
 
@@ -121,10 +132,10 @@ export default {
       <div class="commit-detail flex-list">
         <div class="commit-content qa-commit-content">
           <gl-link
+            v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"
             :class="{ 'font-italic': !commit.message }"
             class="commit-row-message item-title"
-            v-html="commit.titleHtml /* eslint-disable-line vue/no-v-html */"
           />
           <gl-button
             v-if="commit.descriptionHtml"
@@ -150,15 +161,15 @@ export default {
           </div>
           <pre
             v-if="commitDescription"
+            v-safe-html:[$options.safeHtmlConfig]="commitDescription"
             :class="{ 'd-block': showDescription }"
             class="commit-row-description gl-mb-3"
-            v-html="commitDescription /* eslint-disable-line vue/no-v-html */"
           ></pre>
         </div>
         <div class="commit-actions flex-row">
           <div
             v-if="commit.signatureHtml"
-            v-html="commit.signatureHtml /* eslint-disable-line vue/no-v-html */"
+            v-safe-html:[$options.safeHtmlConfig]="commit.signatureHtml"
           ></div>
           <div v-if="commit.pipeline" class="ci-status-link">
             <gl-link

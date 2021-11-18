@@ -1,5 +1,5 @@
 import { mapValues } from 'lodash';
-import { InputRule } from 'prosemirror-inputrules';
+import { InputRule } from '@tiptap/core';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
 import Tracking from '~/tracking';
 import {
@@ -17,17 +17,20 @@ const trackKeyboardShortcut = (contentType, commandFn, shortcut) => () => {
 };
 
 const trackInputRule = (contentType, inputRule) => {
-  return new InputRule(inputRule.match, (...args) => {
-    const result = inputRule.handler(...args);
+  return new InputRule({
+    find: inputRule.find,
+    handler: (...args) => {
+      const result = inputRule.handler(...args);
 
-    if (result) {
-      Tracking.event(undefined, INPUT_RULE_TRACKING_ACTION, {
-        label: CONTENT_EDITOR_TRACKING_LABEL,
-        property: contentType,
-      });
-    }
+      if (result !== null) {
+        Tracking.event(undefined, INPUT_RULE_TRACKING_ACTION, {
+          label: CONTENT_EDITOR_TRACKING_LABEL,
+          property: contentType,
+        });
+      }
 
-    return result;
+      return result;
+    },
   });
 };
 

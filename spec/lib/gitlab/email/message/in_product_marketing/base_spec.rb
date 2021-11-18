@@ -82,4 +82,29 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
       it { is_expected.to include('This is email 1 of 3 in the Create series', Gitlab::Routing.url_helpers.profile_notifications_url) }
     end
   end
+
+  describe '#series?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject do
+      test_class = "Gitlab::Email::Message::InProductMarketing::#{track.to_s.classify}".constantize
+      test_class.new(group: group, user: user, series: series).series?
+    end
+
+    where(:track, :result) do
+      :create       | true
+      :team_short   | true
+      :trial_short  | true
+      :admin_verify | true
+      :verify       | true
+      :trial        | true
+      :team         | true
+      :experience   | true
+      :invite_team  | false
+    end
+
+    with_them do
+      it { is_expected.to eq result }
+    end
+  end
 end

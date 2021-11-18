@@ -61,9 +61,14 @@ details.
 
 ## Personal Access Token prefix
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
+
 You can set a global prefix for all generated Personal Access Tokens.
 
 A prefix can help you identify PATs visually, as well as with automation tools.
+
+NOTE:
+For GitLab.com and self-managed instances, the default prefix is `glpat-`.
 
 ### Set a prefix
 
@@ -125,7 +130,7 @@ is rejected.
 
 NOTE:
 The repository size limit includes repository files and LFS, but does not include artifacts, uploads,
-wiki, packages, or snippets.
+wiki, packages, or snippets. The repository size limit applies to both private and public projects.
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
@@ -148,7 +153,7 @@ add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachme
 nginx['client_max_body_size'] = "200m"
 ```
 
-## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM)**
+## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
 > - It's deployed behind a feature flag, disabled by default.
@@ -173,7 +178,7 @@ To set a limit on how long these sessions are valid:
 
 ## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab Ultimate 12.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a lifetime for
 [personal access tokens](../../profile/personal_access_tokens.md).
@@ -222,7 +227,7 @@ Disabling SSH key expiration immediately enables all expired SSH keys.
 
 ## Allow expired Personal Access Tokens to be used **(ULTIMATE SELF)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab Ultimate 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214723) in GitLab 13.1.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/296881) in GitLab 13.9.
 
 By default, expired personal access tokens (PATs) **are not usable**.

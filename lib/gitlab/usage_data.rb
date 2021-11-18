@@ -45,23 +45,10 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          license_usage_data
-            .merge(system_usage_data_license)
-            .merge(system_usage_data_settings)
-            .merge(system_usage_data)
-            .merge(system_usage_data_monthly)
-            .merge(system_usage_data_weekly)
-            .merge(features_usage_data)
-            .merge(components_usage_data)
-            .merge(object_store_usage_data)
-            .merge(topology_usage_data)
-            .merge(usage_activity_by_stage)
-            .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-            .merge(analytics_unique_visits_data)
-            .merge(compliance_unique_visits_data)
-            .merge(search_unique_visits_data)
-            .merge(redis_hll_counters)
-            .deep_merge(aggregated_metrics_data)
+          usage_data = usage_data_metrics
+          usage_data = usage_data.with_indifferent_access.deep_merge(instrumentation_metrics.with_indifferent_access) if Feature.enabled?(:usage_data_instrumentation)
+
+          usage_data
         end
       end
 
@@ -309,9 +296,11 @@ module Gitlab
             version: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.container_registry_version }
           },
           database: {
-            adapter: alt_usage_data { Gitlab::Database.main.adapter_name },
-            version: alt_usage_data { Gitlab::Database.main.version },
-            pg_system_id: alt_usage_data { Gitlab::Database.main.system_id }
+            # rubocop: disable UsageData/LargeTable
+            adapter: alt_usage_data { ApplicationRecord.database.adapter_name },
+            version: alt_usage_data { ApplicationRecord.database.version },
+            pg_system_id: alt_usage_data { ApplicationRecord.database.system_id }
+            # rubocop: enable UsageData/LargeTable
           },
           mail: {
             smtp_server: alt_usage_data { ActionMailer::Base.smtp_settings[:address] }
@@ -549,7 +538,8 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def usage_activity_by_stage_manage(time_period)
         {
-          events: distinct_count(::Event.where(time_period), :author_id),
+          # rubocop: disable UsageData/LargeTable
+          events: stage_manage_events(time_period),
           groups: distinct_count(::GroupMember.where(time_period), :user_id),
           users_created: count(::User.where(time_period), start: minimum_id(User), finish: maximum_id(User)),
           omniauth_providers: filtered_omniauth_provider_names.reject { |name| name == 'group_saml' },
@@ -628,9 +618,9 @@ module Gitlab
           todos: distinct_count(::Todo.where(time_period), :author_id),
           service_desk_enabled_projects: distinct_count_service_desk_enabled_projects(time_period),
           service_desk_issues: count(::Issue.service_desk.where(time_period)),
-          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .where(time_period), :creator_id),
-          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_cloud.where(time_period), :creator_id),
-          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira) .with_jira_dvcs_server.where(time_period), :creator_id)
+          projects_jira_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).where(time_period), :creator_id),
+          projects_jira_dvcs_cloud_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_cloud.where(time_period), :creator_id),
+          projects_jira_dvcs_server_active: distinct_count(::Project.with_active_integration(::Integrations::Jira).with_jira_dvcs_server.where(time_period), :creator_id)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -729,6 +719,44 @@ module Gitlab
 
       private
 
+      def stage_manage_events(time_period)
+        if time_period.empty?
+          Gitlab::Utils::UsageData::FALLBACK
+        else
+          # rubocop: disable CodeReuse/ActiveRecord
+          # rubocop: disable UsageData/LargeTable
+          start = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
+          finish = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
+          estimate_batch_distinct_count(::Event.where(time_period), :author_id, start: start, finish: finish)
+          # rubocop: enable UsageData/LargeTable
+          # rubocop: enable CodeReuse/ActiveRecord
+        end
+      end
+
+      def usage_data_metrics
+        license_usage_data
+          .merge(system_usage_data_license)
+          .merge(system_usage_data_settings)
+          .merge(system_usage_data)
+          .merge(system_usage_data_monthly)
+          .merge(system_usage_data_weekly)
+          .merge(features_usage_data)
+          .merge(components_usage_data)
+          .merge(object_store_usage_data)
+          .merge(topology_usage_data)
+          .merge(usage_activity_by_stage)
+          .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
+          .merge(analytics_unique_visits_data)
+          .merge(compliance_unique_visits_data)
+          .merge(search_unique_visits_data)
+          .merge(redis_hll_counters)
+          .deep_merge(aggregated_metrics_data)
+      end
+
+      def instrumentation_metrics
+        Gitlab::UsageDataMetrics.uncached_data # rubocop:disable UsageData/LargeTable
+      end
+
       def metric_time_period(time_period)
         time_period.present? ? '28d' : 'none'
       end
@@ -805,7 +833,13 @@ module Gitlab
 
         Users::InProductMarketingEmail.tracks.keys.each_with_object({}) do |track, result|
           # rubocop: enable UsageData/LargeTable:
-          series_amount = Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
+          series_amount =
+            if track.to_sym == Namespaces::InviteTeamEmailService::TRACK
+              0
+            else
+              Namespaces::InProductMarketingEmailsService::TRACKS[track.to_sym][:interval_days].count
+            end
+
           0.upto(series_amount - 1).map do |series|
             # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
             sent_count = sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
@@ -881,7 +915,30 @@ module Gitlab
       end
 
       def projects_imported_count(from, time_period)
-        count(::Project.imported_from(from).where(time_period).where.not(import_type: nil)) # rubocop: disable CodeReuse/ActiveRecord
+        # rubocop:disable CodeReuse/ActiveRecord
+        relation = ::Project.imported_from(from).where.not(import_type: nil) # rubocop:disable UsageData/LargeTable
+        if time_period.empty?
+          count(relation)
+        else
+          @project_import_id ||= {}
+          start = time_period[:created_at].first
+          finish = time_period[:created_at].last
+
+          # can be nil values here if no records are in our range and it is possible the same instance
+          # is called with different time periods since it is passed in as a variable
+          unless @project_import_id.key?(start)
+            @project_import_id[start] = ::Project.select(:id).where(Project.arel_table[:created_at].gteq(start)) # rubocop:disable UsageData/LargeTable
+                                                 .order(created_at: :asc).limit(1).first&.id
+          end
+
+          unless @project_import_id.key?(finish)
+            @project_import_id[finish] = ::Project.select(:id).where(Project.arel_table[:created_at].lteq(finish)) # rubocop:disable UsageData/LargeTable
+                                                  .order(created_at: :desc).limit(1).first&.id
+          end
+
+          count(relation, start: @project_import_id[start], finish: @project_import_id[finish])
+        end
+        # rubocop:enable CodeReuse/ActiveRecord
       end
 
       def issue_imports(time_period)

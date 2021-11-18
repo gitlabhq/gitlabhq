@@ -116,13 +116,13 @@ RSpec.describe Gitlab::GithubImport::BulkImporting do
           value: 5
         )
 
-      expect(Gitlab::Database.main)
-        .to receive(:bulk_insert)
+      expect(ApplicationRecord)
+        .to receive(:legacy_bulk_insert)
         .ordered
         .with('kittens', rows.first(5))
 
-      expect(Gitlab::Database.main)
-        .to receive(:bulk_insert)
+      expect(ApplicationRecord)
+        .to receive(:legacy_bulk_insert)
         .ordered
         .with('kittens', rows.last(5))
 

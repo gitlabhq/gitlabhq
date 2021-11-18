@@ -153,7 +153,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
         it 'adds an error on group' do
           transfer_service.execute(nil)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
       end
 
@@ -185,9 +185,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
         context 'when projects have project namespaces' do
           let_it_be(:project1) { create(:project, :private, namespace: group) }
-          let_it_be(:project_namespace1) { create(:project_namespace, project: project1) }
           let_it_be(:project2) { create(:project, :private, namespace: group) }
-          let_it_be(:project_namespace2) { create(:project_namespace, project: project2) }
 
           it_behaves_like 'project namespace path is in sync with project path' do
             let(:group_full_path) { "#{group.path}" }
@@ -241,7 +239,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
         it 'adds an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup with the same path.')
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
       end
 
@@ -250,36 +248,45 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         let_it_be(:membership) { create(:group_member, :owner, group: new_parent_group, user: user) }
         let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
 
-        before do
-          group.update_attribute(:path, 'foo')
-        end
-
-        it 'returns false' do
-          expect(transfer_service.execute(new_parent_group)).to be_falsy
-        end
-
         it 'adds an error on group' do
-          transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
+          expect(transfer_service.execute(new_parent_group)).to be_falsy
+          expect(transfer_service.error).to eq('Transfer failed: The parent group already has a subgroup or a project with the same path.')
         end
 
-        context 'when projects have project namespaces' do
-          let!(:project_namespace) { create(:project_namespace, project: project) }
-
+        # currently when a project is created it gets a corresponding project namespace
+        # so we test the case where a project without a project namespace is transferred
+        # for backward compatibility
+        context 'without project namespace' do
           before do
-            transfer_service.execute(new_parent_group)
+            project_namespace = project.project_namespace
+            project.update_column(:project_namespace_id, nil)
+            project_namespace.delete
           end
 
-          it_behaves_like 'project namespace path is in sync with project path' do
-            let(:group_full_path) { "#{new_parent_group.full_path}" }
-            let(:projects_with_project_namespace) { [project] }
+          it 'adds an error on group' do
+            expect(project.reload.project_namespace).to be_nil
+            expect(transfer_service.execute(new_parent_group)).to be_falsy
+            expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
           end
+        end
+      end
+
+      context 'when projects have project namespaces' do
+        let_it_be(:project) { create(:project, path: 'foo', namespace: new_parent_group) }
+
+        before do
+          transfer_service.execute(new_parent_group)
+        end
+
+        it_behaves_like 'project namespace path is in sync with project path' do
+          let(:group_full_path) { "#{new_parent_group.full_path}" }
+          let(:projects_with_project_namespace) { [project] }
         end
       end
 
       context 'when the group is allowed to be transferred' do
         let_it_be(:new_parent_group, reload: true) { create(:group, :public) }
-        let_it_be(:new_parent_group_integration) { create(:integrations_slack, group: new_parent_group, project: nil, webhook: 'http://new-group.slack.com') }
+        let_it_be(:new_parent_group_integration) { create(:integrations_slack, :group, group: new_parent_group, webhook: 'http://new-group.slack.com') }
 
         before do
           allow(PropagateIntegrationWorker).to receive(:perform_async)
@@ -316,7 +323,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
 
           context 'with an inherited integration' do
             let_it_be(:instance_integration) { create(:integrations_slack, :instance, webhook: 'http://project.slack.com') }
-            let_it_be(:group_integration) { create(:integrations_slack, group: group, project: nil, webhook: 'http://group.slack.com', inherit_from_id: instance_integration.id) }
+            let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com', inherit_from_id: instance_integration.id) }
 
             it 'replaces inherited integrations', :aggregate_failures do
               expect(new_created_integration.webhook).to eq(new_parent_group_integration.webhook)
@@ -326,7 +333,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           end
 
           context 'with a custom integration' do
-            let_it_be(:group_integration) { create(:integrations_slack, group: group, project: nil, webhook: 'http://group.slack.com') }
+            let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
 
             it 'does not updates the integrations', :aggregate_failures do
               expect { transfer_service.execute(new_parent_group) }.not_to change { group_integration.webhook }
@@ -445,8 +452,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
       context 'when transferring a group with project descendants' do
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
-        let!(:project_namespace1) { create(:project_namespace, project: project1) }
-        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path
@@ -483,8 +488,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let!(:project1) { create(:project, :repository, :public, namespace: group) }
           let!(:project2) { create(:project, :repository, :public, namespace: group) }
           let!(:new_parent_group) { create(:group, :private) }
-          let!(:project_namespace1) { create(:project_namespace, project: project1) }
-          let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
           it 'updates projects visibility to match the new parent' do
             group.projects.each do |project|
@@ -504,8 +507,6 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         let!(:project2) { create(:project, :repository, :internal, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }
         let!(:subgroup2) { create(:group, :internal, parent: group) }
-        let!(:project_namespace1) { create(:project_namespace, project: project1) }
-        let!(:project_namespace2) { create(:project_namespace, project: project2) }
 
         before do
           TestEnv.clean_test_path
@@ -593,11 +594,16 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let_it_be_with_reload(:group) { create(:group, :private, parent: old_parent_group) }
           let_it_be(:new_group_member) { create(:user) }
           let_it_be(:old_group_member) { create(:user) }
+          let_it_be(:unique_subgroup_member) { create(:user) }
+          let_it_be(:direct_project_member) { create(:user) }
 
           before do
             new_parent_group.add_maintainer(new_group_member)
             old_parent_group.add_maintainer(old_group_member)
+            subgroup1.add_developer(unique_subgroup_member)
+            nested_project.add_developer(direct_project_member)
             group.refresh_members_authorized_projects
+            subgroup1.refresh_members_authorized_projects
           end
 
           it 'removes old project authorizations' do
@@ -613,7 +619,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           end
 
           it 'performs authorizations job immediately' do
-            expect(AuthorizedProjectsWorker).to receive(:bulk_perform_inline)
+            expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_inline)
 
             transfer_service.execute(new_parent_group)
           end
@@ -630,14 +636,24 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
                 ProjectAuthorization.where(project_id: nested_project.id, user_id: new_group_member.id).size
               }.from(0).to(1)
             end
+
+            it 'preserves existing project authorizations for direct project members' do
+              expect { transfer_service.execute(new_parent_group) }.not_to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: direct_project_member.id).count
+              }
+            end
           end
 
-          context 'for groups with many members' do
-            before do
-              11.times do
-                new_parent_group.add_maintainer(create(:user))
-              end
+          context 'for nested groups with unique members' do
+            it 'preserves existing project authorizations' do
+              expect { transfer_service.execute(new_parent_group) }.not_to change {
+                ProjectAuthorization.where(project_id: nested_project.id, user_id: unique_subgroup_member.id).count
+              }
             end
+          end
+
+          context 'for groups with many projects' do
+            let_it_be(:project_list) { create_list(:project, 11, :repository, :private, namespace: group) }
 
             it 'adds new project authorizations for the user which makes a transfer' do
               transfer_service.execute(new_parent_group)
@@ -646,9 +662,21 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
               expect(ProjectAuthorization.where(project_id: nested_project.id, user_id: user.id).size).to eq(1)
             end
 
+            it 'adds project authorizations for users in the new hierarchy' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: new_group_member.id).size
+              }.from(0).to(project_list.count)
+            end
+
+            it 'removes project authorizations for users in the old hierarchy' do
+              expect { transfer_service.execute(new_parent_group) }.to change {
+                ProjectAuthorization.where(project_id: project_list.map { |project| project.id }, user_id: old_group_member.id).size
+              }.from(project_list.count).to(0)
+            end
+
             it 'schedules authorizations job' do
-              expect(AuthorizedProjectsWorker).to receive(:bulk_perform_async)
-                .with(array_including(new_parent_group.members_with_parents.pluck(:user_id).map {|id| [id, anything] }))
+              expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:bulk_perform_async)
+                .with(array_including(group.all_projects.ids.map { |id| [id, anything] }))
 
               transfer_service.execute(new_parent_group)
             end

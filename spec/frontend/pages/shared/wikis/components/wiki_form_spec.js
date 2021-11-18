@@ -8,9 +8,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
 import {
-  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   CONTENT_EDITOR_LOADED_ACTION,
   SAVED_USING_CONTENT_EDITOR_ACTION,
+  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+  WIKI_FORMAT_LABEL,
+  WIKI_FORMAT_UPDATED_ACTION,
 } from '~/pages/shared/wikis/constants';
 
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -65,7 +67,6 @@ describe('WikiForm', () => {
   const pageInfoPersisted = {
     ...pageInfoNew,
     persisted: true,
-
     title: 'My page',
     content: '  My page content  ',
     format: 'markdown',
@@ -177,7 +178,7 @@ describe('WikiForm', () => {
       await wrapper.vm.$nextTick();
 
       expect(wrapper.text()).toContain(titleHelpText);
-      expect(findTitleHelpLink().attributes().href).toEqual(titleHelpLink);
+      expect(findTitleHelpLink().attributes().href).toBe(titleHelpLink);
     },
   );
 
@@ -186,7 +187,7 @@ describe('WikiForm', () => {
 
     await wrapper.vm.$nextTick();
 
-    expect(findMarkdownHelpLink().attributes().href).toEqual(
+    expect(findMarkdownHelpLink().attributes().href).toBe(
       '/help/user/markdown#wiki-specific-markdown',
     );
   });
@@ -220,8 +221,8 @@ describe('WikiForm', () => {
         expect(e.preventDefault).not.toHaveBeenCalled();
       });
 
-      it('does not trigger tracking event', async () => {
-        expect(trackingSpy).not.toHaveBeenCalled();
+      it('triggers wiki format tracking event', async () => {
+        expect(trackingSpy).toHaveBeenCalledTimes(1);
       });
 
       it('does not trim page content', () => {
@@ -273,7 +274,7 @@ describe('WikiForm', () => {
       ({ persisted, redirectLink }) => {
         createWrapper(persisted);
 
-        expect(findCancelButton().attributes().href).toEqual(redirectLink);
+        expect(findCancelButton().attributes().href).toBe(redirectLink);
       },
     );
   });
@@ -438,13 +439,22 @@ describe('WikiForm', () => {
         });
       });
 
-      it('triggers tracking event on form submit', async () => {
+      it('triggers tracking events on form submit', async () => {
         triggerFormSubmit();
 
         await wrapper.vm.$nextTick();
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
           label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+        });
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, WIKI_FORMAT_UPDATED_ACTION, {
+          label: WIKI_FORMAT_LABEL,
+          value: findFormat().element.value,
+          extra: {
+            old_format: pageInfoPersisted.format,
+            project_path: pageInfoPersisted.path,
+          },
         });
       });
 

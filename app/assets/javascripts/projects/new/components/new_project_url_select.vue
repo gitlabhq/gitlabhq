@@ -6,9 +6,9 @@ import {
   GlDropdownItem,
   GlDropdownText,
   GlDropdownSectionHeader,
-  GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
@@ -24,7 +24,6 @@ export default {
     GlDropdownItem,
     GlDropdownText,
     GlDropdownSectionHeader,
-    GlLoadingIcon,
     GlSearchBoxByType,
   },
   mixins: [Tracking.mixin()],
@@ -103,6 +102,15 @@ export default {
     focusInput() {
       this.$refs.search.focusInput();
     },
+    handleDropdownItemClick(namespace) {
+      eventHub.$emit('update-visibility', {
+        name: namespace.name,
+        visibility: namespace.visibility,
+        showPath: namespace.webUrl,
+        editPath: joinPaths(namespace.webUrl, '-', 'edit'),
+      });
+      this.setNamespace(namespace);
+    },
     handleSelectTemplate(groupId) {
       this.groupToFilterBy = this.userGroups.find(
         (group) => getIdFromGraphQLId(group.id) === groupId,
@@ -134,23 +142,23 @@ export default {
       <gl-search-box-by-type
         ref="search"
         v-model.trim="search"
+        :is-loading="$apollo.queries.currentUser.loading"
         data-qa-selector="select_namespace_dropdown_search_field"
       />
-      <gl-loading-icon v-if="$apollo.queries.currentUser.loading" />
-      <template v-else>
+      <template v-if="!$apollo.queries.currentUser.loading">
         <template v-if="hasGroupMatches">
           <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
           <gl-dropdown-item
             v-for="group of filteredGroups"
             :key="group.id"
-            @click="setNamespace(group)"
+            @click="handleDropdownItemClick(group)"
           >
             {{ group.fullPath }}
           </gl-dropdown-item>
         </template>
         <template v-if="hasNamespaceMatches">
           <gl-dropdown-section-header>{{ __('Users') }}</gl-dropdown-section-header>
-          <gl-dropdown-item @click="setNamespace(userNamespace)">
+          <gl-dropdown-item @click="handleDropdownItemClick(userNamespace)">
             {{ userNamespace.fullPath }}
           </gl-dropdown-item>
         </template>
@@ -158,6 +166,11 @@ export default {
       </template>
     </gl-dropdown>
 
-    <input type="hidden" name="project[namespace_id]" :value="selectedNamespace.id" />
+    <input
+      id="project_namespace_id"
+      type="hidden"
+      name="project[namespace_id]"
+      :value="selectedNamespace.id"
+    />
   </gl-button-group>
 </template>

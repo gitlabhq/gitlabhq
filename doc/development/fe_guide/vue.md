@@ -73,9 +73,8 @@ component, is that you avoid the need to create a fixture or an HTML element in 
 ##### provide/inject
 
 Vue supports dependency injection through [provide/inject](https://vuejs.org/v2/api/#provide-inject).
-Values passed to the component through `provide` can be accessed in the component the `inject` configuration.
-In the following example of a Vue app initialization, a value from HAML is passed to the component
-through the `provide` configuration:
+In the component the `inject` configuration accesses the values `provide` passes down. 
+This example of a Vue app initialization shows how the `provide` configuration passes a value from HAML to the component:
 
 ```javascript
 #js-vue-app{ data: { endpoint: 'foo' }}
@@ -251,7 +250,7 @@ return new Vue({
   render(createElement) {
     return createElement('my-component', {
       props: {
-        username: gon.current_username,
+        avatarUrl: gl.avatarUrl,
       },
     });
   },

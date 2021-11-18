@@ -26,12 +26,12 @@ describe('Alert Handler', () => {
       });
 
       it('should render the alert', () => {
-        expect(findFirstAlert()).toExist();
+        expect(findFirstAlert()).not.toBe(null);
       });
 
       it('should dismiss the alert on click', () => {
         findFirstDismissButton().click();
-        expect(findFirstAlert()).not.toExist();
+        expect(findFirstAlert()).toBe(null);
       });
     });
 
@@ -58,12 +58,12 @@ describe('Alert Handler', () => {
       });
 
       it('should render the banner', () => {
-        expect(findFirstBanner()).toExist();
+        expect(findFirstBanner()).not.toBe(null);
       });
 
       it('should dismiss the banner on click', () => {
         findFirstDismissButton().click();
-        expect(findFirstBanner()).not.toExist();
+        expect(findFirstBanner()).toBe(null);
       });
     });
 
@@ -79,12 +79,12 @@ describe('Alert Handler', () => {
       });
 
       it('should render the banner', () => {
-        expect(findFirstAlert()).toExist();
+        expect(findFirstAlert()).not.toBe(null);
       });
 
       it('should dismiss the banner on click', () => {
         findFirstDismissButtonByClass().click();
-        expect(findFirstAlert()).not.toExist();
+        expect(findFirstAlert()).toBe(null);
       });
     });
   });

@@ -7,28 +7,11 @@ type: reference
 
 # Protected paths **(FREE SELF)**
 
-Rate limiting is a common technique used to improve the security and durability
-of a web application. For more details, see
-[Rate limits](../../../security/rate_limits.md).
+Rate limiting is a technique that improves the security and durability of a web
+application. For more details, see [Rate limits](../../../security/rate_limits.md).
 
-GitLab rate limits the following paths with Rack Attack by default:
-
-```plaintext
-'/users/password',
-'/users/sign_in',
-'/api/#{API::API.version}/session.json',
-'/api/#{API::API.version}/session',
-'/users',
-'/users/confirmation',
-'/unsubscribes/',
-'/import/github/personal_access_token',
-'/admin/session'
-```
-
-GitLab responds with HTTP status code `429` to POST requests at protected paths
-that exceed 10 requests per minute per IP address.
-
-See [User and IP rate limits](../../admin_area/settings/user_and_ip_rate_limits.md#response-headers) for the headers responded to blocked requests.
+You can rate limit (protect) specified paths. For these paths, GitLab responds with HTTP status
+code `429` to POST requests at protected paths that exceed 10 requests per minute per IP address.
 
 For example, the following are limited to a maximum 10 requests per minute:
 
@@ -36,10 +19,15 @@ For example, the following are limited to a maximum 10 requests per minute:
 - User sign-up (if enabled)
 - User password reset
 
-After 10 requests, the client must wait 60 seconds before it can
-try again.
+After 10 requests, the client must wait 60 seconds before it can try again.
 
-## Configure using GitLab UI
+See also:
+
+- List of paths [protected by default](../../../administration/instance_limits.md#by-protected-path).
+- [User and IP rate limits](../../admin_area/settings/user_and_ip_rate_limits.md#response-headers)
+  for the headers returned to blocked requests.
+
+## Configure protected paths
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31246) in GitLab 12.4.
 

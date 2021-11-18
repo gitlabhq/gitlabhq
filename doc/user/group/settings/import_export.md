@@ -40,7 +40,7 @@ be imported into the desired group structure.
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
 sure these users exist before importing the desired groups.
 
-### Exported Contents
+### Exported contents
 
 The following items are exported:
 
@@ -51,8 +51,8 @@ The following items are exported:
 - Subgroups (including all the aforementioned data)
 - Epics
 - Events
-- [Wikis](../../project/wiki/index.md#group-wikis) **(PREMIUM SELF)**
-  (Introduced in [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247))
+- [Wikis](../../project/wiki/group.md)
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
 
 The following items are **not** exported:
 
@@ -108,6 +108,11 @@ The Enterprise Edition retains some group data that isn't part of the Community 
 1. To begin importing, select **Import group**.
 
 Your newly imported group page appears after the operation completes.
+
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](../../project/import/index.md#automate-group-and-project-import).
 
 ## Version history
 

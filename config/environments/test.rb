@@ -49,7 +49,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: true)
+  config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: ENV['CI'].present?)
 
   config.cache_store = :null_store
 
@@ -59,8 +59,4 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
     config.log_level = :fatal
   end
-
-  # Mount the ActionCable Engine in-app so that we don't have to spawn another Puma
-  # process for feature specs
-  ENV['ACTION_CABLE_IN_APP'] = 'true'
 end

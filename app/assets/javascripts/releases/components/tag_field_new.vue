@@ -95,6 +95,8 @@ export default {
       noRefSelected: __('No tag selected'),
       dropdownHeader: __('Tag name'),
       searchPlaceholder: __('Search or create tag'),
+      label: __('Tag name'),
+      labelDescription: __('*Required'),
     },
     createFrom: {
       noRefSelected: __('No source selected'),
@@ -108,11 +110,12 @@ export default {
 <template>
   <div>
     <gl-form-group
-      :label="__('Tag name')"
-      :label-for="tagNameInputId"
       data-testid="tag-name-field"
       :state="!showTagNameValidationError"
       :invalid-feedback="__('Tag name is required')"
+      :label="$options.translations.tagName.label"
+      :label-for="tagNameInputId"
+      :label-description="$options.translations.tagName.labelDescription"
     >
       <form-field-container>
         <ref-selector

@@ -82,7 +82,7 @@ describe('User deletion obstacles list', () => {
         createComponent({ obstacles: [{ type, name, url, projectName, projectUrl }] });
         const msg = findObstacles().text();
 
-        expect(msg).toContain(`in Project ${projectName}`);
+        expect(msg).toContain(`in project ${projectName}`);
         expect(findLinks().at(1).attributes('href')).toBe(projectUrl);
       });
     },

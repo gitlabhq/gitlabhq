@@ -47,8 +47,9 @@ To add a story:
 1. Write the story as per the [official Storybook instructions](https://storybook.js.org/docs/vue/writing-stories/introduction/)
 
    Notes:
-   - Specify the `title` field of the story as the component's file path from the `javascripts/` directory,
-     e.g. if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`, specify the story `title` as `vue_shared/components/sidebar/todo_toggle/todo_button`. This will ensure the Storybook navigation maps closely to our internal directory structure.
+   - Specify the `title` field of the story as the component's file path from the `javascripts/` directory.
+
+     For example, if the component is located at `app/assets/javascripts/vue_shared/components/sidebar/todo_toggle/todo_button.vue`, specify the story `title` as `vue_shared/components/sidebar/todo_toggle/todo_button`. This will ensure the Storybook navigation maps closely to our internal directory structure.
 
 ## Mock backend APIs
 

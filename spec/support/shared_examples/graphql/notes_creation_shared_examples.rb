@@ -66,20 +66,22 @@ RSpec.shared_examples 'a Note mutation when the given resource id is not for a N
 end
 
 RSpec.shared_examples 'a Note mutation when there are rate limit validation errors' do
-  before do
-    stub_application_setting(notes_create_limit: 3)
-    3.times { post_graphql_mutation(mutation, current_user: current_user) }
-  end
-
-  it_behaves_like 'a Note mutation that does not create a Note'
-  it_behaves_like 'a mutation that returns top-level errors',
-                  errors: ['This endpoint has been requested too many times. Try again later.']
-
-  context 'when the user is in the allowlist' do
+  context 'with rate limiter', :freeze_time, :clean_gitlab_redis_rate_limiting do
     before do
-      stub_application_setting(notes_create_limit_allowlist: ["#{current_user.username}"])
+      stub_application_setting(notes_create_limit: 3)
+      3.times { post_graphql_mutation(mutation, current_user: current_user) }
     end
 
-    it_behaves_like 'a Note mutation that creates a Note'
+    it_behaves_like 'a Note mutation that does not create a Note'
+    it_behaves_like 'a mutation that returns top-level errors',
+                    errors: ['This endpoint has been requested too many times. Try again later.']
+
+    context 'when the user is in the allowlist' do
+      before do
+        stub_application_setting(notes_create_limit_allowlist: ["#{current_user.username}"])
+      end
+
+      it_behaves_like 'a Note mutation that creates a Note'
+    end
   end
 end

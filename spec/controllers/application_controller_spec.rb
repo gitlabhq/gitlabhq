@@ -501,15 +501,27 @@ RSpec.describe ApplicationController do
   describe '#append_info_to_payload' do
     controller(described_class) do
       attr_reader :last_payload
+      urgency :high, [:foo]
 
       def index
         render html: 'authenticated'
+      end
+
+      def foo
+        render html: ''
       end
 
       def append_info_to_payload(payload)
         super
 
         @last_payload = payload
+      end
+    end
+
+    before do
+      routes.draw do
+        get 'index' => 'anonymous#index'
+        get 'foo' => 'anonymous#foo'
       end
     end
 
@@ -533,6 +545,22 @@ RSpec.describe ApplicationController do
       get :index
 
       expect(controller.last_payload[:metadata]).to include('meta.user' => user.username)
+    end
+
+    context 'urgency information' do
+      it 'adds default urgency information to the payload' do
+        get :index
+
+        expect(controller.last_payload[:request_urgency]).to eq(:default)
+        expect(controller.last_payload[:target_duration_s]).to eq(1)
+      end
+
+      it 'adds customized urgency information to the payload' do
+        get :foo
+
+        expect(controller.last_payload[:request_urgency]).to eq(:high)
+        expect(controller.last_payload[:target_duration_s]).to eq(0.25)
+      end
     end
   end
 
@@ -895,7 +923,7 @@ RSpec.describe ApplicationController do
 
   describe '#set_current_context' do
     controller(described_class) do
-      feature_category :issue_tracking
+      feature_category :team_planning
 
       def index
         Gitlab::ApplicationContext.with_raw_context do |context|
@@ -949,7 +977,7 @@ RSpec.describe ApplicationController do
     it 'sets the feature_category as defined in the controller' do
       get :index, format: :json
 
-      expect(json_response['meta.feature_category']).to eq('issue_tracking')
+      expect(json_response['meta.feature_category']).to eq('team_planning')
     end
 
     it 'assigns the context to a variable for logging' do

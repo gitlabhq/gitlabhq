@@ -63,14 +63,12 @@ because the expansion is done in GitLab before any runner gets the job.
 
 #### Nested variable expansion
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10. [Deployed behind the `variable_inside_variable` feature flag](../../user/feature_flags.md), disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.4.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10. [Deployed behind the `variable_inside_variable` feature flag](../../user/feature_flags.md), disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
+- [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.4.
+- Feature flag `variable_inside_variable` removed in GitLab 14.5.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `variable_inside_variable`. On GitLab.com, this feature is available.
-
-GitLab expands job variable values recursively before sending them to the runner. For example:
+GitLab expands job variable values recursively before sending them to the runner. For example, in the following scenario:
 
 ```yaml
 - BUILD_ROOT_DIR: '${CI_BUILDS_DIR}'
@@ -78,10 +76,7 @@ GitLab expands job variable values recursively before sending them to the runner
 - PACKAGE_PATH: '${OUT_PATH}/pkg'
 ```
 
-If nested variable expansion is:
-
-- **Disabled**: the runner receives `${BUILD_ROOT_DIR}/out/pkg`. This is not a valid path.
-- **Enabled**: the runner receives a valid, fully-formed path. For example, if `${CI_BUILDS_DIR}` is `/output`, then `PACKAGE_PATH` would be `/output/out/pkg`.
+The runner receives a valid, fully-formed path. For example, if `${CI_BUILDS_DIR}` is `/output`, then `PACKAGE_PATH` would be `/output/out/pkg`.
 
 References to unavailable variables are left intact. In this case, the runner
 [attempts to expand the variable value](#gitlab-runner-internal-variable-expansion-mechanism) at runtime.

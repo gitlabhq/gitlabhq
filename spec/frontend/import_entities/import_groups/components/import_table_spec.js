@@ -1,39 +1,30 @@
-import {
-  GlButton,
-  GlEmptyState,
-  GlLoadingIcon,
-  GlSearchBoxByClick,
-  GlDropdown,
-  GlDropdownItem,
-  GlTable,
-} from '@gitlab/ui';
-import { mount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import stubChildren from 'helpers/stub_children';
-import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
+import createFlash from '~/flash';
+import httpStatus from '~/lib/utils/http_status';
+import axios from '~/lib/utils/axios_utils';
 import { STATUSES } from '~/import_entities/constants';
-import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
+import { i18n } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
-import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
-import setImportTargetMutation from '~/import_entities/import_groups/graphql/mutations/set_import_target.mutation.graphql';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtures';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+jest.mock('~/flash');
+jest.mock('~/import_entities/import_groups/services/status_poller');
 
-const GlDropdownStub = stubComponent(GlDropdown, {
-  template: '<div><h1 ref="text"><slot name="button-content"></slot></h1><slot></slot></div>',
-});
+Vue.use(VueApollo);
 
 describe('import table', () => {
   let wrapper;
   let apolloProvider;
+  let axiosMock;
 
   const SOURCE_URL = 'https://demo.host';
   const FAKE_GROUP = generateFakeEntry({ id: 1, status: STATUSES.NONE });
@@ -44,76 +35,81 @@ describe('import table', () => {
   const FAKE_PAGE_INFO = { page: 1, perPage: 20, total: 40, totalPages: 2 };
 
   const findImportSelectedButton = () =>
-    wrapper.findAllComponents(GlButton).wrappers.find((w) => w.text() === 'Import selected');
-  const findPaginationDropdown = () => wrapper.findComponent(GlDropdown);
-  const findPaginationDropdownText = () => findPaginationDropdown().find({ ref: 'text' }).text();
+    wrapper.findAll('button').wrappers.find((w) => w.text() === 'Import selected');
+  const findImportButtons = () =>
+    wrapper.findAll('button').wrappers.filter((w) => w.text() === 'Import');
+  const findPaginationDropdown = () => wrapper.find('[aria-label="Page size"]');
+  const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
 
-  // TODO: remove this ugly approach when
-  // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
-  const findTable = () => wrapper.vm.getTableRef();
+  const selectRow = (idx) =>
+    wrapper.findAll('tbody td input[type=checkbox]').at(idx).trigger('click');
 
-  const createComponent = ({ bulkImportSourceGroups }) => {
+  const createComponent = ({ bulkImportSourceGroups, importGroups }) => {
     apolloProvider = createMockApollo([], {
       Query: {
         availableNamespaces: () => availableNamespacesFixture,
         bulkImportSourceGroups,
       },
       Mutation: {
-        setTargetNamespace: jest.fn(),
-        setNewName: jest.fn(),
-        importGroup: jest.fn(),
+        importGroups,
       },
     });
 
     wrapper = mount(ImportTable, {
       propsData: {
         groupPathRegex: /.*/,
+        jobsPath: '/fake_job_path',
         sourceUrl: SOURCE_URL,
-        groupUrlErrorMessage: 'Please choose a group URL with no special characters or spaces.',
       },
-      stubs: {
-        ...stubChildren(ImportTable),
-        GlSprintf: false,
-        GlDropdown: GlDropdownStub,
-        GlTable: false,
-      },
-      localVue,
       apolloProvider,
     });
   };
+
+  beforeAll(() => {
+    gon.api_version = 'v4';
+  });
+
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+    axiosMock.onGet(/.*\/exists$/, () => []).reply(200);
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  it('renders loading icon while performing request', async () => {
-    createComponent({
-      bulkImportSourceGroups: () => new Promise(() => {}),
-    });
-    await waitForPromises();
+  describe('loading state', () => {
+    it('renders loading icon while performing request', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => new Promise(() => {}),
+      });
+      await waitForPromises();
 
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+    });
+
+    it('does not renders loading icon when request is completed', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => [],
+      });
+      await waitForPromises();
+
+      expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+    });
   });
 
-  it('does not renders loading icon when request is completed', async () => {
-    createComponent({
-      bulkImportSourceGroups: () => [],
+  describe('empty state', () => {
+    it('renders message about empty state when no groups are available for import', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [],
+          pageInfo: FAKE_PAGE_INFO,
+        }),
+      });
+      await waitForPromises();
+
+      expect(wrapper.find(GlEmptyState).props().title).toBe('You have no groups to import');
     });
-    await waitForPromises();
-
-    expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
-  });
-
-  it('renders message about empty state when no groups are available for import', async () => {
-    createComponent({
-      bulkImportSourceGroups: () => ({
-        nodes: [],
-        pageInfo: FAKE_PAGE_INFO,
-      }),
-    });
-    await waitForPromises();
-
-    expect(wrapper.find(GlEmptyState).props().title).toBe('You have no groups to import');
   });
 
   it('renders import row for each group in response', async () => {
@@ -140,38 +136,49 @@ describe('import table', () => {
     expect(wrapper.text()).not.toContain('Showing 1-0');
   });
 
-  describe('converts row events to mutation invocations', () => {
-    beforeEach(() => {
-      createComponent({
-        bulkImportSourceGroups: () => ({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO }),
-      });
-      return waitForPromises();
+  it('invokes importGroups mutation when row button is clicked', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO }),
     });
 
-    it.each`
-      event                        | payload            | mutation                   | variables
-      ${'update-target-namespace'} | ${'new-namespace'} | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'new-namespace', newName: 'group1' }}
-      ${'update-new-name'}         | ${'new-name'}      | ${setImportTargetMutation} | ${{ sourceGroupId: FAKE_GROUP.id, targetNamespace: 'root', newName: 'new-name' }}
-    `('correctly maps $event to mutation', async ({ event, payload, mutation, variables }) => {
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
-      wrapper.find(ImportTargetCell).vm.$emit(event, payload);
-      await waitForPromises();
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
-        mutation,
-        variables,
-      });
+    jest.spyOn(apolloProvider.defaultClient, 'mutate');
+
+    await waitForPromises();
+
+    await findImportButtons()[0].trigger('click');
+    expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
+      mutation: importGroupsMutation,
+      variables: {
+        importRequests: [
+          {
+            newName: FAKE_GROUP.lastImportTarget.newName,
+            sourceGroupId: FAKE_GROUP.id,
+            targetNamespace: availableNamespacesFixture[0].fullPath,
+          },
+        ],
+      },
+    });
+  });
+
+  it('displays error if importing group fails', async () => {
+    createComponent({
+      bulkImportSourceGroups: () => ({ nodes: [FAKE_GROUP], pageInfo: FAKE_PAGE_INFO }),
+      importGroups: () => {
+        throw new Error();
+      },
     });
 
-    it('invokes importGroups mutation when row button is clicked', async () => {
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
+    axiosMock.onPost('/import/bulk_imports.json').reply(httpStatus.BAD_REQUEST);
 
-      wrapper.findComponent(ImportActionsCell).vm.$emit('import-group');
-      await waitForPromises();
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
-        mutation: importGroupsMutation,
-        variables: { sourceGroupIds: [FAKE_GROUP.id] },
-      });
-    });
+    await waitForPromises();
+    await findImportButtons()[0].trigger('click');
+    await waitForPromises();
+
+    expect(createFlash).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: i18n.ERROR_IMPORT,
+      }),
+    );
   });
 
   describe('pagination', () => {
@@ -195,10 +202,10 @@ describe('import table', () => {
     });
 
     it('updates page size when selected in Dropdown', async () => {
-      const otherOption = wrapper.findAllComponents(GlDropdownItem).at(1);
+      const otherOption = findPaginationDropdown().findAll('li p').at(1);
       expect(otherOption.text()).toMatchInterpolatedText('50 items per page');
 
-      otherOption.vm.$emit('click');
+      await otherOption.trigger('click');
       await waitForPromises();
 
       expect(findPaginationDropdownText()).toMatchInterpolatedText('50 items per page');
@@ -247,7 +254,11 @@ describe('import table', () => {
       return waitForPromises();
     });
 
-    const findFilterInput = () => wrapper.find(GlSearchBoxByClick);
+    const setFilter = (value) => {
+      const input = wrapper.find('input[placeholder="Filter by source group"]');
+      input.setValue(value);
+      return input.trigger('keydown.enter');
+    };
 
     it('properly passes filter to graphql query when search box is submitted', async () => {
       createComponent({
@@ -256,7 +267,7 @@ describe('import table', () => {
       await waitForPromises();
 
       const FILTER_VALUE = 'foo';
-      findFilterInput().vm.$emit('submit', FILTER_VALUE);
+      await setFilter(FILTER_VALUE);
       await waitForPromises();
 
       expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
@@ -274,7 +285,7 @@ describe('import table', () => {
       await waitForPromises();
 
       const FILTER_VALUE = 'foo';
-      findFilterInput().vm.$emit('submit', FILTER_VALUE);
+      await setFilter(FILTER_VALUE);
       await waitForPromises();
 
       expect(wrapper.text()).toContain('Showing 1-1 of 40 groups matching filter "foo" from');
@@ -282,12 +293,14 @@ describe('import table', () => {
 
     it('properly resets filter in graphql query when search box is cleared', async () => {
       const FILTER_VALUE = 'foo';
-      findFilterInput().vm.$emit('submit', FILTER_VALUE);
+      await setFilter(FILTER_VALUE);
       await waitForPromises();
 
       bulkImportSourceGroupsQueryMock.mockClear();
       await apolloProvider.defaultClient.resetStore();
-      findFilterInput().vm.$emit('clear');
+
+      await setFilter('');
+
       await waitForPromises();
 
       expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
@@ -320,8 +333,8 @@ describe('import table', () => {
         }),
       });
       await waitForPromises();
-      wrapper.find(GlTable).vm.$emit('row-selected', [FAKE_GROUPS[0]]);
-      await nextTick();
+
+      await selectRow(0);
 
       expect(findImportSelectedButton().props().disabled).toBe(false);
     });
@@ -337,7 +350,7 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      findTable().selectRow(0);
+      await selectRow(0);
       await nextTick();
 
       expect(findImportSelectedButton().props().disabled).toBe(true);
@@ -348,7 +361,6 @@ describe('import table', () => {
         generateFakeEntry({
           id: 2,
           status: STATUSES.NONE,
-          validation_errors: [{ field: 'new_name', message: 'FAKE_VALIDATION_ERROR' }],
         }),
       ];
 
@@ -360,9 +372,9 @@ describe('import table', () => {
       });
       await waitForPromises();
 
-      // TODO: remove this ugly approach when
-      // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
-      findTable().selectRow(0);
+      await wrapper.find('tbody input[aria-label="New name"]').setValue('');
+      jest.runOnlyPendingTimers();
+      await selectRow(0);
       await nextTick();
 
       expect(findImportSelectedButton().props().disabled).toBe(true);
@@ -384,15 +396,28 @@ describe('import table', () => {
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
       await waitForPromises();
 
-      findTable().selectRow(0);
-      findTable().selectRow(1);
+      await selectRow(0);
+      await selectRow(1);
       await nextTick();
 
-      findImportSelectedButton().vm.$emit('click');
+      await findImportSelectedButton().trigger('click');
 
       expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: importGroupsMutation,
-        variables: { sourceGroupIds: [NEW_GROUPS[0].id, NEW_GROUPS[1].id] },
+        variables: {
+          importRequests: [
+            {
+              targetNamespace: availableNamespacesFixture[0].fullPath,
+              newName: NEW_GROUPS[0].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[0].id,
+            },
+            {
+              targetNamespace: availableNamespacesFixture[0].fullPath,
+              newName: NEW_GROUPS[1].lastImportTarget.newName,
+              sourceGroupId: NEW_GROUPS[1].id,
+            },
+          ],
+        },
       });
     });
   });

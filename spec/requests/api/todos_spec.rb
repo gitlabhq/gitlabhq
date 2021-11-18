@@ -13,6 +13,8 @@ RSpec.describe API::Todos do
   let_it_be(:john_doe) { create(:user, username: 'john_doe') }
   let_it_be(:issue) { create(:issue, project: project_1) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_1) }
+  let_it_be(:alert) { create(:alert_management_alert, project: project_1) }
+  let_it_be(:alert_todo) { create(:todo, project: project_1, author: john_doe, user: john_doe, target: alert) }
   let_it_be(:merge_request_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
   let_it_be(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: issue) }
   let_it_be(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe, target: issue) }
@@ -67,7 +69,7 @@ RSpec.describe API::Todos do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(4)
+        expect(json_response.length).to eq(5)
         expect(json_response[0]['id']).to eq(pending_3.id)
         expect(json_response[0]['project']).to be_a Hash
         expect(json_response[0]['author']).to be_a Hash
@@ -95,6 +97,10 @@ RSpec.describe API::Todos do
         expect(json_response[3]['target']['merge_requests_count']).to be_nil
         expect(json_response[3]['target']['upvotes']).to eq(1)
         expect(json_response[3]['target']['downvotes']).to eq(0)
+
+        expect(json_response[4]['target_type']).to eq('AlertManagement::Alert')
+        expect(json_response[4]['target']['iid']).to eq(alert.iid)
+        expect(json_response[4]['target']['title']).to eq(alert.title)
       end
 
       context "when current user does not have access to one of the TODO's target" do
@@ -105,7 +111,7 @@ RSpec.describe API::Todos do
 
           get api('/todos', john_doe)
 
-          expect(json_response.count).to eq(4)
+          expect(json_response.count).to eq(5)
           expect(json_response.map { |t| t['id'] }).not_to include(no_access_todo.id, pending_4.id)
         end
       end
@@ -163,7 +169,7 @@ RSpec.describe API::Todos do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(3)
+          expect(json_response.length).to eq(4)
         end
       end
 

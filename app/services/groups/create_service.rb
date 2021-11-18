@@ -6,6 +6,7 @@ module Groups
       @current_user = user
       @params = params.dup
       @chat_team = @params.delete(:create_chat_team)
+      @create_event = @params.delete(:create_event)
     end
 
     def execute
@@ -42,13 +43,24 @@ module Groups
         end
       end
 
+      after_create_hook
+
       @group
     end
 
     private
 
+    attr_reader :create_event
+
     def after_build_hook(group, params)
       # overridden in EE
+    end
+
+    def after_create_hook
+      if group.persisted? && group.root?
+        delay = Namespaces::InviteTeamEmailService::DELIVERY_DELAY_IN_MINUTES
+        Namespaces::InviteTeamEmailWorker.perform_in(delay, group.id, current_user.id)
+      end
     end
 
     def remove_unallowed_params

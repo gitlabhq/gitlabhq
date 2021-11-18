@@ -8,7 +8,7 @@ module Mutations
 
         graphql_name 'CustomerRelationsOrganizationUpdate'
 
-        authorize :admin_organization
+        authorize :admin_crm_organization
 
         field :organization,
               Types::CustomerRelations::OrganizationType,
@@ -39,8 +39,6 @@ module Mutations
           raise_resource_not_available_error! unless organization
 
           group = organization.group
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group, default_enabled: :yaml)
-
           authorize!(group)
 
           result = ::CustomerRelations::Organizations::UpdateService.new(group: group, current_user: current_user, params: args).execute(organization)

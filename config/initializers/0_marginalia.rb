@@ -19,7 +19,10 @@ Marginalia::Comment.components = [:application, :correlation_id, :jid, :endpoint
 # adding :line has some overhead because a regexp on the backtrace has
 # to be run on every SQL query. Only enable this in development because
 # we've seen it slow things down.
-Marginalia::Comment.components << :line if Rails.env.development?
+if Rails.env.development?
+  Marginalia::Comment.components << :line
+  Marginalia::Comment.lines_to_ignore = Regexp.union(Gitlab::BacktraceCleaner::IGNORE_BACKTRACES + %w(lib/ruby/gems/ lib/gem_extensions/ lib/ruby/))
+end
 
 Gitlab::Marginalia.set_application_name
 

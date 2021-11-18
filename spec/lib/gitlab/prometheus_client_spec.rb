@@ -107,36 +107,14 @@ RSpec.describe Gitlab::PrometheusClient do
     let(:prometheus_url) {"https://prometheus.invalid.example.com/api/v1/query?query=1"}
 
     shared_examples 'exceptions are raised' do
-      it 'raises a Gitlab::PrometheusClient::ConnectionError error when a SocketError is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, SocketError)
+      Gitlab::HTTP::HTTP_ERRORS.each do |error|
+        it "raises a Gitlab::PrometheusClient::ConnectionError when a #{error} is rescued" do
+          req_stub = stub_prometheus_request_with_exception(prometheus_url, error.new)
 
-        expect { subject }
-          .to raise_error(Gitlab::PrometheusClient::ConnectionError, "Can't connect to #{prometheus_url}")
-        expect(req_stub).to have_been_requested
-      end
-
-      it 'raises a Gitlab::PrometheusClient::ConnectionError error when a SSLError is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, OpenSSL::SSL::SSLError)
-
-        expect { subject }
-          .to raise_error(Gitlab::PrometheusClient::ConnectionError, "#{prometheus_url} contains invalid SSL data")
-        expect(req_stub).to have_been_requested
-      end
-
-      it 'raises a Gitlab::PrometheusClient::ConnectionError error when a Gitlab::HTTP::ResponseError is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, Gitlab::HTTP::ResponseError)
-
-        expect { subject }
-          .to raise_error(Gitlab::PrometheusClient::ConnectionError, "Network connection error")
-        expect(req_stub).to have_been_requested
-      end
-
-      it 'raises a Gitlab::PrometheusClient::ConnectionError error when a Gitlab::HTTP::ResponseError with a code is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, Gitlab::HTTP::ResponseError.new(code: 400))
-
-        expect { subject }
-          .to raise_error(Gitlab::PrometheusClient::ConnectionError, "Network connection error")
-        expect(req_stub).to have_been_requested
+          expect { subject }
+            .to raise_error(Gitlab::PrometheusClient::ConnectionError, kind_of(String))
+          expect(req_stub).to have_been_requested
+        end
       end
     end
 

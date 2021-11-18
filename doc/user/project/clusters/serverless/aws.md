@@ -434,11 +434,11 @@ To test the application you deployed, please go to the build log and follow the 
 
 1. Click on "Show complete raw" on the upper right-hand corner:
 
-   ![sam-complete-raw](img/sam-complete-raw.png)
+   ![SAM complete raw](img/sam-complete-raw.png)
 
 1. Look for HelloWorldApi – API Gateway endpoint similar to shown below:
 
-   ![sam-api-endpoint](img/sam-api-endpoint.png)
+   ![SAM API endpoint](img/sam-api-endpoint.png)
 
 1. Use curl to test the API. For example:
 

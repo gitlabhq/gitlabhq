@@ -1,16 +1,17 @@
 - service_desk_enabled = @project.service_desk_enabled?
 
 - can_edit_project_settings = can?(current_user, :admin_project, @project)
+- can_admin_issues = can?(current_user, :admin_issue, @project)
 - title_text = s_("ServiceDesk|Use Service Desk to connect with your users and offer customer support through email right inside GitLab")
 
 .non-empty-state.media
   .svg-content
-    = render 'shared/empty_states/icons/service_desk_callout.svg'
+    = render partial: 'shared/empty_states/icons/service_desk_callout', formats: :svg
 
   .gl-mt-3.gl-ml-3
     %h5= title_text
 
-    - if can_edit_project_settings && service_desk_enabled
+    - if can_admin_issues && service_desk_enabled
       %p
         = s_("ServiceDesk|Your users can send emails to this address:")
         %code= @project.service_desk_address

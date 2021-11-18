@@ -6,7 +6,8 @@ RSpec.describe CustomerRelations::Contact, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:organization).optional }
-    it { is_expected.to have_and_belong_to_many(:issues) }
+    it { is_expected.to have_many(:issue_contacts) }
+    it { is_expected.to have_many(:issues) }
   end
 
   describe 'validations' do

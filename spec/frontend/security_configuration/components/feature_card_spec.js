@@ -80,7 +80,11 @@ describe('FeatureCard component', () => {
 
   describe('basic structure', () => {
     beforeEach(() => {
-      feature = makeFeature();
+      feature = makeFeature({
+        type: 'sast',
+        available: true,
+        canEnableByMergeRequest: true,
+      });
       createComponent({ feature });
     });
 
@@ -96,6 +100,11 @@ describe('FeatureCard component', () => {
       const links = findLinks({ text: 'Learn more', href: feature.helpPath });
       expect(links.exists()).toBe(true);
       expect(links).toHaveLength(1);
+    });
+
+    it('should catch and emit manage-via-mr-error', () => {
+      findManageViaMr().vm.$emit('error', 'There was a manage via MR error');
+      expect(wrapper.emitted('error')).toEqual([['There was a manage via MR error']]);
     });
   });
 

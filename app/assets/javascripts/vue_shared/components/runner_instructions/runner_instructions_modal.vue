@@ -16,8 +16,9 @@ import { isEmpty } from 'lodash';
 import { __, s__ } from '~/locale';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import {
-  PLATFORMS_WITHOUT_ARCHITECTURES,
   INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES,
+  PLATFORMS_WITHOUT_ARCHITECTURES,
+  REGISTRATION_TOKEN_PLACEHOLDER,
 } from './constants';
 import getRunnerPlatformsQuery from './graphql/queries/get_runner_platforms.query.graphql';
 import getRunnerSetupInstructionsQuery from './graphql/queries/get_runner_setup.query.graphql';
@@ -41,7 +42,13 @@ export default {
   props: {
     modalId: {
       type: String,
-      required: true,
+      required: false,
+      default: 'runner-instructions-modal',
+    },
+    registrationToken: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -117,8 +124,20 @@ export default {
     runnerInstallationLink() {
       return INSTRUCTIONS_PLATFORMS_WITHOUT_ARCHITECTURES[this.selectedPlatformName]?.link;
     },
+    registerInstructionsWithToken() {
+      const { registerInstructions } = this.instructions || {};
+
+      if (this.registrationToken) {
+        return registerInstructions.replace(REGISTRATION_TOKEN_PLACEHOLDER, this.registrationToken);
+      }
+
+      return registerInstructions;
+    },
   },
   methods: {
+    show() {
+      this.$refs.modal.show();
+    },
     selectPlatform(platform) {
       this.selectedPlatform = platform;
 
@@ -158,9 +177,11 @@ export default {
 </script>
 <template>
   <gl-modal
+    ref="modal"
     :modal-id="modalId"
     :title="$options.i18n.installARunner"
     :action-secondary="$options.closeButton"
+    v-bind="$attrs"
   >
     <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
@@ -243,11 +264,11 @@ export default {
           <pre
             class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line"
             data-testid="register-command"
-            >{{ instructions.registerInstructions }}</pre
+            >{{ registerInstructionsWithToken }}</pre
           >
           <modal-copy-button
             :title="$options.i18n.copyInstructions"
-            :text="instructions.registerInstructions"
+            :text="registerInstructionsWithToken"
             :modal-id="$options.modalId"
             css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
             category="tertiary"

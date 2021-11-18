@@ -6,6 +6,7 @@ RSpec.describe User do
   include ProjectForksHelper
   include TermsHelper
   include ExclusiveLeaseHelpers
+  include LdapHelpers
 
   it_behaves_like 'having unique enum values'
 
@@ -98,7 +99,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:expired_and_unnotified_keys) }
+    it { is_expected.to have_many(:expired_today_and_unnotified_keys) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
@@ -1123,7 +1124,7 @@ RSpec.describe User do
   end
 
   describe 'after commit hook' do
-    describe '#update_emails_with_primary_email' do
+    describe 'when the primary email is updated' do
       before do
         @user = create(:user, email: 'primary@example.com').tap do |user|
           user.skip_reconfirmation!
@@ -1132,34 +1133,12 @@ RSpec.describe User do
         @user.reload
       end
 
-      it 'gets called when email updated' do
-        expect(@user).to receive(:update_emails_with_primary_email)
-
-        @user.update!(email: 'new_primary@example.com')
-      end
-
-      it 'adds old primary to secondary emails when secondary is a new email' do
+      it 'keeps old primary to secondary emails when secondary is a new email' do
         @user.update!(email: 'new_primary@example.com')
         @user.reload
 
         expect(@user.emails.count).to eq 2
         expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com'])
-      end
-
-      it 'adds old primary to secondary emails if secondary is becoming a primary' do
-        @user.update!(email: @secondary.email)
-        @user.reload
-
-        expect(@user.emails.count).to eq 1
-        expect(@user.emails.first.email).to eq 'primary@example.com'
-      end
-
-      it 'transfers old confirmation values into new secondary' do
-        @user.update!(email: @secondary.email)
-        @user.reload
-
-        expect(@user.emails.count).to eq 1
-        expect(@user.emails.first.confirmed_at).not_to eq nil
       end
 
       context 'when the first email was unconfirmed and the second email gets confirmed' do
@@ -1178,11 +1157,8 @@ RSpec.describe User do
           expect(user).to be_confirmed
         end
 
-        it 'keeps the unconfirmed email unconfirmed' do
-          email = user.emails.first
-
-          expect(email.email).to eq('should-be-unconfirmed@test.com')
-          expect(email).not_to be_confirmed
+        it 'does not add unconfirmed email to secondary' do
+          expect(user.emails.map(&:email)).not_to include('should-be-unconfirmed@test.com')
         end
 
         it 'has only one email association' do
@@ -1244,7 +1220,7 @@ RSpec.describe User do
           expect(user.email).to eq(confirmed_email)
         end
 
-        it 'moves the old email' do
+        it 'keeps the old email' do
           email = user.reload.emails.first
 
           expect(email.email).to eq(old_confirmed_email)
@@ -1499,7 +1475,7 @@ RSpec.describe User do
       allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
     end
 
-    let(:user) { create(:user, confirmed_at: nil, unconfirmed_email: 'test@gitlab.com') }
+    let(:user) { create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com') }
 
     it 'returns unconfirmed' do
       expect(user.confirmed?).to be_falsey
@@ -1508,6 +1484,22 @@ RSpec.describe User do
     it 'confirms a user' do
       user.confirm
       expect(user.confirmed?).to be_truthy
+    end
+
+    it 'adds the confirmed primary email to emails' do
+      expect(user.emails.confirmed.map(&:email)).not_to include(user.email)
+
+      user.confirm
+
+      expect(user.emails.confirmed.map(&:email)).to include(user.email)
+    end
+  end
+
+  context 'if the user is created with confirmed_at set to a time' do
+    let!(:user) { create(:user, email: 'test@gitlab.com', confirmed_at: Time.now.utc) }
+
+    it 'adds the confirmed primary email to emails upon creation' do
+      expect(user.emails.confirmed.map(&:email)).to include(user.email)
     end
   end
 
@@ -2216,7 +2208,7 @@ RSpec.describe User do
       end
 
       context 'primary email not confirmed' do
-        let(:user) { create(:user, confirmed_at: nil) }
+        let(:user) { create(:user, :unconfirmed) }
         let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
 
         it 'finds user respecting the confirmed flag' do
@@ -2231,7 +2223,7 @@ RSpec.describe User do
     end
 
     it 'returns nil when user is not confirmed' do
-      user = create(:user, email: 'foo@example.com', confirmed_at: nil)
+      user = create(:user, :unconfirmed, email: 'foo@example.com')
 
       expect(described_class.find_by_any_email(user.email, confirmed: false)).to eq(user)
       expect(described_class.find_by_any_email(user.email, confirmed: true)).to be_nil
@@ -4155,6 +4147,23 @@ RSpec.describe User do
     end
   end
 
+  describe '#remove_project_authorizations' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project3) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    it 'removes the project authorizations of the user, in specified projects' do
+      create(:project_authorization, user: user, project: project1)
+      create(:project_authorization, user: user, project: project2)
+      create(:project_authorization, user: user, project: project3)
+
+      user.remove_project_authorizations([project1.id, project2.id])
+
+      expect(user.project_authorizations.pluck(:project_id)).to match_array([project3.id])
+    end
+  end
+
   describe '#access_level=' do
     let(:user) { build(:user) }
 
@@ -5817,7 +5826,7 @@ RSpec.describe User do
   end
 
   describe '#active_for_authentication?' do
-    subject { user.active_for_authentication? }
+    subject(:active_for_authentication?) { user.active_for_authentication? }
 
     let(:user) { create(:user) }
 
@@ -5827,6 +5836,14 @@ RSpec.describe User do
       end
 
       it { is_expected.to be false }
+
+      it 'does not check if LDAP is allowed' do
+        stub_ldap_setting(enabled: true)
+
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        active_for_authentication?
+      end
     end
 
     context 'when user is a ghost user' do
@@ -5835,6 +5852,28 @@ RSpec.describe User do
       end
 
       it { is_expected.to be false }
+    end
+
+    context 'when user is ldap_blocked' do
+      before do
+        user.ldap_block
+      end
+
+      it 'rechecks if LDAP is allowed when LDAP is enabled' do
+        stub_ldap_setting(enabled: true)
+
+        expect(Gitlab::Auth::Ldap::Access).to receive(:allowed?)
+
+        active_for_authentication?
+      end
+
+      it 'does not check if LDAP is allowed when LDAP is not enabled' do
+        stub_ldap_setting(enabled: false)
+
+        expect(Gitlab::Auth::Ldap::Access).not_to receive(:allowed?)
+
+        active_for_authentication?
+      end
     end
 
     context 'based on user type' do
@@ -6011,7 +6050,7 @@ RSpec.describe User do
     subject { user.confirmation_required_on_sign_in? }
 
     context 'when user is confirmed' do
-      let(:user) { build_stubbed(:user) }
+      let(:user) { create(:user) }
 
       it 'is falsey' do
         expect(user.confirmed?).to be_truthy
@@ -6201,6 +6240,33 @@ RSpec.describe User do
 
     it 'returns the id of each record matching username' do
       expect(described_class.get_ids_by_username([user_name])).to match_array([user_id])
+    end
+  end
+
+  describe 'user_project' do
+    it 'returns users project matched by username and public visibility' do
+      user = create(:user)
+      public_project = create(:project, :public, path: user.username, namespace: user.namespace)
+      create(:project, namespace: user.namespace)
+
+      expect(user.user_project).to eq(public_project)
+    end
+  end
+
+  describe 'user_readme' do
+    it 'returns readme from user project' do
+      user = create(:user)
+      create(:project, :repository, :public, path: user.username, namespace: user.namespace)
+
+      expect(user.user_readme.name).to eq('README.md')
+      expect(user.user_readme.data).to include('testme')
+    end
+
+    it 'returns nil if project is private' do
+      user = create(:user)
+      create(:project, :repository, :private, path: user.username, namespace: user.namespace)
+
+      expect(user.user_readme).to be(nil)
     end
   end
 end

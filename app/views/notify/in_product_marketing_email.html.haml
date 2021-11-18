@@ -166,10 +166,11 @@
                         = about_link('mailers/in_product_marketing/gitlab-logo-gray-rgb.png', 200)
                     %tr
                       %td{ "aria-hidden" => "true", height: "30", style: "font-size: 0; line-height: 0;" }
-                    %tr{ style: "background-color: #ffffff;" }
-                      %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
-                        %p
-                          = @message.progress.html_safe
+                    - if @message.series?
+                      %tr{ style: "background-color: #ffffff;" }
+                        %td{ style: "color: #424242; padding: 10px 30px; text-align: center; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;font-size: 16px; line-height: 22px; border: 1px solid #dddddd" }
+                          %p
+                            = @message.progress.html_safe
                     %tr
                       %td{ bgcolor: "#ffffff", height: "auto", style: "max-width: 600px; width: 100%; text-align: center; height: 200px; padding: 25px 15px; mso-line-height-rule: exactly; min-height: 40px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;", valign: "middle", width: "100%" }
                         = inline_image_link(@message.logo_path, { width: '150', style: 'width: 150px;' })
@@ -210,6 +211,12 @@
                         %td{ style: "padding: 10px 20px 30px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif; color:#000000; font-size: 18px; line-height: 24px;" }
                           %p{ style: "margin: 0 0 50px 0;" }
                             = @message.feedback_thanks
+                    - if @message.invite_members?
+                      %tr
+                        %td{ align: "center", style: "padding: 0 20px 80px 20px; font-family: 'Source Sans Pro', helvetica, arial, sans-serif;" }
+                          = @message.invite_text
+                          %br
+                          = @message.invite_link
                     %tr{ style: "background-color: #ffffff;" }
                       %td{ align: "center", style: "padding:75px 20px 25px;" }
                         = about_link('gitlab_logo.png', 80)

@@ -39,23 +39,14 @@ module Gitlab
 
         def sample
           pool = @action_cable.worker_pool.executor
-          labels = {
-            server_mode: server_mode
-          }
 
-          metrics[:active_connections].set(labels, @action_cable.connections.size)
-          metrics[:pool_min_size].set(labels, pool.min_length)
-          metrics[:pool_max_size].set(labels, pool.max_length)
-          metrics[:pool_current_size].set(labels, pool.length)
-          metrics[:pool_largest_size].set(labels, pool.largest_length)
-          metrics[:pool_completed_tasks].set(labels, pool.completed_task_count)
-          metrics[:pool_pending_tasks].set(labels, pool.queue_length)
-        end
-
-        private
-
-        def server_mode
-          Gitlab::ActionCable::Config.in_app? ? 'in-app' : 'standalone'
+          metrics[:active_connections].set({}, @action_cable.connections.size)
+          metrics[:pool_min_size].set({}, pool.min_length)
+          metrics[:pool_max_size].set({}, pool.max_length)
+          metrics[:pool_current_size].set({}, pool.length)
+          metrics[:pool_largest_size].set({}, pool.largest_length)
+          metrics[:pool_completed_tasks].set({}, pool.completed_task_count)
+          metrics[:pool_pending_tasks].set({}, pool.queue_length)
         end
       end
     end

@@ -98,7 +98,7 @@ export default {
           :file-row-component="$options.DiffFileRow"
           :current-diff-file-id="currentDiffFileId"
           @toggleTreeOpen="toggleTreeOpen"
-          @clickFile="scrollToFile"
+          @clickFile="(path) => scrollToFile({ path })"
         />
       </template>
       <p v-else class="prepend-top-20 append-bottom-20 text-center">

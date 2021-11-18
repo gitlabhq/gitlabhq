@@ -135,6 +135,7 @@ various database operations, such as:
 - [dropping and renaming columns](avoiding_downtime_in_migrations.md#dropping-columns)
 - [changing column constraints and types](avoiding_downtime_in_migrations.md#changing-column-constraints)
 - [adding and dropping indexes, tables, and foreign keys](avoiding_downtime_in_migrations.md#adding-indexes)
+- [migrating `integer` primary keys to `bigint`](avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint)
 
 and explains how to perform them without requiring downtime.
 
@@ -312,12 +313,8 @@ A better strategy is to split the migration, so that we only need to acquire one
 ```ruby
 enable_lock_retries!
 
-def up
-  remove_column :users, :full_name
-end
-
-def down
-  add_column :users, :full_name, :string
+def change
+  remove_column :users, :full_name, :string
 end
 ```
 
@@ -587,8 +584,6 @@ class like so:
 
 ```ruby
 class MyMigration < Gitlab::Database::Migration[1.0]
-  include Gitlab::Database::MigrationHelpers
-
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -632,8 +627,6 @@ be used with a name option. For example:
 
 ```ruby
 class MyMigration < Gitlab::Database::Migration[1.0]
-  include Gitlab::Database::MigrationHelpers
-
   INDEX_NAME = 'index_name'
 
   def up

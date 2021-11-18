@@ -13,20 +13,16 @@ import {
   GlTooltip,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { mapValues, pickBy } from 'lodash';
 import { mapState } from 'vuex';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { convertToFixedRange } from '~/lib/utils/datetime_range';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { relativePathToAbsolute, getBaseURL, visitUrl, isSafeURL } from '~/lib/utils/url_utility';
 import { __, n__ } from '~/locale';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { panelTypes } from '../constants';
 
 import { graphDataToCsv } from '../csv_export';
 import { timeRangeToUrl, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
-import AlertWidget from './alert_widget.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorBarChart from './charts/bar.vue';
 import MonitorColumnChart from './charts/column.vue';
@@ -45,7 +41,6 @@ const events = {
 export default {
   components: {
     MonitorEmptyChart,
-    AlertWidget,
     GlIcon,
     GlLink,
     GlLoadingIcon,
@@ -62,7 +57,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     clipboardText: {
       type: String,
@@ -84,16 +78,6 @@ export default {
       required: false,
       default: 'monitoringDashboard',
     },
-    alertsEndpoint: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    prometheusAlertsAvailable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     settingsPath: {
       type: String,
       required: false,
@@ -104,7 +88,6 @@ export default {
     return {
       showTitleTooltip: false,
       zoomedTimeRange: null,
-      allAlerts: {},
       expandBtnAvailable: Boolean(this.$listeners[events.expand]),
     };
   },
@@ -211,7 +194,7 @@ export default {
     /**
      * In monitoring, Time Series charts typically support
      * a larger feature set like "annotations", "deployment
-     * data", alert "thresholds" and "datazoom".
+     * data" and "datazoom".
      *
      * This is intentional as Time Series are more frequently
      * used.
@@ -252,34 +235,11 @@ export default {
       const { metrics = [] } = this.graphData;
       return metrics.some(({ metricId }) => this.metricsSavedToDb.includes(metricId));
     },
-    alertWidgetAvailable() {
-      const supportsAlerts =
-        this.isPanelType(panelTypes.AREA_CHART) || this.isPanelType(panelTypes.LINE_CHART);
-      return (
-        supportsAlerts &&
-        this.prometheusAlertsAvailable &&
-        this.alertsEndpoint &&
-        this.graphData &&
-        this.hasMetricsInDb &&
-        !this.glFeatures.managedAlertsDeprecation
-      );
-    },
-    alertModalId() {
-      return `alert-modal-${this.graphData.id}`;
-    },
   },
   mounted() {
     this.refreshTitleTooltip();
   },
   methods: {
-    getGraphAlerts(queries) {
-      if (!this.allAlerts) return {};
-      const metricIdsForChart = queries.map((q) => q.metricId);
-      return pickBy(this.allAlerts, (alert) => metricIdsForChart.includes(alert.metricId));
-    },
-    getGraphAlertValues(queries) {
-      return Object.values(this.getGraphAlerts(queries));
-    },
     isPanelType(type) {
       return this.graphData?.type === type;
     },
@@ -310,23 +270,8 @@ export default {
         this.onExpand();
       }
     },
-    setAlerts(alertPath, alertAttributes) {
-      if (alertAttributes) {
-        this.$set(this.allAlerts, alertPath, alertAttributes);
-      } else {
-        this.$delete(this.allAlerts, alertPath);
-      }
-    },
     safeUrl(url) {
       return isSafeURL(url) ? url : '#';
-    },
-    showAlertModal() {
-      this.$root.$emit(BV_SHOW_MODAL, this.alertModalId);
-    },
-    showAlertModalFromKeyboardShortcut() {
-      if (this.isContextualMenuShown) {
-        this.showAlertModal();
-      }
     },
     visitLogsPage() {
       if (this.logsPathWithTimeRange) {
@@ -348,19 +293,6 @@ export default {
         this.$refs.copyChartLink.$el.firstChild.click();
       }
     },
-    getAlertRunbooks(queries) {
-      const hasRunbook = (alert) => Boolean(alert.runbookUrl);
-      const graphAlertsWithRunbooks = pickBy(this.getGraphAlerts(queries), hasRunbook);
-      const alertToRunbookTransform = (alert) => {
-        const alertQuery = queries.find((query) => query.metricId === alert.metricId);
-        return {
-          key: alert.metricId,
-          href: alert.runbookUrl,
-          label: alertQuery.label,
-        };
-      };
-      return mapValues(graphAlertsWithRunbooks, alertToRunbookTransform);
-    },
   },
   panelTypes,
 };
@@ -378,15 +310,6 @@ export default {
       <gl-tooltip :target="() => $refs.graphTitle" :disabled="!showTitleTooltip">
         {{ title }}
       </gl-tooltip>
-      <alert-widget
-        v-if="isContextualMenuShown && alertWidgetAvailable"
-        class="mx-1"
-        :modal-id="alertModalId"
-        :alerts-endpoint="alertsEndpoint"
-        :relevant-queries="graphData.metrics"
-        :alerts-to-manage="getGraphAlerts(graphData.metrics)"
-        @setAlerts="setAlerts"
-      />
       <div class="flex-grow-1"></div>
       <div v-if="graphDataIsLoading" class="mx-1 mt-1">
         <gl-loading-icon size="sm" />
@@ -450,32 +373,6 @@ export default {
             >
               {{ __('Copy link to chart') }}
             </gl-dropdown-item>
-            <gl-dropdown-item
-              v-if="alertWidgetAvailable"
-              v-gl-modal="alertModalId"
-              data-qa-selector="alert_widget_menu_item"
-            >
-              {{ __('Alerts') }}
-            </gl-dropdown-item>
-            <gl-dropdown-item
-              v-for="runbook in getAlertRunbooks(graphData.metrics)"
-              :key="runbook.key"
-              :href="safeUrl(runbook.href)"
-              data-testid="runbookLink"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-                <span>
-                  <gl-sprintf :message="s__('Metrics|View runbook - %{label}')">
-                    <template #label>
-                      {{ runbook.label }}
-                    </template>
-                  </gl-sprintf>
-                </span>
-                <gl-icon name="external-link" />
-              </span>
-            </gl-dropdown-item>
 
             <template v-if="graphData.links && graphData.links.length">
               <gl-dropdown-divider />
@@ -515,7 +412,6 @@ export default {
       :deployment-data="deploymentData"
       :annotations="annotations"
       :project-path="projectPath"
-      :thresholds="getGraphAlertValues(graphData.metrics)"
       :group-id="groupId"
       :timezone="dashboardTimezone"
       :time-range="fixedCurrentTimeRange"

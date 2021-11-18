@@ -67,7 +67,7 @@ module QA
       private
 
       def transform_api_resource(api_resource)
-        api_resource[:web_url] = "#{Runtime::Scenario.gitlab_address}/#{project.full_path}/-/tree/#{branch}/#{api_resource[:file_path]}"
+        api_resource[:web_url] = "#{Runtime::Scenario.gitlab_address}/#{project.full_path}/-/blob/#{branch}/#{api_resource[:file_path]}"
         api_resource
       end
     end

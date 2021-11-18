@@ -18,6 +18,7 @@ RSpec.shared_examples 'manage applications' do
     click_on 'Save application'
 
     validate_application(application_name, 'Yes')
+    expect(page).to have_link('Continue', href: index_path)
 
     application = Doorkeeper::Application.find_by(name: application_name)
     expect(page).to have_css("button[title=\"Copy secret\"][data-clipboard-text=\"#{application.secret}\"]", text: 'Copy')
@@ -33,6 +34,7 @@ RSpec.shared_examples 'manage applications' do
     click_on 'Save application'
 
     validate_application(application_name_changed, 'No')
+    expect(page).not_to have_link('Continue')
 
     visit_applications_path
 

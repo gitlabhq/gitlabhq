@@ -213,6 +213,14 @@ FactoryBot.define do
         end
       end
 
+      trait :with_persisted_artifacts do
+        status { :success }
+
+        after(:create) do |pipeline, evaluator|
+          pipeline.builds << create(:ci_build, :artifacts, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :with_job do
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, pipeline: pipeline, project: pipeline.project)

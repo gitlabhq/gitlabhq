@@ -2,58 +2,86 @@
 
 module Routing
   module PseudonymizationHelper
+    class MaskHelper
+      QUERY_PARAMS_TO_NOT_MASK = %w[].freeze
+
+      def initialize(request_object, group, project)
+        @request = request_object
+        @group = group
+        @project = project
+      end
+
+      def mask_params
+        return default_root_url + @request.original_fullpath unless has_maskable_params?
+
+        masked_params = @request.path_parameters.to_h do |key, value|
+          case key
+          when :project_id
+            [key, "project#{@project&.id}"]
+          when :namespace_id, :group_id
+            namespace = @group || @project&.namespace
+            [key, "namespace#{namespace&.id}"]
+          when :id
+            [key, mask_id(value)]
+          else
+            [key, value]
+          end
+        end
+
+        Gitlab::Routing.url_helpers.url_for(masked_params.merge(params: masked_query_params))
+      end
+
+      private
+
+      def mask_id(value)
+        if @request.path_parameters[:controller] == 'projects/blob'
+          ':repository_path'
+        elsif @request.path_parameters[:controller] == 'projects'
+          "project#{@project&.id}"
+        elsif @request.path_parameters[:controller] == 'groups'
+          "namespace#{@group&.id}"
+        else
+          value
+        end
+      end
+
+      def has_maskable_params?
+        request_params = @request.path_parameters.to_h
+        request_params.key?(:namespace_id) || request_params.key?(:group_id) || request_params.key?(:project_id) || request_params.key?(:id) || @request.query_string.present?
+      end
+
+      def masked_query_params
+        return {} unless @request.query_string.present?
+
+        query_string_hash = Rack::Utils.parse_nested_query(@request.query_string)
+
+        query_string_hash.keys.each do |key|
+          next if QUERY_PARAMS_TO_NOT_MASK.include?(key)
+
+          query_string_hash[key] = "masked_#{key}"
+        end
+
+        query_string_hash
+      end
+
+      def default_root_url
+        Gitlab::Routing.url_helpers.root_url(only_path: false)
+      end
+    end
+
     def masked_page_url
       return unless Feature.enabled?(:mask_page_urls, type: :ops)
 
-      mask_params(Rails.application.routes.recognize_path(request.original_fullpath))
-    rescue ActionController::RoutingError, URI::InvalidURIError => e
+      current_group = group if defined?(group)
+      current_project = project if defined?(project)
+      mask_helper = MaskHelper.new(request, current_group, current_project)
+      mask_helper.mask_params
+
+    # We rescue all exception for time being till we test this helper extensively.
+    # Check https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72864#note_711515501
+    rescue => e # rubocop:disable Style/RescueStandardError
       Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
       nil
-    end
-
-    private
-
-    def mask_params(request_params)
-      return if request_params[:action] == 'new'
-
-      namespace_type = request_params[:controller].split('/')[1]
-
-      namespace_type.present? ? url_with_namespace_type(request_params, namespace_type) : url_without_namespace_type(request_params)
-    end
-
-    def url_without_namespace_type(request_params)
-      masked_url = "#{request.protocol}#{request.host_with_port}"
-
-      masked_url += case request_params[:controller]
-                    when 'groups'
-                      "/namespace:#{group.id}"
-                    when 'projects'
-                      "/namespace:#{project.namespace_id}/project:#{project.id}"
-                    when 'root'
-                      ''
-                    else
-                      "#{request.path}"
-                    end
-
-      masked_url += request.query_string.present? ? "?#{request.query_string}" : ''
-
-      masked_url
-    end
-
-    def url_with_namespace_type(request_params, namespace_type)
-      masked_url = "#{request.protocol}#{request.host_with_port}"
-
-      if request_params.has_key?(:project_id)
-        masked_url += "/namespace:#{project.namespace_id}/project:#{project.id}/-/#{namespace_type}"
-      end
-
-      if request_params.has_key?(:id)
-        masked_url += namespace_type == 'blob' ? '/:repository_path' : "/#{request_params[:id]}"
-      end
-
-      masked_url += request.query_string.present? ? "?#{request.query_string}" : ''
-
-      masked_url
     end
   end
 end

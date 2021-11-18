@@ -1,6 +1,6 @@
 <script>
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import { getSymbol, getLineClasses } from './multiline_comment_utils';
 
 export default {
@@ -27,13 +27,12 @@ export default {
     };
   },
   computed: {
-    ...mapState({ selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition }),
     lineNumber() {
       return this.commentLineOptions[this.commentLineOptions.length - 1].text;
     },
   },
   created() {
-    const line = this.selectedCommentPosition?.start || this.lineRange?.start || this.line;
+    const line = this.lineRange?.start || this.line;
 
     this.commentLineStart = {
       line_code: line.line_code,
@@ -42,7 +41,6 @@ export default {
       new_line: line.new_line,
     };
 
-    if (this.selectedCommentPosition) return;
     this.highlightSelection();
   },
   destroyed() {

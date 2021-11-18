@@ -27,7 +27,7 @@ WARNING:
 Docker for Windows is not officially supported. There are known issues with volume
 permissions, and potentially other unknown issues. If you are trying to run on Docker
 for Windows, see the [getting help page](https://about.gitlab.com/get-help/) for links
-to community resources (IRC, forum, etc.) to seek help from other users.
+to community resources (such as IRC or forums) to seek help from other users.
 
 ## Prerequisites
 

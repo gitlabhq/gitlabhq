@@ -6,13 +6,7 @@
 # and existing service will use these one by one.
 # After all are migrated, we can remove this class.
 #
-# New services should consider inheriting from:
-#
-# - BaseContainerService for services scoped by container (project or group)
-# - BaseProjectService for services scoped to projects
-# - BaseGroupService for services scoped to groups
-#
-# or, create a new base class and update this comment.
+# For new services, please see https://docs.gitlab.com/ee/development/reusing_abstractions.html#service-classes
 class BaseService
   include BaseServiceUtility
   include Gitlab::Experiment::Dsl

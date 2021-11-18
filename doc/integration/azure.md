@@ -48,7 +48,7 @@ As you go through the Microsoft procedure, keep the following in mind:
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Refer to [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
+1. Refer to [Configure initial settings](omniauth.md#configure-initial-settings)
    for initial settings.
 
 1. Add the provider configuration:
@@ -136,6 +136,8 @@ After you have created an application, follow the [Microsoft Quickstart document
 - `openid`
 - `profile`
 
+Alternatively, add the `User.Read.All` application permission.
+
 ### Configuring GitLab
 
 1. On your GitLab server, open the configuration file.
@@ -154,7 +156,7 @@ After you have created an application, follow the [Microsoft Quickstart document
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Refer to [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
+1. Refer to [Configure initial settings](omniauth.md#configure-initial-settings)
    for initial settings.
 
 1. Add the provider configuration:

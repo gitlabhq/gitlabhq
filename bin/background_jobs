@@ -8,6 +8,8 @@ sidekiq_pidfile="$app_root/tmp/pids/sidekiq-cluster.pid"
 sidekiq_logfile="$app_root/log/sidekiq.log"
 gitlab_user=$(ls -l config.ru | awk '{print $3}')
 
+trap cleanup EXIT
+
 warn()
 {
   echo "$@" 1>&2
@@ -57,6 +59,11 @@ start_sidekiq()
   done
 
   ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P $sidekiq_pidfile -e $RAILS_ENV "$@" 2>&1 | tee -a $sidekiq_logfile
+}
+
+cleanup()
+{
+  stop
 }
 
 action="$1"

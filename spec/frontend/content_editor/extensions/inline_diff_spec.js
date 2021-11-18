@@ -1,27 +1,43 @@
-import { inputRegexAddition, inputRegexDeletion } from '~/content_editor/extensions/inline_diff';
+import InlineDiff from '~/content_editor/extensions/inline_diff';
+import { createTestEditor, createDocBuilder, triggerMarkInputRule } from '../test_utils';
 
 describe('content_editor/extensions/inline_diff', () => {
-  describe.each`
-    inputRegex            | description             | input                         | matches
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'hello{+world+}'}           | ${true}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'hello{+ world +}'}         | ${true}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'hello {+ world+}'}         | ${true}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'{+hello world +}'}         | ${true}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'{+hello with \nnewline+}'} | ${false}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'{+open only'}              | ${false}
-    ${inputRegexAddition} | ${'inputRegexAddition'} | ${'close only+}'}             | ${false}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'hello{-world-}'}           | ${true}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'hello{- world -}'}         | ${true}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'hello {- world-}'}         | ${true}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'{-hello world -}'}         | ${true}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'{+hello with \nnewline+}'} | ${false}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'{-open only'}              | ${false}
-    ${inputRegexDeletion} | ${'inputRegexDeletion'} | ${'close only-}'}             | ${false}
-  `('$description', ({ inputRegex, input, matches }) => {
-    it(`${matches ? 'matches' : 'does not match'}: "${input}"`, () => {
-      const match = new RegExp(inputRegex).test(input);
+  let tiptapEditor;
+  let doc;
+  let p;
+  let inlineDiff;
 
-      expect(match).toBe(matches);
-    });
+  beforeEach(() => {
+    tiptapEditor = createTestEditor({ extensions: [InlineDiff] });
+    ({
+      builders: { doc, p, inlineDiff },
+    } = createDocBuilder({
+      tiptapEditor,
+      names: {
+        inlineDiff: { markType: InlineDiff.name },
+      },
+    }));
+  });
+
+  it.each`
+    input                         | insertedNode
+    ${'hello{+world+}'}           | ${() => p('hello', inlineDiff('world'))}
+    ${'hello{+ world +}'}         | ${() => p('hello', inlineDiff(' world '))}
+    ${'{+hello with \nnewline+}'} | ${() => p('{+hello with newline+}')}
+    ${'{+open only'}              | ${() => p('{+open only')}
+    ${'close only+}'}             | ${() => p('close only+}')}
+    ${'hello{-world-}'}           | ${() => p('hello', inlineDiff({ type: 'deletion' }, 'world'))}
+    ${'hello{- world -}'}         | ${() => p('hello', inlineDiff({ type: 'deletion' }, ' world '))}
+    ${'hello {- world-}'}         | ${() => p('hello ', inlineDiff({ type: 'deletion' }, ' world'))}
+    ${'{-hello world -}'}         | ${() => p(inlineDiff({ type: 'deletion' }, 'hello world '))}
+    ${'{-hello with \nnewline-}'} | ${() => p('{-hello with newline-}')}
+    ${'{-open only'}              | ${() => p('{-open only')}
+    ${'close only-}'}             | ${() => p('close only-}')}
+  `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
+    const expectedDoc = doc(insertedNode());
+
+    triggerMarkInputRule({ tiptapEditor, inputRuleText: input });
+
+    expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
   });
 });

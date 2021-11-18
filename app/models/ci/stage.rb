@@ -6,7 +6,6 @@ module Ci
     include Ci::HasStatus
     include Gitlab::OptimisticLocking
     include Presentable
-    include IgnorableColumns
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 

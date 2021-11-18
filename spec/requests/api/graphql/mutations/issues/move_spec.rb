@@ -33,7 +33,7 @@ RSpec.describe 'Moving an issue' do
 
   context 'when the user is not allowed to read source project' do
     it 'returns an error' do
-      error = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+      error = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
       post_graphql_mutation(mutation, current_user: user)
 
       expect(response).to have_gitlab_http_status(:success)

@@ -39,7 +39,7 @@ describe('Issue type field component', () => {
   const findTypeFromDropDownItemIconAt = (at) =>
     findTypeFromDropDownItems().at(at).findComponent(GlIcon);
 
-  const createComponent = ({ data } = {}) => {
+  const createComponent = ({ data } = {}, provide) => {
     fakeApollo = createMockApollo([], mockResolvers);
 
     wrapper = shallowMount(IssueTypeField, {
@@ -50,6 +50,10 @@ describe('Issue type field component', () => {
           issueState: {},
           ...data,
         };
+      },
+      provide: {
+        canCreateIncident: true,
+        ...provide,
       },
     });
   };
@@ -91,6 +95,26 @@ describe('Issue type field component', () => {
       findTypeFromDropDownItems().at(1).vm.$emit('click', IssuableTypes.incident);
       await wrapper.vm.$nextTick();
       expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.incident);
+    });
+
+    describe('when user is a guest', () => {
+      it('hides the incident type from the dropdown', async () => {
+        createComponent({}, { canCreateIncident: false, issueType: 'issue' });
+        await waitForPromises();
+
+        expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
+        expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(false);
+        expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.issue);
+      });
+
+      it('and incident is selected, includes incident in the dropdown', async () => {
+        createComponent({}, { canCreateIncident: false, issueType: 'incident' });
+        await waitForPromises();
+
+        expect(findTypeFromDropDownItemAt(0).isVisible()).toBe(true);
+        expect(findTypeFromDropDownItemAt(1).isVisible()).toBe(true);
+        expect(findTypeFromDropDown().attributes('value')).toBe(IssuableTypes.incident);
+      });
     });
   });
 });

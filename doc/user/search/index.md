@@ -35,7 +35,7 @@ You can also filter the results using the search and filter field, as described 
 GitLab shows shortcuts to issues and merge requests created by you or assigned to you
 in the search field in the upper right corner:
 
-![shortcut to your issues and merge requests](img/issues_mrs_shortcut.png)
+![shortcut to your issues and merge requests](img/issues_mrs_shortcut_v14_4.png)
 
 ### Filter issue and merge request lists
 
@@ -118,7 +118,7 @@ You can add this URL to your feed reader.
 
 You can filter the **Issues** list to individual instances by their ID. For example, enter filter `#10` to return only issue 10. The same applies to the **Merge Requests** list. Enter filter `#30` to return only merge request 30.
 
-![filter issues by specific id](img/issue_search_by_id.png)
+![filter issues by specific ID](img/issue_search_by_id.png)
 
 ### Filtering merge requests by approvers **(PREMIUM)**
 
@@ -290,7 +290,7 @@ To start a search, type into the search bar on the top-right of the screen. You 
 in all GitLab and may also see the options to search in a group or project if you are in the
 group or project dashboard.
 
-![basic search](img/basic_search.png)
+![basic search](img/basic_search_v14_4.png)
 
 After the results are returned, you can modify the search, select a different type of data to
 search, or choose a specific group or project.
@@ -321,9 +321,10 @@ GitLab instance.
 
 ## Search settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292941) in GitLab 13.8 [with a flag](../../administration/feature_flags.md) named `search_settings_in_page`. Disabled by default.
 > - [Added to Group, Administrator, and User settings](https://gitlab.com/groups/gitlab-org/-/epics/4842) in GitLab 13.9.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
+> - [Feature flag `search_settings_in_page` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294025) in GitLab 13.11.
 
 You can search inside a Project, Group, Administrator, or User's settings by entering
 a search term in the search box located at the top of the page. The search results

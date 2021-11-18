@@ -6,9 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Composer packages in the Package Registry **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab Premium 13.2.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) to GitLab Free in 13.3.
-> - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab Free 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
+> - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab 13.10.
 
 WARNING:
 The Composer package registry for GitLab is under development and isn't ready for production use due to
@@ -149,7 +149,7 @@ Do not save unless you want to overwrite the existing CI/CD file.
 When you publish:
 
 - The same package with different data, it overwrites the existing package.
-- The same package with the same data, a `404 Bad request` error occurs.
+- The same package with the same data, a `400 Bad request` error occurs.
 
 ## Install a Composer package
 

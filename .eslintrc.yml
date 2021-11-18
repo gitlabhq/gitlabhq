@@ -113,3 +113,24 @@ overrides:
       - '*.stories.js'
     rules:
       filenames/match-regex: off
+  - files:
+      - '*.graphql'
+    plugins:
+      - '@graphql-eslint'
+    parserOptions:
+      parser: '@graphql-eslint/eslint-plugin'
+      operations:
+         - '{,ee/,jh/}app/**/*.graphql'
+      # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
+      # schema: './tmp/tests/graphql/gitlab_schema.graphql'
+    rules:
+      filenames/match-regex: off
+      spaced-comment: off
+      # TODO: We need a way to include this rule + support ee_else_ce fragments
+      #'@graphql-eslint/unique-fragment-name': error
+      # TODO: Uncomment these rules when then `schema` is available
+      #'@graphql-eslint/fragments-on-composite-type': error
+      #'@graphql-eslint/known-argument-names': error
+      #'@graphql-eslint/known-type-names': error
+      '@graphql-eslint/no-anonymous-operations': error
+      '@graphql-eslint/unique-operation-name': error

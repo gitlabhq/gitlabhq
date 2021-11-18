@@ -66,8 +66,6 @@ if gitlab.mr_labels.include?('database') || db_paths_to_review.any?
   end
 
   unless helper.has_database_scoped_labels?
-    gitlab.api.update_merge_request(gitlab.mr_json['project_id'],
-                                    gitlab.mr_json['iid'],
-                                    add_labels: 'database::review pending')
+    project_helper.labels_to_add << 'database::review pending'
   end
 end

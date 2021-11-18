@@ -1,7 +1,4 @@
-import dateFormat from 'dateformat';
-import { dateFormats } from '~/analytics/shared/constants';
 import { hideFlash } from '~/flash';
-import { getDateInPast } from '~/lib/utils/datetime/date_calculation_utility';
 import { parseSeconds } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
 import { slugify } from '~/lib/utils/text_utility';
@@ -74,23 +71,6 @@ export const formatMedianValues = (medians = []) =>
 export const filterStagesByHiddenStatus = (stages = [], isHidden = true) =>
   stages.filter(({ hidden = false }) => hidden === isHidden);
 
-const toIsoFormat = (d) => dateFormat(d, dateFormats.isoDate);
-
-/**
- * Takes an integer specifying the number of days to subtract
- * from the date specified will return the 2 dates, formatted as ISO dates
- *
- * @param {Number} daysInPast - Number of days in the past to subtract
- * @param {Date} [today=new Date] - Date to subtract days from, defaults to today
- * @returns {Object} Returns 'now' and the 'past' date formatted as ISO dates
- */
-export const calculateFormattedDayInPast = (daysInPast, today = new Date()) => {
-  return {
-    now: toIsoFormat(today),
-    past: toIsoFormat(getDateInPast(today, daysInPast)),
-  };
-};
-
 /**
  * @typedef {Object} MetricData
  * @property {String} title - Title of the metric measured
@@ -123,3 +103,43 @@ export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
       description: popoverContent[key]?.description || '',
     };
   });
+
+const extractFeatures = (gon) => ({
+  cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
+});
+
+/**
+ * Builds the initial data object for Value Stream Analytics with data loaded from the backend
+ *
+ * @param {Object} dataset - dataset object paseed to the frontend via data-* properties
+ * @returns {Object} - The initial data to load the app with
+ */
+export const buildCycleAnalyticsInitialData = ({
+  fullPath,
+  requestPath,
+  projectId,
+  groupId,
+  groupPath,
+  labelsPath,
+  milestonesPath,
+  stage,
+  createdAfter,
+  createdBefore,
+  gon,
+} = {}) => {
+  return {
+    projectId: parseInt(projectId, 10),
+    endpoints: {
+      requestPath,
+      fullPath,
+      labelsPath,
+      milestonesPath,
+      groupId: parseInt(groupId, 10),
+      groupPath,
+    },
+    createdAfter: new Date(createdAfter),
+    createdBefore: new Date(createdBefore),
+    selectedStage: stage ? JSON.parse(stage) : null,
+    features: extractFeatures(gon),
+  };
+};

@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
   include Database::TableSchemaHelpers
 
+  subject(:dropper) { described_class.new }
+
   let(:connection) { ActiveRecord::Base.connection }
 
   def expect_partition_present(name)
@@ -23,10 +25,18 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
   before do
     connection.execute(<<~SQL)
+      CREATE TABLE referenced_table (
+        id bigserial primary key not null
+      )
+    SQL
+    connection.execute(<<~SQL)
+
       CREATE TABLE parent_table (
          id bigserial not null,
+         referenced_id bigint not null,
          created_at timestamptz not null,
-         primary key (id, created_at)
+         primary key (id, created_at),
+        constraint fk_referenced foreign key (referenced_id) references referenced_table(id)
        ) PARTITION BY RANGE(created_at)
     SQL
   end
@@ -59,7 +69,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
                          attached: false,
                          drop_after: 1.day.from_now)
 
-        subject.perform
+        dropper.perform
 
         expect_partition_present('test_partition')
       end
@@ -75,7 +85,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       end
 
       it 'drops the partition' do
-        subject.perform
+        dropper.perform
 
         expect(table_oid('test_partition')).to be_nil
       end
@@ -86,16 +96,62 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
         end
 
         it 'does not drop the partition' do
-          subject.perform
+          dropper.perform
 
           expect(table_oid('test_partition')).not_to be_nil
         end
       end
 
+      context 'removing foreign keys' do
+        it 'removes foreign keys from the table before dropping it' do
+          expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition_name|
+            expect(partition_name).to eq('test_partition')
+            expect(foreign_key_exists_by_name(partition_name, 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_falsey
+
+            drop_method.call(partition_name)
+          end
+
+          expect(foreign_key_exists_by_name('test_partition', 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_truthy
+
+          dropper.perform
+        end
+
+        it 'does not remove foreign keys from the parent table' do
+          expect { dropper.perform }.not_to change { foreign_key_exists_by_name('parent_table', 'fk_referenced') }.from(true)
+        end
+
+        context 'when another process drops the foreign key' do
+          it 'skips dropping that foreign key' do
+            expect(dropper).to receive(:drop_foreign_key_if_present).and_wrap_original do |drop_meth, *args|
+              connection.execute('alter table gitlab_partitions_dynamic.test_partition drop constraint fk_referenced;')
+              drop_meth.call(*args)
+            end
+
+            dropper.perform
+
+            expect_partition_removed('test_partition')
+          end
+        end
+
+        context 'when another process drops the partition' do
+          it 'skips dropping the foreign key' do
+            expect(dropper).to receive(:drop_foreign_key_if_present).and_wrap_original do |drop_meth, *args|
+              connection.execute('drop table gitlab_partitions_dynamic.test_partition')
+              Postgresql::DetachedPartition.where(table_name: 'test_partition').delete_all
+            end
+
+            expect(Gitlab::AppLogger).not_to receive(:error)
+            dropper.perform
+          end
+        end
+      end
+
       context 'when another process drops the table while the first waits for a lock' do
         it 'skips the table' do
+          # First call to .lock is for removing foreign keys
+          expect(Postgresql::DetachedPartition).to receive(:lock).once.ordered.and_call_original
           # Rspec's receive_method_chain does not support .and_wrap_original, so we need to nest here.
-          expect(Postgresql::DetachedPartition).to receive(:lock).and_wrap_original do |lock_meth|
+          expect(Postgresql::DetachedPartition).to receive(:lock).once.ordered.and_wrap_original do |lock_meth|
             locked = lock_meth.call
             expect(locked).to receive(:find_by).and_wrap_original do |find_meth, *find_args|
               # Another process drops the table then deletes this entry
@@ -106,9 +162,9 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
             locked
           end
 
-          expect(subject).not_to receive(:drop_one)
+          expect(dropper).not_to receive(:drop_one)
 
-          subject.perform
+          dropper.perform
         end
       end
     end
@@ -123,19 +179,26 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       end
 
       it 'does not drop the partition, but does remove the DetachedPartition entry' do
-        subject.perform
+        dropper.perform
         aggregate_failures do
           expect(table_oid('test_partition')).not_to be_nil
           expect(Postgresql::DetachedPartition.find_by(table_name: 'test_partition')).to be_nil
         end
       end
 
-      it 'removes the detached_partition entry' do
-        detached_partition = Postgresql::DetachedPartition.find_by!(table_name: 'test_partition')
+      context 'when another process removes the entry before this process' do
+        it 'does nothing' do
+          expect(Postgresql::DetachedPartition).to receive(:lock).and_wrap_original do |lock_meth|
+            Postgresql::DetachedPartition.delete_all
+            lock_meth.call
+          end
 
-        subject.perform
+          expect(Gitlab::AppLogger).not_to receive(:error)
 
-        expect(Postgresql::DetachedPartition.exists?(id: detached_partition.id)).to be_falsey
+          dropper.perform
+
+          expect(table_oid('test_partition')).not_to be_nil
+        end
       end
     end
 
@@ -155,7 +218,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       end
 
       it 'drops both partitions' do
-        subject.perform
+        dropper.perform
 
         expect_partition_removed('partition_1')
         expect_partition_removed('partition_2')
@@ -163,10 +226,10 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
       context 'when the first drop returns an error' do
         it 'still drops the second partition' do
-          expect(subject).to receive(:drop_detached_partition).ordered.and_raise('injected error')
-          expect(subject).to receive(:drop_detached_partition).ordered.and_call_original
+          expect(dropper).to receive(:drop_detached_partition).ordered.and_raise('injected error')
+          expect(dropper).to receive(:drop_detached_partition).ordered.and_call_original
 
-          subject.perform
+          dropper.perform
 
           # We don't know which partition we tried to drop first, so the tests here have to work with either one
           expect(Postgresql::DetachedPartition.count).to eq(1)

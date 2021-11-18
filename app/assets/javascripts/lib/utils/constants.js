@@ -24,3 +24,5 @@ export const DEFAULT_TH_CLASSES =
 // We set the drawer's z-index to 252 to clear flash messages that might
 // be displayed in the page and that have a z-index of 251.
 export const DRAWER_Z_INDEX = 252;
+
+export const MIN_USERNAME_LENGTH = 2;

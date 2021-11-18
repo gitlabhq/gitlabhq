@@ -92,7 +92,7 @@ RSpec.describe GroupsHelper do
       shared_examples 'correct ancestor order' do
         it 'outputs the groups in the correct order' do
           expect(subject)
-            .to match(%r{<li style="text-indent: 16px;"><a.*>#{deep_nested_group.name}.*</li>.*<a.*>#{very_deep_nested_group.name}</a>}m)
+            .to match(%r{<li><a.*>#{deep_nested_group.name}.*</li>.*<a.*>#{very_deep_nested_group.name}</a>}m)
         end
       end
 

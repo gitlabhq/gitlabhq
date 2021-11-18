@@ -1,4 +1,4 @@
-import { GlButton, GlFormSelect, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import { GlButton, GlDropdown, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -13,7 +13,7 @@ describe('ServiceDeskSetting', () => {
   const findIncomingEmail = () => wrapper.findByTestId('incoming-email');
   const findIncomingEmailLabel = () => wrapper.findByTestId('incoming-email-describer');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
-  const findTemplateDropdown = () => wrapper.find(GlFormSelect);
+  const findTemplateDropdown = () => wrapper.find(GlDropdown);
   const findToggle = () => wrapper.find(GlToggle);
 
   const createComponent = ({ props = {}, mountFunction = shallowMount } = {}) =>
@@ -128,6 +128,23 @@ describe('ServiceDeskSetting', () => {
           expect(input.exists()).toBe(true);
           expect(input.attributes('disabled')).toBeUndefined();
         });
+
+        it('shows error when value contains uppercase or special chars', async () => {
+          wrapper = createComponent({
+            props: { customEmailEnabled: true },
+            mountFunction: mount,
+          });
+
+          const input = wrapper.findByTestId('project-suffix');
+
+          input.setValue('abc_A.');
+          input.trigger('blur');
+
+          await wrapper.vm.$nextTick();
+
+          const errorText = wrapper.find('.text-danger');
+          expect(errorText.exists()).toBe(true);
+        });
       });
 
       describe('customEmail is the same as incomingEmail', () => {
@@ -144,63 +161,6 @@ describe('ServiceDeskSetting', () => {
         });
       });
     });
-
-    describe('templates dropdown', () => {
-      it('renders a dropdown to choose a template', () => {
-        wrapper = createComponent();
-
-        expect(findTemplateDropdown().exists()).toBe(true);
-      });
-
-      it('renders a dropdown with a default value of ""', () => {
-        wrapper = createComponent({ mountFunction: mount });
-
-        expect(findTemplateDropdown().element.value).toEqual('');
-      });
-
-      it('renders a dropdown with a value of "Bug" when it is the initial value', () => {
-        const templates = ['Bug', 'Documentation', 'Security release'];
-
-        wrapper = createComponent({
-          props: { initialSelectedTemplate: 'Bug', templates },
-          mountFunction: mount,
-        });
-
-        expect(findTemplateDropdown().element.value).toEqual('Bug');
-      });
-
-      it('renders a dropdown with no options when the project has no templates', () => {
-        wrapper = createComponent({
-          props: { templates: [] },
-          mountFunction: mount,
-        });
-
-        // The dropdown by default has one empty option
-        expect(findTemplateDropdown().element.children).toHaveLength(1);
-      });
-
-      it('renders a dropdown with options when the project has templates', () => {
-        const templates = ['Bug', 'Documentation', 'Security release'];
-
-        wrapper = createComponent({
-          props: { templates },
-          mountFunction: mount,
-        });
-
-        // An empty-named template is prepended so the user can select no template
-        const expectedTemplates = [''].concat(templates);
-
-        const dropdown = findTemplateDropdown();
-        const dropdownList = Array.from(dropdown.element.children).map(
-          (option) => option.innerText,
-        );
-
-        expect(dropdown.element.children).toHaveLength(expectedTemplates.length);
-        expect(dropdownList.includes('Bug')).toEqual(true);
-        expect(dropdownList.includes('Documentation')).toEqual(true);
-        expect(dropdownList.includes('Security release')).toEqual(true);
-      });
-    });
   });
 
   describe('save button', () => {
@@ -214,6 +174,7 @@ describe('ServiceDeskSetting', () => {
       wrapper = createComponent({
         props: {
           initialSelectedTemplate: 'Bug',
+          initialSelectedFileTemplateProjectId: 42,
           initialOutgoingName: 'GitLab Support Bot',
           initialProjectKey: 'key',
         },
@@ -225,6 +186,7 @@ describe('ServiceDeskSetting', () => {
 
       const payload = {
         selectedTemplate: 'Bug',
+        fileTemplateProjectId: 42,
         outgoingName: 'GitLab Support Bot',
         projectKey: 'key',
       };

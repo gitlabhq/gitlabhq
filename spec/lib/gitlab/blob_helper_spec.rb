@@ -7,6 +7,7 @@ RSpec.describe Gitlab::BlobHelper do
 
   let(:project) { create(:project) }
   let(:blob) { fake_blob(path: 'file.txt') }
+  let(:webp_blob) { fake_blob(path: 'file.webp') }
   let(:large_blob) { fake_blob(path: 'test.pdf', size: 2.megabytes, binary: true) }
 
   describe '#extname' do
@@ -62,8 +63,15 @@ RSpec.describe Gitlab::BlobHelper do
   end
 
   describe '#image?' do
-    it 'returns false' do
-      expect(blob.image?).to be_falsey
+    context 'with a .txt file' do
+      it 'returns false' do
+        expect(blob.image?).to be_falsey
+      end
+    end
+    context 'with a .webp file' do
+      it 'returns true' do
+        expect(webp_blob.image?).to be_truthy
+      end
     end
   end
 

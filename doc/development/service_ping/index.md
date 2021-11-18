@@ -50,35 +50,57 @@ We use the following terminology to describe the Service Ping components:
 - **Metrics**: primarily made up of row counts for different tables in an instance's database. Each
   metric has a corresponding [metric definition](metrics_dictionary.md#metrics-definition-and-validation)
   in a YAML file.
+- **MAU**: monthly active users.
+- **WAU**: weekly active users.
 
 ### Why should we enable Service Ping?
 
 - The main purpose of Service Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
 - As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
-- As a benefit of having Service Ping active, GitLab provides you with The DevOps Report,which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
+- As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_report.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
 - You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Service Ping is enabled by default. To disable it, see [Disable Service Ping](#disable-service-ping).
 - When Service Ping is enabled, you have the option to participate in our [Registration Features Program](#registration-features-program) and receive free paid features.
 
-#### Registration Features Program
+### Limitations
+
+- Service Ping does not track frontend events things like page views, link clicks, or user sessions.
+- Service Ping focuses only on aggregated backend events.
+
+Because of these limitations we recommend you:
+
+- Instrument your products with Snowplow for more detailed analytics on GitLab.com.
+- Use Service Ping to track aggregated backend events on self-managed instances.
+
+### Registration Features Program
 
 > Introduced in GitLab 14.1.
 
-Starting with GitLab version 14.1, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data via [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
+In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
 
-##### Features available in 14.1 and later
+#### Features available in 14.1 and later
 
 1. [Email from GitLab](../../tools/email.md).
+
+#### Features available in 14.4 and later
+
+1. [Repository size limit](../../user/admin_area/settings/account_and_limit_settings.md#repository-size-limit).
+1. [Restrict group access by IP address](../../user/group/index.md#restrict-group-access-by-ip-address).
 
 NOTE:
 Registration is not yet required for participation, but will be added in a future milestone.
 
-### Limitations
+#### Enable Registration Features
 
-- Service Ping does not track frontend events things like page views, link clicks, or user sessions, and only focuses on aggregated backend events.
-- Because of these limitations we recommend instrumenting your products with Snowplow for more detailed analytics on GitLab.com and use Service Ping to track aggregated backend events on self-managed.
+1. Sign in as a user with the [Administrator](../../user/permissions.md) role.
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > Metrics and profiling**.
+1. Expand the **Usage statistics** section.
+1. If not enabled, select the **Enable Service Ping** checkbox.
+1. Select the **Enable Registration Features** checkbox.
+1. Select **Save changes**.
 
 ## View the Service Ping payload **(FREE SELF)**
 
@@ -180,7 +202,7 @@ sequenceDiagram
     S3 Bucket->>Snowflake DW: Import data
     Snowflake DW->>Snowflake DW: Transform data using dbt
     Snowflake DW->>Sisense Dashboards: Data available for querying
-    Versions Application->>GitLab Instance: DevOps Report (Conversational Development Index)
+    Versions Application->>GitLab Instance: DevOps Score (Conversational Development Index)
 ```
 
 ## How Service Ping works
@@ -209,10 +231,6 @@ We also collect metrics specific to [Geo](../../administration/geo/index.md) sec
        "repositories_replication_enabled"=>true,
        "repositories_synced_count"=>24,
        "repositories_failed_count"=>0,
-       "attachments_replication_enabled"=>true,
-       "attachments_count"=>1,
-       "attachments_synced_count"=>1,
-       "attachments_failed_count"=>0,
        "git_fetch_event_count_weekly"=>nil,
        "git_push_event_count_weekly"=>nil,
        ... other geo node status fields
@@ -450,27 +468,56 @@ bin/rake gitlab:usage_data:dump_sql_in_json
 bin/rake gitlab:usage_data:dump_sql_in_yaml > ~/Desktop/usage-metrics-2020-09-02.yaml
 ```
 
-## Generating and troubleshooting Service Ping
+## Generate Service Ping
 
-This activity is to be done via a detached screen session on a remote server.
-
-Before you begin these steps, make sure the key is added to the SSH agent locally
-with the `ssh-add` command.
+To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a detached screen session on a remote server.
 
 ### Triggering
 
-1. Connect to bastion with agent forwarding: `$ ssh -A lb-bastion.gprd.gitlab.com`
-1. Create named screen: `$ screen -S <username>_usage_ping_<date>`
-1. Connect to console host: `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`
-1. Run `SubmitUsagePingService.new.execute`
-1. Detach from screen: `ctrl + a, ctrl + d`
-1. Exit from bastion: `$ exit`
+#### Trigger Service Ping with Teleport
+
+1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
+1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
+1. Run `ServicePing::SubmitService.new.execute`.
+
+#### Trigger Service Ping with a detached screen session
+
+1. Connect to bastion with agent forwarding:
+
+   `$ ssh -A lb-bastion.gprd.gitlab.com`.
+1. Create named screen:
+
+   `$ screen -S <username>_usage_ping_<date>`.
+1. Connect to console host:
+
+   `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`.
+1. Run `ServicePing::SubmitService.new.execute`
+1. Detach from screen:
+
+   `ctrl + a, ctrl + d`
+1. Exit from bastion:
+
+   `$ exit`
 
 ### Verification (After approx 30 hours)
 
-1. Reconnect to bastion: `$ ssh -A lb-bastion.gprd.gitlab.com`
-1. Find your screen session: `$ screen -ls`
-1. Attach to your screen session: `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
+#### Verify with a detached screen session
+
+1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
+1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
+1. Check the when the payload was sent: `RawUsageData.last.sent_at`
+
+#### Verify using detached screen session
+
+1. Reconnect to bastion:
+
+   `$ ssh -A lb-bastion.gprd.gitlab.com`
+1. Find your screen session:
+
+   `$ screen -ls`
+1. Attach to your screen session:
+
+   `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
 

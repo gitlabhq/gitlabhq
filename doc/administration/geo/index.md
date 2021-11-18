@@ -129,24 +129,37 @@ and we recommend you use:
 
 ### Firewall rules
 
-The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo.
+The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, we recommend opening ports in both directions.
 
-| **Primary** site | **Secondary** site | Protocol     |
-|:-----------------|:-------------------|:-------------|
-| 80               | 80                 | HTTP         |
-| 443              | 443                | TCP or HTTPS |
-| 22               | 22                 | TCP          |
-| 5432             |                    | PostgreSQL   |
+| Source site | Source port | Destination site | Destination port | Protocol    |
+|-------------|-------------|------------------|------------------|-------------|
+| Primary     | Any         | Secondary        | 80               | TCP (HTTP)  |
+| Primary     | Any         | Secondary        | 443              | TCP (HTTPS) |
+| Secondary   | Any         | Primary          | 80               | TCP (HTTP)  |
+| Secondary   | Any         | Primary          | 443              | TCP (HTTPS) |
+| Secondary   | Any         | Primary          | 5432             | TCP         |
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
 NOTE:
-[Web terminal](../../ci/environments/index.md#web-terminals) support requires your load balancer to correctly handle WebSocket connections.
+[Web terminal](../../ci/environments/index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
 NOTE:
 When using HTTPS protocol for port 443, you need to add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
+
+#### Internal URL
+
+HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
+Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin Area, the
+public URL of the primary site will be used.
+
+To update the internal URL of the primary Geo site:
+
+1. On the top bar, go to **Menu > Admin > Geo > Sites**.
+1. Select **Edit** on the primary site.
+1. Change the **Internal URL**, then select **Save changes**.
 
 ### LDAP
 
@@ -257,6 +270,10 @@ For information on using Geo in disaster recovery situations to mitigate data-lo
 ### Replicating the Container Registry
 
 For more information on how to replicate the Container Registry, see [Docker Registry for a **secondary** site](replication/docker_registry.md).
+
+### Geo secondary proxy
+
+For more information on using Geo proxying on secondary nodes, see [Geo proxying for secondary sites](secondary_proxy/index.md).
 
 ### Security Review
 

@@ -15,13 +15,17 @@ export default (buttonSelector, fileSelector) => {
   });
 };
 
-export const getFilename = ({ clipboardData }) => {
-  let value;
-  if (window.clipboardData && window.clipboardData.getData) {
-    value = window.clipboardData.getData('Text');
-  } else if (clipboardData && clipboardData.getData) {
-    value = clipboardData.getData('text/plain');
+export const getFilename = (file) => {
+  let fileName;
+  if (file) {
+    fileName = file.name;
   }
-  value = value.split('\r');
-  return value[0];
+
+  return fileName;
+};
+
+export const validateImageName = (file) => {
+  const fileName = file.name ? file.name : 'image.png';
+  const legalImageRegex = /^[\w.\-+]+\.(png|jpg|jpeg|gif|bmp|tiff|ico|webp)$/;
+  return legalImageRegex.test(fileName) ? fileName : 'image.png';
 };

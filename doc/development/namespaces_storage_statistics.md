@@ -53,7 +53,10 @@ SELECT split_part("rs".path, '/', 1) as root_path,
         COALESCE(SUM(ps.wiki_size), 0) AS wiki_size,
         COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size,
         COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size,
-        COALESCE(SUM(ps.packages_size), 0) AS packages_size
+        COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size,
+        COALESCE(SUM(ps.packages_size), 0) AS packages_size,
+        COALESCE(SUM(ps.snippets_size), 0) AS snippets_size,
+        COALESCE(SUM(ps.uploads_size), 0) AS uploads_size
 FROM "projects"
     INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'
     INNER JOIN project_statistics ps ON ps.project_id  = projects.id
@@ -83,7 +86,10 @@ WITH refresh AS (
         COALESCE(SUM(ps.wiki_size), 0) AS wiki_size,
         COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size,
         COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size,
-        COALESCE(SUM(ps.packages_size), 0) AS packages_size
+        COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size,
+        COALESCE(SUM(ps.packages_size), 0) AS packages_size,
+        COALESCE(SUM(ps.snippets_size), 0) AS snippets_size,
+        COALESCE(SUM(ps.uploads_size), 0) AS uploads_size
   FROM "projects"
         INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'
         INNER JOIN project_statistics ps ON ps.project_id  = projects.id
@@ -94,7 +100,10 @@ SET storage_size = refresh.storage_size,
     wiki_size = refresh.wiki_size,
     lfs_objects_size = refresh.lfs_objects_size,
     build_artifacts_size = refresh.build_artifacts_size,
-    packages_size  = refresh.packages_size
+    pipeline_artifacts_size = refresh.pipeline_artifacts_size,
+    packages_size  = refresh.packages_size,
+    snippets_size  = refresh.snippets_size,
+    uploads_size  = refresh.uploads_size
 FROM refresh
     INNER JOIN routes rs ON rs.path = refresh.root_path AND rs.source_type = 'Namespace'
 WHERE namespace_storage_statistics.namespace_id = rs.source_id

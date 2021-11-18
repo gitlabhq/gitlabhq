@@ -27,7 +27,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::PerfLogger.new,
                     Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
                     Gitlab::GrapeLogging::Loggers::ContextLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContentLogger.new
+                    Gitlab::GrapeLogging::Loggers::ContentLogger.new,
+                    Gitlab::GrapeLogging::Loggers::UrgencyLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -283,6 +284,7 @@ module API
       mount ::API::Tags
       mount ::API::Templates
       mount ::API::Todos
+      mount ::API::Topics
       mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataQueries

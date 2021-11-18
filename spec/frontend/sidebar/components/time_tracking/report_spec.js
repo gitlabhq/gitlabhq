@@ -50,7 +50,7 @@ describe('Issuable Time Tracking Report', () => {
   it('should render loading spinner', () => {
     mountComponent();
 
-    expect(findLoadingIcon()).toExist();
+    expect(findLoadingIcon().exists()).toBe(true);
   });
 
   it('should render error message on reject', async () => {

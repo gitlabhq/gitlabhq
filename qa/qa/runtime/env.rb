@@ -80,6 +80,11 @@ module QA
         enabled?(ENV['CHROME_REUSE_PROFILE'], default: false)
       end
 
+      # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
+      def disable_dev_shm?
+        running_in_ci? || enabled?(ENV['CHROME_DISABLE_DEV_SHM'], default: false)
+      end
+
       def accept_insecure_certs?
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end
@@ -151,6 +156,12 @@ module QA
 
       def remote_mobile_device_name
         ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
+      end
+
+      def mobile_layout?
+        return false if ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].blank?
+
+        !(ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('ipad') || ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('tablet'))
       end
 
       def user_username
@@ -392,7 +403,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v13.7.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.4.0')
       end
 
       def transient_trials

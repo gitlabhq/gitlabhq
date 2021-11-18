@@ -33,12 +33,10 @@ module Mutations
                  required: false,
                  description: 'Description of or notes for the organization.'
 
-        authorize :admin_organization
+        authorize :admin_crm_organization
 
         def resolve(args)
           group = authorized_find!(id: args[:group_id])
-
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group, default_enabled: :yaml)
 
           result = ::CustomerRelations::Organizations::CreateService.new(group: group, current_user: current_user, params: args).execute
           { organization: result.payload, errors: result.errors }

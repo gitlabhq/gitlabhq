@@ -21,6 +21,7 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :validate_refs!
 
   feature_category :source_code_management
+  urgency :low, [:show, :create, :signatures]
 
   # Diffs may be pretty chunky, the less is better in this endpoint.
   # Pagination design guides: https://design.gitlab.com/components/pagination/#behavior

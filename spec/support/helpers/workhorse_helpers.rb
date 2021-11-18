@@ -24,7 +24,12 @@ module WorkhorseHelpers
 
   # workhorse_post_with_file will transform file_key inside params as if it was disk accelerated by workhorse
   def workhorse_post_with_file(url, file_key:, params:)
-    workhorse_request_with_file(:post, url,
+    workhorse_form_with_file(url, method: :post, file_key: file_key, params: params)
+  end
+
+  # workhorse_form_with_file will transform file_key inside params as if it was disk accelerated by workhorse
+  def workhorse_form_with_file(url, file_key:, params:, method: :post)
+    workhorse_request_with_file(method, url,
                                 file_key: file_key,
                                 params: params,
                                 env: { 'CONTENT_TYPE' => 'multipart/form-data' },

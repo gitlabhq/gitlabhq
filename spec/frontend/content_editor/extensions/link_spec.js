@@ -1,61 +1,46 @@
-import {
-  markdownLinkSyntaxInputRuleRegExp,
-  urlSyntaxRegExp,
-  extractHrefFromMarkdownLink,
-} from '~/content_editor/extensions/link';
+import Link from '~/content_editor/extensions/link';
+import { createTestEditor, createDocBuilder, triggerMarkInputRule } from '../test_utils';
 
 describe('content_editor/extensions/link', () => {
-  describe.each`
-    input                             | matches
-    ${'[gitlab](https://gitlab.com)'} | ${true}
-    ${'[documentation](readme.md)'}   | ${true}
-    ${'[link 123](readme.md)'}        | ${true}
-    ${'[link 123](read me.md)'}       | ${true}
-    ${'text'}                         | ${false}
-    ${'documentation](readme.md'}     | ${false}
-    ${'https://www.google.com'}       | ${false}
-  `('markdownLinkSyntaxInputRuleRegExp', ({ input, matches }) => {
-    it(`${matches ? 'matches' : 'does not match'} ${input}`, () => {
-      const match = new RegExp(markdownLinkSyntaxInputRuleRegExp).exec(input);
+  let tiptapEditor;
+  let doc;
+  let p;
+  let link;
 
-      expect(Boolean(match?.groups.href)).toBe(matches);
-    });
+  beforeEach(() => {
+    tiptapEditor = createTestEditor({ extensions: [Link] });
+    ({
+      builders: { doc, p, link },
+    } = createDocBuilder({
+      tiptapEditor,
+      names: {
+        link: { markType: Link.name },
+      },
+    }));
   });
 
-  describe.each`
-    input                        | matches
-    ${'http://example.com '}     | ${true}
-    ${'https://example.com '}    | ${true}
-    ${'www.example.com '}        | ${true}
-    ${'example.com/ab.html '}    | ${false}
-    ${'text'}                    | ${false}
-    ${' http://example.com '}    | ${true}
-    ${'https://www.google.com '} | ${true}
-  `('urlSyntaxRegExp', ({ input, matches }) => {
-    it(`${matches ? 'matches' : 'does not match'} ${input}`, () => {
-      const match = new RegExp(urlSyntaxRegExp).exec(input);
-
-      expect(Boolean(match?.groups.href)).toBe(matches);
-    });
+  afterEach(() => {
+    tiptapEditor.destroy();
   });
 
-  describe('extractHrefFromMarkdownLink', () => {
-    const input = '[gitlab](https://gitlab.com)';
-    const href = 'https://gitlab.com';
-    let match;
-    let result;
+  it.each`
+    input                             | insertedNode
+    ${'[gitlab](https://gitlab.com)'} | ${() => p(link({ href: 'https://gitlab.com' }, 'gitlab'))}
+    ${'[documentation](readme.md)'}   | ${() => p(link({ href: 'readme.md' }, 'documentation'))}
+    ${'[link 123](readme.md)'}        | ${() => p(link({ href: 'readme.md' }, 'link 123'))}
+    ${'[link 123](read me.md)'}       | ${() => p(link({ href: 'read me.md' }, 'link 123'))}
+    ${'text'}                         | ${() => p('text')}
+    ${'documentation](readme.md'}     | ${() => p('documentation](readme.md')}
+    ${'http://example.com '}          | ${() => p(link({ href: 'http://example.com' }, 'http://example.com'))}
+    ${'https://example.com '}         | ${() => p(link({ href: 'https://example.com' }, 'https://example.com'))}
+    ${'www.example.com '}             | ${() => p(link({ href: 'www.example.com' }, 'www.example.com'))}
+    ${'example.com/ab.html '}         | ${() => p('example.com/ab.html')}
+    ${'https://www.google.com '}      | ${() => p(link({ href: 'https://www.google.com' }, 'https://www.google.com'))}
+  `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
+    const expectedDoc = doc(insertedNode());
 
-    beforeEach(() => {
-      match = new RegExp(markdownLinkSyntaxInputRuleRegExp).exec(input);
-      result = extractHrefFromMarkdownLink(match);
-    });
+    triggerMarkInputRule({ tiptapEditor, inputRuleText: input });
 
-    it('extracts the url from a markdown link captured by markdownLinkSyntaxInputRuleRegExp', () => {
-      expect(result).toEqual({ href });
-    });
-
-    it('makes sure that url text is the last capture group', () => {
-      expect(match[match.length - 1]).toEqual('gitlab');
-    });
+    expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
   });
 });

@@ -63,10 +63,14 @@ module Members
         invites,
         params[:access_level],
         expires_at: params[:expires_at],
-        current_user: current_user
+        current_user: current_user,
+        tasks_to_be_done: params[:tasks_to_be_done],
+        tasks_project_id: params[:tasks_project_id]
       )
 
       members.each { |member| process_result(member) }
+
+      create_tasks_to_be_done
     end
 
     def process_result(member)
@@ -110,6 +114,19 @@ module Members
       areas_of_focus.each do |area_of_focus|
         Gitlab::Tracking.event(self.class.name, 'area_of_focus', label: area_of_focus, property: member.id.to_s)
       end
+    end
+
+    def create_tasks_to_be_done
+      return unless experiment(:invite_members_for_task).enabled?
+      return if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
+
+      valid_members = members.select { |member| member.valid? && member.member_task.valid? }
+      return unless valid_members.present?
+
+      # We can take the first `member_task` here, since all tasks will have the same attributes needed
+      # for the `TasksToBeDone::CreateWorker`, ie. `project` and `tasks_to_be_done`.
+      member_task = valid_members[0].member_task
+      TasksToBeDone::CreateWorker.perform_async(member_task.id, current_user.id, valid_members.map(&:user_id))
     end
 
     def areas_of_focus

@@ -61,3 +61,7 @@ creating small and efficient Git pack files. So it might be a good
 idea to spend time and CPU to properly repack your repository before
 sending it for the first time to your GitLab server. See
 [this StackOverflow question](https://stackoverflow.com/questions/28720151/git-gc-aggressive-vs-git-repack/).
+
+## Related topics
+
+- [Mirror with Perforce Helix with Git Fusion](../repository/mirror/bidirectional.md#mirror-with-perforce-helix-with-git-fusion)

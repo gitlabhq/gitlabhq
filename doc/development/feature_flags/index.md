@@ -535,7 +535,7 @@ to ensure the feature works properly.
 When using the testing environment, all feature flags are enabled by default.
 
 WARNING:
-This does not apply to end-to-end (QA) tests, which [do not disable feature flags by default](#end-to-end-qa-tests). There is a different [process for using feature flags in end-to-end tests](../testing_guide/end_to_end/feature_flags.md).
+This does not apply to end-to-end (QA) tests, which [do not enable feature flags by default](#end-to-end-qa-tests). There is a different [process for using feature flags in end-to-end tests](../testing_guide/end_to_end/feature_flags.md).
 
 To disable a feature flag in a test, use the `stub_feature_flags`
 helper. For example, to globally disable the `ci_live_trace` feature

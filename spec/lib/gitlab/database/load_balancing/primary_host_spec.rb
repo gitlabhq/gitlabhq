@@ -51,7 +51,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::PrimaryHost do
   end
 
   describe '#offline!' do
-    it 'does nothing' do
+    it 'logs the event but does nothing else' do
+      expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn)
+        .with(hash_including(event: :host_offline))
+        .and_call_original
+
       expect(host.offline!).to be_nil
     end
   end

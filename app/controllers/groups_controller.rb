@@ -54,7 +54,7 @@ class GroupsController < Groups::ApplicationController
                      :destroy, :details, :transfer, :activity
                    ]
 
-  feature_category :issue_tracking, [:issues, :issues_calendar, :preview_markdown]
+  feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review, [:merge_requests, :unfoldered_environment_names]
   feature_category :projects, [:projects]
   feature_category :importers, [:export, :download_export]
@@ -92,6 +92,7 @@ class GroupsController < Groups::ApplicationController
         if @group.import_state&.in_progress?
           redirect_to group_import_path(@group)
         else
+          publish_invite_members_for_task_experiment
           render_show_html
         end
       end
@@ -378,6 +379,13 @@ class GroupsController < Groups::ApplicationController
 
   def captcha_required?
     captcha_enabled? && !params[:parent_id]
+  end
+
+  def publish_invite_members_for_task_experiment
+    return unless params[:open_modal] == 'invite_members_for_task'
+    return unless current_user&.can?(:admin_group_member, @group)
+
+    experiment(:invite_members_for_task, namespace: @group).publish_to_client
   end
 end
 

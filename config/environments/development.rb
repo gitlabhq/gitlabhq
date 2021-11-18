@@ -42,8 +42,6 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  # For having correct urls in mails
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # Open sent mails in browser
   config.action_mailer.delivery_method = :letter_opener_web
   # Log mail delivery errors

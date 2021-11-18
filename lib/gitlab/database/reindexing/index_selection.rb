@@ -9,8 +9,8 @@ module Gitlab
         # Only reindex indexes with a relative bloat level (bloat estimate / size) higher than this
         MINIMUM_RELATIVE_BLOAT = 0.2
 
-        # Only consider indexes with a total ondisk size in this range (before reindexing)
-        INDEX_SIZE_RANGE = (1.gigabyte..100.gigabyte).freeze
+        # Only consider indexes beyond this size (before reindexing)
+        INDEX_SIZE_MINIMUM = 1.gigabyte
 
         delegate :each, to: :indexes
 
@@ -32,7 +32,7 @@ module Gitlab
 
           @indexes ||= candidates
             .not_recently_reindexed
-            .where(ondisk_size_bytes: INDEX_SIZE_RANGE)
+            .where('ondisk_size_bytes >= ?', INDEX_SIZE_MINIMUM)
             .sort_by(&:relative_bloat_level) # forced N+1
             .reverse
             .select { |candidate| candidate.relative_bloat_level >= MINIMUM_RELATIVE_BLOAT }

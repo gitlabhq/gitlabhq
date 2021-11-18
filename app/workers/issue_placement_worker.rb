@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# todo: remove this worker and it's queue definition from all_queues after Issues::PlacementWorker is deployed
+# We want to keep it for one release in case some jobs are already scheduled in the old queue so we need the worker
+# to be available to finish those. All new jobs will be queued into the new queue.
 class IssuePlacementWorker
   include ApplicationWorker
 
@@ -9,7 +12,7 @@ class IssuePlacementWorker
 
   idempotent!
   deduplicate :until_executed, including_scheduled: true
-  feature_category :issue_tracking
+  feature_category :team_planning
   urgency :high
   worker_resource_boundary :cpu
   weight 2

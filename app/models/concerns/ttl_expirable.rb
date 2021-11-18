@@ -5,10 +5,11 @@ module TtlExpirable
 
   included do
     validates :status, presence: true
+    default_value_for :read_at, Time.zone.now
 
     enum status: { default: 0, expired: 1, processing: 2, error: 3 }
 
-    scope :updated_before, ->(number_of_days) { where("updated_at <= ?", Time.zone.now - number_of_days.days) }
+    scope :read_before, ->(number_of_days) { where("read_at <= ?", Time.zone.now - number_of_days.days) }
     scope :active, -> { where(status: :default) }
 
     scope :lock_next_by, ->(sort) do
@@ -16,5 +17,9 @@ module TtlExpirable
         .limit(1)
         .lock('FOR UPDATE SKIP LOCKED')
     end
+  end
+
+  def read!
+    self.update(read_at: Time.zone.now)
   end
 end

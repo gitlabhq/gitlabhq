@@ -39,7 +39,7 @@ The following are also added by members of the Technical Writing team:
 - The `~Technical Writing` [team label](../contributing/issue_workflow.md#team-labels).
 
 Documentation changes that are not associated with the release of a new or updated feature
-do not take the `~feature` label, but still need the `~documentation` label.
+do not take the `~"type::feature"` label, but still need the `~documentation` label.
 
 They may include:
 

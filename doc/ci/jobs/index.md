@@ -82,6 +82,24 @@ For example:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
+## Job name limitations
+
+You can't use these keywords as job names:
+
+- `image`
+- `services`
+- `stages`
+- `types`
+- `before_script`
+- `after_script`
+- `variables`
+- `cache`
+- `include`
+
+Job names must be 255 characters or less. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342800)
+in GitLab 14.5, [with a feature flag](../../administration/feature_flags.md) named `ci_validate_job_length`.
+Enabled by default. To disable it, ask an administrator to [disable the feature flag](../../administration/feature_flags.md).
+
 ## Group jobs in a pipeline
 
 If you have many similar jobs, your [pipeline graph](../pipelines/index.md#visualize-pipelines) becomes long and hard
@@ -138,6 +156,89 @@ job names are not removed.
 In [GitLab 13.8 and earlier](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52644),
 the regular expression is `\d+[\s:\/\\]+\d+\s*`. [Feature flag](../../user/feature_flags.md)
 removed in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/322080).
+
+## Hide jobs
+
+To temporarily disable a job without deleting it from the configuration
+file:
+
+- Comment out the job's configuration:
+
+  ```yaml
+  # hidden_job:
+  #   script:
+  #     - run test
+  ```
+
+- Start the job name with a dot (`.`) and it is not processed by GitLab CI/CD:
+
+  ```yaml
+  .hidden_job:
+    script:
+      - run test
+  ```
+
+You can use hidden jobs that start with `.` as templates for reusable configuration with:
+
+- The [`extends` keyword](../yaml/index.md#extends).
+- [YAML anchors](../yaml/yaml_optimization.md#anchors).
+
+## Control the inheritance of default keywords and global variables
+
+You can control the inheritance of:
+
+- [default keywords](../yaml/index.md#default) with [`inherit:default`](../yaml/index.md#inheritdefault).
+- [global variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
+
+For example:
+
+```yaml
+default:
+  image: 'ruby:2.4'
+  before_script:
+    - echo Hello World
+
+variables:
+  DOMAIN: example.com
+  WEBHOOK_URL: https://my-webhook.example.com
+
+rubocop:
+  inherit:
+    default: false
+    variables: false
+  script: bundle exec rubocop
+
+rspec:
+  inherit:
+    default: [image]
+    variables: [WEBHOOK_URL]
+  script: bundle exec rspec
+
+capybara:
+  inherit:
+    variables: false
+  script: bundle exec capybara
+
+karma:
+  inherit:
+    default: true
+    variables: [DOMAIN]
+  script: karma
+```
+
+In this example:
+
+- `rubocop`:
+  - inherits: Nothing.
+- `rspec`:
+  - inherits: the default `image` and the `WEBHOOK_URL` variable.
+  - does **not** inherit: the default `before_script` and the `DOMAIN` variable.
+- `capybara`:
+  - inherits: the default `before_script` and `image`.
+  - does **not** inherit: the `DOMAIN` and `WEBHOOK_URL` variables.
+- `karma`:
+  - inherits: the default `image` and `before_script`, and the `DOMAIN` variable.
+  - does **not** inherit: `WEBHOOK_URL` variable.
 
 ## Specifying variables when running manual jobs
 

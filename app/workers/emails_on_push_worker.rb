@@ -87,13 +87,14 @@ class EmailsOnPushWorker # rubocop:disable Scalability/IdempotentWorker
   private
 
   def send_email(recipient, project_id, options)
-    # Generating the body of this email can be expensive, so only do it once
-    @skip_premailer ||= email.present?
-    @email ||= Notify.repository_push_email(project_id, options)
+    @email ||= Notify.repository_push_email(project_id, options).tap do |mail|
+      Premailer::Rails::Hook.perform(mail)
+    end
 
-    email.to = recipient
-    email.add_message_id
-    email.header[:skip_premailer] = true if skip_premailer
-    email.deliver_now
+    current_email = email.dup
+    current_email.to = recipient
+    current_email.add_message_id
+    current_email.header[:skip_premailer] = true
+    current_email.deliver_now
   end
 end

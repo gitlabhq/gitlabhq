@@ -1,0 +1,22 @@
+---
+key_path: counts.groups_inheriting_shimo_active
+name: count_all_groups_inheriting_shimo_active
+description: Count of groups that inherit active Shimo integrations
+product_section: dev
+product_stage: ecosystem
+product_group: group::integrations
+product_category: integrations
+value_type: number
+status: active
+milestone: "14.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343386
+time_frame: all
+data_source: database
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

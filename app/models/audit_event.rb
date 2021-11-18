@@ -30,6 +30,8 @@ class AuditEvent < ApplicationRecord
   scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
   scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
   scope :by_author_id, -> (author_id) { where(author_id: author_id) }
+  scope :by_entity_username, -> (username) { where(entity_id: find_user_id(username)) }
+  scope :by_author_username, -> (username) { where(author_id: find_user_id(username)) }
 
   after_initialize :initialize_details
 
@@ -105,6 +107,10 @@ class AuditEvent < ApplicationRecord
 
       self[name] = self.details[name] = original
     end
+  end
+
+  def self.find_user_id(username)
+    User.find_by_username(username)&.id
   end
 end
 

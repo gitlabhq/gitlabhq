@@ -3,7 +3,7 @@
 module Integrations
   class Bamboo < BaseCi
     include ActionView::Helpers::UrlHelper
-    include ReactiveService
+    include ReactivelyCached
 
     prop_accessor :bamboo_url, :build_key, :username, :password
 

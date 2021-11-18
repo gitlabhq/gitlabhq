@@ -312,3 +312,16 @@ def down
   remove_concurrent_index_by_name :ci_builds, INDEX_NAME
 end
 ```
+
+## Test database index changes locally
+
+You must test the database index changes locally before creating a merge request.
+
+### Verify indexes created asynchronously 
+
+Use the asynchronous index helpers on your local environment to test changes for creating an index:
+
+1. Enable the feature flags by running `Feature.enable(:database_async_index_creation)` and `Feature.enable(:database_reindexing)` in the Rails console.
+1. Run `bundle exec rails db:migrate` so that it creates an entry in the `postgres_async_indexes` table.
+1. Run `bundle exec rails gitlab:db:reindex` so that the index is created asynchronously.
+1. To verify the index, open the PostgreSQL console using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md) command `gdk psql` and run the command `\d <index_name>` to check that your newly created index exists. 

@@ -1,6 +1,6 @@
 #import "./jira_import.fragment.graphql"
 
-query($fullPath: ID!) {
+query getJiraImportDetails($fullPath: ID!) {
   project(fullPath: $fullPath) {
     jiraImportStatus
     jiraImports {

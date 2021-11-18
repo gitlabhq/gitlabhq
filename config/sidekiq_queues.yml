@@ -35,9 +35,13 @@
   - 1
 - - analytics_usage_trends_counter_job
   - 1
+- - app_sec_dast_scans_consistency
+  - 1
 - - approval_rules_external_approval_rule_payload
   - 1
 - - approve_blocked_pending_approval_users
+  - 1
+- - audit_events_audit_event_streaming
   - 1
 - - authorized_keys
   - 2
@@ -175,6 +179,8 @@
   - 1
 - - group_wikis_git_garbage_collect
   - 1
+- - groups_create_event
+  - 1
 - - groups_export_memberships
   - 1
 - - groups_schedule_bulk_repository_shard_moves
@@ -197,6 +203,8 @@
   - 1
 - - incident_management_pending_escalations_alert_create
   - 1
+- - integrations_create_external_cross_reference
+  - 1
 - - invalid_gpg_signature_update
   - 2
 - - irker
@@ -210,6 +218,10 @@
 - - issue_placement
   - 2
 - - issue_rebalancing
+  - 1
+- - issues_placement
+  - 2
+- - issues_rebalancing
   - 1
 - - iterations
   - 1
@@ -246,6 +258,8 @@
 - - migrate_external_diffs
   - 1
 - - namespaceless_project_destroy
+  - 1
+- - namespaces_invite_team_email
   - 1
 - - namespaces_onboarding_issue_created
   - 1
@@ -390,6 +404,8 @@
 - - sync_seat_link_request
   - 1
 - - system_hook_push
+  - 1
+- - tasks_to_be_done_create
   - 1
 - - todos_destroyer
   - 1

@@ -45,6 +45,10 @@ module QA
           has_element?(:sign_in_button)
         end
 
+        def on_login_page?
+          has_element?(:login_page, wait: 0)
+        end
+
         def sign_in_using_credentials(user: nil, skip_page_validation: false)
           # Don't try to log-in if we're already logged-in
           return if Page::Main::Menu.perform(&:signed_in?)
@@ -163,6 +167,8 @@ module QA
           fill_element :login_field, user.username
           fill_element :password_field, user.password
           click_element :sign_in_button
+
+          Support::WaitForRequests.wait_for_requests
 
           Page::Main::Terms.perform do |terms|
             terms.accept_terms if terms.visible?

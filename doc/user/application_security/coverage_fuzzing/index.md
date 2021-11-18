@@ -70,7 +70,7 @@ my_fuzz_target:
     - ./gitlab-cov-fuzz run --regression=$REGRESSION -- <your fuzz target>
 ```
 
-The included template makes available the [hidden job](../../../ci/yaml/index.md#hide-jobs)
+The included template makes available the [hidden job](../../../ci/jobs/index.md#hide-jobs)
 `.fuzz_base`, which you must [extend](../../../ci/yaml/index.md#extends) for each of your fuzz
 targets. Each fuzz target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
@@ -146,7 +146,7 @@ corpus.
 
 ### Reports JSON format
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.3 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha).
 
 The `gitlab-cov-fuzz` tool emits a JSON report file. For more information, see the
 [schema for this report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

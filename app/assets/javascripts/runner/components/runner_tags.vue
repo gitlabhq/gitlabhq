@@ -14,13 +14,19 @@ export default {
     size: {
       type: String,
       required: false,
-      default: 'md',
+      default: 'sm',
     },
   },
 };
 </script>
 <template>
   <div>
-    <runner-tag v-for="tag in tagList" :key="tag" :tag="tag" :size="size" />
+    <runner-tag
+      v-for="tag in tagList"
+      :key="tag"
+      class="gl-display-inline gl-mr-1"
+      :tag="tag"
+      :size="size"
+    />
   </div>
 </template>

@@ -1,9 +1,11 @@
+import { parseBoolean } from '~/lib/utils/common_utils';
+
 export default (initialState = {}) => ({
   ancestorHelperPath: initialState.ancestorHelpPath,
   endpoint: initialState.endpoint,
   hasAncestorClusters: false,
   clusters: [],
-  clustersPerPage: 0,
+  clustersPerPage: 20,
   loadingClusters: true,
   loadingNodes: true,
   page: 1,
@@ -12,5 +14,6 @@ export default (initialState = {}) => ({
     default: { path: initialState.imgTagsDefaultPath, text: initialState.imgTagsDefaultText },
     gcp: { path: initialState.imgTagsGcpPath, text: initialState.imgTagsGcpText },
   },
-  totalCulsters: 0,
+  totalClusters: 0,
+  canAddCluster: parseBoolean(initialState.canAddCluster),
 });

@@ -16,6 +16,7 @@ module Types
     mount_mutation Mutations::AlertManagement::HttpIntegration::ResetToken
     mount_mutation Mutations::AlertManagement::HttpIntegration::Destroy
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSast
+    mount_mutation Mutations::Security::CiConfiguration::ConfigureSastIac
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSecretDetection
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Create
     mount_mutation Mutations::AlertManagement::PrometheusIntegration::Update
@@ -48,6 +49,7 @@ module Types
     mount_mutation Mutations::Environments::CanaryIngress::Update
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
+    mount_mutation Mutations::Issues::SetCrmContacts
     mount_mutation Mutations::Issues::SetConfidential
     mount_mutation Mutations::Issues::SetLocked
     mount_mutation Mutations::Issues::SetDueDate
@@ -63,12 +65,10 @@ module Types
     mount_mutation Mutations::MergeRequests::SetLocked
     mount_mutation Mutations::MergeRequests::SetMilestone
     mount_mutation Mutations::MergeRequests::SetSubscription
-    mount_mutation Mutations::MergeRequests::SetWip,
-                   calls_gitaly: true,
-                   deprecated: { reason: 'Use mergeRequestSetDraft', milestone: '13.12' }
     mount_mutation Mutations::MergeRequests::SetDraft, calls_gitaly: true
     mount_mutation Mutations::MergeRequests::SetAssignees
     mount_mutation Mutations::MergeRequests::ReviewerRereview
+    mount_mutation Mutations::MergeRequests::ToggleAttentionRequested, feature_flag: :mr_attention_requests
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Create
     mount_mutation Mutations::Metrics::Dashboard::Annotations::Delete
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true

@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
   let(:conflict_error) { Class.new(RuntimeError) }
-  let(:db_host) { ActiveRecord::Base.connection_pool.db_config.host }
+  let(:model) { ActiveRecord::Base }
+  let(:db_host) { model.connection_pool.db_config.host }
   let(:config) do
     Gitlab::Database::LoadBalancing::Configuration
-      .new(ActiveRecord::Base, [db_host, db_host])
+      .new(model, [db_host, db_host])
   end
 
   let(:lb) { described_class.new(config) }
@@ -88,10 +89,25 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       host = double(:host)
 
       allow(lb).to receive(:host).and_return(host)
+      allow(Rails.application.executor).to receive(:active?).and_return(true)
       allow(host).to receive(:query_cache_enabled).and_return(false)
       allow(host).to receive(:connection).and_return(connection)
 
       expect(host).to receive(:enable_query_cache!).once
+
+      lb.read { 10 }
+    end
+
+    it 'does not enable query cache when outside Rails executor context' do
+      connection = double(:connection)
+      host = double(:host)
+
+      allow(lb).to receive(:host).and_return(host)
+      allow(Rails.application.executor).to receive(:active?).and_return(false)
+      allow(host).to receive(:query_cache_enabled).and_return(false)
+      allow(host).to receive(:connection).and_return(connection)
+
+      expect(host).not_to receive(:enable_query_cache!)
 
       lb.read { 10 }
     end
@@ -216,7 +232,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
 
     it 'does not create conflicts with other load balancers when caching hosts' do
       ci_config = Gitlab::Database::LoadBalancing::Configuration
-        .new(Ci::CiDatabaseRecord, [db_host, db_host])
+        .new(Ci::ApplicationRecord, [db_host, db_host])
 
       lb1 = described_class.new(config)
       lb2 = described_class.new(ci_config)
@@ -457,6 +473,86 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
       end
 
       lb.disconnect!(timeout: 30)
+    end
+  end
+
+  describe '#get_write_location' do
+    it 'returns a string' do
+      expect(lb.send(:get_write_location, lb.pool.connection))
+        .to be_a(String)
+    end
+
+    it 'returns nil if there are no results' do
+      expect(lb.send(:get_write_location, double(select_all: []))).to be_nil
+    end
+  end
+
+  describe 'primary connection re-use', :reestablished_active_record_base do
+    let(:model) { Ci::ApplicationRecord }
+
+    around do |example|
+      if Gitlab::Database.has_config?(:ci)
+        example.run
+      else
+        # fake additional Database
+        model.establish_connection(
+          ActiveRecord::DatabaseConfigurations::HashConfig.new(Rails.env, 'ci', ActiveRecord::Base.connection_db_config.configuration_hash)
+        )
+
+        example.run
+
+        # Cleanup connection_specification_name for Ci::ApplicationRecord
+        model.remove_connection
+      end
+    end
+
+    describe '#read' do
+      it 'returns ci replica connection' do
+        expect { |b| lb.read(&b) }.to yield_with_args do |args|
+          expect(args.pool.db_config.name).to eq('ci_replica')
+        end
+      end
+
+      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+        it 'returns ci replica connection' do
+          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+          expect { |b| lb.read(&b) }.to yield_with_args do |args|
+            expect(args.pool.db_config.name).to eq('ci_replica')
+          end
+        end
+      end
+    end
+
+    describe '#read_write' do
+      it 'returns Ci::ApplicationRecord connection' do
+        expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
+          expect(args.pool.db_config.name).to eq('ci')
+        end
+      end
+
+      context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+        it 'returns ActiveRecord::Base connection' do
+          stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+          expect { |b| lb.read_write(&b) }.to yield_with_args do |args|
+            expect(args.pool.db_config.name).to eq('main')
+          end
+        end
+      end
+    end
+  end
+
+  describe '#wal_diff' do
+    it 'returns the diff between two write locations' do
+      loc1 = lb.send(:get_write_location, lb.pool.connection)
+
+      create(:user) # This ensures we get a new WAL location
+
+      loc2 = lb.send(:get_write_location, lb.pool.connection)
+      diff = lb.wal_diff(loc2, loc1)
+
+      expect(diff).to be_positive
     end
   end
 end

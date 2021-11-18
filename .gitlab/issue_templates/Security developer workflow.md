@@ -12,7 +12,7 @@ Set the title to: `Description of the original issue`
 - [ ] Make sure the issue really needs to follow the security release workflow.
   - Verify if the issue you're working on `gitlab-org/gitlab` is confidential, if it's public fix should be placed on GitLab canonical and no backports are required.
   - If the issue you're fixing doesn't appear to be something that can be exploited by a malicious person and is instead simply a security enhancement do not hesitate to ping `@gitlab-com/gl-security/appsec` to discuss if the issue can be fixed in the canonical repository.
-- [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it on the topic of the `#releases` Slack channel. This issue
+- [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it [here](https://gitlab.com/gitlab-org/gitlab/-/issues?sort=created_date&state=opened&label_name[]=upcoming+security+release). This issue
 MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.

@@ -10,13 +10,17 @@ module Gitlab
               uncached_data.deep_stringify_keys.dig(*key_path.split('.'))
             end
 
-            def add_metric(metric, time_frame: 'none')
+            def add_metric(metric, time_frame: 'none', options: {})
               metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
-              metric_class.new(time_frame: time_frame).suggested_name
+              metric_class.new(time_frame: time_frame, options: options).suggested_name
             end
 
             private
+
+            def instrumentation_metrics
+              ::Gitlab::UsageDataMetrics.suggested_names
+            end
 
             def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)
               Gitlab::Usage::Metrics::NameSuggestion.for(:count, column: column, relation: relation)

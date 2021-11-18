@@ -43,7 +43,7 @@ module BoardsHelper
 
   def build_issue_link_base
     if board.group_board?
-      "#{group_path(@board.group)}/:project_path/issues"
+      "/:project_path/-/issues"
     else
       project_issues_path(@project)
     end

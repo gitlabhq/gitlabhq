@@ -62,7 +62,7 @@ RSpec.describe Dashboard::TodosController do
         create(:issue, project: project, assignees: [user])
         group_2 = create(:group)
         group_2.add_owner(user)
-        project_2 = create(:project)
+        project_2 = create(:project, namespace: user.namespace)
         project_2.add_developer(user)
         merge_request_2 = create(:merge_request, source_project: project_2)
         create(:todo, project: project, author: author, user: user, target: merge_request_2)

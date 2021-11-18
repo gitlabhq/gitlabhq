@@ -37,7 +37,7 @@ export default {
     },
     primaryProps() {
       return {
-        text: s__('Delete account'),
+        text: __('Delete account'),
         attributes: [
           { variant: 'danger', 'data-qa-selector': 'confirm_delete_account_button' },
           { category: 'primary' },
@@ -47,7 +47,7 @@ export default {
     },
     cancelProps() {
       return {
-        text: s__('Cancel'),
+        text: __('Cancel'),
       };
     },
     canSubmit() {

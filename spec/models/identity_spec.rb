@@ -118,19 +118,19 @@ RSpec.describe Identity do
 
         it 'if extern_uid changes' do
           expect(ldap_identity).not_to receive(:ensure_normalized_extern_uid)
-          ldap_identity.save
+          ldap_identity.save!
         end
 
         it 'if current_uid is nil' do
           expect(ldap_identity).to receive(:ensure_normalized_extern_uid)
 
-          ldap_identity.update(extern_uid: nil)
+          ldap_identity.update!(extern_uid: nil)
 
           expect(ldap_identity.extern_uid).to be_nil
         end
 
         it 'if extern_uid changed and not nil' do
-          ldap_identity.update(extern_uid: 'uid=john1,ou=PEOPLE,dc=example,dc=com')
+          ldap_identity.update!(extern_uid: 'uid=john1,ou=PEOPLE,dc=example,dc=com')
 
           expect(ldap_identity.extern_uid).to eq 'uid=john1,ou=people,dc=example,dc=com'
         end
@@ -150,7 +150,7 @@ RSpec.describe Identity do
 
             expect(user.user_synced_attributes_metadata.provider).to eq 'ldapmain'
 
-            ldap_identity.destroy
+            ldap_identity.destroy!
 
             expect(user.reload.user_synced_attributes_metadata).to be_nil
           end
@@ -162,7 +162,7 @@ RSpec.describe Identity do
 
             expect(user.user_synced_attributes_metadata.provider).to eq 'other'
 
-            ldap_identity.destroy
+            ldap_identity.destroy!
 
             expect(user.reload.user_synced_attributes_metadata.provider).to eq 'other'
           end

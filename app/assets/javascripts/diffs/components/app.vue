@@ -44,6 +44,7 @@ import {
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
 
+import { discussionIntersectionObserverHandlerFactory } from '../utils/discussions';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
@@ -85,6 +86,9 @@ export default {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
     ALERT_COLLAPSED_FILES,
+  },
+  provide: {
+    discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
   },
   props: {
     endpoint: {
@@ -392,8 +396,6 @@ export default {
     diffsApp.instrument();
   },
   created() {
-    this.mergeRequestContainers = document.querySelectorAll('.merge-request-container');
-
     this.adjustView();
     this.subscribeToEvents();
 
@@ -521,13 +523,6 @@ export default {
       } else {
         this.removeEventListeners();
       }
-
-      if (!this.isFluidLayout && this.glFeatures.mrChangesFluidLayout) {
-        this.mergeRequestContainers.forEach((el) => {
-          el.classList.toggle('limit-container-width', !this.shouldShow);
-          el.classList.toggle('container-limited', !this.shouldShow);
-        });
-      }
     },
     setEventListeners() {
       Mousetrap.bind(keysFor(MR_PREVIOUS_FILE_IN_DIFF), () => this.jumpToFile(-1));
@@ -579,7 +574,7 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
-        this.scrollToFile(this.diffFiles[targetIndex].file_path);
+        this.scrollToFile({ path: this.diffFiles[targetIndex].file_path });
       }
     },
     setTreeDisplay() {

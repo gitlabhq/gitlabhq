@@ -11,8 +11,8 @@ module Gitlab
         # We use bulk_insert here so we can bypass any queries executed by
         # callbacks or validation rules, as doing this wouldn't scale when
         # importing very large projects.
-        result = Gitlab::Database.main # rubocop:disable Gitlab/BulkInsert
-                 .bulk_insert(relation.table_name, [attributes], return_ids: true)
+        result = ApplicationRecord # rubocop:disable Gitlab/BulkInsert
+                 .legacy_bulk_insert(relation.table_name, [attributes], return_ids: true)
 
         result.first
       end

@@ -7,3 +7,5 @@
 /tmp/
 /vendor/
 /sitespeed-result/
+/fixtures/**/*.graphql
+spec/fixtures/**/*.graphql

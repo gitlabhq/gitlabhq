@@ -10,7 +10,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
@@ -43,6 +42,7 @@ describe('DropdownContentsLabelsView', () => {
     initialState = mockConfig,
     queryHandler = successfulQueryHandler,
     injected = {},
+    searchKey = '',
   } = {}) => {
     const mockApollo = createMockApollo([[projectLabelsQuery, queryHandler]]);
 
@@ -56,7 +56,9 @@ describe('DropdownContentsLabelsView', () => {
       propsData: {
         ...initialState,
         localSelectedLabels,
-        issuableType: IssuableType.Issue,
+        searchKey,
+        labelCreateType: 'project',
+        workspaceType: 'project',
       },
       stubs: {
         GlSearchBoxByType,
@@ -68,7 +70,6 @@ describe('DropdownContentsLabelsView', () => {
     wrapper.destroy();
   });
 
-  const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findLabels = () => wrapper.findAllComponents(LabelItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -81,12 +82,6 @@ describe('DropdownContentsLabelsView', () => {
   }
 
   describe('when loading labels', () => {
-    it('renders disabled search input field', async () => {
-      createComponent();
-      await makeObserverAppear();
-      expect(findSearchInput().props('disabled')).toBe(true);
-    });
-
     it('renders loading icon', async () => {
       createComponent();
       await makeObserverAppear();
@@ -105,10 +100,6 @@ describe('DropdownContentsLabelsView', () => {
       createComponent();
       await makeObserverAppear();
       await waitForPromises();
-    });
-
-    it('renders enabled search input field', async () => {
-      expect(findSearchInput().props('disabled')).toBe(false);
     });
 
     it('does not render loading icon', async () => {
@@ -132,9 +123,9 @@ describe('DropdownContentsLabelsView', () => {
           },
         },
       }),
+      searchKey: '123',
     });
     await makeObserverAppear();
-    findSearchInput().vm.$emit('input', '123');
     await waitForPromises();
     await nextTick();
 

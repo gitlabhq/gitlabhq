@@ -23,11 +23,11 @@ describe('RunnerTypeAlert', () => {
   });
 
   describe.each`
-    type             | exampleText                                                            | anchor                 | variant
-    ${INSTANCE_TYPE} | ${'This runner is available to all groups and projects'}               | ${'#shared-runners'}   | ${'success'}
-    ${GROUP_TYPE}    | ${'This runner is available to all projects and subgroups in a group'} | ${'#group-runners'}    | ${'success'}
-    ${PROJECT_TYPE}  | ${'This runner is associated with one or more projects'}               | ${'#specific-runners'} | ${'info'}
-  `('When it is an $type level runner', ({ type, exampleText, anchor, variant }) => {
+    type             | exampleText                                                            | anchor
+    ${INSTANCE_TYPE} | ${'This runner is available to all groups and projects'}               | ${'#shared-runners'}
+    ${GROUP_TYPE}    | ${'This runner is available to all projects and subgroups in a group'} | ${'#group-runners'}
+    ${PROJECT_TYPE}  | ${'This runner is associated with one or more projects'}               | ${'#specific-runners'}
+  `('When it is an $type level runner', ({ type, exampleText, anchor }) => {
     beforeEach(() => {
       createComponent({ props: { type } });
     });
@@ -36,8 +36,8 @@ describe('RunnerTypeAlert', () => {
       expect(wrapper.text()).toMatch(exampleText);
     });
 
-    it(`Shows a ${variant} variant`, () => {
-      expect(findAlert().props('variant')).toBe(variant);
+    it(`Shows an "info" variant`, () => {
+      expect(findAlert().props('variant')).toBe('info');
     });
 
     it(`Links to anchor "${anchor}"`, () => {

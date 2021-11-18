@@ -193,13 +193,19 @@ PostgreSQL introduced significant improvements for partitioning in [version 12](
 - Bulk load (`COPY`) now uses bulk inserts instead of inserting one row at a time;
 
 To leverage these features and performance improvements, we need to use PostgreSQL 12 from the start.
+GitLab 14.0 and later [ships with PostgreSQL 12](../../../administration/package_information/postgresql_versions.md)
+for self-managed instances. Customers not able to upgrade to PostgreSQL 12 have two options:
 
-GitLab currently ships with PostgreSQL 11 for self-managed instances. That is _likely_ to change in 14.0, with PostgreSQL 12 becoming the minimum required version, which will likely happen before the upgraded registry becomes available for self-managed instances. If not, self-managed instances will have two options:
+- Administrators can manually provision and configure a separate PostgreSQL 12 database for the
+  registry. This lets you benefit from the features provided by the new registry and its metadata
+  database.
+- If online garbage collection isn't a concern or provisioning a separate database isn't possible,
+  continue to use the current registry without the database. GitLab supports the current version
+  with security backports and bug fixes.
 
-1. Administrators can manually provision and configure a separate PostgreSQL 12 database for the registry, allowing them to benefit from features provided by the new registry and its metadata database.
-1. Continue to use the current registry without the database if online garbage collection is not a concern or provisioning a separate database is not possible. We will continue supporting the current version with security backports and bug fixes for the foreseeable feature.
-
-It's important to note that apart from online garbage collection, the metadata database's availability will unblock the implementation of many requested features for the GitLab Container Registry, which will only be available for instances using the new version backed by the metadata database.
+Apart from online garbage collection, the metadata database's availability unblocks the
+implementation of many requested features for the GitLab Container Registry. These features are only
+available for instances using the new version backed by the metadata database.
 
 ### Availability
 

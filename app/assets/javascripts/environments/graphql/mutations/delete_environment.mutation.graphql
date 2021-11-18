@@ -1,0 +1,5 @@
+mutation deleteEnvironment($environment: LocalEnvironment) {
+  deleteEnvironment(environment: $environment) @client {
+    errors
+  }
+}

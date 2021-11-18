@@ -45,11 +45,11 @@ module QA
 
               opts[:subdomain] = case option[:subdomain]
                                  when Array
-                                   "(#{option[:subdomain].join("|")})."
+                                   "(#{option[:subdomain].join("|")})\\."
                                  when Regexp
                                    option[:subdomain]
                                  else
-                                   "(#{option[:subdomain]})."
+                                   "(#{option[:subdomain]})\\."
                                  end
             end
           end

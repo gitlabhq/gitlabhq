@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238953', type: :flaky } do
+    context 'Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster do
       # Variables shared between contexts. They're used and shared between
       # contexts so they can't be `let` variables.
       praefect_manager = Service::PraefectManager.new

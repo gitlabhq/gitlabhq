@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     context 'Gitaly' do
-      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/322647', type: :flaky } do
+      describe 'Backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env do
         let(:praefect_manager) { Service::PraefectManager.new }
         let(:project) do
           Resource::Project.fabricate! do |project|
@@ -31,14 +31,6 @@ module QA
           praefect_manager.stop_primary_node
           praefect_manager.wait_for_gitaly_check
 
-          # Confirm that we have access to the repo after failover
-          Support::Waiter.wait_until(retry_on_exception: true, sleep_interval: 5) do
-            Resource::Repository::Commit.fabricate_via_api! do |commits|
-              commits.project = project
-              commits.sha = project.default_branch
-            end
-          end
-
           # Push a commit to the new primary
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
@@ -57,6 +49,11 @@ module QA
 
           # Wait for automatic replication
           praefect_manager.wait_for_replication(project.id)
+
+          # Force switch to the old primary node
+          # This ensures that the commit was replicated
+          praefect_manager.stop_secondary_node
+          praefect_manager.stop_tertiary_node
 
           # Confirm that both commits are available
           expect(project.commits.map { |commit| commit[:message].chomp })

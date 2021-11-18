@@ -41,13 +41,21 @@ gitlab_git_test:
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
 
-no_ee_check:
+no-ee-check:
   extends:
     - .minimal-job
-    - .setup:rules:no_ee_check
+    - .setup:rules:no-ee-check
   stage: test
   script:
-    - scripts/no-ee-check
+    - scripts/no-dir-check ee
+
+no-jh-check:
+  extends:
+    - .minimal-job
+    - .setup:rules:no-jh-check
+  stage: test
+  script:
+    - scripts/no-dir-check jh
 
 verify-tests-yml:
   extends:
@@ -102,6 +110,23 @@ detect-tests as-if-foss:
   before_script:
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
 
+detect-previous-failed-tests:
+  extends:
+    - .detect-test-base
+    - .rails:rules:detect-previous-failed-tests
+  variables:
+    PREVIOUS_FAILED_TESTS_DIR: tmp/previous_failed_tests/
+    RSPEC_PG_REGEX: /rspec .+ pg12( .+)?/
+    RSPEC_EE_PG_REGEX: /rspec-ee .+ pg12( .+)?/
+  script:
+    - source ./scripts/utils.sh
+    - source ./scripts/rspec_helpers.sh
+    - retrieve_previous_failed_tests ${PREVIOUS_FAILED_TESTS_DIR} "${RSPEC_PG_REGEX}" "${RSPEC_EE_PG_REGEX}"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - ${PREVIOUS_FAILED_TESTS_DIR}
+
 add-jh-folder:
   extends: .setup:rules:add-jh-folder
   image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
@@ -112,6 +137,7 @@ add-jh-folder:
     - curl --location -o "jh-folder.tar.gz" "https://gitlab.com/gitlab-jh/gitlab/-/archive/main-jh/gitlab-main-jh.tar.gz?path=jh"
     - tar -xf "jh-folder.tar.gz"
     - mv gitlab-main-jh-jh/jh/ ./
+    - cp Gemfile.lock jh/
     - ls -l jh/
   artifacts:
     expire_in: 2d

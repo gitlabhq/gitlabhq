@@ -1,0 +1,4 @@
+= javascript_tag(nonce: content_security_policy_nonce) do
+  :plain
+    gl = window.gl || {};
+    gl.experiments = #{raw ApplicationExperiment.published_experiments.reject { |name, data| data[:excluded] }.to_json};

@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ApplicationRecord
-      VERSION = '0.31.0'
+      VERSION = '0.34.0'
 
       self.table_name = 'clusters_applications_runners'
 
@@ -70,7 +70,7 @@ module Clusters
         }
 
         if cluster.group_type?
-          attributes[:groups] = [group]
+          attributes[:runner_namespaces] = [::Ci::RunnerNamespace.new(namespace: group)]
         elsif cluster.project_type?
           attributes[:runner_projects] = [::Ci::RunnerProject.new(project: project)]
         end

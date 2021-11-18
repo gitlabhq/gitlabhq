@@ -4,9 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Partitioning::PartitionMonitoring do
   describe '#report_metrics' do
-    subject { described_class.new(models).report_metrics }
+    subject { described_class.new.report_metrics_for_model(model) }
 
-    let(:models) { [model] }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table) }
     let(:partitioning_strategy) { double(missing_partitions: missing_partitions, current_partitions: current_partitions, extra_partitions: extra_partitions) }
     let(:table) { "some_table" }

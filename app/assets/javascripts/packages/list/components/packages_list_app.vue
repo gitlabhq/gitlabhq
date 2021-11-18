@@ -7,6 +7,8 @@ import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import InfrastructureTitle from '~/packages_and_registries/infrastructure_registry/components/infrastructure_title.vue';
+import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/components/infrastructure_search.vue';
 import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '../constants';
 import PackageList from './packages_list.vue';
 
@@ -16,28 +18,10 @@ export default {
     GlLink,
     GlSprintf,
     PackageList,
-    PackageTitle: () =>
-      import(/* webpackChunkName: 'package_registry_components' */ './package_title.vue'),
-    PackageSearch: () =>
-      import(/* webpackChunkName: 'package_registry_components' */ './package_search.vue'),
-    InfrastructureTitle: () =>
-      import(
-        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_title.vue'
-      ),
-    InfrastructureSearch: () =>
-      import(
-        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_search.vue'
-      ),
+    InfrastructureTitle,
+    InfrastructureSearch,
   },
   inject: {
-    titleComponent: {
-      from: 'titleComponent',
-      default: 'PackageTitle',
-    },
-    searchComponent: {
-      from: 'searchComponent',
-      default: 'PackageSearch',
-    },
     emptyPageTitle: {
       from: 'emptyPageTitle',
       default: s__('PackageRegistry|There are no packages yet'),
@@ -111,8 +95,8 @@ export default {
 
 <template>
   <div>
-    <component :is="titleComponent" :help-url="packageHelpUrl" :count="packagesCount" />
-    <component :is="searchComponent" @update="requestPackagesList" />
+    <infrastructure-title :help-url="packageHelpUrl" :count="packagesCount" />
+    <infrastructure-search @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
       <template #empty-state>

@@ -61,7 +61,7 @@ To enable 2FA:
       - [Authenticator](https://mattrubin.me/authenticator/)
       - [andOTP](https://github.com/andOTP/andOTP)
       - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en)
-      - [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator)
+      - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app)
       - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp)
    1. In the application, add a new entry in one of two ways:
       - Scan the code presented in GitLab with your device's camera to add the
@@ -237,6 +237,9 @@ Feature.disable(:forti_token_cloud, User.find(<user ID>))
 GitLab officially only supports [YubiKey](https://www.yubico.com/products/)
 U2F devices, but users have successfully used [SoloKeys](https://solokeys.com/)
 or [Google Titan Security Key](https://cloud.google.com/titan-security-key).
+
+NOTE:
+2FA must be configured before U2F.
 
 The U2F workflow is [supported by](https://caniuse.com/#search=U2F) the
 following desktop browsers:

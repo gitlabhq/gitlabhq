@@ -7,7 +7,7 @@ type: reference
 
 # Rate limits on raw endpoints **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30829) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30635) in GitLab 12.2.
 
 This setting defaults to `300` requests per minute, and allows you to rate limit the requests to raw endpoints:
 
@@ -21,7 +21,7 @@ For example, requests over `300` per minute to `https://gitlab.com/gitlab-org/gi
 
 This limit is:
 
-- Applied independently per project, per commit and per file path.
+- Applied independently per project, per file path.
 - Not applied per IP address.
 - Active by default. To disable, set the option to `0`.
 

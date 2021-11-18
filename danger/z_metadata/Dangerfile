@@ -1,0 +1,39 @@
+# frozen_string_literal: true
+
+# rubocop:disable Style/SignalException
+
+DEFAULT_BRANCH = 'master'
+
+TYPE_LABELS = [
+  'type::feature',
+  'feature::addition',
+  'type::maintenance',
+  'type::tooling',
+  'tooling::pipelines',
+  'tooling::workflow',
+  'type::bug'
+].freeze
+
+if gitlab.mr_body.size < 5
+  fail "Please provide a proper merge request description."
+end
+
+if (TYPE_LABELS & (gitlab.mr_labels + project_helper.labels_to_add)).empty?
+  warn 'Please add a [merge request type](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification) to this merge request.'
+end
+
+unless gitlab.mr_json["assignee"]
+  warn "This merge request does not have any assignee yet. Setting an assignee clarifies who needs to take action on the merge request at any given time."
+end
+
+has_milestone = !gitlab.mr_json["milestone"].nil?
+
+unless has_milestone || (helper.security_mr? && gitlab.branch_for_base == DEFAULT_BRANCH)
+  warn "This merge request does not refer to an existing milestone.", sticky: false
+end
+
+has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('Pick into') }
+
+if gitlab.branch_for_base != DEFAULT_BRANCH && !has_pick_into_stable_label && !helper.security_mr?
+  warn "Most of the time, merge requests should target `#{DEFAULT_BRANCH}`. Otherwise, please set the relevant `Pick into X.Y` label."
+end

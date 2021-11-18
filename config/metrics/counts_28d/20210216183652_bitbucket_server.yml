@@ -8,7 +8,7 @@ product_group: group::import
 product_category: importers
 value_type: number
 status: active
-time_frame: all
+time_frame: 28d
 data_source: database
 distribution:
 - ce

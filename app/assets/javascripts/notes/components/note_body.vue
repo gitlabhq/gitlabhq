@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 
@@ -18,6 +19,9 @@ export default {
     noteAttachment,
     noteForm,
     Suggestions,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [autosave],
   props: {
@@ -144,6 +148,9 @@ export default {
       this.removeSuggestionInfoFromBatch(suggestionId);
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji'],
+  },
 };
 </script>
 
@@ -163,11 +170,7 @@ export default {
       @addToBatch="addSuggestionToBatch"
       @removeFromBatch="removeSuggestionFromBatch"
     />
-    <div
-      v-else
-      class="note-text md"
-      v-html="note.note_html /* eslint-disable-line vue/no-v-html */"
-    ></div>
+    <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
     <note-form
       v-if="isEditing"
       ref="noteForm"

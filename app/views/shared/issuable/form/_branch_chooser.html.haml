@@ -23,7 +23,7 @@
       = html_escape(_('From %{code_open}%{source_title}%{code_close} into')) % { source_title: source_title, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
 
     - if issuable.new_record?
-      %code#js-target-branch-title= target_title
+      %code#js-target-branch-title{ data: { branch_name: @merge_request.target_branch } }= target_title
       &nbsp;
       = link_to _('Change branches'), mr_change_branches_path(issuable)
     - elsif issuable.for_fork?

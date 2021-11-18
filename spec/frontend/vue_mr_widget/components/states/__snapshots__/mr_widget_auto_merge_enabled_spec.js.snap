@@ -50,7 +50,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is disabled template should have 
         <span
           class="gl-mr-3"
         >
-          The source branch will not be deleted
+          Does not delete the source branch
         </span>
          
         <gl-button-stub
@@ -122,7 +122,7 @@ exports[`MRWidgetAutoMergeEnabled when graphql is enabled template should have c
         <span
           class="gl-mr-3"
         >
-          The source branch will not be deleted
+          Does not delete the source branch
         </span>
          
         <gl-button-stub

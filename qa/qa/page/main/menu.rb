@@ -4,6 +4,8 @@ module QA
   module Page
     module Main
       class Menu < Page::Base
+        prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
+
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
           element :sign_out_link
           element :edit_profile_link
@@ -12,12 +14,12 @@ module QA
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar, required: true
           element :canary_badge_link
-          element :user_avatar, required: true
-          element :user_menu, required: true
+          element :user_avatar, required: !QA::Runtime::Env.mobile_layout?
+          element :user_menu, required: !QA::Runtime::Env.mobile_layout?
           element :stop_impersonation_link
-          element :issues_shortcut_button, required: true
-          element :merge_requests_shortcut_button, required: true
-          element :todos_shortcut_button, required: true
+          element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+          element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+          element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
@@ -98,10 +100,14 @@ module QA
         end
 
         def signed_in?
+          return false if Page::Main::Login.perform(&:on_login_page?)
+
           has_personal_area?(wait: 0)
         end
 
         def not_signed_in?
+          return true if Page::Main::Login.perform(&:on_login_page?)
+
           has_no_personal_area?
         end
 
@@ -115,7 +121,7 @@ module QA
               click_element :sign_out_link
             end
 
-            has_no_element?(:user_avatar)
+            not_signed_in?
           end
         end
 

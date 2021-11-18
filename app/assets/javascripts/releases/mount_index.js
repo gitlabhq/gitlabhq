@@ -24,7 +24,6 @@ export default () => {
           // the purpose of making separate requests. So we explicitly
           // disable batching on this page.
           batchMax: 1,
-          assumeImmutableResults: true,
         },
       ),
     });

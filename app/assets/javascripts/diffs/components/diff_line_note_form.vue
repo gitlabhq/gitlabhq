@@ -2,6 +2,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '../../notes/components/multiline_comment_form.vue';
 import {
@@ -32,6 +33,11 @@ export default {
       type: Object,
       required: true,
     },
+    range: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     linePosition: {
       type: String,
       required: false,
@@ -49,6 +55,7 @@ export default {
   },
   data() {
     return {
+      lines: null,
       commentLineStart: {
         line_code: this.line.line_code,
         type: this.line.type,
@@ -116,10 +123,8 @@ export default {
       return commentLineOptions(lines, this.line, this.line.line_code, side);
     },
     commentLines() {
-      if (!this.selectedCommentPosition) return [];
-
       const lines = [];
-      const { start, end } = this.selectedCommentPosition;
+      const { start, end } = this.lines;
       const diffLines = this.diffFile[INLINE_DIFF_LINES_KEY];
       let isAdding = false;
 
@@ -144,6 +149,13 @@ export default {
       return lines;
     },
   },
+  created() {
+    if (this.range) {
+      this.lines = { ...this.range };
+    } else if (this.line) {
+      this.lines = { start: this.line, end: this.line };
+    }
+  },
   mounted() {
     if (this.isLoggedIn) {
       const keys = [
@@ -166,16 +178,16 @@ export default {
       'saveDiffDiscussion',
       'setSuggestPopoverDismissed',
     ]),
-    handleCancelCommentForm(shouldConfirm, isDirty) {
+    async handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
 
-        // eslint-disable-next-line no-alert
-        if (!window.confirm(msg)) {
+        const confirmed = await confirmAction(msg);
+
+        if (!confirmed) {
           return;
         }
       }
-
       this.cancelCommentForm({
         lineCode: this.line.line_code,
         fileHash: this.diffFileHash,
@@ -189,6 +201,9 @@ export default {
         this.handleCancelCommentForm(),
       );
     },
+    updateStartLine(line) {
+      this.lines.start = line;
+    },
   },
 };
 </script>
@@ -199,7 +214,9 @@ export default {
       <multiline-comment-form
         v-model="commentLineStart"
         :line="line"
+        :line-range="lines"
         :comment-line-options="commentLineOptions"
+        @input="updateStartLine"
       />
     </div>
     <note-form

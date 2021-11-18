@@ -87,6 +87,17 @@ FactoryBot.define do
       end
     end
 
+    trait :unarchived_trace_artifact do
+      file_type { :trace }
+      file_format { :raw }
+
+      after(:build) do |artifact, evaluator|
+        file = double('file', path: '/path/to/job.log')
+        artifact.file = file
+        allow(artifact.file).to receive(:file).and_return(CarrierWave::SanitizedFile.new(file))
+      end
+    end
+
     trait :junit do
       file_type { :junit }
       file_format { :gzip }

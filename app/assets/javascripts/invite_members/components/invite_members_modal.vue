@@ -1,5 +1,6 @@
 <script>
 import {
+  GlAlert,
   GlFormGroup,
   GlModal,
   GlDropdown,
@@ -11,29 +12,34 @@ import {
   GlFormInput,
   GlFormCheckboxGroup,
 } from '@gitlab/ui';
-import { partition, isString, unescape } from 'lodash';
+import { partition, isString, unescape, uniqueId } from 'lodash';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { sanitize } from '~/lib/dompurify';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import { s__, sprintf } from '~/locale';
+import { getParameterValues } from '~/lib/utils/url_utility';
+import { sprintf } from '~/locale';
 import {
   INVITE_MEMBERS_IN_COMMENT,
   GROUP_FILTERS,
   USERS_FILTER_ALL,
   MEMBER_AREAS_OF_FOCUS,
+  INVITE_MEMBERS_FOR_TASK,
+  MODAL_LABELS,
 } from '../constants';
 import eventHub from '../event_hub';
 import {
   responseMessageFromError,
   responseMessageFromSuccess,
 } from '../utils/response_message_parser';
+import ModalConfetti from './confetti.vue';
 import GroupSelect from './group_select.vue';
 import MembersTokenSelect from './members_token_select.vue';
 
 export default {
   name: 'InviteMembersModal',
   components: {
+    GlAlert,
     GlFormGroup,
     GlDatepicker,
     GlLink,
@@ -46,7 +52,9 @@ export default {
     GlFormCheckboxGroup,
     MembersTokenSelect,
     GroupSelect,
+    ModalConfetti,
   },
+  inject: ['newProjectPath'],
   props: {
     id: {
       type: String,
@@ -100,35 +108,53 @@ export default {
       type: Array,
       required: true,
     },
+    tasksToBeDoneOptions: {
+      type: Array,
+      required: true,
+    },
+    projects: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       visible: true,
-      modalId: 'invite-members-modal',
+      modalId: uniqueId('invite-members-modal-'),
       selectedAccessLevel: this.defaultAccessLevel,
       inviteeType: 'members',
       newUsersToInvite: [],
       selectedDate: undefined,
       selectedAreasOfFocus: [],
+      selectedTasksToBeDone: [],
+      selectedTaskProject: this.projects[0],
       groupToBeSharedWith: {},
       source: 'unknown',
       invalidFeedbackMessage: '',
       isLoading: false,
+      mode: 'default',
     };
   },
   computed: {
+    isCelebration() {
+      return this.mode === 'celebrate';
+    },
     validationState() {
       return this.invalidFeedbackMessage === '' ? null : false;
     },
     isInviteGroup() {
       return this.inviteeType === 'group';
     },
+    modalTitle() {
+      return this.$options.labels[this.inviteeType].modal[this.mode].title;
+    },
     introText() {
-      const inviteTo = this.isProject ? 'toProject' : 'toGroup';
-
-      return sprintf(this.$options.labels[this.inviteeType][inviteTo].introText, {
+      return sprintf(this.$options.labels[this.inviteeType][this.inviteTo][this.mode].introText, {
         name: this.name,
       });
+    },
+    inviteTo() {
+      return this.isProject ? 'toProject' : 'toGroup';
     },
     toastOptions() {
       return {
@@ -156,7 +182,7 @@ export default {
       );
     },
     areasOfFocusEnabled() {
-      return this.areasOfFocusOptions.length !== 0;
+      return !this.tasksToBeDoneEnabled && this.areasOfFocusOptions.length !== 0;
     },
     areasOfFocusForPost() {
       if (this.selectedAreasOfFocus.length === 0 && this.areasOfFocusEnabled) {
@@ -172,12 +198,40 @@ export default {
 
       return this.$options.labels[this.inviteeType].placeHolder;
     },
+    tasksToBeDoneEnabled() {
+      return (
+        getParameterValues('open_modal')[0] === 'invite_members_for_task' &&
+        this.tasksToBeDoneOptions.length
+      );
+    },
+    showTasksToBeDone() {
+      return (
+        this.tasksToBeDoneEnabled &&
+        this.selectedAccessLevel >= INVITE_MEMBERS_FOR_TASK.minimum_access_level
+      );
+    },
+    showTaskProjects() {
+      return !this.isProject && this.selectedTasksToBeDone.length;
+    },
+    tasksToBeDoneForPost() {
+      return this.showTasksToBeDone ? this.selectedTasksToBeDone : [];
+    },
+    tasksProjectForPost() {
+      return this.showTasksToBeDone && this.selectedTasksToBeDone.length
+        ? this.selectedTaskProject.id
+        : '';
+    },
   },
   mounted() {
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
       this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
     });
+
+    if (this.tasksToBeDoneEnabled) {
+      this.openModal({ inviteeType: 'members', source: 'in_product_marketing_email' });
+      this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, INVITE_MEMBERS_FOR_TASK.view);
+    }
   },
   methods: {
     partitionNewUsersToInvite() {
@@ -191,7 +245,8 @@ export default {
         usersToAddById.map((user) => user.id).join(','),
       ];
     },
-    openModal({ inviteeType, source }) {
+    openModal({ mode = 'default', inviteeType, source }) {
+      this.mode = mode;
       this.inviteeType = inviteeType;
       this.source = source;
 
@@ -219,6 +274,12 @@ export default {
 
       this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.submit);
     },
+    trackinviteMembersForTask() {
+      const label = 'selected_tasks_to_be_done';
+      const property = this.selectedTasksToBeDone.join(',');
+      const tracking = new ExperimentTracking(INVITE_MEMBERS_FOR_TASK.name, { label, property });
+      tracking.event(INVITE_MEMBERS_FOR_TASK.submit);
+    },
     resetFields() {
       this.isLoading = false;
       this.selectedAccessLevel = this.defaultAccessLevel;
@@ -227,9 +288,14 @@ export default {
       this.groupToBeSharedWith = {};
       this.invalidFeedbackMessage = '';
       this.selectedAreasOfFocus = [];
+      this.selectedTasksToBeDone = [];
+      [this.selectedTaskProject] = this.projects;
     },
     changeSelectedItem(item) {
       this.selectedAccessLevel = item;
+    },
+    changeSelectedTaskProject(project) {
+      this.selectedTaskProject = project;
     },
     submitShareWithGroup() {
       const apiShareWithGroup = this.isProject
@@ -263,6 +329,7 @@ export default {
         promises.push(apiAddByUserId(this.id, this.addByUserIdPostData(usersToAddById)));
       }
       this.trackInvite();
+      this.trackinviteMembersForTask();
 
       Promise.all(promises)
         .then(this.conditionallyShowToastSuccess)
@@ -275,6 +342,8 @@ export default {
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
         areas_of_focus: this.areasOfFocusForPost,
+        tasks_to_be_done: this.tasksToBeDoneForPost,
+        tasks_project_id: this.tasksProjectForPost,
       };
     },
     addByUserIdPostData(usersToAddById) {
@@ -284,6 +353,8 @@ export default {
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
         areas_of_focus: this.areasOfFocusForPost,
+        tasks_to_be_done: this.tasksToBeDoneForPost,
+        tasks_project_id: this.tasksProjectForPost,
       };
     },
     shareWithGroupPostData(groupToBeSharedWith) {
@@ -322,49 +393,7 @@ export default {
       return unescape(sanitize(message, { ALLOWED_TAGS: [] }));
     },
   },
-  labels: {
-    members: {
-      modalTitle: s__('InviteMembersModal|Invite members'),
-      searchField: s__('InviteMembersModal|GitLab member or email address'),
-      placeHolder: s__('InviteMembersModal|Select members or type email addresses'),
-      toGroup: {
-        introText: s__(
-          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} group.",
-        ),
-      },
-      toProject: {
-        introText: s__(
-          "InviteMembersModal|You're inviting members to the %{strongStart}%{name}%{strongEnd} project.",
-        ),
-      },
-    },
-    group: {
-      modalTitle: s__('InviteMembersModal|Invite a group'),
-      searchField: s__('InviteMembersModal|Select a group to invite'),
-      placeHolder: s__('InviteMembersModal|Search for a group to invite'),
-      toGroup: {
-        introText: s__(
-          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group.",
-        ),
-      },
-      toProject: {
-        introText: s__(
-          "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
-        ),
-      },
-    },
-    accessLevel: s__('InviteMembersModal|Select a role'),
-    accessExpireDate: s__('InviteMembersModal|Access expiration date (optional)'),
-    toastMessageSuccessful: s__('InviteMembersModal|Members were successfully added'),
-    invalidFeedbackMessageDefault: s__('InviteMembersModal|Something went wrong'),
-    readMoreText: s__(`InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions`),
-    inviteButtonText: s__('InviteMembersModal|Invite'),
-    cancelButtonText: s__('InviteMembersModal|Cancel'),
-    headerCloseLabel: s__('InviteMembersModal|Close invite team members'),
-    areasOfFocusLabel: s__(
-      'InviteMembersModal|What would you like new member(s) to focus on? (optional)',
-    ),
-  },
+  labels: MODAL_LABELS,
   membersTokenSelectLabelId: 'invite-members-input',
 };
 </script>
@@ -374,20 +403,29 @@ export default {
     :modal-id="modalId"
     size="sm"
     data-qa-selector="invite_members_modal_content"
-    :title="$options.labels[inviteeType].modalTitle"
+    data-testid="invite-members-modal"
+    :title="modalTitle"
     :header-close-label="$options.labels.headerCloseLabel"
     @hidden="resetFields"
     @close="resetFields"
     @hide="resetFields"
   >
     <div>
-      <p ref="introText">
-        <gl-sprintf :message="introText">
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
-      </p>
+      <div class="gl-display-flex">
+        <div v-if="isCelebration" class="gl-p-4 gl-font-size-h1"><gl-emoji data-name="tada" /></div>
+        <div>
+          <p ref="introText">
+            <gl-sprintf :message="introText">
+              <template #strong="{ content }">
+                <strong>{{ content }}</strong>
+              </template>
+            </gl-sprintf>
+            <br />
+            <span v-if="isCelebration">{{ $options.labels.members.modal.celebrate.intro }} </span>
+            <modal-confetti v-if="isCelebration" />
+          </p>
+        </div>
+      </div>
 
       <gl-form-group
         :invalid-feedback="invalidFeedbackMessage"
@@ -476,24 +514,70 @@ export default {
           data-testid="area-of-focus-checks"
         />
       </div>
+      <div v-if="showTasksToBeDone" data-testid="invite-members-modal-tasks-to-be-done">
+        <label class="gl-mt-5">
+          {{ $options.labels.members.tasksToBeDone.title }}
+        </label>
+        <template v-if="projects.length">
+          <gl-form-checkbox-group
+            v-model="selectedTasksToBeDone"
+            :options="tasksToBeDoneOptions"
+            data-testid="invite-members-modal-tasks"
+          />
+          <template v-if="showTaskProjects">
+            <label class="gl-mt-5 gl-display-block">
+              {{ $options.labels.members.tasksProject.title }}
+            </label>
+            <gl-dropdown
+              class="gl-w-half gl-xs-w-full"
+              :text="selectedTaskProject.title"
+              data-testid="invite-members-modal-project-select"
+            >
+              <template v-for="project in projects">
+                <gl-dropdown-item
+                  :key="project.id"
+                  active-class="is-active"
+                  is-check-item
+                  :is-checked="project.id === selectedTaskProject.id"
+                  @click="changeSelectedTaskProject(project)"
+                >
+                  {{ project.title }}
+                </gl-dropdown-item>
+              </template>
+            </gl-dropdown>
+          </template>
+        </template>
+        <gl-alert
+          v-else-if="tasksToBeDoneEnabled"
+          variant="tip"
+          :dismissible="false"
+          data-testid="invite-members-modal-no-projects-alert"
+        >
+          <gl-sprintf :message="$options.labels.members.tasksToBeDone.noProjects">
+            <template #link="{ content }">
+              <gl-link :href="newProjectPath" target="_blank" class="gl-label-link">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-alert>
+      </div>
     </div>
 
     <template #modal-footer>
-      <div class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0">
-        <gl-button data-testid="cancel-button" @click="closeModal">
-          {{ $options.labels.cancelButtonText }}
-        </gl-button>
-        <div class="gl-mr-3"></div>
-        <gl-button
-          :disabled="inviteDisabled"
-          :loading="isLoading"
-          variant="success"
-          data-qa-selector="invite_button"
-          data-testid="invite-button"
-          @click="sendInvite"
-          >{{ $options.labels.inviteButtonText }}</gl-button
-        >
-      </div>
+      <gl-button data-testid="cancel-button" @click="closeModal">
+        {{ $options.labels.cancelButtonText }}
+      </gl-button>
+      <gl-button
+        :disabled="inviteDisabled"
+        :loading="isLoading"
+        variant="success"
+        data-qa-selector="invite_button"
+        data-testid="invite-button"
+        @click="sendInvite"
+      >
+        {{ $options.labels.inviteButtonText }}
+      </gl-button>
     </template>
   </gl-modal>
 </template>

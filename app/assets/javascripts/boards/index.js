@@ -13,9 +13,10 @@ import FilteredSearchBoards from '~/boards/filtered_search_boards';
 import initBoardsFilteredSearch from '~/boards/mount_filtered_search_issue_boards';
 import store from '~/boards/stores';
 import toggleFocusMode from '~/boards/toggle_focus';
-import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
+import { NavigationType, isLoggedIn, parseBoolean } from '~/lib/utils/common_utils';
 import { fullBoardId } from './boards_util';
 import boardConfigToggle from './config_toggle';
+import initNewBoard from './new_board';
 import { gqlClient } from './graphql';
 import mountMultipleBoardsSwitcher from './mount_multiple_boards_switcher';
 
@@ -109,7 +110,7 @@ export default () => {
   });
 
   if (gon?.features?.issueBoardsFilteredSearch) {
-    initBoardsFilteredSearch(apolloProvider);
+    initBoardsFilteredSearch(apolloProvider, isLoggedIn());
   }
 
   mountBoardApp($boardApp);
@@ -130,6 +131,7 @@ export default () => {
   }
 
   boardConfigToggle();
+  initNewBoard();
 
   toggleFocusMode();
   toggleLabels();
@@ -142,5 +144,7 @@ export default () => {
     fullPath: $boardApp.dataset.fullPath,
     rootPath: $boardApp.dataset.boardsEndpoint,
     recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
+    allowScopedLabels: $boardApp.dataset.scopedLabels,
+    labelsManagePath: $boardApp.dataset.labelsManagePath,
   });
 };

@@ -19,7 +19,13 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         user_id: 'test',
         cf_ray: SecureRandom.hex,
         cf_request_id: SecureRandom.hex,
-        metadata: { 'meta.user' => 'jane.doe' }
+        metadata: { 'meta.user' => 'jane.doe' },
+        request_urgency: :default,
+        target_duration_s: 1,
+        remote_ip: '192.168.1.2',
+        ua: 'Nyxt',
+        queue_duration_s: 0.2,
+        etag_route: '/etag'
       }
     end
 
@@ -63,6 +69,18 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
 
       it 'does not break' do
         expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'trusted payload' do
+      it { is_expected.to include(event_payload.slice(*described_class::KNOWN_PAYLOAD_PARAMS)) }
+
+      context 'payload with rejected fields' do
+        let(:event_payload) { { params: {}, request_urgency: :high, something: 'random', username: nil } }
+
+        it { is_expected.to include({ request_urgency: :high }) }
+        it { is_expected.not_to include({ something: 'random' }) }
+        it { is_expected.not_to include({ username: nil }) }
       end
     end
 

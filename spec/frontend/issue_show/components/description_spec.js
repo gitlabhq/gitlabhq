@@ -114,6 +114,8 @@ describe('Description component', () => {
         dataType: 'issuableType',
         fieldName: 'description',
         selector: '.detail-page-description',
+        onUpdate: expect.any(Function),
+        onSuccess: expect.any(Function),
         onError: expect.any(Function),
         lockVersion: 0,
       });
@@ -147,6 +149,26 @@ describe('Description component', () => {
       return vm.$nextTick().then(() => {
         expect(document.querySelector('.issuable-meta #task_status').textContent.trim()).toBe('');
       });
+    });
+  });
+
+  describe('taskListUpdateStarted', () => {
+    it('emits event to parent', () => {
+      const spy = jest.spyOn(vm, '$emit');
+
+      vm.taskListUpdateStarted();
+
+      expect(spy).toHaveBeenCalledWith('taskListUpdateStarted');
+    });
+  });
+
+  describe('taskListUpdateSuccess', () => {
+    it('emits event to parent', () => {
+      const spy = jest.spyOn(vm, '$emit');
+
+      vm.taskListUpdateSuccess();
+
+      expect(spy).toHaveBeenCalledWith('taskListUpdateSucceeded');
     });
   });
 

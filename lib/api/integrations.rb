@@ -153,7 +153,7 @@ module API
               requires setting[:name], type: setting[:type], desc: setting[:desc]
             end
           end
-          post "#{path}/#{integration_slug.underscore}/trigger" do
+          post "#{path}/#{integration_slug.underscore}/trigger", urgency: :low do
             project = find_project(params[:id])
 
             # This is not accurate, but done to prevent leakage of the project names

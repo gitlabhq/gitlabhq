@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GrapeLogging::Loggers::PerfLogger do
-  let(:mock_request) { OpenStruct.new(env: {}) }
+  let(:mock_request) { double('env', env: {}) }
 
   describe ".parameters" do
     subject { described_class.new.parameters(mock_request, nil) }

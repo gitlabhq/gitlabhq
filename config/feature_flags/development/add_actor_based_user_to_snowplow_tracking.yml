@@ -1,8 +1,0 @@
----
-name: add_actor_based_user_to_snowplow_tracking
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71353
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338150
-milestone: '14.4'
-type: development
-group: group::product intelligence
-default_enabled: false

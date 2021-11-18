@@ -36,6 +36,10 @@ module Gitlab
           def progress
             super(track_name: 'Admin')
           end
+
+          def invite_members?
+            invite_members_for_task_experiment_enabled?
+          end
         end
       end
     end

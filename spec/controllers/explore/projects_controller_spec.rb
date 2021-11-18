@@ -74,6 +74,28 @@ RSpec.describe Explore::ProjectsController do
         end
       end
     end
+
+    describe 'GET #topic' do
+      context 'when topic does not exist' do
+        it 'renders a 404 error' do
+          get :topic, params: { topic_name: 'topic1' }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+      context 'when topic exists' do
+        before do
+          create(:topic, name: 'topic1')
+        end
+
+        it 'renders the template' do
+          get :topic, params: { topic_name: 'topic1' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('topic')
+        end
+      end
+    end
   end
 
   shared_examples "blocks high page numbers" do

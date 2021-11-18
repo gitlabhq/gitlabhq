@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
+<div
+  class="gl-breadcrumbs"
+>
+   
+  <ol
+    class="breadcrumb gl-breadcrumb-list"
+  >
+    <li
+      class="breadcrumb-item gl-breadcrumb-item"
+    >
+      <a
+        class=""
+        href="/"
+        target="_self"
+      >
+        <span>
+          
+        </span>
+         
+        <span
+          class="gl-breadcrumb-separator"
+          data-testid="separator"
+        >
+          <svg
+            aria-hidden="true"
+            class="gl-icon s8"
+            data-testid="angle-right-icon"
+            role="img"
+          >
+            <use
+              href="#angle-right"
+            />
+          </svg>
+        </span>
+      </a>
+    </li>
+    <li
+      class="breadcrumb-item gl-breadcrumb-item"
+    >
+      <a
+        class=""
+        href="#"
+        target="_self"
+      >
+        <span>
+          
+        </span>
+         
+        <!---->
+      </a>
+    </li>
+  </ol>
+</div>
+`;
+
+exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
+<div
+  class="gl-breadcrumbs"
+>
+   
+  <ol
+    class="breadcrumb gl-breadcrumb-list"
+  >
+    <li
+      class="breadcrumb-item gl-breadcrumb-item"
+    >
+      <a
+        class=""
+        href="/"
+        target="_self"
+      >
+        <span>
+          
+        </span>
+         
+        <!---->
+      </a>
+    </li>
+  </ol>
+</div>
+`;

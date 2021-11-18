@@ -14,7 +14,10 @@ module DependencyProxy
       response = Gitlab::HTTP.head(manifest_url, headers: auth_headers.merge(Accept: ACCEPT_HEADERS))
 
       if response.success?
-        success(digest: response.headers['docker-content-digest'], content_type: response.headers['content-type'])
+        success(
+          digest: response.headers[DependencyProxy::Manifest::DIGEST_HEADER],
+          content_type: response.headers['content-type']
+        )
       else
         error(response.body, response.code)
       end

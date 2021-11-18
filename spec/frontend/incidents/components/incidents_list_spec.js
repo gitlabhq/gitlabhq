@@ -78,6 +78,7 @@ describe('Incidents List', () => {
         authorUsernameQuery: '',
         assigneeUsernameQuery: '',
         slaFeatureAvailable: true,
+        canCreateIncident: true,
         ...provide,
       },
       stubs: {
@@ -105,21 +106,23 @@ describe('Incidents List', () => {
 
   describe('empty state', () => {
     const {
-      emptyState: { title, emptyClosedTabTitle, description },
+      emptyState: { title, emptyClosedTabTitle, description, cannotCreateIncidentDescription },
     } = I18N;
 
     it.each`
-      statusFilter | all  | closed | expectedTitle          | expectedDescription
-      ${'all'}     | ${2} | ${1}   | ${title}               | ${description}
-      ${'open'}    | ${2} | ${0}   | ${title}               | ${description}
-      ${'closed'}  | ${0} | ${0}   | ${title}               | ${description}
-      ${'closed'}  | ${2} | ${0}   | ${emptyClosedTabTitle} | ${undefined}
+      statusFilter | all  | closed | expectedTitle          | canCreateIncident | expectedDescription
+      ${'all'}     | ${2} | ${1}   | ${title}               | ${true}           | ${description}
+      ${'open'}    | ${2} | ${0}   | ${title}               | ${true}           | ${description}
+      ${'closed'}  | ${0} | ${0}   | ${title}               | ${true}           | ${description}
+      ${'closed'}  | ${2} | ${0}   | ${emptyClosedTabTitle} | ${true}           | ${undefined}
+      ${'all'}     | ${2} | ${1}   | ${title}               | ${false}          | ${cannotCreateIncidentDescription}
     `(
       `when active tab is $statusFilter and there are $all incidents in total and $closed closed incidents, the empty state
       has title: $expectedTitle and description: $expectedDescription`,
-      ({ statusFilter, all, closed, expectedTitle, expectedDescription }) => {
+      ({ statusFilter, all, closed, expectedTitle, expectedDescription, canCreateIncident }) => {
         mountComponent({
           data: { incidents: { list: [] }, incidentsCount: { all, closed }, statusFilter },
+          provide: { canCreateIncident },
           loading: false,
         });
         expect(findEmptyState().exists()).toBe(true);
@@ -214,6 +217,15 @@ describe('Incidents List', () => {
     it("doesn't show the button when list is empty", () => {
       mountComponent({
         data: { incidents: { list: [] }, incidentsCount: {} },
+        loading: false,
+      });
+      expect(findCreateIncidentBtn().exists()).toBe(false);
+    });
+
+    it("doesn't show the button when user does not have incident creation permissions", () => {
+      mountComponent({
+        data: { incidents: { list: mockIncidents }, incidentsCount: {} },
+        provide: { canCreateIncident: false },
         loading: false,
       });
       expect(findCreateIncidentBtn().exists()).toBe(false);

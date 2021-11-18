@@ -27,7 +27,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
         it 'raises an error if the resource is not accessible to the user' do
           expect { subject }.to raise_error(
             Gitlab::Graphql::Errors::ResourceNotAvailable,
-            "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+            Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
           )
         end
       end
@@ -41,7 +41,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
           it 'raises an error' do
             expect { subject }.to raise_error(
               Gitlab::Graphql::Errors::ResourceNotAvailable,
-              "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+              Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
             )
           end
         end

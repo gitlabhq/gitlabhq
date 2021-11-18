@@ -14,6 +14,9 @@ module Types
       argument :milestone_title, [GraphQL::Types::String],
                 required: false,
                 description: 'Milestone not applied to this issue.'
+      argument :release_tag, [GraphQL::Types::String],
+                required: false,
+                description: "Release tag not associated with the issue's milestone. Ignored when parent is a group."
       argument :author_username, GraphQL::Types::String,
                 required: false,
                 description: "Username of a user who didn't author the issue."

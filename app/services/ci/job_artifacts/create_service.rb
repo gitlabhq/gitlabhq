@@ -19,6 +19,7 @@ module Ci
       def initialize(job)
         @job = job
         @project = job.project
+        @pipeline = job.pipeline if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, @project)
       end
 
       def authorize(artifact_type:, filesize: nil)
@@ -53,7 +54,7 @@ module Ci
 
       private
 
-      attr_reader :job, :project
+      attr_reader :job, :project, :pipeline
 
       def validate_requirements(artifact_type:, filesize:)
         return too_large_error if too_large?(artifact_type, filesize)
@@ -85,34 +86,38 @@ module Ci
         expire_in = params['expire_in'] ||
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
 
-        artifact = Ci::JobArtifact.new(
+        artifact_attributes = {
           job_id: job.id,
           project: project,
-          file: artifacts_file,
-          file_type: params[:artifact_type],
-          file_format: params[:artifact_format],
-          file_sha256: artifacts_file.sha256,
-          expire_in: expire_in)
+          expire_in: expire_in
+        }
+
+        artifact_attributes[:locked] = pipeline.locked if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, project)
+
+        artifact = Ci::JobArtifact.new(
+          artifact_attributes.merge(
+            file: artifacts_file,
+            file_type: params[:artifact_type],
+            file_format: params[:artifact_format],
+            file_sha256: artifacts_file.sha256
+          )
+        )
 
         artifact_metadata = if metadata_file
                               Ci::JobArtifact.new(
-                                job_id: job.id,
-                                project: project,
-                                file: metadata_file,
-                                file_type: :metadata,
-                                file_format: :gzip,
-                                file_sha256: metadata_file.sha256,
-                                expire_in: expire_in)
+                                artifact_attributes.merge(
+                                  file: metadata_file,
+                                  file_type: :metadata,
+                                  file_format: :gzip,
+                                  file_sha256: metadata_file.sha256
+                                )
+                              )
                             end
 
         [artifact, artifact_metadata]
       end
 
       def parse_artifact(artifact)
-        unless Feature.enabled?(:ci_synchronous_artifact_parsing, project, default_enabled: true)
-          return success
-        end
-
         case artifact.file_type
         when 'dotenv' then parse_dotenv_artifact(artifact)
         else success

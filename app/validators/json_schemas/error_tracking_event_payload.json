@@ -1,7 +1,7 @@
 {
   "description": "Error tracking event payload",
   "type": "object",
-  "required": [],
+  "required": ["exception"],
   "properties": {
     "environment": {
       "type": "string"
@@ -14,7 +14,7 @@
     },
     "exception": {
       "type": "object",
-      "required": [],
+      "required": ["values"],
       "properties": {
         "values": {
           "type": "array",
@@ -28,12 +28,6 @@
               "value": {
                 "type": "string"
               },
-              "module": {
-                "type": "string"
-              },
-              "thread_id": {
-                "type": "number"
-              },
               "stacktrace": {
                 "type": "object",
                 "required": [],
@@ -44,9 +38,6 @@
                       "type": "object",
                       "required": [],
                       "properties": {
-                        "project_root": {
-                          "type": "string"
-                        },
                         "abs_path": {
                           "type": "string"
                         },

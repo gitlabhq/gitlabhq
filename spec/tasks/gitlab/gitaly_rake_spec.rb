@@ -67,34 +67,57 @@ RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
         end
 
         it 'calls gmake in the gitaly directory' do
-          expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(Gitlab::Popen).to receive(:popen).with(%w[gmake], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen)
+            .with(%w[which gmake])
+            .and_return(['/usr/bin/gmake', 0])
+          expect(Gitlab::Popen).to receive(:popen)
+            .with(%w[gmake all git], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+            .and_return(['ok', 0])
 
           subject
+        end
+
+        context 'when gmake fails' do
+          it 'aborts process' do
+            expect(Gitlab::Popen).to receive(:popen)
+              .with(%w[which gmake])
+              .and_return(['/usr/bin/gmake', 0])
+            expect(Gitlab::Popen).to receive(:popen)
+              .with(%w[gmake all git], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+              .and_return(['output', 1])
+
+            expect { subject }.to raise_error /Gitaly failed to compile: output/
+          end
         end
       end
 
       context 'gmake is not available' do
         before do
           expect(main_object).to receive(:checkout_or_clone_version)
-          expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
+          expect(Gitlab::Popen).to receive(:popen)
+            .with(%w[which gmake])
+            .and_return(['', 42])
         end
 
         it 'calls make in the gitaly directory' do
-          expect(Gitlab::Popen).to receive(:popen).with(%w[make], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil }).and_return(true)
+          expect(Gitlab::Popen).to receive(:popen)
+            .with(%w[make all git], nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil })
+            .and_return(['output', 0])
 
           subject
         end
 
         context 'when Rails.env is test' do
-          let(:command) { %w[make] }
+          let(:command) { %w[make all git] }
 
           before do
             stub_rails_env('test')
           end
 
           it 'calls make in the gitaly directory with BUNDLE_DEPLOYMENT and GEM_HOME variables' do
-            expect(Gitlab::Popen).to receive(:popen).with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil, "BUNDLE_DEPLOYMENT" => 'false', "GEM_HOME" => Bundler.bundle_path.to_s }).and_return(true)
+            expect(Gitlab::Popen).to receive(:popen)
+              .with(command, nil, { "BUNDLE_GEMFILE" => nil, "RUBYOPT" => nil, "BUNDLE_DEPLOYMENT" => 'false', "GEM_HOME" => Bundler.bundle_path.to_s })
+              .and_return(['/usr/bin/gmake', 0])
 
             subject
           end

@@ -59,6 +59,9 @@ module QA
         }
       end
 
+      # Get import status
+      #
+      # @return [String]
       def import_status
         response = get(Runtime::API::Request.new(api_client, "/bulk_imports/#{import_id}").url)
 
@@ -67,6 +70,15 @@ module QA
         end
 
         parse_body(response)[:status]
+      end
+
+      # Get import details
+      #
+      # @return [Array]
+      def import_details
+        response = get(Runtime::API::Request.new(api_client, "/bulk_imports/#{import_id}/entities").url)
+
+        parse_body(response)
       end
 
       private

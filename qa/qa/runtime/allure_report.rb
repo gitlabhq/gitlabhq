@@ -76,6 +76,15 @@ module QA
           RSpec.configure do |config|
             config.add_formatter(AllureRspecFormatter)
             config.add_formatter(QA::Support::Formatters::AllureMetadataFormatter)
+
+            config.append_after do |example|
+              Allure.add_attachment(
+                name: 'browser.log',
+                source: Capybara.current_session.driver.browser.logs.get(:browser).map(&:to_s).join("\n\n"),
+                type: Allure::ContentType::TXT,
+                test_case: true
+              )
+            end
           end
         end
 

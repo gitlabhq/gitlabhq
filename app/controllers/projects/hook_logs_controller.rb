@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::HookLogsController < Projects::ApplicationController
-  include HooksExecution
+  include ::Integrations::HooksExecution
 
   before_action :authorize_admin_project!
 
@@ -13,6 +13,7 @@ class Projects::HookLogsController < Projects::ApplicationController
   layout 'project_settings'
 
   feature_category :integrations
+  urgency :low, [:retry]
 
   def show
   end

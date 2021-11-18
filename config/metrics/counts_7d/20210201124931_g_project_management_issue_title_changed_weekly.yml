@@ -5,6 +5,7 @@ description: Count of WAU editing an issue title
 product_stage: plan
 product_group: group::project management
 product_category: issue_tracking
+product_section: 'TBD'
 value_type: number
 status: active
 milestone: "13.6"

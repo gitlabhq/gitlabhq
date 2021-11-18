@@ -681,15 +681,15 @@ Overrides use a JSON document, where each type of override is represented by a J
   },
   "body-form":  {
     "form-param1": "value",
-    "form-param1": "value",
+    "form-param2": "value"
   },
   "body-json":  {
     "json-path1": "value",
-    "json-path2": "value",
+    "json-path2": "value"
   },
   "body-xml" :  {
     "xpath1":    "value",
-    "xpath2":    "value",
+    "xpath2":    "value"
   }
 }
 ```
@@ -968,16 +968,16 @@ Follow these steps to view details of a vulnerability:
 
    | Field               | Description                                                                             |
    |:--------------------|:----------------------------------------------------------------------------------------|
-   | Description         | Description of the vulnerability including what was modified.                                   |
+   | Description         | Description of the vulnerability including what was modified.                           |
    | Project             | Namespace and project in which the vulnerability was detected.                          |
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
-   | Request             | The HTTP request that caused the vulnerability.                                                 |
+   | Request             | The HTTP request that caused the vulnerability.                                         |
    | Unmodified Response | Response from an unmodified request. This is what a normal working response looks like. |
-   | Actual Response     | Response received from test request.                                                  |
-   | Evidence            | How we determined a vulnerability occurred.                                                     |
-   | Identifiers         | The DAST API check used to find this vulnerability.                                              |
-   | Severity            | Severity of the vulnerability.                                              |
+   | Actual Response     | Response received from test request.                                                    |
+   | Evidence            | How we determined a vulnerability occurred.                                             |
+   | Identifiers         | The DAST API check used to find this vulnerability.                                     |
+   | Severity            | Severity of the vulnerability.                                                          |
    | Scanner Type        | Scanner used to perform testing.                                                        |
 
 ### Security Dashboard
@@ -1105,7 +1105,45 @@ Profiles:
           - Name: XmlInjectionCheck
 ```
 
+## Running DAST API in an offline environment
+
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the DAST API testing job to successfully run.
+
+Steps:
+
+1. Host the Docker image in a local container registry.
+1. Set the `SECURE_ANALYZERS_PREFIX` to the local container registry.
+
+The Docker image for DAST API must be pulled (downloaded) from the public registry and then pushed (imported) into a local registry. The GitLab container registry can be used to locally host the Docker image. This process can be performed using a special template. See [loading Docker images onto your offline host](../offline_deployments/index.md#loading-docker-images-onto-your-offline-host) for instructions.
+
+Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-fuzzing:1` results in a valid image location.
+
+NOTE:
+DAST API and API Fuzzing both use the same underlying Docker image `api-fuzzing:1`.
+
+For example, the below line sets a registry for the image `registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:1`:
+
+`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"`
+
+NOTE:
+Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.
+
+For more information, see [Offline environments](../offline_deployments/index.md).
+
 ## Troubleshooting
+
+### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+
+A bug exists in versions of the DAST API analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
+
+The version information can be found in the job details for the `dast_api` job.
+
+If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+
+1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
+1. The full console output of the job.
+1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
+1. The `dast_api` job definition from your `.gitlab-ci.yml` file.
 
 ### Failed to start scanner session (version header not found)
 
@@ -1114,7 +1152,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 **Error message**
 
 - In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found.  Are you sure that you are connecting to the API Security server?`.
+- In GitLab 13.10 and earlier, `API Security version header not found. Are you sure that you are connecting to the API Security server?`.
 
 **Solution**
 

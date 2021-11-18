@@ -12,16 +12,6 @@ module ObjectStorage
       @options = options.to_hash.deep_symbolize_keys
     end
 
-    def load_provider
-      if aws?
-        require 'fog/aws'
-      elsif google?
-        require 'fog/google'
-      elsif azure?
-        require 'fog/azurerm'
-      end
-    end
-
     def credentials
       @credentials ||= options[:connection] || {}
     end

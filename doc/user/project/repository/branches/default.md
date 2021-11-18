@@ -167,7 +167,7 @@ changed, GitLab records the name of the old default branch. If that branch is
 deleted, attempts to view a file or directory on it are redirected to the
 current default branch, instead of displaying the "not found" page.
 
-## Resources
+## Related topics
 
 - [Configure a default branch for your wiki](../../wiki/index.md)
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)

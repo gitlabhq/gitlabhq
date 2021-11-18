@@ -75,7 +75,7 @@ export default {
           return this.$options.i18n.valid;
         default:
           // Only display first error as a reason
-          return this.ciConfig?.errors.length > 0
+          return this.ciConfig?.errors?.length > 0
             ? sprintf(this.$options.i18n.invalidWithReason, { reason }, false)
             : this.$options.i18n.invalid;
       }

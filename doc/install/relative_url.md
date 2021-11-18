@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Install GitLab under a relative URL **(FREE SELF)**
@@ -37,11 +36,11 @@ After all the changes you need to recompile the assets and [restart GitLab](../a
 
 ## Relative URL requirements
 
-If you configure GitLab with a relative URL, the assets (JavaScript, CSS, fonts,
-images, etc.) will need to be recompiled, which is a task which consumes a lot
-of CPU and memory resources. To avoid out-of-memory errors, you should have at
-least 2GB of RAM available on your system, while we recommend 4GB RAM, and 4 or
-8 CPU cores.
+If you configure GitLab with a relative URL, the assets (including JavaScript,
+CSS, fonts, and images) must be recompiled, which can consume a lot of CPU and
+memory resources. To avoid out-of-memory errors, you should have at least 2 GB
+of RAM available on your computer, and we recommend 4 GB RAM, and four or eight
+CPU cores.
 
 See the [requirements](requirements.md) document for more information.
 
@@ -102,8 +101,9 @@ Make sure to follow all steps below:
    gitlab_url: http://127.0.0.1/gitlab
    ```
 
-1. Make sure you have copied the supplied init script and the defaults file
-   as stated in the [installation guide](installation.md#install-init-script).
+1. Make sure you have copied either the supplied systemd services, or the init
+   script and the defaults file, as stated in the
+   [installation guide](installation.md#install-the-service).
    Then, edit `/etc/default/gitlab` and set in `gitlab_workhorse_options` the
    `-authBackend` setting to read like:
 

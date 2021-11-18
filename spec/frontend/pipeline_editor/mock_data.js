@@ -1,4 +1,4 @@
-import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
 export const mockProjectNamespace = 'user1';
@@ -35,6 +35,17 @@ job_build:
     - echo "build"
   needs: ["job_test_2"]
 `;
+
+export const mockCiTemplateQueryResponse = {
+  data: {
+    project: {
+      ciTemplate: {
+        content: mockCiYml,
+      },
+    },
+  },
+};
+
 export const mockBlobContentQueryResponse = {
   data: {
     project: { repository: { blobs: { nodes: [{ rawBlob: mockCiYml }] } } },
@@ -274,11 +285,14 @@ export const mockProjectPipeline = ({ hasStages = true } = {}) => {
 
   return {
     pipeline: {
-      commitPath: '/-/commit/aabbccdd',
       id: 'gid://gitlab/Ci::Pipeline/118',
       iid: '28',
       shortSha: mockCommitSha,
       status: 'SUCCESS',
+      commit: {
+        title: 'Update .gitlabe-ci.yml',
+        webPath: '/-/commit/aabbccdd',
+      },
       detailedStatus: {
         detailsPath: '/root/sample-ci-project/-/pipelines/118',
         group: 'success',
@@ -286,6 +300,62 @@ export const mockProjectPipeline = ({ hasStages = true } = {}) => {
         text: 'passed',
       },
       stages,
+    },
+  };
+};
+
+export const mockLinkedPipelines = ({ hasDownstream = true, hasUpstream = true } = {}) => {
+  let upstream = null;
+  let downstream = {
+    nodes: [],
+    __typename: 'PipelineConnection',
+  };
+
+  if (hasDownstream) {
+    downstream = {
+      nodes: [
+        {
+          id: 'gid://gitlab/Ci::Pipeline/612',
+          path: '/root/job-log-sections/-/pipelines/612',
+          project: { name: 'job-log-sections', __typename: 'Project' },
+          detailedStatus: {
+            group: 'success',
+            icon: 'status_success',
+            label: 'passed',
+            __typename: 'DetailedStatus',
+          },
+          __typename: 'Pipeline',
+        },
+      ],
+      __typename: 'PipelineConnection',
+    };
+  }
+
+  if (hasUpstream) {
+    upstream = {
+      id: 'gid://gitlab/Ci::Pipeline/610',
+      path: '/root/trigger-downstream/-/pipelines/610',
+      project: { name: 'trigger-downstream', __typename: 'Project' },
+      detailedStatus: {
+        group: 'success',
+        icon: 'status_success',
+        label: 'passed',
+        __typename: 'DetailedStatus',
+      },
+      __typename: 'Pipeline',
+    };
+  }
+
+  return {
+    data: {
+      project: {
+        pipeline: {
+          path: '/root/ci-project/-/pipelines/790',
+          downstream,
+          upstream,
+        },
+        __typename: 'Project',
+      },
     },
   };
 };
@@ -324,6 +394,14 @@ export const mockLintResponse = {
       except: { refs: ['main@gitlab-org/gitlab', '/^release/.*$/@gitlab-org/gitlab'] },
     },
   ],
+};
+
+export const mockLintResponseWithoutMerged = {
+  valid: false,
+  status: CI_CONFIG_STATUS_INVALID,
+  errors: ['error'],
+  warnings: [],
+  jobs: [],
 };
 
 export const mockJobs = [

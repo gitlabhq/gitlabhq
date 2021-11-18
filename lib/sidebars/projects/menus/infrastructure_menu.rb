@@ -91,7 +91,7 @@ module Sidebars
 
         def google_cloud_menu_item
           feature_is_enabled = Feature.enabled?(:incubation_5mp_google_cloud)
-          user_has_permissions = can?(context.current_user, :manage_project_google_cloud, context.project)
+          user_has_permissions = can?(context.current_user, :admin_project_google_cloud, context.project)
 
           unless feature_is_enabled && user_has_permissions
             return ::Sidebars::NilMenuItem.new(item_id: :incubation_5mp_google_cloud)
@@ -100,7 +100,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Google Cloud'),
             link: project_google_cloud_index_path(context.project),
-            active_routes: {},
+            active_routes: { controller: :google_cloud },
             item_id: :google_cloud
           )
         end

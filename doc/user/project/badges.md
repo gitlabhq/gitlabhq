@@ -56,11 +56,18 @@ To add this badge to a project:
 
 ## Group badges
 
-Badges can be added to a group and are visible on every project's
-overview page that's under that group. In this case, they cannot be edited or
-deleted on the project level. If you need to have individual badges for each
-project, consider adding them on the [project level](#project-badges) or use
-[placeholders](#placeholders).
+By adding a badge to a group, you add and enforce a project-level badge
+for all projects in the group. The group badge is visible on the **Overview**
+page of any project that belongs to the group.
+
+NOTE:
+While these badges appear as project-level badges in the codebase, they
+cannot be edited or deleted at the project level.
+
+If you need individual badges for each project, either:
+
+- Add the badge at the [project level](#project-badges).
+- Use [placeholders](#placeholders).
 
 To add a new badge to a group:
 

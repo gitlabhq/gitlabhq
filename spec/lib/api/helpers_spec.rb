@@ -351,12 +351,14 @@ RSpec.describe API::Helpers do
 
     let(:send_git_blob) do
       subject.send(:send_git_blob, repository, blob)
+      subject.header
     end
 
     before do
       allow(subject).to receive(:env).and_return({})
       allow(subject).to receive(:content_type)
       allow(subject).to receive(:header).and_return({})
+      allow(subject).to receive(:body).and_return('')
       allow(Gitlab::Workhorse).to receive(:send_git_blob)
     end
 

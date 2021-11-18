@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { isFinished } from '../utils';
 
 export default {
   components: {
@@ -17,15 +16,12 @@ export default {
   },
   computed: {
     fullLastImportPath() {
-      return this.group.last_import_target
-        ? `${this.group.last_import_target.target_namespace}/${this.group.last_import_target.new_name}`
+      return this.group.lastImportTarget
+        ? `${this.group.lastImportTarget.targetNamespace}/${this.group.lastImportTarget.newName}`
         : null;
     },
     absoluteLastImportPath() {
       return joinPaths(gon.relative_url_root || '/', this.fullLastImportPath);
-    },
-    isFinished() {
-      return isFinished(this.group);
     },
   },
 };
@@ -34,13 +30,13 @@ export default {
 <template>
   <div>
     <gl-link
-      :href="group.web_url"
+      :href="group.webUrl"
       target="_blank"
       class="gl-display-inline-flex gl-align-items-center gl-h-7"
     >
-      {{ group.full_path }} <gl-icon name="external-link" />
+      {{ group.fullPath }} <gl-icon name="external-link" />
     </gl-link>
-    <div v-if="isFinished && fullLastImportPath" class="gl-font-sm">
+    <div v-if="group.flags.isFinished && fullLastImportPath" class="gl-font-sm">
       <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">
         <template #link>
           <gl-link :href="absoluteLastImportPath" class="gl-font-sm" target="_blank">{{

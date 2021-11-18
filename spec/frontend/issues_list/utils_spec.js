@@ -58,10 +58,10 @@ describe('getDueDateValue', () => {
 describe('getSortOptions', () => {
   describe.each`
     hasIssueWeightsFeature | hasBlockedIssuesFeature | length | containsWeight | containsBlocking
-    ${false}               | ${false}                | ${8}   | ${false}       | ${false}
-    ${true}                | ${false}                | ${9}   | ${true}        | ${false}
-    ${false}               | ${true}                 | ${9}   | ${false}       | ${true}
-    ${true}                | ${true}                 | ${10}  | ${true}        | ${true}
+    ${false}               | ${false}                | ${9}   | ${false}       | ${false}
+    ${true}                | ${false}                | ${10}  | ${true}        | ${false}
+    ${false}               | ${true}                 | ${10}  | ${false}       | ${true}
+    ${true}                | ${true}                 | ${11}  | ${true}        | ${true}
   `(
     'when hasIssueWeightsFeature=$hasIssueWeightsFeature and hasBlockedIssuesFeature=$hasBlockedIssuesFeature',
     ({

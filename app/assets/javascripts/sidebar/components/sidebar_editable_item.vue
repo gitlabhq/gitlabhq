@@ -134,7 +134,7 @@ export default {
         v-if="canUpdate && !initialLoading && canEdit"
         category="tertiary"
         size="small"
-        class="gl-text-gray-900! gl-ml-auto hide-collapsed gl-mr-n2"
+        class="gl-text-gray-900! gl-ml-auto hide-collapsed gl-mr-n2 shortcut-sidebar-dropdown-toggle"
         data-testid="edit-button"
         :data-track-action="tracking.event"
         :data-track-label="tracking.label"

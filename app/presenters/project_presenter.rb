@@ -249,31 +249,21 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     strong_memoize(:upload_anchor_data) do
       next unless can_current_user_push_to_default_branch?
 
-      experiment(:empty_repo_upload, project: project) do |e|
-        e.use {}
-        e.try do
-          AnchorData.new(false,
-                         statistic_icon('upload') + _('Upload file'),
-                         '#modal-upload-blob',
-                         'js-upload-file-experiment-trigger',
-                         nil,
-                         nil,
-                         {
-                           'target_branch' => default_branch_or_main,
-                           'original_branch' => default_branch_or_main,
-                           'can_push_code' => 'true',
-                           'path' => project_create_blob_path(project, default_branch_or_main),
-                           'project_path' => project.full_path
-                         }
-                        )
-        end
-        e.run
-      end
+      AnchorData.new(false,
+                     statistic_icon('upload') + _('Upload file'),
+                     '#modal-upload-blob',
+                     'js-upload-file-trigger',
+                     nil,
+                     nil,
+                     {
+                       'target_branch' => default_branch_or_main,
+                       'original_branch' => default_branch_or_main,
+                       'can_push_code' => 'true',
+                       'path' => project_create_blob_path(project, default_branch_or_main),
+                       'project_path' => project.full_path
+                     }
+                    )
     end
-  end
-
-  def empty_repo_upload_experiment?
-    upload_anchor_data.present?
   end
 
   def new_file_anchor_data

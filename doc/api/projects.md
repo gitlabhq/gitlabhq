@@ -182,6 +182,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -191,8 +192,10 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -296,6 +299,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -303,8 +307,10 @@ When the user is authenticated and `simple` is not set this returns something li
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -460,6 +466,7 @@ GET /users/:user_id/projects
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -469,8 +476,10 @@ GET /users/:user_id/projects
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -574,6 +583,7 @@ GET /users/:user_id/projects
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -581,8 +591,10 @@ GET /users/:user_id/projects
       "wiki_size" : 0,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0,
+      "pipeline_artifacts_size": 0,
       "packages_size": 0,
-      "snippets_size": 0
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -698,12 +710,17 @@ Example response:
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
       "repository_size": 1038090,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
     "_links": {
@@ -805,12 +822,17 @@ Example response:
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
       "repository_size": 2066080,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+      "pipeline_artifacts_size": 0,
+      "packages_size": 0,
+      "snippets_size": 0,
+      "uploads_size": 0
     },
     "container_registry_image_prefix": "registry.example.com/brightbox/puppet",
     "_links": {
@@ -968,6 +990,7 @@ GET /projects/:id
   "service_desk_address": null,
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
@@ -978,8 +1001,10 @@ GET /projects/:id
     "wiki_size" : 0,
     "lfs_objects_size": 0,
     "job_artifacts_size": 0,
+    "pipeline_artifacts_size": 0,
     "packages_size": 0,
-    "snippets_size": 0
+    "snippets_size": 0,
+    "uploads_size": 0
   },
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-client",
   "_links": {
@@ -1278,6 +1303,7 @@ POST /projects/user/:user_id
 | `issues_enabled`                                            | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                               | boolean | **{dotted-circle}** No | Enable LFS. |
+| `merge_commit_template`                                     | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.)_ |
 | `merge_method`                                              | string  | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
@@ -1355,6 +1381,7 @@ PUT /projects/:id
 | `issues_enabled`                                            | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                              | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                               | boolean        | **{dotted-circle}** No | Enable LFS. |
+| `merge_commit_template`                                     | string         | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.)_ |
 | `merge_method`                                              | string         | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
@@ -1513,6 +1540,7 @@ Example responses:
     "squash_option": "default_on",
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
+    "merge_commit_template": null,
     "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
     "_links": {
       "self": "http://example.com/api/v4/projects",
@@ -1614,6 +1642,7 @@ Example response:
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -1713,6 +1742,7 @@ Example response:
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -1906,6 +1936,7 @@ Example response:
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -2026,6 +2057,7 @@ Example response:
   "squash_option": "default_on",
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "container_registry_image_prefix": "registry.example.com/diaspora/diaspora-project-site",
   "_links": {
     "self": "http://example.com/api/v4/projects",
@@ -2652,6 +2684,7 @@ Example response:
   "merge_method": "merge",
   "squash_option": "default_on",
   "suggestion_commit_message": null,
+  "merge_commit_template": null,
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "autoclose_referenced_issues": true,
@@ -2672,6 +2705,10 @@ Read more in the [Project import/export](project_import_export.md) documentation
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Project vulnerabilities
+
+Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
 
 ## Configure pull mirroring for a project **(PREMIUM)**
 

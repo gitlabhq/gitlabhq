@@ -425,6 +425,24 @@ entry.
 - [Cleanup bigint conversion for ci_builds](gitlab-org/gitlab@176992aa2b2e76b22637a07d5bafbd6541324a7d) ([merge request](gitlab-org/gitlab!70351))
 - [Drop support for data-track-event](gitlab-org/gitlab@ac6027fbef6adf41643412a84945fda6f15c9666) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70234))
 
+## 14.3.4 (2021-10-28)
+
+### Security (13 changes)
+
+- [Highlight usage of unicode bidi characters](gitlab-org/security/gitlab@0b9bcafa73bc12ad873f75584b993f7b94f1f2e7) ([merge request](gitlab-org/security/gitlab!1938))
+- [Fix dompurify.js to prevent path traversal attacks](gitlab-org/security/gitlab@6599afd4d7357ab356fcb773af19f8388978b3ed) ([merge request](gitlab-org/security/gitlab!1930))
+- [Refresh authorizations on transfer of groups having project shares](gitlab-org/security/gitlab@faad71f44a1b1048b73897d450c923a18ec18c0b) ([merge request](gitlab-org/security/gitlab!1917))
+- [Do not allow Applications API to create apps with blank scopes](gitlab-org/security/gitlab@293931500c84ef7ea9a2117d3ddf094f8ac15dcf) ([merge request](gitlab-org/security/gitlab!1923))
+- [Don't allow author to resolve discussions when MR is locked via GraphQL](gitlab-org/security/gitlab@5027cb2b0303645a921b95d324d3d55dcf7632e4) ([merge request](gitlab-org/security/gitlab!1920))
+- [Workhorse: Allow uploading only a single file](gitlab-org/security/gitlab@c18c2ddfa34a4c3e476136ab3eba9be7f265ad59) ([merge request](gitlab-org/security/gitlab!1914))
+- [Group owners should see SCIM token only once](gitlab-org/security/gitlab@3d6664461da720fb256d8e139961b383e33a3b90) ([merge request](gitlab-org/security/gitlab!1907)) **GitLab Enterprise Edition**
+- [Respect visibility level settings when updating project via API](gitlab-org/security/gitlab@124ca62c02bfa8ef6f7de7b328f80756fd01c052) ([merge request](gitlab-org/security/gitlab!1904))
+- [Avoid decoding the whole tiff image on isTIFF check](gitlab-org/security/gitlab@8e6ffd52f50170a5cf2761e50a3d6efaca5fe64f) ([merge request](gitlab-org/security/gitlab!1900))
+- [Adding a '[redacted]' to mask private email addresses](gitlab-org/security/gitlab@6f2a2b2240eb7590bbc773f35d3927d4854a31b5) ([merge request](gitlab-org/security/gitlab!1894))
+- [Do not display the root password by default](gitlab-org/security/gitlab@87893548183fc4a111e12c0bdb3e409175a41668) ([merge request](gitlab-org/security/gitlab!1803))
+- [Set PipelineSchedules to inactive](gitlab-org/security/gitlab@0e77e1cd938f876f3e9c049a84486c8c90cd0f3f) ([merge request](gitlab-org/security/gitlab!1879))
+- [Remove external_webhook_token from exported project](gitlab-org/security/gitlab@1362f7481aad5e4295da11f0db53e31600c7c7b5) ([merge request](gitlab-org/security/gitlab!1866))
+
 ## 14.3.3 (2021-10-12)
 
 ### Fixed (3 changes)
@@ -972,6 +990,24 @@ entry.
 - [Remove deprecated deployment workers](gitlab-org/gitlab@237d7a54fdac62847f8078228fc2ed6692f33f7e) by @edith007 ([merge request](gitlab-org/gitlab!67683))
 - [Remove the FF ci_reset_bridge_with_subsequent_jobs](gitlab-org/gitlab@a4a75095b9b0250d0b1bdadea90c8a4cd24449b2) ([merge request](gitlab-org/gitlab!68295))
 - [Removes ci_same_stage_job_needs ff](gitlab-org/gitlab@5e509cf7aa90041a541b19dda563120a359f0bf9) ([merge request](gitlab-org/gitlab!68041))
+
+## 14.2.6 (2021-10-28)
+
+### Security (13 changes)
+
+- [Highlight usage of unicode bidi characters](gitlab-org/security/gitlab@18a768bb3cd19b6dc780bb85d91a93605ec8aa4f) ([merge request](gitlab-org/security/gitlab!1939))
+- [Fix dompurify.js to prevent path traversal attacks](gitlab-org/security/gitlab@cfd7c715162c22060b9b80268ef501a9e604421a) ([merge request](gitlab-org/security/gitlab!1931))
+- [Refresh authorizations on transfer of groups having project shares](gitlab-org/security/gitlab@3fc08eb869156a090b015e78da79c8ced16a7162) ([merge request](gitlab-org/security/gitlab!1918))
+- [Do not allow Applications API to create apps with blank scopes](gitlab-org/security/gitlab@c4ffc8c0ee5356bcb9b76dbfa92517589b4225a8) ([merge request](gitlab-org/security/gitlab!1924))
+- [Don't allow author to resolve discussions when MR is locked via GraphQL](gitlab-org/security/gitlab@fe2d0b6f250b60619da97f162c93c9e645daf4af) ([merge request](gitlab-org/security/gitlab!1921))
+- [Workhorse: Allow uploading only a single file](gitlab-org/security/gitlab@89b04599592b7dfc0e4883cfde5d3ecd9ea855b2) ([merge request](gitlab-org/security/gitlab!1915))
+- [Group owners should see SCIM token only once](gitlab-org/security/gitlab@d52c1e41f38039db075a7a3418b8eb9ed8474c2a) ([merge request](gitlab-org/security/gitlab!1908)) **GitLab Enterprise Edition**
+- [Respect visibility level settings when updating project via API](gitlab-org/security/gitlab@3051d6a00d1a56133a77ecd24313bafb4565d576) ([merge request](gitlab-org/security/gitlab!1905))
+- [Avoid decoding the whole tiff image on isTIFF check](gitlab-org/security/gitlab@bab7f45def8fc81fe4b0961a21b4c90a60358ff9) ([merge request](gitlab-org/security/gitlab!1901))
+- [Adding a '[redacted]' to mask private email addresses](gitlab-org/security/gitlab@8eb9749f40b87b9b49b034bceb263219a4d3b114) ([merge request](gitlab-org/security/gitlab!1895))
+- [Do not display the root password by default](gitlab-org/security/gitlab@4ccf08b6645b9f616657edd266d9d31e3602d170) ([merge request](gitlab-org/security/gitlab!1802))
+- [Set PipelineSchedules to inactive](gitlab-org/security/gitlab@ebee16945325d22ceb5c07b7ba48df6fd0b2f067) ([merge request](gitlab-org/security/gitlab!1878))
+- [Remove external_webhook_token from exported project](gitlab-org/security/gitlab@f3ef12185902f3ed5c9d62ffce07418fd704a753) ([merge request](gitlab-org/security/gitlab!1865))
 
 ## 14.2.5 (2021-09-30)
 
@@ -1596,6 +1632,19 @@ entry.
 - [Refactor polling interval multiplier configuration UI and docs](gitlab-org/gitlab@b8ef9101f45759b19d982f3f6ae74cf92e2a31d1) ([merge request](gitlab-org/gitlab!66342))
 - [Add helpful text to URL group validation and limit text](gitlab-org/gitlab@59a5a6266cb0d5434596170ffa36e4e74b8d2c2c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65369)) **GitLab Enterprise Edition**
 - [Refactor external storage admin area configuration UI and docs](gitlab-org/gitlab@497ba4fc8f4ec1d234c9f5f1ec5c69712b8c7cb3) ([merge request](gitlab-org/gitlab!66219))
+
+## 14.1.8 (2021-11-15)
+
+### Fixed (1 change)
+
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@5abc66f89524b63873b0ce96b0f78c0acc2687f6) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@c23c94e9d791770fd169723845b12097b8512a9e) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@5aba12770829d43041ef4307049ed500c02b1d77) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@4d3a5798e1f136a027c0b7aab6a35afb3c207ce7) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@795271787c70b7c92a85daa253d2d61561603443) ([merge request](gitlab-org/gitlab!73980)) **GitLab Enterprise Edition**
 
 ## 14.1.7 (2021-09-30)
 
@@ -2272,6 +2321,15 @@ entry.
 - [Add more logging to track encoding errors appending CI traces](gitlab-org/gitlab@6f240a53fe0d56910347a0615d575ac8c3e7215e) ([merge request](gitlab-org/gitlab!63920))
 - [Remove diffs gradual load feature flag](gitlab-org/gitlab@027d7c4327b5b6205a84281239027273517bf81b) ([merge request](gitlab-org/gitlab!55478))
 - [Remove partial index for Hashed Storage migration](gitlab-org/gitlab@3ed017a1023d7b0941a7606b69e6caee8d22f15c) ([merge request](gitlab-org/gitlab!62920))
+
+## 14.0.12 (2021-11-05)
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@ed34172e5c7425316480efb732a9429e93e81017) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@c0f2f40b98c4b9fc72c21c474a2224e045263ea2) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@6370a7258719d5eb0ad83c54383ecb7f4fd54fc2) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@1bcd41f28733b01286a42689857f6530c0805186) ([merge request](gitlab-org/gitlab!73722)) **GitLab Enterprise Edition**
 
 ## 14.0.11 (2021-09-23)
 
@@ -3043,6 +3101,21 @@ No changes.
 - [Track usage of the resolve UI](gitlab-org/gitlab@83519fa35b9b2ab17dbd181a1786be8e78d3efb1) ([merge request](gitlab-org/gitlab!61654))
 - [Add missing metrics information](gitlab-org/gitlab@89cd7fe3b95323e635b2d73e08549b2e6153dc4d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61772/edit))
 - [Track usage of the resolve UI](gitlab-org/gitlab@35c8e30fce288cecefcf2f7c0077d4608e696519) ([merge request](gitlab-org/gitlab!61654))
+
+## 13.12.15 (2021-11-03)
+
+### Fixed (2 changes)
+
+- [Allow nil for remaining ci cd settings](gitlab-org/gitlab@896fd7ecf23714fa9f710efa4af245a26c677dce) ([merge request](gitlab-org/gitlab!73522))
+- [Allow nil on delegated CI/CD settings](gitlab-org/gitlab@d57a9ea79080fc473eb54c0ee696a50fd270e8a4) ([merge request](gitlab-org/gitlab!73522))
+
+## 13.12.14 (2021-11-03)
+
+This version has been skipped due to QA problems.
+
+## 13.12.13 (2021-10-29)
+
+This version has been skipped due to QA problems.
 
 ## 13.12.12 (2021-09-21)
 

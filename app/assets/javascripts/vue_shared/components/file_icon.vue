@@ -86,7 +86,7 @@ export default {
 <template>
   <span>
     <gl-loading-icon v-if="loading" size="sm" :inline="true" />
-    <gl-icon v-else-if="isSymlink" name="symlink" :size="size" use-deprecated-sizes />
+    <gl-icon v-else-if="isSymlink" name="symlink" :size="size" />
     <svg v-else-if="!folder" :key="spriteHref" :class="[iconSizeClass, cssClasses]">
       <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>

@@ -2,21 +2,23 @@
 
 module Emails
   module Pipelines
-    def pipeline_success_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'Successful')
+    def pipeline_success_email(pipeline, recipient)
+      pipeline_mail(pipeline, recipient, 'Successful')
     end
 
-    def pipeline_failed_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'Failed')
+    def pipeline_failed_email(pipeline, recipient)
+      pipeline_mail(pipeline, recipient, 'Failed')
     end
 
-    def pipeline_fixed_email(pipeline, recipients)
-      pipeline_mail(pipeline, recipients, 'Fixed')
+    def pipeline_fixed_email(pipeline, recipient)
+      pipeline_mail(pipeline, recipient, 'Fixed')
     end
 
     private
 
-    def pipeline_mail(pipeline, recipients, status)
+    def pipeline_mail(pipeline, recipient, status)
+      raise ArgumentError if recipient.is_a?(Array)
+
       @project = pipeline.project
       @pipeline = pipeline
 
@@ -28,10 +30,7 @@ module Emails
 
       add_headers
 
-      # We use bcc here because we don't want to generate these emails for a
-      # thousand times. This could be potentially expensive in a loop, and
-      # recipients would contain all project watchers so it could be a lot.
-      mail(bcc: recipients,
+      mail(to: recipient,
            subject: subject(pipeline_subject(status))) do |format|
         format.html { render layout: 'mailer' }
         format.text { render layout: 'mailer' }

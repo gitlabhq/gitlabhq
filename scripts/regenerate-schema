@@ -126,7 +126,7 @@ class SchemaRegenerator
   # In order to properly reset the database and re-run migrations
   # the schema migrations for new migrations must be removed.
   def remove_schema_migration_files
-    (untracked_schema_migrations + commited_schema_migrations).each do |schema_migration|
+    (untracked_schema_migrations + committed_schema_migrations).each do |schema_migration|
       FileUtils.rm(schema_migration)
     end
   end
@@ -144,7 +144,7 @@ class SchemaRegenerator
   # List of untracked schema migrations
   #
   # Get a list of schema migrations that have been committed since the last
-  def commited_schema_migrations
+  def committed_schema_migrations
     git_command = "git diff --name-only --diff-filter=A #{merge_base} -- #{SCHEMA_MIGRATIONS_DIR}"
     run(git_command).chomp.split("\n")
   end

@@ -358,6 +358,12 @@ Example response:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35739) in GitLab 12.7.
 
+NOTE:
+Not all deployments can be associated with merge requests.
+Please see
+[Track what merge requests were deployed to an environment](../ci/environments/index.md#track-newly-included-merge-requests-per-deployment)
+for more information.
+
 This API retrieves the list of merge requests shipped with a given deployment:
 
 ```plaintext

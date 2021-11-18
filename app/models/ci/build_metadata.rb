@@ -23,6 +23,7 @@ module Ci
 
     serialize :config_options, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
     serialize :config_variables, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :runtime_runner_features, Serializers::SymbolizedJson # rubocop:disable Cop/ActiveRecordSerialize
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
@@ -37,8 +38,7 @@ module Ci
         job_timeout_source: 4
     }
 
-    ignore_column :build_id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
-    ignore_columns :id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
+    ignore_columns :runner_features, remove_with: '14.7', remove_after: '2021-11-22'
 
     def update_timeout_state
       timeout = timeout_with_highest_precedence
@@ -46,6 +46,14 @@ module Ci
       return unless timeout
 
       update(timeout: timeout.value, timeout_source: timeout.source)
+    end
+
+    def set_cancel_gracefully
+      runtime_runner_features.merge!( { cancel_gracefully: true } )
+    end
+
+    def cancel_gracefully?
+      runtime_runner_features[:cancel_gracefully] == true
     end
 
     private

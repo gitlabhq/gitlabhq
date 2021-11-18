@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'yaml'
+require 'optparse'
+require_relative 'api/default_options'
+
+# This script returns the desired feature flag state as a comma-separated string for the feature flags in the specified files.
+# Each desired feature flag state is specified as 'feature-flag=state'.
+#
+# For example, if the specified files included `config/feature_flags/development/ci_yaml_limit_size.yml` and the desired
+# state as specified by the second argument was enabled, the value returned would be `ci_yaml_limit_size=enabled`
+
+class GetFeatureFlagsFromFiles
+  def initialize(options)
+    @files = options.delete(:files)
+    @state = options.delete(:state)
+  end
+
+  def extracted_flags
+    files.each_with_object([]) do |file_path, all|
+      next unless file_path =~ %r{/feature_flags/(development|ops)/.*\.yml}
+      next unless File.exist?(file_path)
+
+      ff_yaml = YAML.safe_load(File.read(file_path))
+      ff_to_add = "#{ff_yaml['name']}"
+      ff_to_add += "=#{state}" unless state.to_s.empty?
+
+      all << ff_to_add
+    end.join(',')
+  end
+
+  private
+
+  attr_reader :files, :state
+end
+
+if $0 == __FILE__
+  options = API::DEFAULT_OPTIONS.dup
+
+  OptionParser.new do |opts|
+    opts.on("-f", "--files FILES", Array, "Comma-separated list of feature flag config files") do |value|
+      options[:files] = value
+    end
+
+    opts.on("-s", "--state STATE", String,
+      "The desired state of the feature flags (enabled or disabled). If not specified the output will only list the feature flags."
+    ) do |value|
+      options[:state] = value
+    end
+
+    opts.on("-h", "--help", "Prints this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  puts GetFeatureFlagsFromFiles.new(options).extracted_flags
+end

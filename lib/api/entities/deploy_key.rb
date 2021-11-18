@@ -4,6 +4,9 @@ module API
   module Entities
     class DeployKey < Entities::SSHKey
       expose :key
+      expose :fingerprint
+
+      expose :projects_with_write_access, using: Entities::ProjectIdentity, if: -> (_, options) { options[:include_projects_with_write_access] }
     end
   end
 end

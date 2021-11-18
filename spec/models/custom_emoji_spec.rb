@@ -14,7 +14,7 @@ RSpec.describe CustomEmoji do
   end
 
   describe 'exclusion of duplicated emoji' do
-    let(:emoji_name) { Gitlab::Emoji.emojis_names.sample }
+    let(:emoji_name) { TanukiEmoji.index.all.sample.name }
     let(:group) { create(:group, :private) }
 
     it 'disallows emoji names of built-in emoji' do

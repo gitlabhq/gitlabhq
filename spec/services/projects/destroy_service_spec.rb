@@ -331,6 +331,14 @@ RSpec.describe Projects::DestroyService, :aggregate_failures do
         end
       end
     end
+
+    context 'for an archived project' do
+      before do
+        project.update!(archived: true)
+      end
+
+      it_behaves_like 'deleting the project with pipeline and build'
+    end
   end
 
   describe 'container registry' do

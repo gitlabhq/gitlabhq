@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_int4_column_for_events')
+require_migration!
 
 RSpec.describe DropInt4ColumnForEvents do
   let(:events) { table(:events) }

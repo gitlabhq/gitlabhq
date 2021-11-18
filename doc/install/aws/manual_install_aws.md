@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: howto
 ---
 
 {::options parse_block_html="true" /}
@@ -33,7 +32,7 @@ For the Cloud Native Hybrid architectures there are two Infrastructure as Code o
 
 ## Introduction
 
-For the most part, we'll make use of Omnibus GitLab in our setup, but we'll also leverage native AWS services. Instead of using the Omnibus bundled PostgreSQL and Redis, we will use AWS RDS and ElastiCache.
+For the most part, we'll make use of Omnibus GitLab in our setup, but we'll also leverage native AWS services. Instead of using the Omnibus bundled PostgreSQL and Redis, we will use Amazon RDS and ElastiCache.
 
 In this guide, we'll go through a multi-node setup where we'll start by
 configuring our Virtual Private Cloud and subnets to later integrate
@@ -410,7 +409,10 @@ persistence and is used to store session data, temporary cache information, and 
 
 ## Setting up Bastion Hosts
 
-Since our GitLab instances will be in private subnets, we need a way to connect to these instances via SSH to make configuration changes, perform upgrades, etc. One way of doing this is via a [bastion host](https://en.wikipedia.org/wiki/Bastion_host), sometimes also referred to as a jump box.
+Because our GitLab instances are in private subnets, we need a way to connect
+to these instances with SSH for actions that include making configuration changes
+and performing upgrades. One way of doing this is by using a [bastion host](https://en.wikipedia.org/wiki/Bastion_host),
+sometimes also referred to as a jump box.
 
 NOTE:
 If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
@@ -669,8 +671,13 @@ That concludes the configuration changes for our GitLab instance. Next, we'll cr
 ### Log in for the first time
 
 Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser.
-If you didn't change the password by any other means, the default password will be the same as the instance ID. To change the default password, login as the `root` user
-with the default password and [change it in the user profile](../../user/profile#change-your-password).
+
+Depending on how you installed GitLab and if you did not change the password by any other means, the default password is either:
+
+- Your instance ID if you used the official GitLab AMI.
+- A randomly generated password stored for 24 hours in `/etc/gitlab/initial_root_password`.
+
+To change the default password, log in as the `root` user with the default password and [change it in the user profile](../../user/profile#change-your-password).
 
 When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we'll be able to log in with username `root` and the newly created password.
 

@@ -4,7 +4,7 @@ import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import { getFilename } from '~/lib/utils/file_upload';
+import { getFilename, validateImageName } from '~/lib/utils/file_upload';
 import { __, s__, sprintf } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DeleteButton from '../components/delete_button.vue';
@@ -284,12 +284,16 @@ export default {
           return;
         }
         event.preventDefault();
-        let filename = getFilename(event);
-        if (!filename || filename === 'image.png') {
-          filename = `design_${Date.now()}.png`;
-        }
-        const newFile = new File([files[0]], filename);
-        this.onUploadDesign([newFile]);
+        const fileList = [...files];
+        fileList.forEach((file) => {
+          let filename = getFilename(file);
+          filename = validateImageName(file);
+          if (!filename || filename === 'image.png') {
+            filename = `design_${Date.now()}.png`;
+          }
+          const newFile = new File([file], filename);
+          this.onUploadDesign([newFile]);
+        });
       }
     },
     toggleOnPasteListener() {

@@ -12,16 +12,16 @@ import PipelineEditorMessages from './components/ui/pipeline_editor_messages.vue
 import {
   COMMIT_SHA_POLL_INTERVAL,
   EDITOR_APP_STATUS_EMPTY,
-  EDITOR_APP_STATUS_ERROR,
+  EDITOR_APP_VALID_STATUSES,
   EDITOR_APP_STATUS_LOADING,
   LOAD_FAILURE_UNKNOWN,
   STARTER_TEMPLATE_NAME,
 } from './constants';
+import updateAppStatus from './graphql/mutations/update_app_status.mutation.graphql';
 import getBlobContent from './graphql/queries/blob_content.graphql';
 import getCiConfigData from './graphql/queries/ci_config.graphql';
 import getAppStatus from './graphql/queries/client/app_status.graphql';
 import getCurrentBranch from './graphql/queries/client/current_branch.graphql';
-import getIsNewCiConfigFile from './graphql/queries/client/is_new_ci_config_file.graphql';
 import getTemplate from './graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from './graphql/queries/latest_commit_sha.query.graphql';
 import PipelineEditorHome from './pipeline_editor_home.vue';
@@ -44,23 +44,23 @@ export default {
   },
   data() {
     return {
-      starterTemplateName: STARTER_TEMPLATE_NAME,
       ciConfigData: {},
+      currentCiFileContent: '',
       failureType: null,
       failureReasons: [],
       initialCiFileContent: '',
       isFetchingCommitSha: false,
       isNewCiConfigFile: false,
       lastCommittedContent: '',
-      currentCiFileContent: '',
-      successType: null,
+      shouldSkipStartScreen: false,
+      showFailure: false,
       showStartScreen: false,
       showSuccess: false,
-      showFailure: false,
       starterTemplate: '',
+      starterTemplateName: STARTER_TEMPLATE_NAME,
+      successType: null,
     };
   },
-
   apollo: {
     initialCiFileContent: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
@@ -103,7 +103,11 @@ export default {
           }
 
           if (!hasCIFile) {
-            this.showStartScreen = true;
+            if (this.shouldSkipStartScreen) {
+              this.setNewEmptyCiConfigFile();
+            } else {
+              this.showStartScreen = true;
+            }
           } else if (fileContent.length) {
             // If the file content is > 0, then we make sure to reset the
             // start screen flag during a refetch
@@ -141,10 +145,10 @@ export default {
         return { ...ciConfig, stages };
       },
       result({ data }) {
-        this.setAppStatus(data?.ciConfig?.status || EDITOR_APP_STATUS_ERROR);
+        this.setAppStatus(data?.ciConfig?.status);
       },
-      error() {
-        this.reportFailure(LOAD_FAILURE_UNKNOWN);
+      error(err) {
+        this.reportFailure(LOAD_FAILURE_UNKNOWN, [String(err)]);
       },
       watchLoading(isLoading) {
         if (isLoading) {
@@ -178,9 +182,6 @@ export default {
     },
     currentBranch: {
       query: getCurrentBranch,
-    },
-    isNewCiConfigFile: {
-      query: getIsNewCiConfigFile,
     },
     starterTemplate: {
       query: getTemplate,
@@ -232,6 +233,7 @@ export default {
   },
   mounted() {
     this.loadTemplateFromURL();
+    this.checkShouldSkipStartScreen();
   },
   methods: {
     hideFailure() {
@@ -245,8 +247,6 @@ export default {
       await this.$apollo.queries.initialCiFileContent.refetch();
     },
     reportFailure(type, reasons = []) {
-      this.setAppStatus(EDITOR_APP_STATUS_ERROR);
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.showFailure = true;
       this.failureType = type;
@@ -261,12 +261,12 @@ export default {
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
-      this.$apollo.getClient().writeQuery({ query: getAppStatus, data: { appStatus } });
+      if (EDITOR_APP_VALID_STATUSES.includes(appStatus)) {
+        this.$apollo.mutate({ mutation: updateAppStatus, variables: { appStatus } });
+      }
     },
     setNewEmptyCiConfigFile() {
-      this.$apollo
-        .getClient()
-        .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: true } });
+      this.isNewCiConfigFile = true;
       this.showStartScreen = false;
     },
     showErrorAlert({ type, reasons = [] }) {
@@ -283,9 +283,7 @@ export default {
       this.reportSuccess(type);
 
       if (this.isNewCiConfigFile) {
-        this.$apollo
-          .getClient()
-          .writeQuery({ query: getIsNewCiConfigFile, data: { isNewCiConfigFile: false } });
+        this.isNewCiConfigFile = false;
       }
 
       // Keep track of the latest committed content to know
@@ -299,6 +297,10 @@ export default {
         this.starterTemplateName = templateName;
         this.setNewEmptyCiConfigFile();
       }
+    },
+    checkShouldSkipStartScreen() {
+      const params = queryToObject(window.location.search);
+      this.shouldSkipStartScreen = Boolean(params?.add_new_config_file);
     },
   },
 };
@@ -325,8 +327,9 @@ export default {
       <pipeline-editor-home
         :ci-config-data="ciConfigData"
         :ci-file-content="currentCiFileContent"
-        :is-new-ci-config-file="isNewCiConfigFile"
         :commit-sha="commitSha"
+        :has-unsaved-changes="hasUnsavedChanges"
+        :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
         @resetContent="resetContent"
         @showError="showErrorAlert"

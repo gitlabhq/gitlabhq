@@ -8,10 +8,8 @@ import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import AlertsDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { metricStates, keyboardShortcutKeys } from '../constants';
 import {
   timeRangeFromUrl,
@@ -30,7 +28,6 @@ import VariablesSection from './variables_section.vue';
 
 export default {
   components: {
-    AlertsDeprecationWarning,
     VueDraggable,
     DashboardHeader,
     DashboardPanel,
@@ -47,7 +44,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     TrackEvent: TrackEventDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     hasMetrics: {
       type: Boolean,
@@ -399,8 +395,6 @@ export default {
 
 <template>
   <div class="prometheus-graphs" data-qa-selector="prometheus_graphs">
-    <alerts-deprecation-warning v-if="!glFeatures.managedAlertsDeprecation" />
-
     <dashboard-header
       v-if="showHeader"
       ref="prometheusGraphsHeader"

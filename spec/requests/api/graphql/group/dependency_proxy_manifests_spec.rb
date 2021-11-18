@@ -116,4 +116,26 @@ RSpec.describe 'getting dependency proxy manifests in a group' do
 
     expect(dependency_proxy_image_count_response).to eq(manifests.size)
   end
+
+  describe 'sorting and pagination' do
+    let(:data_path) { ['group', :dependencyProxyManifests] }
+    let(:current_user) { owner }
+
+    context 'with default sorting' do
+      let_it_be(:descending_manifests) { manifests.reverse.map { |manifest| global_id_of(manifest)} }
+
+      it_behaves_like 'sorted paginated query' do
+        let(:sort_param) { '' }
+        let(:first_param) { 2 }
+        let(:all_records) { descending_manifests }
+      end
+    end
+
+    def pagination_query(params)
+      # remove sort since the type does not accept sorting, but be future proof
+      graphql_query_for('group', { 'fullPath' => group.full_path },
+        query_nodes(:dependencyProxyManifests, :id, include_pagination_info: true, args: params.merge(sort: nil))
+      )
+    end
+  end
 end

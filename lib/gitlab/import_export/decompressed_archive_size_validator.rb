@@ -6,7 +6,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       DEFAULT_MAX_BYTES = 10.gigabytes.freeze
-      TIMEOUT_LIMIT = 60.seconds
+      TIMEOUT_LIMIT = 210.seconds
 
       def initialize(archive_path:, max_bytes: self.class.max_bytes)
         @archive_path = archive_path

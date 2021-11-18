@@ -41,13 +41,15 @@ class ProjectTeam
     member
   end
 
-  def add_users(users, access_level, current_user: nil, expires_at: nil)
+  def add_users(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
     Members::Projects::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       project,
       users,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      tasks_to_be_done: tasks_to_be_done,
+      tasks_project_id: tasks_project_id
     )
   end
 

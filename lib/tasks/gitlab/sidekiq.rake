@@ -36,12 +36,16 @@ namespace :gitlab do
           # Do not edit it manually!
         BANNER
 
-        foss_workers, ee_workers = Gitlab::SidekiqConfig.workers_for_all_queues_yml
+        foss_workers, ee_workers, jh_workers = Gitlab::SidekiqConfig.workers_for_all_queues_yml
 
         write_yaml(Gitlab::SidekiqConfig::FOSS_QUEUE_CONFIG_PATH, banner, foss_workers)
 
         if Gitlab.ee?
           write_yaml(Gitlab::SidekiqConfig::EE_QUEUE_CONFIG_PATH, banner, ee_workers)
+        end
+
+        if Gitlab.jh?
+          write_yaml(Gitlab::SidekiqConfig::JH_QUEUE_CONFIG_PATH, banner, jh_workers)
         end
       end
 
@@ -57,6 +61,7 @@ namespace :gitlab do
 
             - #{Gitlab::SidekiqConfig::FOSS_QUEUE_CONFIG_PATH}
             - #{Gitlab::SidekiqConfig::EE_QUEUE_CONFIG_PATH}
+            #{"- " + Gitlab::SidekiqConfig::JH_QUEUE_CONFIG_PATH if Gitlab.jh?}
 
           MSG
         end

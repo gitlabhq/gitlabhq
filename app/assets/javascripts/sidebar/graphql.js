@@ -25,7 +25,6 @@ export const defaultClient = createDefaultClient(resolvers, {
   cacheConfig: {
     fragmentMatcher,
   },
-  assumeImmutableResults: true,
 });
 
 export const apolloProvider = new VueApollo({

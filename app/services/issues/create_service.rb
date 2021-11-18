@@ -6,7 +6,7 @@ module Issues
     prepend RateLimitedService
 
     rate_limit key: :issues_create,
-               opts: { scope: [:project, :current_user], users_allowlist: -> { [User.support_bot.username] } }
+               opts: { scope: [:project, :current_user, :external_author] }
 
     # NOTE: For Issues::CreateService, we require the spam_params and do not default it to nil, because
     # spam_checking is likely to be necessary.  However, if there is not a request available in scope
@@ -23,6 +23,10 @@ module Issues
       filter_resolve_discussion_params
 
       create(@issue, skip_system_notes: skip_system_notes)
+    end
+
+    def external_author
+      params[:external_author] # present when creating an issue using service desk (email: from)
     end
 
     def before_create(issue)

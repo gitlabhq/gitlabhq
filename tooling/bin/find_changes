@@ -3,7 +3,7 @@
 
 require 'gitlab'
 
-gitlab_token = ENV.fetch('DANGER_GITLAB_API_TOKEN', '')
+gitlab_token = ENV.fetch('PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE', '')
 gitlab_endpoint = ENV.fetch('CI_API_V4_URL')
 mr_project_path = ENV.fetch('CI_MERGE_REQUEST_PROJECT_PATH')
 mr_iid = ENV.fetch('CI_MERGE_REQUEST_IID')

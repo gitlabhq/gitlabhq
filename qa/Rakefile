@@ -2,6 +2,7 @@
 # rubocop:disable Rails/RakeEnvironment
 
 load 'tasks/webdrivers.rake'
+load 'tasks/reliable_report.rake'
 
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
 require_relative 'qa/tools/delete_subgroups'

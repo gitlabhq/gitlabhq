@@ -279,6 +279,14 @@ describe('common_utils', () => {
           top: elementTopWithContext,
         });
       });
+
+      it('passes through behaviour', () => {
+        commonUtils.scrollToElementWithContext(`#${id}`, { behavior: 'smooth' });
+        expect(window.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elementTopWithContext,
+        });
+      });
     });
   });
 
@@ -997,6 +1005,21 @@ describe('common_utils', () => {
 
     it('returns false when `::` is not present', () => {
       expect(commonUtils.isScopedLabel({ title: 'foobar' })).toBe(false);
+    });
+  });
+
+  describe('scopedLabelKey', () => {
+    it.each`
+      label                           | expectedLabelKey
+      ${undefined}                    | ${''}
+      ${''}                           | ${''}
+      ${'title'}                      | ${'title'}
+      ${'scoped::value'}              | ${'scoped'}
+      ${'scoped::label::value'}       | ${'scoped::label'}
+      ${'scoped::label-some::value'}  | ${'scoped::label-some'}
+      ${'scoped::label::some::value'} | ${'scoped::label::some'}
+    `('returns "$expectedLabelKey" when label is "$label"', ({ label, expectedLabelKey }) => {
+      expect(commonUtils.scopedLabelKey({ title: label })).toBe(expectedLabelKey);
     });
   });
 

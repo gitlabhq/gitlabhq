@@ -385,6 +385,43 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '.archivables_in' do
+    subject { described_class.archivables_in(project, limit: limit) }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:deployment_1) { create(:deployment, project: project) }
+    let_it_be(:deployment_2) { create(:deployment, project: project) }
+    let_it_be(:deployment_3) { create(:deployment, project: project) }
+
+    let(:limit) { 100 }
+
+    context 'when there are no archivable deployments in the project' do
+      it 'returns nothing' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when there are archivable deployments in the project' do
+      before do
+        stub_const("::Deployment::ARCHIVABLE_OFFSET", 1)
+      end
+
+      it 'returns all archivable deployments' do
+        expect(subject.count).to eq(2)
+        expect(subject).to contain_exactly(deployment_1, deployment_2)
+      end
+
+      context 'with limit' do
+        let(:limit) { 1 }
+
+        it 'takes the limit into account' do
+          expect(subject.count).to eq(1)
+          expect(subject.take).to be_in([deployment_1, deployment_2])
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     describe 'last_for_environment' do
       let(:production) { create(:environment) }
@@ -453,6 +490,17 @@ RSpec.describe Deployment do
       it 'filters deployments by finished_at' do
         expect(described_class.finished_after(1.hour.ago))
           .to eq([deployment2])
+      end
+    end
+
+    describe '.ordered' do
+      let!(:deployment1) { create(:deployment, status: :running) }
+      let!(:deployment2) { create(:deployment, status: :success, finished_at: Time.current) }
+      let!(:deployment3) { create(:deployment, status: :canceled, finished_at: 1.day.ago) }
+      let!(:deployment4) { create(:deployment, status: :success, finished_at: 2.days.ago) }
+
+      it 'sorts by finished at' do
+        expect(described_class.ordered).to eq([deployment1, deployment2, deployment3, deployment4])
       end
     end
 
@@ -763,6 +811,7 @@ RSpec.describe Deployment do
     it 'schedules workers when finishing a deploy' do
       expect(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
       expect(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
+      expect(Deployments::ArchiveInProjectWorker).to receive(:perform_async)
       expect(Deployments::HooksWorker).to receive(:perform_async)
 
       expect(deploy.update_status('success')).to eq(true)
@@ -840,6 +889,12 @@ RSpec.describe Deployment do
     context 'with created deployment' do
       let(:deployment_status) { :created }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -862,12 +917,16 @@ RSpec.describe Deployment do
     context 'with running deployment' do
       let(:deployment_status) { :running }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"run\"} }
-        end
+        it_behaves_like 'ignoring build'
       end
 
       context 'with finished build' do
@@ -886,6 +945,12 @@ RSpec.describe Deployment do
     context 'with finished deployment' do
       let(:deployment_status) { :success }
 
+      context 'with created build' do
+        let(:build_status) { :created }
+
+        it_behaves_like 'ignoring build'
+      end
+
       context 'with running build' do
         let(:build_status) { :running }
 
@@ -897,9 +962,13 @@ RSpec.describe Deployment do
       context 'with finished build' do
         let(:build_status) { :success }
 
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %Q{Status cannot transition via \"succeed\"} }
-        end
+        it_behaves_like 'ignoring build'
+      end
+
+      context 'with failed build' do
+        let(:build_status) { :failed }
+
+        it_behaves_like 'synchronizing deployment'
       end
 
       context 'with unrelated build' do

@@ -26,7 +26,7 @@ describe('Admin statistics panel mutations', () => {
       expect(state.clusters).toBe(apiData.clusters);
       expect(state.clustersPerPage).toBe(paginationInformation.perPage);
       expect(state.hasAncestorClusters).toBe(apiData.has_ancestor_clusters);
-      expect(state.totalCulsters).toBe(paginationInformation.total);
+      expect(state.totalClusters).toBe(paginationInformation.total);
     });
   });
 
@@ -55,6 +55,14 @@ describe('Admin statistics panel mutations', () => {
       mutations[types.SET_PAGE](state, 123);
 
       expect(state.page).toBe(123);
+    });
+  });
+
+  describe(`${types.SET_CLUSTERS_PER_PAGE}`, () => {
+    it('changes clustersPerPage value', () => {
+      mutations[types.SET_CLUSTERS_PER_PAGE](state, 123);
+
+      expect(state.clustersPerPage).toBe(123);
     });
   });
 });

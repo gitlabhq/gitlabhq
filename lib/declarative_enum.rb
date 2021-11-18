@@ -15,9 +15,9 @@
 #     TEXT
 #
 #     define do
-#       acceptable_risk value: 0, description: 'The vulnerability is known but is considered to be an acceptable business risk.'
-#       false_positive value: 1, description: 'An error in reporting the presence of a vulnerability in a system when the vulnerability is not present.'
-#       used_in_tests value: 2, description: 'The finding is not a vulnerability because it is part of a test or is test data.'
+#       acceptable_risk value: 0, description: N_('The vulnerability is known but is considered to be an acceptable business risk.')
+#       false_positive value: 1, description: N_('An error in reporting the presence of a vulnerability in a system when the vulnerability is not present.')
+#       used_in_tests value: 2, description: N_('The finding is not a vulnerability because it is part of a test or is test data.')
 #     end
 #
 # Then we can use this module to register enums for our Active Record models like so,
@@ -61,6 +61,19 @@ module DeclarativeEnum
     @description = new_description if new_description
 
     @description
+  end
+
+  def values
+    definition.transform_values { |definition| definition[:value] }
+  end
+
+  # Return list of dynamically translated descriptions.
+  #
+  # It is required to define descriptions with `N_(...)`.
+  #
+  # See https://github.com/grosser/fast_gettext#n_-and-nn_-make-dynamic-translations-available-to-the-parser
+  def translated_descriptions
+    definition.transform_values { |definition| _(definition[:description]) }
   end
 
   def define(&block)

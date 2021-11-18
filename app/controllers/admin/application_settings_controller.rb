@@ -98,7 +98,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   # Specs are in spec/requests/self_monitoring_project_spec.rb
   def create_self_monitoring_project
-    job_id = SelfMonitoringProjectCreateWorker.perform_async # rubocop:disable CodeReuse/Worker
+    job_id = SelfMonitoringProjectCreateWorker.with_status.perform_async # rubocop:disable CodeReuse/Worker
 
     render status: :accepted, json: {
       job_id: job_id,
@@ -137,7 +137,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   # Specs are in spec/requests/self_monitoring_project_spec.rb
   def delete_self_monitoring_project
-    job_id = SelfMonitoringProjectDeleteWorker.perform_async # rubocop:disable CodeReuse/Worker
+    job_id = SelfMonitoringProjectDeleteWorker.with_status.perform_async # rubocop:disable CodeReuse/Worker
 
     render status: :accepted, json: {
       job_id: job_id,

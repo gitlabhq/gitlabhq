@@ -8,6 +8,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import draftNote from '../../batch_comments/components/draft_note.vue';
+import { discussionIntersectionObserverHandlerFactory } from '../../diffs/utils/discussions';
 import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
@@ -38,6 +39,9 @@ export default {
     TimelineEntryItem,
   },
   mixins: [glFeatureFlagsMixin()],
+  provide: {
+    discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+  },
   props: {
     noteableData: {
       type: Object,
@@ -94,15 +98,17 @@ export default {
       return this.noteableData.noteableType;
     },
     allDiscussions() {
+      let skeletonNotes = [];
+
       if (this.renderSkeleton || this.isLoading) {
         const prerenderedNotesCount = parseInt(this.notesData.prerenderedNotesCount, 10) || 0;
 
-        return new Array(prerenderedNotesCount).fill({
+        skeletonNotes = new Array(prerenderedNotesCount).fill({
           isSkeletonNote: true,
         });
       }
 
-      return this.discussions;
+      return this.discussions.concat(skeletonNotes);
     },
     canReply() {
       return this.userCanReply && !this.commentsDisabled && !this.timelineEnabled;
@@ -258,7 +264,13 @@ export default {
     getFetchDiscussionsConfig() {
       const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
 
-      if (doesHashExistInUrl(constants.NOTE_UNDERSCORE)) {
+      const currentFilter =
+        this.getNotesDataByProp('notesFilter') || constants.DISCUSSION_FILTERS_DEFAULT_VALUE;
+
+      if (
+        doesHashExistInUrl(constants.NOTE_UNDERSCORE) &&
+        currentFilter !== constants.DISCUSSION_FILTERS_DEFAULT_VALUE
+      ) {
         return {
           ...defaultConfig,
           filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,

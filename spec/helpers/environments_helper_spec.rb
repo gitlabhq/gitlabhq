@@ -40,12 +40,10 @@ RSpec.describe EnvironmentsHelper do
         'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
         'custom_metrics_available' => 'true',
         'alerts_endpoint' => project_prometheus_alerts_path(project, environment_id: environment.id, format: :json),
-        'prometheus_alerts_available' => 'true',
         'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations_settings_path' => project_settings_operations_path(project),
         'can_access_operations_settings' => 'true',
-        'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json),
-        'has_managed_prometheus' => 'false'
+        'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
       )
     end
 
@@ -59,20 +57,6 @@ RSpec.describe EnvironmentsHelper do
       specify do
         expect(metrics_data).to include(
           'can_access_operations_settings' => 'false'
-        )
-      end
-    end
-
-    context 'without read_prometheus_alerts permission' do
-      before do
-        allow(helper).to receive(:can?)
-          .with(user, :read_prometheus_alerts, project)
-          .and_return(false)
-      end
-
-      it 'returns false' do
-        expect(metrics_data).to include(
-          'prometheus_alerts_available' => 'false'
         )
       end
     end
@@ -117,52 +101,6 @@ RSpec.describe EnvironmentsHelper do
 
         it 'uses correct path for metrics_dashboard_base_path' do
           expect(metrics_data['metrics_dashboard_base_path']).to eq(project_metrics_dashboard_path(project))
-        end
-      end
-    end
-
-    context 'has_managed_prometheus' do
-      context 'without prometheus integration' do
-        it "doesn't have managed prometheus" do
-          expect(metrics_data).to include(
-            'has_managed_prometheus' => 'false'
-          )
-        end
-      end
-
-      context 'with prometheus integration' do
-        let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-
-        context 'when manual prometheus integration is active' do
-          it "doesn't have managed prometheus" do
-            prometheus_integration.update!(manual_configuration: true)
-
-            expect(metrics_data).to include(
-              'has_managed_prometheus' => 'false'
-            )
-          end
-        end
-
-        context 'when prometheus integration is inactive' do
-          it "doesn't have managed prometheus" do
-            prometheus_integration.update!(manual_configuration: false)
-
-            expect(metrics_data).to include(
-              'has_managed_prometheus' => 'false'
-            )
-          end
-        end
-
-        context 'when a cluster prometheus is available' do
-          let(:cluster) { create(:cluster, projects: [project]) }
-
-          it 'has managed prometheus' do
-            create(:clusters_integrations_prometheus, cluster: cluster)
-
-            expect(metrics_data).to include(
-              'has_managed_prometheus' => 'true'
-            )
-          end
         end
       end
     end

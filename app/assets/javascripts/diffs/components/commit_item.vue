@@ -1,5 +1,5 @@
 <script>
-import { GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlTooltipDirective, GlSafeHtmlDirective } from '@gitlab/ui';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -34,6 +34,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -88,6 +89,9 @@ export default {
       initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
     });
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
+  },
 };
 </script>
 
@@ -101,7 +105,7 @@ export default {
       >
         <div
           v-if="commit.signature_html"
-          v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
+          v-safe-html:[$options.safeHtmlConfig]="commit.signature_html"
         ></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
@@ -142,9 +146,9 @@ export default {
         <div class="commit-detail flex-list">
           <div class="commit-content" data-qa-selector="commit_content">
             <a
+              v-safe-html:[$options.safeHtmlConfig]="commit.title_html"
               :href="commit.commit_url"
               class="commit-row-message item-title"
-              v-html="commit.title_html /* eslint-disable-line vue/no-v-html */"
             ></a>
 
             <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
@@ -174,9 +178,9 @@ export default {
     <div>
       <pre
         v-if="commit.description_html"
+        v-safe-html:[$options.safeHtmlConfig]="commitDescription"
         :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
         class="commit-row-description gl-mb-3 gl-text-body"
-        v-html="commitDescription /* eslint-disable-line vue/no-v-html */"
       ></pre>
     </div>
   </li>

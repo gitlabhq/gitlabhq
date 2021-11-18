@@ -1,8 +1,0 @@
----
-name: group_authorized_agents
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69047
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340166
-milestone: '14.3'
-type: development
-group: group::configure
-default_enabled: false

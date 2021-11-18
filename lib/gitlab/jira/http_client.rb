@@ -32,7 +32,6 @@ module Gitlab
         request_params = { headers: headers }
         request_params[:body] = body if body.present?
         request_params[:headers][:Cookie] = get_cookies if options[:use_cookies]
-        request_params[:timeout] = options[:read_timeout] if options[:read_timeout]
         request_params[:base_uri] = uri.to_s
         request_params.merge!(auth_params)
 

@@ -30,18 +30,20 @@ module Gitlab
 
     source_root File.expand_path('../../../generator_templates/usage_metric_definition', __dir__)
 
-    desc 'Generates a metric definition yml file'
+    desc 'Generates metric definitions yml files'
 
     class_option :ee, type: :boolean, optional: true, default: false, desc: 'Indicates if metric is for ee'
     class_option :dir,
       type: :string, desc: "Indicates the metric location. It must be one of: #{VALID_INPUT_DIRS.join(', ')}"
 
-    argument :key_path, type: :string, desc: 'Unique JSON key path for the metric'
+    argument :key_paths, type: :array, desc: 'Unique JSON key paths for the metrics'
 
     def create_metric_file
       validate!
 
-      template "metric_definition.yml", file_path
+      key_paths.each do |key_path|
+        template "metric_definition.yml", file_path(key_path), key_path
+      end
     end
 
     def time_frame
@@ -66,12 +68,12 @@ module Gitlab
 
     private
 
-    def metric_name_suggestion
+    def metric_name_suggestion(key_path)
       "\nname: \"#{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}\""
     end
 
-    def file_path
-      path = File.join(TOP_LEVEL_DIR, 'metrics', directory&.name, "#{file_name}.yml")
+    def file_path(key_path)
+      path = File.join(TOP_LEVEL_DIR, 'metrics', directory&.name, "#{file_name(key_path)}.yml")
       path = File.join(TOP_LEVEL_DIR_EE, path) if ee?
       path
     end
@@ -79,7 +81,10 @@ module Gitlab
     def validate!
       raise "--dir option is required" unless input_dir.present?
       raise "Invalid dir #{input_dir}, allowed options are #{VALID_INPUT_DIRS.join(', ')}" unless directory.present?
-      raise "Metric definition with key path '#{key_path}' already exists" if metric_definition_exists?
+
+      key_paths.each do |key_path|
+        raise "Metric definition with key path '#{key_path}' already exists" if metric_definition_exists?(key_path)
+      end
     end
 
     def ee?
@@ -93,15 +98,15 @@ module Gitlab
     # Example of file name
     #
     # 20210201124931_g_project_management_issue_title_changed_weekly.yml
-    def file_name
-      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{metric_name}"
+    def file_name(key_path)
+      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{metric_name(key_path)}"
     end
 
     def directory
       @directory ||= TIME_FRAME_DIRS.find { |d| d.match?(input_dir) }
     end
 
-    def metric_name
+    def metric_name(key_path)
       key_path.split('.').last
     end
 
@@ -109,7 +114,7 @@ module Gitlab
       @definitions ||= Gitlab::Usage::MetricDefinition.definitions(skip_validation: true)
     end
 
-    def metric_definition_exists?
+    def metric_definition_exists?(key_path)
       metric_definitions[key_path].present?
     end
   end

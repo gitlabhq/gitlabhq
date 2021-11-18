@@ -4,20 +4,20 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# DevOps Report **(FREE SELF)**
+# DevOps Reports **(FREE SELF)**
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
-
-The DevOps Report gives you an overview of your entire instance's adoption of
+DevOps Reports give you an overview of your entire instance's adoption of
 [Concurrent DevOps](https://about.gitlab.com/topics/concurrent-devops/)
 from planning to monitoring.
 
-To see DevOps Report:
+To see DevOps Reports:
 
 1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Analytics > DevOps Report**.
+1. On the left sidebar, select **Analytics > DevOps Reports**.
 
 ## DevOps Score
+
+> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
 
 NOTE:
 To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). This is because DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
@@ -72,4 +72,4 @@ DevOps Adoption allows you to:
 - Identify specific groups that are lagging in their adoption of GitLab, so you can help them along in their DevOps journey.
 - Find the groups that have adopted certain features, and can provide guidance to other groups on how to use those features.
 
-![DevOps Report](img/admin_devops_adoption_v14_2.png)
+![DevOps Adoption](img/admin_devops_adoption_v14_2.png)

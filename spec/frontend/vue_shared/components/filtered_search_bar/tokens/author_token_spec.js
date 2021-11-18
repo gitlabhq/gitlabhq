@@ -112,6 +112,35 @@ describe('AuthorToken', () => {
         });
       });
 
+      // TODO: rm when completed https://gitlab.com/gitlab-org/gitlab/-/issues/345756
+      describe('when there are null users presents', () => {
+        const mockAuthorsWithNullUser = mockAuthors.concat([null]);
+
+        beforeEach(() => {
+          jest
+            .spyOn(wrapper.vm.config, 'fetchAuthors')
+            .mockResolvedValue({ data: mockAuthorsWithNullUser });
+
+          getBaseToken().vm.$emit('fetch-suggestions', 'root');
+        });
+
+        describe('when res.data is present', () => {
+          it('filters the successful response when null values are present', () => {
+            return waitForPromises().then(() => {
+              expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
+            });
+          });
+        });
+
+        describe('when response is an array', () => {
+          it('filters the successful response when null values are present', () => {
+            return waitForPromises().then(() => {
+              expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
+            });
+          });
+        });
+      });
+
       it('calls `createFlash` with flash error message when request fails', () => {
         jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
 

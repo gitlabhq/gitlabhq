@@ -14,8 +14,7 @@ module Types
     present_using ReleasePresenter
 
     field :tag_name, GraphQL::Types::String, null: true, method: :tag,
-          description: 'Name of the tag associated with the release.',
-          authorize: :download_code
+          description: 'Name of the tag associated with the release.'
     field :tag_path, GraphQL::Types::String, null: true,
           description: 'Relative web path to the tag associated with the release.',
           authorize: :download_code

@@ -3,6 +3,8 @@
 module OauthApplications
   extend ActiveSupport::Concern
 
+  CREATED_SESSION_KEY = :oauth_applications_created
+
   included do
     before_action :prepare_scopes, only: [:create, :update]
   end
@@ -13,6 +15,14 @@ module OauthApplications
     if scopes
       params[:doorkeeper_application][:scopes] = scopes.join(' ')
     end
+  end
+
+  def set_created_session
+    session[CREATED_SESSION_KEY] = true
+  end
+
+  def get_created_session
+    session.delete(CREATED_SESSION_KEY) || false
   end
 
   def load_scopes

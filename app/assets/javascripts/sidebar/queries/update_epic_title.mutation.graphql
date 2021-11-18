@@ -1,4 +1,4 @@
-mutation updateEpic($input: UpdateEpicInput!) {
+mutation updateEpicTitle($input: UpdateEpicInput!) {
   updateIssuableTitle: updateEpic(input: $input) {
     epic {
       title

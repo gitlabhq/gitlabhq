@@ -1,26 +1,46 @@
 <script>
-import { GlFormInput, GlFormGroup, GlButton, GlForm } from '@gitlab/ui';
+import { GlFormInput, GlFormGroup, GlButton, GlForm, GlModal } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { __ } from '~/locale';
 
 export const i18n = {
   currentPassword: __('Current password'),
+  confirmTitle: __('Are you sure?'),
   confirmWebAuthn: __(
-    'Are you sure? This will invalidate your registered applications and U2F / WebAuthn devices.',
+    'This will invalidate your registered applications and U2F / WebAuthn devices.',
   ),
-  confirm: __('Are you sure? This will invalidate your registered applications and U2F devices.'),
+  confirm: __('This will invalidate your registered applications and U2F devices.'),
   disableTwoFactor: __('Disable two-factor authentication'),
+  disable: __('Disable'),
+  cancel: __('Cancel'),
   regenerateRecoveryCodes: __('Regenerate recovery codes'),
+  currentPasswordInvalidFeedback: __('Please enter your current password.'),
 };
 
 export default {
   name: 'ManageTwoFactorForm',
   i18n,
+  modalId: 'manage-two-factor-auth-confirm-modal',
+  modalActions: {
+    primary: {
+      text: i18n.disable,
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    secondary: {
+      text: i18n.cancel,
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
   components: {
     GlForm,
     GlFormInput,
     GlFormGroup,
     GlButton,
+    GlModal,
   },
   inject: [
     'webauthnEnabled',
@@ -32,8 +52,11 @@ export default {
   ],
   data() {
     return {
-      method: '',
-      action: '#',
+      method: null,
+      action: null,
+      currentPassword: '',
+      currentPasswordState: null,
+      showConfirmModal: false,
     };
   },
   computed: {
@@ -46,9 +69,34 @@ export default {
     },
   },
   methods: {
-    handleFormSubmit(event) {
-      this.method = event.submitter.dataset.formMethod;
-      this.action = event.submitter.dataset.formAction;
+    submitForm() {
+      this.$refs.form.$el.submit();
+    },
+    async handleSubmitButtonClick({ method, action, confirm = false }) {
+      this.method = method;
+      this.action = action;
+
+      if (this.isCurrentPasswordRequired && this.currentPassword === '') {
+        this.currentPasswordState = false;
+
+        return;
+      }
+
+      this.currentPasswordState = null;
+
+      if (confirm) {
+        this.showConfirmModal = true;
+
+        return;
+      }
+
+      // Wait for form action and method to be updated
+      await this.$nextTick();
+
+      this.submitForm();
+    },
+    handleModalPrimary() {
+      this.submitForm();
     },
   },
   csrf,
@@ -57,10 +105,11 @@ export default {
 
 <template>
   <gl-form
-    class="gl-display-inline-block"
+    ref="form"
+    class="gl-sm-display-inline-block"
     method="post"
     :action="action"
-    @submit="handleFormSubmit($event)"
+    @submit.prevent
   >
     <input type="hidden" name="_method" data-testid="test-2fa-method-field" :value="method" />
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
@@ -69,35 +118,59 @@ export default {
       v-if="isCurrentPasswordRequired"
       :label="$options.i18n.currentPassword"
       label-for="current-password"
+      :state="currentPasswordState"
+      :invalid-feedback="$options.i18n.currentPasswordInvalidFeedback"
     >
       <gl-form-input
         id="current-password"
+        v-model="currentPassword"
         type="password"
         name="current_password"
-        required
+        :state="currentPasswordState"
         data-qa-selector="current_password_field"
       />
     </gl-form-group>
 
-    <gl-button
-      type="submit"
-      class="btn-danger gl-mr-3 gl-display-inline-block"
-      data-testid="test-2fa-disable-button"
-      variant="danger"
-      :data-confirm="confirmText"
-      :data-form-action="profileTwoFactorAuthPath"
-      :data-form-method="profileTwoFactorAuthMethod"
+    <div class="gl-display-flex gl-flex-wrap">
+      <gl-button
+        type="submit"
+        class="gl-sm-mr-3 gl-w-full gl-sm-w-auto"
+        data-testid="test-2fa-disable-button"
+        variant="danger"
+        @click.prevent="
+          handleSubmitButtonClick({
+            method: profileTwoFactorAuthMethod,
+            action: profileTwoFactorAuthPath,
+            confirm: true,
+          })
+        "
+      >
+        {{ $options.i18n.disableTwoFactor }}
+      </gl-button>
+      <gl-button
+        type="submit"
+        class="gl-mt-3 gl-sm-mt-0 gl-w-full gl-sm-w-auto"
+        data-testid="test-2fa-regenerate-codes-button"
+        @click.prevent="
+          handleSubmitButtonClick({
+            method: codesProfileTwoFactorAuthMethod,
+            action: codesProfileTwoFactorAuthPath,
+          })
+        "
+      >
+        {{ $options.i18n.regenerateRecoveryCodes }}
+      </gl-button>
+    </div>
+    <gl-modal
+      v-model="showConfirmModal"
+      :modal-id="$options.modalId"
+      size="sm"
+      :title="$options.i18n.confirmTitle"
+      :action-primary="$options.modalActions.primary"
+      :action-secondary="$options.modalActions.secondary"
+      @primary="handleModalPrimary"
     >
-      {{ $options.i18n.disableTwoFactor }}
-    </gl-button>
-    <gl-button
-      type="submit"
-      class="gl-display-inline-block"
-      data-testid="test-2fa-regenerate-codes-button"
-      :data-form-action="codesProfileTwoFactorAuthPath"
-      :data-form-method="codesProfileTwoFactorAuthMethod"
-    >
-      {{ $options.i18n.regenerateRecoveryCodes }}
-    </gl-button>
+      {{ confirmText }}
+    </gl-modal>
   </gl-form>
 </template>

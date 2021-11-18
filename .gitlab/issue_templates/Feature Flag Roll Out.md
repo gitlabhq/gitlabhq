@@ -30,6 +30,17 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- Describe the expected outcome when rolling out this feature -->
 
+### When is the feature viable?
+
+<!-- What are the settings we need to configure in order to have this feature viable? -->
+
+<!-- 
+Example below:
+ 
+1. Enable service ping collection
+   `ApplicationSetting.first.update(usage_ping_enabled: true)`
+-->
+
 ### What might happen if this goes wrong?
 
 <!-- Should the feature flag be turned off? Any MRs that need to be rolled back? Communication that needs to happen? What are some things you can think of that could go wrong - data loss or broken pages? -->
@@ -37,6 +48,12 @@ Are there any other stages or teams involved that need to be kept in the loop?
 ### What can we monitor to detect problems with this?
 
 <!-- Which dashboards from https://dashboards.gitlab.net are most relevant? -->
+_Consider mentioning checks for 5xx errors or other anomalies like an increase in redirects 
+(302 HTTP response status)_
+
+### What can we check for monitoring production after rollouts?
+
+_Consider adding links to check for Sentry errors, Production logs for 5xx, 302s, etc._
 
 ## Rollout Steps
 
@@ -73,11 +90,14 @@ Are there any other stages or teams involved that need to be kept in the loop?
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default)).
 - [ ] Announce on [the feature issue](ISSUE LINK) an estimated time this will be enabled on GitLab.com.
-- [ ] If the feature might impact the user experience, notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
+- [ ] Notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 
 ### Global rollout on production
 
-All `/chatops` commands that target production should be done in the `#production` slack channel for visibility.
+For visibility, all `/chatops` commands that target production should be:
+
+- Executed in the `#production` slack channel.
+- Cross-posted (with the command results) to the responsible team's slack channel (`#g_TEAM_NAME`).
 
 - [ ] [Incrementally roll out](https://docs.gitlab.com/ee/development/feature_flags/controls.html#process) the feature.
   - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
@@ -148,5 +168,5 @@ codebase.
 /chatops run feature set <feature-flag-name> false
 ```
 
-/label ~"feature flag"
+/label ~"feature flag" ~"type::feature" ~"feature::addition"
 /assign DRI

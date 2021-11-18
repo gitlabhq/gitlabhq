@@ -57,16 +57,25 @@ module QA
         end
       end
 
-      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0, raise_on_failure: true)
-        Support::Retrier.retry_until(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval, raise_on_failure: raise_on_failure) do
-          yield
-        end
+      def retry_until(max_attempts: 3, reload: false, sleep_interval: 0, raise_on_failure: true, message: nil, &block)
+        Support::Retrier.retry_until(
+          max_attempts: max_attempts,
+          reload_page: (reload && self),
+          sleep_interval: sleep_interval,
+          raise_on_failure: raise_on_failure,
+          message: message,
+          &block
+        )
       end
 
-      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)
-        Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
-          yield
-        end
+      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5, message: nil, &block)
+        Support::Retrier.retry_on_exception(
+          max_attempts: max_attempts,
+          reload_page: (reload && self),
+          sleep_interval: sleep_interval,
+          message: message,
+          &block
+        )
       end
 
       def scroll_to(selector, text: nil)

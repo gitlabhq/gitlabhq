@@ -82,7 +82,7 @@ The Infrastructure Registry is automatically enabled.
 
 For self-managed instances, a GitLab administrator can
 [disable](../../../administration/packages/index.md) **Packages & Registries**,
-which removes this menu item from the sidebar. **(FREE SELF)**
+which removes this menu item from the sidebar.
 
 You can also remove the Infrastructure Registry for a specific project:
 

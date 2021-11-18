@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'uri'
-
 module Gitlab
   module Webpack
     class Manifest
@@ -78,49 +75,16 @@ module Gitlab
         end
 
         def load_manifest
-          data = if Gitlab.config.webpack.dev_server.enabled
-                   load_dev_server_manifest
-                 else
-                   load_static_manifest
-                 end
+          data = Gitlab::Webpack::FileLoader.load(Gitlab.config.webpack.manifest_filename)
 
           Gitlab::Json.parse(data)
-        end
-
-        def load_dev_server_manifest
-          host = Gitlab.config.webpack.dev_server.host
-          port = Gitlab.config.webpack.dev_server.port
-          scheme = Gitlab.config.webpack.dev_server.https ? 'https' : 'http'
-          uri = Addressable::URI.new(scheme: scheme, host: host, port: port, path: dev_server_path)
-
-          # localhost could be blocked via Gitlab::HTTP
-          response = HTTParty.get(uri.to_s, verify: false) # rubocop:disable Gitlab/HTTParty
-
-          return response.body if response.code == 200
-
-          raise "HTTP error #{response.code}"
-        rescue OpenSSL::SSL::SSLError, EOFError => e
+        rescue Gitlab::Webpack::FileLoader::StaticLoadError => e
+          raise ManifestLoadError.new("Could not load compiled manifest from #{e.uri}.\n\nHave you run `rake gitlab:assets:compile`?", e.original_error)
+        rescue Gitlab::Webpack::FileLoader::DevServerSSLError => e
           ssl_status = Gitlab.config.webpack.dev_server.https ? ' over SSL' : ''
-          raise ManifestLoadError.new("Could not connect to webpack-dev-server at #{uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and webpack-dev-server match.", e)
-        rescue StandardError => e
-          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{uri}.\n\nIs webpack-dev-server running? Try running `gdk status webpack` or `gdk tail webpack`.", e)
-        end
-
-        def load_static_manifest
-          File.read(static_manifest_path)
-        rescue StandardError => e
-          raise ManifestLoadError.new("Could not load compiled manifest from #{static_manifest_path}.\n\nHave you run `rake gitlab:assets:compile`?", e)
-        end
-
-        def static_manifest_path
-          ::Rails.root.join(
-            Gitlab.config.webpack.output_dir,
-            Gitlab.config.webpack.manifest_filename
-          )
-        end
-
-        def dev_server_path
-          "/#{Gitlab.config.webpack.public_path}/#{Gitlab.config.webpack.manifest_filename}"
+          raise ManifestLoadError.new("Could not connect to webpack-dev-server at #{e.uri}#{ssl_status}.\n\nIs SSL enabled? Check that settings in `gitlab.yml` and webpack-dev-server match.", e.original_error)
+        rescue Gitlab::Webpack::FileLoader::DevServerLoadError => e
+          raise ManifestLoadError.new("Could not load manifest from webpack-dev-server at #{e.uri}.\n\nIs webpack-dev-server running? Try running `gdk status webpack` or `gdk tail webpack`.", e.original_error)
         end
       end
     end

@@ -1,0 +1,7 @@
+- method = local_assigns.fetch(:method, nil)
+- legend = local_assigns.fetch(:legend, nil)
+
+%fieldset.form-group
+  %legend.h5.gl-border-none.gl-mt-0.gl-mb-3= legend
+  - Gitlab::Access.project_creation_options.each do |label, value|
+    = f.gitlab_ui_radio_component method, value, label

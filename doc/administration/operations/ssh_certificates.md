@@ -19,10 +19,8 @@ In such setups some external automated process is needed to constantly
 upload the new keys to GitLab.
 
 WARNING:
-OpenSSH version 6.9+ is required because that version
-introduced the `AuthorizedPrincipalsCommand` configuration option. If
-using CentOS 6, you can [follow these instructions](fast_ssh_key_lookup.md#compiling-a-custom-version-of-openssh-for-centos-6)
-to compile an up-to-date version.
+OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
+able to accept a fingerprint. Check the version of OpenSSH on your server.
 
 ## Why use OpenSSH certificates?
 

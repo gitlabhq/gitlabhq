@@ -1,5 +1,6 @@
-- if group.adjourned_deletion?
-  = render_if_exists 'groups/settings/adjourned_deletion', group: group
-- else
-  = render 'groups/settings/permanent_deletion', group: group
+- remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 
+- if group.adjourned_deletion?
+  = render_if_exists 'groups/settings/adjourned_deletion', group: group, remove_form_id: remove_form_id
+- else
+  = render 'groups/settings/permanent_deletion', group: group, remove_form_id: remove_form_id

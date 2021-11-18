@@ -14,13 +14,13 @@ RSpec.describe Packages::Package, type: :model do
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
-    it { is_expected.to have_many(:pipelines).through(:build_infos) }
     it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
     it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
   end
 
   describe '.with_debian_codename' do
@@ -996,6 +996,28 @@ RSpec.describe Packages::Package, type: :model do
       it 'returns the pipeline' do
         expect(package.pipeline).to eq(pipeline)
       end
+    end
+  end
+
+  describe '#pipelines' do
+    let_it_be_with_refind(:package) { create(:maven_package) }
+
+    subject { package.pipelines }
+
+    context 'package without pipeline' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'package with pipeline' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+      let_it_be(:pipeline2) { create(:ci_pipeline) }
+
+      before do
+        package.build_infos.create!(pipeline: pipeline)
+        package.build_infos.create!(pipeline: pipeline2)
+      end
+
+      it { is_expected.to contain_exactly(pipeline, pipeline2) }
     end
   end
 

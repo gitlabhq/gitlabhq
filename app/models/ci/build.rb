@@ -10,7 +10,6 @@ module Ci
     include Presentable
     include Importable
     include Ci::HasRef
-    include IgnorableColumns
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -69,9 +68,6 @@ module Ci
     delegate :service_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
-
-    ignore_columns :id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
-    ignore_columns :stage_id_convert_to_bigint, remove_with: '14.5', remove_after: '2021-10-22'
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after
@@ -175,6 +171,7 @@ module Ci
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
+    scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
@@ -313,12 +310,6 @@ module Ci
       end
 
       after_transition pending: :running do |build|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            build.deployment&.run
-          end
-        end
-
         build.run_after_commit do
           build.pipeline.persistent_ref.create
 
@@ -339,33 +330,10 @@ module Ci
       end
 
       after_transition any => [:success] do |build|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            build.deployment&.succeed
-          end
-        end
-
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
-      end
-
-      after_transition any => [:failed] do |build|
-        next unless build.project
-        next unless build.deployment
-
-        unless build.update_deployment_after_transaction_commit?
-          begin
-            Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-              build.deployment.drop!
-            end
-          rescue StandardError => e
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, build_id: build.id)
-          end
-        end
-
-        true
       end
 
       after_transition any => [:failed] do |build|
@@ -380,25 +348,12 @@ module Ci
         end
       end
 
-      after_transition any => [:skipped, :canceled] do |build, transition|
-        unless build.update_deployment_after_transaction_commit?
-          Gitlab::Database.allow_cross_database_modification_within_transaction(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338867') do
-            if transition.to_name == :skipped
-              build.deployment&.skip
-            else
-              build.deployment&.cancel
-            end
-          end
-        end
-      end
-
       # Synchronize Deployment Status
       # Please note that the data integirty is not assured because we can't use
       # a database transaction due to DB decomposition.
       after_transition do |build, transition|
         next if transition.loopback?
         next unless build.project
-        next unless build.update_deployment_after_transaction_commit?
 
         build.run_after_commit do
           build.deployment&.sync_status_with(build)
@@ -585,7 +540,6 @@ module Ci
           .concat(persisted_variables)
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
-          .concat(kubernetes_variables)
           .concat(scoped_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
@@ -1120,12 +1074,6 @@ module Ci
       runner&.instance_type?
     end
 
-    def update_deployment_after_transaction_commit?
-      strong_memoize(:update_deployment_after_transaction_commit) do
-        Feature.enabled?(:update_deployment_after_transaction_commit, project, default_enabled: :yaml)
-      end
-    end
-
     protected
 
     def run_status_commit_hooks!
@@ -1211,10 +1159,6 @@ module Ci
       rescue OpenSSL::PKey::RSAError, Gitlab::Ci::Jwt::NoSigningKeyError => e
         Gitlab::ErrorTracking.track_exception(e)
       end
-    end
-
-    def kubernetes_variables
-      [] # Overridden in EE
     end
 
     def conditionally_allow_failure!(exit_code)

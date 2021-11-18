@@ -31,7 +31,6 @@ module QA
             view 'app/assets/javascripts/monitoring/components/dashboard_panel.vue' do
               element :prometheus_graph_widgets
               element :prometheus_widgets_dropdown
-              element :alert_widget_menu_item
               element :generate_chart_link_menu_item
             end
 

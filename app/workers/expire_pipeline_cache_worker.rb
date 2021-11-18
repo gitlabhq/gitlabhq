@@ -17,13 +17,11 @@ class ExpirePipelineCacheWorker
   # Uncomment once https://gitlab.com/gitlab-org/gitlab/-/issues/325291 is resolved
   # idempotent!
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
-    pipeline = Ci::Pipeline.find_by(id: pipeline_id)
+    pipeline = Ci::Pipeline.find_by_id(pipeline_id)
     return unless pipeline
 
     Ci::ExpirePipelineCacheService.new.execute(pipeline)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
 # rubocop:enable Scalability/IdempotentWorker

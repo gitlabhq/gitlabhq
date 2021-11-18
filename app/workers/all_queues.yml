@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:clusters_integrations_check_prometheus_health
+  :worker_name: Clusters::Integrations::CheckPrometheusHealthWorker
+  :feature_category: :incident_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -347,12 +356,21 @@
   :tags: []
 - :name: cronjob:issue_due_scheduler
   :worker_name: IssueDueSchedulerWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:issues_reschedule_stuck_issue_rebalances
+  :worker_name: Issues::RescheduleStuckIssueRebalancesWorker
+  :feature_category: :team_planning
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:jira_import_stuck_jira_import_jobs
   :worker_name: Gitlab::JiraImport::StuckJiraImportJobsWorker
@@ -362,6 +380,15 @@
   :resource_boundary: :cpu
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: cronjob:loose_foreign_keys_cleanup
+  :worker_name: LooseForeignKeys::CleanupWorker
+  :feature_category: :sharding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:member_invitation_reminder_emails
   :worker_name: MemberInvitationReminderEmailsWorker
@@ -694,6 +721,15 @@
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: deployment:deployments_archive_in_project
+  :worker_name: Deployments::ArchiveInProjectWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 3
   :idempotent: true
   :tags: []
 - :name: deployment:deployments_drop_older_deployments
@@ -1069,15 +1105,6 @@
   :idempotent:
   :tags:
   - :needs_own_queue
-- :name: incident_management:clusters_applications_check_prometheus_health
-  :worker_name: Clusters::Applications::CheckPrometheusHealthWorker
-  :feature_category: :incident_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: true
-  :tags: []
 - :name: incident_management:incident_management_add_severity_system_note
   :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management
@@ -1251,7 +1278,7 @@
   :tags: []
 - :name: mail_scheduler:mail_scheduler_issue_due
   :worker_name: MailScheduler::IssueDueWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1260,7 +1287,7 @@
   :tags: []
 - :name: mail_scheduler:mail_scheduler_notification_service
   :worker_name: MailScheduler::NotificationServiceWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :cpu
@@ -1737,7 +1764,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1746,7 +1773,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_designs
   :worker_name: TodosDestroyer::DestroyedDesignsWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1755,7 +1782,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_destroyed_issuable
   :worker_name: TodosDestroyer::DestroyedIssuableWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1764,7 +1791,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :worker_name: TodosDestroyer::EntityLeaveWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1773,7 +1800,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_group_private
   :worker_name: TodosDestroyer::GroupPrivateWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1782,7 +1809,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_private_features
   :worker_name: TodosDestroyer::PrivateFeaturesWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -1791,7 +1818,7 @@
   :tags: []
 - :name: todos_destroyer:todos_destroyer_project_private
   :worker_name: TodosDestroyer::ProjectPrivateWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2052,7 +2079,7 @@
   :tags: []
 - :name: email_receiver
   :worker_name: EmailReceiverWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :unknown
@@ -2116,7 +2143,7 @@
   :tags: []
 - :name: export_csv
   :worker_name: ExportCsvWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :cpu
@@ -2206,11 +2233,20 @@
   :tags: []
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: integrations_create_external_cross_reference
+  :worker_name: Integrations::CreateExternalCrossReferenceWorker
+  :feature_category: :integrations
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: true
   :tags: []
 - :name: invalid_gpg_signature_update
@@ -2233,7 +2269,7 @@
   :tags: []
 - :name: issuable_export_csv
   :worker_name: IssuableExportCsvWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :cpu
@@ -2242,7 +2278,7 @@
   :tags: []
 - :name: issuable_label_links_destroy
   :worker_name: Issuable::LabelLinksDestroyWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2251,7 +2287,7 @@
   :tags: []
 - :name: issuables_clear_groups_issue_counter
   :worker_name: Issuables::ClearGroupsIssueCounterWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2260,7 +2296,7 @@
   :tags: []
 - :name: issue_placement
   :worker_name: IssuePlacementWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -2269,7 +2305,25 @@
   :tags: []
 - :name: issue_rebalancing
   :worker_name: IssueRebalancingWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: issues_placement
+  :worker_name: Issues::PlacementWorker
+  :feature_category: :team_planning
+  :has_external_dependencies:
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: issues_rebalancing
+  :worker_name: Issues::RebalancingWorker
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown
@@ -2375,6 +2429,15 @@
   :weight: 1
   :idempotent:
   :tags: []
+- :name: namespaces_invite_team_email
+  :worker_name: Namespaces::InviteTeamEmailWorker
+  :feature_category: :experimentation_activation
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent:
+  :tags: []
 - :name: namespaces_onboarding_issue_created
   :worker_name: Namespaces::OnboardingIssueCreatedWorker
   :feature_category: :onboarding
@@ -2413,7 +2476,7 @@
   :tags: []
 - :name: new_issue
   :worker_name: NewIssueWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -2431,7 +2494,7 @@
   :tags: []
 - :name: new_note
   :worker_name: NewNoteWorker
-  :feature_category: :issue_tracking
+  :feature_category: :team_planning
   :has_external_dependencies:
   :urgency: :high
   :resource_boundary: :cpu
@@ -2798,6 +2861,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent:
+  :tags: []
+- :name: tasks_to_be_done_create
+  :worker_name: TasksToBeDone::CreateWorker
+  :feature_category: :onboarding
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker

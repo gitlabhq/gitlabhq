@@ -114,7 +114,7 @@ for a given group:
 1. On the left sidebar, select **Settings > Metrics and profiling**
    (`admin/application_settings/metrics_and_profiling`), and expand
    **Profiling - Performance bar**.
-1. Click **Allow non-administrators to access to the performance bar**.
+1. Click **Allow non-administrators access to the performance bar**.
 1. In the **Allow access to members of the following group** field, provide the full path of the
    group allowed to access the performance.
 1. Click **Save changes**.

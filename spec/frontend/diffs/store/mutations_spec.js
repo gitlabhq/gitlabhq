@@ -633,13 +633,33 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('VIEW_DIFF_FILE', () => {
+  describe('SET_CURRENT_DIFF_FILE', () => {
     it('updates currentDiffFileId', () => {
       const state = createState();
 
-      mutations[types.VIEW_DIFF_FILE](state, 'somefileid');
+      mutations[types.SET_CURRENT_DIFF_FILE](state, 'somefileid');
 
       expect(state.currentDiffFileId).toBe('somefileid');
+    });
+  });
+
+  describe('SET_DIFF_FILE_VIEWED', () => {
+    let state;
+
+    beforeEach(() => {
+      state = {
+        viewedDiffFileIds: { 123: true },
+      };
+    });
+
+    it.each`
+      id       | bool     | outcome
+      ${'abc'} | ${true}  | ${{ 123: true, abc: true }}
+      ${'123'} | ${false} | ${{ 123: false }}
+    `('sets the viewed files list to $bool for the id $id', ({ id, bool, outcome }) => {
+      mutations[types.SET_DIFF_FILE_VIEWED](state, { id, seen: bool });
+
+      expect(state.viewedDiffFileIds).toEqual(outcome);
     });
   });
 

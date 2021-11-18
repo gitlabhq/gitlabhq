@@ -26,14 +26,7 @@ RSpec.describe Resolvers::IssuesResolver do
     expect(described_class).to have_nullable_graphql_type(Types::IssueType.connection_type)
   end
 
-  shared_context 'filtering for confidential issues' do
-    let_it_be(:confidential_issue1) { create(:issue, project: project, confidential: true) }
-    let_it_be(:confidential_issue2) { create(:issue, project: other_project, confidential: true) }
-  end
-
   context "with a project" do
-    let(:obj) { project }
-
     before_all do
       project.add_developer(current_user)
       project.add_reporter(reporter)
@@ -108,6 +101,54 @@ RSpec.describe Resolvers::IssuesResolver do
             expect do
               resolve_issues(not: { milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started })
             end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.')
+          end
+        end
+      end
+
+      describe 'filter by release' do
+        let_it_be(:milestone1) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 1') }
+        let_it_be(:milestone2) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 2') }
+        let_it_be(:milestone3) { create(:milestone, project: project, start_date: 1.day.from_now, title: 'Version 3') }
+        let_it_be(:release1) { create(:release, tag: 'v1.0', milestones: [milestone1], project: project) }
+        let_it_be(:release2) { create(:release, tag: 'v2.0', milestones: [milestone2], project: project) }
+        let_it_be(:release3) { create(:release, tag: 'v3.0', milestones: [milestone3], project: project) }
+        let_it_be(:release_issue1) { create(:issue, project: project, milestone: milestone1) }
+        let_it_be(:release_issue2) { create(:issue, project: project, milestone: milestone2) }
+        let_it_be(:release_issue3) { create(:issue, project: project, milestone: milestone3) }
+
+        describe 'filter by release_tag' do
+          it 'returns all issues associated with the specified tags' do
+            expect(resolve_issues(release_tag: [release1.tag, release3.tag])).to contain_exactly(release_issue1, release_issue3)
+          end
+
+          context 'when release_tag_wildcard_id is also provided' do
+            it 'raises a mutually eclusive argument error' do
+              expect do
+                resolve_issues(release_tag: [release1.tag], release_tag_wildcard_id: 'ANY')
+              end.to raise_error(Gitlab::Graphql::Errors::ArgumentError, 'only one of [releaseTag, releaseTagWildcardId] arguments is allowed at the same time.')
+            end
+          end
+        end
+
+        describe 'filter by negated release_tag' do
+          it 'returns all issues not associated with the specified tags' do
+            expect(resolve_issues(not: { release_tag: [release1.tag, release3.tag] })).to contain_exactly(release_issue2)
+          end
+        end
+
+        describe 'filter by release_tag_wildcard_id' do
+          subject { resolve_issues(release_tag_wildcard_id: wildcard_id) }
+
+          context 'when filtering by ANY' do
+            let(:wildcard_id) { 'ANY' }
+
+            it { is_expected.to contain_exactly(release_issue1, release_issue2, release_issue3) }
+          end
+
+          context 'when filtering by NONE' do
+            let(:wildcard_id) { 'NONE' }
+
+            it { is_expected.to contain_exactly(issue1, issue2) }
           end
         end
       end
@@ -230,7 +271,8 @@ RSpec.describe Resolvers::IssuesResolver do
       end
 
       context 'confidential issues' do
-        include_context 'filtering for confidential issues'
+        let_it_be(:confidential_issue1) { create(:issue, project: project, confidential: true) }
+        let_it_be(:confidential_issue2) { create(:issue, project: other_project, confidential: true) }
 
         context "when user is allowed to view confidential issues" do
           it 'returns all viewable issues by default' do
@@ -561,72 +603,12 @@ RSpec.describe Resolvers::IssuesResolver do
     end
   end
 
-  context "with a group" do
-    let(:obj) { group }
-
-    before do
-      group.add_developer(current_user)
-    end
-
-    describe '#resolve' do
-      it 'finds all group issues' do
-        expect(resolve_issues).to contain_exactly(issue1, issue2, issue3)
-      end
-
-      it 'returns issues without the specified issue_type' do
-        expect(resolve_issues({ not: { types: ['issue'] } })).to contain_exactly(issue1)
-      end
-
-      context "confidential issues" do
-        include_context 'filtering for confidential issues'
-
-        context "when user is allowed to view confidential issues" do
-          it 'returns all viewable issues by default' do
-            expect(resolve_issues).to contain_exactly(issue1, issue2, issue3, confidential_issue1, confidential_issue2)
-          end
-
-          context 'filtering for confidential issues' do
-            it 'returns only the non-confidential issues for the group when filter is set to false' do
-              expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2, issue3)
-            end
-
-            it "returns only the confidential issues for the group when filter is set to true" do
-              expect(resolve_issues({ confidential: true })).to contain_exactly(confidential_issue1, confidential_issue2)
-            end
-          end
-        end
-
-        context "when user is not allowed to see confidential issues" do
-          before do
-            group.add_guest(current_user)
-          end
-
-          it 'returns all viewable issues by default' do
-            expect(resolve_issues).to contain_exactly(issue1, issue2, issue3)
-          end
-
-          context 'filtering for confidential issues' do
-            it 'does not return the confidential issues when filter is set to false' do
-              expect(resolve_issues({ confidential: false })).to contain_exactly(issue1, issue2, issue3)
-            end
-
-            it 'does not return the confidential issues when filter is set to true' do
-              expect(resolve_issues({ confidential: true })).to be_empty
-            end
-          end
-        end
-      end
-    end
-  end
-
   context "when passing a non existent, batch loaded project" do
     let!(:project) do
       BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
         loader.call("non-existent-path", nil)
       end
     end
-
-    let(:obj) { project }
 
     it "returns nil without breaking" do
       expect(resolve_issues(iids: ["don't", "break"])).to be_empty
@@ -648,6 +630,6 @@ RSpec.describe Resolvers::IssuesResolver do
   end
 
   def resolve_issues(args = {}, context = { current_user: current_user })
-    resolve(described_class, obj: obj, args: args, ctx: context)
+    resolve(described_class, obj: project, args: args, ctx: context)
   end
 end

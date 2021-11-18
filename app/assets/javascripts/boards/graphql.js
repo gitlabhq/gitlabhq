@@ -17,6 +17,5 @@ export const gqlClient = createDefaultClient(
 
       fragmentMatcher,
     },
-    assumeImmutableResults: true,
   },
 );

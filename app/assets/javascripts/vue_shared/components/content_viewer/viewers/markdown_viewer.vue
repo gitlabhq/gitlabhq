@@ -1,5 +1,8 @@
 <script>
-import { GlDeprecatedSkeletonLoading as GlSkeletonLoading } from '@gitlab/ui';
+import {
+  GlDeprecatedSkeletonLoading as GlSkeletonLoading,
+  GlSafeHtmlDirective as SafeHtml,
+} from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { forEach, escape } from 'lodash';
@@ -12,6 +15,9 @@ let axiosSource;
 export default {
   components: {
     GlSkeletonLoading,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     content: {
@@ -103,6 +109,7 @@ export default {
       }
     },
   },
+  safeHtmlConfig: { ADD_TAGS: ['gl-emoji', 'use'] },
 };
 </script>
 
@@ -111,8 +118,8 @@ export default {
     <gl-skeleton-loading v-if="isLoading" />
     <div
       v-else
+      v-safe-html:[$options.safeHtmlConfig]="previewContent"
       class="md gl-ml-auto gl-mr-auto"
-      v-html="previewContent /* eslint-disable-line vue/no-v-html */"
     ></div>
   </div>
 </template>

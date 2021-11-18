@@ -44,7 +44,7 @@ class FinalizeConvertGeoJobArtifactDeletedEventsBigint < ActiveRecord::Migration
       change_column_default TABLE_NAME, COLUMN_NAME, nil
       change_column_default TABLE_NAME, COLUMN_NAME_CONVERTED, 0
 
-      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(COLUMN_NAME, COLUMN_NAME_CONVERTED)
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(COLUMN_NAME, COLUMN_NAME_CONVERTED)
       execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
 
       execute "DROP INDEX #{old_index_name}"

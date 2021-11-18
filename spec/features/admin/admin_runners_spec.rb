@@ -24,40 +24,37 @@ RSpec.describe "Admin Runners" do
 
         visit admin_runners_path
 
-        expect(page).to have_text "Set up a shared runner manually"
+        expect(page).to have_text "Register an instance runner"
         expect(page).to have_text "Runners currently online: 1"
       end
 
-      it 'with an instance runner shows an instance badge and no project count' do
+      it 'with an instance runner shows an instance badge' do
         runner = create(:ci_runner, :instance)
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'shared'
-          expect(page).to have_text 'n/a'
         end
       end
 
-      it 'with a group runner shows a group badge and no project count' do
+      it 'with a group runner shows a group badge' do
         runner = create(:ci_runner, :group, groups: [group])
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'group'
-          expect(page).to have_text 'n/a'
         end
       end
 
-      it 'with a project runner shows a project badge and project count' do
+      it 'with a project runner shows a project badge' do
         runner = create(:ci_runner, :project, projects: [project])
 
         visit admin_runners_path
 
         within "[data-testid='runner-row-#{runner.id}']" do
           expect(page).to have_selector '.badge', text: 'specific'
-          expect(page).to have_text '1'
         end
       end
 
@@ -67,6 +64,13 @@ RSpec.describe "Admin Runners" do
           create(:ci_runner, :instance, description: 'runner-bar')
 
           visit admin_runners_path
+        end
+
+        it 'runner types tabs have total counts and can be selected' do
+          expect(page).to have_link('All 2')
+          expect(page).to have_link('Instance 2')
+          expect(page).to have_link('Group 0')
+          expect(page).to have_link('Project 0')
         end
 
         it 'shows runners' do
@@ -137,6 +141,19 @@ RSpec.describe "Admin Runners" do
           expect(page).not_to have_content 'runner-b-1'
           expect(page).not_to have_content 'runner-a-2'
         end
+
+        it 'shows correct runner when type is selected and search term is entered' do
+          create(:ci_runner, :instance, description: 'runner-connected', contacted_at: Time.now)
+          create(:ci_runner, :instance, description: 'runner-not-connected', contacted_at: nil)
+
+          visit admin_runners_path
+
+          # use the string "Not" to avoid using space and trigger an early selection
+          input_filtered_search_filter_is_only('Status', 'Not')
+
+          expect(page).not_to have_content 'runner-connected'
+          expect(page).to have_content 'runner-not-connected'
+        end
       end
 
       describe 'filter by type' do
@@ -145,13 +162,25 @@ RSpec.describe "Admin Runners" do
           create(:ci_runner, :group, description: 'runner-group', groups: [group])
         end
 
+        it '"All" tab is selected by default' do
+          visit admin_runners_path
+
+          page.within('[data-testid="runner-type-tabs"]') do
+            expect(page).to have_link('All', class: 'active')
+          end
+        end
+
         it 'shows correct runner when type matches' do
           visit admin_runners_path
 
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-group'
 
-          input_filtered_search_filter_is_only('Type', 'project')
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on('Project')
+
+            expect(page).to have_link('Project', class: 'active')
+          end
 
           expect(page).to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
@@ -160,7 +189,11 @@ RSpec.describe "Admin Runners" do
         it 'shows no runner when type does not match' do
           visit admin_runners_path
 
-          input_filtered_search_filter_is_only('Type', 'instance')
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Instance'
+
+            expect(page).to have_link('Instance', class: 'active')
+          end
 
           expect(page).not_to have_content 'runner-project'
           expect(page).not_to have_content 'runner-group'
@@ -173,7 +206,9 @@ RSpec.describe "Admin Runners" do
 
           visit admin_runners_path
 
-          input_filtered_search_filter_is_only('Type', 'project')
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Project'
+          end
 
           expect(page).to have_content 'runner-project'
           expect(page).to have_content 'runner-2-project'
@@ -184,6 +219,26 @@ RSpec.describe "Admin Runners" do
           expect(page).to have_content 'runner-project'
           expect(page).not_to have_content 'runner-2-project'
           expect(page).not_to have_content 'runner-group'
+        end
+
+        it 'maintains the same filter when switching between runner types' do
+          create(:ci_runner, :project, description: 'runner-paused-project', active: false, projects: [project])
+
+          visit admin_runners_path
+
+          input_filtered_search_filter_is_only('Status', 'Active')
+
+          expect(page).to have_content 'runner-project'
+          expect(page).to have_content 'runner-group'
+          expect(page).not_to have_content 'runner-paused-project'
+
+          page.within('[data-testid="runner-type-tabs"]') do
+            click_on 'Project'
+          end
+
+          expect(page).to have_content 'runner-project'
+          expect(page).not_to have_content 'runner-group'
+          expect(page).not_to have_content 'runner-paused-project'
         end
       end
 
@@ -267,29 +322,55 @@ RSpec.describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "Set up a shared runner manually"
+        expect(page).to have_text "Register an instance runner"
         expect(page).to have_text "Runners currently online: 0"
         expect(page).to have_text 'No runners found'
       end
     end
 
-    describe 'runners registration token' do
+    describe 'runners registration' do
       let!(:token) { Gitlab::CurrentSettings.runners_registration_token }
 
       before do
         visit admin_runners_path
+
+        click_on 'Register an instance runner'
+      end
+
+      describe 'show registration instructions' do
+        before do
+          click_on 'Show runner installation and registration instructions'
+
+          wait_for_requests
+        end
+
+        it 'opens runner installation modal' do
+          expect(page).to have_text "Install a runner"
+
+          expect(page).to have_text "Environment"
+          expect(page).to have_text "Architecture"
+          expect(page).to have_text "Download and install binary"
+        end
+
+        it 'dismisses runner installation modal' do
+          page.within('[role="dialog"]') do
+            click_button('Close', match: :first)
+          end
+
+          expect(page).not_to have_text "Install a runner"
+        end
       end
 
       it 'has a registration token' do
         click_on 'Click to reveal'
-        expect(page.find('[data-testid="registration-token"]')).to have_content(token)
+        expect(page.find('[data-testid="token-value"]')).to have_content(token)
       end
 
       describe 'reset registration token' do
-        let(:page_token) { find('[data-testid="registration-token"]').text }
+        let(:page_token) { find('[data-testid="token-value"]').text }
 
         before do
-          click_button 'Reset registration token'
+          click_on 'Reset registration token'
 
           page.accept_alert
 
@@ -297,6 +378,8 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'changes registration token' do
+          click_on 'Register an instance runner'
+
           click_on 'Click to reveal'
           expect(page_token).not_to eq token
         end

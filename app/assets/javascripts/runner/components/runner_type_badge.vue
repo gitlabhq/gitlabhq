@@ -12,17 +12,14 @@ import {
 
 const BADGE_DATA = {
   [INSTANCE_TYPE]: {
-    variant: 'success',
     text: s__('Runners|shared'),
     tooltip: I18N_INSTANCE_RUNNER_DESCRIPTION,
   },
   [GROUP_TYPE]: {
-    variant: 'success',
     text: s__('Runners|group'),
     tooltip: I18N_GROUP_RUNNER_DESCRIPTION,
   },
   [PROJECT_TYPE]: {
-    variant: 'info',
     text: s__('Runners|specific'),
     tooltip: I18N_PROJECT_RUNNER_DESCRIPTION,
   },
@@ -53,7 +50,7 @@ export default {
 };
 </script>
 <template>
-  <gl-badge v-if="badge" v-gl-tooltip="badge.tooltip" :variant="badge.variant" v-bind="$attrs">
+  <gl-badge v-if="badge" v-gl-tooltip="badge.tooltip" variant="info" v-bind="$attrs">
     {{ badge.text }}
   </gl-badge>
 </template>

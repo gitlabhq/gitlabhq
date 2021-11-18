@@ -257,7 +257,8 @@ module IssuablesHelper
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
-      isHidden: issue_hidden?(issuable)
+      isHidden: issue_hidden?(issuable),
+      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident)
     }
   end
 
@@ -284,9 +285,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    store_in_cache = parent.is_a?(Group) ? parent.cached_issues_state_count_enabled? : false
-
-    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: store_in_cache)[state]
+    Gitlab::IssuablesCountForState.new(finder, store_in_redis_cache: true)[state]
   end
 
   def close_issuable_path(issuable)
@@ -442,7 +441,7 @@ module IssuablesHelper
   end
 
   def format_count(issuable_type, count, threshold)
-    if issuable_type == :issues && parent.is_a?(Group) && parent.cached_issues_state_count_enabled?
+    if issuable_type == :issues && parent.is_a?(Group)
       format_cached_count(threshold, count)
     else
       number_with_delimiter(count)

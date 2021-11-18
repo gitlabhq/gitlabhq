@@ -7,12 +7,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Uploads development documentation
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) has special rules for handling uploads.
-To prevent occupying a Ruby process on I/O operations, we process the upload in workhorse, where is cheaper.
+We process the upload in Workhorse to prevent occupying a Ruby process on I/O operations and because it is cheaper.
 This process can also directly upload to object storage.
 
 ## The problem description
 
-The following graph explains machine boundaries in a scalable GitLab installation. Without any workhorse optimization in place, we can expect incoming requests to follow the numbers on the arrows.
+The following graph explains machine boundaries in a scalable GitLab installation. Without any Workhorse optimization in place, we can expect incoming requests to follow the numbers on the arrows.
 
 ```mermaid
 graph TB
@@ -27,10 +27,10 @@ graph TB
     subgraph "redis cluster"
        r(persisted redis)
     end
-    LB-- 1 -->workhorse
+    LB-- 1 -->Workhorse
 
     subgraph "web or API fleet"
-      workhorse-- 2 -->rails
+      Workhorse-- 2 -->rails
     end
     rails-- "3 (write files)" -->nfs
     rails-- "4 (schedule a job)" -->r
@@ -63,12 +63,12 @@ graph TB
     subgraph "redis cluster"
        r(persisted redis)
     end
-    LB-- 1 -->workhorse
+    LB-- 1 -->Workhorse
 
     subgraph "web or API fleet"
-      workhorse-- "3 (without files)" -->rails
+      Workhorse-- "3 (without files)" -->rails
     end
-    workhorse -- "2 (write files)" -->nfs
+    Workhorse -- "2 (write files)" -->nfs
     rails-- "4 (schedule a job)" -->r
 
     subgraph sidekiq
@@ -120,7 +120,7 @@ We have three kinds of file encoding in our uploads:
 
 1. <i class="fa fa-check-circle"></i> **multipart**: `multipart/form-data` is the most common, a file is encoded as a part of a multipart encoded request.
 1. <i class="fa fa-check-circle"></i> **body**: some APIs uploads files as the whole request body.
-1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This requires a change to GitLab Workhorse,
+1. <i class="fa fa-times-circle"></i> **JSON**: some JSON APIs upload files as base64-encoded strings. This requires a change to GitLab Workhorse,
    which is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/325068).
 
 ## Uploading technologies
@@ -131,9 +131,9 @@ GitLab supports 3 kinds of uploading technologies, here follows a brief descript
 
 ### Rack Multipart upload
 
-This is the default kind of upload, and it's most expensive in terms of resources.
+This is the default kind of upload, and it's the most expensive in terms of resources.
 
-In this case, workhorse is unaware of files being uploaded and acts as a regular proxy.
+In this case, Workhorse is unaware of files being uploaded and acts as a regular proxy.
 
 When a multipart request reaches the rails application, `Rack::Multipart` leaves behind temporary files in `/tmp` and uses valuable Ruby process time to copy files around.
 
@@ -213,7 +213,7 @@ sequenceDiagram
 
 This is the more advanced acceleration technique we have in place.
 
-Workhorse asks rails for temporary pre-signed object storage URLs and directly uploads to object storage.
+Workhorse asks Rails for temporary pre-signed object storage URLs and directly uploads to object storage.
 
 In this setup, an extra Rails route must be implemented in order to handle authorization. Examples of this can be found in:
 
@@ -221,7 +221,7 @@ In this setup, an extra Rails route must be implemented in order to handle autho
   and [its routes](https://gitlab.com/gitlab-org/gitlab/-/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 - [API endpoints for uploading packages](packages.md#file-uploads).
 
-This falls back to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
+Direct upload falls back to _disk buffered upload_ when `direct_upload` is disabled inside the [object storage setting](../administration/uploads.md#object-storage-settings).
 The answer to the `/authorize` call contains only a file system path.
 
 ```mermaid
@@ -275,7 +275,7 @@ sequenceDiagram
 
 In this section, we describe how to add a new upload route [accelerated](#uploading-technologies) by Workhorse for [body and multipart](#upload-encodings) encoded uploads.
 
-Uploads routes belong to one of these categories:
+Upload routes belong to one of these categories:
 
 1. Rails controllers: uploads handled by Rails controllers.
 1. Grape API: uploads handled by a Grape API endpoint.
@@ -289,7 +289,7 @@ GraphQL uploads do not support [direct upload](#direct-upload) yet. Depending on
 For both the Rails controller and Grape API uploads, Workhorse has to be updated in order to get the
 support for the new upload route.
 
-1. Open an new issue in the [Workhorse tracker](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/new) describing precisely the new upload route:
+1. Open a new issue in the [Workhorse tracker](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/new) describing precisely the new upload route:
    - The route's URL.
    - The [upload encoding](#upload-encodings).
    - If possible, provide a dump of the upload request.

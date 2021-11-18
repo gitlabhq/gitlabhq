@@ -14,8 +14,9 @@
         custom_email: (@project.service_desk_custom_address if @project.service_desk_enabled),
         custom_email_enabled: "#{Gitlab::ServiceDeskEmail.enabled?}",
         selected_template: "#{@project.service_desk_setting&.issue_template_key}",
+        selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
-        templates: issuable_templates_names(Issue.new) } }
+        templates: available_service_desk_templates_for(@project) } }
     - elsif show_callout?('promote_service_desk_dismissed')
       = render 'shared/promotions/promote_servicedesk'

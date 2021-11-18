@@ -13,9 +13,9 @@ export default {
     ConfidentialityFilter,
   },
   computed: {
-    ...mapState(['query']),
+    ...mapState(['urlQuery', 'sidebarDirty']),
     showReset() {
-      return this.query.state || this.query.confidential;
+      return this.urlQuery.state || this.urlQuery.confidential;
     },
   },
   methods: {
@@ -32,7 +32,7 @@ export default {
     <status-filter />
     <confidentiality-filter />
     <div class="gl-display-flex gl-align-items-center gl-mt-3">
-      <gl-button category="primary" variant="confirm" size="small" type="submit">
+      <gl-button category="primary" variant="confirm" type="submit" :disabled="!sidebarDirty">
         {{ __('Apply') }}
       </gl-button>
       <gl-link v-if="showReset" class="gl-ml-auto" @click="resetQuery">{{

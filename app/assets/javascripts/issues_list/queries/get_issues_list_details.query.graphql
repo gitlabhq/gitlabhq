@@ -1,4 +1,4 @@
-query($fullPath: ID!) {
+query getIssuesListDetails($fullPath: ID!) {
   project(fullPath: $fullPath) {
     issues {
       nodes {

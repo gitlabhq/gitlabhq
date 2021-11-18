@@ -16,6 +16,7 @@ module Groups
       end
 
       def show
+        @created = get_created_session
       end
 
       def edit
@@ -26,6 +27,8 @@ module Groups
 
         if @application.persisted?
           flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
+          set_created_session
 
           redirect_to group_settings_application_url(@group, @application)
         else

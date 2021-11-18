@@ -65,7 +65,7 @@ export default {
 };
 </script>
 <template>
-  <div class="blob-viewer" :data-type="activeViewer.type">
+  <div class="blob-viewer" :data-type="activeViewer.type" :data-loaded="!loading">
     <gl-loading-icon v-if="loading" size="md" color="dark" class="my-4 mx-auto" />
 
     <template v-else>

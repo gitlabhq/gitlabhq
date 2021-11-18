@@ -118,6 +118,23 @@ However, you can speed these cycles up somewhat by emptying the
 `.gitlab/ci/rails.gitlab-ci.yml` file in your merge request. Just don't forget
 to revert the change before merging!
 
+#### Adding labels via Danger
+
+NOTE:
+This is currently applicable to the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab)
+project only.
+
+Danger is often used to improve MR hygiene by adding labels. Instead of calling the
+API directly in your `Dangerfile`, add the labels to the `project_helper.labels_to_add` array.
+The main `Dangerfile` will then take care of adding the labels to the MR with a single API call.
+
+#### Shared rules and plugins
+
+If the rule or plugin you implement can be useful for other projects, think about
+upstreaming them to the [`gitlab-org/gitlab-dangerfiles`](https://gitlab.com/gitlab-org/gitlab-dangerfiles) project.
+
+#### Enable Danger on a project
+
 To enable the Dangerfile on another existing GitLab project, run the following
 extra steps:
 

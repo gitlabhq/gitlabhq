@@ -38,7 +38,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         namespace :security do
-          resource :configuration, only: [:show], controller: :configuration
+          resource :configuration, only: [:show], controller: :configuration do
+            resource :sast, only: [:show], controller: :sast_configuration
+          end
         end
 
         resources :artifacts, only: [:index, :destroy]
@@ -358,7 +360,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get 'details', on: :member
         end
 
-        resources :work_items, only: [:index]
+        get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
+
+        get 'work_items/*work_items_path' => 'work_items#index', as: :work_items
 
         resource :tracing, only: [:show]
 
@@ -536,6 +540,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           delete :delete_attachment # rubocop:todo Cop/PutProjectRoutesUnderScope
           post :resolve # rubocop:todo Cop/PutProjectRoutesUnderScope
           delete :resolve, action: :unresolve # rubocop:todo Cop/PutProjectRoutesUnderScope
+          get :outdated_line_change # rubocop:todo Cop/PutProjectRoutesUnderScope
         end
       end
 

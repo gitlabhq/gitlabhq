@@ -1084,28 +1084,30 @@ RSpec.describe Projects::IssuesController do
       end
 
       context 'real-time sidebar feature flag' do
-        using RSpec::Parameterized::TableSyntax
-
         let_it_be(:project) { create(:project, :public) }
         let_it_be(:issue) { create(:issue, project: project) }
 
-        where(:action_cable_in_app_enabled, :feature_flag_enabled, :gon_feature_flag) do
-          true  | true  | true
-          true  | false | true
-          false | true  | true
-          false | false | false
-        end
-
-        with_them do
+        context 'when enabled' do
           before do
-            expect(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
-            stub_feature_flags(real_time_issue_sidebar: feature_flag_enabled)
+            stub_feature_flags(real_time_issue_sidebar: true)
           end
 
-          it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
+          it 'pushes the correct value to the frontend' do
             go(id: issue.to_param)
 
-            expect(Gon.features).to include('realTimeIssueSidebar' => gon_feature_flag)
+            expect(Gon.features).to include('realTimeIssueSidebar' => true)
+          end
+        end
+
+        context 'when disabled' do
+          before do
+            stub_feature_flags(real_time_issue_sidebar: false)
+          end
+
+          it 'pushes the correct value to the frontend' do
+            go(id: issue.to_param)
+
+            expect(Gon.features).to include('realTimeIssueSidebar' => false)
           end
         end
       end
@@ -1406,14 +1408,14 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
-    context 'when the endpoint receives requests above the limit' do
+    context 'when the endpoint receives requests above the limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
-        stub_application_setting(issues_create_limit: 5)
+        stub_application_setting(issues_create_limit: 1)
       end
 
       context 'when issue creation limits imposed' do
         it 'prevents from creating more issues', :request_store do
-          5.times { post_new_issue }
+          post_new_issue
 
           expect { post_new_issue }
             .to change { Gitlab::GitalyClient.get_request_count }.by(1) # creates 1 projects and 0 issues
@@ -1440,7 +1442,7 @@ RSpec.describe Projects::IssuesController do
           project.add_developer(user)
           sign_in(user)
 
-          6.times do
+          2.times do
             post :create, params: {
               namespace_id: project.namespace.to_param,
               project_id: project,

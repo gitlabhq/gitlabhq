@@ -11,7 +11,10 @@ export const I18N = {
     title: s__('IncidentManagement|Display your incidents in a dedicated view'),
     emptyClosedTabTitle: s__('IncidentManagement|There are no closed incidents'),
     description: s__(
-      'IncidentManagement|All alerts promoted to incidents will automatically be displayed within the list. You can also create a new incident using the button below.',
+      'IncidentManagement|All alerts promoted to incidents are automatically displayed within the list. You can also create a new incident using the button below.',
+    ),
+    cannotCreateIncidentDescription: s__(
+      'IncidentManagement|All alerts promoted to incidents are automatically displayed within the list.',
     ),
   },
 };

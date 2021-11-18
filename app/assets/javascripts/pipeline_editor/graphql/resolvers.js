@@ -1,7 +1,8 @@
-import produce from 'immer';
 import axios from '~/lib/utils/axios_utils';
+import getAppStatus from './queries/client/app_status.graphql';
 import getCurrentBranchQuery from './queries/client/current_branch.graphql';
 import getLastCommitBranchQuery from './queries/client/last_commit_branch.query.graphql';
+import getPipelineEtag from './queries/client/pipeline_etag.graphql';
 
 export const resolvers = {
   Mutation: {
@@ -31,20 +32,28 @@ export const resolvers = {
         __typename: 'CiLintContent',
       }));
     },
+    updateAppStatus: (_, { appStatus }, { cache }) => {
+      cache.writeQuery({
+        query: getAppStatus,
+        data: { appStatus },
+      });
+    },
     updateCurrentBranch: (_, { currentBranch }, { cache }) => {
       cache.writeQuery({
         query: getCurrentBranchQuery,
-        data: produce(cache.readQuery({ query: getCurrentBranchQuery }), (draftData) => {
-          draftData.currentBranch = currentBranch;
-        }),
+        data: { currentBranch },
       });
     },
     updateLastCommitBranch: (_, { lastCommitBranch }, { cache }) => {
       cache.writeQuery({
         query: getLastCommitBranchQuery,
-        data: produce(cache.readQuery({ query: getLastCommitBranchQuery }), (draftData) => {
-          draftData.lastCommitBranch = lastCommitBranch;
-        }),
+        data: { lastCommitBranch },
+      });
+    },
+    updatePipelineEtag: (_, { pipelineEtag }, { cache }) => {
+      cache.writeQuery({
+        query: getPipelineEtag,
+        data: { pipelineEtag },
       });
     },
   },

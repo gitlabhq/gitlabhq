@@ -14,16 +14,14 @@ class DetectRepositoryLanguagesWorker # rubocop:disable Scalability/IdempotentWo
 
   attr_reader :project
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, user_id = nil)
-    @project = Project.find_by(id: project_id)
+    @project = Project.find_by_id(project_id)
     return unless project
 
     try_obtain_lease do
       ::Projects::DetectRepositoryLanguagesService.new(project).execute
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

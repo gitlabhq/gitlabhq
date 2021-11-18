@@ -8,6 +8,7 @@ RSpec.describe 'Admin uses repository checks', :request_store do
   let(:admin) { create(:admin) }
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
   end

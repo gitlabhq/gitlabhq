@@ -297,6 +297,37 @@ RSpec.describe API::GenericPackages do
           end
         end
 
+        context 'with select' do
+          context 'with a valid value' do
+            context 'package_file' do
+              let(:params) { super().merge(select: 'package_file') }
+
+              it 'returns a package file' do
+                headers = workhorse_headers.merge(auth_header)
+
+                upload_file(params, headers)
+
+                aggregate_failures do
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(json_response).to have_key('id')
+                end
+              end
+            end
+          end
+
+          context 'with an invalid value' do
+            let(:params) { super().merge(select: 'invalid_value') }
+
+            it 'returns a package file' do
+              headers = workhorse_headers.merge(auth_header)
+
+              upload_file(params, headers)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
+        end
+
         context 'with a status' do
           context 'valid status' do
             let(:params) { super().merge(status: 'hidden') }

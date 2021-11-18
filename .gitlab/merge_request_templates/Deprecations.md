@@ -6,16 +6,19 @@
 
 **Be sure to link this MR to the relevant deprecation issue(s).**
 
+Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
+
 **By the 10th**: Assign this MR to these team members as Reviewer and for Approval (optional unless noted as required):
 
 - Product Marketing: `@PMM`
 - Product Designer(s): `@ProductDesigners`
 - Group Manager or Director: `@manager`
 - Engineering Manager: `@EM` - Required
+- Technical writer: `@TW` - Required
 
-**By 8:00 AM PDT 15th**: PM will assign this MR to the TW reviewer: `@PM`
+**By 11:59 AM PDT 15th**: PM assigns this MR to the TW reviewer for final review and merge: `@PM`
 
-**By 11:59 PM PDT 15th**: TW Reviewer will perform final review and merge this MR to Master: `@TW`
+**By 11:59 PM PDT 17th**: TW Reviewer updates Docs by merging this MR to `master`: `@TW`
 
 ---
 
@@ -31,8 +34,9 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## PM release post item checklist
 
 - [ ] Set yourself as the Assignee.
+- [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
-- [ ] Add reviewers by the 10th
+- [ ] Add reviewers by the 10th.
 - [ ] When ready to be merged and not later than the 15th, add the ~ready label and @ message the TW for final review and merge.
 
 ## Reviewers
@@ -78,5 +82,18 @@ yourself as a reviewer if it's not ready for merge yet.
 
 </details>
 
-When the PM indicates it is ready for merge, all issues have been addressed merge this MR. 
-     - You must merge this MR by the 15th so the Release Post TW lead can run the [deprecations in Docs rake task](https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc) on the 16th
+When the PM indicates it is ready for merge and all issues have been addressed, start the merge process.
+
+#### Technical writer merge process
+
+The [deprecations doc's `.md` file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/deprecations.md)
+must be updated before this MR is merged:
+
+1. Check out the MR's branch (in the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project).
+1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_deprecations`.
+   If you want to double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
+   to verify that the doc is up to date.
+1. Commit the updated file and push the changes.
+1. Set the MR to merge when the pipeline succeeds (or merge if the pipeline is already complete).
+
+If you have trouble running the rake task, check the [troubleshooting steps](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

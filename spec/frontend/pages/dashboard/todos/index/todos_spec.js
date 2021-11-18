@@ -94,13 +94,13 @@ describe('Todos', () => {
       });
 
       it('updates pending text', () => {
-        expect(document.querySelector('.todos-pending .badge').innerHTML).toEqual(
+        expect(document.querySelector('.js-todos-pending .badge').innerHTML).toEqual(
           addDelimiter(TEST_COUNT_BIG),
         );
       });
 
       it('updates done text', () => {
-        expect(document.querySelector('.todos-done .badge').innerHTML).toEqual(
+        expect(document.querySelector('.js-todos-done .badge').innerHTML).toEqual(
           addDelimiter(TEST_DONE_COUNT_BIG),
         );
       });

@@ -8,7 +8,7 @@ import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import {
   emptySearchProjectsQueryResponse,
   project1,
-  project2,
+  project3,
   searchProjectsQueryResponse,
 } from '../mock_data';
 
@@ -72,7 +72,7 @@ describe('NewIssueDropdown component', () => {
     expect(inputSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('renders expected dropdown items', async () => {
+  it('renders projects with issues enabled', async () => {
     wrapper = mountComponent({ mountFn: mount });
 
     await showDropdown();
@@ -80,7 +80,7 @@ describe('NewIssueDropdown component', () => {
     const listItems = wrapper.findAll('li');
 
     expect(listItems.at(0).text()).toBe(project1.nameWithNamespace);
-    expect(listItems.at(1).text()).toBe(project2.nameWithNamespace);
+    expect(listItems.at(1).text()).toBe(project3.nameWithNamespace);
   });
 
   it('renders `No matches found` when there are no matches', async () => {

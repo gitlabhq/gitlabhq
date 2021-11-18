@@ -24,8 +24,13 @@ module Gitlab
           else
             {}
           end
-        when Hash, ActionController::Parameters
+        when Hash
           ambiguous_param
+        when ActionController::Parameters
+          # We can and have to trust the "Parameters" because `graphql-ruby` handles this hash safely
+          # Also, `graphql-ruby` uses hash-specific methods, for example `size`:
+          # https://sourcegraph.com/github.com/rmosolgo/graphql-ruby@61232b03412df6685406fc46c414e11d3f447817/-/blob/lib/graphql/query.rb?L304
+          ambiguous_param.to_unsafe_h
         when nil
           {}
         else

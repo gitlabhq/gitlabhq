@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
     end
 
     context 'CI database' do
-      let(:connection_class) { Ci::CiDatabaseRecord }
+      let(:connection_class) { Ci::ApplicationRecord }
 
       it 'returns a directory path that is database specific' do
         skip_if_multiple_databases_not_setup

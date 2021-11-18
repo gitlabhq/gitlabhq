@@ -43,6 +43,9 @@ type FileHandler struct {
 
 	// a map containing different hashes
 	hashes map[string]string
+
+	// Duration of upload in seconds
+	uploadDuration float64
 }
 
 type uploadClaims struct {
@@ -74,11 +77,12 @@ func (fh *FileHandler) GitLabFinalizeFields(prefix string) (map[string]string, e
 	}
 
 	for k, v := range map[string]string{
-		"name":       fh.Name,
-		"path":       fh.LocalPath,
-		"remote_url": fh.RemoteURL,
-		"remote_id":  fh.RemoteID,
-		"size":       strconv.FormatInt(fh.Size, 10),
+		"name":            fh.Name,
+		"path":            fh.LocalPath,
+		"remote_url":      fh.RemoteURL,
+		"remote_id":       fh.RemoteID,
+		"size":            strconv.FormatInt(fh.Size, 10),
+		"upload_duration": strconv.FormatFloat(fh.uploadDuration, 'f', -1, 64),
 	} {
 		data[key(k)] = v
 		signedData[k] = v
@@ -105,18 +109,20 @@ type consumer interface {
 
 // SaveFileFromReader persists the provided reader content to all the location specified in opts. A cleanup will be performed once ctx is Done
 // Make sure the provided context will not expire before finalizing upload with GitLab Rails.
-func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts *SaveFileOpts) (fh *FileHandler, err error) {
-	var uploadDestination consumer
-	fh = &FileHandler{
+func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts *SaveFileOpts) (*FileHandler, error) {
+	fh := &FileHandler{
 		Name:      opts.TempFilePrefix,
 		RemoteID:  opts.RemoteID,
 		RemoteURL: opts.RemoteURL,
 	}
+	uploadStartTime := time.Now()
+	defer func() { fh.uploadDuration = time.Since(uploadStartTime).Seconds() }()
 	hashes := newMultiHash()
 	reader = io.TeeReader(reader, hashes.Writer)
 
 	var clientMode string
-
+	var uploadDestination consumer
+	var err error
 	switch {
 	case opts.IsLocal():
 		clientMode = "local"
@@ -161,23 +167,19 @@ func SaveFileFromReader(ctx context.Context, reader io.Reader, size int64, opts 
 		return nil, err
 	}
 
+	var hlr *hardLimitReader
 	if opts.MaximumSize > 0 {
 		if size > opts.MaximumSize {
 			return nil, SizeError(fmt.Errorf("the upload size %d is over maximum of %d bytes", size, opts.MaximumSize))
 		}
 
-		hlr := &hardLimitReader{r: reader, n: opts.MaximumSize}
+		hlr = &hardLimitReader{r: reader, n: opts.MaximumSize}
 		reader = hlr
-		defer func() {
-			if hlr.n < 0 {
-				err = ErrEntityTooLarge
-			}
-		}()
 	}
 
 	fh.Size, err = uploadDestination.Consume(ctx, reader, opts.Deadline)
 	if err != nil {
-		if err == objectstore.ErrNotEnoughParts {
+		if (err == objectstore.ErrNotEnoughParts) || (hlr != nil && hlr.n < 0) {
 			err = ErrEntityTooLarge
 		}
 		return nil, err

@@ -1,8 +1,10 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import AdminRunnersApp from './admin_runners_app.vue';
 
+Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initAdminRunners = (selector = '#js-admin-runners') => {
@@ -14,15 +16,19 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
 
   // TODO `activeRunnersCount` should be implemented using a GraphQL API
   // https://gitlab.com/gitlab-org/gitlab/-/issues/333806
-  const { activeRunnersCount, registrationToken, runnerInstallHelpPage } = el.dataset;
+  const {
+    runnerInstallHelpPage,
+    registrationToken,
+
+    activeRunnersCount,
+    allRunnersCount,
+    instanceRunnersCount,
+    groupRunnersCount,
+    projectRunnersCount,
+  } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({
@@ -34,8 +40,15 @@ export const initAdminRunners = (selector = '#js-admin-runners') => {
     render(h) {
       return h(AdminRunnersApp, {
         props: {
-          activeRunnersCount: parseInt(activeRunnersCount, 10),
           registrationToken,
+
+          // All runner counts are returned as formatted
+          // strings, we do not use `parseInt`.
+          activeRunnersCount,
+          allRunnersCount,
+          instanceRunnersCount,
+          groupRunnersCount,
+          projectRunnersCount,
         },
       });
     },

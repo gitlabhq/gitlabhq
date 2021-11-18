@@ -172,7 +172,7 @@ cost describing how expensive the entire node was. In general: the greater the
 values, the more expensive the node.
 
 When using `EXPLAIN ANALYZE`, these statistics will also include the actual time
-(in milliseconds) spent, and other runtime statistics (e.g. the actual number of
+(in milliseconds) spent, and other runtime statistics (for example, the actual number of
 produced rows):
 
 ```sql
@@ -555,7 +555,7 @@ There are two terms commonly used for databases: cardinality, and selectivity.
 Cardinality refers to the number of unique values in a particular column in a
 table.
 
-Selectivity is the number of unique values produced by an operation (e.g. an
+Selectivity is the number of unique values produced by an operation (for example, an
 index scan or filter), relative to the total number of rows. The higher the
 selectivity, the more likely PostgreSQL is able to use an index.
 
@@ -675,8 +675,8 @@ best avoided in most cases, such as:
 
 - Sequential scans on large tables
 - Filters that remove a lot of rows
-- Performing a certain step (e.g. an index scan) that requires _a lot_ of
-  buffers (e.g. more than 512 MB for GitLab.com).
+- Performing a certain step that requires _a lot_ of
+  buffers (for example, an index scan for GitLab.com that requires more than 512 MB).
 
 As a general guideline, aim for a query that:
 

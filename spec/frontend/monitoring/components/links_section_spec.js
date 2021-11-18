@@ -1,5 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+
 import LinksSection from '~/monitoring/components/links_section.vue';
 import { createStore } from '~/monitoring/stores';
 
@@ -26,12 +28,12 @@ describe('Links Section component', () => {
     createShallowWrapper();
   });
 
-  it('does not render a section if no links are present', () => {
+  it('does not render a section if no links are present', async () => {
     setState();
 
-    return wrapper.vm.$nextTick(() => {
-      expect(findLinks()).not.toExist();
-    });
+    await nextTick();
+
+    expect(findLinks().length).toBe(0);
   });
 
   it('renders a link inside a section', () => {

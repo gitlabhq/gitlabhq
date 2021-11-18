@@ -77,6 +77,70 @@ RSpec.describe Noteable do
     end
   end
 
+  describe '#discussion_root_note_ids' do
+    let!(:label_event) { create(:resource_label_event, merge_request: subject) }
+    let!(:system_note) { create(:system_note, project: project, noteable: subject) }
+    let!(:milestone_event) { create(:resource_milestone_event, merge_request: subject) }
+    let!(:state_event) { create(:resource_state_event, merge_request: subject) }
+
+    it 'returns ordered discussion_ids and synthetic note ids' do
+      discussions = subject.discussion_root_note_ids(notes_filter: UserPreference::NOTES_FILTERS[:all_notes]).map do |n|
+        { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
+      end
+
+      expect(discussions).to match([
+        a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id),
+        a_hash_including(table_name: 'resource_label_events', id: label_event.id),
+        a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
+        a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
+        a_hash_including(table_name: 'resource_state_events', id: state_event.id)
+      ])
+    end
+
+    it 'filters by comments only' do
+      discussions = subject.discussion_root_note_ids(notes_filter: UserPreference::NOTES_FILTERS[:only_comments]).map do |n|
+        { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
+      end
+
+      expect(discussions).to match([
+        a_hash_including(table_name: 'notes', discussion_id: active_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: active_diff_note3.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: outdated_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: discussion_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_diff_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_note2.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: commit_discussion_note3.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: note1.discussion_id),
+        a_hash_including(table_name: 'notes', discussion_id: note2.discussion_id)
+      ])
+    end
+
+    it 'filters by system notes only' do
+      discussions = subject.discussion_root_note_ids(notes_filter: UserPreference::NOTES_FILTERS[:only_activity]).map do |n|
+        { table_name: n.table_name, discussion_id: n.discussion_id, id: n.id }
+      end
+
+      expect(discussions).to match([
+        a_hash_including(table_name: 'resource_label_events', id: label_event.id),
+        a_hash_including(table_name: 'notes', discussion_id: system_note.discussion_id),
+        a_hash_including(table_name: 'resource_milestone_events', id: milestone_event.id),
+        a_hash_including(table_name: 'resource_state_events', id: state_event.id)
+      ])
+    end
+  end
+
   describe '#grouped_diff_discussions' do
     let(:grouped_diff_discussions) { subject.grouped_diff_discussions }
 

@@ -47,7 +47,8 @@ RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
         result = subject
         expect(result[Project]).to eq(3)
         expect(result[Group]).to eq(1)
-        expect(result[Namespace]).to eq(4)
+        # 1-Group, 3 namespaces for each project and 3 project namespaces for each project
+        expect(result[Namespace]).to eq(7)
       end
     end
 

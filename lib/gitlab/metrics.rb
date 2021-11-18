@@ -29,7 +29,7 @@ module Gitlab
 
     # Allow access from other metrics related middlewares
     def self.current_transaction
-      Transaction.current
+      WebTransaction.current || BackgroundTransaction.current
     end
 
     # Returns the prefix to use for the name of a series.

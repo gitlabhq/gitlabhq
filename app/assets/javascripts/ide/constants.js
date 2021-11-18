@@ -5,7 +5,7 @@ export const MAX_TITLE_LENGTH = 50;
 export const MAX_BODY_LENGTH = 72;
 
 export const SIDEBAR_INIT_WIDTH = 340;
-export const SIDEBAR_MIN_WIDTH = 340;
+export const SIDEBAR_MIN_WIDTH = 260;
 export const SIDEBAR_NAV_WIDTH = 60;
 
 // File view modes

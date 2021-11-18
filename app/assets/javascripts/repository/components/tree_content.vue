@@ -1,5 +1,4 @@
 <script>
-import filesQuery from 'shared_queries/repository/files.query.graphql';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import createFlash from '~/flash';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -72,9 +71,6 @@ export default {
     hasShowMore() {
       return !this.clickedShowMore && this.pageLimitReached;
     },
-    paginatedTreeEnabled() {
-      return this.glFeatures.paginatedTreeGraphqlQuery;
-    },
   },
 
   watch: {
@@ -101,7 +97,7 @@ export default {
 
       return this.$apollo
         .query({
-          query: this.paginatedTreeEnabled ? paginatedTreeQuery : filesQuery,
+          query: paginatedTreeQuery,
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
@@ -114,20 +110,19 @@ export default {
           if (data.errors) throw data.errors;
           if (!data?.project?.repository || originalPath !== (this.path || '/')) return;
 
-          const pageInfo = this.paginatedTreeEnabled
-            ? data.project.repository.paginatedTree.pageInfo
-            : this.hasNextPage(data.project.repository.tree);
+          const {
+            project: {
+              repository: {
+                paginatedTree: { pageInfo },
+              },
+            },
+          } = data;
 
           this.isLoadingFiles = false;
           this.entries = Object.keys(this.entries).reduce(
             (acc, key) => ({
               ...acc,
-              [key]: this.normalizeData(
-                key,
-                this.paginatedTreeEnabled
-                  ? data.project.repository.paginatedTree.nodes[0][key]
-                  : data.project.repository.tree[key].edges,
-              ),
+              [key]: this.normalizeData(key, data.project.repository.paginatedTree.nodes[0][key]),
             }),
             {},
           );
@@ -149,9 +144,7 @@ export default {
         });
     },
     normalizeData(key, data) {
-      return this.entries[key].concat(
-        this.paginatedTreeEnabled ? data.nodes : data.map(({ node }) => node),
-      );
+      return this.entries[key].concat(data.nodes);
     },
     hasNextPage(data) {
       return []

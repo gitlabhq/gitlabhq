@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ResetSharedRunnersForTransferredProjects, schema: 20201110161542 do
+RSpec.describe Gitlab::BackgroundMigration::ResetSharedRunnersForTransferredProjects, schema: 20181228175414 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
 

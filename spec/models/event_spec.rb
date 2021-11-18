@@ -32,7 +32,7 @@ RSpec.describe Event do
     describe 'after_create :set_last_repository_updated_at' do
       context 'with a push event' do
         it 'updates the project last_repository_updated_at' do
-          project.update(last_repository_updated_at: 1.year.ago)
+          project.update!(last_repository_updated_at: 1.year.ago)
 
           create_push_event(project, project.owner)
 
@@ -44,7 +44,7 @@ RSpec.describe Event do
 
       context 'without a push event' do
         it 'does not update the project last_repository_updated_at' do
-          project.update(last_repository_updated_at: 1.year.ago)
+          project.update!(last_repository_updated_at: 1.year.ago)
 
           create(:closed_issue_event, project: project, author: project.owner)
 
@@ -58,7 +58,7 @@ RSpec.describe Event do
     describe '#set_last_repository_updated_at' do
       it 'only updates once every Event::REPOSITORY_UPDATED_AT_INTERVAL minutes' do
         last_known_timestamp = (Event::REPOSITORY_UPDATED_AT_INTERVAL - 1.minute).ago
-        project.update(last_repository_updated_at: last_known_timestamp)
+        project.update!(last_repository_updated_at: last_known_timestamp)
         project.reload # a reload removes fractions of seconds
 
         expect do
@@ -73,7 +73,7 @@ RSpec.describe Event do
 
       it 'passes event to UserInteractedProject.track' do
         expect(UserInteractedProject).to receive(:track).with(event)
-        event.save
+        event.save!
       end
     end
   end
@@ -824,7 +824,7 @@ RSpec.describe Event do
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
-        project.update(last_activity_at: Time.current)
+        project.update!(last_activity_at: Time.current)
 
         expect(project).not_to receive(:update_column)
           .with(:last_activity_at, a_kind_of(Time))
@@ -835,7 +835,7 @@ RSpec.describe Event do
 
     context 'when a project was updated more than 1 hour ago' do
       it 'updates the project' do
-        project.update(last_activity_at: 1.year.ago)
+        project.update!(last_activity_at: 1.year.ago)
 
         create_push_event(project, project.owner)
 

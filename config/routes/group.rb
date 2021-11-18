@@ -125,6 +125,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         get 'milestones'
       end
     end
+
+    resources :crm, only: [] do
+      collection do
+        get 'contacts'
+        get 'organizations'
+      end
+    end
   end
 
   scope(path: '*id',
@@ -148,5 +155,7 @@ scope format: false do
     get 'v2/*group_id/dependency_proxy/containers/*image/blobs/:sha' => 'groups/dependency_proxy_for_containers#blob' # rubocop:todo Cop/PutGroupRoutesUnderScope
     post 'v2/*group_id/dependency_proxy/containers/*image/blobs/:sha/upload/authorize' => 'groups/dependency_proxy_for_containers#authorize_upload_blob' # rubocop:todo Cop/PutGroupRoutesUnderScope
     post 'v2/*group_id/dependency_proxy/containers/*image/blobs/:sha/upload' => 'groups/dependency_proxy_for_containers#upload_blob' # rubocop:todo Cop/PutGroupRoutesUnderScope
+    post 'v2/*group_id/dependency_proxy/containers/*image/manifests/*tag/upload/authorize' => 'groups/dependency_proxy_for_containers#authorize_upload_manifest' # rubocop:todo Cop/PutGroupRoutesUnderScope
+    post 'v2/*group_id/dependency_proxy/containers/*image/manifests/*tag/upload' => 'groups/dependency_proxy_for_containers#upload_manifest' # rubocop:todo Cop/PutGroupRoutesUnderScope
   end
 end

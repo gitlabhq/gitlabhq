@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 /**
  * Generates empty state messages for Service Desk issues list.
@@ -20,12 +20,12 @@ export function generateMessages(emptyStateMeta) {
   );
 
   const serviceDeskSupportedMessage = s__(
-    'ServiceDesk|Issues created from Service Desk emails appear here. Each comment becomes part of the email conversation.',
+    'ServiceDesk|Issues created from Service Desk emails will appear here. Each comment becomes part of the email conversation.',
   );
 
   const commonDescription = `
   <span>${serviceDeskSupportedMessage}</span>
-  <a href="${serviceDeskHelpPage}">${s__('Learn more.')}</a>`;
+  <a href="${serviceDeskHelpPage}">${__('Learn more.')}</a>`;
 
   return {
     serviceDeskEnabledAndCanEditProjectSettings: {
@@ -60,7 +60,7 @@ export function generateMessages(emptyStateMeta) {
         'ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email.',
       ),
       primaryLink: incomingEmailHelpPage,
-      primaryText: s__('Learn more.'),
+      primaryText: __('Learn more.'),
     },
     serviceDeskIsNotEnabled: {
       title: s__('ServiceDesk|Service Desk is not enabled'),

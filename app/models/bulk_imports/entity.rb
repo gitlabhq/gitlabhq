@@ -112,6 +112,10 @@ class BulkImports::Entity < ApplicationRecord
     @export_relations_url_path ||= EXPORT_RELATIONS_URL % { resource: pluralized_name, full_path: encoded_source_full_path }
   end
 
+  def relation_download_url_path(relation)
+    "#{export_relations_url_path}/download?relation=#{relation}"
+  end
+
   private
 
   def validate_parent_is_a_group

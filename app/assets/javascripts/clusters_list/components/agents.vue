@@ -4,7 +4,6 @@ import { MAX_LIST_COUNT, ACTIVE_CONNECTION_TIME } from '../constants';
 import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
-import InstallAgentModal from './install_agent_modal.vue';
 
 export default {
   apollo: {
@@ -21,12 +20,14 @@ export default {
         this.updateTreeList(data);
         return data;
       },
+      result() {
+        this.emitAgentsLoaded();
+      },
     },
   },
   components: {
     AgentEmptyState,
     AgentTable,
-    InstallAgentModal,
     GlAlert,
     GlKeysetPagination,
     GlLoadingIcon,
@@ -38,11 +39,21 @@ export default {
       required: false,
       type: String,
     },
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
+    },
+    limit: {
+      default: null,
+      required: false,
+      type: Number,
+    },
   },
   data() {
     return {
       cursor: {
-        first: MAX_LIST_COUNT,
+        first: this.limit ? this.limit : MAX_LIST_COUNT,
         last: null,
       },
       folderList: {},
@@ -70,7 +81,7 @@ export default {
       return this.$apollo.queries.agents.loading;
     },
     showPagination() {
-      return this.agentPageInfo.hasPreviousPage || this.agentPageInfo.hasNextPage;
+      return !this.limit && (this.agentPageInfo.hasPreviousPage || this.agentPageInfo.hasNextPage);
     },
     treePageInfo() {
       return this.agents?.project?.repository?.tree?.trees?.pageInfo || {};
@@ -130,24 +141,31 @@ export default {
       }
       return 'unused';
     },
+    emitAgentsLoaded() {
+      const count = this.agents?.project?.clusterAgents?.count;
+      this.$emit('onAgentsLoad', count);
+    },
   },
 };
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-3" />
+  <gl-loading-icon v-if="isLoading" size="md" />
 
-  <section v-else-if="agentList" class="gl-mt-3">
+  <section v-else-if="agentList">
     <div v-if="agentList.length">
-      <AgentTable :agents="agentList" />
+      <agent-table :agents="agentList" />
 
       <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-keyset-pagination v-bind="agentPageInfo" @prev="prevPage" @next="nextPage" />
       </div>
     </div>
 
-    <AgentEmptyState v-else :has-configurations="hasConfigurations" />
-    <InstallAgentModal @agentRegistered="reloadAgents" />
+    <agent-empty-state
+      v-else
+      :has-configurations="hasConfigurations"
+      :is-child-component="isChildComponent"
+    />
   </section>
 
   <gl-alert v-else variant="danger" :dismissible="false">

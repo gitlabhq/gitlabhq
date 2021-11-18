@@ -46,10 +46,6 @@ export default {
       return `${this.filter}-${this.repositories.length}-${this.pageInfo.page}`;
     },
 
-    availableNamespaces() {
-      return this.namespaces.map(({ fullPath }) => fullPath);
-    },
-
     importAllButtonText() {
       if (this.isImportingAnyRepo) {
         return n__('Importing %d repository', 'Importing %d repositories', this.importingRepoCount);
@@ -167,7 +163,7 @@ export default {
             <provider-repo-table-row
               :key="repo.importSource.providerLink"
               :repo="repo"
-              :available-namespaces="availableNamespaces"
+              :available-namespaces="namespaces"
               :user-namespace="defaultTargetNamespace"
             />
           </template>

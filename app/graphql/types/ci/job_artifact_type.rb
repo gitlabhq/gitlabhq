@@ -12,6 +12,10 @@ module Types
       field :file_type, ::Types::Ci::JobArtifactFileTypeEnum, null: true,
             description: 'File type of the artifact.'
 
+      field :name, GraphQL::Types::String, null: true,
+            description: 'File name of the artifact.',
+            method: :filename
+
       def download_path
         ::Gitlab::Routing.url_helpers.download_project_job_artifacts_path(
           object.project,

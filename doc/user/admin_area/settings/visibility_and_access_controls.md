@@ -68,7 +68,7 @@ GitLab administrators can still update the default branch protection of a group.
 ## Define which roles can create projects
 
 Instance-level protections for project creation define which roles can
-[add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)]
+[add projects to a group](../../group/index.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with [Administrator role](../../permissions.md).

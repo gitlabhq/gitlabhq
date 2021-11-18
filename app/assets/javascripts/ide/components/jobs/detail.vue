@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { mapActions, mapState } from 'vuex';
 import { __ } from '../../../locale';
@@ -14,6 +14,7 @@ const scrollPositions = {
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml: GlSafeHtmlDirective,
   },
   components: {
     GlButton,
@@ -100,8 +101,8 @@ export default {
     <pre ref="buildJobLog" class="build-log mb-0 h-100 mr-3" @scroll="scrollBuildLog">
       <code
         v-show="!detailJob.isLoading"
+        v-safe-html="jobOutput"
         class="bash"
-        v-html="jobOutput /* eslint-disable-line vue/no-v-html */"
       >
       </code>
       <div

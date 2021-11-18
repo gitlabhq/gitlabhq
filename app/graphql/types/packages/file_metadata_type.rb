@@ -14,6 +14,8 @@ module Types
         case object
         when ::Packages::Conan::FileMetadatum
           ::Types::Packages::Conan::FileMetadatumType
+        when ::Packages::Helm::FileMetadatum
+          ::Types::Packages::Helm::FileMetadatumType
         else
           # NOTE: This method must be kept in sync with `PackageFileType#file_metadata`,
           # which must never produce data that this discriminator cannot handle.
@@ -21,7 +23,8 @@ module Types
         end
       end
 
-      orphan_types Types::Packages::Conan::FileMetadatumType
+      orphan_types Types::Packages::Conan::FileMetadatumType,
+                   Types::Packages::Helm::FileMetadatumType
     end
   end
 end

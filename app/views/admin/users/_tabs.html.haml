@@ -1,7 +1,3 @@
-%ul.nav-links.nav-tabs.nav.js-users-tabs{ role: 'tablist' }
-  %li.nav-item{ role: 'presentation' }
-    %a.nav-link{ href: admin_users_path, class: active_when(current_page?(admin_users_path)), role: 'tab' }
-      = s_('AdminUsers|Users')
-  %li.nav-item{ role: 'presentation' }
-    %a.nav-link{ href: admin_cohorts_path, class: active_when(current_page?(admin_cohorts_path)), role: 'tab' }
-      = s_('AdminUsers|Cohorts')
+= gl_tabs_nav({ class: 'js-users-tabs' }) do
+  = gl_tab_link_to s_('AdminUsers|Users'), admin_users_path
+  = gl_tab_link_to s_('AdminUsers|Cohorts'), admin_cohorts_path

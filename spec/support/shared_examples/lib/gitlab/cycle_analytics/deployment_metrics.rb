@@ -6,7 +6,7 @@ shared_examples 'deployment metrics examples' do
     environment = project.environments.production.first || create(:environment, :production, project: project)
     create(:deployment, :success, args.merge(environment: environment))
 
-    # this is needed for the dora_deployment_frequency_in_vsa feature flag so we have aggregated data
+    # this is needed for the DORA API so we have aggregated data
     ::Dora::DailyMetrics::RefreshWorker.new.perform(environment.id, Time.current.to_date.to_s) if Gitlab.ee?
   end
 

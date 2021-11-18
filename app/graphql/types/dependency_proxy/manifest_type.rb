@@ -8,6 +8,7 @@ module Types
 
     authorize :read_dependency_proxy
 
+    field :id, ::Types::GlobalIDType[::DependencyProxy::Manifest], null: false, description: 'ID of the manifest.'
     field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
     field :updated_at, Types::TimeType, null: false, description: 'Date of most recent update.'
     field :file_name, GraphQL::Types::String, null: false, description: 'Name of the manifest.'

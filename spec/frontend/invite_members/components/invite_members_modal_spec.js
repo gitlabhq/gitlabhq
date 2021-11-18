@@ -15,17 +15,34 @@ import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
+import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
-import { INVITE_MEMBERS_IN_COMMENT, MEMBER_AREAS_OF_FOCUS } from '~/invite_members/constants';
+import {
+  INVITE_MEMBERS_IN_COMMENT,
+  MEMBER_AREAS_OF_FOCUS,
+  INVITE_MEMBERS_FOR_TASK,
+  CANCEL_BUTTON_TEXT,
+  INVITE_BUTTON_TEXT,
+  MEMBERS_MODAL_CELEBRATE_INTRO,
+  MEMBERS_MODAL_CELEBRATE_TITLE,
+  MEMBERS_MODAL_DEFAULT_TITLE,
+  MEMBERS_PLACEHOLDER,
+  MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
+} from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import { apiPaths, membersApiResponse, invitationsApiResponse } from '../mock_data/api_responses';
 
 let wrapper;
 let mock;
 
 jest.mock('~/experimentation/experiment_tracking');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  getParameterValues: jest.fn(() => []),
+}));
 
 const id = '1';
 const name = 'test name';
@@ -39,6 +56,15 @@ const helpLink = 'https://example.com';
 const areasOfFocusOptions = [
   { text: 'area1', value: 'area1' },
   { text: 'area2', value: 'area2' },
+];
+const tasksToBeDoneOptions = [
+  { text: 'First task', value: 'first' },
+  { text: 'Second task', value: 'second' },
+];
+const newProjectPath = 'projects/new';
+const projects = [
+  { text: 'First project', value: '1' },
+  { text: 'Second project', value: '2' },
 ];
 
 const user1 = { id: 1, name: 'Name One', username: 'one_1', avatar_url: '' };
@@ -56,9 +82,13 @@ const user4 = {
   avatar_url: '',
 };
 const sharedGroup = { id: '981' };
+const GlEmoji = { template: '<img/>' };
 
 const createComponent = (data = {}, props = {}) => {
   wrapper = shallowMountExtended(InviteMembersModal, {
+    provide: {
+      newProjectPath,
+    },
     propsData: {
       id,
       name,
@@ -68,6 +98,8 @@ const createComponent = (data = {}, props = {}) => {
       areasOfFocusOptions,
       defaultAccessLevel,
       noSelectionAreasOfFocus,
+      tasksToBeDoneOptions,
+      projects,
       helpLink,
       ...props,
     },
@@ -81,6 +113,7 @@ const createComponent = (data = {}, props = {}) => {
       }),
       GlDropdown: true,
       GlDropdownItem: true,
+      GlEmoji,
       GlSprintf,
       GlFormGroup: stubComponent(GlFormGroup, {
         props: ['state', 'invalidFeedback', 'description'],
@@ -131,6 +164,11 @@ describe('InviteMembersModal', () => {
   const membersFormGroupDescription = () => findMembersFormGroup().props('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
   const findAreaofFocusCheckBoxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
+  const findTasksToBeDone = () => wrapper.findByTestId('invite-members-modal-tasks-to-be-done');
+  const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
+  const findProjectSelect = () => wrapper.findByTestId('invite-members-modal-project-select');
+  const findNoProjectsAlert = () => wrapper.findByTestId('invite-members-modal-no-projects-alert');
+  const findCelebrationEmoji = () => wrapper.findComponent(GlModal).find(GlEmoji);
 
   describe('rendering the modal', () => {
     beforeEach(() => {
@@ -138,15 +176,15 @@ describe('InviteMembersModal', () => {
     });
 
     it('renders the modal with the correct title', () => {
-      expect(wrapper.findComponent(GlModal).props('title')).toBe('Invite members');
+      expect(wrapper.findComponent(GlModal).props('title')).toBe(MEMBERS_MODAL_DEFAULT_TITLE);
     });
 
     it('renders the Cancel button text correctly', () => {
-      expect(findCancelButton().text()).toBe('Cancel');
+      expect(findCancelButton().text()).toBe(CANCEL_BUTTON_TEXT);
     });
 
     it('renders the Invite button text correctly', () => {
-      expect(findInviteButton().text()).toBe('Invite');
+      expect(findInviteButton().text()).toBe(INVITE_BUTTON_TEXT);
     });
 
     it('renders the Invite button modal without isLoading', () => {
@@ -171,7 +209,7 @@ describe('InviteMembersModal', () => {
 
     describe('rendering the access expiration date field', () => {
       it('renders the datepicker', () => {
-        expect(findDatepicker()).toExist();
+        expect(findDatepicker().exists()).toBe(true);
       });
     });
   });
@@ -191,14 +229,164 @@ describe('InviteMembersModal', () => {
     });
   });
 
+  describe('rendering the tasks to be done', () => {
+    const setupComponent = (
+      extraData = {},
+      props = {},
+      urlParameter = ['invite_members_for_task'],
+    ) => {
+      const data = {
+        selectedAccessLevel: 30,
+        selectedTasksToBeDone: ['ci', 'code'],
+        ...extraData,
+      };
+      getParameterValues.mockImplementation(() => urlParameter);
+      createComponent(data, props);
+    };
+
+    afterAll(() => {
+      getParameterValues.mockImplementation(() => []);
+    });
+
+    it('renders the tasks to be done', () => {
+      setupComponent();
+
+      expect(findTasksToBeDone().exists()).toBe(true);
+    });
+
+    describe('when the selected access level is lower than 30', () => {
+      it('does not render the tasks to be done', () => {
+        setupComponent({ selectedAccessLevel: 20 });
+
+        expect(findTasksToBeDone().exists()).toBe(false);
+      });
+    });
+
+    describe('when the url does not contain the parameter `open_modal=invite_members_for_task`', () => {
+      it('does not render the tasks to be done', () => {
+        setupComponent({}, {}, []);
+
+        expect(findTasksToBeDone().exists()).toBe(false);
+      });
+    });
+
+    describe('rendering the tasks', () => {
+      it('renders the tasks', () => {
+        setupComponent();
+
+        expect(findTasks().exists()).toBe(true);
+      });
+
+      it('does not render an alert', () => {
+        setupComponent();
+
+        expect(findNoProjectsAlert().exists()).toBe(false);
+      });
+
+      describe('when there are no projects passed in the data', () => {
+        it('does not render the tasks', () => {
+          setupComponent({}, { projects: [] });
+
+          expect(findTasks().exists()).toBe(false);
+        });
+
+        it('renders an alert with a link to the new projects path', () => {
+          setupComponent({}, { projects: [] });
+
+          expect(findNoProjectsAlert().exists()).toBe(true);
+          expect(findNoProjectsAlert().findComponent(GlLink).attributes('href')).toBe(
+            newProjectPath,
+          );
+        });
+      });
+    });
+
+    describe('rendering the project dropdown', () => {
+      it('renders the project select', () => {
+        setupComponent();
+
+        expect(findProjectSelect().exists()).toBe(true);
+      });
+
+      describe('when the modal is shown for a project', () => {
+        it('does not render the project select', () => {
+          setupComponent({}, { isProject: true });
+
+          expect(findProjectSelect().exists()).toBe(false);
+        });
+      });
+
+      describe('when no tasks are selected', () => {
+        it('does not render the project select', () => {
+          setupComponent({ selectedTasksToBeDone: [] });
+
+          expect(findProjectSelect().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('tracking events', () => {
+      it('tracks the view for invite_members_for_task', () => {
+        setupComponent();
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          INVITE_MEMBERS_FOR_TASK.view,
+        );
+      });
+
+      it('tracks the submit for invite_members_for_task', () => {
+        setupComponent();
+        clickInviteButton();
+
+        expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name, {
+          label: 'selected_tasks_to_be_done',
+          property: 'ci,code',
+        });
+        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
+          INVITE_MEMBERS_FOR_TASK.submit,
+        );
+      });
+    });
+  });
+
   describe('displaying the correct introText and form group description', () => {
     describe('when inviting to a project', () => {
       describe('when inviting members', () => {
-        it('includes the correct invitee, type, and formatted name', () => {
+        beforeEach(() => {
           createInviteMembersToProjectWrapper();
+        });
 
+        it('renders the modal without confetti', () => {
+          expect(wrapper.findComponent(ModalConfetti).exists()).toBe(false);
+        });
+
+        it('includes the correct invitee, type, and formatted name', () => {
           expect(findIntroText()).toBe("You're inviting members to the test name project.");
-          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
+          expect(findCelebrationEmoji().exists()).toBe(false);
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
+        });
+      });
+
+      describe('when inviting members with celebration', () => {
+        beforeEach(() => {
+          createComponent({ mode: 'celebrate', inviteeType: 'members' }, { isProject: true });
+        });
+
+        it('renders the modal with confetti', () => {
+          expect(wrapper.findComponent(ModalConfetti).exists()).toBe(true);
+        });
+
+        it('renders the modal with the correct title', () => {
+          expect(wrapper.findComponent(GlModal).props('title')).toBe(MEMBERS_MODAL_CELEBRATE_TITLE);
+        });
+
+        it('includes the correct celebration text and emoji', () => {
+          expect(findIntroText()).toBe(
+            `${MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT}  ${MEMBERS_MODAL_CELEBRATE_INTRO}`,
+          );
+          expect(findCelebrationEmoji().exists()).toBe(true);
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
         });
       });
 
@@ -218,7 +406,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           expect(findIntroText()).toBe("You're inviting members to the test name group.");
-          expect(membersFormGroupDescription()).toBe('Select members or type email addresses');
+          expect(membersFormGroupDescription()).toBe(MEMBERS_PLACEHOLDER);
         });
       });
 
@@ -267,6 +455,8 @@ describe('InviteMembersModal', () => {
         invite_source: inviteSource,
         format: 'json',
         areas_of_focus: noSelectionAreasOfFocus,
+        tasks_to_be_done: [],
+        tasks_project_id: '',
       };
 
       describe('when member is added successfully', () => {
@@ -448,6 +638,8 @@ describe('InviteMembersModal', () => {
         email: 'email@example.com',
         invite_source: inviteSource,
         areas_of_focus: noSelectionAreasOfFocus,
+        tasks_to_be_done: [],
+        tasks_project_id: '',
         format: 'json',
       };
 
@@ -576,6 +768,8 @@ describe('InviteMembersModal', () => {
         invite_source: inviteSource,
         areas_of_focus: noSelectionAreasOfFocus,
         format: 'json',
+        tasks_to_be_done: [],
+        tasks_project_id: '',
       };
 
       const emailPostData = { ...postData, email: 'email@example.com' };

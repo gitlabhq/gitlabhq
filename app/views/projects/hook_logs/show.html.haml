@@ -2,11 +2,11 @@
 - add_to_breadcrumbs _('Webhook Settings'), namespace_project_hooks_path
 - page_title _('Webhook Logs')
 
-.row.gl-mt-3.gl-mb-3
-  .col-lg-3
-    %h4.gl-mt-0
-      = _("Request details")
-  .col-lg-9
-    = link_to _('Resend Request'), @hook_log.present.retry_path, method: :post, class: "btn gl-button btn-default float-right gl-ml-3"
+%h3.page-title
+  = _("Request details")
 
-    = render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }
+%hr
+
+= link_to _("Resend Request"), @hook_log.present.retry_path, method: :post, class: "btn gl-button btn-default float-right gl-ml-3"
+
+= render partial: 'shared/hook_logs/content', locals: { hook_log: @hook_log }

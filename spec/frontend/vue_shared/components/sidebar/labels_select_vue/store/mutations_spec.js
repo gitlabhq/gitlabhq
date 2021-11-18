@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
 import mutations from '~/vue_shared/components/sidebar/labels_select_vue/store/mutations';
 
@@ -153,47 +154,40 @@ describe('LabelsSelect Mutations', () => {
   });
 
   describe(`${types.UPDATE_SELECTED_LABELS}`, () => {
-    let labels;
+    const labels = [
+      { id: 1, title: 'scoped' },
+      { id: 2, title: 'scoped::label::one', set: false },
+      { id: 3, title: 'scoped::label::two', set: false },
+      { id: 4, title: 'scoped::label::three', set: true },
+      { id: 5, title: 'scoped::one', set: false },
+      { id: 6, title: 'scoped::two', set: false },
+      { id: 7, title: 'scoped::three', set: true },
+      { id: 8, title: '' },
+    ];
 
-    beforeEach(() => {
-      labels = [
-        { id: 1, title: 'scoped' },
-        { id: 2, title: 'scoped::one', set: false },
-        { id: 3, title: 'scoped::test', set: true },
-        { id: 4, title: '' },
-      ];
-    });
+    it.each`
+      label        | labelGroupIds
+      ${labels[0]} | ${[]}
+      ${labels[1]} | ${[labels[2], labels[3]]}
+      ${labels[2]} | ${[labels[1], labels[3]]}
+      ${labels[3]} | ${[labels[1], labels[2]]}
+      ${labels[4]} | ${[labels[5], labels[6]]}
+      ${labels[5]} | ${[labels[4], labels[6]]}
+      ${labels[6]} | ${[labels[4], labels[5]]}
+      ${labels[7]} | ${[]}
+    `('updates `touched` and `set` props for $label.title', ({ label, labelGroupIds }) => {
+      const state = { labels: cloneDeep(labels) };
 
-    it('updates `state.labels` to include `touched` and `set` props based on provided `labels` param', () => {
-      const updatedLabelIds = [2];
-      const state = {
-        labels,
-      };
-      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: 2 }] });
+      mutations[types.UPDATE_SELECTED_LABELS](state, { labels: [{ id: label.id }] });
 
-      state.labels.forEach((label) => {
-        if (updatedLabelIds.includes(label.id)) {
-          expect(label.touched).toBe(true);
-          expect(label.set).toBe(true);
-        }
+      expect(state.labels[label.id - 1]).toMatchObject({
+        touched: true,
+        set: !labels[label.id - 1].set,
       });
-    });
 
-    describe('when label is scoped', () => {
-      it('unsets the currently selected scoped label and sets the current label', () => {
-        const state = {
-          labels,
-        };
-        mutations[types.UPDATE_SELECTED_LABELS](state, {
-          labels: [{ id: 2, title: 'scoped::one' }],
-        });
-
-        expect(state.labels).toEqual([
-          { id: 1, title: 'scoped' },
-          { id: 2, title: 'scoped::one', set: true, touched: true },
-          { id: 3, title: 'scoped::test', set: false },
-          { id: 4, title: '' },
-        ]);
+      labelGroupIds.forEach((l) => {
+        expect(state.labels[l.id - 1].touched).toBeFalsy();
+        expect(state.labels[l.id - 1].set).toBe(false);
       });
     });
   });

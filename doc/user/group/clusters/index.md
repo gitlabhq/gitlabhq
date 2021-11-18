@@ -5,9 +5,14 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Group-level Kubernetes clusters **(FREE)**
+# Group-level Kubernetes clusters (certificate-based) (DEPRECATED) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in GitLab 11.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in GitLab 11.6.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
+use the [GitLab Kubernetes Agent](../../clusters/agent/index.md).
 
 Similar to [project-level](../../project/clusters/index.md) and
 [instance-level](../../instance/clusters/index.md) Kubernetes clusters,
@@ -28,7 +33,7 @@ installation, such as an Ingress controller.
 ## RBAC compatibility
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29398) in GitLab 11.4.
-> - [Project namespace restriction](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) was introduced in GitLab 11.5.
+> - Project namespace restriction was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51716) in GitLab 11.5.
 
 For each project under a group with a Kubernetes cluster, GitLab creates a restricted
 service account with [`edit` privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
@@ -44,7 +49,7 @@ to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab Free 13.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab 13.2.
 
 You can associate more than one Kubernetes cluster to your group, and maintain different clusters
 for different environments, such as development, staging, and production.

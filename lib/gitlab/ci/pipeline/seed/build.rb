@@ -11,11 +11,11 @@ module Gitlab
 
           delegate :dig, to: :@seed_attributes
 
-          def initialize(context, attributes, previous_stages, current_stage)
+          def initialize(context, attributes, stages_for_needs_lookup = [])
             @context = context
             @pipeline = context.pipeline
             @seed_attributes = attributes
-            @stages_for_needs_lookup = (previous_stages + [current_stage]).compact
+            @stages_for_needs_lookup = stages_for_needs_lookup.compact
             @needs_attributes = dig(:needs_attributes)
             @resource_group_key = attributes.delete(:resource_group_key)
             @job_variables = @seed_attributes.delete(:job_variables)
@@ -90,7 +90,7 @@ module Gitlab
               ::Ci::Bridge.new(attributes)
             else
               ::Ci::Build.new(attributes).tap do |build|
-                build.assign_attributes(self.class.environment_attributes_for(build))
+                build.assign_attributes(self.class.deployment_attributes_for(build))
               end
             end
           end
@@ -101,10 +101,10 @@ module Gitlab
                                               .to_resource
           end
 
-          def self.environment_attributes_for(build)
+          def self.deployment_attributes_for(build, environment = nil)
             return {} unless build.has_environment?
 
-            environment = Seed::Environment.new(build).to_resource
+            environment = Seed::Environment.new(build).to_resource if environment.nil?
 
             unless environment.persisted?
               if Feature.enabled?(:surface_environment_creation_failure, build.project, default_enabled: :yaml) &&
@@ -173,7 +173,7 @@ module Gitlab
           end
 
           def variable_expansion_errors
-            expanded_collection = evaluate_context.variables.sort_and_expand_all(@pipeline.project)
+            expanded_collection = evaluate_context.variables.sort_and_expand_all
             errors = expanded_collection.errors
             ["#{name}: #{errors}"] if errors
           end
@@ -244,5 +244,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Ci::Pipeline::Seed::Build.prepend_mod_with('Gitlab::Ci::Pipeline::Seed::Build')

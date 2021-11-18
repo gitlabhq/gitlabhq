@@ -9,8 +9,8 @@ RSpec.describe LooseForeignKey do
 
       self.table_name = 'projects'
 
-      loose_foreign_key :issues, :project_id, on_delete: :async_delete, gitlab_schema: :gitlab_main
-      loose_foreign_key 'merge_requests', 'project_id', 'on_delete' => 'async_nullify', 'gitlab_schema' => :gitlab_main
+      loose_foreign_key :issues, :project_id, on_delete: :async_delete
+      loose_foreign_key 'merge_requests', 'project_id', 'on_delete' => 'async_nullify'
     end
   end
 
@@ -28,7 +28,6 @@ RSpec.describe LooseForeignKey do
     expect(definition.to_table).to eq('merge_requests')
     expect(definition.column).to eq('project_id')
     expect(definition.on_delete).to eq(:async_nullify)
-    expect(definition.options[:gitlab_schema]).to eq(:gitlab_main)
   end
 
   context 'validation' do
@@ -39,9 +38,9 @@ RSpec.describe LooseForeignKey do
 
           self.table_name = 'projects'
 
-          loose_foreign_key :issues, :project_id, on_delete: :async_delete, gitlab_schema: :gitlab_main
-          loose_foreign_key :merge_requests, :project_id, on_delete: :async_nullify, gitlab_schema: :gitlab_main
-          loose_foreign_key :merge_requests, :project_id, on_delete: :destroy, gitlab_schema: :gitlab_main
+          loose_foreign_key :issues, :project_id, on_delete: :async_delete
+          loose_foreign_key :merge_requests, :project_id, on_delete: :async_nullify
+          loose_foreign_key :merge_requests, :project_id, on_delete: :destroy
         end
       end
 
@@ -50,28 +49,12 @@ RSpec.describe LooseForeignKey do
       end
     end
 
-    context 'gitlab_schema validation' do
-      let(:invalid_class) do
-        Class.new(ApplicationRecord) do
-          include LooseForeignKey
-
-          self.table_name = 'projects'
-
-          loose_foreign_key :merge_requests, :project_id, on_delete: :async_nullify, gitlab_schema: :unknown
-        end
-      end
-
-      it 'raises error when invalid `gitlab_schema` option was given' do
-        expect { invalid_class }.to raise_error /Invalid gitlab_schema option given: unknown/
-      end
-    end
-
     context 'inheritance validation' do
       let(:inherited_project_class) do
         Class.new(Project) do
           include LooseForeignKey
 
-          loose_foreign_key :issues, :project_id, on_delete: :async_delete, gitlab_schema: :gitlab_main
+          loose_foreign_key :issues, :project_id, on_delete: :async_delete
         end
       end
 

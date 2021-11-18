@@ -64,12 +64,12 @@ describe('Board card', () => {
   };
 
   const selectCard = async () => {
-    wrapper.trigger('mouseup');
+    wrapper.trigger('click');
     await wrapper.vm.$nextTick();
   };
 
   const multiSelectCard = async () => {
-    wrapper.trigger('mouseup', { ctrlKey: true });
+    wrapper.trigger('click', { ctrlKey: true });
     await wrapper.vm.$nextTick();
   };
 

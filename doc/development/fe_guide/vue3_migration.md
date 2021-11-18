@@ -29,6 +29,12 @@ Component's computed properties / methods or external helpers.
 
 `$on`, `$once`, and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event hub.
 
+**When to use**
+
+If you are in a Vue app that doesn't use any event hub, try to avoid adding a new one unless absolutely necessary. For example, if you need a child component to react to its parent's event, it's preferred to pass a prop down. Then, use the watch property on that prop in the child component to create the desired side effect. 
+
+If you need cross-component communication (between different Vue apps), then perhaps introducing a hub is the right decision.
+
 **What to use instead**
 
 Vue documentation recommends using the [mitt](https://github.com/developit/mitt) library. It's relatively small (200 bytes, compressed) and has a clear API:

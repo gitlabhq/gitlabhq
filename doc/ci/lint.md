@@ -14,6 +14,9 @@ issues as well.
 To access the CI Lint tool, navigate to **CI/CD > Pipelines** or **CI/CD > Jobs**
 in your project and click **CI lint**.
 
+If you use VS Code, you can also validate your CI/CD configuration with the
+[GitLab Workflow VS Code extension](../user/project/repository/vscode.md).
+
 ## Validate basic logic and syntax
 
 By default, the CI lint checks the syntax of your CI YAML configuration and also runs

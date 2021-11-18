@@ -89,10 +89,8 @@ RSpec.describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
 
         project = Project.find_by_full_path(project_path)
         repo_path = "#{project.disk_path}.git"
-        hook_path = File.join(repo_path, 'hooks')
 
         expect(gitlab_shell.repository_exists?(project.repository_storage, repo_path)).to be(true)
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, hook_path)).to be(true)
       end
 
       context 'hashed storage enabled' do

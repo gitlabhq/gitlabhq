@@ -85,6 +85,12 @@ export const setBaseConfig = ({ commit }, options) => {
     viewDiffsFileByFile,
     mrReviews,
   });
+
+  Array.from(new Set(Object.values(mrReviews).flat())).forEach((id) => {
+    const viewedId = id.replace(/^hash:/, '');
+
+    commit(types.SET_DIFF_FILE_VIEWED, { id: viewedId, seen: true });
+  });
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
@@ -127,7 +133,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
         }
 
         if (!isNoteLink && !state.currentDiffFileId) {
-          commit(types.VIEW_DIFF_FILE, diff_files[0]?.file_hash);
+          commit(types.SET_CURRENT_DIFF_FILE, diff_files[0]?.file_hash);
         }
 
         if (isNoteLink) {
@@ -143,7 +149,7 @@ export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
             !state.diffFiles.some((f) => f.file_hash === state.currentDiffFileId) &&
             !isNoteLink
           ) {
-            commit(types.VIEW_DIFF_FILE, state.diffFiles[0].file_hash);
+            commit(types.SET_CURRENT_DIFF_FILE, state.diffFiles[0].file_hash);
           }
 
           if (state.diffFiles?.length) {
@@ -248,7 +254,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
 export const setHighlightedRow = ({ commit }, lineCode) => {
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
-  commit(types.VIEW_DIFF_FILE, fileHash);
+  commit(types.SET_CURRENT_DIFF_FILE, fileHash);
 
   handleLocationHash();
 };
@@ -514,23 +520,25 @@ export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_FOLDER_OPEN, path);
 };
 
-export const toggleActiveFileByHash = ({ commit }, hash) => {
-  commit(types.VIEW_DIFF_FILE, hash);
+export const setCurrentFileHash = ({ commit }, hash) => {
+  commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 
-export const scrollToFile = ({ state, commit, getters }, path) => {
+export const scrollToFile = ({ state, commit, getters }, { path, setHash = true }) => {
   if (!state.treeEntries[path]) return;
 
   const { fileHash } = state.treeEntries[path];
 
-  commit(types.VIEW_DIFF_FILE, fileHash);
+  commit(types.SET_CURRENT_DIFF_FILE, fileHash);
 
   if (getters.isVirtualScrollingEnabled) {
     eventHub.$emit('scrollToFileHash', fileHash);
 
-    setTimeout(() => {
-      window.history.replaceState(null, null, `#${fileHash}`);
-    });
+    if (setHash) {
+      setTimeout(() => {
+        window.history.replaceState(null, null, `#${fileHash}`);
+      });
+    }
   } else {
     document.location.hash = fileHash;
 
@@ -804,7 +812,7 @@ export const setCurrentDiffFileIdFromNote = ({ commit, state, rootGetters }, not
   const fileHash = rootGetters.getDiscussion(note.discussion_id).diff_file?.file_hash;
 
   if (fileHash && state.diffFiles.some((f) => f.file_hash === fileHash)) {
-    commit(types.VIEW_DIFF_FILE, fileHash);
+    commit(types.SET_CURRENT_DIFF_FILE, fileHash);
   }
 };
 
@@ -812,7 +820,7 @@ export const navigateToDiffFileIndex = ({ commit, state }, index) => {
   const fileHash = state.diffFiles[index].file_hash;
   document.location.hash = fileHash;
 
-  commit(types.VIEW_DIFF_FILE, fileHash);
+  commit(types.SET_CURRENT_DIFF_FILE, fileHash);
 };
 
 export const setFileByFile = ({ state, commit }, { fileByFile }) => {
@@ -848,6 +856,8 @@ export function reviewFile({ commit, state }, { file, reviewed = true }) {
   const reviews = markFileReview(state.mrReviews, file, reviewed);
 
   setReviewsForMergeRequest(mrPath, reviews);
+
+  commit(types.SET_DIFF_FILE_VIEWED, { id: file.file_hash, seen: reviewed });
   commit(types.SET_MR_FILE_REVIEWS, reviews);
 }
 

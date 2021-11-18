@@ -223,16 +223,13 @@ Consider a Pages site deployed with the following files:
 
 ```plaintext
 public/
-├─┬ index.html
-│ ├ data.html
-│ └ info.html
-│
+├── index.html
+├── data.html
+├── info.html
 ├── data/
 │   └── index.html
-├── info/
-│   └── details.html
-└── other/
-    └── index.html
+└── info/
+    └── details.html
 ```
 
 Pages supports reaching each of these files through several different URLs. In
@@ -241,23 +238,19 @@ specifies the directory. If the URL references a file that doesn't exist, but
 adding `.html` to the URL leads to a file that *does* exist, it's served
 instead. Here are some examples of what happens given the above Pages site:
 
-| URL path             | HTTP response | File served |
-| -------------------- | ------------- | ----------- |
-| `/`                  | `200 OK`      | `public/index.html` |
-| `/index.html`        | `200 OK`      | `public/index.html` |
-| `/index`             | `200 OK`      | `public/index.html` |
-| `/data`              | `200 OK`      | `public/data/index.html` |
-| `/data/`             | `200 OK`      | `public/data/index.html` |
-| `/data.html`         | `200 OK`      | `public/data.html` |
-| `/info`              | `200 OK`      | `public/info.html` |
-| `/info/`             | `200 OK`      | `public/info.html` |
-| `/info.html`         | `200 OK`      | `public/info.html` |
-| `/info/details`      | `200 OK`      | `public/info/details.html` |
-| `/info/details.html` | `200 OK`      | `public/info/details.html` |
-| `/other`             | `302 Found`   | `public/other/index.html` |
-| `/other/`            | `200 OK`      | `public/other/index.html` |
-| `/other/index`       | `200 OK`      | `public/other/index.html` |
-| `/other/index.html`  | `200 OK`      | `public/other/index.html` |
+| URL path             | HTTP response |
+| -------------------- | ------------- |
+| `/`                  | `200 OK`: `public/index.html` |
+| `/index.html`        | `200 OK`: `public/index.html` |
+| `/index`             | `200 OK`: `public/index.html` |
+| `/data`              | `302 Found`: redirecting to `/data/` |
+| `/data/`             | `200 OK`: `public/data/index.html` |
+| `/data.html`         | `200 OK`: `public/data.html` |
+| `/info`              | `302 Found`: redirecting to `/info/` |
+| `/info/`             | `404 Not Found` Error Page |
+| `/info.html`         | `200 OK`: `public/info.html` |
+| `/info/details`      | `200 OK`: `public/info/details.html` |
+| `/info/details.html` | `200 OK`: `public/info/details.html` |
 
 Note that when `public/data/index.html` exists, it takes priority over the `public/data.html` file
 for both the `/data` and `/data/` URL paths.

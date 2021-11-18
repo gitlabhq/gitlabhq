@@ -175,7 +175,7 @@ RSpec.describe JiraImportState do
       let(:jira_import) { build(:jira_import_state, project: project)}
 
       it 'does not run the callback', :aggregate_failures do
-        expect { jira_import.save }.to change { JiraImportState.count }.by(1)
+        expect { jira_import.save! }.to change { JiraImportState.count }.by(1)
         expect(jira_import.reload.error_message).to be_nil
       end
     end
@@ -184,7 +184,7 @@ RSpec.describe JiraImportState do
       let(:jira_import) { build(:jira_import_state, project: project, error_message: 'error')}
 
       it 'does not run the callback', :aggregate_failures do
-        expect { jira_import.save }.to change { JiraImportState.count }.by(1)
+        expect { jira_import.save! }.to change { JiraImportState.count }.by(1)
         expect(jira_import.reload.error_message).to eq('error')
       end
     end

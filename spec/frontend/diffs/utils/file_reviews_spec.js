@@ -11,14 +11,14 @@ import {
 
 function getDefaultReviews() {
   return {
-    abc: ['123', '098'],
+    abc: ['123', 'hash:xyz', '098', 'hash:uvw'],
   };
 }
 
 describe('File Review(s) utilities', () => {
   const mrPath = 'my/fake/mr/42';
   const storageKey = `${mrPath}-file-reviews`;
-  const file = { id: '123', file_identifier_hash: 'abc' };
+  const file = { id: '123', file_hash: 'xyz', file_identifier_hash: 'abc' };
   const storedValue = JSON.stringify(getDefaultReviews());
   let reviews;
 
@@ -44,14 +44,14 @@ describe('File Review(s) utilities', () => {
   });
 
   describe('reviewStatuses', () => {
-    const file1 = { id: '123', file_identifier_hash: 'abc' };
-    const file2 = { id: '098', file_identifier_hash: 'abc' };
+    const file1 = { id: '123', hash: 'xyz', file_identifier_hash: 'abc' };
+    const file2 = { id: '098', hash: 'uvw', file_identifier_hash: 'abc' };
 
     it.each`
       mrReviews                         | files             | fileReviews
       ${{}}                             | ${[file1, file2]} | ${{ 123: false, '098': false }}
-      ${{ abc: ['123'] }}               | ${[file1, file2]} | ${{ 123: true, '098': false }}
-      ${{ abc: ['098'] }}               | ${[file1, file2]} | ${{ 123: false, '098': true }}
+      ${{ abc: ['123', 'hash:xyz'] }}   | ${[file1, file2]} | ${{ 123: true, '098': false }}
+      ${{ abc: ['098', 'hash:uvw'] }}   | ${[file1, file2]} | ${{ 123: false, '098': true }}
       ${{ def: ['123'] }}               | ${[file1, file2]} | ${{ 123: false, '098': false }}
       ${{ abc: ['123'], def: ['098'] }} | ${[]}             | ${{}}
     `(
@@ -128,7 +128,7 @@ describe('File Review(s) utilities', () => {
 
   describe('markFileReview', () => {
     it("adds a review when there's nothing that already exists", () => {
-      expect(markFileReview(null, file)).toStrictEqual({ abc: ['123'] });
+      expect(markFileReview(null, file)).toStrictEqual({ abc: ['123', 'hash:xyz'] });
     });
 
     it("overwrites an existing review if it's for the same file (identifier hash)", () => {
@@ -136,15 +136,15 @@ describe('File Review(s) utilities', () => {
     });
 
     it('removes a review from the list when `reviewed` is `false`', () => {
-      expect(markFileReview(reviews, file, false)).toStrictEqual({ abc: ['098'] });
+      expect(markFileReview(reviews, file, false)).toStrictEqual({ abc: ['098', 'hash:uvw'] });
     });
 
     it('adds a new review if the file ID is new', () => {
-      const updatedFile = { ...file, id: '098' };
-      const allReviews = markFileReview({ abc: ['123'] }, updatedFile);
+      const updatedFile = { ...file, id: '098', file_hash: 'uvw' };
+      const allReviews = markFileReview({ abc: ['123', 'hash:xyz'] }, updatedFile);
 
       expect(allReviews).toStrictEqual(getDefaultReviews());
-      expect(allReviews.abc).toStrictEqual(['123', '098']);
+      expect(allReviews.abc).toStrictEqual(['123', 'hash:xyz', '098', 'hash:uvw']);
     });
 
     it.each`
@@ -158,7 +158,7 @@ describe('File Review(s) utilities', () => {
     it('removes the file key if there are no more reviews for it', () => {
       let updated = markFileReview(reviews, file, false);
 
-      updated = markFileReview(updated, { ...file, id: '098' }, false);
+      updated = markFileReview(updated, { ...file, id: '098', file_hash: 'uvw' }, false);
 
       expect(updated).toStrictEqual({});
     });

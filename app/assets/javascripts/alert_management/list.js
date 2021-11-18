@@ -23,7 +23,6 @@ export default () => {
     assigneeUsernameQuery,
     alertManagementEnabled,
     userCanEnableAlertManagement,
-    hasManagedPrometheus,
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
@@ -39,7 +38,6 @@ export default () => {
             return defaultDataIdFromObject(object);
           },
         },
-        assumeImmutableResults: true,
       },
     ),
   });
@@ -66,7 +64,6 @@ export default () => {
       alertManagementEnabled: parseBoolean(alertManagementEnabled),
       trackAlertStatusUpdateOptions: PAGE_CONFIG.OPERATIONS.TRACK_ALERT_STATUS_UPDATE_OPTIONS,
       userCanEnableAlertManagement: parseBoolean(userCanEnableAlertManagement),
-      hasManagedPrometheus: parseBoolean(hasManagedPrometheus),
     },
     apolloProvider,
     render(createElement) {

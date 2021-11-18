@@ -1,5 +1,6 @@
 import { merge } from 'lodash';
 
+// This helper is for specs that use `gitlab/experimentation` module
 export function withGonExperiment(experimentKey, value = true) {
   let origGon;
 
@@ -12,16 +13,26 @@ export function withGonExperiment(experimentKey, value = true) {
     window.gon = origGon;
   });
 }
-// This helper is for specs that use `gitlab-experiment` utilities, which have a different schema that gets pushed via Gon compared to `Experimentation Module`
-export function assignGitlabExperiment(experimentKey, variant) {
-  let origGon;
 
-  beforeEach(() => {
-    origGon = window.gon;
-    window.gon = { experiment: { [experimentKey]: { variant } } };
-  });
+// The following helper is for specs that use `gitlab-experiment` utilities,
+// which have a different schema that gets pushed to the frontend compared to
+// the `Experimentation` Module.
+//
+// Usage: stubExperiments({ experiment_feature_flag_name: 'variant_name', ... })
+export function stubExperiments(experiments = {}) {
+  // Deprecated
+  window.gon = window.gon || {};
+  window.gon.experiment = window.gon.experiment || {};
+  // Preferred
+  window.gl = window.gl || {};
+  window.gl.experiments = window.gl.experiemnts || {};
 
-  afterEach(() => {
-    window.gon = origGon;
+  Object.entries(experiments).forEach(([name, variant]) => {
+    const experimentData = { experiment: name, variant };
+
+    // Deprecated
+    window.gon.experiment[name] = experimentData;
+    // Preferred
+    window.gl.experiments[name] = experimentData;
   });
 }

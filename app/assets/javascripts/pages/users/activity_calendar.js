@@ -5,6 +5,7 @@ import { last } from 'lodash';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
+import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import { n__, s__, __ } from '~/locale';
 
 const d3 = { select };
@@ -294,7 +295,15 @@ export default class ActivityCalendar {
           },
           responseType: 'text',
         })
-        .then(({ data }) => $(this.activitiesContainer).html(data))
+        .then(({ data }) => {
+          $(this.activitiesContainer).html(data);
+          document
+            .querySelector(this.activitiesContainer)
+            .querySelectorAll('.js-localtime')
+            .forEach((el) => {
+              el.setAttribute('title', formatDate(el.getAttribute('data-datetime')));
+            });
+        })
         .catch(() =>
           createFlash({
             message: __('An error occurred while retrieving calendar activity'),

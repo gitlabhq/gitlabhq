@@ -97,7 +97,7 @@ RSpec.describe StubFeatureFlags do
     context 'type handling' do
       context 'raises error' do
         where(:feature_actors) do
-          ['string', 1, 1.0, OpenStruct.new]
+          ['string', 1, 1.0, Object.new]
         end
 
         with_them do

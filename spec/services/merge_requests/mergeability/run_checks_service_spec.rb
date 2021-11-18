@@ -8,7 +8,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
   let_it_be(:merge_request) { create(:merge_request) }
 
   describe '#CHECKS' do
-    it 'contains every subclass of the base checks service' do
+    it 'contains every subclass of the base checks service', :eager_load do
       expect(described_class::CHECKS).to contain_exactly(*MergeRequests::Mergeability::CheckBaseService.subclasses)
     end
   end
@@ -19,7 +19,7 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService do
     let(:params) { {} }
     let(:success_result) { Gitlab::MergeRequests::Mergeability::CheckResult.success }
 
-    context 'when every check is skipped' do
+    context 'when every check is skipped', :eager_load do
       before do
         MergeRequests::Mergeability::CheckBaseService.subclasses.each do |subclass|
           expect_next_instance_of(subclass) do |service|

@@ -1,3 +1,4 @@
+# rubocop:todo Naming/FileName
 # frozen_string_literal: true
 
 module QA
@@ -11,3 +12,5 @@ module QA
     end
   end
 end
+
+# rubocop:enable Naming/FileName

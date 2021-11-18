@@ -23,8 +23,9 @@ Sidekiq::Testing.inline! do
         full_path = url.sub('https://android.googlesource.com/', '')
         full_path = full_path.sub(/\.git\z/, '')
         full_path, _, project_path = full_path.rpartition('/')
-        group = Group.find_by_full_path(full_path) ||
-          Groups::NestedCreateService.new(user, group_path: full_path).execute
+        group = Sidekiq::Worker.skipping_transaction_check do
+          Group.find_by_full_path(full_path) || Groups::NestedCreateService.new(user, group_path: full_path).execute
+        end
 
         params = {
           import_url: url,

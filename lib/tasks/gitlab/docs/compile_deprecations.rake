@@ -21,7 +21,7 @@ namespace :gitlab do
       if doc == contents
         puts "Deprecations doc is up to date."
       else
-        format_output('Deprecations doc is outdated! Please update it by running `bundle exec rake gitlab:docs:compile_deprecations`.')
+        format_output('Deprecations doc is outdated! You (or your technical writer) can update it by running `bin/rake gitlab:docs:compile_deprecations`.')
         abort
       end
     end

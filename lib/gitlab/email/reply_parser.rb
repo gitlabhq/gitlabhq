@@ -4,12 +4,13 @@
 module Gitlab
   module Email
     class ReplyParser
-      attr_accessor :message
+      attr_accessor :message, :allow_only_quotes
 
-      def initialize(message, trim_reply: true, append_reply: false)
+      def initialize(message, trim_reply: true, append_reply: false, allow_only_quotes: false)
         @message = message
         @trim_reply = trim_reply
         @append_reply = append_reply
+        @allow_only_quotes = allow_only_quotes
       end
 
       def execute
@@ -25,7 +26,12 @@ module Gitlab
         # NOTE: We currently don't support empty quotes.
         # EmailReplyTrimmer allows this as a special case,
         # so we detect it manually here.
-        return "" if body.lines.all? { |l| l.strip.empty? || l.start_with?('>') }
+        #
+        # If allow_only_quotes is true a message where all lines starts with ">" is allowed.
+        # This could happen if an email has an empty quote, forwarded without any new content.
+        return "" if body.lines.all? do |l|
+          l.strip.empty? || (!allow_only_quotes && l.start_with?('>'))
+        end
 
         encoded_body = body.force_encoding(encoding).encode("UTF-8")
         return encoded_body unless @append_reply

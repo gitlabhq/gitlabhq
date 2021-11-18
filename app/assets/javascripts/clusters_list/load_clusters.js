@@ -8,8 +8,15 @@ export default (Vue) => {
     return null;
   }
 
+  const { emptyStateHelpText, newClusterPath, clustersEmptyStateImage } = el.dataset;
+
   return new Vue({
     el,
+    provide: {
+      emptyStateHelpText,
+      newClusterPath,
+      clustersEmptyStateImage,
+    },
     store: createStore(el.dataset),
     render(createElement) {
       return createElement(Clusters);

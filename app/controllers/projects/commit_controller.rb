@@ -24,6 +24,7 @@ class Projects::CommitController < Projects::ApplicationController
   COMMIT_DIFFS_PER_PAGE = 20
 
   feature_category :source_code_management
+  urgency :low, [:pipelines, :merge_requests, :show]
 
   def show
     apply_diff_view_cookie!

@@ -15,14 +15,14 @@ export default {
     ...mapGetters('batchComments', ['draftsCount', 'sortedDrafts']),
   },
   methods: {
-    ...mapActions('diffs', ['toggleActiveFileByHash']),
+    ...mapActions('diffs', ['setCurrentFileHash']),
     ...mapActions('batchComments', ['scrollToDraft']),
     isLast(index) {
       return index === this.sortedDrafts.length - 1;
     },
     async onClickDraft(draft) {
       if (this.viewDiffsFileByFile && draft.file_hash) {
-        await this.toggleActiveFileByHash(draft.file_hash);
+        await this.setCurrentFileHash(draft.file_hash);
       }
 
       await this.scrollToDraft(draft);

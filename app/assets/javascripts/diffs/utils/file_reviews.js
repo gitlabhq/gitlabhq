@@ -52,8 +52,10 @@ export function markFileReview(reviews, file, reviewed = true) {
 
     if (reviewed) {
       fileReviews.add(file.id);
+      fileReviews.add(`hash:${file.file_hash}`);
     } else {
       fileReviews.delete(file.id);
+      fileReviews.delete(`hash:${file.file_hash}`);
     }
 
     updatedReviews[file.file_identifier_hash] = Array.from(fileReviews);

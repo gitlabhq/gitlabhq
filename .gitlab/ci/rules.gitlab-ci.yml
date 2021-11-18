@@ -58,6 +58,9 @@
 .if-merge-request-labels-run-decomposed: &if-merge-request-labels-run-decomposed
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-decomposed/'
 
+.if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -91,9 +94,6 @@
 .if-dot-com-ee-nightly-schedule-child-pipeline: &if-dot-com-ee-nightly-schedule-child-pipeline
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $FREQUENCY == "nightly"'
 
-.if-cache-credentials-schedule: &if-cache-credentials-schedule
-  if: '$CI_REPO_CACHE_CREDENTIALS && $CI_PIPELINE_SOURCE == "schedule"'
-
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
@@ -103,6 +103,9 @@
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID'
 
+.if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_MERGE_REQUEST_IID && $QA_MANUAL_FF_PACKAGE_AND_QA'
+
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
@@ -111,6 +114,9 @@
 # fails, we notify release managers.
 .if-security-pipeline-merge-result: &if-security-pipeline-merge-result
   if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && $GITLAB_USER_LOGIN == "gitlab-release-tools-bot"'
+
+.if-skip-flaky-tests-automatically: &if-skip-flaky-tests-automatically
+  if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true"'
 
 ####################
 # Changes patterns #
@@ -159,11 +165,19 @@
   - ".markdownlint.yml"
   - "scripts/lint-doc.sh"
 
+.docs-deprecations-patterns: &docs-deprecations-patterns
+  - "doc/deprecations/index.md"
+  - "data/deprecations/*.yml"
+  - "data/deprecations/templates/_deprecation_template.md.erb"
+  - "lib/tasks/gitlab/docs/compile_deprecations.rake"
+  - "tooling/deprecations/docs.rb"
+
 .bundler-patterns: &bundler-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
+  - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
 .python-patterns: &python-patterns
   - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
@@ -211,6 +225,7 @@
 .startup-css-patterns: &startup-css-patterns
   - "{,ee/,jh/}app/assets/stylesheets/startup/**/*"
 
+# Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
   - "Rakefile"
@@ -224,6 +239,7 @@
   - ".gitlab/ci/**/*"
   - "*_VERSION"
 
+# DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
@@ -252,6 +268,11 @@
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
+.qa-patterns: &qa-patterns
+  - ".dockerignore"
+  - "qa/**/*"
+
+# Code patterns + .ci-patterns + .workhorse-patterns
 .code-patterns: &code-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -260,9 +281,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -273,11 +291,11 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
 
-.qa-patterns: &qa-patterns
-  - ".dockerignore"
-  - "qa/**/*"
-
+# .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -286,9 +304,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -299,6 +314,9 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -307,6 +325,7 @@
   - "{,ee/,jh/}spec/**/*"
   - "{,spec/}tooling/**/*"
 
+# .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -315,9 +334,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -328,10 +344,14 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # QA changes
   - ".dockerignore"
   - "qa/**/*"
 
+# .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -340,9 +360,6 @@
   - ".csscomb.json"
   - "Dockerfile.assets"
   - "vendor/assets/**/*"
-  # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
   - "*_VERSION"
@@ -353,6 +370,9 @@
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -364,8 +384,44 @@
   - ".dockerignore"
   - "qa/**/*"
 
-.code-backstage-danger-patterns: &code-backstage-danger-patterns
+# .code-backstage-qa-patterns + .workhorse-patterns
+.setup-test-env-patterns: &setup-test-env-patterns
+  - "{package.json,yarn.lock}"
+  - ".browserslistrc"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
+  - ".csscomb.json"
+  - "Dockerfile.assets"
+  - "vendor/assets/**/*"
+  - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - ".{codeclimate,eslintrc,gitlab-ci,haml-lint,haml-lint_todo,rubocop,rubocop_todo,rubocop_manual_todo}.yml"
+  - "*_VERSION"
+  - "{,jh/}Gemfile{,.lock}"
+  - "Rakefile"
+  - "tests.yml"
+  - "config.ru"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "data/whats_new/*.yml"
+  # CI changes
+  - ".gitlab-ci.yml"
+  - ".gitlab/ci/**/*"
   # Backstage changes
+  - "Dangerfile"
+  - "danger/**/*"
+  - "{,ee/,jh/}fixtures/**/*"
+  - "{,ee/,jh/}rubocop/**/*"
+  - "{,ee/,jh/}spec/**/*"
+  - "{,spec/}tooling/**/*"
+  # QA changes
+  - ".dockerignore"
+  - "qa/**/*"
+  # Workhorse changes
+  - "GITLAB_WORKHORSE_VERSION"
+  - "workhorse/**/*"
+  - ".gitlab/ci/workhorse.gitlab-ci.yml"
+
+.danger-patterns: &danger-patterns
   - "Dangerfile"
   - "danger/**/*"
   - "tooling/danger/**/*"
@@ -380,6 +436,9 @@
   - "jest.config.{base,integration,unit}.js"
   - "config/helpers/**/*.js"
   - "vendor/assets/javascripts/**/*"
+
+.feature-flag-development-config-patterns: &feature-flag-development-config-patterns
+  - "{,ee/}config/feature_flags/{development,ops}/*.yml"
 
 ################
 # Shared rules #
@@ -402,6 +461,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-build-images-patterns
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
@@ -414,17 +474,10 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *ci-build-images-patterns
     - changes: *code-qa-patterns
-
-####################
-# Cache repo rules #
-####################
-.cache-repo:rules:
-  rules:
-    - <<: *if-cache-credentials-schedule
-      allow_failure: true
 
 #############
 # CNG rules #
@@ -476,6 +529,11 @@
       changes: *docs-patterns
       when: on_success
 
+.docs:rules:deprecations:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-deprecations-patterns
+
 ##################
 # GraphQL rules  #
 ##################
@@ -495,6 +553,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - changes: *code-qa-patterns
 
@@ -525,8 +584,8 @@
 
 .frontend:rules:default-frontend-jobs:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-run-all-rspec
+    - changes: *code-backstage-patterns
 
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
@@ -683,6 +742,9 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *feature-flag-development-config-patterns
+      when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-and-security-merge-request
@@ -695,12 +757,35 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
+.qa:rules:package-and-qa:feature-flags:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-qa
+      changes: *feature-flag-development-config-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+
+.qa:rules:reliable-reports:schedule:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $QA_RELIABLE_REPORT == "true"'
+      allow_failure: true
+
 ###############
 # Rails rules #
 ###############
+.rails:rules:setup-test-env:
+  rules:
+    - changes: *setup-test-env-patterns
+    - <<: *if-merge-request-labels-run-all-rspec
+
 .rails:rules:decomposed-databases:
   rules:
     - <<: *if-merge-request-labels-run-decomposed
+    - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:ee-and-foss-migration:
   rules:
@@ -1163,6 +1248,21 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
+.rails:rules:as-if-jh-rspec:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+      allow_failure: true
+    - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      allow_failure: true
+
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - changes: *db-library-patterns
@@ -1180,8 +1280,24 @@
 
 .rails:rules:detect-tests:
   rules:
-    - changes: *code-backstage-patterns
+    - changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+
+.rails:rules:detect-previous-failed-tests:
+  rules:
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
+
+.rails:rules:rerun-previous-failed-tests:
+  rules:
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request
+      changes: *code-backstage-patterns
 
 .rails:rules:rspec-foss-impact:
   rules:
@@ -1252,12 +1368,26 @@
       when: never
     - changes: *code-backstage-patterns
 
+.rails:rules:skipped-flaky-tests-report:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-skip-flaky-tests-automatically
+      changes: *code-backstage-patterns
+    - changes: *ci-patterns
+
 #########################
 # Static analysis rules #
 #########################
 
 .static-analysis:rules:ee-and-foss:
   rules:
+    - changes: *code-backstage-qa-patterns
+
+.static-analysis:rules:ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
     - changes: *code-backstage-qa-patterns
 
 .static-analysis:rules:as-if-foss:
@@ -1370,6 +1500,12 @@
       when: never
     - changes: *python-patterns
 
+.reports:rules:yarn-audit-dependency_scanning:
+  rules:
+    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/'
+      when: never
+    - changes: *nodejs-patterns
+
 .reports:rules:schedule-dast:
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
@@ -1405,6 +1541,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1415,13 +1552,13 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
 .review:rules:review-build-cng:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1431,24 +1568,22 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
 
 .review:rules:review-deploy:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
       allow_failure: true
 
@@ -1458,6 +1593,7 @@
       when: never
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -1473,6 +1609,7 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
 
@@ -1480,24 +1617,32 @@
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-patterns
-      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-qa-patterns
+      changes: *qa-patterns
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *code-patterns
       allow_failure: true
     - <<: *if-dot-com-ee-schedule-child-pipeline
       allow_failure: true
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
+# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
+# would start running before the qa jobs have started.
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-smoke-report:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_success
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: on_success
@@ -1521,10 +1666,16 @@
     - <<: *if-dot-com-ee-schedule-child-pipeline
       when: on_failure
 
+.review:rules:review-qa-reliable:
+  rules:
+    - when: on_success
+      allow_failure: true
+
 .review:rules:review-qa-all:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -1537,11 +1688,17 @@
 
 # The rule needs to be duplicated between `on_success` and `on_failure`
 # because the jobs `needs` the previous job to complete.
+# With `when: always`, and the `review-qa-*` jobs are manual, the `allure-report-qa-*` jobs
+# would start running before the qa jobs have started.
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63844#note_599012559
 .review:rules:review-qa-all-report:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_success
+    - <<: *if-merge-request-labels-run-review-app
+      when: on_failure
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
@@ -1569,13 +1726,16 @@
       changes: *code-qa-patterns
       when: manual
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule-child-pipeline
+    - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
 .review:rules:review-stop:
   rules:
     - <<: *if-not-ee
       when: never
+    - <<: *if-merge-request-labels-run-review-app
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-qa-patterns
       when: manual
@@ -1588,7 +1748,7 @@
 .review:rules:danger-local:
   rules:
     - if: '$CI_MERGE_REQUEST_IID'
-      changes: *code-backstage-danger-patterns
+      changes: *danger-patterns
 
 ###############
 # Setup rules #
@@ -1616,9 +1776,17 @@
       changes: *code-backstage-patterns
       when: on_success
 
-.setup:rules:no_ee_check:
+.setup:rules:no-ee-check:
   rules:
     - <<: *if-not-foss
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+      when: on_success
+
+.setup:rules:no-jh-check:
+  rules:
+    - <<: *if-jh
       when: never
     - <<: *if-default-refs
       changes: *code-backstage-patterns

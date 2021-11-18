@@ -159,7 +159,10 @@ module ContainerExpirationPolicies
 
       return unless tags_count && cached_tags_count && tags_count != 0
 
-      log_extra_metadata_on_done(:cleanup_tags_service_cache_hit_ratio, cached_tags_count / tags_count.to_f)
+      ratio = cached_tags_count / tags_count.to_f
+      ratio_as_percentage = (ratio * 100).round(2)
+
+      log_extra_metadata_on_done(:cleanup_tags_service_cache_hit_ratio, ratio_as_percentage)
     end
 
     def log_truncate(result)

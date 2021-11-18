@@ -39,4 +39,5 @@ ActiveSupport::Inflector.inflections do |inflect|
   inflect.acronym 'EE'
   inflect.acronym 'JH'
   inflect.acronym 'CSP'
+  inflect.acronym 'VSCode'
 end

@@ -36,7 +36,15 @@ RSpec.describe TabHelper do
       expect(gl_tab_link_to('/url') { 'block content' }).to match(/block content/)
     end
 
-    it 'creates a tab with custom classes' do
+    it 'creates a tab with custom classes for enclosing list item without content block provided' do
+      expect(gl_tab_link_to('Link', '/url', { tab_class: 'my-class' })).to match(/<li class=".*my-class.*"/)
+    end
+
+    it 'creates a tab with custom classes for enclosing list item with content block provided' do
+      expect(gl_tab_link_to('/url', { tab_class: 'my-class' }) { 'Link' }).to match(/<li class=".*my-class.*"/)
+    end
+
+    it 'creates a tab with custom classes for anchor element' do
       expect(gl_tab_link_to('Link', '/url', { class: 'my-class' })).to match(/<a class=".*my-class.*"/)
     end
 
@@ -147,6 +155,24 @@ RSpec.describe TabHelper do
             expect(result).not_to match(/active/)
           end
         end
+      end
+    end
+  end
+
+  describe 'gl_tab_counter_badge' do
+    it 'creates a tab counter badge' do
+      expect(gl_tab_counter_badge(1)).to eq('<span class="badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge">1</span>')
+    end
+
+    context 'with extra classes' do
+      it 'creates a tab counter badge with the correct class attribute' do
+        expect(gl_tab_counter_badge(1, { class: 'js-test' })).to eq('<span class="js-test badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge">1</span>')
+      end
+    end
+
+    context 'with data attributes' do
+      it 'creates a tab counter badge with the data attributes' do
+        expect(gl_tab_counter_badge(1, { data: { some_attribute: 'foo' } })).to eq('<span class="badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge" data-some-attribute="foo">1</span>')
       end
     end
   end

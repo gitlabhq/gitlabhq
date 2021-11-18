@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Snowplow
 
-This page provides an overview of how Snowplow works and how to enable it.
-
-## What is Snowplow
-
 Snowplow is an enterprise-grade marketing and Product Intelligence platform that tracks how users engage with our website and application.
 
 [Snowplow](https://snowplowanalytics.com) consists of several loosely-coupled sub-systems:
@@ -22,12 +18,6 @@ Snowplow is an enterprise-grade marketing and Product Intelligence platform that
 - **Analytics** are performed on Snowplow events or on aggregate tables.
 
 ![snowplow_flow](../img/snowplow_flow.png)
-
-### Useful links
-
-- [Snowplow data structure](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)
-- [Our Iglu schema registry](https://gitlab.com/gitlab-org/iglu)
-- [List of events used in our codebase (Event Dictionary)](https://metrics.gitlab.com/snowplow.html)
 
 ## Enable Snowplow tracking
 
@@ -165,6 +155,9 @@ Snowplow JavaScript adds [web-specific parameters](https://docs.snowplowanalytic
 
 ## Related topics
 
+- [Snowplow data structure](https://docs.snowplowanalytics.com/docs/understanding-your-pipeline/canonical-event/)
+- [Our Iglu schema registry](https://gitlab.com/gitlab-org/iglu)
+- [List of events used in our codebase (Event Dictionary)](https://metrics.gitlab.com/snowplow.html)
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
 - [Service Ping Guide](../service_ping/index.md)
 - [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)

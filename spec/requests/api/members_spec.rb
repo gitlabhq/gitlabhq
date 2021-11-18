@@ -81,14 +81,22 @@ RSpec.describe API::Members do
         expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id]
       end
 
-      it 'finds members with query string' do
-        get api(members_url, developer), params: { query: maintainer.username }
+      context 'with cross db check disabled' do
+        around do |example|
+          allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343305') do
+            example.run
+          end
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.count).to eq(1)
-        expect(json_response.first['username']).to eq(maintainer.username)
+        it 'finds members with query string' do
+          get api(members_url, developer), params: { query: maintainer.username }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.count).to eq(1)
+          expect(json_response.first['username']).to eq(maintainer.username)
+        end
       end
 
       it 'finds members with the given user_ids' do
@@ -402,6 +410,38 @@ RSpec.describe API::Members do
                  params: { user_id: user_id, access_level: Member::DEVELOPER }
 
             expect_no_snowplow_event(category: 'Members::CreateService', action: 'area_of_focus')
+          end
+        end
+      end
+
+      context 'with tasks_to_be_done and tasks_project_id in the params' do
+        before do
+          stub_experiments(invite_members_for_task: true)
+        end
+
+        let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
+
+        context 'when there is 1 user to add' do
+          it 'creates a member_task with the correct attributes' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: { user_id: stranger.id, access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
+
+            member = source.members.find_by(user_id: stranger.id)
+            expect(member.tasks_to_be_done).to match_array([:code, :ci])
+            expect(member.member_task.project_id).to eq(project_id)
+          end
+        end
+
+        context 'when there are multiple users to add' do
+          it 'creates a member_task with the correct attributes' do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: { user_id: [developer.id, stranger.id].join(','), access_level: Member::DEVELOPER, tasks_to_be_done: %w(code ci), tasks_project_id: project_id }
+
+            members = source.members.where(user_id: [developer.id, stranger.id])
+            members.each do |member|
+              expect(member.tasks_to_be_done).to match_array([:code, :ci])
+              expect(member.member_task.project_id).to eq(project_id)
+            end
           end
         end
       end

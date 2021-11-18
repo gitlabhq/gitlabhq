@@ -54,6 +54,7 @@ export default class CreateMergeRequestDropdown {
     this.isCreatingBranch = false;
     this.isCreatingMergeRequest = false;
     this.isGettingRef = false;
+    this.refCancelToken = null;
     this.mergeRequestCreated = false;
     this.refDebounce = debounce((value, target) => this.getRef(value, target), 500);
     this.refIsValid = true;
@@ -101,9 +102,18 @@ export default class CreateMergeRequestDropdown {
       'click',
       this.onClickCreateMergeRequestButton.bind(this),
     );
+    this.branchInput.addEventListener('input', this.onChangeInput.bind(this));
     this.branchInput.addEventListener('keyup', this.onChangeInput.bind(this));
     this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
+    // Detect for example when user pastes ref using the mouse
+    this.refInput.addEventListener('input', this.onChangeInput.bind(this));
+    // Detect for example when user presses right arrow to apply the suggested ref
     this.refInput.addEventListener('keyup', this.onChangeInput.bind(this));
+    // Detect when user clicks inside the input to apply the suggested ref
+    this.refInput.addEventListener('click', this.onChangeInput.bind(this));
+    // Detect when user clicks outside the input to apply the suggested ref
+    this.refInput.addEventListener('blur', this.onChangeInput.bind(this));
+    // Detect when user presses tab to apply the suggested ref
     this.refInput.addEventListener('keydown', CreateMergeRequestDropdown.processTab.bind(this));
   }
 
@@ -247,8 +257,12 @@ export default class CreateMergeRequestDropdown {
   getRef(ref, target = 'all') {
     if (!ref) return false;
 
+    this.refCancelToken = axios.CancelToken.source();
+
     return axios
-      .get(`${createEndpoint(this.projectPath, this.refsPath)}${encodeURIComponent(ref)}`)
+      .get(`${createEndpoint(this.projectPath, this.refsPath)}${encodeURIComponent(ref)}`, {
+        cancelToken: this.refCancelToken.token,
+      })
       .then(({ data }) => {
         const branches = data[Object.keys(data)[0]];
         const tags = data[Object.keys(data)[1]];
@@ -267,7 +281,10 @@ export default class CreateMergeRequestDropdown {
 
         return this.updateInputState(target, ref, result);
       })
-      .catch(() => {
+      .catch((thrown) => {
+        if (axios.isCancel(thrown)) {
+          return false;
+        }
         this.unavailable();
         this.disable();
         createFlash({
@@ -325,14 +342,23 @@ export default class CreateMergeRequestDropdown {
     let target;
     let value;
 
+    // User changed input, cancel to prevent previous request from interfering
+    if (this.refCancelToken !== null) {
+      this.refCancelToken.cancel();
+    }
+
     if (event.target === this.branchInput) {
       target = 'branch';
       ({ value } = this.branchInput);
     } else if (event.target === this.refInput) {
       target = 'ref';
-      value =
-        event.target.value.slice(0, event.target.selectionStart) +
-        event.target.value.slice(event.target.selectionEnd);
+      if (event.target === document.activeElement) {
+        value =
+          event.target.value.slice(0, event.target.selectionStart) +
+          event.target.value.slice(event.target.selectionEnd);
+      } else {
+        value = event.target.value;
+      }
     } else {
       return false;
     }
@@ -358,6 +384,7 @@ export default class CreateMergeRequestDropdown {
 
       this.enable();
       this.showAvailableMessage(target);
+      this.refDebounce(value, target);
       return true;
     }
 
@@ -414,7 +441,8 @@ export default class CreateMergeRequestDropdown {
     if (!selectedText || this.refInput.dataset.value === this.suggestedRef) return;
 
     event.preventDefault();
-    window.getSelection().removeAllRanges();
+    const caretPositionEnd = this.refInput.value.length;
+    this.refInput.setSelectionRange(caretPositionEnd, caretPositionEnd);
   }
 
   removeMessage(target) {

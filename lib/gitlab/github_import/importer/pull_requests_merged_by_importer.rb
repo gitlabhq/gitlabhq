@@ -31,9 +31,7 @@ module Gitlab
         end
 
         def each_object_to_import
-          project.merge_requests.with_state(:merged).find_each do |merge_request|
-            next if already_imported?(merge_request)
-
+          merge_requests_to_import.find_each do |merge_request|
             Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
             pull_request = client.pull_request(project.import_source, merge_request.iid)
@@ -41,6 +39,17 @@ module Gitlab
 
             mark_as_imported(merge_request)
           end
+        end
+
+        private
+
+        # Returns only the merge requests that still have merged_by to be imported.
+        def merge_requests_to_import
+          project.merge_requests.id_not_in(already_imported_objects).with_state(:merged)
+        end
+
+        def already_imported_objects
+          Gitlab::Cache::Import::Caching.values_from_set(already_imported_cache_key)
         end
       end
     end

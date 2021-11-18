@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 
 import $ from 'jquery';
+import mockProjects from 'test_fixtures_static/projects.json';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import '~/lib/utils/common_utils';
-// eslint-disable-next-line import/no-deprecated
-import { getJSONFixture } from 'helpers/fixtures';
 import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -68,8 +67,7 @@ describe('deprecatedJQueryDropdown', () => {
     loadFixtures('static/deprecated_jquery_dropdown.html');
     test.dropdownContainerElement = $('.dropdown.inline');
     test.$dropdownMenuElement = $('.dropdown-menu', test.dropdownContainerElement);
-    // eslint-disable-next-line import/no-deprecated
-    test.projectsData = getJSONFixture('static/projects.json');
+    test.projectsData = JSON.parse(JSON.stringify(mockProjects));
   });
 
   afterEach(() => {

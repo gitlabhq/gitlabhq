@@ -2,8 +2,8 @@
 
 module Integrations
   class Teamcity < BaseCi
-    include ReactiveService
-    include ServicePushDataValidations
+    include PushDataValidations
+    include ReactivelyCached
 
     prop_accessor :teamcity_url, :build_type, :username, :password
 

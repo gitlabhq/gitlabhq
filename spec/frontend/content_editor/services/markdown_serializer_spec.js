@@ -34,10 +34,6 @@ import { createTestEditor, createDocBuilder } from '../test_utils';
 
 jest.mock('~/emoji');
 
-jest.mock('~/content_editor/services/feature_flags', () => ({
-  isBlockTablesFeatureEnabled: jest.fn().mockReturnValue(true),
-}));
-
 const tiptapEditor = createTestEditor({
   extensions: [
     Blockquote,

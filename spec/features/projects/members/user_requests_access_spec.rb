@@ -11,6 +11,7 @@ RSpec.describe 'Projects > Members > User requests access', :js do
   before do
     sign_in(user)
     visit project_path(project)
+    stub_feature_flags(bootstrap_confirmation_modals: false)
   end
 
   it 'request access feature is disabled' do

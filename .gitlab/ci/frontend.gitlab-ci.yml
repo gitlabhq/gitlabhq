@@ -11,7 +11,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7-git-2.31-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.7-git-2.33-lfs-2.9-node-14.15-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -133,6 +133,7 @@ update-storybook-yarn-cache:
     paths:
       - tmp/tests/frontend/
       - knapsack/
+      - crystalball/
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.
@@ -193,20 +194,9 @@ graphql-schema-dump:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
-    SETUP_DB: "false"
   before_script:
-    - !reference [.default-before_script, before_script]
     - *yarn-install
   stage: test
-
-eslint-as-if-foss:
-  extends:
-    - .frontend-test-base
-    - .frontend:rules:eslint-as-if-foss
-    - .as-if-foss
-  needs: []
-  script:
-    - run_timed_command "yarn run lint:eslint:all"
 
 .jest-base:
   extends: .frontend-test-base

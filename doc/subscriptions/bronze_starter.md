@@ -50,15 +50,15 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Group management through LDAP](../administration/auth/ldap/ldap-troubleshooting.md#group-memberships)
   - Syncing information through LDAP:
     - Groups: [one group](../administration/auth/ldap/ldap-troubleshooting.md#sync-one-group),
-      [all groups programmatically](../administration/auth/ldap/index.md#group-sync),
-      [group sync schedule](../administration/auth/ldap/index.md#adjust-ldap-group-sync-schedule), and
+      [all groups programmatically](../administration/auth/ldap/ldap_synchronization.md#group-sync),
+      [group sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule), and
       [all groups manually](../administration/auth/ldap/ldap-troubleshooting.md#sync-all-groups)
     - [Configuration settings](../administration/auth/ldap/index.md#ldap-sync-configuration-settings)
-    - Users: [all users](../administration/auth/ldap/index.md#user-sync),
-      [administrators](../administration/auth/ldap/index.md#administrator-sync),
-      [user sync schedule](../administration/auth/ldap/index.md#adjust-ldap-user-sync-schedule)
-    - [Adding group links](../administration/auth/ldap/index.md#add-group-links)
-    - [Lock memberships to LDAP synchronization](../administration/auth/ldap/index.md#global-group-memberships-lock)
+    - Users: [all users](../administration/auth/ldap/ldap_synchronization.md#user-sync),
+      [administrators](../administration/auth/ldap/ldap_synchronization.md#administrator-sync),
+      [user sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-user-sync-schedule)
+    - [Adding group links](../administration/auth/ldap/ldap_synchronization.md#add-group-links)
+    - [Lock memberships to LDAP synchronization](../administration/auth/ldap/ldap_synchronization.md#global-group-memberships-lock)
     - Rake tasks for [LDAP tasks](../administration/raketasks/ldap.md), including
       [syncing groups](../administration/raketasks/ldap.md#run-a-group-sync)
 - Logging:
@@ -92,11 +92,11 @@ the tiers are no longer mentioned in GitLab documentation:
     - [Pull mirroring](../user/project/repository/mirror/pull.md) outside repositories in a GitLab repository
     - [Overwrite diverged branches](../user/project/repository/mirror/pull.md#overwrite-diverged-branches)
     - [Trigger pipelines for mirror updates](../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
-    - [Hard failures](../user/project/repository/mirror/pull.md#hard-failure) when mirroring fails
+    - [Fix hard failures when mirroring](../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring)
     - [Trigger pull mirroring from the API](../user/project/repository/mirror/pull.md#trigger-an-update-by-using-the-api)
     - [Mirror only protected branches](../user/project/repository/mirror/index.md#mirror-only-protected-branches)
     - [Bidirectional mirroring](../user/project/repository/mirror/bidirectional.md)
-    - [Mirror with Perforce Helix via Git Fusion](../user/project/repository/mirror/bidirectional.md#mirror-with-perforce-helix-via-git-fusion)
+    - [Mirror with Perforce Helix with Git Fusion](../user/project/repository/mirror/bidirectional.md#mirror-with-perforce-helix-with-git-fusion)
 - Runners:
   - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project-for-merge-requests-from-a-forked-project)
   - [Shared runners pipeline minutes quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)

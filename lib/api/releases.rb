@@ -32,6 +32,7 @@ module API
         optional :include_html_description, type: Boolean,
                                desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/releases' do
         releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort)).execute
 
@@ -59,6 +60,7 @@ module API
         optional :include_html_description, type: Boolean,
                                desc: 'If `true`, a response includes HTML rendered markdown of the release description.'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_download_code!
 
@@ -117,6 +119,7 @@ module API
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready.'
         optional :milestones,  type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'The titles of the related milestones'
       end
+      route_setting :authentication, job_token_allowed: true
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_update_release!
 
@@ -142,6 +145,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
+      route_setting :authentication, job_token_allowed: true
       delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_destroy_release!
 

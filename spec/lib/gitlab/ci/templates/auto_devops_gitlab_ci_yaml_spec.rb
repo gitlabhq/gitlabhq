@@ -148,9 +148,7 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
         it_behaves_like 'no Kubernetes deployment job'
       end
 
-      context 'when the project has an active cluster' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp, projects: [project]) }
-
+      shared_examples 'pipeline with Kubernetes jobs' do
         describe 'deployment-related builds' do
           context 'on default branch' do
             it 'does not include rollout jobs besides production' do
@@ -232,6 +230,22 @@ RSpec.describe 'Auto-DevOps.gitlab-ci.yml' do
             end
           end
         end
+      end
+
+      context 'when a cluster is attached' do
+        before do
+          create(:cluster, :project, :provided_by_gcp, projects: [project])
+        end
+
+        it_behaves_like 'pipeline with Kubernetes jobs'
+      end
+
+      context 'when project has an Agent is present' do
+        before do
+          create(:cluster_agent, project: project)
+        end
+
+        it_behaves_like 'pipeline with Kubernetes jobs'
       end
     end
 

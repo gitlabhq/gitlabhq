@@ -84,6 +84,24 @@ RSpec.describe Banzai::Renderer do
     end
   end
 
+  describe '#cacheless_render' do
+    context 'without cache' do
+      let(:object) { fake_object(fresh: false) }
+      let(:histogram) { double('prometheus histogram') }
+
+      it 'returns cacheless render field' do
+        allow(renderer).to receive(:render_result).and_return(output: 'test')
+        allow(renderer).to receive(:real_duration_histogram).and_return(histogram)
+        allow(renderer).to receive(:cpu_duration_histogram).and_return(histogram)
+
+        expect(renderer).to receive(:render_result).with('test', {})
+        expect(histogram).to receive(:observe).twice
+
+        renderer.cacheless_render('test')
+      end
+    end
+  end
+
   describe '#post_process' do
     let(:context_options) { {} }
     let(:html) { 'Consequatur aperiam et nesciunt modi aut assumenda quo id. '}

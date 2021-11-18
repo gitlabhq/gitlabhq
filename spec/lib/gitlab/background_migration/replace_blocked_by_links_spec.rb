@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::ReplaceBlockedByLinks, schema: 20201015073808 do
+RSpec.describe Gitlab::BackgroundMigration::ReplaceBlockedByLinks, schema: 20181228175414 do
   let(:namespace) { table(:namespaces).create!(name: 'gitlab', path: 'gitlab-org') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id, name: 'gitlab') }
   let(:issue1) { table(:issues).create!(project_id: project.id, title: 'a') }

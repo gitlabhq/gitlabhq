@@ -43,17 +43,17 @@ module API
             end
           end
 
-          authenticate_with do |accept|
-            accept.token_types(:personal_access_token, :deploy_token, :job_token)
-                  .sent_through(:http_basic_auth)
-          end
-
           rescue_from ArgumentError do |e|
             render_api_error!(e.message, 400)
           end
 
           rescue_from ActiveRecord::RecordInvalid do |e|
             render_api_error!(e.message, 400)
+          end
+
+          authenticate_with do |accept|
+            accept.token_types(:personal_access_token, :deploy_token, :job_token)
+                  .sent_through(:http_basic_auth)
           end
 
           format :txt

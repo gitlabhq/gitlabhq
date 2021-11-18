@@ -39,7 +39,7 @@ module GroupsHelper
 
     sorted_ancestors(group).with_route.reverse_each.with_index do |parent, index|
       if index > 0
-        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true, for_dropdown: true), location: :before)
+        add_to_breadcrumb_collapsed_links(group_title_link(parent), location: :before)
       else
         full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
       end
@@ -47,7 +47,7 @@ module GroupsHelper
       push_to_schema_breadcrumb(simple_sanitize(parent.name), group_path(parent))
     end
 
-    full_title << render("layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups"))
+    full_title << render("layouts/nav/breadcrumbs/collapsed_inline_list", location: :before, title: _("Show all breadcrumbs"))
 
     full_title << breadcrumb_list_item(group_title_link(group))
     push_to_schema_breadcrumb(simple_sanitize(group.name), group_path(group))

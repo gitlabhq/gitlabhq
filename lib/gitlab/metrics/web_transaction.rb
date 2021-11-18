@@ -2,11 +2,36 @@
 
 module Gitlab
   module Metrics
+    # Exclusive transaction-type metrics for web servers (including Web/Api/Git
+    # fleet). One instance of this class is created for each request going
+    # through the Rack metric middleware. Any metrics dispatched with this
+    # instance include metadata such as controller, action, feature category,
+    # etc.
     class WebTransaction < Transaction
+      THREAD_KEY = :_gitlab_metrics_transaction
+      BASE_LABEL_KEYS = %i(controller action feature_category).freeze
+
       CONTROLLER_KEY = 'action_controller.instance'
       ENDPOINT_KEY = 'api.endpoint'
       ALLOWED_SUFFIXES = Set.new(%w[json js atom rss xml zip])
       SMALL_BUCKETS = [0.1, 0.25, 0.5, 1.0, 2.5, 5.0].freeze
+
+      class << self
+        def current
+          Thread.current[THREAD_KEY]
+        end
+
+        def prometheus_metric(name, type, &block)
+          fetch_metric(type, name) do
+            # set default metric options
+            docstring "#{name.to_s.humanize} #{type}"
+
+            evaluate(&block)
+            # always filter sensitive labels and merge with base ones
+            label_keys BASE_LABEL_KEYS | (label_keys - ::Gitlab::Metrics::Transaction::FILTERED_LABEL_KEYS)
+          end
+        end
+      end
 
       def initialize(env)
         super()

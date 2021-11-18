@@ -37,6 +37,8 @@ RSpec.describe Group do
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
+    it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
+    it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -160,7 +162,7 @@ RSpec.describe Group do
       context 'when sub group is deleted' do
         it 'does not delete parent notification settings' do
           expect do
-            sub_group.destroy
+            sub_group.destroy!
           end.to change { NotificationSetting.count }.by(-1)
         end
       end
@@ -404,7 +406,7 @@ RSpec.describe Group do
 
       subject do
         recorded_queries.record do
-          group.update(parent: new_parent)
+          group.update!(parent: new_parent)
         end
       end
 
@@ -496,7 +498,7 @@ RSpec.describe Group do
       let!(:group) { create(:group, parent: parent_group) }
 
       before do
-        parent_group.update(parent: new_grandparent)
+        parent_group.update!(parent: new_grandparent)
       end
 
       it 'updates traversal_ids for all descendants' do
@@ -563,6 +565,15 @@ RSpec.describe Group do
           it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
         end
       end
+
+      context 'when project namespace exists in the group' do
+        let!(:project) { create(:project, group: group) }
+        let!(:project_namespace) { project.project_namespace }
+
+        it 'filters out project namespace' do
+          expect(group.descendants.find_by_id(project_namespace.id)).to be_nil
+        end
+      end
     end
   end
 
@@ -571,8 +582,8 @@ RSpec.describe Group do
     let(:instance_integration) { build(:jira_integration, :instance) }
 
     before do
-      create(:jira_integration, group: group, project: nil)
-      create(:integrations_slack, group: another_group, project: nil)
+      create(:jira_integration, :group, group: group)
+      create(:integrations_slack, :group, group: another_group)
     end
 
     it 'returns groups without integration' do
@@ -718,6 +729,22 @@ RSpec.describe Group do
       expect(group.group_members.developers.map(&:user)).to include(user)
       expect(group.group_members.guests.map(&:user)).not_to include(user)
     end
+
+    context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
+      let!(:project) { create(:project, group: group) }
+
+      before do
+        stub_experiments(invite_members_for_task: true)
+        group.add_users([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
+      end
+
+      it 'creates a member_task with the correct attributes', :aggregate_failures do
+        member = group.group_members.last
+
+        expect(member.tasks_to_be_done).to match_array([:ci, :code])
+        expect(member.member_task.project).to eq(project)
+      end
+    end
   end
 
   describe '#avatar_type' do
@@ -831,7 +858,7 @@ RSpec.describe Group do
       before do
         parent_group = create(:group)
         create(:group_member, :owner, group: parent_group)
-        group.update(parent: parent_group)
+        group.update!(parent: parent_group)
       end
 
       it { expect(group.last_owner?(@members[:owner])).to be_falsy }
@@ -888,7 +915,7 @@ RSpec.describe Group do
         before do
           parent_group = create(:group)
           create(:group_member, :owner, group: parent_group)
-          group.update(parent: parent_group)
+          group.update!(parent: parent_group)
         end
 
         it { expect(group.member_last_blocked_owner?(member)).to be(false) }
@@ -1936,7 +1963,7 @@ RSpec.describe Group do
           let(:environment) { 'foo%bar/test' }
 
           it 'matches literally for %' do
-            ci_variable.update(environment_scope: 'foo%bar/*')
+            ci_variable.update_attribute(:environment_scope, 'foo%bar/*')
 
             is_expected.to contain_exactly(ci_variable)
           end
@@ -2077,7 +2104,7 @@ RSpec.describe Group do
       let(:ancestor_group) { create(:group) }
 
       before do
-        group.update(parent: ancestor_group)
+        group.update!(parent: ancestor_group)
       end
 
       it 'returns all ancestor group ids' do
@@ -2594,7 +2621,7 @@ RSpec.describe Group do
       let_it_be(:project) { create(:project, group: group, service_desk_enabled: false) }
 
       before do
-        project.update(service_desk_enabled: false)
+        project.update!(service_desk_enabled: false)
       end
 
       it { is_expected.to eq(false) }
@@ -2623,14 +2650,6 @@ RSpec.describe Group do
     end
 
     it_behaves_like 'returns namespaces with disabled email'
-
-    context 'when feature flag :linear_group_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_group_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'returns namespaces with disabled email'
-    end
   end
 
   describe '.timelogs' do

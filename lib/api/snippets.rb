@@ -43,7 +43,7 @@ module API
       params do
         use :pagination
       end
-      get 'public' do
+      get 'public', urgency: :low do
         authenticate!
 
         present paginate(public_snippets), with: Entities::PersonalSnippet, current_user: current_user

@@ -1,0 +1,5 @@
+mutation cancelAutoStop($environment: LocalEnvironment) {
+  cancelAutoStop(environment: $environment) @client {
+    errors
+  }
+}

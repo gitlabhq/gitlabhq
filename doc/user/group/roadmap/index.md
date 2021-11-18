@@ -7,11 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Roadmap **(PREMIUM)**
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.5.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Roadmaps were moved to the Premium tier.
+> - Introduced in GitLab 10.5.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 > - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
 > - Milestones appear in roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
-> - Feature flag for milestones visible in roadmaps removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641).
+> - Feature flag for milestones visible in roadmaps [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641) in GitLab 13.0.
 > - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/214375) and later, the Roadmap also shows milestones in projects in a group.
 > - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/212494) and later, milestone bars can be collapsed and expanded.
 
@@ -36,13 +36,10 @@ toggle the list of the milestone bars.
 
 ## Sort and filter the Roadmap
 
-> - Filtering roadmaps by milestone [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218621) in GitLab 13.7.
-> - Filtering roadmaps by milestone is [deployed behind a feature flag](../../feature_flags.md), enabled by default.
-> - Filtering roadmaps by milestone is enabled on GitLab.com.
-> - Filtering roadmaps by milestone is recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-filtering-roadmaps-by-milestone). **(PREMIUM SELF)**
+> - Filtering by milestone [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218621) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `roadmap_daterange_filter`. Enabled by default.
 > - Filtering by epic confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218624) in GitLab 13.9.
 > - Filtering by epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218623) in GitLab 13.11.
+> - Filtering by milestone [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.5.
 
 WARNING:
 Filtering roadmaps by milestone might not be available to you. Check the **version history** note above for details.
@@ -56,8 +53,6 @@ A dropdown menu lets you show only open or closed epics. By default, all epics a
 
 You can sort epics in the Roadmap view by:
 
-- Created date
-- Last updated
 - Start date
 - Due date
 
@@ -77,40 +72,16 @@ You can also filter epics in the Roadmap view by the epics':
 
 Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
 
-### Enable or disable filtering roadmaps by milestone **(PREMIUM SELF)**
-
-Filtering roadmaps by milestone is under development but ready for production use.
-It is deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can opt to disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:async_filtering)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:async_filtering)
-```
-
 ## Timeline duration
 
-> - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/198062), Timelines were moved to the Premium tier.
+> - Introduced in GitLab 11.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 
 ### Date range presets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/204994) in GitLab 14.3. [Deployed behind the `roadmap_daterange_filter` flag](../../../administration/feature_flags.md), disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group,
-ask an administrator to [enable the `roadmap_daterange_filter` flag](../../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
-The feature is ready for production use.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.3.
+> - [Feature flag `roadmap_daterange_filter` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72419) in GitLab 14.5.
 
 Roadmap provides three date range options, each with predetermined timeline duration:
 

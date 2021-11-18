@@ -1,6 +1,6 @@
 import { initEmojiMock } from 'helpers/emoji';
 import Emoji from '~/content_editor/extensions/emoji';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
 
 describe('content_editor/extensions/emoji', () => {
   let tiptapEditor;
@@ -28,18 +28,16 @@ describe('content_editor/extensions/emoji', () => {
 
   describe('when typing a valid emoji input rule', () => {
     it('inserts an emoji node', () => {
-      const { view } = tiptapEditor;
-      const { selection } = view.state;
       const expectedDoc = doc(
         p(
           ' ',
           emoji({ moji: '❤', name: 'heart', title: 'heavy black heart', unicodeVersion: '1.1' }),
         ),
       );
-      // Triggers the event handler that input rules listen to
-      view.someProp('handleTextInput', (f) => f(view, selection.from, selection.to, ':heart:'));
 
-      expect(eq(tiptapEditor.state.doc, expectedDoc)).toBe(true);
+      triggerNodeInputRule({ tiptapEditor, inputRuleText: ':heart:' });
+
+      expect(tiptapEditor.getJSON()).toEqual(expectedDoc.toJSON());
     });
   });
 

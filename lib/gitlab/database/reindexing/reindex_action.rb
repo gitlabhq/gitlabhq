@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     module Reindexing
-      class ReindexAction < ActiveRecord::Base
+      class ReindexAction < SharedModel
         self.table_name = 'postgres_reindex_actions'
 
         belongs_to :index, foreign_key: :index_identifier, class_name: 'Gitlab::Database::PostgresIndex'

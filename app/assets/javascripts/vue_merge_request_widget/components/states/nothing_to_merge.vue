@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
 import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
+import api from '~/api';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
@@ -21,6 +22,11 @@ export default {
   },
   data() {
     return { emptyStateSVG };
+  },
+  methods: {
+    onClickNewFile() {
+      api.trackRedisHllUserEvent('i_code_review_widget_nothing_merge_click_new_file');
+    },
   },
   ciHelpPage: helpPagePath('/ci/quick_start/index.html'),
   safeHtmlConfig: { ADD_TAGS: ['use'] },
@@ -59,6 +65,7 @@ export default {
             category="secondary"
             variant="success"
             data-testid="createFileButton"
+            @click="onClickNewFile"
           >
             {{ __('Create file') }}
           </gl-button>

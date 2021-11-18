@@ -96,9 +96,10 @@
 }
 
 @mixin line-number-link($color) {
+  min-width: $gl-spacing-scale-9;
+
   &::before {
-    @include gl-visibility-hidden;
-    @include gl-display-inline-block;
+    @include gl-display-none;
     @include gl-align-self-center;
     @include gl-mt-2;
     @include gl-mr-2;
@@ -114,10 +115,10 @@
   }
 
   &:hover::before {
-    @include gl-visibility-visible;
+    @include gl-display-inline-block;
   }
 
   &:focus::before {
-    @include gl-visibility-visible;
+    @include gl-display-inline-block;
   }
 }

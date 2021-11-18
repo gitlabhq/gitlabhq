@@ -18,12 +18,6 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
     GRAPHQL
   end
 
-  describe 'variables' do
-    subject { initial_value.fetch(:variables) }
-
-    it { is_expected.to eq('{:body=>"[FILTERED]"}') }
-  end
-
   describe '#final_value' do
     let(:monotonic_time_before) { 42 }
     let(:monotonic_time_after) { 500 }
@@ -42,7 +36,14 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer do
 
     it 'inserts duration in seconds to memo and sets request store' do
       expect { final_value }.to change { memo[:duration_s] }.to(monotonic_time_duration)
-                            .and change { RequestStore.store[:graphql_logs] }.to([memo])
+                            .and change { RequestStore.store[:graphql_logs] }.to([{
+                              complexity: 4,
+                              depth: 2,
+                              operation_name: query.operation_name,
+                              used_deprecated_fields: [],
+                              used_fields: [],
+                              variables: { body: "[FILTERED]" }.to_s
+                            }])
     end
   end
 end

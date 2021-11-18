@@ -8,7 +8,7 @@ module Mutations
 
         graphql_name 'CustomerRelationsContactUpdate'
 
-        authorize :admin_contact
+        authorize :admin_crm_contact
 
         field :contact,
               Types::CustomerRelations::ContactType,
@@ -48,8 +48,6 @@ module Mutations
           raise_resource_not_available_error! unless contact
 
           group = contact.group
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, group, default_enabled: :yaml)
-
           authorize!(group)
 
           result = ::CustomerRelations::Contacts::UpdateService.new(group: group, current_user: current_user, params: args).execute(contact)

@@ -44,5 +44,13 @@ RSpec.describe Clusters::Cleanup::ServiceAccountService do
     it 'deletes cluster' do
       expect { subject }.to change { Clusters::Cluster.where(id: cluster.id).exists? }.from(true).to(false)
     end
+
+    context 'when cluster.kubeclient is nil' do
+      let(:kubeclient_instance_double) { nil }
+
+      it 'deletes cluster' do
+        expect { subject }.to change { Clusters::Cluster.where(id: cluster.id).exists? }.from(true).to(false)
+      end
+    end
   end
 end

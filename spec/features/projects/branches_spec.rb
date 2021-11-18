@@ -179,6 +179,7 @@ RSpec.describe 'Branches' do
       context 'when the delete_branch_confirmation_modals feature flag is disabled' do
         it 'removes branch after confirmation', :js do
           stub_feature_flags(delete_branch_confirmation_modals: false)
+          stub_feature_flags(bootstrap_confirmation_modals: false)
 
           visit project_branches_filtered_path(project, state: 'all')
 

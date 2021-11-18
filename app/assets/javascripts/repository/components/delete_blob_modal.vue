@@ -116,15 +116,14 @@ export default {
         ],
       };
     },
-    /* eslint-disable dot-notation */
     showCreateNewMrToggle() {
-      return this.canPushCode && this.form.fields['branch_name'].value !== this.originalBranch;
+      return this.canPushCode && this.form.fields.branch_name.value !== this.originalBranch;
     },
     formCompleted() {
-      return this.form.fields['commit_message'].value && this.form.fields['branch_name'].value;
+      return this.form.fields.commit_message.value && this.form.fields.branch_name.value;
     },
     showHint() {
-      const splitCommitMessageByLineBreak = this.form.fields['commit_message'].value
+      const splitCommitMessageByLineBreak = this.form.fields.commit_message.value
         .trim()
         .split('\n');
       const [firstLine, ...otherLines] = splitCommitMessageByLineBreak;
@@ -136,7 +135,7 @@ export default {
         otherLines.some((text) => text.length > COMMIT_MESSAGE_BODY_MAX_LENGTH);
 
       return (
-        !this.form.fields['commit_message'].feedback &&
+        !this.form.fields.commit_message.feedback &&
         (hasFirstLineExceedMaxLength || hasOtherLineExceedMaxLength)
       );
     },
@@ -173,9 +172,7 @@ export default {
       <input type="hidden" name="_method" value="delete" />
       <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
       <template v-if="emptyRepo">
-        <!-- Once "empty_repo_upload_experiment" is made available, will need to add class 'js-branch-name'
-          Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/335721 -->
-        <input type="hidden" name="branch_name" :value="originalBranch" />
+        <input type="hidden" name="branch_name" :value="originalBranch" class="js-branch-name" />
       </template>
       <template v-else>
         <input type="hidden" name="original_branch" :value="originalBranch" />

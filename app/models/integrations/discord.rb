@@ -41,7 +41,12 @@ module Integrations
       [
         { type: "text", name: "webhook", placeholder: "https://discordapp.com/api/webhooks/…", help: "URL to the webhook for the Discord channel." },
         { type: "checkbox", name: "notify_only_broken_pipelines" },
-        { type: 'select', name: 'branches_to_be_notified', choices: branch_choices }
+        {
+          type: 'select',
+          name: 'branches_to_be_notified',
+          title: s_('Integrations|Branches for which notifications are to be sent'),
+          choices: branch_choices
+        }
       ]
     end
 

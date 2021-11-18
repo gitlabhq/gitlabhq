@@ -29,7 +29,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
 
       it 'raises an error' do
         expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-          .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+          .with_message(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-            .with_message('Feature disabled')
+            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
         end
       end
 
@@ -97,5 +97,5 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_contact) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_crm_contact) }
 end

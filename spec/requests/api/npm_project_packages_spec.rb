@@ -180,6 +180,7 @@ RSpec.describe API::NpmProjectPackages do
                 .to change { project.packages.count }.by(1)
                 .and change { Packages::PackageFile.count }.by(1)
                 .and change { Packages::Tag.count }.by(1)
+                .and change { Packages::Npm::Metadatum.count }.by(1)
 
               expect(response).to have_gitlab_http_status(:ok)
             end
@@ -315,6 +316,25 @@ RSpec.describe API::NpmProjectPackages do
               .and not_change { Packages::Dependency.count}
               .and change { Packages::DependencyLink.count}.by(6)
           end
+        end
+      end
+
+      context 'with a too large metadata structure' do
+        let(:package_name) { "@#{group.path}/my_package_name" }
+        let(:params) do
+          upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
+            h['versions']['1.2.3']['test'] = 'test' * 10000
+          end
+        end
+
+        it_behaves_like 'not a package tracking event'
+
+        it 'returns an error' do
+          expect { upload_package_with_token }
+            .not_to change { project.packages.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response.body).to include('Validation failed: Package json structure is too large')
         end
       end
     end

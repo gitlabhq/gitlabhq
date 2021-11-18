@@ -89,6 +89,7 @@ query childItems(
             iid
             epicIssueId
             title
+            blocked
             closedAt
             state
             createdAt

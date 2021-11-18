@@ -60,7 +60,7 @@ RSpec.describe Mutations::Environments::CanaryIngress::Update do
       let(:user) { reporter }
 
       it 'raises an error' do
-        expect { subject }.to raise_error("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+        expect { subject }.to raise_error(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
       end
     end
   end

@@ -10,6 +10,13 @@ module Namespaces
           select('id')
         end
 
+        def roots
+          Gitlab::ObjectHierarchy
+            .new(all)
+            .base_and_ancestors
+            .where(namespaces: { parent_id: nil })
+        end
+
         def self_and_ancestors(include_self: true, hierarchy_order: nil)
           records = Gitlab::ObjectHierarchy.new(all).base_and_ancestors(hierarchy_order: hierarchy_order)
 

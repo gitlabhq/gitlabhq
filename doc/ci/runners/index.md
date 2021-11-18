@@ -5,12 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab Build Cloud runners **(FREE)**
+# GitLab Runner Cloud **(FREE)**
 
 If you are using self-managed GitLab or you want to use your own runners on GitLab.com, you can
 [install and configure your own runners](https://docs.gitlab.com/runner/install/).
 
-If you are using GitLab SaaS (GitLab.com), your CI jobs automatically run on runners in the GitLab Build Cloud.
+If you are using GitLab SaaS (GitLab.com), your CI jobs automatically run on runners in the GitLab Runner Cloud.
 No configuration is required. Your jobs can run on:
 
 - [Linux runners](build_cloud/linux_build_cloud.md).

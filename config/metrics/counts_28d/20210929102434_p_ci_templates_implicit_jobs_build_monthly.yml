@@ -9,7 +9,7 @@ value_type: number
 status: active
 milestone: "14.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71157
-time_frame: 7d
+time_frame: 28d
 data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric

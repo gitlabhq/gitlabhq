@@ -29,6 +29,7 @@ module Gitlab
         def find
           return if epic? && group.nil?
           return find_diff_commit_user if diff_commit_user?
+          return find_diff_commit if diff_commit?
 
           super
         end
@@ -83,9 +84,38 @@ module Gitlab
         end
 
         def find_diff_commit_user
-          find_with_cache do
-            MergeRequest::DiffCommitUser
-              .find_or_create(@attributes['name'], @attributes['email'])
+          find_or_create_diff_commit_user(@attributes['name'], @attributes['email'])
+        end
+
+        def find_diff_commit
+          row = @attributes.dup
+
+          # Diff commits come in two formats:
+          #
+          # 1. The old format where author/committer details are separate fields
+          # 2. The new format where author/committer details are nested objects,
+          #    and pre-processed by `find_diff_commit_user`.
+          #
+          # The code here ensures we support both the old and new format.
+          aname = row.delete('author_name')
+          amail = row.delete('author_email')
+          cname = row.delete('committer_name')
+          cmail = row.delete('committer_email')
+          author = row.delete('commit_author')
+          committer = row.delete('committer')
+
+          row['commit_author'] = author ||
+            find_or_create_diff_commit_user(aname, amail)
+
+          row['committer'] = committer ||
+            find_or_create_diff_commit_user(cname, cmail)
+
+          MergeRequestDiffCommit.new(row)
+        end
+
+        def find_or_create_diff_commit_user(name, email)
+          find_with_cache([MergeRequest::DiffCommitUser, name, email]) do
+            MergeRequest::DiffCommitUser.find_or_create(name, email)
           end
         end
 
@@ -111,6 +141,10 @@ module Gitlab
 
         def diff_commit_user?
           klass == MergeRequest::DiffCommitUser
+        end
+
+        def diff_commit?
+          klass == MergeRequestDiffCommit
         end
 
         # If an existing group milestone used the IID

@@ -6,6 +6,8 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
 
+  COMMITS_DEFAULT_LIMIT = 40
+
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   around_action :allow_gitaly_ref_name_caching
   before_action :require_non_empty_project
@@ -15,6 +17,7 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :set_commits, except: :commits_root
 
   feature_category :source_code_management
+  urgency :low, [:signatures, :show]
 
   def commits_root
     redirect_to project_commits_path(@project, @project.default_branch)
@@ -63,7 +66,9 @@ class Projects::CommitsController < Projects::ApplicationController
 
   def set_commits
     render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
-    @limit = (params[:limit] || 40).to_i
+
+    limit = params[:limit].to_i
+    @limit = limit > 0 ? limit : COMMITS_DEFAULT_LIMIT # limit can only ever be a positive number
     @offset = (params[:offset] || 0).to_i
     search = params[:search]
     author = params[:author]

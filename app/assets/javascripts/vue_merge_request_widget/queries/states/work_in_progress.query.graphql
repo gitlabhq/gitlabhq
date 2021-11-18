@@ -1,9 +1,0 @@
-query workInProgressQuery($projectPath: ID!, $iid: String!) {
-  project(fullPath: $projectPath) {
-    mergeRequest(iid: $iid) {
-      userPermissions {
-        updateMergeRequest
-      }
-    }
-  }
-}

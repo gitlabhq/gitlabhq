@@ -6,6 +6,7 @@ RSpec.describe 'Value Stream Analytics', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:stage_table_selector) { '[data-testid="vsa-stage-table"]' }
+  let_it_be(:stage_filter_bar) { '[data-testid="vsa-filter-bar"]' }
   let_it_be(:stage_table_event_selector) { '[data-testid="vsa-stage-event"]' }
   let_it_be(:stage_table_event_title_selector) { '[data-testid="vsa-stage-event-title"]' }
   let_it_be(:stage_table_pagination_selector) { '[data-testid="vsa-stage-pagination"]' }
@@ -27,7 +28,14 @@ RSpec.describe 'Value Stream Analytics', :js do
   def set_daterange(from_date, to_date)
     page.find(".js-daterange-picker-from input").set(from_date)
     page.find(".js-daterange-picker-to input").set(to_date)
+
+    # simulate a blur event
+    page.find(".js-daterange-picker-to input").send_keys(:tab)
     wait_for_all_requests
+  end
+
+  before do
+    stub_feature_flags(use_vsa_aggregated_tables: false)
   end
 
   context 'as an allowed user' do
@@ -97,7 +105,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         end
       end
 
-      it 'shows data on each stage', :sidekiq_might_not_need_inline do
+      it 'shows data on each stage', :sidekiq_might_not_need_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
         expect_issue_to_be_present
 
         click_stage('Plan')
@@ -133,7 +141,7 @@ RSpec.describe 'Value Stream Analytics', :js do
         expect(metrics_values).to eq(['-'] * 4)
       end
 
-      it 'can sort records' do
+      it 'can sort records', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do
         # NOTE: checking that the string changes should suffice
         # depending on the order the tests are run we might run into problems with hard coded strings
         original_first_title = first_stage_title
@@ -156,6 +164,18 @@ RSpec.describe 'Value Stream Analytics', :js do
         go_to_next_page
 
         expect(page).not_to have_text(original_first_title, exact: true)
+      end
+
+      it 'can navigate directly to a value stream stream stage with filters applied' do
+        visit project_cycle_analytics_path(project, created_before: '2019-12-31', created_after: '2019-11-01', stage_id: 'code', milestone_title: milestone.title)
+        wait_for_requests
+
+        expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Code')
+        expect(page.find(".js-daterange-picker-from input").value).to eq("2019-11-01")
+        expect(page.find(".js-daterange-picker-to input").value).to eq("2019-12-31")
+
+        filter_bar = page.find(stage_filter_bar)
+        expect(filter_bar.find(".gl-filtered-search-token-data-content").text).to eq("%#{milestone.title}")
       end
 
       def stage_time_column

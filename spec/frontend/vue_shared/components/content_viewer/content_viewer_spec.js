@@ -16,6 +16,6 @@ describe('ContentViewer', () => {
       propsData: { path, fileSize: 1024, type },
     });
 
-    expect(wrapper.find(selector).element).toExist();
+    expect(wrapper.find(selector).exists()).toBe(true);
   });
 });

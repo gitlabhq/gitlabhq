@@ -20,6 +20,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
+      RepositoryExists = Class.new(::Gitlab::Git::BaseError)
       InvalidRepository = Class.new(::Gitlab::Git::BaseError)
       InvalidBlobName = Class.new(::Gitlab::Git::BaseError)
       InvalidRef = Class.new(::Gitlab::Git::BaseError)
@@ -101,6 +102,8 @@ module Gitlab
       def create_repository
         wrapped_gitaly_errors do
           gitaly_repository_client.create_repository
+        rescue GRPC::AlreadyExists => e
+          raise RepositoryExists, e.message
         end
       end
 
@@ -198,9 +201,9 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      def tags(sort_by: nil)
+      def tags(sort_by: nil, pagination_params: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.tags(sort_by: sort_by)
+          gitaly_ref_client.tags(sort_by: sort_by, pagination_params: pagination_params)
         end
       end
 
@@ -519,6 +522,17 @@ module Gitlab
         @refs_hash
       end
 
+      # Returns matching refs for OID
+      #
+      # Limit of 0 means there is no limit.
+      def refs_by_oid(oid:, limit: 0)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit)
+        end
+      rescue CommandError, TypeError, NoRepository
+        nil
+      end
+
       # Returns url for submodule
       #
       # Ex.
@@ -781,6 +795,12 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_repository_client.write_ref(ref_path, ref, old_ref)
+        end
+      end
+
+      def list_refs
+        wrapped_gitaly_errors do
+          gitaly_ref_client.list_refs
         end
       end
 

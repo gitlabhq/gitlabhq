@@ -5,6 +5,7 @@ module Resolvers
     prepend IssueResolverArguments
 
     type Types::IssueStatusCountsType, null: true
+    accept_release_tag
 
     extras [:lookahead]
 

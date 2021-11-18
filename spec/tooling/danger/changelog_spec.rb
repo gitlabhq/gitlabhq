@@ -228,7 +228,7 @@ RSpec.describe Tooling::Danger::Changelog do
       end
 
       context 'with changelog label' do
-        let(:mr_labels) { ['feature'] }
+        let(:mr_labels) { ['type::feature'] }
 
         it 'is truthy' do
           is_expected.to be_truthy
@@ -236,7 +236,7 @@ RSpec.describe Tooling::Danger::Changelog do
       end
 
       context 'with no changelog label' do
-        let(:mr_labels) { ['tooling'] }
+        let(:mr_labels) { ['type::tooling'] }
 
         it 'is truthy' do
           is_expected.to be_falsey

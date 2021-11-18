@@ -74,16 +74,32 @@ module Gitlab
       end
 
       def protection_options
-        {
-          "Not protected: Both developers and maintainers can push new commits and force push." => PROTECTION_NONE,
-          "Protected against pushes: Developers cannot push new commits, but are allowed to accept merge requests to the branch. Maintainers can push to the branch." => PROTECTION_DEV_CAN_MERGE,
-          "Partially protected: Both developers and maintainers can push new commits, but cannot force push." => PROTECTION_DEV_CAN_PUSH,
-          "Fully protected: Developers cannot push new commits, but maintainers can. No one can force push." => PROTECTION_FULL
-        }
+        [
+          {
+            label: s_('DefaultBranchProtection|Not protected'),
+            help_text: s_('DefaultBranchProtection|Both developers and maintainers can push new commits, force push, or delete the branch.'),
+            value: PROTECTION_NONE
+          },
+          {
+            label: s_('DefaultBranchProtection|Protected against pushes'),
+            help_text: s_('DefaultBranchProtection|Developers cannot push new commits, but are allowed to accept merge requests to the branch. Maintainers can push to the branch.'),
+            value: PROTECTION_DEV_CAN_MERGE
+          },
+          {
+            label: s_('DefaultBranchProtection|Partially protected'),
+            help_text: s_('DefaultBranchProtection|Both developers and maintainers can push new commits, but cannot force push.'),
+            value: PROTECTION_DEV_CAN_PUSH
+          },
+          {
+            label: s_('DefaultBranchProtection|Fully protected'),
+            help_text: s_('DefaultBranchProtection|Developers cannot push new commits, but maintainers can. No one can force push.'),
+            value: PROTECTION_FULL
+          }
+        ]
       end
 
       def protection_values
-        protection_options.values
+        protection_options.map { |option| option[:value] }
       end
 
       def human_access(access)

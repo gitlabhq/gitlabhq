@@ -11,7 +11,7 @@ RSpec.describe DependencyProxy::PullManifestService do
   let(:digest) { '12345' }
   let(:content_type) { 'foo' }
   let(:headers) do
-    { 'docker-content-digest' => digest, 'content-type' => content_type }
+    { DependencyProxy::Manifest::DIGEST_HEADER => digest, 'content-type' => content_type }
   end
 
   subject { described_class.new(image, tag, token).execute_with_manifest(&method(:check_response)) }

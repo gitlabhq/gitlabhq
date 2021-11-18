@@ -2,7 +2,6 @@
 
 class Projects::UsageQuotasController < Projects::ApplicationController
   before_action :authorize_admin_project!
-  before_action :verify_usage_quotas_enabled!
 
   layout "project_settings"
 
@@ -19,11 +18,5 @@ class Projects::UsageQuotasController < Projects::ApplicationController
       snippets_help_page_path: help_page_path('user/snippets', anchor: 'reduce-snippets-repository-size'),
       wiki_help_page_path: help_page_path('administration/wikis/index.md', anchor: 'reduce-wiki-repository-size')
     }
-  end
-
-  private
-
-  def verify_usage_quotas_enabled!
-    render_404 unless Feature.enabled?(:project_storage_ui, project&.group, default_enabled: :yaml)
   end
 end

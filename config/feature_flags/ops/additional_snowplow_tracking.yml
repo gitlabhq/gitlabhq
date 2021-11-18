@@ -1,0 +1,8 @@
+---
+name: additional_snowplow_tracking
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/12088
+rollout_issue_url:
+milestone: '11.11'
+group: group::product intelligence
+default_enabled: false
+type: ops

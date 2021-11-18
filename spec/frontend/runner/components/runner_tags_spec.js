@@ -33,16 +33,16 @@ describe('RunnerTags', () => {
   });
 
   it('Displays tags with correct style', () => {
-    expect(findBadge().props('size')).toBe('md');
-    expect(findBadge().props('variant')).toBe('info');
+    expect(findBadge().props('size')).toBe('sm');
+    expect(findBadge().props('variant')).toBe('neutral');
   });
 
-  it('Displays tags with small size', () => {
+  it('Displays tags with md size', () => {
     createComponent({
-      props: { size: 'sm' },
+      props: { size: 'md' },
     });
 
-    expect(findBadge().props('size')).toBe('sm');
+    expect(findBadge().props('size')).toBe('md');
   });
 
   it('Is empty when there are no tags', () => {

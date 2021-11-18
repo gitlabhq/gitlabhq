@@ -41,7 +41,7 @@ After you configure a GitLab repository as a pull mirror:
 1. Sidekiq becomes available to process updates, mirrors are updated. If the update process:
    - **Succeeds**: An update is enqueued again with at least a 30 minute wait.
    - **Fails**: The update is attempted again later. After 14 failures, a mirror is marked as a
-     [hard failure](#hard-failure) and is no longer enqueued for updates. A branch diverging
+     [hard failure](#fix-hard-failures-when-mirroring) and is no longer enqueued for updates. A branch diverging
      from its upstream counterpart can cause failures. To prevent branches from
      diverging, configure [Overwrite diverged branches](#overwrite-diverged-branches) when
      you create your mirror.
@@ -102,7 +102,7 @@ updates are pulled immediately.
 For more information, read
 [Start the pull mirroring process for a project](../../../../api/projects.md#start-the-pull-mirroring-process-for-a-project).
 
-## Hard failure
+## Fix hard failures when mirroring
 
 > Moved to GitLab Premium in 13.9.
 
@@ -112,7 +112,7 @@ and mirroring attempts stop. This failure is visible in either the:
 - Project's main dashboard.
 - Pull mirror settings page.
 
-You can resume the project mirroring again by [forcing an update](index.md#force-an-update).
+To resume project mirroring, [force an update](index.md#force-an-update).
 
 ## Related topics
 

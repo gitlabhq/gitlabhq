@@ -5,7 +5,7 @@ require 'rails'
 require 'png_quantizator'
 require 'parallel'
 require 'rainbow/ext/string'
-require_relative '../tooling/lib/tooling/images'
+require_relative '../tooling/lib/tooling/image'
 
 return if Rails.env.production?
 

@@ -14,7 +14,7 @@ This document describes the conventions used at GitLab for writing End-to-end (E
 
 When clicking in a single link to navigate, use `click_`.
 
-E.g.:
+For example:
 
 ```ruby
 def click_ci_cd_pipelines
@@ -33,7 +33,7 @@ From a testing perspective, if we want to check that clicking a link, or a butto
 
 When interacting with multiple elements to go to a page, use `go_to_`.
 
-E.g.:
+For example:
 
 ```ruby
 def go_to_operations_environments
@@ -63,12 +63,12 @@ We follow a simple formula roughly based on Hungarian notation.
 - `type`: A generic control on the page that can be seen by a user.
   - `_button`
   - `_checkbox`
-  - `_container`: an element that includes other elements, but doesn't present visible content itself. E.g., an element that has a third-party editor inside it, but which isn't the editor itself and so doesn't include the editor's content.
+  - `_container`: an element that includes other elements, but doesn't present visible content itself. For example, an element that has a third-party editor inside it, but which isn't the editor itself and so doesn't include the editor's content.
   - `_content`: any element that contains text, images, or any other content displayed to the user.
   - `_dropdown`
   - `_field`: a text input element.
   - `_link`
-  - `_modal`: a popup modal dialog, e.g., a confirmation prompt.
+  - `_modal`: a popup modal dialog, for example, a confirmation prompt.
   - `_placeholder`: a temporary element that appears while content is loading. For example, the elements that are displayed instead of discussions while the discussions are being fetched.
   - `_radio`
   - `_tab`
@@ -116,7 +116,7 @@ we use the name of the page object in [snake_case](https://en.wikipedia.org/wiki
 (all lowercase, with words separated by an underscore). See good and bad examples below.
 
 While we prefer to follow the standard in most cases, it is also acceptable to
-use common abbreviations (e.g., `mr`) or other alternatives, as long as
+use common abbreviations (for example, `mr`) or other alternatives, as long as
 the name is not ambiguous. This can include appending `_page` if it helps to
 avoid confusion or make the code more readable. For example, if a page object is
 named `New`, it could be confusing to name the block argument `new` because that

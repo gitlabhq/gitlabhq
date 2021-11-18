@@ -31,6 +31,7 @@ Get work done as a team.
 - [Labels](../user/project/labels.md)
 - [Milestones](../user/project/milestones/index.md)
 - [Requirements](../user/project/requirements/index.md)
+- [Tasks](../user/tasks.md)
 - [Time tracking](../user/project/time_tracking.md)
 - [Wikis](../user/project/wiki/index.md)
 

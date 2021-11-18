@@ -14,12 +14,19 @@ module Types
           description: 'SHA1 ID of the commit.'
     field :short_id, type: GraphQL::Types::String, null: false,
           description: 'Short SHA1 ID of the commit.'
+
     field :title, type: GraphQL::Types::String, null: true, calls_gitaly: true,
           description: 'Title of the commit message.'
     markdown_field :title_html, null: true
+
+    field :full_title, type: GraphQL::Types::String, null: true, calls_gitaly: true,
+          description: 'Full title of the commit message.'
+    markdown_field :full_title_html, null: true
+
     field :description, type: GraphQL::Types::String, null: true,
           description: 'Description of the commit message.'
     markdown_field :description_html, null: true
+
     field :message, type: GraphQL::Types::String, null: true,
           description: 'Raw commit message.'
     field :authored_date, type: Types::TimeType, null: true,

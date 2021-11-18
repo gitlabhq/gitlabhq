@@ -1,4 +1,4 @@
-import registryExplorer from '~/registry/explorer/index';
+import registryExplorer from '~/packages_and_registries/container_registry/explorer/index';
 
 const explorer = registryExplorer();
 

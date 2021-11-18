@@ -71,8 +71,14 @@ Possible version history entries are:
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X.
 > - [Enabled on GitLab.com](issue-link) in GitLab X.X. Available to GitLab.com administrators only.
 > - [Enabled on self-managed](issue-link) in GitLab X.X.
-> - [Feature flag <flag name> removed](issue-link) in GitLab X.X.
-> - [Generally available](issue-link) in GitLab X.X.
+> - [Generally available](issue-link) in GitLab X.Y. [Feature flag <flag name>](issue-link) removed.
+```
+
+You can combine entries if they happened in the same release:
+
+```markdown
+> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
 ```
 
 ## Feature flag documentation examples
@@ -84,7 +90,7 @@ The following examples show the progression of a feature flag.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the featured flag](../administration/feature_flags.md) named `forti_token_cloud`.
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
 The feature is not ready for production use.
 ```
 
@@ -105,6 +111,5 @@ And, when the feature is done and fully available to all users:
 > - Introduced in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/issue/etc) GitLab 13.8.
 > - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/issue/etc) in GitLab 14.0.
-> - [Generally available](issue-link) in GitLab 14.0.
+> - [Generally available](issue-link) in GitLab 14.0. [Feature flag <flag name>](issue-link) removed.
 ```

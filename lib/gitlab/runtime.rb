@@ -63,12 +63,8 @@ module Gitlab
         puma?
       end
 
-      def action_cable?
-        web_server? && (!!defined?(ACTION_CABLE_SERVER) || Gitlab::ActionCable::Config.in_app?)
-      end
-
       def multi_threaded?
-        puma? || sidekiq? || action_cable?
+        puma? || sidekiq?
       end
 
       def puma_in_clustered_mode?
@@ -84,12 +80,15 @@ module Gitlab
         if puma? && Puma.respond_to?(:cli_config)
           threads += Puma.cli_config.options[:max_threads]
         elsif sidekiq?
-          # An extra thread for the poller in Sidekiq Cron:
+          # 2 extra threads for the pollers in Sidekiq and Sidekiq Cron:
           # https://github.com/ondrejbartas/sidekiq-cron#under-the-hood
-          threads += Sidekiq.options[:concurrency] + 1
+          #
+          # These threads execute Sidekiq client middleware when jobs
+          # are enqueued and those can access DB / Redis.
+          threads += Sidekiq.options[:concurrency] + 2
         end
 
-        if action_cable?
+        if web_server?
           threads += Gitlab::ActionCable::Config.worker_pool_size
         end
 

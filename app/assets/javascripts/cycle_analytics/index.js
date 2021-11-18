@@ -1,44 +1,36 @@
 import Vue from 'vue';
+import {
+  extractFilterQueryParameters,
+  extractPaginationQueryParameters,
+} from '~/analytics/shared/utils';
 import Translate from '../vue_shared/translate';
 import CycleAnalytics from './components/base.vue';
-import { DEFAULT_DAYS_TO_DISPLAY } from './constants';
 import createStore from './store';
-import { calculateFormattedDayInPast } from './utils';
+import { buildCycleAnalyticsInitialData } from './utils';
 
 Vue.use(Translate);
 
 export default () => {
   const store = createStore();
   const el = document.querySelector('#js-cycle-analytics');
-  const {
-    noAccessSvgPath,
-    noDataSvgPath,
-    requestPath,
-    fullPath,
-    projectId,
-    groupId,
-    groupPath,
-    labelsPath,
-    milestonesPath,
-  } = el.dataset;
+  const { noAccessSvgPath, noDataSvgPath } = el.dataset;
+  const initialData = buildCycleAnalyticsInitialData({ ...el.dataset, gon });
 
-  const { now, past } = calculateFormattedDayInPast(DEFAULT_DAYS_TO_DISPLAY);
+  const pagination = extractPaginationQueryParameters(window.location.search);
+  const {
+    selectedAuthor,
+    selectedMilestone,
+    selectedAssigneeList,
+    selectedLabelList,
+  } = extractFilterQueryParameters(window.location.search);
 
   store.dispatch('initializeVsa', {
-    projectId: parseInt(projectId, 10),
-    endpoints: {
-      requestPath,
-      fullPath,
-      labelsPath,
-      milestonesPath,
-      groupId: parseInt(groupId, 10),
-      groupPath,
-    },
-    features: {
-      cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
-    },
-    createdBefore: new Date(now),
-    createdAfter: new Date(past),
+    ...initialData,
+    selectedAuthor,
+    selectedMilestone,
+    selectedAssigneeList,
+    selectedLabelList,
+    pagination,
   });
 
   // eslint-disable-next-line no-new
@@ -52,7 +44,6 @@ export default () => {
         props: {
           noDataSvgPath,
           noAccessSvgPath,
-          fullPath,
         },
       }),
   });

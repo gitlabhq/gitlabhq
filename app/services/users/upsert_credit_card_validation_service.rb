@@ -12,6 +12,7 @@ module Users
         credit_card_validated_at: params.fetch(:credit_card_validated_at),
         expiration_date: get_expiration_date(params),
         last_digits: Integer(params.fetch(:credit_card_mask_number), 10),
+        network: params.fetch(:credit_card_type),
         holder_name: params.fetch(:credit_card_holder_name)
       }
 

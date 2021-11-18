@@ -63,5 +63,9 @@ FactoryBot.define do
     level { 'error' }
     occurred_at { Time.now.iso8601 }
     payload { Gitlab::Json.parse(File.read(Rails.root.join('spec/fixtures/', 'error_tracking/parsed_event.json'))) }
+
+    trait :browser do
+      payload { Gitlab::Json.parse(File.read(Rails.root.join('spec/fixtures/', 'error_tracking/browser_event.json'))) }
+    end
   end
 end

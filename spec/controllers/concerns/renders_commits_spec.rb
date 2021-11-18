@@ -64,6 +64,12 @@ RSpec.describe RendersCommits do
         subject.prepare_commits_for_rendering(merge_request.commits.take(1))
       end
 
+      # Populate Banzai::Filter::References::ReferenceCache
+      subject.prepare_commits_for_rendering(merge_request.commits)
+
+      # Reset lazy_latest_pipeline cache to simulate a new request
+      BatchLoader::Executor.clear_current
+
       expect do
         subject.prepare_commits_for_rendering(merge_request.commits)
         merge_request.commits.each(&:latest_pipeline)

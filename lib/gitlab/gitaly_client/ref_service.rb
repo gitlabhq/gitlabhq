@@ -77,8 +77,8 @@ module Gitlab
         consume_find_local_branches_response(response)
       end
 
-      def tags(sort_by: nil)
-        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+      def tags(sort_by: nil, pagination_params: nil)
+        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_tags_by_param(sort_by) if sort_by
 
         response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient.medium_timeout)
@@ -194,16 +194,37 @@ module Gitlab
         raise ArgumentError, ex
       end
 
+      def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX])
+        request = Gitaly::ListRefsRequest.new(
+          repository: @gitaly_repo,
+          patterns: patterns
+        )
+
+        response = GitalyClient.call(@storage, :ref_service, :list_refs, request, timeout: GitalyClient.fast_timeout)
+        consume_list_refs_response(response)
+      end
+
       def pack_refs
         request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
 
         GitalyClient.call(@storage, :ref_service, :pack_refs, request, timeout: GitalyClient.long_timeout)
       end
 
+      def find_refs_by_oid(oid:, limit:)
+        request = Gitaly::FindRefsByOIDRequest.new(repository: @gitaly_repo, sort_field: :refname, oid: oid, limit: limit)
+
+        response = GitalyClient.call(@storage, :ref_service, :find_refs_by_oid, request, timeout: GitalyClient.medium_timeout)
+        response&.refs&.to_a
+      end
+
       private
 
       def consume_refs_response(response)
         response.flat_map { |message| message.names.map { |name| yield(name) } }
+      end
+
+      def consume_list_refs_response(response)
+        response.flat_map(&:references)
       end
 
       def sort_local_branches_by_param(sort_by)

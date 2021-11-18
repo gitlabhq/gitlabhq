@@ -8,7 +8,6 @@ class Admin::RunnersController < Admin::ApplicationController
   feature_category :runner
 
   def index
-    @active_runners_count = Ci::Runner.online.count
   end
 
   def show
@@ -86,9 +85,12 @@ class Admin::RunnersController < Admin::ApplicationController
         Project.all
       end
 
-    @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
-    @projects = @projects.inc_routes
-    @projects = @projects.page(params[:page]).per(30).without_count
+    ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659') do
+      @projects = @projects.where.not(id: runner.projects.select(:id)) if runner.projects.any?
+      @projects = @projects.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338659')
+      @projects = @projects.inc_routes
+      @projects = @projects.page(params[:page]).per(30).without_count
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

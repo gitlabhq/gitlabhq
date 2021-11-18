@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unneeded-ternary */
+/* eslint-disable class-methods-use-this */
 
 import $ from 'jquery';
 import { getGroups } from '~/api/groups_api';
@@ -78,7 +78,7 @@ export default class Todos {
     initDeprecatedJQueryDropdown($dropdown, {
       fieldName,
       selectable: true,
-      filterable: searchFields ? true : false,
+      filterable: Boolean(searchFields),
       search: { fields: searchFields },
       data: $dropdown.data('data'),
       clicked: () => {
@@ -172,8 +172,8 @@ export default class Todos {
 
   updateBadges(data) {
     $(document).trigger('todo:toggle', data.count);
-    document.querySelector('.todos-pending .badge').innerHTML = addDelimiter(data.count);
-    document.querySelector('.todos-done .badge').innerHTML = addDelimiter(data.done_count);
+    document.querySelector('.js-todos-pending .badge').innerHTML = addDelimiter(data.count);
+    document.querySelector('.js-todos-done .badge').innerHTML = addDelimiter(data.done_count);
   }
 
   goToTodoUrl(e) {

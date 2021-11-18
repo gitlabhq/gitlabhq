@@ -12,9 +12,11 @@ RSpec.describe Admin::RunnersController do
   describe '#index' do
     render_views
 
-    it 'lists all runners' do
+    before do
       get :index
+    end
 
+    it 'renders index template' do
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
     end

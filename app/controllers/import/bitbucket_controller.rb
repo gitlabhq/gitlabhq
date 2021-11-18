@@ -116,7 +116,9 @@ class Import::BitbucketController < Import::BaseController
     redirect_to oauth_client.auth_code.authorize_url(redirect_uri: users_import_bitbucket_callback_url)
   end
 
-  def bitbucket_unauthorized
+  def bitbucket_unauthorized(exception)
+    log_exception(exception)
+
     go_to_bitbucket_for_permissions
   end
 

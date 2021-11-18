@@ -11,6 +11,7 @@ export default {
     label: 'Issues',
     loading: 'Loading issues...',
   },
+  expandEvent: 'i_testing_load_performance_widget_total',
   // Add an array of props
   // These then get mapped to values stored in the MR Widget store
   props: ['targetProjectFullPath', 'conflictsDocsPath'],
@@ -29,7 +30,15 @@ export default {
     // Tertiary action buttons that will take the user elsewhere
     // in the GitLab app
     tertiaryButtons() {
-      return [{ text: 'Full report', href: this.conflictsDocsPath, target: '_blank' }];
+      return [
+        {
+          text: 'Click me',
+          onClick() {
+            console.log('Hello world');
+          },
+        },
+        { text: 'Full report', href: this.conflictsDocsPath, target: '_blank' },
+      ];
     },
   },
   methods: {
@@ -66,6 +75,7 @@ export default {
             //   href: 'https://google.com', // Required: href for the link
             //   text: 'Link text', // Required: Text to be used inside the link
             // },
+            actions: [{ text: 'Full report', href: 'https://gitlab.com', target: '_blank' }],
           }));
         });
     },

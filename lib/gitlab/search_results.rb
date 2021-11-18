@@ -115,6 +115,11 @@ module Gitlab
       {}
     end
 
+    # aggregations are only performed by Elasticsearch backed results
+    def aggregations(scope)
+      []
+    end
+
     private
 
     def collection_for(scope)

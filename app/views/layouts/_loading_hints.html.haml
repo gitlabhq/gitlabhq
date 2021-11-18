@@ -1,4 +1,4 @@
-= cache_if(Feature.enabled?(:cached_loading_hints, current_user), [ActionController::Base.asset_host, user_application_theme, user_color_scheme], expires_in: 1.minute) do
+= cache([ActionController::Base.asset_host, user_application_theme, user_color_scheme], expires_in: 1.minute) do
   - css_crossorigin = ActionController::Base.asset_host ? 'anonymous' : nil
 
   - if ActionController::Base.asset_host
@@ -11,5 +11,5 @@
     = preload_link_tag(path_to_stylesheet('application_utilities'), crossorigin: css_crossorigin)
     = preload_link_tag(path_to_stylesheet('application'), crossorigin: css_crossorigin)
   = preload_link_tag(path_to_stylesheet("highlight/themes/#{user_color_scheme}"), crossorigin: css_crossorigin)
-  - if Gitlab::Tracking.enabled? && Gitlab::CurrentSettings.snowplow_collector_hostname
-    %link{ rel: 'preconnect', href: Gitlab::CurrentSettings.snowplow_collector_hostname, crossorigin: '' }
+  - if Gitlab::Tracking.enabled? && Gitlab::Tracking.collector_hostname
+    %link{ rel: 'preconnect', href: Gitlab::Tracking.collector_hostname, crossorigin: '' }

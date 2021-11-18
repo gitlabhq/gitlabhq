@@ -197,6 +197,7 @@ RSpec.describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        expect(response.parsed_body).to be_empty
       end
 
       it 'sets inline content disposition by default' do
@@ -274,6 +275,7 @@ RSpec.describe API::Repositories do
 
         expect(type).to eq('git-archive')
         expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.gz/)
+        expect(response.parsed_body).to be_empty
       end
 
       it 'returns the repository archive archive.zip' do
@@ -494,6 +496,43 @@ RSpec.describe API::Repositories do
         get api(route, current_user), params: { from: 'master', to: 'unknown_ref' }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it "returns a newly created commit", :use_clean_rails_redis_caching do
+        # Parse the commits ourselves because json_response is cached
+        def commit_messages(response)
+          Gitlab::Json.parse(response.body)["commits"].map do |commit|
+            commit["message"]
+          end
+        end
+
+        # First trigger the rate limit cache
+        get api(route, current_user), params: { from: 'master', to: 'feature' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(commit_messages(response)).not_to include("Cool new commit")
+
+        # Then create a new commit via the API
+        post api("/projects/#{project.id}/repository/commits", user), params: {
+          branch: "feature",
+          commit_message: "Cool new commit",
+          actions: [
+            {
+              action: "create",
+              file_path: "foo/bar/baz.txt",
+              content: "puts 8"
+            }
+          ]
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+
+        # Now perform the same query as before, but the cache should have expired
+        # and our new commit should exist
+        get api(route, current_user), params: { from: 'master', to: 'feature' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(commit_messages(response)).to include("Cool new commit")
       end
     end
 

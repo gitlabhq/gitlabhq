@@ -212,20 +212,21 @@ requests that modify locked files. Unlock the file to allow changes.
 To lock a file:
 
 1. Open the file or directory in GitLab.
-1. Click the **Lock** button, located near the Web IDE button.
+1. On the top right, above the file, select **Lock**.
+1. On the confirmation dialog box, select **OK**.
 
-   ![Locking file](img/file_lock.png)
+If you do not have permission to lock the file, the button is not enabled.
 
-An **Unlock** button is displayed if the file is already locked, and
-is disabled if you do not have permission to unlock the file.
-
-If you did not lock the file, hovering your cursor over the button shows
-who locked the file.
+To view the user who locked the file (if it was not you), hover over the button.
 
 ### View and remove existing locks
 
-The **Locked Files**, accessed from **Project > Repository** left menu, lists
-all file and directory locks. Locks can be removed by their author, or any user
-with the [Maintainer role](../permissions.md) and above.
+To view and remove file locks:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Locked Files**.
 
 This list shows all the files locked either through LFS or GitLab UI.
+
+Locks can be removed by their author, or any user
+with at least the [Maintainer role](../permissions.md).

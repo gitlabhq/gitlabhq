@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
-  let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:default_plan, reload: true) { create(:default_plan) }
-  let_it_be(:project, reload: true) { create(:project, :repository, namespace: namespace) }
+  let_it_be_with_refind(:namespace) { create(:namespace) }
+  let_it_be_with_reload(:default_plan) { create(:default_plan) }
+  let_it_be_with_reload(:project) { create(:project, :repository, namespace: namespace) }
   let_it_be(:plan_limits) { create(:plan_limits, plan: default_plan) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }

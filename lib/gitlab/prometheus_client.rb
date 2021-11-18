@@ -151,12 +151,8 @@ module Gitlab
 
     def get(path, args)
       Gitlab::HTTP.get(path, { query: args }.merge(http_options) )
-    rescue SocketError
-      raise PrometheusClient::ConnectionError, "Can't connect to #{api_url}"
-    rescue OpenSSL::SSL::SSLError
-      raise PrometheusClient::ConnectionError, "#{api_url} contains invalid SSL data"
-    rescue Errno::ECONNREFUSED
-      raise PrometheusClient::ConnectionError, 'Connection refused'
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      raise PrometheusClient::ConnectionError, e.message
     end
 
     def handle_management_api_response(response)

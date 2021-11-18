@@ -69,6 +69,10 @@ module Gitlab
 
             primary_scanner <=> other.primary_scanner
           end
+
+          def has_signatures?
+            findings.any?(&:has_signatures?)
+          end
         end
       end
     end

@@ -98,6 +98,27 @@ module Noteable
       .order('MIN(created_at), MIN(id)')
   end
 
+  # This does not consider OutOfContextDiscussions in MRs
+  # where notes from commits are overriden so that they have
+  # the same discussion_id
+  def discussion_root_note_ids(notes_filter:)
+    relations = []
+
+    relations << discussion_notes.select(
+      "'notes' AS table_name",
+      'discussion_id',
+      'MIN(id) AS id',
+      'MIN(created_at) AS created_at'
+    ).with_notes_filter(notes_filter)
+     .group(:discussion_id)
+
+    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
+      relations += synthetic_note_ids_relations
+    end
+
+    Note.from_union(relations, remove_duplicates: false).fresh
+  end
+
   def capped_notes_count(max)
     notes.limit(max).count
   end
@@ -178,6 +199,18 @@ module Noteable
     return unless project_email
 
     project_email.sub('@', "-#{iid}@")
+  end
+
+  private
+
+  # Synthetic system notes don't have discussion IDs because these are generated dynamically
+  # in Ruby. These are always root notes anyway so we don't need to group by discussion ID.
+  def synthetic_note_ids_relations
+    [
+      resource_label_events.select("'resource_label_events'", "'NULL'", :id, :created_at),
+      resource_milestone_events.select("'resource_milestone_events'", "'NULL'", :id, :created_at),
+      resource_state_events.select("'resource_state_events'", "'NULL'", :id, :created_at)
+    ]
   end
 end
 

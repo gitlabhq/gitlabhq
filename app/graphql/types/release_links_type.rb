@@ -4,7 +4,7 @@ module Types
   class ReleaseLinksType < BaseObject
     graphql_name 'ReleaseLinks'
 
-    authorize :download_code
+    authorize :read_release
 
     alias_method :release, :object
 
@@ -16,14 +16,19 @@ module Types
           description: "HTTP URL of the release's edit page.",
           authorize: :update_release
     field :opened_merge_requests_url, GraphQL::Types::String, null: true,
-          description: 'HTTP URL of the merge request page, filtered by this release and `state=open`.'
+          description: 'HTTP URL of the merge request page, filtered by this release and `state=open`.',
+          authorize: :download_code
     field :merged_merge_requests_url, GraphQL::Types::String, null: true,
-          description: 'HTTP URL of the merge request page , filtered by this release and `state=merged`.'
+          description: 'HTTP URL of the merge request page , filtered by this release and `state=merged`.',
+          authorize: :download_code
     field :closed_merge_requests_url, GraphQL::Types::String, null: true,
-          description: 'HTTP URL of the merge request page , filtered by this release and `state=closed`.'
+          description: 'HTTP URL of the merge request page , filtered by this release and `state=closed`.',
+          authorize: :download_code
     field :opened_issues_url, GraphQL::Types::String, null: true,
-          description: 'HTTP URL of the issues page, filtered by this release and `state=open`.'
+          description: 'HTTP URL of the issues page, filtered by this release and `state=open`.',
+          authorize: :download_code
     field :closed_issues_url, GraphQL::Types::String, null: true,
-          description: 'HTTP URL of the issues page, filtered by this release and `state=closed`.'
+          description: 'HTTP URL of the issues page, filtered by this release and `state=closed`.',
+          authorize: :download_code
   end
 end

@@ -6,7 +6,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     ISSUABLE_TYPES = {
       'merge_requests' => ->(iid) { find_merge_request_with_access(iid) },

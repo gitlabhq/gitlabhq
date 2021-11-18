@@ -13,6 +13,15 @@ RSpec.describe Email do
     it_behaves_like 'an object with RFC3696 compliant email-formatted attributes', :email do
       subject { build(:email) }
     end
+
+    context 'when the email conflicts with the primary email of a different user' do
+      let(:user) { create(:user) }
+      let(:email) { build(:email, email: user.email) }
+
+      it 'is invalid' do
+        expect(email).to be_invalid
+      end
+    end
   end
 
   it 'normalize email value' do
@@ -33,7 +42,7 @@ RSpec.describe Email do
   end
 
   describe 'scopes' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :unconfirmed) }
 
     it 'scopes confirmed emails' do
       create(:email, :confirmed, user: user)

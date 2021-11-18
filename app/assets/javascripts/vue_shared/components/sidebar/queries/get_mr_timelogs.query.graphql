@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/issuable_timelogs.fragment.graphql"
 
-query timeTrackingReport($id: MergeRequestID!) {
+query mrTimeTrackingReport($id: MergeRequestID!) {
   issuable: mergeRequest(id: $id) {
     __typename
     id

@@ -10,19 +10,26 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer do
-  include_context 'relation tree restorer shared context'
+  let_it_be(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
 
+  include_context 'relation tree restorer shared context' do
+    let(:importable_name) { 'project' }
+  end
+
+  let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
+  let(:path) { 'spec/fixtures/lib/gitlab/import_export/sample_data/tree' }
+  let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
   let(:sample_data_relation_tree_restorer) do
     described_class.new(
       user:                  user,
       shared:                shared,
       relation_reader:       relation_reader,
-      object_builder:        object_builder,
+      object_builder:        Gitlab::ImportExport::Project::ObjectBuilder,
       members_mapper:        members_mapper,
-      relation_factory:      relation_factory,
+      relation_factory:      Gitlab::ImportExport::Project::Sample::RelationFactory,
       reader:                reader,
       importable:            importable,
-      importable_path:       importable_path,
+      importable_path:       'project',
       importable_attributes: attributes
     )
   end
@@ -69,32 +76,21 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer do
     end
   end
 
-  context 'when restoring a project' do
-    let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
-    let(:importable_name) { 'project' }
-    let(:importable_path) { 'project' }
-    let(:object_builder) { Gitlab::ImportExport::Project::ObjectBuilder }
-    let(:relation_factory) { Gitlab::ImportExport::Project::Sample::RelationFactory }
-    let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
-    let(:path) { 'spec/fixtures/lib/gitlab/import_export/sample_data/tree' }
-    let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
+  it 'initializes relation_factory with date_calculator as parameter' do
+    expect(Gitlab::ImportExport::Project::Sample::RelationFactory).to receive(:create).with(hash_including(:date_calculator)).at_least(:once).times
 
-    it 'initializes relation_factory with date_calculator as parameter' do
-      expect(Gitlab::ImportExport::Project::Sample::RelationFactory).to receive(:create).with(hash_including(:date_calculator)).at_least(:once).times
+    subject
+  end
 
-      subject
+  context 'when relation tree restorer is initialized' do
+    it 'initializes date calculator with due dates' do
+      expect(Gitlab::ImportExport::Project::Sample::DateCalculator).to receive(:new).with(Array)
+
+      sample_data_relation_tree_restorer
     end
+  end
 
-    context 'when relation tree restorer is initialized' do
-      it 'initializes date calculator with due dates' do
-        expect(Gitlab::ImportExport::Project::Sample::DateCalculator).to receive(:new).with(Array)
-
-        sample_data_relation_tree_restorer
-      end
-    end
-
-    context 'using ndjson reader' do
-      it_behaves_like 'import project successfully'
-    end
+  context 'using ndjson reader' do
+    it_behaves_like 'import project successfully'
   end
 end

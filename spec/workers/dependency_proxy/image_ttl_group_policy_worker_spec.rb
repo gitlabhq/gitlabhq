@@ -12,8 +12,8 @@ RSpec.describe DependencyProxy::ImageTtlGroupPolicyWorker do
     subject { worker.perform }
 
     context 'when there are images to expire' do
-      let_it_be_with_reload(:old_blob) { create(:dependency_proxy_blob, group: group, updated_at: 1.year.ago) }
-      let_it_be_with_reload(:old_manifest) { create(:dependency_proxy_manifest, group: group, updated_at: 1.year.ago) }
+      let_it_be_with_reload(:old_blob) { create(:dependency_proxy_blob, group: group, read_at: 1.year.ago) }
+      let_it_be_with_reload(:old_manifest) { create(:dependency_proxy_manifest, group: group, read_at: 1.year.ago) }
       let_it_be_with_reload(:new_blob) { create(:dependency_proxy_blob, group: group) }
       let_it_be_with_reload(:new_manifest) { create(:dependency_proxy_manifest, group: group) }
 

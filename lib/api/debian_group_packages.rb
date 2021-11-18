@@ -32,7 +32,7 @@ module API
       namespace ':id/-/packages/debian' do
         include ::API::Concerns::Packages::DebianPackageEndpoints
 
-        # GET groups/:id/packages/debian/pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name
+        # GET groups/:id/-/packages/debian/pool/:distribution/:project_id/:letter/:package_name/:package_version/:file_name
         params do
           requires :project_id, type: Integer, desc: 'The Project Id'
           use :shared_package_file_params

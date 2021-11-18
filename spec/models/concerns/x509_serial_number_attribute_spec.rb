@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe X509SerialNumberAttribute do
-  let(:model) { Class.new { include X509SerialNumberAttribute } }
+  let(:model) { Class.new(ApplicationRecord) { include X509SerialNumberAttribute } }
 
   before do
     columns = [

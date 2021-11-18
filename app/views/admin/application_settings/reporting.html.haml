@@ -13,6 +13,9 @@
   .settings-content
     = render 'spam'
 
+-# this partial is from JiHu, see details in https://gitlab.com/gitlab-jh/gitlab/-/merge_requests/135
+= render_if_exists 'admin/application_settings/content_validation_section'
+
 %section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4

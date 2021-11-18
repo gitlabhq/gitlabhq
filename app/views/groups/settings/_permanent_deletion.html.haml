@@ -1,9 +1,11 @@
+- remove_form_id = local_assigns.fetch(:remove_form_id, nil)
+
 .sub-section
   %h4.danger-title= _('Remove group')
-  = form_tag(group, method: :delete) do
+  = form_tag(group, method: :delete, id: remove_form_id) do
     %p
       = _('Removing this group also removes all child projects, including archived projects, and their resources.')
       %br
       %strong= _('Removed group can not be restored!')
 
-    = render 'groups/settings/remove_button', group: group
+    = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id

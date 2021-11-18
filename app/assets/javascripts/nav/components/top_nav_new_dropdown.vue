@@ -46,6 +46,7 @@ export default {
           link-class="top-nav-menu-item"
           :href="menuItem.href"
           data-testid="item"
+          :data-qa-selector="`${menuItem.title.toLowerCase().replace(' ', '_')}_mobile_button`"
         >
           {{ menuItem.title }}
         </gl-dropdown-item>

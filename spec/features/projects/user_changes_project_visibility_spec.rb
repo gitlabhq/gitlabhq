@@ -22,7 +22,7 @@ RSpec.describe 'User changes public project visibility', :js do
         click_button 'Save changes'
       end
 
-      find('.js-confirm-danger-input').send_keys(project.path_with_namespace)
+      find('.js-legacy-confirm-danger-input').send_keys(project.path_with_namespace)
 
       page.within '.modal' do
         click_button 'Reduce project visibility'

@@ -84,9 +84,13 @@ export default {
         >
       </p>
 
-      <gl-table :items="trigger.variables" :fields="$options.fields" small bordered>
+      <gl-table :items="trigger.variables" :fields="$options.fields" small bordered fixed>
+        <template #cell(key)="{ item }">
+          <span class="gl-overflow-break-word">{{ item.key }}</span>
+        </template>
+
         <template #cell(value)="data">
-          {{ getDisplayValue(data.value) }}
+          <span class="gl-overflow-break-word">{{ getDisplayValue(data.value) }}</span>
         </template>
       </gl-table>
     </template>

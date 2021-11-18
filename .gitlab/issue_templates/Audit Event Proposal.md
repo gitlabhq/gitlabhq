@@ -9,5 +9,5 @@
 <!-- Describe the audit event you are proposing should be added, including any details of what should be captured, how, and why. -->
 
 /label ~"Category:Audit Events"
-/label ~"feature"
+/label ~"type::feature"
 /label ~"group::compliance"

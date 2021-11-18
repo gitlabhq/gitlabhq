@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectSettings, schema: 20200114113341 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectSettings, schema: 20181228175414 do
   let(:projects) { table(:projects) }
   let(:project_settings) { table(:project_settings) }
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

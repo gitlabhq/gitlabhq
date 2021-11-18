@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attributes|
+RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attributes, additional_attributes = []|
   let(:prohibited_attributes) { %i[remote_url my_attributes my_ids token my_id test] }
 
   let(:import_export_config) { Gitlab::ImportExport::Config.new.to_h }
@@ -26,7 +26,7 @@ RSpec.shared_examples 'a permitted attribute' do |relation_sym, permitted_attrib
     end
 
     it 'does not contain attributes that would be cleaned with AttributeCleaner' do
-      expect(cleaned_hash.keys).to include(*permitted_hash.keys)
+      expect(cleaned_hash.keys + additional_attributes.to_a).to include(*permitted_hash.keys)
     end
 
     it 'does not contain prohibited attributes that are not related to given relation' do

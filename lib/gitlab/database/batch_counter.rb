@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def count(batch_size: nil, mode: :itself, start: nil, finish: nil)
-        raise 'BatchCount can not be run inside a transaction' if @relation.connection.transaction_open?
+        raise 'BatchCount can not be run inside a transaction' if transaction_open?
 
         check_mode!(mode)
 
@@ -85,6 +85,10 @@ module Gitlab
         end
 
         results
+      end
+
+      def transaction_open?
+        @relation.connection.transaction_open?
       end
 
       def merge_results(results, object)

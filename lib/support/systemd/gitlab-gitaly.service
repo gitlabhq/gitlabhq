@@ -1,0 +1,17 @@
+[Unit]
+Description=GitLab Gitaly
+ReloadPropagatedFrom=gitlab.target
+PartOf=gitlab.target
+After=network.target
+
+[Service]
+Type=simple
+User=git
+WorkingDirectory=/home/git/gitlab
+ExecStart=/home/git/gitaly/_build/bin/gitaly /home/git/gitaly/config.toml
+Restart=on-failure
+SyslogIdentifier=gitlab-gitaly
+Slice=gitlab.slice
+
+[Install]
+WantedBy=gitlab.target

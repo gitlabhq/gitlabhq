@@ -8,7 +8,6 @@ module Banzai
     # Based on HTML::Pipeline::EmojiFilter
     class EmojiFilter < HTML::Pipeline::Filter
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
-      IGNORE_UNICODE_EMOJIS = %w(™ © ®).freeze
 
       def call
         doc.xpath('descendant-or-self::text()').each do |node|
@@ -35,7 +34,8 @@ module Banzai
       def emoji_name_element_unicode_filter(text)
         text.gsub(emoji_pattern) do |match|
           name = Regexp.last_match(1)
-          Gitlab::Emoji.gl_emoji_tag(name)
+          emoji = TanukiEmoji.find_by_alpha_code(name)
+          Gitlab::Emoji.gl_emoji_tag(emoji)
         end
       end
 
@@ -46,26 +46,19 @@ module Banzai
       # Returns a String with unicode emoji replaced with gl-emoji unicode.
       def emoji_unicode_element_unicode_filter(text)
         text.gsub(emoji_unicode_pattern) do |moji|
-          emoji_info = Gitlab::Emoji.emojis_by_moji[moji]
-          Gitlab::Emoji.gl_emoji_tag(emoji_info['name'])
+          emoji = TanukiEmoji.find_by_codepoints(moji)
+          Gitlab::Emoji.gl_emoji_tag(emoji)
         end
       end
 
       # Build a regexp that matches all valid :emoji: names.
       def self.emoji_pattern
-        @emoji_pattern ||=
-          %r{(?<=[^[:alnum:]:]|\n|^)
-          :(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):
-          (?=[^[:alnum:]:]|$)}x
+        @emoji_pattern ||= TanukiEmoji.index.alpha_code_pattern
       end
 
       # Build a regexp that matches all valid unicode emojis names.
       def self.emoji_unicode_pattern
-        @emoji_unicode_pattern ||=
-          begin
-            filtered_emojis = Gitlab::Emoji.emojis_unicodes - IGNORE_UNICODE_EMOJIS
-            /(#{filtered_emojis.map { |moji| Regexp.escape(moji) }.join('|')})/
-          end
+        @emoji_unicode_pattern ||= TanukiEmoji.index.codepoints_pattern
       end
 
       private

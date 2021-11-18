@@ -7,5 +7,13 @@ FactoryBot.define do
     user_name { 'Jane Doe' }
     ip_address { '127.0.0.1' }
     result { :failed }
+
+    trait :successful do
+      result { :success }
+    end
+
+    trait :failed do
+      result { :failed }
+    end
   end
 end

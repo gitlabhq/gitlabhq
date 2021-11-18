@@ -1638,6 +1638,22 @@ RSpec.describe MergeRequest, factory_default: :keep do
       expect(request.default_merge_commit_message)
         .not_to match("By removing all code\n\n")
     end
+
+    it 'uses template from target project' do
+      request = build(:merge_request, title: 'Fix everything')
+      subject.target_project.merge_commit_template = '%{title}'
+
+      expect(request.default_merge_commit_message)
+        .to eq('Fix everything')
+    end
+
+    it 'ignores template when include_description is true' do
+      request = build(:merge_request, title: 'Fix everything')
+      subject.target_project.merge_commit_template = '%{title}'
+
+      expect(request.default_merge_commit_message(include_description: true))
+        .to match("See merge request #{request.to_reference(full: true)}")
+    end
   end
 
   describe "#auto_merge_strategy" do
@@ -2904,6 +2920,8 @@ RSpec.describe MergeRequest, factory_default: :keep do
       params = {}
       merge_jid = 'hash-123'
 
+      allow(MergeWorker).to receive(:with_status).and_return(MergeWorker)
+
       expect(merge_request).to receive(:expire_etag_cache)
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do
         merge_jid
@@ -2921,6 +2939,10 @@ RSpec.describe MergeRequest, factory_default: :keep do
     let(:rebase_jid) { 'rebase-jid' }
 
     subject(:execute) { merge_request.rebase_async(user_id) }
+
+    before do
+      allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
+    end
 
     it 'atomically enqueues a RebaseWorker job and updates rebase_jid' do
       expect(RebaseWorker)

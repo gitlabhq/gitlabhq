@@ -114,7 +114,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 			require.Equal(t, hash, r.FormValue("file."+algo), "file hash %s", algo)
 		}
 
-		require.Len(t, r.MultipartForm.Value, 11, "multipart form values")
+		require.Len(t, r.MultipartForm.Value, 12, "multipart form values")
 
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")

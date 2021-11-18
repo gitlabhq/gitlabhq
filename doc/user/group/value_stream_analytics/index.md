@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Value Stream Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.9 for groups.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196455) in GitLab 12.9 for groups.
 
 Value Stream Analytics measures the time spent to go from an
 [idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab)
@@ -27,6 +27,7 @@ To view group-level Value Stream Analytics:
 
 Value Stream Analytics at the group level includes data for the selected group and its subgroups.
 
+NOTE:
 [Project-level Value Stream Analytics](../../analytics/value_stream_analytics.md) is also available.
 
 ## Default stages
@@ -77,16 +78,41 @@ Data is shown for workflow items created during the selected date range. To filt
 1. Optionally select a project.
 1. Select a date range using the available date pickers.
 
+### Upcoming date filter change
+
+In the [epics](https://gitlab.com/groups/gitlab-org/-/epics/6046), we plan to alter
+the date filter behavior to filter the end event time of the currently selected stage.
+
+The change makes it possible to get a much better picture about the completed items within the
+stage and helps uncover long-running items.
+
+For example, an issue was created a year ago and the current stage was finished in the current month. 
+If you were to look at the metrics for the last three months, this issue would not be included in the calculation of 
+the stage metrics. With the new date filter, this item would be included.
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+As with all projects, the items mentioned on this page are subject to change or delay.
+The development, release, and timing of any products, features, or functionality remain at the
+sole discretion of GitLab Inc.
+
 ## How metrics are measured
 
-> DORA API-based deployment metrics [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256)
-> to Premium in GitLab 14.3 for group-level Value Stream Analytics.
+> DORA API-based deployment metrics for group-level Value Stream Analytics were 
+> [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in 14.3.
 
 The "Time" metrics near the top of the page are measured as follows:
 
 - **Lead time**: median time from issue created to issue closed.
 - **Cycle time**: median time from first commit to issue closed. (You can associate a commit with an
   issue by [crosslinking in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages).)
+- **Lead Time for Changes**: median time between when a merge request is merged and deployed to a
+production environment for all merge requests deployed in the given time period.
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5.
+
+- **Lead Time for Changes**: median duration between merge request merge and deployment to a production environment for all MRs deployed in the given time period. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5.
 
 The "Recent Activity" metrics near the top of the page are measured as follows:
 
@@ -391,8 +417,8 @@ To delete a custom value stream:
 ## Days to completion chart
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21631) in GitLab 12.6.
-> - [Chart median line removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
-> - [Totals replaced with averages](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) in GitLab 13.12.
+> - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
+> - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
 
 This chart visually depicts the average number of days it takes for cycles to be completed.
 
@@ -404,7 +430,7 @@ The chart data is limited to the last 500 items.
 
 ## Type of work - Tasks by type chart
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32421) in GitLab 12.10.
 
 This chart shows a cumulative count of issues and merge requests per day.
 

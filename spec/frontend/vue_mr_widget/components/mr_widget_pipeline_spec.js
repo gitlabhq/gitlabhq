@@ -1,5 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineMiniGraph from '~/pipelines/components/pipelines_list/pipeline_mini_graph.vue';
@@ -39,6 +41,8 @@ describe('MRWidgetPipeline', () => {
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
+  const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(200, []);
+
   const createWrapper = (props = {}, mountFn = shallowMount) => {
     wrapper = extendedWrapper(
       mountFn(PipelineComponent, {
@@ -71,6 +75,8 @@ describe('MRWidgetPipeline', () => {
 
   describe('with a pipeline', () => {
     beforeEach(() => {
+      mockArtifactsRequest();
+
       createWrapper(
         {
           pipelineCoverageDelta: mockData.pipelineCoverageDelta,

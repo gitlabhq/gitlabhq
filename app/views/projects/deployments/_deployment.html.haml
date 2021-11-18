@@ -6,7 +6,7 @@
 
   .table-section.section-10{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("ID")
-    %strong.table-mobile-content ##{deployment.iid}
+    %strong.table-mobile-content{ data: { testid: 'deployment-id' } } ##{deployment.iid}
 
   .table-section.section-10{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("Triggerer")

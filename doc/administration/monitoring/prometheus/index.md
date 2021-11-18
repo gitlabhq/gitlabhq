@@ -345,6 +345,12 @@ memory, disk, and CPU utilization.
 
 [Read more about the node exporter](node_exporter.md).
 
+### Puma exporter
+
+The Puma exporter allows you to measure various Puma metrics.
+
+[Read more about the Puma exporter](puma_exporter.md).
+
 ### Redis exporter
 
 The Redis exporter allows you to measure various Redis metrics.

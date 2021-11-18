@@ -11,9 +11,6 @@ RSpec.describe LearnGitlabHelper do
   let_it_be(:namespace) { project.namespace }
 
   before do
-    project.add_developer(user)
-
-    allow(helper).to receive(:user).and_return(user)
     allow_next_instance_of(LearnGitlab::Project) do |learn_gitlab|
       allow(learn_gitlab).to receive(:project).and_return(project)
     end
@@ -22,38 +19,7 @@ RSpec.describe LearnGitlabHelper do
     OnboardingProgress.register(namespace, :git_write)
   end
 
-  describe '.onboarding_actions_data' do
-    subject(:onboarding_actions_data) { helper.onboarding_actions_data(project) }
-
-    it 'has all actions' do
-      expect(onboarding_actions_data.keys).to contain_exactly(
-        :issue_created,
-        :git_write,
-        :pipeline_created,
-        :merge_request_created,
-        :user_added,
-        :trial_started,
-        :required_mr_approvals_enabled,
-        :code_owners_enabled,
-        :security_scan_enabled
-      )
-    end
-
-    it 'sets correct path and completion status' do
-      expect(onboarding_actions_data[:git_write]).to eq({
-        url: project_issue_url(project, LearnGitlab::Onboarding::ACTION_ISSUE_IDS[:git_write]),
-        completed: true,
-        svg: helper.image_path("learn_gitlab/git_write.svg")
-      })
-      expect(onboarding_actions_data[:pipeline_created]).to eq({
-        url: project_issue_url(project, LearnGitlab::Onboarding::ACTION_ISSUE_IDS[:pipeline_created]),
-        completed: false,
-        svg: helper.image_path("learn_gitlab/pipeline_created.svg")
-      })
-    end
-  end
-
-  describe '.learn_gitlab_enabled?' do
+  describe '#learn_gitlab_enabled?' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user) }
@@ -89,14 +55,121 @@ RSpec.describe LearnGitlabHelper do
     end
   end
 
-  describe '.onboarding_sections_data' do
-    subject(:sections) { helper.onboarding_sections_data }
+  describe '#learn_gitlab_data' do
+    subject(:learn_gitlab_data) { helper.learn_gitlab_data(project) }
 
-    it 'has the right keys' do
-      expect(sections.keys).to contain_exactly(:deploy, :plan, :workspace)
+    let(:onboarding_actions_data) { Gitlab::Json.parse(learn_gitlab_data[:actions]).deep_symbolize_keys }
+    let(:onboarding_sections_data) { Gitlab::Json.parse(learn_gitlab_data[:sections]).deep_symbolize_keys }
+
+    shared_examples 'has all data' do
+      it 'has all actions' do
+        expected_keys = [
+          :issue_created,
+          :git_write,
+          :pipeline_created,
+          :merge_request_created,
+          :user_added,
+          :trial_started,
+          :required_mr_approvals_enabled,
+          :code_owners_enabled,
+          :security_scan_enabled
+        ]
+
+        expect(onboarding_actions_data.keys).to contain_exactly(*expected_keys)
+      end
+
+      it 'has all section data', :aggregate_failures do
+        expect(onboarding_sections_data.keys).to contain_exactly(:deploy, :plan, :workspace)
+        expect(onboarding_sections_data.values.map { |section| section.keys }).to match_array([[:svg]] * 3)
+      end
     end
-    it 'has the svg' do
-      expect(sections.values.map { |section| section.keys }).to eq([[:svg]] * 3)
+
+    it_behaves_like 'has all data'
+
+    it 'sets correct paths' do
+      expect(onboarding_actions_data).to match({
+                                                 trial_started: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/2\z})
+                                                 ),
+                                                 issue_created: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/4\z})
+                                                 ),
+                                                 git_write: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/6\z})
+                                                 ),
+                                                 pipeline_created: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/7\z})
+                                                 ),
+                                                 user_added: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/8\z})
+                                                 ),
+                                                 merge_request_created: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/9\z})
+                                                 ),
+                                                 code_owners_enabled: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/10\z})
+                                                 ),
+                                                 required_mr_approvals_enabled: a_hash_including(
+                                                   url: a_string_matching(%r{/learn_gitlab/-/issues/11\z})
+                                                 ),
+                                                 security_scan_enabled: a_hash_including(
+                                                   url: a_string_matching(%r{docs\.gitlab\.com/ee/user/application_security/security_dashboard/#gitlab-security-dashboard-security-center-and-vulnerability-reports\z})
+                                                 )
+                                               })
+    end
+
+    it 'sets correct completion statuses' do
+      expect(onboarding_actions_data).to match({
+                                                 issue_created: a_hash_including(completed: false),
+                                                 git_write: a_hash_including(completed: true),
+                                                 pipeline_created: a_hash_including(completed: false),
+                                                 merge_request_created: a_hash_including(completed: false),
+                                                 user_added: a_hash_including(completed: false),
+                                                 trial_started: a_hash_including(completed: false),
+                                                 required_mr_approvals_enabled: a_hash_including(completed: false),
+                                                 code_owners_enabled: a_hash_including(completed: false),
+                                                 security_scan_enabled: a_hash_including(completed: false)
+                                               })
+    end
+
+    context 'when in the new action URLs experiment' do
+      before do
+        stub_experiments(change_continuous_onboarding_link_urls: :candidate)
+      end
+
+      it_behaves_like 'has all data'
+
+      it 'sets mostly new paths' do
+        expect(onboarding_actions_data).to match({
+                                                   trial_started: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/2\z})
+                                                   ),
+                                                   issue_created: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/issues\z})
+                                                   ),
+                                                   git_write: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab\z})
+                                                   ),
+                                                   pipeline_created: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/pipelines\z})
+                                                   ),
+                                                   user_added: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/project_members\z})
+                                                   ),
+                                                   merge_request_created: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/merge_requests\z})
+                                                   ),
+                                                   code_owners_enabled: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/10\z})
+                                                   ),
+                                                   required_mr_approvals_enabled: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/issues/11\z})
+                                                   ),
+                                                   security_scan_enabled: a_hash_including(
+                                                     url: a_string_matching(%r{/learn_gitlab/-/security/configuration\z})
+                                                   )
+                                                 })
+      end
     end
   end
 end

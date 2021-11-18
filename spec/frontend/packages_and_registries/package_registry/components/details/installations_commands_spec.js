@@ -33,12 +33,12 @@ describe('InstallationCommands', () => {
     });
   }
 
-  const npmInstallation = () => wrapper.find(NpmInstallation);
-  const mavenInstallation = () => wrapper.find(MavenInstallation);
-  const conanInstallation = () => wrapper.find(ConanInstallation);
-  const nugetInstallation = () => wrapper.find(NugetInstallation);
-  const pypiInstallation = () => wrapper.find(PypiInstallation);
-  const composerInstallation = () => wrapper.find(ComposerInstallation);
+  const npmInstallation = () => wrapper.findComponent(NpmInstallation);
+  const mavenInstallation = () => wrapper.findComponent(MavenInstallation);
+  const conanInstallation = () => wrapper.findComponent(ConanInstallation);
+  const nugetInstallation = () => wrapper.findComponent(NugetInstallation);
+  const pypiInstallation = () => wrapper.findComponent(PypiInstallation);
+  const composerInstallation = () => wrapper.findComponent(ComposerInstallation);
 
   afterEach(() => {
     wrapper.destroy();
@@ -57,7 +57,7 @@ describe('InstallationCommands', () => {
       it(`${packageEntity.packageType} instructions exist`, () => {
         createComponent({ packageEntity });
 
-        expect(selector()).toExist();
+        expect(selector().exists()).toBe(true);
       });
     });
   });

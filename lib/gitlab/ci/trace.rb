@@ -78,7 +78,7 @@ module Gitlab
       end
 
       def archived_trace_exist?
-        trace_artifact&.exists?
+        archived?
       end
 
       def live_trace_exist?
@@ -156,7 +156,7 @@ module Gitlab
 
       def read_stream
         stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
+          if archived?
             trace_artifact.open
           elsif job.trace_chunks.any?
             Gitlab::Ci::Trace::ChunkedIO.new(job)
@@ -174,7 +174,7 @@ module Gitlab
 
       def unsafe_write!(mode, &blk)
         stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
+          if archived?
             raise AlreadyArchivedError, 'Could not write to the archived trace'
           elsif current_path
             File.open(current_path, mode)
@@ -195,7 +195,7 @@ module Gitlab
       def unsafe_archive!
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        already_archived?.tap do |archived|
+        archived?.tap do |archived|
           destroy_any_orphan_trace_data!
           raise AlreadyArchivedError, 'Could not archive again' if archived
         end
@@ -218,7 +218,7 @@ module Gitlab
         end
       end
 
-      def already_archived?
+      def archived?
         # TODO check checksum to ensure archive completed successfully
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/259619
         trace_artifact&.archived_trace_exists?
@@ -227,11 +227,12 @@ module Gitlab
       def destroy_any_orphan_trace_data!
         return unless trace_artifact
 
-        if already_archived?
-          # An archive already exists, so make sure to remove the trace chunks
+        if archived?
+          # An archive file exists, so remove the trace chunks
           erase_trace_chunks!
         else
-          # An archive already exists, but its associated file does not, so remove it
+          # A trace artifact record exists with no archive file
+          # but an archive was attempted, so cleanup the associated record
           trace_artifact.destroy!
         end
       end

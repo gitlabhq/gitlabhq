@@ -7,6 +7,7 @@ import { __ } from '~/locale';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import { createStore } from '~/boards/stores';
 
 Vue.use(Vuex);
 
@@ -42,17 +43,13 @@ describe('BoardFilteredSearch', () => {
     },
   ];
 
-  const createComponent = ({ initialFilterParams = {} } = {}) => {
-    store = new Vuex.Store({
-      actions: {
-        performSearch: jest.fn(),
-      },
-    });
-
+  const createComponent = ({ initialFilterParams = {}, props = {} } = {}) => {
+    store = createStore();
     wrapper = shallowMount(BoardFilteredSearch, {
       provide: { initialFilterParams, fullPath: '' },
       store,
       propsData: {
+        ...props,
         tokens,
       },
     });
@@ -68,11 +65,7 @@ describe('BoardFilteredSearch', () => {
     beforeEach(() => {
       createComponent();
 
-      jest.spyOn(store, 'dispatch');
-    });
-
-    it('renders FilteredSearch', () => {
-      expect(findFilteredSearch().exists()).toBe(true);
+      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     it('passes the correct tokens to FilteredSearch', () => {
@@ -97,6 +90,22 @@ describe('BoardFilteredSearch', () => {
         });
       });
     });
+  });
+
+  describe('when eeFilters is not empty', () => {
+    it('passes the correct initialFilterValue to FitleredSearchBarRoot', () => {
+      createComponent({ props: { eeFilters: { labelName: ['label'] } } });
+
+      expect(findFilteredSearch().props('initialFilterValue')).toEqual([
+        { type: 'label_name', value: { data: 'label', operator: '=' } },
+      ]);
+    });
+  });
+
+  it('renders FilteredSearch', () => {
+    createComponent();
+
+    expect(findFilteredSearch().exists()).toBe(true);
   });
 
   describe('when searching', () => {

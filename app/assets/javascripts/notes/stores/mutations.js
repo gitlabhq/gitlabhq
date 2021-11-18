@@ -129,8 +129,8 @@ export default {
     Object.assign(state, { userData: data });
   },
 
-  [types.SET_INITIAL_DISCUSSIONS](state, discussionsData) {
-    const discussions = discussionsData.reduce((acc, d) => {
+  [types.ADD_OR_UPDATE_DISCUSSIONS](state, discussionsData) {
+    discussionsData.forEach((d) => {
       const discussion = { ...d };
       const diffData = {};
 
@@ -145,27 +145,38 @@ export default {
       // To support legacy notes, should be very rare case.
       if (discussion.individual_note && discussion.notes.length > 1) {
         discussion.notes.forEach((n) => {
-          acc.push({
+          const newDiscussion = {
             ...discussion,
             ...diffData,
             notes: [n], // override notes array to only have one item to mimick individual_note
-          });
+          };
+          const oldDiscussion = state.discussions.find(
+            (existingDiscussion) =>
+              existingDiscussion.id === discussion.id && existingDiscussion.notes[0].id === n.id,
+          );
+
+          if (oldDiscussion) {
+            state.discussions.splice(state.discussions.indexOf(oldDiscussion), 1, newDiscussion);
+          } else {
+            state.discussions.push(newDiscussion);
+          }
         });
       } else {
-        const oldNote = utils.findNoteObjectById(state.discussions, discussion.id);
+        const oldDiscussion = utils.findNoteObjectById(state.discussions, discussion.id);
 
-        acc.push({
-          ...discussion,
-          ...diffData,
-          expanded: oldNote ? oldNote.expanded : discussion.expanded,
-        });
+        if (oldDiscussion) {
+          state.discussions.splice(state.discussions.indexOf(oldDiscussion), 1, {
+            ...discussion,
+            ...diffData,
+            expanded: oldDiscussion.expanded,
+          });
+        } else {
+          state.discussions.push({ ...discussion, ...diffData });
+        }
       }
-
-      return acc;
-    }, []);
-
-    Object.assign(state, { discussions });
+    });
   },
+
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
     Object.assign(state, { lastFetchedAt: fetchedAt });
   },

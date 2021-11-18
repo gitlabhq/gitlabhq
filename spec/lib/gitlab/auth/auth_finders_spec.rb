@@ -873,45 +873,65 @@ RSpec.describe Gitlab::Auth::AuthFinders do
   end
 
   describe '#find_user_from_job_token' do
+    let(:token) { job.token }
+
     subject { find_user_from_job_token }
 
-    context 'when the token is in the headers' do
-      before do
-        set_header(described_class::JOB_TOKEN_HEADER, token)
+    shared_examples 'finds user when job token allowed' do
+      context 'when the token is in the headers' do
+        before do
+          set_header(described_class::JOB_TOKEN_HEADER, token)
+        end
+
+        it_behaves_like 'find user from job token'
       end
 
-      it_behaves_like 'find user from job token'
-    end
+      context 'when the token is in the job_token param' do
+        before do
+          set_param(described_class::JOB_TOKEN_PARAM, token)
+        end
 
-    context 'when the token is in the job_token param' do
-      before do
-        set_param(described_class::JOB_TOKEN_PARAM, token)
+        it_behaves_like 'find user from job token'
       end
 
-      it_behaves_like 'find user from job token'
-    end
+      context 'when the token is in the token param' do
+        before do
+          set_param(described_class::RUNNER_JOB_TOKEN_PARAM, token)
+        end
 
-    context 'when the token is in the token param' do
-      before do
-        set_param(described_class::RUNNER_JOB_TOKEN_PARAM, token)
+        it_behaves_like 'find user from job token'
       end
-
-      it_behaves_like 'find user from job token'
     end
 
-    context 'when the job token is provided via basic auth' do
+    context 'when route setting allows job_token' do
+      let(:route_authentication_setting) { { job_token_allowed: true } }
+
+      include_examples 'finds user when job token allowed'
+    end
+
+    context 'when route setting is basic auth' do
       let(:route_authentication_setting) { { job_token_allowed: :basic_auth } }
-      let(:username) { ::Gitlab::Auth::CI_JOB_USER }
-      let(:token) { job.token }
 
-      before do
-        set_basic_auth_header(username, token)
+      context 'when the token is provided via basic auth' do
+        let(:username) { ::Gitlab::Auth::CI_JOB_USER }
+
+        before do
+          set_basic_auth_header(username, token)
+        end
+
+        it { is_expected.to eq(user) }
       end
 
-      it { is_expected.to eq(user) }
+      include_examples 'finds user when job token allowed'
+    end
 
-      context 'credentials are provided but route setting is incorrect' do
-        let(:route_authentication_setting) { { job_token_allowed: :unknown } }
+    context 'when route setting job_token_allowed is invalid' do
+      let(:route_authentication_setting) { { job_token_allowed: false } }
+
+      context 'when the token is provided' do
+        before do
+          set_header(described_class::JOB_TOKEN_HEADER, token)
+        end
 
         it { is_expected.to be_nil }
       end

@@ -115,7 +115,7 @@ describe('Author Select', () => {
     });
 
     it('does not have popover text by default', () => {
-      expect(wrapper.attributes('title')).not.toExist();
+      expect(wrapper.attributes('title')).toBeUndefined();
     });
   });
 

@@ -13,6 +13,7 @@ class Member < ApplicationRecord
   include FromUnion
   include UpdateHighestRole
   include RestrictedSignup
+  include Gitlab::Experiment::Dsl
 
   AVATAR_SIZE = 40
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
@@ -22,8 +23,10 @@ class Member < ApplicationRecord
   belongs_to :created_by, class_name: "User"
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  has_one :member_task
 
   delegate :name, :username, :email, to: :user, prefix: true
+  delegate :tasks_to_be_done, to: :member_task, allow_nil: true
 
   validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
@@ -413,6 +416,14 @@ class Member < ApplicationRecord
 
   def after_accept_invite
     post_create_hook
+
+    if experiment(:invite_members_for_task).enabled?
+      run_after_commit_or_now do
+        if member_task
+          TasksToBeDone::CreateWorker.perform_async(member_task.id, created_by_id, [user_id.to_i])
+        end
+      end
+    end
   end
 
   def after_decline_invite

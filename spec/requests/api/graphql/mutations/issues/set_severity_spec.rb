@@ -35,7 +35,7 @@ RSpec.describe 'Setting severity level of an incident' do
 
   context 'when the user is not allowed to update the incident' do
     it 'returns an error' do
-      error = "The resource that you are attempting to access does not exist or you don't have permission to perform this action"
+      error = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
       post_graphql_mutation(mutation, current_user: user)
 
       expect(response).to have_gitlab_http_status(:success)

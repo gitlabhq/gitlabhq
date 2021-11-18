@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sha256Attribute do
-  let(:model) { Class.new { include Sha256Attribute } }
+  let(:model) { Class.new(ApplicationRecord) { include Sha256Attribute } }
 
   before do
     columns = [

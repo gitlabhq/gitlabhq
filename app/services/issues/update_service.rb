@@ -80,7 +80,7 @@ module Issues
       todo_service.reassigned_assignable(issue, current_user, old_assignees)
       track_incident_action(current_user, issue, :incident_assigned)
 
-      if Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:broadcast_issue_updates, issue.project)
+      if Feature.enabled?(:broadcast_issue_updates, issue.project, default_enabled: :yaml)
         GraphqlTriggers.issuable_assignees_updated(issue)
       end
     end

@@ -1,9 +1,6 @@
-import { Node } from '@tiptap/core';
-import { InputRule } from 'prosemirror-inputrules';
+import { Node, InputRule } from '@tiptap/core';
 import { s__ } from '~/locale';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
-
-export const inputRuleRegExps = [/^\[\[_TOC_\]\]$/, /^\[TOC\]$/];
 
 export default Node.create({
   name: 'tableOfContents',
@@ -34,17 +31,21 @@ export default Node.create({
 
   addInputRules() {
     const { type } = this;
+    const inputRuleRegExps = [/^\[\[_TOC_\]\]$/, /^\[TOC\]$/];
 
     return inputRuleRegExps.map(
       (regex) =>
-        new InputRule(regex, (state, match, start, end) => {
-          const { tr } = state;
+        new InputRule({
+          find: regex,
+          handler: ({ state, range: { from, to }, match }) => {
+            const { tr } = state;
 
-          if (match) {
-            tr.replaceWith(start - 1, end, type.create());
-          }
+            if (match) {
+              tr.replaceWith(from - 1, to, type.create());
+            }
 
-          return tr;
+            return tr;
+          },
         }),
     );
   },

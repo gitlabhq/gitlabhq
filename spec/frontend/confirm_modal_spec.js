@@ -72,7 +72,7 @@ describe('ConfirmModal', () => {
 
   it('starts with only JsHooks', () => {
     expect(findJsHooks()).toHaveLength(buttons.length);
-    expect(findModal()).not.toExist();
+    expect(findModal()).toBe(null);
   });
 
   describe('when button clicked', () => {
@@ -87,7 +87,7 @@ describe('ConfirmModal', () => {
 
     describe('GlModal', () => {
       it('is rendered', () => {
-        expect(findModal()).toExist();
+        expect(findModal()).not.toBe(null);
         expect(modalIsHidden()).toBe(false);
       });
 

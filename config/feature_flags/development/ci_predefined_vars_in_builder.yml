@@ -1,0 +1,8 @@
+---
+name: ci_predefined_vars_in_builder
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72348
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/231300
+milestone: '14.4'
+type: development
+group: group::pipeline authoring
+default_enabled: false

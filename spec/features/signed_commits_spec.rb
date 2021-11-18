@@ -11,6 +11,7 @@ RSpec.describe 'GPG signed commits' do
 
     perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      user.reload # necessary to reload the association with gpg_keys
     end
 
     visit project_commit_path(project, ref)
@@ -114,6 +115,19 @@ RSpec.describe 'GPG signed commits' do
       end
     end
 
+    it 'unverified signature: commit contains multiple GPG signatures' do
+      user_1_key
+
+      visit project_commit_path(project, GpgHelpers::MULTIPLE_SIGNATURES_SHA)
+      wait_for_all_requests
+
+      page.find('.gpg-status-box', text: 'Unverified').click
+
+      within '.popover' do
+        expect(page).to have_content "This commit was signed with multiple signatures."
+      end
+    end
+
     it 'verified and the gpg user has a gitlab profile' do
       user_1_key
 
@@ -168,7 +182,7 @@ RSpec.describe 'GPG signed commits' do
         page.find('.gpg-status-box', text: 'Unverified').click
 
         within '.popover' do
-          expect(page).to have_content 'This commit was signed with an unverified signature'
+          expect(page).to have_content 'This commit was signed with multiple signatures.'
         end
       end
     end

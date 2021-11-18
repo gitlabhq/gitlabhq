@@ -5,6 +5,9 @@ import CommitForm from '~/pipeline_editor/components/commit/commit_form.vue';
 
 import { mockCommitMessage, mockDefaultBranch } from '../../mock_data';
 
+const scrollIntoViewMock = jest.fn();
+HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
 describe('Pipeline Editor | Commit Form', () => {
   let wrapper;
 
@@ -111,6 +114,22 @@ describe('Pipeline Editor | Commit Form', () => {
       await findCommitTextarea().setValue('');
 
       expect(findSubmitBtn().attributes('disabled')).toBe('disabled');
+    });
+  });
+
+  describe('when scrollToCommitForm becomes true', () => {
+    beforeEach(async () => {
+      createComponent();
+      wrapper.setProps({ scrollToCommitForm: true });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('scrolls into view', () => {
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
+    });
+
+    it('emits "scrolled-to-commit-form"', () => {
+      expect(wrapper.emitted()['scrolled-to-commit-form']).toBeTruthy();
     });
   });
 });

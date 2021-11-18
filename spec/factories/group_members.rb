@@ -34,5 +34,18 @@ FactoryBot.define do
 
       access_level { GroupMember::MINIMAL_ACCESS }
     end
+
+    transient do
+      tasks_to_be_done { [] }
+    end
+
+    after(:build) do |group_member, evaluator|
+      if evaluator.tasks_to_be_done.present?
+        build(:member_task,
+              member: group_member,
+              project: build(:project, namespace: group_member.source),
+              tasks_to_be_done: evaluator.tasks_to_be_done)
+      end
+    end
   end
 end

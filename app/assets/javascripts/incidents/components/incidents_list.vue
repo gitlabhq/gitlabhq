@@ -125,6 +125,7 @@ export default {
     'authorUsernameQuery',
     'assigneeUsernameQuery',
     'slaFeatureAvailable',
+    'canCreateIncident',
   ],
   apollo: {
     incidents: {
@@ -230,12 +231,15 @@ export default {
     },
     emptyStateData() {
       const {
-        emptyState: { title, emptyClosedTabTitle, description },
+        emptyState: { title, emptyClosedTabTitle, description, cannotCreateIncidentDescription },
         createIncidentBtnLabel,
       } = this.$options.i18n;
 
       if (this.activeClosedTabHasNoIncidents) {
         return { title: emptyClosedTabTitle };
+      }
+      if (!this.canCreateIncident) {
+        return { title, description: cannotCreateIncidentDescription };
       }
       return {
         title,
@@ -243,6 +247,9 @@ export default {
         btnLink: this.newIncidentPath,
         btnText: createIncidentBtnLabel,
       };
+    },
+    isHeaderButtonVisible() {
+      return this.canCreateIncident && (!this.isEmpty || this.activeClosedTabHasNoIncidents);
     },
   },
   methods: {
@@ -311,7 +318,7 @@ export default {
     >
       <template #header-actions>
         <gl-button
-          v-if="!isEmpty || activeClosedTabHasNoIncidents"
+          v-if="isHeaderButtonVisible"
           class="gl-my-3 gl-mr-5 create-incident-button"
           data-testid="createIncidentBtn"
           data-qa-selector="create_incident_button"

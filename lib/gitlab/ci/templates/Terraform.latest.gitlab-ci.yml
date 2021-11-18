@@ -7,20 +7,17 @@ include:
   - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
 
 stages:
-  - init
   - validate
   - build
   - deploy
-  - cleanup
-
-init:
-  extends: .terraform:init
 
 fmt:
   extends: .terraform:fmt
+  needs: []
 
 validate:
   extends: .terraform:validate
+  needs: []
 
 build:
   extends: .terraform:build

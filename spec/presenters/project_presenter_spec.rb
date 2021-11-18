@@ -567,44 +567,27 @@ RSpec.describe ProjectPresenter do
     end
 
     describe '#upload_anchor_data' do
-      context 'with empty_repo_upload enabled' do
+      context 'when a user can push to the default branch' do
         before do
-          stub_experiments(empty_repo_upload: :candidate)
-        end
-
-        context 'user can push to branch' do
-          before do
-            project.add_developer(user)
-          end
-
-          it 'returns upload_anchor_data' do
-            expect(presenter.upload_anchor_data).to have_attributes(
-              is_link: false,
-              label:  a_string_including('Upload file'),
-              data: {
-                "can_push_code" => "true",
-                "original_branch" => "master",
-                "path" => "/#{project.full_path}/-/create/master",
-                "project_path" => project.full_path,
-                "target_branch" => "master"
-              }
-            )
-          end
-        end
-
-        context 'user cannot push to branch' do
-          it 'returns nil' do
-            expect(presenter.upload_anchor_data).to be_nil
-          end
-        end
-      end
-
-      context 'with empty_repo_upload disabled' do
-        before do
-          stub_experiments(empty_repo_upload: :control)
           project.add_developer(user)
         end
 
+        it 'returns upload_anchor_data' do
+          expect(presenter.upload_anchor_data).to have_attributes(
+            is_link: false,
+            label:  a_string_including('Upload file'),
+            data: {
+              "can_push_code" => "true",
+              "original_branch" => "master",
+              "path" => "/#{project.full_path}/-/create/master",
+              "project_path" => project.full_path,
+              "target_branch" => "master"
+            }
+          )
+        end
+      end
+
+      context 'when the user cannot push to default branch' do
         it 'returns nil' do
           expect(presenter.upload_anchor_data).to be_nil
         end
@@ -666,7 +649,6 @@ RSpec.describe ProjectPresenter do
       context 'for a developer' do
         before do
           project.add_developer(user)
-          stub_experiments(empty_repo_upload: :candidate)
         end
 
         it 'orders the items correctly' do
@@ -679,16 +661,6 @@ RSpec.describe ProjectPresenter do
             a_string_including('CONTRIBUTING'),
             a_string_including('CI/CD')
           )
-        end
-
-        context 'when not in the upload experiment' do
-          before do
-            stub_experiments(empty_repo_upload: :control)
-          end
-
-          it 'does not include upload button' do
-            expect(empty_repo_statistics_buttons.map(&:label)).not_to start_with(a_string_including('Upload'))
-          end
         end
       end
     end
@@ -780,21 +752,5 @@ RSpec.describe ProjectPresenter do
     subject { presenter.add_code_quality_ci_yml_path }
 
     it { is_expected.to match(/code_quality_walkthrough=true.*template=Code-Quality/) }
-  end
-
-  describe 'empty_repo_upload_experiment?' do
-    subject { presenter.empty_repo_upload_experiment? }
-
-    it 'returns false when upload_anchor_data is nil' do
-      allow(presenter).to receive(:upload_anchor_data).and_return(nil)
-
-      expect(subject).to be false
-    end
-
-    it 'returns true when upload_anchor_data exists' do
-      allow(presenter).to receive(:upload_anchor_data).and_return(true)
-
-      expect(subject).to be true
-    end
   end
 end

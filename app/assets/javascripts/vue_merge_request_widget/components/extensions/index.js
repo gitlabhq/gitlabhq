@@ -12,6 +12,7 @@ export const registerExtension = (extension) => {
     name: extension.name,
     props: extension.props,
     i18n: extension.i18n,
+    expandEvent: extension.expandEvent,
     computed: {
       ...Object.keys(extension.computed).reduce(
         (acc, computedKey) => ({

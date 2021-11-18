@@ -221,7 +221,7 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 By default, a banner displays in merge requests with no pipeline suggesting a
 walkthrough on how to add one.
 
-![Suggest pipeline banner](img/suggest_pipeline_banner.png)
+![Suggest pipeline banner](img/suggest_pipeline_banner_v14_5.png)
 
 To enable or disable the banner:
 

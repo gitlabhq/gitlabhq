@@ -44,7 +44,7 @@ RSpec.describe Projects::PipelinesController do
         end
       end
 
-      it 'does not execute N+1 queries' do
+      it 'does not execute N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345470' do
         get_pipelines_index_json
 
         control_count = ActiveRecord::QueryRecorder.new do

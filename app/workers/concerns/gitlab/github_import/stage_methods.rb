@@ -33,13 +33,13 @@ module Gitlab
         self.class.perform_in(client.rate_limit_resets_in, project.id)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_project(id)
         # If the project has been marked as failed we want to bail out
         # automatically.
-        Project.joins_import_state.where(import_state: { status: :started }).find_by(id: id)
+        # rubocop: disable CodeReuse/ActiveRecord
+        Project.joins_import_state.where(import_state: { status: :started }).find_by_id(id)
+        # rubocop: enable CodeReuse/ActiveRecord
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def abort_on_failure
         false

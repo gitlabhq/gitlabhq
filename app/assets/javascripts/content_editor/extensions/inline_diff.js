@@ -1,8 +1,5 @@
 import { Mark, markInputRule, mergeAttributes } from '@tiptap/core';
 
-export const inputRegexAddition = /(\{\+(.+?)\+\})$/gm;
-export const inputRegexDeletion = /(\{-(.+?)-\})$/gm;
-
 export default Mark.create({
   name: 'inlineDiff',
 
@@ -38,9 +35,20 @@ export default Mark.create({
   },
 
   addInputRules() {
+    const inputRegexAddition = /(\{\+(.+?)\+\})$/gm;
+    const inputRegexDeletion = /(\{-(.+?)-\})$/gm;
+
     return [
-      markInputRule(inputRegexAddition, this.type, () => ({ type: 'addition' })),
-      markInputRule(inputRegexDeletion, this.type, () => ({ type: 'deletion' })),
+      markInputRule({
+        find: inputRegexAddition,
+        type: this.type,
+        getAttributes: () => ({ type: 'addition' }),
+      }),
+      markInputRule({
+        find: inputRegexDeletion,
+        type: this.type,
+        getAttributes: () => ({ type: 'deletion' }),
+      }),
     ];
   },
 });

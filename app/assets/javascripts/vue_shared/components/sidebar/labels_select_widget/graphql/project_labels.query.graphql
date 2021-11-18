@@ -1,11 +1,11 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
 query projectLabels($fullPath: ID!, $searchTerm: String) {
   workspace: project(fullPath: $fullPath) {
+    id
     labels(searchTerm: $searchTerm, includeAncestorGroups: true) {
       nodes {
-        id
-        title
-        color
-        description
+        ...Label
       }
     }
   }

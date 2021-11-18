@@ -24,10 +24,10 @@ RSpec.describe API::ErrorTracking::Collector do
   end
 
   RSpec.shared_examples 'successful request' do
-    it 'writes to the database and returns no content' do
+    it 'writes to the database and returns OK' do
       expect { subject }.to change { ErrorTracking::ErrorEvent.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(:no_content)
+      expect(response).to have_gitlab_http_status(:ok)
     end
   end
 
@@ -89,11 +89,25 @@ RSpec.describe API::ErrorTracking::Collector do
     context 'transaction request type' do
       let(:params) { fixture_file('error_tracking/transaction.txt') }
 
-      it 'does nothing and returns no content' do
+      it 'does nothing and returns ok' do
         expect { subject }.not_to change { ErrorTracking::ErrorEvent.count }
 
-        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:ok)
       end
+    end
+
+    context 'gzip body' do
+      let(:headers) do
+        {
+          'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}",
+          'HTTP_CONTENT_ENCODING' => 'gzip',
+          'CONTENT_TYPE' => 'application/x-sentry-envelope'
+        }
+      end
+
+      let(:params) { ActiveSupport::Gzip.compress(raw_event) }
+
+      it_behaves_like 'successful request'
     end
 
     it_behaves_like 'successful request'
@@ -120,6 +134,35 @@ RSpec.describe API::ErrorTracking::Collector do
       let(:params) { '' }
 
       it_behaves_like 'bad request'
+    end
+
+    context 'body with string instead of json' do
+      let(:params) { '"********"' }
+
+      it_behaves_like 'bad request'
+    end
+
+    context 'collector fails with validation error' do
+      before do
+        allow(::ErrorTracking::CollectErrorService)
+          .to receive(:new).and_raise(ActiveRecord::RecordInvalid)
+      end
+
+      it_behaves_like 'bad request'
+    end
+
+    context 'gzip body' do
+      let(:headers) do
+        {
+          'X-Sentry-Auth' => "Sentry sentry_key=#{client_key.public_key}",
+          'HTTP_CONTENT_ENCODING' => 'gzip',
+          'CONTENT_TYPE' => 'application/json'
+        }
+      end
+
+      let(:params) { ActiveSupport::Gzip.compress(raw_event) }
+
+      it_behaves_like 'successful request'
     end
 
     context 'sentry_key as param and empty headers' do

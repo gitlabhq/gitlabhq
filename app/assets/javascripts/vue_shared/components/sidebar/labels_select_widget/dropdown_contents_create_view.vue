@@ -2,10 +2,10 @@
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import produce from 'immer';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
 import { __ } from '~/locale';
-import { labelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '~/sidebar/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
+import { LabelType } from './constants';
 
 const errorMessage = __('Error creating label.');
 
@@ -20,18 +20,21 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    issuableType: {
-      type: String,
-      required: true,
-    },
     fullPath: {
       type: String,
       required: true,
     },
     attrWorkspacePath: {
       type: String,
-      required: false,
-      default: undefined,
+      required: true,
+    },
+    labelCreateType: {
+      type: String,
+      required: true,
+    },
+    workspaceType: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -50,25 +53,13 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      if (this.issuableType === IssuableType.Epic) {
-        return {
-          title: this.labelTitle,
-          color: this.selectedColor,
-          groupPath: this.fullPath,
-        };
-      }
+      const attributePath = this.labelCreateType === LabelType.group ? 'groupPath' : 'projectPath';
 
-      return this.attrWorkspacePath !== undefined
-        ? {
-            title: this.labelTitle,
-            color: this.selectedColor,
-            groupPath: this.attrWorkspacePath,
-          }
-        : {
-            title: this.labelTitle,
-            color: this.selectedColor,
-            projectPath: this.fullPath,
-          };
+      return {
+        title: this.labelTitle,
+        color: this.selectedColor,
+        [attributePath]: this.attrWorkspacePath,
+      };
     },
   },
   methods: {
@@ -82,8 +73,10 @@ export default {
       this.selectedColor = this.getColorCode(color);
     },
     updateLabelsInCache(store, label) {
+      const { query } = workspaceLabelsQueries[this.workspaceType];
+
       const sourceData = store.readQuery({
-        query: labelsQueries[this.issuableType].workspaceQuery,
+        query,
         variables: { fullPath: this.fullPath, searchTerm: '' },
       });
 
@@ -95,7 +88,7 @@ export default {
       });
 
       store.writeQuery({
-        query: labelsQueries[this.issuableType].workspaceQuery,
+        query,
         variables: { fullPath: this.fullPath, searchTerm: '' },
         data,
       });
@@ -180,7 +173,7 @@ export default {
       <gl-button
         class="js-btn-cancel-create"
         data-testid="cancel-button"
-        @click="$emit('hideCreateView')"
+        @click.stop="$emit('hideCreateView')"
       >
         {{ __('Cancel') }}
       </gl-button>

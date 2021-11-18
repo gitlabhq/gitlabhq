@@ -11,13 +11,11 @@ class BuildSuccessWorker # rubocop:disable Scalability/IdempotentWorker
   queue_namespace :pipeline_processing
   urgency :high
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
-    Ci::Build.find_by(id: build_id).try do |build|
+    Ci::Build.find_by_id(build_id).try do |build|
       stop_environment(build) if build.stops_environment?
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

@@ -15,8 +15,7 @@ RSpec.describe Issues::CreateService do
       expect(described_class.rate_limiter_scoped_and_keyed).to be_a(RateLimitedService::RateLimiterScopedAndKeyed)
 
       expect(described_class.rate_limiter_scoped_and_keyed.key).to eq(:issues_create)
-      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user])
-      expect(described_class.rate_limiter_scoped_and_keyed.opts[:users_allowlist].call).to eq(%w[support-bot])
+      expect(described_class.rate_limiter_scoped_and_keyed.opts[:scope]).to eq(%i[project current_user external_author])
       expect(described_class.rate_limiter_scoped_and_keyed.rate_limiter_klass).to eq(Gitlab::ApplicationRateLimiter)
     end
   end
@@ -81,7 +80,7 @@ RSpec.describe Issues::CreateService do
 
       it_behaves_like 'not an incident issue'
 
-      context 'issue is incident type' do
+      context 'when issue is incident type' do
         before do
           opts.merge!(issue_type: 'incident')
         end
@@ -91,22 +90,36 @@ RSpec.describe Issues::CreateService do
 
         subject { issue }
 
-        it_behaves_like 'incident issue'
-        it_behaves_like 'has incident label'
+        context 'as reporter' do
+          let_it_be(:reporter) { create(:user) }
 
-        it 'does create an incident label' do
-          expect { subject }
-            .to change { Label.where(incident_label_attributes).count }.by(1)
+          let(:user) { reporter }
+
+          before_all do
+            project.add_reporter(reporter)
+          end
+
+          it_behaves_like 'incident issue'
+          it_behaves_like 'has incident label'
+
+          it 'does create an incident label' do
+            expect { subject }
+              .to change { Label.where(incident_label_attributes).count }.by(1)
+          end
+
+          context 'when invalid' do
+            before do
+              opts.merge!(title: '')
+            end
+
+            it 'does not apply an incident label prematurely' do
+              expect { subject }.to not_change(LabelLink, :count).and not_change(Issue, :count)
+            end
+          end
         end
 
-        context 'when invalid' do
-          before do
-            opts.merge!(title: '')
-          end
-
-          it 'does not apply an incident label prematurely' do
-            expect { subject }.to not_change(LabelLink, :count).and not_change(Issue, :count)
-          end
+        context 'as guest' do
+          it_behaves_like 'not an incident issue'
         end
       end
 
@@ -287,6 +300,44 @@ RSpec.describe Issues::CreateService do
         expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute
+      end
+
+      context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
+        let(:user) { create(:user) }
+
+        before do
+          stub_feature_flags(rate_limited_service_issues_create: true)
+          stub_application_setting(issues_create_limit: 1)
+        end
+
+        subject do
+          2.times { described_class.new(project: project, current_user: user, params: opts, spam_params: double).execute }
+        end
+
+        context 'when too many requests are sent by one user' do
+          it 'raises an error' do
+            expect do
+              subject
+            end.to raise_error(RateLimitedService::RateLimitedError)
+          end
+
+          it 'creates 1 issue' do
+            expect do
+              subject
+            rescue RateLimitedService::RateLimitedError
+            end.to change { Issue.count }.by(1)
+          end
+        end
+
+        context 'when limit is higher than count of issues being created' do
+          before do
+            stub_application_setting(issues_create_limit: 2)
+          end
+
+          it 'creates 2 issues' do
+            expect { subject }.to change { Issue.count }.by(2)
+          end
+        end
       end
 
       context 'after_save callback to store_mentions' do

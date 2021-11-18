@@ -207,9 +207,9 @@ RSpec.describe Gitlab::ImportExport::FastHashSerializer do
 
   context 'relation ordering' do
     it 'orders exported pipelines by primary key' do
-      expected_order = project.ci_pipelines.reorder(:id).ids
+      expected_order = project.ci_pipelines.reorder(:id).pluck(:sha)
 
-      expect(subject['ci_pipelines'].pluck('id')).to eq(expected_order)
+      expect(subject['ci_pipelines'].pluck('sha')).to eq(expected_order)
     end
   end
 

@@ -12,13 +12,15 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import {
-  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   CONTENT_EDITOR_LOADED_ACTION,
   SAVED_USING_CONTENT_EDITOR_ACTION,
+  WIKI_CONTENT_EDITOR_TRACKING_LABEL,
+  WIKI_FORMAT_LABEL,
+  WIKI_FORMAT_UPDATED_ACTION,
 } from '../constants';
 
 const trackingMixin = Tracking.mixin({
@@ -83,7 +85,7 @@ export default {
           ),
         },
       },
-      feedbackTip: s__(
+      feedbackTip: __(
         'Tell us your experiences with the new Markdown editor %{linkStart}in this feedback issue%{linkEnd}.',
       ),
     },
@@ -219,6 +221,8 @@ export default {
         this.trackFormSubmit();
       }
 
+      this.trackWikiFormat();
+
       // Wait until form field values are refreshed
       await this.$nextTick();
 
@@ -302,6 +306,14 @@ export default {
       if (this.isContentEditorActive) {
         this.track(SAVED_USING_CONTENT_EDITOR_ACTION);
       }
+    },
+
+    trackWikiFormat() {
+      this.track(WIKI_FORMAT_UPDATED_ACTION, {
+        label: WIKI_FORMAT_LABEL,
+        value: this.format,
+        extra: { project_path: this.pageInfo.path, old_format: this.pageInfo.format },
+      });
     },
 
     dismissContentEditorAlert() {

@@ -1,0 +1,36 @@
+{
+  "suites": [
+    {
+      "name": "rspec unit pg12",
+      "total_time": 975.6635620000018,
+      "total_count": 3811,
+      "success_count": 3800,
+      "failed_count": 1,
+      "skipped_count": 10,
+      "error_count": 0,
+      "suite_error": null,
+      "test_cases": [
+        {
+          "status": "failed",
+          "name": "Note associations is expected not to belong to project required: ",
+          "classname": "spec.models.note_spec",
+          "file": "./spec/models/note_spec.rb",
+          "execution_time": 0.209091,
+          "system_output": "Failure/Error: it { is_expected.not_to belong_to(:project) }\n  Did not expect Note to have a belongs_to association called project\n./spec/models/note_spec.rb:9:in `block (3 levels) in <top (required)>'\n./spec/spec_helper.rb:392:in `block (3 levels) in <top (required)>'\n./spec/support/sidekiq_middleware.rb:9:in `with_sidekiq_server_middleware'\n./spec/spec_helper.rb:383:in `block (2 levels) in <top (required)>'\n./spec/spec_helper.rb:379:in `block (3 levels) in <top (required)>'\n./lib/gitlab/application_context.rb:31:in `with_raw_context'\n./spec/spec_helper.rb:379:in `block (2 levels) in <top (required)>'\n./spec/support/database/prevent_cross_joins.rb:95:in `block (3 levels) in <top (required)>'\n./spec/support/database/prevent_cross_joins.rb:62:in `with_cross_joins_prevented'\n./spec/support/database/prevent_cross_joins.rb:95:in `block (2 levels) in <top (required)>'",
+          "stack_trace": null,
+          "recent_failures": null
+        },
+        {
+          "status": "success",
+          "name": "Gitlab::ImportExport yields the initial tree when importing and exporting it again",
+          "classname": "spec.lib.gitlab.import_export.import_export_equivalence_spec",
+          "file": "./spec/lib/gitlab/import_export/import_export_equivalence_spec.rb",
+          "execution_time": 17.084198,
+          "system_output": null,
+          "stack_trace": null,
+          "recent_failures": null
+        }
+      ]
+    }
+  ]
+}

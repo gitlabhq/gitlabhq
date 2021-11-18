@@ -10,6 +10,7 @@ type: reference, howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210181) in GitLab 13.0.
 > - [Became available on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5 for paid groups only.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235765) in GitLab 13.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/342327) in GitLab 14.5. Default prefix added.
 
 Project access tokens are similar to [personal access tokens](../../profile/personal_access_tokens.md)
 except they are attached to a project rather than a user. They can be used to:
@@ -31,6 +32,9 @@ Project access tokens:
 
 For examples of how you can use a project access token to authenticate with the API, see the
 [relevant section from our API Docs](../../../api/index.md#personalproject-access-tokens).
+
+NOTE:
+For GitLab.com and self-managed instances, the default prefix is `glpat-`.
 
 ## Creating a project access token
 
@@ -58,7 +62,9 @@ For the bot:
 
 - The name is set to the name of the token.
 - The username is set to `project_{project_id}_bot` for the first access token, such as `project_123_bot`.
-- The username is set to `project_{project_id}_bot{bot_count}` for further access tokens, such as `project_123_bot1`.
+- The email is set to `project{project_id}_bot@example.com`, for example `project123_bot@example.com`.
+- For additional access tokens in the same project, the username is set to `project_{project_id}_bot{bot_count}`, for example `project_123_bot1`.
+- For additional acess tokens in the same project, the email is set to `project{project_id}_bot{bot_count}@example.com`, for example `project123_bot1@example.com`
 
 API calls made with a project access token are associated with the corresponding bot user.
 

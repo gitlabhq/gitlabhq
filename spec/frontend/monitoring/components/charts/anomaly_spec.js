@@ -159,10 +159,6 @@ describe('Anomaly chart component', () => {
           const { deploymentData } = getTimeSeriesProps();
           expect(deploymentData).toEqual(anomalyDeploymentData);
         });
-        it('"thresholds" keeps the same value', () => {
-          const { thresholds } = getTimeSeriesProps();
-          expect(thresholds).toEqual(inputThresholds);
-        });
         it('"projectPath" keeps the same value', () => {
           const { projectPath } = getTimeSeriesProps();
           expect(projectPath).toEqual(mockProjectPath);

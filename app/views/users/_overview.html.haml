@@ -2,13 +2,28 @@
 
 .row.d-none.d-sm-flex
   .col-12.calendar-block.gl-my-3
-    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
+    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_time_instance(@user.timezone).now.utc_offset } }
       .gl-spinner.gl-spinner-md.gl-my-8
       .user-calendar-error.invisible
         = _('There was an error loading users activity calendar.')
         %a.js-retry-load{ href: '#' }
           = s_('UserProfile|Retry')
     .user-calendar-activities
+- if @user.user_readme
+  .row.justify-content-center
+    .col-12.col-md-10.col-lg-8.gl-my-6
+      .gl-display-flex
+        %ol.breadcrumb.gl-breadcrumb-list.gl-mb-4
+          %li.breadcrumb-item.gl-breadcrumb-item
+            = link_to @user.username, project_path(@user.user_project)
+            %span.gl-breadcrumb-separator
+              = sprite_icon("chevron-right", size: 16)
+          %li.breadcrumb-item.gl-breadcrumb-item
+            = link_to @user.user_readme.path, @user.user_project.readme_url
+        - if current_user == @user
+          .gl-ml-auto
+            = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
+      = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
 .row
   %div{ class: activity_pane_class }
     - if can?(current_user, :read_cross_project)

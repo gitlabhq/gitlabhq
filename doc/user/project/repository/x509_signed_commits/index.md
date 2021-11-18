@@ -158,7 +158,7 @@ can start signing your tags:
    git config --global tag.gpgsign true
    ```
 
-## Resources
+## Related topics
 
 - [Rake task for X.509 signatures](../../../../raketasks/x509_signatures.md)
 

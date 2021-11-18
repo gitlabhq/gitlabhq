@@ -15,19 +15,21 @@ module Gitlab
           @exact_globs, @pattern_globs = globs.partition(&method(:exact_glob?))
         end
 
-        def satisfied_by?(pipeline, context)
-          paths = worktree_paths(pipeline)
+        def satisfied_by?(_pipeline, context)
+          paths = worktree_paths(context)
 
           exact_matches?(paths) || pattern_matches?(paths)
         end
 
         private
 
-        def worktree_paths(pipeline)
+        def worktree_paths(context)
+          return unless context.project
+
           if @top_level_only
-            pipeline.top_level_worktree_paths
+            context.top_level_worktree_paths
           else
-            pipeline.all_worktree_paths
+            context.all_worktree_paths
           end
         end
 

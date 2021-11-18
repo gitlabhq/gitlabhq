@@ -73,11 +73,6 @@ export default {
       required: false,
       default: chartHeight,
     },
-    thresholds: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     legendLayout: {
       type: String,
       required: false,
@@ -391,7 +386,6 @@ export default {
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
       :format-annotations-tooltip-text="formatAnnotationsTooltipText"
-      :thresholds="thresholds"
       :width="width"
       :height="height"
       :legend-layout="legendLayout"

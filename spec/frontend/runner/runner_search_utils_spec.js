@@ -1,5 +1,6 @@
 import { RUNNER_PAGE_SIZE } from '~/runner/constants';
 import {
+  searchValidator,
   fromUrlQueryToSearch,
   fromSearchToUrl,
   fromSearchToVariables,
@@ -10,13 +11,14 @@ describe('search_params.js', () => {
     {
       name: 'a default query',
       urlQuery: '',
-      search: { filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' },
+      search: { runnerType: null, filters: [], pagination: { page: 1 }, sort: 'CREATED_DESC' },
       graphqlVariables: { sort: 'CREATED_DESC', first: RUNNER_PAGE_SIZE },
     },
     {
       name: 'a single status',
       urlQuery: '?status[]=ACTIVE',
       search: {
+        runnerType: null,
         filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
         pagination: { page: 1 },
         sort: 'CREATED_DESC',
@@ -27,6 +29,7 @@ describe('search_params.js', () => {
       name: 'a single term text search',
       urlQuery: '?search=something',
       search: {
+        runnerType: null,
         filters: [
           {
             type: 'filtered-search-term',
@@ -42,6 +45,7 @@ describe('search_params.js', () => {
       name: 'a two terms text search',
       urlQuery: '?search=something+else',
       search: {
+        runnerType: null,
         filters: [
           {
             type: 'filtered-search-term',
@@ -61,7 +65,8 @@ describe('search_params.js', () => {
       name: 'single instance type',
       urlQuery: '?runner_type[]=INSTANCE_TYPE',
       search: {
-        filters: [{ type: 'runner_type', value: { data: 'INSTANCE_TYPE', operator: '=' } }],
+        runnerType: 'INSTANCE_TYPE',
+        filters: [],
         pagination: { page: 1 },
         sort: 'CREATED_DESC',
       },
@@ -71,6 +76,7 @@ describe('search_params.js', () => {
       name: 'multiple runner status',
       urlQuery: '?status[]=ACTIVE&status[]=PAUSED',
       search: {
+        runnerType: null,
         filters: [
           { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
           { type: 'status', value: { data: 'PAUSED', operator: '=' } },
@@ -84,10 +90,8 @@ describe('search_params.js', () => {
       name: 'multiple status, a single instance type and a non default sort',
       urlQuery: '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&sort=CREATED_ASC',
       search: {
-        filters: [
-          { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
-          { type: 'runner_type', value: { data: 'INSTANCE_TYPE', operator: '=' } },
-        ],
+        runnerType: 'INSTANCE_TYPE',
+        filters: [{ type: 'status', value: { data: 'ACTIVE', operator: '=' } }],
         pagination: { page: 1 },
         sort: 'CREATED_ASC',
       },
@@ -102,6 +106,7 @@ describe('search_params.js', () => {
       name: 'a tag',
       urlQuery: '?tag[]=tag-1',
       search: {
+        runnerType: null,
         filters: [{ type: 'tag', value: { data: 'tag-1', operator: '=' } }],
         pagination: { page: 1 },
         sort: 'CREATED_DESC',
@@ -116,6 +121,7 @@ describe('search_params.js', () => {
       name: 'two tags',
       urlQuery: '?tag[]=tag-1&tag[]=tag-2',
       search: {
+        runnerType: null,
         filters: [
           { type: 'tag', value: { data: 'tag-1', operator: '=' } },
           { type: 'tag', value: { data: 'tag-2', operator: '=' } },
@@ -132,13 +138,19 @@ describe('search_params.js', () => {
     {
       name: 'the next page',
       urlQuery: '?page=2&after=AFTER_CURSOR',
-      search: { filters: [], pagination: { page: 2, after: 'AFTER_CURSOR' }, sort: 'CREATED_DESC' },
+      search: {
+        runnerType: null,
+        filters: [],
+        pagination: { page: 2, after: 'AFTER_CURSOR' },
+        sort: 'CREATED_DESC',
+      },
       graphqlVariables: { sort: 'CREATED_DESC', after: 'AFTER_CURSOR', first: RUNNER_PAGE_SIZE },
     },
     {
       name: 'the previous page',
       urlQuery: '?page=2&before=BEFORE_CURSOR',
       search: {
+        runnerType: null,
         filters: [],
         pagination: { page: 2, before: 'BEFORE_CURSOR' },
         sort: 'CREATED_DESC',
@@ -150,9 +162,9 @@ describe('search_params.js', () => {
       urlQuery:
         '?status[]=ACTIVE&runner_type[]=INSTANCE_TYPE&tag[]=tag-1&tag[]=tag-2&sort=CREATED_ASC&page=2&after=AFTER_CURSOR',
       search: {
+        runnerType: 'INSTANCE_TYPE',
         filters: [
           { type: 'status', value: { data: 'ACTIVE', operator: '=' } },
-          { type: 'runner_type', value: { data: 'INSTANCE_TYPE', operator: '=' } },
           { type: 'tag', value: { data: 'tag-1', operator: '=' } },
           { type: 'tag', value: { data: 'tag-2', operator: '=' } },
         ],
@@ -169,6 +181,14 @@ describe('search_params.js', () => {
       },
     },
   ];
+
+  describe('searchValidator', () => {
+    examples.forEach(({ name, search }) => {
+      it(`Validates ${name} as a search object`, () => {
+        expect(searchValidator(search)).toBe(true);
+      });
+    });
+  });
 
   describe('fromUrlQueryToSearch', () => {
     examples.forEach(({ name, urlQuery, search }) => {

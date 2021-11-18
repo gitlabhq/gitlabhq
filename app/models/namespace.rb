@@ -16,9 +16,11 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Linear
   include EachBatch
 
-  ignore_column :delayed_project_removal, remove_with: '14.1', remove_after: '2021-05-22'
+  # Temporary column used for back-filling project namespaces.
+  # Remove it once the back-filling of all project namespaces is done.
+  ignore_column :tmp_project_id, remove_with: '14.7', remove_after: '2022-01-22'
 
-  # Tells ActiveRecord not to store the full class name, in order to space some space
+  # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
   self.store_full_sti_class = false
   self.store_full_class_name = false
@@ -54,7 +56,7 @@ class Namespace < ApplicationRecord
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
-  has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_many :children, -> { where(type: Group.sti_name) }, class_name: "Namespace", foreign_key: :parent_id
   has_many :custom_emoji, inverse_of: :namespace
   has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :root_storage_statistics, class_name: 'Namespace::RootStorageStatistics'
@@ -95,9 +97,11 @@ class Namespace < ApplicationRecord
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
   validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type, default_enabled: :yaml) }
-  validate :nesting_level_allowed
-  validate :changing_shared_runners_enabled_is_allowed
-  validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed
+
+  # ProjectNamespaces excluded as they are not meant to appear in the group hierarchy at the moment.
+  validate :nesting_level_allowed, unless: -> { project_namespace? }
+  validate :changing_shared_runners_enabled_is_allowed, unless: -> { project_namespace? }
+  validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
@@ -123,7 +127,7 @@ class Namespace < ApplicationRecord
   scope :user_namespaces, -> { where(type: [nil, Namespaces::UserNamespace.sti_name]) }
   # TODO: this can be simplified with `type != 'Project'`  when working on issue
   #       https://gitlab.com/gitlab-org/gitlab/-/issues/341070
-  scope :without_project_namespaces, -> { where("type IS DISTINCT FROM ?", Namespaces::ProjectNamespace.sti_name) }
+  scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].is_distinct_from(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(Gitlab::Database.nulls_first_order(:type)) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
@@ -140,6 +144,7 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.snippets_size), 0) AS snippets_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
         'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size',
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
         'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
       )
@@ -189,9 +194,9 @@ class Namespace < ApplicationRecord
     # Returns an ActiveRecord::Relation.
     def search(query, include_parents: false)
       if include_parents
-        where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
+        without_project_namespaces.where(id: Route.for_routable_type(Namespace.name).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]]).select(:source_id))
       else
-        fuzzy_search(query, [:path, :name])
+        without_project_namespaces.fuzzy_search(query, [:path, :name])
       end
     end
 
@@ -494,6 +499,10 @@ class Namespace < ApplicationRecord
     Feature.enabled?(:block_issue_repositioning, self, type: :ops, default_enabled: :yaml)
   end
 
+  def project_namespace_creation_enabled?
+    Feature.enabled?(:create_project_namespace_on_project_create, self, default_enabled: :yaml)
+  end
+
   private
 
   def expire_child_caches
@@ -535,21 +544,23 @@ class Namespace < ApplicationRecord
       # Until we compare the inconsistency rates of the new specialized worker and
       # the old approach, we still run AuthorizedProjectsWorker
       # but with some delay and lower urgency as a safety net.
-      Group
-        .joins(project_group_links: :project)
-        .where(projects: { namespace_id: id })
-        .distinct
-        .find_each do |group|
-        group.refresh_members_authorized_projects(
-          blocking: false,
-          priority: UserProjectAccessChangedService::LOW_PRIORITY
-        )
-      end
+      enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::LOW_PRIORITY)
     else
-      Group
-        .joins(project_group_links: :project)
-        .where(projects: { namespace_id: id })
-        .find_each(&:refresh_members_authorized_projects)
+      enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+    end
+  end
+
+  def enqueue_jobs_for_groups_requiring_authorizations_refresh(priority:)
+    groups_requiring_authorizations_refresh = Group
+                                              .joins(project_group_links: :project)
+                                              .where(projects: { namespace_id: id })
+                                              .distinct
+
+    groups_requiring_authorizations_refresh.find_each do |group|
+      group.refresh_members_authorized_projects(
+        blocking: false,
+        priority: priority
+      )
     end
   end
 
@@ -573,7 +584,7 @@ class Namespace < ApplicationRecord
     end
 
     if user_namespace?
-      errors.add(:parent_id, _('cannot not be used for user namespace'))
+      errors.add(:parent_id, _('cannot be used for user namespace'))
     elsif group_namespace?
       errors.add(:parent_id, _('user namespace cannot be the parent of another namespace')) if parent.user_namespace?
     end

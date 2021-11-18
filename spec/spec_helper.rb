@@ -107,9 +107,7 @@ RSpec.configure do |config|
         warn `curl -s -o log/goroutines.log http://localhost:9236/debug/pprof/goroutine?debug=2`
       end
     end
-  end
-
-  unless ENV['CI']
+  else
     # Allow running `:focus` examples locally,
     # falling back to all tests when there is no `:focus` example.
     config.filter_run focus: true
@@ -199,6 +197,14 @@ RSpec.configure do |config|
   if ENV['CI'] || ENV['RETRIES']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = ENV.fetch('RETRIES', 3).to_i + 1
+
+    # Do not retry controller tests because rspec-retry cannot properly
+    # reset the controller which may contain data from last attempt. See
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73360
+    config.prepend_before(:each, type: :controller) do |example|
+      example.metadata[:retry] = 1
+    end
+
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
   end
 
@@ -232,7 +238,7 @@ RSpec.configure do |config|
   # We can't use an `around` hook here because the wrapping transaction
   # is not yet opened at the time that is triggered
   config.prepend_before do
-    Gitlab::Database.main.set_open_transactions_baseline
+    ApplicationRecord.set_open_transactions_baseline
   end
 
   config.append_before do
@@ -240,7 +246,7 @@ RSpec.configure do |config|
   end
 
   config.append_after do
-    Gitlab::Database.main.reset_open_transactions_baseline
+    ApplicationRecord.reset_open_transactions_baseline
   end
 
   config.before do |example|
@@ -429,6 +435,10 @@ RSpec.configure do |config|
     Dir[matching_files].map { |filename| File.delete(filename) if File.file?(filename) }
 
     Gitlab::Metrics.reset_registry!
+  end
+
+  config.before(:example, :eager_load) do
+    Rails.application.eager_load!
   end
 
   # This makes sure the `ApplicationController#can?` method is stubbed with the

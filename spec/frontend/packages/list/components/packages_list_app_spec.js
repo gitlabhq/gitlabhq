@@ -9,6 +9,7 @@ import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import * as packageUtils from '~/packages_and_registries/shared/utils';
+import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/components/infrastructure_search.vue';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/flash');
@@ -26,18 +27,9 @@ describe('packages_list_app', () => {
   };
   const GlLoadingIcon = { name: 'gl-loading-icon', template: '<div>loading</div>' };
 
-  // we need to manually stub dynamic imported components because shallowMount is not able to stub them automatically. See: https://github.com/vuejs/vue-test-utils/issues/1279
-  const PackageSearch = { name: 'PackageSearch', template: '<div></div>' };
-  const PackageTitle = { name: 'PackageTitle', template: '<div></div>' };
-  const InfrastructureTitle = { name: 'InfrastructureTitle', template: '<div></div>' };
-  const InfrastructureSearch = { name: 'InfrastructureSearch', template: '<div></div>' };
-
   const emptyListHelpUrl = 'helpUrl';
   const findEmptyState = () => wrapper.find(GlEmptyState);
   const findListComponent = () => wrapper.find(PackageList);
-  const findPackageSearch = () => wrapper.find(PackageSearch);
-  const findPackageTitle = () => wrapper.find(PackageTitle);
-  const findInfrastructureTitle = () => wrapper.find(InfrastructureTitle);
   const findInfrastructureSearch = () => wrapper.find(InfrastructureSearch);
 
   const createStore = (filter = []) => {
@@ -66,10 +58,6 @@ describe('packages_list_app', () => {
         PackageList,
         GlSprintf,
         GlLink,
-        PackageSearch,
-        PackageTitle,
-        InfrastructureTitle,
-        InfrastructureSearch,
       },
       provide,
     });
@@ -191,45 +179,20 @@ describe('packages_list_app', () => {
     });
   });
 
-  describe('Package Search', () => {
+  describe('Search', () => {
     it('exists', () => {
       mountComponent();
 
-      expect(findPackageSearch().exists()).toBe(true);
+      expect(findInfrastructureSearch().exists()).toBe(true);
     });
 
     it('on update fetches data from the store', () => {
       mountComponent();
       store.dispatch.mockClear();
 
-      findPackageSearch().vm.$emit('update');
+      findInfrastructureSearch().vm.$emit('update');
 
       expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
-    });
-  });
-
-  describe('Infrastructure config', () => {
-    it('defaults to package registry components', () => {
-      mountComponent();
-
-      expect(findPackageSearch().exists()).toBe(true);
-      expect(findPackageTitle().exists()).toBe(true);
-
-      expect(findInfrastructureTitle().exists()).toBe(false);
-      expect(findInfrastructureSearch().exists()).toBe(false);
-    });
-
-    it('mount different component based on the provided values', () => {
-      mountComponent({
-        titleComponent: 'InfrastructureTitle',
-        searchComponent: 'InfrastructureSearch',
-      });
-
-      expect(findPackageSearch().exists()).toBe(false);
-      expect(findPackageTitle().exists()).toBe(false);
-
-      expect(findInfrastructureTitle().exists()).toBe(true);
-      expect(findInfrastructureSearch().exists()).toBe(true);
     });
   });
 

@@ -7,14 +7,6 @@ module API
     end
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      rescue_from ArgumentError do |e|
-        render_api_error!(e.message, 400)
-      end
-
-      rescue_from ActiveRecord::RecordInvalid do |e|
-        render_api_error!(e.message, 400)
-      end
-
       after_validation do
         require_packages_enabled!
 

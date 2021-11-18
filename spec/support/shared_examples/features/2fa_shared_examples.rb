@@ -18,6 +18,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
     let(:user) { create(:user) }
 
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       gitlab_sign_in(user)
       user.update_attribute(:otp_required_for_login, true)
     end

@@ -28,9 +28,24 @@ RSpec.describe API::Terraform::Modules::V1::Packages do
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/versions' do
     let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/versions") }
-    let(:headers) { {} }
+    let(:headers) { { 'Authorization' => "Bearer #{tokens[:job_token]}" } }
 
     subject { get(url, headers: headers) }
+
+    context 'with a conflicting package name' do
+      let!(:conflicting_package) { create(:terraform_module_package, project: project, name: "conflict-#{package.name}", version: '2.0.0') }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns only one version' do
+        subject
+
+        expect(json_response['modules'][0]['versions'].size).to eq(1)
+        expect(json_response['modules'][0]['versions'][0]['version']).to eq('1.0.0')
+      end
+    end
 
     context 'with valid namespace' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :shared_examples_name, :expected_status) do

@@ -104,7 +104,7 @@ module Gitlab
                 # the current state on the CD diff, so we treat it as outdated.
                 ac_diff = ac_diffs.diff_file_with_new_path(c_path, c_mode)
 
-                { position: new_position(ac_diff, nil, c_line), outdated: true }
+                { position: new_position(ac_diff, nil, c_line, position.line_range), outdated: true }
               end
             else
               # If the line is still in D and not in C, it is still added.
@@ -112,7 +112,7 @@ module Gitlab
             end
           else
             # If the line is no longer in D, it has been removed from the MR.
-            { position: new_position(bd_diff, b_line, nil), outdated: true }
+            { position: new_position(bd_diff, b_line, nil, position.line_range), outdated: true }
           end
         end
 
@@ -140,14 +140,14 @@ module Gitlab
               # removed line into an unchanged one.
               bd_diff = bd_diffs.diff_file_with_new_path(d_path, d_mode)
 
-              { position: new_position(bd_diff, nil, d_line), outdated: true }
+              { position: new_position(bd_diff, nil, d_line, position.line_range), outdated: true }
             else
               # If the line is still in C and not in D, it is still removed.
               { position: new_position(cd_diff, c_line, nil, position.line_range), outdated: false }
             end
           else
             # If the line is no longer in C, it has been removed outside of the MR.
-            { position: new_position(ac_diff, a_line, nil), outdated: true }
+            { position: new_position(ac_diff, a_line, nil, position.line_range), outdated: true }
           end
         end
 

@@ -3,13 +3,7 @@ import { GlToggle, GlLoadingIcon, GlTooltip, GlAlert } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import {
-  DEBOUNCE_TOGGLE_DELAY,
-  ERROR_MESSAGE,
-  ENABLED,
-  DISABLED,
-  ALLOW_OVERRIDE,
-} from '../constants';
+import { DEBOUNCE_TOGGLE_DELAY, ERROR_MESSAGE } from '../constants';
 
 export default {
   components: {
@@ -18,21 +12,14 @@ export default {
     GlTooltip,
     GlAlert,
   },
-  props: {
-    updatePath: {
-      type: String,
-      required: true,
-    },
-    sharedRunnersAvailability: {
-      type: String,
-      required: true,
-    },
-    parentSharedRunnersAvailability: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
+  inject: [
+    'updatePath',
+    'sharedRunnersAvailability',
+    'parentSharedRunnersAvailability',
+    'runnerEnabled',
+    'runnerDisabled',
+    'runnerAllowOverride',
+  ],
   data() {
     return {
       isLoading: false,
@@ -43,21 +30,21 @@ export default {
   },
   computed: {
     toggleDisabled() {
-      return this.parentSharedRunnersAvailability === DISABLED || this.isLoading;
+      return this.parentSharedRunnersAvailability === this.runnerDisabled || this.isLoading;
     },
     enabledOrDisabledSetting() {
-      return this.enabled ? ENABLED : DISABLED;
+      return this.enabled ? this.runnerEnabled : this.runnerDisabled;
     },
     disabledWithOverrideSetting() {
-      return this.allowOverride ? ALLOW_OVERRIDE : DISABLED;
+      return this.allowOverride ? this.runnerAllowOverride : this.runnerDisabled;
     },
   },
   created() {
-    if (this.sharedRunnersAvailability !== ENABLED) {
+    if (this.sharedRunnersAvailability !== this.runnerEnabled) {
       this.enabled = false;
     }
 
-    if (this.sharedRunnersAvailability === ALLOW_OVERRIDE) {
+    if (this.sharedRunnersAvailability === this.runnerAllowOverride) {
       this.allowOverride = true;
     }
   },

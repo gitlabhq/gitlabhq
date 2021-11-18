@@ -14,7 +14,7 @@ module Gitlab
               result = ::Gitlab::Ci::YamlProcessor.new(
                 @command.config_content, {
                   project: project,
-                  source_ref_path: @pipeline.source_ref_path,
+                  pipeline: @pipeline,
                   sha: @pipeline.sha,
                   source: @pipeline.source,
                   user: current_user,

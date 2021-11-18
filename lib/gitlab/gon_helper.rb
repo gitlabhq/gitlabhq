@@ -39,6 +39,7 @@ module Gitlab
       gon.ee                     = Gitlab.ee?
       gon.jh                     = Gitlab.jh?
       gon.dot_com                = Gitlab.com?
+      gon.dev_env_or_com         = Gitlab.dev_env_or_com?
 
       if current_user
         gon.current_user_id = current_user.id
@@ -55,7 +56,8 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix, default_enabled: false)
       push_frontend_feature_flag(:improved_emoji_picker, default_enabled: :yaml)
       push_frontend_feature_flag(:new_header_search, default_enabled: :yaml)
-      push_frontend_feature_flag(:suppress_apollo_errors_during_navigation, current_user, default_enabled: :yaml)
+      push_frontend_feature_flag(:configure_iac_scanning_via_mr, current_user, default_enabled: :yaml)
+      push_frontend_feature_flag(:bootstrap_confirmation_modals, default_enabled: :yaml)
     end
 
     # Exposes the state of a feature flag to the frontend code.

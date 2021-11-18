@@ -22,6 +22,11 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
 
     it_behaves_like 'records an onboarding progress action', :user_added
+
+    it 'does not create task issues' do
+      expect(TasksToBeDone::CreateWorker).not_to receive(:perform_async)
+      expect { result }.not_to change { project.issues.count }
+    end
   end
 
   context 'when email belongs to an existing user as a secondary email' do

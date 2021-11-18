@@ -23,6 +23,7 @@ RSpec.describe Types::Repository::BlobType do
       :stored_externally,
       :raw_path,
       :replace_path,
+      :pipeline_editor_path,
       :simple_viewer,
       :rich_viewer,
       :plain_data,

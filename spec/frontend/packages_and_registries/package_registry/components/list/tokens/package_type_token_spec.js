@@ -1,7 +1,7 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import component from '~/packages/list/components/tokens/package_type_token.vue';
-import { PACKAGE_TYPES } from '~/packages/list/constants';
+import component from '~/packages_and_registries/package_registry/components/list/tokens/package_type_token.vue';
+import { PACKAGE_TYPES } from '~/packages_and_registries/package_registry/constants';
 
 describe('packages_filter', () => {
   let wrapper;
@@ -41,8 +41,8 @@ describe('packages_filter', () => {
     (packageType, index) => {
       mountComponent();
       const item = findFilteredSearchSuggestions().at(index);
-      expect(item.text()).toBe(packageType.title);
-      expect(item.props('value')).toBe(packageType.type);
+      expect(item.text()).toBe(packageType);
+      expect(item.props('value')).toBe(packageType);
     },
   );
 });

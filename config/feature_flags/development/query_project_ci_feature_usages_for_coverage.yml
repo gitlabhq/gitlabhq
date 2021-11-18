@@ -1,8 +1,0 @@
----
-name: query_project_ci_feature_usages_for_coverage
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69890
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339974
-milestone: '14.3'
-type: development
-group: group::testing
-default_enabled: false

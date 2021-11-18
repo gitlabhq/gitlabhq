@@ -9,7 +9,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
   let(:name) { 'GitLab' }
   let(:default_rate) { 1000.to_f }
   let(:description) { 'VIP' }
-  let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
+  let(:does_not_exist_or_no_permission) { Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR }
   let(:organization) { create(:organization, group: group) }
   let(:attributes) do
     {
@@ -63,11 +63,11 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
-            .with_message('Feature disabled')
+            .with_message("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
         end
       end
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_organization) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_crm_organization) }
 end

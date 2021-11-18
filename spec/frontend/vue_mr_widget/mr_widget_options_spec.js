@@ -1,4 +1,4 @@
-import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon, GlButton, GlDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
+import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
@@ -22,6 +23,8 @@ import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 import testExtension from './test_extension';
+
+jest.mock('~/api.js');
 
 jest.mock('~/smart_interval');
 
@@ -540,7 +543,7 @@ describe('MrWidgetOptions', () => {
         nextTick(() => {
           const tooltip = wrapper.find('[data-testid="question-o-icon"]');
 
-          expect(wrapper.text()).toContain('The source branch will be deleted');
+          expect(wrapper.text()).toContain('Deletes the source branch');
           expect(tooltip.attributes('title')).toBe(
             'A user with write access to the source branch selected this option',
           );
@@ -556,7 +559,7 @@ describe('MrWidgetOptions', () => {
 
         nextTick(() => {
           expect(wrapper.text()).toContain('The source branch has been deleted');
-          expect(wrapper.text()).not.toContain('The source branch will be deleted');
+          expect(wrapper.text()).not.toContain('Deletes the source branch');
 
           done();
         });
@@ -904,6 +907,18 @@ describe('MrWidgetOptions', () => {
       expect(wrapper.text()).toContain('Test extension summary count: 1');
     });
 
+    it('triggers trackRedisHllUserEvent API call', async () => {
+      await waitForPromises();
+
+      wrapper
+        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
+        .trigger('click');
+
+      await Vue.nextTick();
+
+      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_expand_event');
+    });
+
     it('renders full data', async () => {
       await waitForPromises();
 
@@ -912,6 +927,10 @@ describe('MrWidgetOptions', () => {
         .trigger('click');
 
       await Vue.nextTick();
+
+      expect(
+        wrapper.find('[data-testid="widget-extension-top-level"]').find(GlDropdown).exists(),
+      ).toBe(false);
 
       const collapsedSection = wrapper.find('[data-testid="widget-extension-collapsed-section"]');
       expect(collapsedSection.exists()).toBe(true);
@@ -928,6 +947,9 @@ describe('MrWidgetOptions', () => {
       // Renders a link in the row
       expect(collapsedSection.find(GlLink).exists()).toBe(true);
       expect(collapsedSection.find(GlLink).text()).toBe('GitLab.com');
+
+      expect(collapsedSection.find(GlButton).exists()).toBe(true);
+      expect(collapsedSection.find(GlButton).text()).toBe('Full report');
     });
   });
 });

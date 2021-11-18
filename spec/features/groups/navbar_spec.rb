@@ -15,6 +15,7 @@ RSpec.describe 'Group navbar' do
     insert_package_nav(_('Kubernetes'))
 
     stub_feature_flags(group_iterations: false)
+    stub_feature_flags(customer_relations: false)
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
     stub_group_wikis(false)
@@ -33,6 +34,22 @@ RSpec.describe 'Group navbar' do
       stub_config(registry: { enabled: true })
 
       insert_container_nav
+
+      visit group_path(group)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
+
+  context 'when customer_relations feature flag is enabled' do
+    before do
+      stub_feature_flags(customer_relations: true)
+
+      if Gitlab.ee?
+        insert_customer_relations_nav(_('Analytics'))
+      else
+        insert_customer_relations_nav(_('Packages & Registries'))
+      end
 
       visit group_path(group)
     end

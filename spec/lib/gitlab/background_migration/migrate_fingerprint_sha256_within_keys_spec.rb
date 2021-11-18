@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::MigrateFingerprintSha256WithinKeys, schema: 20200106071113 do
+RSpec.describe Gitlab::BackgroundMigration::MigrateFingerprintSha256WithinKeys, schema: 20181228175414 do
   subject(:fingerprint_migrator) { described_class.new }
 
   let(:key_table) { table(:keys) }

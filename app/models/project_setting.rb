@@ -12,6 +12,8 @@ class ProjectSetting < ApplicationRecord
 
   self.primary_key = :project_id
 
+  validates :merge_commit_template, length: { maximum: 500 }
+
   def squash_enabled_by_default?
     %w[always default_on].include?(squash_option)
   end

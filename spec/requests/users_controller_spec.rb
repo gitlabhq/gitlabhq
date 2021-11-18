@@ -305,7 +305,7 @@ RSpec.describe UsersController do
 
     context 'user with keys' do
       let!(:gpg_key) { create(:gpg_key, user: user) }
-      let!(:another_gpg_key) { create(:another_gpg_key, user: user) }
+      let!(:another_gpg_key) { create(:another_gpg_key, user: user.reload) }
 
       shared_examples_for 'renders all verified GPG keys' do
         it 'renders all verified keys separated with a new line with text/plain content type' do

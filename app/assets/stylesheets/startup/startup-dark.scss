@@ -5,6 +5,7 @@
 body.gl-dark {
   --gray-50: #303030;
   --gray-100: #404040;
+  --gray-600: #bfbfbf;
   --gray-900: #fafafa;
   --gray-950: #fff;
   --green-100: #0d532a;
@@ -12,6 +13,7 @@ body.gl-dark {
   --green-700: #91d4a8;
   --blue-400: #1f75cb;
   --orange-400: #ab6100;
+  --indigo-900-alpha-008: rgba(235, 235, 250, 0.08);
   --gl-text-color: #fafafa;
   --border-color: #4f4f4f;
   --black: #fff;
@@ -1693,8 +1695,14 @@ body.gl-dark {
   --black: #fff;
   --svg-status-bg: #333;
 }
+.nav-sidebar li a {
+  color: var(--gray-600);
+}
 .nav-sidebar li.active {
   box-shadow: none;
+}
+.nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
+  background-color: var(--indigo-900-alpha-008);
 }
 body.gl-dark .navbar-gitlab {
   background-color: #fafafa;
@@ -1780,7 +1788,7 @@ body.gl-dark .search .search-input-wrap .clear-icon {
   fill: rgba(250, 250, 250, 0.8);
 }
 body.gl-dark .nav-sidebar li.active > a {
-  color: #f0f0f0;
+  color: #fafafa;
 }
 body.gl-dark .nav-sidebar .fly-out-top-item a,
 body.gl-dark .nav-sidebar .fly-out-top-item.active a,
@@ -1935,7 +1943,7 @@ body.gl-dark {
 .gl-display-none {
   display: none;
 }
-@media (min-width: 36rem) {
+@media (min-width: 576px) {
   .gl-sm-display-block {
     display: block;
   }

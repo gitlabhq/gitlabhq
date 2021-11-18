@@ -12,7 +12,7 @@ import { produce } from 'immer';
 import { fetchPolicies } from '~/lib/graphql';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { setUrlParams } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   BRANCH_PAGINATION_LIMIT,
   BRANCH_SEARCH_DEBOUNCE,
@@ -25,9 +25,9 @@ import getLastCommitBranchQuery from '~/pipeline_editor/graphql/queries/client/l
 
 export default {
   i18n: {
-    dropdownHeader: s__('Switch branch'),
-    title: s__('Branches'),
-    fetchError: s__('Unable to fetch branch list for this project.'),
+    dropdownHeader: __('Switch branch'),
+    title: __('Branches'),
+    fetchError: __('Unable to fetch branch list for this project.'),
   },
   inputDebounce: BRANCH_SEARCH_DEBOUNCE,
   components: {
@@ -43,14 +43,25 @@ export default {
   },
   inject: ['projectFullPath', 'totalBranches'],
   props: {
+    hasUnsavedChanges: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     paginationLimit: {
       type: Number,
       required: false,
       default: BRANCH_PAGINATION_LIMIT,
     },
+    shouldLoadNewBranch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
+      branchSelected: null,
       availableBranches: [],
       filteredBranches: [],
       isSearchingBranches: false,
@@ -101,8 +112,15 @@ export default {
     isBranchesLoading() {
       return this.$apollo.queries.availableBranches.loading || this.isSearchingBranches;
     },
-    showBranchSwitcher() {
+    enableBranchSwitcher() {
       return this.branches.length > 0 || this.searchTerm.length > 0;
+    },
+  },
+  watch: {
+    shouldLoadNewBranch(flag) {
+      if (flag) {
+        this.changeBranch(this.branchSelected);
+      }
     },
   },
   methods: {
@@ -149,11 +167,7 @@ export default {
         })
         .catch(this.showFetchError);
     },
-    async selectBranch(newBranch) {
-      if (newBranch === this.currentBranch) {
-        return;
-      }
-
+    async changeBranch(newBranch) {
       this.updateCurrentBranch(newBranch);
       const updatedPath = setUrlParams({ branch_name: newBranch });
       historyPushState(updatedPath);
@@ -163,6 +177,19 @@ export default {
       // so we need to make sure the currentBranch (and consequently, the commitSha) are updated first
       await this.$nextTick();
       this.$emit('refetchContent');
+    },
+    selectBranch(newBranch) {
+      if (newBranch !== this.currentBranch) {
+        // If there are unsaved changes, we want to show the user
+        // a modal to confirm what to do with these before changing
+        // branches.
+        if (this.hasUnsavedChanges) {
+          this.branchSelected = newBranch;
+          this.$emit('select-branch', newBranch);
+        } else {
+          this.changeBranch(newBranch);
+        }
+      }
     },
     async setSearchTerm(newSearchTerm) {
       this.pageCounter = 0;
@@ -203,11 +230,11 @@ export default {
 
 <template>
   <gl-dropdown
-    v-if="showBranchSwitcher"
     v-gl-tooltip.hover
     :title="$options.i18n.dropdownHeader"
     :header-text="$options.i18n.dropdownHeader"
     :text="currentBranch"
+    :disabled="!enableBranchSwitcher"
     icon="branch"
     data-qa-selector="branch_selector_button"
     data-testid="branch-selector"

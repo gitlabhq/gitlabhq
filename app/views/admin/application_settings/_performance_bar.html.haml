@@ -6,7 +6,7 @@
       .form-check
         = f.check_box :performance_bar_enabled, class: 'form-check-input', data: { qa_selector: 'enable_performance_bar_checkbox'}
         = f.label :performance_bar_enabled, class: 'form-check-label' do
-          = _("Allow non-administrators to access to the performance bar")
+          = _("Allow non-administrators access to the performance bar")
     .form-group
       = f.label :performance_bar_allowed_group_path, _('Allow access to members of the following group'), class: 'label-bold'
       = f.text_field :performance_bar_allowed_group_path, class: 'form-control gl-form-input', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path

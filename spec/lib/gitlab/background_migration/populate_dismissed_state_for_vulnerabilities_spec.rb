@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::BackgroundMigration::PopulateDismissedStateForVulnerabilities, schema: 2020_11_30_103926 do
+RSpec.describe ::Gitlab::BackgroundMigration::PopulateDismissedStateForVulnerabilities, schema: 20181228175414 do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

@@ -29,7 +29,7 @@ describe('~/whats_new/utils/notification', () => {
 
       subject();
 
-      expect(findNotificationCountEl()).toExist();
+      expect(findNotificationCountEl()).not.toBe(null);
       expect(notificationEl.classList).toContain('with-notifications');
     });
 
@@ -38,11 +38,11 @@ describe('~/whats_new/utils/notification', () => {
       notificationEl.classList.add('with-notifications');
       localStorage.setItem('display-whats-new-notification', 'version-digest');
 
-      expect(findNotificationCountEl()).toExist();
+      expect(findNotificationCountEl()).not.toBe(null);
 
       subject();
 
-      expect(findNotificationCountEl()).not.toExist();
+      expect(findNotificationCountEl()).toBe(null);
       expect(notificationEl.classList).not.toContain('with-notifications');
     });
   });

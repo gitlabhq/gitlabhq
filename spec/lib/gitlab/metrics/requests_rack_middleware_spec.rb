@@ -36,7 +36,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
       it 'tracks request count and duration' do
         expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
         expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ method: 'get' }, a_positive_execution_time)
-        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(labels: { feature_category: 'unknown', endpoint_id: 'unknown' }, success: true)
+        expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
+          .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
 
         subject.call(env)
       end
@@ -115,14 +116,14 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
     context 'application context' do
       context 'when a context is present' do
         before do
-          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking', caller_id: 'IssuesController#show')
+          ::Gitlab::ApplicationContext.push(feature_category: 'team_planning', caller_id: 'IssuesController#show')
         end
 
         it 'adds the feature category to the labels for required metrics' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'issue_tracking')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'team_planning')
           expect(described_class).not_to receive(:http_health_requests_total)
           expect(Gitlab::Metrics::RailsSlis.request_apdex)
-            .to receive(:increment).with(labels: { feature_category: 'issue_tracking', endpoint_id: 'IssuesController#show' }, success: true)
+            .to receive(:increment).with(labels: { feature_category: 'team_planning', endpoint_id: 'IssuesController#show', request_urgency: :default }, success: true)
 
           subject.call(env)
         end
@@ -140,12 +141,12 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
       context 'when application raises an exception when the feature category context is present' do
         before do
-          ::Gitlab::ApplicationContext.push(feature_category: 'issue_tracking')
+          ::Gitlab::ApplicationContext.push(feature_category: 'team_planning')
           allow(app).to receive(:call).and_raise(StandardError)
         end
 
         it 'adds the feature category to the labels for http_requests_total' do
-          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'issue_tracking')
+          expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: 'undefined', feature_category: 'team_planning')
           expect(Gitlab::Metrics::RailsSlis).not_to receive(:request_apdex)
 
           expect { subject.call(env) }.to raise_error(StandardError)
@@ -156,7 +157,8 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
         it 'sets the required labels to unknown' do
           expect(described_class).to receive_message_chain(:http_requests_total, :increment).with(method: 'get', status: '200', feature_category: 'unknown')
           expect(described_class).not_to receive(:http_health_requests_total)
-          expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(labels: { feature_category: 'unknown', endpoint_id: 'unknown' }, success: true)
+          expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment)
+            .with(labels: { feature_category: 'unknown', endpoint_id: 'unknown', request_urgency: :default }, success: true)
 
           subject.call(env)
         end
@@ -206,7 +208,11 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
             it "captures SLI metrics" do
               expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-                labels: { feature_category: 'hello_world', endpoint_id: 'GET /projects/:id/archive' },
+                labels: {
+                  feature_category: 'hello_world',
+                  endpoint_id: 'GET /projects/:id/archive',
+                  request_urgency: request_urgency_name
+                },
                 success: success
               )
               subject.call(env)
@@ -235,7 +241,11 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
             it "captures SLI metrics" do
               expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-                labels: { feature_category: 'hello_world', endpoint_id: 'AnonymousController#index' },
+                labels: {
+                  feature_category: 'hello_world',
+                  endpoint_id: 'AnonymousController#index',
+                  request_urgency: request_urgency_name
+                },
                 success: success
               )
               subject.call(env)
@@ -255,17 +265,25 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
 
           let(:api_handler) { Class.new(::API::Base) }
 
-          it "falls back request's expectation to medium (1 second)" do
+          it "falls back request's expectation to default (1 second)" do
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 100.9)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: true
             )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: false
             )
             subject.call(env)
@@ -281,17 +299,25 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
             { 'action_controller.instance' => controller_instance, 'REQUEST_METHOD' => 'GET' }
           end
 
-          it "falls back request's expectation to medium (1 second)" do
+          it "falls back request's expectation to default (1 second)" do
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 100.9)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: true
             )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: false
             )
             subject.call(env)
@@ -303,17 +329,25 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures do
             { 'REQUEST_METHOD' => 'GET' }
           end
 
-          it "falls back request's expectation to medium (1 second)" do
+          it "falls back request's expectation to default (1 second)" do
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 100.9)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: true
             )
             subject.call(env)
 
             allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100, 101)
             expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).with(
-              labels: { feature_category: 'unknown', endpoint_id: 'unknown' },
+              labels: {
+                feature_category: 'unknown',
+                endpoint_id: 'unknown',
+                request_urgency: :default
+              },
               success: false
             )
             subject.call(env)

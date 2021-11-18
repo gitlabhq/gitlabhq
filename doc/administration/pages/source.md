@@ -132,11 +132,11 @@ The Pages daemon doesn't listen to the outside world.
      https: false
      artifacts_server: false
      external_http: ["127.0.0.1:8090"]
-     secret_file: /home/git/gitlab/gitlab-pages/gitlab-pages-secret
+     secret_file: /home/git/gitlab/gitlab-pages-secret
    ```
 
 1. Add the following configuration file to
-   `/home/git/gitlab/gitlab-pages/gitlab-pages.conf`, and be sure to change
+   `/home/git/gitlab-pages/gitlab-pages.conf`, and be sure to change
    `example.io` to the FQDN from which you want to serve GitLab Pages and
    `gitlab.example.com` to the URL of your GitLab instance:
 
@@ -159,12 +159,27 @@ The Pages daemon doesn't listen to the outside world.
    sudo -u git -H openssl rand -base64 32 > /home/git/gitlab/gitlab-pages-secret
    ```
 
-1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon:
+1. To enable the pages daemon:
 
-   ```ini
-   gitlab_pages_enabled=true
-   ```
+   - If your system uses systemd as init, run:
+
+     ```shell
+     sudo systemctl edit gitlab.target
+     ```
+
+     In the editor that opens, add the following and save the file:
+
+     ```plaintext
+     [Unit]
+     Wants=gitlab-pages.service
+     ```
+
+   - If your system uses SysV init instead, edit `/etc/default/gitlab` and set
+     `gitlab_pages_enabled` to `true`:
+
+     ```ini
+     gitlab_pages_enabled=true
+     ```
 
 1. Copy the `gitlab-pages` NGINX configuration file:
 

@@ -1,18 +1,20 @@
-import { GlModal } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import RemoveClusterConfirmation from '~/clusters/components/remove_cluster_confirmation.vue';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 
 describe('Remove cluster confirmation modal', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props = {}, stubs = {} } = {}) => {
     wrapper = mount(RemoveClusterConfirmation, {
       propsData: {
         clusterPath: 'clusterPath',
         clusterName: 'clusterName',
         ...props,
       },
+      stubs,
     });
   };
 
@@ -27,35 +29,44 @@ describe('Remove cluster confirmation modal', () => {
   });
 
   describe('split button dropdown', () => {
-    const findModal = () => wrapper.find(GlModal).vm;
-    const findSplitButton = () => wrapper.find(SplitButton);
+    const findModal = () => wrapper.findComponent(GlModal);
+    const findSplitButton = () => wrapper.findComponent(SplitButton);
 
     beforeEach(() => {
-      createComponent({ clusterName: 'my-test-cluster' });
-      jest.spyOn(findModal(), 'show').mockReturnValue();
+      createComponent({
+        props: { clusterName: 'my-test-cluster' },
+        stubs: { GlSprintf, GlModal: stubComponent(GlModal) },
+      });
+      jest.spyOn(findModal().vm, 'show').mockReturnValue();
     });
 
-    it('opens modal with "cleanup" option', () => {
+    it('opens modal with "cleanup" option', async () => {
       findSplitButton().vm.$emit('remove-cluster-and-cleanup');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findModal().show).toHaveBeenCalled();
-        expect(wrapper.vm.confirmCleanup).toEqual(true);
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(findModal().vm.show).toHaveBeenCalled();
+      expect(wrapper.vm.confirmCleanup).toEqual(true);
+      expect(findModal().html()).toContain(
+        '<strong>To remove your integration and resources, type <code>my-test-cluster</code> to confirm:</strong>',
+      );
     });
 
-    it('opens modal without "cleanup" option', () => {
+    it('opens modal without "cleanup" option', async () => {
       findSplitButton().vm.$emit('remove-cluster');
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(findModal().show).toHaveBeenCalled();
-        expect(wrapper.vm.confirmCleanup).toEqual(false);
-      });
+      await wrapper.vm.$nextTick();
+
+      expect(findModal().vm.show).toHaveBeenCalled();
+      expect(wrapper.vm.confirmCleanup).toEqual(false);
+      expect(findModal().html()).toContain(
+        '<strong>To remove your integration, type <code>my-test-cluster</code> to confirm:</strong>',
+      );
     });
 
     describe('with cluster management project', () => {
       beforeEach(() => {
-        createComponent({ hasManagementProject: true });
+        createComponent({ props: { hasManagementProject: true } });
       });
 
       it('renders regular button instead', () => {

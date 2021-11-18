@@ -16,4 +16,6 @@ organize your work, create and secure your application, and analyze its performa
 - [Secure your application](../user/application_security/index.md)
 - [Release your application](release_your_application.md)
 - [Monitor application performance](../operations/index.md)
+- [Monitor runner performance](https://docs.gitlab.com/runner/monitoring/index.html)
+- [Manage your infrastructure](../user/infrastructure/index.md)
 - [Analyze GitLab usage](../user/analytics/index.md)

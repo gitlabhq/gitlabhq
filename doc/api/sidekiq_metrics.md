@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sidekiq Metrics API **(FREE SELF)**
 
-> Introduced in GitLab 8.9.
-
 This API endpoint allows you to retrieve some information about the current state
 of Sidekiq, its jobs, queues, and processes.
 

@@ -8,12 +8,11 @@ import RunnerActionCell from '~/runner/components/cells/runner_actions_cell.vue'
 import getGroupRunnersQuery from '~/runner/graphql/get_group_runners.query.graphql';
 import getRunnersQuery from '~/runner/graphql/get_runners.query.graphql';
 import runnerDeleteMutation from '~/runner/graphql/runner_delete.mutation.graphql';
-import runnerUpdateMutation from '~/runner/graphql/runner_update.mutation.graphql';
+import runnerActionsUpdateMutation from '~/runner/graphql/runner_actions_update.mutation.graphql';
 import { captureException } from '~/runner/sentry_utils';
-import { runnersData, runnerData } from '../../mock_data';
+import { runnersData } from '../../mock_data';
 
 const mockRunner = runnersData.data.runners.nodes[0];
-const mockRunnerDetails = runnerData.data.runner;
 
 const getRunnersQueryName = getRunnersQuery.definitions[0].name.value;
 const getGroupRunnersQueryName = getGroupRunnersQuery.definitions[0].name.value;
@@ -27,7 +26,7 @@ jest.mock('~/runner/sentry_utils');
 describe('RunnerTypeCell', () => {
   let wrapper;
   const runnerDeleteMutationHandler = jest.fn();
-  const runnerUpdateMutationHandler = jest.fn();
+  const runnerActionsUpdateMutationHandler = jest.fn();
 
   const findEditBtn = () => wrapper.findByTestId('edit-runner');
   const findToggleActiveBtn = () => wrapper.findByTestId('toggle-active-runner');
@@ -46,7 +45,7 @@ describe('RunnerTypeCell', () => {
         localVue,
         apolloProvider: createMockApollo([
           [runnerDeleteMutation, runnerDeleteMutationHandler],
-          [runnerUpdateMutation, runnerUpdateMutationHandler],
+          [runnerActionsUpdateMutation, runnerActionsUpdateMutationHandler],
         ]),
         ...options,
       }),
@@ -62,10 +61,10 @@ describe('RunnerTypeCell', () => {
       },
     });
 
-    runnerUpdateMutationHandler.mockResolvedValue({
+    runnerActionsUpdateMutationHandler.mockResolvedValue({
       data: {
         runnerUpdate: {
-          runner: mockRunnerDetails,
+          runner: mockRunner,
           errors: [],
         },
       },
@@ -74,7 +73,7 @@ describe('RunnerTypeCell', () => {
 
   afterEach(() => {
     runnerDeleteMutationHandler.mockReset();
-    runnerUpdateMutationHandler.mockReset();
+    runnerActionsUpdateMutationHandler.mockReset();
 
     wrapper.destroy();
   });
@@ -116,12 +115,12 @@ describe('RunnerTypeCell', () => {
 
     describe(`When clicking on the ${icon} button`, () => {
       it(`The apollo mutation to set active to ${newActiveValue} is called`, async () => {
-        expect(runnerUpdateMutationHandler).toHaveBeenCalledTimes(0);
+        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(0);
 
         await findToggleActiveBtn().vm.$emit('click');
 
-        expect(runnerUpdateMutationHandler).toHaveBeenCalledTimes(1);
-        expect(runnerUpdateMutationHandler).toHaveBeenCalledWith({
+        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledTimes(1);
+        expect(runnerActionsUpdateMutationHandler).toHaveBeenCalledWith({
           input: {
             id: mockRunner.id,
             active: newActiveValue,
@@ -145,7 +144,7 @@ describe('RunnerTypeCell', () => {
         const mockErrorMsg = 'Update error!';
 
         beforeEach(async () => {
-          runnerUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
+          runnerActionsUpdateMutationHandler.mockRejectedValueOnce(new Error(mockErrorMsg));
 
           await findToggleActiveBtn().vm.$emit('click');
         });
@@ -167,10 +166,10 @@ describe('RunnerTypeCell', () => {
         const mockErrorMsg2 = 'User not allowed!';
 
         beforeEach(async () => {
-          runnerUpdateMutationHandler.mockResolvedValue({
+          runnerActionsUpdateMutationHandler.mockResolvedValue({
             data: {
               runnerUpdate: {
-                runner: runnerData.data.runner,
+                runner: mockRunner,
                 errors: [mockErrorMsg, mockErrorMsg2],
               },
             },

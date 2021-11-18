@@ -29,7 +29,7 @@ The extensive usage of feature flags poses a few challenges
   We sometimes forget how our feature flags are configured or why we haven't
   yet removed the feature flag.
 - The usage of feature flags can also be confusing to people outside of
-  development that might not fully understand dependence of ~feature or ~bug
+  development that might not fully understand dependence of ~"type::feature" or ~"type::bug"
   fix on feature flag and how this feature flag is configured. Or if the feature
   should be announced as part of release post.
 - Maintaining feature flags poses additional challenge of having to manage

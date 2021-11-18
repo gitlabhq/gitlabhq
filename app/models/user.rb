@@ -123,7 +123,7 @@ class User < ApplicationRecord
 
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :expired_and_unnotified_keys, -> { expired_and_not_notified }, class_name: 'Key'
+  has_many :expired_today_and_unnotified_keys, -> { expired_today_and_not_notified }, class_name: 'Key'
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :group_deploy_keys
@@ -274,14 +274,21 @@ class User < ApplicationRecord
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
+  after_create :add_primary_email_to_emails!, if: :confirmed?
   after_commit(on: :update) do
     if previous_changes.key?('email')
-      # Grab previous_email here since previous_changes changes after
-      # #update_emails_with_primary_email and #update_notification_email are called
+      # Add the old primary email to Emails if not added already - this should be removed
+      # after the background migration for MR https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70872/ has completed,
+      # as the primary email is now added to Emails upon confirmation
+      # Issue to remove that: https://gitlab.com/gitlab-org/gitlab/-/issues/344134
       previous_confirmed_at = previous_changes.key?('confirmed_at') ? previous_changes['confirmed_at'][0] : confirmed_at
       previous_email = previous_changes[:email][0]
+      if previous_confirmed_at && !emails.exists?(email: previous_email)
+        # rubocop: disable CodeReuse/ServiceClass
+        Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: previous_confirmed_at)
+        # rubocop: enable CodeReuse/ServiceClass
+      end
 
-      update_emails_with_primary_email(previous_confirmed_at, previous_email)
       update_invalid_gpg_signatures
     end
   end
@@ -454,8 +461,8 @@ class User < ApplicationRecord
   scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
   scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
   scope :by_id_and_login, ->(id, login) { where(id: id).where('username = LOWER(:login) OR email = LOWER(:login)', login: login) }
-  scope :dormant, -> { active.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
-  scope :with_no_activity, -> { active.where(last_activity_on: nil) }
+  scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', MINIMUM_INACTIVE_DAYS.day.ago.to_date) }
+  scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
   scope :get_ids_by_username, -> (username) { where(username: username).pluck(:id) }
 
@@ -466,7 +473,11 @@ class User < ApplicationRecord
   end
 
   def active_for_authentication?
-    super && can?(:log_in)
+    return false unless super
+
+    check_ldap_if_ldap_blocked!
+
+    can?(:log_in)
   end
 
   # The messages for these keys are defined in `devise.en.yml`
@@ -935,6 +946,8 @@ class User < ApplicationRecord
   end
 
   def unique_email
+    return if errors.added?(:email, _('has already been taken'))
+
     if !emails.exists?(email: email) && Email.exists?(email: email)
       errors.add(:email, _('has already been taken'))
     end
@@ -962,24 +975,6 @@ class User < ApplicationRecord
   def check_for_verified_email
     skip_reconfirmation! if emails.confirmed.where(email: self.email).any?
   end
-
-  # Note: the use of the Emails services will cause `saves` on the user object, running
-  # through the callbacks again and can have side effects, such as the `previous_changes`
-  # hash and `_was` variables getting munged.
-  # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
-  # scenario, though it then requires us to use the `previous_changes` hash
-  # rubocop: disable CodeReuse/ServiceClass
-  def update_emails_with_primary_email(previous_confirmed_at, previous_email)
-    primary_email_record = emails.find_by(email: email)
-    Emails::DestroyService.new(self, user: self).execute(primary_email_record) if primary_email_record
-
-    # the original primary email was confirmed, and we want that to carry over.  We don't
-    # have access to the original confirmation values at this point, so just set confirmed_at
-    Emails::CreateService.new(self, user: self, email: previous_email).execute(confirmed_at: previous_confirmed_at)
-
-    update_columns(confirmed_at: primary_email_record.confirmed_at) if primary_email_record&.confirmed_at
-  end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def update_invalid_gpg_signatures
     gpg_keys.each(&:update_invalid_gpg_signatures)
@@ -1025,8 +1020,10 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def remove_project_authorizations(project_ids)
-    project_authorizations.where(project_id: project_ids).delete_all
+  def remove_project_authorizations(project_ids, per_batch = 1000)
+    project_ids.each_slice(per_batch) do |project_ids_batch|
+      project_authorizations.where(project_id: project_ids_batch).delete_all
+    end
   end
 
   def authorized_projects(min_access_level = nil)
@@ -1389,7 +1386,7 @@ class User < ApplicationRecord
     all_emails << email unless temp_oauth_email?
     all_emails << private_commit_email if include_private_email
     all_emails.concat(emails.map(&:email))
-    all_emails
+    all_emails.uniq
   end
 
   def verified_emails(include_private_email: true)
@@ -1397,7 +1394,7 @@ class User < ApplicationRecord
     verified_emails << email if primary_email_verified?
     verified_emails << private_commit_email if include_private_email
     verified_emails.concat(emails.confirmed.pluck(:email))
-    verified_emails
+    verified_emails.uniq
   end
 
   def public_verified_emails
@@ -1610,8 +1607,6 @@ class User < ApplicationRecord
     true
   end
 
-  # TODO Please check all callers and remove allow_cross_joins_across_databases,
-  # when https://gitlab.com/gitlab-org/gitlab/-/issues/336436 is done.
   def ci_owned_runners
     @ci_owned_runners ||= begin
       project_runners = Ci::RunnerProject
@@ -1624,7 +1619,7 @@ class User < ApplicationRecord
         .joins(:runner)
         .select('ci_runners.*')
 
-      Ci::Runner.from_union([project_runners, group_runners])
+      Ci::Runner.from_union([project_runners, group_runners]).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336436')
     end
   end
 
@@ -1980,6 +1975,37 @@ class User < ApplicationRecord
     ci_job_token_scope.present?
   end
 
+  # override from Devise::Confirmable
+  #
+  # Add the primary email to user.emails (or confirm it if it was already
+  # present) when the primary email is confirmed.
+  def confirm(*args)
+    saved = super(*args)
+    return false unless saved
+
+    email_to_confirm = self.emails.find_by(email: self.email)
+
+    if email_to_confirm.present?
+      email_to_confirm.confirm(*args)
+    else
+      add_primary_email_to_emails!
+    end
+
+    saved
+  end
+
+  def user_project
+    strong_memoize(:user_project) do
+      personal_projects.find_by(path: username, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    end
+  end
+
+  def user_readme
+    strong_memoize(:user_readme) do
+      user_project&.repository&.readme
+    end
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -2019,6 +2045,12 @@ class User < ApplicationRecord
   def default_preferred_language
     'en'
   end
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def add_primary_email_to_emails!
+    Emails::CreateService.new(self, user: self, email: self.email).execute(confirmed_at: self.confirmed_at)
+  end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def notification_email_verified
     return if notification_email.blank? || temp_oauth_email?
@@ -2152,6 +2184,13 @@ class User < ApplicationRecord
 
   def ci_job_token_scope_cache_key
     "users:#{id}:ci:job_token_scope"
+  end
+
+  # An `ldap_blocked` user will be unblocked if LDAP indicates they are allowed.
+  def check_ldap_if_ldap_blocked!
+    return unless ::Gitlab::Auth::Ldap::Config.enabled? && ldap_blocked?
+
+    ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 end
 

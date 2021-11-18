@@ -291,7 +291,9 @@ start_gitlab() {
   if [ "$sidekiq_status" = "0" ]; then
     echo "The Sidekiq job dispatcher is already running with pid $spid, not restarting"
   else
-    RAILS_ENV=$RAILS_ENV SIDEKIQ_WORKERS=$SIDEKIQ_WORKERS bin/background_jobs start &
+    # bin/background_jobs writes to log/sidekiq.log and stdout by
+    # default, so we just need to suppress the latter here.
+    RAILS_ENV=$RAILS_ENV SIDEKIQ_WORKERS=$SIDEKIQ_WORKERS bin/background_jobs start > /dev/null &
   fi
 
   if [ "$gitlab_workhorse_status" = "0" ]; then
@@ -454,7 +456,9 @@ reload_gitlab(){
   echo "Done."
 
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=$RAILS_ENV SIDEKIQ_WORKERS=$SIDEKIQ_WORKERS bin/background_jobs restart
+  # bin/background_jobs writes to log/sidekiq.log and stdout by default,
+  # so we just need to suppress the latter here.
+  RAILS_ENV=$RAILS_ENV SIDEKIQ_WORKERS=$SIDEKIQ_WORKERS bin/background_jobs restart > /dev/null &
 
   if [ "$mail_room_enabled" != true ]; then
     echo "Restarting GitLab MailRoom since it isn't capable of reloading its config..."

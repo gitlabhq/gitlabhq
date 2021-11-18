@@ -540,6 +540,94 @@ out, _ = exec.Command("sh", "-c", "echo 1 | cat /etc/passwd").Output()
 
 This outputs `1` followed by the content of `/etc/passwd`.
 
+## General recommendations
+
+### TLS minimum recommended version
+
+As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), we should only use TLS 1.2 and above.
+
+#### Ciphers
+
+We recommend using the ciphers that Mozilla is providing in their [recommended SSL configuration generator](https://ssl-config.mozilla.org/#server=go&version=1.17&config=intermediate&guideline=5.6) for TLS 1.2:
+
+- `ECDHE-ECDSA-AES128-GCM-SHA256`
+- `ECDHE-RSA-AES128-GCM-SHA256`
+- `ECDHE-ECDSA-AES256-GCM-SHA384`
+- `ECDHE-RSA-AES256-GCM-SHA384`
+- `ECDHE-ECDSA-CHACHA20-POLY1305`
+- `ECDHE-RSA-CHACHA20-POLY1305`
+
+And the following cipher suites (according to the [RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446#appendix-B.4)) for TLS 1.3:
+
+- `TLS_AES_128_GCM_SHA256`
+- `TLS_AES_256_GCM_SHA384`
+- `TLS_CHACHA20_POLY1305_SHA256`
+
+*Note*: **Golang** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
+
+##### Implementation examples
+
+##### TLS 1.3
+
+For TLS 1.3, **Golang** only supports [3 cipher suites](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676), as such we only need to set the TLS version:
+
+```golang
+cfg := &tls.Config{
+    MinVersion: tls.VersionTLS13,
+}
+```
+
+For **Ruby**, you can use [HTTParty](https://github.com/jnunemaker/httparty) and specify TLS 1.3 version as well as ciphers:
+
+Whenever possible this example should be **avoided** for security purposes:
+
+```ruby
+response = HTTParty.get('https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256'])
+```
+
+When using [`GitLab::HTTP`](#gitlab-http-library), the code looks like:
+
+This is the **recommended** implementation to avoid security issues such as SSRF:
+
+```ruby
+response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_3, ciphers: ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256'])
+```
+
+##### TLS 1.2
+
+**Golang** does support multiple cipher suites that we do not want to use with TLS 1.2. We need to explicitly list authorized ciphers:
+
+```golang
+func secureCipherSuites() []uint16 {
+  return []uint16{
+    tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+    tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+    tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+    tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+    tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+    tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+  }
+```
+
+And then use `secureCipherSuites()` in `tls.Config`:
+
+```golang
+tls.Config{
+  (...),
+  CipherSuites: secureCipherSuites(),
+  MinVersion:   tls.VersionTLS12,
+  (...),
+}
+```
+
+This example was taken [here](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
+
+For **Ruby**, you can use again [HTTParty](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
+
+```ruby
+response = GitLab::HTTP.perform_request(Net::HTTP::Get, 'https://gitlab.com', ssl_version: :TLSv1_2, ciphers: ['ECDHE-ECDSA-AES128-GCM-SHA256', 'ECDHE-RSA-AES128-GCM-SHA256', 'ECDHE-ECDSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-ECDSA-CHACHA20-POLY1305', 'ECDHE-RSA-CHACHA20-POLY1305'])
+```
+
 ## GitLab Internal Authorization
 
 ### Introduction
@@ -592,3 +680,90 @@ In order to prevent this from happening, it is recommended to use the method `us
           forbidden!(api_access_denied_message(user))
         end
 ```
+
+## Guidelines when defining missing methods with metaprogramming
+
+Metaprogramming is a way to define methods **at runtime**, instead of at the time of writing and deploying the code. It is a powerful tool, but can be dangerous if we allow untrusted actors (like users) to define their own arbitrary methods. For example, imagine we accidentally let an attacker overwrite an access control method to always return true! It can lead to many classes of vulnerabilities such as access control bypass, information disclosure, arbitrary file reads, and remote code execution.
+
+Key methods to watch out for are `method_missing`, `define_method`, `delegate`, and similar methods.
+
+### Insecure metaprogramming example
+
+This example is adapted from an example submitted by [@jobert](https://hackerone.com/jobert?type=user) through our HackerOne bug bounty program.
+Thank you for your contribution!
+
+Before Ruby 2.5.1, you could implement delegators using the `delegate` or `method_missing` methods. For example:
+
+```ruby
+class User
+  def initialize(attributes)
+    @options = OpenStruct.new(attributes)
+  end
+
+  def is_admin?
+    name.eql?("Sid") # Note - never do this!
+  end
+
+  def method_missing(method, *args)
+    @options.send(method, *args)
+  end
+end
+```
+
+When a method was called on a `User` instance that didn't exist, it passed it along to the `@options` instance variable.
+
+```ruby
+User.new({name: "Jeeves"}).is_admin?
+# => false
+
+User.new(name: "Sid").is_admin?
+# => true
+
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?
+# => false
+```
+
+Because the `is_admin?` method is already defined on the class, its behavior is not overridden when passing `is_admin?` to the initializer.
+
+This class can be refactored to use the `Forwardable` method and `def_delegators`:
+
+```ruby
+class User
+  extend Forwardable
+
+  def initialize(attributes)
+    @options = OpenStruct.new(attributes)
+
+    self.class.instance_eval do
+      def_delegators :@options, *attributes.keys
+    end
+  end
+
+  def is_admin?
+    name.eql?("Sid") # Note - never do this!
+  end
+end
+```
+
+It might seem like this example has the same behavior as the first code example. However, there's one crucial difference: **because the delegators are meta-programmed after the class is loaded, it can overwrite existing methods**:
+
+```ruby
+User.new({name: "Jeeves"}).is_admin?
+# => false
+
+User.new(name: "Sid").is_admin?
+# => true
+
+User.new(name: "Jeeves", "is_admin?" => true).is_admin?
+# => true
+#     ^------------------ The method is overwritten! Sneaky Jeeves!
+```
+
+In the example above, the `is_admin?` method is overwritten when passing it to the initializer.
+
+### Best practices
+
+- Never pass user-provided details into method-defining metaprogramming methods.
+  - If you must, be **very** confident that you've sanitized the values correctly.
+    Consider creating an allowlist of values, and validating the user input against that.
+- When extending classes that use metaprogramming, make sure you don't inadvertently override any method definition safety checks.

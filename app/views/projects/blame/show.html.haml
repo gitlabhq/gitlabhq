@@ -20,7 +20,7 @@
       %span.legend-box.legend-box-9
       %span.right-label Older
 
-    .table-responsive.file-content.blame.code.js-syntax-highlight
+    .table-responsive.file-content.blame.code{ class: user_color_scheme }
       %table
         - current_line = 1
         - @blame.groups.each do |blame_group|

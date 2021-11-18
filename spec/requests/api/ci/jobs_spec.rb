@@ -176,6 +176,111 @@ RSpec.describe API::Ci::Jobs do
     end
   end
 
+  describe 'GET /job/allowed_agents' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:group_agent) { create(:cluster_agent, project: create(:project, group: group)) }
+    let_it_be(:group_authorization) { create(:agent_group_authorization, agent: group_agent, group: group) }
+    let_it_be(:project_agent) { create(:cluster_agent, project: project) }
+
+    before(:all) do
+      project.update!(group: group_authorization.group)
+    end
+
+    let(:implicit_authorization) { Clusters::Agents::ImplicitAuthorization.new(agent: project_agent) }
+
+    let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user, status: job_status) }
+    let(:job_status) { 'running' }
+    let(:params) { {} }
+
+    subject do
+      get api('/job/allowed_agents'), headers: headers, params: params
+    end
+
+    before do
+      subject
+    end
+
+    context 'when token is valid and user is authorized' do
+      shared_examples_for 'valid allowed_agents request' do
+        it 'returns agent info', :aggregate_failures do
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(json_response.dig('job', 'id')).to eq(job.id)
+          expect(json_response.dig('pipeline', 'id')).to eq(job.pipeline_id)
+          expect(json_response.dig('project', 'id')).to eq(job.project_id)
+          expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group_authorization.group.id }])
+          expect(json_response.dig('user', 'id')).to eq(api_user.id)
+          expect(json_response.dig('user', 'username')).to eq(api_user.username)
+          expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
+          expect(json_response).not_to include('environment')
+          expect(json_response['allowed_agents']).to match_array([
+            {
+              'id' => implicit_authorization.agent_id,
+              'config_project' => hash_including('id' => implicit_authorization.agent.project_id),
+              'configuration' => implicit_authorization.config
+            },
+            {
+              'id' => group_authorization.agent_id,
+              'config_project' => hash_including('id' => group_authorization.agent.project_id),
+              'configuration' => group_authorization.config
+            }
+          ])
+        end
+      end
+
+      it_behaves_like 'valid allowed_agents request'
+
+      context 'when deployment' do
+        let(:job) { create(:ci_build, :artifacts, :with_deployment, environment: 'production', pipeline: pipeline, user: api_user, status: job_status) }
+
+        it 'includes environment slug' do
+          expect(json_response.dig('environment', 'slug')).to eq('production')
+        end
+      end
+
+      context 'when passing the token as params' do
+        let(:headers) { {} }
+        let(:params) { { job_token: job.token } }
+
+        it_behaves_like 'valid allowed_agents request'
+      end
+    end
+
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      it 'returns unauthorized' do
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when token is invalid because job has finished' do
+      let(:job_status) { 'success' }
+
+      it 'returns unauthorized' do
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when token is invalid' do
+      let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => 'bad_token' } }
+
+      it 'returns unauthorized' do
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when token is valid but not CI_JOB_TOKEN' do
+      let(:token) { create(:personal_access_token, user: user) }
+      let(:headers) { { 'Private-Token' => token.token } }
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs' do
     let(:query) { {} }
 
@@ -203,6 +308,7 @@ RSpec.describe API::Ci::Jobs do
         it 'returns no artifacts nor trace data' do
           json_job = json_response.first
 
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_job['artifacts_file']).to be_nil
           expect(json_job['artifacts']).to be_an Array
           expect(json_job['artifacts']).to be_empty
@@ -319,6 +425,22 @@ RSpec.describe API::Ci::Jobs do
 
       it 'does not return specific job data' do
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when trace artifact record exists with no stored file', :skip_before_request do
+      before do
+        create(:ci_job_artifact, :unarchived_trace_artifact, job: job, project: job.project)
+      end
+
+      it 'returns no artifacts nor trace data' do
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['artifacts']).to be_an Array
+        expect(json_response['artifacts'].size).to eq(1)
+        expect(json_response['artifacts'][0]['file_type']).to eq('trace')
+        expect(json_response['artifacts'][0]['filename']).to eq('job.log')
       end
     end
   end
@@ -456,6 +578,7 @@ RSpec.describe API::Ci::Jobs do
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.parsed_body).to be_empty
         end
 
         context 'when artifacts are locked' do
@@ -826,6 +949,7 @@ RSpec.describe API::Ci::Jobs do
           expect(response.headers.to_h)
             .to include('Content-Type' => 'application/json',
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.parsed_body).to be_empty
         end
       end
 
@@ -919,12 +1043,43 @@ RSpec.describe API::Ci::Jobs do
         end
       end
 
-      context 'when trace is file' do
+      context 'when live trace and uploadless trace artifact' do
+        let(:job) { create(:ci_build, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it 'returns specific job trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when trace is live' do
         let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
         it 'returns specific job trace' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.body).to eq(job.trace.raw)
+        end
+      end
+
+      context 'when no trace' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'returns empty trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to be_empty
+        end
+      end
+
+      context 'when trace artifact record exists with no stored file' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        before do
+          create(:ci_job_artifact, :unarchived_trace_artifact, job: job, project: job.project)
+        end
+
+        it 'returns empty trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to be_empty
         end
       end
     end
@@ -1038,9 +1193,7 @@ RSpec.describe API::Ci::Jobs do
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
-    context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
-
+    shared_examples_for 'erases job' do
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(:created)
         expect(job.job_artifacts.count).to eq(0)
@@ -1049,6 +1202,12 @@ RSpec.describe API::Ci::Jobs do
         expect(job.artifacts_metadata.present?).to be_falsy
         expect(job.has_job_artifacts?).to be_falsy
       end
+    end
+
+    context 'job is erasable' do
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
+
+      it_behaves_like 'erases job'
 
       it 'updates job' do
         job.reload
@@ -1056,6 +1215,12 @@ RSpec.describe API::Ci::Jobs do
         expect(job.erased_at).to be_truthy
         expect(job.erased_by).to eq(user)
       end
+    end
+
+    context 'when job has an unarchived trace artifact' do
+      let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, project: project, pipeline: pipeline) }
+
+      it_behaves_like 'erases job'
     end
 
     context 'job is not erasable' do

@@ -536,6 +536,18 @@ class ApplicationSetting < ApplicationRecord
   validates :sidekiq_job_limiter_limit_bytes,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :sentry_enabled,
+    inclusion: { in: [true, false], message: _('must be a boolean value') }
+  validates :sentry_dsn,
+    addressable_url: true, presence: true, length: { maximum: 255 },
+    if: :sentry_enabled?
+  validates :sentry_clientside_dsn,
+    addressable_url: true, allow_blank: true, length: { maximum: 255 },
+    if: :sentry_enabled?
+  validates :sentry_environment,
+    presence: true, length: { maximum: 255 },
+    if: :sentry_enabled?
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,

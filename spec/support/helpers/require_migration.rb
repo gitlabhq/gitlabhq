@@ -15,7 +15,7 @@ class RequireMigration
   end
 
   MIGRATION_FOLDERS = %w[db/migrate db/post_migrate].freeze
-  SPEC_FILE_PATTERN = %r{.+/(?<file_name>.+)_spec\.rb}.freeze
+  SPEC_FILE_PATTERN = %r{.+/(?:\d+_)?(?<file_name>.+)_spec\.rb}.freeze
 
   class << self
     def require_migration!(file_name)
@@ -26,10 +26,12 @@ class RequireMigration
     end
 
     def search_migration_file(file_name)
+      migration_file_pattern = /\A\d+_#{file_name}\.rb\z/
+
       migration_folders.flat_map do |path|
         migration_path = Rails.root.join(path).to_s
 
-        Find.find(migration_path).select { |m| File.basename(m).match? /\A\d+_#{file_name}\.rb\z/ }
+        Find.find(migration_path).select { |m| migration_file_pattern.match? File.basename(m) }
       end
     end
 

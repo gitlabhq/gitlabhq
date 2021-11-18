@@ -2,7 +2,7 @@
 
 module MigrationsHelpers
   def active_record_base
-    ActiveRecord::Base
+    Gitlab::Database.database_base_models.fetch(self.class.metadata[:database] || :main)
   end
 
   def table(name)
@@ -34,7 +34,7 @@ module MigrationsHelpers
   end
 
   def migrations_paths
-    ActiveRecord::Migrator.migrations_paths
+    active_record_base.connection.migrations_paths
   end
 
   def migration_context
@@ -52,7 +52,7 @@ module MigrationsHelpers
   end
 
   def foreign_key_exists?(source, target = nil, column: nil)
-    ActiveRecord::Base.connection.foreign_keys(source).any? do |key|
+    active_record_base.connection.foreign_keys(source).any? do |key|
       if column
         key.options[:column].to_s == column.to_s
       else

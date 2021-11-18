@@ -170,22 +170,33 @@ it increases the work of the release managers.
 
 ## GitLab `/help`
 
-Every GitLab instance includes the documentation, which is available at `/help`
-(`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
+Every GitLab instance includes documentation at `/help` (`https://gitlab.example.com/help`)
+that matches the version of the instance. For example, <https://gitlab.com/help>.
 
-The documentation available online on <https://docs.gitlab.com> is deployed every
-four hours from the `main` branch of GitLab, Omnibus, and Runner. Therefore,
-after a merge request gets merged, it is available online on the same day.
-However, it's shipped (and available on `/help`) within the milestone assigned
-to the MR.
+The documentation available online at <https://docs.gitlab.com> is deployed every
+four hours from the default branch of [GitLab, Omnibus, Runner, and Charts](#source-files-and-rendered-web-locations).
+After a merge request that updates documentation is merged, it is available online
+in 4 hours or less.
 
-For example, let's say your merge request has a milestone set to 11.3, which
-a release date of 2018-09-22. If it gets merged on 2018-09-15, it is
-available online on 2018-09-15, but, as the feature freeze date has passed, if
-the MR does not have a `~"Pick into 11.3"` label, the milestone has to be changed
-to 11.4 and it ships with all GitLab packages only on 2018-10-22,
-with GitLab 11.4. Meaning, it's available only with `/help` from GitLab
-11.4 onward, but available on <https://docs.gitlab.com/> on the same day it was merged.
+However, it's only available at `/help` on self-managed instances in the next released
+version. The date an update is merged can impact which self-managed release the update
+is present in.
+
+For example:
+
+1. A merge request in `gitlab` updates documentation. It has a milestone of 14.4,
+   with an expected release date of 2021-10-22.
+1. It is merged on 2021-10-19 and available online the same day at <https://docs.gitlab.com>.
+1. GitLab 14.4 is released on 2021-10-22, based on the `gitlab` codebase from 2021-10-18
+   (one day *before* the update was merged).
+1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
+   for 14.4.
+
+The exact cutoff date for each release is flexible, and can be earlier or later
+than expected due to holidays, weekends, or other events. In general, MRs merged
+by the 17th should be present in the release on the 22nd, though it is not guaranteed.
+If it is important that a documentation update is present in that month's release,
+merge it as early as possible.
 
 ### Linking to `/help`
 

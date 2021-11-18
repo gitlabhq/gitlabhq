@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::HooksController < Projects::ApplicationController
-  include HooksExecution
+  include ::Integrations::HooksExecution
 
   # Authorize
   before_action :authorize_admin_project!
@@ -13,9 +13,10 @@ class Projects::HooksController < Projects::ApplicationController
   layout "project_settings"
 
   feature_category :integrations
+  urgency :low, [:test]
 
   def index
-    @hooks = @project.hooks
+    @hooks = @project.hooks.load
     @hook = ProjectHook.new
   end
 

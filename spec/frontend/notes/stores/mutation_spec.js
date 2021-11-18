@@ -159,7 +159,7 @@ describe('Notes Store mutations', () => {
     });
   });
 
-  describe('SET_INITIAL_DISCUSSIONS', () => {
+  describe('ADD_OR_UPDATE_DISCUSSIONS', () => {
     it('should set the initial notes received', () => {
       const state = {
         discussions: [],
@@ -169,15 +169,17 @@ describe('Notes Store mutations', () => {
         individual_note: true,
         notes: [
           {
+            id: 100,
             note: '1',
           },
           {
+            id: 101,
             note: '2',
           },
         ],
       };
 
-      mutations.SET_INITIAL_DISCUSSIONS(state, [note, legacyNote]);
+      mutations.ADD_OR_UPDATE_DISCUSSIONS(state, [note, legacyNote]);
 
       expect(state.discussions[0].id).toEqual(note.id);
       expect(state.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
@@ -190,7 +192,7 @@ describe('Notes Store mutations', () => {
         discussions: [],
       };
 
-      mutations.SET_INITIAL_DISCUSSIONS(state, [
+      mutations.ADD_OR_UPDATE_DISCUSSIONS(state, [
         {
           ...note,
           diff_file: {
@@ -208,7 +210,7 @@ describe('Notes Store mutations', () => {
         discussions: [],
       };
 
-      mutations.SET_INITIAL_DISCUSSIONS(state, [
+      mutations.ADD_OR_UPDATE_DISCUSSIONS(state, [
         {
           ...note,
           diff_file: {

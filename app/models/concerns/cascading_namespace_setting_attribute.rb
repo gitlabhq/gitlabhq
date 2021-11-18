@@ -127,7 +127,7 @@ module CascadingNamespaceSettingAttribute
     end
 
     def alias_boolean(attribute)
-      return unless Gitlab::Database.main.exists? && type_for_attribute(attribute).type == :boolean
+      return unless database.exists? && type_for_attribute(attribute).type == :boolean
 
       alias_method :"#{attribute}?", attribute
     end
@@ -176,10 +176,10 @@ module CascadingNamespaceSettingAttribute
   private
 
   def locked_value(attribute)
+    return application_setting_value(attribute) if locked_by_application_setting?(attribute)
+
     ancestor = locked_ancestor(attribute)
     return ancestor.read_attribute(attribute) if ancestor
-
-    Gitlab::CurrentSettings.public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def locked_ancestor(attribute)

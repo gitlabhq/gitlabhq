@@ -58,6 +58,19 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceService do
 
         subject
       end
+
+      context 'when cluster.kubeclient is nil' do
+        let(:kubeclient_instance_double) { nil }
+
+        it 'schedules ::ServiceAccountWorker' do
+          expect(Clusters::Cleanup::ServiceAccountWorker).to receive(:perform_async).with(cluster.id)
+          subject
+        end
+
+        it 'deletes namespaces from database' do
+          expect { subject }.to change { cluster.kubernetes_namespaces.exists? }.from(true).to(false)
+        end
+      end
     end
 
     context 'when cluster has no namespaces' do

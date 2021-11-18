@@ -14,10 +14,6 @@ export const parseGetProjectStorageResults = (data, helpLinks) => {
   }
   const { storageSize, ...storageStatistics } = projectStatistics;
   const storageTypes = PROJECT_STORAGE_TYPES.reduce((types, currentType) => {
-    if (!storageStatistics[currentType.id]) {
-      return types;
-    }
-
     const helpPathKey = currentType.id.replace(`Size`, `HelpPagePath`);
     const helpPath = helpLinks[helpPathKey];
 

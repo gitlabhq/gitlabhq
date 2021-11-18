@@ -426,7 +426,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js do
 
     it 'user cannot remove source branch', :sidekiq_might_not_need_inline do
       expect(page).not_to have_field('remove-source-branch-input')
-      expect(page).to have_content('The source branch will be deleted')
+      expect(page).to have_content('Deletes the source branch')
     end
   end
 

@@ -16,26 +16,43 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     let_it_be(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
     context 'when artifact is expired' do
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: job) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       context 'with preloaded relationships' do
         before do
           stub_const("#{described_class}::LOOP_LIMIT", 1)
         end
 
-        it 'performs the smallest number of queries for job_artifacts' do
-          log = ActiveRecord::QueryRecorder.new { subject }
+        context 'with ci_destroy_unlocked_job_artifacts feature flag disabled' do
+          before do
+            stub_feature_flags(ci_destroy_unlocked_job_artifacts: false)
+          end
 
-          # SELECT expired ci_job_artifacts - 3 queries from each_batch
-          # PRELOAD projects, routes, project_statistics
-          # BEGIN
-          # INSERT into ci_deleted_objects
-          # DELETE loaded ci_job_artifacts
-          # DELETE security_findings  -- for EE
-          # COMMIT
-          # SELECT next expired ci_job_artifacts
+          it 'performs the smallest number of queries for job_artifacts' do
+            log = ActiveRecord::QueryRecorder.new { subject }
 
-          expect(log.count).to be_within(1).of(10)
+            # SELECT expired ci_job_artifacts - 3 queries from each_batch
+            # PRELOAD projects, routes, project_statistics
+            # BEGIN
+            # INSERT into ci_deleted_objects
+            # DELETE loaded ci_job_artifacts
+            # DELETE security_findings  -- for EE
+            # COMMIT
+            # SELECT next expired ci_job_artifacts
+
+            expect(log.count).to be_within(1).of(10)
+          end
+        end
+
+        context 'with ci_destroy_unlocked_job_artifacts feature flag enabled' do
+          before do
+            stub_feature_flags(ci_destroy_unlocked_job_artifacts: true)
+          end
+
+          it 'performs the smallest number of queries for job_artifacts' do
+            log = ActiveRecord::QueryRecorder.new { subject }
+            expect(log.count).to be_within(1).of(8)
+          end
         end
       end
 
@@ -53,7 +70,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
         end
 
         context 'when the artifact has a file attached to it' do
-          let!(:artifact) { create(:ci_job_artifact, :expired, :zip, job: job) }
+          let!(:artifact) { create(:ci_job_artifact, :expired, :zip, job: job, locked: job.pipeline.locked) }
 
           it 'creates a deleted object' do
             expect { subject }.to change { Ci::DeletedObject.count }.by(1)
@@ -74,7 +91,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
       end
 
       context 'when artifact is locked' do
-        let!(:artifact) { create(:ci_job_artifact, :expired, job: locked_job) }
+        let!(:artifact) { create(:ci_job_artifact, :expired, job: locked_job, locked: locked_job.pipeline.locked) }
 
         it 'does not destroy job artifact' do
           expect { subject }.not_to change { Ci::JobArtifact.count }
@@ -83,7 +100,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when artifact is not expired' do
-      let!(:artifact) { create(:ci_job_artifact, job: job) }
+      let!(:artifact) { create(:ci_job_artifact, job: job, locked: job.pipeline.locked) }
 
       it 'does not destroy expired job artifacts' do
         expect { subject }.not_to change { Ci::JobArtifact.count }
@@ -91,7 +108,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when artifact is permanent' do
-      let!(:artifact) { create(:ci_job_artifact, expire_at: nil, job: job) }
+      let!(:artifact) { create(:ci_job_artifact, expire_at: nil, job: job, locked: job.pipeline.locked) }
 
       it 'does not destroy expired job artifacts' do
         expect { subject }.not_to change { Ci::JobArtifact.count }
@@ -99,7 +116,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when failed to destroy artifact' do
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: job) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       before do
         stub_const("#{described_class}::LOOP_LIMIT", 10)
@@ -135,7 +152,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when exclusive lease has already been taken by the other instance' do
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: job) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       before do
         stub_exclusive_lease_taken(described_class::EXCLUSIVE_LOCK_KEY, timeout: described_class::LOCK_TIMEOUT)
@@ -149,8 +166,8 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
 
     context 'with a second artifact and batch size of 1' do
       let(:second_job) { create(:ci_build, :success, pipeline: pipeline) }
-      let!(:second_artifact) { create(:ci_job_artifact, :archive, expire_at: 1.day.ago, job: second_job) }
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: job) }
+      let!(:second_artifact) { create(:ci_job_artifact, :archive, expire_at: 1.day.ago, job: second_job, locked: job.pipeline.locked) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
 
       before do
         stub_const("#{described_class}::BATCH_SIZE", 1)
@@ -206,8 +223,8 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when some artifacts are locked' do
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: job) }
-      let!(:locked_artifact) { create(:ci_job_artifact, :expired, job: locked_job) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: job, locked: job.pipeline.locked) }
+      let!(:locked_artifact) { create(:ci_job_artifact, :expired, job: locked_job, locked: locked_job.pipeline.locked) }
 
       it 'destroys only unlocked artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
@@ -216,7 +233,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
     end
 
     context 'when all artifacts are locked' do
-      let!(:artifact) { create(:ci_job_artifact, :expired, job: locked_job) }
+      let!(:artifact) { create(:ci_job_artifact, :expired, job: locked_job, locked: locked_job.pipeline.locked) }
 
       it 'destroys no artifacts' do
         expect { subject }.to change { Ci::JobArtifact.count }.by(0)

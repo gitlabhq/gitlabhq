@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
   end
 
   before do
-    allow(Gitlab::X509::Certificate).to receive_messages(from_files: certificate)
+    allow(Gitlab::Email::Hook::SmimeSignatureInterceptor).to receive(:certificate).and_return(certificate)
 
     Mail.register_interceptor(described_class)
     mail.deliver_now

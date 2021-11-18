@@ -9,40 +9,43 @@ Vue.use(Translate);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+  defaultClient: createDefaultClient(),
 });
 
-export default () => {
-  const el = document.getElementById('environments-list-view');
-  return new Vue({
-    el,
-    components: {
-      environmentsComponent,
-    },
-    apolloProvider,
-    provide: {
-      projectPath: el.dataset.projectPath,
-      defaultBranchName: el.dataset.defaultBranchName,
-    },
-    data() {
-      const environmentsData = el.dataset;
+export default (el) => {
+  if (el) {
+    return new Vue({
+      el,
+      components: {
+        environmentsComponent,
+      },
+      apolloProvider,
+      provide: {
+        projectPath: el.dataset.projectPath,
+        defaultBranchName: el.dataset.defaultBranchName,
+      },
+      data() {
+        const environmentsData = el.dataset;
 
-      return {
-        endpoint: environmentsData.environmentsDataEndpoint,
-        newEnvironmentPath: environmentsData.newEnvironmentPath,
-        helpPagePath: environmentsData.helpPagePath,
-        canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
-      };
-    },
-    render(createElement) {
-      return createElement('environments-component', {
-        props: {
-          endpoint: this.endpoint,
-          newEnvironmentPath: this.newEnvironmentPath,
-          helpPagePath: this.helpPagePath,
-          canCreateEnvironment: this.canCreateEnvironment,
-        },
-      });
-    },
-  });
+        return {
+          endpoint: environmentsData.environmentsDataEndpoint,
+          newEnvironmentPath: environmentsData.newEnvironmentPath,
+          helpPagePath: environmentsData.helpPagePath,
+          canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
+        };
+      },
+      render(createElement) {
+        return createElement('environments-component', {
+          props: {
+            endpoint: this.endpoint,
+            newEnvironmentPath: this.newEnvironmentPath,
+            helpPagePath: this.helpPagePath,
+            canCreateEnvironment: this.canCreateEnvironment,
+          },
+        });
+      },
+    });
+  }
+
+  return null;
 };

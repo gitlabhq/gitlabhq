@@ -7,16 +7,17 @@ module Gitlab
         class Base
           include Gitlab::Email::Message::InProductMarketing::Helper
           include Gitlab::Routing
+          include Gitlab::Experiment::Dsl
 
           attr_accessor :format
 
           def initialize(group:, user:, series:, format: :html)
-            raise ArgumentError, "Only #{total_series} series available for this track." unless series.between?(0, total_series - 1)
-
+            @series = series
             @group = group
             @user = user
-            @series = series
             @format = format
+
+            validate_series!
           end
 
           def subject_line
@@ -54,6 +55,18 @@ module Gitlab
             else
               [cta_text, group_email_campaigns_url(group, track: track, series: series)].join(' >> ')
             end
+          end
+
+          def invite_members?
+            false
+          end
+
+          def invite_text
+            s_('InProductMarketing|Do you have a teammate who would be perfect for this task?')
+          end
+
+          def invite_link
+            action_link(s_('InProductMarketing|Invite them to help out.'), group_url(group, open_modal: 'invite_members_for_task'))
           end
 
           def unsubscribe
@@ -102,6 +115,10 @@ module Gitlab
             ["mailers/in_product_marketing", "#{track}-#{series}.png"].join('/')
           end
 
+          def series?
+            total_series > 0
+          end
+
           protected
 
           attr_reader :group, :user, :series
@@ -147,6 +164,20 @@ module Gitlab
             preference_link = "https://about.gitlab.com/company/preference-center/?#{params.to_query}"
 
             link(s_('InProductMarketing|update your preferences'), preference_link)
+          end
+
+          def invite_members_for_task_experiment_enabled?
+            return unless user.can?(:admin_group_member, group)
+
+            experiment(:invite_members_for_task, namespace: group) do |e|
+              e.candidate { true }
+              e.record!
+              e.run
+            end
+          end
+
+          def validate_series!
+            raise ArgumentError, "Only #{total_series} series available for this track." unless @series.between?(0, total_series - 1)
           end
         end
       end

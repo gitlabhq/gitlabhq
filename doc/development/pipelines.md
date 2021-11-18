@@ -23,6 +23,30 @@ as much as possible.
 After a merge request has been approved, the pipeline would contain the full RSpec & Jest tests. This will ensure that all tests
 have been run before a merge request is merged.
 
+### Overview of the GitLab project test dependency
+
+To understand how the minimal test jobs are executed, we need to understand the dependency between
+GitLab code (frontend and backend) and the respective tests (Jest and RSpec).
+This dependency can be visualized in the following diagram:
+
+```mermaid
+flowchart LR
+    subgraph frontend
+    fe["Frontend code"]--tested with-->jest
+    end
+    subgraph backend
+    be["Backend code"]--tested with-->rspec
+    end
+    
+    be--generates-->fixtures["frontend fixtures"]
+    fixtures--used in-->jest
+```
+
+In summary:
+
+- RSpec tests are dependent on the backend code.
+- Jest tests are dependent on both frontend and backend code, the latter through the frontend fixtures.
+
 ### RSpec minimal jobs
 
 #### Determining related RSpec test files in a merge request
@@ -57,7 +81,7 @@ In this mode, `jest` would resolve all the dependencies of related to the change
 
 In addition, there are a few circumstances where we would always run the full Jest tests:
 
-- when the `pipeline:run-all-rspec` label is set on the merge request
+- when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (e.g. Gitaly update or MR targeting a stable branch)
 - when any CI config file is changed (i.e. `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 - when any frontend "core" file is changed (i.e. `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
@@ -142,6 +166,13 @@ Our current RSpec tests parallelization setup is as follows:
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
+### Flaky tests
+
+Tests that are [known to be flaky](testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection) are:
+
+- skipped if the `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is set to `true` (`false` by default)
+- run if `$SKIP_FLAKY_TESTS_AUTOMATICALLY` variable is not set to `true` or if the `~"pipeline:run-flaky-tests"` label is set on the MR
+
 ### Monitoring
 
 The GitLab test suite is [monitored](performance.md#rspec-profiling) for the `main` branch, and any branch
@@ -156,6 +187,8 @@ that includes `rspec-profile` in their name.
 ## Review app jobs
 
 Consult the [Review Apps](testing_guide/review_apps.md) dedicated page for more information.
+
+If you want to force a Review App to be deployed regardless of your changes, you can add the `pipeline:run-review-app` label to the merge request.
 
 ## As-if-FOSS jobs
 
@@ -590,7 +623,8 @@ The current stages are:
 - `build-images`: This stage includes jobs that prepare Docker images
   that are needed by jobs in subsequent stages or downstream pipelines.
 - `fixtures`: This stage includes jobs that prepare fixtures needed by frontend tests.
-- `test`: This stage includes most of the tests, DB/migration jobs, and static analysis jobs.
+- `lint`: This stage includes linting and static analysis jobs.
+- `test`: This stage includes most of the tests, and DB/migration jobs.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the `test` stage's jobs (for example, coverage, Knapsack metadata, and so on).
 - `review-prepare`: This stage includes a job that build the CNG images that are
@@ -664,7 +698,7 @@ then included in individual jobs via [`extends`](../ci/yaml/index.md#extends).
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml)
-and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#anchors)
+and included in `rules` definitions via [YAML anchors](../ci/yaml/yaml_optimization.md#anchors)
 
 #### `if:` conditions
 
@@ -696,7 +730,6 @@ and included in `rules` definitions via [YAML anchors](../ci/yaml/index.md#ancho
 | `if-dot-com-gitlab-org-and-security-merge-request`           | Limit jobs creation to merge requests for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
 | `if-dot-com-gitlab-org-and-security-tag`                     | Limit jobs creation to tags for the `gitlab-org` and `gitlab-org/security` groups on GitLab.com. | |
 | `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
-| `if-cache-credentials-schedule`                              | Limits jobs to scheduled pipelines with the `$CI_REPO_CACHE_CREDENTIALS` variable set. | |
 | `if-security-pipeline-merge-result`                          | Matches if the pipeline is for a security merge request triggered by `@gitlab-release-tools-bot`. | |
 
 <!-- vale gitlab.Substitutions = YES -->
@@ -741,8 +774,10 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
    [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml),
    with fixed keys:
    - `.setup-test-env-cache`
+   - `.ruby-cache`
    - `.rails-cache`
    - `.static-analysis-cache`
+   - `.rubocop-cache`
    - `.coverage-cache`
    - `.danger-review-cache`
    - `.qa-cache`
@@ -752,7 +787,7 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 1. Only the following jobs, running in 2-hourly scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
-   - `update-static-analysis-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
+   - `update-rubocop-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-qa-cache`, defined in [`.gitlab/ci/qa.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/qa.gitlab-ci.yml).
    - `update-assets-compile-production-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
    - `update-assets-compile-test-cache`, defined in [`.gitlab/ci/frontend.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/frontend.gitlab-ci.yml).
@@ -764,71 +799,28 @@ request, be sure to start the `dont-interrupt-me` job before pushing.
 
 We limit the artifacts that are saved and retrieved by jobs to the minimum in order to reduce the upload/download time and costs, as well as the artifacts storage.
 
+### Git fetch caching
+
+Because GitLab.com uses the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+concurrent Git fetches of the same pipeline ref are deduplicated on
+the Gitaly server (always) and served from cache (when available).
+
+This works well for the following reasons:
+
+- The pack-objects cache is enabled on all Gitaly servers on GitLab.com.
+- The CI/CD [Git strategy setting](../ci/pipelines/settings.md#choose-the-default-git-strategy) for `gitlab-org/gitlab` is **Git clone**,
+  causing all jobs to fetch the same data, which maximizes the cache hit ratio.
+- We use [shallow clone](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
+  history for every job.
+
 ### Pre-clone step
 
-The `gitlab-org/gitlab` project on GitLab.com uses a [pre-clone step](https://gitlab.com/gitlab-org/gitlab/-/issues/39134)
-to seed the project with a recent archive of the repository. This is done for
-several reasons:
-
-- It speeds up builds because a 800 MB download only takes seconds, as opposed to a full Git clone.
-- It significantly reduces load on the file server, as smaller deltas mean less time spent in `git pack-objects`.
+NOTE:
+We no longer use this optimization for `gitlab-org/gitlab` because the [pack-objects cache](../administration/gitaly/configure_gitaly.md#pack-objects-cache)
+allows Gitaly to serve the full CI/CD fetch traffic now. See [Git fetch caching](#git-fetch-caching).
 
 The pre-clone step works by using the `CI_PRE_CLONE_SCRIPT` variable
-[defined by GitLab.com shared runners](../ci/runners/build_cloud/linux_build_cloud.md#pre-clone-script).
-
-The `CI_PRE_CLONE_SCRIPT` is currently defined as a project CI/CD variable:
-
-```shell
-(
-  echo "Downloading archived master..."
-  wget -O /tmp/gitlab.tar.gz https://storage.googleapis.com/gitlab-ci-git-repo-cache/project-278964/gitlab-master-shallow.tar.gz
-
-  if [ ! -f /tmp/gitlab.tar.gz ]; then
-      echo "Repository cache not available, cloning a new directory..."
-      exit
-  fi
-
-  rm -rf $CI_PROJECT_DIR
-  echo "Extracting tarball into $CI_PROJECT_DIR..."
-  mkdir -p $CI_PROJECT_DIR
-  cd $CI_PROJECT_DIR
-  tar xzf /tmp/gitlab.tar.gz
-  rm -f /tmp/gitlab.tar.gz
-  chmod a+w $CI_PROJECT_DIR
-)
-```
-
-The first step of the script downloads `gitlab-master.tar.gz` from
-Google Cloud Storage. There is a [GitLab CI job named `cache-repo`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/cache-repo.gitlab-ci.yml#L5)
-that is responsible for keeping that archive up-to-date. Every two hours
-on a scheduled pipeline, it does the following:
-
-1. Creates a fresh clone of the `gitlab-org/gitlab` repository on GitLab.com.
-1. Saves the data as a `.tar.gz`.
-1. Uploads it into the Google Cloud Storage bucket.
-
-When a CI job runs with this configuration, the output looks something like this:
-
-```shell
-$ eval "$CI_PRE_CLONE_SCRIPT"
-Downloading archived master...
-Extracting tarball into /builds/group/project...
-Fetching changes...
-Reinitialized existing Git repository in /builds/group/project/.git/
-```
-
-Note that the `Reinitialized existing Git repository` message shows that
-the pre-clone step worked. The runner runs `git init`, which
-overwrites the Git configuration with the appropriate settings to fetch
-from the GitLab repository.
-
-`CI_REPO_CACHE_CREDENTIALS` contains the Google Cloud service account
-JSON for uploading to the `gitlab-ci-git-repo-cache` bucket. (If you're a
-GitLab Team Member, find credentials in the
-[GitLab shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
-
-Note that this bucket should be located in the same continent as the
-runner, or [you can incur network egress charges](https://cloud.google.com/storage/pricing).
+[defined by GitLab.com shared runners](../ci/runners/runner_cloud/linux_runner_cloud.md#pre-clone-script).
 
 ---
 

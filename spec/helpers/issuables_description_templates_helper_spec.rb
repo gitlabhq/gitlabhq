@@ -44,7 +44,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
     end
   end
 
-  describe '#issuable_templates_names' do
+  describe '#selected_template' do
     let_it_be(:project) { build(:project) }
 
     before do
@@ -63,7 +63,14 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       end
 
       it 'returns project templates' do
-        expect(helper.issuable_templates_names(Issue.new)).to eq(%w[another_issue_template custom_issue_template])
+        value = [
+            "",
+            [
+              { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
+              { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+            ]
+          ].to_json
+        expect(helper.available_service_desk_templates_for(@project)).to eq(value)
       end
     end
 
@@ -71,7 +78,8 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       let(:templates) { {} }
 
       it 'returns empty array' do
-        expect(helper.issuable_templates_names(Issue.new)).to eq([])
+        value = [].to_json
+        expect(helper.available_service_desk_templates_for(@project)).to eq(value)
       end
     end
   end

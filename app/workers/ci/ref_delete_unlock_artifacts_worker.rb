@@ -15,9 +15,12 @@ module Ci
       ::Project.find_by_id(project_id).try do |project|
         ::User.find_by_id(user_id).try do |user|
           project.ci_refs.find_by_ref_path(ref_path).try do |ci_ref|
-            ::Ci::UnlockArtifactsService
+            results = ::Ci::UnlockArtifactsService
               .new(project, user)
               .execute(ci_ref)
+
+            log_extra_metadata_on_done(:unlocked_pipelines, results[:unlocked_pipelines])
+            log_extra_metadata_on_done(:unlocked_job_artifacts, results[:unlocked_job_artifacts])
           end
         end
       end

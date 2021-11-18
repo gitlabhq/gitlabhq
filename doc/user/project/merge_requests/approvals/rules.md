@@ -167,7 +167,7 @@ for protected branches. **(PREMIUM)**
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40491) in GitLab 13.4.
 > - Moved to GitLab Premium in 13.9.
 
-You may need to grant users with [Reporter permissions](../../../permissions.md#project-members-permissions),
+You may have to grant users with the Reporter [role](../../../permissions.md#project-members-permissions)
 permission to approve merge requests before they can merge to a protected branch.
 Some users (like managers) may not need permission to push or merge code, but still need
 oversight on proposed work. To enable approval permissions for these users without

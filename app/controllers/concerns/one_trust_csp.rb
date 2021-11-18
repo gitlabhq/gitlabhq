@@ -5,7 +5,7 @@ module OneTrustCSP
 
   included do
     content_security_policy do |policy|
-      next if policy.directives.blank?
+      next unless helpers.one_trust_enabled? || policy.directives.present?
 
       default_script_src = policy.directives['script-src'] || policy.directives['default-src']
       script_src_values = Array.wrap(default_script_src) | ["'unsafe-eval'", 'https://cdn.cookielaw.org https://*.onetrust.com']

@@ -34,11 +34,11 @@ RSpec.describe UsersStatistics do
 
   describe '.create_current_stats!' do
     before do
-      create_list(:user_highest_role, 4)
+      create_list(:user_highest_role, 1)
       create_list(:user_highest_role, 2, :guest)
-      create_list(:user_highest_role, 3, :reporter)
-      create_list(:user_highest_role, 4, :developer)
-      create_list(:user_highest_role, 3, :maintainer)
+      create_list(:user_highest_role, 2, :reporter)
+      create_list(:user_highest_role, 2, :developer)
+      create_list(:user_highest_role, 2, :maintainer)
       create_list(:user_highest_role, 2, :owner)
       create_list(:user, 2, :bot)
       create_list(:user, 1, :blocked)
@@ -49,11 +49,11 @@ RSpec.describe UsersStatistics do
     context 'when successful' do
       it 'creates an entry with the current statistics values' do
         expect(described_class.create_current_stats!).to have_attributes(
-          without_groups_and_projects: 4,
+          without_groups_and_projects: 1,
           with_highest_role_guest: 2,
-          with_highest_role_reporter: 3,
-          with_highest_role_developer: 4,
-          with_highest_role_maintainer: 3,
+          with_highest_role_reporter: 2,
+          with_highest_role_developer: 2,
+          with_highest_role_maintainer: 2,
           with_highest_role_owner: 2,
           bots: 2,
           blocked: 1

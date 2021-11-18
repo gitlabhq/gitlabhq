@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash';
 import { s__ } from '~/locale';
 import {
   PACKAGE_TYPE_CONAN,
@@ -10,6 +11,8 @@ import {
   PACKAGE_TYPE_GENERIC,
   PACKAGE_TYPE_DEBIAN,
   PACKAGE_TYPE_HELM,
+  LIST_KEY_PROJECT,
+  SORT_FIELDS,
 } from './constants';
 
 export const getPackageTypeLabel = (packageType) => {
@@ -38,3 +41,8 @@ export const getPackageTypeLabel = (packageType) => {
       return null;
   }
 };
+
+export const packageTypeToTrackCategory = (type) => `UI::${capitalize(type)}Packages`;
+
+export const sortableFields = (isGroupPage) =>
+  SORT_FIELDS.filter((f) => f.orderBy !== LIST_KEY_PROJECT || isGroupPage);

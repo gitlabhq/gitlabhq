@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
@@ -8,6 +8,9 @@ export default {
   name: 'SimpleViewer',
   components: {
     GlIcon,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   mixins: [ViewerMixin, glFeatureFlagsMixin()],
   inject: ['blobHash'],
@@ -65,7 +68,7 @@ export default {
       <div class="blob-content">
         <pre
           class="code highlight"
-        ><code :data-blob-hash="blobHash" v-html="content /* eslint-disable-line vue/no-v-html */"></code></pre>
+        ><code v-safe-html="content" :data-blob-hash="blobHash"></code></pre>
       </div>
     </div>
   </div>

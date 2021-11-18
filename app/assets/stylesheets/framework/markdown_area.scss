@@ -82,11 +82,11 @@
 .nav-links {
   li.md-header-toolbar {
     margin-left: auto;
-    display: none;
+    visibility: hidden;
     padding-bottom: $gl-padding-8;
 
     &.active {
-      display: block;
+      visibility: visible;
 
       @include media-breakpoint-down(xs) {
         flex: none;
@@ -116,7 +116,7 @@
 }
 
 .md-preview-holder {
-  min-height: 167px;
+  min-height: 172px;
   padding: 10px 0;
   overflow-x: auto;
 }

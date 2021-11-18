@@ -177,6 +177,39 @@ module API
 
           present current_authenticated_job, with: Entities::Ci::Job
         end
+
+        desc 'Get current agents' do
+          detail 'Retrieves a list of agents for the given job token'
+        end
+        route_setting :authentication, job_token_allowed: true
+        get '/allowed_agents', feature_category: :kubernetes_management do
+          validate_current_authenticated_job
+
+          status 200
+
+          pipeline = current_authenticated_job.pipeline
+          project = current_authenticated_job.project
+          agent_authorizations = Clusters::AgentAuthorizationsFinder.new(project).execute
+          project_groups = project.group&.self_and_ancestor_ids&.map { |id| { id: id } } || []
+          user_access_level = project.team.max_member_access(current_user.id)
+          roles_in_project = Gitlab::Access.sym_options_with_owner
+            .select { |_role, role_access_level| role_access_level <= user_access_level }
+            .map(&:first)
+
+          environment = if environment_slug = current_authenticated_job.deployment&.environment&.slug
+                          { slug: environment_slug }
+                        end
+
+          # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api
+          {
+            allowed_agents: Entities::Clusters::AgentAuthorization.represent(agent_authorizations),
+            job: { id: current_authenticated_job.id },
+            pipeline: { id: pipeline.id },
+            project: { id: project.id, groups: project_groups },
+            user: { id: current_user.id, username: current_user.username, roles_in_project: roles_in_project },
+            environment: environment
+          }.compact
+        end
       end
 
       helpers do
@@ -202,5 +235,3 @@ module API
     end
   end
 end
-
-API::Ci::Jobs.prepend_mod_with('API::Ci::Jobs')

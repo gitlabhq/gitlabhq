@@ -10,7 +10,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
     sign_in(user)
   end
 
-  it_behaves_like IntegrationsActions do
+  it_behaves_like Integrations::Actions do
     let(:integration_attributes) { { group: group, project: nil } }
 
     let(:routing_params) do
@@ -78,7 +78,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   describe '#update' do
     include JiraServiceHelper
 
-    let(:integration) { create(:jira_integration, project: nil, group_id: group.id) }
+    let(:integration) { create(:jira_integration, :group, group: group) }
 
     before do
       group.add_owner(user)
@@ -108,7 +108,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   end
 
   describe '#reset' do
-    let_it_be(:integration) { create(:jira_integration, group: group, project: nil) }
+    let_it_be(:integration) { create(:jira_integration, :group, group: group) }
     let_it_be(:inheriting_integration) { create(:jira_integration, inherit_from_id: integration.id) }
 
     subject do

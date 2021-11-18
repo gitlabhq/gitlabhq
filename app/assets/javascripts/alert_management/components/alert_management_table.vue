@@ -17,7 +17,6 @@ import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
-import AlertsDeprecationWarning from '~/vue_shared/components/alerts_deprecation_warning.vue';
 import {
   tdClass,
   thClass,
@@ -26,7 +25,6 @@ import {
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ALERTS_STATUS_TABS, SEVERITY_LEVELS, trackAlertListViewsOptions } from '../constants';
 import getAlertsCountByStatus from '../graphql/queries/get_count_by_status.query.graphql';
 
@@ -98,7 +96,6 @@ export default {
   severityLabels: SEVERITY_LEVELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
-    AlertsDeprecationWarning,
     GlAlert,
     GlLoadingIcon,
     GlTable,
@@ -115,7 +112,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'textQuery', 'assigneeUsernameQuery', 'populatingAlertsHelpUrl'],
   apollo: {
     alerts: {
@@ -276,8 +272,6 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-
-    <alerts-deprecation-warning v-if="!glFeatures.managedAlertsDeprecation" />
 
     <paginated-table-with-search-and-tabs
       :show-error-msg="showErrorMsg"

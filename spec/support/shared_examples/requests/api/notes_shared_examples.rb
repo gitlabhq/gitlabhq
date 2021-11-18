@@ -281,7 +281,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       end
     end
 
-    context 'when request exceeds the rate limit' do
+    context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
         stub_application_setting(notes_create_limit: 1)
         allow(::Gitlab::ApplicationRateLimiter).to receive(:increment).and_return(2)

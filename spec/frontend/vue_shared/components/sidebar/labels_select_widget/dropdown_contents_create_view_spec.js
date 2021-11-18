@@ -5,8 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
-import { labelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '~/sidebar/constants';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import createLabelMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/create_label.mutation.graphql';
 import {
@@ -50,11 +49,12 @@ describe('DropdownContentsCreateView', () => {
 
   const createComponent = ({
     mutationHandler = createLabelSuccessHandler,
-    issuableType = IssuableType.Issue,
+    labelCreateType = 'project',
+    workspaceType = 'project',
   } = {}) => {
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
-      query: labelsQueries[issuableType].workspaceQuery,
+      query: workspaceLabelsQueries[workspaceType].query,
       data: workspaceLabelsQueryResponse.data,
       variables: {
         fullPath: '',
@@ -66,8 +66,10 @@ describe('DropdownContentsCreateView', () => {
       localVue,
       apolloProvider: mockApollo,
       propsData: {
-        issuableType,
         fullPath: '',
+        attrWorkspacePath: '',
+        labelCreateType,
+        workspaceType,
       },
     });
   };
@@ -128,9 +130,11 @@ describe('DropdownContentsCreateView', () => {
 
   it('emits a `hideCreateView` event on Cancel button click', () => {
     createComponent();
-    findCancelButton().vm.$emit('click');
+    const event = { stopPropagation: jest.fn() };
+    findCancelButton().vm.$emit('click', event);
 
     expect(wrapper.emitted('hideCreateView')).toHaveLength(1);
+    expect(event.stopPropagation).toHaveBeenCalled();
   });
 
   describe('when label title and selected color are set', () => {
@@ -174,7 +178,7 @@ describe('DropdownContentsCreateView', () => {
   });
 
   it('calls a mutation with `groupPath` variable on the epic', () => {
-    createComponent({ issuableType: IssuableType.Epic });
+    createComponent({ labelCreateType: 'group', workspaceType: 'group' });
     fillLabelAttributes();
     findCreateButton().vm.$emit('click');
 

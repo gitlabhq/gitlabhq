@@ -1,19 +1,12 @@
 ---
 stage: Enablement
-group: Alliances
+group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 description: Doing SRE for GitLab instances and runners on AWS.
-type: index
 ---
 
 # GitLab Site Reliability Engineering for AWS **(FREE SELF)**
-
-## AWS known issues list
-
-Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of "as a Service" components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Please consult individual issues to understand GitLabs stance and plans on any given known issue.
-
-See the [GitLab AWS known issues list](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name%5B%5D=AWS+Known+Issue) for a complete list.
 
 ## Gitaly SRE considerations
 

@@ -23,11 +23,14 @@ module API
     desc 'Return all deploy keys'
     params do
       use :pagination
+      optional :public, type: Boolean, default: false, desc: "Only return deploy keys that are public"
     end
     get "deploy_keys" do
       authenticated_as_admin!
 
-      present paginate(DeployKey.all), with: Entities::DeployKey
+      deploy_keys = params[:public] ? DeployKey.are_public : DeployKey.all
+
+      present paginate(deploy_keys.including_projects_with_write_access), with: Entities::DeployKey, include_projects_with_write_access: true
     end
 
     params do

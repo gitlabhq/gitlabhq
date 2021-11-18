@@ -255,6 +255,11 @@ module Ci
 end
 ```
 
+Also, you can pass `if_deduplicated: :reschedule_once` option to re-run a job once after
+the currently running job finished and deduplication happened at least once.
+This ensures that the latest result is always produced even if a race condition
+happened. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342123) for more information.
+
 #### Scheduling jobs in the future
 
 GitLab doesn't skip jobs scheduled in the future, as we assume that
@@ -278,6 +283,36 @@ module AuthorizedProjectUpdate
   end
 end
 ```
+
+### Setting the deduplication time-to-live (TTL)
+
+Deduplication depends on an idempotency key that is stored in Redis. This is normally
+cleared by the configured deduplication strategy.
+
+However, the key can remain until its TTL in certain cases like:
+
+1. `until_executing` is used but the job was never enqueued or executed after the Sidekiq
+   client middleware was run.
+
+1. `until_executed` is used but the job fails to finish due to retry exhaustion, gets
+   interrupted the maximum number of times, or gets lost.
+
+The default value is 6 hours. During this time, jobs won't be enqueued even if the first
+job never executed or finished.
+
+The TTL can be configured with:
+
+```ruby
+class ProjectImportScheduleWorker
+  include ApplicationWorker
+
+  idempotent!
+  deduplicate :until_executing, ttl: 5.minutes
+end
+```
+
+Duplicate jobs can happen when the TTL is reached, so make sure you lower this only for jobs
+that can tolerate some duplication.
 
 ### Deduplication with load balancing
 
@@ -740,8 +775,7 @@ We use the following approach to determine whether a worker is CPU-bound:
 
 ## Feature category
 
-All Sidekiq workers must define a known [feature
-category](feature_categorization/index.md#sidekiq-workers).
+All Sidekiq workers must define a known [feature category](feature_categorization/index.md#sidekiq-workers).
 
 ## Job weights
 

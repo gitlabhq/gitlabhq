@@ -49,7 +49,12 @@ module QA
               click_element(:target_namespace_selector_dropdown)
               click_element(:target_group_dropdown_item, group_name: target_group_path)
               fill_element(:project_path_field, project_name)
-              click_element(:import_button)
+
+              retry_until do
+                click_element(:import_button)
+                # Make sure import started before waiting for completion
+                has_no_element?(:import_status_indicator, text: "Not started", wait: 1)
+              end
             end
           end
 

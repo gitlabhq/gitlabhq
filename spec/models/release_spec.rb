@@ -26,10 +26,10 @@ RSpec.describe Release do
     context 'when a release exists in the database without a name' do
       it 'does not require name' do
         existing_release_without_name = build(:release, project: project, author: user, name: nil)
-        existing_release_without_name.save(validate: false)
+        existing_release_without_name.save!(validate: false)
 
         existing_release_without_name.description = "change"
-        existing_release_without_name.save
+        existing_release_without_name.save!
         existing_release_without_name.reload
 
         expect(existing_release_without_name).to be_valid
@@ -88,7 +88,7 @@ RSpec.describe Release do
 
   describe '.create' do
     it "fills released_at using created_at if it's not set" do
-      release = described_class.create(project: project, author: user)
+      release = create(:release, project: project, author: user, released_at: nil)
 
       expect(release.released_at).to eq(release.created_at)
     end
@@ -96,14 +96,14 @@ RSpec.describe Release do
     it "does not change released_at if it's set explicitly" do
       released_at = Time.zone.parse('2018-10-20T18:00:00Z')
 
-      release = described_class.create(project: project, author: user, released_at: released_at)
+      release = create(:release, project: project, author: user, released_at: released_at)
 
       expect(release.released_at).to eq(released_at)
     end
   end
 
   describe '#update' do
-    subject { release.update(params) }
+    subject { release.update!(params) }
 
     context 'when links do not exist' do
       context 'when params are specified for creation' do
@@ -182,7 +182,7 @@ RSpec.describe Release do
       it 'also deletes the associated evidence' do
         release_with_evidence
 
-        expect { release_with_evidence.destroy }.to change(Releases::Evidence, :count).by(-1)
+        expect { release_with_evidence.destroy! }.to change(Releases::Evidence, :count).by(-1)
       end
     end
   end
@@ -190,7 +190,7 @@ RSpec.describe Release do
   describe '#name' do
     context 'name is nil' do
       before do
-        release.update(name: nil)
+        release.update!(name: nil)
       end
 
       it 'returns tag' do

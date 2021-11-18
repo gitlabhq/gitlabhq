@@ -86,6 +86,7 @@ RSpec.shared_examples 'snippet blob content' do
 
     expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq 'true'
     expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+    expect(response.parsed_body).to be_empty
   end
 
   context 'when snippet repository is empty' do

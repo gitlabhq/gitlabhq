@@ -7,8 +7,10 @@ require 'danger/plugins/helper'
 require 'gitlab/dangerfiles/spec_helper'
 
 require_relative '../../../danger/plugins/project_helper'
+require_relative '../../../spec/support/helpers/stub_env'
 
 RSpec.describe Tooling::Danger::ProjectHelper do
+  include StubENV
   include_context "with dangerfile"
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
@@ -40,7 +42,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
     using RSpec::Parameterized::TableSyntax
 
     before do
-      allow(fake_git).to receive(:diff_for_file).with('usage_data.rb') { double(:diff, patch: "+ count(User.active)") }
+      allow(fake_git).to receive(:diff_for_file).with(instance_of(String)) { double(:diff, patch: "+ count(User.active)") }
     end
 
     where(:path, :expected_categories) do
@@ -189,6 +191,58 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'spec/frontend/tracking/foo.js' | [:frontend, :product_intelligence]
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
+      'config/metrics/counts_7d/test_metric.yml' | [:product_intelligence]
+      'config/metrics/schema.json' | [:product_intelligence]
+      'doc/api/usage_data.md' | [:product_intelligence]
+      'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]
+
+      'app/models/integration.rb' | [:integrations_be, :backend]
+      'ee/app/models/integrations/github.rb' | [:integrations_be, :backend]
+      'ee/app/models/ee/integrations/jira.rb' | [:integrations_be, :backend]
+      'app/models/integrations/chat_message/pipeline_message.rb' | [:integrations_be, :backend]
+      'app/models/jira_connect_subscription.rb' | [:integrations_be, :backend]
+      'app/models/hooks/service_hook.rb' | [:integrations_be, :backend]
+      'ee/app/models/ee/hooks/system_hook.rb' | [:integrations_be, :backend]
+      'app/services/concerns/integrations/project_test_data.rb' | [:integrations_be, :backend]
+      'ee/app/services/ee/integrations/test/project_service.rb' | [:integrations_be, :backend]
+      'app/controllers/concerns/integrations/actions.rb' | [:integrations_be, :backend]
+      'ee/app/controllers/concerns/ee/integrations/params.rb' | [:integrations_be, :backend]
+      'ee/app/controllers/projects/integrations/jira/issues_controller.rb' | [:integrations_be, :backend]
+      'app/controllers/projects/hooks_controller.rb' | [:integrations_be, :backend]
+      'app/controllers/admin/hook_logs_controller.rb' | [:integrations_be, :backend]
+      'app/controllers/groups/settings/integrations_controller.rb' | [:integrations_be, :backend]
+      'app/controllers/jira_connect/branches_controller.rb' | [:integrations_be, :backend]
+      'app/controllers/oauth/jira/authorizations_controller.rb' | [:integrations_be, :backend]
+      'ee/app/finders/projects/integrations/jira/by_ids_finder.rb' | [:integrations_be, :database, :backend]
+      'app/workers/jira_connect/sync_merge_request_worker.rb' | [:integrations_be, :backend]
+      'app/workers/propagate_integration_inherit_worker.rb' | [:integrations_be, :backend]
+      'app/workers/web_hooks/log_execution_worker.rb' | [:integrations_be, :backend]
+      'app/workers/web_hook_worker.rb' | [:integrations_be, :backend]
+      'app/workers/project_service_worker.rb' | [:integrations_be, :backend]
+      'lib/atlassian/jira_connect/serializers/commit_entity.rb' | [:integrations_be, :backend]
+      'lib/api/entities/project_integration.rb' | [:integrations_be, :backend]
+      'lib/gitlab/hook_data/note_builder.rb' | [:integrations_be, :backend]
+      'lib/gitlab/data_builder/note.rb' | [:integrations_be, :backend]
+      'ee/lib/ee/gitlab/integrations/sti_type.rb' | [:integrations_be, :backend]
+      'ee/lib/ee/api/helpers/integrations_helpers.rb' | [:integrations_be, :backend]
+      'ee/app/serializers/integrations/jira_serializers/issue_entity.rb' | [:integrations_be, :backend]
+      'lib/api/github/entities.rb' | [:integrations_be, :backend]
+      'lib/api/v3/github.rb' | [:integrations_be, :backend]
+      'app/models/clusters/integrations/elastic_stack.rb' | [:backend]
+      'app/controllers/clusters/integrations_controller.rb' | [:backend]
+      'app/services/clusters/integrations/prometheus_health_check_service.rb' | [:backend]
+      'app/graphql/types/alert_management/integration_type.rb' | [:backend]
+
+      'app/views/jira_connect/branches/new.html.haml' | [:integrations_fe, :frontend]
+      'app/views/layouts/jira_connect.html.haml' | [:integrations_fe, :frontend]
+      'app/assets/javascripts/jira_connect/branches/pages/index.vue' | [:integrations_fe, :frontend]
+      'ee/app/views/projects/integrations/jira/issues/show.html.haml' | [:integrations_fe, :frontend]
+      'ee/app/assets/javascripts/integrations/zentao/issues_list/graphql/queries/get_zentao_issues.query.graphql' | [:integrations_fe, :frontend]
+      'app/assets/javascripts/pages/projects/settings/integrations/show/index.js' | [:integrations_fe, :frontend]
+      'ee/app/assets/javascripts/pages/groups/hooks/index.js' | [:integrations_fe, :frontend]
+      'app/views/clusters/clusters/_integrations_tab.html.haml' | [:frontend]
+      'app/assets/javascripts/alerts_settings/graphql/fragments/integration_item.fragment.graphql' | [:frontend]
+      'app/assets/javascripts/filtered_search/droplab/hook_input.js' | [:frontend]
     end
 
     with_them do
@@ -199,12 +253,20 @@ RSpec.describe Tooling::Danger::ProjectHelper do
 
     context 'having specific changes' do
       where(:expected_categories, :patch, :changed_files) do
+        [:product_intelligence]                      | '+data-track-action'                           | ['components/welcome.vue']
+        [:product_intelligence]                      | '+ data: { track_label:'                       | ['admin/groups/_form.html.haml']
+        [:product_intelligence]                      | '+ Gitlab::Tracking.event'                     | ['dashboard/todos_controller.rb', 'admin/groups/_form.html.haml']
         [:database, :backend, :product_intelligence] | '+ count(User.active)'                         | ['usage_data.rb', 'lib/gitlab/usage_data.rb', 'ee/lib/ee/gitlab/usage_data.rb']
         [:database, :backend, :product_intelligence] | '+ estimate_batch_distinct_count(User.active)' | ['usage_data.rb']
         [:backend, :product_intelligence]            | '+ alt_usage_data(User.active)'                | ['lib/gitlab/usage_data.rb']
         [:backend, :product_intelligence]            | '+ count(User.active)'                         | ['lib/gitlab/usage_data/topology.rb']
         [:backend, :product_intelligence]            | '+ foo_count(User.active)'                     | ['lib/gitlab/usage_data.rb']
         [:backend]                                   | '+ count(User.active)'                         | ['user.rb']
+        [:integrations_be, :database, :migration]    | '+ add_column :integrations, :foo, :text'      | ['db/migrate/foo.rb']
+        [:integrations_be, :database, :migration]    | '+ create_table :zentao_tracker_data do |t|'   | ['ee/db/post_migrate/foo.rb']
+        [:integrations_be, :backend]                 | '+ Integrations::Foo'                          | ['app/foo/bar.rb']
+        [:integrations_be, :backend]                 | '+ project.execute_hooks(foo, :bar)'           | ['ee/lib/ee/foo.rb']
+        [:integrations_be, :backend]                 | '+ project.execute_integrations(foo, :bar)'    | ['app/foo.rb']
       end
 
       with_them do
@@ -278,6 +340,70 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       expect(project_helper).to receive(:ee?) { false }
 
       is_expected.to eq('gitlab-foss')
+    end
+  end
+
+  describe '#ee?' do
+    subject { project_helper.__send__(:ee?) }
+
+    let(:ee_dir) { File.expand_path('../../../ee', __dir__) }
+
+    context 'when ENV["CI_PROJECT_NAME"] is set' do
+      before do
+        stub_env('CI_PROJECT_NAME', ci_project_name)
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab' do
+        let(:ci_project_name) { 'gitlab' }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab-ee' do
+        let(:ci_project_name) { 'gitlab-ee' }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ENV["CI_PROJECT_NAME"] is gitlab-foss' do
+        let(:ci_project_name) { 'gitlab-foss' }
+
+        it 'resolves to Dir.exist?' do
+          expected = Dir.exist?(ee_dir)
+
+          expect(Dir).to receive(:exist?).with(ee_dir).and_call_original
+
+          is_expected.to eq(expected)
+        end
+      end
+    end
+
+    context 'when ENV["CI_PROJECT_NAME"] is absent' do
+      before do
+        stub_env('CI_PROJECT_NAME', nil)
+
+        expect(Dir).to receive(:exist?).with(ee_dir).and_return(has_ee_dir)
+      end
+
+      context 'when ee/ directory exists' do
+        let(:has_ee_dir) { true }
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when ee/ directory does not exist' do
+        let(:has_ee_dir) { false }
+
+        it 'returns false' do
+          is_expected.to eq(false)
+        end
+      end
     end
   end
 

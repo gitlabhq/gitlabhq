@@ -3,7 +3,7 @@ import { GlSafeHtmlDirective as SafeHtml, GlButton, GlModal, GlModalDirective } 
 import { escape } from 'lodash';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -58,7 +58,7 @@ Please update your Git repository remotes as soon as possible.`),
     },
     primaryProps() {
       return {
-        text: s__('Update username'),
+        text: __('Update username'),
         attributes: [
           { variant: 'warning' },
           { category: 'primary' },
@@ -68,7 +68,7 @@ Please update your Git repository remotes as soon as possible.`),
     },
     cancelProps() {
       return {
-        text: s__('Cancel'),
+        text: __('Cancel'),
       };
     },
   },

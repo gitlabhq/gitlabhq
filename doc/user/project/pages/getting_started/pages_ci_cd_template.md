@@ -13,31 +13,16 @@ the CI/CD pipeline to generate a Pages website.
 
 Use a `.gitlab-ci.yml` template when you have an existing project that you want to add a Pages site to.
 
-Your GitLab repository should contain files specific to an SSG, or plain HTML.
-After you complete these steps, you may need to do additional
-configuration for the Pages site to generate properly.
+Your GitLab repository should contain files specific to an SSG, or plain HTML. After you complete
+these steps, you may have to do additional configuration for the Pages site to generate properly.
 
-1. On the left sidebar, select **Project information**.
-1. Click **Set up CI/CD**.
-
-   ![setup GitLab CI/CD](../img/setup_ci_v13_1.png)
-
-   If this button is not available, CI/CD is already configured for
-   your project. You may want to browse the `.gitlab-ci.yml` files
-   [in these projects instead](https://gitlab.com/pages).
-
-1. From the **Apply a template** list, choose a template for the SSG you're using.
-   You can also choose plain HTML.
-
-   ![gitlab-ci templates](../img/choose_ci_template_v13_1.png)
-
-   If you don't find a corresponding template, you can view the
-   [GitLab Pages group of sample projects](https://gitlab.com/pages).
-   These projects contain `.gitlab-ci.yml` files that you can modify for your needs.
-   You can also [learn how to write your own `.gitlab-ci.yml`
-   file for GitLab Pages](pages_from_scratch.md).
-
-1. Save and commit the `.gitlab-ci.yml` file.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select the project's name.
+1. From the **Add** (**{plus}**) dropdown, select **New file**.
+1. From the **Select a template type** dropdown, select `.gitlab-ci.yml`.
+1. From the **Apply a template** dropdown, in the **Pages** section, select the name of your SSG.
+1. In the **Commit message** box, type the commit message.
+1. Select **Commit changes**.
 
 If everything is configured correctly, the site can take approximately 30 minutes to deploy.
 

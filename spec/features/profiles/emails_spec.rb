@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Profile > Emails' do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
 
   before do
     sign_in(user)
@@ -23,13 +24,23 @@ RSpec.describe 'Profile > Emails' do
       expect(page).to have_content('Resend confirmation email')
     end
 
-    it 'does not add a duplicate email' do
+    it 'does not add an email that is the primary email of another user' do
+      fill_in('Email', with: other_user.email)
+      click_button('Add email address')
+
+      email = user.emails.find_by(email: other_user.email)
+      expect(email).to be_nil
+      expect(page).to have_content('Email has already been taken')
+    end
+
+    it 'adds an email that is the primary email of the same user' do
       fill_in('Email', with: user.email)
       click_button('Add email address')
 
       email = user.emails.find_by(email: user.email)
-      expect(email).to be_nil
-      expect(page).to have_content('Email has already been taken')
+      expect(email).to be_present
+      expect(page).to have_content("#{user.email} Verified")
+      expect(page).not_to have_content("#{user.email} Unverified")
     end
 
     it 'does not add an invalid email' do

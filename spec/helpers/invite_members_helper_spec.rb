@@ -59,7 +59,84 @@ RSpec.describe InviteMembersHelper do
           no_selection_areas_of_focus: []
         }
 
-        expect(helper.common_invite_modal_dataset(project)).to match(attributes)
+        expect(helper.common_invite_modal_dataset(project)).to include(attributes)
+      end
+    end
+
+    context 'tasks_to_be_done' do
+      subject(:output) { helper.common_invite_modal_dataset(source) }
+
+      let_it_be(:source) { project }
+
+      before do
+        stub_experiments(invite_members_for_task: true)
+      end
+
+      context 'when not logged in' do
+        before do
+          allow(helper).to receive(:params).and_return({ open_modal: 'invite_members_for_task' })
+        end
+
+        it "doesn't have the tasks to be done attributes" do
+          expect(output[:tasks_to_be_done_options]).to be_nil
+          expect(output[:projects]).to be_nil
+          expect(output[:new_project_path]).to be_nil
+        end
+      end
+
+      context 'when logged in but the open_modal param is not present' do
+        before do
+          allow(helper).to receive(:current_user).and_return(developer)
+        end
+
+        it "doesn't have the tasks to be done attributes" do
+          expect(output[:tasks_to_be_done_options]).to be_nil
+          expect(output[:projects]).to be_nil
+          expect(output[:new_project_path]).to be_nil
+        end
+      end
+
+      context 'when logged in and the open_modal param is present' do
+        before do
+          allow(helper).to receive(:current_user).and_return(developer)
+          allow(helper).to receive(:params).and_return({ open_modal: 'invite_members_for_task' })
+        end
+
+        context 'for a group' do
+          let_it_be(:source) { create(:group, projects: [project]) }
+
+          it 'has the expected attributes', :aggregate_failures do
+            expect(output[:tasks_to_be_done_options]).to eq(
+              [
+                { value: :code, text: 'Create/import code into a project (repository)' },
+                { value: :ci, text: 'Set up CI/CD pipelines to build, test, deploy, and monitor code' },
+                { value: :issues, text: 'Create/import issues (tickets) to collaborate on ideas and plan work' }
+              ].to_json
+            )
+            expect(output[:projects]).to eq(
+              [{ id: project.id, title: project.title }].to_json
+            )
+            expect(output[:new_project_path]).to eq(
+              new_project_path(namespace_id: source.id)
+            )
+          end
+        end
+
+        context 'for a project' do
+          it 'has the expected attributes', :aggregate_failures do
+            expect(output[:tasks_to_be_done_options]).to eq(
+              [
+                { value: :code, text: 'Create/import code into a project (repository)' },
+                { value: :ci, text: 'Set up CI/CD pipelines to build, test, deploy, and monitor code' },
+                { value: :issues, text: 'Create/import issues (tickets) to collaborate on ideas and plan work' }
+              ].to_json
+            )
+            expect(output[:projects]).to eq(
+              [{ id: project.id, title: project.title }].to_json
+            )
+            expect(output[:new_project_path]).to eq('')
+          end
+        end
       end
     end
   end

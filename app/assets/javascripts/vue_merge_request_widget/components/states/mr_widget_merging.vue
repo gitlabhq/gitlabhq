@@ -32,7 +32,7 @@ export default {
       </h4>
       <section class="mr-info-list">
         <p>
-          {{ s__('mrWidget|The changes will be merged into') }}
+          {{ s__('mrWidget|Merges changes into') }}
           <span class="label-branch">
             <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
           </span>

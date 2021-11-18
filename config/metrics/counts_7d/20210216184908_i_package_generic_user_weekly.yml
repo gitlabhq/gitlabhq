@@ -8,8 +8,7 @@ product_stage: package
 product_group: group::package
 product_category: package registry
 value_type: number
-status: broken
-repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331455
+status: active
 time_frame: 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric

@@ -76,7 +76,7 @@ export default {
     </p>
 
     <div class="row gl-mb-8">
-      <div class="col-lg-3">
+      <div class="col-12">
         <gl-card>
           <div class="gl-flex-direction-row">
             <div class="gl-py-5"><gl-emoji class="gl-font-size-h2-xl" data-name="wave" /></div>

@@ -16,7 +16,7 @@ RSpec.describe Project, factory_default: :keep do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
-    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
+    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id') }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
@@ -191,7 +191,7 @@ RSpec.describe Project, factory_default: :keep do
       # using delete rather than destroy due to `delete` skipping AR hooks/callbacks
       # so it's ensured to work at the DB level. Uses AFTER DELETE trigger.
       let_it_be(:project) { create(:project) }
-      let_it_be(:project_namespace) { create(:project_namespace, project: project) }
+      let_it_be(:project_namespace) { project.project_namespace }
 
       it 'also deletes the associated ProjectNamespace' do
         project.delete
@@ -232,6 +232,58 @@ RSpec.describe Project, factory_default: :keep do
       it 'automatically builds a project setting row' do
         expect(project.project_setting).to be_an_instance_of(ProjectSetting)
         expect(project.project_setting).to be_new_record
+      end
+
+      context 'with project namespaces' do
+        it 'automatically creates a project namespace' do
+          project = build(:project, path: 'hopefully-valid-path1')
+          project.save!
+
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_persisted
+          expect(project.project_namespace).to be_in_sync_with_project(project)
+        end
+
+        context 'with FF disabled' do
+          before do
+            stub_feature_flags(create_project_namespace_on_project_create: false)
+          end
+
+          it 'does not create a project namespace' do
+            project = build(:project, path: 'hopefully-valid-path2')
+            project.save!
+
+            expect(project).to be_persisted
+            expect(project.project_namespace).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'updating a project' do
+      context 'with project namespaces' do
+        it 'keeps project namespace in sync with project' do
+          project = create(:project)
+          project.update!(path: 'hopefully-valid-path1')
+
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_persisted
+          expect(project.project_namespace).to be_in_sync_with_project(project)
+        end
+
+        context 'with FF disabled' do
+          before do
+            stub_feature_flags(create_project_namespace_on_project_create: false)
+          end
+
+          it 'does not create a project namespace when project is updated' do
+            project = create(:project)
+            project.update!(path: 'hopefully-valid-path1')
+
+            expect(project).to be_persisted
+            expect(project.project_namespace).to be_nil
+          end
+        end
       end
     end
 
@@ -294,6 +346,7 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
+    it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
 
     it 'validates build timeout constraints' do
       is_expected.to validate_numericality_of(:build_timeout)
@@ -320,6 +373,18 @@ RSpec.describe Project, factory_default: :keep do
       expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
 
       create(:project)
+    end
+
+    context 'validates project namespace creation' do
+      it 'does not create project namespace if project is not created' do
+        project = build(:project, path: 'tree')
+
+        project.valid?
+
+        expect(project).not_to be_valid
+        expect(project).to be_new_record
+        expect(project.project_namespace).to be_new_record
+      end
     end
 
     context 'repository storages inclusion' do
@@ -424,8 +489,9 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       include_context 'invalid urls'
+      include_context 'valid urls with CRLF'
 
-      it 'does not allow urls with CR or LF characters' do
+      it 'does not allow URLs with unencoded CR or LF characters' do
         project = build(:project)
 
         aggregate_failures do
@@ -434,6 +500,19 @@ RSpec.describe Project, factory_default: :keep do
 
             expect(project).not_to be_valid
             expect(project.errors.full_messages.first).to match(/is blocked: URI is invalid/)
+          end
+        end
+      end
+
+      it 'allow URLs with CR or LF characters' do
+        project = build(:project)
+
+        aggregate_failures do
+          valid_urls_with_CRLF.each do |url|
+            project.import_url = url
+
+            expect(project).to be_valid
+            expect(project.errors).to be_empty
           end
         end
       end
@@ -1714,13 +1793,19 @@ RSpec.describe Project, factory_default: :keep do
         allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
-      it 'returns custom address when project_key is set' do
-        create(:service_desk_setting, project: project, project_key: 'key1')
+      context 'when project_key is set' do
+        it 'returns custom address including the project_key' do
+          create(:service_desk_setting, project: project, project_key: 'key1')
 
-        expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
+          expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
+        end
       end
 
-      it_behaves_like 'with incoming email address'
+      context 'when project_key is not set' do
+        it 'returns custom address including the project full path' do
+          expect(subject).to eq("foo+#{project.full_path_slug}-#{project.project_id}-issue-@bar.com")
+        end
+      end
     end
   end
 
@@ -1777,6 +1862,20 @@ RSpec.describe Project, factory_default: :keep do
       let(:url) { "https://foo.com/bar/baz.git" }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.without_integration' do
+    it 'returns projects without the integration' do
+      project_1, project_2, project_3, project_4 = create_list(:project, 4)
+      instance_integration = create(:jira_integration, :instance)
+      create(:jira_integration, project: project_1, inherit_from_id: instance_integration.id)
+      create(:jira_integration, project: project_2, inherit_from_id: nil)
+      create(:jira_integration, group: create(:group), project: nil, inherit_from_id: nil)
+      create(:jira_integration, project: project_3, inherit_from_id: nil)
+      create(:integrations_slack, project: project_4, inherit_from_id: nil)
+
+      expect(Project.without_integration(instance_integration)).to contain_exactly(project_4)
     end
   end
 

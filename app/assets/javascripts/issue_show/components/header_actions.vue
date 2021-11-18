@@ -192,9 +192,14 @@ export default {
       class="gl-sm-display-none! w-100"
       block
       :text="dropdownText"
+      data-qa-selector="issue_actions_dropdown"
       :loading="isToggleStateButtonLoading"
     >
-      <gl-dropdown-item v-if="showToggleIssueStateButton" @click="toggleIssueState">
+      <gl-dropdown-item
+        v-if="showToggleIssueStateButton"
+        :data-qa-selector="`mobile_${qaSelector}`"
+        @click="toggleIssueState"
+      >
         {{ buttonText }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="canCreateIssue" :href="newIssuePath">

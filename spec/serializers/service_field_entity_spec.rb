@@ -27,7 +27,8 @@ RSpec.describe ServiceFieldEntity do
             help: 'Use a username for server version and an email for cloud version.',
             required: true,
             choices: nil,
-            value: 'jira_username'
+            value: 'jira_username',
+            checkbox_label: nil
           }
 
           is_expected.to eq(expected_hash)
@@ -46,7 +47,8 @@ RSpec.describe ServiceFieldEntity do
             help: 'Leave blank to use your current password or API token.',
             required: true,
             choices: nil,
-            value: 'true'
+            value: 'true',
+            checkbox_label: nil
           }
 
           is_expected.to eq(expected_hash)
@@ -68,7 +70,8 @@ RSpec.describe ServiceFieldEntity do
             placeholder: nil,
             required: nil,
             choices: nil,
-            value: 'true'
+            value: 'true',
+            checkbox_label: nil
           }
 
           is_expected.to include(expected_hash)
@@ -83,12 +86,13 @@ RSpec.describe ServiceFieldEntity do
           expected_hash = {
             type: 'select',
             name: 'branches_to_be_notified',
-            title: nil,
+            title: 'Branches for which notifications are to be sent',
             placeholder: nil,
             required: nil,
             choices: [['All branches', 'all'], ['Default branch', 'default'], ['Protected branches', 'protected'], ['Default branch and protected branches', 'default_and_protected']],
             help: nil,
-            value: nil
+            value: nil,
+            checkbox_label: nil
           }
 
           is_expected.to eq(expected_hash)

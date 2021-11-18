@@ -4,6 +4,7 @@ import { ListType } from '~/boards/constants';
 import { __ } from '~/locale';
 import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
@@ -12,6 +13,7 @@ export const boardObj = {
   id: 1,
   name: 'test',
   milestone_id: null,
+  labels: [],
 };
 
 export const listObj = {
@@ -29,17 +31,27 @@ export const listObj = {
   },
 };
 
-export const listObjDuplicate = {
-  id: listObj.id,
-  position: 1,
-  title: 'Test',
-  list_type: 'label',
-  weight: 3,
-  label: {
-    id: listObj.label.id,
-    title: 'Test',
-    color: '#ff0000',
-    description: 'testing;',
+export const mockGroupBoardResponse = {
+  data: {
+    workspace: {
+      board: {
+        id: 'gid://gitlab/Board/1',
+        name: 'Development',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const mockProjectBoardResponse = {
+  data: {
+    workspace: {
+      board: {
+        id: 'gid://gitlab/Board/2',
+        name: 'Development',
+      },
+      __typename: 'Project',
+    },
   },
 };
 
@@ -538,7 +550,16 @@ export const mockMoveData = {
   ...mockMoveIssueParams,
 };
 
-export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
+export const mockEmojiToken = {
+  type: 'my_reaction_emoji',
+  icon: 'thumb-up',
+  title: 'My-Reaction',
+  unique: true,
+  token: EmojiToken,
+  fetchEmojis: expect.any(Function),
+};
+
+export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji) => [
   {
     icon: 'user',
     title: __('Assignee'),
@@ -579,6 +600,7 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     symbol: '~',
     fetchLabels,
   },
+  ...(hasEmoji ? [mockEmojiToken] : []),
   {
     icon: 'clock',
     title: __('Milestone'),
@@ -593,7 +615,6 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     icon: 'issues',
     title: __('Type'),
     type: 'types',
-    operators: [{ value: '=', description: 'is' }],
     token: GlFilteredSearchToken,
     unique: true,
     options: [
@@ -609,3 +630,43 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones) => [
     unique: true,
   },
 ];
+
+export const mockLabel1 = {
+  id: 'gid://gitlab/GroupLabel/121',
+  title: 'To Do',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockLabel2 = {
+  id: 'gid://gitlab/GroupLabel/122',
+  title: 'Doing',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockProjectLabelsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      labels: {
+        nodes: [mockLabel1, mockLabel2],
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockGroupLabelsResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/1',
+      labels: {
+        nodes: [mockLabel1, mockLabel2],
+      },
+      __typename: 'Group',
+    },
+  },
+};

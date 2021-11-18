@@ -133,9 +133,9 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    if trace_artifact_file
+    if @build.trace.archived_trace_exist?
       workhorse_set_content_type!
-      send_upload(trace_artifact_file,
+      send_upload(@build.job_artifacts_trace.file,
                   send_params: raw_send_params,
                   redirect_params: raw_redirect_params)
     else
@@ -217,10 +217,6 @@ class Projects::JobsController < Projects::ApplicationController
 
   def play_params
     params.permit(job_variables_attributes: %i[key secret_value])
-  end
-
-  def trace_artifact_file
-    @trace_artifact_file ||= @build.job_artifacts_trace&.file
   end
 
   def find_job_as_build

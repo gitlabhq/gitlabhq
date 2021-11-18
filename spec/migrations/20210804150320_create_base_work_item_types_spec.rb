@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('create_base_work_item_types')
+require_migration!
 
 RSpec.describe CreateBaseWorkItemTypes, :migration do
   let!(:work_item_types) { table(:work_item_types) }

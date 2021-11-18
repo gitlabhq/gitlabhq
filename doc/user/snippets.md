@@ -14,6 +14,9 @@ You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
 [syntax highlighting](#filenames), [embedding](#embed-snippets), [downloading](#download-snippets),
 and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
+You can create and manage your snippets through the GitLab user interface, or by
+using the [GitLab Workflow VS Code extension](project/repository/vscode.md).
+
 ![Example of snippet](img/snippet_intro_v13_11.png)
 
 GitLab provides two types of snippets:
@@ -39,6 +42,8 @@ You can create snippets in multiple ways, depending on whether you want to creat
      - *For all other pages,* select the plus icon (**{plus-square-o}**)
        in the top navigation bar, then select **New snippet** from the dropdown
        menu.
+     - If you installed the [GitLab Workflow VS Code extension](project/repository/vscode.md),
+       use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select the
      plus icon (**{plus-square-o}**), and then select **New snippet** from the
      **This project** section of the dropdown menu.
@@ -127,7 +132,7 @@ A single snippet can support up to 10 files, which helps keep related files toge
 
 If you need more than 10 files for your snippet, we recommend you create a
 [wiki](project/wiki/index.md) instead. Wikis are available for projects at all
-subscription levels, and [groups](project/wiki/index.md#group-wikis) for
+subscription levels, and [groups](project/wiki/group.md) for
 [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Snippets with multiple files display a file count in the [snippet list](https://gitlab.com/dashboard/snippets):
@@ -205,6 +210,24 @@ snippet was created using the GitLab web interface the original line ending is W
 
 With snippets, you engage in a conversation about that piece of code,
 which can encourage user collaboration.
+
+## Mark snippet as spam **(FREE SELF)**
+
+Administrators on self-managed GitLab instances can mark snippets as spam.
+
+Prerequisites:
+
+- You must be the administrator for your instance.
+- [Akismet](../integration/akismet.md) spam protection must be enabled on the instance.
+
+To do this task:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Snippets**.
+1. Select the snippet you want to report as spam.
+1. Select **Submit as spam**.
+
+GitLab forwards the spam to Akismet.
 
 ## Troubleshooting
 

@@ -7,9 +7,9 @@ gem 'activesupport', '~> 6.1.4.1' # This should stay in sync with the root's Gem
 gem 'allure-rspec', '~> 2.15.0'
 gem 'capybara', '~> 3.35.0'
 gem 'capybara-screenshot', '~> 1.0.23'
-gem 'rake', '~> 12.3.3'
+gem 'rake', '~> 13'
 gem 'rspec', '~> 3.10'
-gem 'selenium-webdriver', '~> 4.0.0.rc1'
+gem 'selenium-webdriver', '~> 4.0'
 gem 'airborne', '~> 0.3.4', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec-retry', '~> 0.6.1', require: 'rspec/retry'
@@ -22,9 +22,11 @@ gem 'timecop', '~> 0.9.1'
 gem 'parallel', '~> 1.19'
 gem 'rspec-parameterized', '~> 0.4.2'
 gem 'octokit', '~> 4.21'
-gem 'webdrivers', '~> 4.6'
+gem 'webdrivers', '~> 5.0'
 gem 'zeitwerk', '~> 2.4'
 gem 'influxdb-client', '~> 1.17'
+gem 'terminal-table', '~> 1.8', require: false
+gem 'slack-notifier', '~> 2.4', require: false
 
 gem 'chemlab', '~> 0.9'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1'

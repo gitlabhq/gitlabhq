@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "required": ["key_path", "description", "value_type", "status", "product_group", "product_stage", "time_frame", "data_source", "distribution", "tier", "data_category", "milestone"],
+  "required": ["key_path", "description", "value_type", "status", "product_group", "product_section", "product_stage", "time_frame", "data_source", "distribution", "tier", "data_category", "milestone"],
   "properties": {
     "key_path": {
       "type": "string"
@@ -13,10 +13,10 @@
       "type": "string"
     },
     "product_section": {
-      "type": ["string", "null"]
+      "type": ["string"]
     },
     "product_stage": {
-      "type": ["string", "null"]
+      "type": ["string"]
     },
     "product_group": {
       "type": "string"

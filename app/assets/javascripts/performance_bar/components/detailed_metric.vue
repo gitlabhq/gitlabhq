@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal, GlModalDirective, GlSegmentedControl } from '@gitlab/ui';
 
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { sortOrders, sortOrderOptions } from '../constants';
 import RequestWarning from './request_warning.vue';
 
@@ -55,7 +55,7 @@ export default {
       const summary = {};
 
       if (!this.metricDetails.summaryOptions?.hideTotal) {
-        summary[s__('Total')] = this.metricDetails.calls;
+        summary[__('Total')] = this.metricDetails.calls;
       }
 
       if (!this.metricDetails.summaryOptions?.hideDuration) {

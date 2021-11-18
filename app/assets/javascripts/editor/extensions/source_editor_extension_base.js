@@ -36,12 +36,24 @@ export class SourceEditorExtension {
     });
   }
 
-  static highlightLines(instance) {
-    const { hash } = window.location;
-    if (!hash) {
-      return;
-    }
-    const [start, end] = hash.replace(hashRegexp, '').split('-');
+  static removeHighlights(instance) {
+    Object.assign(instance, {
+      lineDecorations: instance.deltaDecorations(instance.lineDecorations || [], []),
+    });
+  }
+
+  /**
+   * Returns a function that can only be invoked once between
+   * each browser screen repaint.
+   * @param {Object} instance - The Source Editor instance
+   * @param {Array} bounds - The [start, end] array with start
+   * and end coordinates for highlighting
+   */
+  static highlightLines(instance, bounds = null) {
+    const [start, end] =
+      bounds && Array.isArray(bounds)
+        ? bounds
+        : window.location.hash?.replace(hashRegexp, '').split('-');
     let startLine = start ? parseInt(start, 10) : null;
     let endLine = end ? parseInt(end, 10) : startLine;
     if (endLine < startLine) {
@@ -51,15 +63,12 @@ export class SourceEditorExtension {
       window.requestAnimationFrame(() => {
         instance.revealLineInCenter(startLine);
         Object.assign(instance, {
-          lineDecorations: instance.deltaDecorations(
-            [],
-            [
-              {
-                range: new Range(startLine, 1, endLine, 1),
-                options: { isWholeLine: true, className: 'active-line-text' },
-              },
-            ],
-          ),
+          lineDecorations: instance.deltaDecorations(instance.lineDecorations || [], [
+            {
+              range: new Range(startLine, 1, endLine, 1),
+              options: { isWholeLine: true, className: 'active-line-text' },
+            },
+          ]),
         });
       });
     }

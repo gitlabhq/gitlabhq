@@ -2,12 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OmniAuth::Strategies::OAuth2', type: :strategy do
-  let(:strategy) { [OmniAuth::Strategies::OAuth2] }
-
+RSpec.describe 'OmniAuth::Strategies::OAuth2' do
   it 'verifies the gem version' do
     current_version = OmniAuth::OAuth2::VERSION
-    expected_version = '1.7.1'
+    expected_version = '1.7.2'
 
     expect(current_version).to eq(expected_version), <<~EOF
       New version #{current_version} of the `omniauth-oauth2` gem detected!
@@ -18,39 +16,18 @@ RSpec.describe 'OmniAuth::Strategies::OAuth2', type: :strategy do
     EOF
   end
 
-  context 'when a custom error message is passed from an OAuth2 provider' do
-    let(:message) { 'Please go to https://evil.com' }
-    let(:state) { 'secret' }
-    let(:callback_path) { '/users/auth/oauth2/callback' }
-    let(:params) { { state: state, error: 'evil_key', error_description: message } }
-    let(:error) { last_request.env['omniauth.error'] }
+  context 'when a Faraday exception is raised' do
+    where(exception: [Faraday::TimeoutError, Faraday::ConnectionFailed])
 
-    before do
-      env('rack.session', { 'omniauth.state' => state })
-    end
+    with_them do
+      it 'passes the exception to OmniAuth' do
+        instance = OmniAuth::Strategies::OAuth2.new(double)
 
-    it 'returns the custom error message if the state is valid' do
-      get callback_path, **params
+        expect(instance).to receive(:original_callback_phase) { raise exception, 'message' }
+        expect(instance).to receive(:fail!).with(:timeout, kind_of(exception))
 
-      expect(error.message).to eq("evil_key | #{message}")
-    end
-
-    it 'returns the custom `error_reason` message if the `error_description` is blank' do
-      get callback_path, **params.merge(error_description: ' ', error_reason: 'custom reason')
-
-      expect(error.message).to eq('evil_key | custom reason')
-    end
-
-    it 'returns a CSRF error if the state is invalid' do
-      get callback_path, **params.merge(state: 'invalid')
-
-      expect(error.message).to eq('csrf_detected | CSRF detected')
-    end
-
-    it 'returns a CSRF error if the state is missing' do
-      get callback_path, **params.without(:state)
-
-      expect(error.message).to eq('csrf_detected | CSRF detected')
+        instance.callback_phase
+      end
     end
   end
 end

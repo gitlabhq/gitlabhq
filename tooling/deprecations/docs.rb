@@ -20,9 +20,11 @@ module Deprecations
         YAML.load_file(file)
       end
 
-      deprecations = VersionSorter.sort(deprecations) { |d| d["removal_milestone"] }
+      deps = VersionSorter.sort(deprecations) { |d| d["removal_milestone"] }
 
-      milestones = deprecations.map { |d| d["removal_milestone"] }.uniq
+      deprecations = deps.sort_by { |d| d["name"] }
+
+      milestones = deps.map { |d| d["removal_milestone"] }.uniq
 
       template = Rails.root.join("data/deprecations/templates/_deprecation_template.md.erb")
 

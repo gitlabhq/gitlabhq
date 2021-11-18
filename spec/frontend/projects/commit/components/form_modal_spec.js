@@ -3,6 +3,7 @@ import { within } from '@testing-library/dom';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import BranchesDropdown from '~/projects/commit/components/branches_dropdown.vue';
@@ -11,6 +12,8 @@ import ProjectsDropdown from '~/projects/commit/components/projects_dropdown.vue
 import eventHub from '~/projects/commit/event_hub';
 import createStore from '~/projects/commit/store';
 import mockData from '../mock_data';
+
+jest.mock('~/api');
 
 describe('CommitFormModal', () => {
   let wrapper;
@@ -166,5 +169,17 @@ describe('CommitFormModal', () => {
 
       expect(findTargetProject().attributes('value')).toBe('_changed_project_value_');
     });
+  });
+
+  it('action primary button triggers Redis HLL tracking api call', async () => {
+    createComponent(mount, {}, {}, { primaryActionEventName: 'test_event' });
+
+    await wrapper.vm.$nextTick();
+
+    jest.spyOn(findForm().element, 'submit');
+
+    getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
+
+    expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_event');
   });
 });

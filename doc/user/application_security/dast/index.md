@@ -320,8 +320,8 @@ tips for optimizing DAST scans in a [blog post](https://about.gitlab.com/blog/20
 
 ### API scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.10.
-> - A new DAST API scanning engine was introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in GitLab 12.10.
+> - A new DAST API scanning engine was introduced in GitLab 13.10.
 
 Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
 Vulnerability rules in an API scan are different than those in a normal website scan.
@@ -416,7 +416,7 @@ variables:
 
 ### URL scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/273141) in GitLab 13.11.
 
 A URL scan allows you to specify which parts of a website are scanned by DAST.
@@ -492,7 +492,7 @@ Click **View details** to view the web console output which includes the list of
 
 ### View details of a vulnerability detected by DAST
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 Vulnerabilities detected by DAST occur in the live web application. Addressing these types of
 vulnerabilities requires specific information. DAST provides the information required to
@@ -954,6 +954,11 @@ An on-demand scan can be run in active or passive mode:
   minimize the risk of accidental damage, running an active scan requires a [validated site
   profile](#site-profile-validation).
 
+### View on-demand DAST scans
+
+To view running and completed on-demand DAST scans for a project, go to
+**Security & Compliance > On-demand Scans** in the left sidebar.
+
 ### Run an on-demand DAST scan
 
 Prerequisites:
@@ -987,6 +992,7 @@ To run an on-demand scan either at a scheduled date or frequency, read
 
 1. From your project's home page, go to **Security & Compliance > On-demand Scans** in the left
    sidebar.
+1. Select **New DAST scan**.
 1. Complete the **Scan name** and **Description** fields.
 1. In GitLab 13.10 and later, select the desired branch from the **Branch** dropdown.
 1. In **Scanner profile**, select a scanner profile from the dropdown.
@@ -1017,17 +1023,13 @@ The on-demand DAST scan runs, and the project's dashboard shows the results.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3. [Deployed behind the `dast_on_demand_scans_scheduler` flag](../../../administration/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an
-administrator to [disable the feature flag](../../../administration/feature_flags.md) named
-`dast_on_demand_scans_scheduler`.
-On GitLab.com, this feature is available.
+> - [Feature flag dast_on_demand_scans_scheduler removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5.
 
 To schedule a scan:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > On-demand Scans**.
+1. Select **New DAST scan**.
 1. Complete the **Scan name** and **Description** text boxes.
 1. In GitLab 13.10 and later, from the **Branch** dropdown list, select the desired branch.
 1. In the **Scanner profile** section, from the dropdown list, select a scanner profile.

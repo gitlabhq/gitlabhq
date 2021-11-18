@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'orphaned_invite_tokens_cleanup'
+require_migration!
 
 RSpec.describe OrphanedInviteTokensCleanup, :migration do
   def create_member(**extra_attributes)

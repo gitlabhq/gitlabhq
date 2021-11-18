@@ -18,7 +18,6 @@ export default function appFactory(el, Component) {
       {},
       {
         batchMax: 1,
-        assumeImmutableResults: true,
       },
     ),
   });

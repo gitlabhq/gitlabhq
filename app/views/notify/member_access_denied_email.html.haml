@@ -2,6 +2,11 @@
   %td.text-content
     %p
       Your request to join the
-      #{link_to member_source.human_name, member_source.web_url, class: :highlight} #{member_source.model_name.singular}
-      has been #{content_tag :span, 'denied', class: :highlight}.
+
+      - if @source_hidden
+        #{content_tag :span, 'Hidden', class: :highlight}
+      - else
+        #{link_to member_source.human_name, member_source.web_url, class: :highlight}
+
+      #{member_source.model_name.singular} has been #{content_tag :span, 'denied', class: :highlight}.
 

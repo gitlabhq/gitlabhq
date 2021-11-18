@@ -69,10 +69,14 @@ can easily notice them.
 
 ![Canary deployments on deploy board](img/deploy_boards_canary_deployments.png)
 
-### Advanced traffic control with Canary Ingress
+### Advanced traffic control with Canary Ingress (DEPRECATED)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215501) in [GitLab Premium](https://about.gitlab.com/pricing/) 13.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) to Free in GitLab 13.8.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 Canary deployments can be more strategic with [Canary Ingress](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#canary),
 which is an advanced traffic routing service that controls incoming HTTP

@@ -3,8 +3,6 @@
 module Packages
   module Rubygems
     class CreateDependenciesService
-      include BulkInsertSafe
-
       def initialize(package, gemspec)
         @package = package
         @gemspec = gemspec

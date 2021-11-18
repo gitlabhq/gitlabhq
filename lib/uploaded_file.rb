@@ -20,8 +20,9 @@ class UploadedFile
   attr_reader :remote_id
   attr_reader :sha256
   attr_reader :size
+  attr_reader :upload_duration
 
-  def initialize(path, filename: nil, content_type: "application/octet-stream", sha256: nil, remote_id: nil, size: nil)
+  def initialize(path, filename: nil, content_type: "application/octet-stream", sha256: nil, remote_id: nil, size: nil, upload_duration: nil)
     if path.present?
       raise InvalidPathError, "#{path} file does not exist" unless ::File.exist?(path)
 
@@ -33,6 +34,12 @@ class UploadedFile
       rescue ArgumentError, TypeError
         raise UnknownSizeError, 'Unable to determine file size'
       end
+    end
+
+    begin
+      @upload_duration = Float(upload_duration)
+    rescue ArgumentError, TypeError
+      @upload_duration = 0
     end
 
     @content_type = content_type
@@ -64,8 +71,11 @@ class UploadedFile
       content_type: params['type'] || 'application/octet-stream',
       sha256: params['sha256'],
       remote_id: remote_id,
-      size: params['size']
-    )
+      size: params['size'],
+      upload_duration: params['upload_duration']
+    ).tap do |uploaded_file|
+      ::Gitlab::Instrumentation::Uploads.track(uploaded_file)
+    end
   end
 
   def self.allowed_path?(file_path, paths)

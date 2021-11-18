@@ -5,6 +5,13 @@ module Ci
     attr_reader :project, :pipelines, :params, :current_user
 
     ALLOWED_INDEXED_COLUMNS = %w[id status ref updated_at user_id].freeze
+    ALLOWED_SCOPES = {
+      RUNNING: 'running',
+      PENDING: 'pending',
+      FINISHED: 'finished',
+      BRANCHES: 'branches',
+      TAGS: 'tags'
+    }.freeze
 
     def initialize(project, current_user, params = {})
       @project = project
@@ -65,15 +72,15 @@ module Ci
 
     def by_scope(items)
       case params[:scope]
-      when 'running'
+      when ALLOWED_SCOPES[:RUNNING]
         items.running
-      when 'pending'
+      when ALLOWED_SCOPES[:PENDING]
         items.pending
-      when 'finished'
+      when ALLOWED_SCOPES[:FINISHED]
         items.finished
-      when 'branches'
+      when ALLOWED_SCOPES[:BRANCHES]
         from_ids(ids_for_ref(branches))
-      when 'tags'
+      when ALLOWED_SCOPES[:TAGS]
         from_ids(ids_for_ref(tags))
       else
         items

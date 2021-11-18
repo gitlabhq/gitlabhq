@@ -139,8 +139,6 @@ module Clusters
     scope :with_available_elasticstack, -> { joins(:application_elastic_stack).merge(::Clusters::Applications::ElasticStack.available) }
     scope :with_available_cilium, -> { joins(:application_cilium).merge(::Clusters::Applications::Cilium.available) }
     scope :distinct_with_deployed_environments, -> { joins(:environments).merge(::Deployment.success).distinct }
-    scope :preload_elasticstack, -> { preload(:integration_elastic_stack) }
-    scope :preload_environments, -> { preload(:environments) }
 
     scope :managed, -> { where(managed: true) }
     scope :with_persisted_applications, -> { eager_load(*APPLICATIONS_ASSOCIATIONS) }
@@ -150,9 +148,7 @@ module Clusters
     scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
     scope :with_name, -> (name) { where(name: name) }
 
-    # with_application_prometheus scope is deprecated, and scheduled for removal
-    # in %14.0. See https://gitlab.com/groups/gitlab-org/-/epics/4280
-    scope :with_application_prometheus, -> { includes(:application_prometheus).joins(:application_prometheus) }
+    scope :with_integration_prometheus, -> { includes(:integration_prometheus).joins(:integration_prometheus) }
     scope :with_project_http_integrations, -> (project_ids) do
       conditions = { projects: :alert_management_http_integrations }
       includes(conditions).joins(conditions).where(projects: { id: project_ids })
@@ -311,7 +307,7 @@ module Clusters
     end
 
     def kubeclient
-      platform_kubernetes.kubeclient if kubernetes?
+      platform_kubernetes&.kubeclient if kubernetes?
     end
 
     def elastic_stack_adapter

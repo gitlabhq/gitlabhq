@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
 
   let(:pipeline) { build(:ci_empty_pipeline, project: project, sha: head_sha) }
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:previous_stages) { [] }
   let(:current_stage) { double(seeds_names: [attributes[:name]]) }
 
-  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages, current_stage) }
+  let(:seed_build) { described_class.new(seed_context, attributes, previous_stages + [current_stage]) }
 
   describe '#attributes' do
     subject { seed_build.attributes }
@@ -393,12 +393,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   describe '#to_resource' do
     subject { seed_build.to_resource }
 
-    context 'when job is not a bridge' do
+    context 'when job is Ci::Build' do
       it { is_expected.to be_a(::Ci::Build) }
       it { is_expected.to be_valid }
 
       shared_examples_for 'deployment job' do
         it 'returns a job with deployment' do
+          expect { subject }.to change { Environment.count }.by(1)
+
           expect(subject.deployment).not_to be_nil
           expect(subject.deployment.deployable).to eq(subject)
           expect(subject.deployment.environment.name).to eq(expected_environment_name)
@@ -413,6 +415,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       shared_examples_for 'ensures environment existence' do
         it 'has environment' do
+          expect { subject }.to change { Environment.count }.by(1)
+
           expect(subject).to be_has_environment
           expect(subject.environment).to eq(environment_name)
           expect(subject.metadata.expanded_environment_name).to eq(expected_environment_name)
@@ -422,6 +426,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       shared_examples_for 'ensures environment inexistence' do
         it 'does not have environment' do
+          expect { subject }.not_to change { Environment.count }
+
           expect(subject).not_to be_has_environment
           expect(subject.environment).to be_nil
           expect(subject.metadata&.expanded_environment_name).to be_nil
@@ -1212,14 +1218,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         ]
       end
 
-      context 'when FF :variable_inside_variable is enabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: [project])
-        end
-
-        it "does not have errors" do
-          expect(subject.errors).to be_empty
-        end
+      it "does not have errors" do
+        expect(subject.errors).to be_empty
       end
     end
 
@@ -1232,36 +1232,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         ]
       end
 
-      context 'when FF :variable_inside_variable is disabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: false)
-        end
-
-        it "does not have errors" do
-          expect(subject.errors).to be_empty
-        end
+      it "returns an error" do
+        expect(subject.errors).to contain_exactly(
+          'rspec: circular variable reference detected: ["A", "B", "C"]')
       end
 
-      context 'when FF :variable_inside_variable is enabled' do
-        before do
-          stub_feature_flags(variable_inside_variable: [project])
+      context 'with job:rules:[if:]' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
+
+        it "included? does not raise" do
+          expect { subject.included? }.not_to raise_error
         end
 
-        it "returns an error" do
-          expect(subject.errors).to contain_exactly(
-            'rspec: circular variable reference detected: ["A", "B", "C"]')
-        end
-
-        context 'with job:rules:[if:]' do
-          let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$C != null', when: 'always' }] } }
-
-          it "included? does not raise" do
-            expect { subject.included? }.not_to raise_error
-          end
-
-          it "included? returns true" do
-            expect(subject.included?).to eq(true)
-          end
+        it "included? returns true" do
+          expect(subject.included?).to eq(true)
         end
       end
     end

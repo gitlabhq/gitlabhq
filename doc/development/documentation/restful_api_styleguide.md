@@ -49,8 +49,8 @@ METHOD /endpoint
 
 Supported attributes:
 
-| Attribute   | Type     | Required | Description           |
-|:------------|:---------|:---------|:----------------------|
+| Attribute   | Type     | Required               | Description           |
+| :---------- | :------- | :--------------------- | :-------------------- |
 | `attribute` | datatype | **{check-circle}** Yes | Detailed description. |
 | `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
 | `attribute` | datatype | **{dotted-circle}** No | Detailed description. |
@@ -80,16 +80,23 @@ to describe the GitLab release that introduced the API call.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (`` ` ``).
 
+Sort the attributes in the table: first, required, then alphabetically.
+
 ```markdown
-| Attribute | Type | Required | Description |
-|:----------|:-----|:---------|:------------|
+| Attribute      | Type          | Required               | Description                                          |
+| :------------- | :------------ | :--------------------- | :--------------------------------------------------- |
+| `user`         | string        | **{check-circle}** Yes | The GitLab username.                                 |
+| `assignee_ids` | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
+| `confidential` | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
 ```
 
 Rendered example:
 
-| Attribute | Type   | Required | Description         |
-|:----------|:-------|:---------|:--------------------|
-| `user`    | string | yes      | The GitLab username. |
+| Attribute      | Type          | Required               | Description                                          |
+| :------------- | :------------ | :--------------------- | :--------------------------------------------------- |
+| `user`         | string        | **{check-circle}** Yes | The GitLab username.                                 |
+| `assignee_ids` | integer array | **{dotted-circle}** No | The IDs of the users to assign the issue to.         |
+| `confidential` | boolean       | **{dotted-circle}** No | Set an issue to be confidential. Default is `false`. |
 
 ## cURL commands
 
@@ -101,12 +108,12 @@ Rendered example:
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
-| Methods                                         | Description                                           |
-|:-------------------------------------------     |:------------------------------------------------------|
+| Methods                                         | Description                                            |
+| :---------------------------------------------- | :----------------------------------------------------- |
 | `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
-| `--request POST`                                | Use this method when creating new objects             |
-| `--request PUT`                                 | Use this method when updating existing objects        |
-| `--request DELETE`                              | Use this method when removing existing objects        |
+| `--request POST`                                | Use this method when creating new objects              |
+| `--request PUT`                                 | Use this method when updating existing objects         |
+| `--request DELETE`                              | Use this method when removing existing objects         |
 
 ## cURL Examples
 

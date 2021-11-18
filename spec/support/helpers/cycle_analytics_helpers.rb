@@ -63,6 +63,10 @@ module CycleAnalyticsHelpers
     wait_for_requests
   end
 
+  def click_save_value_stream_button
+    click_button(_('Save value stream'))
+  end
+
   def create_custom_value_stream(custom_value_stream_name)
     toggle_value_stream_dropdown
     page.find_button(_('Create new Value Stream')).click

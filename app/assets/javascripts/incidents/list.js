@@ -21,10 +21,11 @@ export default () => {
     authorUsernameQuery,
     assigneeUsernameQuery,
     slaFeatureAvailable,
+    canCreateIncident,
   } = domEl.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({
@@ -44,6 +45,7 @@ export default () => {
       authorUsernameQuery,
       assigneeUsernameQuery,
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
+      canCreateIncident: parseBoolean(canCreateIncident),
     },
     apolloProvider,
     render(createElement) {

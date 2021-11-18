@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlFilteredSearchSuggestion } from '@gitlab/ui';
-
+import { compact } from 'lodash';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 
@@ -59,8 +59,10 @@ export default {
         .then((res) => {
           // We'd want to avoid doing this check but
           // users.json and /groups/:id/members & /projects/:id/users
-          // return response differently.
-          this.authors = Array.isArray(res) ? res : res.data;
+          // return response differently
+
+          // TODO: rm when completed https://gitlab.com/gitlab-org/gitlab/-/issues/345756
+          this.authors = Array.isArray(res) ? compact(res) : compact(res.data);
         })
         .catch(() =>
           createFlash({

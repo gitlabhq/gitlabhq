@@ -6,13 +6,16 @@ module Gitlab
   class UsageDataQueries < UsageData
     class << self
       def uncached_data
-        super.with_indifferent_access.deep_merge(instrumentation_metrics_queries.with_indifferent_access)
+        # instrumentation_metrics is already included with feature flag enabled
+        return super if Feature.enabled?(:usage_data_instrumentation)
+
+        super.with_indifferent_access.deep_merge(instrumentation_metrics.with_indifferent_access)
       end
 
-      def add_metric(metric, time_frame: 'none')
+      def add_metric(metric, time_frame: 'none', options: {})
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
-        metric_class.new(time_frame: time_frame).instrumentation
+        metric_class.new(time_frame: time_frame, options: options).instrumentation
       end
 
       def count(relation, column = nil, *args, **kwargs)
@@ -71,7 +74,7 @@ module Gitlab
 
       private
 
-      def instrumentation_metrics_queries
+      def instrumentation_metrics
         ::Gitlab::Usage::Metric.all.map(&:with_instrumentation).reduce({}, :deep_merge)
       end
     end

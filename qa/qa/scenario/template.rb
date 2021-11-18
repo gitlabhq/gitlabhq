@@ -38,8 +38,8 @@ module QA
         Runtime::Release.perform_before_hooks
 
         Runtime::Feature.enable(options[:enable_feature]) if options.key?(:enable_feature)
-
         Runtime::Feature.disable(options[:disable_feature]) if options.key?(:disable_feature) && (@feature_enabled = Runtime::Feature.enabled?(options[:disable_feature]))
+        Runtime::Feature.set(options[:set_feature_flags]) if options.key?(:set_feature_flags)
 
         Specs::Runner.perform do |specs|
           specs.tty = true

@@ -325,12 +325,14 @@ RSpec.describe ProjectStatistics do
         lfs_objects_size: 3,
         snippets_size: 2,
         pipeline_artifacts_size: 3,
+        build_artifacts_size: 3,
+        packages_size: 6,
         uploads_size: 5
       )
 
       statistics.reload
 
-      expect(statistics.storage_size).to eq 19
+      expect(statistics.storage_size).to eq 28
     end
 
     it 'works during wiki_size backfill' do

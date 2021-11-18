@@ -17,4 +17,7 @@ export default CodeBlockHighlight.extend({
   addNodeView() {
     return new VueNodeViewRenderer(FrontmatterWrapper);
   },
+  addInputRules() {
+    return [];
+  },
 });

@@ -51,7 +51,7 @@ The security dashboard and vulnerability report displays information about vulne
 At the pipeline level, the Security section displays the vulnerabilities present in the branch of
 the project the pipeline ran against.
 
-![Pipeline Security Dashboard](img/pipeline_security_dashboard_v14_2.png)
+![Pipeline Security Dashboard](img/pipeline_security_dashboard_v14_4.png)
 
 Visit the page for any pipeline that ran any of the [supported reports](#supported-reports). To view
 the pipeline's security findings, select the **Security** tab when viewing the pipeline.
@@ -64,11 +64,15 @@ the analyzer outputs an
 
 ### Scan details
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3728) in GitLab 13.10.
+> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/333660) in GitLab 14.2.
 
-The **Scan details** section lists the scans run in the pipeline and the total number of
-vulnerabilities per scan. For the DAST scan, select **Download scanned resources** to download a
-CSV file containing details of the resources scanned.
+The **Scan details** section lists the scans run in the pipeline and the total number of vulnerabilities
+per scan.
+
+You can download the JSON artifacts from each security scan. Select **Download results** then
+select the JSON artifact. Additionally for the DAST scan, from the **Download results** dropdown select
+**Download scanned resources** to download a CSV file containing details of the resources scanned.
 
 ## Project Security Dashboard
 

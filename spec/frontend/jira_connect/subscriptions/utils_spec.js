@@ -8,6 +8,7 @@ import {
   getLocation,
   reloadPage,
   sizeToParent,
+  getGitlabSignInURL,
 } from '~/jira_connect/subscriptions/utils';
 
 describe('JiraConnect utils', () => {
@@ -136,5 +137,26 @@ describe('JiraConnect utils', () => {
         expect(sizeToParentSpy).not.toHaveBeenCalled();
       });
     });
+  });
+
+  describe('getGitlabSignInURL', () => {
+    const mockSignInURL = 'https://gitlab.com/sign_in';
+
+    it.each`
+      returnTo            | expectResult
+      ${undefined}        | ${mockSignInURL}
+      ${''}               | ${mockSignInURL}
+      ${'/test/location'} | ${`${mockSignInURL}?return_to=${encodeURIComponent('/test/location')}`}
+    `(
+      'returns `$expectResult` when `AP.getLocation` resolves to `$returnTo`',
+      async ({ returnTo, expectResult }) => {
+        global.AP = {
+          getLocation: jest.fn().mockImplementation((cb) => cb(returnTo)),
+        };
+
+        const url = await getGitlabSignInURL(mockSignInURL);
+        expect(url).toBe(expectResult);
+      },
+    );
   });
 });

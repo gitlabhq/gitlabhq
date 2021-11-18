@@ -9,7 +9,7 @@ module MailScheduler
     sidekiq_options retry: 3
     include MailSchedulerQueue
 
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     # rubocop: disable CodeReuse/ActiveRecord
     def perform(project_id)

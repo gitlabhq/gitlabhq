@@ -1,3 +1,4 @@
+import { GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
@@ -91,6 +92,7 @@ describe('issue_note_form component', () => {
 
       expect(conflictWarning.exists()).toBe(true);
       expect(conflictWarning.text().replace(/\s+/g, ' ').trim()).toBe(message);
+      expect(conflictWarning.find(GlLink).attributes('href')).toBe('#note_545');
     });
   });
 

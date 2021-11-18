@@ -1,6 +1,7 @@
 <script>
-import { pickBy } from 'lodash';
+import { pickBy, isEmpty } from 'lodash';
 import { mapActions } from 'vuex';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -19,6 +20,11 @@ export default {
       type: Array,
       required: true,
     },
+    eeFilters: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -26,57 +32,6 @@ export default {
     };
   },
   computed: {
-    urlParams() {
-      const {
-        authorUsername,
-        labelName,
-        assigneeUsername,
-        search,
-        milestoneTitle,
-        types,
-        weight,
-      } = this.filterParams;
-      let notParams = {};
-
-      if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
-        notParams = pickBy(
-          {
-            'not[label_name][]': this.filterParams.not.labelName,
-            'not[author_username]': this.filterParams.not.authorUsername,
-            'not[assignee_username]': this.filterParams.not.assigneeUsername,
-            'not[types]': this.filterParams.not.types,
-            'not[milestone_title]': this.filterParams.not.milestoneTitle,
-            'not[weight]': this.filterParams.not.weight,
-          },
-          undefined,
-        );
-      }
-
-      return {
-        ...notParams,
-        author_username: authorUsername,
-        'label_name[]': labelName,
-        assignee_username: assigneeUsername,
-        milestone_title: milestoneTitle,
-        search,
-        types,
-        weight,
-      };
-    },
-  },
-  methods: {
-    ...mapActions(['performSearch']),
-    handleFilter(filters) {
-      this.filterParams = this.getFilterParams(filters);
-
-      updateHistory({
-        url: setUrlParams(this.urlParams, window.location.href, true, false, true),
-        title: document.title,
-        replace: true,
-      });
-
-      this.performSearch();
-    },
     getFilteredSearchValue() {
       const {
         authorUsername,
@@ -86,6 +41,8 @@ export default {
         milestoneTitle,
         types,
         weight,
+        epicId,
+        myReactionEmoji,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -133,6 +90,20 @@ export default {
         });
       }
 
+      if (myReactionEmoji) {
+        filteredSearchValue.push({
+          type: 'my_reaction_emoji',
+          value: { data: myReactionEmoji, operator: '=' },
+        });
+      }
+
+      if (epicId) {
+        filteredSearchValue.push({
+          type: 'epic_id',
+          value: { data: epicId, operator: '=' },
+        });
+      }
+
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
           type: 'author_username',
@@ -177,11 +148,88 @@ export default {
         });
       }
 
+      if (this.filterParams['not[epicId]']) {
+        filteredSearchValue.push({
+          type: 'epic_id',
+          value: { data: this.filterParams['not[epicId]'], operator: '!=' },
+        });
+      }
+
+      if (this.filterParams['not[myReactionEmoji]']) {
+        filteredSearchValue.push({
+          type: 'my_reaction_emoji',
+          value: { data: this.filterParams['not[myReactionEmoji]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
 
       return filteredSearchValue;
+    },
+    urlParams() {
+      const {
+        authorUsername,
+        labelName,
+        assigneeUsername,
+        search,
+        milestoneTitle,
+        types,
+        weight,
+        epicId,
+        myReactionEmoji,
+      } = this.filterParams;
+
+      let notParams = {};
+
+      if (Object.prototype.hasOwnProperty.call(this.filterParams, 'not')) {
+        notParams = pickBy(
+          {
+            'not[label_name][]': this.filterParams.not.labelName,
+            'not[author_username]': this.filterParams.not.authorUsername,
+            'not[assignee_username]': this.filterParams.not.assigneeUsername,
+            'not[types]': this.filterParams.not.types,
+            'not[milestone_title]': this.filterParams.not.milestoneTitle,
+            'not[weight]': this.filterParams.not.weight,
+            'not[epic_id]': this.filterParams.not.epicId,
+            'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
+          },
+          undefined,
+        );
+      }
+
+      return {
+        ...notParams,
+        author_username: authorUsername,
+        'label_name[]': labelName,
+        assignee_username: assigneeUsername,
+        milestone_title: milestoneTitle,
+        search,
+        types,
+        weight,
+        epic_id: getIdFromGraphQLId(epicId),
+        my_reaction_emoji: myReactionEmoji,
+      };
+    },
+  },
+  created() {
+    if (!isEmpty(this.eeFilters)) {
+      this.filterParams = this.eeFilters;
+    }
+  },
+  methods: {
+    ...mapActions(['performSearch']),
+    handleFilter(filters) {
+      this.filterParams = this.getFilterParams(filters);
+
+      updateHistory({
+        url: setUrlParams(this.urlParams, window.location.href, true, false, true),
+        title: document.title,
+        replace: true,
+      });
+
+      this.performSearch();
     },
     getFilterParams(filters = []) {
       const notFilters = filters.filter((item) => item.value.operator === '!=');
@@ -216,6 +264,12 @@ export default {
           case 'weight':
             filterParams.weight = filter.value.data;
             break;
+          case 'epic_id':
+            filterParams.epicId = filter.value.data;
+            break;
+          case 'my_reaction_emoji':
+            filterParams.myReactionEmoji = filter.value.data;
+            break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);
             break;
@@ -243,7 +297,7 @@ export default {
     namespace=""
     :tokens="tokens"
     :search-input-placeholder="$options.i18n.search"
-    :initial-filter-value="getFilteredSearchValue()"
+    :initial-filter-value="getFilteredSearchValue"
     @onFilter="handleFilter"
   />
 </template>

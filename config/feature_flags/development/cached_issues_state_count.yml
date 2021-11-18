@@ -1,8 +1,0 @@
----
-name: cached_issues_state_count
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67418
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333089
-milestone: '14.3'
-type: development
-group: group::product planning
-default_enabled: false

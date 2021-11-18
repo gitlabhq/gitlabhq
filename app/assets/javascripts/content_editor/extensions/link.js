@@ -1,9 +1,6 @@
 import { markInputRule } from '@tiptap/core';
 import { Link } from '@tiptap/extension-link';
 
-export const markdownLinkSyntaxInputRuleRegExp = /(?:^|\s)\[([\w|\s|-]+)\]\((?<href>.+?)\)$/gm;
-export const urlSyntaxRegExp = /(?:^|\s)(?<href>(?:https?:\/\/|www\.)[\S]+)(?:\s|\n)$/gim;
-
 const extractHrefFromMatch = (match) => {
   return { href: match.groups.href };
 };
@@ -26,9 +23,20 @@ export default Link.extend({
     openOnClick: false,
   },
   addInputRules() {
+    const markdownLinkSyntaxInputRuleRegExp = /(?:^|\s)\[([\w|\s|-]+)\]\((?<href>.+?)\)$/gm;
+    const urlSyntaxRegExp = /(?:^|\s)(?<href>(?:https?:\/\/|www\.)[\S]+)(?:\s|\n)$/gim;
+
     return [
-      markInputRule(markdownLinkSyntaxInputRuleRegExp, this.type, extractHrefFromMarkdownLink),
-      markInputRule(urlSyntaxRegExp, this.type, extractHrefFromMatch),
+      markInputRule({
+        find: markdownLinkSyntaxInputRuleRegExp,
+        type: this.type,
+        getAttributes: extractHrefFromMarkdownLink,
+      }),
+      markInputRule({
+        find: urlSyntaxRegExp,
+        type: this.type,
+        getAttributes: extractHrefFromMatch,
+      }),
     ];
   },
   addAttributes() {

@@ -11,6 +11,7 @@ class Projects::FindFileController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   feature_category :source_code_management
+  urgency :low, [:show, :list]
 
   def show
     return render_404 unless @repository.commit(@ref)

@@ -14,6 +14,7 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :limit_diverging_commit_counts!, only: [:diverging_commit_counts]
 
   feature_category :source_code_management
+  urgency :low, [:index, :diverging_commit_counts, :create, :destroy]
 
   def index
     respond_to do |format|
@@ -105,8 +106,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
-    @branch_name = Addressable::URI.unescape(params[:id])
-    result = ::Branches::DeleteService.new(project, current_user).execute(@branch_name)
+    result = ::Branches::DeleteService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       format.html do

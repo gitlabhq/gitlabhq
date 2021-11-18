@@ -339,7 +339,7 @@ export default {
           </div>
           <div class="gl-display-flex">
             <span class="gl-text-gray-600 gl-ml-5">
-              {{ s__('SetStatusModal|A busy indicator is shown next to your name and avatar.') }}
+              {{ s__('SetStatusModal|An indicator appears next to your name and avatar') }}
             </span>
           </div>
         </div>

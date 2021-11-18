@@ -6,7 +6,7 @@
 # and what types we expect those attribute values to be.
 #
 # For more information please refer to the handbook documentation here:
-# {{LINK TBD}}
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations
 #
 # Please delete this line and above before submitting your merge request.
 
@@ -19,11 +19,10 @@
 
     This area supports markdown.  Delete this entire comment and replace it with your markdown content.
 
-    Make sure to run `bin/rake gitlab:docs:compile_deprecations` locally before committing and pushing your changes.
-
-    When ready, assign to your tech writer to review and merge.
+    When ready, assign to your tech writer for review. When ready, they will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
 
     END OF BODY COMMENT -->
+# The following items are not published on the docs page, but may be used in the future.
   stage: # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
   tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: # (optional) This is a link to the deprecation issue in GitLab

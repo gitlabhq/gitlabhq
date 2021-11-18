@@ -294,7 +294,7 @@ Example of response
 ]
 ```
 
-In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#single-pipeline-requests)
+In GitLab 13.3 and later, this endpoint [returns data for any pipeline](pipelines.md#get-a-single-pipeline)
 including [child pipelines](../ci/pipelines/parent_child_pipelines.md).
 
 In GitLab 13.5 and later, this endpoint does not return retried jobs in the response
@@ -400,11 +400,12 @@ Retrieve the job that generated a job token.
 GET /job
 ```
 
-Examples
+Examples (must run as part of the [`script`](../ci/yaml/index.md#script) section of a [CI/CD job](../ci/jobs/index.md)):
 
 ```shell
-curl --header "JOB-TOKEN: <your_job_token>" "https://gitlab.example.com/api/v4/job"
-curl "https://gitlab.example.com/api/v4/job?job_token=<your_job_token>"
+curl --header "Authorization: Bearer $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
+curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"
+curl "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
 ```
 
 Example of response

@@ -2,7 +2,6 @@
 stage: Manage
 group: Import
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments"
-type: reference, howto
 ---
 
 # Project import/export **(FREE)**
@@ -159,7 +158,9 @@ To export a project and its data, follow these steps:
 
 1. Go to your project's homepage.
 
-1. Click **Settings** in the sidebar.
+1. Select **Settings** in the sidebar.
+
+1. Scroll down and expand the **Advanced** section.
 
 1. Scroll down to find the **Export project** button:
 
@@ -178,12 +179,14 @@ To export a project and its data, follow these steps:
 
 ## Import the project
 
+> Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8.
+
 WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
 may be possible for an attacker to steal your sensitive data.
 
 1. The GitLab project import feature is the first import option when creating a
-   new project. Click on **GitLab export**:
+   new project. Select **GitLab export**:
 
    ![New project](img/import_export_new_project.png)
 
@@ -191,7 +194,7 @@ may be possible for an attacker to steal your sensitive data.
 
    ![Select file](img/import_export_select_file.png)
 
-1. Click on **Import project** to begin importing. Your newly imported project
+1. Select **Import project** to begin importing. Your newly imported project
    page appears shortly.
 
 NOTE:
@@ -199,9 +202,8 @@ If use of the `Internal` visibility level
 [is restricted](../../../public_access/public_access.md#restrict-use-of-public-or-internal-projects),
 all imported projects are given the visibility of `Private`.
 
-NOTE:
-The maximum import file size can be set by the Administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+The maximum import file size can be set by the Administrator, and the default is `0` (unlimited).
+As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin Area UI](../../admin_area/settings/account_and_limit_settings.md).
 
 ### Project import status
 
@@ -224,6 +226,11 @@ To help avoid abuse, by default, users are rate limited to:
 
 GitLab.com may have [different settings](../../gitlab_com/index.md#importexport) from the defaults.
 
+## Automate group and project import **(PREMIUM)**
+
+For information on automating user, group, and project import API calls, see
+[Automate group and project import](../import/index.md#automate-group-and-project-import).
+
 ## Troubleshooting
 
 ### Project fails to import due to mismatch
@@ -233,15 +240,18 @@ does not match between the exported project, and the project import, the project
 Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and either:
 
 - Ensure shared runners are enabled in both the source and destination projects.
-- Disable shared runners on the parent group when you import the project. 
+- Disable shared runners on the parent group when you import the project.
 
-### Import workaround for large repositories
+### Import workarounds for large repositories
 
 [Maximum import size limitations](#import-the-project)
-can prevent an import from being successful.
-If changing the import limits is not possible,
-the following local workflow can be used to temporarily
-reduce the repository size for another import attempt.
+can prevent an import from being successful. If changing the import limits is not possible, you can
+try one of the workarounds listed here.
+
+#### Workaround option 1
+
+The following local workflow can be used to temporarily
+reduce the repository size for another import attempt:
 
 1. Create a temporary working directory from the export:
 
@@ -290,6 +300,58 @@ reduce the repository size for another import attempt.
    its [default branch](../repository/branches/default.md), and
    delete the temporary, `smaller-tmp-main` branch, and
    the local, temporary data.
+
+#### Workaround option 2
+
+Rather than attempting to push all changes at once, this workaround:
+
+- Separates the project import from the Git Repository import
+- Incrementally pushes the repository to GitLab
+
+1. Make a local clone of the repository to migrate. In a later step, you push this clone outside of
+   the project export.
+1. Download the export and remove the `project.bundle` (which contains the Git repository):
+
+   ```shell
+   tar -czvf new_export.tar.gz --exclude='project.bundle' @old_export.tar.gz
+   ```
+
+1. Import the export without a Git repository. It asks you to confirm to import without a
+   repository.
+1. Save this bash script as a file and run it after adding the appropriate origin.
+
+   ```shell
+   #!/bin/sh
+
+   # ASSUMPTIONS:
+   # - The GitLab location is "origin"
+   # - The default branch is "main"
+   # - This will attempt to push in chunks of 500MB (dividing the total size by 500MB).
+   #   Decrease this size to push in smaller chunks if you still receive timeouts.
+
+   git gc
+   SIZE=$(git count-objects -v 2> /dev/null | grep size-pack | awk '{print $2}')
+
+   # Be conservative... and try to push 2GB at a time
+   # (given this assumes each commit is the same size - which is wrong)
+   BATCHES=$(($SIZE / 500000))
+   TOTAL_COMMITS=$(git rev-list --count HEAD)
+   if (( BATCHES > TOTAL_COMMITS )); then
+       BATCHES=$TOTAL_COMMITS
+   fi
+
+   INCREMENTS=$(( ($TOTAL_COMMITS / $BATCHES) - 1 ))
+
+   for (( BATCH=BATCHES; BATCH>=1; BATCH-- ))
+   do
+     COMMIT_NUM=$(( $BATCH - $INCREMENTS ))
+     COMMIT_SHA=$(git log -n $COMMIT_NUM --format=format:%H | tail -1)
+     git push -u origin ${COMMIT_SHA}:refs/heads/main
+   done
+   git push -u origin main
+   git push -u origin -—all
+   git push -u origin -—tags
+   ```
 
 ### Manually execute export steps
 

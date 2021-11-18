@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Config do
   end
 
   let(:config) do
-    described_class.new(yml, project: nil, sha: nil, user: nil)
+    described_class.new(yml, project: nil, pipeline: nil, sha: nil, user: nil)
   end
 
   context 'when config is valid' do
@@ -286,9 +286,12 @@ RSpec.describe Gitlab::Ci::Config do
   end
 
   context "when using 'include' directive" do
-    let(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
+
     let(:project) { create(:project, :repository, group: group) }
     let(:main_project) { create(:project, :repository, :public, group: group) }
+    let(:pipeline) { build(:ci_pipeline, project: project) }
+
     let(:remote_location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
     let(:local_location) { 'spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml' }
 
@@ -327,7 +330,7 @@ RSpec.describe Gitlab::Ci::Config do
     end
 
     let(:config) do
-      described_class.new(gitlab_ci_yml, project: project, sha: '12345', user: user)
+      described_class.new(gitlab_ci_yml, project: project, pipeline: pipeline, sha: '12345', user: user)
     end
 
     before do
@@ -594,7 +597,7 @@ RSpec.describe Gitlab::Ci::Config do
             job1: {
               script: ["echo 'hello from main file'"],
               variables: {
-                VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+               VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
               }
             }
           })
@@ -725,26 +728,91 @@ RSpec.describe Gitlab::Ci::Config do
     end
 
     context "when an 'include' has rules" do
+      context "when the rule is an if" do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            - local: #{local_location}
+              rules:
+                - if: $CI_PROJECT_ID == "#{project_id}"
+          image: ruby:2.7
+          HEREDOC
+        end
+
+        context 'when the rules condition is satisfied' do
+          let(:project_id) { project.id }
+
+          it 'includes the file' do
+            expect(config.to_hash).to include(local_location_hash)
+          end
+        end
+
+        context 'when the rules condition is satisfied' do
+          let(:project_id) { non_existing_record_id }
+
+          it 'does not include the file' do
+            expect(config.to_hash).not_to include(local_location_hash)
+          end
+        end
+      end
+
+      context "when the rule is an exists" do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            - local: #{local_location}
+              rules:
+                - exists: "#{filename}"
+          image: ruby:2.7
+          HEREDOC
+        end
+
+        before do
+          project.repository.create_file(
+            project.creator,
+            'my_builds.yml',
+            local_file_content,
+            message: 'Add my_builds.yml',
+            branch_name: '12345'
+          )
+        end
+
+        context 'when the exists file does not exist' do
+          let(:filename) { 'not_a_real_file.md' }
+
+          it 'does not include the file' do
+            expect(config.to_hash).not_to include(local_location_hash)
+          end
+        end
+
+        context 'when the exists file does exist' do
+          let(:filename) { 'my_builds.yml' }
+
+          it 'does include the file' do
+            expect(config.to_hash).to include(local_location_hash)
+          end
+        end
+      end
+    end
+
+    context "when an 'include' has rules with a pipeline variable" do
       let(:gitlab_ci_yml) do
         <<~HEREDOC
         include:
           - local: #{local_location}
             rules:
-              - if: $CI_PROJECT_ID == "#{project_id}"
-        image: ruby:2.7
+              - if: $CI_COMMIT_SHA == "#{project.commit.sha}"
         HEREDOC
       end
 
-      context 'when the rules condition is satisfied' do
-        let(:project_id) { project.id }
-
+      context 'when a pipeline is passed' do
         it 'includes the file' do
           expect(config.to_hash).to include(local_location_hash)
         end
       end
 
-      context 'when the rules condition is satisfied' do
-        let(:project_id) { non_existing_record_id }
+      context 'when a pipeline is not passed' do
+        let(:pipeline) { nil }
 
         it 'does not include the file' do
           expect(config.to_hash).not_to include(local_location_hash)

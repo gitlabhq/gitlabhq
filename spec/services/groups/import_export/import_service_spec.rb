@@ -7,6 +7,10 @@ RSpec.describe Groups::ImportExport::ImportService do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
 
+    before do
+      allow(GroupImportWorker).to receive(:with_status).and_return(GroupImportWorker)
+    end
+
     context 'when the job can be successfully scheduled' do
       subject(:import_service) { described_class.new(group: group, user: user) }
 
@@ -20,6 +24,8 @@ RSpec.describe Groups::ImportExport::ImportService do
       end
 
       it 'enqueues an import job' do
+        allow(GroupImportWorker).to receive(:with_status).and_return(GroupImportWorker)
+
         expect(GroupImportWorker).to receive(:perform_async).with(user.id, group.id)
 
         import_service.async_execute

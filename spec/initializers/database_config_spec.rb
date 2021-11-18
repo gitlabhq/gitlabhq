@@ -7,56 +7,15 @@ RSpec.describe 'Database config initializer', :reestablished_active_record_base 
     load Rails.root.join('config/initializers/database_config.rb')
   end
 
-  before do
-    allow(Gitlab::Runtime).to receive(:max_threads).and_return(max_threads)
-  end
-
-  let(:max_threads) { 8 }
-
   it 'retains the correct database name for the connection' do
-    previous_db_name = Gitlab::Database.main.scope.connection.pool.db_config.name
+    previous_db_name = ApplicationRecord.connection.pool.db_config.name
 
     subject
 
-    expect(Gitlab::Database.main.scope.connection.pool.db_config.name).to eq(previous_db_name)
+    expect(ApplicationRecord.connection.pool.db_config.name).to eq(previous_db_name)
   end
 
-  context 'when no custom headroom is specified' do
-    it 'sets the pool size based on the number of worker threads' do
-      old = ActiveRecord::Base.connection_db_config.pool
-
-      expect(old).not_to eq(18)
-
-      expect { subject }
-        .to change { ActiveRecord::Base.connection_db_config.pool }
-        .from(old)
-        .to(18)
-    end
-
-    it 'overwrites custom pool settings' do
-      config = Gitlab::Database.main.config.merge(pool: 42)
-
-      allow(Gitlab::Database.main).to receive(:config).and_return(config)
-      subject
-
-      expect(ActiveRecord::Base.connection_db_config.pool).to eq(18)
-    end
-  end
-
-  context "when specifying headroom through an ENV variable" do
-    let(:headroom) { 15 }
-
-    before do
-      stub_env("DB_POOL_HEADROOM", headroom)
-    end
-
-    it "adds headroom on top of the calculated size" do
-      old = ActiveRecord::Base.connection_db_config.pool
-
-      expect { subject }
-        .to change { ActiveRecord::Base.connection_db_config.pool }
-        .from(old)
-        .to(23)
-    end
+  it 'does not overwrite custom pool settings' do
+    expect { subject }.not_to change { ActiveRecord::Base.connection_db_config.pool }
   end
 end

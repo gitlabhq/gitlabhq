@@ -17,6 +17,10 @@ module Gitlab
           raise NotImplementedError, "Expected #{self.name} to implement value"
         end
 
+        def links
+          []
+        end
+
         private
 
         attr_reader :project, :options

@@ -1,7 +1,7 @@
 import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import DevopsScoreCallout from '~/analytics/devops_report/components/devops_score_callout.vue';
-import { INTRO_COOKIE_KEY } from '~/analytics/devops_report/constants';
+import DevopsScoreCallout from '~/analytics/devops_reports/components/devops_score_callout.vue';
+import { INTRO_COOKIE_KEY } from '~/analytics/devops_reports/constants';
 import * as utils from '~/lib/utils/common_utils';
 import { devopsReportDocsPath, devopsScoreIntroImagePath } from '../mock_data';
 

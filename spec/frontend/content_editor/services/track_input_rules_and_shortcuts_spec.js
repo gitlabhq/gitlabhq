@@ -10,7 +10,7 @@ import Heading from '~/content_editor/extensions/heading';
 import ListItem from '~/content_editor/extensions/list_item';
 import trackInputRulesAndShortcuts from '~/content_editor/services/track_input_rules_and_shortcuts';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
-import { createTestEditor } from '../test_utils';
+import { createTestEditor, triggerNodeInputRule } from '../test_utils';
 
 describe('content_editor/services/track_input_rules_and_shortcuts', () => {
   let trackingSpy;
@@ -70,14 +70,7 @@ describe('content_editor/services/track_input_rules_and_shortcuts', () => {
     describe('when creating a heading using an input rule', () => {
       it('sends a tracking event indicating that a heading was created using an input rule', async () => {
         const nodeName = Heading.name;
-        const { view } = editor;
-        const { selection } = view.state;
-
-        // Triggers the event handler that input rules listen to
-        view.someProp('handleTextInput', (f) => f(view, selection.from, selection.to, '## '));
-
-        editor.chain().insertContent(HEADING_TEXT).run();
-
+        triggerNodeInputRule({ tiptapEditor: editor, inputRuleText: '## ' });
         expect(trackingSpy).toHaveBeenCalledWith(undefined, INPUT_RULE_TRACKING_ACTION, {
           label: CONTENT_EDITOR_TRACKING_LABEL,
           property: `${nodeName}`,

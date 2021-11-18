@@ -159,6 +159,7 @@ options:
   - p_ci_templates_implicit_security_api_fuzzing
   - p_ci_templates_implicit_security_dast
   - p_ci_templates_implicit_security_cluster_image_scanning
+  - p_ci_templates_kaniko
 distribution:
 - ce
 - ee

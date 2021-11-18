@@ -138,7 +138,7 @@ export default function initDiffsApp(store) {
         ...mapActions('diffs', ['toggleFileFinder', 'scrollToFile']),
         openFile(file) {
           window.mrTabs.tabShown('diffs');
-          this.scrollToFile(file.path);
+          this.scrollToFile({ path: file.path });
         },
       },
       render(createElement) {

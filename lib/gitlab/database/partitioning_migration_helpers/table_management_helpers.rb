@@ -428,8 +428,8 @@ module Gitlab
         end
 
         def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name)
-          replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(original_table_name.to_s,
-              replacement_table_name, replaced_table_name, primary_key_name)
+          replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(connection,
+              original_table_name.to_s, replacement_table_name, replaced_table_name, primary_key_name)
 
           transaction do
             drop_sync_trigger(original_table_name)

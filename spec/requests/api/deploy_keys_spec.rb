@@ -8,8 +8,9 @@ RSpec.describe API::DeployKeys do
   let_it_be(:admin)       { create(:admin) }
   let_it_be(:project)     { create(:project, creator_id: user.id) }
   let_it_be(:project2)    { create(:project, creator_id: user.id) }
-
-  let(:deploy_key) { create(:deploy_key, public: true) }
+  let_it_be(:project3)    { create(:project, creator_id: user.id) }
+  let_it_be(:deploy_key) { create(:deploy_key, public: true) }
+  let_it_be(:deploy_key_private) { create(:deploy_key, public: false) }
 
   let!(:deploy_keys_project) do
     create(:deploy_keys_project, project: project, deploy_key: deploy_key)
@@ -33,13 +34,56 @@ RSpec.describe API::DeployKeys do
     end
 
     context 'when authenticated as admin' do
+      let_it_be(:pat) { create(:personal_access_token, user: admin) }
+
+      def make_api_request(params = {})
+        get api('/deploy_keys', personal_access_token: pat), params: params
+      end
+
       it 'returns all deploy keys' do
-        get api('/deploy_keys', admin)
+        make_api_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
+        expect(response).to match_response_schema('public_api/v4/deploy_keys')
         expect(json_response).to be_an Array
-        expect(json_response.first['id']).to eq(deploy_keys_project.deploy_key.id)
+
+        expect(json_response[0]['id']).to eq(deploy_key.id)
+        expect(json_response[1]['id']).to eq(deploy_key_private.id)
+      end
+
+      it 'avoids N+1 database queries', :use_sql_query_cache, :request_store do
+        create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { make_api_request }
+
+        deploy_key2 = create(:deploy_key, public: true)
+        create(:deploy_keys_project, :write_access, project: project3, deploy_key: deploy_key2)
+
+        expect { make_api_request }.not_to exceed_all_query_limit(control)
+      end
+
+      context 'when `public` parameter is `true`' do
+        it 'only returns public deploy keys' do
+          make_api_request({ public: true })
+
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(deploy_key.id)
+        end
+      end
+
+      context 'projects_with_write_access' do
+        let!(:deploy_keys_project2) { create(:deploy_keys_project, :write_access, project: project2, deploy_key: deploy_key) }
+        let!(:deploy_keys_project3) { create(:deploy_keys_project, :write_access, project: project3, deploy_key: deploy_key) }
+
+        it 'returns projects with write access' do
+          make_api_request
+
+          response_projects_with_write_access = json_response.first['projects_with_write_access']
+
+          expect(response_projects_with_write_access[0]['id']).to eq(project2.id)
+          expect(response_projects_with_write_access[1]['id']).to eq(project3.id)
+        end
       end
     end
   end
@@ -58,6 +102,7 @@ RSpec.describe API::DeployKeys do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(deploy_key.title)
+      expect(json_response.first).not_to have_key(:projects_with_write_access)
     end
 
     it 'returns multiple deploy keys without N + 1' do
@@ -77,6 +122,7 @@ RSpec.describe API::DeployKeys do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq(deploy_key.title)
+      expect(json_response).not_to have_key(:projects_with_write_access)
     end
 
     it 'returns 404 Not Found with invalid ID' do

@@ -83,6 +83,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_security_sast_iac_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_security_dast_runner_validation
   category: ci_templates
   redis_slot: ci_templates
@@ -267,6 +271,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_jobs_sast_iac_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_jobs_secret_detection
   category: ci_templates
   redis_slot: ci_templates
@@ -447,6 +455,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_implicit_jobs_sast_iac_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_implicit_jobs_secret_detection
   category: ci_templates
   redis_slot: ci_templates
@@ -503,6 +515,10 @@
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly
+- name: p_ci_templates_implicit_security_sast_iac_latest
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
 - name: p_ci_templates_implicit_security_dast_runner_validation
   category: ci_templates
   redis_slot: ci_templates
@@ -556,6 +572,10 @@
   redis_slot: ci_templates
   aggregation: weekly
 - name: p_ci_templates_implicit_security_cluster_image_scanning
+  category: ci_templates
+  redis_slot: ci_templates
+  aggregation: weekly
+- name: p_ci_templates_kaniko
   category: ci_templates
   redis_slot: ci_templates
   aggregation: weekly

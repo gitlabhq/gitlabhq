@@ -36,7 +36,7 @@ RSpec.describe NotificationSetting do
         notification_setting.merge_merge_request = "t"
         notification_setting.close_merge_request = "nil"
         notification_setting.reopen_merge_request = "false"
-        notification_setting.save
+        notification_setting.save!
       end
 
       it "parses boolean before saving" do
@@ -52,12 +52,12 @@ RSpec.describe NotificationSetting do
     context 'notification_email' do
       let_it_be(:user) { create(:user) }
 
-      subject { described_class.new(source_id: 1, source_type: 'Project', user_id: user.id) }
+      subject { build(:notification_setting, user_id: user.id) }
 
       it 'allows to change email to verified one' do
         email = create(:email, :confirmed, user: user)
 
-        subject.update(notification_email: email.email)
+        subject.notification_email = email.email
 
         expect(subject).to be_valid
       end
@@ -65,13 +65,13 @@ RSpec.describe NotificationSetting do
       it 'does not allow to change email to not verified one' do
         email = create(:email, user: user)
 
-        subject.update(notification_email: email.email)
+        subject.notification_email = email.email
 
         expect(subject).to be_invalid
       end
 
       it 'allows to change email to empty one' do
-        subject.update(notification_email: '')
+        subject.notification_email = ''
 
         expect(subject).to be_valid
       end
@@ -85,7 +85,7 @@ RSpec.describe NotificationSetting do
       1.upto(4) do |i|
         setting = create(:notification_setting, user: user)
 
-        setting.project.update(pending_delete: true) if i.even?
+        setting.project.update!(pending_delete: true) if i.even?
       end
     end
 

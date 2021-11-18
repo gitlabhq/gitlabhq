@@ -388,15 +388,24 @@ describe('diffs/components/app', () => {
 
       wrapper.vm.jumpToFile(+1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '222.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
+        'diffs/scrollToFile',
+        { path: '222.js' },
+      ]);
       store.state.diffs.currentDiffFileId = '222';
       wrapper.vm.jumpToFile(+1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '333.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
+        'diffs/scrollToFile',
+        { path: '333.js' },
+      ]);
       store.state.diffs.currentDiffFileId = '333';
       wrapper.vm.jumpToFile(-1);
 
-      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual(['diffs/scrollToFile', '222.js']);
+      expect(spy.mock.calls[spy.mock.calls.length - 1]).toEqual([
+        'diffs/scrollToFile',
+        { path: '222.js' },
+      ]);
     });
 
     it('does not jump to previous file from the first one', async () => {
@@ -700,25 +709,6 @@ describe('diffs/components/app', () => {
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
-    });
-  });
-
-  describe('fluid layout', () => {
-    beforeEach(() => {
-      setFixtures(
-        '<div><div class="merge-request-container limit-container-width container-limited"></div></div>',
-      );
-    });
-
-    it('removes limited container classes when on diffs tab', () => {
-      createComponent({ isFluidLayout: false, shouldShow: true }, () => {}, {
-        glFeatures: { mrChangesFluidLayout: true },
-      });
-
-      const containerClassList = document.querySelector('.merge-request-container').classList;
-
-      expect(containerClassList).not.toContain('container-limited');
-      expect(containerClassList).not.toContain('limit-container-width');
     });
   });
 });

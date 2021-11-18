@@ -1,0 +1,8 @@
+.js-invite-members-trigger{ data: { trigger_source: 'project-side-nav',
+  classes: 'gl-text-decoration-none! gl-shadow-none! gl-text-body!',
+  icon: 'users',
+  display_text: title,
+  trigger_element: 'side-nav'} }
+
+= render partial: 'shared/nav/sidebar_submenu', locals: { sidebar_menu: sidebar_menu }
+= render 'projects/invite_members_modal', project: project

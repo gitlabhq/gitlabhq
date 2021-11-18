@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateServices, :migration, schema: 20201207165956 do
+RSpec.describe Gitlab::BackgroundMigration::RemoveDuplicateServices, :migration, schema: 20181228175414 do
   let_it_be(:users) { table(:users) }
   let_it_be(:namespaces) { table(:namespaces) }
   let_it_be(:projects) { table(:projects) }

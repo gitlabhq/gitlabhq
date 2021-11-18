@@ -87,7 +87,7 @@ export default {
         v-if="!latestPipeline"
         :empty-state-svg-path="pipelinesEmptyStateSvgPath"
         :can-set-ci="true"
-        class="mb-auto mt-auto"
+        class="gl-p-5"
       />
       <gl-alert
         v-else-if="latestPipeline.yamlError"

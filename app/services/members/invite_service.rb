@@ -39,6 +39,11 @@ module Members
       errors[invite_email(member)] = member.errors.full_messages.to_sentence
     end
 
+    override :create_tasks_to_be_done
+    def create_tasks_to_be_done
+      # Only create task issues for existing users. Tasks for new users are created when they signup.
+    end
+
     def invite_email(member)
       member.invite_email || member.user.email
     end

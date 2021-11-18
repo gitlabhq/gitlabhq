@@ -1,0 +1,8 @@
+---
+name: api_v3_commits_skip_diff_files
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67647
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344617
+milestone: '14.5'
+type: development
+group: group::integrations
+default_enabled: true

@@ -19,6 +19,8 @@ tasks:
         # ensure gdk.yml has correct instance settings
         gdk config set gitlab.rails.port 443
         gdk config set gitlab.rails.https.enabled true
+        # make documentation builds available
+        gdk config set gitlab_docs.enabled true
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure
@@ -69,21 +71,21 @@ tasks:
         printf "Waiting for GitLab at $(gp url 3000) ..."
         # Check /-/readiness which returns JSON, but we're only interested in the exit code
         #
-        # We use http://localhost:3000 instead of the public hostname because 
+        # We use http://localhost:3000 instead of the public hostname because
         # it's no longer possible to access as specific cookies are required
         until curl --silent --no-buffer --fail http://localhost:3000/-/readiness > /dev/null 2>&1; do printf '.'; sleep 5; done && echo ""
         # Give Gitpod a few more seconds to set up everything ...
         sleep 5
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
         gp preview $(gp url 3000) || true
-        # Speed up backend tests
-        export GITLAB_TEST_EAGER_LOAD=false
       )
 
 ports:
   - port: 2222  # sshd
     onOpen: ignore
   - port: 3000  # rails-web
+    onOpen: notify
+  - port: 3005  # gitlab-docs
     onOpen: notify
   - port: 3010  # gitlab-pages
     onOpen: ignore
@@ -104,3 +106,4 @@ vscode:
     - octref.vetur@0.34.1
     - dbaeumer.vscode-eslint@2.1.8
     - gitlab.gitlab-workflow@3.24.0
+    - DavidAnson.vscode-markdownlint@0.44.4

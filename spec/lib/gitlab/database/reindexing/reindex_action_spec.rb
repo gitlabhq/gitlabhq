@@ -11,6 +11,8 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexAction do
     swapout_view_for_table(:postgres_indexes)
   end
 
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe '.create_for' do
     subject { described_class.create_for(index) }
 

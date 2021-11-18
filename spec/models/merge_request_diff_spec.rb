@@ -240,8 +240,8 @@ RSpec.describe MergeRequestDiff do
       stub_external_diffs_setting(enabled: true)
 
       expect(diff).not_to receive(:save!)
-      expect(Gitlab::Database.main)
-        .to receive(:bulk_insert)
+      expect(ApplicationRecord)
+        .to receive(:legacy_bulk_insert)
         .with('merge_request_diff_files', anything)
         .and_raise(ActiveRecord::Rollback)
 
@@ -1077,6 +1077,22 @@ RSpec.describe MergeRequestDiff do
 
     it 'returns sum of all changed lines count in diff files' do
       expect(subject.lines_count).to eq 189
+    end
+  end
+
+  describe '#commits' do
+    include ProjectForksHelper
+
+    let_it_be(:target) { create(:project, :test_repo) }
+    let_it_be(:forked) { fork_project(target, nil, repository: true) }
+    let_it_be(:mr) { create(:merge_request, source_project: forked, target_project: target) }
+
+    it 'returns a CommitCollection whose container points to the target project' do
+      expect(mr.merge_request_diff.commits.container).to eq(target)
+    end
+
+    it 'returns a non-empty CommitCollection' do
+      expect(mr.merge_request_diff.commits.commits.size).to be > 0
     end
   end
 

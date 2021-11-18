@@ -224,3 +224,8 @@ in Puma when using the Linux package, and which ones have no corresponding count
 | `unicorn['exporter_enabled']`        | `puma['exporter_enabled']`         |
 | `unicorn['exporter_address']`        | `puma['exporter_address']`         |
 | `unicorn['exporter_port']`           | `puma['exporter_port']`            |
+
+## Puma exporter
+
+You can use the Puma exporter to measure various Puma metrics. For more information, see
+[Puma exporter](../monitoring/prometheus/puma_exporter.md).

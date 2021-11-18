@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('add_environment_scope_to_group_variables')
+require_migration!
 
 RSpec.describe AddEnvironmentScopeToGroupVariables do
   let(:migration) { described_class.new }

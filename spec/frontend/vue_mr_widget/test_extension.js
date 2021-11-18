@@ -3,6 +3,7 @@ import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 export default {
   name: 'WidgetTestExtension',
   props: ['targetProjectFullPath'],
+  expandEvent: 'test_expand_event',
   computed: {
     summary({ count, targetProjectFullPath }) {
       return `Test extension summary count: ${count} & ${targetProjectFullPath}`;
@@ -30,6 +31,7 @@ export default {
             href: 'https://gitlab.com',
             text: 'GitLab.com',
           },
+          actions: [{ text: 'Full report', href: 'https://gitlab.com', target: '_blank' }],
         },
       ]);
     },

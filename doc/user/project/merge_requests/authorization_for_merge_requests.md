@@ -40,7 +40,7 @@ protected branch.
 ## Forking workflow
 
 With the forking workflow, maintainers get the [Maintainer role](../../permissions.md) and regular
-developers get Reporter access to the authoritative repository, which prohibits
+developers get the Reporter role on the authoritative repository, which prohibits
 them from pushing any changes to it.
 
 Developers create forks of the authoritative project and push their feature

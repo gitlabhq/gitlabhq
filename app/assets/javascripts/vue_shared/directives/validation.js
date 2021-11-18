@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 
 /**
  * Validation messages will take priority based on the property order.
@@ -12,11 +12,11 @@ import { s__ } from '~/locale';
 const defaultFeedbackMap = {
   valueMissing: {
     isInvalid: (el) => el.validity?.valueMissing,
-    message: s__('Please fill out this field.'),
+    message: __('Please fill out this field.'),
   },
   urlTypeMismatch: {
     isInvalid: (el) => el.type === 'url' && el.validity?.typeMismatch,
-    message: s__('Please enter a valid URL format, ex: http://www.example.com/home'),
+    message: __('Please enter a valid URL format, ex: http://www.example.com/home'),
   },
 };
 

@@ -39,6 +39,10 @@ end
 #   let(:status_api) { status_create_self_monitoring_project_admin_application_settings_path }
 #   subject { post create_self_monitoring_project_admin_application_settings_path }
 RSpec.shared_examples 'triggers async worker, returns sidekiq job_id with response accepted' do
+  before do
+    allow(worker_class).to receive(:with_status).and_return(worker_class)
+  end
+
   it 'returns sidekiq job_id of expected length' do
     subject
 

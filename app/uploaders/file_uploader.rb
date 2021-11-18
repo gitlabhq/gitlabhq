@@ -32,7 +32,14 @@ class FileUploader < GitlabUploader
 
   def self.absolute_path(upload)
     File.join(
-      absolute_base_dir(upload.model),
+      root,
+      relative_path(upload)
+    )
+  end
+
+  def self.relative_path(upload)
+    File.join(
+      base_dir(upload.model),
       upload.path # already contain the dynamic_segment, see #upload_path
     )
   end

@@ -6,11 +6,17 @@ comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
+<!-- markdownlint-disable MD044 -->
+<!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-markdownlint-tests -->
+
 <div class="d-none">
   <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
   of this help information with enhanced navigation, discoverability, and readability.</h3>
 </div>
 <!-- the div above will not display on the docs site but will display on /help -->
+
+<!-- markdownlint-enable MD044 -->
 
 # GitLab Docs
 

@@ -1326,14 +1326,25 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'confidential command' do
-      let(:content) { '/confidential' }
-      let(:issuable) { issue }
-    end
+    context '/confidential' do
+      it_behaves_like 'confidential command' do
+        let(:content) { '/confidential' }
+        let(:issuable) { issue }
+      end
 
-    it_behaves_like 'confidential command' do
-      let(:content) { '/confidential' }
-      let(:issuable) { create(:incident, project: project) }
+      it_behaves_like 'confidential command' do
+        let(:content) { '/confidential' }
+        let(:issuable) { create(:incident, project: project) }
+      end
+
+      context 'when non-member is creating a new issue' do
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'confidential command' do
+          let(:content) { '/confidential' }
+          let(:issuable) { build(:issue, project: project) }
+        end
+      end
     end
 
     it_behaves_like 'lock command' do
@@ -2539,6 +2550,34 @@ RSpec.describe QuickActions::InterpretService do
         service.execute(content, issue)
 
         expect(service.commands_executed_count).to eq(3)
+      end
+    end
+  end
+
+  describe '#available_commands' do
+    context 'when Guest is creating a new issue' do
+      let_it_be(:guest) { create(:user) }
+
+      let(:issue) { build(:issue, project: public_project) }
+      let(:service) { described_class.new(project, guest) }
+
+      before_all do
+        public_project.add_guest(guest)
+      end
+
+      it 'includes commands to set metadata' do
+        # milestone action is only available when project has a milestone
+        milestone
+
+        available_commands = service.available_commands(issue)
+
+        expect(available_commands).to include(
+          a_hash_including(name: :label),
+          a_hash_including(name: :milestone),
+          a_hash_including(name: :copy_metadata),
+          a_hash_including(name: :assign),
+          a_hash_including(name: :due)
+        )
       end
     end
   end

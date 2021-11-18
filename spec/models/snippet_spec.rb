@@ -98,7 +98,7 @@ RSpec.describe Snippet do
       snippet = build(:snippet)
       expect(snippet.statistics).to be_nil
 
-      snippet.save
+      snippet.save!
 
       expect(snippet.statistics).to be_persisted
     end
@@ -289,7 +289,7 @@ RSpec.describe Snippet do
     let(:access_level) { ProjectFeature::ENABLED }
 
     before do
-      project.project_feature.update(snippets_access_level: access_level)
+      project.project_feature.update!(snippets_access_level: access_level)
     end
 
     it 'includes snippets for projects with snippets enabled' do
@@ -623,7 +623,7 @@ RSpec.describe Snippet do
 
       context 'when snippet_repository does not exist' do
         it 'creates a snippet_repository' do
-          snippet.snippet_repository.destroy
+          snippet.snippet_repository.destroy!
           snippet.reload
 
           expect do

@@ -2,63 +2,75 @@
 # spec/frontend/fixtures/api_markdown.rb and
 # spec/frontend/content_editor/extensions/markdown_processing_spec.js
 ---
+- name: attachment_image
+  context: group
+  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
+- name: attachment_image
+  context: project
+  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
+- name: attachment_image
+  context: project_wiki
+  markdown: '![test-file](test-file.png)'
+- name: attachment_link
+  context: group
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
+- name: attachment_link
+  context: project
+  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
+- name: attachment_link
+  context: project_wiki
+  markdown: '[test-file](test-file.zip)'
+- name: audio
+  markdown: '![Sample Audio](https://gitlab.com/gitlab.mp3)'
+- name: audio_and_video_in_lists
+  markdown: |-
+    * ![Sample Audio](https://gitlab.com/1.mp3)
+    * ![Sample Video](https://gitlab.com/2.mp4)
+
+    1. ![Sample Video](https://gitlab.com/1.mp4)
+    2. ![Sample Audio](https://gitlab.com/2.mp3)
+
+    * [x] ![Sample Audio](https://gitlab.com/1.mp3)
+    * [x] ![Sample Audio](https://gitlab.com/2.mp3)
+    * [x] ![Sample Video](https://gitlab.com/3.mp4)
+- name: blockquote
+  markdown: |-
+    > This is a blockquote
+    >
+    > This is another one
 - name: bold
   markdown: '**bold**'
-- name: emphasis
-  markdown: '_emphasized text_'
-- name: inline_code
-  markdown: '`code`'
-- name: inline_diff
+- name: bullet_list_style_1
   markdown: |-
-    * {-deleted-}
-    * {+added+}
-- name: strike
-  markdown: '~~del~~'
-- name: horizontal_rule
-  markdown: '---'
-- name: html_marks
+    * list item 1
+    * list item 2
+      * embedded list item 3
+- name: bullet_list_style_2
   markdown: |-
-    * Content editor is ~~great~~<ins>amazing</ins>.
-    * If the changes <abbr title="Looks good to merge">LGTM</abbr>, please <abbr title="Merge when pipeline succeeds">MWPS</abbr>.
-    * The English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew: <span dir="rtl">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory, this is stored as <bdo dir="ltr">אה, אני אוהב להיות ליד חוף הים</bdo>.
-    * <cite>The Scream</cite> by Edvard Munch. Painted in 1893.
-    * <dfn>HTML</dfn> is the standard markup language for creating web pages.
-    * Do not forget to buy <mark>milk</mark> today.
-    * This is a paragraph and <small>smaller text goes here</small>.
-    * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
-    * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
-    * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
-    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
-    * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
-    * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
-    * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
-    * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
-- name: div
+    - list item 1
+    - list item 2
+      * embedded list item 3
+- name: bullet_list_style_3
   markdown: |-
-    <div>plain text</div>
-    <div>
-
-    just a plain ol' div, not much to _expect_!
-
-    </div>
-- name: figure
+    + list item 1
+    + list item 2
+      - embedded list item 3
+- name: code_block
   markdown: |-
-    <figure>
-
-    ![Elephant at sunset](elephant-sunset.jpg)
-
-    <figcaption>An elephant at sunset</figcaption>
-    </figure>
-    <figure>
-
-    ![A crocodile wearing crocs](croc-crocs.jpg)
-
-    <figcaption>
-
-    A crocodile wearing _crocs_!
-
-    </figcaption>
-    </figure>
+    ```javascript
+      console.log('hello world')
+    ```
+- name: color_chips
+  markdown: |-
+    - `#F00`
+    - `#F00A`
+    - `#FF0000`
+    - `#FF0000AA`
+    - `RGB(0,255,0)`
+    - `RGB(0%,100%,0%)`
+    - `RGBA(0,255,0,0.3)`
+    - `HSL(540,70%,50%)`
+    - `HSLA(540,70%,50%,0.3)`
 - name: description_list
   markdown: |-
     <dl>
@@ -106,31 +118,57 @@
     ```
 
     </details>
-- name: link
-  markdown: '[GitLab](https://gitlab.com)'
-- name: attachment_link
-  context: project_wiki
-  markdown: '[test-file](test-file.zip)'
-- name: attachment_link
-  context: project
-  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
-- name: attachment_link
-  context: group
-  markdown: '[test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)'
-- name: attachment_image
-  context: project_wiki
-  markdown: '![test-file](test-file.png)'
-- name: attachment_image
-  context: project
-  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
-- name: attachment_image
-  context: group
-  markdown: '![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)'
-- name: code_block
+- name: div
   markdown: |-
-    ```javascript
-      console.log('hello world')
-    ```
+    <div>plain text</div>
+    <div>
+
+    just a plain ol' div, not much to _expect_!
+
+    </div>
+- name: emoji
+  markdown: ':sparkles: :heart: :100:'
+- name: emphasis
+  markdown: '_emphasized text_'
+- name: figure
+  markdown: |-
+    <figure>
+
+    ![Elephant at sunset](elephant-sunset.jpg)
+
+    <figcaption>An elephant at sunset</figcaption>
+    </figure>
+    <figure>
+
+    ![A crocodile wearing crocs](croc-crocs.jpg)
+
+    <figcaption>
+
+    A crocodile wearing _crocs_!
+
+    </figcaption>
+    </figure>
+- name: frontmatter_json
+  markdown: |-
+    ;;;
+    {
+      "title": "Page title"
+    }
+    ;;;
+- name: frontmatter_toml
+  markdown: |-
+    +++
+    title = "Page title"
+    +++
+- name: frontmatter_yaml
+  markdown: |-
+    ---
+    title: Page title
+    ---
+- name: hard_break
+  markdown: |-
+    This is a line after a\
+    hard break
 - name: headings
   markdown: |-
     # Heading 1
@@ -144,29 +182,44 @@
     ##### Heading 5
 
     ###### Heading 6
-- name: blockquote
+- name: horizontal_rule
+  markdown: '---'
+- name: html_marks
   markdown: |-
-    > This is a blockquote
-    >
-    > This is another one
-- name: thematic_break
+    * Content editor is ~~great~~<ins>amazing</ins>.
+    * If the changes <abbr title="Looks good to merge">LGTM</abbr>, please <abbr title="Merge when pipeline succeeds">MWPS</abbr>.
+    * The English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew: <span dir="rtl">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory, this is stored as <bdo dir="ltr">אה, אני אוהב להיות ליד חוף הים</bdo>.
+    * <cite>The Scream</cite> by Edvard Munch. Painted in 1893.
+    * <dfn>HTML</dfn> is the standard markup language for creating web pages.
+    * Do not forget to buy <mark>milk</mark> today.
+    * This is a paragraph and <small>smaller text goes here</small>.
+    * The concert starts at <time datetime="20:00">20:00</time> and you'll be able to enjoy the band for at least <time datetime="PT2H30M">2h 30m</time>.
+    * Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text (Windows).
+    * WWF's goal is to: <q>Build a future where people live in harmony with nature.</q> We hope they succeed.
+    * The error occured was: <samp>Keyboard not found. Press F1 to continue.</samp>
+    * The area of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var> is the vertical height.
+    * <ruby>漢<rt>ㄏㄢˋ</rt></ruby>
+    * C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O
+    * The **Pythagorean theorem** is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>
+- name: image
+  markdown: '![alt text](https://gitlab.com/logo.png)'
+- name: inline_code
+  markdown: '`code`'
+- name: inline_diff
   markdown: |-
-    ---
-- name: bullet_list_style_1
+    * {-deleted-}
+    * {+added+}
+- name: link
+  markdown: '[GitLab](https://gitlab.com)'
+- name: math
   markdown: |-
-    * list item 1
-    * list item 2
-      * embedded list item 3
-- name: bullet_list_style_2
-  markdown: |-
-    - list item 1
-    - list item 2
-      * embedded list item 3
-- name: bullet_list_style_3
-  markdown: |-
-    + list item 1
-    + list item 2
-      - embedded list item 3
+    This math is inline $`a^2+b^2=c^2`$.
+
+    This is on a separate line:
+
+    ```math
+    a^2+b^2=c^2
+    ```
 - name: ordered_list
   markdown: |-
     1. list item 1
@@ -177,14 +230,6 @@
     134. list item 1
     135. list item 2
     136. list item 3
-- name: task_list
-  markdown: |-
-    * [x] hello
-    * [x] world
-    * [ ] example
-      * [ ] of nested
-        * [x] task list
-        * [ ] items
 - name: ordered_task_list
   markdown: |-
     1. [x] hello
@@ -198,12 +243,12 @@
     4893. [x] hello
     4894. [x] world
     4895. [ ] example
-- name: image
-  markdown: '![alt text](https://gitlab.com/logo.png)'
-- name: hard_break
+- name: reference
+  context: project_wiki
   markdown: |-
-    This is a line after a\
-    hard break
+    Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1
+- name: strike
+  markdown: '~~del~~'
 - name: table
   markdown: |-
     | header | header |
@@ -212,27 +257,6 @@
     | ~~strike~~ | cell with _italic_ |
 
     # content after table
-- name: emoji
-  markdown: ':sparkles: :heart: :100:'
-- name: reference
-  context: project_wiki
-  markdown: |-
-    Hi @gitlab - thank you for reporting this ~bug (#1) we hope to fix it in %1.1 as part of !1
-- name: audio
-  markdown: '![Sample Audio](https://gitlab.com/gitlab.mp3)'
-- name: video
-  markdown: '![Sample Video](https://gitlab.com/gitlab.mp4)'
-- name: audio_and_video_in_lists
-  markdown: |-
-    * ![Sample Audio](https://gitlab.com/1.mp3)
-    * ![Sample Video](https://gitlab.com/2.mp4)
-
-    1. ![Sample Video](https://gitlab.com/1.mp4)
-    2. ![Sample Audio](https://gitlab.com/2.mp3)
-
-    * [x] ![Sample Audio](https://gitlab.com/1.mp3)
-    * [x] ![Sample Audio](https://gitlab.com/2.mp3)
-    * [x] ![Sample Video](https://gitlab.com/3.mp4)
 - name: table_of_contents
   markdown: |-
     [[_TOC_]]
@@ -248,42 +272,18 @@
     # Sit amit
 
     ### I don't know
+- name: task_list
+  markdown: |-
+    * [x] hello
+    * [x] world
+    * [ ] example
+      * [ ] of nested
+        * [x] task list
+        * [ ] items
+- name: thematic_break
+  markdown: |-
+    ---
+- name: video
+  markdown: '![Sample Video](https://gitlab.com/gitlab.mp4)'
 - name: word_break
   markdown: Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz
-- name: frontmatter_yaml
-  markdown: |-
-    ---
-    title: Page title
-    ---
-- name: frontmatter_toml
-  markdown: |-
-    +++
-    title = "Page title"
-    +++
-- name: frontmatter_json
-  markdown: |-
-    ;;;
-    {
-      "title": "Page title"
-    }
-    ;;;
-- name: color_chips
-  markdown: |-
-    - `#F00`
-    - `#F00A`
-    - `#FF0000`
-    - `#FF0000AA`
-    - `RGB(0,255,0)`
-    - `RGB(0%,100%,0%)`
-    - `RGBA(0,255,0,0.3)`
-    - `HSL(540,70%,50%)`
-    - `HSLA(540,70%,50%,0.3)`
-- name: math
-  markdown: |-
-    This math is inline $`a^2+b^2=c^2`$.
-
-    This is on a separate line:
-
-    ```math
-    a^2+b^2=c^2
-    ```

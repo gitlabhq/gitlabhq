@@ -34,6 +34,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js do
   end
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 

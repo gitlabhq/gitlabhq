@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -12,7 +12,7 @@ const TIME_DATE_FORMAT = 'mmmm d, yyyy, HH:MM ("UTC:" o)';
 export default {
   components: {
     GlLoadingIcon,
-    GlTable,
+    GlTableLite,
   },
   inject: ['issuableType'],
   props: {
@@ -89,7 +89,7 @@ export default {
 <template>
   <div>
     <div v-if="isLoading"><gl-loading-icon size="md" /></div>
-    <gl-table v-else :items="report" :fields="$options.fields" foot-clone>
+    <gl-table-lite v-else :items="report" :fields="$options.fields" foot-clone>
       <template #cell(spentAt)="{ item: { spentAt } }">
         <div>{{ formatDate(spentAt) }}</div>
       </template>
@@ -111,6 +111,6 @@ export default {
         <div>{{ getSummary(summary, note) }}</div>
       </template>
       <template #foot(note)>&nbsp;</template>
-    </gl-table>
+    </gl-table-lite>
   </div>
 </template>

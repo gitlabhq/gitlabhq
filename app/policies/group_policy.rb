@@ -75,6 +75,8 @@ class GroupPolicy < BasePolicy
   with_scope :subject
   condition(:has_project_with_service_desk_enabled) { @subject.has_project_with_service_desk_enabled? }
 
+  condition(:crm_enabled, score: 0, scope: :subject) { Feature.enabled?(:customer_relations, @subject) }
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -113,8 +115,8 @@ class GroupPolicy < BasePolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
-    enable :read_organization
-    enable :read_contact
+    enable :read_crm_organization
+    enable :read_crm_contact
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts
@@ -134,8 +136,8 @@ class GroupPolicy < BasePolicy
     enable :create_package
     enable :create_package_settings
     enable :developer_access
-    enable :admin_organization
-    enable :admin_contact
+    enable :admin_crm_organization
+    enable :admin_crm_contact
   end
 
   rule { reporter }.policy do
@@ -250,6 +252,13 @@ class GroupPolicy < BasePolicy
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do
     enable :read_label
+  end
+
+  rule { ~crm_enabled }.policy do
+    prevent :read_crm_contact
+    prevent :read_crm_organization
+    prevent :admin_crm_contact
+    prevent :admin_crm_organization
   end
 
   def access_level(for_any_session: false)

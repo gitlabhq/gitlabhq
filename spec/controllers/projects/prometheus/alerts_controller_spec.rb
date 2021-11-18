@@ -160,7 +160,9 @@ RSpec.describe Projects::Prometheus::AlertsController do
   end
 
   describe 'POST #notify' do
-    let(:service_response) { ServiceResponse.success }
+    let(:alert_1) { build(:alert_management_alert, :prometheus, project: project) }
+    let(:alert_2) { build(:alert_management_alert, :prometheus, project: project) }
+    let(:service_response) { ServiceResponse.success(payload: { alerts: [alert_1, alert_2] }) }
     let(:notify_service) { instance_double(Projects::Prometheus::Alerts::NotifyService, execute: service_response) }
 
     before do
@@ -173,9 +175,14 @@ RSpec.describe Projects::Prometheus::AlertsController do
     end
 
     it 'returns ok if notification succeeds' do
-      expect(notify_service).to receive(:execute).and_return(ServiceResponse.success)
+      expect(notify_service).to receive(:execute).and_return(service_response)
 
       post :notify, params: project_params, session: { as: :json }
+
+      expect(json_response).to contain_exactly(
+        { 'iid' => alert_1.iid, 'title' => alert_1.title },
+        { 'iid' => alert_2.iid, 'title' => alert_2.title }
+      )
 
       expect(response).to have_gitlab_http_status(:ok)
     end

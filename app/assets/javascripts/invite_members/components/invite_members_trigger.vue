@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink, GlIcon } from '@gitlab/ui';
 import ExperimentTracking from '~/experimentation/experiment_tracking';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
+import { TRIGGER_ELEMENT_BUTTON, TRIGGER_ELEMENT_SIDE_NAV } from '../constants';
 
 export default {
-  components: { GlButton, GlLink },
+  components: { GlButton, GlLink, GlIcon },
   props: {
     displayText: {
       type: String,
@@ -53,13 +54,11 @@ export default {
     },
   },
   computed: {
-    isButton() {
-      return this.triggerElement === 'button';
-    },
     componentAttributes() {
       const baseAttributes = {
         class: this.classes,
         'data-qa-selector': 'invite_members_button',
+        'data-test-id': 'invite-members-button',
       };
 
       if (this.event && this.label) {
@@ -77,6 +76,9 @@ export default {
     this.trackExperimentOnShow();
   },
   methods: {
+    checkTrigger(targetTriggerElement) {
+      return this.triggerElement === targetTriggerElement;
+    },
     openModal() {
       eventHub.$emit('openModal', { inviteeType: 'members', source: this.triggerSource });
     },
@@ -87,12 +89,14 @@ export default {
       }
     },
   },
+  TRIGGER_ELEMENT_BUTTON,
+  TRIGGER_ELEMENT_SIDE_NAV,
 };
 </script>
 
 <template>
   <gl-button
-    v-if="isButton"
+    v-if="checkTrigger($options.TRIGGER_ELEMENT_BUTTON)"
     v-bind="componentAttributes"
     :variant="variant"
     :icon="icon"
@@ -100,6 +104,17 @@ export default {
   >
     {{ displayText }}
   </gl-button>
+  <gl-link
+    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_SIDE_NAV)"
+    v-bind="componentAttributes"
+    data-is-link="true"
+    @click="openModal"
+  >
+    <span class="nav-icon-container">
+      <gl-icon :name="icon" />
+    </span>
+    <span class="nav-item-name"> {{ displayText }} </span>
+  </gl-link>
   <gl-link v-else v-bind="componentAttributes" data-is-link="true" @click="openModal">
     {{ displayText }}
   </gl-link>

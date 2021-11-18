@@ -48,10 +48,9 @@ RSpec.describe Gitlab::Runtime do
 
     before do
       stub_const('::Puma', puma_type)
-      stub_env('ACTION_CABLE_IN_APP', 'false')
     end
 
-    it_behaves_like "valid runtime", :puma, 1
+    it_behaves_like "valid runtime", :puma, 1 + Gitlab::ActionCable::Config.worker_pool_size
   end
 
   context "puma with cli_config" do
@@ -61,27 +60,16 @@ RSpec.describe Gitlab::Runtime do
     before do
       stub_const('::Puma', puma_type)
       allow(puma_type).to receive_message_chain(:cli_config, :options).and_return(max_threads: 2, workers: max_workers)
-      stub_env('ACTION_CABLE_IN_APP', 'false')
     end
 
-    it_behaves_like "valid runtime", :puma, 3
+    it_behaves_like "valid runtime", :puma, 3 + Gitlab::ActionCable::Config.worker_pool_size
 
-    context "when ActionCable in-app mode is enabled" do
+    context "when ActionCable worker pool size is configured" do
       before do
-        stub_env('ACTION_CABLE_IN_APP', 'true')
-        stub_env('ACTION_CABLE_WORKER_POOL_SIZE', '3')
+        stub_env('ACTION_CABLE_WORKER_POOL_SIZE', 10)
       end
 
-      it_behaves_like "valid runtime", :puma, 6
-    end
-
-    context "when ActionCable standalone is run" do
-      before do
-        stub_const('ACTION_CABLE_SERVER', true)
-        stub_env('ACTION_CABLE_WORKER_POOL_SIZE', '8')
-      end
-
-      it_behaves_like "valid runtime", :puma, 11
+      it_behaves_like "valid runtime", :puma, 13
     end
 
     describe ".puma_in_clustered_mode?" do
@@ -108,7 +96,7 @@ RSpec.describe Gitlab::Runtime do
       allow(sidekiq_type).to receive(:options).and_return(concurrency: 2)
     end
 
-    it_behaves_like "valid runtime", :sidekiq, 4
+    it_behaves_like "valid runtime", :sidekiq, 5
   end
 
   context "console" do

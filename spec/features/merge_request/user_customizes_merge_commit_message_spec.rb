@@ -26,33 +26,27 @@ RSpec.describe 'Merge request < User customizes merge commit message', :js do
     ].join("\n\n")
   end
 
-  let(:message_with_description) do
-    [
-      "Merge branch 'feature' into 'master'",
-      merge_request.title,
-      merge_request.description,
-      "See merge request #{merge_request.to_reference(full: true)}"
-    ].join("\n\n")
-  end
-
   before do
     project.add_maintainer(user)
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
   end
 
-  it 'toggles commit message between message with description and without description' do
+  it 'has commit message without description' do
     expect(page).not_to have_selector('#merge-message-edit')
     first('.js-mr-widget-commits-count').click
     expect(textbox).to be_visible
     expect(textbox.value).to eq(default_message)
+  end
 
-    check('Include merge request description')
+  context 'when target project has merge commit template set' do
+    let(:project) { create(:project, :public, :repository, merge_commit_template: '%{title}') }
 
-    expect(textbox.value).to eq(message_with_description)
-
-    uncheck('Include merge request description')
-
-    expect(textbox.value).to eq(default_message)
+    it 'uses merge commit template' do
+      expect(page).not_to have_selector('#merge-message-edit')
+      first('.js-mr-widget-commits-count').click
+      expect(textbox).to be_visible
+      expect(textbox.value).to eq(merge_request.title)
+    end
   end
 end

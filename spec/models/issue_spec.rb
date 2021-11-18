@@ -34,7 +34,8 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:issue_email_participants) }
     it { is_expected.to have_many(:timelogs).autosave(true) }
     it { is_expected.to have_one(:incident_management_issuable_escalation_status) }
-    it { is_expected.to have_and_belong_to_many(:customer_relations_contacts) }
+    it { is_expected.to have_many(:issue_customer_relations_contacts) }
+    it { is_expected.to have_many(:customer_relations_contacts) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -305,7 +306,7 @@ RSpec.describe Issue do
   end
 
   describe '#reopen' do
-    let(:issue) { create(:issue, project: reusable_project, state: 'closed', closed_at: Time.current, closed_by: user) }
+    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, state: 'closed', closed_at: Time.current, closed_by: user) }
 
     it 'sets closed_at to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_at }.to(nil)
@@ -313,6 +314,22 @@ RSpec.describe Issue do
 
     it 'sets closed_by to nil when an issue is reopened' do
       expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
+    end
+
+    it 'clears moved_to_id for moved issues' do
+      moved_issue = create(:issue)
+
+      issue.update!(moved_to_id: moved_issue.id)
+
+      expect { issue.reopen }.to change { issue.moved_to_id }.from(moved_issue.id).to(nil)
+    end
+
+    it 'clears duplicated_to_id for duplicated issues' do
+      duplicate_issue = create(:issue)
+
+      issue.update!(duplicated_to_id: duplicate_issue.id)
+
+      expect { issue.reopen }.to change { issue.duplicated_to_id }.from(duplicate_issue.id).to(nil)
     end
 
     it 'changes the state to opened' do
@@ -1218,7 +1235,7 @@ RSpec.describe Issue do
       end
 
       it 'returns public and hidden issues' do
-        expect(described_class.public_only).to eq([public_issue, hidden_issue])
+        expect(described_class.public_only).to contain_exactly(public_issue, hidden_issue)
       end
     end
   end
@@ -1247,7 +1264,7 @@ RSpec.describe Issue do
       end
 
       it 'returns public and hidden issues' do
-        expect(described_class.without_hidden).to eq([public_issue, hidden_issue])
+        expect(described_class.without_hidden).to contain_exactly(public_issue, hidden_issue)
       end
     end
   end

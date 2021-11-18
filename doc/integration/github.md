@@ -29,7 +29,7 @@ When you create an OAuth 2 app in GitHub, you need the following information:
 - The URL of your GitLab instance, such as `https://gitlab.example.com`.
 - The authorization callback URL; in this case, `https://gitlab.example.com/users/auth`. Include the port number if your GitLab instance uses a non-default port.
 
-See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings.
+See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
 
 After you have configured the GitHub provider, you need the following information. You must substitute that information in the GitLab configuration file in these next steps.
 

@@ -1,0 +1,35 @@
+type LocalEnvironment {
+  id: Int!
+  globalId: ID!
+  name: String!
+  folderPath: String
+  stopPath: String
+  deletePath: String
+  retryUrl: String
+  autoStopPath: String
+}
+
+type NestedLocalEnvironment {
+  name: String!
+  size: Int!
+  latest: LocalEnvironment!
+}
+
+type LocalEnvironmentFolder {
+  environments: [LocalEnvironment!]!
+  availableCount: Int!
+  stoppedCount: Int!
+}
+
+type ReviewApp {
+  canSetupReviewApp: Boolean!
+  allClustersEmpty: Boolean!
+  reviewSnippet: String
+}
+
+type LocalEnvironmentApp {
+  stoppedCount: Int!
+  availableCount: Int!
+  environments: [NestedLocalEnvironment!]!
+  reviewApp: ReviewApp!
+}

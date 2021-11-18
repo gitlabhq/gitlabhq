@@ -137,16 +137,27 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu do
         stub_config(dependency_proxy: { enabled: dependency_enabled })
       end
 
-      context 'when config dependency_proxy is enabled' do
-        let(:dependency_enabled) { true }
+      context 'when user can read dependency proxy' do
+        context 'when config dependency_proxy is enabled' do
+          let(:dependency_enabled) { true }
 
-        it 'the menu item is added to list of menu items' do
-          is_expected.not_to be_nil
+          it 'the menu item is added to list of menu items' do
+            is_expected.not_to be_nil
+          end
+        end
+
+        context 'when config dependency_proxy is not enabled' do
+          let(:dependency_enabled) { false }
+
+          it 'the menu item is not added to list of menu items' do
+            is_expected.to be_nil
+          end
         end
       end
 
-      context 'when config dependency_proxy is not enabled' do
-        let(:dependency_enabled) { false }
+      context 'when user cannot read dependency proxy' do
+        let(:user) { nil }
+        let(:dependency_enabled) { true }
 
         it 'the menu item is not added to list of menu items' do
           is_expected.to be_nil

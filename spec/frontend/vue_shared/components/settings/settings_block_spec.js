@@ -1,12 +1,12 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 describe('Settings Block', () => {
   let wrapper;
 
   const mountComponent = (propsData) => {
-    wrapper = shallowMount(SettingsBlock, {
+    wrapper = shallowMountExtended(SettingsBlock, {
       propsData,
       slots: {
         title: '<div data-testid="title-slot"></div>',
@@ -20,11 +20,13 @@ describe('Settings Block', () => {
     wrapper.destroy();
   });
 
-  const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
-  const findTitleSlot = () => wrapper.find('[data-testid="title-slot"]');
-  const findDescriptionSlot = () => wrapper.find('[data-testid="description-slot"]');
+  const findDefaultSlot = () => wrapper.findByTestId('default-slot');
+  const findTitleSlot = () => wrapper.findByTestId('title-slot');
+  const findDescriptionSlot = () => wrapper.findByTestId('description-slot');
   const findExpandButton = () => wrapper.findComponent(GlButton);
-  const findSectionTitleButton = () => wrapper.find('[data-testid="section-title-button"]');
+  const findSectionTitleButton = () => wrapper.findByTestId('section-title-button');
+  // we are using a non js class for this finder because this class determine the component structure
+  const findSettingsContent = () => wrapper.find('.settings-content');
 
   const expectExpandedState = ({ expanded = true } = {}) => {
     const settingsExpandButton = findExpandButton();
@@ -62,6 +64,26 @@ describe('Settings Block', () => {
     expect(findDescriptionSlot().exists()).toBe(true);
   });
 
+  it('content is hidden before first expansion', async () => {
+    // this is a regression test for the bug described here: https://gitlab.com/gitlab-org/gitlab/-/issues/331774
+    mountComponent();
+
+    // content is hidden
+    expect(findDefaultSlot().isVisible()).toBe(false);
+
+    // expand
+    await findSectionTitleButton().trigger('click');
+
+    // content is visible
+    expect(findDefaultSlot().isVisible()).toBe(true);
+
+    // collapse
+    await findSectionTitleButton().trigger('click');
+
+    // content is still visible (and we have a closing animation)
+    expect(findDefaultSlot().isVisible()).toBe(true);
+  });
+
   describe('slide animation behaviour', () => {
     it('is animated by default', () => {
       mountComponent();
@@ -81,6 +103,20 @@ describe('Settings Block', () => {
         expect(wrapper.classes('no-animate')).toBe(noAnimatedClass);
       },
     );
+
+    it('sets the animating class only during the animation', async () => {
+      mountComponent();
+
+      expect(wrapper.classes('animating')).toBe(false);
+
+      await findSectionTitleButton().trigger('click');
+
+      expect(wrapper.classes('animating')).toBe(true);
+
+      await findSettingsContent().trigger('animationend');
+
+      expect(wrapper.classes('animating')).toBe(false);
+    });
   });
 
   describe('expanded behaviour', () => {

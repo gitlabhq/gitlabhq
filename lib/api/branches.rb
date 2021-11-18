@@ -41,7 +41,7 @@ module API
 
         optional :page_token, type: String, desc: 'Name of branch to start the paginaition from'
       end
-      get ':id/repository/branches' do
+      get ':id/repository/branches', urgency: :low do
         ff_enabled = Feature.enabled?(:api_caching_rate_limit_branches, user_project, default_enabled: :yaml)
 
         cache_action_if(ff_enabled, [user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
@@ -86,7 +86,7 @@ module API
         head do
           user_project.repository.branch_exists?(params[:branch]) ? no_content! : not_found!
         end
-        get do
+        get '/', urgency: :low do
           branch = find_branch!(params[:branch])
 
           present branch, with: Entities::Branch, current_user: current_user, project: user_project

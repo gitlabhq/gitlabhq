@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'reschedule_merge_request_diff_users_background_migration'
+require_migration!
 
 RSpec.describe RescheduleMergeRequestDiffUsersBackgroundMigration, :migration do
   let(:migration) { described_class.new }

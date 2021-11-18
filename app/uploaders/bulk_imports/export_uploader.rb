@@ -2,6 +2,6 @@
 
 module BulkImports
   class ExportUploader < ImportExportUploader
-    EXTENSION_WHITELIST = %w[ndjson.gz].freeze
+    EXTENSION_ALLOWLIST = %w[ndjson.gz].freeze
   end
 end

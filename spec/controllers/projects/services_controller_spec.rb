@@ -18,7 +18,7 @@ RSpec.describe Projects::ServicesController do
     project.add_maintainer(user)
   end
 
-  it_behaves_like IntegrationsActions do
+  it_behaves_like Integrations::Actions do
     let(:integration_attributes) { { project: project } }
 
     let(:routing_params) do
@@ -254,7 +254,7 @@ RSpec.describe Projects::ServicesController do
         let_it_be(:project) { create(:project, group: group) }
         let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 
-        let(:group_integration) { create(:jira_integration, group: group, project: nil, url: 'http://group.com', password: 'group') }
+        let(:group_integration) { create(:jira_integration, :group, group: group, url: 'http://group.com', password: 'group') }
         let(:integration_params) { { inherit_from_id: group_integration.id, url: 'http://custom.com', password: 'custom' } }
 
         it 'ignores submitted params and inherits group settings' do
@@ -269,7 +269,7 @@ RSpec.describe Projects::ServicesController do
       context 'when param `inherit_from_id` is set to an unrelated group' do
         let_it_be(:group) { create(:group) }
 
-        let(:group_integration) { create(:jira_integration, group: group, project: nil, url: 'http://group.com', password: 'group') }
+        let(:group_integration) { create(:jira_integration, :group, group: group, url: 'http://group.com', password: 'group') }
         let(:integration_params) { { inherit_from_id: group_integration.id, url: 'http://custom.com', password: 'custom' } }
 
         it 'ignores the param and saves the submitted settings' do

@@ -18,6 +18,7 @@ export default () => {
     outgoingName,
     projectKey,
     selectedTemplate,
+    selectedFileTemplateProjectId,
     templates,
   } = el.dataset;
 
@@ -32,6 +33,7 @@ export default () => {
       outgoingName,
       projectKey,
       selectedTemplate,
+      selectedFileTemplateProjectId: parseInt(selectedFileTemplateProjectId, 10) || null,
       templates: JSON.parse(templates),
     },
     render: (createElement) => createElement(ServiceDeskRoot),

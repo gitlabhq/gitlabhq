@@ -4,6 +4,8 @@ import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_w
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
+import DropdownHeader from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_header.vue';
+import DropdownFooter from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_footer.vue';
 
 import { mockLabels } from './mock_data';
 
@@ -26,7 +28,7 @@ const GlDropdownStub = {
 describe('DropdownContent', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, injected = {}, data = {} } = {}) => {
+  const createComponent = ({ props = {}, data = {} } = {}) => {
     wrapper = shallowMount(DropdownContents, {
       propsData: {
         labelsCreateTitle: 'test',
@@ -37,19 +39,16 @@ describe('DropdownContent', () => {
         footerManageLabelTitle: 'manage',
         dropdownButtonText: 'Labels',
         variant: 'sidebar',
-        issuableType: 'issue',
         fullPath: 'test',
+        workspaceType: 'project',
+        labelCreateType: 'project',
+        attrWorkspacePath: 'path',
         ...props,
       },
       data() {
         return {
           ...data,
         };
-      },
-      provide: {
-        allowLabelCreate: true,
-        labelsManagePath: 'foo/bar',
-        ...injected,
       },
       stubs: {
         GlDropdown: GlDropdownStub,
@@ -63,12 +62,9 @@ describe('DropdownContent', () => {
 
   const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
   const findLabelsView = () => wrapper.findComponent(DropdownContentsLabelsView);
+  const findDropdownHeader = () => wrapper.findComponent(DropdownHeader);
+  const findDropdownFooter = () => wrapper.findComponent(DropdownFooter);
   const findDropdown = () => wrapper.findComponent(GlDropdownStub);
-
-  const findDropdownFooter = () => wrapper.find('[data-testid="dropdown-footer"]');
-  const findDropdownHeader = () => wrapper.find('[data-testid="dropdown-header"]');
-  const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
-  const findGoBackButton = () => wrapper.find('[data-testid="go-back-button"]');
 
   it('calls dropdown `show` method on `isVisible` prop change', async () => {
     createComponent();
@@ -136,6 +132,16 @@ describe('DropdownContent', () => {
     expect(findDropdownHeader().exists()).toBe(true);
   });
 
+  it('sets searchKey for labels view on input event from header', async () => {
+    createComponent();
+
+    expect(wrapper.vm.searchKey).toEqual('');
+    findDropdownHeader().vm.$emit('input', '123');
+    await nextTick();
+
+    expect(findLabelsView().props('searchKey')).toEqual('123');
+  });
+
   describe('Create view', () => {
     beforeEach(() => {
       createComponent({ data: { showDropdownContentsCreateView: true } });
@@ -149,16 +155,8 @@ describe('DropdownContent', () => {
       expect(findDropdownFooter().exists()).toBe(false);
     });
 
-    it('does not render create label button', () => {
-      expect(findCreateLabelButton().exists()).toBe(false);
-    });
-
-    it('renders go back button', () => {
-      expect(findGoBackButton().exists()).toBe(true);
-    });
-
-    it('changes the view to Labels view on back button click', async () => {
-      findGoBackButton().vm.$emit('click', new MouseEvent('click'));
+    it('changes the view to Labels view on `toggleDropdownContentsCreateView` event', async () => {
+      findDropdownHeader().vm.$emit('toggleDropdownContentsCreateView');
       await nextTick();
 
       expect(findCreateView().exists()).toBe(false);
@@ -197,33 +195,6 @@ describe('DropdownContent', () => {
       createComponent({ props: { variant: DropdownVariant.Embedded } });
 
       expect(findDropdownFooter().exists()).toBe(true);
-    });
-
-    it('does not render go back button', () => {
-      expect(findGoBackButton().exists()).toBe(false);
-    });
-
-    it('does not render create label button if `allowLabelCreate` is false', () => {
-      createComponent({ injected: { allowLabelCreate: false } });
-
-      expect(findCreateLabelButton().exists()).toBe(false);
-    });
-
-    describe('when `allowLabelCreate` is true', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('renders create label button', () => {
-        expect(findCreateLabelButton().exists()).toBe(true);
-      });
-
-      it('changes the view to Create on create label button click', async () => {
-        findCreateLabelButton().trigger('click');
-
-        await nextTick();
-        expect(findLabelsView().exists()).toBe(false);
-      });
     });
   });
 });

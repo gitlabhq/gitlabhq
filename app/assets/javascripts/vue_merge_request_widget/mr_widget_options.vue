@@ -91,6 +91,7 @@ export default {
     MrWidgetApprovals,
     SecurityReportsApp: () => import('~/vue_shared/security_reports/security_reports_app.vue'),
     MergeChecksFailed: () => import('./components/states/merge_checks_failed.vue'),
+    ReadyToMerge: ReadyToMergeState,
   },
   apollo: {
     state: {
@@ -212,6 +213,9 @@ export default {
         window.gon?.features?.refactorMrWidgetsExtensions ||
         window.gon?.features?.refactorMrWidgetsExtensionsUser
       );
+    },
+    isRestructuredMrWidgetEnabled() {
+      return window.gon?.features?.restructuredMrWidget;
     },
   },
   watch: {
@@ -547,12 +551,17 @@ export default {
 
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />
-
-        <div class="mr-widget-info">
+        <ready-to-merge
+          v-if="isRestructuredMrWidgetEnabled && mr.commitsCount"
+          :mr="mr"
+          :service="service"
+        />
+        <div v-else class="mr-widget-info">
           <mr-widget-related-links
             v-if="shouldRenderRelatedLinks"
             :state="mr.state"
             :related-links="mr.relatedLinks"
+            class="mr-info-list gl-ml-7 gl-pb-5"
           />
 
           <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />

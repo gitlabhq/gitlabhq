@@ -240,7 +240,7 @@ it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/blob/
 
 ## Internal API
 
-The [internal API](internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
+The [internal API](internal_api/index.md) is documented for internal use. Please keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems

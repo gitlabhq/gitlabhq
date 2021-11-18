@@ -27,6 +27,8 @@ module Gitlab
           path: request.fullpath
         )
         Rack::Response.new('', 403).finish
+      rescue Gitlab::Auth::MissingPersonalAccessTokenError
+        Rack::Response.new('', 401).finish
       end
 
       private

@@ -221,4 +221,26 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report do
       end
     end
   end
+
+  describe '#has_signatures?' do
+    let(:finding) { create(:ci_reports_security_finding, signatures: signatures) }
+
+    subject { report.has_signatures? }
+
+    before do
+      report.add_finding(finding)
+    end
+
+    context 'when the findings of the report does not have signatures' do
+      let(:signatures) { [] }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the findings of the report have signatures' do
+      let(:signatures) { [instance_double(Gitlab::Ci::Reports::Security::FindingSignature)] }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

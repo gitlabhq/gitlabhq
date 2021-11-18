@@ -22,8 +22,6 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def self_url
-    return unless can_download_code?
-
     project_release_url(project, release)
   end
 
@@ -64,7 +62,7 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
 
   delegator_override :name
   def name
-    can_download_code? ? release.name : "Release-#{release.id}"
+    release.name
   end
 
   def download_url(filepath)

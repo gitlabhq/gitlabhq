@@ -37,20 +37,20 @@ Complete these steps in GitLab:
 1. Ensure that the **Active** toggle is enabled.
 1. Paste the token you generated on GitHub.
 1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`.
-1. (Optional) To disable static status check names, clear the **Static status check names** checkbox.
+1. (Optional) To disable static status check names, clear the **Enable static status check names** checkbox.
 1. Select **Save changes** or optionally select **Test settings**.
 
 After configuring the integration, see [Pipelines for external pull requests](../../../ci/ci_cd_for_external_repos/#pipelines-for-external-pull-requests)
 to configure pipelines to run for open pull requests.
 
-### Static / dynamic status check names
+### Static or dynamic status check names
 
 > - Introduced in GitLab 11.5: using static status check names as opt-in option.
 > - [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/9931), static status check names is default behavior for new projects.
 
 This makes it possible to mark these status checks as **Required** on GitHub.
 
-When **Static status check names** is enabled on the integration page, your
+When **Enable static status check names** is checked on the integration page, your
 GitLab instance host name is appended to a status check name.
 
-When disabled, it uses dynamic status check names and appends the branch name.
+When unchecked, it uses dynamic status check names and appends the branch name.

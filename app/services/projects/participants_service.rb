@@ -36,17 +36,9 @@ module Projects
     private
 
     def project_members_through_invited_groups
-      groups_with_ancestors = if ::Feature.enabled?(:linear_participants_service_ancestor_scopes, current_user, default_enabled: :yaml)
-                                visible_groups.self_and_ancestors
-                              else
-                                Gitlab::ObjectHierarchy
-                                  .new(visible_groups)
-                                  .base_and_ancestors
-                              end
-
       GroupMember
         .active_without_invites_and_requests
-        .with_source_id(groups_with_ancestors.pluck_primary_key)
+        .with_source_id(visible_groups.self_and_ancestors.pluck_primary_key)
     end
 
     def visible_groups

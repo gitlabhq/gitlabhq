@@ -33,7 +33,8 @@ module Gitlab
                       links: 'Releases::Link',
                       metrics_setting: 'ProjectMetricsSetting',
                       commit_author: 'MergeRequest::DiffCommitUser',
-                      committer: 'MergeRequest::DiffCommitUser' }.freeze
+                      committer: 'MergeRequest::DiffCommitUser',
+                      merge_request_diff_commits: 'MergeRequestDiffCommit' }.freeze
 
         BUILD_MODELS = %i[Ci::Build commit_status].freeze
 
@@ -59,6 +60,7 @@ module Gitlab
           external_pull_requests
           DesignManagement::Design
           MergeRequest::DiffCommitUser
+          MergeRequestDiffCommit
         ].freeze
 
         def create

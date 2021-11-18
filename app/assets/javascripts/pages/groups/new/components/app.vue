@@ -47,7 +47,7 @@ export default {
 <template>
   <new-namespace-page
     :jump-to-last-persisted-panel="hasErrors"
-    :initial-breadcrumb="s__('New group')"
+    :initial-breadcrumb="__('New group')"
     :panels="$options.PANELS"
     :title="s__('GroupsNew|Create new group')"
     persistence-key="new_group_last_active_tab"

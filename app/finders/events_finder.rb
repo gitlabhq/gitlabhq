@@ -44,7 +44,6 @@ class EventsFinder
     events = by_created_at_after(events)
     events = sort(events)
 
-    events = events.with_associations if params[:with_associations]
     paginated_filtered_by_user_visibility(events)
   end
 
@@ -113,10 +112,12 @@ class EventsFinder
   end
 
   def paginated_filtered_by_user_visibility(events)
+    events_count = events.count
+    events = events.with_associations if params[:with_associations]
     limited_events = events.page(page).per(per_page)
     visible_events = limited_events.select { |event| event.visible_to_user?(current_user) }
 
-    Kaminari.paginate_array(visible_events, total_count: events.count)
+    Kaminari.paginate_array(visible_events, total_count: events_count)
   end
 
   def per_page

@@ -3040,7 +3040,7 @@ RSpec.describe NotificationService, :mailer do
           it 'emails only the creator' do
             notification.pipeline_finished(pipeline)
 
-            should_only_email(u_custom_notification_enabled, kind: :bcc)
+            should_only_email(u_custom_notification_enabled)
           end
 
           it_behaves_like 'project emails are disabled' do
@@ -3063,7 +3063,7 @@ RSpec.describe NotificationService, :mailer do
             it 'sends to group notification email' do
               notification.pipeline_finished(pipeline)
 
-              expect(email_recipients(kind: :bcc).first).to eq(group_notification_email)
+              expect(email_recipients.first).to eq(group_notification_email)
             end
           end
         end
@@ -3076,7 +3076,7 @@ RSpec.describe NotificationService, :mailer do
           it 'emails only the creator' do
             notification.pipeline_finished(pipeline)
 
-            should_only_email(u_member, kind: :bcc)
+            should_only_email(u_member)
           end
 
           it_behaves_like 'project emails are disabled' do
@@ -3098,7 +3098,7 @@ RSpec.describe NotificationService, :mailer do
             it 'sends to group notification email' do
               notification.pipeline_finished(pipeline)
 
-              expect(email_recipients(kind: :bcc).first).to eq(group_notification_email)
+              expect(email_recipients.first).to eq(group_notification_email)
             end
           end
         end
@@ -3110,7 +3110,7 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it 'emails only the creator' do
-            should_only_email(u_watcher, kind: :bcc)
+            should_only_email(u_watcher)
           end
         end
 
@@ -3121,7 +3121,7 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it 'emails only the creator' do
-            should_only_email(u_custom_notification_unset, kind: :bcc)
+            should_only_email(u_custom_notification_unset)
           end
         end
 
@@ -3143,7 +3143,7 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it 'emails only the creator' do
-            should_only_email(u_custom_notification_enabled, kind: :bcc)
+            should_only_email(u_custom_notification_enabled)
           end
         end
 
@@ -3170,7 +3170,7 @@ RSpec.describe NotificationService, :mailer do
           it 'emails only the creator' do
             notification.pipeline_finished(pipeline, ref_status: ref_status)
 
-            should_only_email(u_member, kind: :bcc)
+            should_only_email(u_member)
           end
 
           it_behaves_like 'project emails are disabled' do
@@ -3192,7 +3192,7 @@ RSpec.describe NotificationService, :mailer do
             it 'sends to group notification email' do
               notification.pipeline_finished(pipeline, ref_status: ref_status)
 
-              expect(email_recipients(kind: :bcc).first).to eq(group_notification_email)
+              expect(email_recipients.first).to eq(group_notification_email)
             end
           end
         end
@@ -3204,7 +3204,7 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it 'emails only the creator' do
-            should_only_email(u_watcher, kind: :bcc)
+            should_only_email(u_watcher)
           end
         end
 
@@ -3215,7 +3215,7 @@ RSpec.describe NotificationService, :mailer do
           end
 
           it 'emails only the creator' do
-            should_only_email(u_custom_notification_unset, kind: :bcc)
+            should_only_email(u_custom_notification_unset)
           end
         end
 
@@ -3236,7 +3236,7 @@ RSpec.describe NotificationService, :mailer do
 
             notification.pipeline_finished(pipeline, ref_status: ref_status)
 
-            should_only_email(u_custom_notification_enabled, kind: :bcc)
+            should_only_email(u_custom_notification_enabled)
           end
         end
       end

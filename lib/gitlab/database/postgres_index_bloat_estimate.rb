@@ -6,7 +6,7 @@ module Gitlab
     # for all indexes can be expensive in a large database.
     #
     # Best used on a per-index basis.
-    class PostgresIndexBloatEstimate < ActiveRecord::Base
+    class PostgresIndexBloatEstimate < SharedModel
       self.table_name = 'postgres_index_bloat_estimates'
       self.primary_key = 'identifier'
 

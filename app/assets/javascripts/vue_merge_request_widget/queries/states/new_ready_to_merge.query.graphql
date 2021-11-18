@@ -1,4 +1,4 @@
-query readyToMergeQuery($projectPath: ID!, $iid: String!) {
+query getReadyToMergeStatus($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     mergeRequest(iid: $iid) {
       userPermissions {

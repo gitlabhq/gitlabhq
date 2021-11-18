@@ -7,7 +7,7 @@ module API
 
     before { authenticate! }
 
-    feature_category :issue_tracking
+    feature_category :team_planning
 
     LABEL_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       name: API::NO_SLASH_URL_PART_REGEX,

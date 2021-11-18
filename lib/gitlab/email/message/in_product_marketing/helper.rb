@@ -36,6 +36,15 @@ module Gitlab
               "#{text} (#{link})"
             end
           end
+
+          def action_link(text, link)
+            case format
+            when :html
+              ActionController::Base.helpers.link_to text, link, target: '_blank', rel: 'noopener noreferrer'
+            else
+              [text, link].join(' >> ')
+            end
+          end
         end
       end
     end

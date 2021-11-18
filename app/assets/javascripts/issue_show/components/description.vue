@@ -2,7 +2,7 @@
 import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
 import createFlash from '~/flash';
-import { s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 import TaskList from '../../task_list';
 import animateMixin from '../mixins/animate';
 
@@ -86,15 +86,25 @@ export default {
           fieldName: 'description',
           lockVersion: this.lockVersion,
           selector: '.detail-page-description',
+          onUpdate: this.taskListUpdateStarted.bind(this),
+          onSuccess: this.taskListUpdateSuccess.bind(this),
           onError: this.taskListUpdateError.bind(this),
         });
       }
     },
 
+    taskListUpdateStarted() {
+      this.$emit('taskListUpdateStarted');
+    },
+
+    taskListUpdateSuccess() {
+      this.$emit('taskListUpdateSucceeded');
+    },
+
     taskListUpdateError() {
       createFlash({
         message: sprintf(
-          s__(
+          __(
             'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
           ),
           {

@@ -125,7 +125,22 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
 
       it 'gets tags from GitalyClient' do
         expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
-          expect(service).to receive(:tags).with(sort_by: 'name_asc')
+          expect(service).to receive(:tags).with(sort_by: 'name_asc', pagination_params: nil)
+        end
+
+        subject
+      end
+    end
+
+    context 'with pagination option' do
+      subject { repository.tags(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' }) }
+
+      it 'gets tags from GitalyClient' do
+        expect_next_instance_of(Gitlab::GitalyClient::RefService) do |service|
+          expect(service).to receive(:tags).with(
+            sort_by: nil,
+            pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' }
+          )
         end
 
         subject
@@ -1885,6 +1900,44 @@ RSpec.describe Gitlab::Git::Repository, :seed_helper do
       repository.write_ref('refs/heads/feature', SeedRepo::Commit::ID)
 
       expect(repository.commit('feature').sha).to eq(SeedRepo::Commit::ID)
+    end
+  end
+
+  describe '#list_refs' do
+    it 'returns a list of branches with their head commit' do
+      refs = repository.list_refs
+      reference = refs.first
+
+      expect(refs).to be_an(Enumerable)
+      expect(reference).to be_a(Gitaly::ListRefsResponse::Reference)
+      expect(reference.name).to be_a(String)
+      expect(reference.target).to be_a(String)
+    end
+  end
+
+  describe '#refs_by_oid' do
+    it 'returns a list of refs from a OID' do
+      refs = repository.refs_by_oid(oid: repository.commit.id)
+
+      expect(refs).to be_an(Array)
+      expect(refs).to include(Gitlab::Git::BRANCH_REF_PREFIX + repository.root_ref)
+    end
+
+    it 'returns a single ref from a OID' do
+      refs = repository.refs_by_oid(oid: repository.commit.id, limit: 1)
+
+      expect(refs).to be_an(Array)
+      expect(refs).to eq([Gitlab::Git::BRANCH_REF_PREFIX + repository.root_ref])
+    end
+
+    it 'returns empty for unknown ID' do
+      expect(repository.refs_by_oid(oid: Gitlab::Git::BLANK_SHA, limit: 0)).to eq([])
+    end
+
+    it 'returns nil for an empty repo' do
+      project = create(:project)
+
+      expect(project.repository.refs_by_oid(oid: SeedRepo::Commit::ID, limit: 0)).to be_nil
     end
   end
 

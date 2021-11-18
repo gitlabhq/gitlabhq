@@ -44,27 +44,27 @@ RSpec.describe 'Projects > Show > User uploads files' do
     end
   end
 
-  context 'when in the empty_repo_upload experiment' do
-    before do
-      stub_experiments(empty_repo_upload: :candidate)
+  context 'with an empty repo' do
+    let(:project) { create(:project, :empty_repo, creator: user) }
 
+    before do
       visit(project_path(project))
     end
 
-    context 'with an empty repo' do
-      let(:project) { create(:project, :empty_repo, creator: user) }
+    [true, false].each do |value|
+      include_examples 'uploads and commits a new text file via "upload file" button', drop: value
+    end
+  end
 
-      [true, false].each do |value|
-        include_examples 'uploads and commits a new text file via "upload file" button', drop: value
-      end
+  context 'with a nonempty repo' do
+    let(:project) { create(:project, :repository, creator: user) }
+
+    before do
+      visit(project_path(project))
     end
 
-    context 'with a nonempty repo' do
-      let(:project) { create(:project, :repository, creator: user) }
-
-      [true, false].each do |value|
-        include_examples 'uploads and commits a new text file via "upload file" button', drop: value
-      end
+    [true, false].each do |value|
+      include_examples 'uploads and commits a new text file via "upload file" button', drop: value
     end
   end
 end

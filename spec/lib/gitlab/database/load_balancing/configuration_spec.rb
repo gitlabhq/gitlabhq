@@ -3,17 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
-  let(:model) do
-    config = ActiveRecord::DatabaseConfigurations::HashConfig
-      .new('main', 'test', configuration_hash)
-
-    double(:model, connection_db_config: config)
-  end
+  let(:configuration_hash) { {} }
+  let(:db_config) { ActiveRecord::DatabaseConfigurations::HashConfig.new('test', 'ci', configuration_hash) }
+  let(:model) { double(:model, connection_db_config: db_config) }
 
   describe '.for_model' do
     context 'when load balancing is not configured' do
-      let(:configuration_hash) { {} }
-
       it 'uses the default settings' do
         config = described_class.for_model(model)
 
@@ -105,6 +100,14 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
         expect(config.pool_size).to eq(4)
       end
     end
+
+    it 'calls reuse_primary_connection!' do
+      expect_next_instance_of(described_class) do |subject|
+        expect(subject).to receive(:reuse_primary_connection!).and_call_original
+      end
+
+      described_class.for_model(model)
+    end
   end
 
   describe '#load_balancing_enabled?' do
@@ -177,6 +180,62 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
         config = described_class.new(model)
 
         expect(config.pool_size).to eq(Gitlab::Database.default_pool_size)
+      end
+    end
+  end
+
+  describe '#db_config_name' do
+    let(:config) { described_class.new(model) }
+
+    subject { config.db_config_name }
+
+    it 'returns connection name as symbol' do
+      is_expected.to eq(:ci)
+    end
+  end
+
+  describe '#replica_db_config' do
+    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::ApplicationRecord') }
+    let(:config) { described_class.for_model(model) }
+
+    it 'returns exactly db_config' do
+      expect(config.replica_db_config).to eq(db_config)
+    end
+
+    context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+      it 'does not change replica_db_config' do
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+        expect(config.replica_db_config).to eq(db_config)
+      end
+    end
+  end
+
+  describe 'reuse_primary_connection!' do
+    let(:model) { double(:model, connection_db_config: db_config, connection_specification_name: 'Ci::ApplicationRecord') }
+    let(:config) { described_class.for_model(model) }
+
+    context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_* not configured' do
+      it 'the primary connection uses default specification' do
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', nil)
+
+        expect(config.primary_connection_specification_name).to eq('Ci::ApplicationRecord')
+      end
+    end
+
+    context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=main' do
+      it 'the primary connection uses main connection' do
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'main')
+
+        expect(config.primary_connection_specification_name).to eq('ActiveRecord::Base')
+      end
+    end
+
+    context 'when GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci=unknown' do
+      it 'raises exception' do
+        stub_env('GITLAB_LOAD_BALANCING_REUSE_PRIMARY_ci', 'unknown')
+
+        expect { config.reuse_primary_connection! }.to raise_error /Invalid value for/
       end
     end
   end

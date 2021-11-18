@@ -65,7 +65,7 @@ module Gitlab
         private
 
         def current_transaction
-          ::Gitlab::Metrics::Transaction.current
+          ::Gitlab::Metrics::WebTransaction.current
         end
 
         def metric_cache_operation_duration_seconds

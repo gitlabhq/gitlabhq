@@ -63,9 +63,9 @@
           "items": {
             "type": "object",
             "properties": {
-              "if": {
-                "type": "string"
-              },
+              "if": { "$ref": "#/definitions/if" },
+              "changes": { "$ref": "#/definitions/changes" },
+              "exists": { "$ref": "#/definitions/exists" },
               "variables": { "$ref": "#/definitions/variables" },
               "when": {
                 "type": "string",
@@ -497,24 +497,9 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "if": {
-            "type": "string",
-            "description": "Expression to evaluate whether additional attributes should be provided to the job"
-          },
-          "changes": {
-            "type": "array",
-            "description": "Additional attributes will be provided to job if any of the provided paths matches a modified file",
-            "items": {
-              "type": "string"
-            }
-          },
-          "exists": {
-            "type": "array",
-            "description": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository",
-            "items": {
-              "type": "string"
-            }
-          },
+          "if": { "$ref": "#/definitions/if" },
+          "changes": { "$ref": "#/definitions/changes" },
+          "exists": { "$ref": "#/definitions/exists" },
           "variables": { "$ref": "#/definitions/variables" },
           "when": { "$ref": "#/definitions/when" },
           "start_in": { "$ref": "#/definitions/start_in" },
@@ -541,6 +526,24 @@
         ]
       }
     },
+    "if": {
+      "type": "string",
+      "description": "Expression to evaluate whether additional attributes should be provided to the job"
+    },
+    "changes": {
+      "type": "array",
+      "description": "Additional attributes will be provided to job if any of the provided paths matches a modified file",
+      "items": {
+        "type": "string"
+      }
+    },
+    "exists": {
+      "type": "array",
+      "description": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository",
+      "items": {
+        "type": "string"
+      }
+    },
     "variables": {
       "type": "object",
       "description": "Defines environment variables for specific jobs. Job level property overrides global variables. If a job sets `variables: {}`, all global variables are turned off.",
@@ -555,7 +558,7 @@
     },
     "start_in": {
       "type": "string",
-      "description": "Used in conjunction with 'when: delayed' to set how long to delay before starting a job.",
+      "description": "Used in conjunction with 'when: delayed' to set how long to delay before starting a job. e.g. '5', 5 seconds, 30 minutes, 1 week, etc. Read more: https://docs.gitlab.com/ee/ci/jobs/job_control.html#run-a-job-after-a-delay",
       "minLength": 1
     },
     "allow_failure": {
@@ -939,7 +942,7 @@
         "stage": {
           "type": "string",
           "description": "Define what stage the job will run in.",
-          "default": "test"
+          "minLength": 1
         },
         "only": {
           "$ref": "#/definitions/filter",

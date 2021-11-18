@@ -3,7 +3,7 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import { IssuableType } from '~/issuable_show/constants';
 import Issue from '~/issue';
-import initIncidentApp from '~/issue_show/incident';
+import { initIncidentApp, initIncidentHeaderActions } from '~/issue_show/incident';
 import { initIssuableApp, initIssueHeaderActions } from '~/issue_show/issue';
 import { parseIssuableData } from '~/issue_show/utils/parse_data';
 import initNotesApp from '~/notes';
@@ -22,16 +22,18 @@ export default function initShowIssue() {
   switch (issueType) {
     case IssuableType.Incident:
       initIncidentApp(issuableData);
+      initIncidentHeaderActions(store);
       break;
     case IssuableType.Issue:
       initIssuableApp(issuableData, store);
+      initIssueHeaderActions(store);
       break;
     default:
+      initIssueHeaderActions(store);
       break;
   }
 
   initIssuableHeaderWarning(store);
-  initIssueHeaderActions(store);
   initSentryErrorStackTraceApp();
   initRelatedMergeRequestsApp();
 

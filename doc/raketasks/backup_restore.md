@@ -22,7 +22,7 @@ backups with your object storage provider, if desired.
 
 ## Requirements
 
-To be able to backup and restore, ensure that Rsync is installed on your
+To be able to back up and restore, ensure that Rsync is installed on your
 system. If you installed GitLab:
 
 - _Using the Omnibus package_, you're all set.
@@ -61,7 +61,7 @@ including:
 - Container Registry images
 - GitLab Pages content
 - Snippets
-- [Group wikis](../user/project/wiki/index.md#group-wikis)
+- [Group wikis](../user/project/wiki/group.md)
 
 Backups do not include:
 
@@ -74,7 +74,7 @@ GitLab does not back up any configuration files, SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
 WARNING:
-The backup command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+The backup command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Depending on your version of GitLab, use the following command if you installed
@@ -168,7 +168,7 @@ as its key defeats the purpose of using encryption in the first place.
 WARNING:
 The secrets file is essential to preserve your database encryption key.
 
-At the very **minimum**, you must backup:
+At the very **minimum**, you must back up:
 
 For Omnibus:
 
@@ -187,7 +187,7 @@ the GitLab container according to the documentation, it should be in the
 
 For [GitLab Helm chart installations](https://gitlab.com/gitlab-org/charts/gitlab)
 on a Kubernetes cluster, you must follow the
-[Backup the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
+[Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
 instructions.
 
 You may also want to back up any TLS keys and certificates, and your
@@ -408,6 +408,8 @@ For Omnibus GitLab packages:
    for the changes to take effect
 
 ##### S3 Encrypted Buckets
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
 
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
@@ -787,7 +789,7 @@ For installations from source:
 #### Configuring cron to make daily backups
 
 WARNING:
-The following cron jobs do not [backup your GitLab configuration files](#storing-configuration-files)
+The following cron jobs do not [back up your GitLab configuration files](#storing-configuration-files)
 or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 You can schedule a cron job that backs up your repositories and GitLab metadata.
@@ -974,7 +976,7 @@ message. Install the [correct GitLab version](https://packages.gitlab.com/gitlab
 and then try again.
 
 WARNING:
-The restore command requires [additional parameters](#backup-and-restore-for-installations-using-pgbouncer) when
+The restore command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
@@ -1020,7 +1022,7 @@ docker exec -it <name of container> gitlab-ctl stop sidekiq
 # Verify that the processes are all down before continuing
 docker exec -it <name of container> gitlab-ctl status
 
-# Run the restore
+# Run the restore. NOTE: "_gitlab_backup.tar" is omitted from the name
 docker exec -it <name of container> gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 
 # Restart the GitLab container
@@ -1215,9 +1217,9 @@ There are a few possible downsides to this:
 There is an **experimental** script that attempts to automate this process in
 [the Geo team Runbooks project](https://gitlab.com/gitlab-org/geo-team/runbooks/-/tree/main/experimental-online-backup-through-rsync).
 
-## Backup and restore for installations using PgBouncer
+## Back up and restore for installations using PgBouncer
 
-Do NOT backup or restore GitLab through a PgBouncer connection. These
+Do NOT back up or restore GitLab through a PgBouncer connection. These
 tasks must [bypass PgBouncer and connect directly to the PostgreSQL primary database node](#bypassing-pgbouncer),
 or they cause a GitLab outage.
 
@@ -1377,16 +1379,28 @@ after which users must reactivate 2FA.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Examine the `ci_group_variables` and `ci_variables` tables:
@@ -1411,16 +1425,28 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Clear all tokens for projects, groups, and the entire instance:
@@ -1448,16 +1474,28 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Clear all the tokens for pending jobs:
@@ -1480,16 +1518,28 @@ The fix is to truncate the `web_hooks` table:
 
 1. Enter the database console:
 
-   For Omnibus GitLab packages:
+   For Omnibus GitLab 14.1 and earlier:
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source:
+   For Omnibus GitLab 14.2 and later:
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   For installations from source, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
+   ```
+
+   For installations from source, GitLab 14.2 and later:
+
+   ```shell
+   sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
 1. Truncate the table:

@@ -1,5 +1,4 @@
 import { shallowMount } from '@vue/test-utils';
-import { LIST_INTRO_TEXT, LIST_TITLE_TEXT } from '~/packages/list/constants';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -37,8 +36,8 @@ describe('PackageTitle', () => {
       mountComponent();
 
       expect(findTitleArea().props()).toMatchObject({
-        title: LIST_TITLE_TEXT,
-        infoMessages: [{ text: LIST_INTRO_TEXT, link: 'foo' }],
+        title: PackageTitle.i18n.LIST_TITLE_TEXT,
+        infoMessages: [{ text: PackageTitle.i18n.LIST_INTRO_TEXT, link: 'foo' }],
       });
     });
   });

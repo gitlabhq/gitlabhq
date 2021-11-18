@@ -41,8 +41,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
             .with(github_note)
             .and_return([user.id, true])
 
-          expect(Gitlab::Database.main)
-            .to receive(:bulk_insert)
+          expect(ApplicationRecord)
+            .to receive(:legacy_bulk_insert)
             .with(
               Note.table_name,
               [
@@ -71,8 +71,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
             .with(github_note)
             .and_return([project.creator_id, false])
 
-          expect(Gitlab::Database.main)
-            .to receive(:bulk_insert)
+          expect(ApplicationRecord)
+            .to receive(:legacy_bulk_insert)
             .with(
               Note.table_name,
               [
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
 
     context 'when the noteable does not exist' do
       it 'does not import the note' do
-        expect(Gitlab::Database.main).not_to receive(:bulk_insert)
+        expect(ApplicationRecord).not_to receive(:legacy_bulk_insert)
 
         importer.execute
       end
@@ -134,8 +134,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter do
           .with(github_note)
           .and_return([user.id, true])
 
-        expect(Gitlab::Database.main)
-          .to receive(:bulk_insert)
+        expect(ApplicationRecord)
+          .to receive(:legacy_bulk_insert)
           .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 
         expect { importer.execute }.not_to raise_error

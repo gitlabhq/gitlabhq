@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlSprintf } from '@gitlab/ui';
 import ProjectDeleteButton from '~/projects/components/project_delete_button.vue';
 import SharedDeleteButton from '~/projects/components/shared/delete_button.vue';
 
@@ -12,6 +13,11 @@ describe('Project remove modal', () => {
   const defaultProps = {
     confirmPhrase: 'foo',
     formPath: 'some/path',
+    isFork: false,
+    issuesCount: 1,
+    mergeRequestsCount: 2,
+    forksCount: 3,
+    starsCount: 4,
   };
 
   const createComponent = (props = {}) => {
@@ -21,6 +27,7 @@ describe('Project remove modal', () => {
         ...props,
       },
       stubs: {
+        GlSprintf,
         SharedDeleteButton,
       },
     });
@@ -41,7 +48,10 @@ describe('Project remove modal', () => {
     });
 
     it('passes confirmPhrase and formPath props to the shared delete button', () => {
-      expect(findSharedDeleteButton().props()).toEqual(defaultProps);
+      expect(findSharedDeleteButton().props()).toEqual({
+        confirmPhrase: defaultProps.confirmPhrase,
+        formPath: defaultProps.formPath,
+      });
     });
   });
 });

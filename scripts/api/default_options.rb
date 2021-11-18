@@ -9,3 +9,10 @@ module API
     endpoint: ENV['CI_API_V4_URL'] || 'https://gitlab.com/api/v4'
   }.freeze
 end
+
+module Host
+  DEFAULT_OPTIONS = {
+    instance_base_url: ENV['CI_SERVER_URL'],
+    mr_id: ENV['CI_MERGE_REQUEST_ID']
+  }.freeze
+end

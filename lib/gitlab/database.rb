@@ -59,19 +59,8 @@ module Gitlab
         # that inher from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
-        ci: ::Ci::CiDatabaseRecord.connection_class? ? ::Ci::CiDatabaseRecord : nil
-      }.compact.freeze
-    end
-
-    def self.databases
-      @databases ||= database_base_models
-        .transform_values { |connection_class| Connection.new(connection_class) }
-        .with_indifferent_access
-        .freeze
-    end
-
-    def self.main
-      databases[PRIMARY_DATABASE_NAME]
+        ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
+      }.compact.with_indifferent_access.freeze
     end
 
     # We configure the database connection pool size automatically based on the
@@ -110,8 +99,10 @@ module Gitlab
     def self.check_postgres_version_and_print_warning
       return if Gitlab::Runtime.rails_runner?
 
-      databases.each do |name, connection|
-        next if connection.postgresql_minimum_supported_version?
+      database_base_models.each do |name, model|
+        database = Gitlab::Database::Reflection.new(model)
+
+        next if database.postgresql_minimum_supported_version?
 
         Kernel.warn ERB.new(Rainbow.new.wrap(<<~EOS).red).result
 
@@ -122,7 +113,7 @@ module Gitlab
                      ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  
 
           ******************************************************************************
-            You are using PostgreSQL #{connection.version} for the #{name} database, but PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>
+            You are using PostgreSQL #{database.version} for the #{name} database, but PostgreSQL >= <%= Gitlab::Database::MINIMUM_POSTGRES_VERSION %>
             is required for this version of GitLab.
             <% if Rails.env.development? || Rails.env.test? %>
             If using gitlab-development-kit, please find the relevant steps here:
@@ -174,18 +165,6 @@ module Gitlab
     def self.allow_cross_joins_across_databases(url:)
       # this method is implemented in:
       # spec/support/database/prevent_cross_joins.rb
-      yield
-    end
-
-    # This method will allow cross database modifications within the block
-    # Example:
-    #
-    # allow_cross_database_modification_within_transaction(url: 'url-to-an-issue') do
-    #   create(:build) # inserts ci_build and project record in one transaction
-    # end
-    def self.allow_cross_database_modification_within_transaction(url:)
-      # this method will be overridden in:
-      # spec/support/database/cross_database_modification_check.rb
       yield
     end
 
@@ -263,13 +242,27 @@ module Gitlab
         # A patch over ActiveRecord::Base.transaction that provides
         # observability into transactional methods.
         def transaction(**options, &block)
-          if options[:requires_new] && connection.transaction_open?
-            ::Gitlab::Database::Metrics.subtransactions_increment(self.name)
-          end
+          transaction_type = get_transaction_type(connection.transaction_open?, options[:requires_new])
 
-          ActiveSupport::Notifications.instrument('transaction.active_record', { connection: connection }) do
+          ::Gitlab::Database::Metrics.subtransactions_increment(self.name) if transaction_type == :sub_transaction
+
+          payload = { connection: connection, transaction_type: transaction_type }
+
+          ActiveSupport::Notifications.instrument('transaction.active_record', payload) do
             super(**options, &block)
           end
+        end
+
+        private
+
+        def get_transaction_type(transaction_open, requires_new_flag)
+          if transaction_open
+            return :sub_transaction if requires_new_flag
+
+            return :fake_transaction
+          end
+
+          :real_transaction
         end
       end
     end

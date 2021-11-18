@@ -317,6 +317,7 @@ RSpec.describe 'Pipelines', :js do
         end
 
         before do
+          stub_feature_flags(bootstrap_confirmation_modals: false)
           visit_project_pipelines
         end
 
@@ -635,7 +636,7 @@ RSpec.describe 'Pipelines', :js do
 
         # header
         expect(page).to have_text("##{pipeline.id}")
-        expect(page).to have_selector(%Q(img[alt$="#{pipeline.user.name}'s avatar"]))
+        expect(page).to have_selector(%Q(img[src="#{pipeline.user.avatar_url}"]))
         expect(page).to have_link(pipeline.user.name, href: user_path(pipeline.user))
 
         # stages

@@ -25,7 +25,7 @@ RSpec.describe Projects::TagsController do
       with_them do
         it 'returns 503 status code' do
           expect_next_instance_of(TagsFinder) do |finder|
-            expect(finder).to receive(:execute).and_return([[], Gitlab::Git::CommandError.new])
+            expect(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError)
           end
 
           get :index, params: { namespace_id: project.namespace.to_param, project_id: project }, format: format

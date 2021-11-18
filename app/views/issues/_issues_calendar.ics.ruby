@@ -1,3 +1,4 @@
+# rubocop:disable Naming/FileName
 # frozen_string_literal: true
 
 cal = Icalendar::Calendar.new
@@ -17,3 +18,5 @@ end
 # rubocop: enable CodeReuse/ActiveRecord
 
 cal.to_ical
+
+# rubocop:enable Naming/FileName

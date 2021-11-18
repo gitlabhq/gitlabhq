@@ -1,65 +1,51 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf, GlEmptyState } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import { mapState, mapMutations } from 'vuex';
-import { retrieveAlert, getLocation } from '~/jira_connect/subscriptions/utils';
-import { __ } from '~/locale';
+import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import { SET_ALERT } from '../store/mutation_types';
-import GroupsList from './groups_list.vue';
 import SubscriptionsList from './subscriptions_list.vue';
+import AddNamespaceButton from './add_namespace_button.vue';
+import SignInButton from './sign_in_button.vue';
 
 export default {
   name: 'JiraConnectApp',
   components: {
     GlAlert,
-    GlButton,
     GlLink,
-    GlModal,
     GlSprintf,
-    GroupsList,
+    GlEmptyState,
     SubscriptionsList,
-  },
-  directives: {
-    GlModalDirective,
+    AddNamespaceButton,
+    SignInButton,
   },
   inject: {
     usersPath: {
       default: '',
     },
-  },
-  data() {
-    return {
-      location: '',
-    };
+    subscriptions: {
+      default: [],
+    },
   },
   computed: {
     ...mapState(['alert']),
-    usersPathWithReturnTo() {
-      if (this.location) {
-        return `${this.usersPath}?return_to=${this.location}`;
-      }
-
-      return this.usersPath;
-    },
     shouldShowAlert() {
       return Boolean(this.alert?.message);
     },
-  },
-  modal: {
-    cancelProps: {
-      text: __('Cancel'),
+    hasSubscriptions() {
+      return !isEmpty(this.subscriptions);
+    },
+    userSignedIn() {
+      return Boolean(!this.usersPath);
     },
   },
   created() {
     this.setInitialAlert();
-    this.setLocation();
   },
   methods: {
     ...mapMutations({
       setAlert: SET_ALERT,
     }),
-    async setLocation() {
-      this.location = await getLocation();
-    },
     setInitialAlert() {
       const { linkUrl, title, message, variant } = retrieveAlert() || {};
       this.setAlert({ linkUrl, title, message, variant });
@@ -88,38 +74,44 @@ export default {
       </template>
     </gl-alert>
 
-    <h2 class="gl-text-center">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
+    <h2 class="gl-text-center gl-mb-7">{{ s__('JiraService|GitLab for Jira Configuration') }}</h2>
+    <div class="jira-connect-app-body gl-mx-auto gl-px-5 gl-mb-7">
+      <template v-if="hasSubscriptions">
+        <div class="gl-display-flex gl-justify-content-end">
+          <sign-in-button v-if="!userSignedIn" :users-path="usersPath" />
+          <add-namespace-button v-else />
+        </div>
 
-    <div class="jira-connect-app-body gl-my-7 gl-px-5 gl-pb-4">
-      <div class="gl-display-flex gl-justify-content-end">
-        <gl-button
-          v-if="usersPath"
-          category="primary"
-          variant="info"
-          class="gl-align-self-center"
-          :href="usersPathWithReturnTo"
-          target="_blank"
-          >{{ s__('Integrations|Sign in to add namespaces') }}</gl-button
+        <subscriptions-list />
+      </template>
+      <template v-else>
+        <div v-if="!userSignedIn" class="gl-text-center">
+          <p class="gl-mb-7">{{ s__('JiraService|Sign in to GitLab.com to get started.') }}</p>
+          <sign-in-button class="gl-mb-7" :users-path="usersPath">
+            {{ __('Sign in to GitLab') }}
+          </sign-in-button>
+          <p>
+            {{
+              s__(
+                'Integrations|Note: this integration only works with accounts on GitLab.com (SaaS).',
+              )
+            }}
+          </p>
+        </div>
+        <gl-empty-state
+          v-else
+          :title="s__('Integrations|No linked namespaces')"
+          :description="
+            s__(
+              'Integrations|Namespaces are the GitLab groups and subgroups you link to this Jira instance.',
+            )
+          "
         >
-        <template v-else>
-          <gl-button
-            v-gl-modal-directive="'add-namespace-modal'"
-            category="primary"
-            variant="info"
-            class="gl-align-self-center"
-            >{{ s__('Integrations|Add namespace') }}</gl-button
-          >
-          <gl-modal
-            modal-id="add-namespace-modal"
-            :title="s__('Integrations|Link namespaces')"
-            :action-cancel="$options.modal.cancelProps"
-          >
-            <groups-list />
-          </gl-modal>
-        </template>
-      </div>
-
-      <subscriptions-list />
+          <template #actions>
+            <add-namespace-button />
+          </template>
+        </gl-empty-state>
+      </template>
     </div>
   </div>
 </template>

@@ -3,13 +3,16 @@ import { shallowMount } from '@vue/test-utils';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import SharedRunnersForm from '~/group_settings/components/shared_runners_form.vue';
-import { ENABLED, DISABLED, ALLOW_OVERRIDE } from '~/group_settings/constants';
 import axios from '~/lib/utils/axios_utils';
 
-const TEST_UPDATE_PATH = '/test/update';
-const DISABLED_PAYLOAD = { shared_runners_setting: DISABLED };
-const ENABLED_PAYLOAD = { shared_runners_setting: ENABLED };
-const OVERRIDE_PAYLOAD = { shared_runners_setting: ALLOW_OVERRIDE };
+const provide = {
+  updatePath: '/test/update',
+  sharedRunnersAvailability: 'enabled',
+  parentSharedRunnersAvailability: null,
+  runnerDisabled: 'disabled',
+  runnerEnabled: 'enabled',
+  runnerAllowOverride: 'allow_override',
+};
 
 jest.mock('~/flash');
 
@@ -17,13 +20,11 @@ describe('group_settings/components/shared_runners_form', () => {
   let wrapper;
   let mock;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (provides = {}) => {
     wrapper = shallowMount(SharedRunnersForm, {
-      propsData: {
-        updatePath: TEST_UPDATE_PATH,
-        sharedRunnersAvailability: ENABLED,
-        parentSharedRunnersAvailability: null,
-        ...props,
+      provide: {
+        ...provide,
+        ...provides,
       },
     });
   };
@@ -33,13 +34,13 @@ describe('group_settings/components/shared_runners_form', () => {
   const findEnabledToggle = () => wrapper.find('[data-testid="enable-runners-toggle"]');
   const findOverrideToggle = () => wrapper.find('[data-testid="override-runners-toggle"]');
   const changeToggle = (toggle) => toggle.vm.$emit('change', !toggle.props('value'));
-  const getRequestPayload = () => JSON.parse(mock.history.put[0].data);
+  const getSharedRunnersSetting = () => JSON.parse(mock.history.put[0].data).shared_runners_setting;
   const isLoadingIconVisible = () => findLoadingIcon().exists();
 
   beforeEach(() => {
     mock = new MockAxiosAdapter(axios);
 
-    mock.onPut(TEST_UPDATE_PATH).reply(200);
+    mock.onPut(provide.updatePath).reply(200);
   });
 
   afterEach(() => {
@@ -95,7 +96,7 @@ describe('group_settings/components/shared_runners_form', () => {
 
       await waitForPromises();
 
-      expect(getRequestPayload()).toEqual(ENABLED_PAYLOAD);
+      expect(getSharedRunnersSetting()).toEqual(provide.runnerEnabled);
       expect(findOverrideToggle().exists()).toBe(false);
     });
 
@@ -104,14 +105,14 @@ describe('group_settings/components/shared_runners_form', () => {
 
       await waitForPromises();
 
-      expect(getRequestPayload()).toEqual(DISABLED_PAYLOAD);
+      expect(getSharedRunnersSetting()).toEqual(provide.runnerDisabled);
       expect(findOverrideToggle().exists()).toBe(true);
     });
   });
 
   describe('override toggle', () => {
     beforeEach(() => {
-      createComponent({ sharedRunnersAvailability: ALLOW_OVERRIDE });
+      createComponent({ sharedRunnersAvailability: provide.runnerAllowOverride });
     });
 
     it('enabling the override toggle sends correct payload', async () => {
@@ -119,7 +120,7 @@ describe('group_settings/components/shared_runners_form', () => {
 
       await waitForPromises();
 
-      expect(getRequestPayload()).toEqual(OVERRIDE_PAYLOAD);
+      expect(getSharedRunnersSetting()).toEqual(provide.runnerAllowOverride);
     });
 
     it('disabling the override toggle sends correct payload', async () => {
@@ -127,21 +128,21 @@ describe('group_settings/components/shared_runners_form', () => {
 
       await waitForPromises();
 
-      expect(getRequestPayload()).toEqual(DISABLED_PAYLOAD);
+      expect(getSharedRunnersSetting()).toEqual(provide.runnerDisabled);
     });
   });
 
   describe('toggle disabled state', () => {
-    it(`toggles are not disabled with setting ${DISABLED}`, () => {
-      createComponent({ sharedRunnersAvailability: DISABLED });
+    it(`toggles are not disabled with setting ${provide.runnerDisabled}`, () => {
+      createComponent({ sharedRunnersAvailability: provide.runnerDisabled });
       expect(findEnabledToggle().props('disabled')).toBe(false);
       expect(findOverrideToggle().props('disabled')).toBe(false);
     });
 
     it('toggles are disabled', () => {
       createComponent({
-        sharedRunnersAvailability: DISABLED,
-        parentSharedRunnersAvailability: DISABLED,
+        sharedRunnersAvailability: provide.runnerDisabled,
+        parentSharedRunnersAvailability: provide.runnerDisabled,
       });
       expect(findEnabledToggle().props('disabled')).toBe(true);
       expect(findOverrideToggle().props('disabled')).toBe(true);
@@ -154,7 +155,7 @@ describe('group_settings/components/shared_runners_form', () => {
     ${{ error: 'Undefined error' }} | ${'Undefined error Refresh the page and try again.'}
   `(`with error $errorObj`, ({ errorObj, message }) => {
     beforeEach(async () => {
-      mock.onPut(TEST_UPDATE_PATH).reply(500, errorObj);
+      mock.onPut(provide.updatePath).reply(500, errorObj);
 
       createComponent();
       changeToggle(findEnabledToggle());

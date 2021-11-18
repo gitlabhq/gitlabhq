@@ -111,12 +111,9 @@ To generate an API Fuzzing configuration snippet:
 
 ### OpenAPI Specification
 
-> Support for OpenAPI Specification v3.1 was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
-> Support for OpenAPI Specification using YAML format was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
-> Support for OpenAPI Specification v3.0 was
-> [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
+> - Support for OpenAPI Specification v3.0 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
+> - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
+> - Support for OpenAPI Specification v3.1 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
 
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
@@ -214,7 +211,7 @@ To configure API fuzzing to use a HAR file:
    ```
 
 1. Provide the location of the HAR specification. You can provide the specification as a file
-   or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
+   or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
    in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_HAR` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
@@ -285,7 +282,7 @@ To configure API fuzzing to use a Postman Collection file:
    ```
 
 1. Provide the location of the Postman Collection specification. You can provide the specification
-   as a file or URL. [URL support was introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
+   as a file or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
    in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
    variable.
 
@@ -613,15 +610,15 @@ Overrides use a JSON document, where each type of override is represented by a J
   },
   "body-form":  {
     "form-param1": "value",
-    "form-param1": "value",
+    "form-param2": "value"
   },
   "body-json":  {
     "json-path1": "value",
-    "json-path2": "value",
+    "json-path2": "value"
   },
   "body-xml" :  {
     "xpath1":    "value",
-    "xpath2":    "value",
+    "xpath2":    "value"
   }
 }
 ```
@@ -975,7 +972,7 @@ reported.
 
 ### View details of an API Fuzzing vulnerability
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 13.7.
+> Introduced in GitLab 13.7.
 
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a
@@ -1156,11 +1153,40 @@ Profiles:
 
 ## Running API fuzzing in an offline environment
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
-to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to
-successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
+For self-managed GitLab instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to successfully run.
+
+Steps:
+
+1. Host the Docker image in a local container registry.
+1. Set the `SECURE_ANALYZERS_PREFIX` to the local container registry.
+
+The Docker image for API Fuzzing must be pulled (downloaded) from the public registry and then pushed (imported) into a local registry. The GitLab container registry can be used to locally host the Docker image. This process can be performed using a special template. See [loading Docker images onto your offline host](../offline_deployments/index.md#loading-docker-images-onto-your-offline-host) for instructions.
+
+Once the Docker image is hosted locally, the `SECURE_ANALYZERS_PREFIX` variable is set with the location of the local registry. The variable must be set such that concatenating `/api-fuzzing:1` results in a valid image location.
+
+For example, the below line sets a registry for the image `registry.gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing:1`:
+
+`SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"`
+
+NOTE:
+Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.
+
+For more information, see [Offline environments](../offline_deployments/index.md).
 
 ## Troubleshooting
+
+### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+
+A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the DAST API analyzer.
+
+The version information can be found in the job details for the `apifuzzer_fuzz` job.
+
+If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+
+1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
+1. The full console output of the job.
+1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
+1. The `apifuzzer_fuzz` job definition from your `.gitlab-ci.yml` file.
 
 ### Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema
 

@@ -1,0 +1,10 @@
+mutation toggleDraftStatus($projectPath: ID!, $iid: String!, $draft: Boolean!) {
+  mergeRequestSetDraft(input: { projectPath: $projectPath, iid: $iid, draft: $draft }) {
+    mergeRequest {
+      mergeableDiscussionsState
+      title
+      draft
+    }
+    errors
+  }
+}

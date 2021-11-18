@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Remove this entire file when removing `use_cmark_renderer` feature flag and switching to the CMARK html renderer.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/345744
 module Banzai
   module Renderer
     module CommonMark

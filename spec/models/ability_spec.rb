@@ -425,9 +425,9 @@ RSpec.describe Ability do
       expect(keys).to include(
         :administrator,
         'admin',
-        "/dp/condition/BasePolicy/admin/#{user_b.id}"
+        "/dp/condition/BasePolicy/admin/User:#{user_b.id}"
       )
-      expect(keys).not_to include("/dp/condition/BasePolicy/admin/#{user_a.id}")
+      expect(keys).not_to include("/dp/condition/BasePolicy/admin/User:#{user_a.id}")
     end
 
     # regression spec for re-entrant admin condition checks

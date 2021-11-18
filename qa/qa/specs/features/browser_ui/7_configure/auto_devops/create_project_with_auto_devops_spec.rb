@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Configure' do
+  RSpec.describe 'Configure', only: { subdomain: :staging } do
     let(:project) do
       Resource::Project.fabricate_via_api! do |project|
-        project.name = Runtime::Env.auto_devops_project_name || 'autodevops-project'
+        project.name = 'autodevops-project'
         project.auto_devops_enabled = true
       end
     end
@@ -13,35 +13,24 @@ module QA
       disable_optional_jobs(project)
     end
 
-    describe 'Auto DevOps support', :orchestrated, :kubernetes, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/251090', type: :stale } do
+    describe 'Auto DevOps support' do
       context 'when rbac is enabled' do
         let(:cluster) { Service::KubernetesCluster.new.create! }
 
         after do
           cluster&.remove!
+          project.remove_via_api!
         end
 
         it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1422' do
           Flow::Login.sign_in
 
-          # Set an application secret CI variable (prefixed with K8S_SECRET_)
-          Resource::CiVariable.fabricate! do |resource|
-            resource.project = project
-            resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
-            resource.value = 'you_can_see_this_variable'
-            resource.masked = false
-          end
-
-          # Connect K8s cluster
           Resource::KubernetesCluster::ProjectCluster.fabricate! do |k8s_cluster|
             k8s_cluster.project = project
             k8s_cluster.cluster = cluster
             k8s_cluster.install_ingress = true
-            k8s_cluster.install_prometheus = true
-            k8s_cluster.install_runner = true
           end
 
-          # Create Auto DevOps compatible repo
           Resource::Repository::ProjectPush.fabricate! do |push|
             push.project = project
             push.directory = Pathname
@@ -78,46 +67,6 @@ module QA
 
             job.click_element(:pipeline_path)
           end
-
-          Page::Project::Menu.perform(&:go_to_deployments_environments)
-          Page::Project::Deployments::Environments::Index.perform do |index|
-            index.click_environment_link('production')
-          end
-          Page::Project::Deployments::Environments::Show.perform do |show|
-            show.view_deployment do
-              expect(page).to have_content('Hello World!')
-              expect(page).to have_content('you_can_see_this_variable')
-            end
-          end
-        end
-      end
-    end
-
-    describe 'Auto DevOps', :smoke do
-      before do
-        Flow::Login.sign_in
-
-        project.visit!
-
-        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
-        Page::Project::Settings::CiCd.perform(&:expand_auto_devops)
-        Page::Project::Settings::AutoDevops.perform(&:enable_autodevops)
-
-        # Create AutoDevOps repo
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
-          push.directory = Pathname
-            .new(__dir__)
-            .join('../../../../../fixtures/auto_devops_rack')
-          push.commit_message = 'Create AutoDevOps compatible Project'
-        end
-      end
-
-      it 'runs an AutoDevOps pipeline', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1564' do
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          expect(pipeline).to have_tag('Auto DevOps')
         end
       end
     end
@@ -128,7 +77,8 @@ module QA
       %w[
         CODE_QUALITY_DISABLED LICENSE_MANAGEMENT_DISABLED
         SAST_DISABLED DAST_DISABLED DEPENDENCY_SCANNING_DISABLED
-        CONTAINER_SCANNING_DISABLED
+        CONTAINER_SCANNING_DISABLED BROWSER_PERFORMANCE_DISABLED
+        SECRET_DETECTION_DISABLED
       ].each do |key|
         Resource::CiVariable.fabricate_via_api! do |resource|
           resource.project = project

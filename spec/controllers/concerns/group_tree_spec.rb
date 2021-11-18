@@ -102,13 +102,5 @@ RSpec.describe GroupTree do
     end
 
     it_behaves_like 'returns filtered groups'
-
-    context 'when feature flag :linear_group_tree_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_group_tree_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'returns filtered groups'
-    end
   end
 end

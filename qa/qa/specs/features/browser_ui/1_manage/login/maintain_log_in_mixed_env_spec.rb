@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :mixed_env, :smoke, only: { subdomain: :staging } do
+  RSpec.describe 'Manage', only: { subdomain: :staging }, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/344213', type: :stale } do
     describe 'basic user' do
       it 'remains logged in when redirected from canary to non-canary node', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2251' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

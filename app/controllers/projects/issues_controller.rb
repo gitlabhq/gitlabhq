@@ -48,12 +48,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   before_action only: :show do
-    real_time_enabled = Gitlab::ActionCable::Config.in_app? || Feature.enabled?(:real_time_issue_sidebar, @project)
-
-    push_to_gon_attributes(:features, :real_time_issue_sidebar, real_time_enabled)
+    push_frontend_feature_flag(:real_time_issue_sidebar, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:confidential_notes, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:issue_assignees_widget, @project, default_enabled: :yaml)
     push_frontend_feature_flag(:labels_widget, @project, default_enabled: :yaml)
+    push_frontend_feature_flag(:paginated_issue_discussions, @project, default_enabled: :yaml)
 
     experiment(:invite_members_in_comment, namespace: @project.root_ancestor) do |experiment_instance|
       experiment_instance.exclude! unless helpers.can_admin_project_member?(@project)
@@ -71,7 +70,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   alias_method :designs, :show
 
-  feature_category :issue_tracking, [
+  feature_category :team_planning, [
                      :index, :calendar, :show, :new, :create, :edit, :update,
                      :destroy, :move, :reorder, :designs, :toggle_subscription,
                      :discussions, :bulk_update, :realtime_changes,

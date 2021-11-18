@@ -91,9 +91,7 @@ export default {
 
       try {
         const addLabelIds = payload.filter((label) => label.set).map((label) => label.id);
-        const removeLabelIds = this.selectedLabels
-          .filter((label) => !payload.find((selected) => selected.id === label.id))
-          .map((label) => label.id);
+        const removeLabelIds = payload.filter((label) => !label.set).map((label) => label.id);
 
         const input = {
           addLabelIds,
@@ -164,7 +162,7 @@ export default {
         :labels-list-title="__('Select label')"
         :dropdown-button-text="__('Choose labels')"
         :is-editing="edit"
-        variant="embedded"
+        variant="sidebar"
         class="gl-display-block labels gl-w-full"
         @updateSelectedLabels="setLabels"
       >

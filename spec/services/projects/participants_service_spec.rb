@@ -207,13 +207,5 @@ RSpec.describe Projects::ParticipantsService do
     end
 
     it_behaves_like 'return project members'
-
-    context 'when feature flag :linear_participants_service_ancestor_scopes is disabled' do
-      before do
-        stub_feature_flags(linear_participants_service_ancestor_scopes: false)
-      end
-
-      it_behaves_like 'return project members'
-    end
   end
 end

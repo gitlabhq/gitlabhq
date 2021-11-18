@@ -262,21 +262,36 @@ unable to add the `commit_message_regex_change` column.
 This results in the [backport migration of EE tables](https://gitlab.com/gitlab-org/gitlab/-/blob/cf00e431024018ddd82158f8a9210f113d0f4dbc/db/migrate/20190402150158_backport_enterprise_schema.rb#L1619) not working correctly.
 The backport migration assumes that certain tables in the database do not exist when running CE.
 
-To fix this issue, manually add the missing `commit_message_negative_regex` column and restart GitLab:
+To fix this issue:
 
-```shell
-# Access psql
-sudo gitlab-rails dbconsole
+1. Start a database console:
 
-# Add the missing column
-ALTER TABLE push_rules ADD COLUMN commit_message_negative_regex VARCHAR;
+   In GitLab 14.2 and later:
 
-# Exit psql
-\q
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
 
-# Restart GitLab
-sudo gitlab-ctl restart
-```
+   In GitLab 14.1 and earlier:
+
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+1. Manually add the missing `commit_message_negative_regex` column:
+
+   ```sql
+   ALTER TABLE push_rules ADD COLUMN commit_message_negative_regex VARCHAR;
+
+   # Exit psql
+   \q
+   ```
+
+1. Restart GitLab:
+
+   ```shell
+   sudo gitlab-ctl restart
+   ```
 
 ### Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
 

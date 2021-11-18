@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
-import { trackFileUploadEvent } from '../upload_file_experiment_tracking';
 
 const UPLOAD_BLOB_MODAL_ID = 'details-modal-upload-blob';
 
@@ -30,11 +29,6 @@ export default {
       default: '',
     },
   },
-  methods: {
-    trackOpenModal() {
-      trackFileUploadEvent('click_upload_modal_trigger');
-    },
-  },
   uploadBlobModalId: UPLOAD_BLOB_MODAL_ID,
 };
 </script>
@@ -44,7 +38,6 @@ export default {
       v-gl-modal="$options.uploadBlobModalId"
       icon="upload"
       data-testid="upload-file-button"
-      @click="trackOpenModal"
       >{{ __('Upload File') }}</gl-button
     >
     <upload-blob-modal

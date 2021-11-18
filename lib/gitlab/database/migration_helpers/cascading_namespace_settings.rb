@@ -31,10 +31,10 @@ module Gitlab
 
           namespace_options = options.merge(null: true, default: nil)
 
-          add_column(:namespace_settings, setting_name, type, namespace_options)
+          add_column(:namespace_settings, setting_name, type, **namespace_options)
           add_column(:namespace_settings, lock_column_name, :boolean, default: false, null: false)
 
-          add_column(:application_settings, setting_name, type, options)
+          add_column(:application_settings, setting_name, type, **options)
           add_column(:application_settings, lock_column_name, :boolean, default: false, null: false)
         end
 

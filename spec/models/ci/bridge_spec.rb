@@ -17,8 +17,6 @@ RSpec.describe Ci::Bridge do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
-  it { is_expected.to respond_to(:runner_features) }
-
   it 'has many sourced pipelines' do
     expect(bridge).to have_many(:sourced_pipelines)
   end

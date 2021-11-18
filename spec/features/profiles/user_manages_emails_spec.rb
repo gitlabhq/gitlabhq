@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User manages emails' do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
 
   before do
     sign_in(user)
@@ -11,7 +12,7 @@ RSpec.describe 'User manages emails' do
     visit(profile_emails_path)
   end
 
-  it "shows user's emails" do
+  it "shows user's emails", :aggregate_failures do
     expect(page).to have_content(user.email)
 
     user.emails.each do |email|
@@ -19,7 +20,7 @@ RSpec.describe 'User manages emails' do
     end
   end
 
-  it 'adds an email' do
+  it 'adds an email', :aggregate_failures do
     fill_in('email_email', with: 'my@email.com')
     click_button('Add')
 
@@ -34,21 +35,21 @@ RSpec.describe 'User manages emails' do
     end
   end
 
-  it 'does not add a duplicate email' do
-    fill_in('email_email', with: user.email)
+  it 'does not add an email that is the primary email of another user', :aggregate_failures do
+    fill_in('email_email', with: other_user.email)
     click_button('Add')
 
-    email = user.emails.find_by(email: user.email)
+    email = user.emails.find_by(email: other_user.email)
 
     expect(email).to be_nil
-    expect(page).to have_content(user.email)
+    expect(page).to have_content('Email has already been taken')
 
     user.emails.each do |email|
       expect(page).to have_content(email.email)
     end
   end
 
-  it 'removes an email' do
+  it 'removes an email', :aggregate_failures do
     fill_in('email_email', with: 'my@email.com')
     click_button('Add')
 

@@ -27,7 +27,9 @@ module QA
                  :import_error
 
       attribute :group do
-        Group.fabricate!
+        Group.fabricate! do |group|
+          group.api_client = api_client
+        end
       end
 
       attribute :path_with_namespace do
@@ -91,6 +93,7 @@ module QA
           new_page.choose_name(@name)
           new_page.add_description(@description)
           new_page.set_visibility(@visibility)
+          new_page.disable_initialize_with_sast
           new_page.disable_initialize_with_readme unless @initialize_with_readme
           new_page.create_new_project
         end
@@ -212,6 +215,10 @@ module QA
 
       def api_wikis_path
         "#{api_get_path}/wikis"
+      end
+
+      def api_push_rules_path
+        "#{api_get_path}/push_rule"
       end
 
       def api_post_body
@@ -356,6 +363,15 @@ module QA
       def wikis
         response = get(request_url(api_wikis_path))
         parse_body(response)
+      end
+
+      def push_rules
+        response = get(request_url(api_push_rules_path))
+        parse_body(response)
+      end
+
+      def add_push_rules(rules)
+        api_post_to(api_push_rules_path, rules)
       end
 
       # Object comparison

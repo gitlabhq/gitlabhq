@@ -3,7 +3,7 @@
 module Gitlab
   module Database
     class UnidirectionalCopyTrigger
-      def self.on_table(table_name, connection: ActiveRecord::Base.connection)
+      def self.on_table(table_name, connection:)
         new(table_name, connection)
       end
 

@@ -16,7 +16,7 @@ describe('Pipeline Status', () => {
   let mockApollo;
   let mockPipelineQuery;
 
-  const createComponentWithApollo = (glFeatures = {}) => {
+  const createComponentWithApollo = () => {
     const handlers = [[getPipelineQuery, mockPipelineQuery]];
     mockApollo = createMockApollo(handlers);
 
@@ -27,7 +27,6 @@ describe('Pipeline Status', () => {
         commitSha: mockCommitSha,
       },
       provide: {
-        glFeatures,
         projectFullPath: mockProjectFullPath,
       },
       stubs: { GlLink, GlSprintf },
@@ -40,6 +39,8 @@ describe('Pipeline Status', () => {
   const findPipelineId = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
   const findPipelineErrorMsg = () => wrapper.find('[data-testid="pipeline-error-msg"]');
+  const findPipelineNotTriggeredErrorMsg = () =>
+    wrapper.find('[data-testid="pipeline-not-triggered-error-msg"]');
   const findPipelineLoadingMsg = () => wrapper.find('[data-testid="pipeline-loading-msg"]');
   const findPipelineViewBtn = () => wrapper.find('[data-testid="pipeline-view-btn"]');
   const findStatusIcon = () => wrapper.find('[data-testid="pipeline-status-icon"]');
@@ -95,17 +96,18 @@ describe('Pipeline Status', () => {
       it('renders pipeline data', () => {
         const {
           id,
+          commit: { title },
           detailedStatus: { detailsPath },
         } = mockProjectPipeline().pipeline;
 
         expect(findStatusIcon().exists()).toBe(true);
         expect(findPipelineId().text()).toBe(`#${id.match(/\d+/g)[0]}`);
-        expect(findPipelineCommit().text()).toBe(mockCommitSha);
+        expect(findPipelineCommit().text()).toBe(`${mockCommitSha}: ${title}`);
         expect(findPipelineViewBtn().attributes('href')).toBe(detailsPath);
       });
 
-      it('does not render the pipeline mini graph', () => {
-        expect(findPipelineEditorMiniGraph().exists()).toBe(false);
+      it('renders the pipeline mini graph', () => {
+        expect(findPipelineEditorMiniGraph().exists()).toBe(true);
       });
     });
 
@@ -117,7 +119,8 @@ describe('Pipeline Status', () => {
         await waitForPromises();
       });
 
-      it('renders error', () => {
+      it('renders api error', () => {
+        expect(findPipelineNotTriggeredErrorMsg().exists()).toBe(false);
         expect(findIcon().attributes('name')).toBe('warning-solid');
         expect(findPipelineErrorMsg().text()).toBe(i18n.fetchError);
       });
@@ -129,20 +132,22 @@ describe('Pipeline Status', () => {
         expect(findPipelineViewBtn().exists()).toBe(false);
       });
     });
-  });
 
-  describe('when feature flag for pipeline mini graph is enabled', () => {
-    beforeEach(() => {
-      mockPipelineQuery.mockResolvedValue({
-        data: { project: mockProjectPipeline() },
+    describe('when pipeline is null', () => {
+      beforeEach(() => {
+        mockPipelineQuery.mockResolvedValue({
+          data: { project: { pipeline: null } },
+        });
+
+        createComponentWithApollo();
+        waitForPromises();
       });
 
-      createComponentWithApollo({ pipelineEditorMiniGraph: true });
-      waitForPromises();
-    });
-
-    it('renders the pipeline mini graph', () => {
-      expect(findPipelineEditorMiniGraph().exists()).toBe(true);
+      it('renders pipeline not triggered error', () => {
+        expect(findPipelineErrorMsg().exists()).toBe(false);
+        expect(findIcon().attributes('name')).toBe('information-o');
+        expect(findPipelineNotTriggeredErrorMsg().text()).toBe(i18n.pipelineNotTriggeredMsg);
+      });
     });
   });
 });

@@ -15,8 +15,16 @@ endpoint requires an administrator role and is not available on GitLab.com.
 GET /deploy_keys
 ```
 
+Supported attributes:
+
+| Attribute   | Type     | Required | Description           |
+|:------------|:---------|:---------|:----------------------|
+| `public` | boolean | **{dotted-circle}** No | Only return deploy keys that are public. Defaults to `false`. |
+
+Example request:
+
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/deploy_keys"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/deploy_keys?public=true"
 ```
 
 Example response:
@@ -27,13 +35,36 @@ Example response:
     "id": 1,
     "title": "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "created_at": "2013-10-02T10:12:29Z"
+    "fingerprint": "7f:72:08:7d:0e:47:48:ec:37:79:b2:76:68:b5:87:65",
+    "created_at": "2013-10-02T10:12:29Z",
+    "projects_with_write_access": [
+      {
+        "id": 73,
+        "description": null,
+        "name": "project2",
+        "name_with_namespace": "Sidney Jones / project2",
+        "path": "project2",
+        "path_with_namespace": "sidney_jones/project2",
+        "created_at": "2021-10-25T18:33:17.550Z"
+      },
+      {
+        "id": 74,
+        "description": null,
+        "name": "project3",
+        "name_with_namespace": "Sidney Jones / project3",
+        "path": "project3",
+        "path_with_namespace": "sidney_jones/project3",
+        "created_at": "2021-10-25T18:33:17.666Z"
+      }
+    ]
   },
   {
     "id": 3,
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-    "created_at": "2013-10-02T11:12:29Z"
+    "fingerprint": "64:d3:73:d4:83:70:ab:41:96:68:d5:3d:a5:b0:34:ea",
+    "created_at": "2013-10-02T11:12:29Z",
+    "projects_with_write_access": []
   }
 ]
 ```

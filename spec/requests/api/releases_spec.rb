@@ -42,6 +42,14 @@ RSpec.describe API::Releases do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: maintainer)
+
+        get api("/projects/#{project.id}/releases"), params: { job_token: job.token }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
       it 'returns releases ordered by released_at' do
         get api("/projects/#{project.id}/releases", maintainer)
 
@@ -312,6 +320,14 @@ RSpec.describe API::Releases do
 
       it 'returns 200 HTTP status' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns 200 HTTP status when using JOB-TOKEN auth' do
+        job = create(:ci_build, :running, project: project, user: maintainer)
+
+        get api("/projects/#{project.id}/releases/v0.1"), params: { job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -1008,6 +1024,14 @@ RSpec.describe API::Releases do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    it 'accepts the request when using JOB-TOKEN auth' do
+      job = create(:ci_build, :running, project: project, user: maintainer)
+
+      put api("/projects/#{project.id}/releases/v0.1"), params: params.merge(job_token: job.token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'updates the description' do
       put api("/projects/#{project.id}/releases/v0.1", maintainer), params: params
 
@@ -1216,6 +1240,14 @@ RSpec.describe API::Releases do
 
     it 'accepts the request' do
       delete api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'accepts the request when using JOB-TOKEN auth' do
+      job = create(:ci_build, :running, project: project, user: maintainer)
+
+      delete api("/projects/#{project.id}/releases/v0.1"), params: { job_token: job.token }
 
       expect(response).to have_gitlab_http_status(:ok)
     end

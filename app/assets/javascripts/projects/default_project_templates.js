@@ -93,6 +93,10 @@ export default {
     text: s__('ProjectTemplates|Serverless Framework/JS'),
     icon: '.template-option .icon-serverless_framework',
   },
+  tencent_serverless_framework: {
+    text: s__('ProjectTemplates|Tencent Serverless Framework/NextjsSSR'),
+    icon: '.template-option .icon-tencent_serverless_framework',
+  },
   cluster_management: {
     text: s__('ProjectTemplates|GitLab Cluster Management'),
     icon: '.template-option .icon-cluster_management',

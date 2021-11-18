@@ -135,6 +135,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Set up CI/CD"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -156,6 +157,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Start a free Ultimate trial"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -177,6 +179,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Add code owners"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -205,6 +208,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Add merge request approval"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -269,6 +273,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Create an issue"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -290,6 +295,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Submit a merge request"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"
@@ -347,6 +353,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <a
                 class="gl-link"
                 data-track-action="click_link"
+                data-track-experiment="change_continuous_onboarding_link_urls"
                 data-track-label="Run a Security scan using CI/CD"
                 data-track-property="Growth::Conversion::Experiment::LearnGitLab"
                 href="http://example.com/"

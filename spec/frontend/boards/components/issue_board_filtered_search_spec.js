@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
+import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import IssueBoardFilteredSpec from '~/boards/components/issue_board_filtered_search.vue';
 import issueBoardFilters from '~/boards/issue_board_filters';
 import { mockTokens } from '../mock_data';
@@ -9,39 +9,60 @@ jest.mock('~/boards/issue_board_filters');
 describe('IssueBoardFilter', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const findBoardsFilteredSearch = () => wrapper.findComponent(BoardFilteredSearch);
+
+  const createComponent = ({ isSignedIn = false } = {}) => {
     wrapper = shallowMount(IssueBoardFilteredSpec, {
-      props: { fullPath: '', boardType: '' },
+      propsData: { fullPath: 'gitlab-org', boardType: 'group' },
+      provide: {
+        isSignedIn,
+      },
     });
   };
+
+  let fetchAuthorsSpy;
+  let fetchLabelsSpy;
+  beforeEach(() => {
+    fetchAuthorsSpy = jest.fn();
+    fetchLabelsSpy = jest.fn();
+
+    issueBoardFilters.mockReturnValue({
+      fetchAuthors: fetchAuthorsSpy,
+      fetchLabels: fetchLabelsSpy,
+    });
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('default', () => {
-    let fetchAuthorsSpy;
-    let fetchLabelsSpy;
     beforeEach(() => {
-      fetchAuthorsSpy = jest.fn();
-      fetchLabelsSpy = jest.fn();
-
-      issueBoardFilters.mockReturnValue({
-        fetchAuthors: fetchAuthorsSpy,
-        fetchLabels: fetchLabelsSpy,
-      });
-
       createComponent();
     });
 
     it('finds BoardFilteredSearch', () => {
-      expect(wrapper.find(BoardFilteredSearch).exists()).toBe(true);
+      expect(findBoardsFilteredSearch().exists()).toBe(true);
     });
 
-    it('passes the correct tokens to BoardFilteredSearch', () => {
-      const tokens = mockTokens(fetchLabelsSpy, fetchAuthorsSpy, wrapper.vm.fetchMilestones);
+    it.each`
+      isSignedIn
+      ${true}
+      ${false}
+    `(
+      'passes the correct tokens to BoardFilteredSearch when user sign in is $isSignedIn',
+      ({ isSignedIn }) => {
+        createComponent({ isSignedIn });
 
-      expect(wrapper.find(BoardFilteredSearch).props('tokens')).toEqual(tokens);
-    });
+        const tokens = mockTokens(
+          fetchLabelsSpy,
+          fetchAuthorsSpy,
+          wrapper.vm.fetchMilestones,
+          isSignedIn,
+        );
+
+        expect(findBoardsFilteredSearch().props('tokens')).toEqual(tokens);
+      },
+    );
   });
 });

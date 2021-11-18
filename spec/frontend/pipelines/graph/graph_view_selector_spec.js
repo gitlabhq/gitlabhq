@@ -111,7 +111,7 @@ describe('the graph view selector component', () => {
       expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
       expect(findToggleLoader().exists()).toBe(false);
 
-      await findDependenciesToggle().trigger('click');
+      await findDependenciesToggle().vm.$emit('change', true);
       /*
         Loading happens before the event is emitted or timers are run.
         Then we run the timer because the event is emitted in setInterval

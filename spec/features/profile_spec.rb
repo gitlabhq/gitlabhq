@@ -6,6 +6,7 @@ RSpec.describe 'Profile account page', :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(bootstrap_confirmation_modals: false)
     sign_in(user)
   end
 
@@ -80,6 +81,7 @@ RSpec.describe 'Profile account page', :js do
   describe 'when I reset incoming email token' do
     before do
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+      stub_feature_flags(bootstrap_confirmation_modals: false)
       visit profile_personal_access_tokens_path
     end
 

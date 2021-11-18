@@ -6,12 +6,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:warden_user) { double(:warden, user: double(:user, id: 42)) }
-  let(:single_sticking_object) { Set.new([[ActiveRecord::Base, :user, 42]]) }
+  let(:single_sticking_object) { Set.new([[ActiveRecord::Base.sticking, :user, 42]]) }
   let(:multiple_sticking_objects) do
     Set.new([
-      [ActiveRecord::Base, :user, 42],
-      [ActiveRecord::Base, :runner, '123456789'],
-      [ActiveRecord::Base, :runner, '1234']
+      [ActiveRecord::Base.sticking, :user, 42],
+      [ActiveRecord::Base.sticking, :runner, '123456789'],
+      [ActiveRecord::Base.sticking, :runner, '1234']
     ])
   end
 
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
       it 'returns the warden user if present' do
         env = { 'warden' => warden_user }
         ids = Gitlab::Database::LoadBalancing.base_models.map do |model|
-          [model, :user, 42]
+          [model.sticking, :user, 42]
         end
 
         expect(middleware.sticking_namespaces(env)).to eq(ids)
@@ -181,9 +181,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
         env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
         expect(middleware.sticking_namespaces(env)).to eq([
-          [ActiveRecord::Base, :user, 42],
-          [ActiveRecord::Base, :runner, '123456789'],
-          [ActiveRecord::Base, :runner, '1234']
+          [ActiveRecord::Base.sticking, :user, 42],
+          [ActiveRecord::Base.sticking, :runner, '123456789'],
+          [ActiveRecord::Base.sticking, :runner, '1234']
         ])
       end
     end

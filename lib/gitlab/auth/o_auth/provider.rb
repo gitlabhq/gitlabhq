@@ -5,6 +5,7 @@ module Gitlab
     module OAuth
       class Provider
         LABELS = {
+          "dingtalk"                 => "DingTalk",
           "github"                   => "GitHub",
           "gitlab"                   => "GitLab.com",
           "google_oauth2"            => "Google",

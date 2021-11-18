@@ -51,6 +51,16 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
         it 'menu link points to Terraform page' do
           expect(subject.link).to eq find_menu_item(:terraform).link
         end
+
+        context 'when Terraform menu is not visible' do
+          before do
+            subject.renderable_items.delete(find_menu_item(:terraform))
+          end
+
+          it 'menu link points to Google Cloud page' do
+            expect(subject.link).to eq find_menu_item(:google_cloud).link
+          end
+        end
       end
     end
 
@@ -86,6 +96,12 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
 
     describe 'Terraform' do
       let(:item_id) { :terraform }
+
+      it_behaves_like 'access rights checks'
+    end
+
+    describe 'Google Cloud' do
+      let(:item_id) { :google_cloud }
 
       it_behaves_like 'access rights checks'
     end

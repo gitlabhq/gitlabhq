@@ -11,7 +11,7 @@ module Banzai
     class SyntaxHighlightFilter < HTML::Pipeline::Filter
       include OutputSafety
 
-      PARAMS_DELIMITER = ':'
+      LANG_PARAMS_DELIMITER = ':'
       LANG_PARAMS_ATTR = 'data-lang-params'
 
       CSS   = 'pre:not([data-math-style]):not([data-mermaid-style]):not([data-kroki-style]) > code'
@@ -27,7 +27,7 @@ module Banzai
 
       def highlight_node(node)
         css_classes = +'code highlight js-syntax-highlight'
-        lang, lang_params = parse_lang_params(node.attr('lang'))
+        lang, lang_params = parse_lang_params(node)
         sourcepos = node.parent.attr('data-sourcepos')
         retried = false
 
@@ -56,7 +56,7 @@ module Banzai
           retry
         end
 
-        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ""
+        sourcepos_attr = sourcepos ? "data-sourcepos=\"#{sourcepos}\"" : ''
 
         highlighted = %(<pre #{sourcepos_attr} class="#{css_classes}"
                              lang="#{language}"
@@ -69,13 +69,36 @@ module Banzai
 
       private
 
-      def parse_lang_params(language)
+      def parse_lang_params(node)
+        node = node.parent if Feature.enabled?(:use_cmark_renderer)
+
+        # Commonmarker's FULL_INFO_STRING render option works with the space delimiter.
+        # But the current behavior of GitLab's markdown renderer is different - it grabs everything as the single
+        # line, including language and its options. To keep backward compatability, we have to parse the old format and
+        # merge with the new one.
+        #
+        # Behaviors before separating language and its parameters:
+        # Old ones:
+        # "```ruby with options```" -> '<pre><code lang="ruby with options">'.
+        # "```ruby:with:options```" -> '<pre><code lang="ruby:with:options">'.
+        #
+        # New ones:
+        # "```ruby with options```" -> '<pre><code lang="ruby" data-meta="with options">'.
+        # "```ruby:with:options```" -> '<pre><code lang="ruby:with:options">'.
+
+        language = node.attr('lang')
+
         return unless language
 
-        lang, params = language.split(PARAMS_DELIMITER, 2)
-        formatted_params = %(#{LANG_PARAMS_ATTR}="#{escape_once(params)}") if params
+        language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
 
-        [lang, formatted_params]
+        if Feature.enabled?(:use_cmark_renderer)
+          language_params = [node.attr('data-meta'), language_params].compact.join(' ')
+        end
+
+        formatted_language_params = format_language_params(language_params)
+
+        [language, formatted_language_params]
       end
 
       # Separate method so it can be instrumented.
@@ -94,6 +117,12 @@ module Banzai
 
       def use_rouge?(language)
         (%w(math suggestion) + ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES).exclude?(language)
+      end
+
+      def format_language_params(language_params)
+        return if language_params.blank?
+
+        %(#{LANG_PARAMS_ATTR}="#{escape_once(language_params)}")
       end
     end
   end

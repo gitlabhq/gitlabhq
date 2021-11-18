@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Emails::CreateService do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+
   let(:opts) { { email: 'new@email.com', user: user } }
 
   subject(:service) { described_class.new(user, opts) }
@@ -22,7 +23,7 @@ RSpec.describe Emails::CreateService do
     it 'has the right user association' do
       service.execute
 
-      expect(user.emails).to eq(Email.where(opts))
+      expect(user.emails).to include(Email.find_by(opts))
     end
   end
 end

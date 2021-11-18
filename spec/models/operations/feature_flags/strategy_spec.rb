@@ -20,8 +20,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         end
         with_them do
           it 'skips parameters validation' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: invalid_name, parameters: { bad: 'params' })
+            strategy = build(:operations_strategy,
+                             feature_flag: feature_flag,
+                             name: invalid_name,
+                             parameters: { bad: 'params' })
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:name]).to eq(['strategy name is invalid'])
             expect(strategy.errors[:parameters]).to be_empty
@@ -36,19 +40,24 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         end
         with_them do
           it 'must have valid parameters for the strategy' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'gradualRolloutUserId', parameters: invalid_parameters)
+            strategy = build(:operations_strategy,
+                             :gradual_rollout,
+                             feature_flag: feature_flag,
+                             parameters: invalid_parameters)
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
           end
         end
 
         it 'allows the parameters in any order' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gradualRolloutUserId',
-                                            parameters: { percentage: '10', groupId: 'mygroup' })
+          strategy = build(:operations_strategy,
+                           :gradual_rollout,
+                           feature_flag: feature_flag,
+                           parameters: { percentage: '10', groupId: 'mygroup' })
 
-          expect(strategy.errors[:parameters]).to be_empty
+          expect(strategy).to be_valid
         end
 
         describe 'percentage' do
@@ -59,9 +68,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'gradualRolloutUserId',
-                                                parameters: { groupId: 'mygroup', percentage: invalid_value })
+              strategy = build(:operations_strategy,
+                               :gradual_rollout,
+                               feature_flag: feature_flag,
+                               parameters: { groupId: 'mygroup', percentage: invalid_value })
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to eq(['percentage must be a string between 0 and 100 inclusive'])
             end
@@ -72,11 +84,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'gradualRolloutUserId',
-                                                parameters: { groupId: 'mygroup', percentage: valid_value })
+              strategy = build(:operations_strategy,
+                               :gradual_rollout,
+                               feature_flag: feature_flag,
+                               parameters: { groupId: 'mygroup', percentage: valid_value })
 
-              expect(strategy.errors[:parameters]).to eq([])
+              expect(strategy).to be_valid
             end
           end
         end
@@ -88,9 +101,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'gradualRolloutUserId',
-                                                parameters: { groupId: invalid_value, percentage: '40' })
+              strategy = build(:operations_strategy,
+                               :gradual_rollout,
+                               feature_flag: feature_flag,
+                               parameters: { groupId: invalid_value, percentage: '40' })
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to eq(['groupId parameter is invalid'])
             end
@@ -101,11 +117,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'gradualRolloutUserId',
-                                                parameters: { groupId: valid_value, percentage: '40' })
+              strategy = build(:operations_strategy,
+                               :gradual_rollout,
+                               feature_flag: feature_flag,
+                               parameters: { groupId: valid_value, percentage: '40' })
 
-              expect(strategy.errors[:parameters]).to eq([])
+              expect(strategy).to be_valid
             end
           end
         end
@@ -123,9 +140,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         ])
         with_them do
           it 'must have valid parameters for the strategy' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'flexibleRollout',
-                                              parameters: invalid_parameters)
+            strategy = build(:operations_strategy,
+                             :flexible_rollout,
+                             feature_flag: feature_flag,
+                             parameters: invalid_parameters)
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
           end
@@ -137,11 +157,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           [:groupId, 'mygroup']
         ].permutation(3).each do |parameters|
           it "allows the parameters in the order #{parameters.map { |p| p.first }.join(', ')}" do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'flexibleRollout',
-                                              parameters: Hash[parameters])
+            strategy = build(:operations_strategy,
+                             :flexible_rollout,
+                             feature_flag: feature_flag,
+                             parameters: Hash[parameters])
 
-            expect(strategy.errors[:parameters]).to be_empty
+            expect(strategy).to be_valid
           end
         end
 
@@ -152,9 +173,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
               parameters = { stickiness: 'default', groupId: 'mygroup', rollout: invalid_value }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to eq([
                 'rollout must be a string between 0 and 100 inclusive'
@@ -166,11 +190,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string value between 0 and 100 inclusive and without a percentage sign' do
               parameters = { stickiness: 'default', groupId: 'mygroup', rollout: valid_value }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
 
-              expect(strategy.errors[:parameters]).to eq([])
+              expect(strategy).to be_valid
             end
           end
         end
@@ -181,9 +206,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
               parameters = { stickiness: 'default', groupId: invalid_value, rollout: '40' }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to eq(['groupId parameter is invalid'])
             end
@@ -193,11 +221,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string value of up to 32 lowercase characters' do
               parameters = { stickiness: 'default', groupId: valid_value, rollout: '40' }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
 
-              expect(strategy.errors[:parameters]).to eq([])
+              expect(strategy).to be_valid
             end
           end
         end
@@ -207,9 +236,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string representing a supported stickiness setting' do
               parameters = { stickiness: invalid_value, groupId: 'mygroup', rollout: '40' }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to eq([
                 'stickiness parameter must be default, userId, sessionId, or random'
@@ -221,11 +253,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           with_them do
             it 'must be a string representing a supported stickiness setting' do
               parameters = { stickiness: valid_value, groupId: 'mygroup', rollout: '40' }
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'flexibleRollout',
-                                                parameters: parameters)
+              strategy = build(:operations_strategy,
+                               :flexible_rollout,
+                               feature_flag: feature_flag,
+                               parameters: parameters)
 
-              expect(strategy.errors[:parameters]).to eq([])
+              expect(strategy).to be_valid
             end
           end
         end
@@ -237,8 +270,11 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         end
         with_them do
           it 'must have valid parameters for the strategy' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'userWithId', parameters: invalid_parameters)
+            strategy = build(:operations_strategy,
+                             feature_flag: feature_flag,
+                             name: 'userWithId', parameters: invalid_parameters)
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
           end
@@ -253,10 +289,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'is valid with a string of comma separated values' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'userWithId', parameters: { userIds: valid_value })
+              strategy = build(:operations_strategy,
+                               feature_flag: feature_flag,
+                               name: 'userWithId',
+                               parameters: { userIds: valid_value })
 
-              expect(strategy.errors[:parameters]).to be_empty
+              expect(strategy).to be_valid
             end
           end
 
@@ -267,8 +305,12 @@ RSpec.describe Operations::FeatureFlags::Strategy do
           end
           with_them do
             it 'is invalid' do
-              strategy = described_class.create(feature_flag: feature_flag,
-                                                name: 'userWithId', parameters: { userIds: invalid_value })
+              strategy = build(:operations_strategy,
+                               feature_flag: feature_flag,
+                               name: 'userWithId',
+                               parameters: { userIds: invalid_value })
+
+              expect(strategy).to be_invalid
 
               expect(strategy.errors[:parameters]).to include(
                 'userIds must be a string of unique comma separated values each 256 characters or less'
@@ -284,43 +326,48 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         end
         with_them do
           it 'must be empty' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'default',
-                                              parameters: invalid_value)
+            strategy = build(:operations_strategy, :default, feature_flag: feature_flag, parameters: invalid_value)
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
           end
         end
 
         it 'must be empty' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'default',
-                                            parameters: {})
+          strategy = build(:operations_strategy, :default, feature_flag: feature_flag)
 
-          expect(strategy.errors[:parameters]).to be_empty
+          expect(strategy).to be_valid
         end
       end
 
       context 'when the strategy name is gitlabUserList' do
+        let_it_be(:user_list) { create(:operations_feature_flag_user_list, project: project) }
+
         where(:invalid_value) do
           [{ groupId: "default", percentage: "7" }, "", "nothing", 7, nil, [], 2.5, { userIds: 'user1' }]
         end
         with_them do
-          it 'must be empty' do
-            strategy = described_class.create(feature_flag: feature_flag,
-                                              name: 'gitlabUserList',
-                                              parameters: invalid_value)
+          it 'is invalid' do
+            strategy = build(:operations_strategy,
+                             :gitlab_userlist,
+                             user_list: user_list,
+                             feature_flag: feature_flag,
+                             parameters: invalid_value)
+
+            expect(strategy).to be_invalid
 
             expect(strategy.errors[:parameters]).to eq(['parameters are invalid'])
           end
         end
 
-        it 'must be empty' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gitlabUserList',
-                                            parameters: {})
+        it 'is valid' do
+          strategy = build(:operations_strategy,
+                           :gitlab_userlist,
+                           user_list: user_list,
+                           feature_flag: feature_flag)
 
-          expect(strategy.errors[:parameters]).to be_empty
+          expect(strategy).to be_valid
         end
       end
     end
@@ -329,18 +376,15 @@ RSpec.describe Operations::FeatureFlags::Strategy do
       context 'when name is gitlabUserList' do
         it 'is valid when associated with a user list' do
           user_list = create(:operations_feature_flag_user_list, project: project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gitlabUserList',
-                                            user_list: user_list,
-                                            parameters: {})
+          strategy = build(:operations_strategy, :gitlab_userlist, feature_flag: feature_flag, user_list: user_list)
 
-          expect(strategy.errors[:user_list]).to be_empty
+          expect(strategy).to be_valid
         end
 
         it 'is invalid without a user list' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gitlabUserList',
-                                            parameters: {})
+          strategy = build(:operations_strategy, :gitlab_userlist, feature_flag: feature_flag, user_list: nil)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(["can't be blank"])
         end
@@ -348,10 +392,9 @@ RSpec.describe Operations::FeatureFlags::Strategy do
         it 'is invalid when associated with a user list from another project' do
           other_project = create(:project)
           user_list = create(:operations_feature_flag_user_list, project: other_project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gitlabUserList',
-                                            user_list: user_list,
-                                            parameters: {})
+          strategy = build(:operations_strategy, :gitlab_userlist, feature_flag: feature_flag, user_list: user_list)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(['must belong to the same project'])
         end
@@ -360,84 +403,68 @@ RSpec.describe Operations::FeatureFlags::Strategy do
       context 'when name is default' do
         it 'is invalid when associated with a user list' do
           user_list = create(:operations_feature_flag_user_list, project: project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'default',
-                                            user_list: user_list,
-                                            parameters: {})
+          strategy = build(:operations_strategy, :default, feature_flag: feature_flag, user_list: user_list)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(['must be blank'])
         end
 
         it 'is valid without a user list' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'default',
-                                            parameters: {})
+          strategy = build(:operations_strategy, :default, feature_flag: feature_flag)
 
-          expect(strategy.errors[:user_list]).to be_empty
+          expect(strategy).to be_valid
         end
       end
 
       context 'when name is userWithId' do
         it 'is invalid when associated with a user list' do
           user_list = create(:operations_feature_flag_user_list, project: project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'userWithId',
-                                            user_list: user_list,
-                                            parameters: { userIds: 'user1' })
+          strategy = build(:operations_strategy, :userwithid, feature_flag: feature_flag, user_list: user_list)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(['must be blank'])
         end
 
         it 'is valid without a user list' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'userWithId',
-                                            parameters: { userIds: 'user1' })
+          strategy = build(:operations_strategy, :userwithid, feature_flag: feature_flag)
 
-          expect(strategy.errors[:user_list]).to be_empty
+          expect(strategy).to be_valid
         end
       end
 
       context 'when name is gradualRolloutUserId' do
         it 'is invalid when associated with a user list' do
           user_list = create(:operations_feature_flag_user_list, project: project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gradualRolloutUserId',
-                                            user_list: user_list,
-                                            parameters: { groupId: 'default', percentage: '10' })
+          strategy = build(:operations_strategy, :gradual_rollout, feature_flag: feature_flag, user_list: user_list)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(['must be blank'])
         end
 
         it 'is valid without a user list' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'gradualRolloutUserId',
-                                            parameters: { groupId: 'default', percentage: '10' })
+          strategy = build(:operations_strategy, :gradual_rollout, feature_flag: feature_flag)
 
-          expect(strategy.errors[:user_list]).to be_empty
+          expect(strategy).to be_valid
         end
       end
 
       context 'when name is flexibleRollout' do
         it 'is invalid when associated with a user list' do
           user_list = create(:operations_feature_flag_user_list, project: project)
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'flexibleRollout',
-                                            user_list: user_list,
-                                            parameters: { groupId: 'default',
-                                                          rollout: '10',
-                                                          stickiness: 'default' })
+          strategy = build(:operations_strategy, :flexible_rollout, feature_flag: feature_flag, user_list: user_list)
+
+          expect(strategy).to be_invalid
 
           expect(strategy.errors[:user_list]).to eq(['must be blank'])
         end
 
         it 'is valid without a user list' do
-          strategy = described_class.create(feature_flag: feature_flag,
-                                            name: 'flexibleRollout',
-                                            parameters: { groupId: 'default',
-                                                          rollout: '10',
-                                                          stickiness: 'default' })
+          strategy = build(:operations_strategy, :flexible_rollout, feature_flag: feature_flag)
 
-          expect(strategy.errors[:user_list]).to be_empty
+          expect(strategy).to be_valid
         end
       end
     end

@@ -145,7 +145,7 @@ module API
           check_allowed(params)
         end
 
-        post "/lfs_authenticate", feature_category: :source_code_management do
+        post "/lfs_authenticate", feature_category: :source_code_management, urgency: :high do
           not_found! unless container&.lfs_enabled?
 
           status 200

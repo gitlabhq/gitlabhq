@@ -269,7 +269,9 @@ $tabs-holder-z-index: 250;
   }
 
   .mr-widget-body {
-    line-height: 28px;
+    &:not(.mr-widget-body-line-height-1) {
+      line-height: 28px;
+    }
 
     @include clearfix;
 

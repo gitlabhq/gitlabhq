@@ -99,9 +99,10 @@ module Backup
             # - 1495527122_gitlab_backup.tar
             # - 1495527068_2017_05_23_gitlab_backup.tar
             # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            next unless file =~ /^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/
+            matched = backup_file?(file)
+            next unless matched
 
-            timestamp = Regexp.last_match(1).to_i
+            timestamp = matched[1].to_i
 
             if Time.at(timestamp) < (Time.now - keep_time)
               begin
@@ -192,6 +193,10 @@ module Backup
 
     private
 
+    def backup_file?(file)
+      file.match(/^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/)
+    end
+
     def non_tarred_backup?
       File.exist?(File.join(backup_path, 'backup_information.yml'))
     end
@@ -210,9 +215,7 @@ module Backup
 
     def object_storage_config
       @object_storage_config ||= begin
-        config = ObjectStorage::Config.new(Gitlab.config.backup.upload)
-        config.load_provider
-        config
+        ObjectStorage::Config.new(Gitlab.config.backup.upload)
       end
     end
 
@@ -316,3 +319,5 @@ module Backup
     end
   end
 end
+
+Backup::Manager.prepend_mod

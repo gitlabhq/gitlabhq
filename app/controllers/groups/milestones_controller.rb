@@ -6,7 +6,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   before_action :milestone, only: [:edit, :show, :update, :issues, :merge_requests, :participants, :labels, :destroy]
   before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update, :destroy]
 
-  feature_category :issue_tracking
+  feature_category :team_planning
 
   def index
     respond_to do |format|

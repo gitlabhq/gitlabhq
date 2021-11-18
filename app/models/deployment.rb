@@ -8,10 +8,11 @@ class Deployment < ApplicationRecord
   include Importable
   include Gitlab::Utils::StrongMemoize
   include FastDestroyAll
-  include IgnorableColumns
 
   StatusUpdateError = Class.new(StandardError)
   StatusSyncError = Class.new(StandardError)
+
+  ARCHIVABLE_OFFSET = 50_000
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
@@ -53,6 +54,8 @@ class Deployment < ApplicationRecord
 
   scope :finished_after, ->(date) { where('finished_at >= ?', date) }
   scope :finished_before, ->(date) { where('finished_at < ?', date) }
+
+  scope :ordered, -> { order(finished_at: :desc) }
 
   FINISHED_STATUSES = %i[success failed canceled].freeze
 
@@ -99,6 +102,10 @@ class Deployment < ApplicationRecord
       deployment.run_after_commit do
         Deployments::UpdateEnvironmentWorker.perform_async(id)
         Deployments::LinkMergeRequestWorker.perform_async(id)
+
+        if ::Feature.enabled?(:deployments_archive, deployment.project, default_enabled: :yaml)
+          Deployments::ArchiveInProjectWorker.perform_async(deployment.project_id)
+        end
       end
     end
 
@@ -131,6 +138,14 @@ class Deployment < ApplicationRecord
     canceled: 4,
     skipped: 5
   }
+
+  def self.archivables_in(project, limit:)
+    start_iid = project.deployments.order(iid: :desc).limit(1)
+      .select("(iid - #{ARCHIVABLE_OFFSET}) AS start_iid")
+
+    project.deployments.preload(:environment).where('iid <= (?)', start_iid)
+      .where(archived: false).limit(limit)
+  end
 
   def self.last_for_environment(environment)
     ids = self
@@ -299,7 +314,7 @@ class Deployment < ApplicationRecord
                              "#{id} as deployment_id",
                              "#{environment_id} as environment_id").to_sql
 
-    # We don't use `Gitlab::Database.main.bulk_insert` here so that we don't need to
+    # We don't use `ApplicationRecord.legacy_bulk_insert` here so that we don't need to
     # first pluck lots of IDs into memory.
     #
     # We also ignore any duplicates so this method can be called multiple times
@@ -325,6 +340,7 @@ class Deployment < ApplicationRecord
 
   def sync_status_with(build)
     return false unless ::Deployment.statuses.include?(build.status)
+    return false if build.created? || build.status == self.status
 
     update_status!(build.status)
   rescue StandardError => e

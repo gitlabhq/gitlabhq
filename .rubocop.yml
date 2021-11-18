@@ -106,25 +106,31 @@ RSpec/MultipleMemoizedHelpers:
 
 Naming/FileName:
   ExpectMatchingDefinition: true
+  CheckDefinitionPathHierarchy: false
   Exclude:
-    - 'db/**/*'
-    - 'ee/db/**/*'
-    - 'spec/**/*'
-    - 'features/**/*'
-    - 'ee/spec/**/*'
-    - 'qa/spec/**/*'
-    - 'qa/qa/specs/**/*'
-    - 'qa/bin/*'
+    - '**/*/*.builder'
     - 'ee/bin/*'
+    - 'config.ru'
     - 'config/**/*'
     - 'ee/config/**/*'
+    - 'jh/config/**/*'
+    - 'db/**/*'
+    - 'ee/db/**/*'
+    - 'ee/elastic/migrate/*'
+    - 'lib/tasks/**/*.rake'
+    - 'ee/lib/tasks/**/*.rake'
     - 'lib/generators/**/*'
-    - 'locale/unfound_translations.rb'
-    - 'ee/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
-    - 'qa/qa/scenario/test/integration/ldap_no_tls.rb'
-    - 'qa/qa/scenario/test/integration/ldap_tls.rb'
-    - 'qa/tasks/*'
+    - 'scripts/**/*'
+    - 'spec/**/*'
+    - 'tooling/bin/**/*'
+    - 'ee/spec/**/*'
+    - 'jh/spec/**/*'
+    - 'qa/bin/*'
+    - 'qa/spec/**/*'
+    - 'qa/qa/specs/**/*'
+    - 'qa/tasks/**/*.rake'
+    - '**/*.ru'
 
   IgnoreExecutableScripts: true
   AllowedAcronyms:
@@ -146,6 +152,26 @@ Naming/FileName:
     - CI
     - CD
     - OAuth
+    - CSP
+    - CSV
+    - SCA
+    - SAN
+    - CIDR
+    - SPDX
+    - MR
+    - SSE
+    - JWT
+    - HLL
+    - GPG
+    - OTP
+    - GID
+    - AR
+    - RSpec
+    - ECDSA
+    - ED25519
+    - GitLab
+    - JavaScript
+    - VSCode
     # default ones:
     - CLI
     - DSL
@@ -682,10 +708,6 @@ Cop/UserAdmin:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-Performance/OpenStruct:
-  Exclude:
-    - 'ee/spec/**/*.rb'
-
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/327495
 Style/RegexpLiteral:
   Enabled: false
@@ -711,6 +733,10 @@ QA/SelectorUsage:
     - 'ee/spec/**/*.rb'
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
+
+QA/DuplicateTestcaseLink:
+  # this cop is executed in static-analysis.gitlab-ci.yml since it cannot be run in parallel
+  Enabled: false
 
 Performance/ActiveRecordSubtransactions:
   Exclude:

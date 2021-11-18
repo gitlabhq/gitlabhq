@@ -1,0 +1,8 @@
+---
+name: terms_of_service_vue
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343046
+milestone: '14.5'
+type: development
+group: group::access
+default_enabled: true

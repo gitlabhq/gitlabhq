@@ -82,7 +82,7 @@ export default {
     });
 
     this.$root.$on('clicked::link', (e) => {
-      window.location = e.target.href;
+      window.location = e.currentTarget.href;
     });
   },
 

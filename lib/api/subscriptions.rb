@@ -22,21 +22,21 @@ module API
         entity: Entities::Issue,
         source: Project,
         finder: ->(id) { find_project_issue(id) },
-        feature_category: :issue_tracking
+        feature_category: :team_planning
       },
       {
         type: 'labels',
         entity: Entities::ProjectLabel,
         source: Project,
         finder: ->(id) { find_label(user_project, id) },
-        feature_category: :issue_tracking
+        feature_category: :team_planning
       },
       {
         type: 'labels',
         entity: Entities::GroupLabel,
         source: Group,
         finder: ->(id) { find_label(user_group, id) },
-        feature_category: :issue_tracking
+        feature_category: :team_planning
       }
     ]
 

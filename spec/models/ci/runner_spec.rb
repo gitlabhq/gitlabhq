@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Ci::Runner do
   it_behaves_like 'having unique enum values'
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_runner }
+
+    before do
+      Clusters::Applications::Runner # ensure that the referenced model is loaded
+    end
+  end
+
   describe 'groups association' do
     # Due to other assoctions such as projects this whole spec is allowed to
     # generate cross-database queries. So we have this temporary spec to
@@ -44,7 +52,7 @@ RSpec.describe Ci::Runner do
       let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'disallows assigning group if already assigned to a group' do
-        runner.groups << build(:group)
+        runner.runner_namespaces << build(:ci_runner_namespace)
 
         expect(runner).not_to be_valid
         expect(runner.errors.full_messages).to include('Runner needs to be assigned to exactly one group')
@@ -397,7 +405,7 @@ RSpec.describe Ci::Runner do
     it 'sticks the runner to the primary and calls the original method' do
       runner = create(:ci_runner)
 
-      expect(ApplicationRecord.sticking).to receive(:stick)
+      expect(described_class.sticking).to receive(:stick)
         .with(:runner, runner.id)
 
       expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
@@ -618,9 +626,48 @@ RSpec.describe Ci::Runner do
   end
 
   describe '#status' do
-    let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
+    let(:runner) { build(:ci_runner, :instance) }
 
     subject { runner.status }
+
+    context 'never connected' do
+      before do
+        runner.contacted_at = nil
+      end
+
+      it { is_expected.to eq(:not_connected) }
+    end
+
+    context 'inactive but online' do
+      before do
+        runner.contacted_at = 1.second.ago
+        runner.active = false
+      end
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'contacted 1s ago' do
+      before do
+        runner.contacted_at = 1.second.ago
+      end
+
+      it { is_expected.to eq(:online) }
+    end
+
+    context 'contacted long time ago' do
+      before do
+        runner.contacted_at = 1.year.ago
+      end
+
+      it { is_expected.to eq(:offline) }
+    end
+  end
+
+  describe '#deprecated_rest_status' do
+    let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
+
+    subject { runner.deprecated_rest_status }
 
     context 'never connected' do
       before do

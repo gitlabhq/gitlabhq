@@ -35,9 +35,11 @@ module Clusters
       end
 
       def kubeclient_delete_namespace(kubernetes_namespace)
-        cluster.kubeclient.delete_namespace(kubernetes_namespace.namespace)
+        cluster.kubeclient&.delete_namespace(kubernetes_namespace.namespace)
       rescue Kubeclient::ResourceNotFoundError
-        # no-op: nothing to delete
+        # The resources have already been deleted, possibly on a previous attempt that timed out
+      rescue Gitlab::UrlBlocker::BlockedUrlError
+        # User gave an invalid cluster from the start, or deleted the endpoint before this job ran
       end
     end
   end

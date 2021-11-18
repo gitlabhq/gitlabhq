@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('schedule_update_jira_tracker_data_deployment_type_based_on_url')
+require_migration!
 
 RSpec.describe ScheduleUpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration do
   let(:services_table) { table(:services) }

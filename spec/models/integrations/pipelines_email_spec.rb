@@ -35,6 +35,42 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
 
       it { is_expected.not_to validate_presence_of(:recipients) }
     end
+
+    describe 'validates number of recipients' do
+      before do
+        stub_const("#{described_class}::RECIPIENTS_LIMIT", 2)
+      end
+
+      subject(:integration) { described_class.new(project: project, recipients: recipients, active: true) }
+
+      context 'valid number of recipients' do
+        let(:recipients) { 'foo@bar.com, , ' }
+
+        it 'does not count empty emails' do
+          is_expected.to be_valid
+        end
+      end
+
+      context 'invalid number of recipients' do
+        let(:recipients) { 'foo@bar.com bar@foo.com bob@gitlab.com' }
+
+        it { is_expected.not_to be_valid }
+
+        it 'adds an error message' do
+          integration.valid?
+
+          expect(integration.errors).to contain_exactly('Recipients can\'t exceed 2')
+        end
+
+        context 'when integration is not active' do
+          before do
+            integration.active = false
+          end
+
+          it { is_expected.to be_valid }
+        end
+      end
+    end
   end
 
   shared_examples 'sending email' do |branches_to_be_notified: nil|
@@ -50,7 +86,7 @@ RSpec.describe Integrations::PipelinesEmail, :mailer do
     it 'sends email' do
       emails = receivers.map { |r| double(notification_email_or_default: r) }
 
-      should_only_email(*emails, kind: :bcc)
+      should_only_email(*emails)
     end
   end
 

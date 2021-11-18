@@ -1,8 +1,0 @@
----
-name: new_customersdot_staging_url
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71827
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/342513
-milestone: '14.4'
-type: development
-group: group::fulfillment
-default_enabled: false

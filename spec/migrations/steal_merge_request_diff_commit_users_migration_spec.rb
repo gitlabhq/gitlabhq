@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration! 'steal_merge_request_diff_commit_users_migration'
+require_migration!
 
 RSpec.describe StealMergeRequestDiffCommitUsersMigration, :migration do
   let(:migration) { described_class.new }

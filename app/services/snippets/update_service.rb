@@ -148,3 +148,5 @@ module Snippets
     end
   end
 end
+
+Snippets::UpdateService.prepend_mod_with('Snippets::UpdateService')

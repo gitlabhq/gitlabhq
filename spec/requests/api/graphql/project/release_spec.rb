@@ -228,6 +228,189 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
     end
   end
 
+  shared_examples 'restricted access to release fields' do
+    describe 'scalar fields' do
+      let(:path) { path_prefix }
+
+      let(:release_fields) do
+        %{
+          tagName
+          tagPath
+          description
+          descriptionHtml
+          name
+          createdAt
+          releasedAt
+          upcomingRelease
+        }
+      end
+
+      before do
+        post_query
+      end
+
+      it 'finds all release data' do
+        expect(data).to eq({
+          'tagName' => release.tag,
+          'tagPath' => nil,
+          'description' => release.description,
+          'descriptionHtml' => release.description_html,
+          'name' => release.name,
+          'createdAt' => release.created_at.iso8601,
+          'releasedAt' => release.released_at.iso8601,
+          'upcomingRelease' => false
+        })
+      end
+    end
+
+    describe 'milestones' do
+      let(:path) { path_prefix + %w[milestones nodes] }
+
+      let(:release_fields) do
+        query_graphql_field(:milestones, nil, 'nodes { id title }')
+      end
+
+      it 'finds milestones associated to a release' do
+        post_query
+
+        expected = release.milestones.order_by_dates_and_title.map do |milestone|
+          { 'id' => global_id_of(milestone), 'title' => milestone.title }
+        end
+
+        expect(data).to eq(expected)
+      end
+    end
+
+    describe 'author' do
+      let(:path) { path_prefix + %w[author] }
+
+      let(:release_fields) do
+        query_graphql_field(:author, nil, 'id username')
+      end
+
+      it 'finds the author of the release' do
+        post_query
+
+        expect(data).to eq(
+          'id' => global_id_of(release.author),
+          'username' => release.author.username
+        )
+      end
+    end
+
+    describe 'commit' do
+      let(:path) { path_prefix + %w[commit] }
+
+      let(:release_fields) do
+        query_graphql_field(:commit, nil, 'sha')
+      end
+
+      it 'restricts commit associated with the release' do
+        post_query
+
+        expect(data).to eq(nil)
+      end
+    end
+
+    describe 'assets' do
+      describe 'count' do
+        let(:path) { path_prefix + %w[assets] }
+
+        let(:release_fields) do
+          query_graphql_field(:assets, nil, 'count')
+        end
+
+        it 'returns non source release links count' do
+          post_query
+
+          expect(data).to eq('count' => release.assets_count(except: [:sources]))
+        end
+      end
+
+      describe 'links' do
+        let(:path) { path_prefix + %w[assets links nodes] }
+
+        let(:release_fields) do
+          query_graphql_field(:assets, nil,
+            query_graphql_field(:links, nil, 'nodes { id name url external, directAssetUrl }'))
+        end
+
+        it 'finds all non source external release links' do
+          post_query
+
+          expected = release.links.map do |link|
+            {
+              'id' => global_id_of(link),
+              'name' => link.name,
+              'url' => link.url,
+              'external' => true,
+              'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
+            }
+          end
+
+          expect(data).to match_array(expected)
+        end
+      end
+
+      describe 'sources' do
+        let(:path) { path_prefix + %w[assets sources nodes] }
+
+        let(:release_fields) do
+          query_graphql_field(:assets, nil,
+            query_graphql_field(:sources, nil, 'nodes { format url }'))
+        end
+
+        it 'restricts release sources' do
+          post_query
+
+          expect(data).to match_array([])
+        end
+      end
+    end
+
+    describe 'links' do
+      let(:path) { path_prefix + %w[links] }
+
+      let(:release_fields) do
+        query_graphql_field(:links, nil, %{
+          selfUrl
+          openedMergeRequestsUrl
+          mergedMergeRequestsUrl
+          closedMergeRequestsUrl
+          openedIssuesUrl
+          closedIssuesUrl
+        })
+      end
+
+      it 'finds only selfUrl' do
+        post_query
+
+        expect(data).to eq(
+          'selfUrl' => project_release_url(project, release),
+          'openedMergeRequestsUrl' => nil,
+          'mergedMergeRequestsUrl' => nil,
+          'closedMergeRequestsUrl' => nil,
+          'openedIssuesUrl' => nil,
+          'closedIssuesUrl' => nil
+        )
+      end
+    end
+
+    describe 'evidences' do
+      let(:path) { path_prefix + %w[evidences] }
+
+      let(:release_fields) do
+        query_graphql_field(:evidences, nil, 'nodes { id sha filepath collectedAt }')
+      end
+
+      it 'restricts all evidence fields' do
+        post_query
+
+        expect(data).to eq('nodes' => [])
+      end
+    end
+  end
+
   shared_examples 'no access to the release field' do
     describe 'repository-related fields' do
       let(:path) { path_prefix }
@@ -302,7 +485,8 @@ RSpec.describe 'Query.project(fullPath).release(tagName)' do
       context 'when the user has Guest permissions' do
         let(:current_user) { guest }
 
-        it_behaves_like 'no access to the release field'
+        it_behaves_like 'restricted access to release fields'
+        it_behaves_like 'no access to editUrl'
       end
 
       context 'when the user has Reporter permissions' do

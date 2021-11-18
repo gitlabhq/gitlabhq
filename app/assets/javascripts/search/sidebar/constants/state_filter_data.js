@@ -5,7 +5,7 @@ const header = __('Status');
 const filters = {
   ANY: {
     label: __('Any'),
-    value: 'all',
+    value: null,
   },
   OPEN: {
     label: __('Open'),

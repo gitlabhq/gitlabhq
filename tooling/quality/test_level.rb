@@ -40,6 +40,7 @@ module Quality
         replicators
         routing
         rubocop
+        scripts
         serializers
         services
         sidekiq
@@ -53,6 +54,7 @@ module Quality
         tooling
       ],
       integration: %w[
+        commands
         controllers
         mailers
         requests

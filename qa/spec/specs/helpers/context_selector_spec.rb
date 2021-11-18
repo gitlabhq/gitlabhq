@@ -186,6 +186,24 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
   end
 
+  context 'staging-ref' do
+    before do
+      QA::Runtime::Scenario.define(:gitlab_address, 'https://staging-ref.gitlab.com/')
+    end
+
+    it 'runs on staging-ref' do
+      group = describe_successfully do
+        it('does not run in staging', only: { subdomain: :staging }) {}
+        it('runs in staging-ref', only: { subdomain: /^staging-ref./ }) {}
+      end
+
+      aggregate_failures do
+        expect(group.examples[0].execution_result.status).to eq(:pending)
+        expect(group.examples[1].execution_result.status).to eq(:passed)
+      end
+    end
+  end
+
   context 'production' do
     before do
       QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.com/')

@@ -1464,6 +1464,7 @@ RSpec.describe API::Users do
         credit_card_expiration_year: expiration_year,
         credit_card_expiration_month: 1,
         credit_card_holder_name: 'John Smith',
+        credit_card_type: 'AmericanExpress',
         credit_card_mask_number: '1111'
       }
     end
@@ -1495,6 +1496,7 @@ RSpec.describe API::Users do
           credit_card_validated_at: credit_card_validated_time,
           expiration_date: Date.new(expiration_year, 1, 31),
           last_digits: 1111,
+          network: 'AmericanExpress',
           holder_name: 'John Smith'
         )
       end
@@ -1904,7 +1906,8 @@ RSpec.describe API::Users do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first['email']).to eq(email.email)
+        expect(json_response.first['email']).to eq(user.email)
+        expect(json_response.second['email']).to eq(email.email)
       end
 
       it "returns a 404 for invalid ID" do
@@ -2486,7 +2489,8 @@ RSpec.describe API::Users do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.first["email"]).to eq(email.email)
+        expect(json_response.first['email']).to eq(user.email)
+        expect(json_response.second['email']).to eq(email.email)
       end
 
       context "scopes" do

@@ -93,6 +93,8 @@ RSpec.describe "User comments on commit", :js do
 
   context "when deleting comment" do
     before do
+      stub_feature_flags(bootstrap_confirmation_modals: false)
+
       visit(project_commit_path(project, sample_commit.id))
 
       add_note(comment_text)

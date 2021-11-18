@@ -2,6 +2,8 @@
 
 module Resolvers
   class GroupsResolver < BaseResolver
+    include ResolvesGroups
+
     type Types::GroupType, null: true
 
     argument :include_parent_descendants, GraphQL::Types::Boolean,
@@ -19,16 +21,12 @@ module Resolvers
 
     alias_method :parent, :object
 
-    def resolve(**args)
-      return [] unless parent.present?
-
-      find_groups(args)
-    end
-
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_groups(args)
+    def resolve_groups(args)
+      return Group.none unless parent.present?
+
       GroupsFinder
         .new(context[:current_user], args.merge(parent: parent))
         .execute

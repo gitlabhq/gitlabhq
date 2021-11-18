@@ -491,22 +491,22 @@ RSpec.describe 'Admin updates settings' do
         group = create(:group)
 
         page.within('.as-performance-bar') do
-          check 'Allow non-administrators to access to the performance bar'
+          check 'Allow non-administrators access to the performance bar'
           fill_in 'Allow access to members of the following group', with: group.path
           click_on 'Save changes'
         end
 
         expect(page).to have_content "Application settings saved successfully"
-        expect(find_field('Allow non-administrators to access to the performance bar')).to be_checked
+        expect(find_field('Allow non-administrators access to the performance bar')).to be_checked
         expect(find_field('Allow access to members of the following group').value).to eq group.path
 
         page.within('.as-performance-bar') do
-          uncheck 'Allow non-administrators to access to the performance bar'
+          uncheck 'Allow non-administrators access to the performance bar'
           click_on 'Save changes'
         end
 
         expect(page).to have_content 'Application settings saved successfully'
-        expect(find_field('Allow non-administrators to access to the performance bar')).not_to be_checked
+        expect(find_field('Allow non-administrators access to the performance bar')).not_to be_checked
         expect(find_field('Allow access to members of the following group').value).to be_nil
       end
 

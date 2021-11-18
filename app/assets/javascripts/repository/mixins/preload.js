@@ -1,4 +1,3 @@
-import filesQuery from 'shared_queries/repository/files.query.graphql';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import projectPathQuery from '../queries/project_path.query.graphql';
 import getRefMixin from './get_ref';
@@ -22,7 +21,7 @@ export default {
 
       return this.$apollo
         .query({
-          query: gon.features.paginatedTreeGraphqlQuery ? paginatedTreeQuery : filesQuery,
+          query: paginatedTreeQuery,
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,

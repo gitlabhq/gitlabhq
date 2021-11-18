@@ -1,8 +1,10 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import GroupRunnersApp from './group_runners_app.vue';
 
+Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initGroupRunners = (selector = '#js-group-runners') => {
@@ -21,12 +23,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
   } = el.dataset;
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(
-      {},
-      {
-        assumeImmutableResults: true,
-      },
-    ),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

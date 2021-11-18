@@ -72,18 +72,18 @@ export default {
       return [
         {
           value: KEY_EVERY_DAY,
-          text: sprintf(s__(`Every day (at %{time})`), { time: this.formattedTime }),
+          text: sprintf(__(`Every day (at %{time})`), { time: this.formattedTime }),
         },
         {
           value: KEY_EVERY_WEEK,
-          text: sprintf(s__('Every week (%{weekday} at %{time})'), {
+          text: sprintf(__('Every week (%{weekday} at %{time})'), {
             weekday: this.weekday,
             time: this.formattedTime,
           }),
         },
         {
           value: KEY_EVERY_MONTH,
-          text: sprintf(s__('Every month (Day %{day} at %{time})'), {
+          text: sprintf(__('Every month (Day %{day} at %{time})'), {
             day: this.randomDay,
             time: this.formattedTime,
           }),

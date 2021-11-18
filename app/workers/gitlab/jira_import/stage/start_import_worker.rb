@@ -16,7 +16,7 @@ module Gitlab
         attr_reader :project
 
         def perform(project_id)
-          @project = Project.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord
+          @project = Project.find_by_id(project_id)
 
           return unless start_import
 

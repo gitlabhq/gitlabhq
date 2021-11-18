@@ -9,6 +9,7 @@ import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_t
 import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const mockAuthor1 = {
@@ -110,6 +111,18 @@ export const mockIterationToken = {
   fetchIterations: () => Promise.resolve(),
 };
 
+export const mockIterations = [
+  {
+    id: 1,
+    title: 'Iteration 1',
+    startDate: '2021-11-05',
+    dueDate: '2021-11-10',
+    iterationCadence: {
+      title: 'Cadence 1',
+    },
+  },
+];
+
 export const mockLabelToken = {
   type: 'label_name',
   icon: 'labels',
@@ -130,6 +143,14 @@ export const mockMilestoneToken = {
   token: MilestoneToken,
   operators: OPERATOR_IS_ONLY,
   fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
+};
+
+export const mockReleaseToken = {
+  type: 'release',
+  icon: 'rocket',
+  title: 'Release',
+  token: ReleaseToken,
+  fetchReleases: () => Promise.resolve(),
 };
 
 export const mockEpicToken = {
@@ -280,6 +301,11 @@ export const tokenValueConfidential = {
 export const tokenValuePlain = {
   type: 'filtered-search-term',
   value: { data: 'foo' },
+};
+
+export const tokenValueEmpty = {
+  type: 'filtered-search-term',
+  value: { data: '' },
 };
 
 export const tokenValueEpic = {

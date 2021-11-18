@@ -5,8 +5,6 @@ import {
 } from '~/api/analytics_api';
 import { __, s__ } from '~/locale';
 
-export const DEFAULT_DAYS_IN_PAST = 30;
-export const DEFAULT_DAYS_TO_DISPLAY = 30;
 export const OVERVIEW_STAGE_ID = 'overview';
 
 export const DEFAULT_VALUE_STREAM = {
@@ -45,6 +43,11 @@ export const METRICS_POPOVER_CONTENT = {
   'cycle-time': {
     description: s__(
       "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
+    ),
+  },
+  'lead-time-for-changes': {
+    description: s__(
+      'ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period.',
     ),
   },
   'new-issue': { description: s__('ValueStreamAnalytics|Number of new issues created.') },

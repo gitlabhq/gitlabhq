@@ -60,6 +60,7 @@ const (
 	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+/` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
+	apiTopicPattern      = apiPattern + `v4/topics`
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
 	importPattern        = `^/import/`
@@ -295,6 +296,8 @@ func configureRoutes(u *upstream) {
 		// Overall status can be seen at https://gitlab.com/groups/gitlab-org/-/epics/1802#current-status
 		u.route("POST", apiProjectPattern+`wikis/attachments\z`, uploadAccelerateProxy),
 		u.route("POST", apiPattern+`graphql\z`, uploadAccelerateProxy),
+		u.route("POST", apiTopicPattern, uploadAccelerateProxy),
+		u.route("PUT", apiTopicPattern, uploadAccelerateProxy),
 		u.route("POST", apiPattern+`v4/groups/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 		u.route("POST", apiPattern+`v4/projects/import`, upload.Accelerate(api, signingProxy, preparers.uploads)),
 
@@ -374,6 +377,10 @@ func configureRoutes(u *upstream) {
 		// Geo API routes
 		u.route("", "^/api/v4/geo_nodes", defaultUpstream),
 		u.route("", "^/api/v4/geo_replication", defaultUpstream),
+		u.route("", "^/api/v4/geo/proxy_git_ssh", defaultUpstream),
+
+		// Internal API routes
+		u.route("", "^/api/v4/internal", defaultUpstream),
 
 		// Don't define a catch-all route. If a route does not match, then we know
 		// the request should be proxied.

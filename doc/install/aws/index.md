@@ -1,6 +1,6 @@
 ---
 stage: Enablement
-group: Alliances
+group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 comments: false
 description: Read through the GitLab installation methods.
@@ -11,29 +11,37 @@ type: index
 
 GitLab [Reference Architectures](../../administration/reference_architectures/index.md) give qualified and tested guidance on the recommended ways GitLab can be configured to meet the performance requirements of various workloads. Reference Architectures are purpose-designed to be non-implementation specific so they can be extrapolated to as many environments as possible. This generally means they have a highly-granular "machine" to "server role" specification and focus on system elements that impact performance. This is what enables Reference Architectures to be adaptable to the broadest number of supported implementations.
 
-Implementation patterns are built on the foundational information and testing done for Reference Architectures and allow architects and implementers at GitLab, GitLab Customers, and GitLab Partners to build out deployments with less experimentation and a higher degree of confidence that the results will perform as expected.
+Implementation patterns are built on the foundational information and testing done for Reference Architectures and allow architects and implementers at GitLab, GitLab Customers, and GitLab Partners to build out deployments with less experimentation and a higher degree of confidence that the results will perform as expected. A more thorough discussion of implementation patterns is below in [Additional details on implementation patterns](#additional-details-on-implementation-patterns).
 
-## Implementation patterns information
+## AWS Implementation patterns information
 
-### Install GitLab Cloud Native Hybrid on AWS EKS (HA)
-
-[Provision GitLab Cloud Native Hybrid on AWS EKS (HA)](gitlab_hybrid_on_aws.md). This document includes instructions, patterns, and automation for installing GitLab Cloud Native Hybrid on AWS EKS. It also includes [Bill of Materials](https://en.wikipedia.org/wiki/Bill_of_materials) listings and links to Infrastructure as Code. GitLab Cloud Native Hybrid is the supported way to put as much of GitLab as possible into Kubernetes.
-
-### Install Omnibus GitLab on AWS EC2 (HA)
-
-[Omnibus GitLab on AWS EC2 (HA)](manual_install_aws.md) - instructions for installing GitLab on EC2 instances. Manual instructions from which you may build out a GitLab instance or create your own Infrastructure as Code (IaC).
+The following are the currently available implementation patterns for GitLab when it is implemented on AWS.
 
 ### GitLab Site Reliability Engineering (SRE) for AWS
 
-[GitLab SRE Considerations for AWS](gitlab_sre_for_aws.md) - important information and known issues for planning, implementing, upgrading and long term management of GitLab instances and runners on AWS.
+[GitLab Site Reliability Engineering (SRE) for AWS](gitlab_sre_for_aws.md) - information for planning, implementing, upgrading and long term management of GitLab instances and runners on AWS.
 
-### EKS cluster provisioning best practices
+### Patterns to Install GitLab Cloud Native Hybrid on AWS EKS (HA)
+
+[Provision GitLab Cloud Native Hybrid on AWS EKS (HA)](gitlab_hybrid_on_aws.md). This document includes instructions, patterns, and automation for installing GitLab Cloud Native Hybrid on AWS EKS. It also includes [Bill of Materials](https://en.wikipedia.org/wiki/Bill_of_materials) listings and links to Infrastructure as Code. GitLab Cloud Native Hybrid is the supported way to put as much of GitLab as possible into Kubernetes.
+
+### Patterns to Install Omnibus GitLab on AWS EC2 (HA)
+
+[Omnibus GitLab on AWS EC2 (HA)](manual_install_aws.md) - instructions for installing GitLab on EC2 instances. Manual instructions to build a GitLab instance or create your own Infrastructure as Code (IaC).
+
+### Patterns for EKS cluster provisioning
 
 [EKS Cluster Provisioning Patterns](eks_clusters_aws.md) - considerations for setting up EKS cluster for runners and for integrating.
 
-### Scaling HA GitLab Runner on AWS EC2 ASG
+### Patterns for Scaling HA GitLab Runner on AWS EC2 ASG
 
 The following repository is self-contained in regard to enabling this pattern: [GitLab HA Scaling Runner Vending Machine for AWS EC2 ASG](https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/). The [feature list for this implementation pattern](https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/-/blob/main/FEATURES.md) is good to review to understand the complete value it can deliver.
+
+## AWS known issues list
+
+Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of "as a Service" components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Please consult individual issues to understand GitLabs stance and plans on any given known issue.
+
+See the [GitLab AWS known issues list](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name%5B%5D=AWS+Known+Issue) for a complete list.
 
 ## Additional details on implementation patterns
 
@@ -61,7 +69,7 @@ Implementation patterns enable platform-specific terminology, best practice arch
 
 Platform as a Service options are a huge portion of the value provided by Cloud Platforms as they simplify operational complexity and reduce the SRE and security skilling required to operate advanced, highly available technology services. Implementation patterns can be prequalified against the partner PaaS options.
 
-- Implementation patterns help implementers understand what PaaS options are known to work and how to choose between PaaS solutions when a single platform has more than one PaaS option for the same GitLab role (for example, AWS RDS versus AWS Aurora RDS).
+- Implementation patterns help implementers understand what PaaS options are known to work and how to choose between PaaS solutions when a single platform has more than one PaaS option for the same GitLab role.
 - For instance, where reference architectures do not have a specific recommendation on what technology is leveraged for GitLab outbound email services or what the sizing should be - a Reference Implementation may advise using a cloud providers Email as a Service (PaaS) and possibly even with specific settings.
 
 ### Cost optimizing engineering

@@ -38,13 +38,13 @@ rake gitlab:ldap:check[50]
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
 
-The following task runs a [group sync](../auth/ldap/index.md#group-sync) immediately. This is valuable
-when you'd like to update all configured group memberships against LDAP without
+The following task runs a [group sync](../auth/ldap/ldap_synchronization.md#group-sync) immediately.
+This is valuable when you'd like to update all configured group memberships against LDAP without
 waiting for the next scheduled group sync to be run.
 
 NOTE:
 If you'd like to change the frequency at which a group sync is performed,
-[adjust the cron schedule](../auth/ldap/index.md#adjust-ldap-group-sync-schedule)
+[adjust the cron schedule](../auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule)
 instead.
 
 **Omnibus Installation**

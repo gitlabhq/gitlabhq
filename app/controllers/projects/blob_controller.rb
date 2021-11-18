@@ -40,6 +40,7 @@ class Projects::BlobController < Projects::ApplicationController
   track_redis_hll_event :create, :update, name: 'g_edit_by_sfe'
 
   feature_category :source_code_management
+  urgency :low, [:create, :show, :edit, :update, :diff]
 
   before_action do
     push_frontend_feature_flag(:refactor_blob_viewer, @project, default_enabled: :yaml)

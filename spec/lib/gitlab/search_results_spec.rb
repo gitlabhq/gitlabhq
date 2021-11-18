@@ -96,6 +96,18 @@ RSpec.describe Gitlab::SearchResults do
       end
     end
 
+    describe '#aggregations' do
+      where(:scope) do
+        %w(projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown)
+      end
+
+      with_them do
+        it 'returns an empty array' do
+          expect(results.aggregations(scope)).to match_array([])
+        end
+      end
+    end
+
     context "when count_limit is lower than total amount" do
       before do
         allow(results).to receive(:count_limit).and_return(1)

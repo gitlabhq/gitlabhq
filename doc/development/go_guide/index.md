@@ -364,8 +364,7 @@ JSON format, as all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
 logging simply by using the build in [JSON
 formatter](https://github.com/sirupsen/logrus#formatters). This follows the
-same logging type we use in our [Ruby
-applications](../logging.md#use-structured-json-logging).
+same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
 
 #### How to use Logrus
 
@@ -450,6 +449,78 @@ up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every
 The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repository. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
 
 If the scanner report is small, less than 35 lines, then feel free to [inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77) rather than use a `testdata` directory.
+
+#### Test Diffs
+
+The [go-cmp]<https://github.com/google/go-cmp> package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
+
+```golang
+package main
+
+import (
+  "reflect"
+  "testing"
+
+  "github.com/google/go-cmp/cmp"
+)
+
+type Foo struct {
+  Desc  Bar
+  Point Baz
+}
+
+type Bar struct {
+  A string
+  B string
+}
+
+type Baz struct {
+  X int
+  Y int
+}
+
+func TestHelloWorld(t *testing.T) {
+  want := Foo{
+    Desc:  Bar{A: "a", B: "b"},
+    Point: Baz{X: 1, Y: 2},
+  }
+
+  got := Foo{
+    Desc:  Bar{A: "a", B: "b"},
+    Point: Baz{X: 2, Y: 2},
+  }
+
+  t.Log("reflect comparison:")
+  if !reflect.DeepEqual(got, want) {
+    t.Errorf("Wrong result. want:\n%v\nGot:\n%v", want, got)
+  }
+
+  t.Log("cmp comparison:")
+  if diff := cmp.Diff(want, got); diff != "" {
+    t.Errorf("Wrong result. (-want +got):\n%s", diff)
+  }
+}
+```
+
+The output demonstrates why `go-cmp` is far superior when comparing large structs. Even though you could spot the difference with this small difference, it quickly gets unwieldy as the data grows.
+
+```plaintext
+  main_test.go:36: reflect comparison:
+  main_test.go:38: Wrong result. want:
+      {{a b} {1 2}}
+      Got:
+      {{a b} {2 2}}
+  main_test.go:41: cmp comparison:
+  main_test.go:43: Wrong result. (-want +got):
+        main.Foo{
+              Desc: {A: "a", B: "b"},
+              Point: main.Baz{
+      -               X: 1,
+      +               X: 2,
+                      Y: 2,
+              },
+        }
+```
 
 ---
 

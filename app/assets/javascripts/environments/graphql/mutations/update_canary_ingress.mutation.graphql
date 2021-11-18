@@ -1,4 +1,4 @@
-mutation($input: EnvironmentsCanaryIngressUpdateInput!) {
+mutation updateCanaryIngress($input: EnvironmentsCanaryIngressUpdateInput!) {
   environmentsCanaryIngressUpdate(input: $input) {
     errors
   }

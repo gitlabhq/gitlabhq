@@ -669,6 +669,20 @@ describe('Design management index page', () => {
         expect(variables.files).toEqual(event.clipboardData.files.map((f) => new File([f], '')));
       });
 
+      it('display original file name', () => {
+        event.clipboardData.files = [new File([new Blob()], 'test.png', { type: 'image/png' })];
+        document.dispatchEvent(event);
+
+        const [{ mutation, variables }] = mockMutate.mock.calls[0];
+        expect(mutation).toBe(uploadDesignMutation);
+        expect(variables).toStrictEqual({
+          files: expect.any(Array),
+          iid: '1',
+          projectPath: 'project-path',
+        });
+        expect(variables.files[0].name).toEqual('test.png');
+      });
+
       it('renames a design if it has an image.png filename', () => {
         event.clipboardData.getData = () => 'image.png';
         document.dispatchEvent(event);

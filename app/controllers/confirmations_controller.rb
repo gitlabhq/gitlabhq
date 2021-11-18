@@ -2,6 +2,10 @@
 
 class ConfirmationsController < Devise::ConfirmationsController
   include AcceptsPendingInvitations
+  include GitlabRecaptcha
+
+  prepend_before_action :check_recaptcha, only: :create
+  before_action :load_recaptcha, only: :new
 
   feature_category :users
 
@@ -29,6 +33,12 @@ class ConfirmationsController < Devise::ConfirmationsController
       flash[:notice] = flash[:notice] + _(" Please sign in.")
       new_session_path(:user, anchor: 'login-pane', invite_email: resource.email)
     end
+  end
+
+  def check_recaptcha
+    return unless resource_params[:email].present?
+
+    super
   end
 
   def after_sign_in(resource)

@@ -153,9 +153,9 @@
             %span.float-right
               #{Rails::VERSION::STRING}
           %p
-            = Gitlab::Database.main.human_adapter_name
+            = ApplicationRecord.database.human_adapter_name
             %span.float-right
-              = Gitlab::Database.main.version
+              = ApplicationRecord.database.version
           %p
             = _('Redis')
             %span.float-right

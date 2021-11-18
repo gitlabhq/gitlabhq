@@ -948,7 +948,7 @@ RSpec.describe API::Internal::Base do
 
     context 'user does not exist' do
       it do
-        pull(OpenStruct.new(id: 0), project)
+        pull(double('key', id: 0), project)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response["status"]).to be_falsey

@@ -1,6 +1,7 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
 import '~/behaviors/markdown/render_gfm';
+import { discussionIntersectionObserverHandlerFactory } from '~/diffs/utils/discussions';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { SYSTEM_NOTE } from '~/notes/constants';
@@ -26,6 +27,9 @@ describe('DiscussionNotes', () => {
   const createComponent = (props, mountingMethod = shallowMount) => {
     wrapper = mountingMethod(DiscussionNotes, {
       store,
+      provide: {
+        discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
+      },
       propsData: {
         discussion: discussionMock,
         isExpanded: false,

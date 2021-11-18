@@ -74,6 +74,20 @@ you want using steps 1 and 2 from the GitLab downloads page.
    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32 10.10.1.31/32 10.10.1.32/32 10.10.1.33/32 10.10.1.38/32)
    ```
 
+1. If you run multiple Sidekiq nodes with a shared file storage, such as NFS, you must
+   specify the UIDs and GIDs to ensure they match between servers. Specifying the UIDs
+   and GIDs prevents permissions issues in the file system. This advice is similar to the
+   [advice for Geo setups](geo/replication/multiple_servers.md#step-4-configure-the-frontend-application-nodes-on-the-geo-secondary-site):
+
+   ```ruby
+   user['uid'] = 9000
+   user['gid'] = 9000
+   web_server['uid'] = 9001
+   web_server['gid'] = 9001
+   registry['uid'] = 9002
+   registry['gid'] = 9002
+   ```
+
 1. Disable other services:
 
    ```ruby

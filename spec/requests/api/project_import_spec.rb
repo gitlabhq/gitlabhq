@@ -47,7 +47,7 @@ RSpec.describe API::ProjectImport do
     it 'executes a limited number of queries' do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
-      expect(control_count).to be <= 100
+      expect(control_count).to be <= 101
     end
 
     it 'schedules an import using a namespace' do

@@ -14,6 +14,9 @@
       },
       "unit": {
         "type": "string"
+      },
+      "links": {
+        "type": "array"
       }
     },
     "additionalProperties": false

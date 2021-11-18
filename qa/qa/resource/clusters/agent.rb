@@ -19,13 +19,12 @@ module QA
         def fabricate!
           puts 'TODO: FABRICATE VIA UI'
         end
-        # TODO
-        #
-        # The UI for this model is not yet implemented. So far it can only be
-        # created through the GraphQL API
-        # def fabricate
-        #
-        # end
+
+        def resource_web_url(resource)
+          super
+        rescue ResourceURLMissingError
+          # this particular resource does not expose a web_url property
+        end
 
         def api_get_path
           "gid://gitlab/Clusters::Agent/#{id}"

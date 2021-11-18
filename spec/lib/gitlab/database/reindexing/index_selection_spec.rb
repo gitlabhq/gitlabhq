@@ -46,14 +46,14 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection do
     expect(subject).not_to include(excluded.index)
   end
 
-  it 'excludes indexes larger than 100 GB ondisk size' do
-    excluded = create(
+  it 'includes indexes larger than 100 GB ondisk size' do
+    included = create(
       :postgres_index_bloat_estimate,
       index: create(:postgres_index, ondisk_size_bytes: 101.gigabytes),
       bloat_size_bytes: 25.gigabyte
     )
 
-    expect(subject).not_to include(excluded.index)
+    expect(subject).to include(included.index)
   end
 
   context 'with time frozen' do

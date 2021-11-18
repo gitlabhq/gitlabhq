@@ -90,7 +90,7 @@ module ContainerRegistry
 
     def repository_tag_digest(name, reference)
       response = faraday.head("/v2/#{name}/manifests/#{reference}")
-      response.headers['docker-content-digest'] if response.success?
+      response.headers[DependencyProxy::Manifest::DIGEST_HEADER] if response.success?
     end
 
     def delete_repository_tag_by_digest(name, reference)
@@ -171,7 +171,7 @@ module ContainerRegistry
         req.body = Gitlab::Json.pretty_generate(manifest)
       end
 
-      response.headers['docker-content-digest'] if response.success?
+      response.headers[DependencyProxy::Manifest::DIGEST_HEADER] if response.success?
     end
 
     private

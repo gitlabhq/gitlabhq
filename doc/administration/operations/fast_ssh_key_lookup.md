@@ -26,11 +26,8 @@ indexed lookup in the GitLab database. This page describes how to enable the fas
 lookup of authorized SSH keys.
 
 WARNING:
-OpenSSH version 6.9+ is required because
-`AuthorizedKeysCommand` must be able to accept a fingerprint. These
-instructions break installations that use older versions of OpenSSH, such as
-those included with CentOS 6 as of September 2017. If you want to use this
-feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package](#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
+OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
+able to accept a fingerprint. Check the version of OpenSSH on your server.
 
 ## Fast lookup is required for Geo **(PREMIUM)**
 
@@ -132,100 +129,43 @@ This is a brief overview. Please refer to the above instructions for more contex
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Omnibus Docker.
 1. Reload `sshd`: `sudo service sshd reload`.
 
-## Compiling a custom version of OpenSSH for CentOS 6
+## Use `gitlab-sshd` instead of OpenSSH
 
-Building a custom version of OpenSSH is not necessary for Ubuntu 16.04 users,
-since Ubuntu 16.04 ships with OpenSSH 7.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299109) in GitLab 14.5.
 
-It is also unnecessary for CentOS 7.4 users, as that version ships with
-OpenSSH 7.4. If you are using CentOS 7.0 - 7.3, we strongly recommend that you
-upgrade to CentOS 7.4 instead of following this procedure. This should be as
-simple as running `yum update`.
+WARNING:
+`gitlab-sshd` is in [**Alpha**](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga).
+It is not ready for production use.
 
-CentOS 6 users must build their own OpenSSH package to enable SSH lookups via
-the database. The following instructions can be used to build OpenSSH 7.5:
+`gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
+ written in Go. It is provided as a part of `gitlab-shell` package. It has a lower memory
+ use as a OpenSSH alternative and supports
+ [group access restriction by IP address](../../user/group/index.md) for applications
+ running behind the proxy.
 
-1. First, download the package and install the required packages:
+If you are considering switching from OpenSSH to `gitlab-sshd`, consider these concerns:
 
-   ```shell
-   sudo su -
-   cd /tmp
-   curl --remote-name "https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-7.5p1.tar.gz"
-   tar xzvf openssh-7.5p1.tar.gz
-   yum install rpm-build gcc make wget openssl-devel krb5-devel pam-devel libX11-devel xmkmf libXt-devel
+- The `gitlab-sshd` component is only available for
+  [Cloud Native Helm Charts](https://docs.gitlab.com/charts/) deployments.
+- `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
+  on it, such as HAProxy.
+- `gitlab-sshd` does not share a SSH port with the system administrator's OpenSSH,
+  and requires a bind to port 22.
+- `gitlab-sshd` **does not** support SSH certificates.
+
+To switch from OpenSSH to `gitlab-sshd`:
+
+1. Set the `gitlab-shell` charts `sshDaemon` option to
+   [`gitlab-sshd`](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options).
+   For example:
+
+   ```yaml
+   gitlab:
+     gitlab-shell:
+       sshDaemon: gitlab-sshd
    ```
 
-1. Prepare the build by copying files to the right place:
-
-   ```shell
-   mkdir -p /root/rpmbuild/{SOURCES,SPECS}
-   cp ./openssh-7.5p1/contrib/redhat/openssh.spec /root/rpmbuild/SPECS/
-   cp openssh-7.5p1.tar.gz /root/rpmbuild/SOURCES/
-   cd /root/rpmbuild/SPECS
-   ```
-
-1. Next, set the spec settings properly:
-
-   ```shell
-   sed -i -e "s/%define no_gnome_askpass 0/%define no_gnome_askpass 1/g" openssh.spec
-   sed -i -e "s/%define no_x11_askpass 0/%define no_x11_askpass 1/g" openssh.spec
-   sed -i -e "s/BuildPreReq/BuildRequires/g" openssh.spec
-   ```
-
-1. Build the RPMs:
-
-   ```shell
-   rpmbuild -bb openssh.spec
-   ```
-
-1. Ensure the RPMs were built:
-
-   ```shell
-   ls -al /root/rpmbuild/RPMS/x86_64/
-   ```
-
-   You should see something as the following:
-
-   ```plaintext
-   total 1324
-   drwxr-xr-x. 2 root root   4096 Jun 20 19:37 .
-   drwxr-xr-x. 3 root root     19 Jun 20 19:37 ..
-   -rw-r--r--. 1 root root 470828 Jun 20 19:37 openssh-7.5p1-1.x86_64.rpm
-   -rw-r--r--. 1 root root 490716 Jun 20 19:37 openssh-clients-7.5p1-1.x86_64.rpm
-   -rw-r--r--. 1 root root  17020 Jun 20 19:37 openssh-debuginfo-7.5p1-1.x86_64.rpm
-   -rw-r--r--. 1 root root 367516 Jun 20 19:37 openssh-server-7.5p1-1.x86_64.rpm
-   ```
-
-1. Install the packages. OpenSSH packages replace `/etc/pam.d/sshd`
-   with their own versions, which may prevent users from logging in, so be sure
-   that the file is backed up and restored after installation:
-
-   ```shell
-   timestamp=$(date +%s)
-   cp /etc/pam.d/sshd pam-ssh-conf-$timestamp
-   rpm -Uvh /root/rpmbuild/RPMS/x86_64/*.rpm
-   yes | cp pam-ssh-conf-$timestamp /etc/pam.d/sshd
-   ```
-
-1. Verify the installed version. In another window, attempt to sign in to the
-   server:
-
-   ```shell
-   ssh -v <your-centos-machine>
-   ```
-
-   You should see a line that reads: "debug1: Remote protocol version 2.0, remote software version OpenSSH_7.5"
-
-   If not, you may need to restart `sshd` (for example, `systemctl restart sshd.service`).
-
-1. *IMPORTANT!* Open a new SSH session to your server before exiting to make
-   sure everything is working! If you need to downgrade, simple install the
-   older package:
-
-   ```shell
-   # Only run this if you run into a problem logging in
-   yum downgrade openssh-server openssh openssh-clients
-   ```
+1. Perform a Helm upgrade.
 
 ## SELinux support and limitations
 

@@ -5,9 +5,13 @@ query getIssuesCount(
   $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
+  $confidential: Boolean
   $labelName: [String]
   $milestoneTitle: [String]
   $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
   $not: NegatedIssueFilterInput
 ) {
@@ -19,9 +23,11 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       types: $types
       not: $not
     ) {
@@ -34,9 +40,11 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       types: $types
       not: $not
     ) {
@@ -49,9 +57,11 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
       types: $types
       not: $not
     ) {
@@ -65,9 +75,13 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {
@@ -79,9 +93,13 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {
@@ -93,9 +111,13 @@ query getIssuesCount(
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
+      confidential: $confidential
       labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       types: $types
       not: $not
     ) {

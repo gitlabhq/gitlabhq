@@ -16,7 +16,7 @@ RSpec.describe ProtectableDropdown do
   describe '#protectable_ref_names' do
     context 'when project repository is not empty' do
       before do
-        project.protected_branches.create(name: 'master')
+        create(:protected_branch, project: project, name: 'master')
       end
 
       it { expect(subject.protectable_ref_names).to include('feature') }

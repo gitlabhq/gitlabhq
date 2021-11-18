@@ -196,12 +196,26 @@ module ProjectsHelper
     cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
   end
 
-  def link_to_set_password
-    if current_user.require_password_creation_for_git?
-      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
-    else
-      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
-    end
+  def no_password_message
+    push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'pull-and-push') }
+    clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }
+    set_password_link_start = '<a href="%{url}">'.html_safe % { url: edit_profile_password_path }
+    set_up_pat_link_start = '<a href="%{url}">'.html_safe % { url: profile_personal_access_tokens_path }
+
+    message = if current_user.require_password_creation_for_git?
+                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+              else
+                _('Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}.')
+              end
+
+    html_escape(message) % {
+      push_pull_link_start: push_pull_link_start,
+      protocol: gitlab_config.protocol.upcase,
+      clone_with_https_link_start: clone_with_https_link_start,
+      set_password_link_start: set_password_link_start,
+      set_up_pat_link_start: set_up_pat_link_start,
+      link_end: '</a>'.html_safe
+    }
   end
 
   # Returns true if any projects are present.
@@ -380,6 +394,15 @@ module ProjectsHelper
     return "project-highlight-puc" if project.warn_about_potentially_unwanted_characters?
 
     ""
+  end
+
+  # Returns the confirm phrase the user needs to type in order to delete the project
+  #
+  # Thus the phrase should include the namespace to make it very clear to the
+  # user which project is subject to deletion.
+  # Relevant issue: https://gitlab.com/gitlab-org/gitlab/-/issues/343591
+  def delete_confirm_phrase(project)
+    project.path_with_namespace
   end
 
   private
@@ -590,6 +613,7 @@ module ProjectsHelper
     %w[
       environments
       clusters
+      cluster_agents
       functions
       error_tracking
       alert_management

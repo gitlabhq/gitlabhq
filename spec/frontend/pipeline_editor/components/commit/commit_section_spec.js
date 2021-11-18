@@ -52,6 +52,7 @@ describe('Pipeline Editor | Commit section', () => {
   const defaultProps = {
     ciFileContent: mockCiYml,
     commitSha: mockCommitSha,
+    isNewCiConfigFile: false,
   };
 
   const createComponent = ({ props = {}, options = {}, provide = {} } = {}) => {
@@ -72,7 +73,6 @@ describe('Pipeline Editor | Commit section', () => {
       data() {
         return {
           currentBranch: mockDefaultBranch,
-          isNewCiConfigFile: Boolean(options?.isNewCiConfigfile),
         };
       },
       mocks: {
@@ -115,7 +115,7 @@ describe('Pipeline Editor | Commit section', () => {
 
   describe('when the user commits a new file', () => {
     beforeEach(async () => {
-      createComponent({ options: { isNewCiConfigfile: true } });
+      createComponent({ props: { isNewCiConfigFile: true } });
       await submitCommit();
     });
 
@@ -276,5 +276,17 @@ describe('Pipeline Editor | Commit section', () => {
 
       expect(wrapper.emitted('resetContent')).toHaveLength(1);
     });
+  });
+
+  it('sets listeners on commit form', () => {
+    const handler = jest.fn();
+    createComponent({ options: { listeners: { event: handler } } });
+    findCommitForm().vm.$emit('event');
+    expect(handler).toHaveBeenCalled();
+  });
+
+  it('passes down scroll-to-commit-form prop to commit form', () => {
+    createComponent({ props: { 'scroll-to-commit-form': true } });
+    expect(findCommitForm().props('scrollToCommitForm')).toBe(true);
   });
 });

@@ -49,7 +49,7 @@ Prerequisites:
 
 - Your namespace cannot contain a project with [Container Registry](../packages/container_registry/index.md) tags.
 - Your namespace cannot have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom).
+  see [this procedure in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 
 To change your username:
 
@@ -100,6 +100,18 @@ When visiting the public page of a user, you can only see the projects which you
 If the [public level is restricted](../admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 user profiles are only visible to signed-in users.
 
+## User profile README
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
+
+You can add a README section to your profile that can include more information and [formatting](../markdown.md) than
+your profile's bio.
+
+To add a README to your profile:
+
+1. Create a new public project with the same name as your GitLab username.
+1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
+
 ## Add external accounts to your user profile page
 
 You can add links to certain other external accounts you might have, like Skype and Twitter.
@@ -117,7 +129,7 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../../api/events.md#action-types) to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](../index.md#user-contribution-events) to private projects.
 
 To show private contributions:
 
@@ -218,6 +230,12 @@ To set the busy status indicator, either:
   | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
 
 ## Set your time zone
+
+You can set your local time zone to:
+
+- Display your local time on your profile, and in places where hovering over your name shows information about you.
+- Align your contribution calendar with your local time to better reflect when your contributions were made
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335343) in GitLab 14.5).
 
 To set your time zone:
 

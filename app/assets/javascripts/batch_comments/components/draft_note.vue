@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
@@ -9,6 +9,9 @@ export default {
     NoteableNote,
     PublishButton,
     GlButton,
+  },
+  directives: {
+    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     draft: {
@@ -72,6 +75,9 @@ export default {
       }
     },
   },
+  safeHtmlConfig: {
+    ADD_TAGS: ['use', 'gl-emoji'],
+  },
 };
 </script>
 <template>
@@ -104,8 +110,8 @@ export default {
     <template v-if="!isEditingDraft">
       <div
         v-if="draftCommands"
+        v-safe-html:[$options.safeHtmlConfig]="draftCommands"
         class="referenced-commands draft-note-commands"
-        v-html="draftCommands /* eslint-disable-line vue/no-v-html */"
       ></div>
 
       <p class="draft-note-actions d-flex">

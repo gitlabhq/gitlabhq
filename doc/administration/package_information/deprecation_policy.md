@@ -1,7 +1,7 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
 # Deprecation policy **(FREE SELF)**
@@ -35,9 +35,11 @@ This section lists steps necessary for deprecating and removing configuration.
 
 We can differentiate two different types of configuration:
 
-- Sensitive: Configuration that can cause major service outage ( Data integrity,
-  installation integrity, preventing users from reaching the installation, etc.)
-- Regular: Configuration that can make a feature unavailable but still makes the installation useable ( Change in default project/group settings, miscommunication with other components and similar )
+- Sensitive: Configuration that can cause major service outage (like data integrity,
+  installation integrity, or preventing users from reaching the installation)
+- Regular: Configuration that can make a feature unavailable but still makes the
+  installation useable (like a change in default project/group settings, or
+  miscommunication with other components)
 
 We also need to differentiate deprecation and removal procedure.
 

@@ -23,10 +23,6 @@ RSpec.describe 'Environment' do
     let!(:action) { }
     let!(:cluster) { }
 
-    before do
-      visit_environment(environment)
-    end
-
     context 'with auto-stop' do
       let!(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
 
@@ -52,12 +48,20 @@ RSpec.describe 'Environment' do
     end
 
     context 'without deployments' do
+      before do
+        visit_environment(environment)
+      end
+
       it 'does not show deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
 
     context 'with deployments' do
+      before do
+        visit_environment(environment)
+      end
+
       context 'when there is no related deployable' do
         let(:deployment) do
           create(:deployment, :success, environment: environment, deployable: nil)
@@ -108,12 +112,36 @@ RSpec.describe 'Environment' do
         end
       end
 
+      context 'with many deployments' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let!(:second) { create(:deployment, environment: environment, deployable: build, status: :success, finished_at: Time.current) }
+        let!(:first) { create(:deployment, environment: environment, deployable: build, status: :running) }
+        let!(:last) { create(:deployment, environment: environment, deployable: build, status: :success, finished_at: 2.days.ago) }
+        let!(:third) { create(:deployment, environment: environment, deployable: build, status: :canceled, finished_at: 1.day.ago) }
+
+        before do
+          visit_environment(environment)
+        end
+
+        it 'shows all of them in ordered way' do
+          ids = find_all('[data-testid="deployment-id"]').map { |e| e.text }
+          expected_ordered_ids = [first, second, third, last].map { |d| "##{d.iid}" }
+          expect(ids).to eq(expected_ordered_ids)
+        end
+      end
+
       context 'with related deployable present' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
         let(:build) { create(:ci_build, pipeline: pipeline) }
 
         let(:deployment) do
           create(:deployment, :success, environment: environment, deployable: build)
+        end
+
+        before do
+          visit_environment(environment)
         end
 
         it 'does show build name' do

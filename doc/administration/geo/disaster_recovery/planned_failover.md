@@ -204,4 +204,4 @@ in the loss of any data uploaded to the new **primary** in the meantime.
 
 Don't forget to remove the broadcast message after the failover is complete.
 
-Finally, you can bring the [old site back as a secondary](bring_primary_back.md#configure-the-former-primary-node-to-be-a-secondary-node).
+Finally, you can bring the [old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).

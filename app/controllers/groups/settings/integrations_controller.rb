@@ -3,7 +3,7 @@
 module Groups
   module Settings
     class IntegrationsController < Groups::ApplicationController
-      include IntegrationsActions
+      include ::Integrations::Actions
 
       before_action :authorize_admin_group!
 

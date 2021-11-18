@@ -27,7 +27,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS, urgency: :low do
       desc 'Get a project repository commits' do
         success Entities::Commit
       end
@@ -43,7 +43,7 @@ module API
         optional :trailers, type: Boolean, desc: 'Parse and include Git trailers for every commit', default: false
         use :pagination
       end
-      get ':id/repository/commits' do
+      get ':id/repository/commits', urgency: :low do
         path = params[:path]
         before = params[:until]
         after = params[:since]
@@ -169,7 +169,7 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         use :pagination
       end
-      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -295,7 +295,7 @@ module API
         optional :type, type: String, values: %w[branch tag all], default: 'all', desc: 'Scope'
         use :pagination
       end
-      get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
 
@@ -363,7 +363,7 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
         use :pagination
       end
-      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         authorize! :read_merge_request, user_project
 
         commit = user_project.commit(params[:sha])

@@ -2,8 +2,7 @@
 
 module Ci
   class ParseDotenvArtifactService < ::BaseService
-    MAX_ACCEPTABLE_DOTENV_SIZE = 5.kilobytes
-    MAX_ACCEPTABLE_VARIABLES_COUNT = 20
+    include ::Gitlab::Utils::StrongMemoize
 
     SizeLimitError = Class.new(StandardError)
     ParserError = Class.new(StandardError)
@@ -27,9 +26,9 @@ module Ci
         raise ArgumentError, 'Artifact is not dotenv file type'
       end
 
-      unless artifact.file.size < MAX_ACCEPTABLE_DOTENV_SIZE
+      unless artifact.file.size < dotenv_size_limit
         raise SizeLimitError,
-          "Dotenv Artifact Too Big. Maximum Allowable Size: #{MAX_ACCEPTABLE_DOTENV_SIZE}"
+          "Dotenv Artifact Too Big. Maximum Allowable Size: #{dotenv_size_limit}"
       end
     end
 
@@ -45,9 +44,9 @@ module Ci
         end
       end
 
-      if variables.size > MAX_ACCEPTABLE_VARIABLES_COUNT
+      if variables.size > dotenv_variable_limit
         raise SizeLimitError,
-          "Dotenv files cannot have more than #{MAX_ACCEPTABLE_VARIABLES_COUNT} variables"
+          "Dotenv files cannot have more than #{dotenv_variable_limit} variables"
       end
 
       variables
@@ -59,6 +58,14 @@ module Ci
       raise ParserError, 'Invalid Format' if result.nil?
 
       result.each(&:strip!)
+    end
+
+    def dotenv_variable_limit
+      strong_memoize(:dotenv_variable_limit) { project.actual_limits.dotenv_variables }
+    end
+
+    def dotenv_size_limit
+      strong_memoize(:dotenv_size_limit) { project.actual_limits.dotenv_size }
     end
   end
 end

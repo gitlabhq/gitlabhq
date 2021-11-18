@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('update_issuable_slas_where_issue_closed')
+require_migration!
 
 RSpec.describe UpdateIssuableSlasWhereIssueClosed, :migration do
   let(:namespaces) { table(:namespaces) }

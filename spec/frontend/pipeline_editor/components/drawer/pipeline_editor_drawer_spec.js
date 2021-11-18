@@ -1,6 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import FirstPipelineCard from '~/pipeline_editor/components/drawer/cards/first_pipeline_card.vue';
 import GettingStartedCard from '~/pipeline_editor/components/drawer/cards/getting_started_card.vue';
@@ -33,19 +34,41 @@ describe('Pipeline editor drawer', () => {
 
   const clickToggleBtn = async () => findToggleBtn().vm.$emit('click');
 
+  const originalObjects = [];
+
+  beforeEach(() => {
+    originalObjects.push(window.gon, window.gl);
+    stubExperiments({ pipeline_editor_walkthrough: 'control' });
+  });
+
   afterEach(() => {
     wrapper.destroy();
     localStorage.clear();
+    [window.gon, window.gl] = originalObjects;
   });
 
-  it('it sets the drawer to be opened by default', async () => {
-    createComponent();
+  describe('default expanded state', () => {
+    describe('when experiment control', () => {
+      it('sets the drawer to be opened by default', async () => {
+        createComponent();
+        expect(findDrawerContent().exists()).toBe(false);
+        await nextTick();
+        expect(findDrawerContent().exists()).toBe(true);
+      });
+    });
 
-    expect(findDrawerContent().exists()).toBe(false);
+    describe('when experiment candidate', () => {
+      beforeEach(() => {
+        stubExperiments({ pipeline_editor_walkthrough: 'candidate' });
+      });
 
-    await nextTick();
-
-    expect(findDrawerContent().exists()).toBe(true);
+      it('sets the drawer to be closed by default', async () => {
+        createComponent();
+        expect(findDrawerContent().exists()).toBe(false);
+        await nextTick();
+        expect(findDrawerContent().exists()).toBe(false);
+      });
+    });
   });
 
   describe('when the drawer is collapsed', () => {

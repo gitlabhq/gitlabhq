@@ -31,16 +31,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#add_timestamps_with_timezone' do
-    let(:in_transaction) { false }
-
-    before do
-      allow(model).to receive(:transaction_open?).and_return(in_transaction)
-      allow(model).to receive(:disable_statement_timeout)
-    end
-
     it 'adds "created_at" and "updated_at" fields with the "datetime_with_timezone" data type' do
       Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|
-        expect(model).to receive(:add_column).with(:foo, column_name, :datetime_with_timezone, { null: false })
+        expect(model).to receive(:add_column)
+          .with(:foo, column_name, :datetime_with_timezone, { default: nil, null: false })
       end
 
       model.add_timestamps_with_timezone(:foo)
@@ -48,7 +42,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
     it 'can disable the NOT NULL constraint' do
       Gitlab::Database::MigrationHelpers::DEFAULT_TIMESTAMP_COLUMNS.each do |column_name|
-        expect(model).to receive(:add_column).with(:foo, column_name, :datetime_with_timezone, { null: true })
+        expect(model).to receive(:add_column)
+          .with(:foo, column_name, :datetime_with_timezone, { default: nil, null: true })
       end
 
       model.add_timestamps_with_timezone(:foo, null: true)
@@ -64,38 +59,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'can add choice of acceptable columns' do
       expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, anything)
       expect(model).to receive(:add_column).with(:foo, :deleted_at, :datetime_with_timezone, anything)
+      expect(model).to receive(:add_column).with(:foo, :processed_at, :datetime_with_timezone, anything)
       expect(model).not_to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, anything)
 
-      model.add_timestamps_with_timezone(:foo, columns: [:created_at, :deleted_at])
+      model.add_timestamps_with_timezone(:foo, columns: [:created_at, :deleted_at, :processed_at])
     end
 
     it 'cannot add unacceptable column names' do
       expect do
         model.add_timestamps_with_timezone(:foo, columns: [:bar])
       end.to raise_error %r/Illegal timestamp column name/
-    end
-
-    context 'in a transaction' do
-      let(:in_transaction) { true }
-
-      before do
-        allow(model).to receive(:add_column).with(any_args).and_call_original
-        allow(model).to receive(:add_column)
-          .with(:foo, anything, :datetime_with_timezone, anything)
-          .and_return(nil)
-      end
-
-      it 'cannot add a default value' do
-        expect do
-          model.add_timestamps_with_timezone(:foo, default: :i_cause_an_error)
-        end.to raise_error %r/add_timestamps_with_timezone/
-      end
-
-      it 'can add columns without defaults' do
-        expect do
-          model.add_timestamps_with_timezone(:foo)
-        end.not_to raise_error
-      end
     end
   end
 
@@ -271,12 +244,92 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
         model.add_concurrent_index(:users, :foo, unique: true)
       end
 
-      it 'does nothing if the index exists already' do
-        expect(model).to receive(:index_exists?)
-          .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
-        expect(model).not_to receive(:add_index)
+      context 'when the index exists and is valid' do
+        before do
+          model.add_index :users, :id, unique: true
+        end
 
-        model.add_concurrent_index(:users, :foo, unique: true)
+        it 'does leaves the existing index' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :id, { algorithm: :concurrently, unique: true }).and_call_original
+
+          expect(model).not_to receive(:remove_index)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :id, unique: true)
+        end
+      end
+
+      context 'when an invalid copy of the index exists' do
+        before do
+          model.add_index :users, :id, unique: true, name: index_name
+
+          model.connection.execute(<<~SQL)
+            UPDATE pg_index
+            SET indisvalid = false
+            WHERE indexrelid = '#{index_name}'::regclass
+          SQL
+        end
+
+        context 'when the default name is used' do
+          let(:index_name) { model.index_name(:users, :id) }
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :id, { algorithm: :concurrently, unique: true }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: nil).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(:users, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(:users, :id, { algorithm: :concurrently, unique: true })
+
+            model.add_concurrent_index(:users, :id, unique: true)
+          end
+        end
+
+        context 'when a custom name is used' do
+          let(:index_name) { 'my_test_index' }
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :id, { algorithm: :concurrently, unique: true, name: index_name }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: nil).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(:users, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(:users, :id, { algorithm: :concurrently, unique: true, name: index_name })
+
+            model.add_concurrent_index(:users, :id, unique: true, name: index_name)
+          end
+        end
+
+        context 'when a qualified table name is used' do
+          let(:other_schema) { 'foo_schema' }
+          let(:index_name) { 'my_test_index' }
+          let(:table_name) { "#{other_schema}.users" }
+
+          before do
+            model.connection.execute(<<~SQL)
+              CREATE SCHEMA #{other_schema};
+              ALTER TABLE users SET SCHEMA #{other_schema};
+            SQL
+          end
+
+          it 'drops and recreates the index' do
+            expect(model).to receive(:index_exists?)
+              .with(table_name, :id, { algorithm: :concurrently, unique: true, name: index_name }).and_call_original
+            expect(model).to receive(:index_invalid?).with(index_name, schema: other_schema).and_call_original
+
+            expect(model).to receive(:remove_concurrent_index_by_name).with(table_name, index_name)
+
+            expect(model).to receive(:add_index)
+              .with(table_name, :id, { algorithm: :concurrently, unique: true, name: index_name })
+
+            model.add_concurrent_index(table_name, :id, unique: true, name: index_name)
+          end
+        end
       end
 
       it 'unprepares the async index creation' do

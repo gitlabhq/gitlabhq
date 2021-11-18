@@ -15,7 +15,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
           include ::Gitlab::Config::Entry::Configurable
 
-          ALLOWED_KEYS = %i[name entrypoint command alias ports].freeze
+          ALLOWED_KEYS = %i[name entrypoint command alias ports variables].freeze
 
           validations do
             validates :config, hash_or_string: true
@@ -31,6 +31,10 @@ module Gitlab
 
           entry :ports, Entry::Ports,
             description: 'Ports used to expose the service'
+
+          entry :variables, ::Gitlab::Ci::Config::Entry::Variables,
+            description: 'Environment variables available for this service.',
+            inherit: false
 
           attributes :ports
 

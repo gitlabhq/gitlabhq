@@ -18,6 +18,7 @@ class Projects::ServicesController < Projects::ApplicationController
   layout "project_settings"
 
   feature_category :integrations
+  urgency :low, [:test]
 
   def edit
   end

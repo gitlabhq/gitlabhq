@@ -1,6 +1,6 @@
 #import "../fragments/job_artifacts.fragment.graphql"
 
-query getCorpuses($projectPath: ID!, $iid: ID, $reportTypes: [SecurityReportTypeEnum!]) {
+query getPipelineCorpuses($projectPath: ID!, $iid: ID, $reportTypes: [SecurityReportTypeEnum!]) {
   project(fullPath: $projectPath) {
     pipeline(iid: $iid) {
       id

@@ -1,15 +1,18 @@
 <script>
-import { GlIcon, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlFormCheckbox, GlLink } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SQUASH_BEFORE_MERGE } from '../../i18n';
 
 export default {
   components: {
     GlIcon,
     GlFormCheckbox,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   i18n: {
     ...SQUASH_BEFORE_MERGE,
   },
@@ -33,6 +36,9 @@ export default {
     tooltipTitle() {
       return this.isDisabled ? this.$options.i18n.tooltipTitle : null;
     },
+    helpIconName() {
+      return this.glFeatures.restructuredMrWidget ? 'question-o' : 'question';
+    },
   },
 };
 </script>
@@ -51,18 +57,18 @@ export default {
     >
       {{ $options.i18n.checkboxLabel }}
     </gl-form-checkbox>
-    <a
+    <gl-link
       v-if="helpPath"
       v-gl-tooltip
       :href="helpPath"
       :title="$options.i18n.helpLabel"
+      :class="{ 'gl-text-blue-600': glFeatures.restructuredMrWidget }"
       target="_blank"
-      rel="noopener noreferrer nofollow"
     >
-      <gl-icon name="question" />
+      <gl-icon :name="helpIconName" />
       <span class="sr-only">
         {{ $options.i18n.helpLabel }}
       </span>
-    </a>
+    </gl-link>
   </div>
 </template>

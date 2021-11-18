@@ -90,7 +90,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
 
   shared_examples 'wait until database is ready' do
     it 'checks if the database is ready once' do
-      expect(Gitlab::Database.main).to receive(:exists?).once
+      expect(ApplicationRecord.database).to receive(:exists?).once
 
       run_rake_task(task)
     end
@@ -102,7 +102,7 @@ RSpec.describe 'rake gitlab:storage:*', :silence_stdout do
       end
 
       it 'tries for 3 times, polling every 0.1 seconds' do
-        expect(Gitlab::Database.main).to receive(:exists?).exactly(3).times.and_return(false)
+        expect(ApplicationRecord.database).to receive(:exists?).exactly(3).times.and_return(false)
 
         run_rake_task(task)
       end

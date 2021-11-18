@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Import::DatabaseHelpers do
     let(:project) { create(:project) }
 
     it 'returns the ID returned by the query' do
-      expect(Gitlab::Database.main)
-        .to receive(:bulk_insert)
+      expect(ApplicationRecord)
+        .to receive(:legacy_bulk_insert)
         .with(Issue.table_name, [attributes], return_ids: true)
         .and_return([10])
 

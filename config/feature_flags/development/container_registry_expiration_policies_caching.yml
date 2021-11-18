@@ -1,8 +1,0 @@
----
-name: container_registry_expiration_policies_caching
-introduced_by_url:
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/340606
-milestone: '14.3'
-type: development
-group: group::package
-default_enabled: false

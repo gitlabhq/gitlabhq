@@ -40,8 +40,8 @@ RSpec.describe 'Subscriptions Content Security Policy' do
       visit jira_connect_subscriptions_path(jwt: jwt)
 
       is_expected.to include("frame-ancestors 'self' https://*.atlassian.net")
-      is_expected.to include("script-src 'self' https://some-cdn.test https://connect-cdn.atl-paas.net https://unpkg.com/jquery@3.3.1/")
-      is_expected.to include("style-src 'self' https://some-cdn.test 'unsafe-inline' https://unpkg.com/@atlaskit/")
+      is_expected.to include("script-src 'self' https://some-cdn.test https://connect-cdn.atl-paas.net")
+      is_expected.to include("style-src 'self' https://some-cdn.test 'unsafe-inline'")
     end
   end
 end

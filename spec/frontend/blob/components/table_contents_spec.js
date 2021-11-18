@@ -32,10 +32,30 @@ describe('Markdown table of contents component', () => {
   });
 
   describe('not loaded', () => {
+    const findDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+
     it('does not populate dropdown', () => {
       createComponent();
 
-      expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(false);
+      expect(findDropdownItem().exists()).toBe(false);
+    });
+
+    it('does not show dropdown when loading blob content', async () => {
+      createComponent();
+
+      await setLoaded(false);
+
+      expect(findDropdownItem().exists()).toBe(false);
+    });
+
+    it('does not show dropdown when viewing non-rich content', async () => {
+      createComponent();
+
+      document.querySelector('.blob-viewer').setAttribute('data-type', 'simple');
+
+      await setLoaded(true);
+
+      expect(findDropdownItem().exists()).toBe(false);
     });
   });
 

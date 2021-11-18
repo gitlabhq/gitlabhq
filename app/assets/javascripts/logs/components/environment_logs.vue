@@ -130,7 +130,7 @@ export default {
       }}
       <a :href="clusterApplicationsDocumentationPath">
         <strong>
-          {{ s__('View Documentation') }}
+          {{ __('View Documentation') }}
         </strong>
       </a>
     </gl-alert>

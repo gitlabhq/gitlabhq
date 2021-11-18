@@ -118,8 +118,9 @@ SSO has the following effects when enabled:
 
 - For groups, users can't share a project in the group outside the top-level group,
   even if the project is forked.
-- For a Git activity, users must be signed-in through SSO before they can push to or
-  pull from a GitLab repository.
+- For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
+  pull from a GitLab repository. 
+- Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
 
@@ -242,11 +243,12 @@ On subsequent visits, you should be able to go [sign in to GitLab.com with SAML]
 
 ### Configure user settings from SAML response
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
-This affects users created on first sign-in via Group SAML. Existing users'
-attributes are not affected regardless of the values sent in the SAML response.
+Existing users will have these attributes updated if the user was originally
+provisioned by the group. Users are provisioned by the group when the account was
+created via [SCIM](scim_setup.md) or by first sign-in with SAML SSO for GitLab.com groups.
 
 #### Supported user attributes
 
@@ -341,9 +343,8 @@ Ensure your SAML identity provider sends an attribute statement named `Groups` o
 ```
 
 NOTE:
+The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
 To inspect the SAML response, you can use one of these [SAML debugging tools](#saml-debugging-tools).
-Also note that the value for `Groups` or `groups` in the SAML response can be either the group name or
-the group ID depending what the IdP sends to GitLab.
 
 When SAML SSO is enabled for the top-level group, `Maintainer` and `Owner` level users
 see a new menu item in group **Settings > SAML Group Links**. You can configure one or more **SAML Group Links** to map
@@ -516,6 +517,13 @@ Here are possible causes and solutions:
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](#user-access-and-management). |
 
+User accounts are created in one of the following ways:
+
+- User registration
+- Sign in through OAuth
+- Sign in through SAML
+- SCIM provisioning
+
 ### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
 
 Getting both of these errors at the same time suggests the NameID capitalization provided by the identity provider didn't exactly match the previous value for that user.
@@ -530,6 +538,16 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 `samlp:Response` tag, which is [expected by the SAML gem](https://github.com/onelogin/ruby-saml/blob/9f710c5028b069bfab4b9e2b66891e0549765af5/lib/onelogin/ruby-saml/response.rb#L307-L316).
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not the identity provider.
+
+### Message: "Login to a GitLab account to link with your SAML identity"
+
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](#linking-saml-to-your-existing-gitlabcom-account).
+
+To resolve this problem, the user should check they are using the correct GitLab password to log in. They first need to
+[reset their password](https://gitlab.com/users/password/new) if both:
+
+- The account was provisioned by SCIM.
+- This is the first time the user has logged in the username and password.
 
 ### Stuck in a login "loop"
 

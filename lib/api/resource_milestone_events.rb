@@ -8,7 +8,7 @@ module API
     before { authenticate! }
 
     {
-      Issue => :issue_tracking,
+      Issue => :team_planning,
       MergeRequest => :code_review
     }.each do |eventable_type, feature_category|
       parent_type = eventable_type.parent_class.to_s.underscore

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceSettings, schema: 20200703125016 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceSettings, schema: 20181228175414 do
   let(:namespaces) { table(:namespaces) }
   let(:namespace_settings) { table(:namespace_settings) }
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

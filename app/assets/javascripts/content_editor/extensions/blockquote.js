@@ -1,9 +1,7 @@
 import { Blockquote } from '@tiptap/extension-blockquote';
-import { wrappingInputRule } from 'prosemirror-inputrules';
+import { wrappingInputRule } from '@tiptap/core';
 import { getParents } from '~/lib/utils/dom_utils';
 import { getMarkdownSource } from '../services/markdown_sourcemap';
-
-export const multilineInputRegex = /^\s*>>>\s$/gm;
 
 export default Blockquote.extend({
   addAttributes() {
@@ -25,9 +23,15 @@ export default Blockquote.extend({
   },
 
   addInputRules() {
+    const multilineInputRegex = /^\s*>>>\s$/gm;
+
     return [
       ...this.parent?.(),
-      wrappingInputRule(multilineInputRegex, this.type, () => ({ multiline: true })),
+      wrappingInputRule({
+        find: multilineInputRegex,
+        type: this.type,
+        getAttributes: () => ({ multiline: true }),
+      }),
     ];
   },
 });

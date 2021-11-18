@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 class Admin::HooksController < Admin::ApplicationController
-  include HooksExecution
+  include ::Integrations::HooksExecution
 
   before_action :hook_logs, only: :edit
 
   feature_category :integrations
+  urgency :low, [:test]
 
   def index
-    @hooks = SystemHook.all
+    @hooks = SystemHook.all.load
     @hook = SystemHook.new
   end
 

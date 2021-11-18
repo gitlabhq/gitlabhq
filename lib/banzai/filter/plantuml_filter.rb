@@ -5,18 +5,15 @@ require "asciidoctor_plantuml/plantuml"
 
 module Banzai
   module Filter
-    # HTML that replaces all `code plantuml` tags with PlantUML img tags.
+    # HTML that replaces all `lang plantuml` tags with PlantUML img tags.
     #
     class PlantumlFilter < HTML::Pipeline::Filter
-      CSS   = 'pre > code[lang="plantuml"]'
-      XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
-
       def call
-        return doc unless settings.plantuml_enabled? && doc.at_xpath(XPATH)
+        return doc unless settings.plantuml_enabled? && doc.at_xpath(lang_tag)
 
         plantuml_setup
 
-        doc.xpath(XPATH).each do |node|
+        doc.xpath(lang_tag).each do |node|
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
             Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {}))
           node.parent.replace(img_tag)
@@ -26,6 +23,15 @@ module Banzai
       end
 
       private
+
+      def lang_tag
+        @lang_tag ||=
+          if Feature.enabled?(:use_cmark_renderer)
+            Gitlab::Utils::Nokogiri.css_to_xpath('pre[lang="plantuml"] > code').freeze
+          else
+            Gitlab::Utils::Nokogiri.css_to_xpath('pre > code[lang="plantuml"]').freeze
+          end
+      end
 
       def settings
         Gitlab::CurrentSettings.current_application_settings

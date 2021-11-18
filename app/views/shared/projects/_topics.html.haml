@@ -8,7 +8,7 @@
       = sprite_icon('tag', css_class: 'icon gl-relative gl-mr-2')
 
       - project.topics_to_show.each do |topic|
-        - explore_project_topic_path = explore_projects_path(topic: topic)
+        - explore_project_topic_path = topic_explore_projects_path(topic_name: topic)
         - if topic.length > max_project_topic_length
           %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
             = truncate(topic, length: max_project_topic_length)
@@ -21,7 +21,7 @@
         - content = capture do
           %span.gl-display-inline-flex.gl-flex-wrap
             - project.topics_not_shown.each do |topic|
-              - explore_project_topic_path = explore_projects_path(topic: topic)
+              - explore_project_topic_path = topic_explore_projects_path(topic_name: topic)
               - if topic.length > max_project_topic_length
                 %a{ class: "#{ project_topics_classes } gl-mb-3 str-truncated has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path, itemprop: 'keywords' }
                   = truncate(topic, length: max_project_topic_length)

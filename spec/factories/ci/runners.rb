@@ -11,12 +11,17 @@ FactoryBot.define do
     runner_type { :instance_type }
 
     transient do
+      groups { [] }
       projects { [] }
     end
 
     after(:build) do |runner, evaluator|
       evaluator.projects.each do |proj|
         runner.runner_projects << build(:ci_runner_project, project: proj)
+      end
+
+      evaluator.groups.each do |group|
+        runner.runner_namespaces << build(:ci_runner_namespace, namespace: group)
       end
     end
 
@@ -32,7 +37,9 @@ FactoryBot.define do
       runner_type { :group_type }
 
       after(:build) do |runner, evaluator|
-        runner.groups << build(:group) if runner.groups.empty?
+        if runner.runner_namespaces.empty?
+          runner.runner_namespaces << build(:ci_runner_namespace)
+        end
       end
     end
 

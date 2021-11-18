@@ -77,14 +77,14 @@ that prevent leaks of private data.
 
 There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
-least [Reporter access](../../permissions.md#project-members-permissions). However, a guest user can also create
+least the Reporter [role](../../permissions.md#project-members-permissions). However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
-For example, here's what a user with the [Maintainer role](../../permissions.md) and Guest access
+For example, here's what a user with the [Maintainer role](../../permissions.md) and the Guest role
 sees in the project's search results respectively.
 
-| Maintainer role                                                                        | Guest access                                                                     |
+| Maintainer role                                                                        | Guest role                                                                     |
 |:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
 | ![Confidential issues search by maintainer](img/confidential_issues_search_master.png) | ![Confidential issues search by guest](img/confidential_issues_search_guest.png) |
 

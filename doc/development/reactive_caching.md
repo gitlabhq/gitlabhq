@@ -74,7 +74,7 @@ For more information, read the internal issue
 
 ### In models and integrations
 
-The ReactiveCaching concern can be used in models as well as `integrations`
+The ReactiveCaching concern can be used in models as well as integrations
 (`app/models/integrations`).
 
 1. Include the concern in your model or integration.
@@ -88,7 +88,7 @@ The ReactiveCaching concern can be used in models as well as `integrations`
    To include the concern in an integration:
 
    ```ruby
-   include ReactiveService
+   include Integrations::ReactivelyCached
    ```
 
 1. Implement the `calculate_reactive_cache` method in your model or integration.
@@ -201,15 +201,15 @@ There are some `class_attribute` options which can be tweaked.
   and `"ExampleModel:1:arg1:arg2:alive"` respectively, where `ExampleModel` is the
   name of the model, `1` is the ID of the record, `arg1` and `arg2` are parameters
   passed to `with_reactive_cache`.
-- If you're including this concern in a service instead, you must override
-  the default by adding the following to your service:
+- If you're including this concern in an integration (`app/models/integrations/`) instead, you must override
+  the default by adding the following to your integration:
 
   ```ruby
-  self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
+  self.reactive_cache_key = ->(integration) { [integration.class.model_name.singular, integration.project_id] }
   ```
 
   If your reactive_cache_key is exactly like the above, you can use the existing
-  `ReactiveService` concern instead.
+  `Integrations::ReactivelyCached` concern instead.
 
 #### `self.reactive_cache_lease_timeout`
 

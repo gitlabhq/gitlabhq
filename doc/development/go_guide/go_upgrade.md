@@ -89,10 +89,14 @@ if you need help finding the correct person or labels:
 1. Schedule an update with the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues):
    - Title the issue `Support using Go version <VERSION_NUMBER>`.
    - Set the issue as related to every issue created in the previous step.
-1. Schedule one issue per Secure Stage team and add the `devops::secure` label to each:
+1. Schedule one issue per Sec Section team that maintains Go based Security Analyzers and add the `section::sec` label to each:
    - [Static Analysis tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
    - [Composition Analysis tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
    - [Container Security tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
+
+    NOTE:
+    Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
+    the analyzers are built independently as separate container images.
 1. Schedule builder updates with Distribution projects:
    - Dependency and GitLab Development Kit issues created in previous steps should be set as blockers.
    - Each issue should have the title `Support building with Go <VERSION_NUMBER>` and description as noted:

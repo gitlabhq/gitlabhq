@@ -3,7 +3,6 @@ stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
-type: howto
 ---
 
 # Installing GitLab on Google Cloud Platform **(FREE SELF)**
@@ -11,9 +10,11 @@ type: howto
 This guide will help you install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official GitLab Linux package. You should customize it to accommodate your needs.
 
 NOTE:
-Google provides a whitepaper for [deploying production-ready GitLab on
-Google Kubernetes Engine](https://cloud.google.com/architecture/deploying-production-ready-gitlab-on-gke),
-including all steps and external resource configuration. These are an alternative to using a GCP VM, and use
+To deploy production-ready GitLab on
+Google Kubernetes Engine,
+you can follow Google Cloud Platform's
+[Click to Deploy steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
+It's an alternative to using a GCP VM, and uses
 the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 
 ## Prerequisites
@@ -126,8 +127,8 @@ Check the [Omnibus documentation](https://docs.gitlab.com/omnibus/settings/smtp.
 
 ## Further reading
 
-GitLab can be configured to authenticate with other OAuth providers, LDAP, SAML,
-Kerberos, etc. Here are some documents you might be interested in reading:
+GitLab can be configured to authenticate with other OAuth providers, like LDAP,
+SAML, and Kerberos. Here are some documents you might be interested in reading:
 
 - [Omnibus GitLab documentation](https://docs.gitlab.com/omnibus/)
 - [Integration documentation](../../integration/index.md)

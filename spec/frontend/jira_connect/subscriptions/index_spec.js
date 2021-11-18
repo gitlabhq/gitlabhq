@@ -1,24 +1,36 @@
 import { initJiraConnect } from '~/jira_connect/subscriptions';
+import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
 
-jest.mock('~/jira_connect/subscriptions/utils', () => ({
-  getLocation: jest.fn().mockResolvedValue('test/location'),
-}));
+jest.mock('~/jira_connect/subscriptions/utils');
 
 describe('initJiraConnect', () => {
-  beforeEach(async () => {
-    setFixtures(`
-      <a class="js-jira-connect-sign-in" href="https://gitlab.com">Sign In</a>
-      <a class="js-jira-connect-sign-in" href="https://gitlab.com">Another Sign In</a>
-    `);
+  const mockInitialHref = 'https://gitlab.com';
 
-    await initJiraConnect();
+  beforeEach(() => {
+    setFixtures(`
+      <a class="js-jira-connect-sign-in" href="${mockInitialHref}">Sign In</a>
+      <a class="js-jira-connect-sign-in" href="${mockInitialHref}">Another Sign In</a>
+    `);
   });
 
+  const assertSignInLinks = (expectedLink) => {
+    Array.from(document.querySelectorAll('.js-jira-connect-sign-in')).forEach((el) => {
+      expect(el.getAttribute('href')).toBe(expectedLink);
+    });
+  };
+
   describe('Sign in links', () => {
-    it('have `return_to` query parameter', () => {
-      Array.from(document.querySelectorAll('.js-jira-connect-sign-in')).forEach((el) => {
-        expect(el.href).toContain('return_to=test/location');
-      });
+    it('are updated on initialization', async () => {
+      const mockSignInLink = `https://gitlab.com?return_to=${encodeURIComponent('/test/location')}`;
+      getGitlabSignInURL.mockResolvedValue(mockSignInLink);
+
+      // assert the initial state
+      assertSignInLinks(mockInitialHref);
+
+      await initJiraConnect();
+
+      // assert the update has occurred
+      assertSignInLinks(mockSignInLink);
     });
   });
 });

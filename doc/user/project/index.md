@@ -47,7 +47,7 @@ Projects include the following [features](https://about.gitlab.com/features/):
   strategy and get reviewed by your team.
   - [Merge Request Approvals](merge_requests/approvals/index.md): Ask for approval before
   implementing a change.
-  - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md): View Git diffs from the GitLab UI.
+  - [Fix merge conflicts from the UI](merge_requests/conflicts.md): View Git diffs from the GitLab UI.
   - [Review Apps](../../ci/review_apps/index.md): By branch, preview the results
   of the changes proposed in a merge request.
 - [Labels](labels.md): Organize issues and merge requests by labels.

@@ -27,10 +27,10 @@ module BreadcrumbsHelper
     end
   end
 
-  def add_to_breadcrumb_dropdown(link, location: :before)
-    @breadcrumb_dropdown_links ||= {}
-    @breadcrumb_dropdown_links[location] ||= []
-    @breadcrumb_dropdown_links[location] << link
+  def add_to_breadcrumb_collapsed_links(link, location: :before)
+    @breadcrumb_collapsed_links ||= {}
+    @breadcrumb_collapsed_links[location] ||= []
+    @breadcrumb_collapsed_links[location] << link
   end
 
   def push_to_schema_breadcrumb(text, link)

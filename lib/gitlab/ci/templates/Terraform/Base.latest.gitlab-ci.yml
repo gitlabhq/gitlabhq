@@ -21,18 +21,11 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
-.terraform:init: &terraform_init
-  stage: init
-  script:
-    - cd ${TF_ROOT}
-    - gitlab-terraform init
-
 .terraform:fmt: &terraform_fmt
   stage: validate
-  needs: []
   script:
     - cd ${TF_ROOT}
-    - gitlab-terraform fmt -check -recursive
+    - gitlab-terraform fmt
   allow_failure: true
 
 .terraform:validate: &terraform_validate
@@ -60,10 +53,9 @@ cache:
     - cd ${TF_ROOT}
     - gitlab-terraform apply
   resource_group: ${TF_STATE_NAME}
-  when: manual
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
 
 .terraform:destroy: &terraform_destroy
   stage: cleanup

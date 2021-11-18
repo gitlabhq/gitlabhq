@@ -5,7 +5,7 @@ module API
     module FileUploadHelpers
       def file_is_valid?
         filename = params[:file]&.original_filename
-        filename && ImportExportUploader::EXTENSION_WHITELIST.include?(File.extname(filename).delete('.'))
+        filename && ImportExportUploader::EXTENSION_ALLOWLIST.include?(File.extname(filename).delete('.'))
       end
 
       def validate_file!

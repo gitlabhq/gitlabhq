@@ -56,6 +56,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :organizations, class_name: 'CustomerRelations::Organization', inverse_of: :group
+  has_many :contacts, class_name: 'CustomerRelations::Contact', inverse_of: :group
+
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
 
@@ -194,13 +197,8 @@ class Group < Namespace
     def ids_with_disabled_email(groups)
       inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
 
-      inner_ancestors = if Feature.enabled?(:linear_group_ancestor_scopes, default_enabled: :yaml)
-                          inner_groups.self_and_ancestors
-                        else
-                          Gitlab::ObjectHierarchy.new(inner_groups).base_and_ancestors
-                        end
-
-      inner_query = inner_ancestors
+      inner_query = inner_groups
+        .self_and_ancestors
         .where(emails_disabled: true)
         .select('1')
         .limit(1)
@@ -317,13 +315,15 @@ class Group < Namespace
     owners.include?(user)
   end
 
-  def add_users(users, access_level, current_user: nil, expires_at: nil)
+  def add_users(users, access_level, current_user: nil, expires_at: nil, tasks_to_be_done: [], tasks_project_id: nil)
     Members::Groups::BulkCreatorService.add_users( # rubocop:disable CodeReuse/ServiceClass
       self,
       users,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      tasks_to_be_done: tasks_to_be_done,
+      tasks_project_id: tasks_project_id
     )
   end
 
@@ -758,18 +758,6 @@ class Group < Namespace
 
   def timelogs
     Timelog.in_group(self)
-  end
-
-  def cached_issues_state_count_enabled?
-    Feature.enabled?(:cached_issues_state_count, self, default_enabled: :yaml)
-  end
-
-  def organizations
-    ::CustomerRelations::Organization.where(group_id: self.id)
-  end
-
-  def contacts
-    ::CustomerRelations::Contact.where(group_id: self.id)
   end
 
   def dependency_proxy_image_ttl_policy

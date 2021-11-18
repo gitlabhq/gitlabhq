@@ -3,8 +3,7 @@
 require 'action_cable/subscription_adapter/redis'
 
 Rails.application.configure do
-  # Mount the ActionCable engine when in-app mode is enabled
-  config.action_cable.mount_path = Gitlab::ActionCable::Config.in_app? ? '/-/cable' : nil
+  config.action_cable.mount_path = '/-/cable'
 
   config.action_cable.url = Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/cable')
   config.action_cable.worker_pool_size = Gitlab::ActionCable::Config.worker_pool_size

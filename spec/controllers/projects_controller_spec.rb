@@ -213,21 +213,6 @@ RSpec.describe ProjectsController do
 
       before do
         sign_in(user)
-
-        allow(controller).to receive(:record_experiment_user)
-      end
-
-      context 'when user can push to default branch', :experiment do
-        let(:user) { empty_project.owner }
-
-        it 'creates an "view_project_show" experiment tracking event' do
-          expect(experiment(:empty_repo_upload)).to track(
-            :view_project_show,
-            property: 'empty'
-          ).on_next_instance
-
-          get :show, params: { namespace_id: empty_project.namespace, id: empty_project }
-        end
       end
 
       User.project_views.keys.each do |project_view|
@@ -1156,6 +1141,22 @@ RSpec.describe ProjectsController do
       expect(json_response["Branches"]).to include("master")
       expect(json_response["Tags"]).to include("v1.0.0")
       expect(json_response["Commits"]).to include("123456")
+    end
+
+    context 'when gitaly is unavailable' do
+      before do
+        expect_next_instance_of(TagsFinder) do |finder|
+          allow(finder).to receive(:execute).and_raise(Gitlab::Git::CommandError)
+        end
+      end
+
+      it 'gets an empty list of tags' do
+        get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+
+        expect(json_response["Branches"]).to include("master")
+        expect(json_response["Tags"]).to eq([])
+        expect(json_response["Commits"]).to include("123456")
+      end
     end
 
     context "when preferred language is Japanese" do

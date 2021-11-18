@@ -7,7 +7,8 @@ product_stage: manage
 product_group: group::manage
 product_category:
 value_type: number
-status: active
+status: broken
+repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344100
 time_frame: all
 data_source: database
 distribution:

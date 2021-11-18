@@ -4,10 +4,63 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Reindexing do
   include ExclusiveLeaseHelpers
+  include Database::DatabaseHelpers
 
-  describe '.perform' do
-    subject { described_class.perform(candidate_indexes) }
+  describe '.automatic_reindexing' do
+    subject { described_class.automatic_reindexing(maximum_records: limit) }
 
+    let(:limit) { 5 }
+
+    before_all do
+      swapout_view_for_table(:postgres_indexes)
+    end
+
+    before do
+      allow(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!)
+      allow(Gitlab::Database::Reindexing).to receive(:perform_from_queue).and_return(0)
+      allow(Gitlab::Database::Reindexing).to receive(:perform_with_heuristic).and_return(0)
+    end
+
+    it 'cleans up leftovers, before consuming the queue' do
+      expect(Gitlab::Database::Reindexing).to receive(:cleanup_leftovers!).ordered
+      expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).ordered
+
+      subject
+    end
+
+    context 'with records in the queue' do
+      before do
+        create(:reindexing_queued_action)
+      end
+
+      context 'with enough records in the queue to reach limit' do
+        let(:limit) { 1 }
+
+        it 'does not perform reindexing with heuristic' do
+          expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).and_return(limit)
+          expect(Gitlab::Database::Reindexing).not_to receive(:perform_with_heuristic)
+
+          subject
+        end
+      end
+
+      context 'without enough records in the queue to reach limit' do
+        let(:limit) { 2 }
+
+        it 'continues if the queue did not have enough records' do
+          expect(Gitlab::Database::Reindexing).to receive(:perform_from_queue).ordered.and_return(1)
+          expect(Gitlab::Database::Reindexing).to receive(:perform_with_heuristic).with(maximum_records: 1).ordered
+
+          subject
+        end
+      end
+    end
+  end
+
+  describe '.perform_with_heuristic' do
+    subject { described_class.perform_with_heuristic(candidate_indexes, maximum_records: limit) }
+
+    let(:limit) { 2 }
     let(:coordinator) { instance_double(Gitlab::Database::Reindexing::Coordinator) }
     let(:index_selection) { instance_double(Gitlab::Database::Reindexing::IndexSelection) }
     let(:candidate_indexes) { double }
@@ -15,7 +68,7 @@ RSpec.describe Gitlab::Database::Reindexing do
 
     it 'delegates to Coordinator' do
       expect(Gitlab::Database::Reindexing::IndexSelection).to receive(:new).with(candidate_indexes).and_return(index_selection)
-      expect(index_selection).to receive(:take).with(2).and_return(indexes)
+      expect(index_selection).to receive(:take).with(limit).and_return(indexes)
 
       indexes.each do |index|
         expect(Gitlab::Database::Reindexing::Coordinator).to receive(:new).with(index).and_return(coordinator)
@@ -23,6 +76,59 @@ RSpec.describe Gitlab::Database::Reindexing do
       end
 
       subject
+    end
+  end
+
+  describe '.perform_from_queue' do
+    subject { described_class.perform_from_queue(maximum_records: limit) }
+
+    before_all do
+      swapout_view_for_table(:postgres_indexes)
+    end
+
+    let(:limit) { 2 }
+    let(:queued_actions) { create_list(:reindexing_queued_action, 3) }
+    let(:coordinator) { instance_double(Gitlab::Database::Reindexing::Coordinator) }
+
+    before do
+      queued_actions.take(limit).each do |action|
+        allow(Gitlab::Database::Reindexing::Coordinator).to receive(:new).with(action.index).and_return(coordinator)
+        allow(coordinator).to receive(:perform)
+      end
+    end
+
+    it 'consumes the queue in order of created_at and applies the limit' do
+      queued_actions.take(limit).each do |action|
+        expect(Gitlab::Database::Reindexing::Coordinator).to receive(:new).ordered.with(action.index).and_return(coordinator)
+        expect(coordinator).to receive(:perform)
+      end
+
+      subject
+    end
+
+    it 'updates queued action and sets state to done' do
+      subject
+
+      queue = queued_actions
+
+      queue.shift(limit).each do |action|
+        expect(action.reload.state).to eq('done')
+      end
+
+      queue.each do |action|
+        expect(action.reload.state).to eq('queued')
+      end
+    end
+
+    it 'updates queued action upon error and sets state to failed' do
+      expect(Gitlab::Database::Reindexing::Coordinator).to receive(:new).ordered.with(queued_actions.first.index).and_return(coordinator)
+      expect(coordinator).to receive(:perform).and_raise('something went wrong')
+
+      subject
+
+      states = queued_actions.map(&:reload).map(&:state)
+
+      expect(states).to eq(%w(failed done queued))
     end
   end
 

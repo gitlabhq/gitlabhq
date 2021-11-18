@@ -15,6 +15,12 @@ module API
           helpers ::API::Helpers::Packages::BasicAuthHelpers
           include ::API::Helpers::Authentication
 
+          helpers do
+            def distribution
+              ::Packages::Debian::DistributionsFinder.new(project_or_group, codename: params[:codename]).execute.last || not_found!('Distribution')
+            end
+          end
+
           namespace 'debian_distributions' do
             helpers do
               params :optional_distribution_params do
@@ -36,9 +42,18 @@ module API
               end
             end
 
+            rescue_from ArgumentError do |e|
+              render_api_error!(e.message, 400)
+            end
+
+            rescue_from ActiveRecord::RecordInvalid do |e|
+              render_api_error!(e.message, 400)
+            end
+
             authenticate_with do |accept|
-              accept.token_types(:personal_access_token, :deploy_token, :job_token)
-                    .sent_through(:http_basic_auth)
+              accept.token_types(:personal_access_token).sent_through(:http_private_token_header)
+              accept.token_types(:deploy_token).sent_through(:http_deploy_token_header)
+              accept.token_types(:job_token).sent_through(:http_job_token_header)
             end
 
             content_type :json, 'application/json'
@@ -59,12 +74,12 @@ module API
 
               distribution_params = declared_params(include_missing: false)
               result = ::Packages::Debian::CreateDistributionService.new(project_or_group, current_user, distribution_params).execute
-              distribution = result.payload[:distribution]
+              created_distribution = result.payload[:distribution]
 
               if result.success?
-                present distribution, with: ::API::Entities::Packages::Debian::Distribution
+                present created_distribution, with: ::API::Entities::Packages::Debian::Distribution
               else
-                render_validation_error!(distribution)
+                render_validation_error!(created_distribution)
               end
             end
 
@@ -100,9 +115,26 @@ module API
             get '/:codename' do
               authorize_read_package!(project_or_group)
 
-              distribution = ::Packages::Debian::DistributionsFinder.new(project_or_group, codename: params[:codename]).execute.last!
-
               present distribution, with: ::API::Entities::Packages::Debian::Distribution
+            end
+
+            # GET {projects|groups}/:id/debian_distributions/:codename/key
+            desc 'Get a Debian Distribution Key' do
+              detail 'This feature was introduced in 14.4'
+              success ::API::Entities::Packages::Debian::Distribution
+            end
+
+            params do
+              requires :codename, type: String, regexp: Gitlab::Regex.debian_distribution_regex, desc: 'The Debian Codename'
+            end
+            get '/:codename/key.asc' do
+              authorize_read_package!(project_or_group)
+
+              content_type 'text/plain'
+              env['api.format'] = :binary
+              header 'Content-Disposition', "attachment; filename*=UTF-8''#{CGI.escape(params[:codename])}.asc"
+
+              distribution.key&.public_key || not_found!('Distribution key')
             end
 
             # PUT {projects|groups}/:id/debian_distributions/:codename
@@ -118,15 +150,14 @@ module API
             put '/:codename' do
               authorize_create_package!(project_or_group)
 
-              distribution = ::Packages::Debian::DistributionsFinder.new(project_or_group, codename: params[:codename]).execute.last!
               distribution_params = declared_params(include_missing: false).except(:codename)
               result = ::Packages::Debian::UpdateDistributionService.new(distribution, distribution_params).execute
-              distribution = result.payload[:distribution]
+              updated_distribution = result.payload[:distribution]
 
               if result.success?
-                present distribution, with: ::API::Entities::Packages::Debian::Distribution
+                present updated_distribution, with: ::API::Entities::Packages::Debian::Distribution
               else
-                render_validation_error!(distribution)
+                render_validation_error!(updated_distribution)
               end
             end
 
@@ -141,8 +172,6 @@ module API
             end
             delete '/:codename' do
               authorize_destroy_package!(project_or_group)
-
-              distribution = ::Packages::Debian::DistributionsFinder.new(project_or_group, codename: params[:codename]).execute.last!
 
               accepted! if distribution.destroy
 

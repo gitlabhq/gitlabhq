@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::PopulateHasVulnerabilities, schema: 20201103192526 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateHasVulnerabilities, schema: 20181228175414 do
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

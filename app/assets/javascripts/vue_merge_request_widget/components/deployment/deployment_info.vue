@@ -12,13 +12,12 @@ import {
   CANCELED,
   SKIPPED,
 } from './constants';
-import MemoryUsage from './memory_usage.vue';
 
 export default {
   name: 'DeploymentInfo',
   components: {
     GlLink,
-    MemoryUsage,
+    MemoryUsage: () => import('./memory_usage.vue'),
     TooltipOnTruncate,
   },
   directives: {

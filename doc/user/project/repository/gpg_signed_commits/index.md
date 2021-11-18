@@ -39,7 +39,10 @@ For a commit to be verified by GitLab:
 - The committer's public key must have been uploaded to their GitLab
   account.
 - One of the emails in the GPG key must match a **verified** email address
-  used by the committer in GitLab.
+  used by the committer in GitLab. This address will be part of the public key.
+  If you want to keep this address private, use the automatically generated 
+  [private commit email address](../../../profile/index.md#use-an-automatically-generated-private-commit-email)
+  GitLab provides in your profile.
 - The committer's email address must match the verified email address from the
   GPG key.
 

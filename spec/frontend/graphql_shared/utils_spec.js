@@ -52,6 +52,10 @@ describe('getIdFromGraphQLId', () => {
       output: null,
     },
     {
+      input: 'gid://gitlab/Environments/0',
+      output: 0,
+    },
+    {
       input: 'gid://gitlab/Environments/123',
       output: 123,
     },

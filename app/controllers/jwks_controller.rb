@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
-class JwksController < ActionController::Base # rubocop:disable Rails/ApplicationController
+class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   def index
-    render json: { keys: keys }
+    render json: { keys: payload }
+  end
+
+  def keys
+    index
   end
 
   private
 
-  def keys
+  def payload
     [
       # We keep openid_connect_signing_key so that we can seamlessly
       # replace it with ci_jwt_signing_key and remove it on the next release.

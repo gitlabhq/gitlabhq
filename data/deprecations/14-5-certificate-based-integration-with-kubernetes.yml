@@ -1,0 +1,19 @@
+- name: "Certificate-based integration with Kubernetes"
+  announcement_milestone: "14.5"
+  announcement_date: "2021-11-15"
+  removal_milestone: "15.0"
+  body: |
+    [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+    The timeline of removal of the integration from the product is not yet planned and we will communicate
+    more details as they emerge. The certificate-based integration will continue to receive security and
+    critical fixes, and features built on the integration will continue to work with supported Kubernetes
+    versions. We will provide migration plans in a future iteration. See [the list of features affected by this deprecation](https://docs.gitlab.com/ee/user/infrastructure/clusters/#deprecated-features).
+    For updates and details, follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+    For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend the use of the
+    [Kubernetes Agent](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab.
+  stage: Configure
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: 'https://gitlab.com/groups/gitlab-org/configure/-/epics/8'
+  documentation_url: 'https://docs.gitlab.com/ee/user/infrastructure/clusters/#certificate-based-kubernetes-integration-deprecated'
+  removal_date: # (optional - may be required in the future) YYYY-MM-DD format. This should almost always be the 22nd of a month (YYYY-MM-22), the date of the milestone release when this feature is planned to be removed

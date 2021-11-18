@@ -165,6 +165,14 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
         it { is_expected.to eq(success: false, result: %(#{status} - "QUERY FAILED!")) }
       end
     end
+
+    context "when client raises Gitlab::PrometheusClient::ConnectionError" do
+      before do
+        stub_any_prometheus_request.to_raise(Gitlab::PrometheusClient::ConnectionError)
+      end
+
+      it { is_expected.to include(success: false, result: kind_of(String)) }
+    end
   end
 
   describe '#build_query_args' do

@@ -108,6 +108,11 @@ module Types
                  description: 'Name of the job.'
       end
 
+      field :job_artifacts,
+            null: true,
+            description: 'Job artifacts of the pipeline.',
+            resolver: ::Resolvers::Ci::PipelineJobArtifactsResolver
+
       field :source_job,
             type: Types::Ci::JobType,
             null: true,
@@ -124,6 +129,10 @@ module Types
 
       field :path, GraphQL::Types::String, null: true,
             description: "Relative path to the pipeline's page."
+
+      field :commit, Types::CommitType, null: true,
+            description: "Git commit of the pipeline.",
+            calls_gitaly: true
 
       field :commit_path, GraphQL::Types::String, null: true,
             description: 'Path to the commit that triggered the pipeline.'

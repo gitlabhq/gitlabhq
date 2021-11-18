@@ -571,7 +571,7 @@ Settings.cron_jobs['user_status_cleanup_batch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['user_status_cleanup_batch_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['user_status_cleanup_batch_worker']['job_class'] = 'UserStatusCleanup::BatchWorker'
 Settings.cron_jobs['ssh_keys_expired_notification_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['ssh_keys_expired_notification_worker']['cron'] ||= '0 2 * * *'
+Settings.cron_jobs['ssh_keys_expired_notification_worker']['cron'] ||= '0 2,14 * * *'
 Settings.cron_jobs['ssh_keys_expired_notification_worker']['job_class'] = 'SshKeys::ExpiredNotificationWorker'
 Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 16 * * *'
@@ -588,6 +588,12 @@ Settings.cron_jobs['ci_delete_unit_tests_worker']['job_class'] = 'Ci::DeleteUnit
 Settings.cron_jobs['batched_background_migrations_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['batched_background_migrations_worker']['cron'] ||= '* * * * *'
 Settings.cron_jobs['batched_background_migrations_worker']['job_class'] = 'Database::BatchedBackgroundMigrationWorker'
+Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances'] ||= Settingslogic.new({})
+Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['cron'] ||= '*/15 * * * *'
+Settings.cron_jobs['issues_reschedule_stuck_issue_rebalances']['job_class'] = 'Issues::RescheduleStuckIssueRebalancesWorker'
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['clusters_integrations_check_prometheus_health_worker']['job_class'] = 'Clusters::Integrations::CheckPrometheusHealthWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -713,6 +719,9 @@ Gitlab.ee do
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'
+  Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
 end
 
 #

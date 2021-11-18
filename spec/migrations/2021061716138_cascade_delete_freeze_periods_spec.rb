@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('cascade_delete_freeze_periods')
+require_migration!
 
 RSpec.describe CascadeDeleteFreezePeriods do
   let(:namespace) { table(:namespaces).create!(name: 'deploy_freeze', path: 'deploy_freeze') }

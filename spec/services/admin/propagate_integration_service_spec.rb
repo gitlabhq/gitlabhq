@@ -55,7 +55,7 @@ RSpec.describe Admin::PropagateIntegrationService do
     end
 
     context 'for a group-level integration' do
-      let(:group_integration) { create(:jira_integration, group: group, project: nil) }
+      let(:group_integration) { create(:jira_integration, :group, group: group) }
 
       context 'with a project without integration' do
         let(:another_project) { create(:project, group: group) }
@@ -81,7 +81,7 @@ RSpec.describe Admin::PropagateIntegrationService do
 
       context 'with a subgroup with integration' do
         let(:subgroup) { create(:group, parent: group) }
-        let(:subgroup_integration) { create(:jira_integration, group: subgroup, project: nil, inherit_from_id: group_integration.id) }
+        let(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }
 
         it 'calls to PropagateIntegrationInheritDescendantWorker' do
           expect(PropagateIntegrationInheritDescendantWorker).to receive(:perform_async)

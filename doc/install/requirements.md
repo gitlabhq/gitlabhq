@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Installation requirements **(FREE SELF)**
@@ -119,7 +118,6 @@ the following table) as these were used for development and testing:
 
 | GitLab version | Minimum PostgreSQL version |
 |----------------|----------------------------|
-| 10.0           | 9.6                        |
 | 13.0           | 11                         |
 | 14.0           | 12                         |
 
@@ -272,9 +270,9 @@ On a very active server (10,000 billable users) the Sidekiq process can use 1GB+
 
 ## Prometheus and its exporters
 
-As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
-exporters are enabled by default, to enable easy and in depth monitoring of
-GitLab. With default settings, these processes consume approximately 200MB of memory.
+[Prometheus](https://prometheus.io) and its related exporters are enabled by
+default to enable in depth monitoring of GitLab. With default settings, these
+processes consume approximately 200 MB of memory.
 
 If you would like to disable Prometheus and it's exporters or read more information
 about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
@@ -304,7 +302,7 @@ The GitLab Runner server requirements depend on:
 
 Since the nature of the jobs varies for each use case, you need to experiment by adjusting the job concurrency to get the optimum setting.
 
-For reference, the GitLab.com Build Cloud [auto-scaling runner for Linux](../ci/runners/build_cloud/linux_build_cloud.md) is configured so that a **single job** runs in a **single instance** with:
+For reference, the GitLab.com Runner Cloud [auto-scaling runner for Linux](../ci/runners/build_cloud/linux_build_cloud.md) is configured so that a **single job** runs in a **single instance** with:
 
 - 1 vCPU.
 - 3.75 GB of RAM.

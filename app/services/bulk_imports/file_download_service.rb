@@ -7,8 +7,16 @@ module BulkImports
 
     REMOTE_FILENAME_PATTERN = %r{filename="(?<filename>[^"]+)"}.freeze
     FILENAME_SIZE_LIMIT = 255 # chars before the extension
+    DEFAULT_FILE_SIZE_LIMIT = 5.gigabytes
+    DEFAULT_ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
 
-    def initialize(configuration:, relative_url:, dir:, file_size_limit:, allowed_content_types:, filename: nil)
+    def initialize(
+      configuration:,
+      relative_url:,
+      dir:,
+      file_size_limit: DEFAULT_FILE_SIZE_LIMIT,
+      allowed_content_types: DEFAULT_ALLOWED_CONTENT_TYPES,
+      filename: nil)
       @configuration = configuration
       @relative_url = relative_url
       @filename = filename

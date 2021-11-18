@@ -50,7 +50,7 @@ RSpec.describe 'Deleting a release' do
 
       expect(mutation_response).to be_nil
       expect(graphql_errors.count).to eq(1)
-      expect(graphql_errors.first['message']).to eq("The resource that you are attempting to access does not exist or you don't have permission to perform this action")
+      expect(graphql_errors.first['message']).to eq(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
     end
   end
 

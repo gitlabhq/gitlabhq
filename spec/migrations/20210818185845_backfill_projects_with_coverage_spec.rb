@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('backfill_projects_with_coverage')
+require_migration!
 
 RSpec.describe BackfillProjectsWithCoverage do
   let(:projects) { table(:projects) }

@@ -1,7 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import BoardForm from '~/boards/components/board_form.vue';
@@ -18,21 +17,18 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 const currentBoard = {
-  id: 1,
+  id: 'gid://gitlab/Board/1',
   name: 'test',
   labels: [],
-  milestone_id: undefined,
+  milestone: {},
   assignee: {},
-  assignee_id: undefined,
   weight: null,
-  hide_backlog_list: false,
-  hide_closed_list: false,
+  hideBacklogList: false,
+  hideClosedList: false,
 };
 
 const defaultProps = {
   canAdminBoard: false,
-  labelsPath: `${TEST_HOST}/labels/path`,
-  labelsWebUrl: `${TEST_HOST}/-/labels`,
   currentBoard,
   currentPage: '',
 };
@@ -252,7 +248,7 @@ describe('BoardForm', () => {
         mutation: updateBoardMutation,
         variables: {
           input: expect.objectContaining({
-            id: `gid://gitlab/Board/${currentBoard.id}`,
+            id: currentBoard.id,
           }),
         },
       });
@@ -278,7 +274,7 @@ describe('BoardForm', () => {
         mutation: updateBoardMutation,
         variables: {
           input: expect.objectContaining({
-            id: `gid://gitlab/Board/${currentBoard.id}`,
+            id: currentBoard.id,
           }),
         },
       });
@@ -326,7 +322,7 @@ describe('BoardForm', () => {
       expect(mutate).toHaveBeenCalledWith({
         mutation: destroyBoardMutation,
         variables: {
-          id: 'gid://gitlab/Board/1',
+          id: currentBoard.id,
         },
       });
 

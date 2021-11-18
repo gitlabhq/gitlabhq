@@ -1,9 +1,9 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import markdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
@@ -17,6 +17,8 @@ export default {
     markdownField,
     CommentFieldLayout,
     GlButton,
+    GlSprintf,
+    GlLink,
   },
   mixins: [glFeatureFlagsMixin(), issuableStateMixin, resolvable],
   props: {
@@ -203,16 +205,12 @@ export default {
       );
     },
     changedCommentText() {
-      return sprintf(
-        __(
+      return {
+        text: __(
           'This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost.',
         ),
-        {
-          startTag: `<a href="${this.noteHash}" target="_blank" rel="noopener noreferrer">`,
-          endTag: '</a>',
-        },
-        false,
-      );
+        placeholder: { link: ['startTag', 'endTag'] },
+      };
     },
   },
   watch: {
@@ -318,11 +316,13 @@ export default {
 
 <template>
   <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
-    <div
-      v-if="conflictWhileEditing"
-      class="js-conflict-edit-warning alert alert-danger"
-      v-html="changedCommentText /* eslint-disable-line vue/no-v-html */"
-    ></div>
+    <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
+      <gl-sprintf :message="changedCommentText.text" :placeholders="changedCommentText.placeholder">
+        <template #link="{ content }">
+          <gl-link :href="noteHash" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </div>
     <div class="flash-container timeline-content"></div>
     <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <comment-field-layout
@@ -334,13 +334,13 @@ export default {
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
           :line="line"
+          :lines="lines"
           :note="discussionNote"
           :can-suggest="canSuggest"
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :show-suggest-popover="showSuggestPopover"
           :textarea-value="updatedNoteBody"
-          :lines="lines"
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         >
           <template #textarea>

@@ -140,14 +140,13 @@ module Projects
 
       def cache
         strong_memoize(:cache) do
-          ::Projects::ContainerRepository::CacheTagsCreatedAtService.new(@container_repository)
+          ::Gitlab::ContainerRepository::Tags::Cache.new(@container_repository)
         end
       end
 
       def caching_enabled?
         container_expiration_policy &&
-          older_than.present? &&
-          Feature.enabled?(:container_registry_expiration_policies_caching, @project)
+          older_than.present?
       end
 
       def throttling_enabled?

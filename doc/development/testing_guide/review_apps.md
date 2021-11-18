@@ -16,6 +16,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for merge requests with frontend changes
 - for merge requests with QA changes
 - for scheduled pipelines
+- the MR has the `pipeline:run-review-app` label set
 
 ## QA runs on Review Apps
 
@@ -36,6 +37,15 @@ browser performance testing using a
 [Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
 
 ## How to
+
+### Redeploy Review App from a clean slate
+
+To reset Review App and redeploy from a clean slate, do the following:
+
+1. Run `review-stop` job.
+1. Re-deploy by running or retrying `review-deploy` job.
+
+Doing this will remove all existing data from a previously deployed Review App.
 
 ### Get access to the GCP Review Apps cluster
 
@@ -180,7 +190,7 @@ subgraph "CNG-mirror pipeline"
 **Additional notes:**
 
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
-  please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~bug`
+  please post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"ep::review apps"` `~"type::bug"`
   issue with a link to your merge request. Note that the deployment failure can
   reveal an actual problem introduced in your merge request (i.e. this isn't
   necessarily a transient failure)!
@@ -189,7 +199,7 @@ subgraph "CNG-mirror pipeline"
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the
   failure or if it seems unrelated to your change, please post a message in the
-  `#quality` channel and/or create a ~Quality ~bug issue with a link to your
+  `#quality` channel and/or create a ~Quality ~"type::bug" issue with a link to your
   merge request.
 - The manual `review-stop` can be used to
   stop a Review App manually, and is also started by GitLab once a merge
@@ -237,6 +247,16 @@ Leading indicators may be health check failures leading to restarts or majority 
 
 The [Review Apps Overview dashboard](https://console.cloud.google.com/monitoring/classic/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
 aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
+
+### Database related errors in `review-deploy` or `review-qa-smoke`
+
+Occasionally the state of a Review App's database could diverge from the database schema. This could be caused by
+changes to migration files or schema, such as a migration being renamed or deleted. This typically manifest in migration errors such as:
+
+- migration job failing with a column that already exists
+- migration job failing with a column that does not exist
+
+To recover from this, please attempt to [redeploy Review App from a clean slate](#redeploy-review-app-from-a-clean-slate)
 
 ### Release failed with `ImagePullBackOff`
 

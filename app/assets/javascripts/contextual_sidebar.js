@@ -2,6 +2,8 @@ import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { debounce } from 'lodash';
+import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
+import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 export const SIDEBAR_COLLAPSED_CLASS = 'js-sidebar-collapsed';
@@ -112,5 +114,8 @@ export default class ContextualSidebar {
       const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
       this.toggleCollapsedSidebar(collapse, true);
     }
+
+    initInviteMembersModal();
+    initInviteMembersTrigger();
   }
 }

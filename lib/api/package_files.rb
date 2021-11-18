@@ -28,7 +28,10 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
-        present paginate(package.package_files), with: ::API::Entities::PackageFile
+        files = package.package_files
+                       .preload_pipelines
+
+        present paginate(files), with: ::API::Entities::PackageFile
       end
 
       desc 'Remove a package file' do

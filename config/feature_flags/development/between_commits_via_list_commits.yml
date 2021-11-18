@@ -1,0 +1,8 @@
+---
+name: between_commits_via_list_commits
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74273
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345458
+milestone: '14.5'
+type: development
+group: group::gitaly
+default_enabled: false

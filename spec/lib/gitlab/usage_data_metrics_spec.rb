@@ -13,7 +13,9 @@ RSpec.describe Gitlab::UsageDataMetrics do
     end
 
     before do
-      allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+      allow_next_instance_of(Gitlab::Database::BatchCounter) do |batch_counter|
+        allow(batch_counter).to receive(:transaction_open?).and_return(false)
+      end
     end
 
     context 'with instrumentation_class' do
@@ -74,6 +76,18 @@ RSpec.describe Gitlab::UsageDataMetrics do
           expect(metric_files_key_paths).to match_array(service_ping_key_paths)
         end
       end
+    end
+  end
+
+  describe '.suggested_names' do
+    subject { described_class.suggested_names }
+
+    let(:suggested_names) do
+      ::Gitlab::Usage::Metric.all.map(&:with_suggested_name).reduce({}, :deep_merge)
+    end
+
+    it 'includes Service Ping suggested names' do
+      expect(subject).to match_array(suggested_names)
     end
   end
 end

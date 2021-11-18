@@ -11,7 +11,10 @@ RSpec.describe ErrorTracking::ErrorEvent, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:description) }
+    it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { is_expected.to validate_presence_of(:occurred_at) }
+    it { is_expected.to validate_length_of(:level).is_at_most(255) }
+    it { is_expected.to validate_length_of(:environment).is_at_most(255) }
   end
 
   describe '#stacktrace' do
@@ -36,6 +39,23 @@ RSpec.describe ErrorTracking::ErrorEvent, type: :model do
 
       expect(event.stacktrace).to be_kind_of(Array)
       expect(event.stacktrace.first).to eq(expected_entry)
+    end
+
+    context 'error context is missing' do
+      let(:event) { create(:error_tracking_error_event, :browser) }
+
+      it 'generates a stacktrace without context' do
+        expected_entry = {
+          'lineNo' => 6395,
+          'context' => [],
+          'filename' => 'webpack-internal:///./node_modules/vue/dist/vue.runtime.esm.js',
+          'function' => 'hydrate',
+          'colNo' => 0
+        }
+
+        expect(event.stacktrace).to be_kind_of(Array)
+        expect(event.stacktrace.first).to eq(expected_entry)
+      end
     end
   end
 

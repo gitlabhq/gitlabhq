@@ -140,6 +140,11 @@ module Types
           null: true,
           resolver: Resolvers::BoardListResolver
 
+    field :topics, Types::Projects::TopicType.connection_type,
+          null: true,
+          resolver: Resolvers::TopicsResolver,
+          description: "Find project topics."
+
     def design_management
       DesignManagementObject.new(nil)
     end

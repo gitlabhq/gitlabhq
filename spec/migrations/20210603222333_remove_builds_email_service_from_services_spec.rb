@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-require_migration!('remove_builds_email_service_from_services')
+require_migration!
 
 RSpec.describe RemoveBuildsEmailServiceFromServices do
   let(:namespaces) { table(:namespaces) }

@@ -19,6 +19,10 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,
             stage: 2
           },
+          milestones: {
+            pipeline: BulkImports::Common::Pipelines::MilestonesPipeline,
+            stage: 2
+          },
           issues: {
             pipeline: BulkImports::Projects::Pipelines::IssuesPipeline,
             stage: 3
@@ -27,9 +31,29 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 4
           },
+          merge_requests: {
+            pipeline: BulkImports::Projects::Pipelines::MergeRequestsPipeline,
+            stage: 4
+          },
+          external_pull_requests: {
+            pipeline: BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline,
+            stage: 4
+          },
+          protected_branches: {
+            pipeline: BulkImports::Projects::Pipelines::ProtectedBranchesPipeline,
+            stage: 4
+          },
+          wiki: {
+            pipeline: BulkImports::Common::Pipelines::WikiPipeline,
+            stage: 5
+          },
+          uploads: {
+            pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
+            stage: 5
+          },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
-            stage: 5
+            stage: 6
           }
         }
       end

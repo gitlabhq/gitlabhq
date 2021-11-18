@@ -4,7 +4,7 @@ module Projects
   module Security
     module ConfigurationHelper
       def security_upgrade_path
-        'https://about.gitlab.com/pricing/'
+        "https://#{ApplicationHelper.promo_host}/pricing/"
       end
     end
   end

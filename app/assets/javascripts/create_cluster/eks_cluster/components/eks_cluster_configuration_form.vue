@@ -84,7 +84,7 @@ export default {
     ),
     subnetDropdownHelpPath: 'https://console.aws.amazon.com/vpc/home?#subnets',
     securityGroupDropdownHelpText: s__(
-      'ClusterIntegration|Choose the %{linkStart}security group %{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets.',
+      'ClusterIntegration|Choose the %{linkStart}security group%{linkEnd} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets.',
     ),
     securityGroupDropdownHelpPath: 'https://console.aws.amazon.com/vpc/home?#securityGroups',
     instanceTypesDropdownHelpText: s__(

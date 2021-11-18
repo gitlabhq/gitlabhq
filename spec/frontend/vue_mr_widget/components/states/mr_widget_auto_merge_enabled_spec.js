@@ -270,8 +270,8 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
           const normalizedText = wrapper.text().replace(/\s+/g, ' ');
 
-          expect(normalizedText).toContain('The source branch will be deleted');
-          expect(normalizedText).not.toContain('The source branch will not be deleted');
+          expect(normalizedText).toContain('Deletes the source branch');
+          expect(normalizedText).not.toContain('Does not delete the source branch');
         });
 
         it('should not show delete source branch button when user not able to delete source branch', () => {

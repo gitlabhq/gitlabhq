@@ -5,10 +5,10 @@ import { OBSTACLE_TYPES } from './constants';
 
 const OBSTACLE_TEXT = {
   [OBSTACLE_TYPES.oncallSchedules]: s__(
-    'OnCallSchedules|On-call schedule %{obstacle} in Project %{project}',
+    'OnCallSchedules|On-call schedule %{obstacle} in project %{project}',
   ),
   [OBSTACLE_TYPES.escalationPolicies]: s__(
-    'EscalationPolicies|Escalation policy %{obstacle} in Project %{project}',
+    'EscalationPolicies|Escalation policy %{obstacle} in project %{project}',
   ),
 };
 

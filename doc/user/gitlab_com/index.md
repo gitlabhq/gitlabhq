@@ -135,11 +135,13 @@ the related documentation.
 | Scheduled Pipeline Cron | `*/5 * * * *` | `3-59/10 * * * *` |
 | [Max jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines) | `500` for Free tier, unlimited otherwise | Unlimited |
 | [Max CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project) | `2` | Unlimited |
+| [Max number of pipeline triggers in a project](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers) | `25000` for Free tier, Unlimited for all paid tiers | Unlimited |
 | [Max pipeline schedules in projects](../../administration/instance_limits.md#number-of-pipeline-schedules) | `10` for Free tier, `50` for all paid tiers | Unlimited |
 | [Max pipelines per schedule](../../administration/instance_limits.md#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-per-day) | `24` for Free tier, `288` for all paid tiers | Unlimited |
 | [Scheduled Job Archival](../../user/admin_area/settings/continuous_integration.md#archive-jobs) | 3 months | Never |
 | Max test cases per [unit test report](../../ci/unit_test_reports.md) | `500_000` | Unlimited |
 | [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | Free tier: `50` per-group / `50` per-project <br/> All paid tiers: `1_000` per-group  / `1_000` per-project | `1_000` per-group / `1_000` per-project |
+| [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables) | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150` | Unlimited |
 
 ## Account and limit settings
 
@@ -158,7 +160,7 @@ If you are near or over the repository size limit, you can either
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
 Cloudflare. Git LFS and imports other than a file upload are not affected by
-this limit.
+this limit. Repository limits apply to both public and private projects.
 
 ## IP range
 
@@ -198,11 +200,11 @@ The following limits apply for [Webhooks](../project/integrations/webhooks.md):
 | [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks) | `100` per project, `50` per group | `100` per project, `50` per group |
 | Maximum payload size | 25 MB       | 25 MB   |
 
-## Shared Build Cloud runners
+## Shared Runner Cloud runners
 
 GitLab has shared runners on GitLab.com that you can use to run your CI jobs.
 
-For more information, see [GitLab Build Cloud runners](../../ci/runners/index.md).
+For more information, see [GitLab Runner Cloud runners](../../ci/runners/index.md).
 
 ## Sidekiq
 
@@ -296,6 +298,7 @@ after the limits change in January, 2021:
 | **All** traffic (from a given **IP address**)                             | **600** requests per minute | **2,000** requests per minute | **2,000** requests per minute |
 | **Issue creation**                                                        |                             | **300** requests per minute   | **300** requests per minute   |
 | **Note creation** (on issues and merge requests)                          |                             | **300** requests per minute   | **60** requests per minute    |
+| **Advanced, project, and group search** API (for a given **IP address**)   |                             |    | **10** requests per minute    |
 
 More details are available on the rate limits for [protected
 paths](#protected-paths-throttle) and [raw

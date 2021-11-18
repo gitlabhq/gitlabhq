@@ -3,11 +3,9 @@
 class Projects::WikisController < Projects::ApplicationController
   include WikiActions
 
-  alias_method :container, :project
+  urgency :low
 
-  before_action do
-    push_frontend_feature_flag(:content_editor_block_tables, @project, default_enabled: :yaml)
-  end
+  alias_method :container, :project
 
   feature_category :wiki
 end

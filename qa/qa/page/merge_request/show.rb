@@ -99,6 +99,8 @@ module QA
 
         view 'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue' do
           element :add_suggestion_batch_button
+          element :applied_badge
+          element :applying_badge
         end
 
         view 'app/views/projects/merge_requests/_description.html.haml' do
@@ -354,13 +356,20 @@ module QA
         end
 
         def apply_suggestion_with_message(message)
-          click_element(:apply_suggestion_dropdown)
+          all_elements(:apply_suggestion_dropdown, minimum: 1).first.click
           fill_element(:commit_message_field, message)
           click_element(:commit_with_custom_message_button)
         end
 
         def add_suggestion_to_batch
           all_elements(:add_suggestion_batch_button, minimum: 1).first.click
+        end
+
+        def has_suggestions_applied?(count = 1)
+          wait_until(reload: false) do
+            has_no_element?(:applying_badge)
+          end
+          all_elements(:applied_badge, count: count)
         end
 
         def cherry_pick!

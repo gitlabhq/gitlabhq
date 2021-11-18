@@ -9,7 +9,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   respond_to :html
 
-  feature_category :issue_tracking
+  feature_category :team_planning
 
   def index
     respond_to do |format|

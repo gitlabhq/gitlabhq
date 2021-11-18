@@ -95,7 +95,7 @@ export default {
 
 <template>
   <new-namespace-page
-    :initial-breadcrumb="s__('New project')"
+    :initial-breadcrumb="__('New project')"
     :panels="availablePanels"
     :jump-to-last-persisted-panel="hasErrors"
     :title="s__('ProjectsNew|Create new project')"

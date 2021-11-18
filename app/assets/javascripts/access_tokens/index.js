@@ -49,7 +49,7 @@ export const initProjectsField = () => {
             { default: createDefaultClient },
           ]) => {
             const apolloProvider = new VueApollo({
-              defaultClient: createDefaultClient({}, { assumeImmutableResults: true }),
+              defaultClient: createDefaultClient(),
             });
 
             Vue.use(VueApollo);

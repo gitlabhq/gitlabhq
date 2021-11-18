@@ -5,14 +5,15 @@ require 'active_support/core_ext/object/blank'
 module QA
   module Runtime
     class Feature
+      SetFeatureError = Class.new(RuntimeError)
+      AuthorizationError = Class.new(RuntimeError)
+      UnknownScopeError = Class.new(RuntimeError)
+      UnknownStateError = Class.new(RuntimeError)
+
       class << self
         # Documentation: https://docs.gitlab.com/ee/api/features.html
 
         include Support::API
-
-        SetFeatureError = Class.new(RuntimeError)
-        AuthorizationError = Class.new(RuntimeError)
-        UnknownScopeError = Class.new(RuntimeError)
 
         def remove(key)
           request = Runtime::API::Request.new(api_client, "/features/#{key}")
@@ -28,6 +29,23 @@ module QA
 
         def disable(key, **scopes)
           set_and_verify(key, enable: false, **scopes)
+        end
+
+        # Set one or more flags to their specified state.
+        #
+        # @param [Hash] flags The feature flags and desired values, e.g., { 'flag1' => 'enabled', 'flag2' => "disabled" }
+        # @param [Hash] scopes The scope (user, project, group) to apply the feature flag to.
+        def set(flags, **scopes)
+          flags.each_pair do |flag, state|
+            case state
+            when 'enabled', 'enable', 'true', 1, true
+              enable(flag, **scopes)
+            when 'disabled', 'disable', 'false', 0, false
+              disable(flag, **scopes)
+            else
+              raise UnknownStateError, "Unknown feature flag state: #{state}"
+            end
+          end
         end
 
         def enabled?(key, **scopes)
@@ -47,15 +65,15 @@ module QA
           scopes.each do |key, value|
             case key
             when :project, :group, :user
-              actors = gates.filter { |i| i['key'] == 'actors' }.first['value']
-              break actors.include?("#{key.to_s.capitalize}:#{value.id}")
+              actors = gates.find { |i| i['key'] == 'actors' }['value']
+              return actors.include?("#{key.to_s.capitalize}:#{value.id}")
             when :feature_group
-              groups = gates.filter { |i| i['key'] == 'groups' }.first['value']
-              break groups.include?(value)
-            else
-              raise UnknownScopeError, "Unknown scope: #{key}"
+              groups = gates.find { |i| i['key'] == 'groups' }['value']
+              return groups.include?(value)
             end
           end
+
+          raise UnknownScopeError, "Unknown scope in: #{scopes}"
         end
 
         def get_features

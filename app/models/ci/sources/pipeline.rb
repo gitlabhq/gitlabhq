@@ -4,9 +4,6 @@ module Ci
   module Sources
     class Pipeline < Ci::ApplicationRecord
       include Ci::NamespacedModelName
-      include IgnorableColumns
-
-      ignore_columns 'source_job_id_convert_to_bigint', remove_with: '14.5', remove_after: '2021-11-22'
 
       self.table_name = "ci_sources_pipelines"
 

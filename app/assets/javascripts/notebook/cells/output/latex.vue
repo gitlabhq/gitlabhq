@@ -1,4 +1,5 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import 'mathjax/es5/tex-svg';
 import Prompt from '../prompt.vue';
 
@@ -6,6 +7,9 @@ export default {
   name: 'LatexOutput',
   components: {
     Prompt,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     count: {
@@ -33,13 +37,16 @@ export default {
       return svg.outerHTML;
     },
   },
+  safeHtmlConfig: {
+    // to support SVGs and custom tags for mathjax
+    ADD_TAGS: ['use', 'mjx-container', 'mjx-tool', 'mjx-status', 'mjx-tip'],
+  },
 };
 </script>
 
 <template>
   <div class="output">
     <prompt type="Out" :count="count" :show-output="index === 0" />
-    <!-- eslint-disable -->
-    <div ref="maths" v-html="code"></div>
+    <div ref="maths" v-safe-html:[$options.safeHtmlConfig]="code"></div>
   </div>
 </template>

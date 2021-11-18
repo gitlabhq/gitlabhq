@@ -3278,6 +3278,8 @@ RSpec.describe API::MergeRequests do
 
       context 'when skip_ci parameter is set' do
         it 'enqueues a rebase of the merge request with skip_ci flag set' do
+          allow(RebaseWorker).to receive(:with_status).and_return(RebaseWorker)
+
           expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, user.id, true).and_call_original
 
           Sidekiq::Testing.fake! do

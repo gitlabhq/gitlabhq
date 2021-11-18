@@ -23,7 +23,7 @@ load_performance:
     reports:
       load_performance: load-performance.json
   rules:
-    - if: '$CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == ""'
+    - if: '($CI_KUBERNETES_ACTIVE == null || $CI_KUBERNETES_ACTIVE == "") && ($KUBECONFIG == null || $KUBECONFIG == "")'
       when: never
     - if: '$LOAD_PERFORMANCE_DISABLED'
       when: never

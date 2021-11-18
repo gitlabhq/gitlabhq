@@ -1,3 +1,4 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import DatePicker from '~/vue_shared/components/pikaday.vue';
 import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
@@ -5,14 +6,8 @@ import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 describe('SidebarDatePicker', () => {
   let wrapper;
 
-  const mountComponent = (propsData = {}, data = {}) => {
-    if (wrapper) {
-      throw new Error('tried to call mountComponent without d');
-    }
+  const createComponent = (propsData = {}, data = {}) => {
     wrapper = mount(SidebarDatePicker, {
-      stubs: {
-        DatePicker: true,
-      },
       propsData,
       data: () => data,
     });
@@ -20,87 +15,93 @@ describe('SidebarDatePicker', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
-  it('should emit toggleCollapse when collapsed toggle sidebar is clicked', () => {
-    mountComponent();
+  const findDatePicker = () => wrapper.findComponent(DatePicker);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEditButton = () => wrapper.find('.title .btn-blank');
+  const findRemoveButton = () => wrapper.find('.value-content .btn-blank');
+  const findSidebarToggle = () => wrapper.find('.title .gutter-toggle');
+  const findValueContent = () => wrapper.find('.value-content');
 
-    wrapper.find('.issuable-sidebar-header .gutter-toggle').element.click();
+  it('should emit toggleCollapse when collapsed toggle sidebar is clicked', () => {
+    createComponent();
+
+    wrapper.find('.issuable-sidebar-header .gutter-toggle').trigger('click');
 
     expect(wrapper.emitted('toggleCollapse')).toEqual([[]]);
   });
 
   it('should render collapsed-calendar-icon', () => {
-    mountComponent();
+    createComponent();
 
-    expect(wrapper.find('.sidebar-collapsed-icon').element).toBeDefined();
+    expect(wrapper.find('.sidebar-collapsed-icon').exists()).toBe(true);
   });
 
   it('should render value when not editing', () => {
-    mountComponent();
+    createComponent();
 
-    expect(wrapper.find('.value-content').element).toBeDefined();
+    expect(findValueContent().exists()).toBe(true);
   });
 
   it('should render None if there is no selectedDate', () => {
-    mountComponent();
+    createComponent();
 
-    expect(wrapper.find('.value-content span').text().trim()).toEqual('None');
+    expect(findValueContent().text()).toBe('None');
   });
 
   it('should render date-picker when editing', () => {
-    mountComponent({}, { editing: true });
+    createComponent({}, { editing: true });
 
-    expect(wrapper.find(DatePicker).element).toBeDefined();
+    expect(findDatePicker().exists()).toBe(true);
   });
 
   it('should render label', () => {
     const label = 'label';
-    mountComponent({ label });
-    expect(wrapper.find('.title').text().trim()).toEqual(label);
+    createComponent({ label });
+    expect(wrapper.find('.title').text()).toBe(label);
   });
 
   it('should render loading-icon when isLoading', () => {
-    mountComponent({ isLoading: true });
-    expect(wrapper.find('.gl-spinner').element).toBeDefined();
+    createComponent({ isLoading: true });
+    expect(findLoadingIcon().exists()).toBe(true);
   });
 
   describe('editable', () => {
     beforeEach(() => {
-      mountComponent({ editable: true });
+      createComponent({ editable: true });
     });
 
     it('should render edit button', () => {
-      expect(wrapper.find('.title .btn-blank').text().trim()).toEqual('Edit');
+      expect(findEditButton().text()).toBe('Edit');
     });
 
     it('should enable editing when edit button is clicked', async () => {
-      wrapper.find('.title .btn-blank').element.click();
+      findEditButton().trigger('click');
 
       await wrapper.vm.$nextTick();
 
-      expect(wrapper.vm.editing).toEqual(true);
+      expect(wrapper.vm.editing).toBe(true);
     });
   });
 
   it('should render date if selectedDate', () => {
-    mountComponent({ selectedDate: new Date('07/07/2017') });
+    createComponent({ selectedDate: new Date('07/07/2017') });
 
-    expect(wrapper.find('.value-content strong').text().trim()).toEqual('Jul 7, 2017');
+    expect(wrapper.find('.value-content strong').text()).toBe('Jul 7, 2017');
   });
 
   describe('selectedDate and editable', () => {
     beforeEach(() => {
-      mountComponent({ selectedDate: new Date('07/07/2017'), editable: true });
+      createComponent({ selectedDate: new Date('07/07/2017'), editable: true });
     });
 
     it('should render remove button if selectedDate and editable', () => {
-      expect(wrapper.find('.value-content .btn-blank').text().trim()).toEqual('remove');
+      expect(findRemoveButton().text()).toBe('remove');
     });
 
     it('should emit saveDate with null when remove button is clicked', () => {
-      wrapper.find('.value-content .btn-blank').element.click();
+      findRemoveButton().trigger('click');
 
       expect(wrapper.emitted('saveDate')).toEqual([[null]]);
     });
@@ -108,15 +109,15 @@ describe('SidebarDatePicker', () => {
 
   describe('showToggleSidebar', () => {
     beforeEach(() => {
-      mountComponent({ showToggleSidebar: true });
+      createComponent({ showToggleSidebar: true });
     });
 
     it('should render toggle-sidebar when showToggleSidebar', () => {
-      expect(wrapper.find('.title .gutter-toggle').element).toBeDefined();
+      expect(findSidebarToggle().exists()).toBe(true);
     });
 
     it('should emit toggleCollapse when toggle sidebar is clicked', () => {
-      wrapper.find('.title .gutter-toggle').element.click();
+      findSidebarToggle().trigger('click');
 
       expect(wrapper.emitted('toggleCollapse')).toEqual([[]]);
     });

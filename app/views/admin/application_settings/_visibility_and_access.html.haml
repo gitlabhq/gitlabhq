@@ -1,13 +1,11 @@
-= form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-visibility-settings'), html: { class: 'fieldset-form', id: 'visibility-settings' } do |f|
+= gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-visibility-settings'), html: { class: 'fieldset-form', id: 'visibility-settings' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    = render 'shared/default_branch_protection', f: f, selected_level: @application_setting.default_branch_protection
+    = render 'shared/default_branch_protection', f: f
     = render_if_exists 'admin/application_settings/group_owners_can_manage_default_branch_protection_setting', form: f
 
-    .form-group
-      = f.label s_('ProjectCreationLevel|Default project creation protection'), class: 'label-bold'
-      = f.select :default_project_creation, options_for_select(Gitlab::Access.project_creation_options, @application_setting.default_project_creation), {}, class: 'form-control'
+    = render 'shared/project_creation_levels', f: f, method: :default_project_creation, legend: s_('ProjectCreationLevel|Default project creation protection')
     = render_if_exists 'admin/application_settings/default_project_deletion_protection_setting', form: f
     = render_if_exists 'admin/application_settings/default_delayed_project_deletion_setting', form: f
     = render_if_exists 'admin/application_settings/default_project_deletion_adjourned_period_setting', form: f

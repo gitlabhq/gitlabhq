@@ -62,6 +62,7 @@ Click on the service links to see further configuration instructions and details
 | [Unify Circuit](unify_circuit.md)                         | Send notifications about project events to Unify Circuit.                                    | **{dotted-circle}** No |
 | [Webex Teams](webex_teams.md)                             | Receive events notifications.                                                                | **{dotted-circle}** No |
 | [YouTrack](youtrack.md)                                   | Use YouTrack as the issue tracker.                                                           | **{dotted-circle}** No |
+| [ZenTao](zentao.md)                                       | Use ZenTao as the issue tracker.                                                           | **{dotted-circle}** No |
 
 ## Push hooks limit
 

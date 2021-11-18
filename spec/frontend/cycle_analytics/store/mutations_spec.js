@@ -101,6 +101,7 @@ describe('Project Value Stream Analytics mutations', () => {
     ${types.SET_SELECTED_VALUE_STREAM}           | ${selectedValueStream}                                   | ${'selectedValueStream'} | ${selectedValueStream}
     ${types.SET_PAGINATION}                      | ${pagination}                                            | ${'pagination'}          | ${{ ...pagination, sort: PAGINATION_SORT_FIELD_END_EVENT, direction: PAGINATION_SORT_DIRECTION_DESC }}
     ${types.SET_PAGINATION}                      | ${{ ...pagination, sort: 'duration', direction: 'asc' }} | ${'pagination'}          | ${{ ...pagination, sort: 'duration', direction: 'asc' }}
+    ${types.SET_SELECTED_STAGE}                  | ${selectedStage}                                         | ${'selectedStage'}       | ${selectedStage}
     ${types.RECEIVE_VALUE_STREAMS_SUCCESS}       | ${[selectedValueStream]}                                 | ${'valueStreams'}        | ${[selectedValueStream]}
     ${types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS} | ${{ stages: rawValueStreamStages }}                      | ${'stages'}              | ${valueStreamStages}
     ${types.RECEIVE_STAGE_MEDIANS_SUCCESS}       | ${rawStageMedians}                                       | ${'medians'}             | ${formattedStageMedians}

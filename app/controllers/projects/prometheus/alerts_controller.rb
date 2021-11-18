@@ -30,7 +30,11 @@ module Projects
         token = extract_alert_manager_token(request)
         result = notify_service.execute(token)
 
-        head result.http_status
+        if result.success?
+          render json: AlertManagement::AlertSerializer.new.represent(result.payload[:alerts]), code: result.http_status
+        else
+          head result.http_status
+        end
       end
 
       def create

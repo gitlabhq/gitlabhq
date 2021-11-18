@@ -2,7 +2,7 @@
 import { GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   visibilityOptions,
   visibilityLevelDescriptions,
@@ -31,7 +31,7 @@ export default {
     operationsLabel: s__('ProjectSettings|Operations'),
     packagesLabel: s__('ProjectSettings|Packages'),
     pagesLabel: s__('ProjectSettings|Pages'),
-    ciCdLabel: s__('CI/CD'),
+    ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
     requirementsLabel: s__('ProjectSettings|Requirements'),
     securityAndComplianceLabel: s__('ProjectSettings|Security & Compliance'),
@@ -400,6 +400,9 @@ export default {
         ref="project-visibility-settings"
         :help-path="visibilityHelpPath"
         :label="s__('ProjectSettings|Project visibility')"
+        :help-text="
+          s__('ProjectSettings|Manage who can see the project in the public access directory.')
+        "
       >
         <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
           <div class="select-wrapper gl-flex-grow-1">

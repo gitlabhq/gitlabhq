@@ -3361,7 +3361,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
 
     shared_examples 'sending a notification' do
       it 'sends an email', :sidekiq_might_not_need_inline do
-        should_only_email(pipeline.user, kind: :bcc)
+        should_only_email(pipeline.user)
       end
     end
 
@@ -4593,6 +4593,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
         expect(matchers.size).to eq(1)
         expect(matchers.first.build_ids).not_to include(retried_build.id)
       end
+    end
+  end
+
+  describe '#authorized_cluster_agents' do
+    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:agent) { instance_double(Clusters::Agent) }
+    let(:authorization) { instance_double(Clusters::Agents::GroupAuthorization, agent: agent) }
+    let(:finder) { double(execute: [authorization]) }
+
+    it 'retrieves agent records from the finder and caches the result' do
+      expect(Clusters::AgentAuthorizationsFinder).to receive(:new).once
+        .with(pipeline.project)
+        .and_return(finder)
+
+      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent)
+      expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
     end
   end
 end

@@ -1,6 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
@@ -84,7 +85,8 @@ describe('releases/components/tag_field_new', () => {
       beforeEach(() => createComponent());
 
       it('renders a label', () => {
-        expect(findTagNameFormGroup().attributes().label).toBe('Tag name');
+        expect(findTagNameFormGroup().attributes().label).toBe(__('Tag name'));
+        expect(findTagNameFormGroup().props().labelDescription).toBe(__('*Required'));
       });
 
       describe('when the user selects a new tag name', () => {

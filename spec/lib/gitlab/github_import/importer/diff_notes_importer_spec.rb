@@ -19,7 +19,9 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter do
       updated_at: Time.zone.now,
       line: 23,
       start_line: nil,
+      in_reply_to_id: nil,
       id: 1,
+      side: 'RIGHT',
       body: <<~BODY
         Hello World
 

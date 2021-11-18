@@ -1,0 +1,22 @@
+---
+key_path: counts.groups_zentao_active
+name: count_all_groups_zentao_active
+description: Count of groups with active Zentao integrations
+product_section: dev
+product_stage: ecosystem
+product_group: group::integrations
+product_category: integrations
+value_type: number
+status: active
+milestone: "14.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338178
+time_frame: all
+data_source: database
+data_category: Operational
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

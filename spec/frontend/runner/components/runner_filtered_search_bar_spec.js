@@ -5,13 +5,7 @@ import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_
 import { statusTokenConfig } from '~/runner/components/search_tokens/status_token_config';
 import TagToken from '~/runner/components/search_tokens/tag_token.vue';
 import { tagTokenConfig } from '~/runner/components/search_tokens/tag_token_config';
-import { typeTokenConfig } from '~/runner/components/search_tokens/type_token_config';
-import {
-  PARAM_KEY_STATUS,
-  PARAM_KEY_RUNNER_TYPE,
-  PARAM_KEY_TAG,
-  STATUS_ACTIVE,
-} from '~/runner/constants';
+import { PARAM_KEY_STATUS, PARAM_KEY_TAG, STATUS_ACTIVE, INSTANCE_TYPE } from '~/runner/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -31,6 +25,11 @@ describe('RunnerList', () => {
   ];
   const mockActiveRunnersCount = 2;
 
+  const expectToHaveLastEmittedInput = (value) => {
+    const inputs = wrapper.emitted('input');
+    expect(inputs[inputs.length - 1][0]).toEqual(value);
+  };
+
   const createComponent = ({ props = {}, options = {} } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(RunnerFilteredSearchBar, {
@@ -38,6 +37,7 @@ describe('RunnerList', () => {
           namespace: 'runners',
           tokens: [],
           value: {
+            runnerType: null,
             filters: [],
             sort: mockDefaultSort,
           },
@@ -86,18 +86,13 @@ describe('RunnerList', () => {
   it('sets tokens to the filtered search', () => {
     createComponent({
       props: {
-        tokens: [statusTokenConfig, typeTokenConfig, tagTokenConfig],
+        tokens: [statusTokenConfig, tagTokenConfig],
       },
     });
 
     expect(findFilteredSearch().props('tokens')).toEqual([
       expect.objectContaining({
         type: PARAM_KEY_STATUS,
-        token: BaseToken,
-        options: expect.any(Array),
-      }),
-      expect.objectContaining({
-        type: PARAM_KEY_RUNNER_TYPE,
         token: BaseToken,
         options: expect.any(Array),
       }),
@@ -123,6 +118,7 @@ describe('RunnerList', () => {
       createComponent({
         props: {
           value: {
+            runnerType: INSTANCE_TYPE,
             sort: mockOtherSort,
             filters: mockFilters,
           },
@@ -142,30 +138,40 @@ describe('RunnerList', () => {
           .text(),
       ).toEqual('Last contact');
     });
+
+    it('when the user sets a filter, the "search" preserves the other filters', () => {
+      findGlFilteredSearch().vm.$emit('input', mockFilters);
+      findGlFilteredSearch().vm.$emit('submit');
+
+      expectToHaveLastEmittedInput({
+        runnerType: INSTANCE_TYPE,
+        filters: mockFilters,
+        sort: mockOtherSort,
+        pagination: { page: 1 },
+      });
+    });
   });
 
   it('when the user sets a filter, the "search" is emitted with filters', () => {
     findGlFilteredSearch().vm.$emit('input', mockFilters);
     findGlFilteredSearch().vm.$emit('submit');
 
-    expect(wrapper.emitted('input')[0]).toEqual([
-      {
-        filters: mockFilters,
-        sort: mockDefaultSort,
-        pagination: { page: 1 },
-      },
-    ]);
+    expectToHaveLastEmittedInput({
+      runnerType: null,
+      filters: mockFilters,
+      sort: mockDefaultSort,
+      pagination: { page: 1 },
+    });
   });
 
   it('when the user sets a sorting method, the "search" is emitted with the sort', () => {
     findSortOptions().at(1).vm.$emit('click');
 
-    expect(wrapper.emitted('input')[0]).toEqual([
-      {
-        filters: [],
-        sort: mockOtherSort,
-        pagination: { page: 1 },
-      },
-    ]);
+    expectToHaveLastEmittedInput({
+      runnerType: null,
+      filters: [],
+      sort: mockOtherSort,
+      pagination: { page: 1 },
+    });
   });
 });

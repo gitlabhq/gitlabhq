@@ -463,12 +463,25 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'when job has trace' do
+      context 'when job has live trace' do
         let(:job) { create(:ci_build, :running, :trace_live, pipeline: pipeline) }
 
-        it "has_trace is true" do
+        it 'has_trace is true' do
           get_show_json
 
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['has_trace']).to be true
+        end
+      end
+
+      context 'when has live trace and unarchived artifact' do
+        let(:job) { create(:ci_build, :running, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it 'has_trace is true' do
+          get_show_json
+
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['has_trace']).to be true
         end
@@ -631,15 +644,25 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when job has a trace' do
+    context 'when job has a live trace' do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
-      it 'returns a trace' do
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('job/build_trace')
-        expect(json_response['id']).to eq job.id
-        expect(json_response['status']).to eq job.status
-        expect(json_response['lines']).to eq [{ 'content' => [{ 'text' => 'BUILD TRACE' }], 'offset' => 0 }]
+      shared_examples_for 'returns trace' do
+        it 'returns a trace' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/build_trace')
+          expect(json_response['id']).to eq job.id
+          expect(json_response['status']).to eq job.status
+          expect(json_response['lines']).to match_array [{ 'content' => [{ 'text' => 'BUILD TRACE' }], 'offset' => 0 }]
+        end
+      end
+
+      it_behaves_like 'returns trace'
+
+      context 'when job has unarchived artifact' do
+        let(:job) { create(:ci_build, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it_behaves_like 'returns trace'
       end
 
       context 'when job is running' do
@@ -1055,9 +1078,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       post_erase
     end
 
-    context 'when job is erasable' do
-      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
-
+    shared_examples_for 'erases' do
       it 'redirects to the erased job page' do
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: job.id))
@@ -1073,7 +1094,19 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when job is not erasable' do
+    context 'when job is successful and has artifacts' do
+      let(:job) { create(:ci_build, :erasable, :trace_artifact, pipeline: pipeline) }
+
+      it_behaves_like 'erases'
+    end
+
+    context 'when job has live trace and unarchived artifact' do
+      let(:job) { create(:ci_build, :success, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+      it_behaves_like 'erases'
+    end
+
+    context 'when job is erased' do
       let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
 
       it 'returns unprocessable_entity' do
@@ -1165,16 +1198,26 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context "when job has a trace file" do
+    context 'when job has a live trace' do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
-      it 'sends a trace file' do
-        response = subject
+      shared_examples_for 'sends live trace' do
+        it 'sends a trace file' do
+          response = subject
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
-        expect(response.headers["Content-Disposition"]).to match(/^inline/)
-        expect(response.body).to eq("BUILD TRACE")
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
+          expect(response.headers["Content-Disposition"]).to match(/^inline/)
+          expect(response.body).to eq("BUILD TRACE")
+        end
+      end
+
+      it_behaves_like 'sends live trace'
+
+      context 'and when job has unarchived artifact' do
+        let(:job) { create(:ci_build, :trace_live, :unarchived_trace_artifact, pipeline: pipeline) }
+
+        it_behaves_like 'sends live trace'
       end
     end
 

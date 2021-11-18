@@ -28,11 +28,31 @@ functionality of a project.
 
 Adjust your project's name, description, avatar, [default branch](../repository/branches/default.md), and topics:
 
-![general project settings](img/general_settings_v13_11.png)
-
 The project description also partially supports [standard Markdown](../../markdown.md#features-extended-from-standard-markdown).
 You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and
 [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
+
+#### Topics
+
+Use topics to categorize projects and find similar new projects.
+
+To assign topics to a project:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings** > **General**.
+1. Under **Topics**, enter the project topics. Existing popular topics are suggested as you type.
+1. Select **Save changes**.
+
+For GitLab.com, explore popular topics on the [Explore topics page](../working_with_projects.md#explore-topics).
+When you select a topic, you can see relevant projects.
+
+NOTE:
+The assigned topics are visible only to everyone with access to the project,
+but everyone can see which topics exist at all on the GitLab instance.
+Do not include sensitive information in the name of a topic.
+
+If you're an instance administrator, see also
+[Administering topics](../../admin_area/index.md#administering-topics).
 
 #### Compliance frameworks **(PREMIUM)**
 
@@ -157,7 +177,9 @@ audit trail:
 include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
   project: '$CI_PROJECT_PATH'
   file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME'  # Must be defined or MR pipelines always use the use default branch.
+  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
+  rules:
+    - exists: '$CI_CONFIG_PATH'
 ```
 
 ##### Ensure compliance jobs are always run
@@ -236,7 +258,7 @@ Use the switches to enable or disable the following features:
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/). |
-| **Operations**                   | ✓                         | Control access to [operations dashboard](../../../operations/index.md). |
+| **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md). |
 
 Some features depend on others:
@@ -293,6 +315,7 @@ Set up your project's merge request settings:
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch).
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
+- Configure [merge commit message template](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Service Desk

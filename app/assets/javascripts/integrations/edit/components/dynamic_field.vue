@@ -62,6 +62,14 @@ export default {
       required: false,
       default: null,
     },
+    /**
+     * The label that is displayed inline with the checkbox.
+     */
+    checkboxLabel: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -152,7 +160,7 @@ export default {
     <template v-if="isCheckbox">
       <input :name="fieldName" type="hidden" :value="model || false" />
       <gl-form-checkbox :id="fieldId" v-model="model" :disabled="isInheriting">
-        {{ humanizedTitle }}
+        {{ checkboxLabel || humanizedTitle }}
       </gl-form-checkbox>
     </template>
     <template v-else-if="isSelect">

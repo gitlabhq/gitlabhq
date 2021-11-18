@@ -7,23 +7,21 @@ type: howto
 
 # Geo database replication **(PREMIUM SELF)**
 
-NOTE:
-If your GitLab installation uses external (not managed by Omnibus) PostgreSQL
-instances, the Omnibus roles are unable to perform all necessary
-configuration steps. In this case,
-[follow the Geo with external PostgreSQL instances document instead](external_database.md).
+This document describes the minimal required steps to replicate your primary
+GitLab database to a secondary node's database. You may have to change some
+values, based on attributes including your database's setup and size.
 
 NOTE:
+If your GitLab installation uses external (not managed by Omnibus GitLab)
+PostgreSQL instances, the Omnibus roles cannot perform all necessary
+configuration steps. In this case, use the [Geo with external PostgreSQL instances](external_database.md)
+process instead.
+
 The stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
+Before you attempt the steps in this stage, [complete all prior stages](../setup/index.md#using-omnibus-gitlab).
 
-This document describes the minimal steps you have to take to replicate your
-**primary** GitLab database to a **secondary** node's database. You may have to
-change some values, based on attributes including your database's setup and
-size.
-
-You are encouraged to first read through all the steps before executing them
-in your testing/production environment.
+Be sure to read and review all of these steps before you execute them in your
+testing or production environments.
 
 ## Single instance database replication
 
@@ -214,7 +212,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ## - Prevents automatic upgrade of Postgres since it requires downtime of
    ##   streaming replication to Geo secondary sites
    ## - Enables standard single-node GitLab services like NGINX, Puma, Redis,
-   ##   Sidekiq, etc. If you are segregating services, then you will need to
+   ##   or Sidekiq. If you are segregating services, then you will need to
    ##   explicitly disable unwanted services.
    ##
    roles(['geo_primary_role'])
@@ -690,8 +688,8 @@ could do it with [HAProxy](https://www.haproxy.org/).
 The following IPs and names are used as an example:
 
 - `10.6.0.21`: Patroni 1 (`patroni1.internal`)
-- `10.6.0.21`: Patroni 2 (`patroni2.internal`)
-- `10.6.0.22`: Patroni 3 (`patroni3.internal`)
+- `10.6.0.22`: Patroni 2 (`patroni2.internal`)
+- `10.6.0.23`: Patroni 3 (`patroni3.internal`)
 
 ```plaintext
 global
@@ -716,7 +714,7 @@ backend postgresql
 
     server patroni1.internal 10.6.0.21:5432 maxconn 100 check port 8008
     server patroni2.internal 10.6.0.22:5432 maxconn 100 check port 8008
-    server patroni3.internal 10.6.0.23.195:5432 maxconn 100 check port 8008
+    server patroni3.internal 10.6.0.23:5432 maxconn 100 check port 8008
 ```
 
 Refer to your preferred Load Balancer's documentation for further guidance.

@@ -31,7 +31,10 @@ module API
           expose :wiki_size
           expose :lfs_objects_size
           expose :build_artifacts_size, as: :job_artifacts_size
+          expose :pipeline_artifacts_size
+          expose :packages_size
           expose :snippets_size
+          expose :uploads_size
         end
       end
     end

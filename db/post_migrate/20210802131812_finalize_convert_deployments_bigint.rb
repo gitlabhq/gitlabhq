@@ -35,7 +35,7 @@ class FinalizeConvertDeploymentsBigint < ActiveRecord::Migration[6.1]
       execute "ALTER TABLE #{TABLE_NAME} RENAME COLUMN #{quote_column_name(COLUMN_NAME_BIGINT)} TO #{quote_column_name(COLUMN_NAME)}"
       execute "ALTER TABLE #{TABLE_NAME} RENAME COLUMN #{quote_column_name(temp_name)} TO #{quote_column_name(COLUMN_NAME_BIGINT)}"
 
-      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME).name(COLUMN_NAME, COLUMN_NAME_BIGINT)
+      function_name = Gitlab::Database::UnidirectionalCopyTrigger.on_table(TABLE_NAME, connection: connection).name(COLUMN_NAME, COLUMN_NAME_BIGINT)
       execute "ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL"
 
       execute "DROP INDEX #{old_index_name}"

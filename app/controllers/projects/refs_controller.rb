@@ -12,6 +12,7 @@ class Projects::RefsController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   feature_category :source_code_management
+  urgency :low, [:switch, :logs_tree]
 
   def switch
     respond_to do |format|

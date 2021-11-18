@@ -33,8 +33,7 @@ module Gitlab
             report_data
           rescue JSON::ParserError
             raise SecurityReportParserError, 'JSON parsing failed'
-          rescue StandardError => e
-            Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+          rescue StandardError
             raise SecurityReportParserError, "#{report.type} security report parsing failed"
           end
 
@@ -115,7 +114,7 @@ module Gitlab
                 flags: flags,
                 links: links,
                 remediations: remediations,
-                raw_metadata: data.to_json,
+                original_data: data,
                 metadata_version: report_version,
                 details: data['details'] || {},
                 signatures: signatures,

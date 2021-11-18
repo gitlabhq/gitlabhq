@@ -24,11 +24,17 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     set_index_vars
   end
 
+  def show
+    @created = get_created_session
+  end
+
   def create
     @application = Applications::CreateService.new(current_user, application_params).execute(request)
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
+      set_created_session
 
       redirect_to oauth_application_url(@application)
     else

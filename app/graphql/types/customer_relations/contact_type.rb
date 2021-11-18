@@ -5,7 +5,7 @@ module Types
     class ContactType < BaseObject
       graphql_name 'CustomerRelationsContact'
 
-      authorize :read_contact
+      authorize :read_crm_contact
 
       field :id,
             GraphQL::Types::ID,

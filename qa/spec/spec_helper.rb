@@ -27,13 +27,23 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::TestStatsFormatter if QA::Runtime::Env.export_metrics?
 
-  config.before do |example|
+  config.prepend_before do |example|
     QA::Runtime::Logger.debug("\nStarting test: #{example.full_description}\n")
+
+    # Reset fabrication counters tracked in resource base
+    Thread.current[:api_fabrication] = 0
+    Thread.current[:browser_ui_fabrication] = 0
   end
 
   config.after do
     # If a .netrc file was created during the test, delete it so that subsequent tests don't try to use the same logins
     QA::Git::Repository.new.delete_netrc
+  end
+
+  # Add fabrication time to spec metadata
+  config.append_after do |example|
+    example.metadata[:api_fabrication] = Thread.current[:api_fabrication]
+    example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
   end
 
   config.after(:context) do

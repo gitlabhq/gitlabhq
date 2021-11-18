@@ -1,0 +1,9 @@
+- remote = local_assigns.fetch(:remote, false)
+
+- if @topics.empty?
+  = render 'shared/empty_states/topics'
+- else
+  .row.gl-mt-3
+    = render partial: 'shared/topics/topic', collection: @topics
+
+  = paginate_collection @topics, remote: remote

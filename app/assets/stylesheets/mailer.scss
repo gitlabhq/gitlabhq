@@ -143,6 +143,10 @@ table.content {
     line-height: 1.4;
     padding: 15px 5px;
     text-align: center;
+
+    ul.list-style-position-inside {
+      list-style-position: inside;
+    }
   }
 
   td.mailer-align-left {

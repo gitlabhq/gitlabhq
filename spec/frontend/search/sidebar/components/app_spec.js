@@ -1,13 +1,13 @@
 import { GlButton, GlLink } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
 import StatusFilter from '~/search/sidebar/components/status_filter.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
+Vue.use(Vuex);
 
 describe('GlobalSearchSidebar', () => {
   let wrapper;
@@ -20,28 +20,26 @@ describe('GlobalSearchSidebar', () => {
   const createComponent = (initialState) => {
     const store = new Vuex.Store({
       state: {
-        query: MOCK_QUERY,
+        urlQuery: MOCK_QUERY,
         ...initialState,
       },
       actions: actionSpies,
     });
 
     wrapper = shallowMount(GlobalSearchSidebar, {
-      localVue,
       store,
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   const findSidebarForm = () => wrapper.find('form');
-  const findStatusFilter = () => wrapper.find(StatusFilter);
-  const findConfidentialityFilter = () => wrapper.find(ConfidentialityFilter);
-  const findApplyButton = () => wrapper.find(GlButton);
-  const findResetLinkButton = () => wrapper.find(GlLink);
+  const findStatusFilter = () => wrapper.findComponent(StatusFilter);
+  const findConfidentialityFilter = () => wrapper.findComponent(ConfidentialityFilter);
+  const findApplyButton = () => wrapper.findComponent(GlButton);
+  const findResetLinkButton = () => wrapper.findComponent(GlLink);
 
   describe('template', () => {
     beforeEach(() => {
@@ -61,10 +59,32 @@ describe('GlobalSearchSidebar', () => {
     });
   });
 
+  describe('ApplyButton', () => {
+    describe('when sidebarDirty is false', () => {
+      beforeEach(() => {
+        createComponent({ sidebarDirty: false });
+      });
+
+      it('disables the button', () => {
+        expect(findApplyButton().attributes('disabled')).toBe('true');
+      });
+    });
+
+    describe('when sidebarDirty is true', () => {
+      beforeEach(() => {
+        createComponent({ sidebarDirty: true });
+      });
+
+      it('enables the button', () => {
+        expect(findApplyButton().attributes('disabled')).toBe(undefined);
+      });
+    });
+  });
+
   describe('ResetLinkButton', () => {
     describe('with no filter selected', () => {
       beforeEach(() => {
-        createComponent({ query: {} });
+        createComponent({ urlQuery: {} });
       });
 
       it('does not render', () => {
@@ -74,10 +94,20 @@ describe('GlobalSearchSidebar', () => {
 
     describe('with filter selected', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({ urlQuery: MOCK_QUERY });
       });
 
-      it('does render when a filter selected', () => {
+      it('does render', () => {
+        expect(findResetLinkButton().exists()).toBe(true);
+      });
+    });
+
+    describe('with filter selected and user updated query back to default', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: MOCK_QUERY, query: {} });
+      });
+
+      it('does render', () => {
         expect(findResetLinkButton().exists()).toBe(true);
       });
     });

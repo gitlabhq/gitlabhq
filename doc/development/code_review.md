@@ -152,7 +152,7 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 1. For the code that this change impacts, I believe that the automated tests ([Testing Guide](testing_guide/index.md)) validate functionality that is highly important to users (including consideration of [all test levels](testing_guide/testing_levels.md)).
 1. If the existing automated tests do not cover the above functionality, I have added the necessary additional tests or added an issue to describe the automation testing gap and linked it to this MR.
 1. I have considered the technical aspects of this change's impact on GitLab.com hosted customers and self-managed customers.
-1. I have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~frontend`, `~backend`, and `~database` labels accordingly.
+1. I have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
 1. I have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
 1. I have confirmed that this change is [backwards compatible across updates](multi_version_compatibility.md), or I have decided that this does not apply.
 1. I have properly separated EE content from FOSS, or this MR is FOSS only.

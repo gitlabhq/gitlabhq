@@ -12,6 +12,7 @@ export default class TaskList {
     this.lockVersion = options.lockVersion;
     this.taskListContainerSelector = `${this.selector} .js-task-list-container`;
     this.updateHandler = this.update.bind(this);
+    this.onUpdate = options.onUpdate || (() => {});
     this.onSuccess = options.onSuccess || (() => {});
     this.onError =
       options.onError ||
@@ -96,6 +97,7 @@ export default class TaskList {
       },
     };
 
+    this.onUpdate();
     this.disableTaskListItems(e);
 
     return axios

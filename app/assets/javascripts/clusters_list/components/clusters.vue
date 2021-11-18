@@ -14,6 +14,7 @@ import { __, sprintf } from '~/locale';
 import { CLUSTER_TYPES, STATUSES } from '../constants';
 import AncestorNotice from './ancestor_notice.vue';
 import NodeErrorHelpText from './node_error_help_text.vue';
+import ClustersEmptyState from './clusters_empty_state.vue';
 
 export default {
   nodeMemoryText: __('%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)'),
@@ -28,9 +29,22 @@ export default {
     GlSprintf,
     GlTable,
     NodeErrorHelpText,
+    ClustersEmptyState,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    isChildComponent: {
+      default: false,
+      required: false,
+      type: Boolean,
+    },
+    limit: {
+      default: null,
+      required: false,
+      type: Number,
+    },
   },
   computed: {
     ...mapState([
@@ -40,7 +54,7 @@ export default {
       'loadingNodes',
       'page',
       'providers',
-      'totalCulsters',
+      'totalClusters',
     ]),
     contentAlignClasses() {
       return 'gl-display-flex gl-align-items-center gl-justify-content-end gl-justify-content-md-start';
@@ -55,43 +69,57 @@ export default {
       },
     },
     fields() {
+      const tdClass = 'gl-py-5!';
       return [
         {
           key: 'name',
           label: __('Kubernetes cluster'),
+          tdClass,
         },
         {
           key: 'environment_scope',
           label: __('Environment scope'),
+          tdClass,
         },
         {
           key: 'node_size',
           label: __('Nodes'),
+          tdClass,
         },
         {
           key: 'total_cpu',
           label: __('Total cores (CPUs)'),
+          tdClass,
         },
         {
           key: 'total_memory',
           label: __('Total memory (GB)'),
+          tdClass,
         },
         {
           key: 'cluster_type',
           label: __('Cluster level'),
+          tdClass,
           formatter: (value) => CLUSTER_TYPES[value],
         },
       ];
     },
-    hasClusters() {
+    hasClustersPerPage() {
       return this.clustersPerPage > 0;
+    },
+    hasClusters() {
+      return this.totalClusters > 0;
     },
   },
   mounted() {
+    if (this.limit) {
+      this.setClustersPerPage(this.limit);
+    }
+
     this.fetchClusters();
   },
   methods: {
-    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage']),
+    ...mapActions(['fetchClusters', 'reportSentryError', 'setPage', 'setClustersPerPage']),
     k8sQuantityToGb(quantity) {
       if (!quantity) {
         return 0;
@@ -196,18 +224,20 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loadingClusters" size="md" class="gl-mt-3" />
+  <gl-loading-icon v-if="loadingClusters" size="md" />
 
   <section v-else>
     <ancestor-notice />
 
     <gl-table
+      v-if="hasClusters"
       :items="clusters"
       :fields="fields"
+      fixed
       stacked="md"
       head-variant="white"
-      thead-class="gl-border-b-solid gl-border-b-1 gl-border-b-gray-100"
-      class="qa-clusters-table"
+      thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
+      class="qa-clusters-table gl-mb-4!"
       data-testid="cluster_list_table"
     >
       <template #cell(name)="{ item }">
@@ -241,7 +271,7 @@ export default {
 
         <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
-        <NodeErrorHelpText
+        <node-error-help-text
           v-else-if="item.kubernetes_errors"
           :class="contentAlignClasses"
           :error-type="item.kubernetes_errors.connection_error"
@@ -262,7 +292,7 @@ export default {
 
         <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
-        <NodeErrorHelpText
+        <node-error-help-text
           v-else-if="item.kubernetes_errors"
           :class="contentAlignClasses"
           :error-type="item.kubernetes_errors.node_connection_error"
@@ -283,7 +313,7 @@ export default {
 
         <gl-skeleton-loading v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
 
-        <NodeErrorHelpText
+        <node-error-help-text
           v-else-if="item.kubernetes_errors"
           :class="contentAlignClasses"
           :error-type="item.kubernetes_errors.metrics_connection_error"
@@ -298,11 +328,13 @@ export default {
       </template>
     </gl-table>
 
+    <clusters-empty-state v-else :is-child-component="isChildComponent" />
+
     <gl-pagination
-      v-if="hasClusters"
+      v-if="hasClustersPerPage && !limit"
       v-model="currentPage"
       :per-page="clustersPerPage"
-      :total-items="totalCulsters"
+      :total-items="totalClusters"
       :prev-text="__('Prev')"
       :next-text="__('Next')"
       align="center"

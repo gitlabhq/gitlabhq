@@ -3,6 +3,7 @@ import { __, s__ } from '~/locale';
 
 import {
   REPORT_TYPE_SAST,
+  REPORT_TYPE_SAST_IAC,
   REPORT_TYPE_DAST,
   REPORT_TYPE_DAST_PROFILES,
   REPORT_TYPE_SECRET_DETECTION,
@@ -16,6 +17,7 @@ import {
 } from '~/vue_shared/security_reports/constants';
 
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
+import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
 
 /**
@@ -29,6 +31,19 @@ export const SAST_HELP_PATH = helpPagePath('user/application_security/sast/index
 export const SAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/sast/index', {
   anchor: 'configuration',
 });
+
+export const SAST_IAC_NAME = __('Infrastructure as Code (IaC) Scanning');
+export const SAST_IAC_SHORT_NAME = s__('ciReport|IaC Scanning');
+export const SAST_IAC_DESCRIPTION = __(
+  'Analyze your infrastructure as code configuration files for known vulnerabilities.',
+);
+export const SAST_IAC_HELP_PATH = helpPagePath('user/application_security/iac_scanning/index');
+export const SAST_IAC_CONFIG_HELP_PATH = helpPagePath(
+  'user/application_security/iac_scanning/index',
+  {
+    anchor: 'configuration',
+  },
+);
 
 export const DAST_NAME = __('Dynamic Application Security Testing (DAST)');
 export const DAST_SHORT_NAME = s__('ciReport|DAST');
@@ -141,6 +156,27 @@ export const securityFeatures = [
     // https://gitlab.com/gitlab-org/gitlab/-/issues/331621
     canEnableByMergeRequest: true,
   },
+  ...(gon?.features?.configureIacScanningViaMr
+    ? [
+        {
+          name: SAST_IAC_NAME,
+          shortName: SAST_IAC_SHORT_NAME,
+          description: SAST_IAC_DESCRIPTION,
+          helpPath: SAST_IAC_HELP_PATH,
+          configurationHelpPath: SAST_IAC_CONFIG_HELP_PATH,
+          type: REPORT_TYPE_SAST_IAC,
+
+          // This field is currently hardcoded because SAST IaC is always available.
+          // It will eventually come from the Backend, the progress is tracked in
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/331622
+          available: true,
+
+          // This field will eventually come from the backend, the progress is
+          // tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/331621
+          canEnableByMergeRequest: true,
+        },
+      ]
+    : []),
   {
     name: DAST_NAME,
     shortName: DAST_SHORT_NAME,
@@ -242,6 +278,21 @@ export const featureToMutationMap = {
       },
     }),
   },
+  ...(gon?.features?.configureIacScanningViaMr
+    ? {
+        [REPORT_TYPE_SAST_IAC]: {
+          mutationId: 'configureSastIac',
+          getMutationPayload: (projectPath) => ({
+            mutation: configureSastIacMutation,
+            variables: {
+              input: {
+                projectPath,
+              },
+            },
+          }),
+        },
+      }
+    : {}),
   [REPORT_TYPE_SECRET_DETECTION]: {
     mutationId: 'configureSecretDetection',
     getMutationPayload: (projectPath) => ({

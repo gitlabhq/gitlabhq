@@ -581,13 +581,16 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
                   )
                 end
 
-                it "returns the new position but drops line_range information" do
+                it "returns the new position" do
                   expect_change_position(
                     old_path: file_name,
                     new_path: file_name,
                     old_line: nil,
                     new_line: 2,
-                    line_range: nil
+                    line_range: {
+                      "start_line_code" => 1,
+                      "end_line_code"   => 2
+                    }
                   )
                 end
               end

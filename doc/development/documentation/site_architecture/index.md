@@ -124,12 +124,12 @@ Every four hours a scheduled pipeline builds and deploys the docs site. The pipe
 fetches the current docs from the main project's main branch, builds it with Nanoc
 and deploys it to <https://docs.gitlab.com>.
 
-If you need to build and deploy the site immediately (must have maintainer level permissions):
+To build and deploy the site immediately (must have the Maintainer role):
 
 1. In [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs), go to **{rocket}** **CI/CD > Schedules**.
 1. For the `Build docs.gitlab.com every 4 hours` scheduled pipeline, click the **play** (**{play}**) button.
 
-Read more about the [deployment process](deployment_process.md).
+Read more about [documentation deployments](deployment_process.md).
 
 ## Using YAML data files
 
@@ -162,6 +162,35 @@ We can then loop over the `versions` array with something like:
 
 Note that the data file must have the `yaml` extension (not `yml`) and that
 we reference the array with a symbol (`:versions`).
+
+## Archived documentation banner
+
+A banner is displayed on archived documentation pages with the text `This is archived documentation for
+GitLab. Go to the latest.` when either:
+
+- The version of the documentation displayed is not the first version entry in `online` in
+  `content/_data/versions.yaml`.
+- The documentation was built from the default branch (`main`).
+
+For example, if the `online` entries for `content/_data/versions.yaml` are:
+
+```yaml
+online:
+  - "14.4"
+  - "14.3"
+  - "14.2"
+```
+
+In this case, the archived documentation banner isn't displayed:
+
+- For 14.4, the docs built from the `14.4` branch. The branch name is the first entry in `online`.
+- For 14.5-pre, the docs built from the default project branch (`main`).
+
+The archived documentation banner is displayed:
+
+- For 14.3.
+- For 14.2.
+- For any other version.
 
 ## Bumping versions of CSS and JavaScript
 

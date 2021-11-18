@@ -103,7 +103,6 @@ Default client accepts two parameters: `resolvers` and `config`.
 - `config` parameter takes an object of configuration settings:
   - `cacheConfig` field accepts an optional object of settings to [customize Apollo cache](https://www.apollographql.com/docs/react/caching/cache-configuration/#configuring-the-cache)
   - `baseUrl` allows us to pass a URL for GraphQL endpoint different from our main endpoint (for example, `${gon.relative_url_root}/api/graphql`)
-  - `assumeImmutableResults` (set to `false` by default) - this setting, when set to `true`, assumes that every single operation on updating Apollo Cache is immutable. It also sets `freezeResults` to `true`, so any attempt on mutating Apollo Cache throws a console warning in development environment. Please ensure you're following the immutability pattern on cache update operations before setting this option to `true`.
   - `fetchPolicy` determines how you want your component to interact with the Apollo cache. Defaults to "cache-first".
 
 ### Multiple client queries for the same object
@@ -179,7 +178,7 @@ with a **new and updated** object.
 
 To facilitate the process of updating the cache and returning the new object we
 use the library [Immer](https://immerjs.github.io/immer/).
-When possible, follow these conventions:
+Please, follow these conventions:
 
 - The updated cache is named `data`.
 - The original cache data is named `sourceData`.
@@ -203,11 +202,6 @@ client.writeQuery({
 
 As shown in the code example by using `produce`, we can perform any kind of direct manipulation of the
 `draftState`. Besides, `immer` guarantees that a new state which includes the changes to `draftState` is generated.
-
-Finally, to verify whether the immutable cache update is working properly, we need to change
-`assumeImmutableResults` to `true` in the default client configuration. See [Apollo Client](#apollo-client) for more information.
-
-If everything is working properly `assumeImmutableResults` should remain set to `true`.
 
 ## Usage in Vue
 
@@ -1106,17 +1100,15 @@ To test the logic of Apollo cache updates, we might want to mock an Apollo Clien
 
 To separate tests with mocked client from 'usual' unit tests, create an additional factory and pass the created `mockApollo` as an option to the `createComponent`-factory. This way we only create Apollo Client instance when it's necessary.
 
-We need to inject `VueApollo` to the Vue local instance and, likewise, it is recommended to call `localVue.use()` in `createMockApolloProvider()` to only load it when it is necessary.
+We need to inject `VueApollo` into the Vue instance by calling `Vue.use(VueApollo)`. This will install `VueApollo` globally for all the tests in the file. It is recommended to call `Vue.use(VueApollo)` just after the imports.
 
 ```javascript
 import VueApollo from 'vue-apollo';
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 
-const localVue = createLocalVue();
+Vue.use(VueApollo);
 
 function createMockApolloProvider() {
-  localVue.use(VueApollo);
-
   return createMockApollo(requestHandlers);
 }
 
@@ -1124,7 +1116,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
   ...
   return shallowMount(..., {
-    localVue,
     apolloProvider: mockApollo,
     ...
   });
@@ -1194,7 +1185,6 @@ describe('Some component', () => {
     const { mockApollo } = options;
 
     return shallowMount(Index, {
-      localVue,
       apolloProvider: mockApollo,
     });
   }
@@ -1281,7 +1271,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
 
   return shallowMount(Index, {
-    localVue,
     apolloProvider: mockApollo,
   });
 }
@@ -1414,7 +1403,6 @@ const createComponentWithApollo = ({ props = {} } = {}) => {
   mockApollo = createMockApollo([], mockResolvers); // resolvers are the second parameter
 
   wrapper = shallowMount(MyComponent, {
-    localVue,
     propsData: {},
     apolloProvider: mockApollo,
     // ...
@@ -1482,7 +1470,6 @@ function createComponent(options = {}) {
   const { mockApollo } = options;
 
   return shallowMount(Index, {
-    localVue,
     apolloProvider: mockApollo,
   });
 }

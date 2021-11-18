@@ -43,7 +43,7 @@ module Gitlab
         private
 
         def current_transaction
-          ::Gitlab::Metrics::Transaction.current
+          ::Gitlab::Metrics::WebTransaction.current || ::Gitlab::Metrics::BackgroundTransaction.current
         end
 
         def add_to_detail_store(start, payload)

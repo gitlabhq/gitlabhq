@@ -90,7 +90,10 @@ RSpec.describe Resolvers::Projects::JiraProjectsResolver do
           end
 
           it 'raises failure error' do
-            expect { resolve_jira_projects }.to raise_error('An error occurred while requesting data from Jira: Some failure. Check your Jira integration configuration and try again.')
+            config_docs_link_url = Rails.application.routes.url_helpers.help_page_path('integration/jira/configure')
+            docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: config_docs_link_url }
+            error_message = 'An error occurred while requesting data from Jira: Some failure. Check your %{docs_link_start}Jira integration configuration</a> and try again.' % { docs_link_start: docs_link_start }
+            expect { resolve_jira_projects }.to raise_error(error_message)
           end
         end
       end

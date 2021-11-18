@@ -9,6 +9,7 @@ module QA
         Project.fabricate! do |resource|
           resource.name = 'project-for-issues'
           resource.description = 'project for adding issues'
+          resource.api_client = api_client
         end
       end
 
@@ -91,6 +92,52 @@ module QA
         auto_paginated_response(
           Runtime::API::Request.new(api_client, api_comments_path, per_page: '100').url,
           attempts: attempts
+        )
+      end
+
+      # Object comparison
+      #
+      # @param [QA::Resource::Issue] other
+      # @return [Boolean]
+      def ==(other)
+        other.is_a?(Issue) && comparable_issue == other.comparable_issue
+      end
+
+      # Override inspect for a better rspec failure diff output
+      #
+      # @return [String]
+      def inspect
+        JSON.pretty_generate(comparable_issue)
+      end
+
+      protected
+
+      # Return subset of fields for comparing issues
+      #
+      # @return [Hash]
+      def comparable_issue
+        reload! if api_response.nil?
+
+        api_resource.slice(
+          :state,
+          :description,
+          :type,
+          :title,
+          :labels,
+          :milestone,
+          :upvotes,
+          :downvotes,
+          :merge_requests_count,
+          :user_notes_count,
+          :due_date,
+          :has_tasks,
+          :task_status,
+          :confidential,
+          :discussion_locked,
+          :issue_type,
+          :task_completion_status,
+          :closed_at,
+          :created_at
         )
       end
     end

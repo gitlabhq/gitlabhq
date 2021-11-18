@@ -5,7 +5,7 @@ module Types
     graphql_name 'ReleaseEvidence'
     description 'Evidence for a release'
 
-    authorize :download_code
+    authorize :read_release_evidence
 
     present_using Releases::EvidencePresenter
 

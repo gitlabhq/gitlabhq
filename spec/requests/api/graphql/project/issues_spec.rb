@@ -429,11 +429,11 @@ RSpec.describe 'getting an issue list for a project' do
     end
 
     it 'avoids N+1 queries' do
-      create(:contact, group_id: group.id, issues: [issue_a])
+      create(:issue_customer_relations_contact, :for_issue, issue: issue_a)
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { clean_state_query }
 
-      create(:contact, group_id: group.id, issues: [issue_a])
+      create(:issue_customer_relations_contact, :for_issue, issue: issue_a)
 
       expect { clean_state_query }.not_to exceed_all_query_limit(control)
     end

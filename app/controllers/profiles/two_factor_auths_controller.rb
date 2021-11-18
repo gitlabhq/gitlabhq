@@ -66,7 +66,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       render 'create'
     else
-      @error = _('Invalid pin code')
+      @error = { message: _('Invalid pin code.') }
       @qr_code = build_qr_code
 
       if Feature.enabled?(:webauthn)
@@ -147,7 +147,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def current_password_required?
-    !current_user.password_automatically_set?
+    !current_user.password_automatically_set? && current_user.allow_password_authentication_for_web?
   end
 
   def build_qr_code

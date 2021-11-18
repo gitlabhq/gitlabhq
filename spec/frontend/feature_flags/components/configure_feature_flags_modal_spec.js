@@ -1,5 +1,6 @@
 import { GlModal, GlSprintf, GlAlert } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Component from '~/feature_flags/components/configure_feature_flags_modal.vue';
 
 describe('Configure Feature Flags Modal', () => {
@@ -20,7 +21,7 @@ describe('Configure Feature Flags Modal', () => {
   };
 
   let wrapper;
-  const factory = (props = {}, { mountFn = shallowMount, ...options } = {}) => {
+  const factory = (props = {}, { mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(Component, {
       provide,
       stubs: { GlSprintf },
@@ -140,11 +141,13 @@ describe('Configure Feature Flags Modal', () => {
 
   describe('has rotate error', () => {
     afterEach(() => wrapper.destroy());
-    beforeEach(factory.bind(null, { hasRotateError: false }));
+    beforeEach(() => {
+      factory({ hasRotateError: true });
+    });
 
     it('should display an error', async () => {
-      expect(wrapper.find('.text-danger')).toExist();
-      expect(wrapper.find('[name="warning"]')).toExist();
+      expect(wrapper.findByTestId('rotate-error').exists()).toBe(true);
+      expect(wrapper.find('[name="warning"]').exists()).toBe(true);
     });
   });
 

@@ -15,7 +15,7 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
       subject
 
       expect(graphql_errors).not_to be_empty
-      expect(graphql_errors).to include(a_hash_including('message' => "The resource that you are attempting to access does not exist or you don't have permission to perform this action"))
+      expect(graphql_errors).to include(a_hash_including('message' => Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR))
       expect(mutation_response).to be_nil
     end
   end

@@ -2,7 +2,6 @@
 stage: Enablement
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: reference
 ---
 
 # Object storage **(FREE SELF)**
@@ -77,7 +76,13 @@ Mattermost. See the [full table for a complete list](#storage-specific-configura
 However, backups can be configured with [server side encryption](../raketasks/backup_restore.md#s3-encrypted-buckets) separately.
 
 Enabling consolidated object storage enables object storage for all object
-types. If you want to use local storage for specific object types, you can
+types. If not all buckets are specified, `sudo gitlab-ctl reconfigure` may fail with the error like:
+
+```plaintext
+Object storage for <object type> must have a bucket specified
+```
+
+If you want to use local storage for specific object types, you can
 [selectively disable object storages](#selectively-disabling-object-storage).
 
 Most types of objects, such as CI artifacts, LFS files, upload
@@ -123,8 +128,8 @@ See the section on [ETag mismatch errors](#etag-mismatch) for more details.
     gitlab_rails['object_store']['objects']['pages']['bucket'] = '<pages>'
     ```
 
-   For GitLab 9.4 or later, if you're using AWS IAM profiles, be sure to omit the
-   AWS access key and secret access key/value pairs. For example:
+   If you're using AWS IAM profiles, omit the AWS access key and secret access
+   key/value pairs. For example:
 
    ```ruby
    gitlab_rails['object_store']['connection'] = {
@@ -558,7 +563,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
 | [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) **(PREMIUM SELF)** | **{check-circle}** Yes |
-| [Pseudonymizer](pseudonymizer.md#configuration) (optional feature) **(ULTIMATE SELF)** | **{dotted-circle}** No |
+| [Pseudonymizer](pseudonymizer.md) (optional feature) | **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [GitLab Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |

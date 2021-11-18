@@ -1,0 +1,15 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+
+mutation updateEpicLabels($input: UpdateEpicInput!) {
+  updateEpic(input: $input) {
+    epic {
+      id
+      labels {
+        nodes {
+          ...Label
+        }
+      }
+    }
+    errors
+  }
+}

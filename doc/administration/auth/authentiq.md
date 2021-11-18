@@ -27,7 +27,7 @@ Authentiq generates a Client ID and the accompanying Client Secret for you to us
    sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
    ```
 
-1. See [Initial OmniAuth Configuration](../../integration/omniauth.md#initial-omniauth-configuration) for initial settings to enable single sign-on and add Authentiq as an OAuth provider.
+1. See [Configure initial settings](../../integration/omniauth.md#configure-initial-settings) for initial settings to enable single sign-on and add Authentiq as an OAuth provider.
 
 1. Add the provider configuration for Authentiq:
 

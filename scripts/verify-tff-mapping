@@ -102,8 +102,8 @@ tests = [
 
   {
     explanation: 'Migration should map to its non-timestamped spec',
-    source: 'db/migrate/20200116175538_update_timestamp_softwarelicensespolicy.rb',
-    expected: ['spec/migrations/update_timestamp_softwarelicensespolicy_spec.rb']
+    source: 'db/migrate/20210818220234_add_default_project_approval_rules_vuln_allowed.rb',
+    expected: ['spec/migrations/add_default_project_approval_rules_vuln_allowed_spec.rb']
   },
 
   {

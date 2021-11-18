@@ -3,7 +3,7 @@ import { EditorContent } from '@tiptap/vue-2';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
-import ContentEditorError from '~/content_editor/components/content_editor_error.vue';
+import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import FormattingBubbleMenu from '~/content_editor/components/formatting_bubble_menu.vue';
@@ -111,10 +111,10 @@ describe('ContentEditor', () => {
     ]);
   });
 
-  it('renders content_editor_error component', () => {
+  it('renders content_editor_alert component', () => {
     createWrapper();
 
-    expect(wrapper.findComponent(ContentEditorError).exists()).toBe(true);
+    expect(wrapper.findComponent(ContentEditorAlert).exists()).toBe(true);
   });
 
   describe('when loading content', () => {

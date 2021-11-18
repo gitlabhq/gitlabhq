@@ -12,6 +12,7 @@ module QA
           view 'app/assets/javascripts/pages/projects/forks/new/components/fork_form.vue' do
             element :fork_namespace_dropdown
             element :fork_project_button
+            element :fork_privacy_button
           end
 
           def fork_project(namespace = Runtime::Namespace.path)
@@ -19,6 +20,7 @@ module QA
               click_element(:fork_namespace_button, name: namespace)
             else
               select_element(:fork_namespace_dropdown, namespace)
+              click_element(:fork_privacy_button, privacy_level: 'public')
               click_element(:fork_project_button)
             end
           end

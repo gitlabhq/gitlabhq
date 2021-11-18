@@ -5,6 +5,8 @@ module Gitlab
     class Config
       module External
         class Context
+          include Gitlab::Utils::StrongMemoize
+
           TimeoutError = Class.new(StandardError)
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables
@@ -20,6 +22,18 @@ module Gitlab
             @execution_deadline = 0
 
             yield self if block_given?
+          end
+
+          def top_level_worktree_paths
+            strong_memoize(:top_level_worktree_paths) do
+              project.repository.tree(sha).blobs.map(&:path)
+            end
+          end
+
+          def all_worktree_paths
+            strong_memoize(:all_worktree_paths) do
+              project.repository.ls_files(sha)
+            end
           end
 
           def mutate(attrs = {})

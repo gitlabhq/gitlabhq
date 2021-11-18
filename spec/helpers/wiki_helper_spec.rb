@@ -8,7 +8,7 @@ RSpec.describe WikiHelper do
 
     it 'sets the title for the show action' do
       expect(helper).to receive(:breadcrumb_title).with(page.human_title)
-      expect(helper).to receive(:wiki_breadcrumb_dropdown_links).with(page.slug)
+      expect(helper).to receive(:wiki_breadcrumb_collapsed_links).with(page.slug)
       expect(helper).to receive(:page_title).with(page.human_title, 'Wiki')
       expect(helper).to receive(:add_to_breadcrumbs).with('Wiki', helper.wiki_path(page.wiki))
 
@@ -17,7 +17,7 @@ RSpec.describe WikiHelper do
 
     it 'sets the title for a custom action' do
       expect(helper).to receive(:breadcrumb_title).with(page.human_title)
-      expect(helper).to receive(:wiki_breadcrumb_dropdown_links).with(page.slug)
+      expect(helper).to receive(:wiki_breadcrumb_collapsed_links).with(page.slug)
       expect(helper).to receive(:page_title).with('Edit', page.human_title, 'Wiki')
       expect(helper).to receive(:add_to_breadcrumbs).with('Wiki', helper.wiki_path(page.wiki))
 
@@ -27,7 +27,7 @@ RSpec.describe WikiHelper do
     it 'sets the title for an unsaved page' do
       expect(page).to receive(:persisted?).and_return(false)
       expect(helper).not_to receive(:breadcrumb_title)
-      expect(helper).not_to receive(:wiki_breadcrumb_dropdown_links)
+      expect(helper).not_to receive(:wiki_breadcrumb_collapsed_links)
       expect(helper).to receive(:page_title).with('Wiki')
       expect(helper).to receive(:add_to_breadcrumbs).with('Wiki', helper.wiki_path(page.wiki))
 

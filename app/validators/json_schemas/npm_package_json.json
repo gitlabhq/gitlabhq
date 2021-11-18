@@ -1,0 +1,26 @@
+{
+  "description": "NPM package json metadata",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "dist": {
+      "type": "object",
+      "properties": {
+        "tarball": { "type": "string" },
+        "shasum": { "type": "string" }
+      },
+      "additionalProperties": true,
+      "required": [
+        "tarball",
+        "shasum"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "required": [
+    "name",
+    "version",
+    "dist"
+  ]
+}

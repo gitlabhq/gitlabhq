@@ -15,6 +15,17 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     it { is_expected.to validate_presence_of(:digest) }
   end
 
+  describe 'scopes' do
+    let_it_be(:manifest_one) { create(:dependency_proxy_manifest) }
+    let_it_be(:manifest_two) { create(:dependency_proxy_manifest) }
+    let_it_be(:manifests) { [manifest_one, manifest_two] }
+    let_it_be(:ids) { manifests.map(&:id) }
+
+    it 'order_id_desc' do
+      expect(described_class.where(id: ids).order_id_desc.to_a).to eq [manifest_two, manifest_one]
+    end
+  end
+
   describe 'file is being stored' do
     subject { create(:dependency_proxy_manifest) }
 
@@ -31,18 +42,14 @@ RSpec.describe DependencyProxy::Manifest, type: :model do
     end
   end
 
-  describe '.find_or_initialize_by_file_name_or_digest' do
+  describe '.find_by_file_name_or_digest' do
     let_it_be(:file_name) { 'foo' }
     let_it_be(:digest) { 'bar' }
 
-    subject { DependencyProxy::Manifest.find_or_initialize_by_file_name_or_digest(file_name: file_name, digest: digest) }
+    subject { DependencyProxy::Manifest.find_by_file_name_or_digest(file_name: file_name, digest: digest) }
 
     context 'no manifest exists' do
-      it 'initializes a manifest' do
-        expect(DependencyProxy::Manifest).to receive(:new).with(file_name: file_name, digest: digest)
-
-        subject
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'manifest exists and matches file_name' do

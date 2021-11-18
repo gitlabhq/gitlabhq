@@ -2,7 +2,14 @@
 
 FactoryBot.define do
   factory :ci_runner_namespace, class: 'Ci::RunnerNamespace' do
-    runner factory: [:ci_runner, :group]
     group
+
+    after(:build) do |runner_namespace, evaluator|
+      unless runner_namespace.runner.present?
+        runner_namespace.runner = build(
+          :ci_runner, :group, runner_namespaces: [runner_namespace]
+        )
+      end
+    end
   end
 end

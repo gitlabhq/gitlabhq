@@ -15,12 +15,12 @@ describe('Text variable component', () => {
     });
   };
 
-  const findInput = () => wrapper.find(GlFormInput);
+  const findInput = () => wrapper.findComponent(GlFormInput);
 
   it('renders a text input when all props are passed', () => {
     createShallowWrapper();
 
-    expect(findInput()).toExist();
+    expect(findInput().exists()).toBe(true);
   });
 
   it('always has a default value', () => {

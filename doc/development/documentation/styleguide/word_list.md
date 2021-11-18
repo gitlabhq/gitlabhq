@@ -259,6 +259,16 @@ Use **box** instead of **field** or **text box**.
 - Do: In the **Variable name** box, enter `my text`.
 - Do not: In the **Variable name** field, enter `my text`.
 
+However, you can make an exception when you are writing a task and you need to refer to all
+of the fields at once. For example:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Complete the fields.
+
+Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+
 ## foo
 
 Do not use **foo** in product documentation. You can use it in our API and contributor documentation, but try to use a clearer and more meaningful example instead.
@@ -454,6 +464,13 @@ Do not use **note that** because it's wordy.
 - Do: You can change the settings.
 - Do not: Note that you can change the settings.
 
+## on
+
+When documenting how to select high-level UI elements, use the word **on**.
+
+- Do: `On the left sidebar...`
+- Do not: `From the left sidebar...` or `In the left sidebar...`
+
 ## once
 
 The word **once** means **one time**. Don't use it to mean **after** or **when**.
@@ -524,8 +541,8 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
 
-Do: Select the jobs you want.
-Do not: Select the job(s) you want.
+- Do: Select the jobs you want.
+- Do not: Select the job(s) you want.
 
 If you can select multiples of something, then write the word as plural.
 
@@ -554,6 +571,10 @@ or collapsing a section, don't include the word **section**.
 
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
+
+## Service Desk
+
+Use title case for **Service Desk**.
 
 ## setup, set up
 

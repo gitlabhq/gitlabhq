@@ -71,10 +71,19 @@ RSpec.describe Emails::Pipelines do
     end
   end
 
+  shared_examples_for 'only accepts a single recipient' do
+    let(:recipient) { ['test@gitlab.com', 'test2@gitlab.com'] }
+
+    it 'raises an ArgumentError' do
+      expect { subject.deliver_now }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '#pipeline_success_email' do
-    subject { Notify.pipeline_success_email(pipeline, pipeline.user.try(:email)) }
+    subject { Notify.pipeline_success_email(pipeline, recipient) }
 
     let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
+    let(:recipient) { pipeline.user.try(:email) }
     let(:ref) { 'master' }
     let(:sha) { project.commit(ref).sha }
 
@@ -93,12 +102,15 @@ RSpec.describe Emails::Pipelines do
         stub_config_setting(email_subject_suffix: email_subject_suffix)
       end
     end
+
+    it_behaves_like 'only accepts a single recipient'
   end
 
   describe '#pipeline_failed_email' do
-    subject { Notify.pipeline_failed_email(pipeline, pipeline.user.try(:email)) }
+    subject { Notify.pipeline_failed_email(pipeline, recipient) }
 
     let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
+    let(:recipient) { pipeline.user.try(:email) }
     let(:ref) { 'master' }
     let(:sha) { project.commit(ref).sha }
 
@@ -106,12 +118,15 @@ RSpec.describe Emails::Pipelines do
       let(:status) { 'Failed' }
       let(:status_text) { "Pipeline ##{pipeline.id} has failed!" }
     end
+
+    it_behaves_like 'only accepts a single recipient'
   end
 
   describe '#pipeline_fixed_email' do
     subject { Notify.pipeline_fixed_email(pipeline, pipeline.user.try(:email)) }
 
     let(:pipeline) { create(:ci_pipeline, project: project, ref: ref, sha: sha) }
+    let(:recipient) { pipeline.user.try(:email) }
     let(:ref) { 'master' }
     let(:sha) { project.commit(ref).sha }
 
@@ -119,5 +134,7 @@ RSpec.describe Emails::Pipelines do
       let(:status) { 'Fixed' }
       let(:status_text) { "Pipeline has been fixed and ##{pipeline.id} has passed!" }
     end
+
+    it_behaves_like 'only accepts a single recipient'
   end
 end

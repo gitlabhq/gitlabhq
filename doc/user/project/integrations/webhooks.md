@@ -40,8 +40,14 @@ including:
 
 ## Group webhooks **(PREMIUM)**
 
-You can configure a webhook for a group to ensure all projects in the group
-receive the same webhook settings.
+You can configure a group webhook, which is triggered by events
+that occur across all projects in the group.
+
+Group webhooks can also be configured to listen for events that are
+specific to a group, including:
+
+- [Group member events](webhook_events.md#group-member-events)
+- [Subgroup events](webhook_events.md#subgroup-events)
 
 ## Configure a webhook
 

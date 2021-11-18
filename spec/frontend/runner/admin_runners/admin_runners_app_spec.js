@@ -10,9 +10,10 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
 import AdminRunnersApp from '~/runner/admin_runners/admin_runners_app.vue';
+import RunnerTypeTabs from '~/runner/components/runner_type_tabs.vue';
 import RunnerFilteredSearchBar from '~/runner/components/runner_filtered_search_bar.vue';
 import RunnerList from '~/runner/components/runner_list.vue';
-import RunnerManualSetupHelp from '~/runner/components/runner_manual_setup_help.vue';
+import RegistrationDropdown from '~/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/runner/components/runner_pagination.vue';
 
 import {
@@ -22,7 +23,6 @@ import {
   DEFAULT_SORT,
   INSTANCE_TYPE,
   PARAM_KEY_STATUS,
-  PARAM_KEY_RUNNER_TYPE,
   PARAM_KEY_TAG,
   STATUS_ACTIVE,
   RUNNER_PAGE_SIZE,
@@ -34,7 +34,11 @@ import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered
 import { runnersData, runnersDataPaginated } from '../mock_data';
 
 const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
-const mockActiveRunnersCount = 2;
+const mockActiveRunnersCount = '2';
+const mockAllRunnersCount = '6';
+const mockInstanceRunnersCount = '3';
+const mockGroupRunnersCount = '2';
+const mockProjectRunnersCount = '1';
 
 jest.mock('~/flash');
 jest.mock('~/runner/sentry_utils');
@@ -50,7 +54,8 @@ describe('AdminRunnersApp', () => {
   let wrapper;
   let mockRunnersQuery;
 
-  const findRunnerManualSetupHelp = () => wrapper.findComponent(RunnerManualSetupHelp);
+  const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
+  const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationPrev = () =>
@@ -66,8 +71,12 @@ describe('AdminRunnersApp', () => {
       localVue,
       apolloProvider: createMockApollo(handlers),
       propsData: {
-        activeRunnersCount: mockActiveRunnersCount,
         registrationToken: mockRegistrationToken,
+        activeRunnersCount: mockActiveRunnersCount,
+        allRunnersCount: mockAllRunnersCount,
+        instanceRunnersCount: mockInstanceRunnersCount,
+        groupRunnersCount: mockGroupRunnersCount,
+        projectRunnersCount: mockProjectRunnersCount,
         ...props,
       },
     });
@@ -86,8 +95,19 @@ describe('AdminRunnersApp', () => {
     wrapper.destroy();
   });
 
+  it('shows the runner tabs with a runner count', async () => {
+    createComponent({ mountFn: mount });
+
+    await waitForPromises();
+
+    expect(findRunnerTypeTabs().text()).toMatchInterpolatedText(
+      `All ${mockAllRunnersCount} Instance ${mockInstanceRunnersCount} Group ${mockGroupRunnersCount} Project ${mockProjectRunnersCount}`,
+    );
+  });
+
   it('shows the runner setup instructions', () => {
-    expect(findRunnerManualSetupHelp().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
+    expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
   });
 
   it('shows the runners list', () => {
@@ -126,10 +146,6 @@ describe('AdminRunnersApp', () => {
         options: expect.any(Array),
       }),
       expect.objectContaining({
-        type: PARAM_KEY_RUNNER_TYPE,
-        options: expect.any(Array),
-      }),
-      expect.objectContaining({
         type: PARAM_KEY_TAG,
         recentTokenValuesStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
@@ -154,9 +170,9 @@ describe('AdminRunnersApp', () => {
 
     it('sets the filters in the search bar', () => {
       expect(findRunnerFilteredSearchBar().props('value')).toEqual({
+        runnerType: INSTANCE_TYPE,
         filters: [
           { type: 'status', value: { data: STATUS_ACTIVE, operator: '=' } },
-          { type: 'runner_type', value: { data: INSTANCE_TYPE, operator: '=' } },
           { type: 'tag', value: { data: 'tag1', operator: '=' } },
         ],
         sort: 'CREATED_DESC',
@@ -178,6 +194,7 @@ describe('AdminRunnersApp', () => {
   describe('when a filter is selected by the user', () => {
     beforeEach(() => {
       findRunnerFilteredSearchBar().vm.$emit('input', {
+        runnerType: null,
         filters: [{ type: PARAM_KEY_STATUS, value: { data: STATUS_ACTIVE, operator: '=' } }],
         sort: CREATED_ASC,
       });

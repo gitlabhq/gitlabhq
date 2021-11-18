@@ -16,7 +16,7 @@ enabling you to see statistics about the resources that Terraform creates,
 modifies, or destroys.
 
 WARNING:
-Like any other job artifact, Terraform Plan data is [viewable by anyone with Guest access](../../permissions.md) to the repository.
+Like any other job artifact, Terraform Plan data is viewable by anyone with the Guest [role](../../permissions.md) on the repository.
 Neither Terraform nor GitLab encrypts the plan file by default. If your Terraform Plan
 includes sensitive data such as passwords, access tokens, or certificates, we strongly
 recommend encrypting plan output or modifying the project visibility settings.
@@ -77,8 +77,7 @@ To manually configure a GitLab Terraform Report artifact:
          terraform: $PLAN_JSON
    ```
 
-   For a full example using the pre-built image, see [Example `.gitlab-ci.yml`
-   file](#example-gitlab-ciyml-file).
+   For a full example using the pre-built image, see [Example `.gitlab-ci.yml` file](#example-gitlab-ciyml-file).
 
    For an example displaying multiple reports, see [`.gitlab-ci.yml` multiple reports file](#multiple-terraform-plan-reports).
 

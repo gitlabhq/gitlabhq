@@ -326,6 +326,7 @@ RSpec.describe IssuesHelper do
         new_issue_path: new_project_issue_path(project, issue: { milestone_id: finder.milestones.first.id }),
         project_import_jira_path: project_import_jira_path(project),
         quick_actions_help_path: help_page_path('user/project/quick_actions'),
+        releases_path: project_releases_path(project, format: :json),
         reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
         rss_path: '#',
         show_new_issue_link: 'true',

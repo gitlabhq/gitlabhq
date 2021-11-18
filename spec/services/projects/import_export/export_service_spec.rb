@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::ImportExport::ExportService do
   describe '#execute' do
-    let!(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
+
     let(:project) { create(:project) }
     let(:shared) { project.import_export_shared }
     let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
@@ -28,7 +29,14 @@ RSpec.describe Projects::ImportExport::ExportService do
     end
 
     it 'saves the models' do
-      expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).and_call_original
+      saver_params = {
+        project: project,
+        current_user: user,
+        shared: shared,
+        params: {},
+        logger: an_instance_of(Gitlab::Export::Logger)
+      }
+      expect(Gitlab::ImportExport::Project::TreeSaver).to receive(:new).with(saver_params).and_call_original
 
       service.execute
     end

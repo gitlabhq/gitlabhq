@@ -174,9 +174,9 @@ module API
     # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ /^\d+$/
-        Namespace.find_by(id: id)
+        Namespace.without_project_namespaces.find_by(id: id)
       else
-        Namespace.find_by_full_path(id)
+        find_namespace_by_path(id)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -186,7 +186,7 @@ module API
     end
 
     def find_namespace_by_path(path)
-      Namespace.find_by_full_path(path)
+      Namespace.without_project_namespaces.find_by_full_path(path)
     end
 
     def find_namespace_by_path!(path)
@@ -488,7 +488,7 @@ module API
     def handle_api_exception(exception)
       if report_exception?(exception)
         define_params_for_grape_middleware
-        Gitlab::ApplicationContext.push(user: current_user)
+        Gitlab::ApplicationContext.push(user: current_user, remote_ip: request.ip)
         Gitlab::ErrorTracking.track_exception(exception)
       end
 
@@ -681,20 +681,27 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
+
       header['Content-Disposition'] = ActionDispatch::Http::ContentDisposition.format(disposition: 'inline', filename: blob.name)
 
       # Let Workhorse examine the content and determine the better content disposition
       header[Gitlab::Workhorse::DETECT_HEADER] = "true"
 
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
+
+      body ''
     end
 
     def send_git_archive(repository, **kwargs)
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
+
+      body ''
     end
 
     def send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
+
+      body ''
     end
 
     # The Grape Error Middleware only has access to `env` but not `params` nor

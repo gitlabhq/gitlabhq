@@ -9,7 +9,7 @@ cmd = ENV['GUARD_CMD'] || (ENV['SPRING'] ? 'spring rspec' : 'bundle exec rspec')
 directories %w(app ee lib rubocop tooling spec)
 
 rspec_context_for = proc do |context_path|
-  OpenStruct.new(to_s: "spec").tap do |rspec|
+  OpenStruct.new(to_s: "spec").tap do |rspec| # rubocop:disable Style/OpenStructUse
     rspec.spec_dir = "#{context_path}spec"
     rspec.spec = ->(m) { Guard::RSpec::Dsl.detect_spec_file_for(rspec, m) }
     rspec.spec_helper = "#{rspec.spec_dir}/spec_helper.rb"
@@ -19,7 +19,7 @@ rspec_context_for = proc do |context_path|
 end
 
 rails_context_for = proc do |context_path, exts|
-  OpenStruct.new.tap do |rails|
+  OpenStruct.new.tap do |rails| # rubocop:disable Style/OpenStructUse
     rails.app_files = %r{^#{context_path}app/(.+)\.rb$}
 
     rails.views = %r{^#{context_path}app/(views/.+/[^/]*\.(?:#{exts}))$}

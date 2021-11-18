@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_migration!('drop_temporary_columns_and_triggers_for_ci_build_trace_chunks')
+require_migration!
 
 RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildTraceChunks do
   let(:ci_build_trace_chunks_table) { table(:ci_build_trace_chunks) }

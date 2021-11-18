@@ -7,10 +7,6 @@ module BulkImports
         include Gitlab::ImportExport::CommandLineUtil
         include Gitlab::Utils::StrongMemoize
 
-        FILE_SIZE_LIMIT = 5.gigabytes
-        ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
-        EXPORT_DOWNLOAD_URL_PATH = "/%{resource}/%{full_path}/export_relations/download?relation=%{relation}"
-
         def initialize(relation:)
           @relation = relation
           @tmp_dir = Dir.mktmpdir
@@ -39,32 +35,18 @@ module BulkImports
         def download_service(tmp_dir, context)
           @download_service ||= BulkImports::FileDownloadService.new(
             configuration: context.configuration,
-            relative_url: relative_resource_url(context),
-            dir: tmp_dir,
-            filename: filename,
-            file_size_limit: FILE_SIZE_LIMIT,
-            allowed_content_types: ALLOWED_CONTENT_TYPES
-          )
-        end
-
-        def decompression_service(tmp_dir)
-          @decompression_service ||= BulkImports::FileDecompressionService.new(
+            relative_url: context.entity.relation_download_url_path(relation),
             dir: tmp_dir,
             filename: filename
           )
         end
 
-        def ndjson_reader(tmp_dir)
-          @ndjson_reader ||= Gitlab::ImportExport::Json::NdjsonReader.new(tmp_dir)
+        def decompression_service(tmp_dir)
+          @decompression_service ||= BulkImports::FileDecompressionService.new(dir: tmp_dir, filename: filename)
         end
 
-        def relative_resource_url(context)
-          strong_memoize(:relative_resource_url) do
-            resource = context.entity.pluralized_name
-            encoded_full_path = context.entity.encoded_source_full_path
-
-            EXPORT_DOWNLOAD_URL_PATH % { resource: resource, full_path: encoded_full_path, relation: relation }
-          end
+        def ndjson_reader(tmp_dir)
+          @ndjson_reader ||= Gitlab::ImportExport::Json::NdjsonReader.new(tmp_dir)
         end
       end
     end

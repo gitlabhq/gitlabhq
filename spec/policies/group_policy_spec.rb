@@ -11,8 +11,8 @@ RSpec.describe GroupPolicy do
 
     it do
       expect_allowed(:read_group)
-      expect_allowed(:read_organization)
-      expect_allowed(:read_contact)
+      expect_allowed(:read_crm_organization)
+      expect_allowed(:read_crm_contact)
       expect_allowed(:read_counts)
       expect_allowed(*read_group_permissions)
       expect_disallowed(:upload_file)
@@ -33,8 +33,8 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
-    it { expect_disallowed(:read_organization) }
-    it { expect_disallowed(:read_contact) }
+    it { expect_disallowed(:read_crm_organization) }
+    it { expect_disallowed(:read_crm_contact) }
     it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
@@ -48,8 +48,8 @@ RSpec.describe GroupPolicy do
     end
 
     it { expect_disallowed(:read_group) }
-    it { expect_disallowed(:read_organization) }
-    it { expect_disallowed(:read_contact) }
+    it { expect_disallowed(:read_crm_organization) }
+    it { expect_disallowed(:read_crm_contact) }
     it { expect_disallowed(:read_counts) }
     it { expect_disallowed(*read_group_permissions) }
   end
@@ -933,8 +933,8 @@ RSpec.describe GroupPolicy do
 
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
-      it { is_expected.to be_allowed(:read_organization) }
-      it { is_expected.to be_allowed(:read_contact) }
+      it { is_expected.to be_allowed(:read_crm_organization) }
+      it { is_expected.to be_allowed(:read_crm_contact) }
       it { is_expected.to be_disallowed(:create_package) }
     end
 
@@ -944,8 +944,8 @@ RSpec.describe GroupPolicy do
       it { is_expected.to be_allowed(:create_package) }
       it { is_expected.to be_allowed(:read_package) }
       it { is_expected.to be_allowed(:read_group) }
-      it { is_expected.to be_allowed(:read_organization) }
-      it { is_expected.to be_allowed(:read_contact) }
+      it { is_expected.to be_allowed(:read_crm_organization) }
+      it { is_expected.to be_allowed(:read_crm_contact) }
       it { is_expected.to be_disallowed(:destroy_package) }
     end
 
@@ -1031,5 +1031,18 @@ RSpec.describe GroupPolicy do
 
       it { is_expected.to be_disallowed(:update_runners_registration_token) }
     end
+  end
+
+  context 'with customer_relations feature flag disabled' do
+    let(:current_user) { owner }
+
+    before do
+      stub_feature_flags(customer_relations: false)
+    end
+
+    it { is_expected.to be_disallowed(:read_crm_contact) }
+    it { is_expected.to be_disallowed(:read_crm_organization) }
+    it { is_expected.to be_disallowed(:admin_crm_contact) }
+    it { is_expected.to be_disallowed(:admin_crm_organization) }
   end
 end

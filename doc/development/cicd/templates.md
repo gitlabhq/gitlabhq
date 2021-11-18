@@ -60,7 +60,7 @@ don't have any other `.gitlab-ci.yml` files.
 When authoring pipeline templates:
 
 - Place any [global keywords](../../ci/yaml/index.md#global-keywords) like `image`
-  or `before_script` in a [`default`](../../ci/yaml/index.md#custom-default-keyword-values)
+  or `before_script` in a [`default`](../../ci/yaml/index.md#default)
   section at the top of the template.
 - Note clearly in the [code comments](#explain-the-template-with-comments) if the
   template is designed to be used with the `includes` keyword in an existing
@@ -77,7 +77,7 @@ other pipeline configuration.
 
 When authoring job templates:
 
-- Do not use [global](../../ci/yaml/index.md#global-keywords) or [`default`](../../ci/yaml/index.md#custom-default-keyword-values)
+- Do not use [global](../../ci/yaml/index.md#global-keywords) or [`default`](../../ci/yaml/index.md#default)
   keywords. When a root `.gitlab-ci.yml` includes a template, global or default keywords
   might be overridden and cause unexpected behavior. If a job template requires a
   specific stage, explain in the code comments that users must manually add the stage

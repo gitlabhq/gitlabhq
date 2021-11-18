@@ -28,6 +28,7 @@ RSpec.describe GitlabSchema.types['Query'] do
       runners
       timelogs
       board_list
+      topics
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

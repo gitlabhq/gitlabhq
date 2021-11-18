@@ -1,4 +1,4 @@
-import { GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlAvatarLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CiIconBadge from '~/vue_shared/components/ci_badge_link.vue';
@@ -18,6 +18,7 @@ describe('Header CI Component', () => {
     },
     time: '2017-05-08T14:57:39.781Z',
     user: {
+      id: 1234,
       web_url: 'path',
       name: 'Foo',
       username: 'foobar',
@@ -29,7 +30,7 @@ describe('Header CI Component', () => {
 
   const findIconBadge = () => wrapper.findComponent(CiIconBadge);
   const findTimeAgo = () => wrapper.findComponent(TimeagoTooltip);
-  const findUserLink = () => wrapper.findComponent(GlLink);
+  const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
   const findActionButtons = () => wrapper.findByTestId('ci-header-action-buttons');
   const findHeaderItemText = () => wrapper.findByTestId('ci-header-item-text');
@@ -64,16 +65,51 @@ describe('Header CI Component', () => {
       expect(findTimeAgo().exists()).toBe(true);
     });
 
-    it('should render user icon and name', () => {
-      expect(findUserLink().text()).toContain(defaultProps.user.name);
-    });
-
     it('should render sidebar toggle button', () => {
       expect(findSidebarToggleBtn().exists()).toBe(true);
     });
 
     it('should not render header action buttons when slot is empty', () => {
       expect(findActionButtons().exists()).toBe(false);
+    });
+  });
+
+  describe('user avatar', () => {
+    beforeEach(() => {
+      createComponent({ itemName: 'Pipeline' });
+    });
+
+    it('contains the username', () => {
+      expect(findUserLink().text()).toContain(defaultProps.user.username);
+    });
+
+    it('has the correct data attributes', () => {
+      expect(findUserLink().attributes()).toMatchObject({
+        'data-user-id': defaultProps.user.id.toString(),
+        'data-username': defaultProps.user.username,
+        'data-name': defaultProps.user.name,
+      });
+    });
+
+    describe('with data from GraphQL', () => {
+      const userId = 1;
+
+      beforeEach(() => {
+        createComponent({
+          itemName: 'Pipeline',
+          user: { ...defaultProps.user, id: `gid://gitlab/User/${1}` },
+        });
+      });
+
+      it('has the correct user id', () => {
+        expect(findUserLink().attributes('data-user-id')).toBe(userId.toString());
+      });
+    });
+
+    describe('with data from REST', () => {
+      it('has the correct user id', () => {
+        expect(findUserLink().attributes('data-user-id')).toBe(defaultProps.user.id.toString());
+      });
     });
   });
 

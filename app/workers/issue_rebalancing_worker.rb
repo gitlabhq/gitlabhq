@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# todo: remove this worker and it's queue definition from all_queues after Issue::RebalancingWorker is released.
+# We want to keep it for one release in case some jobs are already scheduled in the old queue so we need the worker
+# to be available to finish those. All new jobs will be queued into the new queue.
 class IssueRebalancingWorker
   include ApplicationWorker
 
@@ -9,13 +12,14 @@ class IssueRebalancingWorker
 
   idempotent!
   urgency :low
-  feature_category :issue_tracking
+  feature_category :team_planning
   deduplicate :until_executed, including_scheduled: true
 
   def perform(ignore = nil, project_id = nil, root_namespace_id = nil)
     # we need to have exactly one of the project_id and root_namespace_id params be non-nil
     raise ArgumentError, "Expected only one of the params project_id: #{project_id} and root_namespace_id: #{root_namespace_id}" if project_id && root_namespace_id
     return if project_id.nil? && root_namespace_id.nil?
+    return if ::Gitlab::Issues::Rebalancing::State.rebalance_recently_finished?(project_id, root_namespace_id)
 
     # pull the projects collection to be rebalanced either the project if namespace is not a group(i.e. user namesapce)
     # or the root namespace, this also makes the worker backward compatible with previous version where a project_id was

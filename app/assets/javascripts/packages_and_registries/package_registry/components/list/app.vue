@@ -1,33 +1,31 @@
 <script>
-/*
- * The following component has several commented lines, this is because we are refactoring them piece by piece on several mrs
- * For a complete overview of the plan please check: https://gitlab.com/gitlab-org/gitlab/-/issues/330846
- * This work is behind feature flag: https://gitlab.com/gitlab-org/gitlab/-/issues/341136
- */
-// import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { historyReplaceState } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
-import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
-import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import {
   PROJECT_RESOURCE_TYPE,
   GROUP_RESOURCE_TYPE,
-  LIST_QUERY_DEBOUNCE_TIME,
+  GRAPHQL_PAGE_SIZE,
+  DELETE_PACKAGE_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/package_registry/constants';
+import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+
+import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
 import PackageTitle from './package_title.vue';
 import PackageSearch from './package_search.vue';
-// import PackageList from './packages_list.vue';
+import PackageList from './packages_list.vue';
 
 export default {
   components: {
-    // GlEmptyState,
-    // GlLink,
-    // GlSprintf,
-    // PackageList,
+    GlEmptyState,
+    GlLink,
+    GlSprintf,
+    PackageList,
     PackageTitle,
     PackageSearch,
+    DeletePackage,
   },
   inject: [
     'packageHelpUrl',
@@ -41,6 +39,7 @@ export default {
       packages: {},
       sort: '',
       filters: {},
+      mutationLoading: false,
     };
   },
   apollo: {
@@ -52,7 +51,9 @@ export default {
       update(data) {
         return data[this.graphqlResource].packages;
       },
-      debounce: LIST_QUERY_DEBOUNCE_TIME,
+      skip() {
+        return !this.sort;
+      },
     },
   },
   computed: {
@@ -64,10 +65,14 @@ export default {
         groupSort: this.isGroupPage ? this.sort : undefined,
         packageName: this.filters?.packageName,
         packageType: this.filters?.packageType,
+        first: GRAPHQL_PAGE_SIZE,
       };
     },
     graphqlResource() {
       return this.isGroupPage ? GROUP_RESOURCE_TYPE : PROJECT_RESOURCE_TYPE;
+    },
+    pageInfo() {
+      return this.packages?.pageInfo ?? {};
     },
     packagesCount() {
       return this.packages?.count;
@@ -75,10 +80,24 @@ export default {
     hasFilters() {
       return this.filters.packageName && this.filters.packageType;
     },
+    emptySearch() {
+      return !this.filters.packageName && !this.filters.packageType;
+    },
     emptyStateTitle() {
       return this.emptySearch
         ? this.$options.i18n.emptyPageTitle
         : this.$options.i18n.noResultsTitle;
+    },
+    isLoading() {
+      return this.$apollo.queries.packages.loading || this.mutationLoading;
+    },
+    refetchQueriesData() {
+      return [
+        {
+          query: getPackagesQuery,
+          variables: this.queryVariables,
+        },
+      ];
     },
   },
   mounted() {
@@ -99,6 +118,35 @@ export default {
       this.sort = sort;
       this.filters = { ...filters };
     },
+    updateQuery(_, { fetchMoreResult }) {
+      return fetchMoreResult;
+    },
+    fetchNextPage() {
+      const variables = {
+        ...this.queryVariables,
+        first: GRAPHQL_PAGE_SIZE,
+        last: null,
+        after: this.pageInfo?.endCursor,
+      };
+
+      this.$apollo.queries.packages.fetchMore({
+        variables,
+        updateQuery: this.updateQuery,
+      });
+    },
+    fetchPreviousPage() {
+      const variables = {
+        ...this.queryVariables,
+        first: null,
+        last: GRAPHQL_PAGE_SIZE,
+        before: this.pageInfo?.startCursor,
+      };
+
+      this.$apollo.queries.packages.fetchMore({
+        variables,
+        updateQuery: this.updateQuery,
+      });
+    },
   },
   i18n: {
     widenFilters: s__('PackageRegistry|To widen your search, change or remove the filters above.'),
@@ -116,19 +164,35 @@ export default {
     <package-title :help-url="packageHelpUrl" :count="packagesCount" />
     <package-search @update="handleSearchUpdate" />
 
-    <!-- <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">
-      <template #empty-state>
-        <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
-          <template #description>
-            <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
-            <gl-sprintf v-else :message="$options.i18n.noResultsText">
-              <template #noPackagesLink="{ content }">
-                <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+    <delete-package
+      :refetch-queries="refetchQueriesData"
+      show-success-alert
+      @start="mutationLoading = true"
+      @end="mutationLoading = false"
+    >
+      <template #default="{ deletePackage }">
+        <package-list
+          :list="packages.nodes"
+          :is-loading="isLoading"
+          :page-info="pageInfo"
+          @prev-page="fetchPreviousPage"
+          @next-page="fetchNextPage"
+          @package:delete="deletePackage"
+        >
+          <template #empty-state>
+            <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
+              <template #description>
+                <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
+                <gl-sprintf v-else :message="$options.i18n.noResultsText">
+                  <template #noPackagesLink="{ content }">
+                    <gl-link :href="emptyListHelpUrl" target="_blank">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
               </template>
-            </gl-sprintf>
+            </gl-empty-state>
           </template>
-        </gl-empty-state>
+        </package-list>
       </template>
-    </package-list> -->
+    </delete-package>
   </div>
 </template>

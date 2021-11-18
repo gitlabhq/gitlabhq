@@ -24,6 +24,10 @@ RSpec.describe AutoMerge::MergeWhenPipelineSucceedsService do
     project.add_maintainer(user)
   end
 
+  before do
+    allow(MergeWorker).to receive(:with_status).and_return(MergeWorker)
+  end
+
   describe "#available_for?" do
     subject { service.available_for?(mr_merge_if_green_enabled) }
 

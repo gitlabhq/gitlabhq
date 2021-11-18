@@ -154,7 +154,8 @@ module Trigger
         'SECURITY_SOURCES' => Trigger.security? ? 'true' : 'false',
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master',
-        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE']
+        'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE'],
+        'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS']
       }
     end
   end

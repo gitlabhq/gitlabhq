@@ -1,6 +1,6 @@
 ---
-stage: Release
-group: Release
+stage: Verify
+group: Testing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 type: reference
 ---
@@ -98,6 +98,7 @@ The following are example projects that demonstrate Review App configuration:
 
 - [NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx).
 - [OpenShift](https://gitlab.com/gitlab-examples/review-apps-openshift).
+- [HashiCorp Nomad](https://gitlab.com/gitlab-examples/review-apps-nomad).
 
 Other examples of Review Apps:
 

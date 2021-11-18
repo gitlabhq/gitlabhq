@@ -20,10 +20,10 @@
 
 If you are only adding documentation, do not add any of the following labels:
 
-- `~"feature"`
+- `~"type::feature"`
 - `~"frontend"`
 - `~"backend"`
-- `~"bug"`
+- `~"type::bug"`
 - `~"database"`
 
 These labels cause the MR to be added to code verification QA issues.

@@ -1256,28 +1256,38 @@ RSpec.describe Issues::UpdateService, :mailer do
       let(:closed_issuable) { create(:closed_issue, project: project) }
     end
 
-    context 'real-time updates' do
-      using RSpec::Parameterized::TableSyntax
-
+    context 'broadcasting issue assignee updates' do
       let(:update_params) { { assignee_ids: [user2.id] } }
 
-      where(:action_cable_in_app_enabled, :feature_flag_enabled, :should_broadcast) do
-        true  | true  | true
-        true  | false | true
-        false | true  | true
-        false | false | false
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: true)
+        end
+
+        it 'triggers the GraphQL subscription' do
+          expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
+
+          update_issue(update_params)
+        end
+
+        context 'when assignee is not updated' do
+          let(:update_params) { { title: 'Some other title' } }
+
+          it 'does not trigger the GraphQL subscription' do
+            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
+
+            update_issue(update_params)
+          end
+        end
       end
 
-      with_them do
-        it 'broadcasts to the issues channel based on ActionCable and feature flag values' do
-          allow(Gitlab::ActionCable::Config).to receive(:in_app?).and_return(action_cable_in_app_enabled)
-          stub_feature_flags(broadcast_issue_updates: feature_flag_enabled)
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(broadcast_issue_updates: false)
+        end
 
-          if should_broadcast
-            expect(GraphqlTriggers).to receive(:issuable_assignees_updated).with(issue)
-          else
-            expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
-          end
+        it 'does not trigger the GraphQL subscription' do
+          expect(GraphqlTriggers).not_to receive(:issuable_assignees_updated).with(issue)
 
           update_issue(update_params)
         end

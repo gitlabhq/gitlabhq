@@ -9,20 +9,9 @@
     = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
 
 %main.jira-connect-app.gl-px-5.gl-pt-7.gl-mx-auto
-  - if current_user.blank? && @subscriptions.empty?
-    .jira-connect-app-body.gl-px-5.gl-text-center
-      %h2= s_('JiraService|GitLab for Jira Configuration')
-      %p= s_('JiraService|Sign in to GitLab.com to get started.')
+  .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 
-      .gl-mt-7
-        = external_link _('Sign in to GitLab'), jira_connect_users_path, class: "btn gl-button btn-confirm js-jira-connect-sign-in"
-
-      .gl-mt-7
-        %p= s_('Integrations|Note: this integration only works with accounts on GitLab.com (SaaS).')
-  - else
-    .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
-
-  %p.jira-connect-app-body.gl-px-5.gl-mt-7.gl-font-base.gl-text-center
+  %p.jira-connect-app-body.gl-px-5.gl-font-base.gl-text-center.gl-mx-auto
     %strong= s_('Integrations|Browser limitations')
     - browser_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'
     - firefox_link_start = browser_link_start.html_safe % { url: 'https://www.mozilla.org/en-US/firefox/' }

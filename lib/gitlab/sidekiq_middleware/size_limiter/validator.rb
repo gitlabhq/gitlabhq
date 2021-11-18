@@ -55,18 +55,15 @@ module Gitlab
 
         attr_reader :mode, :size_limit, :compression_threshold
 
-        def initialize(
-          worker_class, job,
-          mode: Gitlab::CurrentSettings.sidekiq_job_limiter_mode,
-          compression_threshold: Gitlab::CurrentSettings.sidekiq_job_limiter_compression_threshold_bytes,
-          size_limit: Gitlab::CurrentSettings.sidekiq_job_limiter_limit_bytes
-        )
+        def initialize(worker_class, job)
           @worker_class = worker_class
           @job = job
 
-          set_mode(mode)
-          set_compression_threshold(compression_threshold)
-          set_size_limit(size_limit)
+          current_settings = Gitlab::CurrentSettings.current_application_settings
+
+          @mode = current_settings.sidekiq_job_limiter_mode
+          @compression_threshold = current_settings.sidekiq_job_limiter_compression_threshold_bytes
+          @size_limit = current_settings.sidekiq_job_limiter_limit_bytes
         end
 
         def validate!
@@ -89,30 +86,6 @@ module Gitlab
         end
 
         private
-
-        def set_mode(mode)
-          @mode = (mode || TRACK_MODE).to_s.strip
-          unless MODES.include?(@mode)
-            ::Sidekiq.logger.warn "Invalid Sidekiq size limiter mode: #{@mode}. Fallback to #{TRACK_MODE} mode."
-            @mode = TRACK_MODE
-          end
-        end
-
-        def set_compression_threshold(compression_threshold)
-          @compression_threshold = (compression_threshold || DEFAULT_COMPRESSION_THRESHOLD_BYTES).to_i
-          if @compression_threshold <= 0
-            ::Sidekiq.logger.warn "Invalid Sidekiq size limiter compression threshold: #{@compression_threshold}"
-            @compression_threshold = DEFAULT_COMPRESSION_THRESHOLD_BYTES
-          end
-        end
-
-        def set_size_limit(size_limit)
-          @size_limit = (size_limit || DEFAULT_SIZE_LIMIT).to_i
-          if @size_limit < 0
-            ::Sidekiq.logger.warn "Invalid Sidekiq size limiter limit: #{@size_limit}"
-            @size_limit = DEFAULT_SIZE_LIMIT
-          end
-        end
 
         def exceed_limit_error(job_args)
           ExceedLimitError.new(@worker_class, job_args.bytesize, @size_limit).tap do |exception|

@@ -166,6 +166,7 @@ const LABEL_PRIORITY_ASC_SORT = 'label_priority_asc';
 const POPULARITY_ASC_SORT = 'popularity_asc';
 const WEIGHT_DESC_SORT = 'weight_desc';
 const BLOCKING_ISSUES_DESC_SORT = 'blocking_issues_desc';
+const TITLE_ASC_SORT = 'title_asc';
 const TITLE_DESC_SORT = 'title_desc';
 
 export const urlSortParams = {
@@ -187,7 +188,7 @@ export const urlSortParams = {
   [WEIGHT_ASC]: WEIGHT,
   [WEIGHT_DESC]: WEIGHT_DESC_SORT,
   [BLOCKING_ISSUES_DESC]: BLOCKING_ISSUES_DESC_SORT,
-  [TITLE_ASC]: TITLE,
+  [TITLE_ASC]: TITLE_ASC_SORT,
   [TITLE_DESC]: TITLE_DESC_SORT,
 };
 
@@ -211,6 +212,7 @@ export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
 export const TOKEN_TYPE_MILESTONE = 'milestone';
 export const TOKEN_TYPE_LABEL = 'labels';
 export const TOKEN_TYPE_TYPE = 'type';
+export const TOKEN_TYPE_RELEASE = 'release';
 export const TOKEN_TYPE_MY_REACTION = 'my_reaction_emoji';
 export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_ITERATION = 'iteration';
@@ -271,6 +273,7 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'label_name[]',
         [SPECIAL_FILTER]: 'label_name[]',
+        [ALTERNATIVE_FILTER]: 'label_name',
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[label_name][]',
@@ -280,12 +283,28 @@ export const filters = {
   [TOKEN_TYPE_TYPE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'types',
-      [SPECIAL_FILTER]: 'types',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'type[]',
-        [SPECIAL_FILTER]: 'type[]',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[type][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_RELEASE]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'releaseTag',
+      [SPECIAL_FILTER]: 'releaseTagWildcardId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'release_tag',
+        [SPECIAL_FILTER]: 'release_tag',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[release_tag]',
       },
     },
   },
@@ -298,6 +317,9 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
         [SPECIAL_FILTER]: 'my_reaction_emoji',
+      },
+      [OPERATOR_IS_NOT]: {
+        [NORMAL_FILTER]: 'not[my_reaction_emoji]',
       },
     },
   },

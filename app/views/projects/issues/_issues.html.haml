@@ -1,5 +1,5 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
-= render 'shared/alerts/positioning_disabled'
+= render 'shared/alerts/positioning_disabled' if @sort == 'relative_position'
 
 - if Feature.enabled?(:vue_issuables_list, @project) && !is_project_overview
   - data_endpoint = local_assigns.fetch(:data_endpoint, expose_path(api_v4_projects_issues_path(id: @project.id)))

@@ -172,7 +172,9 @@ test its execution using `CREATE INDEX CONCURRENTLY` in the `#database-lab` Slac
   `gitlab-org/gitlab-foss` (`project_id = 13083`) or the `gitlab-org/gitlab` (`project_id = 278964`)
    projects provide enough data to serve as a good example.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
-  - If your queries belong to a new feature in GitLab.com and thus they don't return data in production, it's suggested to analyze the query and to provide the plan from a local environment.
+  - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
+    - You may analyze the query and to provide the plan from a local environment.
+    - `#database-lab` and [postgres.ai](https://postgres.ai/) both allow updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
   - More information on how to find the number of actual returned records in [Understanding EXPLAIN plans](understanding_explain_plans.md)
 - For query changes, it is best to provide both the SQL queries along with the
   plan _before_ and _after_ the change. This helps spot differences quickly.

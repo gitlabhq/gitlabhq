@@ -3,6 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe JwksController do
+  describe 'Endpoints from the parent Doorkeeper::OpenidConnect::DiscoveryController' do
+    it 'respond successfully' do
+      [
+        "/oauth/discovery/keys",
+        "/.well-known/openid-configuration",
+        "/.well-known/webfinger?resource=#{create(:user).email}"
+      ].each do |endpoint|
+        get endpoint
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
   describe 'GET /-/jwks' do
     let(:ci_jwt_signing_key) { OpenSSL::PKey::RSA.generate(1024) }
     let(:ci_jwk) { ci_jwt_signing_key.to_jwk }

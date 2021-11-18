@@ -6,21 +6,19 @@ RSpec.describe Database::DropDetachedPartitionsWorker do
   describe '#perform' do
     subject { described_class.new.perform }
 
-    let(:monitoring) { instance_double('PartitionMonitoring', report_metrics: nil) }
-
     before do
       allow(Gitlab::Database::Partitioning).to receive(:drop_detached_partitions)
-      allow(Gitlab::Database::Partitioning::PartitionMonitoring).to receive(:new).and_return(monitoring)
+      allow(Gitlab::Database::Partitioning).to receive(:report_metrics)
     end
 
-    it 'delegates to Partitioning.drop_detached_partitions' do
+    it 'drops detached partitions' do
       expect(Gitlab::Database::Partitioning).to receive(:drop_detached_partitions)
 
       subject
     end
 
     it 'reports partition metrics' do
-      expect(monitoring).to receive(:report_metrics)
+      expect(Gitlab::Database::Partitioning).to receive(:report_metrics)
 
       subject
     end

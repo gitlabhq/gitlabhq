@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: counts.kubernetes_agents_with_token
+description: Count of Kubernetes agents with at least one token
+product_section: ops
+product_stage: configure
+product_group: group::configure
+product_category: kubernetes_management
+value_type: number
+status: active
+time_frame: all
+data_source: database
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"

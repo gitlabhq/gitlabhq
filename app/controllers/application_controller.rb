@@ -163,7 +163,8 @@ class ApplicationController < ActionController::Base
 
     payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
     payload[:metadata] = @current_context
-
+    payload[:request_urgency] = urgency&.name
+    payload[:target_duration_s] = urgency&.duration
     logged_user = auth_user
     if logged_user.present?
       payload[:user_id] = logged_user.try(:id)

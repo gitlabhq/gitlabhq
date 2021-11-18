@@ -41,7 +41,6 @@ export const stateAndPropsFromDataset = (dataset = {}) => {
   dataProps.hasMetrics = parseBoolean(dataProps.hasMetrics);
   dataProps.customMetricsAvailable = parseBoolean(dataProps.customMetricsAvailable);
   dataProps.prometheusAlertsAvailable = parseBoolean(dataProps.prometheusAlertsAvailable);
-  dataProps.hasManagedPrometheus = parseBoolean(dataProps.hasManagedPrometheus);
 
   return {
     initState: {

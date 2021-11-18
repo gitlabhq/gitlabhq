@@ -68,6 +68,9 @@ module Types
       field :replace_path, GraphQL::Types::String, null: true,
             description: 'Web path to replace the blob content.'
 
+      field :pipeline_editor_path, GraphQL::Types::String, null: true,
+            description: 'Web path to edit .gitlab-ci.yml file.'
+
       field :file_type, GraphQL::Types::String, null: true,
             description: 'Expected format of the blob based on the extension.'
 

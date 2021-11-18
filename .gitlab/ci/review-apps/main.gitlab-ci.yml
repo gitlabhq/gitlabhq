@@ -35,10 +35,11 @@ review-build-cng:
   extends:
     - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-helm3.5-kubectl1.17
+  resource_group: "review/${CI_COMMIT_REF_NAME}"
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "v5.2.1"
+    GITLAB_HELM_CHART_REF: "v5.4.1"
   environment:
     name: review/${CI_COMMIT_REF_SLUG}${FREQUENCY}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
@@ -51,7 +52,6 @@ review-deploy:
     - .review:rules:review-deploy
   stage: deploy
   needs: ["review-build-cng"]
-  resource_group: "review/${CI_COMMIT_REF_NAME}"
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
@@ -101,6 +101,7 @@ review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
-  stage: post-qa
+  stage: deploy
+  needs: []
   script:
     - delete_k8s_release_namespace

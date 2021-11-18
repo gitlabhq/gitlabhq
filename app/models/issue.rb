@@ -81,7 +81,8 @@ class Issue < ApplicationRecord
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :prometheus_alerts, through: :prometheus_alert_events
-  has_and_belongs_to_many :customer_relations_contacts, join_table: :issue_customer_relations_contacts, class_name: 'CustomerRelations::Contact' # rubocop: disable Rails/HasAndBelongsToMany
+  has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
+  has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
 
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
@@ -203,6 +204,8 @@ class Issue < ApplicationRecord
     before_transition closed: :opened do |issue|
       issue.closed_at = nil
       issue.closed_by = nil
+
+      issue.clear_closure_reason_references
     end
   end
 
@@ -376,6 +379,11 @@ class Issue < ApplicationRecord
 
   def duplicated?
     !duplicated_to_id.nil?
+  end
+
+  def clear_closure_reason_references
+    self.moved_to_id = nil
+    self.duplicated_to_id = nil
   end
 
   def can_move?(user, to_project = nil)

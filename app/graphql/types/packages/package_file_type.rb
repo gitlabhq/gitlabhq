@@ -27,6 +27,8 @@ module Types
         case object.package.package_type
         when 'conan'
           object.conan_file_metadatum
+        when 'helm'
+          object.helm_file_metadatum
         else
           nil
         end

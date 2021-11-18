@@ -96,7 +96,7 @@ second argument:
 
 ```ruby
 class DashboardController < ApplicationController
-  feature_category :issue_tracking, [:issues, :issues_calendar]
+  feature_category :team_planning, [:issues, :issues_calendar]
   feature_category :code_review, [:merge_requests]
 end
 ```
@@ -137,7 +137,7 @@ Grape API endpoints can use the `feature_category` class method, like
 ```ruby
 module API
   class Issues < ::API::Base
-    feature_category :issue_tracking
+    feature_category :team_planning
   end
 end
 ```

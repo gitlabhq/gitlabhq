@@ -1,4 +1,4 @@
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
 export const PACKAGE_TYPE_MAVEN = 'MAVEN';
@@ -59,16 +59,7 @@ export const TRACKING_ACTION_COPY_COMPOSER_REGISTRY_INCLUDE_COMMAND =
 export const TRACKING_ACTION_COPY_COMPOSER_PACKAGE_INCLUDE_COMMAND =
   'copy_composer_package_include_command';
 
-export const TrackingCategories = {
-  [PACKAGE_TYPE_MAVEN]: 'MavenPackages',
-  [PACKAGE_TYPE_NPM]: 'NpmPackages',
-  [PACKAGE_TYPE_CONAN]: 'ConanPackages',
-};
-
 export const SHOW_DELETE_SUCCESS_ALERT = 'showSuccessDeleteAlert';
-export const DELETE_PACKAGE_ERROR_MESSAGE = s__(
-  'PackageRegistry|Something went wrong while deleting the package.',
-);
 export const DELETE_PACKAGE_FILE_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting the package file.',
 );
@@ -78,6 +69,8 @@ export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
 export const FETCH_PACKAGE_DETAILS_ERROR_MESSAGE = s__(
   'PackageRegistry|Failed to load the package data',
 );
+
+export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
 
 export const PACKAGE_ERROR_STATUS = 'ERROR';
 export const PACKAGE_DEFAULT_STATUS = 'DEFAULT';
@@ -92,4 +85,52 @@ export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
 export const PROJECT_RESOURCE_TYPE = 'project';
 export const GROUP_RESOURCE_TYPE = 'group';
-export const LIST_QUERY_DEBOUNCE_TIME = 50;
+export const GRAPHQL_PAGE_SIZE = 20;
+
+export const LIST_KEY_NAME = 'name';
+export const LIST_KEY_PROJECT = 'project_path';
+export const LIST_KEY_VERSION = 'version';
+export const LIST_KEY_PACKAGE_TYPE = 'type';
+export const LIST_KEY_CREATED_AT = 'created_at';
+
+export const LIST_LABEL_NAME = __('Name');
+export const LIST_LABEL_PROJECT = __('Project');
+export const LIST_LABEL_VERSION = __('Version');
+export const LIST_LABEL_PACKAGE_TYPE = __('Type');
+export const LIST_LABEL_CREATED_AT = __('Published');
+
+export const SORT_FIELDS = [
+  {
+    orderBy: LIST_KEY_NAME,
+    label: LIST_LABEL_NAME,
+  },
+  {
+    orderBy: LIST_KEY_PROJECT,
+    label: LIST_LABEL_PROJECT,
+  },
+  {
+    orderBy: LIST_KEY_VERSION,
+    label: LIST_LABEL_VERSION,
+  },
+  {
+    orderBy: LIST_KEY_PACKAGE_TYPE,
+    label: LIST_LABEL_PACKAGE_TYPE,
+  },
+  {
+    orderBy: LIST_KEY_CREATED_AT,
+    label: LIST_LABEL_CREATED_AT,
+  },
+];
+
+export const PACKAGE_TYPES = [
+  s__('PackageRegistry|Composer'),
+  s__('PackageRegistry|Conan'),
+  s__('PackageRegistry|Generic'),
+  s__('PackageRegistry|Maven'),
+  s__('PackageRegistry|npm'),
+  s__('PackageRegistry|NuGet'),
+  s__('PackageRegistry|PyPI'),
+  s__('PackageRegistry|RubyGems'),
+  s__('PackageRegistry|Debian'),
+  s__('PackageRegistry|Helm'),
+];

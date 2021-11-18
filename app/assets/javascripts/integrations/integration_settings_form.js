@@ -1,5 +1,4 @@
 import { delay } from 'lodash';
-import { __, s__ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import axios from '../lib/utils/axios_utils';
 import initForm from './edit';
@@ -10,6 +9,9 @@ import {
   GET_JIRA_ISSUE_TYPES_EVENT,
   TOGGLE_INTEGRATION_EVENT,
   VALIDATE_INTEGRATION_FORM_EVENT,
+  I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
+  I18N_DEFAULT_ERROR_MESSAGE,
+  I18N_SUCCESSFUL_CONNECTION_MESSAGE,
 } from './constants';
 
 export default class IntegrationSettingsForm {
@@ -104,11 +106,7 @@ export default class IntegrationSettingsForm {
     return this.fetchTestSettings(formData)
       .then(
         ({
-          data: {
-            issuetypes,
-            error,
-            message = s__('Integrations|Connection failed. Please check your settings.'),
-          },
+          data: { issuetypes, error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE },
         }) => {
           if (error || !issuetypes?.length) {
             eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
@@ -118,7 +116,7 @@ export default class IntegrationSettingsForm {
           dispatch('receiveJiraIssueTypesSuccess', issuetypes);
         },
       )
-      .catch(({ message = __('Something went wrong on our end.') }) => {
+      .catch(({ message = I18N_DEFAULT_ERROR_MESSAGE }) => {
         dispatch('receiveJiraIssueTypesError', message);
       });
   }
@@ -140,11 +138,11 @@ export default class IntegrationSettingsForm {
           toast(`${data.message} ${data.service_response}`);
         } else {
           this.vue.$store.dispatch('receiveJiraIssueTypesSuccess', data.issuetypes);
-          toast(s__('Integrations|Connection successful.'));
+          toast(I18N_SUCCESSFUL_CONNECTION_MESSAGE);
         }
       })
       .catch(() => {
-        toast(__('Something went wrong on our end.'));
+        toast(I18N_DEFAULT_ERROR_MESSAGE);
       })
       .finally(() => {
         this.vue.$store.dispatch('setIsTesting', false);

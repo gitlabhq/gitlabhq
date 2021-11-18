@@ -62,7 +62,7 @@ module Gitlab
           trace_metadata.update!(remote_checksum: remote_checksum)
 
           unless trace_metadata.remote_checksum_valid?
-            metrics.increment_error_counter(type: :archive_invalid_checksum)
+            metrics.increment_error_counter(error_reason: :archive_invalid_checksum)
           end
         end
 

@@ -33,12 +33,5 @@ RSpec.describe ErrorTracking::Collector::SentryRequestParser do
     context 'plain text sentry request' do
       it_behaves_like 'valid parser'
     end
-
-    context 'gzip encoded sentry request' do
-      let(:headers) { { 'Content-Encoding' => 'gzip' } }
-      let(:body) { Zlib.gzip(raw_event) }
-
-      it_behaves_like 'valid parser'
-    end
   end
 end

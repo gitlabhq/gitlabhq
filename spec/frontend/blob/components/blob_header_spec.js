@@ -3,6 +3,7 @@ import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
 import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
+import TableContents from '~/blob/components/table_contents.vue';
 
 import { Blob } from './mock_data';
 
@@ -43,6 +44,7 @@ describe('Blob Header Default Actions', () => {
 
     it('renders all components', () => {
       createComponent();
+      expect(wrapper.find(TableContents).exists()).toBe(true);
       expect(wrapper.find(ViewerSwitcher).exists()).toBe(true);
       expect(findDefaultActions().exists()).toBe(true);
       expect(wrapper.find(BlobFilepath).exists()).toBe(true);

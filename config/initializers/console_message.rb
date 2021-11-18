@@ -10,8 +10,8 @@ if Gitlab::Runtime.console?
   puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
   puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.version)}"
 
-  if Gitlab::Database.main.exists?
-    puts " #{Gitlab::Database.main.human_adapter_name}:".ljust(justify) + Gitlab::Database.main.version
+  if ApplicationRecord.database.exists?
+    puts " #{ApplicationRecord.database.human_adapter_name}:".ljust(justify) + ApplicationRecord.database.version
 
     Gitlab.ee do
       if Gitlab::Geo.connected? && Gitlab::Geo.enabled?

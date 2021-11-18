@@ -1,0 +1,8 @@
+---
+name: configure_iac_scanning_via_mr
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73155
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/343966
+milestone: '14.5'
+type: development
+group: group::static analysis
+default_enabled: true

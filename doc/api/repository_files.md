@@ -185,7 +185,7 @@ POST /projects/:id/repository/files/:file_path
 ```shell
 curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
                "content": "some content", "commit_message": "create a new file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
@@ -221,7 +221,7 @@ PUT /projects/:id/repository/files/:file_path
 ```shell
 curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "content": "some content", "commit_message": "update file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
@@ -268,7 +268,7 @@ DELETE /projects/:id/repository/files/:file_path
 ```shell
 curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "commit_message": "delete file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```

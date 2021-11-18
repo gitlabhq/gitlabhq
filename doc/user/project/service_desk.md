@@ -86,10 +86,10 @@ To improve your project's security, we recommend the following:
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
-The unique internal email address is visible to project members with Maintainer (or higher)
-[permission level](../permissions.md)
-in your GitLab instance. However, when using an email alias externally, an end user
-(issue creator) cannot see the internal email address displayed in the information note.
+The unique internal email address is visible to project members at least
+the Reporter [role](../permissions.md) in your GitLab instance.
+An external user (issue creator) cannot see the internal email address
+displayed in the information note.
 
 ### Using customized email templates
 
@@ -137,15 +137,23 @@ You can use these placeholders to be automatically replaced in each email:
 
 #### New Service Desk issues
 
-You can select one [issue description template](description_templates.md#create-an-issue-template)
+You can select one [description template](description_templates.md#create-an-issue-template)
 **per project** to be appended to every new Service Desk issue's description.
-Issue description templates should reside in your repository's `.gitlab/issue_templates/` directory.
 
-To use a custom issue template with Service Desk, in your project:
+You can set description templates at various levels:
 
-1. [Create a description template](description_templates.md#create-an-issue-template)
-1. Go to **Settings > General > Service Desk**.
-1. From the dropdown **Template to append to all Service Desk issues**, select your template.
+- The entire [instance](description_templates.md#set-instance-level-description-templates).
+- A specific [group or subgroup](description_templates.md#set-group-level-description-templates).
+- A specific [project](description_templates.md#set-a-default-template-for-merge-requests-and-issues).
+
+The templates are inherited. For example, in a project, you can also access templates set for the instance or the project’s parent groups.
+
+To use a custom description template with Service Desk:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. [Create a description template](description_templates.md#create-an-issue-template).
+1. On the left sidebar, select **Settings > General > Service Desk**.
+1. From the dropdown **Template to append to all Service Desk issues**, search or select your template.
 
 ### Using a custom email display name
 
@@ -156,7 +164,8 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. In a project, go to **Settings > General > Service Desk**.
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General > Service Desk**.
 1. Enter a new name in **Email display name**.
 1. Select **Save Changes**.
 
@@ -166,13 +175,13 @@ To edit the custom email display name:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
 It is possible to customize the email address used by Service Desk. To do this, you must configure
-both a [custom mailbox](#configuring-a-custom-mailbox) and a
+a [custom mailbox](#configuring-a-custom-mailbox). If you want you can also configure a
 [custom suffix](#configuring-a-custom-email-address-suffix).
 
 #### Configuring a custom mailbox
 
 NOTE:
-On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, so you only have to configure the
+On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
 [custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
 
 Using the `service_desk_email` configuration, you can customize the mailbox
@@ -198,7 +207,7 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
   service_desk_email:
     enabled: true
     address: "project_contact+%{key}@example.com"
-    user: "project_support@example.com"
+    user: "project_contact@example.com"
     password: "[REDACTED]"
     host: "imap.gmail.com"
     port: 993
@@ -215,7 +224,7 @@ To configure a custom mailbox for Service Desk with IMAP, add the following snip
   ```ruby
   gitlab_rails['service_desk_email_enabled'] = true
   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
-  gitlab_rails['service_desk_email_email'] = "project_support@gmail.com"
+  gitlab_rails['service_desk_email_email'] = "project_contact@gmail.com"
   gitlab_rails['service_desk_email_password'] = "[REDACTED]"
   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
   gitlab_rails['service_desk_email_idle_timeout'] = 60
@@ -270,6 +279,8 @@ For example, suppose the `mygroup/myproject` project Service Desk settings has t
 
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
 The [incoming email](../../administration/incoming_email.md) address still works.
+
+If you don't configure the custom suffix, the default project identification will be used for identifying the project. You can see that email address in the project settings.
 
 ## Using Service Desk
 
