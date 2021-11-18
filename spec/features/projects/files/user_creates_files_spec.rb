@@ -170,7 +170,7 @@ RSpec.describe 'Projects > Files > User creates files', :js do
       end
 
       it 'shows a message saying the file will be committed in a fork' do
-        message = "A new branch will be created in your fork and a new merge request will be started."
+        message = "GitLab will create a branch in your fork and start a merge request."
 
         expect(page).to have_content(message)
       end

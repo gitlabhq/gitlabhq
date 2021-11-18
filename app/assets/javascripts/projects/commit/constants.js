@@ -11,7 +11,7 @@ export const I18N_MODAL = {
     'ChangeTypeAction|Your changes will be committed to %{branchName} because a merge request is open.',
   ),
   branchInFork: s__(
-    'ChangeTypeAction|A new branch will be created in your fork and a new merge request will be started.',
+    'ChangeTypeAction|GitLab will create a branch in your fork and start a merge request.',
   ),
   newMergeRequest: __('new merge request'),
   actionCancelText: __('Cancel'),

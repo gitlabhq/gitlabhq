@@ -1500,9 +1500,6 @@ msgstr ""
 msgid "A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:"
 msgstr ""
 
-msgid "A new branch will be created in your fork and a new merge request will be started."
-msgstr ""
-
 msgid "A new impersonation token has been created."
 msgstr ""
 
@@ -6519,10 +6516,10 @@ msgstr ""
 msgid "ChangeReviewer|Unassigned"
 msgstr ""
 
-msgid "ChangeTypeAction|A new branch will be created in your fork and a new merge request will be started."
+msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
-msgid "ChangeTypeAction|Cherry-pick"
+msgid "ChangeTypeAction|GitLab will create a branch in your fork and start a merge request."
 msgstr ""
 
 msgid "ChangeTypeAction|Pick into branch"
@@ -15851,6 +15848,9 @@ msgid "GitLab uses %{linkStart}Sidekiq%{linkEnd} to process background jobs"
 msgstr ""
 
 msgid "GitLab version"
+msgstr ""
+
+msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
 
 msgid "GitLab.com"
@@ -37245,6 +37245,9 @@ msgstr ""
 msgid "Upload license"
 msgstr ""
 
+msgid "Upload new file"
+msgstr ""
+
 msgid "Upload object map"
 msgstr ""
 
@@ -41436,6 +41439,9 @@ msgstr ""
 msgid "mrWidget|Merge blocked: all threads must be resolved."
 msgstr ""
 
+msgid "mrWidget|Merge blocked: denied licenses must be removed."
+msgstr ""
+
 msgid "mrWidget|Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
@@ -41572,9 +41578,6 @@ msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or des
 msgstr ""
 
 msgid "mrWidget|What is a merge train?"
-msgstr ""
-
-msgid "mrWidget|You can merge after removing denied licenses"
 msgstr ""
 
 msgid "mrWidget|You can only merge once this merge request is approved."

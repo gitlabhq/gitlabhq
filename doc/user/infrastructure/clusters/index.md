@@ -52,7 +52,7 @@ the Kubernetes Agent model on the [Agent's blueprint documentation](../../../arc
 - [Cluster integrations](../../clusters/integrations.md)
 - [Cluster cost management](../../clusters/cost_management.md)
 - [Cluster environments](../../clusters/environments.md)
-- [Canary Deployments](../../project/canary_deployments.md)
+- [Advanced traffic control with Canary Ingress](../../project/canary_deployments.md#advanced-traffic-control-with-canary-ingress-deprecated)
 - [Serverless](../../project/clusters/serverless/index.md)
 - [Deploy Boards](../../project/deploy_boards.md)
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
