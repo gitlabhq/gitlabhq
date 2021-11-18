@@ -75,6 +75,9 @@ export const i18n = {
   editIssues: __('Edit issues'),
   errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
+  issueRepositioningMessage: __(
+    'Issues are being rebalanced at the moment, so manual reordering is disabled.',
+  ),
   jiraIntegrationMessage: s__(
     'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
   ),

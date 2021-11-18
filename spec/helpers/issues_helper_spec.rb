@@ -302,6 +302,7 @@ RSpec.describe IssuesHelper do
       allow(helper).to receive(:can?).and_return(true)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:import_csv_namespace_project_issues_path).and_return('#')
+      allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
       allow(helper).to receive(:url_for).and_return('#')
 
       expected = {
@@ -318,6 +319,7 @@ RSpec.describe IssuesHelper do
         has_any_issues: project_issues(project).exists?.to_s,
         import_csv_issues_path: '#',
         initial_email: project.new_issuable_address(current_user, 'issue'),
+        is_issue_repositioning_disabled: 'true',
         is_project: 'true',
         is_signed_in: current_user.present?.to_s,
         jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),

@@ -448,7 +448,7 @@ class Project < ApplicationRecord
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :actual_limits, :actual_plan_name, to: :namespace, allow_nil: true
   delegate :allow_merge_on_skipped_pipeline, :allow_merge_on_skipped_pipeline?,
-    :allow_merge_on_skipped_pipeline=, :has_confluence?,
+    :allow_merge_on_skipped_pipeline=, :has_confluence?, :has_shimo?,
     to: :project_setting
   delegate :active?, to: :prometheus_integration, allow_nil: true, prefix: true
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
@@ -1468,7 +1468,9 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    [:shimo]
+    disabled_integrations = []
+    disabled_integrations << 'shimo' unless Feature.enabled?(:shimo_integration, self)
+    disabled_integrations
   end
 
   def find_or_initialize_integration(name)

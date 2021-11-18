@@ -18,10 +18,13 @@ export const extractHrefFromMarkdownLink = (match) => {
 };
 
 export default Link.extend({
-  defaultOptions: {
-    ...Link.options,
-    openOnClick: false,
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      openOnClick: false,
+    };
   },
+
   addInputRules() {
     const markdownLinkSyntaxInputRuleRegExp = /(?:^|\s)\[([\w|\s|-]+)\]\((?<href>.+?)\)$/gm;
     const urlSyntaxRegExp = /(?:^|\s)(?<href>(?:https?:\/\/|www\.)[\S]+)(?:\s|\n)$/gim;

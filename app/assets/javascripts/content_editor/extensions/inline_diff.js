@@ -3,8 +3,10 @@ import { Mark, markInputRule, mergeAttributes } from '@tiptap/core';
 export default Mark.create({
   name: 'inlineDiff',
 
-  defaultOptions: {
-    HTMLAttributes: {},
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
   },
 
   addAttributes() {

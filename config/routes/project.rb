@@ -453,6 +453,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
+
+        namespace :integrations do
+          resource :shimo, only: [:show]
+        end
       end
       # End of the /-/ scope.
 

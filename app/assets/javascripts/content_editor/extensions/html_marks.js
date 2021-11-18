@@ -31,13 +31,12 @@ const attrs = {
 export default marks.map((name) =>
   Mark.create({
     name,
-
     inclusive: false,
-
-    defaultOptions: {
-      HTMLAttributes: {},
+    addOptions() {
+      return {
+        HTMLAttributes: {},
+      };
     },
-
     addAttributes() {
       return (attrs[name] || []).reduce(
         (acc, attr) => ({

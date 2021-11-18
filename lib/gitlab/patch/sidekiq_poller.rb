@@ -2,7 +2,7 @@
 
 module Gitlab
   module Patch
-    module SidekiqCronPoller
+    module SidekiqPoller
       def enqueue
         Rails.application.reloader.wrap do
           ::Gitlab::WithRequestStore.with_request_store do

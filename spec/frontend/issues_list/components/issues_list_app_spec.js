@@ -17,7 +17,7 @@ import {
   locationSearch,
   urlParams,
 } from 'jest/issues_list/mock_data';
-import createFlash from '~/flash';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -29,6 +29,8 @@ import {
   CREATED_DESC,
   DUE_DATE_OVERDUE,
   PARAM_DUE_DATE,
+  RELATIVE_POSITION,
+  RELATIVE_POSITION_ASC,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -312,6 +314,29 @@ describe('IssuesListApp component', () => {
           urlParams: {
             sort: urlSortParams[sortKey],
           },
+        });
+      });
+
+      describe('when issue repositioning is disabled and the sort is manual', () => {
+        beforeEach(() => {
+          setWindowLocation(`?sort=${RELATIVE_POSITION}`);
+          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+        });
+
+        it('changes the sort to the default of created descending', () => {
+          expect(findIssuableList().props()).toMatchObject({
+            initialSortBy: CREATED_DESC,
+            urlParams: {
+              sort: urlSortParams[CREATED_DESC],
+            },
+          });
+        });
+
+        it('shows an alert to tell the user that manual reordering is disabled', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.issueRepositioningMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
         });
       });
     });
@@ -762,6 +787,30 @@ describe('IssuesListApp component', () => {
           });
         },
       );
+
+      describe('when issue repositioning is disabled', () => {
+        const initialSort = CREATED_DESC;
+
+        beforeEach(() => {
+          setWindowLocation(`?sort=${initialSort}`);
+          wrapper = mountComponent({ provide: { isIssueRepositioningDisabled: true } });
+
+          findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
+        });
+
+        it('does not update the sort to manual', () => {
+          expect(findIssuableList().props('urlParams')).toMatchObject({
+            sort: urlSortParams[initialSort],
+          });
+        });
+
+        it('shows an alert to tell the user that manual reordering is disabled', () => {
+          expect(createFlash).toHaveBeenCalledWith({
+            message: IssuesListApp.i18n.issueRepositioningMessage,
+            type: FLASH_TYPES.NOTICE,
+          });
+        });
+      });
     });
 
     describe('when "update-legacy-bulk-edit" event is emitted by IssuableList', () => {

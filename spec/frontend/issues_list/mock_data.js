@@ -22,6 +22,7 @@ export const getIssuesQueryResponse = {
             createdAt: '2021-05-22T04:08:01Z',
             downvotes: 2,
             dueDate: '2021-05-29',
+            hidden: false,
             humanTimeEstimate: null,
             mergeRequestsCount: false,
             moved: false,

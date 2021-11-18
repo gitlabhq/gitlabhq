@@ -5,7 +5,11 @@ module Integrations
     prop_accessor :external_wiki_url
     validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
+    after_commit :cache_project_has_shimo
+
     def render?
+      return false unless Feature.enabled?(:shimo_integration, project)
+
       valid? && activated?
     end
 
@@ -42,6 +46,15 @@ module Integrations
           required: true
         }
       ]
+    end
+
+    private
+
+    def cache_project_has_shimo
+      return unless project && !project.destroyed?
+
+      project.project_setting.save! unless project.project_setting.persisted?
+      project.project_setting.update_column(:has_shimo, activated?)
     end
   end
 end

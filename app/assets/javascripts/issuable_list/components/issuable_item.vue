@@ -185,6 +185,13 @@ export default {
           :title="__('Confidential')"
           :aria-label="__('Confidential')"
         />
+        <gl-icon
+          v-if="issuable.hidden"
+          v-gl-tooltip
+          name="spam"
+          :title="__('This issue is hidden because its author has been banned')"
+          :aria-label="__('Hidden')"
+        />
         <gl-link class="issue-title-text" dir="auto" :href="webUrl" v-bind="issuableTitleProps">
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
@@ -202,7 +209,7 @@ export default {
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}
         </span>
-        <span class="gl-display-none gl-sm-display-inline-block">
+        <span class="gl-display-none gl-sm-display-inline">
           <span aria-hidden="true">&middot;</span>
           <span class="issuable-authored gl-mr-3">
             <gl-sprintf :message="__('created %{timeAgo} by %{author}')">

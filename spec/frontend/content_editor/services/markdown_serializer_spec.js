@@ -28,7 +28,6 @@ import TableHeader from '~/content_editor/extensions/table_header';
 import TableRow from '~/content_editor/extensions/table_row';
 import TaskItem from '~/content_editor/extensions/task_item';
 import TaskList from '~/content_editor/extensions/task_list';
-import Text from '~/content_editor/extensions/text';
 import markdownSerializer from '~/content_editor/services/markdown_serializer';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
@@ -58,7 +57,6 @@ const tiptapEditor = createTestEditor({
     Link,
     ListItem,
     OrderedList,
-    Paragraph,
     Strike,
     Table,
     TableCell,
@@ -66,7 +64,6 @@ const tiptapEditor = createTestEditor({
     TableRow,
     TaskItem,
     TaskList,
-    Text,
   ],
 });
 

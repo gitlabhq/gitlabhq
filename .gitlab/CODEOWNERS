@@ -53,7 +53,6 @@
 /doc/user/application_security/cve_id_request.md @fneill
 /doc/user/application_security/security_dashboard @fneill
 /doc/user/application_security/vulnerabilities @fneill
-/doc/user/application_security/vulnerability_management @fneill
 /doc/user/application_security/vulnerability_report @fneill
 /doc/user/clusters/ @marcia
 /doc/user/compliance/ @rdickenson @eread
@@ -86,7 +85,6 @@
 
 [Docs Create]
 /doc/administration/file_hooks.md @aqualls
-/doc/administration/git_annex.md @aqualls
 /doc/administration/git_protocol.md @aqualls
 /doc/administration/invalidate_markdown_cache.md @aqualls
 /doc/administration/issue_closing_pattern.md @aqualls
@@ -179,7 +177,6 @@
 /lib/gitlab/background_migration/ @gitlab-org/maintainers/database
 /ee/lib/ee/gitlab/background_migration/ @gitlab-org/maintainers/database
 /lib/gitlab/database/ @gitlab-org/maintainers/database
-/ee/lib/gitlab/database/ @gitlab-org/maintainers/database
 /lib/gitlab/sql/ @gitlab-org/maintainers/database
 /lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /app/finders/ @gitlab-org/maintainers/database
@@ -191,7 +188,6 @@
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
 /.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
-/.gitlab/ci/dast.gitlab-ci.yml @dappelt @ngeorge1 @gl-quality/eng-prod
 /.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec @gl-quality/eng-prod
 /.gitlab/CODEOWNERS @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
@@ -236,8 +232,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/app/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
 /ee/lib/api/vulnerabilit*.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/lib/gitlab/ci/reports/security/vulnerability_reports_comparer.rb @gitlab-org/secure/threat-insights-backend-team
-/ee/spec/lib/gitlab/ci/reports/security/vulnerability_reports_comparer_spec.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/policies/vulnerabilities/ @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/policies/vulnerability*.rb @gitlab-org/secure/threat-insights-backend-team
 /ee/spec/presenters/projects/security/ @gitlab-org/secure/threat-insights-backend-team
@@ -273,8 +267,6 @@ Dangerfile @gl-quality/eng-prod
 /spec/lib/gitlab/kubernetes/network_policy_spec.rb @gitlab-org/protect/container-security-backend
 /ee/app/services/network_policies/** @gitlab-org/protect/container-security-backend
 /ee/spec/services/network_policies/** @gitlab-org/protect/container-security-backend
-/ee/app/controllers/projects/security/waf_anomalies_controller.rb @gitlab-org/protect/container-security-backend
-/ee/spec/controllers/projects/security/waf_anomalies_controller_spec.rb @gitlab-org/protect/container-security-backend
 /app/models/clusters/applications/cilium.rb @gitlab-org/protect/container-security-backend
 /spec/models/clusters/applications/cilium_spec.rb @gitlab-org/protect/container-security-backend
 /ee/app/controllers/projects/security/network_policies_controller.rb @gitlab-org/protect/container-security-backend
@@ -304,7 +296,7 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/discussions_diff/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 /lib/gitlab/quick_actions/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 
-/ee/app/models/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/ee/app/models/ee/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 /ee/app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 /ee/app/workers/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
 /ee/app/workers/merge_request_reset_approvals_worker.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
@@ -312,7 +304,6 @@ Dangerfile @gl-quality/eng-prod
 /app/assets/javascripts/diffs @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/notes @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/merge_request @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/merge_conflicts @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/mr_notes @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/mr_popover @viktomas @jboyson @iamphill @thomasrandolph
@@ -334,7 +325,6 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/usage_data_counters/ @gitlab-org/growth/product-intelligence/engineers
 
 [Growth Experiments]
-/app/assets/javascripts/lib/utils/experimentation.js @gitlab-org/growth/experiment-devs
 /app/experiments/ @gitlab-org/growth/experiment-devs
 /app/models/experiment.rb @gitlab-org/growth/experiment-devs
 /app/models/experiment_subject.rb @gitlab-org/growth/experiment-devs

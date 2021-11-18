@@ -11,7 +11,7 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
-import createFlash from '~/flash';
+import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
@@ -157,6 +157,9 @@ export default {
     initialEmail: {
       default: '',
     },
+    isIssueRepositioningDisabled: {
+      default: false,
+    },
     isProject: {
       default: false,
     },
@@ -184,8 +187,13 @@ export default {
   },
   data() {
     const state = getParameterByName(PARAM_STATE);
-    const sortKey = getSortKey(getParameterByName(PARAM_SORT));
     const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+    let sortKey = getSortKey(getParameterByName(PARAM_SORT)) || defaultSortKey;
+
+    if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+      this.showIssueRepositioningMessage();
+      sortKey = defaultSortKey;
+    }
 
     return {
       dueDateFilter: getDueDateValue(getParameterByName(PARAM_DUE_DATE)),
@@ -196,7 +204,7 @@ export default {
       pageInfo: {},
       pageParams: getInitialPageParams(sortKey),
       showBulkEditSidebar: false,
-      sortKey: sortKey || defaultSortKey,
+      sortKey,
       state: state || IssuableStates.Opened,
     };
   },
@@ -611,10 +619,21 @@ export default {
         });
     },
     handleSort(sortKey) {
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        return;
+      }
+
       if (this.sortKey !== sortKey) {
         this.pageParams = getInitialPageParams(sortKey);
       }
       this.sortKey = sortKey;
+    },
+    showIssueRepositioningMessage() {
+      createFlash({
+        message: this.$options.i18n.issueRepositioningMessage,
+        type: FLASH_TYPES.NOTICE,
+      });
     },
     toggleBulkEditSidebar(showBulkEditSidebar) {
       this.showBulkEditSidebar = showBulkEditSidebar;

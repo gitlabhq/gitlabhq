@@ -17092,6 +17092,9 @@ msgstr ""
 msgid "Hi %{username}!"
 msgstr ""
 
+msgid "Hidden"
+msgstr ""
+
 msgid "Hide"
 msgstr ""
 
@@ -31883,13 +31886,25 @@ msgstr ""
 msgid "Sherlock Transactions"
 msgstr ""
 
+msgid "Shimo|Go to Shimo Workspace"
+msgstr ""
+
 msgid "Shimo|Link to a Shimo Workspace from the sidebar."
 msgstr ""
 
 msgid "Shimo|Shimo"
 msgstr ""
 
+msgid "Shimo|Shimo Workspace"
+msgstr ""
+
 msgid "Shimo|Shimo Workspace URL"
+msgstr ""
+
+msgid "Shimo|Shimo Workspace integration is enabled"
+msgstr ""
+
+msgid "Shimo|You've enabled the Shimo Workspace integration. You can view your wiki directly in Shimo."
 msgstr ""
 
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."

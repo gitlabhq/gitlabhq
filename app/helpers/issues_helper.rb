@@ -212,6 +212,7 @@ module IssuesHelper
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
       empty_state_svg_path: image_path('illustrations/issues.svg'),
       full_path: namespace.full_path,
+      is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
       is_signed_in: current_user.present?.to_s,
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),

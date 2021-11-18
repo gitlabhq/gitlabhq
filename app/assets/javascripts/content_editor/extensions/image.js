@@ -7,9 +7,11 @@ const resolveImageEl = (element) =>
   element.nodeName === 'IMG' ? element : element.querySelector('img');
 
 export default Image.extend({
-  defaultOptions: {
-    ...Image.options,
-    inline: true,
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      inline: true,
+    };
   },
   addAttributes() {
     return {

@@ -44,6 +44,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   let addFileToForm;
   let updateAttachingMessage;
   let uploadFile;
+  let hasPlainText;
 
   formTextarea.wrap('<div class="div-dropzone"></div>');
   formTextarea.on('paste', (event) => handlePaste(event));
@@ -184,7 +185,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
         event.preventDefault();
         const text = converter.convertToTableMarkdown();
         pasteText(text);
-      } else {
+      } else if (!hasPlainText(pasteEvent)) {
         const fileList = [...clipboardData.files];
         fileList.forEach((file) => {
           if (file.type.indexOf('image') !== -1) {
@@ -201,6 +202,11 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
         });
       }
     }
+  };
+
+  hasPlainText = (data) => {
+    const clipboardDataList = [...data.clipboardData.items];
+    return clipboardDataList.some((item) => item.type === 'text/plain');
   };
 
   pasteText = (text, shouldPad) => {

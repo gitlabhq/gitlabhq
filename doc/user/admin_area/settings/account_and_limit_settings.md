@@ -9,7 +9,12 @@ type: reference
 
 ## Default projects limit
 
-You can change the default maximum number of projects that users can create in their personal namespace:
+You can configure the default maximum number of projects new users can create in their
+personal namespace. This limit affects only new user accounts created after you change
+the setting. This setting is not retroactive for existing users, but you can separately edit
+the [project limits for existing users](#projects-limit-for-a-user).
+
+To configure the maximum number of projects in personal namespaces for new users:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**, then expand **Account and limit**.
@@ -17,6 +22,17 @@ You can change the default maximum number of projects that users can create in t
 
 If you set **Default projects limit** to 0, users are not allowed to create projects
 in their users personal namespace. However, projects can still be created in a group.
+
+### Projects limit for a user
+
+You can edit a specific user, and change the maximum number of projects this user
+can create in their personal namespace:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Overview** > **Users**.
+1. From the list of users, select a user.
+1. Select **Edit**.
+1. Increase or decrease the **Projects limit** value.
 
 ## Max attachment size
 
