@@ -7,19 +7,26 @@ require_relative '../../sidekiq_cluster/sidekiq_cluster'
 RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
   describe '.start' do
     it 'starts Sidekiq with the given queues, environment and options' do
-      expected_options = {
-        env: :production,
-        directory: 'foo/bar',
-        max_concurrency: 20,
-        min_concurrency: 10,
-        timeout: 25,
-        dryrun: true
+      process_options = {
+        pgroup: true,
+        err: $stderr,
+        out: $stdout
       }
 
-      expect(described_class).to receive(:start_sidekiq).ordered.with(%w(foo), expected_options.merge(worker_id: 0))
-      expect(described_class).to receive(:start_sidekiq).ordered.with(%w(bar baz), expected_options.merge(worker_id: 1))
+      expect(Process).to receive(:spawn).ordered.with({
+          "ENABLE_SIDEKIQ_CLUSTER" => "1",
+          "SIDEKIQ_WORKER_ID" => "0"
+        },
+        "bundle", "exec", "sidekiq", "-c10", "-eproduction", "-t25", "-gqueues:foo", "-rfoo/bar", "-qfoo,1", process_options
+      )
+      expect(Process).to receive(:spawn).ordered.with({
+        "ENABLE_SIDEKIQ_CLUSTER" => "1",
+        "SIDEKIQ_WORKER_ID" => "1"
+        },
+        "bundle", "exec", "sidekiq", "-c10", "-eproduction", "-t25", "-gqueues:bar,baz", "-rfoo/bar", "-qbar,1", "-qbaz,1", process_options
+      )
 
-      described_class.start([%w(foo), %w(bar baz)], env: :production, directory: 'foo/bar', max_concurrency: 20, min_concurrency: 10, dryrun: true)
+      described_class.start([%w(foo), %w(bar baz)], env: :production, directory: 'foo/bar', max_concurrency: 20, min_concurrency: 10)
     end
 
     it 'starts Sidekiq with the given queues and sensible default options' do

@@ -310,5 +310,9 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 		}
 	}
 
+	// Since the first sleep happens before any API call, this ensures
+	// we call the API at least once.
+	waitForNextApiPoll()
+
 	return ws, ws.Close, waitForNextApiPoll
 }

@@ -260,10 +260,10 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	var buffer bytes.Buffer
 
 	writer := multipart.NewWriter(&buffer)
-	_, err = writer.CreateFormFile("file", "my.file")
-	require.NoError(t, err)
-	_, err = writer.CreateFormFile("file", "my.file")
-	require.NoError(t, err)
+	for i := 0; i < 11; i++ {
+		_, err = writer.CreateFormFile(fmt.Sprintf("file %v", i), "my.file")
+		require.NoError(t, err)
+	}
 	require.NoError(t, writer.Close())
 
 	httpRequest, err := http.NewRequest("PUT", "/url/path", &buffer)
@@ -279,7 +279,7 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	HandleFileUploads(response, httpRequest, nilHandler, apiResponse, &testFormProcessor{}, opts)
 
 	require.Equal(t, 400, response.Code)
-	require.Equal(t, "Uploading multiple files is not allowed\n", response.Body.String())
+	require.Equal(t, "upload request contains more than 10 files\n", response.Body.String())
 }
 
 func TestUploadProcessingFile(t *testing.T) {

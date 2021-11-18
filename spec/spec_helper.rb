@@ -475,3 +475,7 @@ Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init
+
+# Exclude the Geo proxy API request from getting on_next_request Warden handlers,
+# necessary to prevent race conditions with feature tests not getting authenticated.
+::Warden.asset_paths << %r{^/api/v4/geo/proxy$}

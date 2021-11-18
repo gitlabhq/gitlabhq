@@ -96,8 +96,8 @@ RSpec.describe Gitlab::QuickActions::Dsl do
 
       expect(dynamic_description_def.name).to eq(:dynamic_description)
       expect(dynamic_description_def.aliases).to eq([])
-      expect(dynamic_description_def.to_h(OpenStruct.new(noteable: 'issue'))[:description]).to eq('A dynamic description for ISSUE')
-      expect(dynamic_description_def.execute_message(OpenStruct.new(noteable: 'issue'), 'arg')).to eq('A dynamic execution message for ISSUE passing arg')
+      expect(dynamic_description_def.to_h(double('desc', noteable: 'issue'))[:description]).to eq('A dynamic description for ISSUE')
+      expect(dynamic_description_def.execute_message(double('desc', noteable: 'issue'), 'arg')).to eq('A dynamic execution message for ISSUE passing arg')
       expect(dynamic_description_def.params).to eq(['The first argument', 'The second argument'])
       expect(dynamic_description_def.condition_block).to be_nil
       expect(dynamic_description_def.types).to eq([])

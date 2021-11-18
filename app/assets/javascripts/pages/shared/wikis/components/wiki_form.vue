@@ -15,6 +15,7 @@ import { setUrlFragment } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CONTENT_EDITOR_LOADED_ACTION,
   SAVED_USING_CONTENT_EDITOR_ACTION,
@@ -104,6 +105,8 @@ export default {
       newPage: s__('WikiPage|Create page'),
     },
     cancel: s__('WikiPage|Cancel'),
+    editSourceButtonText: s__('WikiPage|Edit source'),
+    editRichTextButtonText: s__('WikiPage|Edit rich text'),
   },
   contentEditorFeedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/332629',
   components: {
@@ -123,7 +126,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagMixin()],
   inject: ['formatOptions', 'pageInfo'],
   data() {
     return {
@@ -131,7 +134,6 @@ export default {
       format: this.pageInfo.format || 'markdown',
       content: this.pageInfo.content || '',
       isContentEditorAlertDismissed: false,
-      isContentEditorLoading: true,
       useContentEditor: false,
       commitMessage: '',
       isDirty: false,
@@ -164,6 +166,11 @@ export default {
     linkExample() {
       return MARKDOWN_LINK_TEXT[this.format];
     },
+    toggleEditingModeButtonText() {
+      return this.isContentEditorActive
+        ? this.$options.i18n.editSourceButtonText
+        : this.$options.i18n.editRichTextButtonText;
+    },
     submitButtonText() {
       return this.pageInfo.persisted
         ? this.$options.i18n.submitButton.existingPage
@@ -188,7 +195,23 @@ export default {
       return this.format === 'markdown';
     },
     showContentEditorAlert() {
-      return this.isMarkdownFormat && !this.useContentEditor && !this.isContentEditorAlertDismissed;
+      return (
+        !this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown &&
+        this.isMarkdownFormat &&
+        !this.useContentEditor &&
+        !this.isContentEditorAlertDismissed
+      );
+    },
+    showSwitchEditingModeButton() {
+      return this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown && this.isMarkdownFormat;
+    },
+    displayWikiSpecificMarkdownHelp() {
+      return !this.isContentEditorActive;
+    },
+    displaySwitchBackToClassicEditorMessage() {
+      return (
+        !this.glFeatures.wikiSwitchBetweenContentEditorRawMarkdown && this.isContentEditorActive
+      );
     },
     disableSubmitButton() {
       return this.noContent || !this.title || this.contentEditorRenderFailed;
@@ -210,6 +233,14 @@ export default {
       return axios
         .post(this.pageInfo.markdownPreviewPath, { text: content })
         .then(({ data }) => data.body);
+    },
+
+    toggleEditingMode() {
+      if (this.useContentEditor) {
+        this.content = this.contentEditor.getSerializedContent();
+      }
+
+      this.useContentEditor = !this.useContentEditor;
     },
 
     async handleFormSubmit(e) {
@@ -405,6 +436,17 @@ export default {
         }}</label>
       </div>
       <div class="col-sm-10">
+        <div
+          v-if="showSwitchEditingModeButton"
+          class="gl-display-flex gl-justify-content-end gl-mb-3"
+        >
+          <gl-button
+            data-testid="toggle-editing-mode-button"
+            variant="link"
+            @click="toggleEditingMode"
+            >{{ toggleEditingModeButtonText }}</gl-button
+          >
+        </div>
         <gl-alert
           v-if="showContentEditorAlert"
           class="gl-mb-6"
@@ -498,7 +540,7 @@ export default {
         <div class="error-alert"></div>
 
         <div class="form-text gl-text-gray-600">
-          <gl-sprintf v-if="!isContentEditorActive" :message="$options.i18n.linksHelpText">
+          <gl-sprintf v-if="displayWikiSpecificMarkdownHelp" :message="$options.i18n.linksHelpText">
             <template #linkExample
               ><code>{{ linkExample }}</code></template
             >
@@ -513,7 +555,7 @@ export default {
               ></template
             >
           </gl-sprintf>
-          <span v-else>
+          <span v-if="displaySwitchBackToClassicEditorMessage">
             {{ $options.i18n.contentEditor.switchToOldEditor.helpText }}
             <gl-button variant="link" @click="confirmSwitchToOldEditor">{{
               $options.i18n.contentEditor.switchToOldEditor.label

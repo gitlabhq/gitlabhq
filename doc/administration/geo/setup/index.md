@@ -26,6 +26,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** site(s).
 1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** site(s). See [notes on LDAP](../index.md#ldap).
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.
+1. [Configure Geo secondary proxying](../secondary_proxy/index.md) to use a single, unified URL for all Geo sites. This step is recommended to accelerate most read requests while transparently proxying writes to the primary Geo site.
 
 ## Post-installation documentation
 

@@ -1,3 +1,4 @@
+import { GlDropdown } from '@gitlab/ui';
 import { createLocalVue, mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
@@ -86,6 +87,12 @@ describe('DiscussionFilter component', () => {
     expect(wrapper.find('#discussion-filter-dropdown .dropdown-item').text().trim()).toBe(
       discussionFiltersMock[0].title,
     );
+  });
+
+  it('disables the dropdown when discussions are loading', () => {
+    store.state.isLoading = true;
+
+    expect(wrapper.findComponent(GlDropdown).props('disabled')).toBe(true);
   });
 
   it('updates to the selected item', () => {

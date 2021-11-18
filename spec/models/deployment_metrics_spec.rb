@@ -111,7 +111,7 @@ RSpec.describe DeploymentMetrics do
         }
       end
 
-      let(:prometheus_adapter) { instance_double('prometheus_adapter', can_query?: true, configured?: true) }
+      let(:prometheus_adapter) { instance_double(::Integrations::Prometheus, can_query?: true, configured?: true) }
 
       before do
         allow(deployment_metrics).to receive(:prometheus_adapter).and_return(prometheus_adapter)

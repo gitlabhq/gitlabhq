@@ -601,7 +601,8 @@ export const setLoadingState = ({ commit }, data) => {
   commit(types.SET_NOTES_LOADING_STATE, data);
 };
 
-export const filterDiscussion = ({ dispatch }, { path, filter, persistFilter }) => {
+export const filterDiscussion = ({ commit, dispatch }, { path, filter, persistFilter }) => {
+  commit(types.CLEAR_DISCUSSIONS);
   dispatch('setLoadingState', true);
   dispatch('fetchDiscussions', { path, filter, persistFilter })
     .then(() => {

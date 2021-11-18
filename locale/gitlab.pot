@@ -39140,6 +39140,12 @@ msgstr ""
 msgid "WikiPage|Create page"
 msgstr ""
 
+msgid "WikiPage|Edit rich text"
+msgstr ""
+
+msgid "WikiPage|Edit source"
+msgstr ""
+
 msgid "WikiPage|Format"
 msgstr ""
 

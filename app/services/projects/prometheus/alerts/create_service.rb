@@ -3,7 +3,7 @@
 module Projects
   module Prometheus
     module Alerts
-      class CreateService < BaseService
+      class CreateService < BaseProjectService
         include AlertParams
 
         def execute

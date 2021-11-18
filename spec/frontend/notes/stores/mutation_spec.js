@@ -159,6 +159,18 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('CLEAR_DISCUSSIONS', () => {
+    it('should set discussions to an empty array', () => {
+      const state = {
+        discussions: [discussionMock],
+      };
+
+      mutations.CLEAR_DISCUSSIONS(state);
+
+      expect(state.discussions).toEqual([]);
+    });
+  });
+
   describe('ADD_OR_UPDATE_DISCUSSIONS', () => {
     it('should set the initial notes received', () => {
       const state = {

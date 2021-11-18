@@ -35,8 +35,8 @@ func HandleFileUploads(w http.ResponseWriter, r *http.Request, h http.Handler, p
 		switch err {
 		case ErrInjectedClientParam:
 			helper.CaptureAndFail(w, r, err, "Bad Request", http.StatusBadRequest)
-		case ErrMultipleFilesUploaded:
-			helper.CaptureAndFail(w, r, err, "Uploading multiple files is not allowed", http.StatusBadRequest)
+		case ErrTooManyFilesUploaded:
+			helper.CaptureAndFail(w, r, err, err.Error(), http.StatusBadRequest)
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
 		case filestore.ErrEntityTooLarge:

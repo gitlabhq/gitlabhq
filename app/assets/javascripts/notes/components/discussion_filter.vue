@@ -39,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNotesDataByProp', 'timelineEnabled']),
+    ...mapGetters(['getNotesDataByProp', 'timelineEnabled', 'isLoading']),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
       return this.filters.find((filter) => filter.value === this.currentValue);
@@ -119,6 +119,7 @@ export default {
     class="gl-mr-3 full-width-mobile discussion-filter-container js-discussion-filter-container"
     data-qa-selector="discussion_filter_dropdown"
     :text="currentFilter.title"
+    :disabled="isLoading"
   >
     <div v-for="filter in filters" :key="filter.value" class="dropdown-item-wrapper">
       <gl-dropdown-item

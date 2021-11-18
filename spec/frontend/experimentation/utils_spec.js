@@ -51,6 +51,29 @@ describe('experiment Utilities', () => {
         expect(experimentUtils.getExperimentData(...input)).toEqual(output);
       });
     });
+
+    it('only collects the data properties which are supported by the schema', () => {
+      origGl = window.gl;
+      window.gl.experiments = {
+        my_experiment: {
+          experiment: 'my_experiment',
+          variant: 'control',
+          key: 'randomization-unit-key',
+          migration_keys: 'migration_keys object',
+          excluded: false,
+          other: 'foobar',
+        },
+      };
+
+      expect(experimentUtils.getExperimentData('my_experiment')).toEqual({
+        experiment: 'my_experiment',
+        variant: 'control',
+        key: 'randomization-unit-key',
+        migration_keys: 'migration_keys object',
+      });
+
+      window.gl = origGl;
+    });
   });
 
   describe('getAllExperimentContexts', () => {
@@ -71,19 +94,6 @@ describe('experiment Utilities', () => {
 
     it('returns an empty array if there are no experiments', () => {
       expect(experimentUtils.getAllExperimentContexts()).toEqual([]);
-    });
-
-    it('only collects the data properties which are supported by the schema', () => {
-      origGl = window.gl;
-      window.gl.experiments = {
-        my_experiment: { experiment: 'my_experiment', variant: 'control', excluded: false },
-      };
-
-      expect(experimentUtils.getAllExperimentContexts()).toEqual([
-        { schema, data: { experiment: 'my_experiment', variant: 'control' } },
-      ]);
-
-      window.gl = origGl;
     });
   });
 

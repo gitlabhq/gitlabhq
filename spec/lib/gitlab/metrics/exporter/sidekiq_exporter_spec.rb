@@ -50,40 +50,4 @@ RSpec.describe Gitlab::Metrics::Exporter::SidekiqExporter do
       expect(exporter.log_filename).to end_with('sidekiq_exporter.log')
     end
   end
-
-  context 'when port is already taken' do
-    let(:first_exporter) { described_class.new }
-
-    before do
-      stub_config(
-        monitoring: {
-          sidekiq_exporter: {
-            enabled: true,
-            port: 9992,
-            address: '127.0.0.1'
-          }
-        }
-      )
-
-      first_exporter.start
-    end
-
-    after do
-      first_exporter.stop
-    end
-
-    it 'does print error message' do
-      expect(Sidekiq.logger).to receive(:error)
-        .with(
-          class: described_class.to_s,
-          message: 'Cannot start sidekiq_exporter',
-          'exception.message' => anything)
-
-      exporter.start
-    end
-
-    it 'does not start thread' do
-      expect(exporter.start).to be_nil
-    end
-  end
 end

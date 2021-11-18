@@ -82,17 +82,17 @@ module Projects
 
       def create_service
         Projects::Prometheus::Alerts::CreateService
-          .new(project, current_user, alerts_params)
+          .new(project: project, current_user: current_user, params: alerts_params)
       end
 
       def update_service
         Projects::Prometheus::Alerts::UpdateService
-          .new(project, current_user, alerts_params)
+          .new(project: project, current_user: current_user, params: alerts_params)
       end
 
       def destroy_service
         Projects::Prometheus::Alerts::DestroyService
-          .new(project, current_user, nil)
+          .new(project: project, current_user: current_user, params: nil)
       end
 
       def schedule_prometheus_update!

@@ -24,10 +24,12 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
 
+const maxFilesAllowed = 10
+
 // ErrInjectedClientParam means that the client sent a parameter that overrides one of our own fields
 var (
-	ErrInjectedClientParam   = errors.New("injected client parameter")
-	ErrMultipleFilesUploaded = errors.New("upload request contains more than one file")
+	ErrInjectedClientParam  = errors.New("injected client parameter")
+	ErrTooManyFilesUploaded = fmt.Errorf("upload request contains more than %v files", maxFilesAllowed)
 )
 
 var (
@@ -117,8 +119,8 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, pr
 }
 
 func (rew *rewriter) handleFilePart(ctx context.Context, name string, p *multipart.Part, opts *filestore.SaveFileOpts) error {
-	if rew.filter.Count() > 0 {
-		return ErrMultipleFilesUploaded
+	if rew.filter.Count() >= maxFilesAllowed {
+		return ErrTooManyFilesUploaded
 	}
 
 	multipartFiles.WithLabelValues(rew.filter.Name()).Inc()

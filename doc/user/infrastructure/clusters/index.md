@@ -58,7 +58,6 @@ the Kubernetes Agent model on the [Agent's blueprint documentation](../../../arc
 - [Pod logs](../../project/clusters/kubernetes_pod_logs.md)
 - [Clusters health](manage/clusters_health.md)
 - [Crossplane integration](../../clusters/crossplane.md)
-- [Auto Deploy](../../../topics/autodevops/stages.md#auto-deploy)
 - [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels

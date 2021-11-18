@@ -35,10 +35,15 @@ RSpec.describe IssuableExportCsvWorker do
     end
 
     context 'with params' do
-      let(:params) { { 'test_key' => true } }
+      let(:params) { { 'test_key' => true, 'not' => { 'label_name' => ['SomeLabel'] } } }
 
-      it 'converts controller string keys to symbol keys for IssuesFinder' do
-        expect(IssuesFinder).to receive(:new).with(user, hash_including(test_key: true)).and_call_original
+      it 'allows symbol access for IssuesFinder' do
+        expect(IssuesFinder).to receive(:new).and_wrap_original do |method, user, params|
+          expect(params[:test_key]).to eq(true)
+          expect(params[:not][:label_name]).to eq(['SomeLabel'])
+
+          method.call(user, params)
+        end
 
         subject
       end

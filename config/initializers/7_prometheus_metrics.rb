@@ -28,11 +28,15 @@ Gitlab::Application.configure do |config|
   config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
-Sidekiq.configure_server do |config|
-  config.on(:startup) do
-    # Do not clean the metrics directory here - the supervisor script should
-    # have already taken care of that
-    Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
+if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
+  # The single worker outside of a sidekiq-cluster, or the first worker (sidekiq_0)
+  # in a cluster of processes, is responsible for serving health checks.
+  Sidekiq.configure_server do |config|
+    config.on(:startup) do
+      # Do not clean the metrics directory here - the supervisor script should
+      # have already taken care of that
+      Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
+    end
   end
 end
 

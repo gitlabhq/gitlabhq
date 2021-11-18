@@ -129,6 +129,10 @@ export default {
     Object.assign(state, { userData: data });
   },
 
+  [types.CLEAR_DISCUSSIONS](state) {
+    state.discussions = [];
+  },
+
   [types.ADD_OR_UPDATE_DISCUSSIONS](state, discussionsData) {
     discussionsData.forEach((d) => {
       const discussion = { ...d };

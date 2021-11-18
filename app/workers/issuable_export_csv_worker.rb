@@ -41,7 +41,7 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
 
   def parse_params(params, project_id)
     params
-      .symbolize_keys
+      .with_indifferent_access
       .except(:sort)
       .merge(project_id: project_id)
   end

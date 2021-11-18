@@ -7,7 +7,7 @@ RSpec.describe Projects::Prometheus::Alerts::DestroyService do
   let_it_be(:user) { create(:user) }
   let_it_be(:alert) { create(:prometheus_alert, project: project) }
 
-  let(:service) { described_class.new(project, user, nil) }
+  let(:service) { described_class.new(project: project, current_user: user, params: nil) }
 
   describe '#execute' do
     subject { service.execute(alert) }

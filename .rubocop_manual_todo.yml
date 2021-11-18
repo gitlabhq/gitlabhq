@@ -2599,7 +2599,6 @@ Style/OpenStructUse:
     - 'spec/lib/gitlab/graphql/pagination/keyset/connection_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/quick_actions/command_definition_spec.rb'
-    - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
     - 'spec/models/design_management/design_action_spec.rb'
     - 'spec/models/design_management/design_at_version_spec.rb'

@@ -27,6 +27,10 @@ func (s *SavedFileTracker) Count() int {
 }
 
 func (s *SavedFileTracker) ProcessFile(_ context.Context, fieldName string, file *filestore.FileHandler, _ *multipart.Writer) error {
+	if _, ok := s.rewrittenFields[fieldName]; ok {
+		return fmt.Errorf("the %v field has already been processed", fieldName)
+	}
+
 	s.Track(fieldName, file.LocalPath)
 	return nil
 }

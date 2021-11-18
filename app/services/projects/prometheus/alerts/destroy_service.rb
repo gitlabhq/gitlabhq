@@ -3,7 +3,7 @@
 module Projects
   module Prometheus
     module Alerts
-      class DestroyService < BaseService
+      class DestroyService < BaseProjectService
         def execute(alert)
           alert.destroy
         end
