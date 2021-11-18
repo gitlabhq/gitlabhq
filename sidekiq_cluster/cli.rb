@@ -11,6 +11,7 @@ require_relative '../lib/gitlab/utils'
 require_relative '../lib/gitlab/sidekiq_config/cli_methods'
 require_relative '../lib/gitlab/sidekiq_config/worker_matcher'
 require_relative '../lib/gitlab/sidekiq_logging/json_formatter'
+require_relative '../lib/gitlab/process_management'
 require_relative 'sidekiq_cluster'
 
 module Gitlab
@@ -106,7 +107,7 @@ module Gitlab
       end
 
       def write_pid
-        SidekiqCluster.write_pid(@pid) if @pid
+        ProcessManagement.write_pid(@pid) if @pid
       end
 
       def soft_timeout_seconds
@@ -123,11 +124,11 @@ module Gitlab
       end
 
       def continue_waiting?(deadline)
-        SidekiqCluster.any_alive?(@processes) && monotonic_time < deadline
+        ProcessManagement.any_alive?(@processes) && monotonic_time < deadline
       end
 
       def hard_stop_stuck_pids
-        SidekiqCluster.signal_processes(SidekiqCluster.pids_alive(@processes), "-KILL")
+        ProcessManagement.signal_processes(ProcessManagement.pids_alive(@processes), "-KILL")
       end
 
       def wait_for_termination
@@ -138,14 +139,14 @@ module Gitlab
       end
 
       def trap_signals
-        SidekiqCluster.trap_terminate do |signal|
+        ProcessManagement.trap_terminate do |signal|
           @alive = false
-          SidekiqCluster.signal_processes(@processes, signal)
+          ProcessManagement.signal_processes(@processes, signal)
           wait_for_termination
         end
 
-        SidekiqCluster.trap_forward do |signal|
-          SidekiqCluster.signal_processes(@processes, signal)
+        ProcessManagement.trap_forward do |signal|
+          ProcessManagement.signal_processes(@processes, signal)
         end
       end
 
@@ -153,12 +154,12 @@ module Gitlab
         while @alive
           sleep(@interval)
 
-          unless SidekiqCluster.all_alive?(@processes)
+          unless ProcessManagement.all_alive?(@processes)
             # If a child process died we'll just terminate the whole cluster. It's up to
             # runit and such to then restart the cluster.
             @logger.info('A worker terminated, shutting down the cluster')
 
-            SidekiqCluster.signal_processes(@processes, :TERM)
+            ProcessManagement.signal_processes(@processes, :TERM)
             break
           end
         end

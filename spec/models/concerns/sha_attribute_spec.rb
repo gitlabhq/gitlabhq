@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ShaAttribute do
-  let(:model) { Class.new(ApplicationRecord) { include ShaAttribute } }
+  let(:model) { Class.new(ActiveRecord::Base) { include ShaAttribute } }
 
   before do
     columns = [

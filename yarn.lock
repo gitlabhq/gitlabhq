@@ -3863,9 +3863,14 @@ create-require@^1.1.0:
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
 cron-validator@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/cron-validator/-/cron-validator-1.1.1.tgz#0a27bb75508c7bc03c8b840d2d9f170eeacb5615"
-  integrity sha512-vfZb05w/wezuwPZBDvdIBmJp2BvuJExHeyKRa5oBqD2ZDXR61hb3QgPc/3ZhBEQJlAy8Jlnn5XC/JCT3IDqxwg==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/cron-validator/-/cron-validator-1.2.1.tgz#0f0de2de36d231a6ace0e43ffc6c0564fe6edf1a"
+  integrity sha512-RqdpGSokGFICPc8qAkT38aXqZLLanXghQTK2q7a2x2FabSwDd2ARrazd5ElEWAXzToUcMG4cZIwDH+5RM0q1mA==
+
+cronstrue@^1.122.0:
+  version "1.122.0"
+  resolved "https://registry.yarnpkg.com/cronstrue/-/cronstrue-1.122.0.tgz#bd6838077b476d28f61d381398b47b8c3912a126"
+  integrity sha512-PFuhZd+iPQQ0AWTXIEYX+t3nFGzBrWxmTWUKJOrsGRewaBSLKZ4I1f8s2kryU75nNxgyugZgiGh2OJsCTA/XlA==
 
 cropper@^2.3.0:
   version "2.3.0"

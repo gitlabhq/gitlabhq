@@ -246,7 +246,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
   describe '#write_pid' do
     context 'when a PID is specified' do
       it 'writes the PID to a file' do
-        expect(Gitlab::SidekiqCluster).to receive(:write_pid).with('/dev/null')
+        expect(Gitlab::ProcessManagement).to receive(:write_pid).with('/dev/null')
 
         cli.option_parser.parse!(%w(-P /dev/null))
         cli.write_pid
@@ -255,7 +255,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
     context 'when no PID is specified' do
       it 'does not write a PID' do
-        expect(Gitlab::SidekiqCluster).not_to receive(:write_pid)
+        expect(Gitlab::ProcessManagement).not_to receive(:write_pid)
 
         cli.write_pid
       end
@@ -264,13 +264,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
   describe '#wait_for_termination' do
     it 'waits for termination of all sub-processes and succeeds after 3 checks' do
-      expect(Gitlab::SidekiqCluster).to receive(:any_alive?)
+      expect(Gitlab::ProcessManagement).to receive(:any_alive?)
         .with(an_instance_of(Array)).and_return(true, true, true, false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:pids_alive)
+      expect(Gitlab::ProcessManagement).to receive(:pids_alive)
         .with([]).and_return([])
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
         .with([], "-KILL")
 
       stub_const("Gitlab::SidekiqCluster::CHECK_TERMINATE_INTERVAL_SECONDS", 0.1)
@@ -292,13 +292,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
                                             .with([['foo']], default_options)
                                             .and_return(worker_pids)
 
-        expect(Gitlab::SidekiqCluster).to receive(:any_alive?)
+        expect(Gitlab::ProcessManagement).to receive(:any_alive?)
           .with(worker_pids).and_return(true).at_least(10).times
 
-        expect(Gitlab::SidekiqCluster).to receive(:pids_alive)
+        expect(Gitlab::ProcessManagement).to receive(:pids_alive)
           .with(worker_pids).and_return([102])
 
-        expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+        expect(Gitlab::ProcessManagement).to receive(:signal_processes)
           .with([102], "-KILL")
 
         cli.run(%w(foo))
@@ -313,8 +313,8 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
 
   describe '#trap_signals' do
     it 'traps the termination and forwarding signals' do
-      expect(Gitlab::SidekiqCluster).to receive(:trap_terminate)
-      expect(Gitlab::SidekiqCluster).to receive(:trap_forward)
+      expect(Gitlab::ProcessManagement).to receive(:trap_terminate)
+      expect(Gitlab::ProcessManagement).to receive(:trap_forward)
 
       cli.trap_signals
     end
@@ -324,10 +324,10 @@ RSpec.describe Gitlab::SidekiqCluster::CLI do # rubocop:disable RSpec/FilePath
     it 'runs until one of the processes has been terminated' do
       allow(cli).to receive(:sleep).with(a_kind_of(Numeric))
 
-      expect(Gitlab::SidekiqCluster).to receive(:all_alive?)
+      expect(Gitlab::ProcessManagement).to receive(:all_alive?)
         .with(an_instance_of(Array)).and_return(false)
 
-      expect(Gitlab::SidekiqCluster).to receive(:signal_processes)
+      expect(Gitlab::ProcessManagement).to receive(:signal_processes)
         .with(an_instance_of(Array), :TERM)
 
       cli.start_loop

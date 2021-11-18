@@ -26,7 +26,5 @@ export function createMockClient(handlers = [], resolvers = {}, cacheOptions = {
 
 export default function createMockApollo(handlers, resolvers, cacheOptions) {
   const mockClient = createMockClient(handlers, resolvers, cacheOptions);
-  const apolloProvider = new VueApollo({ defaultClient: mockClient });
-
-  return apolloProvider;
+  return new VueApollo({ defaultClient: mockClient });
 }

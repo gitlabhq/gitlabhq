@@ -30807,7 +30807,7 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
-msgid "SecurityOrchestration|Scan to be performed every %{cadence} on the %{branches}"
+msgid "SecurityOrchestration|Scan to be performed %{cadence} on the %{branches}"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan to be performed on every pipeline on the %{branches}"
