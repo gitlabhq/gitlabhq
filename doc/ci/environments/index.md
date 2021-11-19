@@ -447,6 +447,63 @@ try to check out the code after the branch is deleted.
 
 Read more in the [`.gitlab-ci.yml` reference](../yaml/index.md#environmenton_stop).
 
+#### Stop an environment when another job is finished
+
+You can set an environment to stop when another job is finished.
+
+In your `.gitlab-ci.yml` file, specify in the [`on_stop:`](../yaml/index.md#environmenton_stop)
+keyword the name of the job that stops the environment.
+
+The following example shows a `review_app` job that calls a `stop_review_app` job after the first
+job is finished. The `stop_review_app` is triggered based on what is defined under `when`. In this
+case, it is set to `manual`, so it needs a
+[manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
+from the GitLab UI to run.
+
+Both jobs must have the same rules or only/except configuration.
+In this example, if the configuration is not identical:
+
+- The `stop_review_app` job might not be included in all pipelines that include the `review_app` job.
+- It is not possible to trigger the `action: stop` to stop the environment automatically.
+
+Also in the example, `GIT_STRATEGY` is set to `none`. If the
+`stop_review_app` job is [automatically triggered](../environments/index.md#stop-an-environment),
+the runner won't try to check out the code after the branch is deleted.
+
+The example also overwrites global variables. If your `stop` `environment` job depends
+on global variables, use [anchor variables](../yaml/yaml_optimization.md#yaml-anchors-for-variables) when you set the `GIT_STRATEGY`
+to change the job without overriding the global variables.
+
+The `stop_review_app` job **must** have the following keywords defined:
+
+- `when`, defined at either:
+  - [The job level](../yaml/index.md#when).
+  - [In a rules clause](../yaml/index.md#rules). If you use `rules:` and `when: manual`, you should
+    also set [`allow_failure: true`](../yaml/index.md#allow_failure) so the pipeline can complete
+    even if the job doesn't run.
+- `environment:name`
+- `environment:action`
+
+```yaml
+review_app:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    on_stop: stop_review_app
+
+stop_review_app:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  script: make delete-app
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+```
+
 #### Stop an environment after a certain time period
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20956) in GitLab 12.8.
