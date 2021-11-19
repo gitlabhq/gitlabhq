@@ -3917,6 +3917,9 @@ msgstr ""
 msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
+msgid "An integer value is required for seconds"
+msgstr ""
+
 msgid "An issue already exists"
 msgstr ""
 
@@ -25972,6 +25975,9 @@ msgid "Please enter a valid hex (#RRGGBB or #RGB) color value"
 msgstr ""
 
 msgid "Please enter a valid number"
+msgstr ""
+
+msgid "Please enter a valid time interval"
 msgstr ""
 
 msgid "Please enter or upload a valid license."
