@@ -503,10 +503,10 @@ describe('ReadyToMerge', () => {
         expect(findCheckboxElement().exists()).toBeFalsy();
       });
 
-      it('should not be rendered when there is only 1 commit', () => {
+      it('should be rendered when there is only 1 commit', () => {
         createComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
 
-        expect(findCheckboxElement().exists()).toBeFalsy();
+        expect(findCheckboxElement().exists()).toBe(true);
       });
 
       describe('squash options', () => {

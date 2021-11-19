@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User posts diff notes', :js do
   include MergeRequestDiffHelpers
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
@@ -238,10 +239,8 @@ RSpec.describe 'Merge request > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    find('.js-close-discussion-note-form').click
-
-    page.within('.modal') do
-      click_button 'OK'
+    accept_gl_confirm(s_('Notes|Are you sure you want to cancel creating this comment?')) do
+      find('.js-close-discussion-note-form').click
     end
 
     assert_comment_dismissal(line_holder)

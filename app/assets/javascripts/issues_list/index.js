@@ -2,7 +2,7 @@ import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
-import IssuesListApp from '~/issues_list/components/issues_list_app.vue';
+import IssuesListApp from 'ee_else_ce/issues_list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import IssuablesListApp from './components/issuables_list_app.vue';

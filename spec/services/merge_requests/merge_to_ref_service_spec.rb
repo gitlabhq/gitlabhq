@@ -150,7 +150,10 @@ RSpec.describe MergeRequests::MergeToRefService do
           merge_request.update!(squash: true)
         end
 
-        it_behaves_like 'MergeService for target ref'
+        it_behaves_like 'successfully merges to ref with merge method' do
+          let(:first_parent_ref) { 'refs/heads/master' }
+          let(:target_ref) { merge_request.merge_ref_path }
+        end
 
         it 'does not squash before merging' do
           expect(MergeRequests::SquashService).not_to receive(:new)

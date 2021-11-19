@@ -6,6 +6,7 @@ FactoryBot.define do
 
     first_name { generate(:name) }
     last_name { generate(:name) }
+    email { generate(:email) }
 
     trait :with_organization do
       organization

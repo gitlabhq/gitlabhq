@@ -55,18 +55,26 @@ RSpec.describe MergeRequests::SquashService do
         expect(merge_request).to receive(:commits_count).at_least(:once).and_return(1)
       end
 
-      it 'will skip performing the squash, as the outcome would be the same' do
-        expect(merge_request.target_project.repository).not_to receive(:squash)
+      it 'will still perform the squash' do
+        expect(merge_request.target_project.repository).to receive(:squash).and_return('sha')
 
         service.execute
       end
 
-      it 'will still perform the squash when a custom squash commit message has been provided' do
-        service = described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: 'A custom commit message' })
+      context 'when squash message matches commit message' do
+        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: merge_request.first_commit.safe_message }) }
 
-        expect(merge_request.target_project.repository).to receive(:squash).and_return('sha')
+        it 'returns that commit SHA' do
+          result = service.execute
 
-        service.execute
+          expect(result).to match(status: :success, squash_sha: merge_request.diff_head_sha)
+        end
+
+        it 'does not perform any git actions' do
+          expect(repository).not_to receive(:squash)
+
+          service.execute
+        end
       end
     end
 
@@ -113,17 +121,7 @@ RSpec.describe MergeRequests::SquashService do
     context 'when there is only one commit in the merge request' do
       let(:merge_request) { merge_request_with_one_commit }
 
-      it 'returns that commit SHA' do
-        result = service.execute
-
-        expect(result).to match(status: :success, squash_sha: merge_request.diff_head_sha)
-      end
-
-      it 'does not perform any git actions' do
-        expect(repository).not_to receive(:popen)
-
-        service.execute
-      end
+      include_examples 'the squash succeeds'
     end
 
     context 'when squashing only new files' do

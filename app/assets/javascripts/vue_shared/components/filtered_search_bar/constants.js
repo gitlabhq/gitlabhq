@@ -2,7 +2,6 @@ import { __ } from '~/locale';
 
 export const DEBOUNCE_DELAY = 200;
 export const MAX_RECENT_TOKENS_SIZE = 3;
-export const WEIGHT_TOKEN_SUGGESTIONS_SIZE = 21;
 
 export const FILTER_NONE = 'None';
 export const FILTER_ANY = 'Any';
@@ -23,10 +22,6 @@ export const OPERATOR_IS_AND_IS_NOT = [...OPERATOR_IS_ONLY, ...OPERATOR_IS_NOT_O
 export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const DEFAULT_NONE_ANY = [DEFAULT_LABEL_NONE, DEFAULT_LABEL_ANY];
-
-export const DEFAULT_ITERATIONS = DEFAULT_NONE_ANY.concat([
-  { value: FILTER_CURRENT, text: __('Current') },
-]);
 
 export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
   { value: FILTER_UPCOMING, text: __('Upcoming'), title: __('Upcoming') },
@@ -56,6 +51,3 @@ export const TOKEN_TITLE_TYPE = __('Type');
 export const TOKEN_TITLE_RELEASE = __('Release');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_CONFIDENTIAL = __('Confidential');
-export const TOKEN_TITLE_ITERATION = __('Iteration');
-export const TOKEN_TITLE_EPIC = __('Epic');
-export const TOKEN_TITLE_WEIGHT = __('Weight');

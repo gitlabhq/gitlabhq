@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Two factor auths' do
+  include Spec::Support::Helpers::ModalHelpers
+
   context 'when signed in' do
     before do
       sign_in(user)
@@ -70,7 +72,7 @@ RSpec.describe 'Two factor auths' do
 
         click_button 'Disable two-factor authentication'
 
-        page.within('[role="dialog"]') do
+        within_modal do
           click_button 'Disable'
         end
 
@@ -80,7 +82,7 @@ RSpec.describe 'Two factor auths' do
 
         click_button 'Disable two-factor authentication'
 
-        page.within('[role="dialog"]') do
+        within_modal do
           click_button 'Disable'
         end
 
@@ -112,7 +114,7 @@ RSpec.describe 'Two factor auths' do
 
           click_button 'Disable two-factor authentication'
 
-          page.within('[role="dialog"]') do
+          within_modal do
             click_button 'Disable'
           end
 

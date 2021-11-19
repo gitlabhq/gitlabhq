@@ -287,7 +287,7 @@ export default {
         return false;
       }
 
-      return enableSquashBeforeMerge && this.commitsCount > 1;
+      return enableSquashBeforeMerge;
     },
     shouldShowMergeControls() {
       if (this.glFeatures.restructuredMrWidget) {

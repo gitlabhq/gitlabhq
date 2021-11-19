@@ -6,6 +6,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
   include Select2Helper
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -92,7 +93,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js do
         click_button 'Remove group'
       end
 
-      page.within('[role="dialog"]') do
+      within_modal do
         click_button('Remove group')
       end
 

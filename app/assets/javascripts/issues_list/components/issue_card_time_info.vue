@@ -7,24 +7,15 @@ import {
   isInPast,
   isToday,
 } from '~/lib/utils/datetime_utility';
-import { convertToCamelCase } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlLink,
     GlIcon,
-    IssueHealthStatus: () =>
-      import('ee_component/related_items_tree/components/issue_health_status.vue'),
-    WeightCount: () => import('ee_component/issues/components/weight_count.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-  },
-  inject: {
-    hasIssuableHealthStatusFeature: {
-      default: false,
-    },
   },
   props: {
     issue: {
@@ -53,12 +44,6 @@ export default {
     },
     timeEstimate() {
       return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;
-    },
-    showHealthStatus() {
-      return this.hasIssuableHealthStatusFeature && this.issue.healthStatus;
-    },
-    healthStatus() {
-      return convertToCamelCase(this.issue.healthStatus);
     },
   },
   methods: {
@@ -114,7 +99,6 @@ export default {
       <gl-icon name="timer" />
       {{ timeEstimate }}
     </span>
-    <weight-count class="issuable-weight gl-mr-3" :weight="issue.weight" />
-    <issue-health-status v-if="showHealthStatus" :health-status="healthStatus" />
+    <slot></slot>
   </span>
 </template>

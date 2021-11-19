@@ -8,8 +8,10 @@ module Gitlab
           include Chain::Helpers
 
           def perform!
-            BulkInsertableAssociations.with_bulk_insert do
-              pipeline.save!
+            logger.instrument(:pipeline_save) do
+              BulkInsertableAssociations.with_bulk_insert do
+                pipeline.save!
+              end
             end
           rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")

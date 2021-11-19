@@ -94,6 +94,15 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
   end
 
   describe '#mutate' do
+    let(:attributes) do
+      {
+        project: project,
+        user: user,
+        sha: sha,
+        logger: double('logger')
+      }
+    end
+
     shared_examples 'a mutated context' do
       let(:mutated) { subject.mutate(new_attributes) }
 
@@ -107,6 +116,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
       it { expect(mutated).to have_attributes(new_attributes) }
       it { expect(mutated.expandset).to eq(subject.expandset) }
       it { expect(mutated.execution_deadline).to eq(mutated.execution_deadline) }
+      it { expect(mutated.logger).to eq(mutated.logger) }
     end
 
     context 'with attributes' do

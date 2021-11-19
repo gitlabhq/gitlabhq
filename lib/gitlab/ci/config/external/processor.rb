@@ -7,10 +7,13 @@ module Gitlab
         class Processor
           IncludeError = Class.new(StandardError)
 
+          attr_reader :context, :logger
+
           def initialize(values, context)
             @values = values
             @external_files = External::Mapper.new(values, context).process
             @content = {}
+            @logger = context.logger
           rescue External::Mapper::Error,
                  OpenSSL::SSL::SSLError => e
             raise IncludeError, e.message
@@ -29,13 +32,17 @@ module Gitlab
 
           def validate_external_files!
             @external_files.each do |file|
-              raise IncludeError, file.error_message unless file.valid?
+              logger.instrument(:config_external_verify) do
+                raise IncludeError, file.error_message unless file.valid?
+              end
             end
           end
 
           def merge_external_files!
             @external_files.each do |file|
-              @content.deep_merge!(file.to_hash)
+              logger.instrument(:config_external_merge) do
+                @content.deep_merge!(file.to_hash)
+              end
             end
           end
 

@@ -279,3 +279,11 @@
   category: quickactions
   redis_slot: quickactions
   aggregation: weekly
+- name: i_quickactions_add_contacts
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly
+- name: i_quickactions_remove_contacts
+  category: quickactions
+  redis_slot: quickactions
+  aggregation: weekly

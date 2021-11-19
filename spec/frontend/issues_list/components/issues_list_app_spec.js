@@ -1,8 +1,8 @@
 import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
@@ -34,14 +34,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
-  TOKEN_TYPE_WEIGHT,
   urlSortParams,
 } from '~/issues_list/constants';
 import eventHub from '~/issues_list/eventhub';
@@ -55,12 +52,11 @@ jest.mock('~/lib/utils/scroll_utils', () => ({
   scrollUp: jest.fn().mockName('scrollUpMock'),
 }));
 
-describe('IssuesListApp component', () => {
+describe('CE IssuesListApp component', () => {
   let axiosMock;
   let wrapper;
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const defaultProvide = {
     calendarPath: 'calendar/path',
@@ -71,6 +67,7 @@ describe('IssuesListApp component', () => {
     hasAnyIssues: true,
     hasAnyProjects: true,
     hasBlockedIssuesFeature: true,
+    hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
     isProject: true,
@@ -113,7 +110,6 @@ describe('IssuesListApp component', () => {
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(IssuesListApp, {
-      localVue,
       apolloProvider,
       provide: {
         ...defaultProvide,
@@ -526,54 +522,6 @@ describe('IssuesListApp component', () => {
       });
     });
 
-    describe('when iterations are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            projectIterationsPath: '',
-          },
-        });
-      });
-
-      it('does not render Iteration token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_ITERATION },
-        ]);
-      });
-    });
-
-    describe('when epics are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            groupPath: '',
-          },
-        });
-      });
-
-      it('does not render Epic token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_EPIC },
-        ]);
-      });
-    });
-
-    describe('when weights are not available', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({
-          provide: {
-            groupPath: '',
-          },
-        });
-      });
-
-      it('does not render Weight token', () => {
-        expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_WEIGHT },
-        ]);
-      });
-    });
-
     describe('when all tokens are available', () => {
       const originalGon = window.gon;
 
@@ -586,14 +534,11 @@ describe('IssuesListApp component', () => {
           current_user_avatar_url: mockCurrentUser.avatar_url,
         };
 
-        wrapper = mountComponent({
-          provide: {
-            isSignedIn: true,
-            projectIterationsPath: 'project/iterations/path',
-            groupPath: 'group/path',
-            hasIssueWeightsFeature: true,
-          },
-        });
+        wrapper = mountComponent({ provide: { isSignedIn: true } });
+      });
+
+      afterEach(() => {
+        window.gon = originalGon;
       });
 
       it('renders all tokens', () => {
@@ -610,9 +555,6 @@ describe('IssuesListApp component', () => {
           { type: TOKEN_TYPE_RELEASE },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
-          { type: TOKEN_TYPE_ITERATION },
-          { type: TOKEN_TYPE_EPIC },
-          { type: TOKEN_TYPE_WEIGHT },
         ]);
       });
     });

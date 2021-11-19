@@ -11,6 +11,7 @@ import {
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import getIssuesQuery from 'ee_else_ce/issues_list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues_list/queries/get_issues_counts.query.graphql';
+import IssueCardTimeInfo from 'ee_else_ce/issues_list/components/issue_card_time_info.vue';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -31,14 +32,11 @@ import {
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
-  TOKEN_TYPE_WEIGHT,
   UPDATED_DESC,
   urlSortParams,
 } from '~/issues_list/constants';
@@ -61,39 +59,29 @@ import {
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
-  TOKEN_TITLE_EPIC,
-  TOKEN_TITLE_ITERATION,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
-  TOKEN_TITLE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
-import searchIterationsQuery from '../queries/search_iterations.query.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import searchUsersQuery from '../queries/search_users.query.graphql';
-import IssueCardTimeInfo from './issue_card_time_info.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/author_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
-const EpicToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue');
-const IterationToken = () =>
-  import('~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue');
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const ReleaseToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
-const WeightToken = () =>
-  import('~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue');
 
 export default {
   i18n,
@@ -109,7 +97,6 @@ export default {
     IssuableList,
     IssueCardTimeInfo,
     NewIssueDropdown,
-    BlockingIssuesCount: () => import('ee_component/issues/components/blocking_issues_count.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -133,9 +120,6 @@ export default {
     fullPath: {
       default: '',
     },
-    groupPath: {
-      default: '',
-    },
     hasAnyIssues: {
       default: false,
     },
@@ -146,9 +130,6 @@ export default {
       default: false,
     },
     hasIssueWeightsFeature: {
-      default: false,
-    },
-    hasIterationsFeature: {
       default: false,
     },
     hasMultipleIssueAssigneesFeature: {
@@ -183,6 +164,13 @@ export default {
     },
     signInPath: {
       default: '',
+    },
+  },
+  props: {
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -389,39 +377,8 @@ export default {
         });
       }
 
-      if (this.hasIterationsFeature) {
-        tokens.push({
-          type: TOKEN_TYPE_ITERATION,
-          title: TOKEN_TITLE_ITERATION,
-          icon: 'iteration',
-          token: IterationToken,
-          fetchIterations: this.fetchIterations,
-        });
-      }
-
-      if (this.groupPath) {
-        tokens.push({
-          type: TOKEN_TYPE_EPIC,
-          title: TOKEN_TITLE_EPIC,
-          icon: 'epic',
-          token: EpicToken,
-          unique: true,
-          symbol: '&',
-          idProperty: 'id',
-          useIdValue: true,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-epic_id`,
-          fullPath: this.groupPath,
-        });
-      }
-
-      if (this.hasIssueWeightsFeature) {
-        tokens.push({
-          type: TOKEN_TYPE_WEIGHT,
-          title: TOKEN_TITLE_WEIGHT,
-          icon: 'weight',
-          token: WeightToken,
-          unique: true,
-        });
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
       }
 
       return tokens;
@@ -498,20 +455,6 @@ export default {
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
         .then(({ data }) => data[this.namespace]?.milestones.nodes);
-    },
-    fetchIterations(search) {
-      const id = Number(search);
-      const variables =
-        !search || Number.isNaN(id)
-          ? { fullPath: this.fullPath, search, isProject: this.isProject }
-          : { fullPath: this.fullPath, id, isProject: this.isProject };
-
-      return this.$apollo
-        .query({
-          query: searchIterationsQuery,
-          variables,
-        })
-        .then(({ data }) => data[this.namespace]?.iterations.nodes);
     },
     fetchUsers(search) {
       return this.$apollo
@@ -746,12 +689,7 @@ export default {
           <gl-icon name="thumb-down" />
           {{ issuable.downvotes }}
         </li>
-        <blocking-issues-count
-          class="blocking-issues gl-display-none gl-sm-display-block"
-          :blocking-issues-count="issuable.blockingCount"
-          :is-list-item="true"
-          data-testid="blocking-issues"
-        />
+        <slot :issuable="issuable"></slot>
       </template>
 
       <template #empty-state>

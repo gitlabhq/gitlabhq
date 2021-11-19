@@ -17,21 +17,27 @@ module Gitlab
         Config::Yaml::Tags::TagError
       ].freeze
 
-      attr_reader :root, :context, :source_ref_path, :source
+      attr_reader :root, :context, :source_ref_path, :source, :logger
 
-      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil)
+      def initialize(config, project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, source: nil, logger: nil)
+        @logger = logger || ::Gitlab::Ci::Pipeline::Logger.new(project: project)
         @source_ref_path = pipeline&.source_ref_path
 
-        @context = build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
+        @context = self.logger.instrument(:config_build_context) do
+          build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
+        end
+
         @context.set_deadline(TIMEOUT_SECONDS)
 
         @source = source
 
-        @config = expand_config(config)
+        @config = self.logger.instrument(:config_expand) do
+          expand_config(config)
+        end
 
-        @root = Entry::Root.new(@config)
-        @root.compose!
-
+        @root = self.logger.instrument(:config_compose) do
+          Entry::Root.new(@config).tap(&:compose!)
+        end
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message
       end
@@ -94,11 +100,25 @@ module Gitlab
       end
 
       def build_config(config)
-        initial_config = Config::Yaml.load!(config)
-        initial_config = Config::External::Processor.new(initial_config, @context).perform
-        initial_config = Config::Extendable.new(initial_config).to_hash
-        initial_config = Config::Yaml::Tags::Resolver.new(initial_config).to_hash
-        Config::EdgeStagesInjector.new(initial_config).to_hash
+        initial_config = logger.instrument(:config_yaml_load) do
+          Config::Yaml.load!(config)
+        end
+
+        initial_config = logger.instrument(:config_external_process) do
+          Config::External::Processor.new(initial_config, @context).perform
+        end
+
+        initial_config = logger.instrument(:config_yaml_extend) do
+          Config::Extendable.new(initial_config).to_hash
+        end
+
+        initial_config = logger.instrument(:config_tags_resolve) do
+          Config::Yaml::Tags::Resolver.new(initial_config).to_hash
+        end
+
+        logger.instrument(:config_stages_inject) do
+          Config::EdgeStagesInjector.new(initial_config).to_hash
+        end
       end
 
       def find_sha(project)
@@ -115,10 +135,20 @@ module Gitlab
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
-          variables: build_variables(project: project, pipeline: pipeline))
+          variables: build_variables(project: project, pipeline: pipeline),
+          logger: logger)
       end
 
       def build_variables(project:, pipeline:)
+        logger.instrument(:config_build_variables) do
+          build_variables_without_instrumentation(
+            project: project,
+            pipeline: pipeline
+          )
+        end
+      end
+
+      def build_variables_without_instrumentation(project:, pipeline:)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           break variables unless project
 

@@ -206,7 +206,7 @@ module Gitlab
         end
 
         desc _('Add Zoom meeting')
-        explanation _('Adds a Zoom meeting')
+        explanation _('Adds a Zoom meeting.')
         params '<Zoom URL>'
         types Issue
         condition do
@@ -223,7 +223,7 @@ module Gitlab
         end
 
         desc _('Remove Zoom meeting')
-        explanation _('Remove Zoom meeting')
+        explanation _('Remove Zoom meeting.')
         execution_message _('Zoom meeting removed')
         types Issue
         condition do
@@ -236,7 +236,7 @@ module Gitlab
         end
 
         desc _('Add email participant(s)')
-        explanation _('Adds email participant(s)')
+        explanation _('Adds email participant(s).')
         params 'email1@example.com email2@example.com (up to 6 emails)'
         types Issue
         condition do
@@ -282,6 +282,46 @@ module Gitlab
               _('Issue has been promoted to incident')
             else
               _('Failed to promote issue to incident')
+            end
+        end
+
+        desc _('Add customer relation contacts')
+        explanation _('Add customer relation contact(s).')
+        params 'contact@example.com person@example.org'
+        types Issue
+        condition do
+          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+        end
+        command :add_contacts do |contact_emails|
+          result = ::Issues::SetCrmContactsService
+            .new(project: project, current_user: current_user, params: { add_emails: contact_emails.split(' ') })
+            .execute(quick_action_target)
+
+          @execution_message[:add_contacts] =
+            if result.success?
+              _('One or more contacts were successfully added.')
+            else
+              result.message
+            end
+        end
+
+        desc _('Remove customer relation contacts')
+        explanation _('Remove customer relation contact(s).')
+        params 'contact@example.com person@example.org'
+        types Issue
+        condition do
+          current_user.can?(:set_issue_crm_contacts, quick_action_target)
+        end
+        command :remove_contacts do |contact_emails|
+          result = ::Issues::SetCrmContactsService
+            .new(project: project, current_user: current_user, params: { remove_emails: contact_emails.split(' ') })
+            .execute(quick_action_target)
+
+          @execution_message[:remove_contacts] =
+            if result.success?
+              _('One or more contacts were successfully removed.')
+            else
+              result.message
             end
         end
 

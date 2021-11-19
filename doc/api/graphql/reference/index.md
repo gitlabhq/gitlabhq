@@ -2846,7 +2846,7 @@ Input type: `IssueSetCrmContactsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetcrmcontactsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetcrmcontactscrmcontactids"></a>`crmContactIds` | [`[CustomerRelationsContactID!]!`](#customerrelationscontactid) | Customer relations contact IDs to set. Replaces existing contacts by default. |
+| <a id="mutationissuesetcrmcontactscontactids"></a>`contactIds` | [`[CustomerRelationsContactID!]!`](#customerrelationscontactid) | Customer relations contact IDs to set. Replaces existing contacts by default. |
 | <a id="mutationissuesetcrmcontactsiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetcrmcontactsoperationmode"></a>`operationMode` | [`MutationOperationMode`](#mutationoperationmode) | Changes the operation mode. Defaults to REPLACE. |
 | <a id="mutationissuesetcrmcontactsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
@@ -8339,6 +8339,7 @@ Represents an epic on an issue board.
 | <a id="boardepicdownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the epic has received. |
 | <a id="boardepicduedate"></a>`dueDate` | [`Time`](#time) | Due date of the epic. |
 | <a id="boardepicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
+| <a id="boardepicduedatefrominheritedsource"></a>`dueDateFromInheritedSource` | [`Time`](#time) | Inherited due date of the epic from child epics or milestones. |
 | <a id="boardepicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="boardepicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
 | <a id="boardepicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
@@ -8358,6 +8359,7 @@ Represents an epic on an issue board.
 | <a id="boardepicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="boardepicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="boardepicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
+| <a id="boardepicstartdatefrominheritedsource"></a>`startDateFromInheritedSource` | [`Time`](#time) | Inherited start date of the epic from child epics or milestones. |
 | <a id="boardepicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
 | <a id="boardepicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="boardepicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |
@@ -9765,6 +9767,7 @@ Represents an epic.
 | <a id="epicdownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the epic has received. |
 | <a id="epicduedate"></a>`dueDate` | [`Time`](#time) | Due date of the epic. |
 | <a id="epicduedatefixed"></a>`dueDateFixed` | [`Time`](#time) | Fixed due date of the epic. |
+| <a id="epicduedatefrominheritedsource"></a>`dueDateFromInheritedSource` | [`Time`](#time) | Inherited due date of the epic from child epics or milestones. |
 | <a id="epicduedatefrommilestones"></a>`dueDateFromMilestones` | [`Time`](#time) | Inherited due date of the epic from milestones. |
 | <a id="epicduedateisfixed"></a>`dueDateIsFixed` | [`Boolean`](#boolean) | Indicates if the due date has been manually set. |
 | <a id="epicevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
@@ -9784,6 +9787,7 @@ Represents an epic.
 | <a id="epicrelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the epic in the epic tree. |
 | <a id="epicstartdate"></a>`startDate` | [`Time`](#time) | Start date of the epic. |
 | <a id="epicstartdatefixed"></a>`startDateFixed` | [`Time`](#time) | Fixed start date of the epic. |
+| <a id="epicstartdatefrominheritedsource"></a>`startDateFromInheritedSource` | [`Time`](#time) | Inherited start date of the epic from child epics or milestones. |
 | <a id="epicstartdatefrommilestones"></a>`startDateFromMilestones` | [`Time`](#time) | Inherited start date of the epic from milestones. |
 | <a id="epicstartdateisfixed"></a>`startDateIsFixed` | [`Boolean`](#boolean) | Indicates if the start date has been manually set. |
 | <a id="epicstate"></a>`state` | [`EpicState!`](#epicstate) | State of the epic. |

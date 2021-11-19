@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe "Admin Runners" do
   include StubENV
+  include Spec::Support::Helpers::ModalHelpers
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -353,7 +354,7 @@ RSpec.describe "Admin Runners" do
         end
 
         it 'dismisses runner installation modal' do
-          page.within('[role="dialog"]') do
+          within_modal do
             click_button('Close', match: :first)
           end
 

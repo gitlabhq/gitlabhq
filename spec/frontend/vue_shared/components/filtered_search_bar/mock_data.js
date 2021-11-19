@@ -5,12 +5,9 @@ import { OPERATOR_IS_ONLY } from '~/vue_shared/components/filtered_search_bar/co
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
-import EpicToken from '~/vue_shared/components/filtered_search_bar/tokens/epic_token.vue';
-import IterationToken from '~/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
-import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const mockAuthor1 = {
   id: 1,
@@ -65,11 +62,6 @@ export const mockMilestones = [
   mockEscapedMilestone,
 ];
 
-export const mockEpics = [
-  { iid: 1, id: 1, title: 'Foo', group_full_path: 'gitlab-org' },
-  { iid: 2, id: 2, title: 'Bar', group_full_path: 'gitlab-org/design' },
-];
-
 export const mockEmoji1 = {
   name: 'thumbsup',
 };
@@ -102,27 +94,6 @@ export const mockAuthorToken = {
   fetchAuthors: Api.projectUsers.bind(Api),
 };
 
-export const mockIterationToken = {
-  type: 'iteration',
-  icon: 'iteration',
-  title: 'Iteration',
-  unique: true,
-  token: IterationToken,
-  fetchIterations: () => Promise.resolve(),
-};
-
-export const mockIterations = [
-  {
-    id: 1,
-    title: 'Iteration 1',
-    startDate: '2021-11-05',
-    dueDate: '2021-11-10',
-    iterationCadence: {
-      title: 'Cadence 1',
-    },
-  },
-];
-
 export const mockLabelToken = {
   type: 'label_name',
   icon: 'labels',
@@ -153,73 +124,6 @@ export const mockReleaseToken = {
   fetchReleases: () => Promise.resolve(),
 };
 
-export const mockEpicToken = {
-  type: 'epic_iid',
-  icon: 'clock',
-  title: 'Epic',
-  unique: true,
-  symbol: '&',
-  token: EpicToken,
-  operators: OPERATOR_IS_ONLY,
-  idProperty: 'iid',
-  fullPath: 'gitlab-org',
-};
-
-export const mockEpicNode1 = {
-  __typename: 'Epic',
-  parent: null,
-  id: 'gid://gitlab/Epic/40',
-  iid: '2',
-  title: 'Marketing epic',
-  description: 'Mock epic description',
-  state: 'opened',
-  startDate: '2017-12-25',
-  dueDate: '2018-02-15',
-  webUrl: 'http://gdk.test:3000/groups/gitlab-org/marketing/-/epics/1',
-  hasChildren: false,
-  hasParent: false,
-  confidential: false,
-};
-
-export const mockEpicNode2 = {
-  __typename: 'Epic',
-  parent: null,
-  id: 'gid://gitlab/Epic/41',
-  iid: '3',
-  title: 'Another marketing',
-  startDate: '2017-12-26',
-  dueDate: '2018-03-10',
-  state: 'opened',
-  webUrl: 'http://gdk.test:3000/groups/gitlab-org/marketing/-/epics/2',
-};
-
-export const mockGroupEpicsQueryResponse = {
-  data: {
-    group: {
-      id: 'gid://gitlab/Group/1',
-      name: 'Gitlab Org',
-      epics: {
-        edges: [
-          {
-            node: {
-              ...mockEpicNode1,
-            },
-            __typename: 'EpicEdge',
-          },
-          {
-            node: {
-              ...mockEpicNode2,
-            },
-            __typename: 'EpicEdge',
-          },
-        ],
-        __typename: 'EpicConnection',
-      },
-      __typename: 'Group',
-    },
-  },
-};
-
 export const mockReactionEmojiToken = {
   type: 'my_reaction_emoji',
   icon: 'thumb-up',
@@ -241,14 +145,6 @@ export const mockMembershipToken = {
     { value: 'exclude', title: 'Direct' },
     { value: 'only', title: 'Inherited' },
   ],
-};
-
-export const mockWeightToken = {
-  type: 'weight',
-  icon: 'weight',
-  title: 'Weight',
-  unique: true,
-  token: WeightToken,
 };
 
 export const mockMembershipTokenOptionsWithoutTitles = {

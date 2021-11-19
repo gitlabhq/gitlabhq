@@ -7,7 +7,6 @@ import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/auth
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
-import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -21,7 +20,6 @@ export const listObj = {
   position: 0,
   title: 'Test',
   list_type: 'label',
-  weight: 3,
   label: {
     id: 5000,
     title: 'Test',
@@ -154,7 +152,6 @@ export const rawIssue = {
   iid: '27',
   dueDate: null,
   timeEstimate: 0,
-  weight: null,
   confidential: false,
   referencePath: 'gitlab-org/test-subgroup/gitlab-test#27',
   path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/27',
@@ -184,7 +181,6 @@ export const mockIssue = {
   title: 'Issue 1',
   dueDate: null,
   timeEstimate: 0,
-  weight: null,
   confidential: false,
   referencePath: `${mockIssueFullPath}#27`,
   path: `/${mockIssueFullPath}/-/issues/27`,
@@ -216,7 +212,6 @@ export const mockIssue2 = {
   title: 'Issue 2',
   dueDate: null,
   timeEstimate: 0,
-  weight: null,
   confidential: false,
   referencePath: 'gitlab-org/test-subgroup/gitlab-test#28',
   path: '/gitlab-org/test-subgroup/gitlab-test/-/issues/28',
@@ -234,7 +229,6 @@ export const mockIssue3 = {
   referencePath: '#29',
   dueDate: null,
   timeEstimate: 0,
-  weight: null,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
   assignees,
@@ -249,7 +243,6 @@ export const mockIssue4 = {
   referencePath: '#30',
   dueDate: null,
   timeEstimate: 0,
-  weight: null,
   confidential: false,
   path: '/gitlab-org/gitlab-test/-/issues/28',
   assignees,
@@ -621,13 +614,6 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
       { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
       { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
     ],
-  },
-  {
-    icon: 'weight',
-    title: __('Weight'),
-    type: 'weight',
-    token: WeightToken,
-    unique: true,
   },
 ];
 

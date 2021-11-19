@@ -97,14 +97,15 @@ Rails.cache.instance_variable_get(:@data).keys
 ## Profile a page
 
 ```ruby
+url = '<url/of/the/page>'
+
 # Before 11.6.0
 logger = Logger.new($stdout)
-admin_token = User.find_by_username('ADMIN_USERNAME').personal_access_tokens.first.token
-app.get("URL/?private_token=#{admin_token}")
+admin_token = User.find_by_username('<admin-username>').personal_access_tokens.first.token
+app.get("#{url}/?private_token=#{admin_token}")
 
 # From 11.6.0
-admin = User.find_by_username('ADMIN_USERNAME')
-url = "/url/goes/here"
+admin = User.find_by_username('<admin-username>')
 Gitlab::Profiler.with_user(admin) { app.get(url) }
 ```
 
@@ -112,8 +113,8 @@ Gitlab::Profiler.with_user(admin) { app.get(url) }
 
 ```ruby
 logger = Logger.new($stdout)
-admin = User.find_by_username('ADMIN_USERNAME')
-Gitlab::Profiler.profile('URL', logger: logger, user: admin)
+admin = User.find_by_username('<admin-username>')
+Gitlab::Profiler.profile('<url/of/the/page>', logger: logger, user: admin)
 ```
 
 ## Time an operation
@@ -414,12 +415,14 @@ p.create_wiki  ### creates the wiki project on the filesystem
 ### In case of issue boards not loading properly and it's getting time out. We need to call the Issue Rebalancing service to fix this
 
 ```ruby
-p = Project.find_by_full_path('PROJECT PATH')
+p = Project.find_by_full_path('<username-or-group>/<project-name>')
 
 Issues::RelativePositionRebalancingService.new(p.root_namespace.all_projects).execute
 ```
 
-## Imports / Exports
+## Imports and exports
+
+### Import a project
 
 ```ruby
 # Find the project and get the error
@@ -462,17 +465,18 @@ Clear the cache:
 sudo gitlab-rake cache:clear
 ```
 
-### Export a repository
+### Export a project
 
 It's typically recommended to export a project through [the web interface](../../user/project/settings/import_export.md#export-a-project-and-its-data) or through [the API](../../api/project_import_export.md). In situations where this is not working as expected, it may be preferable to export a project directly via the Rails console:
 
 ```ruby
-user = User.find_by_username('USERNAME')
-project = Project.find_by_full_path('PROJECT_PATH')
+user = User.find_by_username('<username>')
+# Sufficient permissions needed
+# Read https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions
+
+project = Project.find_by_full_path('<username-or-group>/<project-name')
 Projects::ImportExport::ExportService.new(project, user).execute
 ```
-
-If the project you wish to export is available at `https://gitlab.example.com/baltig/pipeline-templates`, the value to use for `PROJECT_PATH` would be `baltig/pipeline-templates`.
 
 If this all runs successfully, you see an output like the following before being returned to the Rails console prompt:
 
@@ -481,6 +485,11 @@ If this all runs successfully, you see an output like the following before being
 ```
 
 The exported project is located within a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
+
+If this fails, [enable verbose logging](navigating_gitlab_via_rails_console.md#looking-up-database-persisted-objects),
+repeat the above procedure after,
+and report the output to
+[GitLab Support](https://about.gitlab.com/support/).
 
 ## Repository
 
@@ -782,7 +791,7 @@ end
 emails = [email1, email2]
 
 emails.each do |e|
-  delete_bad_scim(e,'GROUPPATH')
+  delete_bad_scim(e,'<group-path>')
 end
 ```
 

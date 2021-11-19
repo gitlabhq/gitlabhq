@@ -18,7 +18,6 @@ import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/auth
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
-import WeightToken from '~/vue_shared/components/filtered_search_bar/tokens/weight_token.vue';
 
 export default {
   types: {
@@ -35,7 +34,6 @@ export default {
     incident: __('Incident'),
     issue: __('Issue'),
     milestone: __('Milestone'),
-    weight: __('Weight'),
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn'],
@@ -59,16 +57,7 @@ export default {
         : this.fullPath.slice(0, this.fullPath.lastIndexOf('/'));
     },
     tokensCE() {
-      const {
-        label,
-        author,
-        assignee,
-        issue,
-        incident,
-        type,
-        milestone,
-        weight,
-      } = this.$options.i18n;
+      const { label, author, assignee, issue, incident, type, milestone } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchAuthors, fetchLabels } = issueBoardFilters(
         this.$apollo,
@@ -154,13 +143,6 @@ export default {
             { icon: 'issue-type-issue', value: types.ISSUE, title: issue },
             { icon: 'issue-type-incident', value: types.INCIDENT, title: incident },
           ],
-        },
-        {
-          type: 'weight',
-          title: weight,
-          icon: 'weight',
-          token: WeightToken,
-          unique: true,
         },
       ];
     },

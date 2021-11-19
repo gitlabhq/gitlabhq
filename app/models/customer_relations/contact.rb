@@ -25,6 +25,13 @@ class CustomerRelations::Contact < ApplicationRecord
   validates :description, length: { maximum: 1024 }
   validate :validate_email_format
 
+  def self.find_ids_by_emails(group_id, emails)
+    raise ArgumentError, "Cannot lookup more than #{MAX_PLUCK} emails" if emails.length > MAX_PLUCK
+
+    where(group_id: group_id, email: emails)
+      .pluck(:id)
+  end
+
   private
 
   def validate_email_format

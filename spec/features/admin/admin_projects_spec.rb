@@ -6,6 +6,7 @@ RSpec.describe "Admin::Projects" do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
   include Select2Helper
+  include Spec::Support::Helpers::ModalHelpers
 
   let(:user) { create :user }
   let(:project) { create(:project) }
@@ -145,7 +146,7 @@ RSpec.describe "Admin::Projects" do
         click_button 'Leave'
       end
 
-      page.within('[role="dialog"]') do
+      within_modal do
         click_button('Leave')
       end
 

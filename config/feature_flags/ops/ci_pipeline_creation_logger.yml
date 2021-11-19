@@ -1,0 +1,8 @@
+---
+name: ci_pipeline_creation_logger
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72996
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345779
+milestone: '14.5'
+type: ops
+group: group::pipeline execution
+default_enabled: false

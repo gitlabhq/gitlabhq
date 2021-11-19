@@ -483,6 +483,43 @@ expect(page).to have_css '[data-testid="weight"]', text: 2
 expect(page).to have_css '.atwho-view ul', visible: true
 ```
 
+##### Interacting with modals
+
+Use the `within_modal` helper to interact with [GitLab UI modals](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-modal--default).
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+within_modal do
+  expect(page).to have_link _('UI testing docs')
+
+  fill_in _('Search projects'), with: 'gitlab'
+
+  click_button 'Continue'
+end
+```
+
+Furthermore, you can use `accept_gl_confirm` for confirmation modals that only need to be accepted.
+This is helpful when migrating [`window.confirm()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm) to [`confirmAction`](https://gitlab.com/gitlab-org/gitlab/-/blob/ee280ed2b763d1278ad38c6e7e8a0aff092f617a/app/assets/javascripts/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal.js#L3).
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+accept_gl_confirm do
+  click_button 'Delete user'
+end
+```
+
+You can also pass the expected confirmation message and button text to `accept_gl_confirm`.
+
+```ruby
+include Spec::Support::Helpers::ModalHelpers
+
+accept_gl_confirm('Are you sure you want to delete this user?', button_text: 'Delete') do
+  click_button 'Delete user'
+end
+```
+
 ##### Other useful methods
 
 After you retrieve an element using a [finder method](#finders), you can invoke a number of

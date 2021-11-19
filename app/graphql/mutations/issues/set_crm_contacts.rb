@@ -5,7 +5,7 @@ module Mutations
     class SetCrmContacts < Base
       graphql_name 'IssueSetCrmContacts'
 
-      argument :crm_contact_ids,
+      argument :contact_ids,
                [::Types::GlobalIDType[::CustomerRelations::Contact]],
                required: true,
                description: 'Customer relations contact IDs to set. Replaces existing contacts by default.'
@@ -15,27 +15,27 @@ module Mutations
                required: false,
                description: 'Changes the operation mode. Defaults to REPLACE.'
 
-      def resolve(project_path:, iid:, crm_contact_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
+      def resolve(project_path:, iid:, contact_ids:, operation_mode: Types::MutationOperationModeEnum.enum[:replace])
         issue = authorized_find!(project_path: project_path, iid: iid)
         project = issue.project
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless Feature.enabled?(:customer_relations, project.group, default_enabled: :yaml)
 
-        crm_contact_ids = crm_contact_ids.compact.map do |crm_contact_id|
-          raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{crm_contact_id} is invalid." unless crm_contact_id.respond_to?(:model_id)
+        contact_ids = contact_ids.compact.map do |contact_id|
+          raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid." unless contact_id.respond_to?(:model_id)
 
-          crm_contact_id.model_id.to_i
+          contact_id.model_id.to_i
         end
 
         attribute_name = case operation_mode
                          when Types::MutationOperationModeEnum.enum[:append]
-                           :add_crm_contact_ids
+                           :add_ids
                          when Types::MutationOperationModeEnum.enum[:remove]
-                           :remove_crm_contact_ids
+                           :remove_ids
                          else
-                           :crm_contact_ids
+                           :replace_ids
                          end
 
-        response = ::Issues::SetCrmContactsService.new(project: project, current_user: current_user, params: { attribute_name => crm_contact_ids })
+        response = ::Issues::SetCrmContactsService.new(project: project, current_user: current_user, params: { attribute_name => contact_ids })
           .execute(issue)
 
         {

@@ -5,7 +5,7 @@ module MergeRequests
     def execute
       # If performing a squash would result in no change, then
       # immediately return a success message without performing a squash
-      if merge_request.commits_count < 2 && message.nil?
+      if merge_request.commits_count == 1 && message == merge_request.first_commit.safe_message
         return success(squash_sha: merge_request.diff_head_sha)
       end
 
@@ -17,7 +17,7 @@ module MergeRequests
     private
 
     def squash!
-      squash_sha = repository.squash(current_user, merge_request, message || merge_request.default_squash_commit_message)
+      squash_sha = repository.squash(current_user, merge_request, message)
 
       success(squash_sha: squash_sha)
     rescue StandardError => e
@@ -39,7 +39,7 @@ module MergeRequests
     end
 
     def message
-      params[:squash_commit_message].presence
+      params[:squash_commit_message].presence || merge_request.default_squash_commit_message
     end
   end
 end

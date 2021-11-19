@@ -2,9 +2,13 @@
 
 module Ci
   class CreatePipelineService < BaseService
-    attr_reader :pipeline
+    attr_reader :pipeline, :logger
 
     CreateError = Class.new(StandardError)
+
+    LOG_MAX_DURATION_THRESHOLD = 3.seconds
+    LOG_MAX_PIPELINE_SIZE = 2_000
+    LOG_MAX_CREATION_THRESHOLD = 20.seconds
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
                 Gitlab::Ci::Pipeline::Chain::Build::Associations,
@@ -53,6 +57,7 @@ module Ci
     # @return [Ci::Pipeline]                             The created Ci::Pipeline object.
     # rubocop: disable Metrics/ParameterLists
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
+      @logger = build_logger
       @pipeline = Ci::Pipeline.new
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -76,6 +81,7 @@ module Ci
         push_options: params[:push_options] || {},
         chat_data: params[:chat_data],
         bridge: bridge,
+        logger: @logger,
         **extra_options(**options))
 
       # Ensure we never persist the pipeline when dry_run: true
@@ -98,6 +104,9 @@ module Ci
       else
         ServiceResponse.success(payload: pipeline)
       end
+
+    ensure
+      @logger.commit(pipeline: pipeline, caller: self.class.name)
     end
     # rubocop: enable Metrics/ParameterLists
 
@@ -134,6 +143,32 @@ module Ci
 
     def extra_options(content: nil, dry_run: false)
       { content: content, dry_run: dry_run }
+    end
+
+    def build_logger
+      Gitlab::Ci::Pipeline::Logger.new(project: project) do |l|
+        l.log_when do |observations|
+          observations.any? do |name, values|
+            values.any? &&
+            name.to_s.end_with?('duration_s') &&
+            values.max >= LOG_MAX_DURATION_THRESHOLD
+          end
+        end
+
+        l.log_when do |observations|
+          values = observations['pipeline_size_count']
+          next false if values.empty?
+
+          values.max >= LOG_MAX_PIPELINE_SIZE
+        end
+
+        l.log_when do |observations|
+          values = observations['pipeline_creation_duration_s']
+          next false if values.empty?
+
+          values.max >= LOG_MAX_CREATION_THRESHOLD
+        end
+      end
     end
   end
 end

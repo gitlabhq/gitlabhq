@@ -12,7 +12,7 @@ RSpec.describe 'Setting issues crm contacts' do
 
   let(:issue) { create(:issue, project: project) }
   let(:operation_mode) { Types::MutationOperationModeEnum.default_mode }
-  let(:crm_contact_ids) { [global_id_of(contacts[1]), global_id_of(contacts[2])] }
+  let(:contact_ids) { [global_id_of(contacts[1]), global_id_of(contacts[2])] }
   let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
 
   let(:mutation) do
@@ -20,7 +20,7 @@ RSpec.describe 'Setting issues crm contacts' do
       project_path: issue.project.full_path,
       iid: issue.iid.to_s,
       operation_mode: operation_mode,
-      crm_contact_ids: crm_contact_ids
+      contact_ids: contact_ids
     }
 
     graphql_mutation(:issue_set_crm_contacts, variables,
@@ -83,7 +83,7 @@ RSpec.describe 'Setting issues crm contacts' do
     end
 
     context 'append' do
-      let(:crm_contact_ids) { [global_id_of(contacts[3])] }
+      let(:contact_ids) { [global_id_of(contacts[3])] }
       let(:operation_mode) { Types::MutationOperationModeEnum.enum[:append] }
 
       it 'updates the issue with correct contacts' do
@@ -95,7 +95,7 @@ RSpec.describe 'Setting issues crm contacts' do
     end
 
     context 'remove' do
-      let(:crm_contact_ids) { [global_id_of(contacts[0])] }
+      let(:contact_ids) { [global_id_of(contacts[0])] }
       let(:operation_mode) { Types::MutationOperationModeEnum.enum[:remove] }
 
       it 'updates the issue with correct contacts' do
@@ -107,7 +107,7 @@ RSpec.describe 'Setting issues crm contacts' do
     end
 
     context 'when the contact does not exist' do
-      let(:crm_contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
+      let(:contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
 
       it 'returns expected error' do
         post_graphql_mutation(mutation, current_user: user)
@@ -120,7 +120,7 @@ RSpec.describe 'Setting issues crm contacts' do
     context 'when the contact belongs to a different group' do
       let(:group2) { create(:group) }
       let(:contact) { create(:contact, group: group2) }
-      let(:crm_contact_ids) { [global_id_of(contact)] }
+      let(:contact_ids) { [global_id_of(contact)] }
 
       before do
         group2.add_reporter(user)
@@ -137,7 +137,7 @@ RSpec.describe 'Setting issues crm contacts' do
     context 'when attempting to add more than 6' do
       let(:operation_mode) { Types::MutationOperationModeEnum.enum[:append] }
       let(:gid) { global_id_of(contacts[0]) }
-      let(:crm_contact_ids) { [gid, gid, gid, gid, gid, gid, gid] }
+      let(:contact_ids) { [gid, gid, gid, gid, gid, gid, gid] }
 
       it 'returns expected error' do
         post_graphql_mutation(mutation, current_user: user)
@@ -149,7 +149,7 @@ RSpec.describe 'Setting issues crm contacts' do
 
     context 'when trying to remove non-existent contact' do
       let(:operation_mode) { Types::MutationOperationModeEnum.enum[:remove] }
-      let(:crm_contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
+      let(:contact_ids) { ["gid://gitlab/CustomerRelations::Contact/#{non_existing_record_id}"] }
 
       it 'raises expected error' do
         post_graphql_mutation(mutation, current_user: user)

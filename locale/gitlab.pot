@@ -2019,6 +2019,12 @@ msgstr ""
 msgid "Add commit messages as comments to Pivotal Tracker stories. %{docs_link}"
 msgstr ""
 
+msgid "Add customer relation contact(s)."
+msgstr ""
+
+msgid "Add customer relation contacts"
+msgstr ""
+
 msgid "Add deploy freeze"
 msgstr ""
 
@@ -2220,7 +2226,7 @@ msgstr ""
 msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
-msgid "Adds a Zoom meeting"
+msgid "Adds a Zoom meeting."
 msgstr ""
 
 msgid "Adds a to do."
@@ -2229,7 +2235,7 @@ msgstr ""
 msgid "Adds an issue to an epic."
 msgstr ""
 
-msgid "Adds email participant(s)"
+msgid "Adds email participant(s)."
 msgstr ""
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
@@ -24229,6 +24235,12 @@ msgid_plural "%d more items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "One or more contacts were successfully added."
+msgstr ""
+
+msgid "One or more contacts were successfully removed."
+msgstr ""
+
 msgid "One or more groups that you don't have access to."
 msgstr ""
 
@@ -28753,6 +28765,9 @@ msgstr ""
 msgid "Remove Zoom meeting"
 msgstr ""
 
+msgid "Remove Zoom meeting."
+msgstr ""
+
 msgid "Remove access"
 msgstr ""
 
@@ -28790,6 +28805,12 @@ msgid "Remove card"
 msgstr ""
 
 msgid "Remove child epic from an epic"
+msgstr ""
+
+msgid "Remove customer relation contact(s)."
+msgstr ""
+
+msgid "Remove customer relation contacts"
 msgstr ""
 
 msgid "Remove deploy key"
@@ -39569,6 +39590,9 @@ msgstr ""
 msgid "You can only %{action} files when you are on a branch"
 msgstr ""
 
+msgid "You can only add up to %{max_contacts} contacts at one time"
+msgstr ""
+
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
@@ -39609,6 +39633,9 @@ msgid "You cannot %{action} %{state} users."
 msgstr ""
 
 msgid "You cannot access the raw file. Please wait a minute."
+msgstr ""
+
+msgid "You cannot combine replace_ids with add_ids or remove_ids"
 msgstr ""
 
 msgid "You cannot impersonate a blocked user"
@@ -39747,6 +39774,9 @@ msgid "You have insufficient permissions to remove an on-call schedule from this
 msgstr ""
 
 msgid "You have insufficient permissions to remove this HTTP integration"
+msgstr ""
+
+msgid "You have insufficient permissions to set customer relations contacts for this issue"
 msgstr ""
 
 msgid "You have insufficient permissions to update an on-call schedule for this project"
