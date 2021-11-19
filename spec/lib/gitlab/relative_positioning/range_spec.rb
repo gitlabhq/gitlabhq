@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RelativePositioning::Range do
-  item_a = OpenStruct.new(relative_position: 100, object: :x, positioned?: true)
-  item_b = OpenStruct.new(relative_position: 200, object: :y, positioned?: true)
+  position_struct = Struct.new(:relative_position, :object, :positioned?)
+
+  item_a = position_struct.new(100, :x, true)
+  item_b = position_struct.new(200, :y, true)
 
   before do
     allow(item_a).to receive(:lhs_neighbour) { nil }
@@ -90,12 +92,12 @@ RSpec.describe Gitlab::RelativePositioning::Range do
   end
 
   describe '#cover?' do
-    item_c = OpenStruct.new(relative_position: 150, object: :z, positioned?: true)
-    item_d = OpenStruct.new(relative_position: 050, object: :w, positioned?: true)
-    item_e = OpenStruct.new(relative_position: 250, object: :r, positioned?: true)
-    item_f = OpenStruct.new(positioned?: false)
-    item_ax = OpenStruct.new(relative_position: 100, object: :not_x, positioned?: true)
-    item_bx = OpenStruct.new(relative_position: 200, object: :not_y, positioned?: true)
+    item_c = position_struct.new(150, :z, true)
+    item_d = position_struct.new(050, :w, true)
+    item_e = position_struct.new(250, :r, true)
+    item_f = position_struct.new(positioned?: false)
+    item_ax = position_struct.new(100, :not_x, true)
+    item_bx = position_struct.new(200, :not_y, true)
 
     where(:lhs, :rhs, :item, :expected_result) do
       [

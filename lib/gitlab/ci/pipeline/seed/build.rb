@@ -7,8 +7,6 @@ module Gitlab
         class Build < Seed::Base
           include Gitlab::Utils::StrongMemoize
 
-          EnvironmentCreationFailure = Class.new(StandardError)
-
           delegate :dig, to: :@seed_attributes
 
           def initialize(context, attributes, stages_for_needs_lookup = [])
@@ -107,20 +105,7 @@ module Gitlab
             environment = Seed::Environment.new(build).to_resource if environment.nil?
 
             unless environment.persisted?
-              if Feature.enabled?(:surface_environment_creation_failure, build.project, default_enabled: :yaml) &&
-                 Feature.disabled?(:surface_environment_creation_failure_override, build.project)
-                return { status: :failed, failure_reason: :environment_creation_failure }
-              end
-
-              # If there is a validation error on environment creation, such as
-              # the name contains invalid character, the build falls back to a
-              # non-environment job.
-              Gitlab::ErrorTracking.track_exception(
-                EnvironmentCreationFailure.new,
-                project_id: build.project_id,
-                reason: environment.errors.full_messages.to_sentence)
-
-              return { environment: nil }
+              return { status: :failed, failure_reason: :environment_creation_failure }
             end
 
             build.persisted_environment = environment

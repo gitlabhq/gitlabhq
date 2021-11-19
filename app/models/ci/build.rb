@@ -164,6 +164,7 @@ module Ci
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
     scope :with_expired_artifacts, -> { with_downloadable_artifacts.where('artifacts_expire_at < ?', Time.current) }
+    scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }

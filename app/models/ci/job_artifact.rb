@@ -133,6 +133,7 @@ module Ci
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
+    scope :for_job_ids, ->(job_ids) { where(job_id: job_ids) }
     scope :for_job_name, ->(name) { joins(:job).where(ci_builds: { name: name }) }
 
     scope :with_job, -> { joins(:job).includes(:job) }
@@ -264,6 +265,10 @@ module Ci
 
     def self.artifacts_size_for(project)
       self.where(project: project).sum(:size)
+    end
+
+    def self.distinct_job_ids
+      distinct.pluck(:job_id)
     end
 
     ##

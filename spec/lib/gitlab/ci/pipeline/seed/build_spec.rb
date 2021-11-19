@@ -452,25 +452,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
             expect(subject.metadata.expanded_environment_name).to be_nil
             expect(Environment.exists?(name: expected_environment_name)).to eq(false)
           end
-
-          context 'when surface_environment_creation_failure feature flag is disabled' do
-            before do
-              stub_feature_flags(surface_environment_creation_failure: false)
-            end
-
-            it_behaves_like 'non-deployment job'
-            it_behaves_like 'ensures environment inexistence'
-
-            it 'tracks an exception' do
-              expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                .with(an_instance_of(described_class::EnvironmentCreationFailure),
-                      project_id: project.id,
-                      reason: %q{Name can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces, but it cannot start or end with '/'})
-                .once
-
-              subject
-            end
-          end
         end
       end
 

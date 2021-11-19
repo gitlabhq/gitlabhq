@@ -82,10 +82,10 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 ## Checking for background migrations before upgrading
 
 Certain releases may require different migrations to be
-finished before you update to the newer version. 
+finished before you update to the newer version.
 
 [Batched migrations](#batched-background-migrations) are a migration type available in GitLab 14.0 and later.
-Background migrations and batched migrations not the same, so you should check that both are 
+Background migrations and batched migrations not the same, so you should check that both are
 complete before updating.
 
 Decrease the time required to complete these migrations by increasing the number of
@@ -362,8 +362,10 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 ### 14.4.0
 
-Git 2.33.x and later is required. We recommend you use the
-[Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.33.x and later is required. We recommend you use the
+  [Git version provided by Gitaly](../install/installation.md#git).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.3.0
 
@@ -389,6 +391,8 @@ for how to proceed.
   # For source installations
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.2.0
 
@@ -416,14 +420,19 @@ for how to proceed.
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
 
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 ### 14.1.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
   but can upgrade to 14.1.Z.
-- It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
+
+  It is not required for instances already running 14.0.5 (or higher) to stop at 14.1.Z.
   14.1 is included on the upgrade path for the broadest compatibility
   with self-managed installations, and ensure 14.0.0-14.0.4 installations do not
   encounter issues with [batched background migrations](#batched-background-migrations).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 14.0.0
 
@@ -454,6 +463,8 @@ for how to proceed.
   You should instead follow a [supported upgrade path](#upgrade-paths).
 - The support of PostgreSQL 11 [has been dropped](../install/requirements.md#database). Make sure to [update your database](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) to version 12 before updating to GitLab 14.0.
 
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 #### Upgrading to later 14.Y releases
 
 - Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later,
@@ -464,48 +475,60 @@ for how to proceed.
   1. [Batched background migrations need to finish](#batched-background-migrations)
      before you update to a later version [and may take longer than usual](#1400).
 
+### 13.12.0
+
+See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
 ### 13.11.0
 
-Git 2.31.x and later is required. We recommend you use the
-[Git version provided by Gitaly](../install/installation.md#git).
+- Git 2.31.x and later is required. We recommend you use the
+  [Git version provided by Gitaly](../install/installation.md#git).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+
+### 13.10.0
+
+See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 13.9.0
 
-We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
-that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
-to perform the following additional steps for the zero-downtime upgrade:
+- We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
+  that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2, and 13.9.3 when following the zero-downtime steps. It is necessary
+  to perform the following additional steps for the zero-downtime upgrade:
 
-1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
-   execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
-   to drop the problematic triggers:
+  1. Before running the final `sudo gitlab-rake db:migrate` command on the deploy node,
+     execute the following queries using the PostgreSQL console (or `sudo gitlab-psql`)
+     to drop the problematic triggers:
 
-   ```sql
-   drop trigger trigger_e40a6f1858e6 on application_settings;
-   drop trigger trigger_0d588df444c8 on application_settings;
-   drop trigger trigger_1572cbc9a15f on application_settings;
-   drop trigger trigger_22a39c5c25f3 on application_settings;
-   ```
+     ```sql
+     drop trigger trigger_e40a6f1858e6 on application_settings;
+     drop trigger trigger_0d588df444c8 on application_settings;
+     drop trigger trigger_1572cbc9a15f on application_settings;
+     drop trigger trigger_22a39c5c25f3 on application_settings;
+     ```
 
-1. Run the final migrations:
+  1. Run the final migrations:
 
-   ```shell
-   sudo gitlab-rake db:migrate
-   ```
+     ```shell
+     sudo gitlab-rake db:migrate
+     ```
 
-If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
-encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
-see the following error:
+  If you have already run the final `sudo gitlab-rake db:migrate` command on the deploy node and have
+  encountered the [column rename issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160), you
+  see the following error:
 
-```shell
--- remove_column(:application_settings, :asset_proxy_whitelist)
-rake aborted!
-StandardError: An error has occurred, all later migrations canceled:
-PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
-DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
-```
+  ```shell
+  -- remove_column(:application_settings, :asset_proxy_whitelist)
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+  PG::DependentObjectsStillExist: ERROR: cannot drop column asset_proxy_whitelist of table application_settings because other objects depend on it
+  DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
+  ```
 
-To work around this bug, follow the previous steps to complete the update.
-More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
+  To work around this bug, follow the previous steps to complete the update.
+  More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
+
+- See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
 ### 13.8.8
 
@@ -614,6 +637,14 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
+
+### Maintenance mode issue in GitLab 13.9 to 14.4
+
+When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+Users who were signed in before Maintenance mode was enabled will continue to be signed in. If the admin who enabled Maintenance mode loses their session, then they will not be able to disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/#disable-maintenance-mode).
+
+[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0, and is expected to be backported to GitLab 14.3 and 14.4.
 
 ## Miscellaneous
 

@@ -31,10 +31,9 @@ set of concurrently running child pipelines, but within the same project:
 - Child pipelines still execute each of their jobs according to a stage sequence, but
   would be free to continue forward through their stages without waiting for unrelated
   jobs in the parent pipeline to finish.
-- The configuration is split up into smaller child pipeline configurations, which are
+- The configuration is split up into smaller child pipeline configurations. Each child pipeline contains only relevant steps which are
   easier to understand. This reduces the cognitive load to understand the overall configuration.
 - Imports are done at the child pipeline level, reducing the likelihood of collisions.
-- Each pipeline has only relevant steps, making it easier to understand what's going on.
 
 Child pipelines work well with other GitLab CI/CD features:
 

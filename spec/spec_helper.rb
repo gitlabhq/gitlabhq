@@ -321,10 +321,6 @@ RSpec.configure do |config|
       # For more information check https://gitlab.com/gitlab-org/gitlab/-/issues/339348
       stub_feature_flags(new_header_search: false)
 
-      # Disable the override flag in order to enable the feature by default.
-      # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
-      stub_feature_flags(surface_environment_creation_failure_override: false)
-
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

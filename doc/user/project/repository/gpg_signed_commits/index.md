@@ -54,16 +54,17 @@ started:
 1. [Install GPG](https://www.gnupg.org/download/index.html) for your operating system.
    If your operating system has `gpg2` installed, replace `gpg` with `gpg2` in
    the following commands.
-1. Generate the private/public key pair with the following command, which will
-   spawn a series of questions:
+1. Generate the private/public key pair with the command appropriate for your version
+   of `gpg`. This command spawns a series of questions:
 
    ```shell
+   # Use this command for the default version of gpg, including
+   # Gpg4win on Windows, and most macOS versions:
+   gpg --gen-key
+
+   # Use this command for versions of GPG later than 2.1.17:
    gpg --full-gen-key
    ```
-
-   NOTE:
-   In some cases like Gpg4win on Windows and other macOS versions, the command
-   here may be `gpg --gen-key`.
 
 1. The first question is which algorithm can be used. Select the kind you want
    or press <kbd>Enter</kbd> to choose the default (RSA and RSA):

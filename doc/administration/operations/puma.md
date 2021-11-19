@@ -113,7 +113,7 @@ is used when Puma is enabled.
 NOTE:
 Unlike Unicorn, the `puma['worker_timeout']` setting does not set the maximum request duration.
 
-To change the worker timeout:
+To change the worker timeout to 600 seconds:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

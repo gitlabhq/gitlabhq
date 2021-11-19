@@ -16495,7 +16495,7 @@ msgstr ""
 msgid "GroupSAML|\"persistent\" recommended"
 msgstr ""
 
-msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enabling %{linkStart}SSO enforcement%{linkEnd} can reduce security risks."
+msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enable %{linkStart}SSO enforcement%{linkEnd} to reduce security risks."
 msgstr ""
 
 msgid "GroupSAML|Active SAML Group Links (%{count})"
