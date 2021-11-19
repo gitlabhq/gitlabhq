@@ -249,6 +249,9 @@ In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like
 use the `ApplicationRecord`-provided `.pluck_primary_key` helper method instead.
 In the latter, you should add a small helper method to the relevant model.
 
+If you have strong reasons to use `pluck`, it could make sense to limit the number
+of records plucked. `MAX_PLUCK` defaults to `1_000` in `ApplicationRecord`.
+
 ## Inherit from ApplicationRecord
 
 Most models in the GitLab codebase should inherit from `ApplicationRecord`,

@@ -19,7 +19,6 @@ describe('Agents', () => {
   };
   const provideData = {
     projectPath: 'path/to/project',
-    kasAddress: 'kas.example.com',
   };
 
   const createWrapper = ({ props = {}, agents = [], pageInfo = null, trees = [], count = 0 }) => {
@@ -213,24 +212,6 @@ describe('Agents', () => {
     it('should render empty state', () => {
       expect(findAgentTable().exists()).toBe(false);
       expect(findEmptyState().exists()).toBe(true);
-    });
-  });
-
-  describe('when the agent configurations are present', () => {
-    const trees = [
-      {
-        name: 'agent-1',
-        path: '.gitlab/agents/agent-1',
-        webPath: '/project/path/.gitlab/agents/agent-1',
-      },
-    ];
-
-    beforeEach(() => {
-      return createWrapper({ agents: [], trees });
-    });
-
-    it('should pass the correct hasConfigurations boolean value to empty state component', () => {
-      expect(findEmptyState().props('hasConfigurations')).toEqual(true);
     });
   });
 

@@ -1,10 +1,12 @@
 import { GlAlert, GlButton, GlFormInputGroup } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
-import { I18N_INSTALL_AGENT_MODAL, MAX_LIST_COUNT } from '~/clusters_list/constants';
+import { I18N_AGENT_MODAL, MAX_LIST_COUNT } from '~/clusters_list/constants';
 import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
+import getAgentConfigurations from '~/clusters_list/graphql/queries/agent_configurations.query.graphql';
 import createAgentMutation from '~/clusters_list/graphql/mutations/create_agent.mutation.graphql';
 import createAgentTokenMutation from '~/clusters_list/graphql/mutations/create_agent_token.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -23,6 +25,9 @@ const localVue = createLocalVue();
 localVue.use(VueApollo);
 
 const projectPath = 'path/to/project';
+const kasAddress = 'kas.example.com';
+const kasEnabled = true;
+const emptyStateImage = 'path/to/image';
 const defaultBranchName = 'default';
 const maxAgents = MAX_LIST_COUNT;
 
@@ -30,7 +35,16 @@ describe('InstallAgentModal', () => {
   let wrapper;
   let apolloProvider;
 
-  const i18n = I18N_INSTALL_AGENT_MODAL;
+  const configurations = [{ agentName: 'agent-name' }];
+  const apolloQueryResponse = {
+    data: {
+      project: {
+        clusterAgents: { nodes: [] },
+        agentConfigurations: { nodes: configurations },
+      },
+    },
+  };
+
   const findModal = () => wrapper.findComponent(ModalStub);
   const findAgentDropdown = () => findModal().findComponent(AvailableAgentsDropdown);
   const findAlert = () => findModal().findComponent(GlAlert);
@@ -40,6 +54,8 @@ describe('InstallAgentModal', () => {
       .wrappers.find((button) => button.props('variant') === variant);
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
+  const findSecondaryButton = () => wrapper.findByTestId('agent-secondary-button');
+  const findImage = () => wrapper.findByRole('img', { alt: I18N_AGENT_MODAL.install.altText });
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
@@ -52,7 +68,9 @@ describe('InstallAgentModal', () => {
   const createWrapper = () => {
     const provide = {
       projectPath,
-      kasAddress: 'kas.example.com',
+      kasAddress,
+      kasEnabled,
+      emptyStateImage,
     };
 
     const propsData = {
@@ -60,7 +78,7 @@ describe('InstallAgentModal', () => {
       maxAgents,
     };
 
-    wrapper = shallowMount(InstallAgentModal, {
+    wrapper = shallowMountExtended(InstallAgentModal, {
       attachTo: document.body,
       stubs: {
         GlModal: ModalStub,
@@ -85,9 +103,11 @@ describe('InstallAgentModal', () => {
     });
   };
 
-  const mockSelectedAgentResponse = () => {
+  const mockSelectedAgentResponse = async () => {
     createWrapper();
     writeQuery();
+
+    await wrapper.vm.$nextTick();
 
     wrapper.vm.setAgentName('agent-name');
     findActionButton().vm.$emit('click');
@@ -96,121 +116,160 @@ describe('InstallAgentModal', () => {
   };
 
   beforeEach(() => {
+    apolloProvider = createMockApollo([
+      [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+    ]);
     createWrapper();
   });
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
     apolloProvider = null;
   });
 
-  describe('initial state', () => {
-    it('renders the dropdown for available agents', () => {
-      expect(findAgentDropdown().isVisible()).toBe(true);
-      expect(findModal().text()).not.toContain(i18n.basicInstallTitle);
-      expect(findModal().findComponent(GlFormInputGroup).exists()).toBe(false);
-      expect(findModal().findComponent(GlAlert).exists()).toBe(false);
-      expect(findModal().findComponent(CodeBlock).exists()).toBe(false);
+  describe('when agent configurations are present', () => {
+    const i18n = I18N_AGENT_MODAL.register;
+
+    describe('initial state', () => {
+      it('renders the dropdown for available agents', () => {
+        expect(findAgentDropdown().isVisible()).toBe(true);
+        expect(findModal().text()).not.toContain(i18n.basicInstallTitle);
+        expect(findModal().findComponent(GlFormInputGroup).exists()).toBe(false);
+        expect(findModal().findComponent(GlAlert).exists()).toBe(false);
+        expect(findModal().findComponent(CodeBlock).exists()).toBe(false);
+      });
+
+      it('renders a cancel button', () => {
+        expect(findCancelButton().isVisible()).toBe(true);
+        expectDisabledAttribute(findCancelButton(), false);
+      });
+
+      it('renders a disabled next button', () => {
+        expect(findActionButton().isVisible()).toBe(true);
+        expect(findActionButton().text()).toBe(i18n.registerAgentButton);
+        expectDisabledAttribute(findActionButton(), true);
+      });
     });
 
-    it('renders a cancel button', () => {
-      expect(findCancelButton().isVisible()).toBe(true);
-      expectDisabledAttribute(findCancelButton(), false);
+    describe('an agent is selected', () => {
+      beforeEach(() => {
+        findAgentDropdown().vm.$emit('agentSelected');
+      });
+
+      it('enables the next button', () => {
+        expect(findActionButton().isVisible()).toBe(true);
+        expectDisabledAttribute(findActionButton(), false);
+      });
     });
 
-    it('renders a disabled next button', () => {
-      expect(findActionButton().isVisible()).toBe(true);
-      expect(findActionButton().text()).toBe(i18n.registerAgentButton);
-      expectDisabledAttribute(findActionButton(), true);
+    describe('registering an agent', () => {
+      const createAgentHandler = jest.fn().mockResolvedValue(createAgentResponse);
+      const createAgentTokenHandler = jest.fn().mockResolvedValue(createAgentTokenResponse);
+
+      beforeEach(() => {
+        apolloProvider = createMockApollo([
+          [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+          [createAgentMutation, createAgentHandler],
+          [createAgentTokenMutation, createAgentTokenHandler],
+        ]);
+
+        return mockSelectedAgentResponse();
+      });
+
+      it('creates an agent and token', () => {
+        expect(createAgentHandler).toHaveBeenCalledWith({
+          input: { name: 'agent-name', projectPath },
+        });
+
+        expect(createAgentTokenHandler).toHaveBeenCalledWith({
+          input: { clusterAgentId: 'agent-id', name: 'agent-name' },
+        });
+      });
+
+      it('renders a close button', () => {
+        expect(findActionButton().isVisible()).toBe(true);
+        expect(findActionButton().text()).toBe(i18n.close);
+        expectDisabledAttribute(findActionButton(), false);
+      });
+
+      it('shows agent instructions', () => {
+        const modalText = findModal().text();
+        expect(modalText).toContain(i18n.basicInstallTitle);
+        expect(modalText).toContain(i18n.basicInstallBody);
+
+        const token = findModal().findComponent(GlFormInputGroup);
+        expect(token.props('value')).toBe('mock-agent-token');
+
+        const alert = findModal().findComponent(GlAlert);
+        expect(alert.props('title')).toBe(i18n.tokenSingleUseWarningTitle);
+
+        const code = findModal().findComponent(CodeBlock).props('code');
+        expect(code).toContain('--agent-token=mock-agent-token');
+        expect(code).toContain('--kas-address=kas.example.com');
+      });
+
+      describe('error creating agent', () => {
+        beforeEach(() => {
+          apolloProvider = createMockApollo([
+            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+            [createAgentMutation, jest.fn().mockResolvedValue(createAgentErrorResponse)],
+          ]);
+
+          return mockSelectedAgentResponse();
+        });
+
+        it('displays the error message', () => {
+          expect(findAlert().text()).toBe(
+            createAgentErrorResponse.data.createClusterAgent.errors[0],
+          );
+        });
+      });
+
+      describe('error creating token', () => {
+        beforeEach(() => {
+          apolloProvider = createMockApollo([
+            [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
+            [createAgentMutation, jest.fn().mockResolvedValue(createAgentResponse)],
+            [createAgentTokenMutation, jest.fn().mockResolvedValue(createAgentTokenErrorResponse)],
+          ]);
+
+          return mockSelectedAgentResponse();
+        });
+
+        it('displays the error message', async () => {
+          expect(findAlert().text()).toBe(
+            createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
+          );
+        });
+      });
     });
   });
 
-  describe('an agent is selected', () => {
-    beforeEach(() => {
-      findAgentDropdown().vm.$emit('agentSelected');
-    });
-
-    it('enables the next button', () => {
-      expect(findActionButton().isVisible()).toBe(true);
-      expectDisabledAttribute(findActionButton(), false);
-    });
-  });
-
-  describe('registering an agent', () => {
-    const createAgentHandler = jest.fn().mockResolvedValue(createAgentResponse);
-    const createAgentTokenHandler = jest.fn().mockResolvedValue(createAgentTokenResponse);
+  describe('when there are no agent configurations present', () => {
+    const i18n = I18N_AGENT_MODAL.install;
+    const apolloQueryEmptyResponse = {
+      data: {
+        project: {
+          clusterAgents: { nodes: [] },
+          agentConfigurations: { nodes: [] },
+        },
+      },
+    };
 
     beforeEach(() => {
       apolloProvider = createMockApollo([
-        [createAgentMutation, createAgentHandler],
-        [createAgentTokenMutation, createAgentTokenHandler],
+        [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryEmptyResponse)],
       ]);
-
-      return mockSelectedAgentResponse(apolloProvider);
+      createWrapper();
     });
 
-    it('creates an agent and token', () => {
-      expect(createAgentHandler).toHaveBeenCalledWith({
-        input: { name: 'agent-name', projectPath },
-      });
-
-      expect(createAgentTokenHandler).toHaveBeenCalledWith({
-        input: { clusterAgentId: 'agent-id', name: 'agent-name' },
-      });
+    it('renders empty state image', () => {
+      expect(findImage().attributes('src')).toBe(emptyStateImage);
     });
 
-    it('renders a close button', () => {
-      expect(findActionButton().isVisible()).toBe(true);
-      expect(findActionButton().text()).toBe(i18n.close);
-      expectDisabledAttribute(findActionButton(), false);
-    });
-
-    it('shows agent instructions', () => {
-      const modalText = findModal().text();
-      expect(modalText).toContain(i18n.basicInstallTitle);
-      expect(modalText).toContain(i18n.basicInstallBody);
-
-      const token = findModal().findComponent(GlFormInputGroup);
-      expect(token.props('value')).toBe('mock-agent-token');
-
-      const alert = findModal().findComponent(GlAlert);
-      expect(alert.props('title')).toBe(i18n.tokenSingleUseWarningTitle);
-
-      const code = findModal().findComponent(CodeBlock).props('code');
-      expect(code).toContain('--agent-token=mock-agent-token');
-      expect(code).toContain('--kas-address=kas.example.com');
-    });
-
-    describe('error creating agent', () => {
-      beforeEach(() => {
-        apolloProvider = createMockApollo([
-          [createAgentMutation, jest.fn().mockResolvedValue(createAgentErrorResponse)],
-        ]);
-
-        return mockSelectedAgentResponse();
-      });
-
-      it('displays the error message', () => {
-        expect(findAlert().text()).toBe(createAgentErrorResponse.data.createClusterAgent.errors[0]);
-      });
-    });
-
-    describe('error creating token', () => {
-      beforeEach(() => {
-        apolloProvider = createMockApollo([
-          [createAgentMutation, jest.fn().mockResolvedValue(createAgentResponse)],
-          [createAgentTokenMutation, jest.fn().mockResolvedValue(createAgentTokenErrorResponse)],
-        ]);
-
-        return mockSelectedAgentResponse();
-      });
-
-      it('displays the error message', () => {
-        expect(findAlert().text()).toBe(
-          createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
-        );
-      });
+    it('renders a secondary button', () => {
+      expect(findSecondaryButton().isVisible()).toBe(true);
+      expect(findSecondaryButton().text()).toBe(i18n.secondaryButton);
     });
   });
 });

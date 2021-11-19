@@ -2717,15 +2717,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: propagate_service_template
-  :worker_name: PropagateServiceTemplateWorker
-  :feature_category: :integrations
-  :has_external_dependencies:
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent:
-  :tags: []
 - :name: reactive_caching
   :worker_name: ReactiveCachingWorker
   :feature_category: :not_owned

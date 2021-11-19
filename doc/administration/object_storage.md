@@ -354,7 +354,7 @@ gitlab_rails['object_store']['connection'] = {
   'provider' => 'AzureRM',
   'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
   'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
-  'azure_storage_domain' => '<AZURE STORAGE DOMAIN>',
+  'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
 }
 ```
 

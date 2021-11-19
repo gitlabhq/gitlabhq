@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Diff::File do
 
   describe 'initialize' do
     context 'when file is ipynb with a change after transformation' do
-      let(:commit) { project.commit("f6b7a707") }
+      let(:commit) { project.commit("532c837") }
       let(:diff) { commit.raw_diffs.first }
       let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Diff::File do
         end
 
         it 'recreates the diff by transforming the files' do
-          expect(diff_file.diff.diff).not_to include('"| Fake')
+          expect(diff_file.diff.diff).not_to include('cell_type')
         end
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Diff::File do
         end
 
         it 'does not recreate the diff' do
-          expect(diff_file.diff.diff).to include('"| Fake')
+          expect(diff_file.diff.diff).to include('cell_type')
         end
       end
     end

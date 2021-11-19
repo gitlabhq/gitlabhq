@@ -7423,6 +7423,9 @@ msgstr ""
 msgid "ClusterAgents|GitLab Agents provide an increased level of security when integrating with clusters. %{linkStart}Learn more about the GitLab Kubernetes Agent.%{linkEnd}"
 msgstr ""
 
+msgid "ClusterAgents|GitLab Kubernetes Agent"
+msgstr ""
+
 msgid "ClusterAgents|Go to the repository"
 msgstr ""
 
@@ -7442,6 +7445,12 @@ msgid "ClusterAgents|Learn how to create an agent access token"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to troubleshoot"
+msgstr ""
+
+msgid "ClusterAgents|Learn more about installing a GitLab Kubernetes Agent"
+msgstr ""
+
+msgid "ClusterAgents|Learn more about the GitLab Kubernetes Agent registration."
 msgstr ""
 
 msgid "ClusterAgents|Learn more about the GitLab Kubernetes Agent."
@@ -7468,9 +7477,6 @@ msgstr ""
 msgid "ClusterAgents|Not connected"
 msgstr ""
 
-msgid "ClusterAgents|Read more about getting started"
-msgstr ""
-
 msgid "ClusterAgents|Recommended"
 msgstr ""
 
@@ -7492,13 +7498,16 @@ msgstr ""
 msgid "ClusterAgents|Select an Agent"
 msgstr ""
 
-msgid "ClusterAgents|Select the Agent you want to register with GitLab and install on your cluster. To learn more about the Kubernetes Agent registration process %{linkStart}go to the documentation%{linkEnd}."
+msgid "ClusterAgents|Select an Agent to register with GitLab and install on your cluster."
 msgstr ""
 
 msgid "ClusterAgents|Select which Agent you want to install"
 msgstr ""
 
 msgid "ClusterAgents|The Agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}."
+msgstr ""
+
+msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|The recommended installation method provided below includes the token. If you want to follow the alternative installation method provided in the docs make sure you save the token value before you close the window."
@@ -19648,9 +19657,6 @@ msgstr ""
 msgid "Japanese language support using"
 msgstr ""
 
-msgid "Jira Issues"
-msgstr ""
-
 msgid "Jira display name"
 msgstr ""
 
@@ -19780,16 +19786,10 @@ msgstr ""
 msgid "JiraService|If different from Web URL."
 msgstr ""
 
-msgid "JiraService|Issue List"
-msgstr ""
-
 msgid "JiraService|Issues created from vulnerabilities in this project will be Jira issues, even if GitLab issues are enabled."
 msgstr ""
 
 msgid "JiraService|Jira API URL"
-msgstr ""
-
-msgid "JiraService|Jira Issues"
 msgstr ""
 
 msgid "JiraService|Jira comments are created when an issue is referenced in a commit."
@@ -19799,6 +19799,9 @@ msgid "JiraService|Jira comments are created when an issue is referenced in a me
 msgstr ""
 
 msgid "JiraService|Jira issue type"
+msgstr ""
+
+msgid "JiraService|Jira issues"
 msgstr ""
 
 msgid "JiraService|Jira project key"

@@ -78,6 +78,8 @@ module Types
     attr_reader :feature_flag
 
     def field_authorized?(object, ctx)
+      object = object.node if object.is_a?(GraphQL::Pagination::Connection::Edge)
+
       authorization.ok?(object, ctx[:current_user])
     end
 

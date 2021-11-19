@@ -26,6 +26,12 @@ RSpec.describe MergeRequests::ResolvedDiscussionNotificationService do
 
         subject.execute(merge_request)
       end
+
+      it "doesn't send a webhook" do
+        expect_any_instance_of(MergeRequests::BaseService).not_to receive(:execute_hooks)
+
+        subject.execute(merge_request)
+      end
     end
 
     context "when all discussions are resolved" do
@@ -41,6 +47,12 @@ RSpec.describe MergeRequests::ResolvedDiscussionNotificationService do
 
       it "sends a notification email", :sidekiq_might_not_need_inline do
         expect_any_instance_of(NotificationService).to receive(:resolve_all_discussions).with(merge_request, user)
+
+        subject.execute(merge_request)
+      end
+
+      it "sends a webhook" do
+        expect_any_instance_of(MergeRequests::BaseService).to receive(:execute_hooks).with(merge_request, 'update')
 
         subject.execute(merge_request)
       end

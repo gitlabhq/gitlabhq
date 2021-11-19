@@ -86,9 +86,6 @@ export default {
     treePageInfo() {
       return this.agents?.project?.repository?.tree?.trees?.pageInfo || {};
     },
-    hasConfigurations() {
-      return Boolean(this.agents?.project?.repository?.tree?.trees?.nodes?.length);
-    },
   },
   methods: {
     reloadAgents() {
@@ -161,11 +158,7 @@ export default {
       </div>
     </div>
 
-    <agent-empty-state
-      v-else
-      :has-configurations="hasConfigurations"
-      :is-child-component="isChildComponent"
-    />
+    <agent-empty-state v-else :is-child-component="isChildComponent" />
   </section>
 
   <gl-alert v-else variant="danger" :dismissible="false">

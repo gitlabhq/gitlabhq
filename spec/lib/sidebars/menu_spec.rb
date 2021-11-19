@@ -153,6 +153,25 @@ RSpec.describe Sidebars::Menu do
     end
   end
 
+  describe '#remove_element' do
+    let(:item1) { Sidebars::MenuItem.new(title: 'foo1', link: 'foo1', active_routes: {}, item_id: :foo1) }
+    let(:item2) { Sidebars::MenuItem.new(title: 'foo2', link: 'foo2', active_routes: {}, item_id: :foo2) }
+    let(:item3) { Sidebars::MenuItem.new(title: 'foo3', link: 'foo3', active_routes: {}, item_id: :foo3) }
+    let(:list) { [item1, item2, item3] }
+
+    it 'removes specific element' do
+      menu.remove_element(list, :foo2)
+
+      expect(list).to eq [item1, item3]
+    end
+
+    it 'does not remove nil elements' do
+      menu.remove_element(list, nil)
+
+      expect(list).to eq [item1, item2, item3]
+    end
+  end
+
   describe '#container_html_options' do
     before do
       allow(menu).to receive(:title).and_return('Foo Menu')

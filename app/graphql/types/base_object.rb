@@ -7,6 +7,7 @@ module Types
     prepend Gitlab::Graphql::MarkdownField
 
     field_class Types::BaseField
+    edge_type_class Types::BaseEdge
 
     def self.accepts(*types)
       @accepts ||= []

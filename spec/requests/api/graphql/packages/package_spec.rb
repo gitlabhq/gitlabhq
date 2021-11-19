@@ -68,7 +68,7 @@ RSpec.describe 'package details' do
         subject
 
         expect(graphql_data_at(:package, :versions, :nodes, :version)).to be_present
-        expect(graphql_data_at(:package, :versions, :nodes, :versions, :nodes)).to be_empty
+        expect(graphql_data_at(:package, :versions, :nodes, :versions, :nodes)).to eq [nil, nil]
       end
     end
   end

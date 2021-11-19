@@ -398,7 +398,6 @@ RSpec.describe 'Every Sidekiq worker' do
         'PropagateIntegrationInheritWorker' => 3,
         'PropagateIntegrationProjectWorker' => 3,
         'PropagateIntegrationWorker' => 3,
-        'PropagateServiceTemplateWorker' => 3,
         'PurgeDependencyProxyCacheWorker' => 3,
         'ReactiveCachingWorker' => 3,
         'RebaseWorker' => 3,

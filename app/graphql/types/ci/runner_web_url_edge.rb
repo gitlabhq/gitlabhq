@@ -3,7 +3,7 @@
 module Types
   module Ci
     # rubocop: disable Graphql/AuthorizeTypes
-    class RunnerWebUrlEdge < GraphQL::Types::Relay::BaseEdge
+    class RunnerWebUrlEdge < ::Types::BaseEdge
       include FindClosest
 
       field :web_url, GraphQL::Types::String, null: true,

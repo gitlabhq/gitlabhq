@@ -1,7 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { I18N_AVAILABLE_AGENTS_DROPDOWN } from '../constants';
-import agentConfigurations from '../graphql/queries/agent_configurations.query.graphql';
 
 export default {
   name: 'AvailableAgentsDropdown',
@@ -10,36 +9,22 @@ export default {
     GlDropdown,
     GlDropdownItem,
   },
-  inject: ['projectPath'],
   props: {
     isRegistering: {
       required: true,
       type: Boolean,
     },
-  },
-  apollo: {
-    agents: {
-      query: agentConfigurations,
-      variables() {
-        return {
-          projectPath: this.projectPath,
-        };
-      },
-      update(data) {
-        this.populateAvailableAgents(data);
-      },
+    availableAgents: {
+      required: true,
+      type: Array,
     },
   },
   data() {
     return {
-      availableAgents: [],
       selectedAgent: null,
     };
   },
   computed: {
-    isLoading() {
-      return this.$apollo.queries.agents.loading;
-    },
     dropdownText() {
       if (this.isRegistering) {
         return this.$options.i18n.registeringAgent;
@@ -58,18 +43,11 @@ export default {
     isSelected(agent) {
       return this.selectedAgent === agent;
     },
-    populateAvailableAgents(data) {
-      const installedAgents = data?.project?.clusterAgents?.nodes.map((agent) => agent.name) ?? [];
-      const configuredAgents =
-        data?.project?.agentConfigurations?.nodes.map((config) => config.agentName) ?? [];
-
-      this.availableAgents = configuredAgents.filter((agent) => !installedAgents.includes(agent));
-    },
   },
 };
 </script>
 <template>
-  <gl-dropdown :text="dropdownText" :loading="isLoading || isRegistering">
+  <gl-dropdown :text="dropdownText" :loading="isRegistering">
     <gl-dropdown-item
       v-for="agent in availableAgents"
       :key="agent"

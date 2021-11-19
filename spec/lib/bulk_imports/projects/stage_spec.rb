@@ -14,6 +14,7 @@ RSpec.describe BulkImports::Projects::Stage do
       [4, BulkImports::Projects::Pipelines::MergeRequestsPipeline],
       [4, BulkImports::Projects::Pipelines::ExternalPullRequestsPipeline],
       [4, BulkImports::Projects::Pipelines::ProtectedBranchesPipeline],
+      [4, BulkImports::Projects::Pipelines::CiPipelinesPipeline],
       [5, BulkImports::Common::Pipelines::WikiPipeline],
       [5, BulkImports::Common::Pipelines::UploadsPipeline],
       [6, BulkImports::Common::Pipelines::EntityFinisher]

@@ -43,6 +43,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::ProtectedBranchesPipeline,
             stage: 4
           },
+          ci_pipelines: {
+            pipeline: BulkImports::Projects::Pipelines::CiPipelinesPipeline,
+            stage: 4
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5

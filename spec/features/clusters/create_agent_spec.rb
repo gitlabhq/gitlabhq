@@ -25,7 +25,7 @@ RSpec.describe 'Cluster agent registration', :js do
 
   it 'allows the user to select an agent to install, and displays the resulting agent token' do
     click_button('Actions')
-    expect(page).to have_content('Install new Agent')
+    expect(page).to have_content('Register Agent')
 
     click_button('Select an Agent')
     click_button('example-agent-2')
