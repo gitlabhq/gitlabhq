@@ -24,9 +24,10 @@ module Environments
         end
 
       environments =
-        if Feature.enabled?(:environments_by_deployments_finder_exists_optimization, default_enabled: :yaml)
+        if Feature.enabled?(:environments_by_deployments_finder_exists_optimization, project, default_enabled: :yaml)
+          # TODO: replace unscope with deployments = Deployment on top of the method https://gitlab.com/gitlab-org/gitlab/-/issues/343544
           project.environments.available
-            .where('EXISTS (?)', deployments.where('environment_id = environments.id'))
+            .where('EXISTS (?)', deployments.unscope(where: :project_id).where('environment_id = environments.id'))
         else
           environment_ids = deployments
             .group(:environment_id)

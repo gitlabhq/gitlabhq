@@ -8338,6 +8338,9 @@ msgstr ""
 msgid "Code review"
 msgstr ""
 
+msgid "Code snippet"
+msgstr ""
+
 msgid "Code snippet copied. Insert it in the correct location in the YAML file."
 msgstr ""
 

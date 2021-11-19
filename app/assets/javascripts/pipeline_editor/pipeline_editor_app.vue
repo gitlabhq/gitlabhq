@@ -247,10 +247,14 @@ export default {
       await this.$apollo.queries.initialCiFileContent.refetch();
     },
     reportFailure(type, reasons = []) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      this.showFailure = true;
-      this.failureType = type;
-      this.failureReasons = reasons;
+      const isCurrentFailure = this.failureType === type && this.failureReasons[0] === reasons[0];
+
+      if (!isCurrentFailure) {
+        this.showFailure = true;
+        this.failureType = type;
+        this.failureReasons = reasons;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     },
     reportSuccess(type) {
       window.scrollTo({ top: 0, behavior: 'smooth' });

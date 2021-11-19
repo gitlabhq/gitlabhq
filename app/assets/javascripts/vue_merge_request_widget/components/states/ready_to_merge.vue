@@ -590,13 +590,7 @@ export default {
               :class="{ 'gl-w-full gl-order-n1 gl-mb-5': glFeatures.restructuredMrWidget }"
               class="gl-display-flex gl-align-items-center gl-flex-wrap"
             >
-              <merge-train-helper-icon
-                v-if="shouldRenderMergeTrainHelperIcon"
-                :merge-train-when-pipeline-succeeds-docs-path="
-                  mr.mergeTrainWhenPipelineSucceedsDocsPath
-                "
-                class="gl-mx-3"
-              />
+              <merge-train-helper-icon v-if="shouldRenderMergeTrainHelperIcon" class="gl-mx-3" />
 
               <gl-form-checkbox
                 v-if="canRemoveSourceBranch"

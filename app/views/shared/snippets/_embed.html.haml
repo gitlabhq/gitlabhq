@@ -17,5 +17,5 @@
         = embedded_raw_snippet_button(@snippet, blob)
 
         = embedded_snippet_download_button(@snippet, blob)
-  %article.file-holder.snippet-file-content
+  %figure.file-holder.snippet-file-content{ "aria-label" => _('Code snippet') }
     = render 'projects/blob/viewer', viewer: blob.simple_viewer, load_async: false, external_embed: true

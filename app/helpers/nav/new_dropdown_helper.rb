@@ -50,7 +50,7 @@ module Nav
 
       menu_items.push(create_epic_menu_item(group))
 
-      if Gitlab::Experimentation.active?(:invite_members_new_dropdown) && can?(current_user, :admin_group_member, group)
+      if can?(current_user, :admin_group_member, group)
         menu_items.push(
           invite_members_menu_item(
             href: group_group_members_path(group)
@@ -101,7 +101,7 @@ module Nav
         )
       end
 
-      if Gitlab::Experimentation.active?(:invite_members_new_dropdown) && can_admin_project_member?(project)
+      if can_admin_project_member?(project)
         menu_items.push(
           invite_members_menu_item(
             href: project_project_members_path(project)
@@ -161,12 +161,11 @@ module Nav
       ::Gitlab::Nav::TopNavMenuItem.build(
         id: 'invite',
         title: s_('InviteMember|Invite members'),
-        emoji: ('shaking_hands' if experiment_enabled?(:invite_members_new_dropdown)),
+        emoji: 'shaking_hands',
         href: href,
         data: {
-          track_action: 'click_link',
-          track_label: tracking_label,
-          track_property: experiment_tracking_category_and_group(:invite_members_new_dropdown)
+          track_action: 'click_link_invite_members',
+          track_label: 'plus_menu_dropdown'
         }
       )
     end

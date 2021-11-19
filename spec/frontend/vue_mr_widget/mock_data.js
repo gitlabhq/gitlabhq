@@ -271,8 +271,6 @@ export default {
   mr_troubleshooting_docs_path: 'help',
   ci_troubleshooting_docs_path: 'help2',
   merge_request_pipelines_docs_path: '/help/ci/pipelines/merge_request_pipelines.md',
-  merge_train_when_pipeline_succeeds_docs_path:
-    '/help/ci/pipelines/merge_trains.md#startadd-to-merge-train-when-pipeline-succeeds',
   squash: true,
   visual_review_app_available: true,
   merge_trains_enabled: true,
