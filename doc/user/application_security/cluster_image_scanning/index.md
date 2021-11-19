@@ -153,7 +153,7 @@ The included template:
   fetches vulnerabilities found by [Starboard Operator](https://aquasecurity.github.io/starboard/v0.10.3/operator/).
 
 GitLab saves the results as a
-[Cluster Image Scanning report artifact](../../../ci/yaml/index.md#artifactsreportscluster_image_scanning)
+[Cluster Image Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscluster_image_scanning)
 that you can download and analyze later. When downloading, you always receive the most recent
 artifact.
 

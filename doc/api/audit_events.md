@@ -277,7 +277,7 @@ Example response:
     "entity_id": 7,
     "entity_type": "Project",
     "details": {
-        "change": "prevent merge request approval from reviewers",
+        "change": "prevent merge request approval from committers",
         "from": "",
         "to": "true",
         "author_name": "Administrator",
@@ -336,7 +336,7 @@ Example response:
   "entity_id": 7,
   "entity_type": "Project",
   "details": {
-      "change": "prevent merge request approval from reviewers",
+      "change": "prevent merge request approval from committers",
       "from": "",
       "to": "true",
       "author_name": "Administrator",

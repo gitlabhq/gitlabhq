@@ -184,7 +184,7 @@ The included template creates SAST jobs in your CI/CD pipeline and scans
 your project's source code for possible vulnerabilities.
 
 The results are saved as a
-[SAST report artifact](../../../ci/yaml/index.md#artifactsreportssast)
+[SAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)
 that you can later download and analyze. Due to implementation limitations, we
 always take the latest SAST artifact available.
 

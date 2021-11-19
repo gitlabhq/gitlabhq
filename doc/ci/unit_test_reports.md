@@ -41,7 +41,7 @@ Consider the following workflow:
 ## How it works
 
 First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format)
-as [artifacts](yaml/index.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
+as [artifacts](yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 
 - The base branch is the target branch (usually the default branch).
@@ -77,7 +77,7 @@ If a test failed in the project's default branch in the last 14 days, a message 
 ## How to set it up
 
 To enable the Unit test reports in merge requests, you need to add
-[`artifacts:reports:junit`](yaml/index.md#artifactsreportsjunit)
+[`artifacts:reports:junit`](yaml/artifacts_reports.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 The reports must be `.xml` files, otherwise [GitLab returns an Error 500](https://gitlab.com/gitlab-org/gitlab/-/issues/216575).
 
@@ -377,7 +377,7 @@ GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202114) in GitLab 13.0 behind the `:junit_pipeline_screenshots_view` feature flag, disabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/216979) in GitLab 13.12.
 
-Upload your screenshots as [artifacts](yaml/index.md#artifactsreportsjunit) to GitLab. If JUnit
+Upload your screenshots as [artifacts](yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. If JUnit
 report format XML files contain an `attachment` tag, GitLab parses the attachment. Note that:
 
 - The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For

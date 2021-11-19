@@ -13,7 +13,7 @@ all repositories and all attachments.
 
 You can only restore a backup to **exactly the same version and type (CE/EE)**
 of GitLab on which it was created. The best way to migrate your repositories
-from one server to another is through backup restore.
+from one server to another is through a backup and restore.
 
 WARNING:
 GitLab doesn't back up items that aren't stored in the file system. If you're
@@ -70,7 +70,7 @@ Backups do not include:
 - [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
 
 WARNING:
-GitLab does not back up any configuration files, SSL certificates, or system
+GitLab does not back up any configuration files (`/etc/gitlab`), SSL certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
 WARNING:
@@ -190,7 +190,7 @@ on a Kubernetes cluster, you must follow the
 [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
 instructions.
 
-You may also want to back up any TLS keys and certificates, and your
+You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`), and your
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 If you use Omnibus GitLab, review additional information to
@@ -903,7 +903,7 @@ If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runner
 loses access to your GitLab server.
 
-You may also want to restore any TLS keys, certificates, or
+You may also want to restore any TLS keys, certificates (`/etc/gitlab/ssl`), or
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 Starting with GitLab 12.9, if an untarred backup (like the ones made with

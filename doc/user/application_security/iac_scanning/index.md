@@ -74,7 +74,7 @@ The included template creates IaC scanning jobs in your CI/CD pipeline and scans
 your project's configuration files for possible vulnerabilities.
 
 The results are saved as a
-[SAST report artifact](../../../ci/yaml/index.md#artifactsreportssast)
+[SAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssast)
 that you can download and analyze.
 
 ### Enable IaC Scanning via an automatic merge request
