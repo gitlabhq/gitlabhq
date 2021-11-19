@@ -79,10 +79,11 @@ On your GitLab server:
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       "name" => "google_oauth2",
-       "app_id" => "YOUR_APP_ID",
-       "app_secret" => "YOUR_APP_SECRET",
-       "args" => { "access_type" => "offline", "approval_prompt" => '' }
+       name: "google_oauth2",
+       # label: "Provider name", # optional label for login button, defaults to "Google"
+       app_id: "YOUR_APP_ID",
+       app_secret: "YOUR_APP_SECRET",
+       args: { access_type: "offline", approval_prompt: "" }
      }
    ]
    ```
@@ -91,6 +92,7 @@ On your GitLab server:
 
    ```yaml
    - { name: 'google_oauth2',
+       # label: 'Provider name', # optional label for login button, defaults to "Google"
        app_id: 'YOUR_APP_ID',
        app_secret: 'YOUR_APP_SECRET',
        args: { access_type: 'offline', approval_prompt: '' } }

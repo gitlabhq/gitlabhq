@@ -35,22 +35,23 @@ The OpenID Connect provides you with a client's details and secret for you to us
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
-     { 'name' => 'openid_connect',
-       'label' => '<your_oidc_label>',
-       'icon' => '<custom_provider_icon>',
-       'args' => {
-         'name' => 'openid_connect',
-         'scope' => ['openid','profile','email'],
-         'response_type' => 'code',
-         'issuer' => '<your_oidc_url>',
-         'discovery' => true,
-         'client_auth_method' => 'query',
-         'uid_field' => '<uid_field>',
-         'send_scope_to_token_endpoint' => 'false',
-         'client_options' => {
-           'identifier' => '<your_oidc_client_id>',
-           'secret' => '<your_oidc_client_secret>',
-           'redirect_uri' => '<your_gitlab_url>/users/auth/openid_connect/callback'
+     {
+       name: "openid_connect",
+       label: "Provider name", # optional label for login button, defaults to "Openid Connect"
+       icon: "<custom_provider_icon>",
+       args: {
+         name: "openid_connect",
+         scope: ["openid","profile","email"],
+         response_type: "code",
+         issuer: "<your_oidc_url>",
+         discovery: true,
+         client_auth_method: "query",
+         uid_field: "<uid_field>",
+         send_scope_to_token_endpoint: "false",
+         client_options: {
+           identifier: "<your_oidc_client_id>",
+           secret: "<your_oidc_client_secret>",
+           redirect_uri: "<your_gitlab_url>/users/auth/openid_connect/callback"
          }
        }
      }
@@ -61,7 +62,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 
    ```yaml
      - { name: 'openid_connect',
-         label: '<your_oidc_label>',
+         label: 'Provider name', # optional label for login button, defaults to "Openid Connect"
          icon: '<custom_provider_icon>',
          args: {
            name: 'openid_connect',
@@ -136,20 +137,20 @@ for more details:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    'name' => 'openid_connect',
-    'label' => 'Google OpenID',
-    'args' => {
-      'name' => 'openid_connect',
-      'scope' => ['openid', 'profile', 'email'],
-      'response_type' => 'code',
-      'issuer' => 'https://accounts.google.com',
-      'client_auth_method' => 'query',
-      'discovery' => true,
-      'uid_field' => 'preferred_username',
-      'client_options' => {
-        'identifier' => '<YOUR PROJECT CLIENT ID>',
-        'secret' => '<YOUR PROJECT CLIENT SECRET>',
-        'redirect_uri' => 'https://example.com/users/auth/openid_connect/callback',
+    name: "openid_connect",
+    label: "Google OpenID", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "openid_connect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer: "https://accounts.google.com",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "preferred_username",
+      client_options: {
+        identifier: "<YOUR PROJECT CLIENT ID>",
+        secret: "<YOUR PROJECT CLIENT SECRET>",
+        redirect_uri: "https://example.com/users/auth/openid_connect/callback",
        }
      }
   }
@@ -173,20 +174,20 @@ Example Omnibus configuration block:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    'name' => 'openid_connect',
-    'label' => 'Azure OIDC',
-    'args' => {
-      'name' => 'openid_connect',
-      'scope' => ['openid', 'profile', 'email'],
-      'response_type' => 'code',
-      'issuer' =>  'https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0',
-      'client_auth_method' => 'query',
-      'discovery' => true,
-      'uid_field' => 'preferred_username',
-      'client_options' => {
-        'identifier' => '<YOUR APP CLIENT ID>',
-        'secret' => '<YOUR APP CLIENT SECRET>',
-        'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+    name: "openid_connect",
+    label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "openid_connect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://login.microsoftonline.com/<YOUR-TENANT-ID>/v2.0",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "preferred_username",
+      client_options: {
+        identifier: "<YOUR APP CLIENT ID>",
+        secret: "<YOUR APP CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback"
       }
     }
   }
@@ -302,21 +303,21 @@ The trailing forward slash is required.
    ```ruby
    gitlab_rails['omniauth_providers'] = [
    {
-     'name' => 'openid_connect',
-     'label' => 'Azure B2C OIDC',
-     'args' => {
-       'name' => 'openid_connect',
-       'scope' => ['openid'],
-       'response_mode' => 'query',
-       'response_type' => 'id_token',
-       'issuer' =>  'https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/b2c_1a_signup_signin/v2.0/',
-       'client_auth_method' => 'query',
-       'discovery' => true,
-       'send_scope_to_token_endpoint' => true,
-       'client_options' => {
-         'identifier' => '<YOUR APP CLIENT ID>',
-         'secret' => '<YOUR APP CLIENT SECRET>',
-         'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+     name: "openid_connect",
+     label: "Azure B2C OIDC", # optional label for login button, defaults to "Openid Connect"
+     args: {
+       name: "openid_connect",
+       scope: ["openid"],
+       response_mode: "query",
+       response_type: "id_token",
+       issuer:  "https://<YOUR-DOMAIN>/tfp/<YOUR-TENANT-ID>/b2c_1a_signup_signin/v2.0/",
+       client_auth_method: "query",
+       discovery: true,
+       send_scope_to_token_endpoint: true,
+       client_options: {
+         identifier: "<YOUR APP CLIENT ID>",
+         secret: "<YOUR APP CLIENT SECRET>",
+         redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback"
        }
      }
    }]
@@ -359,20 +360,20 @@ Example Omnibus configuration block:
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    'name' => 'openid_connect',
-    'label' => 'Keycloak',
-    'args' => {
-      'name' => 'openid_connect',
-      'scope' => ['openid', 'profile', 'email'],
-      'response_type' => 'code',
-      'issuer' =>  'https://keycloak.example.com/auth/realms/myrealm',
-      'client_auth_method' => 'query',
-      'discovery' => true,
-      'uid_field' => 'preferred_username',
-      'client_options' => {
-        'identifier' => '<YOUR CLIENT ID>',
-        'secret' => '<YOUR CLIENT SECRET>',
-        'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+    name: "openid_connect",
+    label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
+    args: {
+      name: "openid_connect",
+      scope: ["openid", "profile", "email"],
+      response_type: "code",
+      issuer:  "https://keycloak.example.com/auth/realms/myrealm",
+      client_auth_method: "query",
+      discovery: true,
+      uid_field: "preferred_username",
+      client_options: {
+        identifier: "<YOUR CLIENT ID>",
+        secret: "<YOUR CLIENT SECRET>",
+        redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback"
       }
     }
   }
@@ -436,21 +437,21 @@ To use symmetric key encryption:
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       'name' => 'openid_connect',
-       'label' => 'Keycloak',
-       'args' => {
-         'name' => 'openid_connect',
-         'scope' => ['openid', 'profile', 'email'],
-         'response_type' => 'code',
-         'issuer' =>  'https://keycloak.example.com/auth/realms/myrealm',
-         'client_auth_method' => 'query',
-         'discovery' => true,
-         'uid_field' => 'preferred_username',
-         'jwt_secret_base64' => '<YOUR BASE64-ENCODED SECRET>',
-         'client_options' => {
-           'identifier' => '<YOUR CLIENT ID>',
-           'secret' => '<YOUR CLIENT SECRET>',
-           'redirect_uri' => 'https://gitlab.example.com/users/auth/openid_connect/callback'
+       name: "openid_connect",
+       label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
+       args: {
+         name: "openid_connect",
+         scope: ["openid", "profile", "email"],
+         response_type: "code",
+         issuer:  "https://keycloak.example.com/auth/realms/myrealm",
+         client_auth_method: "query",
+         discovery: true,
+         uid_field: "preferred_username",
+         jwt_secret_base64: "<YOUR BASE64-ENCODED SECRET>",
+         client_options: {
+           identifier: "<YOUR CLIENT ID>",
+           secret: "<YOUR CLIENT SECRET>",
+           redirect_uri: "https://gitlab.example.com/users/auth/openid_connect/callback"
          }
        }
      }

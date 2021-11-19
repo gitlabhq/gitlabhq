@@ -60,7 +60,7 @@ module Gitlab
             current_user: author,
             params: {
               title: mail.subject,
-              description: message_including_reply
+              description: message_including_reply_or_only_quotes
             },
             spam_params: nil
           ).execute

@@ -101,6 +101,17 @@ RSpec.describe Gitlab::Email::Handler::CreateIssueHandler do
     end
   end
 
+  context 'when all lines of email are quotes' do
+    let(:email_raw) { email_fixture('emails/valid_new_issue_with_only_quotes.eml') }
+
+    it 'creates email with correct body' do
+      receiver.execute
+
+      issue = Issue.last
+      expect(issue.description).to include('This email has been forwarded without new content.')
+    end
+  end
+
   context "something is wrong" do
     context "when the issue could not be saved" do
       before do

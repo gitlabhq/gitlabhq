@@ -36,6 +36,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     options = {
       environment: environment,
       merge_request: @merge_request,
+      commit: commit,
       diff_view: diff_view,
       merge_ref_head_diff: render_merge_ref_head_diff?,
       pagination_data: diffs.pagination_data,

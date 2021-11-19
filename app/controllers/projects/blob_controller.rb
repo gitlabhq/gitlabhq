@@ -298,3 +298,5 @@ class Projects::BlobController < Projects::ApplicationController
     experiment(:code_quality_walkthrough, namespace: @project.root_ancestor).track(:commit_created)
   end
 end
+
+Projects::BlobController.prepend_mod

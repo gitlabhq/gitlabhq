@@ -136,6 +136,14 @@ This deprecation mainly impacts users compiling GitLab from source because Omnib
 
 Announced: 2021-09-22
 
+### Must explicitly assign `AuthenticationType` for `[runners.cache.s3]`
+
+In GitLab 15.0 and later, to access the AWS S3 cache, you must specify the `AuthenticationType` for [`[runners.cache.s3]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section). The `AuthenticationType` must be `IAM` or `credentials`.
+
+Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner chose a type for you.
+
+Announced: 2021-11-22
+
 ### NFS for Git repository storage deprecated
 
 With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/)), we have deprecated development (bugfixes, performance improvements, etc) for NFS for Git repository storage in GitLab 14.0. We will continue to provide technical support for NFS for Git repositories throughout 14.x, but we will remove all support for NFS in GitLab 15.0. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support.html#gitaly-and-nfs) for further information.
@@ -178,6 +186,12 @@ not active.
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
 `active` to be `false` instead.
+
+Announced: 2021-11-22
+
+### Removal of `defaultMergeCommitMessageWithDescription` GraphQL API field
+
+The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
 
 Announced: 2021-11-22
 
@@ -225,19 +239,5 @@ Announced: 2021-11-22
 We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out. 
 
 If you monitor Value Stream Analytics metrics and rely on the date filter, to avoid losing data, you must save the data prior to this change.
-
-Announced: 2021-11-22
-
-### `AuthenticationType` for `[runners.cache.s3]` must be explicitly assigned
-
-In GitLab 15.0 and later, to access the AWS S3 cache, you must specify the `AuthenticationType` for [`[runners.cache.s3]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section). The `AuthenticationType` must be `IAM` or `credentials`.
-
-Prior to 14.5, if you did not define the `AuthenticationType`, GitLab Runner chose a type for you. 
-
-Announced: 2021-11-22
-
-### defaultMergeCommitMessageWithDescription GraphQL API field will be removed in GitLab 15.0
-
-The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
 
 Announced: 2021-11-22

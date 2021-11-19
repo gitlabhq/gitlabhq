@@ -58,12 +58,14 @@ application.
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       "name" => "auth0",
-       "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID',
-                   client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-                   domain: 'YOUR_AUTH0_DOMAIN',
-                   scope: 'openid profile email'
-                 }
+       name: "auth0",
+       # label: "Provider name", # optional label for login button, defaults to "Auth0"
+       args: {
+         client_id: "YOUR_AUTH0_CLIENT_ID",
+         client_secret: "YOUR_AUTH0_CLIENT_SECRET",
+         domain: "YOUR_AUTH0_DOMAIN",
+         scope: "openid profile email"
+       }
      }
    ]
    ```
@@ -72,6 +74,7 @@ application.
 
    ```yaml
    - { name: 'auth0',
+       # label: 'Provider name', # optional label for login button, defaults to "Auth0"
        args: {
          client_id: 'YOUR_AUTH0_CLIENT_ID',
          client_secret: 'YOUR_AUTH0_CLIENT_SECRET',

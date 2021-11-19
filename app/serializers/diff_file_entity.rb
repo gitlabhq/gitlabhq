@@ -90,3 +90,5 @@ class DiffFileEntity < DiffFileBaseEntity
     options.fetch(:diff_view, :inline).to_sym
   end
 end
+
+DiffFileEntity.prepend_mod

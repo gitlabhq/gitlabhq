@@ -31,6 +31,7 @@ RSpec.describe 'Merge Requests Diffs' do
       {
         environment: nil,
         merge_request: merge_request,
+        commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
         allow_tree_conflicts: true,

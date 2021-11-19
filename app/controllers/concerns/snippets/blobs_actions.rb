@@ -51,3 +51,5 @@ module Snippets::BlobsActions
     params[:snippet_id]
   end
 end
+
+Snippets::BlobsActions.prepend_mod

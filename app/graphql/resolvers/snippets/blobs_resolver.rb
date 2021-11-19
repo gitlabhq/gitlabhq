@@ -35,3 +35,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::Snippets::BlobsResolver.prepend_mod

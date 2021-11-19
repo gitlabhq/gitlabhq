@@ -32,14 +32,15 @@ JWT will provide you with a secret key for you to use.
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
-     { name: 'jwt',
+     { name: "jwt",
+       label: "Provider name", # optional label for login button, defaults to "Jwt"
        args: {
-         secret: 'YOUR_APP_SECRET',
-         algorithm: 'HS256', # Supported algorithms: 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512'
-         uid_claim: 'email',
-         required_claims: ['name', 'email'],
-         info_map: { name: 'name', email: 'email' },
-         auth_url: 'https://example.com/',
+         secret: "YOUR_APP_SECRET",
+         algorithm: "HS256", # Supported algorithms: "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "HS256", "HS384", "HS512"
+         uid_claim: "email",
+         required_claims: ["name", "email"],
+         info_map: { name: "name", email: "email" },
+         auth_url: "https://example.com/",
          valid_within: 3600 # 1 hour
        }
      }
@@ -50,6 +51,7 @@ JWT will provide you with a secret key for you to use.
 
    ```yaml
    - { name: 'jwt',
+       label: 'Provider name', # optional label for login button, defaults to "Jwt"
        args: {
          secret: 'YOUR_APP_SECRET',
          algorithm: 'HS256', # Supported algorithms: 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512'

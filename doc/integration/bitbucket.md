@@ -87,10 +87,11 @@ to the end of the Bitbucket authorization callback URL.
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       "name" => "bitbucket",
-       "app_id" => "BITBUCKET_APP_KEY",
-       "app_secret" => "BITBUCKET_APP_SECRET",
-       "url" => "https://bitbucket.org/"
+       name: "bitbucket",
+       # label: "Provider name", # optional label for login button, defaults to "Bitbucket"
+       app_id: "BITBUCKET_APP_KEY",
+       app_secret: "BITBUCKET_APP_SECRET",
+       url: "https://bitbucket.org/"
      }
    ]
    ```
@@ -102,6 +103,7 @@ to the end of the Bitbucket authorization callback URL.
      enabled: true
      providers:
        - { name: 'bitbucket',
+           # label: 'Provider name', # optional label for login button, defaults to "Bitbucket"
            app_id: 'BITBUCKET_APP_KEY',
            app_secret: 'BITBUCKET_APP_SECRET',
            url: 'https://bitbucket.org/' }

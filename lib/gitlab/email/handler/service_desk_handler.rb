@@ -108,7 +108,7 @@ module Gitlab
         end
 
         def message_including_template
-          description = process_message(trim_reply: false, allow_only_quotes: true)
+          description = message_including_reply_or_only_quotes
           template_content = service_desk_setting&.issue_template_content
 
           if template_content.present?

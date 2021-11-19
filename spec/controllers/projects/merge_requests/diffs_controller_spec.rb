@@ -496,6 +496,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
       {
         environment: nil,
         merge_request: merge_request,
+        commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
         allow_tree_conflicts: true,
@@ -552,7 +553,7 @@ RSpec.describe Projects::MergeRequests::DiffsController do
 
       it_behaves_like 'serializes diffs with expected arguments' do
         let(:collection) { Gitlab::Diff::FileCollection::Commit }
-        let(:expected_options) { collection_arguments }
+        let(:expected_options) { collection_arguments.merge(commit: merge_request.commits(limit: 1).first) }
       end
     end
 

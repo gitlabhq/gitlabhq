@@ -98,15 +98,15 @@ as described in the section on [Security](#security). Otherwise, your users are 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: 'saml',
+       name: "saml",
+       label: "Provider name", # optional label for login button, defaults to "Saml"
        args: {
-                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
-                idp_sso_target_url: 'https://login.example.com/idp',
-                issuer: 'https://gitlab.example.com',
-                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-              },
-       label: 'Provider name' # optional label for SAML login button, defaults to "Saml"
+         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
+         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_sso_target_url: "https://login.example.com/idp",
+         issuer: "https://gitlab.example.com",
+         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+       }
      }
    ]
    ```
@@ -118,14 +118,14 @@ as described in the section on [Security](#security). Otherwise, your users are 
      providers:
        - {
          name: 'saml',
+         label: 'Provider name', # optional label for login button, defaults to "Saml"
          args: {
            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
            idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
            idp_sso_target_url: 'https://login.example.com/idp',
            issuer: 'https://gitlab.example.com',
            name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-         },
-         label: 'Company Login'  # optional label for SAML login button, defaults to "Saml"
+         }
        }
    ```
 
@@ -362,22 +362,21 @@ In addition to the changes in GitLab, make sure that your IdP is returning the
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: 'saml',
+       name: "saml",
        args: {
-                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
-                idp_sso_target_url: 'https://login.example.com/idp',
-                issuer: 'https://gitlab.example.com',
-                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                upstream_two_factor_authn_contexts:
-                  %w(
-                    urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
-                    urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
-                    urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN
-                  )
-
-              },
-       label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
+         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
+         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_sso_target_url: "https://login.example.com/idp",
+         issuer: "https://gitlab.example.com",
+         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+         upstream_two_factor_authn_contexts:
+           %w(
+             urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
+             urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
+             urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN
+           )
+       },
+       label: "Company Login" # optional label for SAML login button, defaults to "Saml"
      }
    ]
    ```

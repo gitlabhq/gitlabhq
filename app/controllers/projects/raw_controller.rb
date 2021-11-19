@@ -51,3 +51,5 @@ class Projects::RawController < Projects::ApplicationController
       .raw_blob_request_limit
   end
 end
+
+Projects::RawController.prepend_mod

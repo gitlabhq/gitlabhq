@@ -189,7 +189,7 @@ module Gitlab
             user = User.id_in(token.resource_owner_id).first
             return unless user && can_user_login_with_non_expired_password?(user)
 
-            Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
+            Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))
           end
         end
       end
@@ -230,7 +230,7 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_scoped_token?(token, [:api])
+        token && token.accessible? && valid_scoped_token?(token, Doorkeeper.configuration.scopes)
       end
 
       def valid_scoped_token?(token, scopes)
