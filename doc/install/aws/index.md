@@ -37,6 +37,13 @@ The following are the currently available implementation patterns for GitLab whe
 
 The following repository is self-contained in regard to enabling this pattern: [GitLab HA Scaling Runner Vending Machine for AWS EC2 ASG](https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/). The [feature list for this implementation pattern](https://gitlab.com/guided-explorations/aws/gitlab-runner-autoscaling-aws-asg/-/blob/main/FEATURES.md) is good to review to understand the complete value it can deliver.
 
+### Patterns for Using GitLab with AWS
+
+[The Guided Explorations' subgroup for AWS](https://gitlab.com/guided-explorations/aws) contains a variety of working example projects for:
+
+- Using GitLab and AWS together.
+- Running GitLab infrastructure on AWS.
+
 ## AWS known issues list
 
 Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of "as a Service" components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Please consult individual issues to understand GitLabs stance and plans on any given known issue.
