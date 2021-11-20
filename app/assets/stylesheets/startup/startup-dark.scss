@@ -1139,6 +1139,11 @@ input {
   border-right: 0.25rem solid #fff;
   border-right-color: var(--black, #fff);
 }
+@media (min-width: 576px) {
+  .nav-sidebar a.has-sub-items + .sidebar-sub-level-items {
+    min-width: 150px;
+  }
+}
 .nav-sidebar a.has-sub-items + .sidebar-sub-level-items .fly-out-top-item {
   display: none;
 }

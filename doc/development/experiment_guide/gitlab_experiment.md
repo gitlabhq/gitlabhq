@@ -20,7 +20,7 @@ concepts which may seem confusing or advanced without understanding the underpin
 of how GitLab uses feature flags in development. One concept: GLEX supports
 experiments with multiple variants, which are sometimes referred to as A/B/n tests.
 
-The [`gitlab-experiment` project](https://gitlab.com/gitlab-org/gitlab-experiment)
+The [`gitlab-experiment` project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment)
 exists in a separate repository, so it can be shared across any GitLab property that uses
 Ruby. You should feel comfortable reading the documentation on that project as well
 if you want to dig into more advanced topics.

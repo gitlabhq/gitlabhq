@@ -44,7 +44,7 @@ If the experiment is successful and becomes part of the product, any items that 
 
 ## Implementing an experiment
 
-[`GLEX`](https://gitlab.com/gitlab-org/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
+[`GLEX`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) - or `Gitlab::Experiment`, the `gitlab-experiment` gem - is the preferred option for implementing an experiment in GitLab.
 
 For more information, see [Implementing an A/B/n experiment using GLEX](gitlab_experiment.md).
 

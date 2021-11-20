@@ -81,7 +81,6 @@
       @include gl-px-0;
       @include gl-pb-2;
       @include gl-pt-0;
-      min-width: 150px;
       background-color: $gray-10;
       box-shadow: 0 $gl-spacing-scale-2 $gl-spacing-scale-5 $t-gray-a-24, 0 0 $gl-spacing-scale-1 $t-gray-a-24;
       border-style: none;
@@ -309,6 +308,10 @@
   }
 
   a.has-sub-items + .sidebar-sub-level-items {
+    @include media-breakpoint-up(sm) {
+      min-width: 150px;
+    }
+
     .fly-out-top-item {
       @include fly-out-top-item($has-sub-items: true);
     }

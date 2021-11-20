@@ -1,7 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { mount, createLocalVue } from '@vue/test-utils';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
-import { discussionIntersectionObserverHandlerFactory } from '~/diffs/utils/discussions';
 import { createStore } from '~/mr_notes/stores';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
@@ -20,9 +19,6 @@ describe('DiffDiscussions', () => {
     store = createStore();
     wrapper = mount(localVue.extend(DiffDiscussions), {
       store,
-      provide: {
-        discussionObserverHandler: discussionIntersectionObserverHandlerFactory(),
-      },
       propsData: {
         discussions: getDiscussionsMockData(),
         ...props,
