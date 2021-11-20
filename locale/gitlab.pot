@@ -26247,7 +26247,7 @@ msgstr ""
 msgid "Prev"
 msgstr ""
 
-msgid "Prevent adding new members to project membership within this group"
+msgid "Prevent adding new members to projects within this group"
 msgstr ""
 
 msgid "Prevent auto-stopping"

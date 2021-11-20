@@ -450,6 +450,13 @@ RSpec.configure do |config|
     $stdout = StringIO.new
   end
 
+  # Makes diffs show entire non-truncated values.
+  config.before(:each, unlimited_max_formatted_output_length: true) do |_example|
+    config.expect_with :rspec do |c|
+      c.max_formatted_output_length = nil
+    end
+  end
+
   config.after(:each, :silence_stdout) do
     $stdout = STDOUT
   end

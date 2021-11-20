@@ -73,7 +73,7 @@ These features can also help with compliance requirements:
 - [**Generate reports on permission levels of users**](../user/admin_area/index.md#user-permission-export) (for
   instances): Administrators can generate a report listing all users' access permissions for groups and projects in the
   instance.
-- [**Lock project membership to group**](../user/group/index.md#prevent-members-from-being-added-to-a-group) (for
+- [**Lock project membership to group**](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group) (for
   groups): Group owners can prevent new members from being added to projects within a group.
 - [**LDAP group sync**](auth/ldap/ldap_synchronization.md#group-sync) (for instances): Gives administrators the ability
   to automatically sync groups and manage SSH keys, permissions, and authentication, so you can focus on building your

@@ -508,7 +508,7 @@ To prevent a project from being shared with other groups:
 This setting applies to all subgroups unless overridden by a group owner. Groups already
 added to a project lose access when the setting is enabled.
 
-## Prevent members from being added to a group **(PREMIUM)**
+## Prevent members from being added to projects in a group **(PREMIUM)**
 
 As a group owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -516,7 +516,11 @@ projects in a group, allowing tighter control over project membership.
 For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you can guarantee that project membership cannot be modified during the audit.
 
-To prevent members from being added to a group:
+You can still invite groups or to add members to groups, implicitly giving members access to projects in the **locked** group.
+
+The setting does not cascade. Projects in subgroups observe the subgroup configuration, ignoring the parent group.
+
+To prevent members from being added to projects in a group:
 
 1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.

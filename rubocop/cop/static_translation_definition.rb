@@ -8,11 +8,15 @@ module RuboCop
       TRANSLATION_METHODS = %i[_ s_ n_].freeze
 
       def_node_matcher :translation_method?, <<~PATTERN
-      (send _ _ str*)
+        (send _ _ str*)
       PATTERN
 
       def_node_matcher :lambda_node?, <<~PATTERN
-      (send _ :lambda)
+        (send _ :lambda)
+      PATTERN
+
+      def_node_matcher :struct_constant_assignment?, <<~PATTERN
+        (casgn _ _ `(const _ :Struct))
       PATTERN
 
       def on_send(node)
@@ -27,7 +31,7 @@ module RuboCop
           receiver, _ = *ancestor
           break if lambda_node?(receiver) # translations defined in lambda nodes should be allowed
 
-          if constant_assignment?(ancestor)
+          if constant_assignment?(ancestor) && !struct_constant_assignment?(ancestor)
             add_offense(node, location: :expression)
 
             break

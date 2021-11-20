@@ -28,7 +28,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Creating group memberships via CN](../user/group/index.md#create-group-links-via-cn)
   - [Group push rules](../user/group/index.md#group-push-rules)
   - [Managing group memberships via LDAP](../user/group/index.md#manage-group-memberships-via-ldap)
-  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-a-group)
+  - [Member locking](../user/group/index.md#prevent-members-from-being-added-to-projects-in-a-group)
   - [Overriding user permissions](../user/group/index.md#override-user-permissions)
   - [User contribution analytics](../user/group/contribution_analytics/index.md)
   - [Kerberos integration](../integration/kerberos.md)
