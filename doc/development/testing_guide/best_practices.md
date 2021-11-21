@@ -739,6 +739,42 @@ it 'is overdue' do
 end
 ```
 
+#### RSpec helpers
+
+You can use the `:freeze_time` and `:time_travel_to` RSpec metadata tag helpers to help reduce the amount of
+boilerplate code needed to wrap entire specs with the [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+methods.
+
+```ruby
+describe 'specs which require time to be frozen', :freeze_time do
+  it 'freezes time' do
+    right_now = Time.now
+
+    expect(Time.now).to eq(right_now)
+  end
+end
+
+describe 'specs which require time to be frozen to a specific date and/or time', time_travel_to: '2020-02-02 10:30:45 -0700' do
+  it 'freezes time to the specified date and time' do
+    expect(Time.now).to eq(Time.new(2020, 2, 2, 17, 30, 45, '+00:00'))
+  end
+end
+```
+
+[Under the hood](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/time_travel.rb), these helpers use the `around(:each)` hook and the block syntax of the
+[`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/v6.0.3.1/classes/ActiveSupport/Testing/TimeHelpers.html)
+methods:
+
+```ruby
+around(:each) do |example|
+  freeze_time { example.run }
+end
+
+around(:each) do |example|
+  travel_to(date_or_time) { example.run }
+end
+```
+
 ### Feature flags in tests
 
 This section was moved to [developing with feature flags](../feature_flags/index.md).
