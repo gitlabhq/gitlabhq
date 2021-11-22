@@ -18,7 +18,9 @@ This feature might not be available to you. Check the **version history** note a
 Usage Trends gives you an overview of how much data your instance contains, and how quickly this volume is changing over time.
 Usage Trends data refreshes daily.
 
-To see Usage Trends:
+## View Usage Trends
+
+To view Usage Trends:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Analytics > Usage Trends**.

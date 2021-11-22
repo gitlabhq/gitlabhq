@@ -248,39 +248,40 @@ RSpec.describe ApplicationWorker do
   end
 
   describe '.perform_async' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:primary_only?, :skip_scheduling_ff, :data_consistency, :schedules_job?) do
+      true  | false | :sticky  | false
+      true  | false | :delayed | false
+      true  | false | :always  | false
+      true  | true  | :sticky  | false
+      true  | true  | :delayed | false
+      true  | true  | :always  | false
+      false | false | :sticky  | true
+      false | false | :delayed | true
+      false | false | :always  | false
+      false | true  | :sticky  | false
+      false | true  | :delayed | false
+      false | true  | :always  | false
+    end
+
     before do
       stub_const(worker.name, worker)
+      worker.data_consistency(data_consistency)
+
+      allow(Gitlab::Database::LoadBalancing).to receive(:primary_only?).and_return(primary_only?)
+      stub_feature_flags(skip_scheduling_workers_for_replicas: skip_scheduling_ff)
     end
 
-    shared_examples_for 'worker utilizes load balancing capabilities' do |data_consistency|
-      before do
-        worker.data_consistency(data_consistency)
-      end
-
-      it 'call perform_in' do
-        expect(worker).to receive(:perform_in).with(described_class::DEFAULT_DELAY_INTERVAL.seconds, 123)
+    with_them do
+      it 'schedules or enqueues the job correctly' do
+        if schedules_job?
+          expect(worker).to receive(:perform_in).with(described_class::DEFAULT_DELAY_INTERVAL.seconds, 123)
+        else
+          expect(worker).not_to receive(:perform_in)
+        end
 
         worker.perform_async(123)
-      end
-    end
-
-    context 'when workers data consistency is :sticky' do
-      it_behaves_like 'worker utilizes load balancing capabilities', :sticky
-    end
-
-    context 'when workers data consistency is :delayed' do
-      it_behaves_like 'worker utilizes load balancing capabilities', :delayed
-    end
-
-    context 'when workers data consistency is :always' do
-      before do
-        worker.data_consistency(:always)
-      end
-
-      it 'does not call perform_in' do
-        expect(worker).not_to receive(:perform_in)
-
-        worker.perform_async
       end
     end
   end

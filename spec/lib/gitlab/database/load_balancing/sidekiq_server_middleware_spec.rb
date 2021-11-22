@@ -77,9 +77,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       include_examples 'load balancing strategy', expected_strategy
     end
 
-    shared_examples_for 'sticks based on data consistency' do |data_consistency|
-      include_context 'data consistency worker class', data_consistency, :load_balancing_for_test_data_consistency_worker
-
+    shared_examples_for 'sticks based on data consistency' do
       context 'when load_balancing_for_test_data_consistency_worker is disabled' do
         before do
           stub_feature_flags(load_balancing_for_test_data_consistency_worker: false)
@@ -136,6 +134,52 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
     end
 
+    shared_examples_for 'sleeps when necessary' do
+      context 'when WAL locations are blank', :freeze_time do
+        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "wal_locations" => {}, "created_at" => Time.current.to_f - (described_class::MINIMUM_DELAY_INTERVAL - 0.3) } }
+
+        it 'does not sleep' do
+          expect(middleware).not_to receive(:sleep)
+
+          run_middleware
+        end
+      end
+
+      context 'when WAL locations are present', :freeze_time do
+        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "database_replica_location" => "0/D525E3A8", "created_at" => Time.current.to_f - elapsed_time } }
+
+        context 'when delay interval has not elapsed' do
+          let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL - 0.3 }
+
+          it 'sleeps until the minimum delay is reached' do
+            expect(middleware).to receive(:sleep).with(be_within(0.01).of(elapsed_time))
+
+            run_middleware
+          end
+        end
+
+        context 'when delay interval has elapsed' do
+          let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL + 0.3 }
+
+          it 'does not sleep' do
+            expect(middleware).not_to receive(:sleep)
+
+            run_middleware
+          end
+        end
+
+        context 'when created_at is in the future' do
+          let(:elapsed_time) { -5 }
+
+          it 'does not sleep' do
+            expect(middleware).not_to receive(:sleep)
+
+            run_middleware
+          end
+        end
+      end
+    end
+
     context 'when worker class does not include ApplicationWorker' do
       let(:worker) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper.new }
 
@@ -146,10 +190,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       include_context 'data consistency worker class', :always, :load_balancing_for_test_data_consistency_worker
 
       include_examples 'stick to the primary', 'primary'
+
+      context 'when delay interval has not elapsed', :freeze_time do
+        let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'database_replica_location' => '0/D525E3A8', "created_at" => Time.current.to_f - elapsed_time } }
+        let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL - 0.3 }
+
+        it 'does not sleep' do
+          expect(middleware).not_to receive(:sleep)
+
+          run_middleware
+        end
+      end
     end
 
     context 'when worker data consistency is :delayed' do
-      include_examples 'sticks based on data consistency', :delayed
+      include_context 'data consistency worker class', :delayed, :load_balancing_for_test_data_consistency_worker
+
+      include_examples 'sticks based on data consistency'
+      include_examples 'sleeps when necessary'
 
       context 'when replica is not up to date' do
         before do
@@ -195,7 +253,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
     end
 
     context 'when worker data consistency is :sticky' do
-      include_examples 'sticks based on data consistency', :sticky
+      include_context 'data consistency worker class', :sticky, :load_balancing_for_test_data_consistency_worker
+
+      include_examples 'sticks based on data consistency'
+      include_examples 'sleeps when necessary'
 
       context 'when replica is not up to date' do
         before do
@@ -255,7 +316,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   end
 
   def run_middleware
-    middleware.call(worker, job, double(:queue)) { yield }
+    middleware.call(worker, job, double(:queue)) { yield if block_given? }
   rescue described_class::JobReplicaNotUpToDate
     # we silence errors here that cause the job to retry
   end

@@ -6,6 +6,8 @@ module Gitlab
       class SidekiqServerMiddleware
         JobReplicaNotUpToDate = Class.new(StandardError)
 
+        MINIMUM_DELAY_INTERVAL = 1
+
         def call(worker, job, _queue)
           worker_class = worker.class
           strategy = select_load_balancing_strategy(worker_class, job)
@@ -42,7 +44,9 @@ module Gitlab
 
           wal_locations = get_wal_locations(job)
 
-          return :primary_no_wal unless wal_locations
+          return :primary_no_wal if wal_locations.blank?
+
+          sleep_if_needed(job)
 
           if databases_in_sync?(wal_locations)
             # Happy case: we can read from a replica.
@@ -54,6 +58,11 @@ module Gitlab
             # Sad case: we need to fall back to the primary.
             :primary
           end
+        end
+
+        def sleep_if_needed(job)
+          time_diff = Time.current.to_f - job['created_at'].to_f
+          sleep time_diff if time_diff > 0 && time_diff < MINIMUM_DELAY_INTERVAL
         end
 
         def get_wal_locations(job)
