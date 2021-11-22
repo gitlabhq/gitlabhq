@@ -7,7 +7,7 @@
       %li
         %span.light.js-localtime{ :data => { :datetime => event.created_at.utc.strftime('%Y-%m-%dT%H:%M:%SZ'), :toggle => 'tooltip', :placement => 'top' } }
           = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
-          = event.created_at.to_time.in_time_zone(@user.timezone).strftime('%-I:%M%P')
+          = event.created_at.to_time.in_time_zone(local_time_instance(@user.timezone)).strftime('%-I:%M%P')
         - if event.visible_to_user?(current_user)
           - if event.push_action?
             #{event.action_name} #{event.ref_type}

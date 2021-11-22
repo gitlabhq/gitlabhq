@@ -16,6 +16,7 @@ WARNING:
 This feature might not be available to you. Check the **version history** note above for details.
 
 Usage Trends gives you an overview of how much data your instance contains, and how quickly this volume is changing over time.
+Usage Trends data refreshes daily.
 
 To see Usage Trends:
 

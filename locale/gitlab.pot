@@ -1536,9 +1536,6 @@ msgstr ""
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
-msgid "A string appended to the project path to form the Service Desk email address."
-msgstr ""
-
 msgid "A title is required"
 msgstr ""
 
@@ -1969,6 +1966,9 @@ msgid "Add a numbered list"
 msgstr ""
 
 msgid "Add a related issue"
+msgstr ""
+
+msgid "Add a suffix to Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Add a table"
@@ -12690,6 +12690,9 @@ msgstr ""
 msgid "Email a new %{name} to this project"
 msgstr ""
 
+msgid "Email address suffix"
+msgstr ""
+
 msgid "Email address to use for Support Desk"
 msgstr ""
 
@@ -16999,9 +17002,6 @@ msgstr ""
 msgid "Have more to say about GitLab?"
 msgstr ""
 
-msgid "Header cannot be associated with both a request and a response"
-msgstr ""
-
 msgid "Header logo"
 msgstr ""
 
@@ -17012,9 +17012,6 @@ msgid "Header logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Header message"
-msgstr ""
-
-msgid "Header must be associated with a request or response"
 msgstr ""
 
 msgid "Headers"
@@ -26932,9 +26929,6 @@ msgid "Project milestone"
 msgstr ""
 
 msgid "Project name"
-msgstr ""
-
-msgid "Project name suffix"
 msgstr ""
 
 msgid "Project navigation"

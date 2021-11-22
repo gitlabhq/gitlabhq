@@ -274,7 +274,7 @@ When configured, the custom suffix creates a new Service Desk email address, con
 
 For example, suppose the `mygroup/myproject` project Service Desk settings has the following configured:
 
-- Project name suffix is set to `support`.
+- Email address suffix is set to `support`.
 - Service Desk email address is configured to `contact+%{key}@example.com`.
 
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.

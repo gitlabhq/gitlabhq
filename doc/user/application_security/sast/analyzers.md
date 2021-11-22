@@ -59,7 +59,7 @@ support the following features:
 ## Official default analyzers
 
 Any custom change to the official analyzers can be achieved by using a
-[CI/CD variable in your `.gitlab-ci.yml`](index.md#customizing-the-sast-settings).
+[CI/CD variable in your `.gitlab-ci.yml`](index.md#available-cicd-variables).
 
 ### Using a custom Docker mirror
 

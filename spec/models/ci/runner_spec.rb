@@ -208,26 +208,38 @@ RSpec.describe Ci::Runner do
   end
 
   describe '.belonging_to_parent_group_of_project' do
-    let(:project) { create(:project, group: group) }
-    let(:group) { create(:group) }
-    let(:runner) { create(:ci_runner, :group, groups: [group]) }
-    let!(:unrelated_group) { create(:group) }
-    let!(:unrelated_project) { create(:project, group: unrelated_group) }
-    let!(:unrelated_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
-
-    it 'returns the specific group runner' do
-      expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
-    end
-
-    context 'with a parent group with a runner' do
-      let(:runner) { create(:ci_runner, :group, groups: [parent_group]) }
+    shared_examples 'returns parent group project runners' do
       let(:project) { create(:project, group: group) }
-      let(:group) { create(:group, parent: parent_group) }
-      let(:parent_group) { create(:group) }
+      let(:group) { create(:group) }
+      let(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:unrelated_group) { create(:group) }
+      let!(:unrelated_project) { create(:project, group: unrelated_group) }
+      let!(:unrelated_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
 
-      it 'returns the group runner from the parent group' do
+      it 'returns the specific group runner' do
         expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
       end
+
+      context 'with a parent group with a runner' do
+        let(:runner) { create(:ci_runner, :group, groups: [parent_group]) }
+        let(:project) { create(:project, group: group) }
+        let(:group) { create(:group, parent: parent_group) }
+        let(:parent_group) { create(:group) }
+
+        it 'returns the group runner from the parent group' do
+          expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+        end
+      end
+    end
+
+    it_behaves_like 'returns parent group project runners'
+
+    context 'when feature flag :linear_runner_ancestor_scopes is disabled' do
+      before do
+        stub_feature_flags(linear_runner_ancestor_scopes: false)
+      end
+
+      it_behaves_like 'returns parent group project runners'
     end
   end
 
@@ -1259,31 +1271,43 @@ RSpec.describe Ci::Runner do
   end
 
   describe '.belonging_to_group' do
-    it 'returns the specific group runner' do
-      group = create(:group)
-      runner = create(:ci_runner, :group, groups: [group])
-      unrelated_group = create(:group)
-      create(:ci_runner, :group, groups: [unrelated_group])
+    shared_examples 'returns group runners' do
+      it 'returns the specific group runner' do
+        group = create(:group)
+        runner = create(:ci_runner, :group, groups: [group])
+        unrelated_group = create(:group)
+        create(:ci_runner, :group, groups: [unrelated_group])
 
-      expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+        expect(described_class.belonging_to_group(group.id)).to contain_exactly(runner)
+      end
+
+      context 'runner belonging to parent group' do
+        let_it_be(:parent_group) { create(:group) }
+        let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
+        let_it_be(:group) { create(:group, parent: parent_group) }
+
+        context 'when include_parent option is passed' do
+          it 'returns the group runner from the parent group' do
+            expect(described_class.belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
+          end
+        end
+
+        context 'when include_parent option is not passed' do
+          it 'does not return the group runner from the parent group' do
+            expect(described_class.belonging_to_group(group.id)).to be_empty
+          end
+        end
+      end
     end
 
-    context 'runner belonging to parent group' do
-      let_it_be(:parent_group) { create(:group) }
-      let_it_be(:parent_runner) { create(:ci_runner, :group, groups: [parent_group]) }
-      let_it_be(:group) { create(:group, parent: parent_group) }
+    it_behaves_like 'returns group runners'
 
-      context 'when include_parent option is passed' do
-        it 'returns the group runner from the parent group' do
-          expect(described_class.belonging_to_group(group.id, include_ancestors: true)).to contain_exactly(parent_runner)
-        end
+    context 'when feature flag :linear_runner_ancestor_scopes is disabled' do
+      before do
+        stub_feature_flags(linear_runner_ancestor_scopes: false)
       end
 
-      context 'when include_parent option is not passed' do
-        it 'does not return the group runner from the parent group' do
-          expect(described_class.belonging_to_group(group.id)).to be_empty
-        end
-      end
+      it_behaves_like 'returns group runners'
     end
   end
 end

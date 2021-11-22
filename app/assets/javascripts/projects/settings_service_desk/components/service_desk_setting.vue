@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlToggle, GlLoadingIcon, GlSprintf, GlFormInput, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
@@ -88,6 +89,16 @@ export default {
     hasCustomEmail() {
       return this.customEmail && this.customEmail !== this.incomingEmail;
     },
+    emailSuffixHelpUrl() {
+      return helpPagePath('user/project/service_desk.html', {
+        anchor: 'configuring-a-custom-email-address-suffix',
+      });
+    },
+    customEmailAddressHelpUrl() {
+      return helpPagePath('user/project/service_desk.html', {
+        anchor: 'using-a-custom-email-address',
+      });
+    },
   },
   methods: {
     onCheckboxToggle(isChecked) {
@@ -170,7 +181,7 @@ export default {
         </template>
 
         <label for="service-desk-project-suffix" class="mt-3">
-          {{ __('Project name suffix') }}
+          {{ __('Email address suffix') }}
         </label>
         <gl-form-input
           v-if="hasProjectKeySupport"
@@ -189,7 +200,20 @@ export default {
           class="form-text text-muted"
           :class="{ 'gl-mt-2!': hasProjectKeySupport && projectKeyError }"
         >
-          {{ __('A string appended to the project path to form the Service Desk email address.') }}
+          <gl-sprintf
+            :message="
+              __('Add a suffix to Service Desk email address. %{linkStart}Learn more.%{linkEnd}')
+            "
+          >
+            <template #link="{ content }">
+              <gl-link
+                :href="emailSuffixHelpUrl"
+                target="_blank"
+                class="gl-text-blue-600 font-size-inherit"
+                >{{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
         </span>
         <span v-else class="form-text text-muted">
           <gl-sprintf
@@ -201,7 +225,7 @@ export default {
           >
             <template #link="{ content }">
               <gl-link
-                href="https://docs.gitlab.com/ee/user/project/service_desk.html#using-a-custom-email-address"
+                :href="customEmailAddressHelpUrl"
                 target="_blank"
                 class="gl-text-blue-600 font-size-inherit"
                 >{{ content }}
