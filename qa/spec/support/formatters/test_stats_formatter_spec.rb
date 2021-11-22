@@ -45,7 +45,7 @@ describe QA::Support::Formatters::TestStatsFormatter do
         job_name: "test-job",
         merge_request: "false",
         run_type: run_type,
-        stage: stage
+        stage: stage.match(%r{\d{1,2}_(\w+)}).captures.first
       },
       fields: {
         id: './spec/support/formatters/test_stats_formatter_spec.rb[1:1]',

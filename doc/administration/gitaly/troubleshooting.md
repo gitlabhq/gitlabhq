@@ -328,6 +328,27 @@ experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 Please ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
 server to keep them synchronized if possible.
 
+### Health check warnings
+
+The following warning in `/var/log/gitlab/praefect/current` can be ignored.
+
+```plaintext
+"error":"full method name not found: /grpc.health.v1.Health/Check",
+"msg":"error when looking up method info"
+```
+
+### File not found errors
+
+The following errors in `/var/log/gitlab/gitaly/current` can be ignored.
+They are caused by the GitLab Rails application checking for specific files
+that do not exist in a repository.
+
+```plaintext
+"error":"not found: .gitlab/route-map.yml"
+"error":"not found: Dockerfile"
+"error":"not found: .gitlab-ci.yml"
+```
+
 ## Troubleshoot Praefect (Gitaly Cluster)
 
 The following sections provide possible solutions to Gitaly Cluster errors.
@@ -409,3 +430,21 @@ This indicates that the virtual storage name used in the
 [`git_data_dirs` setting](praefect.md#gitaly) for GitLab.
 
 Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.
+
+### Gitaly Cluster performance issues on cloud platforms
+
+Praefect does not require a lot of CPU or memory, and can run on small virtual machines.
+Cloud services may place other limits on the resources that small VMs can use, such as
+disk IO and network traffic.
+
+Praefect nodes generate a lot of network traffic. The following symptoms can be observed
+if their network bandwidth has been throttled by the cloud service.
+
+- Poor performance of Git operations
+- High network latency
+- High memory use by Praefect
+
+Possible solutions:
+
+- Provision larger VMs to gain access to larger network traffic allowances.
+- Use your cloud service's monitoring and logging to check that the Praefect nodes are not exhausting their traffic allowances.

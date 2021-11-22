@@ -822,11 +822,11 @@ bin/rake gettext:regenerate
 ```
 
 This command updates the `locale/gitlab.pot` file with the newly externalized strings and removes
-any unused strings. Once the changes are on the default branch, [CrowdIn](https://translate.gitlab.com)
+any unused strings. Once the changes are on the default branch, [Crowdin](https://translate.gitlab.com)
 picks them up and presents them for translation.
 
 You don't need to check in any changes to the `locale/[language]/gitlab.po` files. They are updated
-automatically when [translations from CrowdIn are merged](merging_translations.md).
+automatically when [translations from Crowdin are merged](merging_translations.md).
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file and regenerate it
 using the same command.

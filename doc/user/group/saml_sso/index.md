@@ -29,13 +29,15 @@ If required, you can find [a glossary of common terms](../../../integration/saml
    Alternatively GitLab provides [metadata XML configuration](#metadata-configuration).
    See [specific identity provider documentation](#providers) for more details.
 1. Configure the SAML response to include a NameID that uniquely identifies each user.
-1. Configure [required assertions](#assertions) at minimum containing
-   the user's email address.
+1. Configure the required [user attributes](#user-attributes), ensuring you include the user's email address.
 1. While the default is enabled for most SAML providers, please ensure the app is set to have service provider
    initiated calls in order to link existing GitLab accounts.
 1. Once the identity provider is set up, move on to [configuring GitLab](#configuring-gitlab).
 
 ![Issuer and callback for configuring SAML identity provider with GitLab.com](img/group_saml_configuration_information.png)
+
+If your account is the only owner in the group after SAML is set up, you can't unlink the account. To [unlink the account](#unlinking-accounts),
+set up another user as a group owner.
 
 ### NameID
 
@@ -60,15 +62,16 @@ Once users have signed into GitLab using the SSO SAML setup, changing the `NameI
 We recommend setting the NameID format to `Persistent` unless using a field (such as email) that requires a different format.
 Most NameID formats can be used, except `Transient` due to the temporary nature of this format.
 
-### Assertions
+### User attributes
 
-For users to be created with the right information with the improved [user access and management](#user-access-and-management),
-the user details need to be passed to GitLab as SAML assertions.
+To create users with the correct information for improved [user access and management](#user-access-and-management),
+the user's details must be passed to GitLab as attributes in the SAML assertion. At a minimum, the user's email address
+must be specified as an attribute named `email` or `mail`.
 
-At a minimum, the user's email address *must* be specified as an assertion named `email` or `mail`.
-See [the assertions list](../../../integration/saml.md#assertions) for other available claims.
-In addition to the attributes in the linked assertions list, GitLab.com supports `username`
-and `nickname` attributes.
+GitLab.com supports the following attributes:
+
+- `username` or `nickname`. We recommend you configure only one of these.
+- The [attributes also available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
 
 ### Metadata configuration
 

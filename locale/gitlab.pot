@@ -21809,9 +21809,6 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
-msgid "Merge requests are read-only in a secondary Geo node"
-msgstr ""
-
 msgid "Merge requests assigned to me"
 msgstr ""
 
@@ -21819,6 +21816,9 @@ msgid "Merge requests that I'm a reviewer"
 msgstr ""
 
 msgid "Merge the branch and fix any conflicts that come up"
+msgstr ""
+
+msgid "Merge unavailable: merge requests are read-only in a secondary Geo node."
 msgstr ""
 
 msgid "Merge when pipeline succeeds"
@@ -41496,6 +41496,9 @@ msgstr ""
 msgid "mrWidget|Merge locally"
 msgstr ""
 
+msgid "mrWidget|Merge unavailable: merge requests are read-only on archived projects."
+msgstr ""
+
 msgid "mrWidget|Merged by"
 msgstr ""
 
@@ -41605,9 +41608,6 @@ msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"
-msgstr ""
-
-msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr ""
 
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."

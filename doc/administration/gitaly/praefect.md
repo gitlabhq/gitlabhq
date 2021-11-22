@@ -215,6 +215,38 @@ The database used by Praefect is now configured.
 If you see Praefect database errors after configuring PostgreSQL, see
 [troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
+#### Reads distribution caching
+
+Praefect performance can be improved by additionally configuring the `database_direct`
+settings:
+
+```ruby
+praefect['database_direct_host'] = POSTGRESQL_HOST
+praefect['database_direct_port'] = 5432
+
+# Use the following to override parameters of direct database connection.
+# Comment out where the parameters are the same for both connections.
+
+praefect['database_direct_user'] = 'praefect'
+praefect['database_direct_password'] = PRAEFECT_SQL_PASSWORD
+praefect['database_direct_dbname'] = 'praefect_production'
+#praefect['database_direct_sslmode'] = '...'
+#praefect['database_direct_sslcert'] = '...'
+#praefect['database_direct_sslkey'] = '...'
+#praefect['database_direct_sslrootcert'] = '...'
+```
+
+Once configured, this connection is automatically used for the
+[SQL LISTEN](https://www.postgresql.org/docs/11/sql-listen.html) feature and
+allows Praefect to receive notifications from PostgreSQL for cache invalidation.
+
+Verify this feature is working by looking for the following log entry in the Praefect
+log:
+
+```plaintext
+reads distribution caching is enabled by configuration
+```
+
 #### Use PgBouncer
 
 To reduce PostgreSQL resource consumption, we recommend setting up and configuring
@@ -1073,30 +1105,16 @@ To get started quickly:
 Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
 
-## Configure strong consistency
+## Strong consistency
 
-To enable [strong consistency](index.md#strong-consistency):
+[Strong consistency](index.md#strong-consistency) is the default from GitLab 14.0.
+For configuration information on earlier versions, refer to documentation:
 
-- In GitLab 13.5, you must use Git v2.28.0 or higher on Gitaly nodes to enable strong consistency.
-- In GitLab 13.4 and later, the strong consistency voting strategy has been improved and enabled by default.
-  Instead of requiring all nodes to agree, only the primary and half of the secondaries need to agree.
-- In GitLab 13.3, reference transactions are enabled by default with a primary-wins strategy.
-  This strategy causes all transactions to succeed for the primary and thus does not ensure strong consistency.
-  To enable strong consistency, disable the `:gitaly_reference_transactions_primary_wins` feature flag.
-- In GitLab 13.2, enable the `:gitaly_reference_transactions` feature flag.
-- In GitLab 13.1, enable the `:gitaly_reference_transactions` and `:gitaly_hooks_rpc`
-  feature flags.
+- On your GitLab instance at `/help`.
+- The [13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
 
-Changing feature flags requires [access to the Rails console](../feature_flags.md#start-the-gitlab-rails-console).
-In the Rails console, enable or disable the flags as required. For example:
-
-```ruby
-Feature.enable(:gitaly_reference_transactions)
-Feature.disable(:gitaly_reference_transactions_primary_wins)
-```
-
-For information on monitoring strong consistency, see the
-[relevant documentation](index.md#monitor-gitaly-cluster).
+For information on monitoring strong consistency, see the Gitaly Cluster
+[Prometheus metrics documentation](index.md#monitor-gitaly-cluster).
 
 ## Configure replication factor
 

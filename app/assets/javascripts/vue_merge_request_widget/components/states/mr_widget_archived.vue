@@ -20,7 +20,7 @@ export default {
     </div>
     <div class="media-body">
       <span class="bold">
-        {{ s__('mrWidget|This project is archived, write access has been disabled') }}
+        {{ s__('mrWidget|Merge unavailable: merge requests are read-only on archived projects.') }}
       </span>
     </div>
   </div>

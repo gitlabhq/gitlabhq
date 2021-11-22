@@ -76,6 +76,12 @@ dramatically slow down GitLab instances. For this reason, they are being removed
 
 Announced: 2021-09-22
 
+### CI/CD job name length limit
+
+In GitLab 15.0 we are going to limit the number of characters in CI/CD job names to 255. Any pipeline with job names that exceed the 255 character limit will stop working after the 15.0 release.
+
+Announced: 2021-12-22
+
 ### Certificate-based integration with Kubernetes
 
 [We are deprecating the certificate-based integration with Kubernetes](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).

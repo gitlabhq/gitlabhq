@@ -42,7 +42,12 @@ To move repositories into a [Gitaly Cluster](../gitaly/index.md#gitaly-cluster) 
 WARNING:
 Repositories can be **permanently deleted** by a call to `/projects/:project_id/repository_storage_moves`
 that attempts to move a project already stored in a Gitaly Cluster back into that cluster.
-See [this issue for more details](https://gitlab.com/gitlab-org/gitaly/-/issues/3752).
+See [this issue for more details](https://gitlab.com/gitlab-org/gitaly/-/issues/3752). This was fixed in
+GitLab 14.3.0 and backported to
+[14.2.4](https://about.gitlab.com/releases/2021/09/17/gitlab-14-2-4-released/),
+[14.1.6](https://about.gitlab.com/releases/2021/09/27/gitlab-14-1-6-released/),
+[14.0.11](https://about.gitlab.com/releases/2021/09/27/gitlab-14-0-11-released/), and
+[13.12.12](https://about.gitlab.com/releases/2021/09/22/gitlab-13-12-12-released/).
 
 Each repository is made read-only for the duration of the move. The repository is not writable
 until the move has completed.

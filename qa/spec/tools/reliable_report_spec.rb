@@ -12,30 +12,31 @@ describe QA::Tools::ReliableReport do
   let(:slack_channel) { "#quality-reports" }
   let(:run_type) { "package-and-qa" }
   let(:range) { 30 }
-  let(:results) { 10 }
+  let(:results) { 2 }
 
   let(:runs) { { 0 => stable_spec, 1 => unstable_spec } }
 
+  let(:spec_values) { { "file_path" => "some/spec.rb", "stage" => "manage" } }
   let(:stable_spec) do
-    spec_values = { "name" => "stable spec", "status" => "passed", "file_path" => "some/spec.rb" }
+    values = { "name" => "stable spec", "status" => "passed", **spec_values }
     instance_double(
       "InfluxDB2::FluxTable",
       records: [
-        instance_double("InfluxDB2::FluxRecord", values: spec_values),
-        instance_double("InfluxDB2::FluxRecord", values: spec_values),
-        instance_double("InfluxDB2::FluxRecord", values: spec_values)
+        instance_double("InfluxDB2::FluxRecord", values: values),
+        instance_double("InfluxDB2::FluxRecord", values: values),
+        instance_double("InfluxDB2::FluxRecord", values: values)
       ]
     )
   end
 
   let(:unstable_spec) do
-    spec_values = { "name" => "unstable spec", "status" => "failed", "file_path" => "some/spec.rb" }
+    values = { "name" => "unstable spec", "status" => "failed", **spec_values }
     instance_double(
       "InfluxDB2::FluxTable",
       records: [
-        instance_double("InfluxDB2::FluxRecord", values: { **spec_values, "status" => "passed" }),
-        instance_double("InfluxDB2::FluxRecord", values: spec_values),
-        instance_double("InfluxDB2::FluxRecord", values: spec_values)
+        instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
+        instance_double("InfluxDB2::FluxRecord", values: values),
+        instance_double("InfluxDB2::FluxRecord", values: values)
       ]
     )
   end
@@ -86,7 +87,8 @@ describe QA::Tools::ReliableReport do
     let(:query) { flux_query(false) }
     let(:fetch_message) { "Fetching data on test execution for past #{range} days in '#{run_type}' runs" }
     let(:slack_send_message) { "Sending top stable spec report to #{slack_channel} slack channel" }
-    let(:title) { "Top #{results} stable specs for past #{range} days in '#{run_type}' runs" }
+    let(:message_title) { "Top #{results} stable specs for past #{range} days in '#{run_type}' runs" }
+    let(:table_title) { "Top stable specs in 'manage' stage" }
     let(:rows) do
       [
         [name_column("stable spec"), 3, 0, "0%"],
@@ -95,15 +97,15 @@ describe QA::Tools::ReliableReport do
     end
 
     it "prints top stable spec report to console" do
-      expect { reporter.show_top_stable }.to output("#{fetch_message}\n\n#{table(rows, title)}\n").to_stdout
+      expect { reporter.show_top_stable }.to output("#{fetch_message}\n\n#{table(rows, table_title)}\n\n").to_stdout
     end
 
     it "sends top stable spec report to slack" do
       slack_args = { icon_emoji: ":mtg_green:", username: "Stable Spec Report" }
 
-      expect { reporter.notify_top_stable }.to output("#{fetch_message}\n\n\n#{slack_send_message}\n").to_stdout
-      expect(slack_notifier).to have_received(:post).with(text: "*#{title}*", **slack_args)
-      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows)}```", **slack_args)
+      expect { reporter.notify_top_stable }.to output("\n#{slack_send_message}\n#{fetch_message}\n\n").to_stdout
+      expect(slack_notifier).to have_received(:post).with(text: "*#{message_title}*", **slack_args)
+      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows, table_title)}```", **slack_args)
     end
   end
 
@@ -111,19 +113,20 @@ describe QA::Tools::ReliableReport do
     let(:query) { flux_query(true) }
     let(:fetch_message) { "Fetching data on reliable test execution for past #{range} days in '#{run_type}' runs" }
     let(:slack_send_message) { "Sending top unstable reliable spec report to #{slack_channel} slack channel" }
-    let(:title) { "Top #{results} unstable reliable specs for past #{range} days in '#{run_type}' runs" }
+    let(:message_title) { "Top #{results} unstable reliable specs for past #{range} days in '#{run_type}' runs" }
+    let(:table_title) { "Top unstable specs in 'manage' stage" }
     let(:rows) { [[name_column("unstable spec"), 3, 2, "66.67%"]] }
 
     it "prints top unstable spec report to console" do
-      expect { reporter.show_top_unstable }.to output("#{fetch_message}\n\n#{table(rows, title)}\n").to_stdout
+      expect { reporter.show_top_unstable }.to output("#{fetch_message}\n\n#{table(rows, table_title)}\n\n").to_stdout
     end
 
     it "sends top unstable reliable spec report to slack" do
       slack_args = { icon_emoji: ":sadpanda:", username: "Unstable Spec Report" }
 
       expect { reporter.notify_top_unstable }.to output("#{fetch_message}\n\n\n#{slack_send_message}\n").to_stdout
-      expect(slack_notifier).to have_received(:post).with(text: "*#{title}*", **slack_args)
-      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows)}```", **slack_args)
+      expect(slack_notifier).to have_received(:post).with(text: "*#{message_title}*", **slack_args)
+      expect(slack_notifier).to have_received(:post).with(text: "```#{table(rows, table_title)}```", **slack_args)
     end
   end
 

@@ -228,7 +228,7 @@ self.reactive_cache_lease_timeout = 2.minutes
 - It defaults to 1 minute.
 
 ```ruby
-self.reactive_cache_lease_timeout = 1.minute
+self.reactive_cache_refresh_interval = 1.minute
 ```
 
 #### `self.reactive_cache_lifetime`

@@ -167,7 +167,7 @@ module QA
         # @param [String] location
         # @return [String, nil]
         def devops_stage(file_path)
-          file_path.match(%r{(\d{1,2}_\w+)/})&.captures&.first
+          file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
         end
       end
     end

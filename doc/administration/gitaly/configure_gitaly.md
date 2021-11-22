@@ -350,6 +350,10 @@ leading to `Error creating pipeline` and `Commit not found` errors, or stale dat
 As the final step, you must update Gitaly clients to switch from using local Gitaly service to use
 the Gitaly servers you just configured.
 
+NOTE:
+GitLab requires a `default` repository storage to be configured.
+[Read more about this limitation](#gitlab-requires-a-default-repository-storage).
+
 This can be risky because anything that prevents your Gitaly clients from reaching the Gitaly
 servers causes all Gitaly requests to fail. For example, any sort of network, firewall, or name
 resolution problems.
@@ -488,6 +492,18 @@ gitaly['key_path'] = "/etc/gitlab/ssl/key.pem"
 
 `path` can be included only for storage shards on the local Gitaly server.
 If it's excluded, default Git storage directory is used for that storage shard.
+
+### GitLab requires a default repository storage
+
+When adding Gitaly servers to an environment, you might want to replace the original `default` Gitaly service. However, you can't
+reconfigure the GitLab application servers to remove the `default` entry from `git_data_dirs` because GitLab requires a
+`git_data_dirs` entry called `default`. [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) about this limitation.
+
+To work around the limitation:
+
+1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`.
+1. In the [Admin Area](../repository_storage_paths.md#configure-where-new-repositories-are-stored), set `default` to a weight of zero
+   to prevent repositories being stored there.
 
 ### Disable Gitaly where not required (optional)
 
