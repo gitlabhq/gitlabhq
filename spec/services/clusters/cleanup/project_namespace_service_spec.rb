@@ -95,5 +95,31 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceService do
         subject
       end
     end
+
+    context 'when there is a Kubeclient::HttpError' do
+      let(:kubeclient_instance_double) do
+        instance_double(Gitlab::Kubernetes::KubeClient)
+      end
+
+      ['Unauthorized', 'forbidden', 'Certificate verify Failed'].each do |message|
+        it 'schedules ::ServiceAccountWorker with accepted errors' do
+          allow(kubeclient_instance_double)
+            .to receive(:delete_namespace)
+            .and_raise(Kubeclient::HttpError.new(401, message, nil))
+
+          expect(Clusters::Cleanup::ServiceAccountWorker).to receive(:perform_async).with(cluster.id)
+
+          subject
+        end
+      end
+
+      it 'raises error with unaccepted errors' do
+        allow(kubeclient_instance_double)
+          .to receive(:delete_namespace)
+          .and_raise(Kubeclient::HttpError.new(401, 'unexpected message', nil))
+
+        expect { subject }.to raise_error(Kubeclient::HttpError)
+      end
+    end
   end
 end

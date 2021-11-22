@@ -476,7 +476,27 @@ The following image is a sequence diagram for how GitLab works as an OAuth2
 provider for Mattermost. You can use this to troubleshoot errors
 in getting the integration to work:
 
-![sequence diagram](img/gitlab-mattermost.png)
+```mermaid
+sequenceDiagram
+    User->>Mattermost: GET https://mm.domain.com
+    Note over Mattermost, GitLab: Obtain access code
+    Mattermost->>GitLab: GET https://gitlab.domain.com/oauth/authorize
+    Note over User, GitLab: GitLab user signs in (if necessary)
+    Note over GitLab: GitLab verifies client_id matches an OAuth application
+    GitLab->>User: GitLab asks user to authorize Mattermost OAuth app
+    User->>GitLab: User selects 'Allow'
+    Note over GitLab: GitLab verifies redirect_uri matches list of valid URLs
+    GitLab->>User: 302 redirect: https://mm.domain.com/signup/gitlab/complete
+    User->>Mattermost: GET https://mm.domain.com/signup/gitlab/complete
+    Note over Mattermost, GitLab: Exchange access code for access token
+    Mattermost->>GitLab: POST http://gitlab.domain.com/oauth/token
+    GitLab->>GitLab: Doorkeeper::TokensController#35;create
+    GitLab->>Mattermost: Access token
+    Note over Mattermost, GitLab: Mattermost looks up GitLab user
+    Mattermost->>GitLab: GET https://gitlab.domain.com/api/v4/user
+    GitLab->>Mattermost: User details
+    Mattermost->>User: Mattermost/GitLab user ready
+```
 
 ## Troubleshooting the Mattermost CLI
 

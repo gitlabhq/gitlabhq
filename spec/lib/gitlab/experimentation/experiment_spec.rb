@@ -16,6 +16,7 @@ RSpec.describe Gitlab::Experimentation::Experiment do
   before do
     skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
+    allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
     feature = double('FeatureFlag', percentage_of_time_value: percentage, enabled?: true)
     allow(Feature).to receive(:get).with(:experiment_key_experiment_percentage).and_return(feature)
   end

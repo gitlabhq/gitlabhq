@@ -95,5 +95,47 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         expect(subject[correlation_id_key]).to eq('123456')
       end
     end
+
+    context  'when feature flags are present', :request_store do
+      before do
+        allow(Feature::Definition).to receive(:valid_usage!).and_return(true)
+
+        allow(Feature).to receive(:log_feature_flag_states?).and_return(false)
+
+        Feature.enable(:enabled_feature)
+        Feature.disable(:disabled_feature)
+
+        allow(Feature).to receive(:log_feature_flag_states?).with(:enabled_feature).and_call_original
+        allow(Feature).to receive(:log_feature_flag_states?).with(:disabled_feature).and_call_original
+      end
+
+      context 'and :feature_flag_log_states is enabled' do
+        before do
+          Feature.enable(:feature_flag_state_logs)
+        end
+
+        it 'adds feature flag events' do
+          Feature.enabled?(:enabled_feature)
+          Feature.enabled?(:disabled_feature)
+
+          expect(subject).to have_key(:feature_flag_states)
+          expect(subject[:feature_flag_states]).to match_array(%w[enabled_feature:1 disabled_feature:0])
+        end
+      end
+
+      context 'and :feature_flag_log_states is disabled' do
+        before do
+          Feature.disable(:feature_flag_state_logs)
+        end
+
+        it 'does not track or add feature flag events' do
+          Feature.enabled?(:enabled_feature)
+          Feature.enabled?(:disabled_feature)
+
+          expect(subject).not_to have_key(:feature_flag_states)
+          expect(Feature).not_to receive(:log_feature_flag_state)
+        end
+      end
+    end
   end
 end

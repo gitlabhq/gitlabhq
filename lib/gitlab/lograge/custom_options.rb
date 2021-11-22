@@ -32,6 +32,10 @@ module Gitlab
 
         ::Gitlab::ExceptionLogFormatter.format!(exception, payload)
 
+        if Feature.enabled?(:feature_flag_state_logs, type: :ops)
+          payload[:feature_flag_states] = Feature.logged_states.map { |key, state| "#{key}:#{state ? 1 : 0}" }
+        end
+
         payload
       end
     end

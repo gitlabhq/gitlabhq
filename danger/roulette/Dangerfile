@@ -49,8 +49,8 @@ for them.
 MARKDOWN
 
 def group_not_available_template(slack_channel, gitlab_group)
-  <<~TEMPLATE
-    No engineer is available for automated assignment, please reach out to `#{slack_channel}` slack channel or mention `#{gitlab_group}` for assistance.
+  <<~TEMPLATE.strip
+    No engineer is available for automated assignment, please reach out to the `#{slack_channel}` Slack channel or mention `#{gitlab_group}` for assistance.
   TEMPLATE
 end
 

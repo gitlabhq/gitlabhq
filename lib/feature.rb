@@ -83,7 +83,12 @@ class Feature
       # `persisted?` can potentially generate DB queries and also checks for inclusion
       # in an array of feature names (177 at last count), possibly reducing performance by half.
       # So we only perform the `persisted` check if `default_enabled: true`
-      !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
+      feature_value = !default_enabled || Feature.persisted_name?(feature.name) ? feature.enabled?(thing) : true
+
+      # If we don't filter out this flag here we will enter an infinite loop
+      log_feature_flag_state(key, feature_value) if log_feature_flag_states?(key)
+
+      feature_value
     end
 
     def disabled?(key, thing = nil, type: :development, default_enabled: false)
@@ -151,6 +156,18 @@ class Feature
 
     def logger
       @logger ||= Feature::Logger.build
+    end
+
+    def log_feature_flag_states?(key)
+      key != :feature_flag_state_logs && Feature.enabled?(:feature_flag_state_logs, type: :ops)
+    end
+
+    def log_feature_flag_state(key, feature_value)
+      logged_states[key] ||= feature_value
+    end
+
+    def logged_states
+      RequestStore.fetch(:feature_flag_events) { {} }
     end
 
     private

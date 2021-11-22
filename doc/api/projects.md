@@ -1350,6 +1350,17 @@ where `password` is a public access key with the `api` scope enabled.
 PUT /projects/:id
 ```
 
+For example, to toggle the setting for
+[shared runners on a GitLab.com project](../user/gitlab_com/index.md#shared-runner-cloud-runners):
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
+     --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
+     --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
+```
+
+Supported attributes:
+
 | Attribute                                                   | Type           | Required               | Description |
 |-------------------------------------------------------------|----------------|------------------------|-------------|
 | `allow_merge_on_skipped_pipeline`                           | boolean        | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
