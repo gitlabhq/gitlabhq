@@ -128,7 +128,7 @@ crosslinked
 crosslinking
 crosslinks
 Crossplane
-CrowdIn
+Crowdin
 CSV
 cybersecurity
 Dangerfile

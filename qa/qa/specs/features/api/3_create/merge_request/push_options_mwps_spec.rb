@@ -25,8 +25,9 @@ module QA
         end
       end
 
-      after do
+      after do |example|
         runner.remove_via_api!
+        project.remove_via_api! unless example.exception
       end
 
       it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1240' do
@@ -106,15 +107,22 @@ module QA
         expect(merge_request).not_to be_nil, "There was a problem creating the merge request"
         expect(merge_request[:merge_when_pipeline_succeeds]).to be true
 
-        merge_request = Support::Waiter.wait_until(sleep_interval: 5) do
-          mr = Resource::MergeRequest.fabricate_via_api! do |mr|
-            mr.project = project
-            mr.iid = merge_request[:iid]
+        mr = nil
+        begin
+          merge_request = Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5, message: 'The merge request was not merged') do
+            mr = Resource::MergeRequest.fabricate_via_api! do |mr|
+              mr.project = project
+              mr.iid = merge_request[:iid]
+            end
+
+            next unless mr.state == 'merged'
+
+            mr
           end
+        rescue Support::Repeater::WaitExceededError
+          QA::Runtime::Logger.debug("MR: #{mr.api_response}")
 
-          next unless mr.state == 'merged'
-
-          mr
+          raise
         end
 
         expect(merge_request.state).to eq('merged')
