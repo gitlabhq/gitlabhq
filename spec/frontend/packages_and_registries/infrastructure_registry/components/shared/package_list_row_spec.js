@@ -2,13 +2,13 @@ import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
+import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagePath from '~/packages/shared/components/package_path.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages/shared/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import { packageList } from '../../mock_data';
+import { packageList } from '../../../../packages/mock_data';
 
 describe('packages_list_row', () => {
   let wrapper;
@@ -17,12 +17,10 @@ describe('packages_list_row', () => {
   const [packageWithoutTags, packageWithTags] = packageList;
 
   const InfrastructureIconAndName = { name: 'InfrastructureIconAndName', template: '<div></div>' };
-  const PackageIconAndName = { name: 'PackageIconAndName', template: '<div></div>' };
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackagePath = () => wrapper.findComponent(PackagePath);
   const findDeleteButton = () => wrapper.findByTestId('action-delete');
-  const findPackageIconAndName = () => wrapper.findComponent(PackageIconAndName);
   const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
   const findListItem = () => wrapper.findComponent(ListItem);
   const findPackageLink = () => wrapper.findComponent(GlLink);
@@ -41,7 +39,6 @@ describe('packages_list_row', () => {
       stubs: {
         ListItem,
         InfrastructureIconAndName,
-        PackageIconAndName,
       },
       propsData: {
         packageLink: 'foo',
@@ -93,13 +90,13 @@ describe('packages_list_row', () => {
     it('shows the type when set', () => {
       mountComponent();
 
-      expect(findPackageIconAndName().exists()).toBe(true);
+      expect(findInfrastructureIconAndName().exists()).toBe(true);
     });
 
     it('does not show the type when not set', () => {
       mountComponent({ showPackageType: false });
 
-      expect(findPackageIconAndName().exists()).toBe(false);
+      expect(findInfrastructureIconAndName().exists()).toBe(false);
     });
   });
 
@@ -132,27 +129,6 @@ describe('packages_list_row', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('packageToDelete')).toBeTruthy();
       expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
-    });
-  });
-
-  describe('Infrastructure config', () => {
-    it('defaults to package registry components', () => {
-      mountComponent();
-
-      expect(findPackageIconAndName().exists()).toBe(true);
-      expect(findInfrastructureIconAndName().exists()).toBe(false);
-    });
-
-    it('mounts different component based on the provided values', () => {
-      mountComponent({
-        provide: {
-          iconComponent: 'InfrastructureIconAndName',
-        },
-      });
-
-      expect(findPackageIconAndName().exists()).toBe(false);
-
-      expect(findInfrastructureIconAndName().exists()).toBe(true);
     });
   });
 

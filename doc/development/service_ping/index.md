@@ -521,6 +521,12 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
 
+### Skip database write operations
+
+To skip database write operations, DevOps report creation, and storage of usage data payload, you can pass an optional argument `skip_db_write`:
+
+`ServicePing::SubmitService.new(skip_db_write: true).execute`
+
 ## Troubleshooting
 
 ### Cannot disable Service Ping using the configuration file

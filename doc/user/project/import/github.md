@@ -52,9 +52,12 @@ self-managed GitLab instance.
 - If you're importing to a self-managed GitLab instance, you can alternatively use the
   [GitHub Rake task](../../../administration/raketasks/github_import.md) to import
   projects without the constraints of a [Sidekiq](../../../development/sidekiq_style_guide.md) worker.
-- If you're importing from GitHub Enterprise to your self-managed GitLab instance, you must first enable
-  [GitHub integration](../../../integration/github.md).
+- If you're importing from GitHub Enterprise to your self-managed GitLab instance:
+  - You must first enable [GitHub integration](../../../integration/github.md).
   - To import projects from GitHub Enterprise to GitLab.com, use the [Import API](../../../api/import.md).
+  - If GitLab is behind a HTTP/HTTPS proxy you must populate the [allowlist for local requests](../../../security/webhooks.md#allowlist-for-local-requests)
+    with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
+    [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941)
 - If you're importing from GitHub.com to your self-managed GitLab instance,
   setting up GitHub integration is not required. You can use the [Import API](../../../api/import.md).
 

@@ -1,6 +1,6 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
-import component from '~/packages_and_registries/infrastructure_registry/components/infrastructure_search.vue';
+import component from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 

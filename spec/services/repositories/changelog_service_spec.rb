@@ -61,6 +61,8 @@ RSpec.describe Repositories::ChangelogService do
     let!(:commit2) { project.commit(sha3) }
     let!(:commit3) { project.commit(sha4) }
 
+    let(:commit_to_changelog) { true }
+
     it 'generates and commits a changelog section' do
       allow(MergeRequestDiffCommit)
         .to receive(:oldest_merge_request_id_per_commit)
@@ -73,7 +75,7 @@ RSpec.describe Repositories::ChangelogService do
       service = described_class
         .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
 
-      recorder = ActiveRecord::QueryRecorder.new { service.execute }
+      recorder = ActiveRecord::QueryRecorder.new { service.execute(commit_to_changelog: commit_to_changelog) }
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
       expect(recorder.count).to eq(9)
@@ -90,7 +92,7 @@ RSpec.describe Repositories::ChangelogService do
 
       described_class
         .new(project, creator, version: '1.0.0', from: sha1)
-        .execute
+        .execute(commit_to_changelog: commit_to_changelog)
 
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
@@ -108,7 +110,7 @@ RSpec.describe Repositories::ChangelogService do
 
       described_class
         .new(project, creator, version: '1.0.0', from: sha1)
-        .execute
+        .execute(commit_to_changelog: commit_to_changelog)
 
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
@@ -119,11 +121,32 @@ RSpec.describe Repositories::ChangelogService do
     it 'uses the target branch when "to" is unspecified' do
       described_class
         .new(project, creator, version: '1.0.0', from: sha1)
-        .execute
+        .execute(commit_to_changelog: commit_to_changelog)
 
       changelog = project.repository.blob_at('master', 'CHANGELOG.md')&.data
 
       expect(changelog).to include('Title 1', 'Title 2', 'Title 3')
+    end
+
+    describe 'with commit_to_changelog: false' do
+      let(:commit_to_changelog) { false }
+
+      it 'generates changelog section' do
+        allow(MergeRequestDiffCommit)
+          .to receive(:oldest_merge_request_id_per_commit)
+          .with(project.id, [commit2.id, commit1.id])
+          .and_return([
+            { sha: sha2, merge_request_id: mr1.id },
+            { sha: sha3, merge_request_id: mr2.id }
+          ])
+
+        service = described_class
+          .new(project, creator, version: '1.0.0', from: sha1, to: sha3)
+
+        changelog = service.execute(commit_to_changelog: commit_to_changelog)
+
+        expect(changelog).to include('Title 1', 'Title 2')
+      end
     end
   end
 

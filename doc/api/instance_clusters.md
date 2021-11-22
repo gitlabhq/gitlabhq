@@ -97,7 +97,6 @@ Example response:
     ...
   }
 ]
-
 ```
 
 ## Get a single instance cluster
@@ -184,7 +183,6 @@ curl --header "Private-Token:<your_access_token>" "http://gitlab.example.com/api
 -H "Accept:application/json" \
 -H "Content-Type:application/json" \
 -X POST --data '{"name":"cluster-3", "environment_scope":"production", "platform_kubernetes_attributes":{"api_url":"https://example.com", "token":"12345",  "ca_cert":"-----BEGIN CERTIFICATE-----qpoeiXXZafCM0ZDJkZjM...-----END CERTIFICATE-----"}}'
-
 ```
 
 Example response:
@@ -255,7 +253,6 @@ Example request:
 curl --header "Private-Token: <your_access_token>" "http://gitlab.example.com/api/v4/admin/clusters/9" \
 -H "Content-Type:application/json" \
 -X PUT --data '{"name":"update-cluster-name", "platform_kubernetes_attributes":{"api_url":"https://new-example.com","token":"new-token"}}'
-
 ```
 
 Example response:
@@ -290,7 +287,6 @@ Example response:
   "management_project": null,
   "project": null
 }
-
 ```
 
 ## Delete instance cluster

@@ -62,7 +62,7 @@ GET /groups/:id/epics?state=opened
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
-| `labels`            | string           | no         | Return epics matching a comma separated list of labels names. Label names from the epic group or a parent group can be used |
+| `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
 | `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. Available in [GitLab 12.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) and later |
 | `order_by`          | string           | no         | Return epics ordered by `created_at`, `updated_at`, or `title` fields. Default is `created_at`                              |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |
@@ -265,7 +265,7 @@ POST /groups/:id/epics
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) owned by the authenticated user                |
 | `title`             | string           | yes        | The title of the epic |
-| `labels`            | string           | no         | The comma separated list of labels |
+| `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `created_at`        | string           | no         | When the epic was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` . Requires administrator or project/group owner privileges ([available](https://gitlab.com/gitlab-org/gitlab/-/issues/255309) in GitLab 13.5 and later) |

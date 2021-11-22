@@ -3,13 +3,13 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
-import PackagesList from '~/packages/list/components/packages_list.vue';
-import PackagesListRow from '~/packages/shared/components/package_list_row.vue';
+import PackagesList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
+import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { TrackingActions } from '~/packages/shared/constants';
 import * as SharedUtils from '~/packages/shared/utils';
 import Tracking from '~/tracking';
-import { packageList } from '../../mock_data';
+import { packageList } from '../../../../../packages/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

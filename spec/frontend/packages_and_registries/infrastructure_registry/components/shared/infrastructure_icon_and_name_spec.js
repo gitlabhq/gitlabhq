@@ -1,6 +1,6 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import InfrastructureIconAndName from '~/packages_and_registries/infrastructure_registry/components/infrastructure_icon_and_name.vue';
+import InfrastructureIconAndName from '~/packages_and_registries/infrastructure_registry/shared/infrastructure_icon_and_name.vue';
 
 describe('InfrastructureIconAndName', () => {
   let wrapper;

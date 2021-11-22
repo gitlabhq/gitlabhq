@@ -60,7 +60,7 @@ module Repositories
     end
     # rubocop: enable Metrics/ParameterLists
 
-    def execute
+    def execute(commit_to_changelog: true)
       config = Gitlab::Changelog::Config.from_git(@project, @user)
       from = start_of_commit_range(config)
 
@@ -93,9 +93,13 @@ module Repositories
         end
       end
 
-      Gitlab::Changelog::Committer
-        .new(@project, @user)
-        .commit(release: release, file: @file, branch: @branch, message: @message)
+      if commit_to_changelog
+        Gitlab::Changelog::Committer
+          .new(@project, @user)
+          .commit(release: release, file: @file, branch: @branch, message: @message)
+      else
+        Gitlab::Changelog::Generator.new.add(release)
+      end
     end
 
     def start_of_commit_range(config)

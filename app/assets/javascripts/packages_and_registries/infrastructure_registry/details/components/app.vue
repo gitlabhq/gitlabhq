@@ -16,7 +16,7 @@ import { s__, __ } from '~/locale';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import Tracking from '~/tracking';
-import PackageListRow from '~/packages/shared/components/package_list_row.vue';
+import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { TrackingActions, SHOW_DELETE_SUCCESS_ALERT } from '~/packages/shared/constants';
 import { packageTypeToTrackCategory } from '~/packages/shared/utils';

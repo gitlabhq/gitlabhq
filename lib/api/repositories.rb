@@ -10,6 +10,32 @@ module API
 
     helpers ::API::Helpers::HeadersHelpers
 
+    helpers do
+      params :release_params do
+        requires :version,
+          type: String,
+          regexp: Gitlab::Regex.unbounded_semver_regex,
+          desc: 'The version of the release, using the semantic versioning format'
+
+        optional :from,
+          type: String,
+          desc: 'The first commit in the range of commits to use for the changelog'
+
+        optional :to,
+          type: String,
+          desc: 'The last commit in the range of commits to use for the changelog'
+
+        optional :date,
+          type: DateTime,
+          desc: 'The date and time of the release'
+
+        optional :trailer,
+          type: String,
+          desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
+          default: ::Repositories::ChangelogService::DEFAULT_TRAILER
+      end
+    end
+
     before { authorize! :download_code, user_project }
 
     feature_category :source_code_management
@@ -208,35 +234,32 @@ module API
         end
       end
 
-      desc 'Generates a changelog section for a release' do
+      desc 'Generates a changelog section for a release and returns it' do
+        detail 'This feature was introduced in GitLab 14.6'
+      end
+      params do
+        use :release_params
+      end
+      get ':id/repository/changelog' do
+        service = ::Repositories::ChangelogService.new(
+          user_project,
+          current_user,
+          **declared_params(include_missing: false)
+        )
+        changelog = service.execute(commit_to_changelog: false)
+
+        present changelog, with: Entities::Changelog
+      end
+
+      desc 'Generates a changelog section for a release and commits it in a changelog file' do
         detail 'This feature was introduced in GitLab 13.9'
       end
       params do
-        requires :version,
-          type: String,
-          regexp: Gitlab::Regex.unbounded_semver_regex,
-          desc: 'The version of the release, using the semantic versioning format'
-
-        optional :from,
-          type: String,
-          desc: 'The first commit in the range of commits to use for the changelog'
-
-        optional :to,
-          type: String,
-          desc: 'The last commit in the range of commits to use for the changelog'
-
-        optional :date,
-          type: DateTime,
-          desc: 'The date and time of the release'
+        use :release_params
 
         optional :branch,
           type: String,
           desc: 'The branch to commit the changelog changes to'
-
-        optional :trailer,
-          type: String,
-          desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
-          default: ::Repositories::ChangelogService::DEFAULT_TRAILER
 
         optional :file,
           type: String,
@@ -261,7 +284,7 @@ module API
           **declared_params(include_missing: false)
         )
 
-        service.execute
+        service.execute(commit_to_changelog: true)
         status(200)
       rescue Gitlab::Changelog::Error => ex
         render_api_error!("Failed to generate the changelog: #{ex.message}", 422)

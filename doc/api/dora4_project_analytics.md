@@ -25,9 +25,6 @@ GET /projects/:id/analytics/deployment_frequency?environment=:environment&from=:
 | Attribute    | Type   | Required | Description           |
 |--------------|--------|----------|-----------------------|
 | `id`         | string | yes      | The ID of the project |
-
-| Parameter    | Type   | Required | Description           |
-|--------------|--------|----------|-----------------------|
 | `environment`| string | yes      | The name of the environment to filter by |
 | `from`       | string | yes      | Datetime range to start from, inclusive, ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `to`         | string | no       | Datetime range to end at, exclusive, ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |

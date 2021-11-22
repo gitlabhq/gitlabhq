@@ -2488,8 +2488,8 @@ GET /projects/:id/push_rule
 {
   "id": 1,
   "project_id": 3,
-  "commit_message_regex": "Fixes \d+\..*",
-  "commit_message_negative_regex": "ssh\:\/\/",
+  "commit_message_regex": "Fixes \\d+\\..*",
+  "commit_message_negative_regex": "ssh\\:\\/\\/",
   "branch_name_regex": "",
   "deny_delete_tag": false,
   "created_at": "2012-10-12T17:04:47Z",

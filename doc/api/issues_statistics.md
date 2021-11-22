@@ -49,7 +49,7 @@ GET /issues_statistics?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                                               |
+| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                                               |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/issues_statistics"
@@ -105,7 +105,7 @@ GET /groups/:id/issues_statistics?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
+| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/4/issues_statistics"
@@ -161,7 +161,7 @@ GET /projects/:id/issues_statistics?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `confidential`     | boolean          | no         | Filter confidential or public issues.                                                                                         |
+| `confidential`      | boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues_statistics"

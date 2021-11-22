@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import component from '~/packages_and_registries/infrastructure_registry/components/infrastructure_title.vue';
+import component from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_title.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 

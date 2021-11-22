@@ -3,11 +3,12 @@ import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gi
 import { s__ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { PACKAGE_ERROR_STATUS, PACKAGE_DEFAULT_STATUS } from '../constants';
-import { getPackageTypeLabel } from '../utils';
-import PackagePath from './package_path.vue';
-import PackageTags from './package_tags.vue';
-import PublishMethod from './publish_method.vue';
+import { PACKAGE_ERROR_STATUS, PACKAGE_DEFAULT_STATUS } from '~/packages/shared/constants';
+import { getPackageTypeLabel } from '~/packages/shared/utils';
+import PackagePath from '~/packages/shared/components/package_path.vue';
+import PackageTags from '~/packages/shared/components/package_tags.vue';
+import PublishMethod from '~/packages/shared/components/publish_method.vue';
+import InfrastructureIconAndName from '~/packages_and_registries/infrastructure_registry/shared/infrastructure_icon_and_name.vue';
 
 export default {
   name: 'PackageListRow',
@@ -20,23 +21,12 @@ export default {
     PackagePath,
     PublishMethod,
     ListItem,
-    PackageIconAndName: () =>
-      import(/* webpackChunkName: 'package_registry_components' */ './package_icon_and_name.vue'),
-    InfrastructureIconAndName: () =>
-      import(
-        /* webpackChunkName: 'infrastructure_registry_components' */ '~/packages_and_registries/infrastructure_registry/components/infrastructure_icon_and_name.vue'
-      ),
+    InfrastructureIconAndName,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
-  inject: {
-    iconComponent: {
-      from: 'iconComponent',
-      default: 'PackageIconAndName',
-    },
-  },
   props: {
     packageEntity: {
       type: Object,
@@ -130,9 +120,9 @@ export default {
           </gl-sprintf>
         </div>
 
-        <component :is="iconComponent" v-if="showPackageType">
+        <infrastructure-icon-and-name v-if="showPackageType">
           {{ packageType }}
-        </component>
+        </infrastructure-icon-and-name>
 
         <package-path
           v-if="hasProjectLink"

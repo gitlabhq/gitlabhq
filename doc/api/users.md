@@ -269,7 +269,9 @@ GET /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user
+| Attribute | Type    | Required | Description      |
+|-----------|---------|----------|------------------|
+| `id`      | integer | yes      | The ID of a user |
 
 ```json
 {
@@ -303,7 +305,9 @@ GET /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of a user
+| Attribute | Type    | Required | Description      |
+|-----------|---------|----------|------------------|
+| `id`      | integer | yes      | The ID of a user |
 
 Example Responses:
 
@@ -509,8 +513,10 @@ DELETE /users/:id/identities/:provider
 
 Parameters:
 
-- `id` (required) - The ID of the user
-- `provider` (required) - External provider name
+| Attribute  | Type    | Required | Description            |
+|------------|---------|----------|------------------------|
+| `id`       | integer | yes      | The ID of a user       |
+| `provider` | string  | yes      | External provider name |
 
 ## User deletion
 
@@ -523,10 +529,10 @@ DELETE /users/:id
 
 Parameters:
 
-- `id` (required) - The ID of the user
-- `hard_delete` (optional) - If true, contributions that would usually be
-  [moved to the ghost user](../user/profile/account/delete_account.md#associated-records)
-  are deleted instead, as well as groups owned solely by this user.
+| Attribute     | Type    | Required | Description                                  |
+|---------------|---------|----------|----------------------------------------------|
+| `id`          | integer | yes      | The ID of a user                             |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to the ghost user](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this user. |
 
 ## List current user (for normal users)
 
@@ -576,13 +582,15 @@ GET /user
 
 ## List current user (for admins)
 
-Parameters:
-
-- `sudo` (optional) - the ID of a user to make the call in their place
-
 ```plaintext
 GET /user
 ```
+
+Parameters:
+
+| Attribute | Type    | Required | Description                                      |
+|-----------|---------|----------|--------------------------------------------------|
+| `sudo`    | integer | no       | the ID of a user to make the call in their place |
 
 ```json
 {
@@ -936,7 +944,9 @@ GET /user/keys/:key_id
 
 Parameters:
 
-- `key_id` (required) - The ID of an SSH key
+| Attribute | Type   | Required | Description          |
+|-----------|--------|----------|----------------------|
+| `key_id`  | string | yes      | The ID of an SSH key |
 
 ```json
 {
@@ -957,9 +967,11 @@ POST /user/keys
 
 Parameters:
 
-- `title` (required) - new SSH key's title
-- `key` (required) - new SSH key
-- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
+| Attribute    | Type   | Required | Description                                                                    |
+|--------------|--------|----------|--------------------------------------------------------------------------------|
+| `title`      | string | yes      | new SSH key's title                                                            |
+| `key`        | string | yes      | new SSH key                                                                    |
+| `expires_at` | string | no       | The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
 
 ```json
 {
@@ -995,10 +1007,12 @@ POST /users/:id/keys
 
 Parameters:
 
-- `id` (required) - ID of specified user
-- `title` (required) - new SSH key's title
-- `key` (required) - new SSH key
-- `expires_at` (optional) - The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)
+| Attribute    | Type    | Required | Description                                                                    |
+|--------------|---------|----------|--------------------------------------------------------------------------------|
+| `id`         | integer | yes      | ID of specified user                                                           |
+| `title`      | string  | yes      | new SSH key's title                                                            |
+| `key`        | string  | yes      | new SSH key                                                                    |
+| `expires_at` | string  | no       | The expiration date of the SSH key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
 
 NOTE:
 This also adds an audit event, as described in [audit instance events](../administration/audit_events.md#instance-events). **(PREMIUM)**
@@ -1014,7 +1028,9 @@ DELETE /user/keys/:key_id
 
 Parameters:
 
-- `key_id` (required) - SSH key ID
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `key_id`  | integer | yes      | SSH key ID  |
 
 ## Delete SSH key for given user
 
@@ -1026,8 +1042,10 @@ DELETE /users/:id/keys/:key_id
 
 Parameters:
 
-- `id` (required) - ID of specified user
-- `key_id` (required) - SSH key ID
+| Attribute | Type    | Required | Description          |
+|-----------|---------|----------|----------------------|
+| `id`      | integer | yes      | ID of specified user |
+| `key_id`  | integer | yes      | SSH key ID           |
 
 ## List all GPG keys
 
@@ -1092,8 +1110,8 @@ POST /user/gpg_keys
 Parameters:
 
 | Attribute | Type   | Required | Description     |
-| --------- | ------ | -------- | --------------- |
-| key       | string | yes      | The new GPG key |
+|-----------|--------|----------|-----------------|
+| `key`     | string | yes      | The new GPG key |
 
 ```shell
 curl --data "key=-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxsBNBFV..." \
@@ -1288,7 +1306,9 @@ GET /users/:id/emails
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute | Type    | Required | Description          |
+|-----------|---------|----------|----------------------|
+| `id`      | integer | yes      | ID of specified user |
 
 ## Single email
 
@@ -1300,7 +1320,9 @@ GET /user/emails/:email_id
 
 Parameters:
 
-- `email_id` (required) - email ID
+| Attribute  | Type    | Required | Description |
+|------------|---------|----------|-------------|
+| `email_id` | integer | yes      | Email ID    |
 
 ```json
 {
@@ -1320,7 +1342,9 @@ POST /user/emails
 
 Parameters:
 
-- `email` (required) - email address
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `email`   | string | yes      | Email address |
 
 ```json
 {
@@ -1353,9 +1377,11 @@ POST /users/:id/emails
 
 Parameters:
 
-- `id` (required) - ID of specified user
-- `email` (required) - email address
-- `skip_confirmation` (optional) - Skip confirmation and assume email is verified - true or false (default)
+| Attribute           | Type    | Required | Description                                                               |
+|---------------------|---------|----------|---------------------------------------------------------------------------|
+| `id`                | string  | yes      | ID of specified user                                                      |
+| `email`             | string  | yes      | Email address                                                             |
+| `skip_confirmation` | boolean | no       | Skip confirmation and assume email is verified - true or false (default) |
 
 ## Delete email for current user
 
@@ -1368,7 +1394,9 @@ DELETE /user/emails/:email_id
 
 Parameters:
 
-- `email_id` (required) - email ID
+| Attribute  | Type    | Required | Description |
+|------------|---------|----------|-------------|
+| `email_id` | integer | yes      | Email ID    |
 
 ## Delete email for given user
 
@@ -1380,8 +1408,10 @@ DELETE /users/:id/emails/:email_id
 
 Parameters:
 
-- `id` (required) - ID of specified user
-- `email_id` (required) - email ID
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
+| `email_id` | integer | yes      | Email ID             |
 
 ## Block user
 
@@ -1393,7 +1423,9 @@ POST /users/:id/block
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
 
 Returns:
 
@@ -1413,7 +1445,9 @@ POST /users/:id/unblock
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
 
 Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
@@ -1430,7 +1464,9 @@ POST /users/:id/deactivate
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
 
 Returns:
 
@@ -1453,7 +1489,9 @@ POST /users/:id/activate
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
 
 Returns:
 
@@ -1572,7 +1610,9 @@ POST /users/:id/approve
 
 Parameters:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description          |
+|------------|---------|----------|----------------------|
+| `id`       | integer | yes      | ID of specified user |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/approve"
@@ -1731,16 +1771,16 @@ It revokes an impersonation token.
 DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
-```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
-```
-
 Parameters:
 
 | Attribute                | Type    | Required | Description                       |
 | ------------------------ | ------- | -------- | --------------------------------- |
 | `user_id`                | integer | yes      | The ID of the user                |
 | `impersonation_token_id` | integer | yes      | The ID of the impersonation token |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
+```
 
 ## Create a personal access token **(FREE SELF)**
 

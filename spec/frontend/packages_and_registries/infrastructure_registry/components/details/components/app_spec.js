@@ -9,7 +9,7 @@ import PackagesApp from '~/packages_and_registries/infrastructure_registry/detai
 import PackageFiles from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
 import PackageHistory from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
 import * as getters from '~/packages_and_registries/infrastructure_registry/details/store/getters';
-import PackageListRow from '~/packages/shared/components/package_list_row.vue';
+import PackageListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages/shared/components/packages_list_loader.vue';
 import { TrackingActions } from '~/packages/shared/constants';
 import * as SharedUtils from '~/packages/shared/utils';

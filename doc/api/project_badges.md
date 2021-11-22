@@ -11,7 +11,7 @@ type: reference, api
 
 ## Placeholder tokens
 
-Badges support placeholders that are replaced in real time in both the link and image URL. The allowed placeholders are:
+Badges support placeholders that are replaced in real-time in both the link and image URL. The allowed placeholders are:
 
 <!-- vale gitlab.Spelling = NO -->
 
