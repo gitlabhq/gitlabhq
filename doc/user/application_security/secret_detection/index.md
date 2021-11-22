@@ -34,33 +34,8 @@ GitLab displays identified secrets visibly in a few places:
 ## Supported secrets
 
 Secret Detection detects a variety of common secrets by default. You can also customize the secret detection patterns using [custom rulesets](#custom-rulesets).
-
-The [default ruleset provided by TruffleHog and Gitleaks](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes the following key types:
-
-- Cloud services:
-  - Amazon Web Services (AWS)
-  - Google Cloud Platform (GCP)
-  - Heroku API
-- Encryption keys:
-  - PKCS8
-  - RSA
-  - SSH
-  - PGP
-  - DSA
-  - EC
-- Social media platforms:
-  - Facebook API
-  - Twitter API
-- Cloud SaaS vendors:
-  - GitHub API
-  - Shopify API
-  - Slack Token
-  - Slack Webhook
-  - Stripe API
-  - Twilio API
-  - Generic API key strings starting with `api-`
-- Password in URL
-- U.S. Social Security Number
+The [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml) includes **90+ secret detection patterns**.
+You can contribute "well-identifiable" secrets by follow the steps detailed in the [community contributions guidelines](https://gitlab.com/gitlab-org/gitlab/-/issues/345453).
 
 WARNING:
 Gitleaks does not support scanning binary files.

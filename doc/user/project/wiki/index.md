@@ -87,7 +87,7 @@ Users with the [Developer role](../../permissions.md) can create new wiki pages:
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
    and have [length restrictions](#length-restrictions-for-file-and-directory-names).
 1. Add content to your wiki page.
-1. (Optional) Attach a file, and GitLab stores it according to your installed version of GitLab:
+1. Optional. Attach a file, and GitLab stores it according to your installed version of GitLab:
    - *Files added in [GitLab 11.3 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33475):*
      Files are stored in the wiki's Git repository.
    - *Files added GitLab 11.2 and earlier:* Files are stored in GitLab itself. To add
@@ -290,7 +290,7 @@ To add a link to an external wiki from a project's left sidebar:
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
-1. (Optional) Select **Test settings** to verify the connection.
+1. Optional. To verify the connection, select **Test settings**.
 1. Select **Save changes**.
 
 You can now see the **External wiki** option from your project's

@@ -76,7 +76,7 @@ First, set up the project. Once done, you can use the Static Site Editor to
 1. Edit the [`data/config.yml`](#static-site-generator-configuration) configuration file
    to replace `<username>` and `<project-name>` with the proper values for
    your project's path.
-1. (Optional) Edit the [`.gitlab/static-site-editor.yml`](#static-site-editor-configuration-file) file
+1. Optional. Edit the [`.gitlab/static-site-editor.yml`](#static-site-editor-configuration-file) file
    to customize the behavior of the Static Site Editor.
 1. When you submit your changes, GitLab triggers a CI/CD pipeline to deploy your project with GitLab Pages.
 1. When the pipeline finishes, from your project's left-side menu, go to **Settings > Pages** to find the URL of your new website.
@@ -96,15 +96,15 @@ After setting up your project, you can start editing content directly from the S
 To edit a file:
 
 1. Visit the page you want to edit.
-1. Click the **Edit this page** button.
+1. Select **Edit this page**.
 1. The file is opened in the Static Site Editor in **WYSIWYG** mode. If you
    wish to edit the raw Markdown instead, you can toggle the **Markdown** mode
    in the bottom-right corner.
 1. When you're done, click **Submit changes...**.
-1. (Optional) Adjust the default title and description of the merge request, to submit
+1. Optional. Adjust the default title and description of the merge request, to submit
    with your changes. Alternatively, select a [merge request template](../../../user/project/description_templates.md#create-a-merge-request-template)
    from the dropdown menu and edit it accordingly.
-1. Click **Submit changes**.
+1. Select **Submit changes**.
 1. A new merge request is automatically created and you can assign a colleague for review.
 
 ### Text
@@ -123,11 +123,11 @@ The Static Site Editors supports Markdown files (`.md`, `.md.erb`) for editing t
 You can upload image files via the WYSIWYG editor directly to the repository to default upload directory
 `source/images`. To do so:
 
-1. Click the image icon (**{doc-image}**).
-1. Choose the **Upload file** tab.
-1. Click **Choose file** to select a file from your computer.
-1. Optional: add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
-1. Click **Insert image**.
+1. Select the image icon (**{doc-image}**).
+1. Select the **Upload file** tab.
+1. To select a file from your computer, select **Choose file**.
+1. Optional. Add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
+1. Select **Insert image**.
 
 The selected file can be any supported image file (`.png`, `.jpg`, `.jpeg`, `.gif`). The editor renders
 thumbnail previews so you can verify the correct image is included and there aren't any references to
@@ -137,11 +137,11 @@ missing images.
 
 You can also link to an image if you'd like:
 
-1. Click the image icon (**{doc-image}**).
-1. Choose the **Link to an image** tab.
+1. Select the image icon (**{doc-image}**).
+1. Select the **Link to an image** tab.
 1. Add the link to the image into the **Image URL** field (use the full path; relative paths are not supported yet).
-1. Optional: add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
-1. Click **Insert image**.
+1. Optional. Add a description to the image for SEO and accessibility ([ALT text](https://moz.com/learn/seo/alt-text)).
+1. Select **Insert image**.
 
 The link can reference images already hosted in your project, an asset hosted
 externally on a content delivery network, or any other external URL. The editor renders thumbnail previews
