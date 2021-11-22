@@ -194,7 +194,7 @@ This function should be imported and called in the [page-specific JavaScript](fe
           setting_locked: delayed_project_removal_locked,
           settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') },
           help_text: s_('Settings|Projects will be permanently deleted after a 7-day delay. Inherited by subgroups.') do
-        = s_('Settings|Enable delayed project removal')
+        = s_('Settings|Enable delayed project deletion')
       = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
           attribute: :delayed_project_removal,
           group: @group,

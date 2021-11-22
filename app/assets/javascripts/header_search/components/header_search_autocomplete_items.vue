@@ -23,9 +23,25 @@ export default {
   directives: {
     SafeHtml,
   },
+  props: {
+    currentFocusedOption: {
+      type: Object,
+      required: false,
+      default: () => null,
+    },
+  },
   computed: {
     ...mapState(['search', 'loading']),
     ...mapGetters(['autocompleteGroupedSearchOptions']),
+  },
+  watch: {
+    currentFocusedOption() {
+      const focusedElement = this.$refs[this.currentFocusedOption?.html_id]?.[0]?.$el;
+
+      if (focusedElement) {
+        focusedElement.scrollIntoView(false);
+      }
+    },
   },
   methods: {
     highlightedName(val) {
@@ -38,6 +54,9 @@ export default {
 
       return SMALL_AVATAR_PX;
     },
+    isOptionFocused(data) {
+      return this.currentFocusedOption?.html_id === data.html_id;
+    },
   },
 };
 </script>
@@ -49,9 +68,10 @@ export default {
         <gl-dropdown-divider />
         <gl-dropdown-section-header>{{ option.category }}</gl-dropdown-section-header>
         <gl-dropdown-item
-          v-for="(data, index) in option.data"
-          :id="`autocomplete-${option.category}-${index}`"
-          :key="index"
+          v-for="data in option.data"
+          :ref="data.html_id"
+          :key="data.html_id"
+          :class="{ 'gl-bg-gray-50': isOptionFocused(data) }"
           tabindex="-1"
           :href="data.url"
         >

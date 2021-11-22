@@ -29,7 +29,7 @@ module QA
           # Stop the primary node to trigger failover, and then wait
           # for Gitaly to be ready for writes again
           praefect_manager.stop_primary_node
-          praefect_manager.wait_for_gitaly_check
+          praefect_manager.wait_for_primary_node_health_check_failure
 
           # Push a commit to the new primary
           Resource::Repository::ProjectPush.fabricate! do |push|

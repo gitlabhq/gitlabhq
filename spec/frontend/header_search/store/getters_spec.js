@@ -15,6 +15,7 @@ import {
   MOCK_SEARCH,
   MOCK_AUTOCOMPLETE_OPTIONS,
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
+  MOCK_SORTED_AUTOCOMPLETE_OPTIONS,
 } from '../mock_data';
 
 describe('Header Search Store Getters', () => {
@@ -248,4 +249,44 @@ describe('Header Search Store Getters', () => {
       );
     });
   });
+
+  describe.each`
+    search         | defaultSearchOptions           | scopedSearchOptions           | autocompleteGroupedSearchOptions     | expectedArray
+    ${null}        | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_DEFAULT_SEARCH_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${[]}                                | ${MOCK_SCOPED_SEARCH_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${[]}                         | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS}
+    ${MOCK_SEARCH} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${MOCK_GROUPED_AUTOCOMPLETE_OPTIONS} | ${MOCK_SCOPED_SEARCH_OPTIONS.concat(MOCK_SORTED_AUTOCOMPLETE_OPTIONS)}
+  `(
+    'searchOptions',
+    ({
+      search,
+      defaultSearchOptions,
+      scopedSearchOptions,
+      autocompleteGroupedSearchOptions,
+      expectedArray,
+    }) => {
+      describe(`when search is ${search} and the defaultSearchOptions${
+        defaultSearchOptions.length ? '' : ' do not'
+      } exist, scopedSearchOptions${
+        scopedSearchOptions.length ? '' : ' do not'
+      } exist, and autocompleteGroupedSearchOptions${
+        autocompleteGroupedSearchOptions.length ? '' : ' do not'
+      } exist`, () => {
+        const mockGetters = {
+          defaultSearchOptions,
+          scopedSearchOptions,
+          autocompleteGroupedSearchOptions,
+        };
+
+        beforeEach(() => {
+          createState();
+          state.search = search;
+        });
+
+        it(`should return the correct combined array`, () => {
+          expect(getters.searchOptions(state, mockGetters)).toStrictEqual(expectedArray);
+        });
+      });
+    },
+  );
 });

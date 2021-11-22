@@ -6,9 +6,15 @@ import HeaderSearchApp from '~/header_search/components/app.vue';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from '~/header_search/components/header_search_default_items.vue';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
-import { ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
+import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { MOCK_SEARCH, MOCK_SEARCH_QUERY, MOCK_USERNAME } from '../mock_data';
+import {
+  MOCK_SEARCH,
+  MOCK_SEARCH_QUERY,
+  MOCK_USERNAME,
+  MOCK_DEFAULT_SEARCH_OPTIONS,
+} from '../mock_data';
 
 Vue.use(Vuex);
 
@@ -24,7 +30,7 @@ describe('HeaderSearchApp', () => {
     fetchAutocompleteOptions: jest.fn(),
   };
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState, mockGetters) => {
     const store = new Vuex.Store({
       state: {
         ...initialState,
@@ -32,6 +38,8 @@ describe('HeaderSearchApp', () => {
       actions: actionSpies,
       getters: {
         searchQuery: () => MOCK_SEARCH_QUERY,
+        searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
+        ...mockGetters,
       },
     });
 
@@ -50,6 +58,7 @@ describe('HeaderSearchApp', () => {
   const findHeaderSearchScopedItems = () => wrapper.findComponent(HeaderSearchScopedItems);
   const findHeaderSearchAutocompleteItems = () =>
     wrapper.findComponent(HeaderSearchAutocompleteItems);
+  const findDropdownKeyboardNavigation = () => wrapper.findComponent(DropdownKeyboardNavigation);
 
   describe('template', () => {
     it('always renders Header Search Input', () => {
@@ -66,8 +75,8 @@ describe('HeaderSearchApp', () => {
     `('Header Search Dropdown', ({ showDropdown, username, showSearchDropdown }) => {
       describe(`when showDropdown is ${showDropdown} and current_username is ${username}`, () => {
         beforeEach(() => {
-          createComponent();
           window.gon.current_username = username;
+          createComponent();
           wrapper.setData({ showDropdown });
         });
 
@@ -78,31 +87,42 @@ describe('HeaderSearchApp', () => {
     });
 
     describe.each`
-      search         | showDefault | showScoped | showAutocomplete
-      ${null}        | ${true}     | ${false}   | ${false}
-      ${''}          | ${true}     | ${false}   | ${false}
-      ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}
-    `('Header Search Dropdown Items', ({ search, showDefault, showScoped, showAutocomplete }) => {
-      describe(`when search is ${search}`, () => {
-        beforeEach(() => {
-          createComponent({ search });
-          window.gon.current_username = MOCK_USERNAME;
-          wrapper.setData({ showDropdown: true });
-        });
+      search         | showDefault | showScoped | showAutocomplete | showDropdownNavigation
+      ${null}        | ${true}     | ${false}   | ${false}         | ${true}
+      ${''}          | ${true}     | ${false}   | ${false}         | ${true}
+      ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}          | ${true}
+    `(
+      'Header Search Dropdown Items',
+      ({ search, showDefault, showScoped, showAutocomplete, showDropdownNavigation }) => {
+        describe(`when search is ${search}`, () => {
+          beforeEach(() => {
+            window.gon.current_username = MOCK_USERNAME;
+            createComponent({ search });
+            findHeaderSearchInput().vm.$emit('click');
+          });
 
-        it(`should${showDefault ? '' : ' not'} render the Default Dropdown Items`, () => {
-          expect(findHeaderSearchDefaultItems().exists()).toBe(showDefault);
-        });
+          it(`should${showDefault ? '' : ' not'} render the Default Dropdown Items`, () => {
+            expect(findHeaderSearchDefaultItems().exists()).toBe(showDefault);
+          });
 
-        it(`should${showScoped ? '' : ' not'} render the Scoped Dropdown Items`, () => {
-          expect(findHeaderSearchScopedItems().exists()).toBe(showScoped);
-        });
+          it(`should${showScoped ? '' : ' not'} render the Scoped Dropdown Items`, () => {
+            expect(findHeaderSearchScopedItems().exists()).toBe(showScoped);
+          });
 
-        it(`should${showAutocomplete ? '' : ' not'} render the Autocomplete Dropdown Items`, () => {
-          expect(findHeaderSearchAutocompleteItems().exists()).toBe(showAutocomplete);
+          it(`should${
+            showAutocomplete ? '' : ' not'
+          } render the Autocomplete Dropdown Items`, () => {
+            expect(findHeaderSearchAutocompleteItems().exists()).toBe(showAutocomplete);
+          });
+
+          it(`should${
+            showDropdownNavigation ? '' : ' not'
+          } render the Dropdown Navigation Component`, () => {
+            expect(findDropdownKeyboardNavigation().exists()).toBe(showDropdownNavigation);
+          });
         });
-      });
-    });
+      },
+    );
   });
 
   describe('events', () => {
@@ -132,21 +152,6 @@ describe('HeaderSearchApp', () => {
         });
       });
 
-      describe('when dropdown is opened', () => {
-        beforeEach(() => {
-          wrapper.setData({ showDropdown: true });
-        });
-
-        it('onKey-Escape closes dropdown', async () => {
-          expect(findHeaderSearchDropdown().exists()).toBe(true);
-          findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ESC_KEY }));
-
-          await wrapper.vm.$nextTick();
-
-          expect(findHeaderSearchDropdown().exists()).toBe(false);
-        });
-      });
-
       describe('onInput', () => {
         beforeEach(() => {
           findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
@@ -160,13 +165,71 @@ describe('HeaderSearchApp', () => {
           expect(actionSpies.fetchAutocompleteOptions).toHaveBeenCalled();
         });
       });
+    });
 
-      it('submits a search onKey-Enter', async () => {
+    describe('Dropdown Keyboard Navigation', () => {
+      beforeEach(() => {
+        findHeaderSearchInput().vm.$emit('click');
+      });
+
+      it('closes dropdown when @tab is emitted', async () => {
+        expect(findHeaderSearchDropdown().exists()).toBe(true);
+        findDropdownKeyboardNavigation().vm.$emit('tab');
+
+        await wrapper.vm.$nextTick();
+
+        expect(findHeaderSearchDropdown().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('computed', () => {
+    describe('currentFocusedOption', () => {
+      const MOCK_INDEX = 1;
+
+      beforeEach(() => {
+        createComponent();
+        window.gon.current_username = MOCK_USERNAME;
+        findHeaderSearchInput().vm.$emit('click');
+      });
+
+      it(`when currentFocusIndex changes to ${MOCK_INDEX} updates the data to searchOptions[${MOCK_INDEX}]`, async () => {
+        findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
+        await wrapper.vm.$nextTick();
+        expect(wrapper.vm.currentFocusedOption).toBe(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX]);
+      });
+    });
+  });
+
+  describe('Submitting a search', () => {
+    describe('with no currentFocusedOption', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('onKey-enter submits a search', async () => {
         findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
 
         await wrapper.vm.$nextTick();
 
         expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
+      });
+    });
+
+    describe('with currentFocusedOption', () => {
+      const MOCK_INDEX = 1;
+
+      beforeEach(() => {
+        createComponent();
+        window.gon.current_username = MOCK_USERNAME;
+        findHeaderSearchInput().vm.$emit('click');
+      });
+
+      it('onKey-enter clicks the selected dropdown item rather than submitting a search', async () => {
+        findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
+        await wrapper.vm.$nextTick();
+        findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+        expect(visitUrl).toHaveBeenCalledWith(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX].url);
       });
     });
   });

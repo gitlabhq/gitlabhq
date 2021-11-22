@@ -9,14 +9,14 @@ import {
   PROJECTS_CATEGORY,
   SMALL_AVATAR_PX,
 } from '~/header_search/constants';
-import { MOCK_GROUPED_AUTOCOMPLETE_OPTIONS, MOCK_AUTOCOMPLETE_OPTIONS } from '../mock_data';
+import { MOCK_GROUPED_AUTOCOMPLETE_OPTIONS, MOCK_SORTED_AUTOCOMPLETE_OPTIONS } from '../mock_data';
 
 Vue.use(Vuex);
 
 describe('HeaderSearchAutocompleteItems', () => {
   let wrapper;
 
-  const createComponent = (initialState, mockGetters) => {
+  const createComponent = (initialState, mockGetters, props) => {
     const store = new Vuex.Store({
       state: {
         loading: false,
@@ -30,6 +30,9 @@ describe('HeaderSearchAutocompleteItems', () => {
 
     wrapper = shallowMount(HeaderSearchAutocompleteItems, {
       store,
+      propsData: {
+        ...props,
+      },
     });
   };
 
@@ -38,6 +41,7 @@ describe('HeaderSearchAutocompleteItems', () => {
   });
 
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => w.text());
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -69,16 +73,16 @@ describe('HeaderSearchAutocompleteItems', () => {
 
       describe('Dropdown items', () => {
         it('renders item for each option in autocomplete option', () => {
-          expect(findDropdownItems()).toHaveLength(MOCK_AUTOCOMPLETE_OPTIONS.length);
+          expect(findDropdownItems()).toHaveLength(MOCK_SORTED_AUTOCOMPLETE_OPTIONS.length);
         });
 
         it('renders titles correctly', () => {
-          const expectedTitles = MOCK_AUTOCOMPLETE_OPTIONS.map((o) => o.label);
+          const expectedTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.map((o) => o.label);
           expect(findDropdownItemTitles()).toStrictEqual(expectedTitles);
         });
 
         it('renders links correctly', () => {
-          const expectedLinks = MOCK_AUTOCOMPLETE_OPTIONS.map((o) => o.url);
+          const expectedLinks = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.map((o) => o.url);
           expect(findDropdownItemLinks()).toStrictEqual(expectedLinks);
         });
       });
@@ -102,6 +106,43 @@ describe('HeaderSearchAutocompleteItems', () => {
             expect(findGlAvatar().exists() && findGlAvatar().attributes('size')).toBe(avatarSize);
           });
         });
+      });
+    });
+
+    describe.each`
+      currentFocusedOption                   | isFocused
+      ${null}                                | ${false}
+      ${{ html_id: 'not-a-match' }}          | ${false}
+      ${MOCK_SORTED_AUTOCOMPLETE_OPTIONS[0]} | ${true}
+    `('isOptionFocused', ({ currentFocusedOption, isFocused }) => {
+      describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
+        beforeEach(() => {
+          createComponent({}, {}, { currentFocusedOption });
+        });
+
+        it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
+          expect(findFirstDropdownItem().classes('gl-bg-gray-50')).toBe(isFocused);
+        });
+      });
+    });
+  });
+
+  describe('watchers', () => {
+    describe('currentFocusedOption', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('when focused changes to existing element calls scroll into view on the newly focused element', async () => {
+        const focusedElement = findFirstDropdownItem().element;
+        const scrollSpy = jest.spyOn(focusedElement, 'scrollIntoView');
+
+        wrapper.setProps({ currentFocusedOption: MOCK_SORTED_AUTOCOMPLETE_OPTIONS[0] });
+
+        await wrapper.vm.$nextTick();
+
+        expect(scrollSpy).toHaveBeenCalledWith(false);
+        scrollSpy.mockRestore();
       });
     });
   });

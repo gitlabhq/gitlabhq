@@ -111,7 +111,7 @@ You can combine the filter options. For example, to list only public projects wi
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3.
 
-When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-removal),
+When delayed project deletion is [enabled for a group](../group/index.md#enable-delayed-project-deletion),
 projects within that group are not deleted immediately, but only after a delay. To access a list of all projects that are pending deletion:
 
 1. On the top bar, select **Menu > Projects > Explore projects**.

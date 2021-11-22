@@ -54,22 +54,27 @@ export const defaultSearchOptions = (state, getters) => {
 
   return [
     {
+      html_id: 'default-issues-assigned',
       title: MSG_ISSUES_ASSIGNED_TO_ME,
       url: `${getters.scopedIssuesPath}/?assignee_username=${userName}`,
     },
     {
+      html_id: 'default-issues-created',
       title: MSG_ISSUES_IVE_CREATED,
       url: `${getters.scopedIssuesPath}/?author_username=${userName}`,
     },
     {
+      html_id: 'default-mrs-assigned',
       title: MSG_MR_ASSIGNED_TO_ME,
       url: `${getters.scopedMRPath}/?assignee_username=${userName}`,
     },
     {
+      html_id: 'default-mrs-reviewer',
       title: MSG_MR_IM_REVIEWER,
       url: `${getters.scopedMRPath}/?reviewer_username=${userName}`,
     },
     {
+      html_id: 'default-mrs-created',
       title: MSG_MR_IVE_CREATED,
       url: `${getters.scopedMRPath}/?author_username=${userName}`,
     },
@@ -122,6 +127,7 @@ export const scopedSearchOptions = (state, getters) => {
 
   if (state.searchContext.project) {
     options.push({
+      html_id: 'scoped-in-project',
       scope: state.searchContext.project.name,
       description: MSG_IN_PROJECT,
       url: getters.projectUrl,
@@ -130,6 +136,7 @@ export const scopedSearchOptions = (state, getters) => {
 
   if (state.searchContext.group) {
     options.push({
+      html_id: 'scoped-in-group',
       scope: state.searchContext.group.name,
       description: MSG_IN_GROUP,
       url: getters.groupUrl,
@@ -137,6 +144,7 @@ export const scopedSearchOptions = (state, getters) => {
   }
 
   options.push({
+    html_id: 'scoped-in-all',
     description: MSG_IN_ALL_GITLAB,
     url: getters.allUrl,
   });
@@ -164,4 +172,19 @@ export const autocompleteGroupedSearchOptions = (state) => {
   });
 
   return results;
+};
+
+export const searchOptions = (state, getters) => {
+  if (!state.search) {
+    return getters.defaultSearchOptions;
+  }
+
+  const sortedAutocompleteOptions = Object.values(getters.autocompleteGroupedSearchOptions).reduce(
+    (options, group) => {
+      return [...options, ...group.data];
+    },
+    [],
+  );
+
+  return getters.scopedSearchOptions.concat(sortedAutocompleteOptions);
 };

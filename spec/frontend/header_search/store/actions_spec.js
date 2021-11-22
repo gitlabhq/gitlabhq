@@ -5,7 +5,7 @@ import * as actions from '~/header_search/store/actions';
 import * as types from '~/header_search/store/mutation_types';
 import createState from '~/header_search/store/state';
 import axios from '~/lib/utils/axios_utils';
-import { MOCK_SEARCH, MOCK_AUTOCOMPLETE_OPTIONS } from '../mock_data';
+import { MOCK_SEARCH, MOCK_AUTOCOMPLETE_OPTIONS_RES } from '../mock_data';
 
 jest.mock('~/flash');
 
@@ -29,9 +29,9 @@ describe('Header Search Store Actions', () => {
   });
 
   describe.each`
-    axiosMock                                                         | type         | expectedMutations                                                                                                           | flashCallCount
-    ${{ method: 'onGet', code: 200, res: MOCK_AUTOCOMPLETE_OPTIONS }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS }]} | ${0}
-    ${{ method: 'onGet', code: 500, res: null }}                      | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}                                       | ${1}
+    axiosMock                                                             | type         | expectedMutations                                                                                                               | flashCallCount
+    ${{ method: 'onGet', code: 200, res: MOCK_AUTOCOMPLETE_OPTIONS_RES }} | ${'success'} | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_SUCCESS, payload: MOCK_AUTOCOMPLETE_OPTIONS_RES }]} | ${0}
+    ${{ method: 'onGet', code: 500, res: null }}                          | ${'error'}   | ${[{ type: types.REQUEST_AUTOCOMPLETE }, { type: types.RECEIVE_AUTOCOMPLETE_ERROR }]}                                           | ${1}
   `('fetchAutocompleteOptions', ({ axiosMock, type, expectedMutations, flashCallCount }) => {
     describe(`on ${type}`, () => {
       beforeEach(() => {

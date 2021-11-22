@@ -23,3 +23,7 @@ export const PROJECTS_CATEGORY = 'Projects';
 export const LARGE_AVATAR_PX = 32;
 
 export const SMALL_AVATAR_PX = 16;
+
+export const FIRST_DROPDOWN_INDEX = 0;
+
+export const SEARCH_BOX_INDEX = -1;

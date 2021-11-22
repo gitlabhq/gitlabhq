@@ -36,6 +36,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
    
   <gl-form-input-group-stub
     class="gl-mb-4"
+    inputclass=""
     predefinedoptions="[object Object]"
     value=""
   >
@@ -57,6 +58,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
    
   <gl-form-input-group-stub
     class="gl-mb-4"
+    inputclass=""
     predefinedoptions="[object Object]"
     value=""
   >
@@ -69,6 +71,7 @@ exports[`Registry Project Empty state to match the default snapshot 1`] = `
   </gl-form-input-group-stub>
    
   <gl-form-input-group-stub
+    inputclass=""
     predefinedoptions="[object Object]"
     value=""
   >

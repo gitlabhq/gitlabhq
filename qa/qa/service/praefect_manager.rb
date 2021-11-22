@@ -58,6 +58,7 @@ module QA
 
       def start_praefect
         start_node(@praefect)
+        wait_for_praefect
       end
 
       def stop_praefect
@@ -176,6 +177,7 @@ module QA
         start_node(@primary_node)
         start_node(@secondary_node)
         start_node(@tertiary_node)
+        start_node(@praefect)
 
         wait_for_health_check_all_nodes
         wait_for_reliable_connection
@@ -197,14 +199,7 @@ module QA
           max_duration: 180,
           retry_on_exception: true
         )
-
-        # Praefect can fail to start if unable to dial one of the gitaly nodes
-        # See https://gitlab.com/gitlab-org/gitaly/-/issues/2847
-        # We tail the logs to allow us to confirm if that is the problem if tests fail
-
-        shell "docker exec #{@praefect} bash -c 'tail /var/log/gitlab/praefect/current'" do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-        end
+        wait_for_gitaly_check
       end
 
       def wait_for_sql_ping
@@ -244,7 +239,7 @@ module QA
       def wait_for_storage_nodes
         wait_for_no_praefect_storage_error
 
-        Support::Waiter.repeat_until(max_attempts: 3) do
+        Support::Waiter.repeat_until(max_attempts: 3, max_duration: 120, sleep_interval: 1) do
           nodes_confirmed = {
             @primary_node => false,
             @secondary_node => false,
@@ -304,7 +299,7 @@ module QA
       end
 
       def wait_until_node_is_removed_from_healthy_storages(node)
-        Support::Waiter.wait_until(max_duration: 60, sleep_interval: 3, raise_on_failure: false) do
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
           result = []
           shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
             result << line
@@ -315,7 +310,7 @@ module QA
       end
 
       def wait_until_node_is_marked_as_healthy_storage(node)
-        Support::Waiter.wait_until(max_duration: 60, sleep_interval: 3, raise_on_failure: false) do
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
           result = []
           shell sql_to_docker_exec_cmd("SELECT count(*) FROM healthy_storages WHERE storage = '#{node}';") do |line|
             result << line
@@ -327,17 +322,10 @@ module QA
       end
 
       def wait_for_gitaly_check
-        Support::Waiter.repeat_until(max_attempts: 3) do
-          storage_ok = false
-          check_finished = false
-
-          wait_until_shell_command("docker exec #{@gitlab} bash -c 'gitlab-rake gitlab:gitaly:check'") do |line|
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
+          wait_until_shell_command("docker exec #{@gitlab} bash -c 'gitlab-rake gitlab:git:fsck'") do |line|
             QA::Runtime::Logger.debug(line.chomp)
-
-            storage_ok = true if line =~ /Gitaly: ... #{@virtual_storage} ... OK/
-            check_finished = true if line =~ /Checking Gitaly ... Finished/
-
-            storage_ok && check_finished
+            line.include?('Done')
           end
         end
       end
@@ -347,7 +335,7 @@ module QA
       # has no pre-read data, consider it to have had zero reads.
       def wait_for_read_count_change(pre_read_data)
         diff_found = false
-        Support::Waiter.wait_until(sleep_interval: 5) do
+        Support::Waiter.wait_until(sleep_interval: 1, max_duration: 60) do
           query_read_distribution.each_with_index do |data, index|
             diff_found = true if data[:value] > value_for_node(pre_read_data, data[:node])
           end
@@ -361,10 +349,8 @@ module QA
 
       def wait_for_reliable_connection
         QA::Runtime::Logger.info('Wait until GitLab and Praefect can communicate reliably')
-        wait_for_praefect
         wait_for_sql_ping
         wait_for_storage_nodes
-        wait_for_gitaly_check
       end
 
       def wait_for_replication(project_id)

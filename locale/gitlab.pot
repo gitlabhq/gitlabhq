@@ -6937,9 +6937,6 @@ msgstr ""
 msgid "Choose File..."
 msgstr ""
 
-msgid "Choose a branch/tag (e.g. %{branch}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
-msgstr ""
-
 msgid "Choose a file"
 msgstr ""
 
@@ -21053,7 +21050,7 @@ msgstr ""
 msgid "MERGED"
 msgstr ""
 
-msgid "MR widget|Back to the Merge request"
+msgid "MR widget|Back to the merge request"
 msgstr ""
 
 msgid "MR widget|See your pipeline in action"
@@ -36278,6 +36275,9 @@ msgid "To see this project's operational details, %{linkStart}upgrade its group 
 msgstr ""
 
 msgid "To see this project's operational details, contact an owner of group %{groupName} to upgrade the plan. You can also remove the project from the dashboard."
+msgstr ""
+
+msgid "To see what's changed or create a merge request, choose a branch or tag (like %{branch}), or enter a commit (like %{sha})."
 msgstr ""
 
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"

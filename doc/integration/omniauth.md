@@ -10,6 +10,8 @@ Users can sign in to GitLab by using their credentials from Twitter, GitHub, and
 [OmniAuth](https://rubygems.org/gems/omniauth/) is the Rack
 framework that GitLab uses to provide this authentication.
 
+![OmniAuth providers on sign-in page](img/omniauth_providers_v_14_6.png)
+
 If you configure OmniAuth, users can continue to sign in using other
 mechanisms, including standard GitLab authentication or LDAP (if configured).
 
@@ -113,6 +115,12 @@ To change these settings:
 After configuring these settings, you can configure
 your chosen [provider](#supported-providers).
 
+### Passwords for users created via OmniAuth
+
+The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
+guide provides an overview about how GitLab generates and sets passwords for
+users created with OmniAuth.
+
 ## Enable OmniAuth for an existing user
 
 If you're an existing user, after your GitLab account is
@@ -128,6 +136,41 @@ provider like Twitter.
    you are redirected back to GitLab.
 
 You can now use your chosen OmniAuth provider to sign in to GitLab.
+
+## Enable or disable sign-in with an OmniAuth provider without disabling import sources
+
+Administrators can enable or disable sign-in for some OmniAuth providers.
+
+NOTE:
+By default, sign-in is enabled for all the OAuth providers configured in `config/gitlab.yml`.
+
+To enable or disable an OmniAuth provider:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings**.
+1. Expand **Sign-in restrictions**.
+1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
+
+## Disable OmniAuth
+
+In GitLab 11.4 and later, OmniAuth is enabled by default. However, OmniAuth only works
+if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
+
+If OmniAuth providers are causing problems even when individually disabled, you
+can disable the entire OmniAuth subsystem by modifying the configuration file:
+
+- **For Omnibus installations**
+
+  ```ruby
+  gitlab_rails['omniauth_enabled'] = false
+  ```
+
+- **For installations from source**:
+
+  ```yaml
+  omniauth:
+    enabled: false
+  ```
 
 ## Link existing users to OmniAuth users
 
@@ -228,41 +271,6 @@ let us know.
 We can't officially support every possible authentication mechanism available,
 but we'd like to at least help those with specific needs.
 
-## Enable or disable sign-in with an OmniAuth provider without disabling import sources
-
-Administrators can enable or disable sign-in for some OmniAuth providers.
-
-NOTE:
-By default, sign-in is enabled for all the OAuth providers configured in `config/gitlab.yml`.
-
-To enable or disable an OmniAuth provider:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings**.
-1. Expand **Sign-in restrictions**.
-1. In the **Enabled OAuth authentication sources** section, select or clear the checkbox for each provider you want to enable or disable.
-
-## Disable OmniAuth
-
-In GitLab 11.4 and later, OmniAuth is enabled by default. However, OmniAuth only works
-if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
-
-If OmniAuth providers are causing problems even when individually disabled, you
-can disable the entire OmniAuth subsystem by modifying the configuration file:
-
-- **For Omnibus installations**
-
-  ```ruby
-  gitlab_rails['omniauth_enabled'] = false
-  ```
-
-- **For installations from source**:
-
-  ```yaml
-  omniauth:
-    enabled: false
-  ```
-
 ## Keep OmniAuth user profiles up to date
 
 You can enable profile syncing from selected OmniAuth providers. You can sync
@@ -344,12 +352,6 @@ one of the OmniAuth users is an administrator.
 You can also bypass automatic sign-in by browsing to
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
-## Passwords for users created via OmniAuth
-
-The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md)
-guide provides an overview about how GitLab generates and sets passwords for
-users created with OmniAuth.
-
 ## Use a custom OmniAuth provider icon
 
 Most supported providers include a built-in icon for the rendered sign-in button.
@@ -359,7 +361,7 @@ then override the icon in one of two ways:
 
 - **Provide a custom image path**:
 
-  1. *If you are hosting the image outside of your GitLab server domain,* ensure
+  1. If you are hosting the image outside of your GitLab server domain, ensure
      your [content security policies](https://docs.gitlab.com/omnibus/settings/configuration.html#content-security-policy)
      are configured to allow access to the image file.
   1. Depending on your method of installing GitLab, add a custom `icon` parameter

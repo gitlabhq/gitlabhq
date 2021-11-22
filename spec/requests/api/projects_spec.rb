@@ -1504,6 +1504,20 @@ RSpec.describe API::Projects do
       expect(json_response.map { |project| project['id'] }).to contain_exactly(private_project1.id)
     end
 
+    context 'and using an admin to search', :enable_admin_mode, :aggregate_errors do
+      it 'returns users projects when authenticated as admin' do
+        private_project1 = create(:project, :private, name: 'private_project1', creator_id: user4.id, namespace: user4.namespace)
+
+        # min_access_level does not make any difference when admins search for a user's projects
+        get api("/users/#{user4.id}/projects/", admin), params: { min_access_level: 30 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project['id'] }).to contain_exactly(project4.id, private_project1.id, public_project.id)
+      end
+    end
+
     context 'and using the programming language filter' do
       include_context 'with language detection'
 

@@ -7,9 +7,21 @@ export default {
   components: {
     GlDropdownItem,
   },
+  props: {
+    currentFocusedOption: {
+      type: Object,
+      required: false,
+      default: () => null,
+    },
+  },
   computed: {
     ...mapState(['search']),
     ...mapGetters(['scopedSearchOptions']),
+  },
+  methods: {
+    isOptionFocused(option) {
+      return this.currentFocusedOption?.html_id === option.html_id;
+    },
   },
 };
 </script>
@@ -17,9 +29,10 @@ export default {
 <template>
   <div>
     <gl-dropdown-item
-      v-for="(option, index) in scopedSearchOptions"
-      :id="`scoped-${index}`"
-      :key="index"
+      v-for="option in scopedSearchOptions"
+      :ref="option.html_id"
+      :key="option.html_id"
+      :class="{ 'gl-bg-gray-50': isOptionFocused(option) }"
       tabindex="-1"
       :href="option.url"
     >

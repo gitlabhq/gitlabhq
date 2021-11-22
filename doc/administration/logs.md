@@ -296,7 +296,7 @@ Depending on your installation method, this file is located at:
 - Installations from source: `/home/git/gitlab/log/application.log`
 
 It helps you discover events happening in your instance such as user creation
-and project removal. For example:
+and project deletion. For example:
 
 ```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created

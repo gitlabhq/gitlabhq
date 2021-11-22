@@ -42,6 +42,7 @@ module QA
 
         context 'when a node is unhealthy' do
           before do
+            praefect_manager.start_all_nodes
             praefect_manager.stop_secondary_node
             praefect_manager.wait_for_secondary_node_health_check_failure
           end

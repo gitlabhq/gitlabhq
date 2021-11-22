@@ -13,9 +13,14 @@ module QA
         end
       end
 
-      after do
+      before do
+        praefect_manager.start_all_nodes
         praefect_manager.start_praefect
-        praefect_manager.wait_for_reliable_connection
+      end
+
+      after do
+        praefect_manager.start_all_nodes
+        praefect_manager.start_praefect
         praefect_manager.clear_replication_queue
       end
 
@@ -51,7 +56,6 @@ module QA
         praefect_manager.create_stalled_replication_queue
 
         praefect_manager.start_praefect
-        praefect_manager.wait_for_reliable_connection
 
         # Create a new project, push to it, and check that replication occurs
         project_push = Resource::Repository::ProjectPush.fabricate! do |push|

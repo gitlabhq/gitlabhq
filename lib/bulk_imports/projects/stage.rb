@@ -27,6 +27,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::IssuesPipeline,
             stage: 3
           },
+          snippets: {
+            pipeline: BulkImports::Projects::Pipelines::SnippetsPipeline,
+            stage: 3
+          },
           boards: {
             pipeline: BulkImports::Common::Pipelines::BoardsPipeline,
             stage: 4

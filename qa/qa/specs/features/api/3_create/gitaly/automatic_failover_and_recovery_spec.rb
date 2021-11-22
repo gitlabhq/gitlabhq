@@ -22,9 +22,7 @@ module QA
         end
       end
 
-      after(:context, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }) do
-        # Leave the cluster in a suitable state for subsequent tests,
-        # if there was a problem during the tests here
+      after do
         praefect_manager.start_all_nodes
       end
 
@@ -44,10 +42,7 @@ module QA
           push.file_content = "This should exist on all nodes"
         end
 
-        praefect_manager.start_secondary_node
-        praefect_manager.start_tertiary_node
-        praefect_manager.wait_for_health_check_all_nodes
-
+        praefect_manager.start_all_nodes
         praefect_manager.wait_for_replication(project.id)
 
         # Stop the primary node to trigger failover, and then wait

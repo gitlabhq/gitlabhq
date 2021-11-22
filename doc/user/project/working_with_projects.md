@@ -248,7 +248,7 @@ To delete a project, first navigate to the home page for that project.
 1. Click **Delete project**
 1. Confirm this action by typing in the expected text.
 
-Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enable delayed project removal](../group/index.md#enable-delayed-project-removal).
+Projects in personal namespaces are deleted immediately on request. For information on delayed deletion of projects in a group, please see [Enable delayed project deletion](../group/index.md#enable-delayed-project-deletion).
 
 ## Project settings
 

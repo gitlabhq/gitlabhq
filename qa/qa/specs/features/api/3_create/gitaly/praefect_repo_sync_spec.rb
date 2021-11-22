@@ -9,11 +9,13 @@ module QA
       let(:repo2) { { "relative_path" => "@hashed/path/to/repo2.git", "storage" => "gitaly3", "virtual_storage" => "default" } }
 
       before do
+        praefect_manager.start_all_nodes
         praefect_manager.add_repo_to_disk(praefect_manager.primary_node, repo1["relative_path"])
         praefect_manager.add_repo_to_disk(praefect_manager.tertiary_node, repo2["relative_path"])
       end
 
       after do
+        praefect_manager.start_all_nodes
         praefect_manager.remove_repo_from_disk(repo1["relative_path"])
         praefect_manager.remove_repo_from_disk(repo2["relative_path"])
         praefect_manager.remove_repository_from_praefect_database(repo1["relative_path"])
