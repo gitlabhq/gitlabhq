@@ -6,23 +6,29 @@ import {
   EDITOR_EXTENSION_NOT_REGISTERED_ERROR,
   EDITOR_EXTENSION_NOT_SPECIFIED_FOR_UNUSE_ERROR,
 } from '~/editor/constants';
-import Instance from '~/editor/source_editor_instance';
+import SourceEditorInstance from '~/editor/source_editor_instance';
 import { sprintf } from '~/locale';
-import { MyClassExtension, conflictingExtensions, MyFnExtension, MyConstExt } from './helpers';
+import {
+  SEClassExtension,
+  conflictingExtensions,
+  SEFnExtension,
+  SEConstExt,
+  SEWithSetupExt,
+} from './helpers';
 
 describe('Source Editor Instance', () => {
   let seInstance;
 
   const defSetupOptions = { foo: 'bar' };
   const fullExtensionsArray = [
-    { definition: MyClassExtension },
-    { definition: MyFnExtension },
-    { definition: MyConstExt },
+    { definition: SEClassExtension },
+    { definition: SEFnExtension },
+    { definition: SEConstExt },
   ];
   const fullExtensionsArrayWithOptions = [
-    { definition: MyClassExtension, setupOptions: defSetupOptions },
-    { definition: MyFnExtension, setupOptions: defSetupOptions },
-    { definition: MyConstExt, setupOptions: defSetupOptions },
+    { definition: SEClassExtension, setupOptions: defSetupOptions },
+    { definition: SEFnExtension, setupOptions: defSetupOptions },
+    { definition: SEConstExt, setupOptions: defSetupOptions },
   ];
 
   const fooFn = jest.fn();
@@ -40,26 +46,26 @@ describe('Source Editor Instance', () => {
   });
 
   it('sets up the registry for the methods coming from extensions', () => {
-    seInstance = new Instance();
+    seInstance = new SourceEditorInstance();
     expect(seInstance.methods).toBeDefined();
 
-    seInstance.use({ definition: MyClassExtension });
+    seInstance.use({ definition: SEClassExtension });
     expect(seInstance.methods).toEqual({
-      shared: 'MyClassExtension',
-      classExtMethod: 'MyClassExtension',
+      shared: 'SEClassExtension',
+      classExtMethod: 'SEClassExtension',
     });
 
-    seInstance.use({ definition: MyFnExtension });
+    seInstance.use({ definition: SEFnExtension });
     expect(seInstance.methods).toEqual({
-      shared: 'MyClassExtension',
-      classExtMethod: 'MyClassExtension',
-      fnExtMethod: 'MyFnExtension',
+      shared: 'SEClassExtension',
+      classExtMethod: 'SEClassExtension',
+      fnExtMethod: 'SEFnExtension',
     });
   });
 
   describe('proxy', () => {
     it('returns prop from an extension if extension provides it', () => {
-      seInstance = new Instance();
+      seInstance = new SourceEditorInstance();
       seInstance.use({ definition: DummyExt });
 
       expect(fooFn).not.toHaveBeenCalled();
@@ -67,8 +73,58 @@ describe('Source Editor Instance', () => {
       expect(fooFn).toHaveBeenCalled();
     });
 
+    it.each`
+      stringPropToPass | objPropToPass        | setupOptions
+      ${undefined}     | ${undefined}         | ${undefined}
+      ${'prop'}        | ${undefined}         | ${undefined}
+      ${'prop'}        | ${[]}                | ${undefined}
+      ${'prop'}        | ${{}}                | ${undefined}
+      ${'prop'}        | ${{ alpha: 'beta' }} | ${undefined}
+      ${'prop'}        | ${{ alpha: 'beta' }} | ${defSetupOptions}
+      ${'prop'}        | ${undefined}         | ${defSetupOptions}
+      ${undefined}     | ${undefined}         | ${defSetupOptions}
+      ${''}            | ${{}}                | ${defSetupOptions}
+    `(
+      'correctly passes arguments ("$stringPropToPass", "$objPropToPass") and instance (with "$setupOptions" setupOptions) to extension methods',
+      ({ stringPropToPass, objPropToPass, setupOptions }) => {
+        seInstance = new SourceEditorInstance();
+        seInstance.use({ definition: SEWithSetupExt, setupOptions });
+
+        const [stringProp, objProp, instance] = seInstance.returnInstanceAndProps(
+          stringPropToPass,
+          objPropToPass,
+        );
+        const expectedObjProps = objPropToPass || {};
+
+        expect(instance).toBe(seInstance);
+        expect(stringProp).toBe(stringPropToPass);
+        expect(objProp).toEqual(expectedObjProps);
+        if (setupOptions) {
+          Object.keys(setupOptions).forEach((key) => {
+            expect(instance[key]).toBe(setupOptions[key]);
+          });
+        }
+      },
+    );
+
+    it('correctly passes instance to the methods even if no additional props have been passed', () => {
+      seInstance = new SourceEditorInstance();
+      seInstance.use({ definition: SEWithSetupExt });
+
+      const instance = seInstance.returnInstance();
+
+      expect(instance).toBe(seInstance);
+    });
+
+    it("correctly sets the context of the 'this' keyword for the extension's methods", () => {
+      seInstance = new SourceEditorInstance();
+      seInstance.use({ definition: SEWithSetupExt });
+
+      expect(seInstance.giveMeContext().constructor).toEqual(SEWithSetupExt);
+    });
+
     it('returns props from SE instance itself if no extension provides the prop', () => {
-      seInstance = new Instance({
+      seInstance = new SourceEditorInstance({
         use: fooFn,
       });
       jest.spyOn(seInstance, 'use').mockImplementation(() => {});
@@ -80,7 +136,7 @@ describe('Source Editor Instance', () => {
     });
 
     it('returns props from Monaco instance when the prop does not exist on the SE instance', () => {
-      seInstance = new Instance({
+      seInstance = new SourceEditorInstance({
         fooFn,
       });
 
@@ -92,13 +148,13 @@ describe('Source Editor Instance', () => {
 
   describe('public API', () => {
     it.each(['use', 'unuse'], 'provides "%s" as public method by default', (method) => {
-      seInstance = new Instance();
+      seInstance = new SourceEditorInstance();
       expect(seInstance[method]).toBeDefined();
     });
 
     describe('use', () => {
       it('extends the SE instance with methods provided by an extension', () => {
-        seInstance = new Instance();
+        seInstance = new SourceEditorInstance();
         seInstance.use({ definition: DummyExt });
 
         expect(fooFn).not.toHaveBeenCalled();
@@ -108,15 +164,15 @@ describe('Source Editor Instance', () => {
 
       it.each`
         extensions                          | expectedProps
-        ${{ definition: MyClassExtension }} | ${['shared', 'classExtMethod']}
-        ${{ definition: MyFnExtension }}    | ${['fnExtMethod']}
-        ${{ definition: MyConstExt }}       | ${['constExtMethod']}
+        ${{ definition: SEClassExtension }} | ${['shared', 'classExtMethod']}
+        ${{ definition: SEFnExtension }}    | ${['fnExtMethod']}
+        ${{ definition: SEConstExt }}       | ${['constExtMethod']}
         ${fullExtensionsArray}              | ${['shared', 'classExtMethod', 'fnExtMethod', 'constExtMethod']}
         ${fullExtensionsArrayWithOptions}   | ${['shared', 'classExtMethod', 'fnExtMethod', 'constExtMethod']}
       `(
         'Should register $expectedProps when extension is "$extensions"',
         ({ extensions, expectedProps }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           expect(seInstance.extensionsAPI).toHaveLength(0);
 
           seInstance.use(extensions);
@@ -127,15 +183,15 @@ describe('Source Editor Instance', () => {
 
       it.each`
         definition                               | preInstalledExtDefinition               | expectedErrorProp
-        ${conflictingExtensions.WithInstanceExt} | ${MyClassExtension}                     | ${'use'}
+        ${conflictingExtensions.WithInstanceExt} | ${SEClassExtension}                     | ${'use'}
         ${conflictingExtensions.WithInstanceExt} | ${null}                                 | ${'use'}
         ${conflictingExtensions.WithAnotherExt}  | ${null}                                 | ${undefined}
-        ${conflictingExtensions.WithAnotherExt}  | ${MyClassExtension}                     | ${'shared'}
-        ${MyClassExtension}                      | ${conflictingExtensions.WithAnotherExt} | ${'shared'}
+        ${conflictingExtensions.WithAnotherExt}  | ${SEClassExtension}                     | ${'shared'}
+        ${SEClassExtension}                      | ${conflictingExtensions.WithAnotherExt} | ${'shared'}
       `(
         'logs the naming conflict error when registering $definition',
         ({ definition, preInstalledExtDefinition, expectedErrorProp }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           jest.spyOn(console, 'error').mockImplementation(() => {});
 
           if (preInstalledExtDefinition) {
@@ -175,7 +231,7 @@ describe('Source Editor Instance', () => {
       `(
         'Should throw $thrownError when extension is "$extensions"',
         ({ extensions, thrownError }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           const useExtension = () => {
             seInstance.use(extensions);
           };
@@ -188,24 +244,24 @@ describe('Source Editor Instance', () => {
 
         beforeEach(() => {
           extensionStore = new Map();
-          seInstance = new Instance({}, extensionStore);
+          seInstance = new SourceEditorInstance({}, extensionStore);
         });
 
         it('stores _instances_ of the used extensions in a global registry', () => {
-          const extension = seInstance.use({ definition: MyClassExtension });
+          const extension = seInstance.use({ definition: SEClassExtension });
 
           expect(extensionStore.size).toBe(1);
-          expect(extensionStore.entries().next().value).toEqual(['MyClassExtension', extension]);
+          expect(extensionStore.entries().next().value).toEqual(['SEClassExtension', extension]);
         });
 
         it('does not duplicate entries in the registry', () => {
           jest.spyOn(extensionStore, 'set');
 
-          const extension1 = seInstance.use({ definition: MyClassExtension });
-          seInstance.use({ definition: MyClassExtension });
+          const extension1 = seInstance.use({ definition: SEClassExtension });
+          seInstance.use({ definition: SEClassExtension });
 
           expect(extensionStore.set).toHaveBeenCalledTimes(1);
-          expect(extensionStore.set).toHaveBeenCalledWith('MyClassExtension', extension1);
+          expect(extensionStore.set).toHaveBeenCalledWith('SEClassExtension', extension1);
         });
 
         it.each`
@@ -222,20 +278,20 @@ describe('Source Editor Instance', () => {
             jest.spyOn(extensionStore, 'set');
 
             const extension1 = seInstance.use({
-              definition: MyClassExtension,
+              definition: SEClassExtension,
               setupOptions: currentSetupOptions,
             });
             const extension2 = seInstance.use({
-              definition: MyClassExtension,
+              definition: SEClassExtension,
               setupOptions: newSetupOptions,
             });
 
             expect(extensionStore.size).toBe(1);
             expect(extensionStore.set).toHaveBeenCalledTimes(expectedCallTimes);
             if (expectedCallTimes > 1) {
-              expect(extensionStore.set).toHaveBeenCalledWith('MyClassExtension', extension2);
+              expect(extensionStore.set).toHaveBeenCalledWith('SEClassExtension', extension2);
             } else {
-              expect(extensionStore.set).toHaveBeenCalledWith('MyClassExtension', extension1);
+              expect(extensionStore.set).toHaveBeenCalledWith('SEClassExtension', extension1);
             }
           },
         );
@@ -252,7 +308,7 @@ describe('Source Editor Instance', () => {
       `(
         `Should throw "${EDITOR_EXTENSION_NOT_SPECIFIED_FOR_UNUSE_ERROR}" when extension is "$unuseExtension"`,
         ({ unuseExtension, thrownError }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           const unuse = () => {
             seInstance.unuse(unuseExtension);
           };
@@ -262,16 +318,16 @@ describe('Source Editor Instance', () => {
 
       it.each`
         initExtensions                      | unuseExtensionIndex | remainingAPI
-        ${{ definition: MyClassExtension }} | ${0}                | ${[]}
-        ${{ definition: MyFnExtension }}    | ${0}                | ${[]}
-        ${{ definition: MyConstExt }}       | ${0}                | ${[]}
+        ${{ definition: SEClassExtension }} | ${0}                | ${[]}
+        ${{ definition: SEFnExtension }}    | ${0}                | ${[]}
+        ${{ definition: SEConstExt }}       | ${0}                | ${[]}
         ${fullExtensionsArray}              | ${0}                | ${['fnExtMethod', 'constExtMethod']}
         ${fullExtensionsArray}              | ${1}                | ${['shared', 'classExtMethod', 'constExtMethod']}
         ${fullExtensionsArray}              | ${2}                | ${['shared', 'classExtMethod', 'fnExtMethod']}
       `(
         'un-registers properties introduced by single extension $unuseExtension',
         ({ initExtensions, unuseExtensionIndex, remainingAPI }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           const extensions = seInstance.use(initExtensions);
 
           if (Array.isArray(initExtensions)) {
@@ -291,7 +347,7 @@ describe('Source Editor Instance', () => {
       `(
         'un-registers properties introduced by multiple extensions $unuseExtension',
         ({ unuseExtensionIndex, remainingAPI }) => {
-          seInstance = new Instance();
+          seInstance = new SourceEditorInstance();
           const extensions = seInstance.use(fullExtensionsArray);
           const extensionsToUnuse = extensions.filter((ext, index) =>
             unuseExtensionIndex.includes(index),
@@ -304,11 +360,11 @@ describe('Source Editor Instance', () => {
 
       it('it does not remove entry from the global registry to keep for potential future re-use', () => {
         const extensionStore = new Map();
-        seInstance = new Instance({}, extensionStore);
+        seInstance = new SourceEditorInstance({}, extensionStore);
         const extensions = seInstance.use(fullExtensionsArray);
         const verifyExpectations = () => {
           const entries = extensionStore.entries();
-          const mockExtensions = ['MyClassExtension', 'MyFnExtension', 'MyConstExt'];
+          const mockExtensions = ['SEClassExtension', 'SEFnExtension', 'SEConstExt'];
           expect(extensionStore.size).toBe(mockExtensions.length);
           mockExtensions.forEach((ext, index) => {
             expect(entries.next().value).toEqual([ext, extensions[index]]);
@@ -326,7 +382,7 @@ describe('Source Editor Instance', () => {
 
       beforeEach(() => {
         instanceModel = monacoEditor.createModel('');
-        seInstance = new Instance({
+        seInstance = new SourceEditorInstance({
           getModel: () => instanceModel,
         });
       });
@@ -363,7 +419,7 @@ describe('Source Editor Instance', () => {
       };
 
       it('passes correct arguments to callback fns when using an extension', () => {
-        seInstance = new Instance();
+        seInstance = new SourceEditorInstance();
         seInstance.use({
           definition: MyFullExtWithCallbacks,
           setupOptions: defSetupOptions,
@@ -373,7 +429,7 @@ describe('Source Editor Instance', () => {
       });
 
       it('passes correct arguments to callback fns when un-using an extension', () => {
-        seInstance = new Instance();
+        seInstance = new SourceEditorInstance();
         const extension = seInstance.use({
           definition: MyFullExtWithCallbacks,
           setupOptions: defSetupOptions,

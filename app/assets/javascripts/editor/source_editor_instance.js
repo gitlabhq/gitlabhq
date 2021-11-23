@@ -73,9 +73,7 @@ export default class EditorInstance {
         if (methodExtension) {
           const extension = extensionsStore.get(methodExtension);
 
-          return (...args) => {
-            return extension.api[prop].call(seInstance, ...args, receiver);
-          };
+          return (...args) => extension.api[prop].call(seInstance, receiver, ...args);
         }
         return Reflect.get(seInstance[prop] ? seInstance : target, prop, receiver);
       },

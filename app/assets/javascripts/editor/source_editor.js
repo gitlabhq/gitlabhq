@@ -26,26 +26,6 @@ export default class SourceEditor {
     registerLanguages(...languages);
   }
 
-  static pushToImportsArray(arr, toImport) {
-    arr.push(import(toImport));
-  }
-
-  static loadExtensions(extensions) {
-    if (!extensions) {
-      return Promise.resolve();
-    }
-    const promises = [];
-    const extensionsArray = typeof extensions === 'string' ? extensions.split(',') : extensions;
-
-    extensionsArray.forEach((ext) => {
-      const prefix = ext.includes('/') ? '' : 'editor/';
-      const trimmedExt = ext.replace(/^\//, '').trim();
-      SourceEditor.pushToImportsArray(promises, `~/${prefix}${trimmedExt}`);
-    });
-
-    return Promise.all(promises);
-  }
-
   static mixIntoInstance(source, inst) {
     if (!inst) {
       return;
@@ -69,23 +49,6 @@ export default class SourceEditor {
     monacoEditor.onDidCreateEditor(() => {
       delete el.dataset.editorLoading;
     });
-  }
-
-  static manageDefaultExtensions(instance, el, extensions) {
-    SourceEditor.loadExtensions(extensions, instance)
-      .then((modules) => {
-        if (modules) {
-          modules.forEach((module) => {
-            instance.use(module.default);
-          });
-        }
-      })
-      .then(() => {
-        el.dispatchEvent(new Event(EDITOR_READY_EVENT));
-      })
-      .catch((e) => {
-        throw e;
-      });
   }
 
   static createEditorModel({
@@ -187,7 +150,6 @@ export default class SourceEditor {
     blobContent = '',
     blobOriginalContent = '',
     blobGlobalId = uuids()[0],
-    extensions = [],
     isDiff = false,
     ...instanceOptions
   } = {}) {
@@ -218,9 +180,8 @@ export default class SourceEditor {
       SourceEditor.instanceDisposeModels(this, instance, model);
     });
 
-    SourceEditor.manageDefaultExtensions(instance, el, extensions);
-
     this.instances.push(instance);
+    el.dispatchEvent(new CustomEvent(EDITOR_READY_EVENT, { instance }));
     return instance;
   }
 
@@ -233,12 +194,5 @@ export default class SourceEditor {
 
   dispose() {
     this.instances.forEach((instance) => instance.dispose());
-  }
-
-  use(exts) {
-    this.instances.forEach((inst) => {
-      inst.use(exts);
-    });
-    return this;
   }
 }

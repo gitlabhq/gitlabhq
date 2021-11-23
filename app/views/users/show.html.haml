@@ -2,8 +2,7 @@
 - @hide_breadcrumbs = true
 - @no_container = true
 - page_title       user_display_name(@user)
-- page_description @user.bio
-- header_title     @user.name, user_path(@user)
+- page_description @user.bio unless @user.blocked? || !@user.confirmed?
 - page_itemtype    'http://schema.org/Person'
 - link_classes = "flex-grow-1 mx-1 "
 

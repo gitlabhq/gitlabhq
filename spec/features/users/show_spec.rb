@@ -207,34 +207,31 @@ RSpec.describe 'User page' do
         state: :blocked,
         organization: 'GitLab - work info test',
         job_title: 'Frontend Engineer',
-        pronunciation: 'pruh-nuhn-see-ay-shn'
+        pronunciation: 'pruh-nuhn-see-ay-shn',
+        bio: 'My personal bio'
       )
     end
 
     let_it_be(:status) { create(:user_status, user: user, message: "Working hard!") }
 
-    it 'shows no tab' do
-      subject
+    before do
+      visit_profile
+    end
 
+    it 'shows no tab' do
       expect(page).to have_css("div.profile-header")
       expect(page).not_to have_css("ul.nav-links")
     end
 
     it 'shows blocked message' do
-      subject
-
       expect(page).to have_content("This user is blocked")
     end
 
     it 'shows user name as blocked' do
-      subject
-
       expect(page).to have_css(".cover-title", text: 'Blocked user')
     end
 
     it 'shows no additional fields' do
-      subject
-
       expect(page).not_to have_css(".profile-user-bio")
       expect(page).not_to have_content('GitLab - work info test')
       expect(page).not_to have_content('Frontend Engineer')
@@ -243,10 +240,10 @@ RSpec.describe 'User page' do
     end
 
     it 'shows username' do
-      subject
-
       expect(page).to have_content("@#{user.username}")
     end
+
+    it_behaves_like 'default brand title page meta description'
   end
 
   context 'with unconfirmed user' do
@@ -256,7 +253,8 @@ RSpec.describe 'User page' do
         :unconfirmed,
         organization: 'GitLab - work info test',
         job_title: 'Frontend Engineer',
-        pronunciation: 'pruh-nuhn-see-ay-shn'
+        pronunciation: 'pruh-nuhn-see-ay-shn',
+        bio: 'My personal bio'
       )
     end
 
@@ -287,6 +285,8 @@ RSpec.describe 'User page' do
       it 'shows private profile message' do
         expect(page).to have_content("This user has a private profile")
       end
+
+      it_behaves_like 'default brand title page meta description'
     end
 
     context 'when visited by an authenticated user' do

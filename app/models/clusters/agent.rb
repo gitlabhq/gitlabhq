@@ -16,6 +16,8 @@ module Clusters
     has_many :project_authorizations, class_name: 'Clusters::Agents::ProjectAuthorization'
     has_many :authorized_projects, class_name: '::Project', through: :project_authorizations, source: :project
 
+    has_many :activity_events, -> { in_timeline_order }, class_name: 'Clusters::Agents::ActivityEvent', inverse_of: :agent
+
     scope :ordered_by_name, -> { order(:name) }
     scope :with_name, -> (name) { where(name: name) }
 

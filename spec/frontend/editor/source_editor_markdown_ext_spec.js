@@ -57,7 +57,7 @@ describe('Markdown Extension for Source Editor', () => {
       blobPath: markdownPath,
       blobContent: text,
     });
-    editor.use(new EditorMarkdownExtension({ instance, previewMarkdownPath }));
+    instance.use(new EditorMarkdownExtension({ instance, previewMarkdownPath }));
     panelSpy = jest.spyOn(EditorMarkdownExtension, 'togglePreviewPanel');
   });
 

@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 import { editor as monacoEditor, languages as monacoLanguages } from 'monaco-editor';
-import waitForPromises from 'helpers/wait_for_promises';
 import {
   SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
@@ -531,105 +530,19 @@ describe('Base editor', () => {
         instance.use(FunctionExt);
         expect(instance.inst()).toEqual(editor.instances[0]);
       });
-    });
 
-    describe('extensions as an instance parameter', () => {
-      let editorExtensionSpy;
-      const instanceConstructor = (extensions = []) => {
-        return editor.createInstance({
-          el: editorEl,
-          blobPath,
-          blobContent,
-          extensions,
+      it('emits the EDITOR_READY_EVENT event after setting up the instance', () => {
+        jest.spyOn(monacoEditor, 'create').mockImplementation(() => {
+          return {
+            setModel: jest.fn(),
+            onDidDispose: jest.fn(),
+          };
         });
-      };
-
-      beforeEach(() => {
-        editorExtensionSpy = jest
-          .spyOn(SourceEditor, 'pushToImportsArray')
-          .mockImplementation((arr) => {
-            arr.push(
-              Promise.resolve({
-                default: {},
-              }),
-            );
-          });
-      });
-
-      it.each([undefined, [], [''], ''])(
-        'does not fail and makes no fetch if extensions is %s',
-        () => {
-          instance = instanceConstructor(null);
-          expect(editorExtensionSpy).not.toHaveBeenCalled();
-        },
-      );
-
-      it.each`
-        type                  | value             | callsCount
-        ${'simple string'}    | ${'foo'}          | ${1}
-        ${'combined string'}  | ${'foo, bar'}     | ${2}
-        ${'array of strings'} | ${['foo', 'bar']} | ${2}
-      `('accepts $type as an extension parameter', ({ value, callsCount }) => {
-        instance = instanceConstructor(value);
-        expect(editorExtensionSpy).toHaveBeenCalled();
-        expect(editorExtensionSpy.mock.calls).toHaveLength(callsCount);
-      });
-
-      it.each`
-        desc                                     | path                      | expectation
-        ${'~/editor'}                            | ${'foo'}                  | ${'~/editor/foo'}
-        ${'~/CUSTOM_PATH with leading slash'}    | ${'/my_custom_path/bar'}  | ${'~/my_custom_path/bar'}
-        ${'~/CUSTOM_PATH without leading slash'} | ${'my_custom_path/delta'} | ${'~/my_custom_path/delta'}
-      `('fetches extensions from $desc path', ({ path, expectation }) => {
-        instance = instanceConstructor(path);
-        expect(editorExtensionSpy).toHaveBeenCalledWith(expect.any(Array), expectation);
-      });
-
-      it('emits EDITOR_READY_EVENT event after all extensions were applied', async () => {
-        const calls = [];
-        const eventSpy = jest.fn().mockImplementation(() => {
-          calls.push('event');
-        });
-        const useSpy = jest.fn().mockImplementation(() => {
-          calls.push('use');
-        });
-        jest.spyOn(SourceEditor, 'convertMonacoToELInstance').mockImplementation((inst) => {
-          const decoratedInstance = inst;
-          decoratedInstance.use = useSpy;
-          return decoratedInstance;
-        });
+        const eventSpy = jest.fn();
         editorEl.addEventListener(EDITOR_READY_EVENT, eventSpy);
-        instance = instanceConstructor('foo, bar');
-        await waitForPromises();
-        expect(useSpy.mock.calls).toHaveLength(2);
-        expect(calls).toEqual(['use', 'use', 'event']);
-      });
-    });
-
-    describe('multiple instances', () => {
-      let inst1;
-      let inst2;
-      let editorEl1;
-      let editorEl2;
-
-      beforeEach(() => {
-        setFixtures('<div id="editor1"></div><div id="editor2"></div>');
-        editorEl1 = document.getElementById('editor1');
-        editorEl2 = document.getElementById('editor2');
-        inst1 = editor.createInstance({ el: editorEl1, blobPath: `foo-${blobPath}` });
-        inst2 = editor.createInstance({ el: editorEl2, blobPath: `bar-${blobPath}` });
-      });
-
-      afterEach(() => {
-        editor.dispose();
-        editorEl1.remove();
-        editorEl2.remove();
-      });
-
-      it('extends all instances if no specific instance is passed', () => {
-        editor.use(AlphaExt);
-        expect(inst1.alpha()).toEqual(alphaRes);
-        expect(inst2.alpha()).toEqual(alphaRes);
+        expect(eventSpy).not.toHaveBeenCalled();
+        instance = editor.createInstance({ el: editorEl });
+        expect(eventSpy).toHaveBeenCalled();
       });
     });
   });

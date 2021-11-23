@@ -38540,7 +38540,13 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."
 msgstr ""
 
+msgid "VulnerabilityManagement|Summary, detailed description, steps to reproduce, etc."
+msgstr ""
+
 msgid "VulnerabilityManagement|Verified as fixed or mitigated"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability name or type. Ex: Cross-site scripting"
 msgstr ""
 
 msgid "VulnerabilityManagement|Will not fix or a false-positive"

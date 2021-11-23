@@ -65,7 +65,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null
+    "group_saml_identity": null,
+    "membership_state": "active"
   },
   {
     "id": 2,
@@ -81,7 +82,8 @@ Example response:
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
       "saml_provider_id": 10
-    }
+    },
+    "membership_state": "active"
   }
 ]
 ```
@@ -126,7 +128,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-10-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null
+    "group_saml_identity": null,
+    "membership_state": "active"
   },
   {
     "id": 2,
@@ -142,7 +145,8 @@ Example response:
       "extern_uid":"ABC-1234567890",
       "provider": "group_saml",
       "saml_provider_id": 10
-    }
+    },
+    "membership_state": "active"
   },
   {
     "id": 3,
@@ -153,7 +157,8 @@ Example response:
     "web_url": "http://192.168.1.8:3000/root",
     "expires_at": "2012-11-22T14:13:35Z",
     "access_level": 30,
-    "group_saml_identity": null
+    "group_saml_identity": null,
+    "membership_state": "active"
   }
 ]
 ```
@@ -191,7 +196,8 @@ Example response:
   "email": "john@example.com",
   "created_at": "2012-10-22T14:13:35Z",
   "expires_at": null,
-  "group_saml_identity": null
+  "group_saml_identity": null,
+  "membership_state": "active"
 }
 ```
 
@@ -229,7 +235,8 @@ Example response:
   "access_level": 30,
   "email": "john@example.com",
   "expires_at": null,
-  "group_saml_identity": null
+  "group_saml_identity": null,
+  "membership_state": "active"
 }
 ```
 

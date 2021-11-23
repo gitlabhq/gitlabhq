@@ -22,15 +22,15 @@ describe('Editor Extension', () => {
 
   it.each`
     definition                  | setupOptions | expectedName
-    ${helpers.MyClassExtension} | ${undefined} | ${'MyClassExtension'}
-    ${helpers.MyClassExtension} | ${{}}        | ${'MyClassExtension'}
-    ${helpers.MyClassExtension} | ${dummyObj}  | ${'MyClassExtension'}
-    ${helpers.MyFnExtension}    | ${undefined} | ${'MyFnExtension'}
-    ${helpers.MyFnExtension}    | ${{}}        | ${'MyFnExtension'}
-    ${helpers.MyFnExtension}    | ${dummyObj}  | ${'MyFnExtension'}
-    ${helpers.MyConstExt}       | ${undefined} | ${'MyConstExt'}
-    ${helpers.MyConstExt}       | ${{}}        | ${'MyConstExt'}
-    ${helpers.MyConstExt}       | ${dummyObj}  | ${'MyConstExt'}
+    ${helpers.SEClassExtension} | ${undefined} | ${'SEClassExtension'}
+    ${helpers.SEClassExtension} | ${{}}        | ${'SEClassExtension'}
+    ${helpers.SEClassExtension} | ${dummyObj}  | ${'SEClassExtension'}
+    ${helpers.SEFnExtension}    | ${undefined} | ${'SEFnExtension'}
+    ${helpers.SEFnExtension}    | ${{}}        | ${'SEFnExtension'}
+    ${helpers.SEFnExtension}    | ${dummyObj}  | ${'SEFnExtension'}
+    ${helpers.SEConstExt}       | ${undefined} | ${'SEConstExt'}
+    ${helpers.SEConstExt}       | ${{}}        | ${'SEConstExt'}
+    ${helpers.SEConstExt}       | ${dummyObj}  | ${'SEConstExt'}
   `(
     'correctly creates extension for definition = $definition and setupOptions = $setupOptions',
     ({ definition, setupOptions, expectedName }) => {
@@ -51,9 +51,9 @@ describe('Editor Extension', () => {
   describe('api', () => {
     it.each`
       definition                  | expectedKeys
-      ${helpers.MyClassExtension} | ${['shared', 'classExtMethod']}
-      ${helpers.MyFnExtension}    | ${['fnExtMethod']}
-      ${helpers.MyConstExt}       | ${['constExtMethod']}
+      ${helpers.SEClassExtension} | ${['shared', 'classExtMethod']}
+      ${helpers.SEFnExtension}    | ${['fnExtMethod']}
+      ${helpers.SEConstExt}       | ${['constExtMethod']}
     `('correctly returns API for $definition', ({ definition, expectedKeys }) => {
       const extension = new EditorExtension({ definition });
       const expectedApi = Object.fromEntries(

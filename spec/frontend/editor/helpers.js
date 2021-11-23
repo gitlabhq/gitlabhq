@@ -1,4 +1,4 @@
-export class MyClassExtension {
+export class SEClassExtension {
   // eslint-disable-next-line class-methods-use-this
   provides() {
     return {
@@ -8,7 +8,7 @@ export class MyClassExtension {
   }
 }
 
-export function MyFnExtension() {
+export function SEFnExtension() {
   return {
     fnExtMethod: () => 'fn own method',
     provides: () => {
@@ -19,7 +19,7 @@ export function MyFnExtension() {
   };
 }
 
-export const MyConstExt = () => {
+export const SEConstExt = () => {
   return {
     provides: () => {
       return {
@@ -28,6 +28,33 @@ export const MyConstExt = () => {
     },
   };
 };
+
+export function SEWithSetupExt() {
+  return {
+    onSetup: (setupOptions = {}, instance) => {
+      if (setupOptions && !Array.isArray(setupOptions)) {
+        Object.entries(setupOptions).forEach(([key, value]) => {
+          Object.assign(instance, {
+            [key]: value,
+          });
+        });
+      }
+    },
+    provides: () => {
+      return {
+        returnInstanceAndProps: (instance, stringProp, objProp = {}) => {
+          return [stringProp, objProp, instance];
+        },
+        returnInstance: (instance) => {
+          return instance;
+        },
+        giveMeContext: () => {
+          return this;
+        },
+      };
+    },
+  };
+}
 
 export const conflictingExtensions = {
   WithInstanceExt: () => {
