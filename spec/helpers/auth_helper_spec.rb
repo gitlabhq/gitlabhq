@@ -283,34 +283,83 @@ RSpec.describe AuthHelper do
 
     before do
       allow(Gitlab).to receive(:com?).and_return(is_gitlab_com)
-      stub_config(extra: { google_tag_manager_id: 'key' })
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    subject(:google_tag_manager_enabled?) { helper.google_tag_manager_enabled? }
-
-    context 'on gitlab.com and a key set without a current user' do
-      it { is_expected.to be_truthy }
-    end
+    subject(:google_tag_manager_enabled) { helper.google_tag_manager_enabled? }
 
     context 'when not on gitlab.com' do
       let(:is_gitlab_com) { false }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(false) }
     end
 
-    context 'when current user is set' do
-      let(:user) { instance_double('User') }
+    context 'regular and nonce versions' do
+      using RSpec::Parameterized::TableSyntax
 
-      it { is_expected.to be_falsey }
+      where(:gtm_nonce_enabled, :gtm_key) do
+        false | 'google_tag_manager_id'
+        true  | 'google_tag_manager_nonce_id'
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(gtm_nonce: gtm_nonce_enabled)
+          stub_config(extra: { gtm_key => 'key' })
+        end
+
+        context 'on gitlab.com and a key set without a current user' do
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when current user is set' do
+          let(:user) { instance_double('User') }
+
+          it { is_expected.to eq(false) }
+        end
+
+        context 'when no key is set' do
+          before do
+            stub_config(extra: {})
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+    end
+  end
+
+  describe '#google_tag_manager_id' do
+    subject(:google_tag_manager_id) { helper.google_tag_manager_id }
+
+    before do
+      stub_config(extra: { 'google_tag_manager_nonce_id': 'nonce', 'google_tag_manager_id': 'gtm' })
     end
 
-    context 'when no key is set' do
+    context 'when google tag manager is disabled' do
       before do
-        stub_config(extra: {})
+        allow(helper).to receive(:google_tag_manager_enabled?).and_return(false)
       end
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when google tag manager is enabled' do
+      before do
+        allow(helper).to receive(:google_tag_manager_enabled?).and_return(true)
+      end
+
+      context 'when nonce feature flag is enabled' do
+        it { is_expected.to eq('nonce') }
+      end
+
+      context 'when nonce feature flag is disabled' do
+        before do
+          stub_feature_flags(gtm_nonce: false)
+        end
+
+        it { is_expected.to eq('gtm') }
+      end
     end
   end
 

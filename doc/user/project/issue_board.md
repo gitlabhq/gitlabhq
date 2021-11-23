@@ -219,27 +219,6 @@ This ordering also affects [issue lists](issues/sorting_issue_lists.md).
 Changing the order in an issue board changes the ordering in an issue list,
 and vice versa.
 
-### GraphQL-based issue boards
-
-<!-- This anchor is linked from #blocked-issues as well. -->
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285074) in GitLab 13.9.
-> - [Deployed behind a feature flag](../feature_flags.md), enabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1
-> - [Feature flag `graphql_board_lists`](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) removed in GitLab 14.3
-
-There can be
-[risks when disabling released features](../../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
-
-Using GraphQL-based boards gives you these
-additional features:
-
-- [Edit more issue attributes](#edit-an-issue)
-- [View blocked issues](#blocked-issues)
-
-Learn more about the known issues in [epic 5596](https://gitlab.com/groups/gitlab-org/-/epics/5596).
-
 ## GitLab Enterprise features for issue boards
 
 GitLab issue boards are available on the GitLab Free tier, but some
@@ -334,10 +313,7 @@ As in other list types, click the trash icon to remove a list.
 
 ### Iteration lists **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11.
-> - Enabled on GitLab.com and is ready for production use.
-> - Enabled with `iteration_board_lists` flag for self-managed GitLab and is ready for production use.
->   GitLab administrators can opt to [disable the feature flag](#enable-or-disable-iteration-lists-in-boards).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an
@@ -345,8 +321,9 @@ administrator to [disable the `iteration_board_lists` flag](../../administration
 On GitLab.com, this feature is available.
 
 You're also able to create lists of an iteration.
-These are lists that filter issues by the assigned
-iteration. To add an iteration list:
+These lists filter issues by the assigned iteration.
+
+To add an iteration list:
 
 1. Select **Create list**.
 1. Select **Iteration**.
@@ -434,8 +411,6 @@ status.
 
 When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
 
-This feature is only supported when using the [GraphQL-based boards](#graphql-based-issue-boards). The feature is enabled by default regardless when you use group issue boards in epic swimlanes mode.
-
 ![Blocked issues](img/issue_boards_blocked_icon_v13_10.png)
 
 ## Actions you can take on an issue board
@@ -457,25 +432,25 @@ If you're not able to do some of the things above, make sure you have the right
 
 ### Edit an issue
 
+> Editing title, iteration, and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1.
+
 You can edit an issue without leaving the board view.
 To open the right sidebar, select an issue card (not its title).
 
 You can edit the following issue attributes in the right sidebar:
 
 - Assignees
-- [Epic](../group/epics/index.md)
-- Milestone
-- Time tracking value (view only)
-- Due date
-- Labels
-- [Weight](issues/issue_weight.md)
-- Notifications setting
-
-When you use [GraphQL-based boards](#graphql-based-issue-boards), you can also edit the following issue attributes:
-
-- Title
-- [Iteration](../group/iterations/index.md)
 - Confidentiality
+- Due date
+- [Epic](../group/epics/index.md)
+- [Iteration](../group/iterations/index.md)
+- Labels
+- Milestone
+- Notifications setting
+- Title
+- [Weight](issues/issue_weight.md)
+
+Additionally, you can also see the time tracking value.
 
 ### Create a new list
 
@@ -620,13 +595,12 @@ and the target list.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18954) in GitLab 12.4.
 > - [Placed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61955) behind a [feature flag](../feature_flags.md), disabled by default in GitLab 14.0.
-> - Disabled on GitLab.com.
-> - Not recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-multi-selecting-issue-cards). **(FREE SELF)**
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an
+administrator to [enable the feature flag](../../administration/feature_flags.md) named `board_multi_select`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to
 another list. This makes it faster to reorder many issues at once.
@@ -668,41 +642,3 @@ A few things to remember:
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.
-
-### Enable or disable iteration lists in boards **(PREMIUM SELF)**
-
-The iteration list is under development but ready for production use. It is
-deployed behind a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can disable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:iteration_board_lists)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:iteration_board_lists)
-```
-
-### Enable or disable multi-selecting issue cards **(FREE SELF)**
-
-Multi-selecting issue cards is under development and not ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:board_multi_select)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:board_multi_select)
-```

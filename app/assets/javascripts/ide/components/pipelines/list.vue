@@ -11,10 +11,17 @@ import {
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import IDEServices from '~/ide/services';
-import { sprintf, __ } from '../../../locale';
-import EmptyState from '../../../pipelines/components/pipelines_list/empty_state.vue';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
+import { sprintf, __ } from '~/locale';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobsList from '../jobs/list.vue';
+import EmptyState from './empty_state.vue';
+
+const CLASSES_FLEX_VERTICAL_CENTER = [
+  'gl-h-full',
+  'gl-display-flex',
+  'gl-flex-direction-column',
+  'gl-justify-content-center',
+];
 
 export default {
   components: {
@@ -32,7 +39,6 @@ export default {
     SafeHtml,
   },
   computed: {
-    ...mapState(['pipelinesEmptyStateSvgPath']),
     ...mapGetters(['currentProject']),
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages', 'pipelineFailed']),
     ...mapState('pipelines', [
@@ -63,12 +69,15 @@ export default {
   methods: {
     ...mapActions('pipelines', ['fetchLatestPipeline']),
   },
+  CLASSES_FLEX_VERTICAL_CENTER,
 };
 </script>
 
 <template>
   <div class="ide-pipeline">
-    <gl-loading-icon v-if="showLoadingIcon" size="lg" class="gl-mt-3" />
+    <div v-if="showLoadingIcon" :class="$options.CLASSES_FLEX_VERTICAL_CENTER">
+      <gl-loading-icon size="lg" />
+    </div>
     <template v-else-if="hasLoadedPipeline">
       <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
         <ci-icon :status="latestPipeline.details.status" :size="24" class="d-flex" />
@@ -83,12 +92,9 @@ export default {
           </a>
         </span>
       </header>
-      <empty-state
-        v-if="!latestPipeline"
-        :empty-state-svg-path="pipelinesEmptyStateSvgPath"
-        :can-set-ci="true"
-        class="gl-p-5"
-      />
+      <div v-if="!latestPipeline" :class="$options.CLASSES_FLEX_VERTICAL_CENTER">
+        <empty-state />
+      </div>
       <gl-alert
         v-else-if="latestPipeline.yamlError"
         variant="danger"

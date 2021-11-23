@@ -487,24 +487,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store do
     end
   end
 
-  describe 'primary connection re-use', :reestablished_active_record_base do
+  describe 'primary connection re-use', :reestablished_active_record_base, :add_ci_connection do
     let(:model) { Ci::ApplicationRecord }
-
-    around do |example|
-      if Gitlab::Database.has_config?(:ci)
-        example.run
-      else
-        # fake additional Database
-        model.establish_connection(
-          ActiveRecord::DatabaseConfigurations::HashConfig.new(Rails.env, 'ci', ActiveRecord::Base.connection_db_config.configuration_hash)
-        )
-
-        example.run
-
-        # Cleanup connection_specification_name for Ci::ApplicationRecord
-        model.remove_connection
-      end
-    end
 
     describe '#read' do
       it 'returns ci replica connection' do
