@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import Api from '~/api';
+import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 
@@ -1571,6 +1571,51 @@ describe('Api', () => {
         expect(result).toEqual(null);
         expect(axios.post).toHaveBeenCalledTimes(0);
       });
+    });
+  });
+
+  describe('deployKeys', () => {
+    it('fetches deploy keys', async () => {
+      const deployKeys = [
+        {
+          id: 7,
+          title: 'My title 1',
+          created_at: '2021-10-29T16:59:55.229Z',
+          expires_at: null,
+          key:
+            'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDLvQzRX960N7dxPdge9o5a96+M4GEGQ7rxT2D3wAQDtQFjQV5ZcKb5wfeLtYLe3kRVI4lCO10PXeQppb1XBaYmVO31IaRkcgmMEPVyfp76Dp4CJZz6aMEbbcqfaHkDre0Fa8kzTXnBJVh2NeDbBfGMjFM5NRQLhKykodNsepO6dQ== dummy@gitlab.com',
+          fingerprint: '81:93:63:b9:1e:24:a2:aa:e0:87:d3:3f:42:81:f2:c2',
+          projects_with_write_access: [
+            {
+              id: 11,
+              description: null,
+              name: 'project1',
+              name_with_namespace: 'John Doe3 / project1',
+              path: 'project1',
+              path_with_namespace: 'namespace1/project1',
+              created_at: '2021-10-29T16:59:54.668Z',
+            },
+            {
+              id: 12,
+              description: null,
+              name: 'project2',
+              name_with_namespace: 'John Doe4 / project2',
+              path: 'project2',
+              path_with_namespace: 'namespace2/project2',
+              created_at: '2021-10-29T16:59:55.116Z',
+            },
+          ],
+        },
+      ];
+
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/deploy_keys`;
+      mock.onGet(expectedUrl).reply(httpStatus.OK, deployKeys);
+
+      const params = { page: 2, public: true };
+      const { data } = await Api.deployKeys(params);
+
+      expect(data).toEqual(deployKeys);
+      expect(mock.history.get[0].params).toEqual({ ...params, per_page: DEFAULT_PER_PAGE });
     });
   });
 

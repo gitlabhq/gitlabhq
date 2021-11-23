@@ -50,6 +50,109 @@ the pipeline that finishes later creates the job artifact.
 
 For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/index.md#artifacts).
 
+### Use CI/CD variables to define the artifacts name
+
+You can use [CI/CD variables](../variables/index.md) to dynamically define the
+artifacts file's name.
+
+For example, to create an archive with a name of the current job:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - binaries/
+```
+
+To create an archive with a name of the current branch or tag including only
+the binaries directory:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+If your branch-name contains forward slashes
+(for example `feature/my-feature`) it's advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
+
+To create an archive with a name of the current job and the current branch or
+tag including only the binaries directory:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+To create an archive with a name of the current [stage](../yaml/index.md#stages) and branch name:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+If you use **Windows Batch** to run your shell scripts you must replace
+`$` with `%`:
+
+```yaml
+job:
+  artifacts:
+    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
+    paths:
+      - binaries/
+```
+
+If you use **Windows PowerShell** to run your shell scripts you must replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/
+```
+
+### Exclude files from job artifacts
+
+Use [`artifacts:exclude`](../yaml/index.md#artifactsexclude) to prevent files from
+being added to an artifacts archive.
+
+For example, to store all files in `binaries/`, but not `*.o` files located in
+subdirectories of `binaries/`.
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/**/*.o
+```
+
+Unlike [`artifacts:paths`](../yaml/index.md#artifactspaths), `exclude` paths are not recursive.
+To exclude all of the contents of a directory, match them explicitly rather
+than matching the directory itself.
+
+For example, to store all files in `binaries/` but nothing located in the `temp/` subdirectory:
+
+```yaml
+artifacts:
+  paths:
+    - binaries/
+  exclude:
+    - binaries/temp/**/*
+```
+
 ## Download job artifacts
 
 You can download job artifacts or view the job archive:
@@ -102,6 +205,35 @@ To delete a job:
 1. Go to a job's detail page.
 1. On the top right of the job's log, select **Erase job log** (**{remove}**).
 1. On the confirmation dialog, select **OK**.
+
+## Expose job artifacts in the merge request UI
+
+Use the [`artifacts:expose_as`](../yaml/index.md#artifactsexpose_as) keyword to expose
+[job artifacts](../pipelines/job_artifacts.md) in the [merge request](../../user/project/merge_requests/index.md) UI.
+
+For example, to match a single file:
+
+```yaml
+test:
+  script: ["echo 'test' > file.txt"]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['file.txt']
+```
+
+With this configuration, GitLab adds a link **artifact 1** to the relevant merge request
+that points to `file1.txt`. To access the link, select **View exposed artifact**
+below the pipeline graph in the merge request overview.
+
+An example that matches an entire directory:
+
+```yaml
+test:
+  script: ["mkdir test && echo 'test' > test/file.txt"]
+  artifacts:
+    expose_as: 'artifact 1'
+    paths: ['test/']
+```
 
 ## Retrieve job artifacts for other projects
 

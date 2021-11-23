@@ -628,12 +628,13 @@ test_job_2:
 
 ### `artifacts`
 
-Use `artifacts` to specify a list of files and directories that are
+Use `artifacts` to specify which files to save as [job artifacts](../pipelines/job_artifacts.md).
+Job artifacts are a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts are sent to GitLab after the job finishes. They are
-available for download in the GitLab UI if the size is not
-larger than the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
+available for download in the GitLab UI if the size is smaller than the
+the [maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
 
 By default, jobs in later stages automatically download all the artifacts created
 by jobs in earlier stages. You can control artifact download behavior in jobs with
@@ -652,16 +653,18 @@ artifacts are restored after [caches](#cache).
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15122) in GitLab 13.1
 > - Requires GitLab Runner 13.1
 
-`exclude` makes it possible to prevent files from being added to an artifacts
-archive.
+Use `artifacts:exclude` to prevent files from being added to an artifacts archive.
 
-Similar to [`artifacts:paths`](#artifactspaths), `exclude` paths are relative
-to the project directory. You can use Wildcards that use
-[glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
-[`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#PathMatch) patterns.
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
 
-For example, to store all files in `binaries/`, but not `*.o` files located in
-subdirectories of `binaries/`:
+**Possible inputs**:
+
+- An array of file paths, relative to the project directory.
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
+  [`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#PathMatch) patterns.
+
+**Example of `artifacts:exclude`**:
 
 ```yaml
 artifacts:
@@ -671,20 +674,18 @@ artifacts:
     - binaries/**/*.o
 ```
 
-Unlike [`artifacts:paths`](#artifactspaths), `exclude` paths are not recursive. To exclude all of the contents of a directory, you can match them explicitly rather than matching the directory itself.
+This example stores all files in `binaries/`, but not `*.o` files located in
+subdirectories of `binaries/`.
 
-For example, to store all files in `binaries/` but nothing located in the `temp/` subdirectory:
+**Additional details**:
 
-```yaml
-artifacts:
-  paths:
-    - binaries/
-  exclude:
-    - binaries/temp/**/*
-```
+- `artifacts:exclude` paths are not searched recursively.
+- Files matched by [`artifacts:untracked`](#artifactsuntracked) can be excluded using
+  `artifacts:exclude` too.
 
-Files matched by [`artifacts:untracked`](#artifactsuntracked) can be excluded using
-`artifacts:exclude` too.
+**Related topics**:
+
+- [Exclude files from job artifacts](../pipelines/job_artifacts.md#exclude-files-from-job-artifacts)
 
 #### `artifacts:expire_in`
 
@@ -704,8 +705,14 @@ they expire and are deleted. The `expire_in` setting does not affect:
   pipeline artifacts. See [When pipeline artifacts are deleted](../pipelines/pipeline_artifacts.md#when-pipeline-artifacts-are-deleted)
   for more information.
 
-The value of `expire_in` is an elapsed time in seconds, unless a unit is provided. Valid values
-include:
+After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
+accessible anymore.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
+
+**Possible inputs**: The expiry time. If no unit is provided, the time is in seconds.
+Valid values include:
 
 - `'42'`
 - `42 seconds`
@@ -717,7 +724,7 @@ include:
 - `3 weeks and 2 days`
 - `never`
 
-To expire artifacts one week after being uploaded:
+**Example of `artifacts:expire_in`**:
 
 ```yaml
 job:
@@ -725,28 +732,31 @@ job:
     expire_in: 1 week
 ```
 
-The expiration time period begins when the artifact is uploaded and stored on GitLab. If the expiry
-time is not defined, it defaults to the
-[instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration)
-(30 days by default).
+**Additional details**:
 
-To override the expiration date and protect artifacts from being automatically deleted:
-
-- Select **Keep** on the job page.
-- [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
-  `expire_in` to `never`.
-
-After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
-accessible anymore.
+- The expiration time period begins when the artifact is uploaded and stored on GitLab.
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../user/admin_area/settings/continuous_integration.md#default-artifacts-expiration).
+- To override the expiration date and protect artifacts from being automatically deleted:
+  - Select **Keep** on the job page.
+  - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22761), set the value of
+    `expire_in` to `never`.
 
 #### `artifacts:expose_as`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
 
-Use the `expose_as` keyword to expose [job artifacts](../pipelines/job_artifacts.md)
-in the [merge request](../../user/project/merge_requests/index.md) UI.
+Use the `artifacts:expose_as` keyword to
+[expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
 
-For example, to match a single file:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
+
+**Possible inputs**:
+
+- The name to display in the merge request UI for the artifacts download link.
+  Must be combined with [`artifacts:paths`](#artifactspaths).
+
+**Example of `artifacts:expose_as`**:
 
 ```yaml
 test:
@@ -756,108 +766,50 @@ test:
     paths: ['file.txt']
 ```
 
-With this configuration, GitLab adds a link **artifact 1** to the relevant merge request
-that points to `file1.txt`. To access the link, select **View exposed artifact**
-below the pipeline graph in the merge request overview.
+**Additional details**:
 
-An example that matches an entire directory:
-
-```yaml
-test:
-  script: ["mkdir test && echo 'test' > test/file.txt"]
-  artifacts:
-    expose_as: 'artifact 1'
-    paths: ['test/']
-```
-
-Note the following:
-
-- Artifacts do not display in the merge request UI when using variables to define the `artifacts:paths`.
+- If `artifacts:paths` uses [CI/CD variables](../variables/index.md), the artifacts do not display in the UI.
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
-- If a directory is specified, the link is to the job [artifacts browser](../pipelines/job_artifacts.md#download-job-artifacts) if there is more than
-  one file in the directory.
-- For exposed single file artifacts with `.html`, `.htm`, `.txt`, `.json`, `.xml`,
-  and `.log` extensions, if [GitLab Pages](../../administration/pages/index.md) is:
-  - Enabled, GitLab automatically renders the artifact.
-  - Not enabled, the file is displayed in the artifacts browser.
+- If a directory is specified and there is more than one file in the directory,
+  the link is to the job [artifacts browser](../pipelines/job_artifacts.md#download-job-artifacts).
+- If [GitLab Pages](../../administration/pages/index.md) is enabled, GitLab automatically
+  renders the artifacts when the artifacts is a single file with one of these extensions:
+  - `.html` or `.htm`
+  - `.txt`
+  - `.json`
+  - `.xml`
+  - `.log`
 
 #### `artifacts:name`
 
-Use the `name` directive to define the name of the created artifacts
-archive. You can specify a unique name for every archive. The `artifacts:name`
-variable can make use of any of the [predefined variables](../variables/index.md).
-The default name is `artifacts`, which becomes `artifacts.zip` when you download it.
+Use the `artifacts:name` keyword to define the name of the created artifacts
+archive. You can specify a unique name for every archive.
+
+If not defined, the default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
+
+**Possible inputs**:
+
+- The name of the artifacts archive. Can use [CI/CD variables](../variables/index.md).
+
+**Example of `artifacts:name`**:
 
 To create an archive with a name of the current job:
 
 ```yaml
 job:
   artifacts:
-    name: "$CI_JOB_NAME"
+    name: "job1-artifacts-file"
     paths:
       - binaries/
 ```
 
-To create an archive with a name of the current branch or tag including only
-the binaries directory:
+**Related topics**:
 
-```yaml
-job:
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-      - binaries/
-```
-
-If your branch-name contains forward slashes
-(for example `feature/my-feature`) it's advised to use `$CI_COMMIT_REF_SLUG`
-instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
-
-To create an archive with a name of the current job and the current branch or
-tag including only the binaries directory:
-
-```yaml
-job:
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    paths:
-      - binaries/
-```
-
-To create an archive with a name of the current [stage](#stages) and branch name:
-
-```yaml
-job:
-  artifacts:
-    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
-    paths:
-      - binaries/
-```
-
----
-
-If you use **Windows Batch** to run your shell scripts you must replace
-`$` with `%`:
-
-```yaml
-job:
-  artifacts:
-    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
-    paths:
-      - binaries/
-```
-
-If you use **Windows PowerShell** to run your shell scripts you must replace
-`$` with `$env:`:
-
-```yaml
-job:
-  artifacts:
-    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
-    paths:
-      - binaries/
-```
+- [Use CI/CD variables to define the artifacts name.](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name)
 
 #### `artifacts:paths`
 

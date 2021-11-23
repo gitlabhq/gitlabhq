@@ -1,8 +1,17 @@
 import { merge } from 'lodash';
-import { GlTable, GlButton } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlPagination } from '@gitlab/ui';
+import { nextTick } from 'vue';
 
+import responseBody from 'test_fixtures/api/deploy_keys/index.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import DeployKeysTable from '~/admin/deploy_keys/components/table.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import Api, { DEFAULT_PER_PAGE } from '~/api';
+import createFlash from '~/flash';
+
+jest.mock('~/api');
+jest.mock('~/flash');
 
 describe('DeployKeysTable', () => {
   let wrapper;
@@ -14,9 +23,50 @@ describe('DeployKeysTable', () => {
     emptyStateSvgPath: '/assets/illustrations/empty-state/empty-deploy-keys.svg',
   };
 
+  const deployKey = responseBody[0];
+  const deployKey2 = responseBody[1];
+
   const createComponent = (provide = {}) => {
     wrapper = mountExtended(DeployKeysTable, {
       provide: merge({}, defaultProvide, provide),
+    });
+  };
+
+  const findEditButton = (index) =>
+    wrapper.findAllByLabelText(DeployKeysTable.i18n.edit, { selector: 'a' }).at(index);
+  const findRemoveButton = (index) =>
+    wrapper.findAllByLabelText(DeployKeysTable.i18n.remove, { selector: 'button' }).at(index);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findTimeAgoTooltip = (index) => wrapper.findAllComponents(TimeAgoTooltip).at(index);
+  const findPagination = () => wrapper.findComponent(GlPagination);
+
+  const expectDeployKeyIsRendered = (expectedDeployKey, expectedRowIndex) => {
+    const editButton = findEditButton(expectedRowIndex);
+    const timeAgoTooltip = findTimeAgoTooltip(expectedRowIndex);
+
+    expect(wrapper.findByText(expectedDeployKey.title).exists()).toBe(true);
+    expect(wrapper.findByText(expectedDeployKey.fingerprint, { selector: 'code' }).exists()).toBe(
+      true,
+    );
+    expect(timeAgoTooltip.exists()).toBe(true);
+    expect(timeAgoTooltip.props('time')).toBe(expectedDeployKey.created_at);
+    expect(editButton.exists()).toBe(true);
+    expect(editButton.attributes('href')).toBe(`/admin/deploy_keys/${expectedDeployKey.id}/edit`);
+    expect(findRemoveButton(expectedRowIndex).exists()).toBe(true);
+  };
+
+  const itRendersTheEmptyState = () => {
+    it('renders empty state', () => {
+      const emptyState = wrapper.findComponent(GlEmptyState);
+
+      expect(emptyState.exists()).toBe(true);
+      expect(emptyState.props()).toMatchObject({
+        svgPath: defaultProvide.emptyStateSvgPath,
+        title: DeployKeysTable.i18n.emptyStateTitle,
+        description: DeployKeysTable.i18n.emptyStateDescription,
+        primaryButtonText: DeployKeysTable.i18n.newDeployKeyButtonText,
+        primaryButtonLink: defaultProvide.createPath,
+      });
     });
   };
 
@@ -30,18 +80,128 @@ describe('DeployKeysTable', () => {
     expect(wrapper.findByText(DeployKeysTable.i18n.pageTitle).exists()).toBe(true);
   });
 
-  it('renders table', () => {
-    createComponent();
-
-    expect(wrapper.findComponent(GlTable).exists()).toBe(true);
-  });
-
   it('renders `New deploy key` button', () => {
     createComponent();
 
-    const newDeployKeyButton = wrapper.findComponent(GlButton);
+    const newDeployKeyButton = wrapper.findByTestId('new-deploy-key-button');
 
-    expect(newDeployKeyButton.text()).toBe(DeployKeysTable.i18n.newDeployKeyButtonText);
+    expect(newDeployKeyButton.exists()).toBe(true);
     expect(newDeployKeyButton.attributes('href')).toBe(defaultProvide.createPath);
+  });
+
+  describe('when `/deploy_keys` API request is pending', () => {
+    beforeEach(() => {
+      Api.deployKeys.mockImplementation(() => new Promise(() => {}));
+    });
+
+    it('shows loading icon', async () => {
+      createComponent();
+
+      await nextTick();
+
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('when `/deploy_keys` API request is successful', () => {
+    describe('when there are deploy keys', () => {
+      beforeEach(() => {
+        Api.deployKeys.mockResolvedValue({
+          data: responseBody,
+          headers: { 'x-total': `${responseBody.length}` },
+        });
+
+        createComponent();
+      });
+
+      it('renders deploy keys in table', () => {
+        expectDeployKeyIsRendered(deployKey, 0);
+        expectDeployKeyIsRendered(deployKey2, 1);
+      });
+    });
+
+    describe('pagination', () => {
+      beforeEach(() => {
+        Api.deployKeys.mockResolvedValueOnce({
+          data: [deployKey],
+          headers: { 'x-total': '2' },
+        });
+
+        createComponent();
+      });
+
+      it('renders pagination', () => {
+        const pagination = findPagination();
+        expect(pagination.exists()).toBe(true);
+        expect(pagination.props()).toMatchObject({
+          value: 1,
+          perPage: DEFAULT_PER_PAGE,
+          totalItems: responseBody.length,
+          nextText: DeployKeysTable.i18n.pagination.next,
+          prevText: DeployKeysTable.i18n.pagination.prev,
+          align: 'center',
+        });
+      });
+
+      describe('when pagination is changed', () => {
+        it('calls API with `page` parameter', async () => {
+          const pagination = findPagination();
+          expectDeployKeyIsRendered(deployKey, 0);
+
+          Api.deployKeys.mockResolvedValue({
+            data: [deployKey2],
+            headers: { 'x-total': '2' },
+          });
+
+          pagination.vm.$emit('input', 2);
+
+          await nextTick();
+
+          expect(findLoadingIcon().exists()).toBe(true);
+          expect(pagination.exists()).toBe(false);
+
+          await waitForPromises();
+
+          expect(Api.deployKeys).toHaveBeenCalledWith({
+            page: 2,
+            public: true,
+          });
+          expectDeployKeyIsRendered(deployKey2, 0);
+        });
+      });
+    });
+
+    describe('when there are no deploy keys', () => {
+      beforeEach(() => {
+        Api.deployKeys.mockResolvedValue({
+          data: [],
+          headers: { 'x-total': '0' },
+        });
+
+        createComponent();
+      });
+
+      itRendersTheEmptyState();
+    });
+  });
+
+  describe('when `deploy_keys` API request is unsuccessful', () => {
+    const error = new Error('Network Error');
+
+    beforeEach(() => {
+      Api.deployKeys.mockRejectedValue(error);
+
+      createComponent();
+    });
+
+    itRendersTheEmptyState();
+
+    it('displays flash', () => {
+      expect(createFlash).toHaveBeenCalledWith({
+        message: DeployKeysTable.i18n.apiErrorMessage,
+        captureError: true,
+        error,
+      });
+    });
   });
 });
