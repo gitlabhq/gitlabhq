@@ -154,9 +154,8 @@ module SystemNotes
       create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
     end
 
-    # Called when a Mentionable references a Noteable
-    #
-    # mentioner - Mentionable object
+    # Called when a Mentionable (the `mentioned_in`) references another Mentionable (the `mentioned`,
+    # passed to this service as `noteable`).
     #
     # Example Note text:
     #
@@ -168,19 +167,20 @@ module SystemNotes
     #
     # See cross_reference_note_content.
     #
-    # Returns the created Note object
-    def cross_reference(mentioner)
-      return if cross_reference_disallowed?(mentioner)
+    # @param mentioned_in [Mentionable]
+    # @return [Note]
+    def cross_reference(mentioned_in)
+      return if cross_reference_disallowed?(mentioned_in)
 
-      gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
+      gfm_reference = mentioned_in.gfm_reference(noteable.project || noteable.group)
       body = cross_reference_note_content(gfm_reference)
 
       if noteable.is_a?(ExternalIssue)
         Integrations::CreateExternalCrossReferenceWorker.perform_async(
           noteable.project_id,
           noteable.id,
-          mentioner.class.name,
-          mentioner.id,
+          mentioned_in.class.name,
+          mentioned_in.id,
           author.id
         )
       else
@@ -195,15 +195,14 @@ module SystemNotes
     # in a merge request. Additionally, it prevents the creation of references to
     # external issues (which would fail).
     #
-    # mentioner - Mentionable object
-    #
-    # Returns Boolean
-    def cross_reference_disallowed?(mentioner)
+    # @param mentioned_in [Mentionable]
+    # @return [Boolean]
+    def cross_reference_disallowed?(mentioned_in)
       return true if noteable.is_a?(ExternalIssue) && !noteable.project&.external_references_supported?
-      return false unless mentioner.is_a?(MergeRequest)
+      return false unless mentioned_in.is_a?(MergeRequest)
       return false unless noteable.is_a?(Commit)
 
-      mentioner.commits.include?(noteable)
+      mentioned_in.commits.include?(noteable)
     end
 
     # Called when the status of a Task has changed
@@ -309,19 +308,19 @@ module SystemNotes
       create_resource_state_event(status: status, mentionable_source: source)
     end
 
-    # Check if a cross reference to a noteable from a mentioner already exists
+    # Check if a cross reference to a Mentionable from the `mentioned_in` Mentionable
+    # already exists.
     #
     # This method is used to prevent multiple notes being created for a mention
-    # when a issue is updated, for example. The method also calls notes_for_mentioner
-    # to check if the mentioner is a commit, and return matches only on commit hash
+    # when a issue is updated, for example. The method also calls `existing_mentions_for`
+    # to check if the mention is in a commit, and return matches only on commit hash
     # instead of project + commit, to avoid repeated mentions from forks.
     #
-    # mentioner - Mentionable object
-    #
-    # Returns Boolean
-    def cross_reference_exists?(mentioner)
+    # @param mentioned_in [Mentionable]
+    # @return [Boolean]
+    def cross_reference_exists?(mentioned_in)
       notes = noteable.notes.system
-      notes_for_mentioner(mentioner, noteable, notes).exists?
+      existing_mentions_for(mentioned_in, noteable, notes).exists?
     end
 
     # Called when a Noteable has been marked as a duplicate of another Issue
@@ -398,12 +397,12 @@ module SystemNotes
       "#{self.class.cross_reference_note_prefix}#{gfm_reference}"
     end
 
-    def notes_for_mentioner(mentioner, noteable, notes)
-      if mentioner.is_a?(Commit)
-        text = "#{self.class.cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
+    def existing_mentions_for(mentioned_in, noteable, notes)
+      if mentioned_in.is_a?(Commit)
+        text = "#{self.class.cross_reference_note_prefix}%#{mentioned_in.to_reference(nil)}"
         notes.like_note_or_capitalized_note(text)
       else
-        gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
+        gfm_reference = mentioned_in.gfm_reference(noteable.project || noteable.group)
         text = cross_reference_note_content(gfm_reference)
         notes.for_note_or_capitalized_note(text)
       end

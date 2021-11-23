@@ -21737,6 +21737,9 @@ msgstr ""
 msgid "Merge automatically (%{strategy})"
 msgstr ""
 
+msgid "Merge blocked: all merge request dependencies must be merged or closed."
+msgstr ""
+
 msgid "Merge blocked: new changes were just added."
 msgstr ""
 
@@ -39600,9 +39603,6 @@ msgid "You can only add up to %{max_contacts} contacts at one time"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
-msgstr ""
-
-msgid "You can only merge once the items above are resolved."
 msgstr ""
 
 msgid "You can only merge once this merge request is approved."

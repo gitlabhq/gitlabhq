@@ -24,4 +24,5 @@ module.exports = {
       '^jh_else_ce_test_helpers(/.*)$': '<rootDir>/jh/spec/frontend_integration/test_helpers$1',
     },
   }),
+  timers: 'real',
 };

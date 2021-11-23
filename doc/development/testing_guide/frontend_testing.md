@@ -716,16 +716,19 @@ Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by plac
 If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
 a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
 
-If a manual mock is needed for a CE module, place it in `spec/frontend/mocks/ce`.
+If a manual mock is needed for a CE module, place the implementation in
+`spec/frontend/__helpers__/mocks` and add a line to the `frontend/test_setup`
+(or the `frontend/shared_test_setup`) that looks something like:
 
-- Files in `spec/frontend/mocks/ce` mocks the corresponding CE module from `app/assets/javascripts`, mirroring the source module's path.
-  - Example: `spec/frontend/mocks/ce/lib/utils/axios_utils` mocks the module `~/lib/utils/axios_utils`.
-- We don't support mocking EE modules yet.
-- If a mock is found for which a source module doesn't exist, the test suite fails. 'Virtual' mocks, or mocks that don't have a 1-to-1 association with a source module, are not supported yet.
+```javascript
+// "~/lib/utils/axios_utils" is the path to the real module
+// "helpers/mocks/axios_utils" is the path to the mocked implementation
+jest.mock('~/lib/utils/axios_utils', () => jest.requireActual('helpers/mocks/axios_utils'));
+```
 
 #### Manual mock examples
 
-- [`mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/-/blob/bd20aeb64c4eed117831556c54b40ff4aee9bfd1/spec/frontend/mocks/ce/lib/utils/axios_utils.js#L1) -
+- [`__helpers__/mocks/axios_utils`](https://gitlab.com/gitlab-org/gitlab/-/blob/a50edd12b3b1531389624086b6381a042c8143ef/spec/frontend/__helpers__/mocks/axios_utils.js#L1) -
   This mock is helpful because we don't want any unmocked requests to pass any tests. Also, we are able to inject some test helpers such as `axios.waitForAll`.
 - [`__mocks__/mousetrap/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/cd4c086d894226445be9d18294a060ba46572435/spec/frontend/__mocks__/mousetrap/index.js#L1) -
   This mock is helpful because the module itself uses AMD format which webpack understands, but is incompatible with the jest environment. This mock doesn't remove

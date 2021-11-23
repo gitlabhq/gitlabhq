@@ -3242,11 +3242,6 @@ call-bind@^1.0.0, call-bind@^1.0.2:
     function-bind "^1.1.1"
     get-intrinsic "^1.0.2"
 
-call-me-maybe@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/call-me-maybe/-/call-me-maybe-1.0.1.tgz#26d208ea89e37b5cbde60250a15f031c16a4d66b"
-  integrity sha1-JtII6onje1y95gJQoV8DHBak1ms=
-
 callsites@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
@@ -6076,11 +6071,6 @@ glob-parent@^5.1.1, glob-parent@^5.1.2, glob-parent@~5.1.0:
   integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
   dependencies:
     is-glob "^4.0.1"
-
-glob-to-regexp@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz#c75297087c851b9a578bd217dd59a92f59fe546e"
-  integrity sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==
 
 "glob@5 - 7", glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.2, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6, glob@~7.1.6:
   version "7.1.7"
@@ -10176,14 +10166,6 @@ readable-stream@~2.0.6:
     process-nextick-args "~1.0.6"
     string_decoder "~0.10.x"
     util-deprecate "~1.0.1"
-
-readdir-enhanced@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/readdir-enhanced/-/readdir-enhanced-2.2.4.tgz#773fb8a8de5f645fb13d9403746d490d4facb3e6"
-  integrity sha512-JQD83C9gAs5B5j2j40qLn/K83HhR8po3bUonebNeuJQUZbbn7q1HxL9kQuPBtxoXkaUpbtEmpFBw5kzyYnnJDA==
-  dependencies:
-    call-me-maybe "^1.0.1"
-    glob-to-regexp "^0.4.0"
 
 readdirp@~3.4.0:
   version "3.4.0"

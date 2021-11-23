@@ -274,9 +274,9 @@ RSpec.describe ::SystemNotes::IssuablesService do
   describe '#cross_reference' do
     let(:service) { described_class.new(noteable: noteable, author: author) }
 
-    let(:mentioner) { create(:issue, project: project) }
+    let(:mentioned_in) { create(:issue, project: project) }
 
-    subject { service.cross_reference(mentioner) }
+    subject { service.cross_reference(mentioned_in) }
 
     it_behaves_like 'a system note' do
       let(:action) { 'cross_reference' }
@@ -314,35 +314,35 @@ RSpec.describe ::SystemNotes::IssuablesService do
       describe 'note_body' do
         context 'cross-project' do
           let(:project2) { create(:project, :repository) }
-          let(:mentioner) { create(:issue, project: project2) }
+          let(:mentioned_in) { create(:issue, project: project2) }
 
           context 'from Commit' do
-            let(:mentioner) { project2.repository.commit }
+            let(:mentioned_in) { project2.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "mentioned in commit #{mentioned_in.to_reference(project)}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference(project)}"
+              expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(project)}"
             end
           end
         end
 
         context 'within the same project' do
           context 'from Commit' do
-            let(:mentioner) { project.repository.commit }
+            let(:mentioned_in) { project.repository.commit }
 
             it 'references the mentioning commit' do
-              expect(subject.note).to eq "mentioned in commit #{mentioner.to_reference}"
+              expect(subject.note).to eq "mentioned in commit #{mentioned_in.to_reference}"
             end
           end
 
           context 'from non-Commit' do
             it 'references the mentioning object' do
-              expect(subject.note).to eq "mentioned in issue #{mentioner.to_reference}"
+              expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference}"
             end
           end
         end
@@ -350,14 +350,14 @@ RSpec.describe ::SystemNotes::IssuablesService do
 
       context 'with external issue' do
         let(:noteable) { ExternalIssue.new('JIRA-123', project) }
-        let(:mentioner) { project.commit }
+        let(:mentioned_in) { project.commit }
 
         it 'queues a background worker' do
           expect(Integrations::CreateExternalCrossReferenceWorker).to receive(:perform_async).with(
             project.id,
             'JIRA-123',
             'Commit',
-            mentioner.id,
+            mentioned_in.id,
             author.id
           )
 
@@ -716,28 +716,28 @@ RSpec.describe ::SystemNotes::IssuablesService do
   end
 
   describe '#cross_reference_disallowed?' do
-    context 'when mentioner is not a MergeRequest' do
+    context 'when mentioned_in is not a MergeRequest' do
       it 'is falsey' do
-        mentioner = noteable.dup
+        mentioned_in = noteable.dup
 
-        expect(service.cross_reference_disallowed?(mentioner)).to be_falsey
+        expect(service.cross_reference_disallowed?(mentioned_in)).to be_falsey
       end
     end
 
-    context 'when mentioner is a MergeRequest' do
-      let(:mentioner) { create(:merge_request, :simple, source_project: project) }
-      let(:noteable)  { project.commit }
+    context 'when mentioned_in is a MergeRequest' do
+      let(:mentioned_in) { create(:merge_request, :simple, source_project: project) }
+      let(:noteable) { project.commit }
 
       it 'is truthy when noteable is in commits' do
-        expect(mentioner).to receive(:commits).and_return([noteable])
+        expect(mentioned_in).to receive(:commits).and_return([noteable])
 
-        expect(service.cross_reference_disallowed?(mentioner)).to be_truthy
+        expect(service.cross_reference_disallowed?(mentioned_in)).to be_truthy
       end
 
       it 'is falsey when noteable is not in commits' do
-        expect(mentioner).to receive(:commits).and_return([])
+        expect(mentioned_in).to receive(:commits).and_return([])
 
-        expect(service.cross_reference_disallowed?(mentioner)).to be_falsey
+        expect(service.cross_reference_disallowed?(mentioned_in)).to be_falsey
       end
     end
 
