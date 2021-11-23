@@ -5,8 +5,8 @@
   %div
     %ul
       %li
-        %span.badge.badge-pill.gl-badge.sm.badge-success active
+        = gl_badge_tag s_("Runners|active"), variant: :success, size: :sm
         = _('- Available to run jobs.')
       %li
-        %span.badge.badge-pill.gl-badge.sm.badge-danger paused
+        = gl_badge_tag s_("Runners|paused"), variant: :danger, size: :sm
         = _('- Not available to run jobs.')

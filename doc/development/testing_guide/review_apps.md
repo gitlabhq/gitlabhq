@@ -83,13 +83,13 @@ the GitLab handbook information for the [shared 1Password account](https://about
 1. Make sure you [have access to the cluster](#get-access-to-the-gcp-review-apps-cluster) and the `container.pods.exec` permission first.
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps),
    e.g. `review-qa-raise-e-12chm0`.
-1. Find and open the `task-runner` Deployment, e.g. `review-qa-raise-e-12chm0-task-runner`.
-1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`.
-1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
-1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
+1. Find and open the `toolbox` Deployment, e.g. `review-qa-raise-e-12chm0-toolbox`.
+1. Click on the Pod in the "Managed pods" section, e.g. `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`.
+1. Click on the `KUBECTL` dropdown, then `Exec` -> `toolbox`.
+1. Replace `-c toolbox -- ls` with `-it -- gitlab-rails console` from the
    default command or
-   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console` and
-     - Replace `review-qa-raise-e-12chm0-task-runner-d5455cc8-2lsvz`
+   - Run `kubectl exec --namespace review-qa-raise-e-12chm0 review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz -it -- gitlab-rails console` and
+     - Replace `review-qa-raise-e-12chm0-toolbox-d5455cc8-2lsvz`
        with your Pod's name.
 
 ### Dig into a Pod's logs

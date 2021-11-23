@@ -31,11 +31,17 @@ end
 if Gitlab::Runtime.sidekiq? && (!ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0')
   # The single worker outside of a sidekiq-cluster, or the first worker (sidekiq_0)
   # in a cluster of processes, is responsible for serving health checks.
+  #
+  # Do not clean the metrics directory here - the supervisor script should
+  # have already taken care of that.
   Sidekiq.configure_server do |config|
     config.on(:startup) do
-      # Do not clean the metrics directory here - the supervisor script should
-      # have already taken care of that
-      Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
+      # In https://gitlab.com/gitlab-org/gitlab/-/issues/345804 we are looking to
+      # only serve health-checks from a worker process; for backwards compatibility
+      # we still go through the metrics exporter server, but start to configure it
+      # with the new settings keys.
+      exporter_settings = Settings.monitoring.sidekiq_health_checks
+      Gitlab::Metrics::Exporter::SidekiqExporter.instance(exporter_settings).start
     end
   end
 end

@@ -1977,6 +1977,9 @@ msgstr ""
 msgid "Add a task list"
 msgstr ""
 
+msgid "Add a title…"
+msgstr ""
+
 msgid "Add a to do"
 msgstr ""
 
@@ -30098,6 +30101,9 @@ msgstr ""
 msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
 msgstr ""
 
+msgid "Runners|active"
+msgstr ""
+
 msgid "Runners|group"
 msgstr ""
 
@@ -32371,6 +32377,9 @@ msgid "Something went wrong on our end. Please try again."
 msgstr ""
 
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
+msgstr ""
+
+msgid "Something went wrong when creating a work item. Please try again"
 msgstr ""
 
 msgid "Something went wrong when reordering designs. Please try again"
@@ -41515,6 +41524,15 @@ msgid "mrWidget|Merging! Drum roll, please…"
 msgstr ""
 
 msgid "mrWidget|Merging! Everything's good…"
+msgstr ""
+
+msgid "mrWidget|Merging! Lift-off in 5… 4… 3…"
+msgstr ""
+
+msgid "mrWidget|Merging! Take a deep breath and relax…"
+msgstr ""
+
+msgid "mrWidget|Merging! The changes are leaving the station…"
 msgstr ""
 
 msgid "mrWidget|Merging! This is going to be great…"

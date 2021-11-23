@@ -3,7 +3,10 @@
 module Routing
   module PseudonymizationHelper
     class MaskHelper
-      QUERY_PARAMS_TO_NOT_MASK = %w[].freeze
+      QUERY_PARAMS_TO_NOT_MASK = %w[
+        scope
+        state
+      ].freeze
 
       def initialize(request_object, group, project)
         @request = request_object

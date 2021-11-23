@@ -11,12 +11,14 @@ module Gitlab
 
         attr_accessor :readiness_checks
 
-        def enabled?
-          settings.enabled
+        def initialize(settings, **options)
+          super(**options)
+
+          @settings = settings
         end
 
-        def settings
-          raise NotImplementedError
+        def enabled?
+          settings.enabled
         end
 
         def log_filename
@@ -24,6 +26,8 @@ module Gitlab
         end
 
         private
+
+        attr_reader :settings
 
         def start_working
           logger = WEBrick::Log.new(log_filename)

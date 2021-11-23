@@ -733,7 +733,7 @@ Supported attributes:
 | `trailer` | string   | no | The Git trailer to use for including commits, defaults to `Changelog`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: token" --data "version=1.0.0" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+curl --header "PRIVATE-TOKEN: token" "https://gitlab.com/api/v4/projects/42/repository/changelog?version=1.0.0"
 ```
 
 Example Response:

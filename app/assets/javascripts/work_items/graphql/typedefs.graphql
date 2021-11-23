@@ -33,6 +33,18 @@ type WorkItem {
   widgets: [WorkItemWidgetConnection]
 }
 
+type CreateWorkItemInput {
+  title: String!
+}
+
+type CreateWorkItemPayload {
+  workItem: WorkItem!
+}
+
 extend type Query {
   workItem(id: ID!): WorkItem!
+}
+
+extend type Mutation {
+  createWorkItem(input: CreateWorkItemInput!): CreateWorkItemPayload!
 }

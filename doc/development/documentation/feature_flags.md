@@ -58,7 +58,7 @@ FLAG:
 
 If needed, you can add this sentence:
 
-`You should not use this feature for production environments.`
+`The feature is not ready for production use.`
 
 ## Add version history text
 
@@ -109,7 +109,7 @@ And, when the feature is done and fully available to all users:
 
 ```markdown
 > - Introduced in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/issue/etc) GitLab 13.8.
+> - [Enabled on self-managed](https://gitlab.com/issue/etc) in GitLab 13.8.
 > - [Enabled on GitLab.com](https://gitlab.com/issue/etc) in GitLab 13.9.
 > - [Generally available](issue-link) in GitLab 14.0. [Feature flag <flag name>](issue-link) removed.
 ```

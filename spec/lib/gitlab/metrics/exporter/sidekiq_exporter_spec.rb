@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Exporter::SidekiqExporter do
-  let(:exporter) { described_class.new }
+  let(:exporter) { described_class.new(Settings.monitoring.sidekiq_exporter) }
 
   after do
     exporter.stop

@@ -1,12 +1,12 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { workItemQueryResponse } from '../mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const WORK_ITEM_ID = '1';
 
@@ -30,7 +30,6 @@ describe('Work items root component', () => {
       propsData: {
         id: WORK_ITEM_ID,
       },
-      localVue,
       apolloProvider: fakeApollo,
     });
   };

@@ -160,7 +160,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'when author_username is present' do
-      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=masked_scope&state=masked_state" }
+      let(:masked_url) { "http://localhost/dashboard/issues?author_username=masked_author_username&scope=all&state=opened" }
       let(:request) do
         double(:Request,
                path_parameters: {
@@ -201,7 +201,7 @@ RSpec.describe ::Routing::PseudonymizationHelper do
     end
 
     context 'when query string has keys with the same names as path params' do
-      let(:masked_url) { "http://localhost/dashboard/issues?action=masked_action&scope=masked_scope&state=masked_state" }
+      let(:masked_url) { "http://localhost/dashboard/issues?action=masked_action&scope=all&state=opened" }
       let(:request) do
         double(:Request,
                path_parameters: {

@@ -20,7 +20,7 @@ RSpec.describe 'User Snippets' do
   end
 
   it 'view my public snippets' do
-    page.within('.snippet-scope-menu') do
+    page.within('.js-snippets-nav-tabs') do
       click_link "Public"
     end
 
@@ -30,7 +30,7 @@ RSpec.describe 'User Snippets' do
   end
 
   it 'view my internal snippets' do
-    page.within('.snippet-scope-menu') do
+    page.within('.js-snippets-nav-tabs') do
       click_link "Internal"
     end
 
@@ -40,7 +40,7 @@ RSpec.describe 'User Snippets' do
   end
 
   it 'view my private snippets' do
-    page.within('.snippet-scope-menu') do
+    page.within('.js-snippets-nav-tabs') do
       click_link "Private"
     end
 

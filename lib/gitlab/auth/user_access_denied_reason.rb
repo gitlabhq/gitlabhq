@@ -15,7 +15,7 @@ module Gitlab
           "Your account is pending approval from your administrator and hence blocked."
         when :terms_not_accepted
           "You (#{@user.to_reference}) must accept the Terms of Service in order to perform this action. "\
-          "Please access GitLab from a web browser to accept these terms."
+          "To accept these terms, please access GitLab from a web browser at #{Gitlab.config.gitlab.url}."
         when :deactivated
           "Your account has been deactivated by your administrator. "\
           "Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}"

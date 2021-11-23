@@ -919,11 +919,23 @@ Settings.webpack.dev_server['https']   ||= false
 #
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
+
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['log_enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
 Settings.monitoring.sidekiq_exporter['port'] ||= 8082
+
+# TODO: Once we split out health checks from SidekiqExporter, we
+# should not let this default to the same settings anymore; we only
+# do this for back-compat currently.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/345804
+Settings.monitoring['sidekiq_health_checks'] ||= Settingslogic.new({})
+Settings.monitoring.sidekiq_health_checks['enabled'] ||= Settings.monitoring.sidekiq_exporter['enabled']
+Settings.monitoring.sidekiq_health_checks['log_enabled'] ||= Settings.monitoring.sidekiq_exporter['log_enabled']
+Settings.monitoring.sidekiq_health_checks['address'] ||= Settings.monitoring.sidekiq_exporter['address']
+Settings.monitoring.sidekiq_health_checks['port'] ||= Settings.monitoring.sidekiq_exporter['port']
+
 Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'

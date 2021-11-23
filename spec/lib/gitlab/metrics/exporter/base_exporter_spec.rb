@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Metrics::Exporter::BaseExporter do
-  let(:exporter) { described_class.new }
-  let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
   let(:settings) { double('settings') }
+  let(:exporter) { described_class.new(settings) }
+  let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
 
   before do
     allow_any_instance_of(described_class).to receive(:log_filename).and_return(log_filename)

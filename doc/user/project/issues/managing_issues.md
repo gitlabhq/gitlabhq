@@ -373,8 +373,10 @@ Read more about promoting an issue to an epic on the [Manage epics page](../../g
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
-1. In an issue sidebar, click **Edit** next to **Iteration**. A dropdown appears.
-1. Click an iteration you'd like to associate this issue with.
+1. Go to your issue.
+1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. From the dropdown list, select the iteration to associate this issue with.
+1. Click or tap anywhere outside of the dropdown.
 
 You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)

@@ -50,6 +50,18 @@ export const MERGE_ACTIVE_STATUS_PHRASES = [
     message: s__('mrWidget|Merging! This is going to be great…'),
     emoji: 'heart_eyes',
   },
+  {
+    message: s__('mrWidget|Merging! Lift-off in 5… 4… 3…'),
+    emoji: 'rocket',
+  },
+  {
+    message: s__('mrWidget|Merging! The changes are leaving the station…'),
+    emoji: 'bullettrain_front',
+  },
+  {
+    message: s__('mrWidget|Merging! Take a deep breath and relax…'),
+    emoji: 'sunglasses',
+  },
 ];
 
 const STATE_MACHINE = {
