@@ -11,6 +11,10 @@ type: reference
 > - Code Owners for merge request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4418) in GitLab Premium 11.9.
 > - Moved to GitLab Premium in 13.9.
 
+INFO:
+Get access to Code Owners and more with a
+[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-code-owners-docs).
+
 Code Owners define who owns specific files or directories in a repository.
 
 - The users you define as Code Owners are displayed in the UI when you browse directories.

@@ -48,4 +48,24 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro do
       end
     end
   end
+
+  describe '#options' do
+    let_it_be(:group) { create :group }
+
+    before do
+      stub_env('SNOWPLOW_MICRO_URI', 'http://gdk.test:9091')
+    end
+
+    it 'includes protocol with the correct value' do
+      expect(subject.options(group)[:protocol]).to eq 'http'
+    end
+
+    it 'includes port with the correct value' do
+      expect(subject.options(group)[:port]).to eq 9091
+    end
+
+    it 'includes forceSecureTracker with value false' do
+      expect(subject.options(group)[:forceSecureTracker]).to eq false
+    end
+  end
 end

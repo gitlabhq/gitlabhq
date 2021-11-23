@@ -7,6 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency Scanning **(ULTIMATE)**
 
+INFO:
+Try out Dependency Scanning in GitLab Ultimate.
+[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs). 
+
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
 lets you know if your application uses an external (open source) library that is known to be

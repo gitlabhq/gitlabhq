@@ -2325,14 +2325,6 @@ RSpec.describe Group do
     end
 
     it_behaves_like 'returns the expected groups for a group and its descendants'
-
-    context 'when :linear_group_including_descendants_by feature flag is disabled' do
-      before do
-        stub_feature_flags(linear_group_including_descendants_by: false)
-      end
-
-      it_behaves_like 'returns the expected groups for a group and its descendants'
-    end
   end
 
   describe '.preset_root_ancestor_for' do

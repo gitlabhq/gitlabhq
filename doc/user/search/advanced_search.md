@@ -14,6 +14,10 @@ This is the user documentation. To configure the Advanced Search,
 visit the [administrator documentation](../../integration/elasticsearch.md).
 Advanced Search is enabled in GitLab.com.
 
+INFO:
+Get advanced search and more with a
+[free 30-day trial of GitLab Ultimate](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=p-advanced-search-docs).
+
 GitLab Advanced Search expands on the Basic Search with an additional set of
 features for faster, more advanced searches across the entire GitLab instance
 when searching in:

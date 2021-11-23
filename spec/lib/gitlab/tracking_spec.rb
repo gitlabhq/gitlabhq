@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Tracking do
           appId: '_abc123_',
           protocol: 'http',
           port: 9090,
-          force_secure_tracker: false,
+          forceSecureTracker: false,
           formTracking: true,
           linkClickTracking: true
         }

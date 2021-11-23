@@ -7,6 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Security Dashboards and Security Center **(ULTIMATE)**
 
+INFO:
+Want to try out security scanning?
+[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-security-dashboard-docs). 
+
 GitLab provides a comprehensive set of features for viewing and managing vulnerabilities:
 
 - Security dashboards: An overview of the security status in your personal [Security Center](#security-center), [groups](#group-security-dashboard), and

@@ -15,7 +15,7 @@ module Gitlab
             protocol: uri.scheme,
             port: uri.port,
             force_secure_tracker: false
-          )
+          ).transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
         end
 
         override :hostname

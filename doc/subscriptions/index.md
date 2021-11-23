@@ -7,6 +7,11 @@ type: index, reference
 
 # GitLab subscription **(PREMIUM)**
 
+INFO:
+Get advanced search and more with
+[a trial of GitLab Ultimate](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-subscription-docs).
+Free for 30 days.
+
 GitLab offers tiers of features. Your subscription determines which tier you
 have access to. Subscriptions are valid for 12 months.
 
