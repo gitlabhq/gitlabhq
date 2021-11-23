@@ -120,9 +120,9 @@ function get_pod() {
 function run_task() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local ruby_cmd="${1}"
-  local task_runner_pod=$(get_pod "task-runner")
+  local toolbox_pod=$(get_pod "toolbox")
 
-  kubectl exec --namespace "${namespace}" "${task_runner_pod}" -- gitlab-rails runner "${ruby_cmd}"
+  kubectl exec --namespace "${namespace}" "${toolbox_pod}" -- gitlab-rails runner "${ruby_cmd}"
 }
 
 function disable_sign_ups() {
@@ -290,8 +290,8 @@ HELM_CMD=$(cat << EOF
     --set gitlab.webservice.image.tag="${CI_COMMIT_REF_SLUG}" \
     --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
     --set gitlab.webservice.workhorse.tag="${CI_COMMIT_REF_SLUG}" \
-    --set gitlab.task-runner.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.task-runner.image.tag="${CI_COMMIT_REF_SLUG}"
+    --set gitlab.toolbox.image.repository="${gitlab_toolbox_image_repository}" \
+    --set gitlab.toolbox.image.tag="${CI_COMMIT_REF_SLUG}"
 EOF
 )
 

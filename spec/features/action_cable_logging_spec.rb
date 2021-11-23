@@ -25,7 +25,7 @@ RSpec.describe 'ActionCable logging', :js do
       username: user.username
     )
 
-    expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable', subscription_data)
+    expect(ActiveSupport::Notifications).to receive(:instrument).with('subscribe.action_cable', subscription_data).at_least(:once)
 
     gitlab_sign_in(user)
     visit project_issue_path(project, issue)

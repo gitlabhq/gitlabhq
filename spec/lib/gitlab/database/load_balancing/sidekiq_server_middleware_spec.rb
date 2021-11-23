@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           let(:elapsed_time) { described_class::MINIMUM_DELAY_INTERVAL - 0.3 }
 
           it 'sleeps until the minimum delay is reached' do
-            expect(middleware).to receive(:sleep).with(be_within(0.01).of(elapsed_time))
+            expect(middleware).to receive(:sleep).with(be_within(0.01).of(described_class::MINIMUM_DELAY_INTERVAL - elapsed_time))
 
             run_middleware
           end

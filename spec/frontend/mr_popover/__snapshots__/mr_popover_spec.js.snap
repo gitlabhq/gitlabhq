@@ -45,7 +45,7 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
     <h5
       class="my-2"
     >
-      MR Title
+      Updated Title
     </h5>
      
     <div
@@ -77,11 +77,7 @@ exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
       />
     </div>
      
-    <h5
-      class="my-2"
-    >
-      MR Title
-    </h5>
+    <!---->
      
     <div
       class="text-secondary"

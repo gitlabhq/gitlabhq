@@ -81,16 +81,6 @@ RSpec.describe BulkImports::Common::Pipelines::MilestonesPipeline do
         end
       end
 
-      context 'when milestone is persisted' do
-        it 'does not save milestone' do
-          milestone = create(:milestone, group: group)
-
-          expect(milestone).not_to receive(:save!)
-
-          subject.load(context, milestone)
-        end
-      end
-
       context 'when milestone is missing' do
         it 'returns' do
           expect(subject.load(context, nil)).to be_nil

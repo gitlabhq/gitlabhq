@@ -1,6 +1,7 @@
 query mergeRequest($projectPath: ID!, $mergeRequestIID: String!) {
   project(fullPath: $projectPath) {
     mergeRequest(iid: $mergeRequestIID) {
+      title
       createdAt
       state
       headPipeline {

@@ -395,7 +395,7 @@ it('passes', () => {
 ```
 
 To modify only the hash, use either the `setWindowLocation` helper, or assign
-directly to `window.location.hash`, e.g.:
+directly to `window.location.hash`, for example:
 
 ```javascript
 it('passes', () => {
@@ -423,9 +423,7 @@ it('passes', () => {
 ### Waiting in tests
 
 Sometimes a test needs to wait for something to happen in the application before it continues.
-Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout)
-
-because it makes the reason for waiting unclear. Instead use one of the following approaches.
+Avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) because it makes the reason for waiting unclear. Instead use one of the following approaches.
 
 #### Promises and Ajax calls
 
@@ -633,8 +631,8 @@ The latter is useful when you have `setInterval` in the code. **Remember:** our 
 
 Non-determinism is the breeding ground for flaky and brittle specs. Such specs end up breaking the CI pipeline, interrupting the work flow of other contributors.
 
-1. Make sure your test subject's collaborators (e.g., Axios, apollo, Lodash helpers) and test environment (e.g., Date) behave consistently across systems and over time.
-1. Make sure tests are focused and not doing "extra work" (e.g., needlessly creating the test subject more than once in an individual test)
+1. Make sure your test subject's collaborators (for example, Axios, Apollo, Lodash helpers) and test environment (for example, Date) behave consistently across systems and over time.
+1. Make sure tests are focused and not doing "extra work" (for example, needlessly creating the test subject more than once in an individual test).
 
 ### Faking `Date` for determinism
 
@@ -650,7 +648,7 @@ describe('cool/component', () => {
   // Default fake `Date`
   const TODAY = new Date();
 
-  // NOTE: `useFakeDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.).
+  // NOTE: `useFakeDate` cannot be called during test execution (that is, inside `it`, `beforeEach`, `beforeAll`, etc.).
   describe("on Ada Lovelace's Birthday", () => {
     useFakeDate(1815, 11, 10)
 
@@ -670,7 +668,7 @@ Similarly, if you really need to use the real `Date` class, then you can import 
 ```javascript
 import { useRealDate } from 'helpers/fake_date';
 
-// NOTE: `useRealDate` cannot be called during test execution (i.e. inside `it`, `beforeEach`, `beforeAll`, etc.).
+// NOTE: `useRealDate` cannot be called during test execution (that is, inside `it`, `beforeEach`, `beforeAll`, etc.).
 describe('with real date', () => {
   useRealDate();
 });
@@ -702,16 +700,16 @@ The more challenging part are mocks, which can be used for functions or even dep
 ### Manual module mocks
 
 Manual mocks are used to mock modules across the entire Jest environment. This is a very powerful testing tool that helps simplify
-unit testing by mocking out modules which cannot be easily consumed in our test environment.
+unit testing by mocking out modules that cannot be easily consumed in our test environment.
 
-> **WARNING:** Do not use manual mocks if a mock should not be consistently applied in every spec (i.e. it's only needed by a few specs).
+> **WARNING:** Do not use manual mocks if a mock should not be consistently applied in every spec (that is, it's only needed by a few specs).
 > Instead, consider using [`jest.mock(..)`](https://jestjs.io/docs/jest-object#jestmockmodulename-factory-options)
 > (or a similar mocking function) in the relevant spec file.
 
 #### Where should I put manual mocks?
 
 Jest supports [manual module mocks](https://jestjs.io/docs/manual-mocks) by placing a mock in a `__mocks__/` directory next to the source module
-(e.g. `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
+(for example, `app/assets/javascripts/ide/__mocks__`). **Don't do this.** We want to keep all of our test-related code in one place (the `spec/` folder).
 
 If a manual mock is needed for a `node_modules` package, use the `spec/frontend/__mocks__` folder. Here's an example of
 a [Jest mock for the package `monaco-editor`](https://gitlab.com/gitlab-org/gitlab/-/blob/b7f914cddec9fc5971238cdf12766e79fa1629d7/spec/frontend/__mocks__/monaco-editor/index.js#L1).
@@ -900,7 +898,7 @@ it.each([
 NOTE:
 Only use template literal block if pretty print is not needed for spec output. For example, empty strings, nested objects etc.
 
-For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string e.g. `''` and a non-empty string e.g. `'search string'` would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience
+For example, when testing the difference between an empty search string and a non-empty search string, the use of the array block syntax with the pretty print option would be preferred. That way the differences between an empty string (`''`) and a non-empty string (`'search string'`) would be visible in the spec output. Whereas with a template literal block, the empty string would be shown as a space, which could lead to a confusing developer experience.
 
 ```javascript
 // bad
@@ -1193,7 +1191,7 @@ it('renders the component correctly', () => {
 })
 ```
 
-The above test will create two snapshots, what's important is to decide which of the snapshots provide more value for the codebase safety i.e. if one of these snapshots changes, does that highlight a possible un-wanted break in the codebase? This can help catch unexpected changes if something in an underlying dependency changes without our knowledge.
+The above test will create two snapshots. It's important to decide which of the snapshots provide more value for codebase safety. That is, if one of these snapshots changes, does that highlight a possible break in the codebase? This can help catch unexpected changes if something in an underlying dependency changes without our knowledge.
 
 ### Pros and Cons
 

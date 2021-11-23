@@ -21,6 +21,7 @@ module Gitlab
       SEARCH_MAX_REQUESTS_PER_MINUTE = 30
       DEFAULT_PER_PAGE = 100
       LOWER_PER_PAGE = 50
+      CLIENT_CONNECTION_ERROR = ::Faraday::ConnectionFailed # used/set in sawyer agent which octokit uses
 
       # A single page of data and the corresponding page number.
       Page = Struct.new(:objects, :number)
@@ -148,14 +149,14 @@ module Gitlab
       # whether we are running in parallel mode or not. For more information see
       # `#rate_or_wait_for_rate_limit`.
       def with_rate_limit
-        return yield unless rate_limiting_enabled?
+        return with_retry { yield } unless rate_limiting_enabled?
 
         request_count_counter.increment
 
         raise_or_wait_for_rate_limit unless requests_remaining?
 
         begin
-          yield
+          with_retry { yield }
         rescue ::Octokit::TooManyRequests
           raise_or_wait_for_rate_limit
 
@@ -166,7 +167,7 @@ module Gitlab
       end
 
       def search_repos_by_name(name, options = {})
-        octokit.search_repositories(search_query(str: name, type: :name), options)
+        with_retry { octokit.search_repositories(search_query(str: name, type: :name), options) }
       end
 
       def search_query(str:, type:, include_collaborations: true, include_orgs: true)
@@ -269,6 +270,25 @@ module Gitlab
         each_object(:organizations)
           .map { |org| "org:#{org.login}" }
           .join(' ')
+      end
+
+      def with_retry
+        Retriable.retriable(on: CLIENT_CONNECTION_ERROR, on_retry: on_retry) do
+          yield
+        end
+      end
+
+      def on_retry
+        proc do |exception, try, elapsed_time, next_interval|
+          Gitlab::Import::Logger.info(
+            message: "GitHub connection retry triggered",
+            'error.class': exception.class,
+            'error.message': exception.message,
+            try_count: try,
+            elapsed_time_s: elapsed_time,
+            wait_to_retry_s: next_interval
+          )
+        end
       end
     end
   end

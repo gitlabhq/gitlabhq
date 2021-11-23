@@ -44,6 +44,7 @@ export function initIssuableApp(issuableData, store) {
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
+          id: this.getNoteableData?.id,
         },
       });
     },

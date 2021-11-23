@@ -60,6 +60,10 @@ module Ci
       url_helpers.graphql_etag_pipeline_sha_path(sha)
     end
 
+    def graphql_project_on_demand_scan_counts_path(project)
+      url_helpers.graphql_etag_project_on_demand_scan_counts_path(project)
+    end
+
     # Updates ETag caches of a pipeline.
     #
     # This logic resides in a separate method so that EE can more easily extend
@@ -82,6 +86,8 @@ module Ci
         store.touch(graphql_pipeline_path(relative_pipeline))
         store.touch(graphql_pipeline_sha_path(relative_pipeline.sha))
       end
+
+      store.touch(graphql_project_on_demand_scan_counts_path(project))
     end
 
     def url_helpers

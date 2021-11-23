@@ -31,8 +31,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ### Installing GitLab
 
 - [Install](../install/index.md): Requirements, directory structures, and installation methods.
-  - [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
-  - [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 - [Reference architectures](reference_architectures/index.md): Add additional resources to support more users.
   - [Installing GitLab on Amazon Web Services (AWS)](../install/aws/index.md): Set up GitLab on Amazon AWS.
 - [Geo](geo/index.md): Replicate your GitLab instance to other geographic locations as a read-only fully operational version.
@@ -79,6 +77,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Enabling and disabling features flags](feature_flags.md): how to enable and
   disable GitLab features deployed behind feature flags.
 - [Application settings cache expiry interval](application_settings_cache.md)
+- [Database Load Balancing](postgresql/database_load_balancing.md): Distribute database queries among multiple database servers.
+- [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only).
 
 #### Customizing GitLab appearance
 

@@ -160,10 +160,10 @@ query. This in turn makes it much harder for this code to overload a database.
 
 ## Use read replicas when possible
 
-In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
+In a DB cluster we have many read replicas and one primary. A classic use of scaling the DB is to have read-only actions be performed by the replicas. We use [load balancing](../administration/postgresql/database_load_balancing.md) to distribute this load. This allows for the replicas to grow as the pressure on the DB grows.
 
 By default, queries use read-only replicas, but due to
-[primary sticking](../administration/database_load_balancing.md#primary-sticking), GitLab uses the
+[primary sticking](../administration/postgresql/database_load_balancing.md#primary-sticking), GitLab uses the
 primary for some time and reverts to secondaries after they have either caught up or after 30 seconds.
 Doing this can lead to a considerable amount of unnecessary load on the primary.
 To prevent switching to the primary [merge request 56849](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) introduced the
@@ -187,7 +187,7 @@ Internally, our database load balancer classifies the queries based on their mai
 - Sidekiq background jobs
 
 After the above queries are executed, GitLab
-[sticks to the primary](../administration/database_load_balancing.md#primary-sticking).
+[sticks to the primary](../administration/postgresql/database_load_balancing.md#primary-sticking).
 To make the inside queries prefer using the replicas,
 [merge request 59086](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59086) introduced
 `fallback_to_replicas_for_ambiguous_queries`. This MR is also an example of how we redirected a

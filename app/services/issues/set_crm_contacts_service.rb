@@ -23,6 +23,7 @@ module Issues
       remove_by_email if params[:remove_emails].present?
 
       if issue.valid?
+        GraphqlTriggers.issue_crm_contacts_updated(issue)
         ServiceResponse.success(payload: issue)
       else
         # The default error isn't very helpful: "Issue customer relations contacts is invalid"

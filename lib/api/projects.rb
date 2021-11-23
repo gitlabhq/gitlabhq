@@ -270,7 +270,7 @@ module API
         attrs = translate_params_for_compatibility(attrs)
         filter_attributes_using_license!(attrs)
 
-        validate_git_import_url!(params[:import_url], import_enabled: check_import_by_url_is_enabled)
+        validate_git_import_url!(params[:import_url]) { check_import_by_url_is_enabled }
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 

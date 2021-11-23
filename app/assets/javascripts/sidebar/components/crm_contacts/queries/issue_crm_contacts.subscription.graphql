@@ -1,0 +1,9 @@
+#import "./issue_crm_contacts.fragment.graphql"
+
+subscription issueCrmContactsUpdated($id: IssuableID!) {
+  issueCrmContactsUpdated(issuableId: $id) {
+    ... on Issue {
+      ...CrmContacts
+    }
+  }
+}

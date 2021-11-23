@@ -1160,6 +1160,15 @@ RSpec.describe API::Projects do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
+    it 'allows creating a project without an import_url when git import source is disabled', :aggregate_failures do
+      stub_application_setting(import_sources: nil)
+      project_params = { path: 'path-project-Foo' }
+
+      expect { post api('/projects', user), params: project_params }.to change { Project.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(:created)
+    end
+
     it 'disallows creating a project with an import_url that is not reachable', :aggregate_failures do
       url = 'http://example.com'
       endpoint_url = "#{url}/info/refs?service=git-upload-pack"

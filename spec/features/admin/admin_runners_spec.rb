@@ -26,7 +26,7 @@ RSpec.describe "Admin Runners" do
         visit admin_runners_path
 
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Runners currently online: 1"
+        expect(page).to have_text "Online Runners 1"
       end
 
       it 'with an instance runner shows an instance badge' do
@@ -324,7 +324,7 @@ RSpec.describe "Admin Runners" do
 
       it 'has all necessary texts including no runner message' do
         expect(page).to have_text "Register an instance runner"
-        expect(page).to have_text "Runners currently online: 0"
+        expect(page).to have_text "Online Runners 0"
         expect(page).to have_text 'No runners found'
       end
     end

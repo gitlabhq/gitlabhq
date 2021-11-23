@@ -87,9 +87,15 @@ update-qa-cache:
 
 .package-and-qa-ff-base:
   script:
-    - export GITLAB_QA_OPTIONS="--set-feature-flags $(scripts/changed-feature-flags --files $(cat $CHANGES_FILE | tr ' ' ',') --state $QA_FF_STATE)"
-    - echo $GITLAB_QA_OPTIONS
-    - ./scripts/trigger-build omnibus
+    - |
+      feature_flags=$(scripts/changed-feature-flags --files $(cat $CHANGES_FILE | tr ' ' ',') --state $QA_FF_STATE)
+      if [[ $feature_flags ]]; then
+        export GITLAB_QA_OPTIONS="--set-feature-flags $feature_flags"
+        echo $GITLAB_QA_OPTIONS
+        ./scripts/trigger-build omnibus
+      else
+        echo "No changed feature flag found to test. The tests are skipped if the flag was removed."
+      fi
 
 package-and-qa:
   extends:

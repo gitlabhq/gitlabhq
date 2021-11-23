@@ -574,7 +574,7 @@ of reading a stale record is non-zero due to replicas potentially lagging behind
 
 When the number of jobs that rely on the database increases, ensuring immediate data consistency
 can put unsustainable load on the primary database server. We therefore added the ability to use
-[database load balancing for Sidekiq workers](../administration/database_load_balancing.md#load-balancing-for-sidekiq).
+[Database Load Balancing for Sidekiq workers](../administration/postgresql/database_load_balancing.md).
 By configuring a worker's `data_consistency` field, we can then allow the scheduler to target read replicas
 under several strategies outlined below.
 

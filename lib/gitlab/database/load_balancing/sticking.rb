@@ -123,21 +123,18 @@ module Gitlab
         def unstick(namespace, id)
           Gitlab::Redis::SharedState.with do |redis|
             redis.del(redis_key_for(namespace, id))
-            redis.del(old_redis_key_for(namespace, id))
           end
         end
 
         def set_write_location_for(namespace, id, location)
           Gitlab::Redis::SharedState.with do |redis|
             redis.set(redis_key_for(namespace, id), location, ex: EXPIRATION)
-            redis.set(old_redis_key_for(namespace, id), location, ex: EXPIRATION)
           end
         end
 
         def last_write_location_for(namespace, id)
           Gitlab::Redis::SharedState.with do |redis|
-            redis.get(redis_key_for(namespace, id)) ||
-              redis.get(old_redis_key_for(namespace, id))
+            redis.get(redis_key_for(namespace, id))
           end
         end
 
@@ -145,10 +142,6 @@ module Gitlab
           name = @load_balancer.name
 
           "database-load-balancing/write-location/#{name}/#{namespace}/#{id}"
-        end
-
-        def old_redis_key_for(namespace, id)
-          "database-load-balancing/write-location/#{namespace}/#{id}"
         end
       end
     end

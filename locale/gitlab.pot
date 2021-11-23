@@ -495,6 +495,11 @@ msgstr[1] ""
 msgid "%{count} approvals from %{name}"
 msgstr ""
 
+msgid "%{count} contact"
+msgid_plural "%{count} contacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} files touched"
 msgstr ""
 
@@ -24125,6 +24130,9 @@ msgstr ""
 msgid "OnCallSchedules|Your schedule has been successfully created. To add individual users to this schedule, use the Add a rotation button. To enable notifications for this schedule, you must also create an %{linkStart}escalation policy%{linkEnd}."
 msgstr ""
 
+msgid "OnDemandScans|%{learnMoreLinkStart}Learn more about on-demand scans%{learnMoreLinkEnd}."
+msgstr ""
+
 msgid "OnDemandScans|Could not fetch on-demand scans. Please refresh the page, or try again later."
 msgstr ""
 
@@ -24216,6 +24224,12 @@ msgid "OnDemandScans|Start time"
 msgstr ""
 
 msgid "OnDemandScans|Target"
+msgstr ""
+
+msgid "OnDemandScans|There are no finished scans."
+msgstr ""
+
+msgid "OnDemandScans|There are no running scans."
 msgstr ""
 
 msgid "OnDemandScans|Use existing scanner profile"
@@ -29945,6 +29959,9 @@ msgstr ""
 msgid "Runners|Online"
 msgstr ""
 
+msgid "Runners|Online Runners"
+msgstr ""
+
 msgid "Runners|Paused"
 msgstr ""
 
@@ -32377,6 +32394,9 @@ msgid "Something went wrong on our end. Please try again."
 msgstr ""
 
 msgid "Something went wrong trying to change the locked state of this %{issuableDisplayName}"
+msgstr ""
+
+msgid "Something went wrong trying to load issue contacts."
 msgstr ""
 
 msgid "Something went wrong when creating a work item. Please try again"
@@ -39333,6 +39353,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress Limit"
+msgstr ""
+
+msgid "Work in progress- click here to find out more"
 msgstr ""
 
 msgid "WorkItem|Work Items"

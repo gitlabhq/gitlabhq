@@ -143,16 +143,6 @@ RSpec.describe BulkImports::NdjsonPipeline do
       end
     end
 
-    context 'when object is persisted' do
-      it 'does not save the object' do
-        object = double(persisted?: true)
-
-        expect(object).not_to receive(:save!)
-
-        subject.load(nil, object)
-      end
-    end
-
     context 'when object is missing' do
       it 'returns' do
         expect(subject.load(nil, nil)).to be_nil

@@ -31,9 +31,7 @@ module BulkImports
       end
 
       def load(_, object)
-        return unless object
-
-        object.save! unless object.persisted?
+        object&.save!
       end
 
       def deep_transform_relation!(relation_hash, relation_key, relation_definition, &block)

@@ -61,8 +61,9 @@ module Gitlab
         end
 
         def sleep_if_needed(job)
-          time_diff = Time.current.to_f - job['created_at'].to_f
-          sleep time_diff if time_diff > 0 && time_diff < MINIMUM_DELAY_INTERVAL
+          remaining_delay = MINIMUM_DELAY_INTERVAL - (Time.current.to_f - job['created_at'].to_f)
+
+          sleep remaining_delay if remaining_delay > 0 && remaining_delay < MINIMUM_DELAY_INTERVAL
         end
 
         def get_wal_locations(job)

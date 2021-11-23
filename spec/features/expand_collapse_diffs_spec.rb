@@ -7,7 +7,6 @@ RSpec.describe 'Expand and collapse diffs', :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    stub_feature_flags(increased_diff_limits: false)
     allow(Gitlab::CurrentSettings).to receive(:diff_max_patch_bytes).and_return(100.kilobytes)
 
     admin = create(:admin)

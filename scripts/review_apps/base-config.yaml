@@ -64,7 +64,7 @@ gitlab:
         memory: 2890M
     hpa:
       targetAverageValue: 650m
-  task-runner:
+  toolbox:
     resources:
       requests:
         cpu: 300m

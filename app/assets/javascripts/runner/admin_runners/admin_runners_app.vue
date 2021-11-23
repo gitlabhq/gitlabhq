@@ -3,12 +3,12 @@ import { GlBadge, GlLink } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { sprintf, __ } from '~/locale';
 
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
 import RunnerList from '../components/runner_list.vue';
 import RunnerName from '../components/runner_name.vue';
+import RunnerOnlineStat from '../components/stat/runner_online_stat.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 
@@ -38,6 +38,7 @@ export default {
     RunnerFilteredSearchBar,
     RunnerList,
     RunnerName,
+    RunnerOnlineStat,
     RunnerPagination,
     RunnerTypeTabs,
   },
@@ -110,11 +111,6 @@ export default {
     noRunnersFound() {
       return !this.runnersLoading && !this.runners.items.length;
     },
-    activeRunnersMessage() {
-      return sprintf(__('Runners currently online: %{active_runners_count}'), {
-        active_runners_count: this.activeRunnersCount,
-      });
-    },
     searchTokens() {
       return [
         statusTokenConfig,
@@ -165,6 +161,8 @@ export default {
 </script>
 <template>
   <div>
+    <runner-online-stat class="gl-py-6 gl-px-5" :value="activeRunnersCount" />
+
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >
@@ -194,11 +192,7 @@ export default {
       v-model="search"
       :tokens="searchTokens"
       :namespace="$options.filteredSearchNamespace"
-    >
-      <template #runner-count>
-        {{ activeRunnersMessage }}
-      </template>
-    </runner-filtered-search-bar>
+    />
 
     <div v-if="noRunnersFound" class="gl-text-center gl-p-5">
       {{ __('No runners found') }}

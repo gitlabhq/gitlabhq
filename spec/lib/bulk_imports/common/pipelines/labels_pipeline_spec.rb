@@ -59,16 +59,6 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline do
       end
     end
 
-    context 'when label is persisted' do
-      it 'does not save label' do
-        label = create(:group_label, group: group)
-
-        expect(label).not_to receive(:save!)
-
-        subject.load(context, label)
-      end
-    end
-
     context 'when label is missing' do
       it 'returns' do
         expect(subject.load(context, nil)).to be_nil

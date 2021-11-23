@@ -34,6 +34,7 @@ import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subsc
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import { IssuableAttributeType } from './constants';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
+import CrmContacts from './components/crm_contacts/crm_contacts.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -203,6 +204,28 @@ function mountReviewersComponent(mediator) {
   if (reviewerDropdown) {
     trackShowInviteMemberLink(reviewerDropdown);
   }
+}
+
+function mountCrmContactsComponent() {
+  const el = document.getElementById('js-issue-crm-contacts');
+
+  if (!el) return;
+
+  const { issueId } = el.dataset;
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    apolloProvider,
+    components: {
+      CrmContacts,
+    },
+    render: (createElement) =>
+      createElement('crm-contacts', {
+        props: {
+          issueId,
+        },
+      }),
+  });
 }
 
 function mountMilestoneSelect() {
@@ -535,6 +558,7 @@ export function mountSidebar(mediator, store) {
     mountAssigneesComponentDeprecated(mediator);
   }
   mountReviewersComponent(mediator);
+  mountCrmContactsComponent();
   mountSidebarLabels();
   mountMilestoneSelect();
   mountConfidentialComponent(mediator);

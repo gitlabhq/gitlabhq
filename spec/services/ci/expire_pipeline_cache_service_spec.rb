@@ -16,6 +16,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
       pipeline_path = "/#{project.full_path}/-/pipelines/#{pipeline.id}.json"
       graphql_pipeline_path = "/api/graphql:pipelines/id/#{pipeline.id}"
       graphql_pipeline_sha_path = "/api/graphql:pipelines/sha/#{pipeline.sha}"
+      graphql_project_on_demand_scan_counts_path = "/api/graphql:on_demand_scan/counts/#{project.full_path}"
 
       expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
         expect(store).to receive(:touch).with(pipelines_path)
@@ -23,6 +24,7 @@ RSpec.describe Ci::ExpirePipelineCacheService do
         expect(store).to receive(:touch).with(pipeline_path)
         expect(store).to receive(:touch).with(graphql_pipeline_path)
         expect(store).to receive(:touch).with(graphql_pipeline_sha_path)
+        expect(store).to receive(:touch).with(graphql_project_on_demand_scan_counts_path)
       end
 
       subject.execute(pipeline)

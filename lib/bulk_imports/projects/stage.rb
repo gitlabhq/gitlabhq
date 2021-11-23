@@ -51,6 +51,10 @@ module BulkImports
             pipeline: BulkImports::Projects::Pipelines::CiPipelinesPipeline,
             stage: 4
           },
+          project_feature: {
+            pipeline: BulkImports::Projects::Pipelines::ProjectFeaturePipeline,
+            stage: 4
+          },
           wiki: {
             pipeline: BulkImports::Common::Pipelines::WikiPipeline,
             stage: 5
