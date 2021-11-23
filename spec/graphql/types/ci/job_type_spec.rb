@@ -25,6 +25,7 @@ RSpec.describe Types::Ci::JobType do
       needs
       pipeline
       playable
+      previousStageJobsAndNeeds
       queued_at
       queued_duration
       refName

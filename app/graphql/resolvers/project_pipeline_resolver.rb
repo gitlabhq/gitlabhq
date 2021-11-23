@@ -24,7 +24,6 @@ module Resolvers
       super
     end
 
-    # the preloads are defined on ee/app/graphql/ee/resolvers/project_pipeline_resolver.rb
     def resolve(iid: nil, sha: nil, **args)
       self.lookahead = args.delete(:lookahead)
 
@@ -41,6 +40,12 @@ module Resolvers
           apply_lookahead(finder.execute).each { |pipeline| loader.call(pipeline.sha.to_s, pipeline) }
         end
       end
+    end
+
+    def unconditional_includes
+      [
+        { statuses: [:needs] }
+      ]
     end
   end
 end

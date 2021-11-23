@@ -8663,6 +8663,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cijobneeds"></a>`needs` | [`CiBuildNeedConnection`](#cibuildneedconnection) | References to builds that must complete before the jobs run. (see [Connections](#connections)) |
 | <a id="cijobpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline the job belongs to. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
+| <a id="cijobpreviousstagejobsandneeds"></a>`previousStageJobsAndNeeds` | [`CiJobConnection`](#cijobconnection) | All prerequisite jobs. (see [Connections](#connections)) |
 | <a id="cijobqueuedat"></a>`queuedAt` | [`Time`](#time) | When the job was enqueued and marked as pending. |
 | <a id="cijobqueuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the job was enqueued before starting. |
 | <a id="cijobrefname"></a>`refName` | [`String`](#string) | Ref name of the job. |

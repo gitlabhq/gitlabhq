@@ -9,32 +9,29 @@ type: index, howto
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
-GitLab CI/CD can be used with:
-
-- [GitHub](github_integration.md).
-- [Bitbucket Cloud](bitbucket_integration.md).
-- Any other Git server.
+GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md),
+or any other Git server.
 
 Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
 
 Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
-and create a lightweight project with issues, merge requests, wiki, and
+and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
 [can be re-enabled later](../../user/project/settings/index.md#sharing-and-permissions).
+
+## Connect to an external repository
 
 To connect to an external repository:
 
 <!-- vale gitlab.Spelling = NO -->
 
-1. On the top menu, select **Projects > Create new project**.
+1. On the top bar, select **Menu > Projects > Create new project**.
 1. Select **Run CI/CD for external repository**.
 1. Select **GitHub** or **Repo by URL**.
 1. Complete the fields.
 
 <!-- vale gitlab.Spelling = YES -->
-
-![CI/CD for external repository project creation](img/ci_cd_for_external_repo.png)
 
 ## Pipelines for external pull requests
 

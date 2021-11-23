@@ -14,7 +14,7 @@ RSpec.describe 'Query.project.pipeline' do
   describe '.stages.groups.jobs' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
-      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first')
+      stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first', position: 1)
       create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
 
       pipeline
@@ -44,12 +44,17 @@ RSpec.describe 'Query.project.pipeline' do
             name
             jobs {
               nodes {
-                detailedStatus {
-                  id
-                }
                 name
                 needs {
                   nodes { #{all_graphql_fields_for('CiBuildNeed')} }
+                }
+                previousStageJobsAndNeeds {
+                  nodes {
+                    name
+                  }
+                }
+                detailedStatus {
+                  id
                 }
                 pipeline {
                   id
@@ -62,58 +67,80 @@ RSpec.describe 'Query.project.pipeline' do
       FIELDS
     end
 
-    context 'when there are build needs' do
-      before do
-        pipeline.statuses.each do |build|
-          create_list(:ci_build_need, 2, build: build)
-        end
-      end
-
-      it 'reports the build needs' do
-        post_graphql(query, current_user: user)
-
-        expect(jobs_graphql_data).to contain_exactly a_hash_including(
-          'needs' => a_hash_including(
-            'nodes' => contain_exactly(
-              a_hash_including('name' => String),
-              a_hash_including('name' => String)
-            )
-          )
-        )
-      end
-    end
-
     it 'returns the jobs of a pipeline stage' do
       post_graphql(query, current_user: user)
 
       expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
     end
 
-    describe 'performance' do
+    context 'when there is more than one stage and job needs' do
       before do
         build_stage = create(:ci_stage_entity, position: 2, name: 'build', project: project, pipeline: pipeline)
         test_stage = create(:ci_stage_entity, position: 3, name: 'test', project: project, pipeline: pipeline)
-        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 1 2')
-        create(:commit_status, pipeline: pipeline, stage_id: build_stage.id, name: 'docker 2 2')
-        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 1 2')
-        create(:commit_status, pipeline: pipeline, stage_id: test_stage.id, name: 'rspec 2 2')
+        deploy_stage = create(:ci_stage_entity, position: 4, name: 'deploy', project: project, pipeline: pipeline)
+
+        create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
+        create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
+        create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)
+        test_job = create(:ci_bridge, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 2 2', stage: test_stage)
+        create(:ci_build, pipeline: pipeline, stage_idx: deploy_stage.position, name: 'deploy 1 2', stage: deploy_stage)
+        deploy_job = create(:ci_build, pipeline: pipeline, stage_idx: deploy_stage.position, name: 'deploy 2 2', stage: deploy_stage)
+
+        create(:ci_build_need, build: test_job, name: 'my test job')
+        create(:ci_build_need, build: deploy_job, name: 'rspec 1 2')
       end
 
-      it 'can find the first stage' do
-        post_graphql(query, current_user: user, variables: first_n.with(1))
-
-        expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
-      end
-
-      it 'can find all stages' do
-        post_graphql(query, current_user: user, variables: first_n.with(3))
+      it 'reports the build needs and previous stages with no duplicates' do
+        post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(
-          a_hash_including('name' => 'my test job'),
-          a_hash_including('name' => 'docker 1 2'),
-          a_hash_including('name' => 'docker 2 2'),
-          a_hash_including('name' => 'rspec 1 2'),
-          a_hash_including('name' => 'rspec 2 2')
+          a_hash_including(
+            'name' => 'my test job',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [] }
+          ),
+          a_hash_including(
+            'name' => 'docker 1 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "my test job" }
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'docker 2 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "my test job" }
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'rspec 1 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "docker 1 2" }, { "name" => "docker 2 2" }
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'rspec 2 2',
+            'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "docker 1 2" }, { "name" => "docker 2 2" }, { "name" => "my test job" }
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'deploy 1 2',
+            'needs' => { 'nodes' => [] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "rspec 1 2" }, { "name" => "rspec 2 2" }
+            ] }
+          ),
+          a_hash_including(
+            'name' => 'deploy 2 2',
+            'needs' => { 'nodes' => [a_hash_including('name' => 'rspec 1 2')] },
+            'previousStageJobsAndNeeds' => { 'nodes' => [
+              { "name" => "rspec 1 2" }, { "name" => "rspec 2 2" }
+            ] }
+          )
         )
       end
 

@@ -533,6 +533,10 @@ RSpec.describe Group do
       describe '#ancestors' do
         it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
       end
+
+      describe '#ancestors_upto' do
+        it { expect(group.ancestors_upto.to_sql).not_to include "WITH ORDINALITY" }
+      end
     end
 
     context 'linear' do
@@ -564,6 +568,10 @@ RSpec.describe Group do
 
           it { expect(group.ancestors.to_sql).not_to include 'traversal_ids <@' }
         end
+      end
+
+      describe '#ancestors_upto' do
+        it { expect(group.ancestors_upto.to_sql).to include "WITH ORDINALITY" }
       end
 
       context 'when project namespace exists in the group' do

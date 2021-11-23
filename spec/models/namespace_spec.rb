@@ -700,20 +700,6 @@ RSpec.describe Namespace do
     end
   end
 
-  describe '#ancestors_upto' do
-    let(:parent) { create(:group) }
-    let(:child) { create(:group, parent: parent) }
-    let(:child2) { create(:group, parent: child) }
-
-    it 'returns all ancestors when no namespace is given' do
-      expect(child2.ancestors_upto).to contain_exactly(child, parent)
-    end
-
-    it 'includes ancestors upto but excluding the given ancestor' do
-      expect(child2.ancestors_upto(parent)).to contain_exactly(child)
-    end
-  end
-
   describe '#move_dir', :request_store do
     shared_examples "namespace restrictions" do
       context "when any project has container images" do
@@ -1260,6 +1246,38 @@ RSpec.describe Namespace do
     context 'when use_traversal_ids_for_ancestors? feature flag is false' do
       before do
         stub_feature_flags(use_traversal_ids_for_ancestors: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when use_traversal_ids? feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
+
+  describe '#use_traversal_ids_for_ancestors_upto?' do
+    let_it_be(:namespace, reload: true) { create(:namespace) }
+
+    subject { namespace.use_traversal_ids_for_ancestors_upto? }
+
+    context 'when use_traversal_ids_for_ancestors_upto feature flag is true' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors_upto: true)
+      end
+
+      it { is_expected.to eq true }
+
+      it_behaves_like 'disabled feature flag when traversal_ids is blank'
+    end
+
+    context 'when use_traversal_ids_for_ancestors_upto feature flag is false' do
+      before do
+        stub_feature_flags(use_traversal_ids_for_ancestors_upto: false)
       end
 
       it { is_expected.to eq false }

@@ -64,6 +64,13 @@ module Namespaces
         traversal_ids.present?
       end
 
+      def use_traversal_ids_for_ancestors_upto?
+        return false unless use_traversal_ids?
+        return false unless Feature.enabled?(:use_traversal_ids_for_ancestors_upto, root_ancestor, default_enabled: :yaml)
+
+        traversal_ids.present?
+      end
+
       def use_traversal_ids_for_root_ancestor?
         return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor, default_enabled: :yaml)
 
@@ -112,6 +119,35 @@ module Namespaces
         return super unless use_traversal_ids_for_ancestors?
 
         hierarchy_order == :desc ? traversal_ids[0..-2] : traversal_ids[0..-2].reverse
+      end
+
+      # Returns all ancestors upto but excluding the top.
+      # When no top is given, all ancestors are returned.
+      # When top is not found, returns all ancestors.
+      #
+      # This copies the behavior of the recursive method. We will deprecate
+      # this behavior soon.
+      def ancestors_upto(top = nil, hierarchy_order: nil)
+        return super unless use_traversal_ids_for_ancestors_upto?
+
+        # We can't use a default value in the method definition above because
+        # we need to preserve those specific parameters for super.
+        hierarchy_order ||= :desc
+
+        # Get all ancestor IDs inclusively between top and our parent.
+        top_index = top ? traversal_ids.find_index(top.id) : 0
+        ids = traversal_ids[top_index...-1]
+        ids_string = ids.map { |id| Integer(id) }.join(',')
+
+        # WITH ORDINALITY lets us order the result to match traversal_ids order.
+        from_sql = <<~SQL
+          unnest(ARRAY[#{ids_string}]::bigint[]) WITH ORDINALITY AS ancestors(id, ord)
+          INNER JOIN namespaces ON namespaces.id = ancestors.id
+        SQL
+
+        self.class
+          .from(Arel.sql(from_sql))
+          .order('ancestors.ord': hierarchy_order)
       end
 
       def self_and_ancestors(hierarchy_order: nil)

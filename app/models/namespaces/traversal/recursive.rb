@@ -46,6 +46,7 @@ module Namespaces
         object_hierarchy(self.class.where(id: id))
           .ancestors(upto: top, hierarchy_order: hierarchy_order)
       end
+      alias_method :recursive_ancestors_upto, :ancestors_upto
 
       def self_and_ancestors(hierarchy_order: nil)
         return self.class.where(id: id) unless parent_id

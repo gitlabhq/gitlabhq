@@ -31,7 +31,10 @@ module Types
 
         BatchLoader::GraphQL.for(key).batch(default_value: []) do |keys, loader|
           by_pipeline = keys.group_by(&:pipeline)
-          include_needs = keys.any? { |k| k.requires?(%i[nodes jobs nodes needs]) }
+          include_needs = keys.any? do |k|
+            k.requires?(%i[nodes jobs nodes needs]) ||
+            k.requires?(%i[nodes jobs nodes previousStageJobsAndNeeds])
+          end
 
           by_pipeline.each do |pl, key_group|
             project = pl.project
