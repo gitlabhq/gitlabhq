@@ -40,6 +40,9 @@
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'
 
+.if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
+  if: '$CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/'
+
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
@@ -518,6 +521,10 @@
       when: never
     - <<: *if-jh
       when: never
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
     - changes: *code-backstage-qa-patterns
@@ -550,7 +557,9 @@
     - <<: *if-jh
       when: never
     - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
@@ -1637,6 +1646,10 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-jh
+      when: never
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
       when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
