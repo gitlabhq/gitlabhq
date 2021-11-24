@@ -386,20 +386,15 @@ module QA
       def list_untracked_repositories
         untracked_repositories = []
         shell "docker exec #{@praefect} bash -c 'gitlab-ctl praefect list-untracked-repositories'" do |line|
-          # Results look like this depending on whether untracked items found or not
-          #   Running list-untracked-repositories
-          #   Done.
-
-          #   Running list-untracked-repositories
+          # Results look like this
+          #   The following repositories were found on disk, but missing from the tracking database:
           #   {"relative_path":"@hashed/aa/bb.git","storage":"gitaly1","virtual_storage":"default"}
           #   {"relative_path":"@hashed/bb/cc.git","storage":"gitaly3","virtual_storage":"default"}
-          #   Done.
 
           QA::Runtime::Logger.debug(line.chomp)
-          next if line.start_with?('Running list-untracked-repositories')
-          next if line.start_with?('Done.')
-
           untracked_repositories.append(JSON.parse(line))
+        rescue JSON::ParserError
+          # Ignore lines that can't be parsed as JSON
         end
 
         QA::Runtime::Logger.debug("list_untracked_repositories --- #{untracked_repositories}")

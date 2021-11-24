@@ -7,7 +7,8 @@ module QA
                     :author_name,
                     :content,
                     :commit_message,
-                    :name
+                    :name,
+                    :start_branch
       attr_writer :branch
 
       attribute :project do
@@ -27,6 +28,7 @@ module QA
         @name = 'QA Test - File name'
         @content = 'QA Test - File content'
         @commit_message = 'QA Test - Commit message'
+        @start_branch = project.default_branch
       end
 
       def branch
@@ -57,6 +59,7 @@ module QA
       def api_post_body
         {
           branch: branch,
+          start_branch: start_branch,
           author_email: @author_email || Runtime::User.default_email,
           author_name: @author_name || Runtime::User.username,
           content: content,

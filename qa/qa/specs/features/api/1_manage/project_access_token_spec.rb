@@ -4,7 +4,10 @@ module QA
   RSpec.describe 'Manage' do
     describe 'Project access token' do
       before(:all) do
-        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api!
+        @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
+          pat.project = Resource::ReusableProject.fabricate_via_api!
+        end
+
         @user_api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @project_access_token.token)
       end
 
@@ -14,7 +17,7 @@ module QA
             Resource::File.fabricate_via_api! do |file|
               file.api_client = @user_api_client
               file.project = @project_access_token.project
-              file.branch = 'new_branch'
+              file.branch = "new_branch_#{SecureRandom.hex(8)}"
               file.commit_message = 'Add new file'
               file.name = "text-#{SecureRandom.hex(8)}.txt"
               file.content = 'New file'
@@ -27,7 +30,7 @@ module QA
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.api_client = @user_api_client
               commit.project = @project_access_token.project
-              commit.branch = 'new_branch'
+              commit.branch = "new_branch_#{SecureRandom.hex(8)}"
               commit.start_branch = @project_access_token.project.default_branch
               commit.commit_message = 'Add new file'
               commit.add_files([
@@ -48,7 +51,7 @@ module QA
             Resource::File.fabricate_via_api! do |file|
               file.api_client = @user_api_client
               file.project = @different_project
-              file.branch = 'new_branch'
+              file.branch = "new_branch_#{SecureRandom.hex(8)}"
               file.commit_message = 'Add new file'
               file.name = "text-#{SecureRandom.hex(8)}.txt"
               file.content = 'New file'
@@ -61,7 +64,7 @@ module QA
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               commit.api_client = @user_api_client
               commit.project = @different_project
-              commit.branch = 'new_branch'
+              commit.branch = "new_branch_#{SecureRandom.hex(8)}"
               commit.start_branch = @different_project.default_branch
               commit.commit_message = 'Add new file'
               commit.add_files([

@@ -1105,17 +1105,6 @@ To get started quickly:
 Congratulations! You've configured an observable fault-tolerant Praefect
 cluster.
 
-## Strong consistency
-
-[Strong consistency](index.md#strong-consistency) is the default from GitLab 14.0.
-For configuration information on earlier versions, refer to documentation:
-
-- On your GitLab instance at `/help`.
-- The [13.12 documentation](https://docs.gitlab.com/13.12/ee/administration/gitaly/praefect.html#strong-consistency).
-
-For information on monitoring strong consistency, see the Gitaly Cluster
-[Prometheus metrics documentation](index.md#monitor-gitaly-cluster).
-
 ## Configure replication factor
 
 WARNING:

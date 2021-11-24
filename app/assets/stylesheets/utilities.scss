@@ -297,3 +297,8 @@ $gl-line-height-42: px-to-rem(42px);
     max-width: 50%;
   }
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2497
+.gl-z-index-200 {
+  z-index: 200;
+}

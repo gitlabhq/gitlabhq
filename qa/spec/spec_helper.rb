@@ -64,6 +64,13 @@ RSpec.configure do |config|
     end
   end
 
+  config.after(:suite) do |suite|
+    # If any tests failed, leave the resources behind to help troubleshoot
+    next if suite.reporter.failed_examples.present?
+
+    QA::Resource::ReusableProject.remove_all_via_api!
+  end
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

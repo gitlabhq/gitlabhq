@@ -15,7 +15,7 @@
 import { GlDropdown, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import eventHub from '../../event_hub';
 import JobItem from './job_item.vue';
 
@@ -98,6 +98,9 @@ export default {
       // warn the pipelines table to update
       this.$emit('pipelineActionRequestComplete');
     },
+    stageAriaLabel(title) {
+      return sprintf(__('View Stage: %{title}'), { title });
+    },
   },
 };
 </script>
@@ -106,9 +109,10 @@ export default {
   <gl-dropdown
     ref="dropdown"
     v-gl-tooltip.hover.ds0
+    v-gl-tooltip="stage.title"
     data-testid="mini-pipeline-graph-dropdown"
-    :title="stage.title"
     variant="link"
+    :aria-label="stageAriaLabel(stage.title)"
     :lazy="true"
     :popper-opts="{ placement: 'bottom' }"
     :toggle-class="['mini-pipeline-graph-dropdown-toggle', triggerButtonClass]"

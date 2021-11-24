@@ -4,14 +4,21 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Resource class in GitLab QA
+# Resource classes in GitLab QA
 
-Resources are primarily created using Browser UI steps, but can also
-be created via the API or the CLI.
+Resources are primarily created using Browser UI steps, but can also be created via the API or the CLI.
+
+A typical resource class is used to create a new resource that can be used in a single test. However, several tests can
+end up creating the same kind of resource and use it in ways that mean it could have been
+used by more than one test. Creating a new resource each time is not efficient. Therefore, we can also create reusable
+resources that are created once and can then be used by many tests.
+
+In the following section the content focuses on single-use resources, however it also applies to reusable resources.
+Information specific to [reusable resources is detailed below](#reusable-resources).
 
 ## How to properly implement a resource class?
 
-All resource classes should inherit from `Resource::Base`.
+All non-reusable resource classes should inherit from `Resource::Base`.
 
 There is only one mandatory method to implement to define a resource class.
 This is the `#fabricate!` method, which is used to build the resource via the
@@ -390,6 +397,96 @@ end
 ```
 
 In this case, the result is similar to calling `Resource::Shirt.fabricate!`.
+
+## Reusable resources
+
+Reusable resources are created by the first test that needs a particular kind of resource, and then any test that needs
+the same kind of resource can reuse it instead of creating a new one.
+
+The `ReusableProject` resource is an example of this class:
+
+```ruby
+module QA
+  module Resource
+    class ReusableProject < Project # A reusable resource inherits from the resource class that we want to be able to reuse.
+      prepend Reusable # The Reusable module mixes in some methods that help implement reuse.
+
+      def initialize
+        super # A ReusableProject is a Project so it should be initialized as one.
+
+        # Some Project attributes aren't valid and need to be overridden. For example, a ReusableProject keeps its name once it's created,
+        # so we don't add a random string to the name specified.
+        @add_name_uuid = false
+
+        # It has a default name, and a different name can be specified when a resource is first created. However, the same name must be
+        # provided any time that instance of the resource is used.
+        @name = "reusable_project"
+
+        # Several instances of a ReusableProject can exists as long as each is identified via a unique value for `reuse_as`.
+        @reuse_as = :default_project
+      end
+
+      # All reusable resource classes must validate that an instance meets the conditions that allow reuse. For example,
+      # by confirming that the name specified for the instance is valid and doesn't conflict with other instances.
+      def validate_reuse_preconditions
+        raise ResourceReuseError unless reused_name_valid?
+      end
+    end
+  end
+end
+```
+
+Consider some examples of how a reusable resource is used:
+
+```ruby
+# This will create a project.
+default_project = Resource::ReusableProject.fabricate_via_api!
+default_project.name # => "reusable_project"
+default_project.reuse_as # => :default_project
+```
+
+Then in another test we could reuse the project:
+
+```ruby
+# This will fetch the project created above rather than creating a new one.
+default_project_again = Resource::ReusableProject.fabricate_via_api!
+default_project_again.name # => "reusable_project"
+default_project_again.reuse_as # => :default_project
+```
+
+We can also create another project that we want to change in a way that might not be suitable for tests using the
+default project:
+
+```ruby
+project_with_member = Resource::ReusableProject.fabricate_via_api! do |project|
+  project.name = "project-with-member"
+  project.reuse_as = :project_with_member
+end
+
+project_with_member.add_member(user)
+```
+
+Another test can reuse that project:
+
+```ruby
+project_still_has_member = Resource::ReusableProject.fabricate_via_api! do |project|
+  project.name = "project-with-member"
+  project.reuse_as = :project_with_member
+end
+
+expect(project_still_has_member).to have_member(user)
+```
+
+However, if we don't provide the name again an error will be raised:
+
+```ruby
+Resource::ReusableProject.fabricate_via_api! do |project|
+  project.reuse_as = :project_with_member
+end
+
+# => ResourceReuseError will be raised because it will try to use the default name, "reusable_project", which doesn't
+# match the name specified when the project was first fabricated.
+```
 
 ## Where to ask for help?
 

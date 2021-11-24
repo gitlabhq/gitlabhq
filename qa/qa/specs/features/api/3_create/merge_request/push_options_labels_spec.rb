@@ -11,12 +11,7 @@ module QA
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
       let(:commit_message) { 'Add README.md' }
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { Resource::ReusableProject.fabricate_via_api! }
 
       def create_new_mr_via_push
         Resource::Repository::ProjectPush.fabricate! do |push|

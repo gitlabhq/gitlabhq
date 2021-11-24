@@ -71,7 +71,7 @@ module QA
       end
 
       context 'when recovering from dataloss after failover' do
-        it 'automatically reconciles', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/238187', type: :stale }, testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1266' do
+        it 'automatically reconciles', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1266' do
           # Start the old primary node again
           praefect_manager.start_primary_node
           praefect_manager.wait_for_primary_node_health_check

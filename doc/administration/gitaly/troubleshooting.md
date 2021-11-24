@@ -437,12 +437,12 @@ Praefect does not require a lot of CPU or memory, and can run on small virtual m
 Cloud services may place other limits on the resources that small VMs can use, such as
 disk IO and network traffic.
 
-Praefect nodes generate a lot of network traffic. The following symptoms can be observed
-if their network bandwidth has been throttled by the cloud service.
+Praefect nodes generate a lot of network traffic. The following symptoms can be observed if their network bandwidth has
+been throttled by the cloud service:
 
-- Poor performance of Git operations
-- High network latency
-- High memory use by Praefect
+- Poor performance of Git operations.
+- High network latency.
+- High memory use by Praefect.
 
 Possible solutions:
 
