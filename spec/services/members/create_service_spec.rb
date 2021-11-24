@@ -202,10 +202,6 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       { invite_source: '_invite_source_', tasks_to_be_done: %w(ci code), tasks_project_id: source.id }
     end
 
-    before do
-      stub_experiments(invite_members_for_task: true)
-    end
-
     it 'creates 2 task issues', :aggregate_failures do
       expect(TasksToBeDone::CreateWorker)
         .to receive(:perform_async)

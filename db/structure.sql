@@ -27,9 +27,8 @@ CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     AS $$
 BEGIN
   INSERT INTO loose_foreign_keys_deleted_records
-  (partition, fully_qualified_table_name, primary_key_value)
-  SELECT 1, TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table
-  ON CONFLICT DO NOTHING;
+  (fully_qualified_table_name, primary_key_value)
+  SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
 
   RETURN NULL;
 END
@@ -1016,7 +1015,7 @@ ALTER TABLE ONLY analytics_cycle_analytics_merge_request_stage_events ATTACH PAR
 
 CREATE TABLE loose_foreign_keys_deleted_records (
     id bigint NOT NULL,
-    partition bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
     primary_key_value bigint NOT NULL,
     status smallint DEFAULT 1 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -1037,7 +1036,7 @@ ALTER SEQUENCE loose_foreign_keys_deleted_records_id_seq OWNED BY loose_foreign_
 
 CREATE TABLE gitlab_partitions_static.loose_foreign_keys_deleted_records_1 (
     id bigint DEFAULT nextval('loose_foreign_keys_deleted_records_id_seq'::regclass) NOT NULL,
-    partition bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
     primary_key_value bigint NOT NULL,
     status smallint DEFAULT 1 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,

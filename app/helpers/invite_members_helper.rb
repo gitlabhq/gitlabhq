@@ -83,9 +83,8 @@ module InviteMembersHelper
   def show_invite_members_for_task?(source)
     return unless current_user
 
-    invite_members_for_task_experiment = experiment(:invite_members_for_task).enabled? && params[:open_modal] == 'invite_members_for_task'
     invite_for_help_continuous_onboarding = source.is_a?(Project) && experiment(:invite_for_help_continuous_onboarding, namespace: source.namespace).variant.name == 'candidate'
-    invite_members_for_task_experiment || invite_for_help_continuous_onboarding
+    params[:open_modal] == 'invite_members_for_task' || invite_for_help_continuous_onboarding
   end
 
   def tasks_to_be_done_options

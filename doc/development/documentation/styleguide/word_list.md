@@ -148,6 +148,13 @@ If you must refer to the checkbox, you can say it is selected or cleared. For ex
 - Ensure the **Protect environment** checkbox is cleared.
 - Ensure the **Protect environment** checkbox is selected.
 
+## checkout, check out
+
+Use **check out** as a verb. For the Git command, use `checkout`.
+
+- Use `git checkout` to check out a branch locally.
+- Check out the files you want to edit.
+
 ## CI/CD
 
 CI/CD is always uppercase. No need to spell it out on first use.
@@ -477,6 +484,19 @@ The word **once** means **one time**. Don't use it to mean **after** or **when**
 
 - Do: When the process is complete...
 - Do not: Once the process is complete...
+
+## only
+
+Put the word **only** next to the word it modifies.
+
+- You can create only private projects.
+
+In this example, **only** modifies the noun **projects**. The sentence means you can create one type of project--a private project.
+
+- You can only create private projects.
+
+In this example, **only** modifies the verb **create**. This sentence means that you can't perform other actions,
+like deleting private projects, or adding users to them.
 
 ## Owner
 

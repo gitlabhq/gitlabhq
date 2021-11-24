@@ -117,7 +117,6 @@ module Members
     end
 
     def create_tasks_to_be_done
-      return unless experiment(:invite_members_for_task).enabled?
       return if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
 
       valid_members = members.select { |member| member.valid? && member.member_task.valid? }

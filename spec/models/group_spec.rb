@@ -742,7 +742,6 @@ RSpec.describe Group do
       let!(:project) { create(:project, group: group) }
 
       before do
-        stub_experiments(invite_members_for_task: true)
         group.add_users([create(:user)], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
       end
 

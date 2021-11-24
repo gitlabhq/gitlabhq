@@ -21,6 +21,7 @@ module Gitlab
 
           from_union([failed_jobs, self.stuck])
         }
+        scope :except_succeeded, -> { where(status: self.statuses.except(:succeeded).values) }
 
         enum status: {
           pending: 0,

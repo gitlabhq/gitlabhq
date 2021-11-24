@@ -68,7 +68,6 @@ RSpec.describe Emails::InProductMarketing do
 
     with_them do
       before do
-        stub_experiments(invite_members_for_task: :candidate)
         group.add_owner(user)
       end
 

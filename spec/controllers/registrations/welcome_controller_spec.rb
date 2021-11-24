@@ -101,10 +101,6 @@ RSpec.describe Registrations::WelcomeController do
         context 'when tasks to be done are assigned' do
           let!(:member1) { create(:group_member, user: user, tasks_to_be_done: %w(ci code)) }
 
-          before do
-            stub_experiments(invite_members_for_task: true)
-          end
-
           it { is_expected.to redirect_to(issues_dashboard_path(assignee_username: user.username)) }
         end
       end

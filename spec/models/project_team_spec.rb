@@ -237,7 +237,6 @@ RSpec.describe ProjectTeam do
 
     context 'when `tasks_to_be_done` and `tasks_project_id` are passed' do
       before do
-        stub_experiments(invite_members_for_task: true)
         project.team.add_users([user1], :developer, tasks_to_be_done: %w(ci code), tasks_project_id: project.id)
       end
 

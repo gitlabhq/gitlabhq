@@ -98,7 +98,7 @@ describe('Blob content viewer component', () => {
   const findForkSuggestion = () => wrapper.findComponent(ForkSuggestion);
 
   beforeEach(() => {
-    gon.features = { refactorTextViewer: true };
+    gon.features = { highlightJs: true };
     isLoggedIn.mockReturnValue(true);
   });
 

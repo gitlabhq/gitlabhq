@@ -3,7 +3,7 @@ export const loadViewer = (type) => {
     case 'empty':
       return () => import(/* webpackChunkName: 'blob_empty_viewer' */ './empty_viewer.vue');
     case 'text':
-      return gon.features.refactorTextViewer
+      return gon.features.highlightJs
         ? () => import(/* webpackChunkName: 'blob_text_viewer' */ './text_viewer.vue')
         : null;
     case 'download':

@@ -17,13 +17,17 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     let_it_be(:stuck_job) { create(:batched_background_migration_job, status: :pending, updated_at: fixed_time - described_class::STUCK_JOBS_TIMEOUT) }
     let_it_be(:failed_job) { create(:batched_background_migration_job, status: :failed, attempts: 1) }
 
-    before_all do
-      create(:batched_background_migration_job, status: :failed, attempts: described_class::MAX_ATTEMPTS)
-      create(:batched_background_migration_job, status: :succeeded)
-    end
+    let!(:max_attempts_failed_job) { create(:batched_background_migration_job, status: :failed, attempts: described_class::MAX_ATTEMPTS) }
+    let!(:succeeded_job) { create(:batched_background_migration_job, status: :succeeded) }
 
     before do
       travel_to fixed_time
+    end
+
+    describe '.except_succeeded' do
+      it 'returns not succeeded jobs' do
+        expect(described_class.except_succeeded).to contain_exactly(pending_job, running_job, stuck_job, failed_job, max_attempts_failed_job)
+      end
     end
 
     describe '.active' do

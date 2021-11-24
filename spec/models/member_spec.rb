@@ -681,8 +681,6 @@ RSpec.describe Member do
     end
 
     it 'schedules a TasksToBeDone::CreateWorker task' do
-      stub_experiments(invite_members_for_task: true)
-
       member_task = create(:member_task, member: member, project: member.project)
 
       expect(TasksToBeDone::CreateWorker)

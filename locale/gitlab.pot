@@ -27032,6 +27032,9 @@ msgstr ""
 msgid "ProjectOverview|Unstar"
 msgstr ""
 
+msgid "ProjectOverview|You don't have permission to fork this project"
+msgstr ""
+
 msgid "ProjectOverview|You have reached your project limit"
 msgstr ""
 

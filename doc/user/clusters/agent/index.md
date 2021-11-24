@@ -135,6 +135,27 @@ with the following differences:
 
 ## Remove the GitLab Kubernetes Agent
 
+1. Get the `<cluster-agent-id>` and the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
+For GitLab.com, go to <https://gitlab.com/-/graphql-explorer> to open GraphQL Explorer.
+For self-managed GitLab instances, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your own instance's URL.
+
+   ```graphql
+   query{
+     project(fullPath: "<full-path-to-agent-configuration-project>") {
+       clusterAgent(name: "<agent-name>") {
+         id
+         tokens {
+           edges {
+             node {
+               id
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
 1. Remove an Agent record with GraphQL by deleting the `clusterAgent` and the `clusterAgentToken`.
 
    ```graphql

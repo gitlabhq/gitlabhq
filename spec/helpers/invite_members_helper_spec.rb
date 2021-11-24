@@ -93,22 +93,17 @@ RSpec.describe InviteMembersHelper do
         end
       end
 
-      context 'the invite_members_for_task experiment' do
-        where(:invite_members_for_task_enabled?, :open_modal_param_present?, :logged_in?, :expected?) do
-          true  | true  | true  | true
-          true  | true  | false | false
-          true  | false | true  | false
-          true  | false | false | false
-          false | true  | true  | false
-          false | true  | false | false
-          false | false | true  | false
-          false | false | false | false
+      context 'inviting members for tasks' do
+        where(:open_modal_param_present?, :logged_in?, :expected?) do
+          true  | true  | true
+          true  | false | false
+          false | true  | false
+          false | false | false
         end
 
         with_them do
           before do
             allow(helper).to receive(:current_user).and_return(developer) if logged_in?
-            stub_experiments(invite_members_for_task: true) if invite_members_for_task_enabled?
             allow(helper).to receive(:params).and_return({ open_modal: 'invite_members_for_task' }) if open_modal_param_present?
           end
 

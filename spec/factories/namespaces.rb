@@ -5,8 +5,6 @@ FactoryBot.define do
     sequence(:name) { |n| "namespace#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
 
-    # TODO: can this be moved into the :user_namespace factory?
-    #       evaluate in issue https://gitlab.com/gitlab-org/gitlab/-/issues/341070
     owner { association(:user, strategy: :build, namespace: instance, username: path) }
 
     trait :with_aggregation_schedule do

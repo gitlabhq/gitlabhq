@@ -10,7 +10,12 @@ module BulkImports
       ndjson_pipeline!
 
       def transform(context, data)
+        return unless data
+
         relation_hash, relation_index = data
+
+        return unless relation_hash
+
         relation_definition = import_export_config.top_relation_tree(relation)
 
         relation_object = deep_transform_relation!(relation_hash, relation, relation_definition) do |key, hash|

@@ -595,7 +595,7 @@ User.active.count
 User.billable.count
 
 # The historical max on the instance as of the past year
-::HistoricalData.max_historical_user_count
+::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
 ```
 
 Using cURL and jq (up to a max 100, see the [pagination docs](../../api/index.md#pagination)):

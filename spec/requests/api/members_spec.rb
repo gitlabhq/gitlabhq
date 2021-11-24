@@ -415,10 +415,6 @@ RSpec.describe API::Members do
       end
 
       context 'with tasks_to_be_done and tasks_project_id in the params' do
-        before do
-          stub_experiments(invite_members_for_task: true)
-        end
-
         let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
 
         context 'when there is 1 user to add' do

@@ -166,16 +166,6 @@ module Gitlab
             link(s_('InProductMarketing|update your preferences'), preference_link)
           end
 
-          def invite_members_for_task_experiment_enabled?
-            return unless user.can?(:admin_group_member, group)
-
-            experiment(:invite_members_for_task, namespace: group) do |e|
-              e.candidate { true }
-              e.record!
-              e.run
-            end
-          end
-
           def validate_series!
             raise ArgumentError, "Only #{total_series} series available for this track." unless @series.between?(0, total_series - 1)
           end

@@ -133,11 +133,9 @@ You can mark that content for translation with:
 
 The `~/locale` module exports the following key functions for externalization:
 
-- `__()` (double underscore parenthesis)
-- `s__()` (namespaced double underscore parenthesis)
-- `__()` Mark content for translation (note the double underscore).
-- `s__()` Mark namespaced content for translation
-- `n__()` Mark pluralized content for translation
+- `__()` Mark content for translation (double underscore parenthesis).
+- `s__()` Mark namespaced content for translation (s double underscore parenthesis).
+- `n__()` Mark pluralized content for translation (n double underscore parenthesis).
 
 ```javascript
 import { __, s__, n__ } from '~/locale';

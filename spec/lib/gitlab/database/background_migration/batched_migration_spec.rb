@@ -23,6 +23,28 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     subject { build(:batched_background_migration) }
 
     it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
+
+    context 'when there are failed jobs' do
+      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let!(:batched_job) { create(:batched_background_migration_job, batched_migration: batched_migration, status: :failed) }
+
+      it 'raises an exception' do
+        expect { batched_migration.finished! }.to raise_error(ActiveRecord::RecordInvalid)
+
+        expect(batched_migration.reload.status).to eql 'active'
+      end
+    end
+
+    context 'when the jobs are completed' do
+      let(:batched_migration) { create(:batched_background_migration, status: :active, total_tuple_count: 100) }
+      let!(:batched_job) { create(:batched_background_migration_job, batched_migration: batched_migration, status: :succeeded) }
+
+      it 'finishes the migration' do
+        batched_migration.finished!
+
+        expect(batched_migration.status).to eql 'finished'
+      end
+    end
   end
 
   describe '.queue_order' do

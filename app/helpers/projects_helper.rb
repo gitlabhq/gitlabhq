@@ -405,6 +405,16 @@ module ProjectsHelper
     project.path_with_namespace
   end
 
+  def fork_button_disabled_tooltip(project)
+    return unless current_user
+
+    if !current_user.can?(:fork_project, project)
+      s_("ProjectOverview|You don't have permission to fork this project")
+    elsif !current_user.can?(:create_fork)
+      s_('ProjectOverview|You have reached your project limit')
+    end
+  end
+
   private
 
   def tab_ability_map
