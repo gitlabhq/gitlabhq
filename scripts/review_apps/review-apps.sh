@@ -147,6 +147,13 @@ function disable_sign_ups() {
   fi
 }
 
+function create_sample_projects() {
+  local create_sample_projects_rb="root_user = User.find_by_username('root'); 1.times { |i| params = { namespace_id: root_user.namespace.id, name: 'sample-project' + i.to_s, path: 'sample-project' + i.to_s, template_name: 'sample' }; ::Projects::CreateFromTemplateService.new(root_user, params).execute }"
+
+  # Queue jobs to create sample projects for root user namespace from sample data project template
+  retry "run_task \"${create_sample_projects_rb}\""
+}
+
 function check_kube_domain() {
   echoinfo "Checking that Kube domain exists..." true
 

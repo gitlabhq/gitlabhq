@@ -53,6 +53,7 @@ RSpec.describe 'Database schema' do
     identities: %w[user_id],
     import_failures: %w[project_id],
     issues: %w[last_edited_by_id state_id],
+    issue_emails: %w[email_message_id],
     jira_tracker_data: %w[jira_issue_transition_id],
     keys: %w[user_id],
     label_links: %w[target_id],

@@ -252,4 +252,34 @@ RSpec.describe BulkImports::Entity, type: :model do
         .to eq("/groups/#{entity.encoded_source_full_path}/export_relations/download?relation=test")
     end
   end
+
+  describe '#entity_type' do
+    it 'returns entity type' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.entity_type).to eq('group')
+      expect(project_entity.entity_type).to eq('project')
+    end
+  end
+
+  describe '#project?' do
+    it 'returns true if project entity' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.project?).to eq(false)
+      expect(project_entity.project?).to eq(true)
+    end
+  end
+
+  describe '#group?' do
+    it 'returns true if group entity' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.group?).to eq(true)
+      expect(project_entity.group?).to eq(false)
+    end
+  end
 end

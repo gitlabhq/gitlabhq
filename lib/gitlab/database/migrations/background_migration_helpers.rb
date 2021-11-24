@@ -258,7 +258,9 @@ module Gitlab
 
           # We keep track of the estimated number of tuples to reason later
           # about the overall progress of a migration.
-          migration.total_tuple_count = Gitlab::Database::PgClass.for_table(batch_table_name)&.cardinality_estimate
+          migration.total_tuple_count = Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PgClass.for_table(batch_table_name)&.cardinality_estimate
+          end
           migration.save!
 
           migration

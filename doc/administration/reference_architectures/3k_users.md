@@ -58,6 +58,8 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 3k
+skinparam linetype ortho
+
 card "**External Load Balancer**" as elb #6a9be7
 card "**Internal Load Balancer**" as ilb #9370DB
 
@@ -66,7 +68,10 @@ together {
   collections "**Sidekiq** x4" as sidekiq #ff8dd1
 }
 
-card "**Prometheus + Grafana**" as monitor #7FFFD4
+together {
+  card "**Prometheus + Grafana**" as monitor #7FFFD4
+  collections "**Consul** x3" as consul #e76a9b
+}
 
 card "Gitaly Cluster" as gitaly_cluster {
   collections "**Praefect** x3" as praefect #FF8C00
@@ -79,47 +84,45 @@ card "Gitaly Cluster" as gitaly_cluster {
 
 card "Database" as database {
   collections "**PGBouncer** x3" as pgbouncer #4EA7FF
-  card "**PostgreSQL** (Primary)" as postgres_primary #4EA7FF
-  collections "**PostgreSQL** (Secondary) x2" as postgres_secondary #4EA7FF
+  card "**PostgreSQL** //Primary//" as postgres_primary #4EA7FF
+  collections "**PostgreSQL** //Secondary// x2" as postgres_secondary #4EA7FF
 
   pgbouncer -[#4EA7FF]-> postgres_primary
   postgres_primary .[#4EA7FF]> postgres_secondary
 }
 
-card "**Consul + Sentinel**" as consul_sentinel {
- collections "**Consul** x3" as consul #e76a9b
- collections "**Redis Sentinel** x3" as sentinel #e6e727
-}
-
 card "Redis" as redis {
   collections "**Redis** x3" as redis_nodes #FF6347
-
-  redis_nodes <.[#FF6347]- sentinel
 }
 
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]--> monitor
+elb -[#6a9be7,norank]--> monitor
 
-gitlab -[#32CD32]--> ilb
-gitlab -[#32CD32]-> object_storage
-gitlab -[#32CD32]---> redis
+gitlab -[#32CD32,norank]--> ilb
+gitlab -[#32CD32]r-> object_storage
+gitlab -[#32CD32]----> redis
+gitlab .[#32CD32]----> database
 gitlab -[hidden]-> monitor
 gitlab -[hidden]-> consul
 
-sidekiq -[#ff8dd1]--> ilb
-sidekiq -[#ff8dd1]-> object_storage
-sidekiq -[#ff8dd1]---> redis
+sidekiq -[#ff8dd1,norank]--> ilb
+sidekiq -[#ff8dd1]r-> object_storage
+sidekiq -[#ff8dd1]----> redis
+sidekiq .[#ff8dd1]----> database
 sidekiq -[hidden]-> monitor
 sidekiq -[hidden]-> consul
 
-ilb -[#9370DB]-> gitaly_cluster
-ilb -[#9370DB]-> database
+ilb -[#9370DB]--> gitaly_cluster
+ilb -[#9370DB]--> database
+ilb -[hidden]--> redis
+ilb -[hidden]u-> consul
+ilb -[hidden]u-> monitor
 
 consul .[#e76a9b]u-> gitlab
 consul .[#e76a9b]u-> sidekiq
-consul .[#e76a9b]> monitor
+consul .[#e76a9b]r-> monitor
 consul .[#e76a9b]-> database
 consul .[#e76a9b]-> gitaly_cluster
 consul .[#e76a9b,norank]--> redis
@@ -769,8 +772,8 @@ run: sentinel: (pid 30098) 76832s; run: log: (pid 29704) 76850s
 
 ## Configure PostgreSQL
 
-In this section, you'll be guided through configuring an external PostgreSQL database
-to be used with GitLab.
+In this section, you'll be guided through configuring a highly available PostgreSQL
+cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
@@ -786,11 +789,24 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
+1. For improved performance, configuring [Database Load Balancing](../postgresql/database_load_balancing.md)
+   with multiple read replicas is recommended.
 
 See [Configure GitLab using an external PostgreSQL service](../postgresql/external.md) for
 further configuration steps.
 
 ### Standalone PostgreSQL using Omnibus GitLab
+
+The recommended Omnibus GitLab configuration for a PostgreSQL cluster with
+replication and failover requires:
+
+- A minimum of three PostgreSQL nodes.
+- A minimum of three Consul server nodes.
+- A minimum of three PgBouncer nodes that track and handle primary database reads and writes.
+  - An [internal load balancer](#configure-the-internal-load-balancer) (TCP) to balance requests between the PgBouncer nodes.
+- [Database Load Balancing](../postgresql/database_load_balancing.md) enabled.
+
+  A local PgBouncer service to be configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
 
 The following IPs will be used as an example:
 
@@ -846,8 +862,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. On every database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except Patroni and Consul
-   roles(['patroni_role'])
+   # Disable all components except Patroni, PgBouncer and Consul
+   roles(['patroni_role', 'pgbouncer_role'])
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
@@ -891,6 +907,15 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # Replace 10.6.0.0/24 with Network Address
    postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
+
+   # Local PgBouncer service for Database Load Balancing
+   pgbouncer['databases'] = {
+      gitlabhq_production: {
+         host: "127.0.0.1",
+         user: "pgbouncer",
+         password: '<pgbouncer_password_hash>'
+      }
+   }
 
    # Set the network addresses that the exporters will listen on for monitoring
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -952,9 +977,11 @@ If the 'State' column for any node doesn't say "running", check the
   </a>
 </div>
 
-## Configure PgBouncer
+### Configure PgBouncer
 
-Now that the PostgreSQL servers are all set up, let's configure PgBouncer.
+Now that the PostgreSQL servers are all set up, let's configure PgBouncer
+for tracking and handling reads/writes to the primary database.
+
 The following IPs will be used as an example:
 
 - `10.6.0.21`: PgBouncer 1
@@ -1613,8 +1640,8 @@ To configure the Sidekiq nodes, one each one:
    gitlab_rails['db_host'] = '10.6.0.40' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
-   gitlab_rails['db_adapter'] = 'postgresql'
-   gitlab_rails['db_encoding'] = 'unicode'
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.31', '10.6.0.32', '10.6.0.33'] } # PostgreSQL IPs
+
    ## Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -1773,6 +1800,8 @@ On each node perform the following:
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = '<postgresql_user_password>'
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['10.6.0.31', '10.6.0.32', '10.6.0.33'] } # PostgreSQL IPs
+
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -2183,25 +2212,21 @@ For all PaaS solutions that involve configuring instances, it is strongly recomm
 
 ```plantuml
 @startuml 3k
+skinparam linetype ortho
 
 card "Kubernetes via Helm Charts" as kubernetes {
   card "**External Load Balancer**" as elb #6a9be7
 
   together {
-    collections "**Webservice** x2" as gitlab #32CD32
-    collections "**Sidekiq** x3" as sidekiq #ff8dd1
+    collections "**Webservice** x4" as gitlab #32CD32
+    collections "**Sidekiq** x4" as sidekiq #ff8dd1
   }
 
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
   card "**Supporting Services**" as support
 }
 
 card "**Internal Load Balancer**" as ilb #9370DB
-
-card "**Consul + Sentinel**" as consul_sentinel {
- collections "**Consul** x3" as consul #e76a9b
- collections "**Redis Sentinel** x3" as sentinel #e6e727
-}
+collections "**Consul** x3" as consul #e76a9b
 
 card "Gitaly Cluster" as gitaly_cluster {
   collections "**Praefect** x3" as praefect #FF8C00
@@ -2221,41 +2246,33 @@ card "Database" as database {
   postgres_primary .[#4EA7FF]> postgres_secondary
 }
 
-card "Redis" as redis {
+card "redis" as redis {
   collections "**Redis** x3" as redis_nodes #FF6347
-
-  redis_nodes <.[#FF6347]- sentinel
 }
 
 cloud "**Object Storage**" as object_storage #white
 
 elb -[#6a9be7]-> gitlab
-elb -[#6a9be7]-> monitor
+elb -[hidden]-> sidekiq
 elb -[hidden]-> support
 
 gitlab -[#32CD32]--> ilb
-gitlab -[#32CD32]-> object_storage
-gitlab -[#32CD32]---> redis
-gitlab -[hidden]--> consul
+gitlab -[#32CD32]r--> object_storage
+gitlab -[#32CD32,norank]----> redis
+gitlab -[#32CD32]----> database
 
 sidekiq -[#ff8dd1]--> ilb
-sidekiq -[#ff8dd1]-> object_storage
-sidekiq -[#ff8dd1]---> redis
-sidekiq -[hidden]--> consul
+sidekiq -[#ff8dd1]r--> object_storage
+sidekiq -[#ff8dd1,norank]----> redis
+sidekiq .[#ff8dd1]----> database
 
-ilb -[#9370DB]-> gitaly_cluster
-ilb -[#9370DB]-> database
+ilb -[#9370DB]--> gitaly_cluster
+ilb -[#9370DB]--> database
+ilb -[hidden,norank]--> redis
 
-consul .[#e76a9b]-> database
-consul .[#e76a9b]-> gitaly_cluster
-consul .[#e76a9b,norank]--> redis
-
-monitor .[#7FFFD4]> consul
-monitor .[#7FFFD4]-> database
-monitor .[#7FFFD4]-> gitaly_cluster
-monitor .[#7FFFD4,norank]--> redis
-monitor .[#7FFFD4]> ilb
-monitor .[#7FFFD4,norank]u--> elb
+consul .[#e76a9b]--> database
+consul .[#e76a9b,norank]--> gitaly_cluster
+consul .[#e76a9b]--> redis
 
 @enduml
 ```

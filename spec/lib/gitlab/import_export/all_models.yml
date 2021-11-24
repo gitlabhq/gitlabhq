@@ -61,6 +61,7 @@ issues:
 - pending_escalations
 - customer_relations_contacts
 - issue_customer_relations_contacts
+- email
 work_item_type:
 - issues
 events:

@@ -317,6 +317,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :google_cloud, only: [:index]
 
+        namespace :google_cloud do
+          resources :service_accounts, only: [:index, :create]
+        end
+
         resources :environments, except: [:destroy] do
           member do
             post :stop

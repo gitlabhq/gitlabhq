@@ -5,11 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
   before do
     create_list(:project, 3)
+    create_list(:ci_instance_variable, 2)
     create(:identity)
     create(:group)
   end
 
-  let(:models) { [Project, Identity, Group, Namespace] }
+  let(:models) { [Project, Ci::InstanceVariable, Identity, Group, Namespace] }
   let(:strategy) { described_class.new(models) }
 
   subject { strategy.count }
@@ -20,7 +21,8 @@ RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
         Project => threshold + 1,
         Identity => threshold - 1,
         Group => threshold + 1,
-        Namespace => threshold + 1
+        Namespace => threshold + 1,
+        Ci::InstanceVariable => threshold + 1
       }
     end
 
@@ -43,12 +45,14 @@ RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
         expect(Project).not_to receive(:count)
         expect(Group).not_to receive(:count)
         expect(Namespace).not_to receive(:count)
+        expect(Ci::InstanceVariable).not_to receive(:count)
 
         result = subject
         expect(result[Project]).to eq(3)
         expect(result[Group]).to eq(1)
         # 1-Group, 3 namespaces for each project and 3 project namespaces for each project
         expect(result[Namespace]).to eq(7)
+        expect(result[Ci::InstanceVariable]).to eq(2)
       end
     end
 

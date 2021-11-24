@@ -11,6 +11,7 @@ RSpec.describe BulkImports::Projects::Stage do
       [1, BulkImports::Projects::Pipelines::RepositoryPipeline],
       [2, BulkImports::Common::Pipelines::LabelsPipeline],
       [2, BulkImports::Common::Pipelines::MilestonesPipeline],
+      [2, BulkImports::Common::Pipelines::BadgesPipeline],
       [3, BulkImports::Projects::Pipelines::IssuesPipeline],
       [3, BulkImports::Projects::Pipelines::SnippetsPipeline],
       [4, BulkImports::Common::Pipelines::BoardsPipeline],

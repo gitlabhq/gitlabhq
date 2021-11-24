@@ -2,7 +2,7 @@
 
 module Gitlab
   module Database
-    class PgClass < ActiveRecord::Base
+    class PgClass < SharedModel
       self.table_name = 'pg_class'
 
       def self.for_table(relname)

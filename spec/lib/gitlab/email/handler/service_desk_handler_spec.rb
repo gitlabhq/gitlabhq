@@ -12,6 +12,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
 
   let(:email_raw) { email_fixture('emails/service_desk.eml') }
   let(:author_email) { 'jake@adventuretime.ooo' }
+  let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com' }
+
   let_it_be(:group) { create(:group, :private, name: "email") }
 
   let(:expected_description) do
@@ -40,6 +42,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         expect(new_issue.all_references.all).to be_empty
         expect(new_issue.title).to eq("The message subject! @all")
         expect(new_issue.description).to eq(expected_description.strip)
+        expect(new_issue.email&.email_message_id).to eq(message_id)
       end
 
       it 'creates an issue_email_participant' do
@@ -70,6 +73,95 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
         let(:email_raw) { fixture_file('emails/service_desk_legacy.eml') }
 
         it_behaves_like 'a new issue request'
+      end
+
+      context 'when replying to issue creation email' do
+        def receive_reply
+          reply_email_raw = email_fixture('emails/service_desk_reply.eml')
+
+          second_receiver = Gitlab::Email::Receiver.new(reply_email_raw)
+          second_receiver.execute
+        end
+
+        context 'when an issue with message_id has been found' do
+          before do
+            receiver.execute
+          end
+
+          subject do
+            receive_reply
+          end
+
+          it 'does not create an additional issue' do
+            expect { subject }.not_to change { Issue.count }
+          end
+
+          it 'adds a comment to the created issue' do
+            subject
+
+            notes = Issue.last.notes
+            new_note = notes.first
+
+            expect(notes.count).to eq(1)
+            expect(new_note.note).to eq("Service desk reply!\n\n`/label ~label2`")
+            expect(new_note.author).to eql(User.support_bot)
+          end
+
+          it 'does not send thank you email' do
+            expect(Notify).not_to receive(:service_desk_thank_you_email)
+
+            subject
+          end
+
+          context 'when issue_email_participants FF is enabled' do
+            it 'creates 2 issue_email_participants' do
+              subject
+
+              expect(Issue.last.issue_email_participants.map(&:email))
+                .to match_array(%w(alan@adventuretime.ooo jake@adventuretime.ooo))
+            end
+          end
+
+          context 'when issue_email_participants FF is disabled' do
+            before do
+              stub_feature_flags(issue_email_participants: false)
+            end
+
+            it 'creates only 1 issue_email_participant' do
+              subject
+
+              expect(Issue.last.issue_email_participants.map(&:email))
+                .to match_array(%w(jake@adventuretime.ooo))
+            end
+          end
+        end
+
+        context 'when an issue with message_id has not been found' do
+          subject do
+            receive_reply
+          end
+
+          it 'creates a new issue correctly' do
+            expect { subject }.to change { Issue.count }.by(1)
+
+            issue = Issue.last
+
+            expect(issue.description).to eq("Service desk reply!\n\n`/label ~label2`")
+          end
+
+          it 'sends thank you email once' do
+            expect(Notify).to receive(:service_desk_thank_you_email).once.and_return(double(deliver_later: true))
+
+            subject
+          end
+
+          it 'creates 1 issue_email_participant' do
+            subject
+
+            expect(Issue.last.issue_email_participants.map(&:email))
+              .to match_array(%w(alan@adventuretime.ooo))
+          end
+        end
       end
 
       context 'when using issue templates' do
@@ -270,6 +362,20 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
       end
     end
 
+    context 'when issue email creation fails' do
+      before do
+        allow(::Issue::Email).to receive(:create!).and_raise(StandardError)
+      end
+
+      it 'still creates a new issue' do
+        expect { receiver.execute }.to change { Issue.count }.by(1)
+      end
+
+      it 'does not create issue email record' do
+        expect { receiver.execute }.not_to change { Issue::Email.count }
+      end
+    end
+
     context 'when rate limiting is in effect', :freeze_time, :clean_gitlab_redis_rate_limiting do
       let(:receiver) { Gitlab::Email::Receiver.new(email_raw) }
 
@@ -291,19 +397,19 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
           rescue RateLimitedService::RateLimitedError
           end.to change { Issue.count }.by(1)
         end
+      end
 
-        context 'when requests are sent by different users' do
-          let(:email_raw_2) { email_fixture('emails/service_desk_forwarded.eml') }
-          let(:receiver2) { Gitlab::Email::Receiver.new(email_raw_2) }
+      context 'when requests are sent by different users' do
+        let(:email_raw_2) { email_fixture('emails/service_desk_forwarded.eml') }
+        let(:receiver2) { Gitlab::Email::Receiver.new(email_raw_2) }
 
-          subject do
-            receiver.execute
-            receiver2.execute
-          end
+        subject do
+          receiver.execute
+          receiver2.execute
+        end
 
-          it 'creates 2 issues' do
-            expect { subject }.to change { Issue.count }.by(2)
-          end
+        it 'creates 2 issues' do
+          expect { subject }.to change { Issue.count }.by(2)
         end
       end
 
@@ -389,6 +495,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
     context 'when the email is forwarded through an alias' do
       let(:author_email) { 'jake.g@adventuretime.ooo' }
       let(:email_raw) { email_fixture('emails/service_desk_forwarded.eml') }
+      let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=fdskbsf@mail.gmail.com' }
 
       it_behaves_like 'a new issue request'
     end

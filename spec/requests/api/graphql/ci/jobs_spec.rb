@@ -90,7 +90,7 @@ RSpec.describe 'Query.project.pipeline' do
         create(:ci_build_need, build: deploy_job, name: 'rspec 1 2')
       end
 
-      it 'reports the build needs and previous stages with no duplicates' do
+      it 'reports the build needs and previous stages with no duplicates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346433' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(

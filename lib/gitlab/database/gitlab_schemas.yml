@@ -261,6 +261,7 @@ issuable_severities: :gitlab_main
 issuable_slas: :gitlab_main
 issue_assignees: :gitlab_main
 issue_customer_relations_contacts: :gitlab_main
+issue_emails: :gitlab_main
 issue_email_participants: :gitlab_main
 issue_links: :gitlab_main
 issue_metrics: :gitlab_main

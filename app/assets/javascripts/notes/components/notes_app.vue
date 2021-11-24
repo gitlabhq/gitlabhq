@@ -104,6 +104,10 @@ export default {
         });
       }
 
+      if (this.sortDirDesc) {
+        return skeletonNotes.concat(this.discussions);
+      }
+
       return this.discussions.concat(skeletonNotes);
     },
     canReply() {

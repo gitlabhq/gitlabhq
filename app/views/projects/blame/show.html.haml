@@ -27,7 +27,7 @@
           - commit_data = @blame.commit_data(blame_group[:commit])
           - line_count = blame_group[:lines].count
 
-          %tr
+          %tr{ style: intrinsic_row_css(line_count) }
             %td.blame-commit{ class: commit_data.age_map_class }
               .commit
                 = commit_data.author_avatar

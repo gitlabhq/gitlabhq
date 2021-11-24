@@ -5,7 +5,7 @@ module RuboCop
     module Graphql
       class AuthorizeTypes < RuboCop::Cop::Cop
         MSG = 'Add an `authorize :ability` call to the type: '\
-              'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization'
+              'https://docs.gitlab.com/ee/development/graphql_guide/authorization.html#type-authorization'
 
         # We want to exclude our own basetypes and scalars
         ALLOWED_TYPES = %w[BaseEnum BaseEdge BaseScalar BasePermissionType MutationType SubscriptionType

@@ -32,11 +32,11 @@ module Gitlab
         def execute
           raise ProjectNotFound if project.nil?
 
-          create_issue!
+          create_issue_or_note
 
           if from_address
             add_email_participant
-            send_thank_you_email
+            send_thank_you_email unless reply_email?
           end
         end
 
@@ -82,6 +82,14 @@ module Gitlab
           project.present? && slug == project.full_path_slug
         end
 
+        def create_issue_or_note
+          if reply_email?
+            create_note_from_reply_email
+          else
+            create_issue!
+          end
+        end
+
         def create_issue!
           @issue = ::Issues::CreateService.new(
             project: project,
@@ -97,9 +105,33 @@ module Gitlab
 
           raise InvalidIssueError unless @issue.persisted?
 
-          if service_desk_setting&.issue_template_missing?
-            create_template_not_found_note(@issue)
+          begin
+            ::Issue::Email.create!(issue: @issue, email_message_id: mail.message_id)
+          rescue StandardError => e
+            Gitlab::ErrorTracking.log_exception(e)
           end
+
+          if service_desk_setting&.issue_template_missing?
+            create_template_not_found_note
+          end
+        end
+
+        def issue_from_reply_to
+          strong_memoize(:issue_from_reply_to) do
+            next unless mail.in_reply_to
+
+            Issue::Email.find_by_email_message_id(mail.in_reply_to)&.issue
+          end
+        end
+
+        def reply_email?
+          issue_from_reply_to.present?
+        end
+
+        def create_note_from_reply_email
+          @issue = issue_from_reply_to
+
+          create_note(message_including_reply)
         end
 
         def send_thank_you_email
@@ -124,7 +156,7 @@ module Gitlab
           end
         end
 
-        def create_template_not_found_note(issue)
+        def create_template_not_found_note
           issue_template_key = service_desk_setting&.issue_template_key
 
           warning_note = <<-MD.strip_heredoc
@@ -132,15 +164,15 @@ module Gitlab
             Please check service desk settings and update the file to be used.
           MD
 
-          note_params = {
-            noteable: issue,
-            note: warning_note
-          }
+          create_note(warning_note)
+        end
 
+        def create_note(note)
           ::Notes::CreateService.new(
             project,
             User.support_bot,
-            note_params
+            noteable: @issue,
+            note: note
           ).execute
         end
 
@@ -157,6 +189,8 @@ module Gitlab
         end
 
         def add_email_participant
+          return if reply_email? && !Feature.enabled?(:issue_email_participants, @issue.project)
+
           @issue.issue_email_participants.create(email: from_address)
         end
       end

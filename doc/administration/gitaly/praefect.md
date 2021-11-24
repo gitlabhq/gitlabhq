@@ -255,7 +255,7 @@ this, you must point Praefect to PgBouncer by setting Praefect database paramete
 
 ```ruby
 praefect['database_host'] = PGBOUNCER_HOST
-praefect['database_port'] = 6432
+praefect['database_port'] = 5432
 praefect['database_user'] = 'praefect'
 praefect['database_password'] = PRAEFECT_SQL_PASSWORD
 praefect['database_dbname'] = 'praefect_production'

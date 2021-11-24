@@ -104,8 +104,12 @@ class BulkImports::Entity < ApplicationRecord
     end
   end
 
+  def entity_type
+    source_type.gsub('_entity', '')
+  end
+
   def pluralized_name
-    source_type.gsub('_entity', '').pluralize
+    entity_type.pluralize
   end
 
   def export_relations_url_path
@@ -114,6 +118,14 @@ class BulkImports::Entity < ApplicationRecord
 
   def relation_download_url_path(relation)
     "#{export_relations_url_path}/download?relation=#{relation}"
+  end
+
+  def project?
+    source_type == 'project_entity'
+  end
+
+  def group?
+    source_type == 'group_entity'
   end
 
   private

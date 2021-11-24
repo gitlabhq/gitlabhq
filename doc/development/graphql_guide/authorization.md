@@ -43,6 +43,11 @@ such as short pages, which can expose the presence of confidential resources.
 See [`authorization_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/features/authorization_spec.rb)
 for examples of all the authorization schemes discussed here.
 
+<!--
+    NOTE: if you change this heading (or the location to this file), make sure to update
+          the referenced link in rubocop/cop/graphql/authorize_types.rb
+-->
+
 ## Type authorization
 
 Authorize a type by passing an ability to the `authorize` method. All

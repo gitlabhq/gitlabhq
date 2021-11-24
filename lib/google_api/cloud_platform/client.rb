@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require 'securerandom'
 require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
 require 'google/apis/container_v1beta1'
 require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
+require 'google/apis/iam_v1'
 
 module GoogleApi
   module CloudPlatform
@@ -81,6 +83,51 @@ module GoogleApi
       def parse_operation_id(self_link)
         m = self_link.match(%r{projects/.*/zones/.*/operations/(.*)})
         m[1] if m
+      end
+
+      def list_projects
+        result = []
+
+        service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
+        service.authorization = access_token
+
+        response = service.fetch_all(items: :projects) do |token|
+          service.list_projects
+        end
+
+        # Google API results are paged by default, so we need to iterate through
+        response.each do |project|
+          result.append(project)
+        end
+
+        result
+      end
+
+      def create_service_account(gcp_project_id, display_name, description)
+        name = "projects/#{gcp_project_id}"
+
+        # initialize google iam service
+        service = Google::Apis::IamV1::IamService.new
+        service.authorization = access_token
+
+        # generate account id
+        random_account_id = "gitlab-" + SecureRandom.hex(11)
+
+        body_params = { account_id: random_account_id,
+                        service_account: { display_name: display_name,
+                                           description: description } }
+
+        request_body = Google::Apis::IamV1::CreateServiceAccountRequest.new(**body_params)
+        service.create_service_account(name, request_body)
+      end
+
+      def create_service_account_key(gcp_project_id, service_account_id)
+        service = Google::Apis::IamV1::IamService.new
+        service.authorization = access_token
+
+        name = "projects/#{gcp_project_id}/serviceAccounts/#{service_account_id}"
+        request_body = Google::Apis::IamV1::CreateServiceAccountKeyRequest.new
+        service.create_service_account_key(name, request_body)
       end
 
       private

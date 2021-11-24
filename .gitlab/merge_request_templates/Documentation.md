@@ -20,7 +20,6 @@
 
 If you are only adding documentation, do not add any of the following labels:
 
-- `~"type::feature"`
 - `~"frontend"`
 - `~"backend"`
 - `~"type::bug"`
@@ -44,5 +43,5 @@ Documentation-related MRs should be reviewed by a Technical Writer for a non-blo
 - [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
 - [ ] Ensure a release milestone is set.
 
-/label ~documentation
+/label ~documentation ~"type::maintenance"
 /assign me

@@ -63,6 +63,19 @@ module TabHelper
     end
   end
 
+  # Creates a <gl-badge> for use inside tabs.
+  #
+  # html_options - The html_options hash (default: {})
+  def gl_tab_counter_badge(count, html_options = {})
+    gl_badge_tag(
+      count,
+      { size: :sm },
+      html_options.merge(
+        class: ['gl-tab-counter-badge', *html_options[:class]]
+      )
+    )
+  end
+
   # Navigation link helper
   #
   # Returns an `li` element with an 'active' class if the supplied
@@ -210,13 +223,4 @@ module TabHelper
 
     current_page?(options)
   end
-end
-
-def gl_tab_counter_badge(count, html_options = {})
-  badge_classes = %w[badge badge-muted badge-pill gl-badge sm gl-tab-counter-badge]
-  content_tag(:span,
-    count,
-    class: [*html_options[:class], badge_classes].join(' '),
-    data: html_options[:data]
-  )
 end

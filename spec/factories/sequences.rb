@@ -21,4 +21,5 @@ FactoryBot.define do
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }
   sequence(:job_name) { |n| "job #{n}" }
   sequence(:work_item_type_name) { |n| "bug#{n}" }
+  sequence(:short_text) { |n| "someText#{n}" }
 end

@@ -33,6 +33,7 @@ Issue:
 - health_status
 - external_key
 - issue_type
+- email_message_id
 Event:
 - id
 - target_type

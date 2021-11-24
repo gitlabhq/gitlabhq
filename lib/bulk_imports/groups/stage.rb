@@ -32,7 +32,7 @@ module BulkImports
             stage: 1
           },
           badges: {
-            pipeline: BulkImports::Groups::Pipelines::BadgesPipeline,
+            pipeline: BulkImports::Common::Pipelines::BadgesPipeline,
             stage: 1
           },
           boards: {

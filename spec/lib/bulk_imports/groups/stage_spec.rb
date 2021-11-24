@@ -13,7 +13,7 @@ RSpec.describe BulkImports::Groups::Stage do
       [1, BulkImports::Groups::Pipelines::MembersPipeline],
       [1, BulkImports::Common::Pipelines::LabelsPipeline],
       [1, BulkImports::Common::Pipelines::MilestonesPipeline],
-      [1, BulkImports::Groups::Pipelines::BadgesPipeline],
+      [1, BulkImports::Common::Pipelines::BadgesPipeline],
       [2, BulkImports::Common::Pipelines::BoardsPipeline]
     ]
   end

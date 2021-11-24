@@ -747,6 +747,7 @@ excluded_attributes:
     - :service_desk_reply_to
     - :upvotes_count
     - :work_item_type_id
+    - :email_message_id
   merge_request: &merge_request_excluded_definition
     - :milestone_id
     - :sprint_id

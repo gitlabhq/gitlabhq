@@ -88,5 +88,26 @@ RSpec.describe GoogleApi::AuthorizationsController do
 
       it_behaves_like 'access denied'
     end
+
+    context 'user logs in but declines authorizations' do
+      subject { get :callback, params: { error: 'xxx', state: state } }
+
+      let(:session_key) { 'session-key' }
+      let(:redirect_uri) { 'example.com' }
+      let(:error_uri) { 'error.com' }
+      let(:state) { session_key }
+
+      before do
+        session[GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(session_key)] = redirect_uri
+        session[:error_uri] = error_uri
+        allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
+          allow(instance).to receive(:get_token).and_return([token, expires_at])
+        end
+      end
+
+      it 'redirects to error uri' do
+        expect(subject).to redirect_to(error_uri)
+      end
+    end
   end
 end

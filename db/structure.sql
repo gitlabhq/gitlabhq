@@ -15278,6 +15278,22 @@ CREATE SEQUENCE issue_email_participants_id_seq
 
 ALTER SEQUENCE issue_email_participants_id_seq OWNED BY issue_email_participants.id;
 
+CREATE TABLE issue_emails (
+    id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    email_message_id text NOT NULL,
+    CONSTRAINT check_5abf3e6aea CHECK ((char_length(email_message_id) <= 1000))
+);
+
+CREATE SEQUENCE issue_emails_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE issue_emails_id_seq OWNED BY issue_emails.id;
+
 CREATE TABLE issue_links (
     id integer NOT NULL,
     source_id integer NOT NULL,
@@ -21565,6 +21581,8 @@ ALTER TABLE ONLY issue_customer_relations_contacts ALTER COLUMN id SET DEFAULT n
 
 ALTER TABLE ONLY issue_email_participants ALTER COLUMN id SET DEFAULT nextval('issue_email_participants_id_seq'::regclass);
 
+ALTER TABLE ONLY issue_emails ALTER COLUMN id SET DEFAULT nextval('issue_emails_id_seq'::regclass);
+
 ALTER TABLE ONLY issue_links ALTER COLUMN id SET DEFAULT nextval('issue_links_id_seq'::regclass);
 
 ALTER TABLE ONLY issue_metrics ALTER COLUMN id SET DEFAULT nextval('issue_metrics_id_seq'::regclass);
@@ -23237,6 +23255,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 
 ALTER TABLE ONLY issue_email_participants
     ADD CONSTRAINT issue_email_participants_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY issue_emails
+    ADD CONSTRAINT issue_emails_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY issue_links
     ADD CONSTRAINT issue_links_pkey PRIMARY KEY (id);
@@ -26158,6 +26179,10 @@ CREATE UNIQUE INDEX index_issue_crm_contacts_on_issue_id_and_contact_id ON issue
 CREATE INDEX index_issue_customer_relations_contacts_on_contact_id ON issue_customer_relations_contacts USING btree (contact_id);
 
 CREATE UNIQUE INDEX index_issue_email_participants_on_issue_id_and_lower_email ON issue_email_participants USING btree (issue_id, lower(email));
+
+CREATE INDEX index_issue_emails_on_email_message_id ON issue_emails USING btree (email_message_id);
+
+CREATE INDEX index_issue_emails_on_issue_id ON issue_emails USING btree (issue_id);
 
 CREATE INDEX index_issue_links_on_source_id ON issue_links USING btree (source_id);
 
@@ -30991,6 +31016,9 @@ ALTER TABLE ONLY packages_packages
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_emails
+    ADD CONSTRAINT fk_rails_e2ee00a8f7 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_finding_evidences
     ADD CONSTRAINT fk_rails_e3205a0c65 FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
