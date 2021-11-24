@@ -1,5 +1,5 @@
 import { GlButton, GlDropdown, GlLoadingIcon, GlToggle } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ServiceDeskSetting from '~/projects/settings_service_desk/components/service_desk_setting.vue';
@@ -11,14 +11,14 @@ describe('ServiceDeskSetting', () => {
   const findButton = () => wrapper.find(GlButton);
   const findClipboardButton = () => wrapper.find(ClipboardButton);
   const findIncomingEmail = () => wrapper.findByTestId('incoming-email');
-  const findIncomingEmailLabel = () => wrapper.findByTestId('incoming-email-describer');
+  const findIncomingEmailLabel = () => wrapper.findByTestId('incoming-email-label');
   const findLoadingIcon = () => wrapper.find(GlLoadingIcon);
   const findTemplateDropdown = () => wrapper.find(GlDropdown);
   const findToggle = () => wrapper.find(GlToggle);
 
-  const createComponent = ({ props = {}, mountFunction = shallowMount } = {}) =>
+  const createComponent = ({ props = {} } = {}) =>
     extendedWrapper(
-      mountFunction(ServiceDeskSetting, {
+      mount(ServiceDeskSetting, {
         propsData: {
           isEnabled: true,
           ...props,
@@ -131,8 +131,7 @@ describe('ServiceDeskSetting', () => {
 
         it('shows error when value contains uppercase or special chars', async () => {
           wrapper = createComponent({
-            props: { customEmailEnabled: true },
-            mountFunction: mount,
+            props: { email: 'foo@bar.com', customEmailEnabled: true },
           });
 
           const input = wrapper.findByTestId('project-suffix');
@@ -142,7 +141,7 @@ describe('ServiceDeskSetting', () => {
 
           await wrapper.vm.$nextTick();
 
-          const errorText = wrapper.find('.text-danger');
+          const errorText = wrapper.find('.invalid-feedback');
           expect(errorText.exists()).toBe(true);
         });
       });

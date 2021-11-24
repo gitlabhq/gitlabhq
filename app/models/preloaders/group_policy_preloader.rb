@@ -8,15 +8,12 @@ module Preloaders
     end
 
     def execute
-      Preloaders::UserMaxAccessLevelInGroupsPreloader.new(@groups, @current_user).execute
-      Preloaders::GroupRootAncestorPreloader.new(@groups, root_ancestor_preloads).execute
+      Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
     end
 
     private
 
-    def root_ancestor_preloads
-      []
-    end
+    attr_reader :groups, :current_user
   end
 end
 

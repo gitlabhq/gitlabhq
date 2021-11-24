@@ -685,7 +685,7 @@ subdirectories of `binaries/`.
 
 **Related topics**:
 
-- [Exclude files from job artifacts](../pipelines/job_artifacts.md#exclude-files-from-job-artifacts)
+- [Exclude files from job artifacts](../pipelines/job_artifacts.md#exclude-files-from-job-artifacts).
 
 #### `artifacts:expire_in`
 
@@ -781,6 +781,10 @@ test:
   - `.xml`
   - `.log`
 
+**Related topics**:
+
+- [Expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
+
 #### `artifacts:name`
 
 Use the `artifacts:name` keyword to define the name of the created artifacts
@@ -793,7 +797,8 @@ If not defined, the default name is `artifacts`, which becomes `artifacts.zip` w
 
 **Possible inputs**:
 
-- The name of the artifacts archive. Can use [CI/CD variables](../variables/index.md).
+- The name of the artifacts archive. Can use [CI/CD variables](../variables/index.md). Must be combined with
+  [`artifacts:paths`](#artifactspaths).
 
 **Example of `artifacts:name`**:
 
@@ -809,7 +814,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name.](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name)
+- [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name).
 
 #### `artifacts:paths`
 
