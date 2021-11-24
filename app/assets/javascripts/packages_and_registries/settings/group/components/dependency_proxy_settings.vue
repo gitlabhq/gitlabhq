@@ -23,12 +23,15 @@ export default {
   i18n: {
     DEPENDENCY_PROXY_HEADER,
     DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
-    label: s__('DependencyProxy|Enable Proxy'),
+    label: s__('DependencyProxy|Enable Dependency Proxy'),
+    enabledProxyHelpText: s__(
+      'DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}',
+    ),
   },
   links: {
     DEPENDENCY_PROXY_DOCS_PATH,
   },
-  inject: ['defaultExpanded', 'groupPath'],
+  inject: ['defaultExpanded', 'groupPath', 'groupDependencyProxyPath'],
   props: {
     dependencyProxySettings: {
       type: Object,
@@ -48,6 +51,9 @@ export default {
       set(enabled) {
         this.updateSettings({ enabled });
       },
+    },
+    helpText() {
+      return this.enabled ? this.$options.i18n.enabledProxyHelpText : '';
     },
   },
   methods: {
@@ -91,7 +97,11 @@ export default {
       <span data-testid="description">
         <gl-sprintf :message="$options.i18n.DEPENDENCY_PROXY_SETTINGS_DESCRIPTION">
           <template #docLink="{ content }">
-            <gl-link :href="$options.links.DEPENDENCY_PROXY_DOCS_PATH">{{ content }}</gl-link>
+            <gl-link
+              data-testid="description-link"
+              :href="$options.links.DEPENDENCY_PROXY_DOCS_PATH"
+              >{{ content }}</gl-link
+            >
           </template>
         </gl-sprintf>
       </span>
@@ -102,9 +112,22 @@ export default {
           v-model="enabled"
           :disabled="isLoading"
           :label="$options.i18n.label"
+          :help="helpText"
           data-qa-selector="dependency_proxy_setting_toggle"
           data-testid="dependency-proxy-setting-toggle"
-        />
+        >
+          <template #help>
+            <span class="gl-overflow-break-word gl-max-w-100vw gl-display-inline-block">
+              <gl-sprintf :message="$options.i18n.enabledProxyHelpText">
+                <template #link="{ content }">
+                  <gl-link data-testid="toggle-help-link" :href="groupDependencyProxyPath">{{
+                    content
+                  }}</gl-link>
+                </template>
+              </gl-sprintf>
+            </span>
+          </template>
+        </gl-toggle>
       </div>
     </template>
   </settings-block>

@@ -127,9 +127,6 @@ export default {
         this.isSaving = false;
       }
     },
-    onCommitCancel() {
-      this.$emit('resetContent');
-    },
     updateCurrentBranch(currentBranch) {
       this.$apollo.mutate({
         mutation: updateCurrentBranchMutation,
@@ -153,7 +150,6 @@ export default {
     :is-saving="isSaving"
     :scroll-to-commit-form="scrollToCommitForm"
     v-on="$listeners"
-    @cancel="onCommitCancel"
     @submit="onCommitSubmit"
   />
 </template>

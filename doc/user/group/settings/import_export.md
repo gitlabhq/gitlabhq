@@ -9,19 +9,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
 
-Existing groups running on any GitLab instance or GitLab.com can be exported with all their related data and moved to a
-new GitLab instance.
+You can export groups, with all their related data, from one GitLab instance to another.
+You can also [export projects](../../project/settings/import_export.md).
 
-The **GitLab import/export** button is displayed if the group import option in enabled.
+## Enable export for a group
 
-See also:
+Prerequisite:
 
-- [Group Import/Export API](../../../api/group_import_export.md)
-- [Project Import/Export](../../project/settings/import_export.md)
-- [Project Import/Export API](../../../api/project_import_export.md)
+- You must have the [Owner role](../../permissions.md) for the group.
 
-Users with the [Owner role](../../permissions.md) for a group can enable
-import and export for that group:
+To enable import and export for a group:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
@@ -70,8 +67,11 @@ WARNING:
 This feature will be [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619)
 in GitLab 14.6 and replaced by [GitLab Migration](../import/).
 
-Users with the [Owner role](../../permissions.md) for a group can export the
-contents of that group:
+Prerequisites:
+
+- You must have the [Owner role](../../permissions.md) for the group.
+
+To export the contents of a group:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
@@ -87,6 +87,8 @@ contents of that group:
 NOTE:
 The maximum import file size can be set by the Administrator, default is `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings) or the [Admin UI](../../admin_area/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50MB to 0 in GitLab 13.8.
+
+You can also use the [group import/export API](../../../api/group_import_export.md).
 
 ### Between CE and EE
 

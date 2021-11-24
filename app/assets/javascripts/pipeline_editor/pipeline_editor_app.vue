@@ -1,8 +1,8 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
 
@@ -30,6 +30,7 @@ export default {
   components: {
     ConfirmUnsavedChangesDialog,
     GlLoadingIcon,
+    GlModal,
     PipelineEditorEmptyState,
     PipelineEditorHome,
     PipelineEditorMessages,
@@ -54,6 +55,7 @@ export default {
       lastCommittedContent: '',
       shouldSkipStartScreen: false,
       showFailure: false,
+      showResetComfirmationModal: false,
       showStartScreen: false,
       showSuccess: false,
       starterTemplate: '',
@@ -224,6 +226,18 @@ export default {
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
   },
+  resetModal: {
+    actionPrimary: {
+      text: __('Reset file'),
+    },
+    actionCancel: {
+      text: __('Cancel'),
+    },
+    body: s__(
+      'Pipeline Editor|Are you sure you want to reset the file to its last committed version?',
+    ),
+    title: __('Discard changes'),
+  },
   watch: {
     isEmpty(flag) {
       if (flag) {
@@ -241,6 +255,11 @@ export default {
     },
     hideSuccess() {
       this.showSuccess = false;
+    },
+    confirmReset() {
+      if (this.hasUnsavedChanges) {
+        this.showResetComfirmationModal = true;
+      }
     },
     async refetchContent() {
       this.$apollo.queries.initialCiFileContent.skip = false;
@@ -262,6 +281,7 @@ export default {
       this.successType = type;
     },
     resetContent() {
+      this.showResetComfirmationModal = false;
       this.currentCiFileContent = this.lastCommittedContent;
     },
     setAppStatus(appStatus) {
@@ -335,12 +355,22 @@ export default {
         :has-unsaved-changes="hasUnsavedChanges"
         :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
-        @resetContent="resetContent"
+        @resetContent="confirmReset"
         @showError="showErrorAlert"
         @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
         @updateCommitSha="updateCommitSha"
       />
+      <gl-modal
+        v-model="showResetComfirmationModal"
+        modal-id="reset-content"
+        :title="$options.resetModal.title"
+        :action-cancel="$options.resetModal.actionCancel"
+        :action-primary="$options.resetModal.actionPrimary"
+        @primary="resetContent"
+      >
+        {{ $options.resetModal.body }}
+      </gl-modal>
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>
   </div>

@@ -103,11 +103,6 @@ describe('Pipeline Editor | Commit section', () => {
     await waitForPromises();
   };
 
-  const cancelCommitForm = async () => {
-    const findCancelBtn = () => wrapper.find('[type="reset"]');
-    await findCancelBtn().trigger('click');
-  };
-
   afterEach(() => {
     mockMutate.mockReset();
     wrapper.destroy();
@@ -263,18 +258,6 @@ describe('Pipeline Editor | Commit section', () => {
         branch: mockDefaultBranch,
         openMergeRequest: false,
       });
-    });
-  });
-
-  describe('when the commit form is cancelled', () => {
-    beforeEach(async () => {
-      createComponent();
-    });
-
-    it('emits an event so that it cab be reseted', async () => {
-      await cancelCommitForm();
-
-      expect(wrapper.emitted('resetContent')).toHaveLength(1);
     });
   });
 

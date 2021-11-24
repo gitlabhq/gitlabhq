@@ -52,4 +52,53 @@ RSpec.describe 'Pipeline Editor', :js do
       end
     end
   end
+
+  context 'Editor content' do
+    it 'user can reset their CI configuration' do
+      click_button 'Collapse'
+
+      page.within('#source-editor-') do
+        find('textarea').send_keys '123'
+      end
+
+      # It takes some time after sending keys for the reset
+      # btn to register the changes inside the editor
+      sleep 1
+      click_button 'Reset'
+
+      expect(page).to have_css('#reset-content')
+
+      page.within('#reset-content') do
+        click_button 'Reset file'
+      end
+
+      page.within('#source-editor-') do
+        expect(page).to have_content('Default Content')
+        expect(page).not_to have_content('Default Content123')
+      end
+    end
+
+    it 'user can cancel reseting their CI configuration' do
+      click_button 'Collapse'
+
+      page.within('#source-editor-') do
+        find('textarea').send_keys '123'
+      end
+
+      # It takes some time after sending keys for the reset
+      # btn to register the changes inside the editor
+      sleep 1
+      click_button 'Reset'
+
+      expect(page).to have_css('#reset-content')
+
+      page.within('#reset-content') do
+        click_button 'Cancel'
+      end
+
+      page.within('#source-editor-') do
+        expect(page).to have_content('Default Content123')
+      end
+    end
+  end
 end

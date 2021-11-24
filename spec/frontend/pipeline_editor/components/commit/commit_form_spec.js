@@ -78,7 +78,7 @@ describe('Pipeline Editor | Commit Form', () => {
     it('emits an event when the form resets', () => {
       findCancelBtn().trigger('click');
 
-      expect(wrapper.emitted('cancel')).toHaveLength(1);
+      expect(wrapper.emitted('resetContent')).toHaveLength(1);
     });
   });
 

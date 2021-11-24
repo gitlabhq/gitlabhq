@@ -5,8 +5,9 @@ export const packageSettings = () => ({
   genericDuplicateExceptionRegex: '',
 });
 
-export const dependencyProxySettings = () => ({
+export const dependencyProxySettings = (extend) => ({
   enabled: true,
+  ...extend,
 });
 
 export const groupPackageSettingsMock = {

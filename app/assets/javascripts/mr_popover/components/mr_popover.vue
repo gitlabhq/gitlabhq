@@ -100,13 +100,13 @@ export default {
           <div :class="`issuable-status-box status-box ${statusBoxClass}`">
             {{ stateHumanName }}
           </div>
-          <span class="text-secondary">Opened <time v-text="formattedTime"></time></span>
+          <span class="gl-text-secondary">Opened <time v-text="formattedTime"></time></span>
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" />
       </div>
       <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <div class="text-secondary">
+      <div class="gl-text-secondary">
         {{ `${projectPath}!${mergeRequestIID}` }}
       </div>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->

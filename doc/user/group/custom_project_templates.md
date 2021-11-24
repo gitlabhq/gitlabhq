@@ -9,49 +9,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
 
-[Group owners](../permissions.md#group-members-permissions) can set a subgroup to
-be the source of project templates that are selectable when a new project is created
-in the group. These templates can be selected when you go to **New project > Create from template**
-in the group and select the **Group** tab.
+When you create a project, you can [choose from a list of templates](../project/working_with_projects.md#project-templates).
+These templates, for things like GitLab Pages or Ruby, populate the new project with a copy of the files contained in the
+template. This information is identical to the information used by [GitLab project import/export](../project/settings/import_export.md)
+and can help you start a new project more quickly.
 
-Every project in the subgroup, but not nested subgroups, can be selected by members
-of the group when a new project is created.
+You can [customize the list](../project/working_with_projects.md#custom-project-templates) of available templates, so
+that all projects in your group have the same list. To do this, you populate a subgroup with the projects you want to
+use as templates.
 
-- Public projects can be selected by any signed-in user as a template for a new project,
-  if all enabled [project features](../project/settings/index.md#sharing-and-permissions)
-  except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
-  The same applies to internal projects.
-- Private projects can be selected only by users who are members of the projects.
-
-Repository and database information that is copied over to each new project is identical to the
-data exported with the [GitLab Project Import/Export](../project/settings/import_export.md).
-
-To set custom project templates at the instance level, see [Custom instance-level project templates](../admin_area/custom_project_templates.md).
+You can also configure [custom templates for the instance](../admin_area/custom_project_templates.md).
 
 ## Set up group-level project templates
+
+Prerequisite:
+
+- You must have the [Owner role for the group](../permissions.md#group-members-permissions).
 
 To set up custom project templates in a group, add the subgroup that contains the
 project templates to the group settings:
 
 1. In the group, create a [subgroup](subgroups/index.md).
 1. [Add projects to the new subgroup](index.md#add-projects-to-a-group) as your templates.
-1. In the left menu for the group, go to **Settings > General**.
+1. In the left menu for the group, select **Settings > General**.
 1. Expand **Custom project templates** and select the subgroup.
 
-If all enabled [project features](../project/settings/index.md#sharing-and-permissions)
-(except for GitLab Pages) are set to **Everyone With Access**, then every project
-template in the subgroup is available to every member of the group.
+The next time a group member creates a project, they can select any of the projects in the subgroup.
 
-Any projects added to the subgroup later can be selected the next time a group member
-creates a new project.
+Projects in nested subgroups are not included in the template list.
 
-### Example structure
+## Which projects are available as templates
 
-Here's a sample group/project structure for project templates, for a hypothetical _Acme Co_:
+- Public and internal projects can be selected by any signed-in user as a template for a new project,
+  if all [project features](../project/settings/index.md#sharing-and-permissions)
+  except for **GitLab Pages** and **Security & Compliance** are set to **Everyone With Access**.
+- Private projects can be selected only by users who are members of the projects.
+
+## Example structure
+
+Here's a sample group and project structure for project templates, for `myorganization`:
 
 ```plaintext
 # GitLab instance and group
-gitlab.com/acmeco/
+gitlab.com/myorganization/
     # Subgroups
     internal
     tools
@@ -61,7 +61,7 @@ gitlab.com/acmeco/
             # Project templates
             client-site-django
             client-site-gatsby
-            client-site-hTML
+            client-site-html
 
         # Other projects
         client-site-a

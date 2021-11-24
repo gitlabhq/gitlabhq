@@ -1,6 +1,7 @@
-import { GlSprintf, GlLink, GlToggle } from '@gitlab/ui';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlSprintf, GlToggle } from '@gitlab/ui';
+import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -16,7 +17,7 @@ import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/gr
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import { updateGroupDependencyProxySettingsOptimisticResponse } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
 import {
-  dependencyProxySettings,
+  dependencyProxySettings as dependencyProxySettingsMock,
   dependencyProxySettingMutationMock,
   groupPackageSettingsMock,
   dependencyProxySettingMutationErrorMock,
@@ -34,6 +35,7 @@ describe('DependencyProxySettings', () => {
   const defaultProvide = {
     defaultExpanded: false,
     groupPath: 'foo_group_path',
+    groupDependencyProxyPath: 'group_dependency_proxy_path',
   };
 
   localVue.use(VueApollo);
@@ -42,21 +44,23 @@ describe('DependencyProxySettings', () => {
     provide = defaultProvide,
     mutationResolver = jest.fn().mockResolvedValue(dependencyProxySettingMutationMock()),
     isLoading = false,
+    dependencyProxySettings = dependencyProxySettingsMock(),
   } = {}) => {
     const requestHandlers = [[updateDependencyProxySettings, mutationResolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       localVue,
       apolloProvider,
       provide,
       propsData: {
-        dependencyProxySettings: dependencyProxySettings(),
+        dependencyProxySettings,
         isLoading,
       },
       stubs: {
         GlSprintf,
+        GlToggle,
         SettingsBlock,
       },
     });
@@ -67,9 +71,10 @@ describe('DependencyProxySettings', () => {
   });
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
-  const findDescription = () => wrapper.find('[data-testid="description"');
-  const findLink = () => wrapper.findComponent(GlLink);
+  const findDescription = () => wrapper.findByTestId('description');
+  const findDescriptionLink = () => wrapper.findByTestId('description-link');
   const findToggle = () => wrapper.findComponent(GlToggle);
+  const findToggleHelpLink = () => wrapper.findByTestId('toggle-help-link');
 
   const fillApolloCache = () => {
     apolloProvider.defaultClient.cache.writeQuery({
@@ -112,10 +117,59 @@ describe('DependencyProxySettings', () => {
   it('has the correct link', () => {
     mountComponent();
 
-    expect(findLink().attributes()).toMatchObject({
+    expect(findDescriptionLink().attributes()).toMatchObject({
       href: DEPENDENCY_PROXY_DOCS_PATH,
     });
-    expect(findLink().text()).toBe('Learn more');
+    expect(findDescriptionLink().text()).toBe('Learn more');
+  });
+
+  describe('enable toggle', () => {
+    it('exists', () => {
+      mountComponent();
+
+      expect(findToggle().props()).toMatchObject({
+        label: component.i18n.label,
+      });
+    });
+
+    describe('when enabled', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
+      it('has the help prop correctly set', () => {
+        expect(findToggle().props()).toMatchObject({
+          help: component.i18n.enabledProxyHelpText,
+        });
+      });
+
+      it('has help text with a link', () => {
+        expect(findToggle().text()).toContain(
+          'To see the image prefix and what is in the cache, visit the Dependency Proxy',
+        );
+        expect(findToggleHelpLink().attributes()).toMatchObject({
+          href: defaultProvide.groupDependencyProxyPath,
+        });
+      });
+    });
+
+    describe('when disabled', () => {
+      beforeEach(() => {
+        mountComponent({
+          dependencyProxySettings: dependencyProxySettingsMock({ enabled: false }),
+        });
+      });
+
+      it('has the help prop set to empty', () => {
+        expect(findToggle().props()).toMatchObject({
+          help: '',
+        });
+      });
+
+      it('the help text is not visible', () => {
+        expect(findToggleHelpLink().exists()).toBe(false);
+      });
+    });
   });
 
   describe('settings update', () => {

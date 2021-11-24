@@ -26,7 +26,7 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
         </div>
          
         <span
-          class="text-secondary"
+          class="gl-text-secondary"
         >
           Opened 
           <time>
@@ -49,7 +49,7 @@ exports[`MR Popover loaded state matches the snapshot 1`] = `
     </h5>
      
     <div
-      class="text-secondary"
+      class="gl-text-secondary"
     >
       
       foo/bar!1
@@ -80,7 +80,7 @@ exports[`MR Popover shows skeleton-loader while apollo is loading 1`] = `
     <!---->
      
     <div
-      class="text-secondary"
+      class="gl-text-secondary"
     >
       
       foo/bar!1

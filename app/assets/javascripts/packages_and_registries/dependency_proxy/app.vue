@@ -1,11 +1,12 @@
 <script>
 import {
   GlAlert,
+  GlEmptyState,
   GlFormGroup,
   GlFormInputGroup,
+  GlLink,
   GlSkeletonLoader,
   GlSprintf,
-  GlEmptyState,
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -15,7 +16,10 @@ import {
   DEPENDENCY_PROXY_SETTINGS_DESCRIPTION,
   DEPENDENCY_PROXY_DOCS_PATH,
 } from '~/packages_and_registries/settings/group/constants';
-import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
+import {
+  GRAPHQL_PAGE_SIZE,
+  ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
+} from '~/packages_and_registries/dependency_proxy/constants';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -25,6 +29,7 @@ export default {
     GlEmptyState,
     GlFormGroup,
     GlFormInputGroup,
+    GlLink,
     GlSkeletonLoader,
     GlSprintf,
     ClipboardButton,
@@ -37,13 +42,17 @@ export default {
       'DependencyProxy|Dependency Proxy feature is limited to public groups for now.',
     ),
     proxyDisabledText: s__(
-      'DependencyProxy|Dependency Proxy disabled. To enable it, contact the group owner.',
+      'DependencyProxy|The Dependency Proxy is disabled. %{docLinkStart}Learn how to enable it%{docLinkEnd}.',
     ),
     proxyImagePrefix: s__('DependencyProxy|Dependency Proxy image prefix'),
     copyImagePrefixText: s__('DependencyProxy|Copy prefix'),
     blobCountAndSize: s__('DependencyProxy|Contains %{count} blobs of images (%{size})'),
     pageTitle: s__('DependencyProxy|Dependency Proxy'),
     noManifestTitle: s__('DependencyProxy|There are no images in the cache'),
+  },
+  links: {
+    DEPENDENCY_PROXY_DOCS_PATH,
+    ENABLE_DEPENDENCY_PROXY_DOCS_PATH,
   },
   data() {
     return {
@@ -162,7 +171,11 @@ export default {
       />
     </div>
     <gl-alert v-else :dismissible="false" data-testid="proxy-disabled">
-      {{ $options.i18n.proxyDisabledText }}
+      <gl-sprintf :message="$options.i18n.proxyDisabledText">
+        <template #docLink="{ content }">
+          <gl-link :href="$options.links.ENABLE_DEPENDENCY_PROXY_DOCS_PATH">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
     </gl-alert>
   </div>
 </template>

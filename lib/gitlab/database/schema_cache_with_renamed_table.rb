@@ -42,7 +42,7 @@ module Gitlab
       def renamed_tables_cache
         @renamed_tables ||= begin
           Gitlab::Database::TABLES_TO_BE_RENAMED.select do |old_name, new_name|
-            ActiveRecord::Base.connection.view_exists?(old_name)
+            connection.view_exists?(old_name)
           end
         end
       end

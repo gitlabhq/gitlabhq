@@ -11426,22 +11426,25 @@ msgstr ""
 msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
-msgid "DependencyProxy|Dependency Proxy disabled. To enable it, contact the group owner."
-msgstr ""
-
 msgid "DependencyProxy|Dependency Proxy feature is limited to public groups for now."
 msgstr ""
 
 msgid "DependencyProxy|Dependency Proxy image prefix"
 msgstr ""
 
-msgid "DependencyProxy|Enable Proxy"
+msgid "DependencyProxy|Enable Dependency Proxy"
 msgstr ""
 
 msgid "DependencyProxy|Image list"
 msgstr ""
 
+msgid "DependencyProxy|The Dependency Proxy is disabled. %{docLinkStart}Learn how to enable it%{docLinkEnd}."
+msgstr ""
+
 msgid "DependencyProxy|There are no images in the cache"
+msgstr ""
+
+msgid "DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}"
 msgstr ""
 
 msgid "Depends on %d merge request being merged"
@@ -25301,6 +25304,9 @@ msgstr ""
 msgid "Pipeline Editor"
 msgstr ""
 
+msgid "Pipeline Editor|Are you sure you want to reset the file to its last committed version?"
+msgstr ""
+
 msgid "Pipeline ID"
 msgstr ""
 
@@ -29533,6 +29539,9 @@ msgid "Reset authorization key"
 msgstr ""
 
 msgid "Reset authorization key?"
+msgstr ""
+
+msgid "Reset file"
 msgstr ""
 
 msgid "Reset filters"
