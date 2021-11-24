@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     subject(:sync_partitions) { described_class.new(model).sync_partitions }
 
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: []) }
+    let(:partitioning_strategy) { double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "some_table" }
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
     let(:manager) { described_class.new(model) }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
-    let(:partitioning_strategy) { double(extra_partitions: extra_partitions, missing_partitions: []) }
+    let(:partitioning_strategy) { double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { "foo" }
 

@@ -8,6 +8,7 @@ module Gitlab
     EE_QUEUE_CONFIG_PATH = 'ee/app/workers/all_queues.yml'
     JH_QUEUE_CONFIG_PATH = 'jh/app/workers/all_queues.yml'
     SIDEKIQ_QUEUES_PATH = 'config/sidekiq_queues.yml'
+    JH_SIDEKIQ_QUEUES_PATH = 'jh/config/sidekiq_queues.yml'
 
     QUEUE_CONFIG_PATHS = [
       FOSS_QUEUE_CONFIG_PATH,
@@ -100,16 +101,22 @@ module Gitlab
       def queues_for_sidekiq_queues_yml
         namespaces_with_equal_weights =
           workers
+            .reject { |worker| worker.jh? }
             .group_by(&:queue_namespace)
             .map(&:last)
             .select { |workers| workers.map(&:get_weight).uniq.count == 1 }
             .map(&:first)
 
         namespaces = namespaces_with_equal_weights.map(&:queue_namespace).to_set
-        remaining_queues = workers.reject { |worker| namespaces.include?(worker.queue_namespace) }
+        remaining_queues = workers.reject { |worker| worker.jh? }.reject { |worker| namespaces.include?(worker.queue_namespace) }
 
         (namespaces_with_equal_weights.map(&:namespace_and_weight) +
          remaining_queues.map(&:queue_and_weight)).sort
+      end
+
+      # Override in JH repo
+      def jh_queues_for_sidekiq_queues_yml
+        []
       end
 
       # YAML.load_file is OK here as we control the file contents
@@ -154,3 +161,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SidekiqConfig.prepend_mod

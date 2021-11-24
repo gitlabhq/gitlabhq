@@ -7,7 +7,8 @@ module PartitionedTable
     attr_reader :partitioning_strategy
 
     PARTITIONING_STRATEGIES = {
-      monthly: Gitlab::Database::Partitioning::MonthlyStrategy
+      monthly: Gitlab::Database::Partitioning::MonthlyStrategy,
+      sliding_list: Gitlab::Database::Partitioning::SlidingListStrategy
     }.freeze
 
     def partitioned_by(partitioning_key, strategy:, **kwargs)

@@ -194,7 +194,7 @@ module Gitlab
 
       def increment_method_missing_count(command_name)
         @method_missing_counter ||= Gitlab::Metrics.counter(:gitlab_redis_multi_store_method_missing_total, 'Client side Redis MultiStore method missing')
-        @method_missing_counter.increment(command: command_name, innamece_name: instance_name)
+        @method_missing_counter.increment(command: command_name, instance_name: instance_name)
       end
 
       def validate_stores!

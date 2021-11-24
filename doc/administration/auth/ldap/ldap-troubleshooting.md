@@ -582,8 +582,8 @@ for each of these users.
 
 ## Expired license causes errors with multiple LDAP servers
 
-Using [multiple LDAP servers](index.md#multiple-ldap-servers) requires a valid license. An expired
-license can cause:
+Using [multiple LDAP servers](index.md#use-multiple-ldap-servers) requires a valid license. An expired license can
+cause:
 
 - `502` errors in the web interface.
 - The following error in logs (the actual strategy name depends on the name configured in `/etc/gitlab/gitlab.rb`):

@@ -114,6 +114,12 @@ RSpec.describe Gitlab::Redis::MultiStore do
     end
 
     RSpec.shared_examples_for 'fallback read from the secondary store' do
+      let(:counter) { Gitlab::Metrics::NullMetric.instance }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
+      end
+
       it 'fallback and execute on secondary instance' do
         expect(secondary_store).to receive(name).with(*args).and_call_original
 
@@ -128,7 +134,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
       end
 
       it 'increment read fallback count metrics' do
-        expect(multi_store).to receive(:increment_read_fallback_count).with(name)
+        expect(counter).to receive(:increment).with(command: name, instance_name: instance_name)
 
         subject
       end
@@ -401,9 +407,12 @@ RSpec.describe Gitlab::Redis::MultiStore do
   end
 
   context 'with unsupported command' do
+    let(:counter) { Gitlab::Metrics::NullMetric.instance }
+
     before do
       primary_store.flushdb
       secondary_store.flushdb
+      allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
     end
 
     let_it_be(:key) { "redis:counter" }
@@ -426,7 +435,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
     end
 
     it 'increments method missing counter' do
-      expect(multi_store).to receive(:increment_method_missing_count).with(:incr)
+      expect(counter).to receive(:increment).with(command: :incr, instance_name: instance_name)
 
       subject
     end

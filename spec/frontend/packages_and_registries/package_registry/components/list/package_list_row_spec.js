@@ -6,6 +6,8 @@ import PackagesListRow from '~/packages_and_registries/package_registry/componen
 import PackagePath from '~/packages/shared/components/package_path.vue';
 import PackageTags from '~/packages/shared/components/package_tags.vue';
 import PackageIconAndName from '~/packages/shared/components/package_icon_and_name.vue';
+import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -29,6 +31,9 @@ describe('packages_list_row', () => {
   const findPackageLink = () => wrapper.findComponent(GlLink);
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
+  const findPublishMethod = () => wrapper.findComponent(PublishMethod);
+  const findCreatedDateText = () => wrapper.findByTestId('created-date');
+  const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
 
   const mountComponent = ({
     packageEntity = packageWithoutTags,
@@ -151,6 +156,25 @@ describe('packages_list_row', () => {
       mountComponent();
 
       expect(findPackageIconAndName().text()).toBe(packageWithoutTags.packageType.toLowerCase());
+    });
+  });
+
+  describe('right info', () => {
+    it('has publish method component', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, pipelines: { nodes: packagePipelines() } },
+      });
+
+      expect(findPublishMethod().props('pipeline')).toEqual(packagePipelines()[0]);
+    });
+
+    it('has the created date', () => {
+      mountComponent();
+
+      expect(findCreatedDateText().text()).toMatchInterpolatedText(PackagesListRow.i18n.createdAt);
+      expect(findTimeAgoTooltip().props()).toMatchObject({
+        time: packageData().createdAt,
+      });
     });
   });
 });

@@ -222,6 +222,51 @@ These LDAP sync configuration settings are available:
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | **{dotted-circle}** No | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | **{dotted-circle}** No | `'sshPublicKey'` or false if not set |
 
+### Use multiple LDAP servers **(PREMIUM SELF)**
+
+If you have users on multiple LDAP servers, you can configure GitLab to use them. To add additional LDAP servers:
+
+1. Duplicate the [`main` LDAP configuration](#configure-ldap).
+1. Edit each duplicate configuration with the details of the additional servers.
+   - For each additional server, choose a different provider ID, like `main`, `secondary`, or `tertiary`. Use lowercase
+     alphanumeric characters. GitLab uses the provider ID to associate each user with a specific LDAP server.
+   - For each entry, use a unique `label` value. These values are used for the tab names on the sign-in page.
+
+#### Example of multiple LDAP servers
+
+The following example shows how to configure three LDAP servers in `gitlab.rb`:
+
+```ruby
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = {
+'main' => {
+  'label' => 'GitLab AD',
+  'host' =>  'ad.example.org',
+  'port' => 636,
+  ...
+  },
+
+'secondary' => {
+  'label' => 'GitLab Secondary AD',
+  'host' =>  'ad-secondary.example.net',
+  'port' => 636,
+  ...
+  },
+
+'tertiary' => {
+  'label' => 'GitLab Tertiary AD',
+  'host' =>  'ad-tertiary.example.net',
+  'port' => 636,
+  ...
+  }
+
+}
+```
+
+This example results in the following sign-in page:
+
+![Multiple LDAP servers sign in](img/multi_login.gif)
+
 ### Set up LDAP user filter
 
 To limit all GitLab access to a subset of the LDAP users on your LDAP server, first narrow the
@@ -451,56 +496,6 @@ If initially your LDAP configuration looked like:
 1. Edit `config/gitlab.yaml` and remove the settings for `user_bn` and `password`.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
-
-## Multiple LDAP servers **(PREMIUM SELF)**
-
-With GitLab, you can configure multiple LDAP servers that your GitLab instance
-connects to.
-
-To add another LDAP server:
-
-1. Duplicate the settings under [the main configuration](#configure-ldap).
-1. Edit them to match the additional LDAP server.
-
-Be sure to choose a different provider ID made of letters a-z and numbers 0-9.
-This ID is stored in the database so that GitLab can remember which LDAP
-server a user belongs to.
-
-![Multiple LDAP Servers Sign in](img/multi_login.gif)
-
-Based on the example illustrated on the image above,
-our `gitlab.rb` configuration would look like:
-
-```ruby
-gitlab_rails['ldap_enabled'] = true
-gitlab_rails['ldap_servers'] = {
-'main' => {
-  'label' => 'GitLab AD',
-  'host' =>  'ad.example.org',
-  'port' => 636,
-  ...
-  },
-
-'secondary' => {
-  'label' => 'GitLab Secondary AD',
-  'host' =>  'ad-secondary.example.net',
-  'port' => 636,
-  ...
-  },
-
-'tertiary' => {
-  'label' => 'GitLab Tertiary AD',
-  'host' =>  'ad-tertiary.example.net',
-  'port' => 636,
-  ...
-  }
-
-}
-```
-
-If you configure multiple LDAP servers, use a unique naming convention for the
-`label` section of each entry. That label is used as the display name of the tab
-shown on the sign-in page.
 
 ## Disable anonymous LDAP authentication
 

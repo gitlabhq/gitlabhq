@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def pool
-          @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
+          @pool ||= ConnectionPool.new(size: pool_size) { redis }
         end
 
         def pool_size
@@ -67,6 +67,10 @@ module Gitlab
           File.expand_path('../../..', __dir__)
         end
 
+        def config_fallback?
+          config_file_name == config_fallback&.config_file_name
+        end
+
         def config_file_name
           [
             # Instance specific config sources:
@@ -99,6 +103,12 @@ module Gitlab
           return unless defined?(::Gitlab::Instrumentation::Redis)
 
           "::Gitlab::Instrumentation::Redis::#{store_name}".constantize
+        end
+
+        private
+
+        def redis
+          ::Redis.new(params)
         end
       end
 

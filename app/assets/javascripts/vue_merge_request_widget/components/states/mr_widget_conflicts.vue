@@ -117,11 +117,12 @@ export default {
       </span>
       <template v-else>
         <span class="bold">
-          {{ s__('mrWidget|There are merge conflicts') }}<span v-if="!canMerge">.</span>
+          {{ s__('mrWidget|Merge blocked: merge conflicts must be resolved.') }}
           <span v-if="!canMerge">
             {{
-              s__(`mrWidget|Resolve these conflicts or ask someone
-              with write access to this repository to merge it locally`)
+              s__(
+                `mrWidget|Users who can write to the source or target branches can resolve the conflicts.`,
+              )
             }}
           </span>
         </span>

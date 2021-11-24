@@ -151,16 +151,16 @@
   parallel: 3
 
 .rspec-unit-parallel:
-  parallel: 20
+  parallel: 22
 
 .rspec-ee-unit-parallel:
-  parallel: 12
+  parallel: 14
 
 .rspec-ee-unit-geo-parallel:
   parallel: 2
 
 .rspec-integration-parallel:
-  parallel: 8
+  parallel: 10
 
 .rspec-ee-integration-parallel:
   parallel: 4

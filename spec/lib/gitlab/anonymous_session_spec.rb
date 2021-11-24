@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_sessions do
   let(:default_session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
   let(:additional_session_id) { '7919a6f1bb119dd7396fadc38fd18d0d' }
 
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
     it 'adds session id to proper key' do
       subject.count_session_ip
 
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         expect(redis.get("session:lookup:ip:gitlab2:127.0.0.1").to_i).to eq 1
       end
     end
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
       freeze_time do
         subject.count_session_ip
 
-        Gitlab::Redis::SharedState.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           expect(redis.ttl("session:lookup:ip:gitlab2:127.0.0.1")).to eq(24.hours.to_i)
         end
       end
@@ -36,7 +36,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
         subject.count_session_ip
         new_anonymous_session.count_session_ip
 
-        Gitlab::Redis::SharedState.with do |redis|
+        Gitlab::Redis::Sessions.with do |redis|
           expect(redis.get("session:lookup:ip:gitlab2:127.0.0.1").to_i).to eq(2)
         end
       end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
 
   describe '#stored_sessions' do
     it 'returns all anonymous sessions per ip' do
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.set("session:lookup:ip:gitlab2:127.0.0.1", 2)
       end
 
@@ -54,13 +54,13 @@ RSpec.describe Gitlab::AnonymousSession, :clean_gitlab_redis_shared_state do
   end
 
   it 'removes obsolete lookup through ip entries' do
-    Gitlab::Redis::SharedState.with do |redis|
+    Gitlab::Redis::Sessions.with do |redis|
       redis.set("session:lookup:ip:gitlab2:127.0.0.1", 2)
     end
 
     subject.cleanup_session_per_ip_count
 
-    Gitlab::Redis::SharedState.with do |redis|
+    Gitlab::Redis::Sessions.with do |redis|
       expect(redis.exists("session:lookup:ip:gitlab2:127.0.0.1")).to eq(false)
     end
   end

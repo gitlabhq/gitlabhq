@@ -51,6 +51,7 @@ module.exports = (path, options = {}) => {
     '^shared_queries(/.*)$': '<rootDir>/app/graphql/queries$1',
     '^ee_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^jh_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^any_else_ce(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^helpers(/.*)$': '<rootDir>/spec/frontend/__helpers__$1',
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
     [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures$1',
@@ -72,6 +73,8 @@ module.exports = (path, options = {}) => {
       '^ee_component(/.*)$': rootDirEE,
       '^ee_else_ce(/.*)$': rootDirEE,
       '^ee_jest/(.*)$': '<rootDir>/ee/spec/frontend/$1',
+      '^any_else_ce(/.*)$': rootDirEE,
+      '^jh_else_ee(/.*)$': rootDirEE,
       [TEST_FIXTURES_PATTERN]: '<rootDir>/tmp/tests/frontend/fixtures-ee$1',
       ...extModuleNameMapperEE,
     });
@@ -84,8 +87,11 @@ module.exports = (path, options = {}) => {
     Object.assign(moduleNameMapper, {
       '^jh(/.*)$': rootDirJH,
       '^jh_component(/.*)$': rootDirJH,
-      '^jh_else_ce(/.*)$': rootDirJH,
       '^jh_jest/(.*)$': '<rootDir>/jh/spec/frontend/$1',
+      // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
+      '^jh_else_ce(/.*)$': rootDirJH,
+      '^jh_else_ee(/.*)$': rootDirJH,
+      '^any_else_ce(/.*)$': rootDirJH,
       ...extModuleNameMapperJH,
     });
 

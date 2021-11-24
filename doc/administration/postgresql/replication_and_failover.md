@@ -19,13 +19,54 @@ replication and failover for GitLab.
 ## Architecture
 
 The Omnibus GitLab recommended configuration for a PostgreSQL cluster with
-replication and failover requires:
+replication failover requires:
 
-- A minimum of three database nodes.
-- A minimum of three `Consul` server nodes.
-- A minimum of one `pgbouncer` service node, but it's recommended to have one per database node. An internal load balancer (TCP) is required when there is more than one `pgbouncer` service node.
+- A minimum of three PostgreSQL nodes.
+- A minimum of three Consul server nodes.
+- A minimum of three PgBouncer nodes that track and handle primary database reads and writes.
+  - An internal load balancer (TCP) to balance requests between the PgBouncer nodes.
+- [Database Load Balancing](database_load_balancing.md) enabled.
+  - A local PgBouncer service configured on each PostgreSQL node. Note that this is separate from the main PgBouncer cluster that tracks the primary.
 
-![PostgreSQL HA Architecture](img/pg_ha_architecture.png)
+```plantuml
+@startuml
+card "**Internal Load Balancer**" as ilb #9370DB
+skinparam linetype ortho
+
+together {
+  collections "**GitLab Rails** x3" as gitlab #32CD32
+  collections "**Sidekiq** x4" as sidekiq #ff8dd1
+}
+
+collections "**Consul** x3" as consul #e76a9b
+
+card "Database" as database {
+  collections "**PGBouncer x3**\n//Consul//" as pgbouncer #4EA7FF
+ 
+  card "**PostgreSQL** //Primary//\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_primary #4EA7FF
+  collections "**PostgreSQL** //Secondary// **x2**\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_secondary #4EA7FF
+
+  pgbouncer -[#4EA7FF]-> postgres_primary
+  postgres_primary .[#4EA7FF]r-> postgres_secondary
+}
+
+gitlab -[#32CD32]-> ilb
+gitlab -[hidden]-> pgbouncer
+gitlab .[#32CD32,norank]-> postgres_primary
+gitlab .[#32CD32,norank]-> postgres_secondary
+
+sidekiq -[#ff8dd1]-> ilb
+sidekiq -[hidden]-> pgbouncer
+sidekiq .[#ff8dd1,norank]-> postgres_primary
+sidekiq .[#ff8dd1,norank]-> postgres_secondary
+
+ilb -[#9370DB]-> pgbouncer
+
+consul -[#e76a9b]r-> pgbouncer
+consul .[#e76a9b,norank]r-> postgres_primary
+consul .[#e76a9b,norank]r-> postgres_secondary
+@enduml
+```
 
 You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
@@ -38,13 +79,14 @@ shipped with Omnibus GitLab, and thus Patroni becomes mandatory for replication 
 
 ### Database node
 
-Each database node runs three services:
+Each database node runs four services:
 
 - `PostgreSQL`: The database itself.
 - `Patroni`: Communicates with other Patroni services in the cluster and handles failover when issues with the leader server occurs. The failover procedure consists of:
   - Selecting a new leader for the cluster.
   - Promoting the new node to leader.
   - Instructing remaining servers to follow the new leader node.
+- `PgBouncer`: A local pooler for the node. Used for _read_ queries as part of [Database Load Balancing](database_load_balancing.md).
 - `Consul` agent: To communicate with Consul cluster which stores the current Patroni state. The agent monitors the status of each node in the database cluster and tracks its health in a service definition on the Consul cluster.
 
 ### Consul server node
@@ -62,8 +104,26 @@ Each PgBouncer node runs two services:
 
 Each service in the package comes with a set of [default ports](../package_information/defaults.md#ports). You may need to make specific firewall rules for the connections listed below:
 
+There are several connection flows in this setup:
+
+- [Primary](#primary)
+- [Database Load Balancing](#database-load-balancing)
+- [Replication](#replication)
+
+#### Primary
+
 - Application servers connect to either PgBouncer directly via its [default port](../package_information/defaults.md) or via a configured Internal Load Balancer (TCP) that serves multiple PgBouncers.
-- PgBouncer connects to the primary database servers [PostgreSQL default port](../package_information/defaults.md)
+- PgBouncer connects to the primary database server's [PostgreSQL default port](../package_information/defaults.md).
+
+#### Database Load Balancing
+
+For read queries against data that haven't been recently changed and are up to date on all database nodes:
+
+- Application servers connect to the local PgBouncer service via its [default port](../package_information/defaults.md) on each database node in a round-robin approach.
+- Local PgBouncer connects to the local database server's [PostgreSQL default port](../package_information/defaults.md).
+
+#### Replication
+
 - Patroni actively manages the running PostgreSQL processes and configuration.
 - PostgreSQL secondaries connect to the primary database servers [PostgreSQL default port](../package_information/defaults.md)
 - Consul servers and agents connect to each others [Consul default ports](../package_information/defaults.md)
@@ -203,8 +263,8 @@ repmgr-specific configuration as well. Especially, make sure that you remove `po
 Here is an example:
 
 ```ruby
-# Disable all components except Patroni and Consul
-roles(['patroni_role'])
+# Disable all components except Patroni, PgBouncer and Consul
+roles(['patroni_role', 'pgbouncer_role'])
 
 # PostgreSQL configuration
 postgresql['listen_address'] = '0.0.0.0'
@@ -244,6 +304,15 @@ patroni['allowlist'] = %w(XXX.XXX.XXX.XXX/YY 127.0.0.1/32)
 
 # Replace XXX.XXX.XXX.XXX/YY with Network Address
 postgresql['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY 127.0.0.1/32)
+
+# Local PgBouncer service for Database Load Balancing
+pgbouncer['databases'] = {
+  gitlabhq_production: {
+    host: "127.0.0.1",
+    user: "PGBOUNCER_USERNAME",
+    password: 'PGBOUNCER_PASSWORD_HASH'
+  }
+}
 
 # Replace placeholders:
 #
@@ -342,7 +411,7 @@ You can use different certificates and keys for both API server and client on di
 However, the CA certificate (`patroni['tls_ca_file']`), TLS certificate verification (`patroni['tls_verify']`), and client TLS
 authentication mode (`patroni['tls_client_mode']`), must each have the same value on all nodes.
 
-### Configuring the PgBouncer node
+### Configure PgBouncer nodes
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`CONSUL_PASSWORD_HASH`](#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information) before executing the next step.
 
@@ -480,6 +549,7 @@ attributes set, but the following need to be set.
    gitlab_rails['db_port'] = 6432
    gitlab_rails['db_password'] = 'POSTGRESQL_USER_PASSWORD'
    gitlab_rails['auto_migrate'] = false
+   gitlab_rails['db_load_balancing'] = { 'hosts' => ['POSTGRESQL_NODE_1', 'POSTGRESQL_NODE_2', 'POSTGRESQL_NODE_3'] }
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -595,8 +665,8 @@ An internal load balancer (TCP) is then required to be setup to serve each PgBou
 On database nodes edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-# Disable all components except Patroni and Consul
-roles(['patroni_role'])
+# Disable all components except Patroni, PgBouncer and Consul
+roles(['patroni_role', 'pgbouncer_role'])
 
 # PostgreSQL configuration
 postgresql['listen_address'] = '0.0.0.0'
@@ -615,6 +685,15 @@ patroni['postgresql']['max_wal_senders'] = 7
 
 patroni['allowlist'] = = %w(10.6.0.0/16 127.0.0.1/32)
 postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16 127.0.0.1/32)
+
+# Local PgBouncer service for Database Load Balancing
+pgbouncer['databases'] = {
+  gitlabhq_production: {
+    host: "127.0.0.1",
+    user: "pgbouncer",
+    password: '771a8625958a529132abe6f1a4acb19c'
+  }
+}
 
 # Configure the Consul agent
 consul['services'] = %w(postgresql)
@@ -649,115 +728,6 @@ After deploying the configuration follow these steps:
    ```shell
    gitlab-rake gitlab:db:configure
    ```
-
-### Example minimal setup
-
-This example uses 3 PostgreSQL servers, and 1 application node (with PgBouncer setup alongside).
-
-It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
-The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#manual-failover-procedure-for-patroni) procedures in addition to [Consul outage recovery](../consul.md#outage-recovery) on the same set of machines.
-
-In this example, we start with all servers on the same 10.6.0.0/16 private network range; they can connect to each freely other on those addresses.
-
-Here is a list and description of each machine and the assigned IP:
-
-- `10.6.0.21`: PostgreSQL 1
-- `10.6.0.22`: PostgreSQL 2
-- `10.6.0.23`: PostgreSQL 3
-- `10.6.0.31`: GitLab application
-
-All passwords are set to `toomanysecrets`. Please do not use this password or derived hashes.
-
-The `external_url` for GitLab is `http://gitlab.example.com`
-
-After the initial configuration, if a failover occurs, the PostgresSQL leader node changes to one of the available secondaries until it is failed back.
-
-#### Example minimal configuration for database servers
-
-On database nodes edit `/etc/gitlab/gitlab.rb`:
-
-```ruby
-# Disable all components except Patroni and Consul
-roles(['patroni_role'])
-
-# PostgreSQL configuration
-postgresql['listen_address'] = '0.0.0.0'
-postgresql['hot_standby'] = 'on'
-postgresql['wal_level'] = 'replica'
-
-# Disable automatic database migrations
-gitlab_rails['auto_migrate'] = false
-
-# Configure the Consul agent
-consul['services'] = %w(postgresql)
-
-postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
-postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
-
-# Sets `max_replication_slots` to double the number of database nodes.
-# Patroni uses one extra slot per node when initiating the replication.
-patroni['postgresql']['max_replication_slots'] = 6
-
-patroni['username'] = 'PATRONI_API_USERNAME'
-patroni['password'] = 'PATRONI_API_PASSWORD'
-
-# Set `max_wal_senders` to one more than the number of replication slots in the cluster.
-# This is used to prevent replication from using up all of the
-# available database connections.
-patroni['postgresql']['max_wal_senders'] = 7
-
-patroni['allowlist'] = = %w(10.6.0.0/16 127.0.0.1/32)
-postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16 127.0.0.1/32)
-
-consul['configuration'] = {
-  server: true,
-  retry_join: %w(10.6.0.21 10.6.0.22 10.6.0.23)
-}
-```
-
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-#### Example minimal configuration for application server
-
-On the server edit `/etc/gitlab/gitlab.rb`:
-
-```ruby
-external_url 'http://gitlab.example.com'
-
-gitlab_rails['db_host'] = '127.0.0.1'
-gitlab_rails['db_port'] = 6432
-gitlab_rails['db_password'] = 'toomanysecrets'
-gitlab_rails['auto_migrate'] = false
-
-postgresql['enable'] = false
-pgbouncer['enable'] = true
-consul['enable'] = true
-
-# Configure PgBouncer
-pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
-
-# Configure Consul agent
-consul['watchers'] = %w(postgresql)
-
-pgbouncer['users'] = {
-  'gitlab-consul': {
-    password: '5e0e3263571e3704ad655076301d6ebe'
-  },
-  'pgbouncer': {
-    password: '771a8625958a529132abe6f1a4acb19c'
-  }
-}
-
-consul['configuration'] = {
-  retry_join: %w(10.6.0.21 10.6.0.22 10.6.0.23)
-}
-```
-
-[Reconfigure Omnibus GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-#### Example minimal setup manual steps
-
-The manual steps for this configuration are the same as for the [example recommended setup](#example-recommended-setup-manual-steps).
 
 ## Patroni
 
@@ -1047,7 +1017,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
   configured replication method (`pg_basebackup` is the only available option). It might take some
   time for replica to catch up with the leader, depending on the size of your database.
 
-- An overview of the upgrade procedure is outlined in [Patoni's documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
+- An overview of the upgrade procedure is outlined in [Patroni's documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
   You can still use `gitlab-ctl pg-upgrade` which implements this procedure with a few adjustments.
 
 Considering these, you should carefully plan your PostgreSQL upgrade:

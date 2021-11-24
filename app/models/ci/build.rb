@@ -1075,6 +1075,16 @@ module Ci
       runner&.instance_type?
     end
 
+    def job_variables_attributes
+      strong_memoize(:job_variables_attributes) do
+        job_variables.map do |variable|
+          variable.attributes.except('id', 'job_id', 'encrypted_value', 'encrypted_value_iv').tap do |attrs|
+            attrs[:value] = variable.value
+          end
+        end
+      end
+    end
+
     protected
 
     def run_status_commit_hooks!

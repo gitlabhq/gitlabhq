@@ -1,7 +1,6 @@
 package zipartifacts
 
 import (
-	"archive/zip"
 	"compress/gzip"
 	"encoding/binary"
 	"encoding/json"
@@ -9,6 +8,8 @@ import (
 	"path"
 	"sort"
 	"strconv"
+
+	zip "gitlab.com/gitlab-org/golang-archive-zip"
 )
 
 type metadata struct {

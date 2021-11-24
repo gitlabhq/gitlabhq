@@ -2,7 +2,9 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline editor', :requires_admin do
+    describe 'Pipeline editor' do
+      let(:random_test_string) { SecureRandom.hex(10) }
+
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-editor-project'
@@ -17,70 +19,71 @@ module QA
             [
               {
                 file_path: '.gitlab-ci.yml',
-                content: default_file_content
+                content: <<~YAML
+                  stages:
+                    - test
+
+                  initialize:
+                    stage: test
+                    script:
+                      - echo "I am now on branch #{project.default_branch}"
+                YAML
               }
             ]
           )
         end
       end
 
-      let!(:production_push) do
-        Resource::Repository::Push.fabricate! do |push|
-          push.repository_http_uri = project.repository_http_location.uri
-          push.branch_name = 'production'
-          push.file_name = '.gitlab-ci.yml'
-          push.file_content = production_file_content
+      let!(:test_branch) do
+        Resource::Repository::ProjectPush.fabricate! do |resource|
+          resource.project = project
+          resource.branch_name = random_test_string
+          resource.file_name = '.gitlab-ci.yml'
+          resource.file_content = <<~YAML
+            stages:
+              - test
+
+            initialize:
+              stage: test
+              script:
+                - echo "I am now on branch #{random_test_string}"
+          YAML
         end
-      end
-
-      let(:default_file_content) do
-        <<~YAML
-          stages:
-            - test
-          
-          initialize:
-            stage: test
-            script:
-              - echo "initialized in #{project.default_branch}"
-        YAML
-      end
-
-      let(:production_file_content) do
-        <<~YAML
-          stages:
-            - test
-          
-          initialize:
-            stage: test
-            script:
-              - echo "initialized in production"
-        YAML
       end
 
       before do
         Flow::Login.sign_in
         project.visit!
-        Page::Project::Menu.perform(&:go_to_pipeline_editor)
+
+        # Project push sometimes takes a while to complete
+        # Making sure new branch is pushed successfully prior to interacting
+        Support::Retrier.retry_until(max_duration: 15, sleep_interval: 3, reload_page: false, message: 'Ensuring project has branch') do
+          project.has_branch?(random_test_string)
+        end
       end
 
       after do
         project.remove_via_api!
-        Page::Main::Menu.perform(&:sign_out)
       end
 
       it 'can switch branches and target branch field updates accordingly', testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/1891' do
+        Page::Project::Menu.perform(&:go_to_pipeline_editor)
         Page::Project::PipelineEditor::Show.perform do |show|
-          expect(show).to have_branch_selector_button
+          show.open_branch_selector_dropdown
+          show.select_branch_from_dropdown(random_test_string)
 
-          show.click_branch_selector_button
-          show.select_branch_from_dropdown(production_push.branch_name)
+          aggregate_failures do
+            expect(show.target_branch_name).to eq(random_test_string), 'Target branch field is not showing expected branch name.'
+            expect(show.editing_content).to have_content(random_test_string), 'Editor content does not include expected test string.'
+          end
 
-          expect(show.target_branch_name).to eq(production_push.branch_name)
-
-          show.click_branch_selector_button
+          show.open_branch_selector_dropdown
           show.select_branch_from_dropdown(project.default_branch)
 
-          expect(show.target_branch_name).to eq(project.default_branch)
+          aggregate_failures do
+            expect(show.target_branch_name).to eq(project.default_branch), 'Target branch field is not showing expected branch name.'
+            expect(show.editing_content).to have_content(project.default_branch), 'Editor content does not include expected test string.'
+          end
         end
       end
     end

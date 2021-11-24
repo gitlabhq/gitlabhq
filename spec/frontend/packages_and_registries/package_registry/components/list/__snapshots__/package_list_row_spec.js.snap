@@ -77,7 +77,9 @@ exports[`packages_list_row renders 1`] = `
         <div
           class="gl-display-flex gl-align-items-center gl-min-h-6"
         >
-          <span>
+          <span
+            data-testid="created-date"
+          >
             Created 
             <timeago-tooltip-stub
               cssclass=""

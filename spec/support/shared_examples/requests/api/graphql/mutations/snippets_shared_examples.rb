@@ -18,19 +18,19 @@ RSpec.shared_examples 'snippet edit usage data counters' do
     end
   end
 
-  context 'when user is not sessionless' do
+  context 'when user is not sessionless', :clean_gitlab_redis_sessions do
     before do
       session_id = Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d')
       session_hash = { 'warden.user.user.key' => [[current_user.id], current_user.encrypted_password[0, 29]] }
 
-      Gitlab::Redis::SharedState.with do |redis|
+      Gitlab::Redis::Sessions.with do |redis|
         redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_hash))
       end
 
       cookies[Gitlab::Application.config.session_options[:key]] = session_id.public_id
     end
 
-    it 'tracks usage data actions', :clean_gitlab_redis_shared_state do
+    it 'tracks usage data actions', :clean_gitlab_redis_sessions do
       expect(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_snippet_editor_edit_action)
 
       post_graphql_mutation(mutation)

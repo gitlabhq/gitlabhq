@@ -1,7 +1,6 @@
 package zipartifacts_test
 
 import (
-	"archive/zip"
 	"bytes"
 	"compress/gzip"
 	"context"
@@ -12,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	zip "gitlab.com/gitlab-org/golang-archive-zip"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )

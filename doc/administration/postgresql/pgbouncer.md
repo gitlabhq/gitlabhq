@@ -17,7 +17,7 @@ through `/etc/gitlab/gitlab.rb`.
 
 ## PgBouncer as part of a fault-tolerant GitLab installation
 
-This content has been moved to a [new location](replication_and_failover.md#configuring-the-pgbouncer-node).
+This content has been moved to a [new location](replication_and_failover.md#configure-pgbouncer-nodes).
 
 ## PgBouncer as part of a non-fault-tolerant GitLab installation
 

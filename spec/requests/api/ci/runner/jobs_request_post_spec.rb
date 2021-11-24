@@ -833,8 +833,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               let(:expected_params) { { project: project.full_path, client_id: "runner/#{runner.id}" } }
             end
 
-            it_behaves_like 'not executing any extra queries for the application context', 2 do
-              # Extra queries: Project, Route
+            it_behaves_like 'not executing any extra queries for the application context', 3 do
+              # Extra queries: Project, Route, RunnerProject
               let(:subject_proc) { proc { request_job } }
             end
           end

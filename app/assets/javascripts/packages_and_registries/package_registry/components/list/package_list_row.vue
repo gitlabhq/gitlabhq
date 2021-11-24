@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
   PACKAGE_ERROR_STATUS,
@@ -64,6 +64,7 @@ export default {
   },
   i18n: {
     erroredPackageText: s__('PackageRegistry|Invalid Package: failed metadata extraction'),
+    createdAt: __('Created %{timestamp}'),
   },
 };
 </script>
@@ -127,8 +128,8 @@ export default {
     </template>
 
     <template #right-secondary>
-      <span>
-        <gl-sprintf :message="__('Created %{timestamp}')">
+      <span data-testid="created-date">
+        <gl-sprintf :message="$options.i18n.createdAt">
           <template #timestamp>
             <timeago-tooltip :time="packageEntity.createdAt" />
           </template>

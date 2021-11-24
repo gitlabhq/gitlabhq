@@ -41549,6 +41549,9 @@ msgstr ""
 msgid "mrWidget|Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
+msgid "mrWidget|Merge blocked: merge conflicts must be resolved."
+msgstr ""
+
 msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue."
 msgstr ""
 
@@ -41627,9 +41630,6 @@ msgstr ""
 msgid "mrWidget|Resolve conflicts"
 msgstr ""
 
-msgid "mrWidget|Resolve these conflicts or ask someone with write access to this repository to merge it locally"
-msgstr ""
-
 msgid "mrWidget|Revert"
 msgstr ""
 
@@ -41675,9 +41675,6 @@ msgstr ""
 msgid "mrWidget|The source branch is being deleted"
 msgstr ""
 
-msgid "mrWidget|There are merge conflicts"
-msgstr ""
-
 msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr ""
 
@@ -41688,6 +41685,9 @@ msgid "mrWidget|To change this default message, edit the template for merge comm
 msgstr ""
 
 msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or description."
+msgstr ""
+
+msgid "mrWidget|Users who can write to the source or target branches can resolve the conflicts."
 msgstr ""
 
 msgid "mrWidget|What is a merge train?"

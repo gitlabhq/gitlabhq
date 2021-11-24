@@ -1,7 +1,6 @@
 package zipartifacts
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"fmt"
@@ -10,11 +9,10 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"runtime"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	zip "gitlab.com/gitlab-org/golang-archive-zip"
 )
 
 func createArchive(t *testing.T, dir string) (map[string][]byte, int64) {
@@ -73,10 +71,6 @@ func TestOpenHTTPArchive(t *testing.T) {
 }
 
 func TestMinimalRangeRequests(t *testing.T) {
-	if strings.HasPrefix(runtime.Version(), "go1.17") {
-		t.Skipf("skipped for go1.17: https://gitlab.com/gitlab-org/gitlab/-/issues/340778")
-	}
-
 	dir := t.TempDir()
 	entries, archiveSize := createArchive(t, dir)
 

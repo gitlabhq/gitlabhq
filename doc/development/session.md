@@ -51,12 +51,12 @@ Session data can be accessed directly through Redis. This can let you check up o
 
 ```ruby
 # Get a list of sessions
-session_ids = Gitlab::Redis::SharedState.with do |redis|
-  redis.smembers("#{Gitlab::Redis::SharedState::USER_SESSIONS_LOOKUP_NAMESPACE}:#{user.id}")
+session_ids = Gitlab::Redis::Sessions.with do |redis|
+  redis.smembers("#{Gitlab::Redis::Sessions::USER_SESSIONS_LOOKUP_NAMESPACE}:#{user.id}")
 end
 
 # Retrieve a specific session
-session_data = Gitlab::Redis::SharedState.with { |redis| redis.get("#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}") }
+session_data = Gitlab::Redis::Sessions.with { |redis| redis.get("#{Gitlab::Redis::Sessions::SESSION_NAMESPACE}:#{session_id}") }
 Marshal.load(session_data)
 ```
 

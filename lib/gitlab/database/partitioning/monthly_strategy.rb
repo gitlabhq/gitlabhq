@@ -36,6 +36,10 @@ module Gitlab
           partitions
         end
 
+        def after_adding_partitions
+          # No-op, required by the partition manager
+        end
+
         private
 
         def desired_partitions

@@ -21,6 +21,7 @@
 #
 class ActiveSession
   include ActiveModel::Model
+  include ::Gitlab::Redis::SessionsStoreHelper
 
   SESSION_BATCH_SIZE = 200
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
@@ -43,7 +44,7 @@ class ActiveSession
   end
 
   def self.set(user, request)
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       session_private_id = request.session.id.private_id
       client = DeviceDetector.new(request.user_agent)
       timestamp = Time.current
@@ -76,7 +77,7 @@ class ActiveSession
   end
 
   def self.list(user)
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       cleaned_up_lookup_entries(redis, user).map do |raw_session|
         load_raw_session(raw_session)
       end
@@ -84,7 +85,7 @@ class ActiveSession
   end
 
   def self.cleanup(user)
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       clean_up_old_sessions(redis, user)
       cleaned_up_lookup_entries(redis, user)
     end
@@ -104,7 +105,7 @@ class ActiveSession
   def self.destroy_session(user, session_id)
     return unless session_id
 
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       destroy_sessions(redis, user, [session_id].compact)
     end
   end
@@ -113,7 +114,7 @@ class ActiveSession
     sessions = not_impersonated(user)
     sessions.reject! { |session| session.current?(current_rack_session) } if current_rack_session
 
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       session_ids = (sessions.map(&:session_id) | sessions.map(&:session_private_id)).compact
       destroy_sessions(redis, user, session_ids) if session_ids.any?
     end
@@ -124,15 +125,15 @@ class ActiveSession
   end
 
   def self.rack_key_name(session_id)
-    "#{Gitlab::Redis::SharedState::SESSION_NAMESPACE}:#{session_id}"
+    "#{Gitlab::Redis::Sessions::SESSION_NAMESPACE}:#{session_id}"
   end
 
   def self.key_name(user_id, session_id = '*')
-    "#{Gitlab::Redis::SharedState::USER_SESSIONS_NAMESPACE}:#{user_id}:#{session_id}"
+    "#{Gitlab::Redis::Sessions::USER_SESSIONS_NAMESPACE}:#{user_id}:#{session_id}"
   end
 
   def self.lookup_key_name(user_id)
-    "#{Gitlab::Redis::SharedState::USER_SESSIONS_LOOKUP_NAMESPACE}:#{user_id}"
+    "#{Gitlab::Redis::Sessions::USER_SESSIONS_LOOKUP_NAMESPACE}:#{user_id}"
   end
 
   def self.list_sessions(user)
@@ -143,7 +144,7 @@ class ActiveSession
   #
   # Returns an array of strings
   def self.session_ids_for_user(user_id)
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       redis.smembers(lookup_key_name(user_id))
     end
   end
@@ -156,7 +157,7 @@ class ActiveSession
   def self.sessions_from_ids(session_ids)
     return [] if session_ids.empty?
 
-    Gitlab::Redis::SharedState.with do |redis|
+    redis_store_class.with do |redis|
       session_keys = rack_session_keys(session_ids)
 
       session_keys.each_slice(SESSION_BATCH_SIZE).flat_map do |session_keys_batch|
@@ -228,9 +229,9 @@ class ActiveSession
     # only the single key entries are automatically expired by redis, the
     # lookup entries in the set need to be removed manually.
     session_ids_and_entries = session_ids.zip(entries)
-    redis.pipelined do
+    redis.pipelined do |pipeline|
       session_ids_and_entries.reject { |_session_id, entry| entry }.each do |session_id, _entry|
-        redis.srem(lookup_key_name(user.id), session_id)
+        pipeline.srem(lookup_key_name(user.id), session_id)
       end
     end
 

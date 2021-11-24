@@ -178,9 +178,11 @@ export default {
           :widget="$options.label || $options.name"
           :tertiary-buttons="tertiaryActionsButtons"
         />
-        <div class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6">
+        <div
+          v-if="isCollapsible"
+          class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
+        >
           <gl-button
-            v-if="isCollapsible"
             v-gl-tooltip
             :title="collapseButtonLabel"
             :aria-expanded="`${!isCollapsed}`"
