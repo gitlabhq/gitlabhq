@@ -321,7 +321,7 @@ RSpec.describe MarkupHelper do
     let(:context) do
       {
         pipeline: :wiki, project: project, wiki: wiki,
-        page_slug: 'nested/page', issuable_state_filter_enabled: true,
+        page_slug: 'nested/page', issuable_reference_expansion_enabled: true,
         repository: wiki_repository
       }
     end

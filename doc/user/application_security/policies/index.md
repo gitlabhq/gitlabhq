@@ -357,7 +357,7 @@ scan_execution_policy:
   - type: schedule
     branches:
     - main
-    cadence: */10 * * * *
+    cadence: "*/10 * * * *"
   actions:
   - scan: dast
     scanner_profile: Scanner Profile C
@@ -378,7 +378,7 @@ scan_execution_policy:
   enabled: true
   rules:
   - type: schedule
-    cadence: '15 3 * * *'
+    cadence: "15 3 * * *
     clusters:
       production-cluster:
         containers:

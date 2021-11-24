@@ -476,7 +476,8 @@ class Project < ApplicationRecord
   validates :project_feature, presence: true
 
   validates :namespace, presence: true
-  validates :project_namespace, presence: true, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :create, if: -> { self.namespace && self.root_namespace.project_namespace_creation_enabled? }
+  validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
                                        ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },

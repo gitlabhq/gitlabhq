@@ -7,10 +7,6 @@ RSpec.describe Ci::Runner do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :ci_runner }
-
-    before do
-      Clusters::Applications::Runner # ensure that the referenced model is loaded
-    end
   end
 
   describe 'groups association' do

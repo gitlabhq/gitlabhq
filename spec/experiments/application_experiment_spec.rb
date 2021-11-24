@@ -263,6 +263,8 @@ RSpec.describe ApplicationExperiment, :experiment do
       "https://badplace.com\nhttps://gitlab.com"  | nil
       'https://gitlabbcom'                        | nil
       'https://gitlabbcom/'                       | nil
+      'http://gdk.test/foo/bar'                   | 'http://gdk.test/foo/bar'
+      'http://localhost:3000/foo/bar'             | 'http://localhost:3000/foo/bar'
     end
 
     with_them do

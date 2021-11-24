@@ -506,7 +506,7 @@ class MergeRequest < ApplicationRecord
   def self.reference_pattern
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)(?<format>\+)?
     }x
   end
 

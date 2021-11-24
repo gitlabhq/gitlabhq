@@ -98,6 +98,7 @@ export default {
         :is-locked="isLocked"
         :can-lock="canLock"
         data-testid="lock"
+        data-qa-selector="lock_button"
       />
       <gl-button v-gl-modal="replaceModalId" data-testid="replace">
         {{ $options.i18n.replace }}

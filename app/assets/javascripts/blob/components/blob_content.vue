@@ -86,7 +86,7 @@ export default {
         :file-name="blob.name"
         :type="activeViewer.fileType"
         :hide-line-numbers="hideLineNumbers"
-        data-qa-selector="file_content"
+        data-qa-selector="blob_viewer_file_content"
       />
     </template>
   </div>

@@ -5,16 +5,9 @@ RSpec.shared_examples 'it has loose foreign keys' do
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
 
-  it 'includes the LooseForeignKey module' do
-    expect(described_class.ancestors).to include(LooseForeignKey)
-  end
-
-  it 'responds to #loose_foreign_key_definitions' do
-    expect(described_class).to respond_to(:loose_foreign_key_definitions)
-  end
-
   it 'has at least one loose foreign key definition' do
-    expect(described_class.loose_foreign_key_definitions.size).to be > 0
+    definitions = Gitlab::Database::LooseForeignKeys.definitions_by_table[table_name]
+    expect(definitions.size).to be > 0
   end
 
   it 'has the deletion trigger present' do

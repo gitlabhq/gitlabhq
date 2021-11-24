@@ -21,33 +21,34 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
     migration.track_record_deletions(:_test_loose_fk_parent_table)
   end
 
-  let(:parent_model) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_parent_table'
-
-      include LooseForeignKey
-
-      loose_foreign_key :_test_loose_fk_child_table_1, :parent_id, on_delete: :async_delete
-      loose_foreign_key :_test_loose_fk_child_table_2, :parent_id_with_different_column, on_delete: :async_nullify
-    end
+  let(:loose_foreign_key_definitions) do
+    [
+      ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        '_test_loose_fk_parent_table',
+        '_test_loose_fk_child_table_1',
+        {
+          column: 'parent_id',
+          on_delete: :async_delete,
+          gitlab_schema: :gitlab_main
+        }
+      ),
+      ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        '_test_loose_fk_parent_table',
+        '_test_loose_fk_child_table_2',
+        {
+          column: 'parent_id_with_different_column',
+          on_delete: :async_nullify,
+          gitlab_schema: :gitlab_main
+        }
+      )
+    ]
   end
 
-  let(:child_model_1) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_child_table_1'
-    end
-  end
-
-  let(:child_model_2) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_child_table_2'
-    end
-  end
-
+  let(:loose_fk_parent_table) { table(:_test_loose_fk_parent_table) }
   let(:loose_fk_child_table_1) { table(:_test_loose_fk_child_table_1) }
   let(:loose_fk_child_table_2) { table(:_test_loose_fk_child_table_2) }
-  let(:parent_record_1) { parent_model.create! }
-  let(:other_parent_record) { parent_model.create! }
+  let(:parent_record_1) { loose_fk_parent_table.create! }
+  let(:other_parent_record) { loose_fk_parent_table.create! }
 
   before(:all) do
     create_table_structure
@@ -87,12 +88,10 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
       expect(loose_fk_child_table_1.count).to eq(4)
       expect(loose_fk_child_table_2.count).to eq(4)
 
-      described_class.new(parent_klass: parent_model,
-                          deleted_parent_records: LooseForeignKeys::DeletedRecord.status_pending.all,
-                          models_by_table_name: {
-                            '_test_loose_fk_child_table_1' => child_model_1,
-                            '_test_loose_fk_child_table_2' => child_model_2
-                          }).execute
+      described_class.new(parent_table: '_test_loose_fk_parent_table',
+                          loose_foreign_key_definitions: loose_foreign_key_definitions,
+                          deleted_parent_records: LooseForeignKeys::DeletedRecord.status_pending.all
+                         ).execute
     end
 
     it 'cleans up the child records' do
@@ -108,7 +107,7 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
     it 'records the DeletedRecord status updates', :prometheus do
       counter = Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records)
 
-      expect(counter.get(table: parent_model.table_name, db_config_name: 'main')).to eq(1)
+      expect(counter.get(table: loose_fk_parent_table.table_name, db_config_name: 'main')).to eq(1)
     end
 
     it 'does not delete unrelated records' do

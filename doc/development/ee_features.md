@@ -1079,6 +1079,48 @@ export default {
 - **EE extra HTML**
   - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
 
+#### Testing modules using EE/CE aliases
+
+When writing Frontend tests, if the module under test imports other modules with `ee_else_ce/...` and these modules are also needed by the relevant test, then the relevant test **must** import these modules with `ee_else_ce/...`. This avoids unexpected EE or FOSS failures, and helps ensure the EE behaves like CE when it is unlicensed.
+
+For example:
+
+```vue
+<script>
+// ~/foo/component_under_test.vue
+
+import FriendComponent from 'ee_else_ce/components/friend.vue;'
+
+export default {
+  name: 'ComponentUnderTest',
+  components: { FriendComponent }.
+}
+</script>
+
+<template>
+  <friend-component />
+</template>
+```
+
+```javascript
+// spec/frontend/foo/component_under_test_spec.js
+
+// ...
+// because we referenced the component using ee_else_ce we have to do the same in the spec.
+import Friend from 'ee_else_ce/components/friend.vue;'
+
+describe('ComponentUnderTest', () => {
+  const findFriend = () => wrapper.find(Friend);
+
+  it('renders friend', () => {
+    // This would fail in CE if we did `ee/component...`
+    // and would fail in EE if we did `~/component...`
+    expect(findFriend().exists()).toBe(true);
+  });
+});
+
+```
+
 ### Non Vue Files
 
 For regular JS files, the approach is similar.

@@ -14351,6 +14351,9 @@ msgstr ""
 msgid "Failed to install."
 msgstr ""
 
+msgid "Failed to load"
+msgstr ""
+
 msgid "Failed to load assignees."
 msgstr ""
 

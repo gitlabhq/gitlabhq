@@ -110,7 +110,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   def render_draft_note(note)
     params = { target_id: merge_request.id, target_type: 'MergeRequest', text: note.note }
     result = PreviewMarkdownService.new(@project, current_user, params).execute
-    markdown_params = { markdown_engine: result[:markdown_engine], issuable_state_filter_enabled: true }
+    markdown_params = { markdown_engine: result[:markdown_engine], issuable_reference_expansion_enabled: true }
 
     note.rendered_note = view_context.markdown(result[:text], markdown_params)
     note.users_referenced = result[:users]

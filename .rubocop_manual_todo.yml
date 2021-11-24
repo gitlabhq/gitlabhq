@@ -2539,12 +2539,10 @@ Rails/IncludeUrlHelper:
     - 'ee/app/presenters/merge_request_approver_presenter.rb'
     - 'ee/spec/helpers/ee/projects/security/configuration_helper_spec.rb'
     - 'ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb'
-    - 'ee/spec/lib/banzai/filter/issuable_state_filter_spec.rb'
     - 'lib/gitlab/ci/badge/metadata.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/helpers/nav/top_nav_helper_spec.rb'
     - 'spec/helpers/notify_helper_spec.rb'
-    - 'spec/lib/banzai/filter/issuable_state_filter_spec.rb'
     - 'spec/lib/banzai/filter/reference_redactor_filter_spec.rb'
     - 'spec/lib/banzai/reference_redactor_spec.rb'
 

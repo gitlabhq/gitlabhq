@@ -2,28 +2,27 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::IssuableStateFilter do
-  include ActionView::Helpers::UrlHelper
+RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter do
   include FilterSpecHelper
 
-  let(:user) { create(:user) }
-  let(:context) { { current_user: user, issuable_state_filter_enabled: true } }
-  let(:closed_issue) { create_issue(:closed) }
-  let(:project) { create(:project, :public) }
-  let(:group) { create(:group) }
-  let(:other_project) { create(:project, :public) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:other_project) { create(:project, :public) }
+  let_it_be(:closed_issue) { create_issue(:closed) }
+
+  let(:context) { { current_user: user, issuable_reference_expansion_enabled: true } }
 
   def create_link(text, data)
-    link_to(text, '', class: 'gfm has-tooltip', data: data)
+    ActionController::Base.helpers.link_to(text, '', class: 'gfm has-tooltip', data: data)
   end
 
-  def create_issue(state)
-    create(:issue, state, project: project)
+  def create_issue(state, attributes = {})
+    create(:issue, state, attributes.merge(project: project))
   end
 
-  def create_merge_request(state)
-    create(:merge_request, state,
-      source_project: project, target_project: project)
+  def create_merge_request(state, attributes = {})
+    create(:merge_request, state, attributes.merge(source_project: project, target_project: project))
   end
 
   it 'ignores non-GFM links' do
@@ -139,6 +138,30 @@ RSpec.describe Banzai::Filter::IssuableStateFilter do
 
       expect(doc.css('a').last.text).to eq("#{moved_issue.to_reference} (moved)")
     end
+
+    it 'shows title for references with +' do
+      issue = create_issue(:opened, title: 'Some issue')
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference})")
+    end
+
+    it 'truncates long title for references with +' do
+      issue = create_issue(:opened, title: 'Some issue ' * 10)
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{issue.title.truncate(50)} (#{issue.to_reference})")
+    end
+
+    it 'shows both title and state for closed references with +' do
+      issue = create_issue(:closed, title: 'Some issue')
+      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue', reference_format: '+')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{issue.title} (#{issue.to_reference} - closed)")
+    end
   end
 
   context 'for merge request references' do
@@ -196,6 +219,21 @@ RSpec.describe Banzai::Filter::IssuableStateFilter do
       doc = filter(link, context)
 
       expect(doc.css('a').last.text).to eq("#{merge_request.to_reference} (merged)")
+    end
+
+    it 'shows title for references with +' do
+      merge_request = create_merge_request(:opened, title: 'Some merge request')
+
+      link = create_link(
+        merge_request.to_reference,
+        merge_request: merge_request.id,
+        reference_type: 'merge_request',
+        reference_format: '+'
+      )
+
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{merge_request.title} (#{merge_request.to_reference})")
     end
   end
 end

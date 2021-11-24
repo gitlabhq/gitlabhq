@@ -27,43 +27,40 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     migration.track_record_deletions(:_test_loose_fk_parent_table_2)
   end
 
-  let!(:parent_model_1) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_parent_table_1'
-
-      include LooseForeignKey
-
-      loose_foreign_key :_test_loose_fk_child_table_1_1, :parent_id, on_delete: :async_delete
-      loose_foreign_key :_test_loose_fk_child_table_1_2, :parent_id_with_different_column, on_delete: :async_nullify
-    end
-  end
-
-  let!(:parent_model_2) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_parent_table_2'
-
-      include LooseForeignKey
-
-      loose_foreign_key :_test_loose_fk_child_table_2_1, :parent_id, on_delete: :async_delete
-    end
-  end
-
-  let!(:child_model_1) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_child_table_1_1'
-    end
-  end
-
-  let!(:child_model_2) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_child_table_1_2'
-    end
-  end
-
-  let!(:child_model_3) do
-    Class.new(ApplicationRecord) do
-      self.table_name = '_test_loose_fk_child_table_2_1'
-    end
+  let(:all_loose_foreign_key_definitions) do
+    {
+      '_test_loose_fk_parent_table_1' => [
+        ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          '_test_loose_fk_parent_table_1',
+          '_test_loose_fk_child_table_1_1',
+          {
+            column: 'parent_id',
+            on_delete: :async_delete,
+            gitlab_schema: :gitlab_main
+          }
+        ),
+        ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          '_test_loose_fk_parent_table_1',
+          '_test_loose_fk_child_table_1_2',
+          {
+            column: 'parent_id_with_different_column',
+            on_delete: :async_nullify,
+            gitlab_schema: :gitlab_main
+          }
+        )
+      ],
+      '_test_loose_fk_parent_table_2' => [
+        ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          '_test_loose_fk_parent_table_2',
+          '_test_loose_fk_child_table_2_1',
+          {
+            column: 'parent_id',
+            on_delete: :async_delete,
+            gitlab_schema: :gitlab_main
+          }
+        )
+      ]
+    }
   end
 
   let(:loose_fk_parent_table_1) { table(:_test_loose_fk_parent_table_1) }
@@ -87,6 +84,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
   end
 
   before do
+    allow(Gitlab::Database::LooseForeignKeys).to receive(:definitions_by_table).and_return(all_loose_foreign_key_definitions)
+
     parent_record_1 = loose_fk_parent_table_1.create!
     loose_fk_child_table_1_1.create!(parent_id: parent_record_1.id)
     loose_fk_child_table_1_2.create!(parent_id_with_different_column: parent_record_1.id)
@@ -98,8 +97,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     parent_record_3 = loose_fk_parent_table_2.create!
     5.times { loose_fk_child_table_2_1.create!(parent_id: parent_record_3.id) }
 
-    parent_model_1.delete_all
-    parent_model_2.delete_all
+    loose_fk_parent_table_1.delete_all
+    loose_fk_parent_table_2.delete_all
   end
 
   it 'cleans up all rows' do

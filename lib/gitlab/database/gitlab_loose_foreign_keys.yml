@@ -1,0 +1,8 @@
+chat_names:
+  - to_table: ci_pipeline_chat_data
+    column: chat_name_id
+    on_delete: async_delete
+ci_runners:
+  - to_table: clusters_applications_runners
+    column: runner_id
+    on_delete: async_nullify

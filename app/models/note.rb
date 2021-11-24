@@ -23,7 +23,7 @@ class Note < ApplicationRecord
   include FromUnion
   include Sortable
 
-  cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
+  cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
   redact_field :note
 

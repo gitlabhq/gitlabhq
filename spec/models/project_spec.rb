@@ -261,7 +261,49 @@ RSpec.describe Project, factory_default: :keep do
     end
 
     context 'updating a project' do
-      context 'with project namespaces' do
+      shared_examples 'project update' do
+        let_it_be(:project_namespace) { create(:project_namespace) }
+        let_it_be(:project) { project_namespace.project }
+
+        context 'when project namespace is not set' do
+          before do
+            project.update_column(:project_namespace_id, nil)
+            project.reload
+          end
+
+          it 'updates the project successfully' do
+            # pre-check that project does not have a project namespace
+            expect(project.project_namespace).to be_nil
+
+            project.update!(path: 'hopefully-valid-path2')
+
+            expect(project).to be_persisted
+            expect(project).to be_valid
+            expect(project.path).to eq('hopefully-valid-path2')
+            expect(project.project_namespace).to be_nil
+          end
+        end
+
+        context 'when project has an associated project namespace' do
+          # when FF is disabled creating a project does not create a project_namespace, so we create one
+          it 'project is INVALID when trying to remove project namespace' do
+            project.reload
+            # check that project actually has an associated project namespace
+            expect(project.project_namespace_id).to eq(project_namespace.id)
+
+            expect do
+              project.update!(project_namespace_id: nil, path: 'hopefully-valid-path1')
+            end.to raise_error(ActiveRecord::RecordInvalid)
+            expect(project).to be_invalid
+            expect(project.errors.full_messages).to include("Project namespace can't be blank")
+            expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+          end
+        end
+      end
+
+      context 'with create_project_namespace_on_project_create FF enabled' do
+        it_behaves_like 'project update'
+
         it 'keeps project namespace in sync with project' do
           project = create(:project)
           project.update!(path: 'hopefully-valid-path1')
@@ -270,19 +312,21 @@ RSpec.describe Project, factory_default: :keep do
           expect(project.project_namespace).to be_persisted
           expect(project.project_namespace).to be_in_sync_with_project(project)
         end
+      end
 
-        context 'with FF disabled' do
-          before do
-            stub_feature_flags(create_project_namespace_on_project_create: false)
-          end
+      context 'with create_project_namespace_on_project_create FF disabled' do
+        before do
+          stub_feature_flags(create_project_namespace_on_project_create: false)
+        end
 
-          it 'does not create a project namespace when project is updated' do
-            project = create(:project)
-            project.update!(path: 'hopefully-valid-path1')
+        it_behaves_like 'project update'
 
-            expect(project).to be_persisted
-            expect(project.project_namespace).to be_nil
-          end
+        it 'does not create a project namespace when project is updated' do
+          project = create(:project)
+          project.update!(path: 'hopefully-valid-path1')
+
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_nil
         end
       end
     end

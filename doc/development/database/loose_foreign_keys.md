@@ -52,25 +52,40 @@ For this procedure to work, we must register which tables to clean up asynchrono
 
 ## Example migration and configuration
 
-### Configure the model
+### Configure the loose foreign key
 
-First, tell the application that the `projects` table has a new loose foreign key.
-You can do this in the `Project` model:
+Loose foreign keys are defined in a YAML file. The configuration requires the
+following information:
 
-```ruby
-class Project < ApplicationRecord
-  # ...
+- Parent table name (`projects`)
+- Child table name (`ci_pipelines`)
+- The data cleanup method (`async_delete` or `async_nullify`)
 
-  include LooseForeignKey
+The YAML file is located at `lib/gitlab/database/gitlab_loose_foreign_keys.yml`. The file groups
+foreign key definitions by the name of the parent table. The parent table can have multiple loose
+foreign key definitions, therefore we store them as an array.
 
-  loose_foreign_key :ci_pipelines, :project_id, on_delete: :async_delete # or async_nullify
+Example definition:
 
-  # ...
-end
+```yaml
+projects:
+  - to_table: ci_pipelines
+    column: project_id
+    on_delete: async_delete
 ```
 
-This instruction ensures the asynchronous cleanup process knows about the association, and the
-how to do the cleanup. In this case, the associated `ci_pipelines` records are deleted.
+If the `projects` key is already present in the YAML file, then a new entry can be added
+to the array:
+
+```yaml
+projects:
+  - to_table: ci_pipelines
+    column: project_id
+    on_delete: async_delete
+  - to_table: another_table
+    column: project_id
+    on_delete: :async_nullify
+```
 
 ### Track record changes
 
@@ -126,6 +141,19 @@ end
 
 At this point, the setup phase is concluded. The deleted `projects` records should be automatically
 picked up by the scheduled cleanup worker job.
+
+## Testing
+
+The "`it has loose foreign keys`" shared example can be used to test the presence of the `ON DELETE` trigger and the
+loose foreign key definitions.
+
+Simply add to the model test file:
+
+```ruby
+it_behaves_like 'it has loose foreign keys' do
+  let(:factory_name) { :project }
+end
+```
 
 ## Caveats of loose foreign keys
 

@@ -23,8 +23,6 @@ module Gitlab
           "#{uri.host}:#{uri.port}"
         end
 
-        private
-
         def uri
           strong_memoize(:snowplow_uri) do
             uri = URI(ENV['SNOWPLOW_MICRO_URI'] || DEFAULT_URI)
@@ -32,6 +30,8 @@ module Gitlab
             uri
           end
         end
+
+        private
 
         override :cookie_domain
         def cookie_domain

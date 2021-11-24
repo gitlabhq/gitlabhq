@@ -8,22 +8,19 @@ module QA
         include Project::SubMenus::Settings
         include Project::SubMenus::Common
         include Layout::Flash
+        include Page::Component::BlobContent
+
+        view 'app/assets/javascripts/repository/components/blob_button_group.vue' do
+          element :lock_button
+        end
 
         view 'app/helpers/blob_helper.rb' do
           element :edit_button, "_('Edit')" # rubocop:disable QA/ElementWithPattern
           element :delete_button, '_("Delete")' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/blob/_header_content.html.haml' do
-          element :file_name_content
-        end
-
         view 'app/views/projects/blob/_remove.html.haml' do
           element :delete_file_button, "button_tag 'Delete file'" # rubocop:disable QA/ElementWithPattern
-        end
-
-        view 'app/views/shared/_file_highlight.html.haml' do
-          element :file_content
         end
 
         def click_edit
@@ -36,26 +33,6 @@ module QA
 
         def click_delete_file
           click_on 'Delete file'
-        end
-
-        def has_file?(name)
-          has_element?(:file_name_content, text: name)
-        end
-
-        def has_no_file?(name)
-          has_no_element?(:file_name_content, text: name)
-        end
-
-        def has_file_content?(file_content, file_number = nil)
-          if file_number
-            within_element_by_index(:file_content, file_number - 1) do
-              has_text?(file_content)
-            end
-          else
-            within_element(:file_content) do
-              has_text?(file_content)
-            end
-          end
         end
       end
     end

@@ -42,7 +42,7 @@ Gitlab::Experiment.configure do |config|
   # This behavior doesn't make perfect sense for self managed installs either,
   # so we don't think we should redirect in those cases.
   #
-  valid_domains = %w[about.gitlab.com docs.gitlab.com gitlab.com]
+  valid_domains = %w[about.gitlab.com docs.gitlab.com gitlab.com gdk.test localhost]
   config.redirect_url_validator = lambda do |url|
     Gitlab.dev_env_or_com? && (url = URI.parse(url)) && valid_domains.include?(url.host)
   rescue URI::InvalidURIError

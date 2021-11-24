@@ -136,7 +136,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pipeline: :gfm,
       author: author,
       project: project,
-      issuable_state_filter_enabled: true
+      issuable_reference_expansion_enabled: true
     )
   end
 
@@ -146,7 +146,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pipeline: :gfm,
       author: author,
       project: project,
-      issuable_state_filter_enabled: true
+      issuable_reference_expansion_enabled: true
     )
   end
 

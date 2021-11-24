@@ -46,6 +46,47 @@ RSpec.describe Ci::CreatePipelineService do
     end
     # rubocop:enable Metrics/ParameterLists
 
+    context 'performance' do
+      it_behaves_like 'pipelines are created without N+1 SQL queries' do
+        let(:config1) do
+          <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+          YAML
+        end
+
+        let(:config2) do
+          <<~YAML
+          job1:
+            stage: build
+            script: exit 0
+
+          job2:
+            stage: test
+            script: exit 0
+
+          job3:
+            stage: deploy
+            script: exit 0
+          YAML
+        end
+
+        let(:accepted_n_plus_ones) do
+          1 + # SELECT "ci_instance_variables"
+          1 + # INSERT INTO "ci_stages"
+          1 + # SELECT "ci_builds".* FROM "ci_builds"
+          1 + # INSERT INTO "ci_builds"
+          1 + # INSERT INTO "ci_builds_metadata"
+          1   # SELECT "taggings".* FROM "taggings"
+        end
+      end
+    end
+
     context 'valid params' do
       let(:pipeline) { execute_service.payload }
 

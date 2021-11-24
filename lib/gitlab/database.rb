@@ -63,6 +63,15 @@ module Gitlab
       }.compact.with_indifferent_access.freeze
     end
 
+    # This returns a list of base models with connection associated for a given gitlab_schema
+    def self.schemas_to_base_models
+      @schemas_to_base_models ||= {
+        gitlab_main: [self.database_base_models.fetch(:main)],
+        gitlab_ci: [self.database_base_models[:ci] || self.database_base_models.fetch(:main)], # use CI or fallback to main
+        gitlab_shared: self.database_base_models.values # all models
+      }.with_indifferent_access.freeze
+    end
+
     # We configure the database connection pool size automatically based on the
     # configured concurrency. We also add some headroom, to make sure we don't
     # run out of connections when more threads besides the 'user-facing' ones

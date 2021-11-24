@@ -25,6 +25,10 @@ module Gitlab
         snowplow.hostname
       end
 
+      def snowplow_micro_enabled?
+        Rails.env.development? && Gitlab::Utils.to_boolean(ENV['SNOWPLOW_MICRO_ENABLE'])
+      end
+
       private
 
       def snowplow
@@ -33,10 +37,6 @@ module Gitlab
                       else
                         Gitlab::Tracking::Destinations::Snowplow.new
                       end
-      end
-
-      def snowplow_micro_enabled?
-        Rails.env.development? && Gitlab::Utils.to_boolean(ENV['SNOWPLOW_MICRO_ENABLE'])
       end
     end
   end

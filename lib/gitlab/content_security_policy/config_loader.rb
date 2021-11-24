@@ -36,6 +36,7 @@ module Gitlab
         if Rails.env.development?
           allow_webpack_dev_server(directives)
           allow_letter_opener(directives)
+          allow_snowplow_micro(directives) if Gitlab::Tracking.snowplow_micro_enabled?
           allow_customersdot(directives) if ENV['CUSTOMER_PORTAL_URL'].present?
         end
 
@@ -136,6 +137,11 @@ module Gitlab
 
       def self.allow_letter_opener(directives)
         append_to_directive(directives, 'frame_src', Gitlab::Utils.append_path(Gitlab.config.gitlab.url, '/rails/letter_opener/'))
+      end
+
+      def self.allow_snowplow_micro(directives)
+        url = URI.join(Gitlab::Tracking::Destinations::SnowplowMicro.new.uri, '/').to_s
+        append_to_directive(directives, 'connect_src', url)
       end
 
       # Using 'self' in the CSP introduces several CSP bypass opportunities

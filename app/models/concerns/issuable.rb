@@ -43,7 +43,7 @@ module Issuable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description, issuable_state_filter_enabled: true
+    cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     redact_field :description
 

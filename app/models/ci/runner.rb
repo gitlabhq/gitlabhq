@@ -12,7 +12,6 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include TaggableQueries
     include Presentable
-    include LooseForeignKey
 
     add_authentication_token_field :token, encrypted: :optional
 
@@ -179,8 +178,6 @@ module Ci
                       message: 'needs to be non-negative' }
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
-
-    loose_foreign_key :clusters_applications_runners, :runner_id, on_delete: :async_nullify
 
     # Searches for runners matching the given query.
     #

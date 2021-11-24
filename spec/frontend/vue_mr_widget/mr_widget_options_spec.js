@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '@sentry/browser';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
@@ -19,10 +20,15 @@ import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/consta
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
-import testExtension from './test_extension';
+import {
+  workingExtension,
+  collapsedDataErrorExtension,
+  fullDataErrorExtension,
+} from './test_extensions';
 
 jest.mock('~/api.js');
 
@@ -892,7 +898,7 @@ describe('MrWidgetOptions', () => {
 
   describe('mock extension', () => {
     beforeEach(() => {
-      registerExtension(testExtension);
+      registerExtension(workingExtension);
 
       createComponent();
     });
@@ -914,7 +920,7 @@ describe('MrWidgetOptions', () => {
         .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
         .trigger('click');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith('test_expand_event');
     });
@@ -926,7 +932,7 @@ describe('MrWidgetOptions', () => {
         .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
         .trigger('click');
 
-      await Vue.nextTick();
+      await nextTick();
 
       expect(
         wrapper.find('[data-testid="widget-extension-top-level"]').find(GlDropdown).exists(),
@@ -950,6 +956,52 @@ describe('MrWidgetOptions', () => {
 
       expect(collapsedSection.find(GlButton).exists()).toBe(true);
       expect(collapsedSection.find(GlButton).text()).toBe('Full report');
+    });
+  });
+
+  describe('mock extension errors', () => {
+    let captureException;
+
+    const itHandlesTheException = () => {
+      expect(captureException).toHaveBeenCalledTimes(1);
+      expect(captureException).toHaveBeenCalledWith(new Error('Fetch error'));
+      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('error');
+    };
+
+    beforeEach(() => {
+      captureException = jest.spyOn(Sentry, 'captureException');
+    });
+
+    afterEach(() => {
+      registeredExtensions.extensions = [];
+      captureException = null;
+    });
+
+    it('handles collapsed data fetch errors', async () => {
+      registerExtension(collapsedDataErrorExtension);
+      createComponent();
+      await waitForPromises();
+
+      expect(
+        wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]').exists(),
+      ).toBe(false);
+      itHandlesTheException();
+    });
+
+    it('handles full data fetch errors', async () => {
+      registerExtension(fullDataErrorExtension);
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.findComponent(StatusIcon).props('iconName')).not.toBe('error');
+      wrapper
+        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
+        .trigger('click');
+
+      await nextTick();
+      await waitForPromises();
+
+      itHandlesTheException();
     });
   });
 });
