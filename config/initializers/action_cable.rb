@@ -9,6 +9,8 @@ Rails.application.configure do
   config.action_cable.worker_pool_size = Gitlab::ActionCable::Config.worker_pool_size
 end
 
+ActionCable::SubscriptionAdapter::Base.prepend(Gitlab::Patch::ActionCableSubscriptionAdapterIdentifier)
+
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
 ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
   args = config.except(:adapter, :channel_prefix)

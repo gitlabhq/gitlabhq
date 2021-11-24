@@ -139,8 +139,9 @@ In these cases, use the following workflow:
    and approval from the VP of Development, the DRI for Development Guidelines,
    @clefelhocz1.
 
-1. After all approvals are complete, assign the merge request to the
-   Technical Writer for [Development Guidelines](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments-to-development-guidelines)
+1. After all approvals are complete, review the page's metadata to
+   [find a Technical Writer](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+   who can help you merge the changes.
    for final content review and merge. The Technical Writer may ask for
    additional approvals as previously suggested before merging the MR.
 

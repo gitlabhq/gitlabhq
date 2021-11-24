@@ -1354,7 +1354,7 @@ PUT /projects/:id
 ```
 
 For example, to toggle the setting for
-[shared runners on a GitLab.com project](../user/gitlab_com/index.md#shared-runner-cloud-runners):
+[shared runners on a GitLab.com project](../ci/runners/index.md):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \

@@ -342,6 +342,7 @@ end
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69372) in GitLab 14.3.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.4.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.6.
 
 The deduplication always take into account the latest binary replication pointer, not the first one.
 This happens because we drop the same job scheduled for the second time and the Write-Ahead Log (WAL) is lost.
@@ -353,15 +354,11 @@ This way we are always comparing the latest binary replication pointer,
 making sure that we read from the replica that is fully caught up.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available,
-ask an administrator to [enable the preserve_latest_wal_locations_for_idempotent_jobs flag](../administration/feature_flags.md).
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available,
-ask an administrator to [enable the `preserve_latest_wal_locations_for_idempotent_jobs` flag](../administration/feature_flags.md).
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to 
+[disable the feature flag](../administration/feature_flags.md) named preserve_latest_wal_locations_for_idempotent_jobs flag.
+
 This feature flag is related to GitLab development and is not intended to be used by GitLab administrators, though.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On GitLab.com, this feature is available.
 
 ## Limited capacity worker
 

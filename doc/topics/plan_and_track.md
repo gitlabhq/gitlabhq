@@ -42,5 +42,6 @@ Align your work across teams.
 - [Epics](../user/group/epics/index.md)
   - [Multi-level epics](../user/group/epics/manage_epics.md#multi-level-child-epics)
   - [Epic boards](../user/group/epics/epic_boards.md)
-  - [View heath status](../user/project/issues/managing_issues.md#health-status)
+  - [View health status](../user/project/issues/managing_issues.md#health-status)
 - [Roadmaps](../user/group/roadmap/index.md)
+- [Planning hierarchies](../user/group/planning_hierarchy/index.md)

@@ -4,9 +4,9 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Runner Cloud for Linux **(FREE)**
+# SaaS runners on Linux **(FREE SAAS)**
 
-Runner Cloud runners for Linux run in autoscale mode and are powered by Google Cloud Platform.
+SaaS runners on Linux are autoscaled ephemeral Google Cloud Platform virtual machines.
 
 Autoscaling means reduced queue times to spin up CI/CD jobs, and isolated VMs for each job, thus maximizing security. These shared runners are available on GitLab.com.
 
@@ -38,7 +38,7 @@ These runners share a [distributed cache](https://docs.gitlab.com/runner/configu
 
 ## Pre-clone script
 
-Cloud runners for Linux provide a way to run commands in a CI
+With SaaS runners on Linux, you can run commands in a CI
 job before the runner attempts to run `git init` and `git fetch` to
 download a GitLab repository. The
 [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)

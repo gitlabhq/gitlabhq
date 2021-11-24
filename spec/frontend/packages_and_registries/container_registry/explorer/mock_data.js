@@ -167,6 +167,7 @@ export const imageTagsMock = (nodes = tagsMock) => ({
   data: {
     containerRepository: {
       id: containerRepositoryMock.id,
+      tagsCount: nodes.length,
       tags: {
         nodes,
         pageInfo: { ...tagsPageInfo },
@@ -191,7 +192,7 @@ export const graphQLImageDetailsMock = (override) => ({
   data: {
     containerRepository: {
       ...containerRepositoryMock,
-
+      tagsCount: tagsMock.length,
       tags: {
         nodes: tagsMock,
         pageInfo: { ...tagsPageInfo },

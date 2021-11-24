@@ -23,8 +23,8 @@ describe('Attention require toggle', () => {
 
   it.each`
     attentionRequested | icon
-    ${true}            | ${'star'}
-    ${false}           | ${'star-o'}
+    ${true}            | ${'attention-solid'}
+    ${false}           | ${'attention'}
   `(
     'renders $icon icon when attention_requested is $attentionRequested',
     ({ attentionRequested, icon }) => {

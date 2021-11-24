@@ -46,7 +46,6 @@ export default {
   data() {
     return {
       containerRepository: {},
-      fetchTagsCount: false,
     };
   },
   apollo: {

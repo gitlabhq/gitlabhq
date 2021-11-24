@@ -1,6 +1,7 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -22,6 +23,7 @@ import {
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
+import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
 
 import component from '~/packages_and_registries/container_registry/explorer/pages/details.vue';
 import Tracking from '~/tracking';
@@ -32,6 +34,7 @@ import {
   containerRepositoryMock,
   graphQLEmptyImageDetailsMock,
   tagsMock,
+  imageTagsMock,
 } from '../mock_data';
 import { DeleteModal } from '../stubs';
 
@@ -67,12 +70,13 @@ describe('Details Page', () => {
 
   const waitForApolloRequestRender = async () => {
     await waitForPromises();
-    await wrapper.vm.$nextTick();
+    await nextTick();
   };
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock()),
     mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock),
+    tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock)),
     options,
     config = {},
   } = {}) => {
@@ -81,6 +85,7 @@ describe('Details Page', () => {
     const requestHandlers = [
       [getContainerRepositoryDetailsQuery, resolver],
       [deleteContainerRepositoryTagsMutation, mutationResolver],
+      [getContainerRepositoryTagsQuery, tagsResolver],
     ];
 
     apolloProvider = createMockApollo(requestHandlers);
@@ -242,38 +247,49 @@ describe('Details Page', () => {
 
     describe('confirmDelete event', () => {
       let mutationResolver;
+      let tagsResolver;
 
       beforeEach(() => {
         mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
-        mountComponent({ mutationResolver });
+        tagsResolver = jest.fn().mockResolvedValue(graphQLImageDetailsMock(imageTagsMock));
+        mountComponent({ mutationResolver, tagsResolver });
 
         return waitForApolloRequestRender();
       });
+
       describe('when one item is selected to be deleted', () => {
-        it('calls apollo mutation with the right parameters', async () => {
+        it('calls apollo mutation with the right parameters and refetches the tags list query', async () => {
           findTagsList().vm.$emit('delete', [cleanTags[0]]);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           findDeleteModal().vm.$emit('confirmDelete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: [cleanTags[0].name] }),
           );
+
+          await waitForPromises();
+
+          expect(tagsResolver).toHaveBeenCalled();
         });
       });
 
       describe('when more than one item is selected to be deleted', () => {
-        it('calls apollo mutation with the right parameters', async () => {
+        it('calls apollo mutation with the right parameters and refetches the tags list query', async () => {
           findTagsList().vm.$emit('delete', tagsMock);
 
-          await wrapper.vm.$nextTick();
+          await nextTick();
 
           findDeleteModal().vm.$emit('confirmDelete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),
           );
+
+          await waitForPromises();
+
+          expect(tagsResolver).toHaveBeenCalled();
         });
       });
     });
@@ -382,7 +398,7 @@ describe('Details Page', () => {
 
         findPartialCleanupAlert().vm.$emit('dismiss');
 
-        await wrapper.vm.$nextTick();
+        await nextTick();
 
         expect(axios.post).toHaveBeenCalledWith(config.userCalloutsPath, {
           feature_name: config.userCalloutId,
@@ -472,7 +488,7 @@ describe('Details Page', () => {
       await waitForApolloRequestRender();
       findDetailsHeader().vm.$emit('delete');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
     };
 
     it('on delete event it deletes the image', async () => {
@@ -497,13 +513,13 @@ describe('Details Page', () => {
 
       findDeleteImage().vm.$emit('start');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findTagsLoader().exists()).toBe(true);
 
       findDeleteImage().vm.$emit('end');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findTagsLoader().exists()).toBe(false);
     });
@@ -513,7 +529,7 @@ describe('Details Page', () => {
 
       findDeleteImage().vm.$emit('error');
 
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       expect(findDeleteAlert().props('deleteAlertType')).toBe(ALERT_DANGER_IMAGE);
     });

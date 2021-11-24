@@ -4,9 +4,9 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Runner Cloud for Windows (beta) **(FREE)**
+# SaaS runners on Windows (beta) **(FREE SAAS)**
 
-Runner Cloud runners for Windows are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
+SaaS runners on Windows are in [beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta)
 and shouldn't be used for production workloads.
 
 During this beta period, the [shared runner pipeline quota](../../../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota)

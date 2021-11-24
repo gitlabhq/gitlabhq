@@ -41,6 +41,8 @@ graph TD
     Child_epic --> Issue2
 ```
 
+Also, read more about possible [planning hierarchies](../planning_hierarchy/index.md).
+
 ## Roadmap in epics **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7327) in GitLab 11.10.

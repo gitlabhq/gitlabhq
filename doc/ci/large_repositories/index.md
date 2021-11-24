@@ -259,5 +259,5 @@ For very active repositories with a large number of references and files, you ca
   must be configured per-repository. The pack-objects cache also automatically works for forks. On GitLab.com, where the pack-objects cache is
   enabled on all Gitaly servers, we found that we no longer need a pre-clone step for `gitlab-org/gitlab` development.
 - Optimize your CI/CD jobs by seeding repository data in a pre-clone step with the
-  [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) of GitLab Runner. See the
-  [Runner Cloud for Linux](../runners/runner_cloud/linux_runner_cloud.md#pre-clone-script) for more details.
+  [`pre_clone_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) of GitLab Runner. See
+  [SaaS runners on Linux](../runners/runner_cloud/linux_runner_cloud.md#pre-clone-script) for details.

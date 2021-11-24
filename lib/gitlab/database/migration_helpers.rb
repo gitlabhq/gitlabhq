@@ -4,6 +4,7 @@ module Gitlab
   module Database
     module MigrationHelpers
       include Migrations::BackgroundMigrationHelpers
+      include Migrations::BatchedBackgroundMigrationHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
