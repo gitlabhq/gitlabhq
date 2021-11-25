@@ -12446,9 +12446,6 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-msgid "Draft merge requests can't be merged."
-msgstr ""
-
 msgid "Drag your designs here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
@@ -21782,6 +21779,9 @@ msgid "Merge automatically (%{strategy})"
 msgstr ""
 
 msgid "Merge blocked: all merge request dependencies must be merged or closed."
+msgstr ""
+
+msgid "Merge blocked: merge request must be marked as ready. It's still marked as draft."
 msgstr ""
 
 msgid "Merge blocked: new changes were just added."
@@ -34218,10 +34218,10 @@ msgstr ""
 msgid "Terraform|Terraform init command"
 msgstr ""
 
-msgid "Terraform|The report %{name} failed to generate."
+msgid "Terraform|The job %{name} failed to generate a report."
 msgstr ""
 
-msgid "Terraform|The report %{name} was generated in your pipelines."
+msgid "Terraform|The job %{name} generated a report."
 msgstr ""
 
 msgid "Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}."
@@ -35679,9 +35679,6 @@ msgid "This merge request is from an internal project to a public project."
 msgstr ""
 
 msgid "This merge request is locked."
-msgstr ""
-
-msgid "This merge request is still a draft."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."

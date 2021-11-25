@@ -167,11 +167,10 @@ export default {
     <div class="media-body">
       <div class="gl-ml-3 float-left">
         <span class="gl-font-weight-bold">
-          {{ __('This merge request is still a draft.') }}
+          {{
+            __("Merge blocked: merge request must be marked as ready. It's still marked as draft.")
+          }}
         </span>
-        <span class="gl-display-block text-muted">{{
-          __("Draft merge requests can't be merged.")
-        }}</span>
       </div>
       <gl-button
         v-if="canUpdate"

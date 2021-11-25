@@ -391,8 +391,10 @@ class User < ApplicationRecord
     # this state transition object in order to do a rollback.
     # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
-      Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
-      Ci::DisableUserPipelineSchedulesService.new.execute(user)
+      user.run_after_commit do
+        Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
+        Ci::DisableUserPipelineSchedulesService.new.execute(user)
+      end
     end
 
     after_transition any => :deactivated do |user|

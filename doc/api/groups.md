@@ -793,9 +793,9 @@ Parameters:
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
 | `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
+| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `emails_disabled`                    | boolean | no       | Disable email notifications |
 | `avatar`                             | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned |
@@ -808,13 +808,13 @@ Parameters:
 
 ### Options for `default_branch_protection`
 
-The `default_branch_protection` attribute determines whether developers and maintainers can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
+The `default_branch_protection` attribute determines whether users with the Developer or [Maintainer role](../user/permissions.md) can push to the applicable [default branch](../user/project/repository/branches/default.md), as described in the following table:
 
 | Value | Description |
 |-------|-------------------------------------------------------------------------------------------------------------|
-| `0`   | No protection. Developers and maintainers can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
-| `1`   | Partial protection. Developers and maintainers can:  <br>- Push new commits |
-| `2`   | Full protection. Only maintainers can:  <br>- Push new commits |
+| `0`   | No protection. Users with the Developer or Maintainer role can:  <br>- Push new commits<br>- Force push changes<br>- Delete the branch |
+| `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
+| `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
 
 ## New Subgroup
 
@@ -869,9 +869,9 @@ PUT /groups/:id
 | `visibility`                               | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `require_two_factor_authentication`        | boolean | no       | Require all users in this group to setup Two-factor authentication. |
 | `two_factor_grace_period`                  | integer | no       | Time before Two-factor authentication is enforced (in hours). |
-| `project_creation_level`                   | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
+| `project_creation_level`                   | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `auto_devops_enabled`                      | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
-| `subgroup_creation_level`                  | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `subgroup_creation_level`                  | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#creating-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `emails_disabled`                          | boolean | no       | Disable email notifications |
 | `avatar`                                   | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
 | `mentions_disabled`                        | boolean | no       | Disable the capability of a group from getting mentioned |

@@ -194,16 +194,15 @@ and are protected at the same time.
 In an enterprise organization, with thousands of projects under a single group,
 ensuring that all of the [project-level protected environments](#protecting-environments)
 are properly configured is not a scalable solution. For example, a developer
-might gain privileged access to a higher environment when they are added as a
-maintainer to a new project. Group-level protected environments can be a solution
-in this situation.
+might gain privileged access to a higher environment when they are given the [Maintainer role](../../user/permissions.md)
+for a new project. Group-level protected environments can be a solution in this situation.
 
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/index.md) must be correctly
 configured:
 
-- Operators should be assigned the [maintainer role](../../user/permissions.md)
-  (or above) to the top-level group. They can maintain CI/CD configurations for
+- Operators should be given at least the [Maintainer role](../../user/permissions.md)
+  for the top-level group. They can maintain CI/CD configurations for
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,
   [group-level runners](../runners/runners_scope.md#group-runners), and
@@ -211,9 +210,9 @@ configured:
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
-- Developers should be assigned the [developer role](../../user/permissions.md)
-  (or below) at the top-level group, or explicitly assigned to a child project
-  as maintainers. They do *NOT* have access to the CI/CD configurations in the
+- Developers should be given no more than the [Developer role](../../user/permissions.md)
+  for the top-level group, or explicitly given the [Maintainer role](../../user/permissions.md) for a child project
+  They do *NOT* have access to the CI/CD configurations in the
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
 - For sub-groups and child projects:
@@ -225,7 +224,7 @@ configured:
     environment configurations exist, to run a deployment job, the user must be allowed in **both**
     rulesets.
   - In a project or a subgroup of the top-level group, developers can be
-    safely assigned the Maintainer role to tune their lower environments (such
+    safely assigned the [Maintainer role](../../user/permissions.md) to tune their lower environments (such
     as `testing`).
 
 Having this configuration in place:

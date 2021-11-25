@@ -96,4 +96,43 @@ RSpec.describe 'package details' do
       expect(graphql_data_at(:b)).to be(nil)
     end
   end
+
+  context 'when loading pipelines ordered by ID DESC' do
+    let(:pipelines) { create_list(:ci_pipeline, 6, project: project) }
+
+    before do
+      composer_package.pipelines = pipelines
+      composer_package.save!
+    end
+
+    def run_query(args)
+      pipelines_nodes = <<~QUERY
+      nodes {
+        id
+      }
+      pageInfo {
+        endCursor
+      }
+      QUERY
+
+      query = graphql_query_for(:package, { id: package_global_id }, query_graphql_field("pipelines", args, pipelines_nodes))
+      post_graphql(query, current_user: user)
+    end
+
+    it 'loads the second page correctly' do
+      run_query({ first: 2 })
+      cursor = graphql_data.dig('package', 'pipelines', 'pageInfo', 'endCursor')
+
+      run_query({ first: 2, after: cursor })
+
+      expected_pipeline_ids = pipelines
+        .sort_by(&:id)
+        .reverse[2..3] # second page
+        .map { |pipeline| pipeline.to_gid.to_s }
+
+      pipeline_ids = graphql_data.dig('package', 'pipelines', 'nodes').pluck('id')
+
+      expect(pipeline_ids).to eq(expected_pipeline_ids)
+    end
+  end
 end

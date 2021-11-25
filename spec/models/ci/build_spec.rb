@@ -4474,7 +4474,7 @@ RSpec.describe Ci::Build do
                 'create' => 0,
                 'update' => 1,
                 'delete' => 0,
-                'job_name' => build.options.dig(:artifacts, :name).to_s
+                'job_name' => build.name
               )
             )
           )

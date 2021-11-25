@@ -98,6 +98,7 @@ From there, you can see the following actions:
 - Roles allowed to create project changed.
 - Group CI/CD variable added, removed, or protected status changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
 - Compliance framework created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) in GitLab 14.5.
+- Event streaming destination created, updated, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) in GitLab 14.6.
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 

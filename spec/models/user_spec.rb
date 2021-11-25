@@ -1856,15 +1856,31 @@ RSpec.describe User do
     end
 
     context 'when user has running CI pipelines' do
-      let(:service) { double }
       let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
 
-      it 'aborts all running pipelines and related jobs' do
-        expect(user).to receive(:pipelines).and_return(pipelines)
-        expect(Ci::DropPipelineService).to receive(:new).and_return(service)
-        expect(service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
+      it 'drops all running pipelines and related jobs' do
+        drop_service = double
+        disable_service = double
 
-        user.block
+        expect(user).to receive(:pipelines).and_return(pipelines)
+        expect(Ci::DropPipelineService).to receive(:new).and_return(drop_service)
+        expect(drop_service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
+
+        expect(Ci::DisableUserPipelineSchedulesService).to receive(:new).and_return(disable_service)
+        expect(disable_service).to receive(:execute).with(user)
+
+        user.block!
+      end
+
+      it 'does not drop running pipelines if the transaction rolls back' do
+        expect(Ci::DropPipelineService).not_to receive(:new)
+        expect(Ci::DisableUserPipelineSchedulesService).not_to receive(:new)
+
+        User.transaction do
+          user.block
+
+          raise ActiveRecord::Rollback
+        end
       end
     end
 

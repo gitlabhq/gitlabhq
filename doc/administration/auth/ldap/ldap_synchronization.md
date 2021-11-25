@@ -127,8 +127,8 @@ following.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
-To take advantage of group sync, group owners or maintainers must [create one
-or more LDAP group links](#add-group-links).
+To take advantage of group sync, group Owners or users with the [Maintainer role](../../../user/permissions.md) must
+[create one or more LDAP group links](#add-group-links).
 
 ### Add group links
 

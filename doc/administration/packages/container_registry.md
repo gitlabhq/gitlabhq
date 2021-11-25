@@ -860,7 +860,7 @@ To remove image tags by running the cleanup policy, run the following commands i
 # Numeric ID of the project whose container registry should be cleaned up
 P = <project_id>
 
-# Numeric ID of a developer, maintainer or owner in that project
+# Numeric ID of a user with Developer, Maintainer, or Owner role for the project
 U = <user_id>
 
 # Get required details / objects
@@ -888,7 +888,7 @@ GitLab offers a set of APIs to manipulate the Container Registry and aid the pro
 of removing unused tags. Currently, this is exposed using the API, but in the future,
 these controls should migrate to the GitLab interface.
 
-Project maintainers can
+Users who have the [Maintainer role](../../user/permissions.md) for the project can
 [delete Container Registry tags in bulk](../../api/container_registry.md#delete-registry-repository-tags-in-bulk)
 periodically based on their own criteria, however, this alone does not recycle data,
 it only unlinks tags from manifests and image blobs. To recycle the Container

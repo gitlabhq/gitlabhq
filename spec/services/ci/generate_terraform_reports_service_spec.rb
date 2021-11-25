@@ -23,7 +23,7 @@ RSpec.describe Ci::GenerateTerraformReportsService do
                 'create' => 0,
                 'delete' => 0,
                 'update' => 1,
-                'job_name' => build.options.dig(:artifacts, :name).to_s
+                'job_name' => build.name
               ))
             ),
             key: an_instance_of(Array)

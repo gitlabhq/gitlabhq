@@ -34,7 +34,7 @@ module Gitlab
           def job_details(job)
             {
               'job_id' => job.id.to_s,
-              'job_name' => job.options.dig(:artifacts, :name).to_s,
+              'job_name' => job.name,
               'job_path' => Gitlab::Routing.url_helpers.project_job_path(job.project, job)
             }
           end

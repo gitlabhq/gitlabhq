@@ -1419,7 +1419,7 @@ Supported attributes:
 | `packages_enabled`                                          | boolean        | **{dotted-circle}** No | Enable or disable packages repository feature. |
 | `pages_access_level`                                        | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled`, or `public`. |
 | `requirements_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, `enabled` or `public` |
-| `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only maintainers to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `restrict_user_defined_variables`                           | boolean        | **{dotted-circle}** No | Allow only users with the [Maintainer role](../user/permissions.md) to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `path`                                                      | string         | **{dotted-circle}** No | Custom repository name for the project. By default generated based on name. |
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |

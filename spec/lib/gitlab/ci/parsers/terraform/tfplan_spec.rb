@@ -103,7 +103,7 @@ RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
               'create' => 0,
               'update' => 1,
               'delete' => 0,
-              'job_name' => artifact.job.options.dig(:artifacts, :name).to_s
+              'job_name' => artifact.job.name
             )
           )
         )
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Ci::Parsers::Terraform::Tfplan do
               'create' => 0,
               'update' => 1,
               'delete' => 0,
-              'job_name' => artifact.job.options.dig(:artifacts, :name).to_s
+              'job_name' => artifact.job.name
             )
           )
         )

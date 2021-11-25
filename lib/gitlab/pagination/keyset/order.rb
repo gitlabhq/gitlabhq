@@ -155,7 +155,7 @@ module Gitlab
         def apply_cursor_conditions(scope, values = {}, options = { use_union_optimization: false, in_operator_optimization_options: nil })
           values ||= {}
           transformed_values = values.with_indifferent_access
-          scope = apply_custom_projections(scope.dup)
+          scope = apply_custom_projections(scope)
 
           where_values = build_where_values(transformed_values)
 
