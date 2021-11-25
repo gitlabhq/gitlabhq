@@ -958,4 +958,21 @@ RSpec.describe CommitStatus do
       expect(build_from_other_pipeline.reload).to have_attributes(retried: false, processed: false)
     end
   end
+
+  describe '.bulk_insert_tags!' do
+    let(:statuses) { double('statuses') }
+    let(:tag_list_by_build) { double('tag list') }
+    let(:inserter) { double('inserter') }
+
+    it 'delegates to bulk insert class' do
+      expect(Gitlab::Ci::Tags::BulkInsert)
+        .to receive(:new)
+        .with(statuses, tag_list_by_build)
+        .and_return(inserter)
+
+      expect(inserter).to receive(:insert!)
+
+      described_class.bulk_insert_tags!(statuses, tag_list_by_build)
+    end
+  end
 end

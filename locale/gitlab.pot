@@ -11174,6 +11174,9 @@ msgstr ""
 msgid "Delete Key"
 msgstr ""
 
+msgid "Delete Selected"
+msgstr ""
+
 msgid "Delete Value Stream"
 msgstr ""
 
@@ -26597,7 +26600,7 @@ msgstr ""
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
-msgid "Profiles|Don't display activity-related personal information on your profiles"
+msgid "Profiles|Don't display activity-related personal information on your profile"
 msgstr ""
 
 msgid "Profiles|Edit Profile"

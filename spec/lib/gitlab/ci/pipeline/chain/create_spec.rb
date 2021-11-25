@@ -56,4 +56,74 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
         .to include /Failed to persist the pipeline/
     end
   end
+
+  context 'tags persistence' do
+    let(:stage) do
+      build(:ci_stage_entity, pipeline: pipeline)
+    end
+
+    let(:job) do
+      build(:ci_build, stage: stage, pipeline: pipeline, project: project)
+    end
+
+    let(:bridge) do
+      build(:ci_bridge, stage: stage, pipeline: pipeline, project: project)
+    end
+
+    before do
+      pipeline.stages = [stage]
+      stage.statuses = [job, bridge]
+    end
+
+    context 'without tags' do
+      it 'extracts an empty tag list' do
+        expect(CommitStatus)
+          .to receive(:bulk_insert_tags!)
+          .with(stage.statuses, {})
+          .and_call_original
+
+        step.perform!
+
+        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
+        expect(job).to be_persisted
+        expect(job.tag_list).to eq([])
+      end
+    end
+
+    context 'with tags' do
+      before do
+        job.tag_list = %w[tag1 tag2]
+      end
+
+      it 'bulk inserts tags' do
+        expect(CommitStatus)
+          .to receive(:bulk_insert_tags!)
+          .with(stage.statuses, { job.name => %w[tag1 tag2] })
+          .and_call_original
+
+        step.perform!
+
+        expect(job.instance_variable_defined?(:@tag_list)).to be_falsey
+        expect(job).to be_persisted
+        expect(job.tag_list).to match_array(%w[tag1 tag2])
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        job.tag_list = %w[tag1 tag2]
+        stub_feature_flags(ci_bulk_insert_tags: false)
+      end
+
+      it 'follows the old code path' do
+        expect(CommitStatus).not_to receive(:bulk_insert_tags!)
+
+        step.perform!
+
+        expect(job.instance_variable_defined?(:@tag_list)).to be_truthy
+        expect(job).to be_persisted
+        expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+      end
+    end
+  end
 end

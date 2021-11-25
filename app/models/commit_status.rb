@@ -217,6 +217,10 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
+  def self.bulk_insert_tags!(statuses, tag_list_by_build)
+    Gitlab::Ci::Tags::BulkInsert.new(statuses, tag_list_by_build).insert!
+  end
+
   def locking_enabled?
     will_save_change_to_status?
   end

@@ -15439,7 +15439,7 @@ CREATE TABLE iterations_cadences (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    start_date date NOT NULL,
+    start_date date,
     last_run_date date,
     duration_in_weeks integer,
     iterations_in_advance integer,

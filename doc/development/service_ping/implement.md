@@ -26,6 +26,10 @@ To implement a new metric in Service Ping, follow these steps:
 1. [Verify your metric](#verify-your-metric)
 1. [Set up and test Service Ping locally](#set-up-and-test-service-ping-locally)
 
+NOTE:
+When you add or change a Service Metric, you must migrate metrics to [instrumentation classes](metrics_instrumentation.md). 
+For information about the progress on migrating Service ping metrics, see this [epic](https://gitlab.com/groups/gitlab-org/-/epics/5547).
+
 ## Instrumentation classes
 
 We recommend you use [instrumentation classes](metrics_instrumentation.md) in `usage_data.rb` where possible.

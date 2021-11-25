@@ -6,8 +6,9 @@ product_stage: ''
 product_group: ''
 product_category: ''
 value_type: number
-status: active
+status: removed
 milestone: '14.3'
+milestone_removed: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69204
 time_frame: 28d
 data_source: redis_hll

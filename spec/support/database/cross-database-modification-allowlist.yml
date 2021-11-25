@@ -30,6 +30,7 @@
 - "./spec/lib/gitlab/ci/pipeline/chain/create_spec.rb"
 - "./spec/lib/gitlab/ci/pipeline/chain/seed_block_spec.rb"
 - "./spec/lib/gitlab/ci/pipeline/seed/build_spec.rb"
+- "./spec/lib/gitlab/ci/tags/bulk_insert_spec.rb"
 - "./spec/lib/gitlab/ci/templates/5_minute_production_app_ci_yaml_spec.rb"
 - "./spec/lib/gitlab/ci/templates/AWS/deploy_ecs_gitlab_ci_yaml_spec.rb"
 - "./spec/lib/gitlab/ci/templates/Jobs/deploy_gitlab_ci_yaml_spec.rb"
