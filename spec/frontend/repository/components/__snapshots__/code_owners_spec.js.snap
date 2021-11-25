@@ -1,0 +1,220 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Code owners component matches the snapshot 1`] = `<!---->`;
+
+exports[`Code owners component matches the snapshot 2`] = `
+<div
+  class="well-segment blob-auxiliary-viewer file-owner-content qa-file-owner-content"
+>
+  <gl-icon-stub
+    data-testid="users-icon"
+    name="users"
+    size="16"
+  />
+   
+  <strong>
+    Code owners
+  </strong>
+   
+  <gl-link-stub
+    href="/help/user/project/code_owners"
+    target="_blank"
+    title="About this feature"
+  >
+    <gl-icon-stub
+      data-testid="help-icon"
+      name="question-o"
+      size="16"
+    />
+  </gl-link-stub>
+  
+  :
+  
+  <div
+    class="gl-display-inline"
+    data-testid="code-owners"
+  >
+    <!---->
+     
+    <!---->
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+</div>
+`;
+
+exports[`Code owners component matches the snapshot 3`] = `
+<div
+  class="well-segment blob-auxiliary-viewer file-owner-content qa-file-owner-content"
+>
+  <gl-icon-stub
+    data-testid="users-icon"
+    name="users"
+    size="16"
+  />
+   
+  <strong>
+    Code owners
+  </strong>
+   
+  <gl-link-stub
+    href="/help/user/project/code_owners"
+    target="_blank"
+    title="About this feature"
+  >
+    <gl-icon-stub
+      data-testid="help-icon"
+      name="question-o"
+      size="16"
+    />
+  </gl-link-stub>
+  
+  :
+  
+  <div
+    class="gl-display-inline"
+    data-testid="code-owners"
+  >
+    <!---->
+     
+    <!---->
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+  <div
+    class="gl-display-inline"
+    data-testid="code-owners"
+  >
+    <!---->
+     
+    <span
+      data-testid="and-separator"
+    >
+      and
+    </span>
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+</div>
+`;
+
+exports[`Code owners component matches the snapshot 4`] = `
+<div
+  class="well-segment blob-auxiliary-viewer file-owner-content qa-file-owner-content"
+>
+  <gl-icon-stub
+    data-testid="users-icon"
+    name="users"
+    size="16"
+  />
+   
+  <strong>
+    Code owners
+  </strong>
+   
+  <gl-link-stub
+    href="/help/user/project/code_owners"
+    target="_blank"
+    title="About this feature"
+  >
+    <gl-icon-stub
+      data-testid="help-icon"
+      name="question-o"
+      size="16"
+    />
+  </gl-link-stub>
+  
+  :
+  
+  <div
+    class="gl-display-inline-block"
+    data-testid="code-owners"
+  >
+    <!---->
+     
+    <!---->
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+  <div
+    class="gl-display-inline-block"
+    data-testid="code-owners"
+  >
+    <span
+      data-testid="comma-separator"
+    >
+      ,
+    </span>
+     
+    <!---->
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+  <div
+    class="gl-display-inline-block"
+    data-testid="code-owners"
+  >
+    <span
+      data-testid="comma-separator"
+    >
+      ,
+    </span>
+     
+    <span
+      data-testid="and-separator"
+    >
+      and
+    </span>
+     
+    <gl-link-stub
+      href="path/to/@johnDoe"
+      target="_blank"
+      title="About this feature"
+    >
+      
+      John Doe
+    
+    </gl-link-stub>
+  </div>
+</div>
+`;

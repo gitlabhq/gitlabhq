@@ -465,7 +465,14 @@ If you regenerate 2FA recovery codes, save them. You can't use any previously cr
 
 ### Have 2FA disabled on your account
 
-If you cannot use a saved recovery code or generate new recovery codes then please submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) requesting that a GitLab global administrator disables two-factor authentication for your account. Please note that only the actual owner of the account can make this request and that disabling this setting will temporarily leave your account in a less secure state. You should therefore sign in and re-enable two-factor authentication as soon as possible.
+If you can't use a saved recovery code or generate new recovery codes, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new) to
+request a GitLab global administrator disable two-factor authentication for your account. Note that:
+
+- Only the owner of the account can make this request.
+- This service is only available for accounts that have a GitLab.com subscription. For more information, see our
+  [blog post](https://about.gitlab.com/blog/2020/08/04/gitlab-support-no-longer-processing-mfa-resets-for-free-users/).
+- Disabling this setting temporarily leaves your account in a less secure state. You should sign in and re-enable two-factor authentication
+  as soon as possible.
 
 ## Note to GitLab administrators
 

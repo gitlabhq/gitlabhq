@@ -91,7 +91,7 @@ module Packages
             generate_component_file(component, :packages, architecture, :deb)
             generate_component_file(component, :di_packages, architecture, :udeb)
           end
-          generate_component_file(component, :source, nil, :dsc)
+          generate_component_file(component, :sources, nil, :dsc)
         end
       end
 

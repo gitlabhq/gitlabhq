@@ -23,7 +23,7 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
   let_it_be(:component_file_other_file_md5, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_md5: 'other_md5') }
   let_it_be(:component_file_other_file_sha256, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_sha256: 'other_sha256') }
   let_it_be(:component_file_other_container, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component2_1, architecture: architecture2_1) }
-  let_it_be_with_refind(:component_file_with_file_type_source) { create("debian_#{container_type}_component_file", :source, component: component1_1) }
+  let_it_be_with_refind(:component_file_with_file_type_sources) { create("debian_#{container_type}_component_file", :sources, component: component1_1) }
   let_it_be(:component_file_with_file_type_di_packages, freeze: can_freeze) { create("debian_#{container_type}_component_file", :di_packages, component: component1_1, architecture: architecture1_1) }
 
   subject { component_file_with_architecture }
@@ -43,8 +43,8 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
       it { is_expected.to belong_to(:architecture).class_name("Packages::Debian::#{container_type.capitalize}Architecture").inverse_of(:files) }
     end
 
-    context 'with :source file_type' do
-      subject { component_file_with_file_type_source }
+    context 'with :sources file_type' do
+      subject { component_file_with_file_type_sources }
 
       it { is_expected.to belong_to(:architecture).class_name("Packages::Debian::#{container_type.capitalize}Architecture").inverse_of(:files).optional }
     end
@@ -66,8 +66,8 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
         it { is_expected.to validate_presence_of(:architecture) }
       end
 
-      context 'with :source file_type' do
-        subject { component_file_with_file_type_source }
+      context 'with :sources file_type' do
+        subject { component_file_with_file_type_sources }
 
         it { is_expected.to validate_absence_of(:architecture) }
       end
@@ -135,10 +135,10 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
     end
 
     describe '.with_file_type' do
-      subject { described_class.with_file_type(:source) }
+      subject { described_class.with_file_type(:sources) }
 
       it do
-        expect(subject.to_a).to contain_exactly(component_file_with_file_type_source)
+        expect(subject.to_a).to contain_exactly(component_file_with_file_type_sources)
       end
     end
 
@@ -214,9 +214,9 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
     end
 
     context 'with a Source file_type' do
-      subject { component_file_with_file_type_source.relative_path }
+      subject { component_file_with_file_type_sources.relative_path }
 
-      it { is_expected.to eq("#{component1_1.name}/source/Source") }
+      it { is_expected.to eq("#{component1_1.name}/source/Sources") }
     end
 
     context 'with a DI Packages file_type' do

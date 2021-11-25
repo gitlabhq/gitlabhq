@@ -10,7 +10,7 @@ class JobFinder
     pipeline_query: {}.freeze,
     job_query: {}.freeze
   ).freeze
-  MAX_PIPELINES_TO_ITERATE = 200
+  MAX_PIPELINES_TO_ITERATE = 20
 
   def initialize(options)
     @project = options.delete(:project)
@@ -51,7 +51,7 @@ class JobFinder
       end
     end
 
-    raise 'Job not found!'
+    warn 'Job not found!'
   end
 
   def find_job_with_filtered_pipelines
@@ -63,7 +63,7 @@ class JobFinder
       end
     end
 
-    raise 'Job not found!'
+    warn 'Job not found!'
   end
 
   def find_job_in_pipeline
@@ -73,7 +73,7 @@ class JobFinder
       return job if found_job_by_name?(job) # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 
-    raise 'Job not found!'
+    warn 'Job not found!'
   end
 
   def found_job_with_artifact?(job)
@@ -87,7 +87,7 @@ class JobFinder
   end
 
   def pipeline_query_params
-    @pipeline_query_params ||= { per_page: 100, **pipeline_query }
+    @pipeline_query_params ||= { per_page: MAX_PIPELINES_TO_ITERATE, **pipeline_query }
   end
 
   def job_query_params

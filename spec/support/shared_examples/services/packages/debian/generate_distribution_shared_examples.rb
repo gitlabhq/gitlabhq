@@ -126,7 +126,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         SHA256: #{package_files[4].file_sha256}
         EOF
 
-        expected_main_source_content = <<~EOF
+        expected_main_sources_content = <<~EOF
         Package: #{package.name}
         Binary: sample-dev, libsample0, sample-udeb
         Version: #{package.version}
@@ -158,7 +158,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         check_component_file(current_time.round, 'main', :di_packages, 'amd64', expected_main_amd64_di_content)
         check_component_file(current_time.round, 'main', :di_packages, 'arm64', nil)
 
-        check_component_file(current_time.round, 'main', :source, nil, expected_main_source_content)
+        check_component_file(current_time.round, 'main', :sources, nil, expected_main_sources_content)
 
         check_component_file(current_time.round, 'contrib', :packages, 'all', nil)
         check_component_file(current_time.round, 'contrib', :packages, 'amd64', nil)
@@ -168,7 +168,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         check_component_file(current_time.round, 'contrib', :di_packages, 'amd64', nil)
         check_component_file(current_time.round, 'contrib', :di_packages, 'arm64', nil)
 
-        check_component_file(current_time.round, 'contrib', :source, nil, nil)
+        check_component_file(current_time.round, 'contrib', :sources, nil, nil)
 
         main_amd64_size = expected_main_amd64_content.length
         main_amd64_md5sum = Digest::MD5.hexdigest(expected_main_amd64_content)
@@ -182,9 +182,9 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         main_amd64_di_md5sum = Digest::MD5.hexdigest(expected_main_amd64_di_content)
         main_amd64_di_sha256 = Digest::SHA256.hexdigest(expected_main_amd64_di_content)
 
-        main_source_size = expected_main_source_content.length
-        main_source_md5sum = Digest::MD5.hexdigest(expected_main_source_content)
-        main_source_sha256 = Digest::SHA256.hexdigest(expected_main_source_content)
+        main_sources_size = expected_main_sources_content.length
+        main_sources_md5sum = Digest::MD5.hexdigest(expected_main_sources_content)
+        main_sources_sha256 = Digest::SHA256.hexdigest(expected_main_sources_content)
 
         expected_release_content = <<~EOF
         Codename: unstable
@@ -199,14 +199,14 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-amd64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 contrib/binary-arm64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 contrib/debian-installer/binary-arm64/Packages
-         d41d8cd98f00b204e9800998ecf8427e        0 contrib/source/Source
+         d41d8cd98f00b204e9800998ecf8427e        0 contrib/source/Sources
          d41d8cd98f00b204e9800998ecf8427e        0 main/binary-all/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-all/Packages
          #{main_amd64_md5sum}     #{main_amd64_size} main/binary-amd64/Packages
          #{main_amd64_di_md5sum}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 main/binary-arm64/Packages
          d41d8cd98f00b204e9800998ecf8427e        0 main/debian-installer/binary-arm64/Packages
-         #{main_source_md5sum}      #{main_source_size} main/source/Source
+         #{main_sources_md5sum}      #{main_sources_size} main/source/Sources
         SHA256:
          #{contrib_all_sha256}        #{contrib_all_size} contrib/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-all/Packages
@@ -214,14 +214,14 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/binary-arm64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/debian-installer/binary-arm64/Packages
-         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/source/Source
+         e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 contrib/source/Sources
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-all/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-all/Packages
          #{main_amd64_sha256}     #{main_amd64_size} main/binary-amd64/Packages
          #{main_amd64_di_sha256}      #{main_amd64_di_size} main/debian-installer/binary-amd64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/binary-arm64/Packages
          e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855        0 main/debian-installer/binary-arm64/Packages
-         #{main_source_sha256}      #{main_source_size} main/source/Source
+         #{main_sources_sha256}      #{main_sources_size} main/source/Sources
         EOF
 
         check_release_files(expected_release_content)

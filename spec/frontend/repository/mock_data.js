@@ -55,3 +55,18 @@ export const projectMock = {
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';
+
+export const codeOwnerMock = { name: 'John Doe', webPath: 'path/to/@johnDoe' };
+
+export const codeOwnersDataMock = {
+  id: '1234',
+  repository: {
+    blobs: {
+      nodes: [
+        {
+          codeOwners: [],
+        },
+      ],
+    },
+  },
+};

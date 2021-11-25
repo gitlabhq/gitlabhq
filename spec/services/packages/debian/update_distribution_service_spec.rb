@@ -61,9 +61,9 @@ RSpec.describe Packages::Debian::UpdateDistributionService do
       let_it_be(:architecture0) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'all') }
       let_it_be(:architecture1) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture1') }
       let_it_be(:architecture2) { create("debian_#{container_type}_architecture", distribution: distribution, name: 'architecture2') }
-      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", :source, component: component1) }
+      let_it_be(:component_file1) { create("debian_#{container_type}_component_file", :sources, component: component1) }
       let_it_be(:component_file2) { create("debian_#{container_type}_component_file", component: component1, architecture: architecture1) }
-      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", :source, component: component2) }
+      let_it_be(:component_file3) { create("debian_#{container_type}_component_file", :sources, component: component2) }
       let_it_be(:component_file4) { create("debian_#{container_type}_component_file", component: component2, architecture: architecture2) }
 
       let(:original_params) do

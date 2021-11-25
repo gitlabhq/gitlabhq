@@ -1,5 +1,6 @@
 <script>
 import { GlTable, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -32,6 +33,7 @@ export default {
   components: {
     GlTable,
     GlSkeletonLoader,
+    TooltipOnTruncate,
     TimeAgo,
     RunnerActionsCell,
     RunnerSummaryCell,
@@ -101,11 +103,15 @@ export default {
       </template>
 
       <template #cell(version)="{ item: { version } }">
-        {{ version }}
+        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="version">
+          {{ version }}
+        </tooltip-on-truncate>
       </template>
 
       <template #cell(ipAddress)="{ item: { ipAddress } }">
-        {{ ipAddress }}
+        <tooltip-on-truncate class="gl-display-block gl-text-truncate" :title="ipAddress">
+          {{ ipAddress }}
+        </tooltip-on-truncate>
       </template>
 
       <template #cell(tagList)="{ item: { tagList } }">

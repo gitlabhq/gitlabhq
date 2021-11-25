@@ -41,6 +41,7 @@ module API
           optional :query, type: String, desc: 'A query string to search for members'
           optional :user_ids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of user ids to look up for membership'
           optional :show_seat_info, type: Boolean, desc: 'Show seat information for members'
+          use :optional_state_filter_ee
           use :pagination
         end
 

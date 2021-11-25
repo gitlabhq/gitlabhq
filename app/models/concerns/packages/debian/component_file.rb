@@ -20,13 +20,13 @@ module Packages
         belongs_to :component, class_name: "Packages::Debian::#{container_type.capitalize}Component", inverse_of: :files
         belongs_to :architecture, class_name: "Packages::Debian::#{container_type.capitalize}Architecture", inverse_of: :files, optional: true
 
-        enum file_type: { packages: 1, source: 2, di_packages: 3 }
+        enum file_type: { packages: 1, sources: 2, di_packages: 3 }
         enum compression_type: { gz: 1, bz2: 2, xz: 3 }
 
         validates :component, presence: true
         validates :file_type, presence: true
-        validates :architecture, presence: true, unless: :source?
-        validates :architecture, absence: true, if: :source?
+        validates :architecture, presence: true, unless: :sources?
+        validates :architecture, absence: true, if: :sources?
         validates :file, length: { minimum: 0, allow_nil: false }
         validates :size, presence: true
         validates :file_store, presence: true
@@ -81,7 +81,7 @@ module Packages
           case file_type
           when 'packages'
             "#{component.name}/binary-#{architecture.name}/#{file_name}#{extension}"
-          when 'source'
+          when 'sources'
             "#{component.name}/source/#{file_name}#{extension}"
           when 'di_packages'
             "#{component.name}/debian-installer/binary-#{architecture.name}/#{file_name}#{extension}"

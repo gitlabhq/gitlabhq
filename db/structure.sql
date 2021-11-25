@@ -27534,7 +27534,7 @@ CREATE INDEX index_users_on_name ON users USING btree (name);
 
 CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
 
-CREATE INDEX index_users_on_public_email ON users USING btree (public_email) WHERE ((public_email)::text <> ''::text);
+CREATE INDEX index_users_on_public_email_excluding_null_and_empty ON users USING btree (public_email) WHERE (((public_email)::text <> ''::text) AND (public_email IS NOT NULL));
 
 CREATE INDEX index_users_on_require_two_factor_authentication_from_group ON users USING btree (require_two_factor_authentication_from_group) WHERE (require_two_factor_authentication_from_group = true);
 

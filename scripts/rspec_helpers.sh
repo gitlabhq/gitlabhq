@@ -108,12 +108,7 @@ function retrieve_frontend_fixtures_mapping() {
     local job_name="generate-frontend-fixtures-mapping"
     local test_metadata_with_mapping_job_id
 
-    # On the MR that introduces 'generate-frontend-fixtures-mapping', we cannot retrieve the file from a master scheduled pipeline, so we take it from a known MR pipeline
-    if [[ "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" == "339343-execute-related-jests-specs-for-mrs-with-backend-changes" ]]; then
-      test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --pipeline-id "414921396" -Q "scope=success" --job-name "${job_name}")
-    else
-      test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "ref=${artifact_branch}" -q "username=${username}" -Q "scope=success" --job-name "${job_name}")
-    fi
+    test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "ref=${artifact_branch}" -q "username=${username}" -Q "scope=success" --job-name "${job_name}")
 
     if [[ $? -eq 0 ]] && [[ -n "${test_metadata_with_mapping_job_id}" ]]; then
       echo "test_metadata_with_mapping_job_id: ${test_metadata_with_mapping_job_id}"

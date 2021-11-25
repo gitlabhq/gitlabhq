@@ -66,6 +66,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
   end
 
+  def code_owners
+    Gitlab::CodeOwners.for_blob(project, blob)
+  end
+
   def fork_and_edit_path
     fork_path_for_current_user(project, edit_blob_path)
   end

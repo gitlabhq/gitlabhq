@@ -104,16 +104,7 @@ export default {
     },
   },
   mounted() {
-    this.fetchCollapsedData(this.$props)
-      .then((data) => {
-        this.collapsedData = data;
-        this.loadingState = null;
-      })
-      .catch((e) => {
-        this.loadingState = LOADING_STATES.collapsedError;
-
-        Sentry.captureException(e);
-      });
+    this.loadCollapsedData();
   },
   methods: {
     triggerRedisTracking: once(function triggerRedisTracking() {
@@ -125,6 +116,20 @@ export default {
       this.isCollapsed = !this.isCollapsed;
 
       this.triggerRedisTracking();
+    },
+    loadCollapsedData() {
+      this.loadingState = LOADING_STATES.collapsedLoading;
+
+      this.fetchCollapsedData(this.$props)
+        .then((data) => {
+          this.collapsedData = data;
+          this.loadingState = null;
+        })
+        .catch((e) => {
+          this.loadingState = LOADING_STATES.collapsedError;
+
+          Sentry.captureException(e);
+        });
     },
     loadAllData() {
       if (this.hasFullData) return;

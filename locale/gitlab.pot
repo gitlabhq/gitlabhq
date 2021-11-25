@@ -776,6 +776,9 @@ msgstr ""
 msgid "%{name} is already being used for another emoji"
 msgstr ""
 
+msgid "%{name} is reserved for %{type} report type"
+msgstr ""
+
 msgid "%{name} is scheduled for %{action}"
 msgstr ""
 
@@ -1012,6 +1015,9 @@ msgid "%{total} open issue weight"
 msgstr ""
 
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
+msgstr ""
+
+msgid "%{type} only supports %{name} name"
 msgstr ""
 
 msgid "%{userName} (cannot merge)"
@@ -3744,6 +3750,9 @@ msgid "An error occurred while loading all the files."
 msgstr ""
 
 msgid "An error occurred while loading chart data"
+msgstr ""
+
+msgid "An error occurred while loading code owners."
 msgstr ""
 
 msgid "An error occurred while loading commit signatures"
@@ -40598,9 +40607,6 @@ msgid "cannot be enabled unless all domains have TLS certificates"
 msgstr ""
 
 msgid "cannot be enabled until a valid credit card is on file"
-msgstr ""
-
-msgid "cannot be modified"
 msgstr ""
 
 msgid "cannot be used for user namespace"
