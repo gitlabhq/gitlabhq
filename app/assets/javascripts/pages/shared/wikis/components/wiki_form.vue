@@ -442,6 +442,8 @@ export default {
         >
           <gl-button
             data-testid="toggle-editing-mode-button"
+            data-qa-selector="editing_mode_button"
+            :data-qa-mode="toggleEditingModeButtonText"
             variant="link"
             @click="toggleEditingMode"
             >{{ toggleEditingModeButtonText }}</gl-button

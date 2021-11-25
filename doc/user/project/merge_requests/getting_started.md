@@ -136,10 +136,18 @@ To learn more, read [Review a merge request](reviews/index.md).
 
 ### Merge requests to close issues
 
-If the merge request is being created to resolve an issue, you can
-add a note in the description which sets it to
-[automatically close the issue](../issues/managing_issues.md#closing-issues-automatically)
-when merged.
+To create a merge request to close an issue when it's merged, you can either:
+
+- [Add a note in the MR description](../issues/managing_issues.md#closing-issues-automatically).
+- In the issue, select **Create a merge request**. Then, you can either:
+
+  - Create a new branch and [a draft merge request](../merge_requests/drafts.md)
+    in one action. The branch is named `issuenumber-title` by default, but you can
+    choose any name, and GitLab verifies that it's not already in use. The merge request
+    inherits the milestone and labels of the issue, and is set to automatically
+    close the issue when it is merged.
+  - Create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
+    only, with its name starting with the issue number.
 
 If the issue is [confidential](../issues/confidential_issues.md),
 you may want to use a different workflow for

@@ -9,7 +9,7 @@ module Gitlab
 
           def initialize(statement, variables = nil)
             @lexer = Expression::Lexer.new(statement)
-            @variables = variables&.to_hash
+            @variables = variables || {}
           end
 
           def parse_tree
@@ -19,7 +19,7 @@ module Gitlab
           end
 
           def evaluate
-            parse_tree.evaluate(@variables.to_h)
+            parse_tree.evaluate(@variables)
           end
 
           def truthful?

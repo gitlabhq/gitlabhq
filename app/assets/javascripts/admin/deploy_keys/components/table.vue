@@ -1,11 +1,12 @@
 <script>
-import { GlTable, GlButton, GlPagination, GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlTable, GlButton, GlPagination, GlLoadingIcon, GlEmptyState, GlModal } from '@gitlab/ui';
 
 import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import createFlash from '~/flash';
+import csrf from '~/lib/utils/csrf';
 
 export default {
   name: 'DeployKeysTable',
@@ -16,11 +17,15 @@ export default {
     emptyStateDescription: __(
       'Deploy keys grant read/write access to all repositories in your instance',
     ),
-    remove: __('Remove deploy key'),
+    delete: __('Delete deploy key'),
     edit: __('Edit deploy key'),
     pagination: {
       next: __('Next'),
       prev: __('Prev'),
+    },
+    modal: {
+      title: __('Are you sure?'),
+      body: __('Are you sure you want to delete this deploy key?'),
     },
     apiErrorMessage: __('An error occurred fetching the public deploy keys. Please try again.'),
   },
@@ -48,6 +53,22 @@ export default {
       thClass: 'gl-lg-w-1px gl-white-space-nowrap',
     },
   ],
+  modal: {
+    id: 'delete-deploy-key-modal',
+    actionPrimary: {
+      text: __('Delete'),
+      attributes: {
+        variant: 'danger',
+      },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
+  csrf,
   DEFAULT_PER_PAGE,
   components: {
     GlTable,
@@ -56,6 +77,7 @@ export default {
     TimeAgoTooltip,
     GlLoadingIcon,
     GlEmptyState,
+    GlModal,
   },
   inject: ['editPath', 'deletePath', 'createPath', 'emptyStateSvgPath'],
   data() {
@@ -64,11 +86,20 @@ export default {
       totalItems: 0,
       loading: false,
       items: [],
+      deployKeyToDelete: null,
     };
   },
   computed: {
     shouldShowTable() {
       return this.totalItems !== 0 || this.loading;
+    },
+    isModalVisible() {
+      return this.deployKeyToDelete !== null;
+    },
+    deleteAction() {
+      return this.deployKeyToDelete === null
+        ? null
+        : this.deletePath.replace(':id', this.deployKeyToDelete);
     },
   },
   watch: {
@@ -119,6 +150,15 @@ export default {
         this.items = [];
       }
       this.loading = false;
+    },
+    handleDeleteClick(id) {
+      this.deployKeyToDelete = id;
+    },
+    handleModalHide() {
+      this.deployKeyToDelete = null;
+    },
+    handleModalPrimary() {
+      this.$refs.modalForm.submit();
     },
   },
 };
@@ -175,7 +215,12 @@ export default {
             :href="editHref(id)"
             class="gl-mr-2"
           />
-          <gl-button variant="danger" icon="remove" :aria-label="$options.i18n.remove" />
+          <gl-button
+            variant="danger"
+            icon="remove"
+            :aria-label="$options.i18n.delete"
+            @click="handleDeleteClick(id)"
+          />
         </template>
       </gl-table>
       <gl-pagination
@@ -196,5 +241,21 @@ export default {
       :primary-button-text="$options.i18n.newDeployKeyButtonText"
       :primary-button-link="createPath"
     />
+    <gl-modal
+      :modal-id="$options.modal.id"
+      :visible="isModalVisible"
+      :title="$options.i18n.modal.title"
+      :action-primary="$options.modal.actionPrimary"
+      :action-secondary="$options.modal.actionSecondary"
+      size="sm"
+      @hide="handleModalHide"
+      @primary="handleModalPrimary"
+    >
+      <form ref="modalForm" :action="deleteAction" method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+      </form>
+      {{ $options.i18n.modal.body }}
+    </gl-modal>
   </div>
 </template>

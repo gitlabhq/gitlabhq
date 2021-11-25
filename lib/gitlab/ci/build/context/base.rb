@@ -17,6 +17,12 @@ module Gitlab
             raise NotImplementedError
           end
 
+          def variables_hash
+            strong_memoize(:variables_hash) do
+              variables.to_hash
+            end
+          end
+
           def project
             pipeline.project
           end

@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules do
   subject(:rules) { described_class.new(rule_hashes) }
 
   describe '#evaluate' do
-    let(:context) { double(variables: {}) }
+    let(:context) { double(variables_hash: {}) }
 
     subject(:result) { rules.evaluate(context).pass? }
 
@@ -20,13 +20,13 @@ RSpec.describe Gitlab::Ci::Config::External::Rules do
       let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
 
       context 'when the rule matches' do
-        let(:context) { double(variables: { MY_VAR: 'hello' }) }
+        let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
 
         it { is_expected.to eq(true) }
       end
 
       context 'when the rule does not match' do
-        let(:context) { double(variables: { MY_VAR: 'invalid' }) }
+        let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
 
         it { is_expected.to eq(false) }
       end

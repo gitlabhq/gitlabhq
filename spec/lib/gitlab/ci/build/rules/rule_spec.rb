@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule do
   let(:seed) do
     double('build seed',
       to_resource: ci_build,
-      variables: ci_build.scoped_variables
+      variables_hash: ci_build.scoped_variables.to_hash
     )
   end
 

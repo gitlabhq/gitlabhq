@@ -15,6 +15,7 @@ module QA
             element :wiki_message_textbox
             element :wiki_submit_button
             element :try_new_editor_container
+            element :editing_mode_button
           end
 
           base.view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
@@ -36,6 +37,10 @@ module QA
 
         def click_submit
           click_element(:wiki_submit_button)
+
+          wait_until(reload: false) do
+            has_no_element?(:wiki_title_textbox)
+          end
         end
 
         def delete_page
@@ -43,11 +48,19 @@ module QA
           Page::Modal::DeleteWiki.perform(&:confirm_deletion)
         end
 
-        def use_new_editor
-          within_element(:try_new_editor_container) do
-            click_button('Use the new editor')
+        def use_new_editor(toggle)
+          # Update once the feature is released, see https://gitlab.com/gitlab-org/gitlab/-/issues/345398
+          if toggle
+            click_element(:editing_mode_button, mode: 'Edit rich text')
+          else
+            within_element(:try_new_editor_container) do
+              click_button('Use the new editor')
+            end
           end
-          has_element?(:content_editor_container)
+
+          wait_until(reload: false) do
+            has_element?(:content_editor_container)
+          end
         end
       end
     end

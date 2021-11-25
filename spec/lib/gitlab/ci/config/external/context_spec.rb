@@ -6,7 +6,8 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
   let(:project) { double('Project') }
   let(:user) { double('User') }
   let(:sha) { '12345' }
-  let(:attributes) { { project: project, user: user, sha: sha } }
+  let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
+  let(:attributes) { { project: project, user: user, sha: sha, variables: variables } }
 
   subject(:subject) { described_class.new(**attributes) }
 
@@ -15,6 +16,9 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq(Set.new) }
       it { expect(subject.execution_deadline).to eq(0) }
+      it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
+      it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
+      it { expect(subject.variables_hash).to include('a' => 'b') }
     end
 
     context 'without values' do
@@ -23,6 +27,8 @@ RSpec.describe Gitlab::Ci::Config::External::Context do
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq(Set.new) }
       it { expect(subject.execution_deadline).to eq(0) }
+      it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
+      it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
     end
   end
 

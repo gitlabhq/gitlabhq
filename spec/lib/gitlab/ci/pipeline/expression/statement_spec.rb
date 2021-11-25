@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Statement do
       .append(key: 'PATH_VARIABLE', value: 'a/path/variable/value')
       .append(key: 'FULL_PATH_VARIABLE', value: '/a/full/path/variable/value')
       .append(key: 'EMPTY_VARIABLE', value: '')
+      .to_hash
   end
 
   subject do

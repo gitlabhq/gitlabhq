@@ -19,9 +19,9 @@ Key actions for issues include:
 
 ## Create a new issue
 
-When you create a new issue, you are prompted to fill in the [data and fields of the issue](issue_data_and_actions.md),
-as illustrated below. If you know the values you want to assign to an issue, you can use the
-[Quick actions](../quick_actions.md) feature to input values.
+When you create a new issue, you are prompted to enter the fields of the issue.
+If you know the values you want to assign to an issue, you can use
+[quick actions](../quick_actions.md) to enter them.
 
 While creating an issue, you can associate it to an existing epic from current group by
 selecting it using **Epic** dropdown.
@@ -142,7 +142,13 @@ Follow these examples to form your new issue URL with prefilled fields.
 - For a new issue in the GitLab Community Edition project with a pre-filled title,
   a pre-filled description, and the confidential flag set, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true`
 
-## Bulk edit issues at the project level
+## Edit an issue
+
+You can edit an issue's title and description.
+
+To edit an issue, select **Edit title and description** (**{pencil}**).
+
+### Bulk edit issues at the project level
 
 > - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
 > - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
@@ -169,7 +175,7 @@ To update multiple project issues at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Click **Update all**.
 
-## Bulk edit issues at the group level
+### Bulk edit issues at the group level
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
 > - Assigning epic ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
@@ -232,15 +238,23 @@ end; nil
 
 ## Closing issues
 
-When you decide that an issue is resolved, or no longer needed, you can close the issue
-using the close button:
+When you decide that an issue is resolved, or no longer needed, you can close the issue.
+The issue is marked as closed but is not deleted.
 
-![close issue - button](img/button_close_issue_v13_6.png)
+To close an issue, you can do the following:
 
-You can also close an issue from the [issue boards](../issue_board.md) by dragging an issue card
-from its list and dropping it into the **Closed** list.
+- Select **Close issue**:
 
-![close issue from the issue board](img/close_issue_from_board.gif)
+  ![close issue - button](img/button_close_issue_v13_6.png)
+
+- In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
+
+  ![close issue from the issue board](img/close_issue_from_board.gif)
+
+### Reopen a closed issue
+
+To reopen a closed issue, select **Reopen issue**.
+A reopened issue is no different from any other open issue.
 
 ### Closing issues automatically
 
@@ -267,6 +281,9 @@ Closes #4, #6, and https://gitlab.com/<username>/<projectname>/issues/<xxx>
 
 For performance reasons, automatic issue closing is disabled for the very first
 push from an existing repository.
+
+Alternatively, when you [create a merge request from an issue](../merge_requests/getting_started.md#merge-requests-to-close-issues),
+it inherits the issue's milestone and labels.
 
 #### Default closing pattern
 
@@ -382,6 +399,35 @@ You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)
 in a comment or description field.
 
+## Copy issue reference
+
+To refer to an issue elsewhere in GitLab, you can use its full URL or a short reference, which looks like
+`namespace/project-name#123`, where `namespace` is either a group or a username.
+
+To copy the issue reference to your clipboard:
+
+1. Go to the issue.
+1. On the right sidebar, next to **Reference**, select **Copy Reference** (**{copy-to-clipboard}**).
+
+You can now paste the reference into another description or comment.
+
+Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
+
+## Copy issue email address
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
+
+You can create a comment in an issue by sending an email.
+
+To copy the issue's email address:
+
+1. Go to the issue.
+1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
+
+Sending an email to this address creates a comment containing the email body.
+To learn more about creating comments by sending an email and the necessary configuration, see
+[Reply to a comment by sending email](../../discussions/index.md#reply-to-a-comment-by-sending-email).
+
 ## Real-time sidebar
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3. Disabled by default.
@@ -394,6 +440,24 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 On GitLab.com, this feature is available.
 
 Assignees in the sidebar are updated in real time.
+
+## Assignee
+
+An issue can be assigned to one or [more users](multiple_assignees_for_issues.md).
+
+The assignees can be changed as often as needed. The idea is that the assignees are
+people responsible for an issue.
+When an issue is assigned to someone, it appears in their assigned issues list.
+
+If a user is not a member of a project, an issue can only be assigned to them if they create it
+themselves or another project member assigns them.
+
+To change the assignee on an issue:
+
+1. Go to your issue.
+1. On the right sidebar, in the **Assignee** section, select **Edit**.
+1. From the dropdown list, select the user to add as an assignee.
+1. Click or tap anywhere outside of the dropdown list.
 
 ## Similar issues
 
@@ -427,3 +491,12 @@ After an issue is closed, its health status can't be edited and the **Edit** but
 until the issue is reopened.
 
 You can then see issue statuses in the issues list and the epic tree.
+
+## Publish an issue **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
+
+If a status page application is associated with the project, you can use the `/publish`
+[quick action](../quick_actions.md) to publish the issue.
+
+For more information, see [GitLab Status Page](../../../operations/incident_management/status_page.md).

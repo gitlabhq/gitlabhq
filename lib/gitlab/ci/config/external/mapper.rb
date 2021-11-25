@@ -179,7 +179,7 @@ module Gitlab
           end
 
           def expand(data)
-            ExpandVariables.expand(data, context.variables)
+            ExpandVariables.expand(data, -> { context.variables_hash })
           end
         end
       end

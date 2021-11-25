@@ -17,30 +17,33 @@ RSpec.describe Gitlab::Ci::Pipeline::Expression::Lexeme::Variable do
   end
 
   describe '#evaluate' do
-    it 'returns variable value if it is defined' do
-      variable = described_class.new('VARIABLE')
+    let(:lexeme) { described_class.new('VARIABLE') }
 
-      expect(variable.evaluate(VARIABLE: 'my variable'))
+    it 'returns variable value if it is defined' do
+      expect(lexeme.evaluate(VARIABLE: 'my variable'))
         .to eq 'my variable'
     end
 
     it 'allows to use a string as a variable key too' do
-      variable = described_class.new('VARIABLE')
-
-      expect(variable.evaluate('VARIABLE' => 'my variable'))
+      expect(lexeme.evaluate('VARIABLE' => 'my variable'))
         .to eq 'my variable'
     end
 
     it 'returns nil if it is not defined' do
-      variable = described_class.new('VARIABLE')
-
-      expect(variable.evaluate(OTHER: 'variable')).to be_nil
+      expect(lexeme.evaluate('OTHER' => 'variable')).to be_nil
+      expect(lexeme.evaluate(OTHER: 'variable')).to be_nil
     end
 
     it 'returns an empty string if it is empty' do
-      variable = described_class.new('VARIABLE')
+      expect(lexeme.evaluate('VARIABLE' => '')).to eq ''
+      expect(lexeme.evaluate(VARIABLE: '')).to eq ''
+    end
 
-      expect(variable.evaluate(VARIABLE: '')).to eq ''
+    it 'does not call with_indifferent_access unnecessarily' do
+      variables_hash = { VARIABLE: 'my variable' }.with_indifferent_access
+
+      expect(variables_hash).not_to receive(:with_indifferent_access)
+      expect(lexeme.evaluate(variables_hash)).to eq 'my variable'
     end
   end
 end

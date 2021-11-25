@@ -9,17 +9,19 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
+          include ::Gitlab::Utils::StrongMemoize
+
           attr_reader :project, :sha, :user, :parent_pipeline, :variables
           attr_reader :expandset, :execution_deadline, :logger
 
           delegate :instrument, to: :logger
 
-          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: [], logger: nil)
+          def initialize(project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil, logger: nil)
             @project = project
             @sha = sha
             @user = user
             @parent_pipeline = parent_pipeline
-            @variables = variables
+            @variables = variables || Ci::Variables::Collection.new
             @expandset = Set.new
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
@@ -36,6 +38,12 @@ module Gitlab
           def all_worktree_paths
             strong_memoize(:all_worktree_paths) do
               project.repository.ls_files(sha)
+            end
+          end
+
+          def variables_hash
+            strong_memoize(:variables_hash) do
+              variables.to_hash
             end
           end
 

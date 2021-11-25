@@ -20,7 +20,7 @@ For guidance not on this page, we defer to these style guides:
 ## `@mention`
 
 Try to avoid **`@mention`**. Say **mention** instead, and consider linking to the
-[mentions topic](../../../user/project/issues/issue_data_and_actions.md#mentions).
+[mentions topic](../../../user/discussions/index.md#mentions).
 Don't use backticks.
 
 ## above

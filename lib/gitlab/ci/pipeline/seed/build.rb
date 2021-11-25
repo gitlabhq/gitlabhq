@@ -205,7 +205,7 @@ module Gitlab
 
           def evaluate_runner_tags
             @seed_attributes[:tag_list]&.map do |tag|
-              ExpandVariables.expand_existing(tag, evaluate_context.variables)
+              ExpandVariables.expand_existing(tag, -> { evaluate_context.variables_hash })
             end
           end
 

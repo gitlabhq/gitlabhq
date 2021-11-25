@@ -1,10 +1,11 @@
 import { merge } from 'lodash';
-import { GlLoadingIcon, GlEmptyState, GlPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlPagination, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import responseBody from 'test_fixtures/api/deploy_keys/index.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import DeployKeysTable from '~/admin/deploy_keys/components/table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
@@ -12,6 +13,7 @@ import createFlash from '~/flash';
 
 jest.mock('~/api');
 jest.mock('~/flash');
+jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('DeployKeysTable', () => {
   let wrapper;
@@ -29,13 +31,23 @@ describe('DeployKeysTable', () => {
   const createComponent = (provide = {}) => {
     wrapper = mountExtended(DeployKeysTable, {
       provide: merge({}, defaultProvide, provide),
+      stubs: {
+        GlModal: stubComponent(GlModal, {
+          template: `
+            <div>
+              <slot name="modal-title"></slot>
+              <slot></slot>
+              <slot name="modal-footer"></slot>
+            </div>`,
+        }),
+      },
     });
   };
 
   const findEditButton = (index) =>
     wrapper.findAllByLabelText(DeployKeysTable.i18n.edit, { selector: 'a' }).at(index);
   const findRemoveButton = (index) =>
-    wrapper.findAllByLabelText(DeployKeysTable.i18n.remove, { selector: 'button' }).at(index);
+    wrapper.findAllByLabelText(DeployKeysTable.i18n.delete, { selector: 'button' }).at(index);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTimeAgoTooltip = (index) => wrapper.findAllComponents(TimeAgoTooltip).at(index);
   const findPagination = () => wrapper.findComponent(GlPagination);
@@ -117,6 +129,27 @@ describe('DeployKeysTable', () => {
       it('renders deploy keys in table', () => {
         expectDeployKeyIsRendered(deployKey, 0);
         expectDeployKeyIsRendered(deployKey2, 1);
+      });
+
+      describe('when delete button is clicked', () => {
+        it('asks user to confirm', async () => {
+          await findRemoveButton(0).trigger('click');
+
+          const modal = wrapper.findComponent(GlModal);
+          const form = modal.find('form');
+          const submitSpy = jest.spyOn(form.element, 'submit');
+
+          expect(modal.props('visible')).toBe(true);
+          expect(form.attributes('action')).toBe(`/admin/deploy_keys/${deployKey.id}`);
+          expect(form.find('input[name="_method"]').attributes('value')).toBe('delete');
+          expect(form.find('input[name="authenticity_token"]').attributes('value')).toBe(
+            'mock-csrf-token',
+          );
+
+          modal.vm.$emit('primary');
+
+          expect(submitSpy).toHaveBeenCalled();
+        });
       });
     });
 

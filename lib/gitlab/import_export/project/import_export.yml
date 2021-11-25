@@ -126,7 +126,6 @@ included_attributes:
     - :project_id
   project_badges:
     - :created_at
-    - :group_id
     - :image_url
     - :link_url
     - :name
@@ -572,7 +571,6 @@ included_attributes:
     - :updated_at
   actions:
     - :event
-    - :image_v432x230
   design: &design_definition
     - :iid
     - :project_id
@@ -731,7 +729,6 @@ excluded_attributes:
     - :verification_checksum
     - :verification_failure
   merge_request_diff_files:
-    - :diff
     - :external_diff_offset
     - :external_diff_size
     - :merge_request_diff_id
@@ -890,8 +887,6 @@ excluded_attributes:
   system_note_metadata:
     - :description_version_id
     - :note_id
-  pipeline_schedules:
-    - :active
 methods:
   notes:
     - :type
