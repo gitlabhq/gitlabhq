@@ -7,17 +7,17 @@ type: reference, index, howto
 
 # Project settings **(FREE)**
 
-NOTE:
-Only project maintainers and administrators have the [permissions](../../permissions.md#project-members-permissions)
-to access project settings.
-
 The **Settings** page in GitLab provides a centralized home for your
 [project](../index.md) configuration options. To access it, go to your project's homepage
-and, in the left navigation menu, clicking **Settings**. To reduce complexity, settings are
-grouped by topic into sections. To display all settings in a section, click **Expand**.
+and, in the left navigation menu, select **Settings**. To reduce complexity, settings are
+grouped by topic into sections. To display all settings in a section, select **Expand**.
 
 In GitLab versions [13.10 and later](https://gitlab.com/groups/gitlab-org/-/epics/4842),
 GitLab displays a search box to help you find the settings you want to view.
+
+NOTE:
+Only users who have the [Maintainer role](../../permissions.md) for the project and administrators can
+access project settings.
 
 ## General settings
 

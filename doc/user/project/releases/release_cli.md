@@ -1,11 +1,10 @@
 ---
-type: reference, howto
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the `release-cli` for the Shell executor
+# Install the `release-cli` for the Shell executor **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
 > - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108) in GitLab 14.2, the `release-cli` binaries are also [available in the Package Registry](https://gitlab.com/jaime/release-cli/-/packages).
