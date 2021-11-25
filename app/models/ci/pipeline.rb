@@ -1276,12 +1276,6 @@ module Ci
       self.builds.latest.build_matchers(project)
     end
 
-    def predefined_vars_in_builder_enabled?
-      strong_memoize(:predefined_vars_in_builder_enabled) do
-        Feature.enabled?(:ci_predefined_vars_in_builder, project, default_enabled: :yaml)
-      end
-    end
-
     def authorized_cluster_agents
       strong_memoize(:authorized_cluster_agents) do
         ::Clusters::AgentAuthorizationsFinder.new(project).execute.map(&:agent)

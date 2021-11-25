@@ -3421,10 +3421,6 @@ RSpec.describe Ci::Build do
   end
 
   describe '#scoped_variables' do
-    before do
-      pipeline.clear_memoization(:predefined_vars_in_builder_enabled)
-    end
-
     it 'records a prometheus metric' do
       histogram = double(:histogram)
       expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_builder_scoped_variables_histogram)
@@ -3521,22 +3517,6 @@ RSpec.describe Ci::Build do
       end
 
       build.scoped_variables
-    end
-
-    context 'when ci builder feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_predefined_vars_in_builder: false)
-      end
-
-      it 'does not delegate to the variable builders' do
-        expect_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
-          expect(builder).not_to receive(:predefined_variables)
-        end
-
-        build.scoped_variables
-      end
-
-      it_behaves_like 'calculates scoped_variables'
     end
   end
 

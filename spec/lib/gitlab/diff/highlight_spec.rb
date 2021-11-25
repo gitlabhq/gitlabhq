@@ -151,20 +151,6 @@ RSpec.describe Gitlab::Diff::Highlight do
         expect(subject[2].rich_text).to eq(%Q{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n})
         expect(subject[2].rich_text).to be_html_safe
       end
-
-      context 'when limited_diff_highlighting is disabled' do
-        before do
-          stub_feature_flags(limited_diff_highlighting: false)
-          stub_feature_flags(diff_line_syntax_highlighting: false)
-        end
-
-        it 'blobs are highlighted as plain text with loading all data' do
-          expect(diff_file.blob).to receive(:load_all_data!).twice
-
-          code = %Q{ <span id="LC7" class="line" lang="">  def popen(cmd, path=nil)</span>\n}
-          expect(subject[2].rich_text).to eq(code)
-        end
-      end
     end
   end
 end

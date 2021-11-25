@@ -3653,7 +3653,8 @@ variable defined, the [job-level variable takes precedence](../variables/index.m
 
 **Possible inputs**: Variable name and value pairs:
 
-- The name can use only numbers, letters, and underscores (`_`).
+- The name can use only numbers, letters, and underscores (`_`). In some shells,
+  the first character must be a letter.
 - The value must be a string.
 
 **Examples of `variables`:**

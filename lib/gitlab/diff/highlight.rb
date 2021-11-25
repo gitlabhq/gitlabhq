@@ -159,7 +159,6 @@ module Gitlab
       end
 
       def blobs_too_large?
-        return false unless Feature.enabled?(:limited_diff_highlighting, project, default_enabled: :yaml)
         return true if Gitlab::Highlight.too_large?(diff_file.old_blob&.size)
 
         Gitlab::Highlight.too_large?(diff_file.new_blob&.size)

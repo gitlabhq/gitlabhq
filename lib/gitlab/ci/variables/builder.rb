@@ -12,7 +12,7 @@ module Gitlab
 
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables(job)) if pipeline.predefined_vars_in_builder_enabled?
+            variables.concat(predefined_variables(job))
           end
         end
 
