@@ -110,7 +110,8 @@ export default () => {
   });
 
   if (gon?.features?.issueBoardsFilteredSearch) {
-    initBoardsFilteredSearch(apolloProvider, isLoggedIn());
+    const { releasesFetchPath } = $boardApp.dataset;
+    initBoardsFilteredSearch(apolloProvider, isLoggedIn(), releasesFetchPath);
   }
 
   mountBoardApp($boardApp);

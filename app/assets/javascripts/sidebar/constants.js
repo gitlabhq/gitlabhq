@@ -1,3 +1,4 @@
+import { s__, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import { IssuableType, WorkspaceType } from '~/issue_show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -272,3 +273,35 @@ export const todoMutations = {
   [TodoMutationTypes.Create]: todoCreateMutation,
   [TodoMutationTypes.MarkDone]: todoMarkDoneMutation,
 };
+
+export function dropdowni18nText(issuableAttribute, issuableType) {
+  return {
+    noAttribute: sprintf(s__('DropdownWidget|No %{issuableAttribute}'), {
+      issuableAttribute,
+    }),
+    assignAttribute: sprintf(s__('DropdownWidget|Assign %{issuableAttribute}'), {
+      issuableAttribute,
+    }),
+    noAttributesFound: sprintf(s__('DropdownWidget|No %{issuableAttribute} found'), {
+      issuableAttribute,
+    }),
+    updateError: sprintf(
+      s__(
+        'DropdownWidget|Failed to set %{issuableAttribute} on this %{issuableType}. Please try again.',
+      ),
+      { issuableAttribute, issuableType },
+    ),
+    listFetchError: sprintf(
+      s__(
+        'DropdownWidget|Failed to fetch the %{issuableAttribute} for this %{issuableType}. Please try again.',
+      ),
+      { issuableAttribute, issuableType },
+    ),
+    currentFetchError: sprintf(
+      s__(
+        'DropdownWidget|An error occurred while fetching the assigned %{issuableAttribute} of the selected %{issuableType}.',
+      ),
+      { issuableAttribute, issuableType },
+    ),
+  };
+}

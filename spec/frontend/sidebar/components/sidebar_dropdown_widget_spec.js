@@ -369,16 +369,18 @@ describe('SidebarDropdownWidget', () => {
 
       describe('when a user is searching', () => {
         describe('when search result is not found', () => {
-          it('renders "No milestone found"', async () => {
-            createComponent();
+          describe('when milestone', () => {
+            it('renders "No milestone found"', async () => {
+              createComponent();
 
-            await toggleDropdown();
+              await toggleDropdown();
 
-            findSearchBox().vm.$emit('input', 'non existing milestones');
+              findSearchBox().vm.$emit('input', 'non existing milestones');
 
-            await wrapper.vm.$nextTick();
+              await wrapper.vm.$nextTick();
 
-            expect(findDropdownText().text()).toBe('No milestone found');
+              expect(findDropdownText().text()).toBe('No milestone found');
+            });
           });
         });
       });

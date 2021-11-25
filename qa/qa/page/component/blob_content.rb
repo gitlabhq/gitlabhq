@@ -74,8 +74,11 @@ module QA
         end
 
         def within_file_by_number(element, file_number)
-          method = file_number ? 'within_element_by_index' : 'within_element'
-          send(method, element, file_number) { yield }
+          if file_number
+            within_element_by_index(element, file_number - 1) { yield }
+          else
+            within_element(element) { yield }
+          end
         end
       end
     end

@@ -44,6 +44,7 @@ export default {
         weight,
         epicId,
         myReactionEmoji,
+        releaseTag,
       } = this.filterParams;
       const filteredSearchValue = [];
 
@@ -102,6 +103,13 @@ export default {
         filteredSearchValue.push({
           type: 'my_reaction_emoji',
           value: { data: myReactionEmoji, operator: '=' },
+        });
+      }
+
+      if (releaseTag) {
+        filteredSearchValue.push({
+          type: 'release',
+          value: { data: releaseTag, operator: '=' },
         });
       }
 
@@ -177,6 +185,13 @@ export default {
         });
       }
 
+      if (this.filterParams['not[releaseTag]']) {
+        filteredSearchValue.push({
+          type: 'release',
+          value: { data: this.filterParams['not[releaseTag]'], operator: '!=' },
+        });
+      }
+
       if (search) {
         filteredSearchValue.push(search);
       }
@@ -195,6 +210,7 @@ export default {
         epicId,
         myReactionEmoji,
         iterationId,
+        releaseTag,
       } = this.filterParams;
       let notParams = {};
 
@@ -210,6 +226,7 @@ export default {
             'not[epic_id]': this.filterParams.not.epicId,
             'not[my_reaction_emoji]': this.filterParams.not.myReactionEmoji,
             'not[iteration_id]': this.filterParams.not.iterationId,
+            'not[release_tag]': this.filterParams.not.releaseTag,
           },
           undefined,
         );
@@ -227,6 +244,7 @@ export default {
         weight,
         epic_id: getIdFromGraphQLId(epicId),
         my_reaction_emoji: myReactionEmoji,
+        release_tag: releaseTag,
       };
     },
   },
@@ -289,6 +307,9 @@ export default {
             break;
           case 'my_reaction_emoji':
             filterParams.myReactionEmoji = filter.value.data;
+            break;
+          case 'release':
+            filterParams.releaseTag = filter.value.data;
             break;
           case 'filtered-search-term':
             if (filter.value.data) plainText.push(filter.value.data);

@@ -7,6 +7,7 @@ import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/auth
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
+import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/release_token.vue';
 
 export const boardObj = {
   id: 1,
@@ -614,6 +615,13 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
       { icon: 'issue-type-issue', value: 'ISSUE', title: 'Issue' },
       { icon: 'issue-type-incident', value: 'INCIDENT', title: 'Incident' },
     ],
+  },
+  {
+    type: 'release',
+    title: __('Release'),
+    icon: 'rocket',
+    token: ReleaseToken,
+    fetchReleases: expect.any(Function),
   },
 ];
 

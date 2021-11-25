@@ -12482,6 +12482,9 @@ msgstr ""
 msgid "DropdownWidget|No %{issuableAttribute} found"
 msgstr ""
 
+msgid "DropdownWidget|No open %{issuableAttribute} found"
+msgstr ""
+
 msgid "Due Date"
 msgstr ""
 
