@@ -1694,6 +1694,16 @@
       changes: *code-backstage-patterns
       when: on_success
 
+.setup:rules:generate-frontend-fixtures-mapping:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-dot-com-ee-2-hourly-schedule
+    - changes:
+        - ".gitlab/ci/setup.gitlab-ci.yml"
+        - ".gitlab/ci/test-metadata.gitlab-ci.yml"
+        - "scripts/rspec_helpers.sh"
+
 .setup:rules:add-jh-folder:
   rules:
     - <<: *if-not-ee

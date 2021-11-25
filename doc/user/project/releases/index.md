@@ -100,7 +100,7 @@ release_job:
   rules:
     - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
-    - echo 'running release_job'
+    - echo "running release_job"
   release:
     name: 'Release $CI_COMMIT_TAG'
     description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION must be defined
@@ -149,7 +149,7 @@ release_job:
       when: never                                  # Do not run this job when a tag is created manually
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # Run this job when commits are pushed or merged to the default branch
   script:
-    - echo 'running release_job for $TAG'
+    - echo "running release_job for $TAG"
   release:
     name: 'Release $TAG'
     description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
@@ -224,14 +224,14 @@ A pipeline can have multiple `release` jobs, for example:
 ```yaml
 ios-release:
   script:
-    - echo 'iOS release job'
+    - echo "iOS release job"
   release:
     tag_name: v1.0.0-ios
     description: 'iOS release v1.0.0'
 
 android-release:
   script:
-    - echo 'Android release job'
+    - echo "Android release job"
   release:
     tag_name: v1.0.0-android
     description: 'Android release v1.0.0'

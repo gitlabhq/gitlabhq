@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlTab, GlTabs } from '@gitlab/ui';
-import App from '~/google_cloud/components/app.vue';
+import App from '~/google_cloud/components/screens/app.vue';
 import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
-import ServiceAccounts from '~/google_cloud/components/service_accounts.vue';
+import ServiceAccountsList from '~/google_cloud/components/service_accounts_list.vue';
 
 describe('google_cloud App component', () => {
   let wrapper;
@@ -13,7 +13,7 @@ describe('google_cloud App component', () => {
   const findConfigurationTab = () => findTabItems().at(0);
   const findDeploymentTab = () => findTabItems().at(1);
   const findServicesTab = () => findTabItems().at(2);
-  const findServiceAccounts = () => findConfigurationTab().findComponent(ServiceAccounts);
+  const findServiceAccountsList = () => findConfigurationTab().findComponent(ServiceAccountsList);
 
   beforeEach(() => {
     const propsData = {
@@ -47,7 +47,7 @@ describe('google_cloud App component', () => {
       });
 
       it('should contain service accounts component', () => {
-        expect(findServiceAccounts().exists()).toBe(true);
+        expect(findServiceAccountsList().exists()).toBe(true);
       });
     });
 

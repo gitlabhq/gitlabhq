@@ -8,7 +8,7 @@
       - knapsack/
       - rspec_flaky/
       - rspec_profiling/
-      - crystalball/packed-mapping.json.gz
+      - crystalball/
 
 retrieve-tests-metadata:
   extends:
@@ -27,6 +27,7 @@ update-tests-metadata:
   stage: post-test
   dependencies:
     - retrieve-tests-metadata
+    - generate-frontend-fixtures-mapping
     - setup-test-env
     - rspec migration pg12
     - rspec-all frontend_fixture

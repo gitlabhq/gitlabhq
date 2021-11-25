@@ -1317,7 +1317,7 @@ class MergeRequest < ApplicationRecord
 
   def default_merge_commit_message(include_description: false)
     if self.target_project.merge_commit_template.present? && !include_description
-      return ::Gitlab::MergeRequests::MergeCommitMessage.new(merge_request: self).message
+      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self).merge_message
     end
 
     closes_issues_references = visible_closing_issues_for.map do |issue|
@@ -1340,6 +1340,10 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_squash_commit_message
+    if self.target_project.squash_commit_template.present?
+      return ::Gitlab::MergeRequests::CommitMessageGenerator.new(merge_request: self).squash_message
+    end
+
     title
   end
 

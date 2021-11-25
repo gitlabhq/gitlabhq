@@ -12867,6 +12867,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectservicedeskenabled"></a>`serviceDeskEnabled` | [`Boolean`](#boolean) | Indicates if the project has service desk enabled. |
 | <a id="projectsharedrunnersenabled"></a>`sharedRunnersEnabled` | [`Boolean`](#boolean) | Indicates if shared runners are enabled for the project. |
 | <a id="projectsnippetsenabled"></a>`snippetsEnabled` | [`Boolean`](#boolean) | Indicates if Snippets are enabled for the current user. |
+| <a id="projectsquashcommittemplate"></a>`squashCommitTemplate` | [`String`](#string) | Template used to create squash commit message in merge requests. |
 | <a id="projectsquashreadonly"></a>`squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
 | <a id="projectsshurltorepo"></a>`sshUrlToRepo` | [`String`](#string) | URL to connect to the project via SSH. |
 | <a id="projectstarcount"></a>`starCount` | [`Int!`](#int) | Number of times the project has been starred. |

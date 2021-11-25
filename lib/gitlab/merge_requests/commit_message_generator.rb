@@ -1,31 +1,21 @@
 # frozen_string_literal: true
 module Gitlab
   module MergeRequests
-    class MergeCommitMessage
+    class CommitMessageGenerator
       def initialize(merge_request:)
         @merge_request = merge_request
       end
 
-      def message
+      def merge_message
         return unless @merge_request.target_project.merge_commit_template.present?
 
-        message = @merge_request.target_project.merge_commit_template
-        message = message.delete("\r")
+        replace_placeholders(@merge_request.target_project.merge_commit_template)
+      end
 
-        # Remove placeholders that correspond to empty values and are the last word in the line
-        # along with all whitespace characters preceding them.
-        # This allows us to recreate previous default merge commit message behaviour - we skipped new line character
-        # before empty description and before closed issues when none were present.
-        PLACEHOLDERS.each do |key, value|
-          unless value.call(merge_request).present?
-            message = message.gsub(BLANK_PLACEHOLDERS_REGEXES[key], '')
-          end
-        end
+      def squash_message
+        return unless @merge_request.target_project.squash_commit_template.present?
 
-        Gitlab::StringPlaceholderReplacer
-          .replace_string_placeholders(message, PLACEHOLDERS_REGEX) do |key|
-          PLACEHOLDERS[key].call(merge_request)
-        end
+        replace_placeholders(@merge_request.target_project.squash_commit_template)
       end
 
       private
@@ -55,6 +45,26 @@ module Gitlab
       BLANK_PLACEHOLDERS_REGEXES = (PLACEHOLDERS.map do |key, value|
         [key, Regexp.new("[\n\r]+%{#{Regexp.escape(key)}}$")]
       end).to_h.freeze
+
+      def replace_placeholders(message)
+        # convert CRLF to LF
+        message = message.delete("\r")
+
+        # Remove placeholders that correspond to empty values and are the last word in the line
+        # along with all whitespace characters preceding them.
+        # This allows us to recreate previous default merge commit message behaviour - we skipped new line character
+        # before empty description and before closed issues when none were present.
+        PLACEHOLDERS.each do |key, value|
+          unless value.call(merge_request).present?
+            message = message.gsub(BLANK_PLACEHOLDERS_REGEXES[key], '')
+          end
+        end
+
+        Gitlab::StringPlaceholderReplacer
+          .replace_string_placeholders(message, PLACEHOLDERS_REGEX) do |key|
+          PLACEHOLDERS[key].call(merge_request)
+        end
+      end
     end
   end
 end

@@ -9,6 +9,9 @@
   %td.status
     = render 'ci/status/badge', status: generic_commit_status.detailed_status(current_user)
 
+  %td
+    = generic_commit_status.name
+
   %td.generic-commit-status-link
     - if can?(current_user, :read_commit_status, generic_commit_status) && generic_commit_status.target_url
       = link_to generic_commit_status.target_url do
@@ -64,9 +67,6 @@
   - if stage
     %td
       = generic_commit_status.stage
-
-  %td
-    = generic_commit_status.name
 
   %td
     - if generic_commit_status.duration

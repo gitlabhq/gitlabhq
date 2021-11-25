@@ -62,6 +62,7 @@ module API
         optional :merge_method, type: String, values: %w(ff rebase_merge merge), desc: 'The merge method used when merging merge requests'
         optional :suggestion_commit_message, type: String, desc: 'The commit message used to apply merge request suggestions'
         optional :merge_commit_template, type: String, desc: 'Template used to create merge commit message'
+        optional :squash_commit_template, type: String, desc: 'Template used to create squash commit message'
         optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
@@ -162,6 +163,7 @@ module API
           :avatar,
           :suggestion_commit_message,
           :merge_commit_template,
+          :squash_commit_template,
           :repository_storage,
           :compliance_framework_setting,
           :packages_enabled,

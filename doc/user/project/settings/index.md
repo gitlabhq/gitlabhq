@@ -315,7 +315,7 @@ Set up your project's merge request settings:
 - Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
 - Enable [`delete source branch after merge` option by default](../merge_requests/getting_started.md#deleting-the-source-branch).
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
-- Configure [merge commit message template](../merge_requests/commit_templates.md).
+- Configure [merge and squash commit message templates](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Service Desk

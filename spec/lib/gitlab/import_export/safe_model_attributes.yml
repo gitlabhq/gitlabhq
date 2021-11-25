@@ -563,6 +563,7 @@ Project:
 - autoclose_referenced_issues
 - suggestion_commit_message
 - merge_commit_template
+- squash_commit_template
 ProjectTracingSetting:
 - external_url
 Author:

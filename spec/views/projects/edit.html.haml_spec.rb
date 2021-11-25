@@ -92,6 +92,22 @@ RSpec.describe 'projects/edit' do
     end
   end
 
+  context 'squash template' do
+    it 'displays a placeholder if none is set' do
+      render
+
+      expect(rendered).to have_field('project[squash_commit_template]', placeholder: '%{title}')
+    end
+
+    it 'displays the user entered value' do
+      project.update!(squash_commit_template: '%{first_multiline_commit}')
+
+      render
+
+      expect(rendered).to have_field('project[squash_commit_template]', with: '%{first_multiline_commit}')
+    end
+  end
+
   context 'forking' do
     before do
       assign(:project, project)

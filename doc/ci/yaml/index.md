@@ -2209,7 +2209,7 @@ its parent pipeline or another child pipeline in the same parent-child pipeline 
   ```yaml
   create-artifact:
     stage: build
-    script: echo 'sample artifact' > artifact.txt
+    script: echo "sample artifact" > artifact.txt
     artifacts:
       paths: [artifact.txt]
 
@@ -2413,10 +2413,10 @@ job2:
 
   ```yaml
   job1:
-    script: echo 'test'
+    script: echo "test"
 
   job2:
-    script: echo 'test'
+    script: echo "test"
     only:
     - branches
     - tags
@@ -2673,7 +2673,7 @@ you can use this image from the GitLab Container Registry: `registry.gitlab.com/
     rules:
       - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
     script:
-      - echo 'Running the release job.'
+      - echo "Running the release job."
     release:
       name: 'Release $CI_COMMIT_TAG'
       description: 'Release created using the release-cli.'
@@ -2691,7 +2691,7 @@ This example creates a release:
 
   ```yaml
   script:
-    - echo 'release job'
+    - echo "release job"
   ```
 
   An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/223856) exists to remove this requirement.
@@ -2729,7 +2729,7 @@ To create a release when a new tag is added to the project:
 
 ```yaml
 job:
-  script: echo 'Running the release job for the new tag.'
+  script: echo "Running the release job for the new tag."
   release:
     tag_name: $CI_COMMIT_TAG
     description: 'Release description'
@@ -2742,7 +2742,7 @@ should **not** configure the job to run only for new tags. A semantic versioning
 
 ```yaml
 job:
-  script: echo 'Running the release job and creating a new tag.'
+  script: echo "Running the release job and creating a new tag."
   release:
     tag_name: ${MAJOR}_${MINOR}_${REVISION}
     description: 'Release description'

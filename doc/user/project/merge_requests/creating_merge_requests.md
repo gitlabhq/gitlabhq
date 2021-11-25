@@ -21,6 +21,10 @@ You can create a merge request from the list of merge requests.
 1. Select a source and target branch and then **Compare branches and continue**.
 1. Fill out the fields and select **Create merge request**.
 
+NOTE:
+Merge requests are designed around a one-to-one (1:1) branch relationship. Only one open merge request may
+be associated with a given target branch at a time.
+
 ## From an issue
 
 You can [create a merge request from an issue](../repository/web_editor.md#create-a-new-branch-from-an-issue).

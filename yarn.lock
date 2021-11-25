@@ -1491,10 +1491,10 @@
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@tiptap/core@^2.0.0-beta.140":
-  version "2.0.0-beta.140"
-  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.140.tgz#9d6771edbc0591b77a46182e863076496a164dda"
-  integrity sha512-PUgIaYVcTSIeK1dvaGJ91Q/a6EM+PucUMyOCvO0VhU5nFqCkxiqAsBVUqdAomIXthLZya1WgfaKIEbwNEBexJA==
+"@tiptap/core@^2.0.0-beta.142":
+  version "2.0.0-beta.142"
+  resolved "https://registry.yarnpkg.com/@tiptap/core/-/core-2.0.0-beta.142.tgz#44e5dc9f63719669fefad422ddae671e8cfe37c4"
+  integrity sha512-0oAkc2a4ZKI+1yfqAM9EN5Rk9KwJyosLEQutKK43c8ufdUawfIeEJEIG99rsm2AfORSk4e2eyMwkUwUoBht7gw==
   dependencies:
     "@types/prosemirror-commands" "^1.0.4"
     "@types/prosemirror-keymap" "^1.0.4"
@@ -1511,10 +1511,10 @@
     prosemirror-transform "^1.3.3"
     prosemirror-view "^1.23.1"
 
-"@tiptap/extension-blockquote@^2.0.0-beta.24":
-  version "2.0.0-beta.24"
-  resolved "https://registry.yarnpkg.com/@tiptap/extension-blockquote/-/extension-blockquote-2.0.0-beta.24.tgz#4dcaf676ded8c3b551efd8f2d6b51cc882ba7d03"
-  integrity sha512-u9D/ZOziO4rMBKeLj7JA7fOc9h8wU6zrzVEsX9MbJwmuicoJZ1lIQ9cyrFWwmlfznzuXLaAxm3iZuHt7xxMppQ==
+"@tiptap/extension-blockquote@^2.0.0-beta.25":
+  version "2.0.0-beta.25"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-blockquote/-/extension-blockquote-2.0.0-beta.25.tgz#f133381163b92b34d9dc6e0d78a52cf56098eb40"
+  integrity sha512-994bQQhyOmPGCNTnzHY5UwZceBh42Xcr6MEB3XnnYk5kgfNnOlrnHHt3l8mJeSnC78Bs1cRSs1BKmDF8WufauQ==
 
 "@tiptap/extension-bold@^2.0.0-beta.24":
   version "2.0.0-beta.24"

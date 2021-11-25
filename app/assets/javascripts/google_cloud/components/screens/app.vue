@@ -1,10 +1,10 @@
 <script>
 import { GlTab, GlTabs } from '@gitlab/ui';
-import IncubationBanner from './incubation_banner.vue';
-import ServiceAccounts from './service_accounts.vue';
+import IncubationBanner from '../incubation_banner.vue';
+import ServiceAccountsList from '../service_accounts_list.vue';
 
 export default {
-  components: { GlTab, GlTabs, IncubationBanner, ServiceAccounts },
+  components: { GlTab, GlTabs, IncubationBanner, ServiceAccountsList },
   props: {
     serviceAccounts: {
       type: Array,
@@ -36,7 +36,7 @@ export default {
     />
     <gl-tabs>
       <gl-tab :title="__('Configuration')">
-        <service-accounts
+        <service-accounts-list
           class="gl-mx-3"
           :list="serviceAccounts"
           :create-url="createServiceAccountUrl"

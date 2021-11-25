@@ -183,6 +183,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -300,6 +301,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -470,6 +472,7 @@ GET /users/:user_id/projects
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -587,6 +590,7 @@ GET /users/:user_id/projects
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -714,6 +718,7 @@ Example response:
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -826,6 +831,7 @@ Example response:
     "autoclose_referenced_issues": true,
     "suggestion_commit_message": null,
     "merge_commit_template": null,
+    "squash_commit_template": null,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -994,6 +1000,7 @@ GET /projects/:id
   "autoclose_referenced_issues": true,
   "suggestion_commit_message": null,
   "merge_commit_template": null,
+  "squash_commit_template": null,
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
@@ -1307,6 +1314,7 @@ POST /projects/user/:user_id
 | `jobs_enabled`                                              | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                               | boolean | **{dotted-circle}** No | Enable LFS. |
 | `merge_commit_template`                                     | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.)_ |
+| `squash_commit_template`                                    | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md#squash-commit-message-template) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
 | `merge_method`                                              | string  | **{dotted-circle}** No | Set the [merge method](#project-merge-method) used. |
 | `merge_requests_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `merge_requests_enabled`                                    | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |

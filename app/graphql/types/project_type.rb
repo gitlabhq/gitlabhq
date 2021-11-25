@@ -386,6 +386,11 @@ module Types
           null: true,
           description: 'Template used to create merge commit message in merge requests.'
 
+    field :squash_commit_template,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Template used to create squash commit message in merge requests.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: project) do |titles, loader, args|
         LabelsFinder

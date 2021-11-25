@@ -18299,7 +18299,9 @@ CREATE TABLE project_settings (
     warn_about_potentially_unwanted_characters boolean DEFAULT true NOT NULL,
     merge_commit_template text,
     has_shimo boolean DEFAULT false NOT NULL,
+    squash_commit_template text,
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
+    CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
     CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500))
 );

@@ -12,6 +12,6 @@
     %p.form-text.text-muted
       = s_('ProjectSettings|Maximum 500 characters.')
       = s_('ProjectSettings|Supported variables:')
-      - Gitlab::MergeRequests::MergeCommitMessage::PLACEHOLDERS.keys.each do |placeholder|
+      - Gitlab::MergeRequests::CommitMessageGenerator::PLACEHOLDERS.keys.each do |placeholder|
         %code
           = "%{#{placeholder}}".html_safe

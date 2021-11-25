@@ -178,6 +178,13 @@ RSpec.describe MergeRequest, factory_default: :keep do
     it 'returns the merge request title' do
       expect(subject.default_squash_commit_message).to eq(subject.title)
     end
+
+    it 'uses template from target project' do
+      subject.target_project.squash_commit_template = 'Squashed branch %{source_branch} into %{target_branch}'
+
+      expect(subject.default_squash_commit_message)
+        .to eq('Squashed branch master into feature')
+    end
   end
 
   describe 'modules' do

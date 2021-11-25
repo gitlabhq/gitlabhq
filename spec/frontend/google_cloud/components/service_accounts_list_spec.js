@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { GlButton, GlEmptyState, GlTable } from '@gitlab/ui';
-import ServiceAccounts from '~/google_cloud/components/service_accounts.vue';
+import ServiceAccountsList from '~/google_cloud/components/service_accounts_list.vue';
 
 describe('ServiceAccounts component', () => {
   describe('when the project does not have any service accounts', () => {
@@ -15,7 +15,7 @@ describe('ServiceAccounts component', () => {
         createUrl: '#create-url',
         emptyIllustrationUrl: '#empty-illustration-url',
       };
-      wrapper = mount(ServiceAccounts, { propsData });
+      wrapper = mount(ServiceAccountsList, { propsData });
     });
 
     afterEach(() => {
@@ -48,7 +48,7 @@ describe('ServiceAccounts component', () => {
         createUrl: '#create-url',
         emptyIllustrationUrl: '#empty-illustration-url',
       };
-      wrapper = mount(ServiceAccounts, { propsData });
+      wrapper = mount(ServiceAccountsList, { propsData });
     });
 
     it('shows the title', () => {

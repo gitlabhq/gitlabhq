@@ -452,6 +452,7 @@ class ProjectsController < Projects::ApplicationController
       :packages_enabled,
       :service_desk_enabled,
       :merge_commit_template,
+      :squash_commit_template,
       project_setting_attributes: project_setting_attributes
     ] + [project_feature_attributes: project_feature_attributes]
   end

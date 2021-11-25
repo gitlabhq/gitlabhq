@@ -31,7 +31,7 @@ This commit message can be customized to follow any guidelines you might have.
 To do so, expand the **Merge requests** tab within your project's **General**
 settings and change the **Merge commit message template** text:
 
-![Custom commit message for applied suggestions](img/merge_commit_message_template_v14_5.png)
+![Custom commit message for merge commit](img/merge_commit_message_template_v14_5.png)
 
 You can use static text and following variables:
 
@@ -49,3 +49,18 @@ Empty variables that are the only word in a line will be removed along with all 
 
 Merge commit template field has a limit of 500 characters. This limit only applies to the template
 itself.
+
+## Squash commit message template
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.
+
+As a project maintainer, you're able to configure squash commit message template. It will be used during merge with
+squash to create squash commit message. It uses the same syntax and variables as merge commit message template.
+
+![Custom commit message for squash commit](img/squash_commit_message_template_v14_6.png)
+
+Default squash commit message can be recreated using following template:
+
+```plaintext
+%{title}
+```

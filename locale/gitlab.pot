@@ -9710,6 +9710,9 @@ msgstr ""
 msgid "Create %{workspace} label"
 msgstr ""
 
+msgid "Create Google Cloud project"
+msgstr ""
+
 msgid "Create New Directory"
 msgstr ""
 
@@ -15276,6 +15279,9 @@ msgstr ""
 msgid "Generate site and private keys at"
 msgstr ""
 
+msgid "Generated service account is linked to the selected environment"
+msgstr ""
+
 msgid "Generic"
 msgstr ""
 
@@ -15825,6 +15831,9 @@ msgstr ""
 msgid "GitLab account request rejected"
 msgstr ""
 
+msgid "GitLab and Google Cloud configuration seems to be incomplete. This probably can be fixed by your GitLab administration team. You may share these logs with them:"
+msgstr ""
+
 msgid "GitLab commit"
 msgstr ""
 
@@ -16213,6 +16222,15 @@ msgid "Google Cloud Project"
 msgstr ""
 
 msgid "Google Cloud authorizations required"
+msgstr ""
+
+msgid "Google Cloud project"
+msgstr ""
+
+msgid "Google Cloud project misconfigured"
+msgstr ""
+
+msgid "Google Cloud project required"
 msgstr ""
 
 msgid "Google authentication is not %{link_start}properly configured%{link_end}. Ask your GitLab administrator if you want to use this service."
@@ -16834,6 +16852,12 @@ msgid "GroupSettings|Users can create %{link_start}project access tokens%{link_e
 msgstr ""
 
 msgid "GroupSettings|What are badges?"
+msgstr ""
+
+msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."
+msgstr ""
+
+msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals. Increasing the user cap will not automatically approve pending users."
 msgstr ""
 
 msgid "GroupSettings|You can only transfer the group to a group you manage."
@@ -23265,6 +23289,9 @@ msgstr ""
 msgid "New schedule"
 msgstr ""
 
+msgid "New service account is generated for the selected Google Cloud project"
+msgstr ""
+
 msgid "New snippet"
 msgstr ""
 
@@ -27422,6 +27449,9 @@ msgstr ""
 msgid "ProjectSettings|Snippets"
 msgstr ""
 
+msgid "ProjectSettings|Squash commit message template"
+msgstr ""
+
 msgid "ProjectSettings|Squash commits when merging"
 msgstr ""
 
@@ -27444,6 +27474,9 @@ msgid "ProjectSettings|The commit message used when applying merge request sugge
 msgstr ""
 
 msgid "ProjectSettings|The commit message used when merging, if the merge method creates a merge commit. %{link_start}Learn more about syntax and variables.%{link_end}"
+msgstr ""
+
+msgid "ProjectSettings|The commit message used when squashing commits. %{link_start}Learn more about syntax and variables.%{link_end}"
 msgstr ""
 
 msgid "ProjectSettings|The default target project for merge requests created in this fork project."
@@ -37091,6 +37124,9 @@ msgstr ""
 msgid "Unknown response text"
 msgstr ""
 
+msgid "Unknown root"
+msgstr ""
+
 msgid "Unknown user"
 msgstr ""
 
@@ -39083,9 +39119,6 @@ msgstr ""
 msgid "When paused, GitLab still tracks the changes. This is useful for cluster/index migrations."
 msgstr ""
 
-msgid "When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."
-msgstr ""
-
 msgid "When this merge request is accepted"
 msgid_plural "When these merge requests are accepted"
 msgstr[0] ""
@@ -39734,6 +39767,9 @@ msgid "You can’t edit files directly in this project. Fork this project and su
 msgstr ""
 
 msgid "You could not create a new trigger."
+msgstr ""
+
+msgid "You do not have any Google Cloud projects. Please create a Google Cloud project and then reload this page."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
@@ -41681,7 +41717,13 @@ msgstr ""
 msgid "mrWidget|To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr ""
 
+msgid "mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "mrWidget|To change this default message, edit the template for merge commit messages. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "mrWidget|To change this default message, edit the template for squash commit messages. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "mrWidget|To merge, a Jira issue key must be mentioned in the title or description."

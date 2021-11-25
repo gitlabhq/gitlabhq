@@ -72,6 +72,7 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
+  FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
