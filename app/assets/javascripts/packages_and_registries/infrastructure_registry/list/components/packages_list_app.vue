@@ -10,7 +10,7 @@ import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registri
 import InfrastructureTitle from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_title.vue';
 import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
 import PackageList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
-import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages/list/constants';
+import { DELETE_PACKAGE_SUCCESS_MESSAGE } from '~/packages_and_registries/infrastructure_registry/list/constants';
 
 export default {
   components: {

@@ -111,6 +111,7 @@ export default {
 
       <gl-modal
         ref="packageListDeleteModal"
+        size="sm"
         modal-id="confirm-delete-pacakge"
         ok-variant="danger"
         @ok="deleteItemConfirmation"

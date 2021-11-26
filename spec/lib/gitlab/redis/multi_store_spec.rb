@@ -27,6 +27,11 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
   subject { multi_store.send(name, *args) }
 
+  before do
+    skip_feature_flags_yaml_validation
+    skip_default_enabled_yaml_check
+  end
+
   after(:all) do
     primary_store.flushdb
     secondary_store.flushdb
@@ -45,6 +50,15 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
     it 'fails with exception' do
       expect { multi_store }.to raise_error(ArgumentError, /secondary_store is required/)
+    end
+  end
+
+  context 'when instance_name is nil' do
+    let(:instance_name) { nil }
+    let(:multi_store) { described_class.new(primary_store, secondary_store, instance_name)}
+
+    it 'fails with exception' do
+      expect { multi_store }.to raise_error(ArgumentError, /instance_name is required/)
     end
   end
 
@@ -175,9 +189,9 @@ RSpec.describe Gitlab::Redis::MultiStore do
           allow(secondary_store).to receive(name).and_call_original
         end
 
-        context 'with feature flag :use_multi_store enabled' do
+        context 'with feature flag :use_primary_and_secondary_stores_for_test_store' do
           before do
-            stub_feature_flags(use_multi_store: true)
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: true)
           end
 
           context 'when reading from the primary is successful' do
@@ -252,12 +266,38 @@ RSpec.describe Gitlab::Redis::MultiStore do
           end
         end
 
-        context 'with feature flag :use_multi_store is disabled' do
+        context 'with feature flag :use_primary_and_secondary_stores_for_test_store' do
           before do
-            stub_feature_flags(use_multi_store: false)
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
           end
 
-          it_behaves_like 'secondary store'
+          context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
+
+            it_behaves_like 'secondary store'
+          end
+
+          context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+            end
+
+            it 'execute on the primary instance' do
+              expect(primary_store).to receive(name).with(*args).and_call_original
+
+              subject
+            end
+
+            include_examples 'reads correct value'
+
+            it 'does not execute on the secondary store' do
+              expect(secondary_store).not_to receive(name)
+
+              subject
+            end
+          end
         end
 
         context 'with both primary and secondary store using same redis instance' do
@@ -335,9 +375,9 @@ RSpec.describe Gitlab::Redis::MultiStore do
           allow(secondary_store).to receive(name).and_call_original
         end
 
-        context 'with feature flag :use_multi_store enabled' do
+        context 'with feature flag :use_primary_and_secondary_stores_for_test_store' do
           before do
-            stub_feature_flags(use_multi_store: true)
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: true)
           end
 
           context 'when executing on primary instance is successful' do
@@ -388,19 +428,40 @@ RSpec.describe Gitlab::Redis::MultiStore do
           end
         end
 
-        context 'with feature flag :use_multi_store is disabled' do
+        context 'with feature flag :use_primary_and_secondary_stores_for_test_store is disabled' do
           before do
-            stub_feature_flags(use_multi_store: false)
+            stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
           end
 
-          it 'executes only on the secondary redis store', :aggregate_errors do
-            expect(secondary_store).to receive(name).with(*expected_args)
-            expect(primary_store).not_to receive(name).with(*expected_args)
+          context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+            end
 
-            subject
+            it 'executes only on the secondary redis store', :aggregate_errors do
+              expect(secondary_store).to receive(name).with(*expected_args)
+              expect(primary_store).not_to receive(name).with(*expected_args)
+
+              subject
+            end
+
+            include_examples 'verify that store contains values', :secondary_store
           end
 
-          include_examples 'verify that store contains values', :secondary_store
+          context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+            before do
+              stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+            end
+
+            it 'executes only on the primary_redis redis store', :aggregate_errors do
+              expect(primary_store).to receive(name).with(*expected_args)
+              expect(secondary_store).not_to receive(name).with(*expected_args)
+
+              subject
+            end
+
+            include_examples 'verify that store contains values', :primary_store
+          end
         end
       end
     end
@@ -440,18 +501,44 @@ RSpec.describe Gitlab::Redis::MultiStore do
       subject
     end
 
-    it 'fallback and executes only on the secondary store', :aggregate_errors do
-      expect(secondary_store).to receive(:incr).with(key).and_call_original
-      expect(primary_store).not_to receive(:incr)
+    context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+      before do
+        stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+      end
 
-      subject
+      it 'fallback and executes only on the secondary store', :aggregate_errors do
+        expect(primary_store).to receive(:incr).with(key).and_call_original
+        expect(secondary_store).not_to receive(:incr)
+
+        subject
+      end
+
+      it 'correct value is stored on the secondary store', :aggregate_errors do
+        subject
+
+        expect(secondary_store.get(key)).to be_nil
+        expect(primary_store.get(key)).to eq('1')
+      end
     end
 
-    it 'correct value is stored on the secondary store', :aggregate_errors do
-      subject
+    context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+      before do
+        stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+      end
 
-      expect(primary_store.get(key)).to be_nil
-      expect(secondary_store.get(key)).to eq('1')
+      it 'fallback and executes only on the secondary store', :aggregate_errors do
+        expect(secondary_store).to receive(:incr).with(key).and_call_original
+        expect(primary_store).not_to receive(:incr)
+
+        subject
+      end
+
+      it 'correct value is stored on the secondary store', :aggregate_errors do
+        subject
+
+        expect(primary_store.get(key)).to be_nil
+        expect(secondary_store.get(key)).to eq('1')
+      end
     end
 
     context 'when the command is executed within pipelined block' do
@@ -473,6 +560,96 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
         expect(primary_store.get(key)).to eq('1')
         expect(secondary_store.get(key)).to eq('1')
+      end
+    end
+  end
+
+  describe '#to_s' do
+    subject { multi_store.to_s }
+
+    context 'with feature flag :use_primary_and_secondary_stores_for_test_store is enabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: true)
+      end
+
+      it 'returns same value as primary_store' do
+        is_expected.to eq(primary_store.to_s)
+      end
+    end
+
+    context 'with feature flag :use_primary_and_secondary_stores_for_test_store is disabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+      end
+
+      context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+        end
+
+        it 'returns same value as primary_store' do
+          is_expected.to eq(primary_store.to_s)
+        end
+      end
+
+      context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+        end
+
+        it 'returns same value as primary_store' do
+          is_expected.to eq(secondary_store.to_s)
+        end
+      end
+    end
+  end
+
+  describe '#is_a?' do
+    it 'returns true for ::Redis::Store' do
+      expect(multi_store.is_a?(::Redis::Store)).to be true
+    end
+  end
+
+  describe '#use_primary_and_secondary_stores?' do
+    context 'with feature flag :use_primary_and_secondary_stores_for_test_store is enabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: true)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be true
+      end
+    end
+
+    context 'with feature flag :use_primary_and_secondary_stores_for_test_store is disabled' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: false)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_and_secondary_stores?).to be false
+      end
+    end
+  end
+
+  describe '#use_primary_store_as_default?' do
+    context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do
+      before do
+        stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_store_as_default?).to be true
+      end
+    end
+
+    context 'with feature flag :use_primary_store_as_default_for_test_store is disabled' do
+      before do
+        stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+      end
+
+      it 'multi store is disabled' do
+        expect(multi_store.use_primary_store_as_default?).to be false
       end
     end
   end

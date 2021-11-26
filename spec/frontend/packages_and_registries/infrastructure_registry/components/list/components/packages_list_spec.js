@@ -9,7 +9,7 @@ import PackagesListLoader from '~/packages/shared/components/packages_list_loade
 import { TrackingActions } from '~/packages/shared/constants';
 import * as SharedUtils from '~/packages/shared/utils';
 import Tracking from '~/tracking';
-import { packageList } from '../../../../../packages/mock_data';
+import { packageList } from '../../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

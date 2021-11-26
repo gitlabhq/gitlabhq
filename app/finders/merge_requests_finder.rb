@@ -174,8 +174,8 @@ class MergeRequestsFinder < IssuableFinder
 
   def by_deployments(items)
     env = params[:environment]
-    before = params[:deployed_before]
-    after = params[:deployed_after]
+    before = parse_datetime(params[:deployed_before])
+    after = parse_datetime(params[:deployed_after])
     id = params[:deployment_id]
 
     return items if !env && !before && !after && !id
@@ -217,6 +217,13 @@ class MergeRequestsFinder < IssuableFinder
     else # reviewer not found
       items.none
     end
+  end
+
+  def parse_datetime(input)
+    # To work around http://www.ruby-lang.org/en/news/2021/11/15/date-parsing-method-regexp-dos-cve-2021-41817/
+    DateTime.parse(input.byteslice(0, 128)) if input
+  rescue Date::Error
+    nil
   end
 end
 

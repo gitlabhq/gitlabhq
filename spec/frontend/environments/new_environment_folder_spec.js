@@ -3,8 +3,8 @@ import Vue from 'vue';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { __, s__ } from '~/locale';
 import EnvironmentsFolder from '~/environments/components/new_environment_folder.vue';
-import { s__ } from '~/locale';
 import { resolvedEnvironmentsApp, resolvedFolder } from './graphql/mock_data';
 
 Vue.use(VueApollo);
@@ -14,6 +14,7 @@ describe('~/environments/components/new_environments_folder.vue', () => {
   let environmentFolderMock;
   let nestedEnvironment;
   let folderName;
+  let button;
 
   const findLink = () => wrapper.findByRole('link', { name: s__('Environments|Show all') });
 
@@ -32,6 +33,7 @@ describe('~/environments/components/new_environments_folder.vue', () => {
     environmentFolderMock.mockReturnValue(resolvedFolder);
     wrapper = createWrapper({ nestedEnvironment }, createApolloProvider());
     folderName = wrapper.findByText(nestedEnvironment.name);
+    button = wrapper.findByRole('button', { name: __('Expand') });
   });
 
   afterEach(() => {
@@ -61,10 +63,11 @@ describe('~/environments/components/new_environments_folder.vue', () => {
     });
 
     it('opens on click', async () => {
-      await folderName.trigger('click');
+      await button.trigger('click');
 
       const link = findLink();
 
+      expect(button.attributes('aria-label')).toBe(__('Collapse'));
       expect(collapse.attributes('visible')).toBe('true');
       expect(icons.wrappers.map((i) => i.props('name'))).toEqual(['angle-down', 'folder-open']);
       expect(folderName.classes('gl-font-weight-bold')).toBe(true);

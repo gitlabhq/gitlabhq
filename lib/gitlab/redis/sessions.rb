@@ -24,7 +24,7 @@ module Gitlab
           primary_store = ::Redis.new(params)
           secondary_store = ::Redis.new(config_fallback.params)
 
-          MultiStore.new(primary_store, secondary_store, name)
+          MultiStore.new(primary_store, secondary_store, store_name)
         end
       end
 
@@ -35,7 +35,7 @@ module Gitlab
         primary_store = create_redis_store(redis_store_options, extras)
         secondary_store = create_redis_store(self.class.config_fallback.params, extras)
 
-        MultiStore.new(primary_store, secondary_store, self.class.name)
+        MultiStore.new(primary_store, secondary_store, self.class.store_name)
       end
 
       private

@@ -8,7 +8,7 @@ import PackageTags from '~/packages/shared/components/package_tags.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages/shared/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import { packageList } from '../../../../packages/mock_data';
+import { packageList } from '../mock_data';
 
 describe('packages_list_row', () => {
   let wrapper;

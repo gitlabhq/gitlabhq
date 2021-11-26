@@ -1,9 +1,9 @@
 <script>
 import { __ } from '~/locale';
+import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import activeDiscussionQuery from '../graphql/queries/active_discussion.query.graphql';
-import DesignNotePin from './design_note_pin.vue';
 
 export default {
   name: 'DesignOverlay',
@@ -251,9 +251,6 @@ export default {
         !discussionNotes.some(({ id }) => id === this.activeDiscussion.id)
       );
     },
-    designPinClass(note) {
-      return { inactive: this.isNoteInactive(note), resolved: note.resolved };
-    },
   },
   i18n: {
     newCommentButtonLabel: __('Add comment to design'),
@@ -287,7 +284,8 @@ export default {
           ? getNotePositionStyle(movingNoteNewPosition)
           : getNotePositionStyle(note.position)
       "
-      :class="designPinClass(note)"
+      :is-inactive="isNoteInactive(note)"
+      :is-resolved="note.resolved"
       @mousedown.stop="onNoteMousedown($event, note)"
       @mouseup.stop="onNoteMouseup(note)"
     />

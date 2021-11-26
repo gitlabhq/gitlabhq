@@ -5,7 +5,7 @@ import {
   getPackageTypeLabel,
   getCommitLink,
 } from '~/packages/shared/utils';
-import { packageList } from '../mock_data';
+import { packageList } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 
 describe('Packages shared utils', () => {
   describe('packageTypeToTrackCategory', () => {

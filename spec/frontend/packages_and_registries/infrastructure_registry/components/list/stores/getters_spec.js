@@ -1,4 +1,4 @@
-import getList from '~/packages/list/stores/getters';
+import getList from '~/packages_and_registries/infrastructure_registry/list/stores/getters';
 import { packageList } from '../../mock_data';
 
 describe('Getters registry list store', () => {

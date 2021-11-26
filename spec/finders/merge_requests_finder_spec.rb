@@ -681,12 +681,36 @@ RSpec.describe MergeRequestsFinder do
           expect(mrs).to eq([mr1])
         end
 
+        it 'filters merge requests ignoring empty deployed_before' do
+          mrs = described_class.new(user, deployed_before: '').execute
+
+          expect(mrs.size).to eq(7)
+        end
+
+        it 'filters merge requests ignoring invalid deployed_before' do
+          mrs = described_class.new(user, deployed_before: '2021-99-99').execute
+
+          expect(mrs.size).to eq(7)
+        end
+
         it 'filters merge requests deployed after a given date' do
           mrs = described_class
             .new(user, deployed_after: '2020-10-01 12:00')
             .execute
 
           expect(mrs).to eq([mr2])
+        end
+
+        it 'filters merge requests ignoring empty deployed_after' do
+          mrs = described_class.new(user, deployed_after: '').execute
+
+          expect(mrs.size).to eq(7)
+        end
+
+        it 'filters merge requests ignoring invalid deployed_after' do
+          mrs = described_class.new(user, deployed_after: '2021-99-99').execute
+
+          expect(mrs.size).to eq(7)
         end
       end
 

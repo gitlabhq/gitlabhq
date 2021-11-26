@@ -265,3 +265,22 @@ resynchronize the information:
 
 For more information, read
 [Atlassian's documentation](https://support.atlassian.com/jira-cloud-administration/docs/synchronize-jira-cloud-to-bitbucket/).
+
+### `Sync Failed` error when refreshing repository data
+
+If you get a `Sync Failed` error in Jira when [refreshing repository data](#refresh-data-imported-to-jira) for specific projects, check your DVCS connector logs. Look for errors that occur when executing requests to API resources in GitLab. For example:
+
+```plaintext
+Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 GET https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 returned a response status of 403 Forbidden] errors:
+{"message":"403 Forbidden"}
+``` 
+
+If you find a `{"message":"403 Forbidden"}` error, it is possible that this specific project has some [GitLab features disabled](../../user/project/settings/index.md#sharing-and-permissions).
+In the example above, the merge requests feature is disabled.
+
+To resolve the issue, enable the relevant feature:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Use the toggles to enable the features as needed.

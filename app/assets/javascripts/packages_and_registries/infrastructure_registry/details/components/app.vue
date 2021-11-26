@@ -203,6 +203,7 @@ export default {
 
     <gl-modal
       ref="deleteModal"
+      size="sm"
       modal-id="delete-modal"
       :action-primary="$options.modal.packageDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"
@@ -223,6 +224,7 @@ export default {
 
     <gl-modal
       ref="deleteFileModal"
+      size="sm"
       modal-id="delete-file-modal"
       :action-primary="$options.modal.fileDeletePrimaryAction"
       :action-cancel="$options.modal.cancelAction"

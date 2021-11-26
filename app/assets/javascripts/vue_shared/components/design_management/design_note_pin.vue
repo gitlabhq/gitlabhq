@@ -10,12 +10,23 @@ export default {
   props: {
     position: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     label: {
       type: Number,
       required: false,
       default: null,
+    },
+    isResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isInactive: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -36,10 +47,13 @@ export default {
     :style="position"
     :aria-label="pinLabel"
     :class="{
-      'btn-transparent comment-indicator gl-p-0': isNewNote,
-      'js-image-badge badge badge-pill': !isNewNote,
+      'btn-transparent comment-indicator': isNewNote,
+      'js-image-badge design-note-pin': !isNewNote,
+      resolved: isResolved,
+      inactive: isInactive,
+      'gl-absolute': position,
     }"
-    class="gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-font-lg gl-outline-0!"
+    class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm"
     type="button"
     @mousedown="$emit('mousedown', $event)"
     @mouseup="$emit('mouseup', $event)"

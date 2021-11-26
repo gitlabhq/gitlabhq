@@ -1,7 +1,7 @@
 import { GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { kebabCase } from 'lodash';
 import { nextTick } from 'vue';
+import { kebabCase } from 'lodash';
 import Actions from '~/admin/users/components/actions';
 import SharedDeleteAction from '~/admin/users/components/actions/shared/shared_delete_action.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -39,9 +39,6 @@ describe('Action components', () => {
       });
 
       await nextTick();
-
-      expect(wrapper.attributes('data-path')).toBe('/test');
-      expect(wrapper.attributes('data-modal-attributes')).toContain('John Doe');
       expect(findDropdownItem().exists()).toBe(true);
     });
   });
@@ -66,7 +63,6 @@ describe('Action components', () => {
         });
 
         await nextTick();
-
         const sharedAction = wrapper.find(SharedDeleteAction);
 
         expect(sharedAction.attributes('data-block-user-url')).toBe(paths.block);
@@ -76,6 +72,7 @@ describe('Action components', () => {
         expect(sharedAction.attributes('data-user-deletion-obstacles')).toBe(
           JSON.stringify(userDeletionObstacles),
         );
+
         expect(findDropdownItem().exists()).toBe(true);
       },
     );

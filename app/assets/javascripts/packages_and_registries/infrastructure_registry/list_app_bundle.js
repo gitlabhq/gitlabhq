@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { s__ } from '~/locale';
 import PackagesListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
-import { createStore } from '~/packages/list/stores';
+import { createStore } from '~/packages_and_registries/infrastructure_registry/list/stores';
 import Translate from '~/vue_shared/translate';
 
 Vue.use(Translate);

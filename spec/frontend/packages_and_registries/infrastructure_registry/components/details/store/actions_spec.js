@@ -13,7 +13,7 @@ import {
   DELETE_PACKAGE_FILE_ERROR_MESSAGE,
   DELETE_PACKAGE_FILE_SUCCESS_MESSAGE,
 } from '~/packages/shared/constants';
-import { npmPackage as packageEntity } from '../../../../../packages/mock_data';
+import { npmPackage as packageEntity } from '../../mock_data';
 
 jest.mock('~/flash.js');
 jest.mock('~/api.js');

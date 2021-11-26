@@ -6,7 +6,7 @@ import { HISTORY_PIPELINES_LIMIT } from '~/packages_and_registries/shared/consta
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { mavenPackage, mockPipelineInfo } from 'jest/packages/mock_data';
+import { mavenPackage, mockPipelineInfo } from '../../mock_data';
 
 describe('Package History', () => {
   let wrapper;

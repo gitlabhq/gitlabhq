@@ -30869,6 +30869,9 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|An error occurred unassigning your security policy project"
+msgstr ""
+
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
@@ -30947,6 +30950,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
+msgid "SecurityOrchestration|Security policy project was unlinked successfully"
+msgstr ""
+
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
@@ -30966,6 +30972,12 @@ msgid "SecurityOrchestration|This project does not contain any security policies
 msgstr ""
 
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
+msgstr ""
+
+msgid "SecurityOrchestration|Unlink project"
+msgstr ""
+
+msgid "SecurityOrchestration|Unlinking a security project removes all policies stored in the linked security project. Save to confirm this action."
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan execution policies"
@@ -32556,9 +32568,6 @@ msgid "Something went wrong while fetching source branches."
 msgstr ""
 
 msgid "Something went wrong while fetching the environments for this merge request. Please try again."
-msgstr ""
-
-msgid "Something went wrong while fetching the package."
 msgstr ""
 
 msgid "Something went wrong while fetching the packages list."

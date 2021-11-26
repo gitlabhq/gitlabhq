@@ -124,6 +124,7 @@ export default {
       <gl-modal
         v-model="showDeleteModal"
         modal-id="confirm-delete-pacakge"
+        size="sm"
         ok-variant="danger"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"

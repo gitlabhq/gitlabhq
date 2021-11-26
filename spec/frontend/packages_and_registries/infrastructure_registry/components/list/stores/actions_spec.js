@@ -3,9 +3,9 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import createFlash from '~/flash';
-import { MISSING_DELETE_PATH_ERROR } from '~/packages/list/constants';
-import * as actions from '~/packages/list/stores/actions';
-import * as types from '~/packages/list/stores/mutation_types';
+import { MISSING_DELETE_PATH_ERROR } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import * as actions from '~/packages_and_registries/infrastructure_registry/list/stores/actions';
+import * as types from '~/packages_and_registries/infrastructure_registry/list/stores/mutation_types';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages/shared/constants';
 
 jest.mock('~/flash.js');

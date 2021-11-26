@@ -1,6 +1,7 @@
 <script>
 import { GlDropdownItem } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
+import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
 import { I18N_USER_ACTIONS } from '../../constants';
 
 // TODO: To be replaced with <template> content in https://gitlab.com/gitlab-org/gitlab/-/issues/320922
@@ -28,12 +29,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    attributes() {
-      return {
-        'data-path': this.path,
-        'data-method': 'put',
-        'data-modal-attributes': JSON.stringify({
+  methods: {
+    onClick() {
+      eventHub.$emit(EVENT_OPEN_CONFIRM_MODAL, {
+        path: this.path,
+        method: 'put',
+        modalAttributes: {
           title: sprintf(s__('AdminUsers|Approve user %{username}?'), {
             username: this.username,
           }),
@@ -45,16 +46,16 @@ export default {
             attributes: [{ variant: 'confirm', 'data-qa-selector': 'approve_user_confirm_button' }],
           },
           messageHtml,
-        }),
-        'data-qa-selector': 'approve_user_button',
-      };
+          'data-qa-selector': 'approve_user_button',
+        },
+      });
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown-item button-class="js-confirm-modal-button" v-bind="{ ...attributes }">
+  <gl-dropdown-item @click="onClick">
     <slot></slot>
   </gl-dropdown-item>
 </template>

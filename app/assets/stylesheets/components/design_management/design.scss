@@ -12,7 +12,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     top: 35px;
   }
 
-  .badge.badge-pill {
+  .design-note-pin {
     display: flex;
     height: $design-pin-diameter;
     width: $design-pin-diameter;
@@ -23,6 +23,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     border-radius: 50%;
     z-index: 1;
     padding: 0;
+    border: 0;
 
     &.resolved {
       background-color: $gray-500;
@@ -34,7 +35,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   }
 
   .comment-indicator,
-  .frame .badge.badge-pill {
+  .frame .design-note-pin {
     &:active {
       cursor: grabbing;
     }
@@ -43,7 +44,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   /**
    * Design pin that overlays the design
    */
-  .frame .badge.badge-pill {
+  .frame .design-note-pin {
     box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
     border: $white 2px solid;
     will-change: transform, box-shadow, opacity;
@@ -114,7 +115,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     }
   }
 
-  .badge.badge-pill {
+  .design-note-pin {
     margin-left: $gl-padding;
   }
 

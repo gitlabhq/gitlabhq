@@ -1,8 +1,8 @@
 ---
-name: use_multi_store
+name: use_primary_and_secondary_stores_for_sessions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73660
 rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1429
-milestone: '14.5'
+milestone: '14.6'
 type: development
 group: group::memory
 default_enabled: false

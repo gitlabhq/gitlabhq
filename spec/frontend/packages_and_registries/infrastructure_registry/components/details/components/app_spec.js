@@ -17,7 +17,7 @@ import TerraformTitle from '~/packages_and_registries/infrastructure_registry/de
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import Tracking from '~/tracking';
 
-import { mavenPackage, mavenFiles, npmPackage } from 'jest/packages/mock_data';
+import { mavenPackage, mavenFiles, npmPackage } from '../../mock_data';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

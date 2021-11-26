@@ -53,5 +53,7 @@ RSpec.describe Gitlab::Redis::Sessions do
         expect(subject).to be_instance_of(::Gitlab::Redis::MultiStore)
       end
     end
+
+    it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_sessions, :use_primary_store_as_default_for_sessions
   end
 end

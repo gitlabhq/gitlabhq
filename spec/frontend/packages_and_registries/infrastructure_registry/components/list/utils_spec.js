@@ -1,5 +1,8 @@
-import { SORT_FIELDS } from '~/packages/list/constants';
-import { getNewPaginationPage, sortableFields } from '~/packages/list/utils';
+import { SORT_FIELDS } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import {
+  getNewPaginationPage,
+  sortableFields,
+} from '~/packages_and_registries/infrastructure_registry/list/utils';
 
 describe('Packages list utils', () => {
   describe('sortableFields', () => {

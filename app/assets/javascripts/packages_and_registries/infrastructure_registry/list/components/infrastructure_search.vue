@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { LIST_KEY_PACKAGE_TYPE } from '~/packages/list/constants';
-import { sortableFields } from '~/packages/list/utils';
+import { LIST_KEY_PACKAGE_TYPE } from '~/packages_and_registries/infrastructure_registry/list/constants';
+import { sortableFields } from '~/packages_and_registries/infrastructure_registry/list/utils';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
