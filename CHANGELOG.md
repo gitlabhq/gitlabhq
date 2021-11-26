@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.3.5 (2021-11-26)
+
+### Fixed (6 changes)
+
+- [Allow SSO callbacks through maintenance mode](gitlab-org/gitlab@f9b250145ac3db5fb01698839f1b5f3d9d349945) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Geo - Fix no repo error message for group-level wikis](gitlab-org/gitlab@5560e012bd6f35431d4d1cea389807ca475c2ce5) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@35344d81d5e07bfb4db997be6c4f99f39a16562e) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Fix error 500 loading branch with UTF-8 characters with performance bar](gitlab-org/gitlab@08b47c2870cc338021bb3f945ac6736e46abf376) ([merge request](gitlab-org/gitlab!75145))
+- [Remove defaultAuthors from MR Analytics and VSA](gitlab-org/gitlab@be95c921623056d31e2cbc0a7bc96de3aa66ca65) ([merge request](gitlab-org/gitlab!75145))
+- [Allow SSO callbacks through maintenance mode](gitlab-org/gitlab@0727751512d41537356b295d6b889e05c6a07480) ([merge request](gitlab-org/gitlab!74706)) **GitLab Enterprise Edition**
+
 ## 14.3.4 (2021-10-28)
 
 ### Security (13 changes)
