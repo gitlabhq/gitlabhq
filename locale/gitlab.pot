@@ -38576,9 +38576,6 @@ msgstr ""
 msgid "VulnerabilityManagement|Create Jira issue"
 msgstr ""
 
-msgid "VulnerabilityManagement|Detected"
-msgstr ""
-
 msgid "VulnerabilityManagement|Fetching linked Jira issues"
 msgstr ""
 
@@ -38592,6 +38589,9 @@ msgid "VulnerabilityManagement|Read more about related issues"
 msgstr ""
 
 msgid "VulnerabilityManagement|Related Jira issues"
+msgstr ""
+
+msgid "VulnerabilityManagement|Requires assessment"
 msgstr ""
 
 msgid "VulnerabilityManagement|Something went wrong while trying to delete the comment. Please try again later."
@@ -38639,10 +38639,10 @@ msgstr ""
 msgid "VulnerabilityStatusTypes|Confirmed"
 msgstr ""
 
-msgid "VulnerabilityStatusTypes|Detected"
+msgid "VulnerabilityStatusTypes|Dismissed"
 msgstr ""
 
-msgid "VulnerabilityStatusTypes|Dismissed"
+msgid "VulnerabilityStatusTypes|Needs triage"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Resolved"

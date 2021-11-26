@@ -9,6 +9,7 @@ RSpec.describe CaseSensitivity do
       Class.new(ActiveRecord::Base) do
         include CaseSensitivity
         self.table_name = 'namespaces'
+        self.inheritance_column = :_type_disabled
       end
     end
 

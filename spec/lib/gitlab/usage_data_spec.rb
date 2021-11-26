@@ -1402,33 +1402,21 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories }
 
-    context 'with redis_hll_tracking feature enabled' do
-      it 'has all known_events' do
-        stub_feature_flags(redis_hll_tracking: true)
+    it 'has all known_events' do
+      expect(subject).to have_key(:redis_hll_counters)
 
-        expect(subject).to have_key(:redis_hll_counters)
+      expect(subject[:redis_hll_counters].keys).to match_array(categories)
 
-        expect(subject[:redis_hll_counters].keys).to match_array(categories)
+      categories.each do |category|
+        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
 
-        categories.each do |category|
-          keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
+        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
 
-          metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
-
-          if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
-            metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
-          end
-
-          expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
+        if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
+          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
         end
-      end
-    end
 
-    context 'with redis_hll_tracking disabled' do
-      it 'does not have redis_hll_tracking key' do
-        stub_feature_flags(redis_hll_tracking: false)
-
-        expect(subject).not_to have_key(:redis_hll_counters)
+        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
       end
     end
   end
