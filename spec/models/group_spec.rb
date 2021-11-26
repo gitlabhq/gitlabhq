@@ -94,34 +94,6 @@ RSpec.describe Group do
           expect(group).to be_valid
         end
       end
-
-      context 'when the feature flag `validate_namespace_parent_type` is disabled' do
-        before do
-          stub_feature_flags(validate_namespace_parent_type: false)
-        end
-
-        context 'when the group has no parent' do
-          it 'allows a group to have no parent associated with it' do
-            group = build(:group)
-
-            expect(group).to be_valid
-          end
-        end
-
-        context 'when the group has a parent' do
-          it 'allows a group to have a namespace as its parent' do
-            group = build(:group, parent: build(:namespace))
-
-            expect(group).to be_valid
-          end
-
-          it 'allows a group to have another group as its parent' do
-            group = build(:group, parent: build(:group))
-
-            expect(group).to be_valid
-          end
-        end
-      end
     end
 
     describe 'path validation' do

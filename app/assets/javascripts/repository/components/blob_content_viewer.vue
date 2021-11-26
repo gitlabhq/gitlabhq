@@ -106,6 +106,7 @@ export default {
                 ideForkAndEditPath: '',
                 storedExternally: false,
                 canModifyBlob: false,
+                canCurrentUserPushToBranch: false,
                 rawPath: '',
                 externalStorageUrl: '',
                 replacePath: '',
@@ -266,6 +267,7 @@ export default {
             :replace-path="blobInfo.replacePath"
             :delete-path="blobInfo.webPath"
             :can-push-code="project.userPermissions.pushCode"
+            :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
             :empty-repo="project.repository.empty"
             :project-path="projectPath"
             :is-locked="isLocked"

@@ -78,6 +78,12 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     super(blob, project, blob.commit_id)
   end
 
+  def can_current_user_push_to_branch?
+    return false unless current_user && project.repository.branch_exists?(blob.commit_id)
+
+    user_access(project).can_push_to_branch?(blob.commit_id)
+  end
+
   def ide_edit_path
     super(project, blob.commit_id, blob.path)
   end

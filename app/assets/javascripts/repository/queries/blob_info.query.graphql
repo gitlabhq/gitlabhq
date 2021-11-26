@@ -28,6 +28,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
           forkAndEditPath
           ideForkAndEditPath
           canModifyBlob
+          canCurrentUserPushToBranch
           storedExternally
           rawPath
           replacePath

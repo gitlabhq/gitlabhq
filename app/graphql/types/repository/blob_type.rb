@@ -91,6 +91,9 @@ module Types
             calls_gitaly: true,
             description: 'Whether the current user can modify the blob.'
 
+      field :can_current_user_push_to_branch, GraphQL::Types::Boolean, null: true, method: :can_current_user_push_to_branch?,
+            description: 'Whether the current user can push to the branch.'
+
       def raw_text_blob
         object.data unless object.binary?
       end

@@ -31,6 +31,28 @@ RSpec.describe BlobPresenter do
     it { expect(presenter.replace_path).to eq("/#{project.full_path}/-/create/#{blob.commit_id}/#{blob.path}") }
   end
 
+  describe '#can_current_user_push_to_branch' do
+    let(:branch_exists) { true }
+
+    before do
+      allow(project.repository).to receive(:branch_exists?).with(blob.commit_id).and_return(branch_exists)
+    end
+
+    it { expect(presenter.can_current_user_push_to_branch?).to eq(true) }
+
+    context 'current_user is nil' do
+      let(:user) { nil }
+
+      it { expect(presenter.can_current_user_push_to_branch?).to eq(false) }
+    end
+
+    context 'branch does not exist' do
+      let(:branch_exists) { false }
+
+      it { expect(presenter.can_current_user_push_to_branch?).to eq(false) }
+    end
+  end
+
   describe '#pipeline_editor_path' do
     context 'when blob is .gitlab-ci.yml' do
       before do

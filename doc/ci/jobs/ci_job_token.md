@@ -61,11 +61,7 @@ tries to steal tokens from other jobs.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328553) in GitLab 14.1. [Deployed behind the `:ci_scoped_job_token` feature flag](../../user/feature_flags.md), disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.4.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the `ci_scoped_job_token` flag](../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/332272) in GitLab 14.6.
 
 You can limit the access scope of a project's CI/CD job token to increase the
 job token's security. A job token might give extra permissions that aren't necessary

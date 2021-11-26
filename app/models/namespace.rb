@@ -94,7 +94,7 @@ class Namespace < ApplicationRecord
 
   validates :max_artifacts_size, numericality: { only_integer: true, greater_than: 0, allow_nil: true }
 
-  validate :validate_parent_type, if: -> { Feature.enabled?(:validate_namespace_parent_type, default_enabled: :yaml) }
+  validate :validate_parent_type
 
   # ProjectNamespaces excluded as they are not meant to appear in the group hierarchy at the moment.
   validate :nesting_level_allowed, unless: -> { project_namespace? }

@@ -7,14 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Iterations **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214713) in GitLab 13.1.
-> - Deployed behind a feature flag, disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 13.2.
-> - Enabled on GitLab.com.
-> - Can be enabled or disabled per-group.
-> - Recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](#enable-or-disable-iterations).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214713) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `group_iterations`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 13.2.
 > - Moved to GitLab Premium in 13.9.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 14.6. [Feature flag `group_iterations`](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) removed.
 
 Iterations are a way to track issues over a period of time. This allows teams
 to track velocity and volatility metrics. Iterations can be used with [milestones](../../project/milestones/index.md)
@@ -170,30 +166,6 @@ To group issues by label:
 1. Select the labels you want to group by in the labels dropdown.
    You can also search for labels by typing in the search input.
 1. Select or tap outside of the label dropdown. The page is now grouped by the selected labels.
-
-## Enable or disable iterations **(PREMIUM SELF)**
-
-GitLab Iterations feature is deployed with a feature flag that is **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
-can disable it for your instance. `:group_iterations` can be enabled or disabled per-group.
-
-To enable it:
-
-```ruby
-# Instance-wide
-Feature.enable(:group_iterations)
-# or by group
-Feature.enable(:group_iterations, Group.find(<group ID>))
-```
-
-To disable it:
-
-```ruby
-# Instance-wide
-Feature.disable(:group_iterations)
-# or by group
-Feature.disable(:group_iterations, Group.find(<group ID>))
-```
 
 ### Enable or disable iteration cadences **(PREMIUM SELF)**
 

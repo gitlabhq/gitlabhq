@@ -1348,27 +1348,6 @@ The DAST tool always emits a JSON report file called `gl-dast-report.json` and
 sample reports can be found in the
 [DAST repository](https://gitlab.com/gitlab-org/security-products/dast/-/tree/master/test/end-to-end/expect).
 
-### Other formats
-
-Reports can also be generated in Markdown, HTML, and XML. These can be published as artifacts using the following configuration:
-
-```yaml
-include:
-  template: DAST.gitlab-ci.yml
-
-dast:
-  variables:
-    DAST_HTML_REPORT: report.html
-    DAST_MARKDOWN_REPORT: report.md
-    DAST_XML_REPORT: report.xml
-  artifacts:
-    paths:
-      - $DAST_HTML_REPORT
-      - $DAST_MARKDOWN_REPORT
-      - $DAST_XML_REPORT
-      - gl-dast-report.json
-```
-
 ## Optimizing DAST
 
 By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If

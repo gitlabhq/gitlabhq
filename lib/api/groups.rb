@@ -109,7 +109,7 @@ module API
       end
 
       def present_groups_with_pagination_strategies(params, groups)
-        return present_groups(params, groups) if current_user.present? || Feature.disabled?(:keyset_pagination_for_groups_api)
+        return present_groups(params, groups) if current_user.present?
 
         options = {
           with: Entities::Group,

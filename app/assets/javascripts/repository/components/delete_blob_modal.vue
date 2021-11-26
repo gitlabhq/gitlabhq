@@ -71,6 +71,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canPushToBranch: {
+      type: Boolean,
+      required: true,
+    },
     emptyRepo: {
       type: Boolean,
       required: true,
@@ -176,9 +180,12 @@ export default {
       </template>
       <template v-else>
         <input type="hidden" name="original_branch" :value="originalBranch" />
-        <!-- Once "push to branch" permission is made available, will need to add to conditional
-          Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/335462 -->
-        <input v-if="createNewMr" type="hidden" name="create_merge_request" value="1" />
+        <input
+          v-if="createNewMr || !canPushToBranch"
+          type="hidden"
+          name="create_merge_request"
+          value="1"
+        />
         <gl-form-group
           :label="$options.i18n.COMMIT_LABEL"
           label-for="commit_message"

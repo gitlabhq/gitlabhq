@@ -14,7 +14,6 @@ RSpec.describe 'Group navbar' do
   before do
     insert_package_nav(_('Kubernetes'))
 
-    stub_feature_flags(group_iterations: false)
     stub_feature_flags(customer_relations: false)
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })

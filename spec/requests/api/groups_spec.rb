@@ -174,18 +174,6 @@ RSpec.describe API::Groups do
                 'Remaining records can be retrieved using keyset pagination.'
               )
             end
-
-            context 'when the feature flag `keyset_pagination_for_groups_api` is disabled' do
-              before do
-                stub_feature_flags(keyset_pagination_for_groups_api: false)
-              end
-
-              it 'returns successful response' do
-                get api('/groups'), params: { page: 3000, per_page: 25 }
-
-                expect(response).to have_gitlab_http_status(:ok)
-              end
-            end
           end
 
           context 'on making requests below the allowed offset pagination threshold' do
@@ -246,24 +234,6 @@ RSpec.describe API::Groups do
               records = Gitlab::Json.parse(response.body)
               expect(records.size).to eq(1)
               expect(records.first['id']).to eq(group_2.id)
-            end
-
-            context 'when the feature flag `keyset_pagination_for_groups_api` is disabled' do
-              before do
-                stub_feature_flags(keyset_pagination_for_groups_api: false)
-              end
-
-              it 'ignores the keyset pagination params and performs offset pagination' do
-                get api('/groups'), params: { pagination: 'keyset', per_page: 1 }
-
-                expect(response).to have_gitlab_http_status(:ok)
-                records = json_response
-                expect(records.size).to eq(1)
-                expect(records.first['id']).to eq(group_1.id)
-
-                params_for_next_page = params_for_next_page(response)
-                expect(params_for_next_page).not_to include('cursor')
-              end
             end
           end
 

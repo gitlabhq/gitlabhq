@@ -26,6 +26,9 @@ Planning features everyone needs to use day-to-day.
 Get work done as a team.
 
 - [Comments and threads](../user/discussions/index.md)
+- [Customer relations (CRM)](../user/crm/index.md)
+  - [Contacts](../user/crm/index.md#contacts)
+  - [Organizations](../user/crm/index.md#organizations)
 - [Issues](../user/project/issues/index.md)
 - [Iterations](../user/group/iterations/index.md)
 - [Labels](../user/project/labels.md)

@@ -9,6 +9,7 @@ const DEFAULT_PROPS = {
   name: 'some name',
   path: 'some/path',
   canPushCode: true,
+  canPushToBranch: true,
   replacePath: 'some/replace/path',
   deletePath: 'some/delete/path',
   emptyRepo: false,

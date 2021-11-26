@@ -1160,8 +1160,7 @@ Praefect regularly checks the health of each Gitaly node. This is used to automa
 to a newly-elected primary Gitaly node if the current primary node is found to be unhealthy.
 
 We recommend using [repository-specific primary nodes](#repository-specific-primary-nodes). This is
-[planned to be the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574)
-from GitLab 14.0.
+[the only available election strategy](https://gitlab.com/gitlab-org/gitaly/-/issues/3574) from GitLab 14.0.
 
 ### Repository-specific primary nodes
 
@@ -1275,7 +1274,7 @@ To migrate existing clusters:
 ### Deprecated election strategies
 
 WARNING:
-The below election strategies are deprecated and are scheduled for removal in GitLab 14.0.
+The below election strategies are deprecated and were removed in GitLab 14.0.
 Migrate to [repository-specific primary nodes](#repository-specific-primary-nodes).
 
 - **PostgreSQL:** Enabled by default until GitLab 14.0, and equivalent to:

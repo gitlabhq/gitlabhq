@@ -32,6 +32,15 @@ RSpec.describe Gitlab::Checks::BranchCheck do
         expect { subject.validate! }.not_to raise_error
       end
 
+      context "deleting a hexadecimal branch" do
+        let(:newrev) { "0000000000000000000000000000000000000000" }
+        let(:ref) { "refs/heads/267208abfe40e546f5e847444276f7d43a39503e" }
+
+        it "doesn't prohibit the deletion of a hexadecimal branch name" do
+          expect { subject.validate! }.not_to raise_error
+        end
+      end
+
       context "the feature flag is disabled" do
         it "doesn't prohibit a 40-character hexadecimal branch name" do
           stub_feature_flags(prohibit_hexadecimal_branch_names: false)

@@ -805,13 +805,5 @@ the following checks when creating or updating namespaces or groups:
 - Namespaces must not have parents.
 - Group parents must be groups and not namespaces.
 
-You can disable the validation if GitLab shows the following errors:
-
-- `A user namespace cannot have a parent`.
-- `A group cannot have a user namespace as its parent`.
-
-To disable the validation,
-[disable the `validate_namespace_parent_type` flag](../../administration/feature_flags.md).
-
-In the unlikely event that you had to disable this feature flag to prevent errors,
+In the unlikely event that you see these errors in your GitLab installation,
 [contact Support](https://about.gitlab.com/support/) so that we can improve this validation.

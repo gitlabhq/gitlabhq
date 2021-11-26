@@ -239,7 +239,7 @@ RSpec.describe 'bin/feature-flag' do
     end
 
     describe '.read_rollout_issue_url' do
-      let(:options) { OpenStruct.new(name: 'foo', type: :development) }
+      let(:options) { double('options', name: 'foo', type: :development) }
       let(:url) { 'https://issue' }
 
       it 'reads type from $stdin' do
@@ -265,7 +265,7 @@ RSpec.describe 'bin/feature-flag' do
     end
 
     describe '.read_ee_only' do
-      let(:options) { OpenStruct.new(name: 'foo', type: :development) }
+      let(:options) { double('options', name: 'foo', type: :development) }
 
       it { expect(described_class.read_ee_only(options)).to eq(false) }
     end

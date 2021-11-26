@@ -190,7 +190,8 @@ RSpec.shared_context 'group navbar structure' do
     [
       _('List'),
       _('Board'),
-      _('Milestones')
+      _('Milestones'),
+      (_('Iterations') if Gitlab.ee?)
     ]
   end
 

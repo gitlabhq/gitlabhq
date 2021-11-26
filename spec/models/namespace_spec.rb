@@ -107,34 +107,6 @@ RSpec.describe Namespace do
           end
         end
       end
-
-      context 'when the feature flag `validate_namespace_parent_type` is disabled' do
-        before do
-          stub_feature_flags(validate_namespace_parent_type: false)
-        end
-
-        context 'when the namespace has no parent' do
-          it 'allows a namespace to have no parent associated with it' do
-            namespace = build(:namespace)
-
-            expect(namespace).to be_valid
-          end
-        end
-
-        context 'when the namespace has a parent' do
-          it 'allows a namespace to have a group as its parent' do
-            namespace = build(:namespace, parent: build(:group))
-
-            expect(namespace).to be_valid
-          end
-
-          it 'allows a namespace to have another namespace as its parent' do
-            namespace = build(:namespace, parent: build(:namespace))
-
-            expect(namespace).to be_valid
-          end
-        end
-      end
     end
 
     describe '#nesting_level_allowed' do

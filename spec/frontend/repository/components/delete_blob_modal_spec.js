@@ -13,6 +13,7 @@ const initialProps = {
   targetBranch: 'some-target-branch',
   originalBranch: 'main',
   canPushCode: true,
+  canPushToBranch: true,
   emptyRepo: false,
 };
 
@@ -103,22 +104,25 @@ describe('DeleteBlobModal', () => {
     );
 
     it.each`
-      input                     | value                          | emptyRepo | canPushCode | exist
-      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${false}  | ${true}     | ${true}
-      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${true}   | ${false}    | ${true}
-      ${'_method'}              | ${'delete'}                    | ${false}  | ${true}     | ${true}
-      ${'_method'}              | ${'delete'}                    | ${true}   | ${false}    | ${true}
-      ${'original_branch'}      | ${initialProps.originalBranch} | ${false}  | ${true}     | ${true}
-      ${'original_branch'}      | ${undefined}                   | ${true}   | ${true}     | ${false}
-      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}
-      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${true}     | ${true}
-      ${'create_merge_request'} | ${undefined}                   | ${true}   | ${false}    | ${false}
+      input                     | value                          | emptyRepo | canPushCode | canPushToBranch | exist
+      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${false}  | ${true}     | ${true}         | ${true}
+      ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${true}   | ${false}    | ${true}         | ${true}
+      ${'_method'}              | ${'delete'}                    | ${false}  | ${true}     | ${true}         | ${true}
+      ${'_method'}              | ${'delete'}                    | ${true}   | ${false}    | ${true}         | ${true}
+      ${'original_branch'}      | ${initialProps.originalBranch} | ${false}  | ${true}     | ${true}         | ${true}
+      ${'original_branch'}      | ${undefined}                   | ${true}   | ${true}     | ${true}         | ${false}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}         | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${true}     | ${true}         | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${false}        | ${true}
+      ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}         | ${true}
+      ${'create_merge_request'} | ${undefined}                   | ${true}   | ${false}    | ${true}         | ${false}
     `(
       'passes $input as a hidden input with the correct value',
-      ({ input, value, emptyRepo, canPushCode, exist }) => {
+      ({ input, value, emptyRepo, canPushCode, canPushToBranch, exist }) => {
         createComponent({
           emptyRepo,
           canPushCode,
+          canPushToBranch,
         });
 
         const inputMethod = findForm().find(`input[name="${input}"]`);

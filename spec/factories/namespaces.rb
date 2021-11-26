@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :namespace do
+  # This factory is called :namespace but actually maps (and always has) to User type
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74152#note_730034103 for context
+  factory :namespace, class: 'Namespaces::UserNamespace' do
     sequence(:name) { |n| "namespace#{n}" }
+    type { Namespaces::UserNamespace.sti_name }
+
     path { name.downcase.gsub(/\s/, '_') }
 
     owner { association(:user, strategy: :build, namespace: instance, username: path) }
