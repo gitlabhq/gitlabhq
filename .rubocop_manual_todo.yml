@@ -2774,3 +2774,9 @@ GraphQL/ResolverMethodLength:
     - 'app/graphql/types/ci/runner_type.rb'
     - 'app/graphql/types/ci/stage_type.rb'
     - 'app/graphql/types/packages/package_type.rb'
+
+# Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/345673
+Performance/Rubyzip:
+  Exclude:
+    - 'app/services/packages/nuget/metadata_extraction_service.rb'
+    - 'lib/gitlab/ci/artifact_file_reader.rb'

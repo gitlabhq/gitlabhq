@@ -10,6 +10,7 @@ import {
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
+import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
 import createFlash from '~/flash';
 import { hasDiff } from '~/helpers/diffs_helper';
 import { diffViewerErrors } from '~/ide/constants';
@@ -28,7 +29,6 @@ import {
 import eventHub from '../event_hub';
 import { DIFF_FILE, GENERIC_ERROR, CONFLICT_TEXT } from '../i18n';
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
-import DiffContent from './diff_content.vue';
 import DiffFileHeader from './diff_file_header.vue';
 
 export default {
