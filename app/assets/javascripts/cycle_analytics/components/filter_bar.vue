@@ -79,7 +79,6 @@ export default {
           title: __('Assignees'),
           type: 'assignees',
           token: AuthorToken,
-          defaultAuthors: [],
           initialAuthors: this.assigneesData,
           unique: false,
           operators: OPERATOR_IS_ONLY,

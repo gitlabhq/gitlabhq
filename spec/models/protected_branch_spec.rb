@@ -163,27 +163,32 @@ RSpec.describe ProtectedBranch do
         expect(described_class.protected?(project, 'staging/some-branch')).to eq(false)
       end
 
+      it 'returns false when branch name is nil' do
+        expect(described_class.protected?(project, nil)).to eq(false)
+      end
+
       context 'with caching', :use_clean_rails_memory_store_caching do
         let_it_be(:project) { create(:project, :repository) }
-        let_it_be(:protected_branch) { create(:protected_branch, project: project, name: "jawn") }
+        let_it_be(:protected_branch) { create(:protected_branch, project: project, name: "“jawn”") }
 
         before do
-          allow(described_class).to receive(:matching).once.and_call_original
+          allow(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).once.and_call_original
+
           # the original call works and warms the cache
-          described_class.protected?(project, 'jawn')
+          described_class.protected?(project, protected_branch.name)
         end
 
         it 'correctly invalidates a cache' do
-          expect(described_class).to receive(:matching).once.and_call_original
+          expect(described_class).to receive(:matching).with(protected_branch.name, protected_refs: anything).once.and_call_original
 
           create(:protected_branch, project: project, name: "bar")
           # the cache is invalidated because the project has been "updated"
-          expect(described_class.protected?(project, 'jawn')).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
         end
 
         it 'correctly uses the cached version' do
           expect(described_class).not_to receive(:matching)
-          expect(described_class.protected?(project, 'jawn')).to eq(true)
+          expect(described_class.protected?(project, protected_branch.name)).to eq(true)
         end
       end
     end
