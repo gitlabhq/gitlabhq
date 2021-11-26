@@ -954,6 +954,17 @@ entry.
 - [Cleanup bigint conversion for ci_builds](gitlab-org/gitlab@176992aa2b2e76b22637a07d5bafbd6541324a7d) ([merge request](gitlab-org/gitlab!70351))
 - [Drop support for data-track-event](gitlab-org/gitlab@ac6027fbef6adf41643412a84945fda6f15c9666) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70234))
 
+## 14.3.5 (2021-11-26)
+
+### Fixed (6 changes)
+
+- [Allow SSO callbacks through maintenance mode](gitlab-org/gitlab@f9b250145ac3db5fb01698839f1b5f3d9d349945) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Geo - Fix no repo error message for group-level wikis](gitlab-org/gitlab@5560e012bd6f35431d4d1cea389807ca475c2ce5) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@35344d81d5e07bfb4db997be6c4f99f39a16562e) ([merge request](gitlab-org/gitlab!75145)) **GitLab Enterprise Edition**
+- [Fix error 500 loading branch with UTF-8 characters with performance bar](gitlab-org/gitlab@08b47c2870cc338021bb3f945ac6736e46abf376) ([merge request](gitlab-org/gitlab!75145))
+- [Remove defaultAuthors from MR Analytics and VSA](gitlab-org/gitlab@be95c921623056d31e2cbc0a7bc96de3aa66ca65) ([merge request](gitlab-org/gitlab!75145))
+- [Allow SSO callbacks through maintenance mode](gitlab-org/gitlab@0727751512d41537356b295d6b889e05c6a07480) ([merge request](gitlab-org/gitlab!74706)) **GitLab Enterprise Edition**
+
 ## 14.3.4 (2021-10-28)
 
 ### Security (13 changes)
@@ -1519,6 +1530,21 @@ entry.
 - [Remove deprecated deployment workers](gitlab-org/gitlab@237d7a54fdac62847f8078228fc2ed6692f33f7e) by @edith007 ([merge request](gitlab-org/gitlab!67683))
 - [Remove the FF ci_reset_bridge_with_subsequent_jobs](gitlab-org/gitlab@a4a75095b9b0250d0b1bdadea90c8a4cd24449b2) ([merge request](gitlab-org/gitlab!68295))
 - [Removes ci_same_stage_job_needs ff](gitlab-org/gitlab@5e509cf7aa90041a541b19dda563120a359f0bf9) ([merge request](gitlab-org/gitlab!68041))
+
+## 14.2.7 (2021-11-26)
+
+### Fixed (3 changes)
+
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@84734dab92e0bf9e304ee7bf1579346cc48d26c3) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Remove defaultAuthors from MR Analytics and VSA](gitlab-org/gitlab@1a15d4d1be939a9e38124827f563ed9ec2612a75) ([merge request](gitlab-org/gitlab!75119))
+- [Let non-members set confidential flag when creating an issue in public project](gitlab-org/gitlab@d093cc62e6263629b36a449c9464d9b8644d4d74) ([merge request](gitlab-org/gitlab!75119))
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@d401e3ec94e6dba9ea76a9682893352f28d446cb) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@00eeff14a9bfeabe9107fc38ce9d7d2eee06384b) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@fac9bb8c11db13d34b311f4ebd18f84fa7a575d3) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@d18381e4788a8652d3e36cec5d4bce343c48209c) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
 
 ## 14.2.6 (2021-10-28)
 

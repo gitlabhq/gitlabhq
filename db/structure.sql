@@ -18888,8 +18888,7 @@ CREATE TABLE requirements_management_test_reports (
     author_id bigint,
     state smallint NOT NULL,
     build_id bigint,
-    issue_id bigint,
-    CONSTRAINT requirements_test_reports_requirement_id_xor_issue_id CHECK ((num_nonnulls(requirement_id, issue_id) = 1))
+    issue_id bigint
 );
 
 CREATE SEQUENCE requirements_management_test_reports_id_seq

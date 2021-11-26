@@ -39,7 +39,11 @@ describe('App component', () => {
   let wrapper;
   let userCalloutDismissSpy;
 
-  const createComponent = ({ shouldShowCallout = true, ...propsData }) => {
+  const createComponent = ({
+    shouldShowCallout = true,
+    secureVulnerabilityTraining = true,
+    ...propsData
+  }) => {
     userCalloutDismissSpy = jest.fn();
 
     wrapper = extendedWrapper(
@@ -50,6 +54,9 @@ describe('App component', () => {
           autoDevopsHelpPagePath,
           autoDevopsPath,
           projectPath,
+          glFeatures: {
+            secureVulnerabilityTraining,
+          },
         },
         stubs: {
           ...stubChildren(SecurityConfigurationApp),
@@ -138,20 +145,20 @@ describe('App component', () => {
       expect(mainHeading.text()).toContain('Security Configuration');
     });
 
-    it('renders GlTab Component ', () => {
-      expect(findTab().exists()).toBe(true);
-    });
+    describe('tabs', () => {
+      const expectedTabs = ['security-testing', 'compliance-testing', 'vulnerability-management'];
 
-    it('renders right amount of tabs with correct title ', () => {
-      expect(findTabs()).toHaveLength(2);
-    });
+      it('renders GlTab Component', () => {
+        expect(findTab().exists()).toBe(true);
+      });
 
-    it('renders security-testing tab', () => {
-      expect(findByTestId('security-testing-tab').exists()).toBe(true);
-    });
+      it('renders correct amount of tabs', () => {
+        expect(findTabs()).toHaveLength(expectedTabs.length);
+      });
 
-    it('renders compliance-testing tab', () => {
-      expect(findByTestId('compliance-testing-tab').exists()).toBe(true);
+      it.each(expectedTabs)('renders the %s tab', (tabName) => {
+        expect(findByTestId(`${tabName}-tab`).exists()).toBe(true);
+      });
     });
 
     it('renders right amount of feature cards for given props with correct props', () => {
@@ -416,6 +423,24 @@ describe('App component', () => {
 
       expect(findComplianceViewHistoryLink().attributes('href')).toBe('test/historyPath');
       expect(findSecurityViewHistoryLink().attributes('href')).toBe('test/historyPath');
+    });
+  });
+
+  describe('when secureVulnerabilityTraining feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({
+        augmentedSecurityFeatures: securityFeaturesMock,
+        augmentedComplianceFeatures: complianceFeaturesMock,
+        secureVulnerabilityTraining: false,
+      });
+    });
+
+    it('renders correct amount of tabs', () => {
+      expect(findTabs()).toHaveLength(2);
+    });
+
+    it('does not render the vulnerability-management tab', () => {
+      expect(wrapper.findByTestId('vulnerability-management-tab').exists()).toBe(false);
     });
   });
 });

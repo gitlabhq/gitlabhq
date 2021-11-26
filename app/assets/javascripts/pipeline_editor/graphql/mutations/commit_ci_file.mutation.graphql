@@ -19,7 +19,9 @@ mutation commitCIFile(
       ]
     }
   ) {
+    __typename
     commit {
+      __typename
       sha
     }
     commitPipelinePath

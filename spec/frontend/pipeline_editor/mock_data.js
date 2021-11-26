@@ -453,3 +453,31 @@ export const mockErrors = [
 export const mockWarnings = [
   '"jobs:multi_project_job may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings"',
 ];
+
+export const mockCommitCreateResponse = {
+  data: {
+    commitCreate: {
+      __typename: 'CommitCreatePayload',
+      errors: [],
+      commit: {
+        __typename: 'Commit',
+        sha: mockCommitNextSha,
+      },
+      commitPipelinePath: '',
+    },
+  },
+};
+
+export const mockCommitCreateResponseNewEtag = {
+  data: {
+    commitCreate: {
+      __typename: 'CommitCreatePayload',
+      errors: [],
+      commit: {
+        __typename: 'Commit',
+        sha: mockCommitNextSha,
+      },
+      commitPipelinePath: '/api/graphql:pipelines/sha/550ceace1acd373c84d02bd539cb9d4614f786db',
+    },
+  },
+};

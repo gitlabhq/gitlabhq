@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 
@@ -32,7 +33,6 @@ describe('Pipeline Editor | Commit Form', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    wrapper = null;
   });
 
   describe('when the form is displayed', () => {
@@ -121,7 +121,7 @@ describe('Pipeline Editor | Commit Form', () => {
     beforeEach(async () => {
       createComponent();
       wrapper.setProps({ scrollToCommitForm: true });
-      await wrapper.vm.$nextTick();
+      await nextTick();
     });
 
     it('scrolls into view', () => {
