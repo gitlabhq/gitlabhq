@@ -15,3 +15,4 @@ export const TYPE_USER = 'User';
 export const TYPE_VULNERABILITY = 'Vulnerability';
 export const TYPE_NOTE = 'Note';
 export const TYPE_DISCUSSION = 'Discussion';
+export const TYPE_PACKAGES_PACKAGE = 'Packages::Package';

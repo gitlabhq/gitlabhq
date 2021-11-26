@@ -7,62 +7,62 @@ RSpec.describe TabHelper do
 
   describe 'gl_tabs_nav' do
     it 'creates a tabs navigation' do
-      expect(gl_tabs_nav).to match(%r{<ul class=".*" role="tablist"><\/ul>})
+      expect(helper.gl_tabs_nav).to match(%r{<ul class=".*" role="tablist"><\/ul>})
     end
 
     it 'captures block output' do
-      expect(gl_tabs_nav { "block content" }).to match(/block content/)
+      expect(helper.gl_tabs_nav { "block content" }).to match(/block content/)
     end
 
     it 'adds styles classes' do
-      expect(gl_tabs_nav).to match(/class="nav gl-tabs-nav"/)
+      expect(helper.gl_tabs_nav).to match(/class="nav gl-tabs-nav"/)
     end
 
     it 'adds custom class' do
-      expect(gl_tabs_nav(class: 'my-class' )).to match(/class=".*my-class.*"/)
+      expect(helper.gl_tabs_nav(class: 'my-class' )).to match(/class=".*my-class.*"/)
     end
   end
 
   describe 'gl_tab_link_to' do
     before do
-      allow(self).to receive(:current_page?).and_return(false)
+      allow(helper).to receive(:current_page?).and_return(false)
     end
 
     it 'creates a tab' do
-      expect(gl_tab_link_to('Link', '/url')).to eq('<li class="nav-item" role="presentation"><a class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
+      expect(helper.gl_tab_link_to('Link', '/url')).to eq('<li class="nav-item" role="presentation"><a class="nav-link gl-tab-nav-item" href="/url">Link</a></li>')
     end
 
     it 'creates a tab with block output' do
-      expect(gl_tab_link_to('/url') { 'block content' }).to match(/block content/)
+      expect(helper.gl_tab_link_to('/url') { 'block content' }).to match(/block content/)
     end
 
     it 'creates a tab with custom classes for enclosing list item without content block provided' do
-      expect(gl_tab_link_to('Link', '/url', { tab_class: 'my-class' })).to match(/<li class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { tab_class: 'my-class' })).to match(/<li class=".*my-class.*"/)
     end
 
     it 'creates a tab with custom classes for enclosing list item with content block provided' do
-      expect(gl_tab_link_to('/url', { tab_class: 'my-class' }) { 'Link' }).to match(/<li class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('/url', { tab_class: 'my-class' }) { 'Link' }).to match(/<li class=".*my-class.*"/)
     end
 
     it 'creates a tab with custom classes for anchor element' do
-      expect(gl_tab_link_to('Link', '/url', { class: 'my-class' })).to match(/<a class=".*my-class.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { class: 'my-class' })).to match(/<a class=".*my-class.*"/)
     end
 
     it 'creates an active tab with item_active = true' do
-      expect(gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
+      expect(helper.gl_tab_link_to('Link', '/url', { item_active: true })).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
     end
 
     context 'when on the active page' do
       before do
-        allow(self).to receive(:current_page?).and_return(true)
+        allow(helper).to receive(:current_page?).and_return(true)
       end
 
       it 'creates an active tab' do
-        expect(gl_tab_link_to('Link', '/url')).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
+        expect(helper.gl_tab_link_to('Link', '/url')).to match(/<a class=".*active gl-tab-nav-item-active gl-tab-nav-item-active-indigo.*"/)
       end
 
       it 'creates an inactive tab with item_active = false' do
-        expect(gl_tab_link_to('Link', '/url', { item_active: false })).not_to match(/<a class=".*active.*"/)
+        expect(helper.gl_tab_link_to('Link', '/url', { item_active: false })).not_to match(/<a class=".*active.*"/)
       end
     end
   end
@@ -72,18 +72,18 @@ RSpec.describe TabHelper do
 
     before do
       allow(controller).to receive(:controller_name).and_return('foo')
-      allow(self).to receive(:action_name).and_return('foo')
+      allow(helper).to receive(:action_name).and_return('foo')
     end
 
     context 'with the content of the li' do
       it 'captures block output' do
-        expect(nav_link { "Testing Blocks" }).to match(/Testing Blocks/)
+        expect(helper.nav_link { "Testing Blocks" }).to match(/Testing Blocks/)
       end
     end
 
     it 'passes extra html options to the list element' do
-      expect(nav_link(action: :foo, html_options: { class: 'home' })).to match(/<li class="home active">/)
-      expect(nav_link(html_options: { class: 'active' })).to match(/<li class="active">/)
+      expect(helper.nav_link(action: :foo, html_options: { class: 'home' })).to match(/<li class="home active">/)
+      expect(helper.nav_link(html_options: { class: 'active' })).to match(/<li class="active">/)
     end
 
     where(:controller_param, :action_param, :path_param, :active) do
@@ -120,7 +120,7 @@ RSpec.describe TabHelper do
 
     with_them do
       specify do
-        result = nav_link(controller: controller_param, action: action_param, path: path_param)
+        result = helper.nav_link(controller: controller_param, action: action_param, path: path_param)
 
         if active
           expect(result).to match(/active/)
@@ -147,7 +147,7 @@ RSpec.describe TabHelper do
 
       with_them do
         specify do
-          result = nav_link(controller: controller_param, action: action_param, path: path_param)
+          result = helper.nav_link(controller: controller_param, action: action_param, path: path_param)
 
           if active
             expect(result).to match(/active/)

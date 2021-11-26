@@ -98,6 +98,7 @@ that can process jobs in the `background_migration` queue.
 
 ```shell
 sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
 ```
 
 **For installations from source:**
@@ -105,6 +106,7 @@ sudo gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaini
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'
+sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMigration.pending'
 ```
 
 ### Batched background migrations
