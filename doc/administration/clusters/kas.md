@@ -4,7 +4,9 @@ group: Configure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Install the Kubernetes Agent Server (KAS) **(PREMIUM SELF)**
+# Install the Kubernetes Agent Server (KAS) **(FREE SELF)**
+
+> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
 The Kubernetes Agent Server (KAS) is a GitLab backend service dedicated to
 managing [Kubernetes Agents](../../user/clusters/agent/index.md).

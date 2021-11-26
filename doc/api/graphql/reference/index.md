@@ -14073,7 +14073,6 @@ Returns [`Tree`](#tree).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
-| <a id="repositoryblobcodeowners"></a>`codeOwners` | [`[UserCore!]`](#usercore) | List of code owners for the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
 | <a id="repositoryblobexternalstorageurl"></a>`externalStorageUrl` | [`String`](#string) | Web path to download the raw blob via external storage, if enabled. |
 | <a id="repositoryblobfiletype"></a>`fileType` | [`String`](#string) | Expected format of the blob based on the extension. |

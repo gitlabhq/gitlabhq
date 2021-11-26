@@ -71,10 +71,6 @@ module Types
       field :pipeline_editor_path, GraphQL::Types::String, null: true,
             description: 'Web path to edit .gitlab-ci.yml file.'
 
-      field :code_owners, [Types::UserType], null: true,
-            description: 'List of code owners for the blob.',
-            calls_gitaly: true
-
       field :file_type, GraphQL::Types::String, null: true,
             description: 'Expected format of the blob based on the extension.'
 

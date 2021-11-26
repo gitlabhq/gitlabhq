@@ -50,6 +50,8 @@ attachments and avatars, and the whole database. This means user accounts,
 issues, merge requests, groups, project data, and so on, will be available for
 query.
 
+For more details, see the [supported Geo data types](datatypes.md).
+
 ## Can I `git push` to a **secondary** site?
 
 Yes! Pushing directly to a **secondary** site (for both HTTP and SSH, including Git LFS) was [introduced](https://about.gitlab.com/releases/2018/09/22/gitlab-11-3-released/) in GitLab 11.3.

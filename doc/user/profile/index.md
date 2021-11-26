@@ -274,6 +274,15 @@ To change your primary email:
 1. In the **Email** field, enter your new email address.
 1. Select **Update profile settings**.
 
+## Set your public email
+
+You can select one of your [configured email addresses](#add-emails-to-your-user-profile) to be displayed on your public profile:
+
+1. In the top-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the **Public email** field, select one of the available email addresses.
+1. Select **Update profile settings**.
+
 ### Use an automatically-generated private commit email
 
 GitLab provides an automatically-generated private commit email address,

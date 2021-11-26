@@ -199,6 +199,13 @@ module QA
           max_duration: 180,
           retry_on_exception: true
         )
+
+        QA::Runtime::Logger.info('Wait until Praefect starts and is listening')
+        wait_until_shell_command_matches(
+          "docker exec #{@praefect} bash -c 'cat /var/log/gitlab/praefect/current'",
+          /listening at tcp address/
+        )
+
         wait_for_gitaly_check
       end
 

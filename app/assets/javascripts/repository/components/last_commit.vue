@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="well-segment commit gl-p-5 gl-w-full">
+  <div class="info-well d-none d-sm-flex project-last-commit commit p-3">
     <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto" />
     <template v-else-if="commit">
       <user-avatar-link

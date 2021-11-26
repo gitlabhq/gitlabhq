@@ -51,7 +51,7 @@ module SimpleCovEnv
       add_filter '/vendor/ruby/'
       add_filter '/app/controllers/sherlock/' # Profiling tool used only in development
       add_filter '/bin/'
-      add_filter 'db/fixtures/' # Matches EE files as well
+      add_filter 'db/fixtures/development/' # Matches EE files as well
 
       add_group 'Channels',     'app/channels' # Matches EE files as well
       add_group 'Controllers',  'app/controllers' # Matches EE files as well

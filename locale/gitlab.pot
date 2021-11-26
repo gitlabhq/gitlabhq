@@ -3752,9 +3752,6 @@ msgstr ""
 msgid "An error occurred while loading chart data"
 msgstr ""
 
-msgid "An error occurred while loading code owners."
-msgstr ""
-
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 

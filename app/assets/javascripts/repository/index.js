@@ -9,7 +9,6 @@ import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
 import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import LastCommit from './components/last_commit.vue';
-import CodeOwners from './components/code_owners.vue';
 import apolloProvider from './graphql';
 import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
@@ -72,23 +71,7 @@ export default function setupVueRepositoryList() {
       },
     });
 
-  const initCodeOwnersApp = () =>
-    new Vue({
-      el: document.getElementById('js-code-owners'),
-      router,
-      apolloProvider,
-      render(h) {
-        return h(CodeOwners, {
-          props: {
-            filePath: this.$route.params.path,
-            projectPath,
-          },
-        });
-      },
-    });
-
   initLastCommitApp();
-  initCodeOwnersApp();
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);

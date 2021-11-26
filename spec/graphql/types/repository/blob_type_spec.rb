@@ -24,7 +24,6 @@ RSpec.describe Types::Repository::BlobType do
       :raw_path,
       :replace_path,
       :pipeline_editor_path,
-      :code_owners,
       :simple_viewer,
       :rich_viewer,
       :plain_data,
