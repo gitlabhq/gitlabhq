@@ -56,17 +56,11 @@ module QA
                                         image: "#{docker_client_version}"
                                         services:
                                         - name: "#{docker_client_version}-dind"
-                                          command:
-                                          - /bin/sh
-                                          - -c
-                                          - |
-                                            apk add --no-cache openssl
-                                            true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
-                                            update-ca-certificates
-                                            dockerd-entrypoint.sh || exit     
+                                          command: ["--insecure-registry=gitlab.test:80"]     
                                         before_script:
                                           - apk add curl jq grep
-                                          - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" "$CI_DEPENDENCY_PROXY_SERVER"
+                                          - echo $CI_DEPENDENCY_PROXY_SERVER
+                                          - docker login -u "$CI_DEPENDENCY_PROXY_USER" -p "$CI_DEPENDENCY_PROXY_PASSWORD" gitlab.test:80
                                         script:
                                           - docker pull #{dependency_proxy_url}/alpine:latest
                                           - TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token)

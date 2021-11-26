@@ -176,6 +176,7 @@ module QA
         autoload :SMTP, 'qa/scenario/test/integration/smtp'
         autoload :SSHTunnel, 'qa/scenario/test/integration/ssh_tunnel'
         autoload :Registry, 'qa/scenario/test/integration/registry'
+        autoload :RegistryTLS, 'qa/scenario/test/integration/registry_tls'
       end
 
       module Sanity

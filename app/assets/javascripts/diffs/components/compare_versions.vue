@@ -100,6 +100,7 @@ export default {
         variant="default"
         icon="file-tree"
         class="gl-mr-3 js-toggle-tree-list btn-icon"
+        data-qa-selector="file_tree_button"
         :title="toggleFileBrowserTitle"
         :aria-label="toggleFileBrowserTitle"
         :selected="showTreeList"

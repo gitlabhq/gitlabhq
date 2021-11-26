@@ -69,6 +69,14 @@ class IssuePolicy < IssuablePolicy
   rule { persisted & can?(:admin_issue) }.policy do
     enable :set_issue_metadata
   end
+
+  rule { can?(:set_issue_metadata) }.policy do
+    enable :set_confidentiality
+  end
+
+  rule { ~persisted & can?(:create_issue) }.policy do
+    enable :set_confidentiality
+  end
 end
 
 IssuePolicy.prepend_mod_with('IssuePolicy')

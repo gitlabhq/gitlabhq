@@ -25,6 +25,11 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/compare_versions.vue' do
           element :target_version_dropdown
+          element :file_tree_button
+        end
+
+        view 'app/assets/javascripts/diffs/components/tree_list.vue' do
+          element :file_tree_container
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
@@ -187,11 +192,17 @@ module QA
         end
 
         def has_file?(file_name)
-          has_element?(:file_name_content, text: file_name)
+          open_file_tree
+          has_element?(:file_name_content, file_name: file_name)
         end
 
         def has_no_file?(file_name)
-          has_no_element?(:file_name_content, text: file_name)
+          open_file_tree
+          has_no_element?(:file_name_content, file_name: file_name)
+        end
+
+        def open_file_tree
+          click_element(:file_tree_button) unless has_element?(:file_tree_container)
         end
 
         def has_merge_button?
