@@ -19,7 +19,7 @@ Epics and milestones in a group containing a start date or due date can be visua
 of a timeline (that is, a Gantt chart). The Roadmap page shows the epics and milestones in a
 group, one of its subgroups, or a project in one of the groups.
 
-On the epic bars, you can see the each epic's title, progress, and completed weight percentage.
+On the epic bars, you can see each epic's title, progress, and completed weight percentage.
 When you hover over an epic bar, a popover appears with the epic's title, start date, due date, and
 weight completed.
 
