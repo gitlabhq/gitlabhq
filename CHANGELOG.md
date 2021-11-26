@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.2.7 (2021-11-26)
+
+### Fixed (3 changes)
+
+- [Prevent Git operations from checking replication lag on non-Geo-secondary sites](gitlab-org/gitlab@84734dab92e0bf9e304ee7bf1579346cc48d26c3) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Remove defaultAuthors from MR Analytics and VSA](gitlab-org/gitlab@1a15d4d1be939a9e38124827f563ed9ec2612a75) ([merge request](gitlab-org/gitlab!75119))
+- [Let non-members set confidential flag when creating an issue in public project](gitlab-org/gitlab@d093cc62e6263629b36a449c9464d9b8644d4d74) ([merge request](gitlab-org/gitlab!75119))
+
+### Changed (4 changes)
+
+- [Geo: Alternate redownload and normal design sync attempts](gitlab-org/gitlab@d401e3ec94e6dba9ea76a9682893352f28d446cb) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal SSF sync attempts](gitlab-org/gitlab@00eeff14a9bfeabe9107fc38ce9d7d2eee06384b) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Alternate redownload and normal project syncs](gitlab-org/gitlab@fac9bb8c11db13d34b311f4ebd18f84fa7a575d3) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+- [Geo: Reduce frequency of redownload attempts](gitlab-org/gitlab@d18381e4788a8652d3e36cec5d4bce343c48209c) ([merge request](gitlab-org/gitlab!75119)) **GitLab Enterprise Edition**
+
 ## 14.2.6 (2021-10-28)
 
 ### Security (13 changes)
