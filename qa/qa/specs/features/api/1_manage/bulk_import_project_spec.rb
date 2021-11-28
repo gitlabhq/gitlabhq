@@ -79,7 +79,7 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2297'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-          expect(imported_projects.count).to eq(1), "Expected to have 1 imported project"
+          expect(imported_projects.count).to eq(1), 'Expected to have 1 imported project'
 
           aggregate_failures do
             expect(imported_projects.first).to eq(source_project)
@@ -120,12 +120,65 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/quality/testcases/-/quality/test_cases/2325'
         ) do
           expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
-          expect(imported_projects.count).to eq(1), "Expected to have 1 imported project"
+          expect(imported_projects.count).to eq(1), 'Expected to have 1 imported project'
 
           aggregate_failures do
             expect(imported_issues.count).to eq(1)
             expect(imported_issue.reload!).to eq(source_issue)
             expect(project_import_failures).to be_empty, "Expected no errors, was: #{project_import_failures}"
+          end
+        end
+      end
+
+      context 'with repository' do
+        let(:imported_project) { imported_projects.first }
+
+        let(:source_commits) { source_project.commits.map { |c| c.except(:web_url) } }
+        let(:source_tags) do
+          source_project.repository_tags.tap do |tags|
+            tags.each { |t| t[:commit].delete(:web_url) }
+          end
+        end
+
+        let(:source_branches) do
+          source_project.repository_branches.tap do |branches|
+            branches.each do |b|
+              b.delete(:web_url)
+              b[:commit].delete(:web_url)
+            end
+          end
+        end
+
+        let(:imported_commits) { imported_project.commits.map { |c| c.except(:web_url) } }
+        let(:imported_tags) do
+          imported_project.repository_tags.tap do |tags|
+            tags.each { |t| t[:commit].delete(:web_url) }
+          end
+        end
+
+        let(:imported_branches) do
+          imported_project.repository_branches.tap do |branches|
+            branches.each do |b|
+              b.delete(:web_url)
+              b[:commit].delete(:web_url)
+            end
+          end
+        end
+
+        before do
+          source_project.create_repository_branch('test-branch')
+          source_project.create_repository_tag('v0.0.1')
+          imported_group # trigger import
+        end
+
+        it 'successfully imports repository' do
+          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+          expect(imported_projects.count).to eq(1), 'Expected to have 1 imported project'
+
+          aggregate_failures do
+            expect(imported_commits).to match_array(source_commits)
+            expect(imported_tags).to match_array(source_tags)
+            expect(imported_branches).to match_array(source_branches)
           end
         end
       end
