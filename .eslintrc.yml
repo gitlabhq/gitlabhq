@@ -63,11 +63,11 @@ rules:
           group: internal
         - pattern: emojis/**
           group: internal
-        - pattern: '{ee_,}empty_states/**'
+        - pattern: '{ee_,jh_,}empty_states/**'
           group: internal
-        - pattern: '{ee_,}icons/**'
+        - pattern: '{ee_,jh_,}icons/**'
           group: internal
-        - pattern: '{ee_,}images/**'
+        - pattern: '{ee_,jh_,}images/**'
           group: internal
         - pattern: vendor/**
           group: internal
@@ -75,13 +75,17 @@ rules:
           group: internal
         - pattern: '{ee_,}spec/**'
           group: internal
-        - pattern: '{ee_,}jest/**'
+        - pattern: '{ee_,jh_,}jest/**'
           group: internal
-        - pattern: ee_else_ce/**
+        - pattern: '{ee_,jh_,any_}else_ce/**'
           group: internal
         - pattern: ee/**
           group: internal
-        - pattern: ee_component/**
+        - pattern: '{ee_,jh_,}component/**'
+          group: internal
+        - pattern: jh_else_ee/**
+          group: internal
+        - pattern: jh/**
           group: internal
         - pattern: '{test_,}helpers/**'
           group: internal
