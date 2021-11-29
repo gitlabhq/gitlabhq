@@ -4,7 +4,7 @@ group: Workspace
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Share projects with other groups
+# Share projects with other groups **(FREE)**
 
 You can share projects with other [groups](../../group/index.md). This makes it
 possible to add a group of users to a project with a single action.
@@ -30,18 +30,20 @@ To share 'Project Acme' with the 'Engineering' group:
 1. For 'Project Acme' use the left navigation menu to go to **Project information > Members**.
 1. Select the **Invite group** tab.
 1. Add the 'Engineering' group with the maximum access level of your choice.
-1. Optionally, select an expiring date.
-1. Click **Invite**.
-1. After sharing 'Project Acme' with 'Engineering':
-   - The group is listed in the **Groups** tab.
-   - The project is listed on the group dashboard.
+1. Optional. Select an expiration date.
+1. Select **Invite**.
 
-Note that you can only share a project with:
+After sharing 'Project Acme' with 'Engineering':
 
-- groups for which you have an explicitly defined membership
-- groups that contain a nested subgroup or project for which you have an explicitly defined role
+- The group is listed in the **Groups** tab.
+- The project is listed on the group dashboard.
 
-Administrators are able to share projects with any group in the system.
+You can share a project only with:
+
+- Groups for which you have an explicitly defined membership.
+- Groups that contain a nested subgroup or project for which you have an explicitly defined role.
+
+Administrators can share projects with any group in the system.
 
 ### Share a project modal window
 
@@ -61,7 +63,7 @@ To share a project after enabling this feature:
 1. Go to your project's page.
 1. On the left sidebar, go to **Project information > Members**, and then select **Invite a group**.
 1. Select a group, and select a **Max role**.
-1. (Optional) Select an **Access expiration date**.
+1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
 ### Enable or disable modal window **(FREE SELF)**
