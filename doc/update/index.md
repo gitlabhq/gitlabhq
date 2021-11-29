@@ -271,7 +271,7 @@ before proceeding with the major version upgrade.
 
 If your GitLab instance has any runners associated with it, it is very
 important to upgrade GitLab Runner to match the GitLab minor version that was
-upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#compatibility-with-gitlab-versions).
+upgraded to. This is to ensure [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
 ## Upgrading without downtime
 
