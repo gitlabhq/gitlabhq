@@ -72,11 +72,11 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
       let(:loggable_data) do
         {
           'pipeline_id' => pipeline.id,
-          'persisted' => true,
+          'pipeline_persisted' => true,
           'project_id' => project.id,
-          'duration_s' => a_kind_of(Numeric),
-          'caller' => 'source',
-          'source' => pipeline.source,
+          'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
+          'pipeline_creation_caller' => 'source',
+          'pipeline_source' => pipeline.source,
           'pipeline_save_duration_s' => {
             'avg' => 60, 'count' => 1, 'max' => 60, 'min' => 60
           },

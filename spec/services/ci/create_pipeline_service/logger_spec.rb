@@ -27,12 +27,12 @@ RSpec.describe Ci::CreatePipelineService do
 
     let(:loggable_data) do
       {
-        'caller' => 'Ci::CreatePipelineService',
-        'source' => 'push',
+        'pipeline_creation_caller' => 'Ci::CreatePipelineService',
+        'pipeline_source' => 'push',
         'pipeline_id' => a_kind_of(Numeric),
-        'persisted' => true,
+        'pipeline_persisted' => true,
         'project_id' => project.id,
-        'duration_s' => a_kind_of(Numeric),
+        'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
         'pipeline_creation_duration_s' => counters,
         'pipeline_size_count' => counters,
         'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => counters
@@ -79,12 +79,12 @@ RSpec.describe Ci::CreatePipelineService do
       context 'when the pipeline is not persisted' do
         let(:loggable_data) do
           {
-            'caller' => 'Ci::CreatePipelineService',
-            'source' => 'push',
+            'pipeline_creation_caller' => 'Ci::CreatePipelineService',
+            'pipeline_source' => 'push',
             'pipeline_id' => nil,
-            'persisted' => false,
+            'pipeline_persisted' => false,
             'project_id' => project.id,
-            'duration_s' => a_kind_of(Numeric),
+            'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
             'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => counters
           }
         end

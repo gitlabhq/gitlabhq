@@ -47,12 +47,12 @@ module Gitlab
           return unless log?
 
           attributes = {
-            caller: caller,
+            pipeline_creation_caller: caller,
             project_id: project.id,
             pipeline_id: pipeline.id,
-            persisted: pipeline.persisted?,
-            source: pipeline.source,
-            duration_s: age
+            pipeline_persisted: pipeline.persisted?,
+            pipeline_source: pipeline.source,
+            pipeline_creation_service_duration_s: age
           }.stringify_keys.merge(observations_hash)
 
           destination.info(attributes)
