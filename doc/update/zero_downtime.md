@@ -111,17 +111,6 @@ Before following these instructions, note the following **important** informatio
 
 1. Update the GitLab package:
 
-   - For GitLab Community Edition:
-
-     ```shell
-     # Debian/Ubuntu
-     sudo apt-get update
-     sudo apt-get install gitlab-ce
-
-     # Centos/RHEL
-     sudo yum install gitlab-ce
-     ```
-
    - For GitLab [Enterprise Edition](https://about.gitlab.com/pricing/):
 
      ```shell
@@ -131,6 +120,17 @@ Before following these instructions, note the following **important** informatio
 
      # Centos/RHEL
      sudo yum install gitlab-ee
+     ```
+
+   - For GitLab Community Edition:
+
+     ```shell
+     # Debian/Ubuntu
+     sudo apt-get update
+     sudo apt-get install gitlab-ce
+
+     # Centos/RHEL
+     sudo yum install gitlab-ce
      ```
 
 1. To get the regular migrations and latest code in place, run
@@ -201,14 +201,14 @@ load balancer to latest GitLab version.
 
        ```shell
        # Debian/Ubuntu
-       sudo apt-get update && sudo apt-get install gitlab-ce
+       sudo apt-get update && sudo apt-get install gitlab-ee
 
        # Centos/RHEL
-       sudo yum install gitlab-ce
+       sudo yum install gitlab-ee
        ```
 
-       If you are an Enterprise Edition user, replace `gitlab-ce` with
-       `gitlab-ee` in the above command.
+       If you are a Community Edition user, replace `gitlab-ee` with
+       `gitlab-ce` in the above command.
 
     1. Get the regular migrations and latest code in place. Before running this step,
        the deploy node's `/etc/gitlab/gitlab.rb` configuration file must have
@@ -277,13 +277,13 @@ database migrations.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - To apply the Praefect database migrations and restart Praefect, run:
 
@@ -296,10 +296,10 @@ database migrations.
 - Update the GitLab package:
 
   ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code:
 
@@ -330,13 +330,13 @@ node throughout the process.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code
 
@@ -350,13 +350,13 @@ node throughout the process.
 
   ```shell
   # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
 
   # Centos/RHEL
-  sudo yum install gitlab-ce
+  sudo yum install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - If you're using PgBouncer:
 
@@ -391,10 +391,10 @@ node throughout the process.
 - Update the GitLab package
 
   ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ce
+  sudo apt-get update && sudo apt-get install gitlab-ee
   ```
 
-  If you are an Enterprise Edition user, replace `gitlab-ce` with `gitlab-ee` in the above command.
+  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
 
 - Ensure nodes are running the latest code
 

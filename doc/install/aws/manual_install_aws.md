@@ -391,7 +391,7 @@ persistence and is used to store session data, temporary cache information, and 
    chance to deploy Redis in multiple availability zones.
 1. In the settings section:
    1. Give the cluster a name (`gitlab-redis`) and a description.
-   1. For the version, select the latest of `5.0` series (e.g., `5.0.6`).
+   1. For the version, select the latest of the `5.0` series (for example, `5.0.6`).
    1. Leave the port as `6379` since this is what we used in our Redis security group above.
    1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the advanced settings section:
@@ -856,7 +856,7 @@ to request additional material:
 
 ### Instances are failing health checks
 
-If your instances are failing the load balancer's health checks, verify that they are returning a status `200` from the health check endpoint we configured earlier. Any other status, including redirects (e.g. status `302`) will cause the health check to fail.
+If your instances are failing the load balancer's health checks, verify that they are returning a status `200` from the health check endpoint we configured earlier. Any other status, including redirects like status `302`, will cause the health check to fail.
 
 You may have to set a password on the `root` user to prevent automatic redirects on the sign-in endpoint before health checks will pass.
 

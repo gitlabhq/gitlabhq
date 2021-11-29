@@ -18,8 +18,8 @@ Each release of GitLab Mattermost is compiled and manually tested on an AMD 64 c
 
 ## Getting started
 
-GitLab Mattermost expects to run on its own virtual host. In your DNS settings you will need
-two entries pointing to the same machine, e.g., `gitlab.example.com` and
+GitLab Mattermost expects to run on its own virtual host. In your DNS settings, you will need
+two entries pointing to the same machine. For example, `gitlab.example.com` and
 `mattermost.example.com`.
 
 GitLab Mattermost is disabled by default. To enable it:
@@ -346,8 +346,8 @@ When upgrading the Mattermost version, it is essential to check the
 for Mattermost to address any changes or migrations that need to be performed.
 
 Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Omnibus GitLab update process. When upgrading previous versions of
-GitLab that process can only be used if Mattermost configuration settings have not been changed outside of GitLab (i.e., no changes to Mattermost's `config.json`
-file have been made, either directly or via the Mattermost **System Console** which saves back changes to `config.json`.)
+GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to Mattermost's `config.json`
+file have been made - either directly or via the Mattermost **System Console**, which saves changes to `config.json`.
 
 If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using Omnibus and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
 

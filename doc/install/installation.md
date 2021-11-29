@@ -1034,7 +1034,7 @@ To use GitLab with HTTPS:
    1. Set the `port` option in section 1 to `443`.
    1. Set the `https` option in section 1 to `true`.
 1. In the `config.yml` of GitLab Shell:
-   1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
+   1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (for example, `https://git.example.com`).
    1. Set the certificates using either the `ca_file` or `ca_path` option.
 1. Use the `gitlab-ssl` NGINX example configuration instead of the `gitlab` configuration.
    1. Update `YOUR_SERVER_FQDN`.
@@ -1119,7 +1119,7 @@ host localhost          # Give your setup a name (here: override localhost)
     hostname 127.0.0.1; # Your server name or IP
 ```
 
-You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (for example, `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
 ### Additional Markup Styles
 
