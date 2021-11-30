@@ -3,6 +3,9 @@
 mutation resetHttpIntegrationToken($id: ID!) {
   httpIntegrationResetToken(input: { id: $id }) {
     errors
+    # We have ID in a deeply nested fragment
+    # TODO: Uncomment next line when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75220 is merged and the rule is enabled
+    # # eslint-disable-next-line @graphql-eslint/require-id-when-available
     integration {
       ...HttpIntegrationItem
     }

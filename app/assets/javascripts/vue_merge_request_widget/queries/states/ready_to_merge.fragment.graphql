@@ -1,8 +1,10 @@
 fragment ReadyToMerge on Project {
+  id
   onlyAllowMergeIfPipelineSucceeds
   mergeRequestsFfOnlyEnabled
   squashReadOnly
   mergeRequest(iid: $iid) {
+    id
     autoMergeEnabled
     shouldRemoveSourceBranch
     forceRemoveSourceBranch
@@ -26,6 +28,7 @@ fragment ReadyToMerge on Project {
     mergeError
     commitsWithoutMergeCommits {
       nodes {
+        id
         sha
         shortId
         title

@@ -4,8 +4,8 @@ fragment Token on ClusterAgentToken {
   description
   lastUsedAt
   name
-
   createdByUser {
+    id
     name
   }
 }

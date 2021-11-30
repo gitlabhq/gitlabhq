@@ -1092,7 +1092,7 @@ RSpec.describe ProjectsController do
 
           expect(forked_project.reload.forked?).to be_falsey
           expect(flash[:notice]).to eq(s_('The fork relationship has been removed.'))
-          expect(response).to render_template(:remove_fork)
+          expect(response).to redirect_to(edit_project_path(forked_project))
         end
       end
 
@@ -1108,7 +1108,7 @@ RSpec.describe ProjectsController do
               format: :js)
 
           expect(flash[:notice]).to be_nil
-          expect(response).to render_template(:remove_fork)
+          expect(response).to redirect_to(edit_project_path(unforked_project))
         end
       end
     end

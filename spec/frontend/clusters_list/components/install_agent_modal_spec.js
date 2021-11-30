@@ -39,6 +39,7 @@ describe('InstallAgentModal', () => {
   const apolloQueryResponse = {
     data: {
       project: {
+        id: '1',
         clusterAgents: { nodes: [] },
         agentConfigurations: { nodes: configurations },
       },

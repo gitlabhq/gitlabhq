@@ -120,6 +120,15 @@ module ProjectsHelper
       { project_full_name: project.full_name }
   end
 
+  def remove_fork_project_confirm_json(project, remove_form_id)
+    {
+      remove_form_id: remove_form_id,
+      button_text: _('Remove fork relationship'),
+      confirm_danger_message: remove_fork_project_warning_message(project),
+      phrase: @project.path
+    }
+  end
+
   def visible_fork_source(project)
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
   end

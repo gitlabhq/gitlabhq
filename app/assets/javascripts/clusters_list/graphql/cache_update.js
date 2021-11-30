@@ -13,6 +13,7 @@ export function addAgentToStore(store, createClusterAgent, query, variables) {
 
     const data = produce(sourceData, (draftData) => {
       const configuration = {
+        id: clusterAgent.id,
         name: clusterAgent.name,
         path: getAgentConfigPath(clusterAgent.name),
         webPath: clusterAgent.webPath,

@@ -2,6 +2,7 @@
 
 query getIntegrations($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     alertManagementIntegrations {
       nodes {
         ...IntegrationItem

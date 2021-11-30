@@ -1,13 +1,14 @@
 query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
   project(fullPath: $projectPath) {
-    id
     __typename
+    id
     repository {
       __typename
       tree(path: $path, ref: $ref) {
         __typename
         lastCommit {
           __typename
+          id
           sha
           title
           titleHtml
@@ -19,6 +20,7 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
           authorGravatar
           author {
             __typename
+            id
             name
             avatarUrl
             webPath
@@ -30,8 +32,10 @@ query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
               __typename
               node {
                 __typename
+                id
                 detailedStatus {
                   __typename
+                  id
                   detailsPath
                   icon
                   tooltip

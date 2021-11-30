@@ -12,7 +12,7 @@ If you run a medium-sized self-managed instance (50+ users) of a free version of
 [either Community Edition or unlicensed Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/),
 you qualify for a free Instance Review.
 
-1. Sign in as a user with Administrator [role](../user/permissions.md).
+1. Sign in as an administrator.
 1. In the top menu, click your user icon, and select
    **Get a free instance review**:
 

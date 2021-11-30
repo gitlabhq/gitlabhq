@@ -14,6 +14,7 @@ export const mockPipelineHeader = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -27,6 +28,7 @@ export const mockFailedPipelineHeader = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'failed',
     icon: 'status_failed',
     label: 'failed',
@@ -43,6 +45,7 @@ export const mockFailedPipelineNoPermissions = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -52,6 +55,7 @@ export const mockFailedPipelineNoPermissions = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -66,6 +70,7 @@ export const mockRunningPipelineHeader = {
   retryable: false,
   cancelable: true,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -82,6 +87,7 @@ export const mockRunningPipelineNoPermissions = {
   },
   createdAt: threeWeeksAgo.toISOString(),
   user: {
+    id: 'user-1',
     name: 'Foo',
     username: 'foobar',
     email: 'foo@bar.com',
@@ -91,6 +97,7 @@ export const mockRunningPipelineNoPermissions = {
   retryable: false,
   cancelable: true,
   detailedStatus: {
+    id: 'status-1',
     group: 'running',
     icon: 'status_running',
     label: 'running',
@@ -105,6 +112,7 @@ export const mockCancelledPipelineHeader = {
   retryable: true,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'cancelled',
     icon: 'status_cancelled',
     label: 'cancelled',
@@ -119,6 +127,7 @@ export const mockSuccessfulPipelineHeader = {
   retryable: false,
   cancelable: false,
   detailedStatus: {
+    id: 'status-1',
     group: 'success',
     icon: 'status_success',
     label: 'success',
@@ -130,13 +139,16 @@ export const mockSuccessfulPipelineHeader = {
 export const mockRunningPipelineHeaderData = {
   data: {
     project: {
+      id: '1',
       pipeline: {
         ...mockRunningPipelineHeader,
         iid: '28',
         user: {
+          id: 'user-1',
           name: 'Foo',
           username: 'foobar',
           webPath: '/foo',
+          webUrl: '/foo',
           email: 'foo@bar.com',
           avatarUrl: 'link',
           status: null,

@@ -7,20 +7,24 @@ fragment PackageData on Package {
   status
   tags {
     nodes {
+      id
       name
     }
   }
   pipelines(last: 1) {
     nodes {
+      id
       sha
       ref
       commitPath
       user {
+        id
         name
       }
     }
   }
   project {
+    id
     fullPath
     webUrl
   }

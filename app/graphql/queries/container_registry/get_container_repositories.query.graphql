@@ -10,6 +10,7 @@ query getProjectContainerRepositories(
 ) {
   project(fullPath: $fullPath) @skip(if: $isGroupPage) {
     __typename
+    id
     containerRepositoriesCount
     containerRepositories(
       name: $name
@@ -43,6 +44,7 @@ query getProjectContainerRepositories(
   }
   group(fullPath: $fullPath) @include(if: $isGroupPage) {
     __typename
+    id
     containerRepositoriesCount
     containerRepositories(
       name: $name

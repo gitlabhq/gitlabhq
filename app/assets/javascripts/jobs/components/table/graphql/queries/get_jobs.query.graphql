@@ -7,6 +7,7 @@ query getJobs(
   $statuses: [CiJobStatus!]
 ) {
   project(fullPath: $fullPath) {
+    id
     jobs(after: $after, before: $before, first: $first, last: $last, statuses: $statuses) {
       pageInfo {
         endCursor
@@ -27,6 +28,7 @@ query getJobs(
         triggered
         createdByTag
         detailedStatus {
+          id
           detailsPath
           group
           icon
@@ -34,6 +36,7 @@ query getJobs(
           text
           tooltip
           action {
+            id
             buttonTitle
             icon
             method
@@ -51,11 +54,13 @@ query getJobs(
           id
           path
           user {
+            id
             webPath
             avatarUrl
           }
         }
         stage {
+          id
           name
         }
         name

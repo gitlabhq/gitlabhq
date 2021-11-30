@@ -39,6 +39,7 @@ job_build:
 export const mockCiTemplateQueryResponse = {
   data: {
     project: {
+      id: 'project-1',
       ciTemplate: {
         content: mockCiYml,
       },
@@ -48,19 +49,22 @@ export const mockCiTemplateQueryResponse = {
 
 export const mockBlobContentQueryResponse = {
   data: {
-    project: { repository: { blobs: { nodes: [{ rawBlob: mockCiYml }] } } },
+    project: {
+      id: 'project-1',
+      repository: { blobs: { nodes: [{ id: 'blob-1', rawBlob: mockCiYml }] } },
+    },
   },
 };
 
 export const mockBlobContentQueryResponseNoCiFile = {
   data: {
-    project: { repository: { blobs: { nodes: [] } } },
+    project: { id: 'project-1', repository: { blobs: { nodes: [] } } },
   },
 };
 
 export const mockBlobContentQueryResponseEmptyCiFile = {
   data: {
-    project: { repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
+    project: { id: 'project-1', repository: { blobs: { nodes: [{ rawBlob: '' }] } } },
   },
 };
 
@@ -93,6 +97,7 @@ export const mockCiConfigQueryResponse = {
             groups: {
               nodes: [
                 {
+                  id: 'group-1',
                   name: 'job_test_1',
                   size: 1,
                   jobs: {
@@ -108,6 +113,7 @@ export const mockCiConfigQueryResponse = {
                   __typename: 'CiConfigGroup',
                 },
                 {
+                  id: 'group-2',
                   name: 'job_test_2',
                   size: 1,
                   jobs: {
@@ -170,9 +176,11 @@ export const mergeUnwrappedCiConfig = (mergedConfig) => {
 export const mockCommitShaResults = {
   data: {
     project: {
+      id: '1',
       repository: {
         tree: {
           lastCommit: {
+            id: 'commit-1',
             sha: mockCommitSha,
           },
         },
@@ -184,9 +192,11 @@ export const mockCommitShaResults = {
 export const mockNewCommitShaResults = {
   data: {
     project: {
+      id: '1',
       repository: {
         tree: {
           lastCommit: {
+            id: 'commit-1',
             sha: 'eeff1122',
           },
         },
@@ -198,9 +208,11 @@ export const mockNewCommitShaResults = {
 export const mockEmptyCommitShaResults = {
   data: {
     project: {
+      id: '1',
       repository: {
         tree: {
           lastCommit: {
+            id: 'commit-1',
             sha: '',
           },
         },
@@ -212,6 +224,7 @@ export const mockEmptyCommitShaResults = {
 export const mockProjectBranches = {
   data: {
     project: {
+      id: '1',
       repository: {
         branchNames: [
           'main',
@@ -236,6 +249,7 @@ export const mockTotalBranchResults =
 export const mockSearchBranches = {
   data: {
     project: {
+      id: '1',
       repository: {
         branchNames: ['test', 'better-feature', 'update-ci', 'test-merge-request'],
       },
@@ -248,6 +262,7 @@ export const mockTotalSearchResults = mockSearchBranches.data.project.repository
 export const mockEmptySearchBranches = {
   data: {
     project: {
+      id: '1',
       repository: {
         branchNames: [],
       },
@@ -284,16 +299,19 @@ export const mockProjectPipeline = ({ hasStages = true } = {}) => {
     : null;
 
   return {
+    id: '1',
     pipeline: {
       id: 'gid://gitlab/Ci::Pipeline/118',
       iid: '28',
       shortSha: mockCommitSha,
       status: 'SUCCESS',
       commit: {
+        id: 'commit-1',
         title: 'Update .gitlabe-ci.yml',
         webPath: '/-/commit/aabbccdd',
       },
       detailedStatus: {
+        id: 'status-1',
         detailsPath: '/root/sample-ci-project/-/pipelines/118',
         group: 'success',
         icon: 'status_success',
@@ -461,6 +479,7 @@ export const mockCommitCreateResponse = {
       errors: [],
       commit: {
         __typename: 'Commit',
+        id: 'commit-1',
         sha: mockCommitNextSha,
       },
       commitPipelinePath: '',
@@ -475,6 +494,7 @@ export const mockCommitCreateResponseNewEtag = {
       errors: [],
       commit: {
         __typename: 'Commit',
+        id: 'commit-2',
         sha: mockCommitNextSha,
       },
       commitPipelinePath: '/api/graphql:pipelines/sha/550ceace1acd373c84d02bd539cb9d4614f786db',

@@ -10,11 +10,13 @@ query getClusterAgent(
   $beforeToken: String
 ) {
   project(fullPath: $projectPath) {
+    id
     clusterAgent(name: $agentName) {
       id
       createdAt
 
       createdByUser {
+        id
         name
       }
 

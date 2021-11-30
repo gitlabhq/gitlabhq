@@ -5,6 +5,7 @@ query boardProjectMilestones(
   $searchTitle: String
 ) {
   project(fullPath: $fullPath) {
+    id
     milestones(state: $state, includeAncestors: $includeAncestors, searchTitle: $searchTitle) {
       edges {
         node {

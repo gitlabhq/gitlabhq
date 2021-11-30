@@ -8,6 +8,7 @@ import IntegrationOverrides from '~/integrations/overrides/components/integratio
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 const mockOverrides = Array(DEFAULT_PER_PAGE * 3)
   .fill(1)
@@ -26,9 +27,10 @@ describe('IntegrationOverrides', () => {
     overridesPath: 'mock/overrides',
   };
 
-  const createComponent = ({ mountFn = shallowMount } = {}) => {
+  const createComponent = ({ mountFn = shallowMount, stubs } = {}) => {
     wrapper = mountFn(IntegrationOverrides, {
       propsData: defaultProps,
+      stubs,
     });
   };
 
@@ -127,27 +129,58 @@ describe('IntegrationOverrides', () => {
   });
 
   describe('pagination', () => {
-    it('triggers fetch when `input` event is emitted', async () => {
-      createComponent();
-      jest.spyOn(axios, 'get');
-      await waitForPromises();
+    describe('when total items does not exceed the page limit', () => {
+      it('does not render', async () => {
+        mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, [mockOverrides[0]], {
+          'X-TOTAL': DEFAULT_PER_PAGE - 1,
+          'X-PAGE': 1,
+        });
 
-      await findPagination().vm.$emit('input', 2);
-      expect(axios.get).toHaveBeenCalledWith(defaultProps.overridesPath, {
-        params: { page: 2, per_page: DEFAULT_PER_PAGE },
+        createComponent();
+
+        // wait for initial load
+        await waitForPromises();
+
+        expect(findPagination().exists()).toBe(false);
       });
     });
 
-    it('does not render with <=1 page', async () => {
-      mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, [mockOverrides[0]], {
-        'X-TOTAL': 1,
-        'X-PAGE': 1,
+    describe('when total items exceeds the page limit', () => {
+      const mockPage = 2;
+
+      beforeEach(async () => {
+        createComponent({ stubs: { UrlSync } });
+        mockAxios.onGet(defaultProps.overridesPath).reply(httpStatus.OK, [mockOverrides[0]], {
+          'X-TOTAL': DEFAULT_PER_PAGE * 2,
+          'X-PAGE': mockPage,
+        });
+
+        // wait for initial load
+        await waitForPromises();
       });
 
-      createComponent();
-      await waitForPromises();
+      it('renders', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
 
-      expect(findPagination().exists()).toBe(false);
+      describe('when navigating to a page', () => {
+        beforeEach(async () => {
+          jest.spyOn(axios, 'get');
+
+          // trigger a page change
+          await findPagination().vm.$emit('input', mockPage);
+        });
+
+        it('performs GET request with correct params', () => {
+          expect(axios.get).toHaveBeenCalledWith(defaultProps.overridesPath, {
+            params: { page: mockPage, per_page: DEFAULT_PER_PAGE },
+          });
+        });
+
+        it('updates `page` URL parameter', () => {
+          expect(window.location.search).toBe(`?page=${mockPage}`);
+        });
+      });
     });
   });
 });

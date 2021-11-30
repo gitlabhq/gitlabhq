@@ -1,5 +1,6 @@
 query issueReference($fullPath: ID!, $iid: String) {
   workspace: project(fullPath: $fullPath) {
+    id
     __typename
     issuable: issue(iid: $iid) {
       __typename

@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe Mutations::MergeRequests::Accept do
   include AfterNextHelpers
 
-  let_it_be(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
-
   subject(:mutation) { described_class.new(context: context, object: nil, field: nil) }
 
-  let_it_be(:context) do
+  let_it_be(:user) { create(:user) }
+
+  let(:project) { create(:project, :public, :repository) }
+  let(:context) do
     GraphQL::Query::Context.new(
-      query: OpenStruct.new(schema: GitlabSchema),
+      query: double('query', schema: GitlabSchema),
       values: { current_user: user },
       object: nil
     )

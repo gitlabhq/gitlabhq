@@ -14,6 +14,7 @@ query getIncidents(
   $assigneeUsername: String = ""
 ) {
   project(fullPath: $projectPath) {
+    id
     issues(
       search: $searchTerm
       types: $issueTypes
@@ -27,18 +28,21 @@ query getIncidents(
       before: $prevPageCursor
     ) {
       nodes {
+        id
         iid
         title
         createdAt
         state
         labels {
           nodes {
+            id
             title
             color
           }
         }
         assignees {
           nodes {
+            id
             name
             username
             avatarUrl

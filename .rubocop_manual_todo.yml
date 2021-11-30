@@ -2576,7 +2576,6 @@ Style/OpenStructUse:
     - 'spec/graphql/mutations/clusters/agents/create_spec.rb'
     - 'spec/graphql/mutations/clusters/agents/delete_spec.rb'
     - 'spec/graphql/mutations/commits/create_spec.rb'
-    - 'spec/graphql/mutations/merge_requests/accept_spec.rb'
     - 'spec/helpers/application_settings_helper_spec.rb'
     - 'spec/helpers/profiles_helper_spec.rb'
     - 'spec/initializers/doorkeeper_spec.rb'
@@ -2598,7 +2597,6 @@ Style/OpenStructUse:
     - 'spec/support/helpers/import_spec_helper.rb'
     - 'spec/support/helpers/login_helpers.rb'
     - 'spec/support/helpers/repo_helpers.rb'
-    - 'spec/support/shared_examples/controllers/githubish_import_controller_shared_examples.rb'
     - 'spec/tooling/rspec_flaky/flaky_example_spec.rb'
     - 'tooling/rspec_flaky/flaky_example.rb'
 

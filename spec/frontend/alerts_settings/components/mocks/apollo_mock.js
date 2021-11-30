@@ -34,6 +34,7 @@ export const updatePrometheusVariables = {
 export const getIntegrationsQueryResponse = {
   data: {
     project: {
+      id: '1',
       alertManagementIntegrations: {
         nodes: [
           {

@@ -98,87 +98,108 @@ class Snippet < ApplicationRecord
     mode:      :per_attribute_iv,
     algorithm: 'aes-256-cbc'
 
-  def self.with_optional_visibility(value = nil)
-    if value
-      where(visibility_level: value)
-    else
-      all
+  class << self
+    # Searches for snippets with a matching title, description or file name.
+    #
+    # This method uses ILIKE on PostgreSQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
+    def search(query)
+      fuzzy_search(query, [:title, :description, :file_name])
     end
-  end
 
-  def self.only_personal_snippets
-    where(project_id: nil)
-  end
-
-  def self.only_project_snippets
-    where.not(project_id: nil)
-  end
-
-  def self.only_include_projects_visible_to(current_user = nil)
-    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
-
-    joins(:project).where(projects: { visibility_level: levels })
-  end
-
-  def self.only_include_projects_with_snippets_enabled(include_private: false)
-    column = ProjectFeature.access_level_attribute(:snippets)
-    levels = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
-
-    levels << ProjectFeature::PRIVATE if include_private
-
-    joins(project: :project_feature)
-      .where(project_features: { column => levels })
-  end
-
-  def self.only_include_authorized_projects(current_user)
-    where(
-      'EXISTS (?)',
-      ProjectAuthorization
-        .select(1)
-        .where('project_id = snippets.project_id')
-        .where(user_id: current_user.id)
-    )
-  end
-
-  def self.for_project_with_user(project, user = nil)
-    return none unless project.snippets_visible?(user)
-
-    if user && project.team.member?(user)
-      project.snippets
-    else
-      project.snippets.public_to_user(user)
+    def parent_class
+      ::Project
     end
-  end
 
-  def self.visible_to_or_authored_by(user)
-    query = where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(user))
-    query.or(where(author_id: user.id))
-  end
+    def sanitized_file_name(file_name)
+      file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
+    end
 
-  def self.reference_prefix
-    '$'
-  end
+    def with_optional_visibility(value = nil)
+      if value
+        where(visibility_level: value)
+      else
+        all
+      end
+    end
 
-  # Pattern used to extract `$123` snippet references from text
-  #
-  # This pattern supports cross-project references.
-  def self.reference_pattern
-    @reference_pattern ||= %r{
+    def only_personal_snippets
+      where(project_id: nil)
+    end
+
+    def only_project_snippets
+      where.not(project_id: nil)
+    end
+
+    def only_include_projects_visible_to(current_user = nil)
+      levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
+
+      joins(:project).where(projects: { visibility_level: levels })
+    end
+
+    def only_include_projects_with_snippets_enabled(include_private: false)
+      column = ProjectFeature.access_level_attribute(:snippets)
+      levels = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+
+      levels << ProjectFeature::PRIVATE if include_private
+
+      joins(project: :project_feature)
+        .where(project_features: { column => levels })
+    end
+
+    def only_include_authorized_projects(current_user)
+      where(
+        'EXISTS (?)',
+        ProjectAuthorization
+          .select(1)
+          .where('project_id = snippets.project_id')
+          .where(user_id: current_user.id)
+      )
+    end
+
+    def for_project_with_user(project, user = nil)
+      return none unless project.snippets_visible?(user)
+
+      if user && project.team.member?(user)
+        project.snippets
+      else
+        project.snippets.public_to_user(user)
+      end
+    end
+
+    def visible_to_or_authored_by(user)
+      query = where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(user))
+      query.or(where(author_id: user.id))
+    end
+
+    def reference_prefix
+      '$'
+    end
+
+    # Pattern used to extract `$123` snippet references from text
+    #
+    # This pattern supports cross-project references.
+    def reference_pattern
+      @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
     }x
-  end
+    end
 
-  def self.link_reference_pattern
-    @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
-  end
+    def link_reference_pattern
+      @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+    end
 
-  def self.find_by_id_and_project(id:, project:)
-    Snippet.find_by(id: id, project: project)
-  end
+    def find_by_id_and_project(id:, project:)
+      Snippet.find_by(id: id, project: project)
+    end
 
-  def self.max_file_limit
-    MAX_FILE_COUNT
+    def max_file_limit
+      MAX_FILE_COUNT
+    end
   end
 
   def initialize(attributes = {})
@@ -228,10 +249,6 @@ class Snippet < ApplicationRecord
 
   def file_name
     super.to_s
-  end
-
-  def self.sanitized_file_name(file_name)
-    file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
   end
 
   def visibility_level_field
@@ -370,23 +387,6 @@ class Snippet < ApplicationRecord
 
   def multiple_files?
     list_files.size > 1
-  end
-
-  class << self
-    # Searches for snippets with a matching title, description or file name.
-    #
-    # This method uses ILIKE on PostgreSQL.
-    #
-    # query - The search query as a String.
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      fuzzy_search(query, [:title, :description, :file_name])
-    end
-
-    def parent_class
-      ::Project
-    end
   end
 end
 

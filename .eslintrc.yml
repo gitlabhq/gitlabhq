@@ -124,9 +124,9 @@ overrides:
     parserOptions:
       parser: '@graphql-eslint/eslint-plugin'
       operations:
-         - '{,ee/,jh/}app/**/*.graphql'
-      # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
-      # schema: './tmp/tests/graphql/gitlab_schema.graphql'
+        - '{,ee/,jh/}app/**/*.graphql'
+        # You can run `bundle exec rake gitlab:graphql:schema:dump` and then uncomment this line
+        # schema: './tmp/tests/graphql/gitlab_schema.graphql'
     rules:
       filenames/match-regex: off
       spaced-comment: off
@@ -138,3 +138,4 @@ overrides:
       #'@graphql-eslint/known-type-names': error
       '@graphql-eslint/no-anonymous-operations': error
       '@graphql-eslint/unique-operation-name': error
+      # '@graphql-eslint/require-id-when-available': error

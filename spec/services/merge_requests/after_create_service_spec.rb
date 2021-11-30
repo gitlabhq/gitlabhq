@@ -85,12 +85,66 @@ RSpec.describe MergeRequests::AfterCreateService do
 
     context 'when merge request is in preparing state' do
       before do
+        merge_request.mark_as_unchecked! unless merge_request.unchecked?
         merge_request.mark_as_preparing!
-        execute_service
       end
 
       it 'marks the merge request as unchecked' do
+        execute_service
+
         expect(merge_request.reload).to be_unchecked
+      end
+
+      context 'when preparing for mergeability fails' do
+        before do
+          # This is only one of the possible cases that can fail. This is to
+          # simulate a failure that happens during the service call.
+          allow(merge_request)
+            .to receive(:update_head_pipeline)
+            .and_raise(StandardError)
+        end
+
+        it 'does not mark the merge request as unchecked' do
+          expect { execute_service }.to raise_error(StandardError)
+          expect(merge_request.reload).to be_preparing
+        end
+
+        context 'when early_prepare_for_mergeability feature flag is disabled' do
+          before do
+            stub_feature_flags(early_prepare_for_mergeability: false)
+          end
+
+          it 'does not mark the merge request as unchecked' do
+            expect { execute_service }.to raise_error(StandardError)
+            expect(merge_request.reload).to be_preparing
+          end
+        end
+      end
+
+      context 'when preparing merge request fails' do
+        before do
+          # This is only one of the possible cases that can fail. This is to
+          # simulate a failure that happens during the service call.
+          allow(merge_request)
+            .to receive_message_chain(:diffs, :write_cache)
+            .and_raise(StandardError)
+        end
+
+        it 'still marks the merge request as unchecked' do
+          expect { execute_service }.to raise_error(StandardError)
+          expect(merge_request.reload).to be_unchecked
+        end
+
+        context 'when early_prepare_for_mergeability feature flag is disabled' do
+          before do
+            stub_feature_flags(early_prepare_for_mergeability: false)
+          end
+
+          it 'does not mark the merge request as unchecked' do
+            expect { execute_service }.to raise_error(StandardError)
+            expect(merge_request.reload).to be_preparing
+          end
+        end
       end
     end
 

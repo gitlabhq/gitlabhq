@@ -27,6 +27,7 @@ describe('ClusterAgentShow', () => {
     id: '1',
     createdAt: '2021-02-13T00:00:00Z',
     createdByUser: {
+      id: 'user-1',
       name: 'user-1',
     },
     name: 'token-1',
@@ -39,7 +40,8 @@ describe('ClusterAgentShow', () => {
 
   const createWrapper = ({ clusterAgent, queryResponse = null }) => {
     const agentQueryResponse =
-      queryResponse || jest.fn().mockResolvedValue({ data: { project: { clusterAgent } } });
+      queryResponse ||
+      jest.fn().mockResolvedValue({ data: { project: { id: 'project-1', clusterAgent } } });
     const apolloProvider = createMockApollo([[getAgentQuery, agentQueryResponse]]);
 
     wrapper = extendedWrapper(

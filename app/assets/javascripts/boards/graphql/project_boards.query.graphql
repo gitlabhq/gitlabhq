@@ -2,6 +2,7 @@
 
 query project_boards($fullPath: ID!) {
   project(fullPath: $fullPath) {
+    id
     boards {
       edges {
         node {

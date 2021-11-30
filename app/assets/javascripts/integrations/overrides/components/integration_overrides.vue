@@ -6,8 +6,12 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { fetchOverrides } from '~/integrations/overrides/api';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { truncateNamespace } from '~/lib/utils/text_utility';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
+import UrlSync from '~/vue_shared/components/url_sync.vue';
+
+const DEFAULT_PAGE = 1;
 
 export default {
   name: 'IntegrationOverrides',
@@ -18,6 +22,7 @@ export default {
     GlTable,
     GlAlert,
     ProjectAvatar,
+    UrlSync,
   },
   props: {
     overridesPath: {
@@ -35,7 +40,7 @@ export default {
     return {
       isLoading: true,
       overrides: [],
-      page: 1,
+      page: DEFAULT_PAGE,
       totalItems: 0,
       errorMessage: null,
     };
@@ -44,12 +49,21 @@ export default {
     showPagination() {
       return this.totalItems > this.$options.DEFAULT_PER_PAGE && this.overrides.length > 0;
     },
+    query() {
+      return {
+        page: this.page,
+      };
+    },
   },
-  mounted() {
-    this.loadOverrides();
+  created() {
+    const initialPage = this.getInitialPage();
+    this.loadOverrides(initialPage);
   },
   methods: {
-    loadOverrides(page = this.page) {
+    getInitialPage() {
+      return getParameterByName('page') ?? DEFAULT_PAGE;
+    },
+    loadOverrides(page) {
       this.isLoading = true;
       this.errorMessage = null;
 
@@ -119,14 +133,16 @@ export default {
       </template>
     </gl-table>
     <div class="gl-display-flex gl-justify-content-center gl-mt-5">
-      <gl-pagination
-        v-if="showPagination"
-        :per-page="$options.DEFAULT_PER_PAGE"
-        :total-items="totalItems"
-        :value="page"
-        :disabled="isLoading"
-        @input="loadOverrides"
-      />
+      <template v-if="showPagination">
+        <gl-pagination
+          :per-page="$options.DEFAULT_PER_PAGE"
+          :total-items="totalItems"
+          :value="page"
+          :disabled="isLoading"
+          @input="loadOverrides"
+        />
+        <url-sync :query="query" />
+      </template>
     </div>
   </div>
 </template>

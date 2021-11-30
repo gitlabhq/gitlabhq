@@ -19,6 +19,7 @@ describe('NewProjectUrlSelect component', () => {
 
   const data = {
     currentUser: {
+      id: 'user-1',
       groups: {
         nodes: [
           {
@@ -194,6 +195,7 @@ describe('NewProjectUrlSelect component', () => {
   it('renders `No matches found` when there are no matching dropdown items', async () => {
     const queryResponse = {
       currentUser: {
+        id: 'user-1',
         groups: {
           nodes: [],
         },

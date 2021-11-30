@@ -104,13 +104,32 @@ describe('releases/util.js', () => {
 
   describe('convertAllReleasesGraphQLResponse', () => {
     it('matches snapshot', () => {
-      expect(convertAllReleasesGraphQLResponse(originalAllReleasesQueryResponse)).toMatchSnapshot();
+      expect(convertAllReleasesGraphQLResponse(originalAllReleasesQueryResponse)).toMatchSnapshot({
+        data: [
+          {
+            author: {
+              id: expect.any(String),
+            },
+          },
+          {
+            author: {
+              id: expect.any(String),
+            },
+          },
+        ],
+      });
     });
   });
 
   describe('convertOneReleaseGraphQLResponse', () => {
     it('matches snapshot', () => {
-      expect(convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse)).toMatchSnapshot();
+      expect(convertOneReleaseGraphQLResponse(originalOneReleaseQueryResponse)).toMatchSnapshot({
+        data: {
+          author: {
+            id: expect.any(String),
+          },
+        },
+      });
     });
   });
 

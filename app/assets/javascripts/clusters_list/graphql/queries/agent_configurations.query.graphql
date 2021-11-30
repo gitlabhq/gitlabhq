@@ -1,5 +1,6 @@
 query agentConfigurations($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     agentConfigurations {
       nodes {
         agentName
@@ -8,6 +9,7 @@ query agentConfigurations($projectPath: ID!) {
 
     clusterAgents {
       nodes {
+        id
         name
       }
     }

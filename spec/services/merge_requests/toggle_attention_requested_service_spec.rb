@@ -13,9 +13,12 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
   let(:service) { described_class.new(project: project, current_user: current_user, merge_request: merge_request, user: user) }
   let(:result) { service.execute }
   let(:todo_service) { spy('todo service') }
+  let(:notification_service) { spy('notification service') }
 
   before do
+    allow(NotificationService).to receive(:new) { notification_service }
     allow(service).to receive(:todo_service).and_return(todo_service)
+    allow(service).to receive(:notification_service).and_return(notification_service)
 
     project.add_developer(current_user)
     project.add_developer(user)
@@ -56,6 +59,12 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'creates a new todo for the reviewer' do
         expect(todo_service).to receive(:create_attention_requested_todo).with(merge_request, current_user, user)
+
+        service.execute
+      end
+
+      it 'sends email to reviewer' do
+        expect(notification_service).to receive_message_chain(:async, :attention_requested_of_merge_request).with(merge_request, current_user, user)
 
         service.execute
       end

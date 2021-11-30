@@ -2,8 +2,10 @@
 
 query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
     groupMembers(search: $search) {
       nodes {
+        id
         user {
           ...User
         }
@@ -11,8 +13,10 @@ query searchUsers($fullPath: ID!, $search: String, $isProject: Boolean = false) 
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     projectMembers(search: $search) {
       nodes {
+        id
         user {
           ...User
         }

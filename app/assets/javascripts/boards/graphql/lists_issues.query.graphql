@@ -11,7 +11,9 @@ query BoardListEE(
   $first: Int
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
+    id
     board(id: $boardId) {
+      id
       lists(id: $id, issueFilters: $filters) {
         nodes {
           id
@@ -33,7 +35,9 @@ query BoardListEE(
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     board(id: $boardId) {
+      id
       lists(id: $id, issueFilters: $filters) {
         nodes {
           id

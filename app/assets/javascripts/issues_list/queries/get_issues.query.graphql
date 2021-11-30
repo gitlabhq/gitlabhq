@@ -26,6 +26,7 @@ query getIssues(
   $lastPageSize: Int
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
     issues(
       includeSubgroups: true
       search: $search
@@ -56,6 +57,7 @@ query getIssues(
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     issues(
       search: $search
       sort: $sort

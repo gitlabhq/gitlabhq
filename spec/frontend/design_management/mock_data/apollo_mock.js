@@ -5,6 +5,7 @@ export const designListQueryResponse = {
       id: '1',
       issue: {
         __typename: 'Issue',
+        id: 'issue-1',
         designCollection: {
           __typename: 'DesignCollection',
           copyState: 'READY',
@@ -97,6 +98,7 @@ export const permissionsQueryResponse = {
       id: '1',
       issue: {
         __typename: 'Issue',
+        id: 'issue-1',
         userPermissions: { __typename: 'UserPermissions', createDesign: true },
       },
     },

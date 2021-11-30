@@ -4,6 +4,7 @@ query permissions($fullPath: ID!, $iid: String!) {
     id
     issue(iid: $iid) {
       __typename
+      id
       userPermissions {
         __typename
         createDesign

@@ -27,6 +27,7 @@ export const createGQLSnippet = () => ({
   },
   project: {
     __typename: 'Project',
+    id: 'project-1',
     fullPath: 'group/project',
     webUrl: `${TEST_HOST}/group/project`,
   },

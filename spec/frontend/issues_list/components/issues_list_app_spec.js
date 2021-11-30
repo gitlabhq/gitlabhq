@@ -643,6 +643,7 @@ describe('CE IssuesListApp component', () => {
       const response = (isProject = true) => ({
         data: {
           [isProject ? 'project' : 'group']: {
+            id: '1',
             issues: {
               ...defaultQueryResponse.data.project.issues,
               nodes: [issueOne, issueTwo, issueThree, issueFour],

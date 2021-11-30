@@ -3,6 +3,7 @@
 subscription issuableAssigneesUpdated($issuableId: IssuableID!) {
   issuableAssigneesUpdated(issuableId: $issuableId) {
     ... on Issue {
+      id
       assignees {
         nodes {
           ...User

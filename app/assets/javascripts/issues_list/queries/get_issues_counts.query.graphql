@@ -16,6 +16,7 @@ query getIssuesCount(
   $not: NegatedIssueFilterInput
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
     openedIssues: issues(
       includeSubgroups: true
       state: opened
@@ -69,6 +70,7 @@ query getIssuesCount(
     }
   }
   project(fullPath: $fullPath) @include(if: $isProject) {
+    id
     openedIssues: issues(
       state: opened
       search: $search

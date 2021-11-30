@@ -2,6 +2,7 @@
 
 query ProjectBoard($fullPath: ID!, $boardId: ID!) {
   workspace: project(fullPath: $fullPath) {
+    id
     board(id: $boardId) {
       ...BoardScopeFragment
     }

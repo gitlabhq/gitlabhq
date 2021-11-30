@@ -5,6 +5,7 @@ query analyticsGetGroupProjects(
   $includeSubgroups: Boolean = false
 ) {
   group(fullPath: $groupFullPath) {
+    id
     projects(
       search: $search
       first: $first

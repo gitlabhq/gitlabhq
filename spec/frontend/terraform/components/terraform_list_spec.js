@@ -23,6 +23,7 @@ describe('TerraformList', () => {
     const apolloQueryResponse = {
       data: {
         project: {
+          id: '1',
           terraformStates,
         },
       },

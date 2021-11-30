@@ -16,6 +16,7 @@ query allReleasesDeprecated(
 ) {
   project(fullPath: $fullPath) {
     __typename
+    id
     releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
       __typename
       nodes {

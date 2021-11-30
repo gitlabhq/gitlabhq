@@ -26,6 +26,7 @@ describe('Agents', () => {
     const apolloQueryResponse = {
       data: {
         project: {
+          id: '1',
           clusterAgents: { nodes: agents, pageInfo, tokens: { nodes: [] }, count },
           repository: { tree: { trees: { nodes: trees, pageInfo } } },
         },
@@ -75,6 +76,7 @@ describe('Agents', () => {
         tokens: {
           nodes: [
             {
+              id: 'token-1',
               lastUsedAt: testDate,
             },
           ],
@@ -86,6 +88,7 @@ describe('Agents', () => {
 
     const trees = [
       {
+        id: 'tree-1',
         name: 'agent-2',
         path: '.gitlab/agents/agent-2',
         webPath: '/project/path/.gitlab/agents/agent-2',

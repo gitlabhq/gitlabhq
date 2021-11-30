@@ -1,8 +1,10 @@
 query issueSuggestion($fullPath: ID!, $search: String) {
   project(fullPath: $fullPath) {
+    id
     issues(search: $search, sort: updated_desc, first: 5) {
       edges {
         node {
+          id
           iid
           title
           confidential
@@ -14,6 +16,7 @@ query issueSuggestion($fullPath: ID!, $search: String) {
           createdAt
           updatedAt
           author {
+            id
             name
             username
             avatarUrl

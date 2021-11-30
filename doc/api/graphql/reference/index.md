@@ -9011,9 +9011,27 @@ Details of a container repository.
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
 | <a id="containerrepositorydetailsstatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
-| <a id="containerrepositorydetailstags"></a>`tags` | [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection) | Tags of the container repository. (see [Connections](#connections)) |
 | <a id="containerrepositorydetailstagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with this image. |
 | <a id="containerrepositorydetailsupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |
+
+#### Fields with arguments
+
+##### `ContainerRepositoryDetails.tags`
+
+Tags of the container repository.
+
+Returns [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
+| <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
 ### `ContainerRepositoryTag`
 
@@ -16020,6 +16038,15 @@ Status of a container repository.
 | ----- | ----------- |
 | <a id="containerrepositorystatusdelete_failed"></a>`DELETE_FAILED` | Delete Failed status. |
 | <a id="containerrepositorystatusdelete_scheduled"></a>`DELETE_SCHEDULED` | Delete Scheduled status. |
+
+### `ContainerRepositoryTagSort`
+
+Values for sorting tags.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerrepositorytagsortname_asc"></a>`NAME_ASC` | Ordered by name in ascending order. |
+| <a id="containerrepositorytagsortname_desc"></a>`NAME_DESC` | Ordered by name in descending order. |
 
 ### `DastProfileCadenceUnit`
 

@@ -47,6 +47,7 @@ fragment EpicNode on Epic {
   hasIssues
   group {
     __typename
+    id
     fullPath
   }
 }
@@ -70,6 +71,9 @@ query childItems(
         __typename
         edges {
           __typename
+          # We have an id in deeply nested fragment
+          # TODO: Uncomment next line when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75220 is merged and the rule is enabled
+          # # eslint-disable-next-line @graphql-eslint/require-id-when-available
           node {
             __typename
             ...EpicNode
@@ -86,6 +90,7 @@ query childItems(
           __typename
           node {
             __typename
+            id
             iid
             epicIssueId
             title
@@ -106,6 +111,7 @@ query childItems(
                 __typename
                 node {
                   __typename
+                  id
                   webUrl
                   name
                   username
@@ -115,6 +121,7 @@ query childItems(
             }
             milestone {
               __typename
+              id
               title
               startDate
               dueDate

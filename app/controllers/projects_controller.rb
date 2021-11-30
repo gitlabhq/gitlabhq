@@ -126,6 +126,8 @@ class ProjectsController < Projects::ApplicationController
     if ::Projects::UnlinkForkService.new(@project, current_user).execute
       flash[:notice] = _('The fork relationship has been removed.')
     end
+
+    redirect_to edit_project_path(@project)
   end
 
   def activity

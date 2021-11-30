@@ -1474,6 +1474,7 @@ export const mockJobsInTable = [
 export const mockJobsQueryResponse = {
   data: {
     project: {
+      id: '1',
       jobs: {
         pageInfo: {
           endCursor: 'eyJpZCI6IjIzMTcifQ',
@@ -1509,6 +1510,7 @@ export const mockJobsQueryResponse = {
             triggered: null,
             createdByTag: false,
             detailedStatus: {
+              id: 'status-1',
               detailsPath: '/root/ci-project/-/jobs/2336',
               group: 'success',
               icon: 'status_success',
@@ -1516,6 +1518,7 @@ export const mockJobsQueryResponse = {
               text: 'passed',
               tooltip: 'passed',
               action: {
+                id: 'action-1',
                 buttonTitle: 'Retry this job',
                 icon: 'retry',
                 method: 'post',
@@ -1535,6 +1538,7 @@ export const mockJobsQueryResponse = {
               id: 'gid://gitlab/Ci::Pipeline/473',
               path: '/root/ci-project/-/pipelines/473',
               user: {
+                id: 'user-1',
                 webPath: '/root',
                 avatarUrl:
                   'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
@@ -1543,6 +1547,7 @@ export const mockJobsQueryResponse = {
               __typename: 'Pipeline',
             },
             stage: {
+              id: 'stage-1',
               name: 'deploy',
               __typename: 'CiStage',
             },
@@ -1573,6 +1578,7 @@ export const mockJobsQueryResponse = {
 export const mockJobsQueryEmptyResponse = {
   data: {
     project: {
+      id: '1',
       jobs: [],
     },
   },

@@ -13,6 +13,7 @@ export const dependencyProxySettings = (extend) => ({
 export const groupPackageSettingsMock = {
   data: {
     group: {
+      id: '1',
       fullPath: 'foo_group_path',
       packageSettings: packageSettings(),
       dependencyProxySetting: dependencyProxySettings(),

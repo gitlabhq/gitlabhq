@@ -14,6 +14,7 @@ query getPackages(
   $before: String
 ) {
   project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    id
     packages(
       sort: $sort
       packageName: $packageName
@@ -33,6 +34,7 @@ query getPackages(
     }
   }
   group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    id
     packages(
       sort: $groupSort
       packageName: $packageName

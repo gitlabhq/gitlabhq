@@ -9,6 +9,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
     }
     pathLocks {
       nodes {
+        id
         path
       }
     }
@@ -16,6 +17,7 @@ query getBlobInfo($projectPath: ID!, $filePath: String!, $ref: String!) {
       empty
       blobs(paths: [$filePath], ref: $ref) {
         nodes {
+          id
           webPath
           name
           size

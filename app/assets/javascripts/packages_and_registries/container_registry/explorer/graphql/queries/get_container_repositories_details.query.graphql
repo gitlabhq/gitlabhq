@@ -9,6 +9,7 @@ query getContainerRepositoriesDetails(
   $sort: ContainerRepositorySort
 ) {
   project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    id
     containerRepositories(
       name: $name
       after: $after
@@ -24,6 +25,7 @@ query getContainerRepositoriesDetails(
     }
   }
   group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    id
     containerRepositories(
       name: $name
       after: $after

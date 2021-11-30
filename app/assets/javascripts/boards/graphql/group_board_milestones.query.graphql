@@ -1,5 +1,6 @@
 query GroupBoardMilestones($fullPath: ID!, $searchTerm: String) {
   group(fullPath: $fullPath) {
+    id
     milestones(includeAncestors: true, searchTitle: $searchTerm) {
       nodes {
         id

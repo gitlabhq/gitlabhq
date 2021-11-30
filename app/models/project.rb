@@ -2750,6 +2750,12 @@ class Project < ApplicationRecord
     end
   end
 
+  def remove_project_authorizations(user_ids, per_batch = 1000)
+    user_ids.each_slice(per_batch) do |user_ids_batch|
+      project_authorizations.where(user_id: user_ids_batch).delete_all
+    end
+  end
+
   private
 
   # overridden in EE

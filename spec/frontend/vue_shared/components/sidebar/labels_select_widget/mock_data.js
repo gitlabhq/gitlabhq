@@ -118,6 +118,7 @@ export const workspaceLabelsQueryResponse = {
 export const issuableLabelsQueryResponse = {
   data: {
     workspace: {
+      id: 'workspace-1',
       issuable: {
         id: '1',
         labels: {

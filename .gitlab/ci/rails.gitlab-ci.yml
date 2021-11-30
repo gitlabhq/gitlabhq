@@ -31,6 +31,7 @@
     RUBY_GC_MALLOC_LIMIT: 67108864
     RUBY_GC_MALLOC_LIMIT_MAX: 134217728
     RECORD_DEPRECATIONS: "true"
+    GEO_SECONDARY_PROXY: 0
   needs: ["setup-test-env", "retrieve-tests-metadata", "compile-test-assets", "detect-tests"]
   script:
     - !reference [.base-script, script]

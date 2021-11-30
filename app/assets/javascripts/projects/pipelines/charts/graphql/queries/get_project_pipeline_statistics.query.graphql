@@ -1,5 +1,6 @@
 query getProjectPipelineStatistics($projectPath: ID!) {
   project(fullPath: $projectPath) {
+    id
     pipelineAnalytics {
       weekPipelinesTotals
       weekPipelinesLabels

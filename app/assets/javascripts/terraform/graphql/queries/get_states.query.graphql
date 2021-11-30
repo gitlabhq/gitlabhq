@@ -3,13 +3,12 @@
 
 query getStates($projectPath: ID!, $first: Int, $last: Int, $before: String, $after: String) {
   project(fullPath: $projectPath) {
+    id
     terraformStates(first: $first, last: $last, before: $before, after: $after) {
       count
-
       nodes {
         ...State
       }
-
       pageInfo {
         ...PageInfo
       }

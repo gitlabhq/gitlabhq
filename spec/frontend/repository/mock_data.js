@@ -1,4 +1,5 @@
 export const simpleViewerMock = {
+  id: '1',
   name: 'some_file.js',
   size: 123,
   rawSize: 123,

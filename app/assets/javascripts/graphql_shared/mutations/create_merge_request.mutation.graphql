@@ -1,6 +1,7 @@
 mutation createMergeRequest($input: MergeRequestCreateInput!) {
   mergeRequestCreate(input: $input) {
     mergeRequest {
+      id
       iid
     }
     errors

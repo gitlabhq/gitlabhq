@@ -1,4 +1,5 @@
 fragment autoMergeEnabled on MergeRequest {
+  id
   autoMergeStrategy
   mergeUser {
     id

@@ -225,6 +225,7 @@ The passed override parameters take precedence over all values defined in the ex
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/remote-import" \
   --data '{"url":"https://remoteobject/file?token=123123","path":"remote-project"}'
 ```

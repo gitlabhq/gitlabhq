@@ -1,5 +1,6 @@
 query getGroupPackagesSettings($fullPath: ID!) {
   group(fullPath: $fullPath) {
+    id
     dependencyProxySetting {
       enabled
     }

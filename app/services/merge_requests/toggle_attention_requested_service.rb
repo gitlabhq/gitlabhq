@@ -31,6 +31,7 @@ module MergeRequests
     private
 
     def notity_user
+      notification_service.async.attention_requested_of_merge_request(merge_request, current_user, user)
       todo_service.create_attention_requested_todo(merge_request, current_user, user)
     end
 

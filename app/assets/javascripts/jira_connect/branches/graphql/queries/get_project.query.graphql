@@ -5,6 +5,7 @@ query getProject(
   $branchNamesSearchPattern: String!
 ) {
   project(fullPath: $projectPath) {
+    id
     repository {
       branchNames(
         limit: $branchNamesLimit

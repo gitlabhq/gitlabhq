@@ -851,6 +851,23 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#remove_project_authorizations' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user_1) { create(:user) }
+    let_it_be(:user_2) { create(:user) }
+    let_it_be(:user_3) { create(:user) }
+
+    it 'removes the project authorizations of the specified users in the current project' do
+      create(:project_authorization, user: user_1, project: project)
+      create(:project_authorization, user: user_2, project: project)
+      create(:project_authorization, user: user_3, project: project)
+
+      project.remove_project_authorizations([user_1.id, user_2.id])
+
+      expect(project.project_authorizations.pluck(:user_id)).not_to include(user_1.id, user_2.id)
+    end
+  end
+
   describe 'reference methods' do
     let_it_be(:owner)     { create(:user, name: 'Gitlab') }
     let_it_be(:namespace) { create(:namespace, name: 'Sample namespace', path: 'sample-namespace', owner: owner) }

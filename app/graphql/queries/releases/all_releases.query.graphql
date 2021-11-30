@@ -11,6 +11,7 @@ query allReleases(
 ) {
   project(fullPath: $fullPath) {
     __typename
+    id
     releases(first: $first, last: $last, before: $before, after: $after, sort: $sort) {
       __typename
       nodes {
@@ -50,6 +51,7 @@ query allReleases(
           __typename
           nodes {
             __typename
+            id
             filepath
             collectedAt
             sha
@@ -67,12 +69,14 @@ query allReleases(
         }
         commit {
           __typename
+          id
           sha
           webUrl
           title
         }
         author {
           __typename
+          id
           webUrl
           avatarUrl
           username

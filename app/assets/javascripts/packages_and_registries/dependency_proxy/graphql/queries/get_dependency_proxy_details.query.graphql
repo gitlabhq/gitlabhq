@@ -8,6 +8,7 @@ query getDependencyProxyDetails(
   $before: String
 ) {
   group(fullPath: $fullPath) {
+    id
     dependencyProxyBlobCount
     dependencyProxyTotalSize
     dependencyProxyImagePrefix
@@ -16,6 +17,7 @@ query getDependencyProxyDetails(
     }
     dependencyProxyManifests(after: $after, before: $before, first: $first, last: $last) {
       nodes {
+        id
         createdAt
         imageName
       }

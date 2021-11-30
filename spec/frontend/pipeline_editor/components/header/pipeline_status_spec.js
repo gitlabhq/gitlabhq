@@ -136,7 +136,7 @@ describe('Pipeline Status', () => {
     describe('when pipeline is null', () => {
       beforeEach(() => {
         mockPipelineQuery.mockResolvedValue({
-          data: { project: { pipeline: null } },
+          data: { project: { id: '1', pipeline: null } },
         });
 
         createComponentWithApollo();
