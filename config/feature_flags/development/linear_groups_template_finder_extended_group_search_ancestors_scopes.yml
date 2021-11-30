@@ -1,0 +1,8 @@
+---
+name: linear_groups_template_finder_extended_group_search_ancestors_scopes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74599
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345786
+milestone: '14.6'
+type: development
+group: group::access
+default_enabled: false

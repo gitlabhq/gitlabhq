@@ -7,7 +7,6 @@ module Ci
     self.limit_name = 'ci_registered_group_runners'
     self.limit_scope = :group
     self.limit_relation = :recent_runners
-    self.limit_feature_flag_for_override = :ci_runner_limits_override
 
     belongs_to :runner, inverse_of: :runner_namespaces
     belongs_to :namespace, inverse_of: :runner_namespaces, class_name: '::Namespace'

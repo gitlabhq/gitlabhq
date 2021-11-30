@@ -8,40 +8,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > Introduced in GitLab Ultimate 11.2, more statistics.
 
-This guide describes Service Ping's purpose and how it's implemented.
-
-For more information about Product Intelligence, see:
-
-- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
-- [Snowplow Guide](../snowplow/index.md)
-
-More links:
-
-- [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
-- [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
-- [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
-- [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)
-
-## What is Service Ping?
-
-Service Ping is a process in GitLab that collects and sends a weekly payload to GitLab Inc.
+Service Ping is a GitLab process that collects and sends a weekly payload to GitLab.
 The payload provides important high-level data that helps our product, support,
-and sales teams understand how GitLab is used. For example, the data helps to:
+and sales teams understand how GitLab is used. The data helps to:
 
 - Compare counts month over month (or week over week) to get a rough sense for how an instance uses
   different product features.
 - Collect other facts that help us classify and understand GitLab installations.
-- Calculate our Stage Monthly Active Users (SMAU), which helps to measure the success of our stages
+- Calculate our stage monthly active users (SMAU), which helps to measure the success of our stages
   and features.
 
-Service Ping information is not anonymous. It's linked to the instance's hostname. However, it does
+Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Sending a Service Ping payload is optional and can be [disabled](#disable-service-ping) on any self-managed instance.
-When Service Ping is enabled, GitLab gathers data from the other instances
+Sending a Service Ping payload is optional and you can [disable](#disable-service-ping) it on any 
+self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances
 and can show your instance's usage statistics to your users.
 
-### Terminology
+## Service Ping terminology
 
 We use the following terminology to describe the Service Ping components:
 
@@ -53,12 +37,18 @@ We use the following terminology to describe the Service Ping components:
 - **MAU**: monthly active users.
 - **WAU**: weekly active users.
 
-### Why should we enable Service Ping?
+### Why enable Service Ping?
 
-- The main purpose of Service Ping is to build a better GitLab. Data about how GitLab is used is collected to better understand feature/stage adoption and usage, which helps us understand how GitLab is adding value and helps our team better understand the reasons why people use GitLab and with this knowledge we're able to make better product decisions.
+The main purpose of Service Ping is to build a better GitLab. We collect data about how GitLab is used
+to understand feature or stage adoption and usage. This data gives an insight into how GitLab adds
+value and helps our team understand the reasons why people use GitLab, and with this knowledge we're able to 
+make better product decisions.
+
+There are several other benefits to enabling Service Ping: 
+
 - As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
 - As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_report.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.
-- You get better, more proactive support. (assuming that our TAMs and support organization used the data to deliver more value)
+- You get better, more proactive support (assuming that our TAMs and support organization used the data to deliver more value).
 - You get insight and advice into how to get the most value out of your investment in GitLab. Wouldn't you want to know that a number of features or values are not being adopted in your organization?
 - You get a report that illustrates how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Service Ping is enabled by default. To disable it, see [Disable Service Ping](#disable-service-ping).
@@ -78,7 +68,7 @@ Because of these limitations we recommend you:
 
 > Introduced in GitLab 14.1.
 
-In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through [Service Ping](#what-is-service-ping). Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
+In GitLab versions 14.1 and later, free self-managed users running [GitLab EE](../ee_features.md) can receive paid features by registering with GitLab and sending us activity data through Service Ping. Features introduced here do not remove the feature from its paid tier. Users can continue to access the features in a paid tier without sharing usage data.
 
 #### Features available in 14.1 and later
 
@@ -609,3 +599,12 @@ To work around this bug, you have two options:
   1. Expand **Usage Statistics**.
   1. Clear the **Enable Service Ping** checkbox.
   1. Select **Save Changes**.
+
+## Related topics
+
+- [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
+- [Snowplow Guide](../snowplow/index.md)
+- [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
+- [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
+- [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
+- [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

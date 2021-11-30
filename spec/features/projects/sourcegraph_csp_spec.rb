@@ -13,7 +13,8 @@ RSpec.describe 'Sourcegraph Content Security Policy' do
   end
 
   it_behaves_like 'setting CSP', 'connect-src' do
-    let_it_be(:whitelisted_url) { 'https://sourcegraph.test' }
+    let_it_be(:sourcegraph_url) { 'https://sourcegraph.test' }
+    let_it_be(:allowlisted_url) { "#{sourcegraph_url}/.api/" }
     let_it_be(:extended_controller_class) { Projects::BlobController }
 
     subject do
@@ -23,7 +24,7 @@ RSpec.describe 'Sourcegraph Content Security Policy' do
     end
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(whitelisted_url)
+      allow(Gitlab::CurrentSettings).to receive(:sourcegraph_url).and_return(sourcegraph_url)
       allow(Gitlab::CurrentSettings).to receive(:sourcegraph_enabled).and_return(true)
 
       sign_in(user)

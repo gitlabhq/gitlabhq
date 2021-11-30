@@ -17,6 +17,10 @@ Only [scoped](https://docs.npmjs.com/misc/scope/) packages are supported.
 For documentation of the specific API endpoints that the npm package manager
 client uses, see the [npm API documentation](../../../api/packages/npm.md).
 
+WARNING:
+Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
+be committed to a repository.
+
 ## Build an npm package
 
 This section covers how to install npm or Yarn and build a package for your
@@ -430,14 +434,16 @@ You can route package requests to organizations and users outside of GitLab.
 To do this, add lines to your `.npmrc` file. Replace `my-org` with the namespace or group that owns your project's repository,
 and use your organization's URL. The name is case-sensitive and must match the name of your group or namespace exactly.
 
+Use environment variables to set up your tokens: `export MY_TOKEN="<your token>"`.
+
 ```shell
 @foo:registry=https://gitlab.example.com/api/v4/packages/npm/
-//gitlab.example.com/api/v4/packages/npm/:_authToken= "<your_token>"
-//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken= "<your_token>"
+//gitlab.example.com/api/v4/packages/npm/:_authToken=${MY_TOKEN}
+//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${MY_TOKEN}
 
 @my-other-org:registry=https://gitlab.example.com/api/v4/packages/npm/
-//gitlab.example.com/api/v4/packages/npm/:_authToken= "<your_token>"
-//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken= "<your_token>"
+//gitlab.example.com/api/v4/packages/npm/:_authToken=${MY_TOKEN}
+//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${MY_TOKEN}
 ```
 
 ### npm metadata
