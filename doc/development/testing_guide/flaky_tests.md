@@ -82,26 +82,19 @@ These flaky tests can fail depending on the order they run with other tests. For
 
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/327668>
 
-To identify the tests that lead to such failure, we can use `rspec --bisect`,
+To identify the tests that lead to such failure, we can use `scripts/rspec_bisect_flaky`,
 which would give us the minimal test combination to reproduce the failure:
 
-```shell
-rspec --bisect ee/spec/services/ee/merge_requests/update_service_spec.rb ee/spec/services/ee/notes/quick_actions_service_spec.rb ee/spec/services/epic_links/create_service_spec.rb  ee/spec/services/ee/issuable/bulk_update_service_spec.rb
-Bisect started using options: "ee/spec/services/ee/merge_requests/update_service_spec.rb ee/spec/services/ee/notes/quick_actions_service_spec.rb ee/spec/services/epic_links/create_service_spec.rb ee/spec/services/ee/issuable/bulk_update_service_spec.rb"
-Running suite to find failures... (2 minutes 18.4 seconds)
-Starting bisect with 3 failing examples and 144 non-failing examples.
-Checking that failure(s) are order-dependent... failure appears to be order-dependent
+1. First obtain the list of specs that ran before the flaky test. You can search
+   for the list under `Knapsack node specs:` in the CI job output log.
+1. Save the list of specs as a file, and run:
 
-Round 1: bisecting over non-failing examples 1-144 . ignoring examples 1-72 (1 minute 11.33 seconds)
-...
-Round 7: bisecting over non-failing examples 132-133 . ignoring example 132 (43.78 seconds)
-Bisect complete! Reduced necessary non-failing examples from 144 to 1 in 8 minutes 31 seconds.
+    ```shell
+    cat knapsack_specs.txt | xargs scripts/rspec_bisect_flaky
+    ```
 
-The minimal reproduction command is:
-  rspec ./ee/spec/services/ee/issuable/bulk_update_service_spec.rb[1:2:1:1:1:1,1:2:1:2:1:1,1:2:1:3:1] ./ee/spec/services/epic_links/create_service_spec.rb[1:1:2:2:6:4]
-```
-
-We can reproduce the test failure with the reproduction command above. If we change the order of the tests, the test would pass.
+If there is an order-dependency issue, the script above will print the minimal
+reproduction.
 
 ### Time-sensitive flaky tests
 

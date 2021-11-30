@@ -249,7 +249,7 @@ the content. This data can be used by static site generators like [Jekyll](https
 When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
-[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/README.md).
+[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/index.md).
 
 In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document
