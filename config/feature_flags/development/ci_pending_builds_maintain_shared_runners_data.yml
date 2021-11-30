@@ -1,8 +1,0 @@
----
-name: ci_pending_builds_maintain_shared_runners_data
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64644
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338152
-milestone: '14.1'
-type: development
-group: group::pipeline execution
-default_enabled: false

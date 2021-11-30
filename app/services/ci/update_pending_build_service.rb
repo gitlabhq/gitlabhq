@@ -15,7 +15,7 @@ module Ci
     end
 
     def execute
-      return unless ::Feature.enabled?(:ci_pending_builds_maintain_shared_runners_data, @model, default_enabled: :yaml)
+      return unless ::Ci::PendingBuild.maintain_denormalized_data?
 
       @model.pending_builds.each_batch do |relation|
         relation.update_all(@update_params)

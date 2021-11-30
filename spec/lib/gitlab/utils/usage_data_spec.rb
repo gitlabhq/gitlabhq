@@ -8,26 +8,8 @@ RSpec.describe Gitlab::Utils::UsageData do
   describe '#add_metric' do
     let(:metric) { 'UuidMetric'}
 
-    context 'with usage_data_instrumentation feature flag' do
-      context 'when enabled' do
-        before do
-          stub_feature_flags(usage_data_instrumentation: true)
-        end
-
-        it 'returns -100 value to be overriden' do
-          expect(described_class.add_metric(metric)).to eq(-100)
-        end
-      end
-
-      context 'when disabled' do
-        before do
-          stub_feature_flags(usage_data_instrumentation: false)
-        end
-
-        it 'computes the metric value for given metric' do
-          expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)
-        end
-      end
+    it 'computes the metric value for given metric' do
+      expect(described_class.add_metric(metric)).to eq(Gitlab::CurrentSettings.uuid)
     end
   end
 

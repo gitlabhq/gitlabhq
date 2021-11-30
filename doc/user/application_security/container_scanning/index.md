@@ -134,6 +134,7 @@ You can [configure](#customizing-the-container-scanning-settings) analyzers by u
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:4` | Docker image of the analyzer. | All |
+| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `DOCKER_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
@@ -228,6 +229,51 @@ NOTE:
 Prior to the GitLab 14.0 release, any variable defined under the scope `container_scanning` is not
 considered for scanners other than Clair. In GitLab 14.0 and later, all variables can be defined
 either as a global variable or under `container_scanning`.
+
+### Setting the default branch image
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5.
+
+By default, container scanning assumes that the image naming convention stores any branch-specific
+identifiers in the image tag rather than the image name. When the image name differs between the
+default branch and the non-default branch, previously-detected vulnerabilities show up as newly
+detected in merge requests.
+
+When the same image has different names on the default branch and a non-default branch, you can use
+the `CS_DEFAULT_BRANCH_IMAGE` variable to indicate what that image's name is on the default branch.
+GitLab then correctly determines if a vulnerability already exists when running scans on non-default
+branches.
+
+As an example, suppose the following:
+
+- Non-default branches publish images with the naming convention
+  `$CI_REGISTRY_IMAGE/$CI_COMMIT_BRANCH:$CI_COMMIT_SHA`.
+- The default branch publishes images with the naming convention
+  `$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA`.
+
+In this example, you can use the following CI/CD configuration to ensure that vulnerabilities aren't
+duplicated:
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DEFAULT_BRANCH_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  before_script:
+    - export DOCKER_IMAGE="$CI_REGISTRY_IMAGE/$CI_COMMIT_BRANCH:$CI_COMMIT_SHA"
+    - |
+      if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+        export DOCKER_IMAGE="$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      fi
+```
+
+`CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `DOCKER_IMAGE`. If it changes, then a
+duplicate set of vulnerabilities are created, which must be manually dismissed.
+
+When using [Auto DevOps](../../../topics/autodevops/index.md), `CS_DEFAULT_BRANCH_IMAGE` is
+automatically set to `$CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_APPLICATION_TAG`.
 
 ### Using a custom SSL CA certificate authority
 
@@ -500,7 +546,7 @@ Here's an example container scanning report:
 
 ```json-doc
 {
-  "version": "3.0.0",
+  "version": "14.0.0",
   "vulnerabilities": [
     {
       "id": "df52bc8ce9a2ae56bbcb0c4ecda62123fbd6f69b",
@@ -522,7 +568,8 @@ Here's an example container scanning report:
           "version": "1.4.8"
         },
         "operating_system": "debian:9.4",
-        "image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256:bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e"
+        "image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256:bc09fe2e0721dfaeee79364115aeedf2174cce0947b9ae5fe7c33312ee019a4e",
+        "default_branch_image": "registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0:latest"
       },
       "identifiers": [
         {

@@ -43,9 +43,9 @@ RSpec.describe Ci::UpdatePendingBuildService do
         expect(pending_build_2.instance_runners_enabled).to be_truthy
       end
 
-      context 'when ci_pending_builds_maintain_shared_runners_data is disabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
         before do
-          stub_feature_flags(ci_pending_builds_maintain_shared_runners_data: false)
+          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
         end
 
         it 'does not update all pending builds', :aggregate_failures do
@@ -67,9 +67,9 @@ RSpec.describe Ci::UpdatePendingBuildService do
         expect(pending_build_2.instance_runners_enabled).to be_truthy
       end
 
-      context 'when ci_pending_builds_maintain_shared_runners_data is disabled' do
+      context 'when ci_pending_builds_maintain_denormalized_data is disabled' do
         before do
-          stub_feature_flags(ci_pending_builds_maintain_shared_runners_data: false)
+          stub_feature_flags(ci_pending_builds_maintain_denormalized_data: false)
         end
 
         it 'does not update all pending builds', :aggregate_failures do

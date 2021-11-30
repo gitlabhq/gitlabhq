@@ -7,54 +7,6 @@ module Gitlab
         BATCH_SIZE = 1_000 # Number of rows to process per job
         JOB_BUFFER_SIZE = 1_000 # Number of jobs to bulk queue at a time
 
-        # Bulk queues background migration jobs for an entire table, batched by ID range.
-        # "Bulk" meaning many jobs will be pushed at a time for efficiency.
-        # If you need a delay interval per job, then use `queue_background_migration_jobs_by_range_at_intervals`.
-        #
-        # model_class - The table being iterated over
-        # job_class_name - The background migration job class as a string
-        # batch_size - The maximum number of rows per job
-        #
-        # Example:
-        #
-        #     class Route < ActiveRecord::Base
-        #       include EachBatch
-        #       self.table_name = 'routes'
-        #     end
-        #
-        #     bulk_queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
-        #
-        # Where the model_class includes EachBatch, and the background migration exists:
-        #
-        #     class Gitlab::BackgroundMigration::ProcessRoutes
-        #       def perform(start_id, end_id)
-        #         # do something
-        #       end
-        #     end
-        def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BATCH_SIZE)
-          raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
-
-          jobs = []
-          table_name = model_class.quoted_table_name
-
-          model_class.each_batch(of: batch_size) do |relation|
-            start_id, end_id = relation.pluck("MIN(#{table_name}.id)", "MAX(#{table_name}.id)").first
-
-            if jobs.length >= JOB_BUFFER_SIZE
-              # Note: This code path generally only helps with many millions of rows
-              # We push multiple jobs at a time to reduce the time spent in
-              # Sidekiq/Redis operations. We're using this buffer based approach so we
-              # don't need to run additional queries for every range.
-              bulk_migrate_async(jobs)
-              jobs.clear
-            end
-
-            jobs << [job_class_name, [start_id, end_id]]
-          end
-
-          bulk_migrate_async(jobs) unless jobs.empty?
-        end
-
         # Queues background migration jobs for an entire table in batches.
         # The default batching column used is the standard primary key `id`.
         # Each job is scheduled with a `delay_interval` in between.

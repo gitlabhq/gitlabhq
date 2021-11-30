@@ -13626,7 +13626,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`. |
+| <a id="projectscanexecutionpoliciesactionscantypes"></a>`actionScanTypes` | [`[SecurityReportTypeEnum!]`](#securityreporttypeenum) | Filters policies by the action scan type. Only these scan types are supported: `dast`, `secret_detection`, `cluster_image_scanning`, `container_scanning`, `sast`. |
 
 ##### `Project.sentryDetailedError`
 

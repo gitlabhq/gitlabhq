@@ -51,10 +51,7 @@ module Gitlab
         clear_memoized
 
         with_finished_at(:recording_ce_finished_at) do
-          usage_data = usage_data_metrics
-          usage_data = usage_data.with_indifferent_access.deep_merge(instrumentation_metrics.with_indifferent_access) if Feature.enabled?(:usage_data_instrumentation)
-
-          usage_data
+          usage_data_metrics
         end
       end
 
@@ -755,10 +752,6 @@ module Gitlab
           .merge(search_unique_visits_data)
           .merge(redis_hll_counters)
           .deep_merge(aggregated_metrics_data)
-      end
-
-      def instrumentation_metrics
-        Gitlab::UsageDataMetrics.uncached_data # rubocop:disable UsageData/LargeTable
       end
 
       def metric_time_period(time_period)

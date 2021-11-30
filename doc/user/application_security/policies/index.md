@@ -307,7 +307,7 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast`, `secret_detection` | The action's type. |
+| `scan` | `string` | `dast`, `secret_detection`, `sast` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 
@@ -330,6 +330,7 @@ Note the following:
 - A container scanning and cluster image scanning scans configured for the `pipeline` rule type will ignore the cluster defined in the `clusters` object.
   They will use predefined CI/CD variables defined for your project. Cluster selection with the `clusters` object is supported for the `schedule` rule type.
   Cluster with name provided in `clusters` object must be created and configured for the project. To be able to successfully perform the `container_scanning`/`cluster_image_scanning` scans for the cluster you must follow instructions for the [Cluster Image Scanning feature](../cluster_image_scanning/index.md#prerequisites).
+- The SAST scan uses the default template and runs in a [child pipeline](../../../ci/pipelines/parent_child_pipelines.md).
 
 ### Example security policies project
 
