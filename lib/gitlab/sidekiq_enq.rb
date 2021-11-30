@@ -11,6 +11,16 @@
 module Gitlab
   class SidekiqEnq
     def enqueue_jobs(now = Time.now.to_f.to_s, sorted_sets = Sidekiq::Scheduled::SETS)
+      Rails.application.reloader.wrap do
+        ::Gitlab::WithRequestStore.with_request_store do
+          find_jobs_and_enqueue(now, sorted_sets)
+        end
+      ensure
+        ::Gitlab::Database::LoadBalancing.release_hosts
+      end
+    end
+
+    def find_jobs_and_enqueue(now, sorted_sets)
       # A job's "score" in Redis is the time at which it should be processed.
       # Just check Redis for the set of jobs with a timestamp before now.
       Sidekiq.redis do |conn|

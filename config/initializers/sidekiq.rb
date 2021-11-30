@@ -114,3 +114,5 @@ Sidekiq.configure_client do |config|
 
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
+
+Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller
