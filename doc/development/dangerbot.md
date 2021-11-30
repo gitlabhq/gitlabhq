@@ -131,7 +131,7 @@ The main `Dangerfile` will then take care of adding the labels to the MR with a 
 #### Shared rules and plugins
 
 If the rule or plugin you implement can be useful for other projects, think about
-upstreaming them to the [`gitlab-org/gitlab-dangerfiles`](https://gitlab.com/gitlab-org/gitlab-dangerfiles) project.
+upstreaming them to the [`gitlab-dangerfiles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles) project.
 
 #### Enable Danger on a project
 
