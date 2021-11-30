@@ -792,7 +792,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         end
       end
 
-      context 'when group has pending builds' do
+      context 'when group has pending builds', :sidekiq_inline do
         let_it_be(:project) { create(:project, :public, namespace: group.reload) }
         let_it_be(:other_project) { create(:project) }
         let_it_be(:pending_build) { create(:ci_pending_build, project: project) }
@@ -813,6 +813,20 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           expect(pending_build.namespace_traversal_ids).to eq(group.traversal_ids)
           expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
           expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+        end
+
+        context 'when ci_pending_builds_async_update is disabled' do
+          let(:update_pending_build_service) { instance_double(::Ci::PendingBuilds::UpdateGroupWorker) }
+
+          before do
+            stub_feature_flags(ci_pending_builds_async_update: false)
+          end
+
+          it 'does not call the new worker' do
+            expect(::Ci::PendingBuilds::UpdateGroupWorker).not_to receive(:perform_async)
+
+            transfer_service.execute(new_parent_group)
+          end
         end
       end
     end

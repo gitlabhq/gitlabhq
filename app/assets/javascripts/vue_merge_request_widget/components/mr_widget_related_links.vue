@@ -1,9 +1,13 @@
 <script>
+import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'MRWidgetRelatedLinks',
+  directives: {
+    SafeHtml,
+  },
   mixins: [glFeatureFlagMixin()],
   props: {
     relatedLinks: {
@@ -43,14 +47,14 @@ export default {
       :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
     >
       {{ closesText }}
-      <span v-html="relatedLinks.closing /* eslint-disable-line vue/no-v-html */"></span>
+      <span v-safe-html="relatedLinks.closing"></span>
     </p>
     <p
       v-if="relatedLinks.mentioned"
       :class="{ 'gl-display-line gl-m-0': glFeatures.restructuredMrWidget }"
     >
       {{ n__('mrWidget|Mentions issue', 'mrWidget|Mentions issues', relatedLinks.mentionedCount) }}
-      <span v-html="relatedLinks.mentioned /* eslint-disable-line vue/no-v-html */"></span>
+      <span v-safe-html="relatedLinks.mentioned"></span>
     </p>
     <p
       v-if="relatedLinks.assignToMe && showAssignToMe"

@@ -11,7 +11,6 @@ import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
-  DEFAULT_MILESTONES_GRAPHQL,
   TOKEN_TITLE_MY_REACTION,
   OPERATOR_IS_AND_IS_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -136,13 +135,12 @@ export default {
             ]
           : []),
         {
-          type: 'milestone_title',
+          type: 'milestone',
           title: milestone,
           icon: 'clock',
           symbol: '%',
           token: MilestoneToken,
           unique: true,
-          defaultMilestones: DEFAULT_MILESTONES_GRAPHQL,
           fetchMilestones: this.fetchMilestones,
         },
         {

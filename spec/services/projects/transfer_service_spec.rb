@@ -169,7 +169,7 @@ RSpec.describe Projects::TransferService do
       end
     end
 
-    context 'when project has pending builds' do
+    context 'when project has pending builds', :sidekiq_inline do
       let!(:other_project) { create(:project) }
       let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
       let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }
@@ -188,6 +188,20 @@ RSpec.describe Projects::TransferService do
         expect(pending_build.namespace_traversal_ids).to eq(group.traversal_ids)
         expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
         expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
+      end
+
+      context 'when ci_pending_builds_async_update is disabled' do
+        let(:update_pending_build_service) { instance_double(::Ci::PendingBuilds::UpdateProjectWorker) }
+
+        before do
+          stub_feature_flags(ci_pending_builds_async_update: false)
+        end
+
+        it 'does not call the new worker' do
+          expect(::Ci::PendingBuilds::UpdateProjectWorker).not_to receive(:perform_async)
+
+          execute_transfer
+        end
       end
     end
   end
@@ -251,7 +265,7 @@ RSpec.describe Projects::TransferService do
       )
     end
 
-    context 'when project has pending builds' do
+    context 'when project has pending builds', :sidekiq_inline do
       let!(:other_project) { create(:project) }
       let!(:pending_build) { create(:ci_pending_build, project: project.reload) }
       let!(:unrelated_pending_build) { create(:ci_pending_build, project: other_project) }

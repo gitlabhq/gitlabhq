@@ -9,7 +9,7 @@ module Ci
 
     def initialize(model, update_params)
       @model = model
-      @update_params = update_params
+      @update_params = update_params.symbolize_keys
 
       validations!
     end

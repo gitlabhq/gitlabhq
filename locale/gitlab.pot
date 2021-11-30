@@ -6745,6 +6745,9 @@ msgstr ""
 msgid "Checkout|%{name}'s storage subscription"
 msgstr ""
 
+msgid "Checkout|%{quantity} CI minutes"
+msgstr ""
+
 msgid "Checkout|%{quantity} GB of storage"
 msgstr ""
 
@@ -6757,9 +6760,6 @@ msgid "Checkout|%{selectedPlanText} plan"
 msgstr ""
 
 msgid "Checkout|%{startDate} - %{endDate}"
-msgstr ""
-
-msgid "Checkout|%{totalCiMinutes} CI minutes"
 msgstr ""
 
 msgid "Checkout|(may be %{linkStart}charged upon purchase%{linkEnd})"

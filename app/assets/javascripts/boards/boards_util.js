@@ -1,6 +1,6 @@
 import { sortBy, cloneDeep } from 'lodash';
 import { isGid } from '~/graphql_shared/utils';
-import { ListType, MilestoneIDs } from './constants';
+import { ListType, MilestoneIDs, AssigneeFilterType, MilestoneFilterType } from './constants';
 
 export function getMilestone() {
   return null;
@@ -186,6 +186,7 @@ export function isListDraggable(list) {
 export const FiltersInfo = {
   assigneeUsername: {
     negatedSupport: true,
+    remap: (k, v) => (v === AssigneeFilterType.any ? 'assigneeWildcardId' : k),
   },
   assigneeId: {
     // assigneeId should be renamed to assigneeWildcardId.
@@ -204,6 +205,11 @@ export const FiltersInfo = {
   },
   milestoneTitle: {
     negatedSupport: true,
+    remap: (k, v) => (Object.values(MilestoneFilterType).includes(v) ? 'milestoneWildcardId' : k),
+  },
+  milestoneWildcardId: {
+    negatedSupport: true,
+    transform: (val) => val.toUpperCase(),
   },
   myReactionEmoji: {
     negatedSupport: true,

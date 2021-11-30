@@ -1447,6 +1447,24 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: pipeline_background:ci_pending_builds_update_group
+  :worker_name: Ci::PendingBuilds::UpdateGroupWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: pipeline_background:ci_pending_builds_update_project
+  :worker_name: Ci::PendingBuilds::UpdateProjectWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies:
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
   :worker_name: Ci::PipelineArtifacts::CoverageReportWorker
   :feature_category: :code_testing

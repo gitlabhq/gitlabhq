@@ -2,7 +2,6 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
 import { __ } from '~/locale';
-import { DEFAULT_MILESTONES_GRAPHQL } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
@@ -599,10 +598,9 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, hasEmoji)
     icon: 'clock',
     title: __('Milestone'),
     symbol: '%',
-    type: 'milestone_title',
+    type: 'milestone',
     token: MilestoneToken,
     unique: true,
-    defaultMilestones: DEFAULT_MILESTONES_GRAPHQL,
     fetchMilestones,
   },
   {

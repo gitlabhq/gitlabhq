@@ -30,9 +30,7 @@ RSpec.describe 'Issue board filters', :js do
 
   describe 'filters by releases' do
     before do
-      filter_input.click
-      filter_input.set('release:')
-      filter_first_suggestion.click # Select `=` operator
+      set_filter('release')
     end
 
     it 'loads all the releases when opened and submit one as filter', :aggregate_failures do
@@ -45,6 +43,35 @@ RSpec.describe 'Issue board filters', :js do
 
       expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
     end
+  end
+
+  describe 'filters by milestone' do
+    before do
+      set_filter('milestone')
+    end
+
+    it 'loads all the milestones when opened and submit one as filter', :aggregate_failures do
+      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+      expect_filtered_search_dropdown_results(filter_dropdown, 6)
+      expect(filter_dropdown).to have_content('None')
+      expect(filter_dropdown).to have_content('Any')
+      expect(filter_dropdown).to have_content('Started')
+      expect(filter_dropdown).to have_content('Upcoming')
+      expect(filter_dropdown).to have_content(milestone_1.title)
+      expect(filter_dropdown).to have_content(milestone_2.title)
+
+      click_on milestone_1.title
+      filter_submit.click
+
+      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+    end
+  end
+
+  def set_filter(filter)
+    filter_input.click
+    filter_input.set("#{filter}:")
+    filter_first_suggestion.click # Select `=` operator
   end
 
   def expect_filtered_search_dropdown_results(filter_dropdown, count)

@@ -29,11 +29,11 @@ module Groups
         update_group_attributes
         ensure_ownership
         update_integrations
-        update_pending_builds!
       end
 
       post_update_hooks(@updated_project_ids)
       propagate_integrations
+      update_pending_builds
 
       true
     end
@@ -228,13 +228,19 @@ module Groups
       end
     end
 
-    def update_pending_builds!
-      update_params = {
+    def update_pending_builds
+      if Feature.enabled?(:ci_pending_builds_async_update, default_enabled: :yaml)
+        ::Ci::PendingBuilds::UpdateGroupWorker.perform_async(group.id, pending_builds_params)
+      else
+        ::Ci::UpdatePendingBuildService.new(group, pending_builds_params).execute
+      end
+    end
+
+    def pending_builds_params
+      {
         namespace_traversal_ids: group.traversal_ids,
         namespace_id: group.id
       }
-
-      ::Ci::UpdatePendingBuildService.new(group, update_params).execute
     end
   end
 end

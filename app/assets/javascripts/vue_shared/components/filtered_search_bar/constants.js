@@ -28,13 +28,6 @@ export const DEFAULT_MILESTONES = DEFAULT_NONE_ANY.concat([
   { value: FILTER_STARTED, text: __('Started'), title: __('Started') },
 ]);
 
-export const DEFAULT_MILESTONES_GRAPHQL = [
-  { value: 'any', text: __('Any'), title: __('Any') },
-  { value: 'none', text: __('None'), title: __('None') },
-  { value: '#upcoming', text: __('Upcoming'), title: __('Upcoming') },
-  { value: '#started', text: __('Started'), title: __('Started') },
-];
-
 export const SortDirection = {
   descending: 'descending',
   ascending: 'ascending',

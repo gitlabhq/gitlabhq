@@ -11,10 +11,7 @@ import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
 
-import {
-  DEFAULT_MILESTONES,
-  DEFAULT_MILESTONES_GRAPHQL,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 
 import { mockMilestoneToken, mockMilestones, mockRegularMilestone } from '../mock_data';
@@ -199,12 +196,12 @@ describe('MilestoneToken', () => {
       beforeEach(() => {
         wrapper = createComponent({
           active: true,
-          config: { ...mockMilestoneToken, defaultMilestones: DEFAULT_MILESTONES_GRAPHQL },
+          config: { ...mockMilestoneToken, defaultMilestones: DEFAULT_MILESTONES },
         });
       });
 
       it('finds the correct value from the activeToken', () => {
-        DEFAULT_MILESTONES_GRAPHQL.forEach(({ value, title }) => {
+        DEFAULT_MILESTONES.forEach(({ value, title }) => {
           const activeToken = wrapper.vm.getActiveMilestone([], value);
 
           expect(activeToken.title).toEqual(title);

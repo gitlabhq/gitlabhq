@@ -1,7 +1,7 @@
 <script>
 import { pickBy, isEmpty } from 'lodash';
 import { mapActions } from 'vuex';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -80,7 +80,7 @@ export default {
 
       if (milestoneTitle) {
         filteredSearchValue.push({
-          type: 'milestone_title',
+          type: 'milestone',
           value: { data: milestoneTitle, operator: '=' },
         });
       }
@@ -129,7 +129,7 @@ export default {
 
       if (this.filterParams['not[milestoneTitle]']) {
         filteredSearchValue.push({
-          type: 'milestone_title',
+          type: 'milestone',
           value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
         });
       }
@@ -242,7 +242,7 @@ export default {
         search,
         types,
         weight,
-        epic_id: getIdFromGraphQLId(epicId),
+        epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
         my_reaction_emoji: myReactionEmoji,
         release_tag: releaseTag,
       };
@@ -293,7 +293,7 @@ export default {
           case 'label_name':
             labels.push(filter.value.data);
             break;
-          case 'milestone_title':
+          case 'milestone':
             filterParams.milestoneTitle = filter.value.data;
             break;
           case 'iteration':
@@ -326,6 +326,7 @@ export default {
       if (plainText.length) {
         filterParams.search = plainText.join(' ');
       }
+
       return filterParams;
     },
   },

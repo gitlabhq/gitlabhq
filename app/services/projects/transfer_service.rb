@@ -104,9 +104,9 @@ module Projects
         update_repository_configuration(@new_path)
 
         execute_system_hooks
-
-        update_pending_builds!
       end
+
+      update_pending_builds
 
       post_update_hooks(project)
     rescue Exception # rubocop:disable Lint/RescueException
@@ -244,13 +244,19 @@ module Projects
       Integration.create_from_active_default_integrations(project, :project_id)
     end
 
-    def update_pending_builds!
-      update_params = {
+    def update_pending_builds
+      if Feature.enabled?(:ci_pending_builds_async_update, default_enabled: :yaml)
+        ::Ci::PendingBuilds::UpdateProjectWorker.perform_async(project.id, pending_builds_params)
+      else
+        ::Ci::UpdatePendingBuildService.new(project, pending_builds_params).execute
+      end
+    end
+
+    def pending_builds_params
+      {
         namespace_id: new_namespace.id,
         namespace_traversal_ids: new_namespace.traversal_ids
       }
-
-      ::Ci::UpdatePendingBuildService.new(project, update_params).execute
     end
   end
 end
