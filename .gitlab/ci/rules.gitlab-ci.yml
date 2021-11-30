@@ -19,6 +19,9 @@
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
+.if-stable-branch-refs: &if-stable-branch-refs
+  if: '$CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/'
+
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
@@ -525,6 +528,8 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-stable-branch-refs
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
     - changes: *code-backstage-qa-patterns
@@ -559,6 +564,8 @@
     - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-stable-branch-refs
       when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1172,6 +1179,24 @@
     - <<: *if-merge-request-labels-as-if-foss
       changes: *code-backstage-patterns
 
+.rails:rules:as-if-jh-rspec:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-jh
+      when: never
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-stable-branch-refs
+      when: never
+    - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-patterns
+      allow_failure: true
+
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - changes: *db-library-patterns
@@ -1650,6 +1675,8 @@
     - <<: *if-security-merge-request
       when: never
     - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - <<: *if-stable-branch-refs
       when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request-labels-run-all-rspec
