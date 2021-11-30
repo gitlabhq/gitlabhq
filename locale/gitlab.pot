@@ -4818,6 +4818,9 @@ msgstr ""
 msgid "Audit Events"
 msgstr ""
 
+msgid "Audit events"
+msgstr ""
+
 msgid "AuditLogs|(removed)"
 msgstr ""
 
@@ -11427,6 +11430,9 @@ msgid "Dependency Proxy"
 msgstr ""
 
 msgid "Dependency Scanning"
+msgstr ""
+
+msgid "Dependency list"
 msgstr ""
 
 msgid "DependencyProxy|Cached %{time}"
@@ -20700,6 +20706,9 @@ msgid "Let's talk!"
 msgstr ""
 
 msgid "License Compliance"
+msgstr ""
+
+msgid "License compliance"
 msgstr ""
 
 msgid "License file"
@@ -35855,7 +35864,7 @@ msgstr ""
 msgid "Thread to reply to cannot be found"
 msgstr ""
 
-msgid "Threat Monitoring"
+msgid "Threat monitoring"
 msgstr ""
 
 msgid "ThreatMonitoring|Alert Details"
@@ -38552,6 +38561,9 @@ msgstr ""
 msgid "Vulnerability remediated. Review before resolving."
 msgstr ""
 
+msgid "Vulnerability report"
+msgstr ""
+
 msgid "Vulnerability resolved in %{branch}"
 msgstr ""
 
@@ -39337,7 +39349,7 @@ msgstr ""
 msgid "WikiPage|Keep editing"
 msgstr ""
 
-msgid "WikiPage|More Information."
+msgid "WikiPage|Learn more."
 msgstr ""
 
 msgid "WikiPage|Page title"

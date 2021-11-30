@@ -140,7 +140,7 @@ Enhancements to use these filters through the user interface
 
 ## Automatic issue transitions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/...) in GitLab 13.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55773) in GitLab 13.11.
 
 When you configure automatic issue transitions, you can transition a referenced
 Jira issue to the next available status with a category of **Done**. To configure

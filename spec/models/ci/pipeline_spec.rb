@@ -4611,4 +4611,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       expect(pipeline.authorized_cluster_agents).to contain_exactly(agent) # cached
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_pipeline }
+  end
 end

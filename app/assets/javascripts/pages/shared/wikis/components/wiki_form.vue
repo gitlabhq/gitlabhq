@@ -47,7 +47,7 @@ export default {
         newPage: s__(
           'WikiPage|Tip: You can specify the full path for the new file. We will automatically create any missing directories.',
         ),
-        moreInformation: s__('WikiPage|More Information.'),
+        learnMore: s__('WikiPage|Learn more.'),
       },
     },
     format: {
@@ -402,10 +402,9 @@ export default {
         <span class="gl-display-inline-block gl-max-w-full gl-mt-2 gl-text-gray-600">
           <gl-icon class="gl-mr-n1" name="bulb" />
           {{ titleHelpText }}
-          <gl-link :href="helpPath" target="_blank"
-            ><gl-icon name="question-o" />
-            {{ $options.i18n.title.helpText.moreInformation }}</gl-link
-          >
+          <gl-link :href="helpPath" target="_blank">
+            {{ $options.i18n.title.helpText.learnMore }}
+          </gl-link>
         </span>
       </div>
     </div>

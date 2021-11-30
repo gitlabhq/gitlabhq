@@ -5403,4 +5403,8 @@ RSpec.describe Ci::Build do
       expect(subject).to be true
     end
   end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_build }
+  end
 end

@@ -2,6 +2,17 @@ chat_names:
   - to_table: ci_pipeline_chat_data
     column: chat_name_id
     on_delete: async_delete
+ci_builds:
+  - to_table: dast_site_profiles_builds
+    column: ci_build_id
+    on_delete: async_delete
+  - to_table: dast_scanner_profiles_builds
+    column: ci_build_id
+    on_delete: async_delete
+ci_pipelines:
+  - to_table: dast_profiles_pipelines
+    column: ci_pipeline_id
+    on_delete: async_delete
 ci_runners:
   - to_table: clusters_applications_runners
     column: runner_id

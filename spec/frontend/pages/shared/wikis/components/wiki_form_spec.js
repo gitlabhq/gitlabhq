@@ -38,7 +38,7 @@ describe('WikiForm', () => {
     wrapper.findByRole('button', { name: 'Try this later' });
   const findSwitchToOldEditorButton = () =>
     wrapper.findByRole('button', { name: 'Switch me back to the classic editor.' });
-  const findTitleHelpLink = () => wrapper.findByRole('link', { name: 'More Information.' });
+  const findTitleHelpLink = () => wrapper.findByRole('link', { name: 'Learn more.' });
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
   const findContentEditor = () => wrapper.findComponent(ContentEditor);
   const findClassicEditor = () => wrapper.findComponent(MarkdownField);

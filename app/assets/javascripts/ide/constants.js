@@ -76,15 +76,15 @@ export const stageKeys = {
 export const commitItemIconMap = {
   addition: {
     icon: 'file-addition',
-    class: 'ide-file-addition',
+    class: 'file-addition ide-file-addition',
   },
   modified: {
     icon: 'file-modified',
-    class: 'ide-file-modified',
+    class: 'file-modified ide-file-modified',
   },
   deleted: {
     icon: 'file-deletion',
-    class: 'ide-file-deletion',
+    class: 'file-deletion ide-file-deletion',
   },
 };
 

@@ -25,7 +25,9 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
   it 'records record deletions' do
     model = create(factory_name) # rubocop: disable Rails/SaveBang
-    model.destroy!
+
+    # using delete to avoid cross-database modification errors when associations with dependent option are present
+    model.delete
 
     deleted_record = LooseForeignKeys::DeletedRecord.find_by(fully_qualified_table_name: "#{connection.current_schema}.#{table_name}", primary_key_value: model.id)
 
@@ -35,7 +37,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
   it 'cleans up record deletions' do
     model = create(factory_name) # rubocop: disable Rails/SaveBang
 
-    expect { model.destroy! }.to change { LooseForeignKeys::DeletedRecord.count }.by(1)
+    expect { model.delete }.to change { LooseForeignKeys::DeletedRecord.count }.by(1)
 
     LooseForeignKeys::ProcessDeletedRecordsService.new(connection: connection).execute
 

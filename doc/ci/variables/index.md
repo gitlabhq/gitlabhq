@@ -293,6 +293,11 @@ Use the variables in a job script like this:
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
 
+WARNING:
+Be careful when assigning the value of a file variable to another variable. The other
+variable takes the content of the file as its value, **not** the path to the file.
+See [issue 29407](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) for more details.
+
 An alternative to `File` type variables is to:
 
 - Read the value of a CI/CD variable (`variable` type).
