@@ -16,7 +16,7 @@ module AfterCommitQueue
 
   def run_after_commit_or_now(&block)
     if ApplicationRecord.inside_transaction?
-      if ActiveRecord::Base.connection.current_transaction.records&.include?(self)
+      if ActiveRecord::Base.connection.current_transaction.records&.include?(self) # rubocop: disable Database/MultipleDatabases
         run_after_commit(&block)
       else
         # If the current transaction does not include this record, we can run

@@ -66,7 +66,7 @@ module Types
       field :stages,
             type: Types::Ci::StageType.connection_type,
             null: true,
-            authorize: :read_commit_status,
+            authorize: :read_build,
             description: 'Stages of the pipeline.',
             extras: [:lookahead],
             resolver: Resolvers::Ci::PipelineStagesResolver
@@ -89,14 +89,14 @@ module Types
       field :jobs,
             ::Types::Ci::JobType.connection_type,
             null: true,
-            authorize: :read_commit_status,
+            authorize: :read_build,
             description: 'Jobs belonging to the pipeline.',
             resolver: ::Resolvers::Ci::JobsResolver
 
       field :job,
             type: ::Types::Ci::JobType,
             null: true,
-            authorize: :read_commit_status,
+            authorize: :read_build,
             description: 'Specific job in this pipeline, either by name or ID.' do
         argument :id,
                  type: ::Types::GlobalIDType[::CommitStatus],
@@ -116,7 +116,7 @@ module Types
       field :source_job,
             type: Types::Ci::JobType,
             null: true,
-            authorize: :read_commit_status,
+            authorize: :read_build,
             description: 'Job where pipeline was triggered from.'
 
       field :downstream, Types::Ci::PipelineType.connection_type, null: true,

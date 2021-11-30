@@ -143,6 +143,40 @@ RSpec.describe 'getting project information' do
     end
   end
 
+  context 'when the user has guest access' do
+    context 'when the project has public pipelines' do
+      before do
+        pipeline = create(:ci_pipeline, project: project)
+        create(:ci_build, project: project, pipeline: pipeline, name: 'a test job')
+        project.add_guest(current_user)
+      end
+
+      it 'shows all jobs' do
+        query = <<~GQL
+          query {
+            project(fullPath: "#{project.full_path}") {
+              jobs {
+                nodes {
+                  name
+                  stage {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        GQL
+
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :jobs, :nodes)).to contain_exactly({
+          'name' => 'a test job',
+          'stage' => { 'name' => 'test' }
+        })
+      end
+    end
+  end
+
   context 'when the user does not have access to the project' do
     it 'returns an empty field' do
       post_graphql(query, current_user: current_user)

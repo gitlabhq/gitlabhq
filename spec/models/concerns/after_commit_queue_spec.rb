@@ -10,7 +10,7 @@ RSpec.describe AfterCommitQueue do
     project = build(:project)
     project.run_after_commit(&test_proc)
 
-    project.save
+    project.save!
 
     expect(called).to be true
   end

@@ -194,7 +194,7 @@ module Types
     field :jobs,
           type: Types::Ci::JobType.connection_type,
           null: true,
-          authorize: :read_commit_status,
+          authorize: :read_build,
           description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
           resolver: Resolvers::ProjectJobsResolver
 

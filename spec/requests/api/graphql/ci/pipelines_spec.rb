@@ -79,12 +79,13 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
       create(:ci_build, pipeline: pipeline, stage_id: other_stage.id, name: 'linux: [baz]')
     end
 
-    it 'is null if the user is a guest' do
+    it 'is present if the user has guest access' do
       project.add_guest(user)
 
-      post_graphql(query, current_user: user, variables: first_n.with(1))
+      post_graphql(query, current_user: user)
 
-      expect(graphql_data_at(:project, :pipelines, :nodes)).to contain_exactly a_hash_including('stages' => be_nil)
+      expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :name))
+        .to contain_exactly(eq(stage.name), eq(other_stage.name))
     end
 
     it 'is present if the user has reporter access' do
@@ -113,12 +114,13 @@ RSpec.describe 'Query.project(fullPath).pipelines' do
         wrap_fields(query_graphql_path(query_path, :name))
       end
 
-      it 'is empty if the user is a guest' do
+      it 'is present if the user has guest access' do
         project.add_guest(user)
 
         post_graphql(query, current_user: user)
 
-        expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :groups)).to be_empty
+        expect(graphql_data_at(:project, :pipelines, :nodes, :stages, :nodes, :groups, :nodes, :name))
+          .to contain_exactly('linux', 'linux')
       end
 
       it 'is present if the user has reporter access' do

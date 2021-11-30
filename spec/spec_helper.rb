@@ -239,6 +239,7 @@ RSpec.configure do |config|
   # is not yet opened at the time that is triggered
   config.prepend_before do
     ApplicationRecord.set_open_transactions_baseline
+    ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
   config.append_before do
@@ -247,6 +248,7 @@ RSpec.configure do |config|
 
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
+    ::Ci::ApplicationRecord.reset_open_transactions_baseline
   end
 
   config.before do |example|

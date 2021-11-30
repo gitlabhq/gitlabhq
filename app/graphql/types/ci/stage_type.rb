@@ -4,7 +4,7 @@ module Types
   module Ci
     class StageType < BaseObject
       graphql_name 'CiStage'
-      authorize :read_commit_status
+      authorize :read_build
 
       field :id, GraphQL::Types::ID, null: false,
             description: 'ID of the stage.'

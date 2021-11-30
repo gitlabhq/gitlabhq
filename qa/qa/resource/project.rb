@@ -217,10 +217,6 @@ module QA
         "#{api_get_path}/wikis"
       end
 
-      def api_push_rules_path
-        "#{api_get_path}/push_rule"
-      end
-
       def api_post_body
         post_body = {
           name: name,
@@ -372,15 +368,6 @@ module QA
         parse_body(response)
       end
 
-      def push_rules
-        response = get(request_url(api_push_rules_path))
-        parse_body(response)
-      end
-
-      def add_push_rules(rules)
-        api_post_to(api_push_rules_path, rules)
-      end
-
       # Object comparison
       #
       # @param [QA::Resource::Project] other
@@ -441,3 +428,5 @@ module QA
     end
   end
 end
+
+QA::Resource::Project.prepend_mod_with('Resource::Project', namespace: QA)
