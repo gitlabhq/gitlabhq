@@ -115,7 +115,7 @@ Use these instructions for exploring the GitLab database while developing with t
    1. **Use an SSL connection?** This depends on your installation. Options are:
       - **Use Secure Connection**
       - **Standard Connection** (default)
-   1. **(Optional) The database to connect to**: `gitlabhq_development`.
+   1. **Optional. The database to connect to**: `gitlabhq_development`.
    1. **The display name for the database connection**: `gitlabhq_development`.
 
 Your database connection should now be displayed in the PostgreSQL Explorer pane and

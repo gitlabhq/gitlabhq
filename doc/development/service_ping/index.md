@@ -474,20 +474,34 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 1. Connect to bastion with agent forwarding:
 
-   `$ ssh -A lb-bastion.gprd.gitlab.com`.
+   ```shell
+   ssh -A lb-bastion.gprd.gitlab.com
+   ```
+
 1. Create named screen:
 
-   `$ screen -S <username>_usage_ping_<date>`.
+   ```shell
+   screen -S <username>_usage_ping_<date>
+   ```
+
 1. Connect to console host:
+  
+   ```shell
+   ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal
+   ```
 
-   `$ ssh $USER-rails@console-01-sv-gprd.c.gitlab-production.internal`.
-1. Run `ServicePing::SubmitService.new.execute`
-1. Detach from screen:
+1. Run:
 
-   `ctrl + a, ctrl + d`
+   ```shell
+   ServicePing::SubmitService.new.execute
+   ```
+
+1. To detach from screen, press `ctrl + A`, `ctrl + D`.
 1. Exit from bastion:
-
-   `$ exit`
+  
+   ```shell
+   exit
+   ```
 
 ### Verification (After approx 30 hours)
 
@@ -501,28 +515,49 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 1. Reconnect to bastion:
 
-   `$ ssh -A lb-bastion.gprd.gitlab.com`
+   ```shell
+   ssh -A lb-bastion.gprd.gitlab.com
+   ```
+
 1. Find your screen session:
 
-   `$ screen -ls`
+   ```shell
+   screen -ls
+   ```
+
 1. Attach to your screen session:
 
-   `$ screen -x 14226.mwawrzyniak_usage_ping_2021_01_22`
-1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
-1. Check the when the payload was sent: `RawUsageData.last.sent_at`
+   ```shell
+   screen -x 14226.mwawrzyniak_usage_ping_2021_01_22
+   ```
+
+1. Check the last payload in `raw_usage_data` table:
+  
+   ```shell
+   RawUsageData.last.payload
+   ```
+
+1. Check the when the payload was sent:
+
+   ```shell
+   RawUsageData.last.sent_at
+   ```
 
 ### Skip database write operations
 
-To skip database write operations, DevOps report creation, and storage of usage data payload, you can pass an optional argument `skip_db_write`:
+To skip database write operations, DevOps report creation, and storage of usage data payload, pass an optional argument:
 
-`ServicePing::SubmitService.new(skip_db_write: true).execute`
+```shell
+skip_db_write:
+ServicePing::SubmitService.new(skip_db_write: true).execute
+```
 
 ## Troubleshooting
 
 ### Cannot disable Service Ping using the configuration file
 
 The method to disable Service Ping using the GitLab configuration file does not work in
-GitLab versions 9.3.0 to 13.12.3. To disable it, you need to use the Admin Area in
+GitLab versions 9.3.0 to 13.12.3. To disable it, you must use the Admin Area in
 the GitLab UI instead. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/333269).
 

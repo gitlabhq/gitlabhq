@@ -147,7 +147,7 @@ First, enable the **Developer Tools** panel. See [Getting the correlation ID in 
 After developer tools have been enabled, obtain a session cookie as follows:
 
 1. Visit <https://gitlab.com> while logged in.
-1. (Optional) Select **Fetch/XHR** request filter in the **Developer Tools** panel. This step is described for Google Chrome developer tools and is not strictly necessary, it just makes it easier to find the correct request.
+1. Optional. Select **Fetch/XHR** request filter in the **Developer Tools** panel. This step is described for Google Chrome developer tools and is not strictly necessary, it just makes it easier to find the correct request.
 1. Select the `results?request_id=<some-request-id>` request on the left hand side.
 1. The session cookie is displayed under the `Request Headers` section of the `Headers` panel. Right-click on the cookie value and select `Copy value`.
 

@@ -161,7 +161,7 @@ To resolve the problem, migrate the affected file (or files) and push back to th
    git push
    ```
 
-1. (Optional) Clean up your `.git` folder:
+1. Optional. Clean up your `.git` folder:
 
    ```shell
    git reflog expire --expire-unreachable=now --all

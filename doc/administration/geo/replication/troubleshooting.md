@@ -559,7 +559,7 @@ to start again from scratch, there are a few steps that can help you:
    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
    as soon as you confirmed that you don't need it anymore, to save disk space.
 
-1. _(Optional)_ Rename other data folders and create new ones
+1. Optional. Rename other data folders and create new ones
 
    WARNING:
    You may still have files on the **secondary** node that have been removed from the **primary** node, but this

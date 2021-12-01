@@ -621,7 +621,7 @@ To configure Gitaly with TLS:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
-1. (Optional) Improve security by:
+1. Optional. Improve security by:
    1. Disabling non-TLS connections by commenting out or deleting `gitaly['listen_addr']` in
       `/etc/gitlab/gitlab.rb`.
    1. Saving the file.
@@ -697,7 +697,7 @@ To configure Gitaly with TLS:
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
-1. (Optional) Improve security by:
+1. Optional. Improve security by:
    1. Disabling non-TLS connections by commenting out or deleting `listen_addr` in
       `/home/git/gitaly/config.toml`.
    1. Saving the file.

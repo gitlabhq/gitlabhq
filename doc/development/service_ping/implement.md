@@ -799,7 +799,7 @@ To set up Service Ping locally, you must:
 
 1. [Set up local repositories](#set-up-local-repositories).
 1. [Test local setup](#test-local-setup).
-1. (Optional) [Test Prometheus-based Service Ping](#test-prometheus-based-service-ping).
+1. Optional. [Test Prometheus-based Service Ping](#test-prometheus-based-service-ping).
 
 ### Set up local repositories
 

@@ -85,10 +85,10 @@ To configure your Vault server:
    to provide details about your Vault server:
    - `VAULT_SERVER_URL` - The URL of your Vault server, such as `https://vault.example.com:8200`.
      Required.
-   - `VAULT_AUTH_ROLE` - (Optional) The role to use when attempting to authenticate.
+   - `VAULT_AUTH_ROLE` - Optional. The role to use when attempting to authenticate.
      If no role is specified, Vault uses the [default role](https://www.vaultproject.io/api/auth/jwt#default_role)
      specified when the authentication method was configured.
-   - `VAULT_AUTH_PATH` - (Optional) The path where the authentication method is mounted, default is `jwt`.
+   - `VAULT_AUTH_PATH` - Optional. The path where the authentication method is mounted, default is `jwt`.
 
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).

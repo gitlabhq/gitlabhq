@@ -302,7 +302,7 @@ listed in the descriptions of the relevant settings.
 | `external_authorization_service_timeout` | float             | required by:<br>`external_authorization_service_enabled` | The timeout after which an authorization request is aborted, in seconds. When a request times out, access is denied to the user. (min: 0.001, max: 10, step: 0.001). |
 | `external_authorization_service_url`     | string           | required by:<br>`external_authorization_service_enabled` | URL to which authorization requests are directed. |
 | `external_pipeline_validation_service_url` | string         | no                                   | URL to use for pipeline validation requests. |
-| `external_pipeline_validation_service_token` | string       | no                                   | (Optional) Token to include as the `X-Gitlab-Token` header in requests to the URL in `external_pipeline_validation_service_url`. |
+| `external_pipeline_validation_service_token` | string       | no                                   | Optional. Token to include as the `X-Gitlab-Token` header in requests to the URL in `external_pipeline_validation_service_url`. |
 | `external_pipeline_validation_service_timeout` | integer    | no                                   | How long to wait for a response from the pipeline validation service. Assumes `OK` if it times out. |
 | `file_template_project_id`                | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from. |
 | `first_day_of_week`                       | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |

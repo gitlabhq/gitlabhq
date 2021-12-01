@@ -689,7 +689,7 @@ The following capture groups are optional:
 - `pre`: If set, the tag is ignored. Ignoring `pre` tags ensures release candidate
   tags and other pre-release tags are not considered when determining the range of
   commits to generate a changelog for.
-- `meta`: (Optional) Specifies build metadata.
+- `meta`: Optional. Specifies build metadata.
 
 Using this information, GitLab builds a map of Git tags and their release
 versions. It then determines what the latest tag is, based on the version

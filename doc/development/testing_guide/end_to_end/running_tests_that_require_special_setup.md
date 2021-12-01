@@ -294,7 +294,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
    export EE_LICENSE=$(cat <path/to/your/gitlab_license>)
    ```
 
-1. (Optional) Pull the GitLab image
+1. Optional. Pull the GitLab image
 
    This step is optional because pulling the Docker image is part of the [`Test::Integration::Geo` orchestrated scenario](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/d8c5c40607c2be0eda58bbca1b9f534b00889a0b/lib/gitlab/qa/scenario/test/integration/geo.rb). However, it's easier to monitor the download progress if you pull the image first, and the scenario skips this step after checking that the image is up to date.
 

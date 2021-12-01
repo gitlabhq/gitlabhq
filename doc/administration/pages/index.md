@@ -56,11 +56,11 @@ Before proceeding with the Pages configuration, you must:
    | `gitlab.example.com` | `pages.example.com` | **{check-circle}** Yes |
 
 1. Configure a **wildcard DNS record**.
-1. (Optional) Have a **wildcard certificate** for that domain if you decide to
+1. Optional. Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
-1. (Optional but recommended) Enable [Shared runners](../../ci/runners/index.md)
+1. Optional but recommended. Enable [Shared runners](../../ci/runners/index.md)
    so that your users don't have to bring their own.
-1. (Only for custom domains) Have a **secondary IP**.
+1. For custom domains, have a **secondary IP**.
 
 NOTE:
 If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites are only accessible to devices/users that have access to the private network.

@@ -634,7 +634,7 @@ timed rollout 10%:
   start_in: 30 minutes
 ```
 
-To stop the active timer of a delayed job, click the **{time-out}** (**Unschedule**) button.
+To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
 This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
 
 To start a delayed job immediately, select **Play** (**{play}**).

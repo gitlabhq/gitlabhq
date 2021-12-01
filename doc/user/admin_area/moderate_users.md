@@ -53,7 +53,7 @@ To approve or reject a user sign up:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Approve** or **Reject**.
 
@@ -77,7 +77,7 @@ by removing them in LDAP, or directly from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Block**.
 
@@ -101,7 +101,7 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select on the **Blocked** tab.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Unblock**.
 
@@ -145,7 +145,7 @@ A user can be deactivated from the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Deactivate**.
 
@@ -185,7 +185,7 @@ To do this:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Activate**.
 
@@ -211,7 +211,7 @@ Users can be banned using the Admin Area. To do this:
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Ban user**.
 
@@ -224,7 +224,7 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
-1. (Optional) Select a user.
+1. Optional. Select a user.
 1. Select the **{settings}** **User administration** dropdown.
 1. Select **Unban user**.
 

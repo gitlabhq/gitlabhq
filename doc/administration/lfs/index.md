@@ -155,7 +155,7 @@ On Omnibus GitLab installations, the settings are prefixed by `lfs_object_store_
    This migrates existing LFS objects to object storage. New LFS objects
    are forwarded to object storage unless
    `gitlab_rails['lfs_object_store_background_upload']` and `gitlab_rails['lfs_object_store_direct_upload']` is set to `false`.
-1. (Optional) Verify all files migrated properly.
+1. Optional. Verify all files migrated properly.
    From [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database)
    (`sudo gitlab-psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
 
@@ -208,7 +208,7 @@ For source installations the settings are nested under `lfs:` and then
    This migrates existing LFS objects to object storage. New LFS objects
    are forwarded to object storage unless `background_upload` and `direct_upload` is set to
    `false`.
-1. (Optional) Verify all files migrated properly.
+1. Optional. Verify all files migrated properly.
    From PostgreSQL console (`sudo -u git -H psql -d gitlabhq_production`) verify `objectstg` below (where `file_store=2`) has count of all artifacts:
 
    ```shell

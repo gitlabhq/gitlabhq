@@ -166,10 +166,10 @@ To add or update variables in the project settings:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope**: (Optional) `All`, or specific [environments](../environments/index.md).
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md).
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is masked
+   - **Mask variable** Optional. If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
@@ -208,10 +208,10 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Environment scope** (Optional): `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Environment scope** Optional. `All`, or specific [environments](#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is masked
+   - **Mask variable** Optional. If selected, the variable's **Value** is masked
      in job logs. The variable fails to save if the value does not meet the
      [masking requirements](#mask-a-cicd-variable).
 
@@ -248,9 +248,9 @@ To add an instance variable:
      10,000 characters is allowed. This is also bounded by the limits of the selected
      runner operating system. In GitLab 13.0 to 13.2, 700 characters is allowed.
    - **Type**: [`File` or `Variable`](#cicd-variable-types).
-   - **Protect variable** (Optional): If selected, the variable is only available
+   - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
-   - **Mask variable** (Optional): If selected, the variable's **Value** is not shown
+   - **Mask variable** Optional. If selected, the variable's **Value** is not shown
      in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 ### CI/CD variable types
