@@ -603,6 +603,15 @@ class Note < ApplicationRecord
     })
   end
 
+  def show_outdated_changes?
+    return false unless for_merge_request?
+    return false unless Feature.enabled?(:display_outdated_line_diff, noteable.source_project, default_enabled: :yaml)
+    return false unless system?
+    return false unless change_position&.line_range
+
+    change_position.line_range["end"] || change_position.line_range["start"]
+  end
+
   private
 
   def system_note_viewable_by?(user)

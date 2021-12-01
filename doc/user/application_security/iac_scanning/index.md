@@ -39,7 +39,7 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 
 ### Making IaC analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers are availibile with the GitLab Free tier. Future propietary analyzers may be restricted to higher tiers. 
+All open source (OSS) analyzers are availibile with the GitLab Free tier. Future propietary analyzers may be restricted to higher tiers.
 
 #### Summary of features per tier
 
@@ -84,7 +84,7 @@ from the Security Configuration page:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
-1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure via Merge Request**.
+1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable IaC Scanning
 that you can review and merge to complete the configuration.

@@ -17,7 +17,7 @@ to securely store the state files in local storage (the default) or
 WARNING:
 Using local storage (the default) on clustered deployments of GitLab will result in
 a split state across nodes, making subsequent executions of Terraform inconsistent.
-You are highly advised to use a remote storage in that case.
+You are highly advised to use a remote storage resource in that case.
 
 The GitLab managed Terraform state backend can store your Terraform state easily and
 securely, and spares you from setting up additional remote resources like
@@ -28,7 +28,7 @@ Amazon S3 or Google Cloud Storage. Its features include:
 - Locking and unlocking state.
 - Remote Terraform plan and apply execution.
 
-A GitLab **administrator** must [setup the Terraform state storage configuration](../../../administration/terraform_state.md)
+A GitLab **administrator** must [set up the Terraform state storage configuration](../../../administration/terraform_state.md)
 before using this feature.
 
 ## Permissions for using Terraform
@@ -89,7 +89,7 @@ local machine, this is a simple way to get started:
    ```
 
 If you already have a GitLab-managed Terraform state, you can use the `terraform init` command
-with the prepopulated parameters values:
+with the pre-populated parameters values:
 
 1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Infrastructure > Terraform**.
@@ -300,7 +300,7 @@ any changes that are required for your infrastructure. All Terraform commands
 should now work.
 
 If you ever set or change modules or backend configuration for Terraform,
-rerun this command to reinitialize your working directory. If you forget, other
+re-run this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 

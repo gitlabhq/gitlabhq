@@ -30776,7 +30776,7 @@ msgstr ""
 msgid "SecurityConfiguration|Configure %{feature}"
 msgstr ""
 
-msgid "SecurityConfiguration|Configure via Merge Request"
+msgid "SecurityConfiguration|Configure with a merge request"
 msgstr ""
 
 msgid "SecurityConfiguration|Copy code and open .gitlab-ci.yml file"
@@ -39736,9 +39736,6 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
-msgid "You can only merge once this merge request is approved."
-msgstr ""
-
 msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
@@ -41629,6 +41626,9 @@ msgstr ""
 msgid "mrWidget|Merge blocked: pipeline must succeed. It's waiting for a manual action to continue."
 msgstr ""
 
+msgid "mrWidget|Merge blocked: this merge request must be approved."
+msgstr ""
+
 msgid "mrWidget|Merge failed."
 msgstr ""
 
@@ -41771,9 +41771,6 @@ msgid "mrWidget|Users who can write to the source or target branches can resolve
 msgstr ""
 
 msgid "mrWidget|What is a merge train?"
-msgstr ""
-
-msgid "mrWidget|You can only merge once this merge request is approved."
 msgstr ""
 
 msgid "mrWidget|Your password"

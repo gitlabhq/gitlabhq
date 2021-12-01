@@ -304,7 +304,7 @@ RSpec.describe Integrations::MicrosoftTeams do
 
     context 'with protected branch' do
       before do
-        create(:protected_branch, project: project, name: 'a-protected-branch')
+        create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
       let(:pipeline) do

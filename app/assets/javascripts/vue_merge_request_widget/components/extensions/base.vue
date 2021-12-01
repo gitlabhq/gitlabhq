@@ -171,7 +171,7 @@ export default {
         :icon-name="statusIconName"
       />
       <div
-        class="media-body gl-display-flex gl-flex-direction-row!"
+        class="media-body gl-display-flex gl-flex-direction-row! gl-align-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-flex-grow-1">

@@ -113,7 +113,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with protected branch" do
         before do
-          create(:protected_branch, project: project, name: "a-protected-branch")
+          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
         let(:sample_data) do
@@ -309,7 +309,7 @@ RSpec.shared_examples "chat integration" do |integration_name|
 
       context "with protected branch" do
         before do
-          create(:protected_branch, project: project, name: "a-protected-branch")
+          create(:protected_branch, :create_branch_on_repository, project: project, name: "a-protected-branch")
         end
 
         let(:sample_data) do

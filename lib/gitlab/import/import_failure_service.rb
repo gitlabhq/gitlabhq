@@ -15,11 +15,21 @@ module Gitlab
           exception: exception,
           import_state: import_state,
           project_id: project_id,
-          error_source: error_source
-        ).execute(fail_import: fail_import, metrics: metrics)
+          error_source: error_source,
+          fail_import: fail_import,
+          metrics: metrics
+        ).execute
       end
 
-      def initialize(exception:, import_state: nil, project_id: nil, error_source: nil)
+      def initialize(
+        exception:,
+        import_state: nil,
+        project_id: nil,
+        error_source: nil,
+        fail_import: false,
+        metrics: false
+      )
+
         if import_state.blank? && project_id.blank?
           raise ArgumentError, 'import_state OR project_id must be provided'
         end
@@ -34,9 +44,11 @@ module Gitlab
 
         @exception = exception
         @error_source = error_source
+        @fail_import = fail_import
+        @metrics = metrics
       end
 
-      def execute(fail_import:, metrics:)
+      def execute
         track_exception
         persist_failure
 
@@ -46,7 +58,7 @@ module Gitlab
 
       private
 
-      attr_reader :exception, :import_state, :project, :error_source
+      attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics
 
       def track_exception
         attributes = {
@@ -65,12 +77,15 @@ module Gitlab
         Gitlab::ErrorTracking.track_exception(exception, attributes)
       end
 
+      # Failures with `retry_count: 0` are considered "hard_failures" and those
+      # are exposed on the REST API projects/:id/import
       def persist_failure
         project.import_failures.create(
           source: error_source,
           exception_class: exception.class.to_s,
           exception_message: exception.message.truncate(255),
-          correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
+          correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+          retry_count: fail_import ? 0 : nil
         )
       end
 

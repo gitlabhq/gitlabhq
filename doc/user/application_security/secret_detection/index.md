@@ -123,10 +123,10 @@ from the Security Configuration page.
 
 1. In the project where you want to enable Secret Detection, go to
    **Security & Compliance > Configuration**.
-1. In the **Secret Detection** row, select **Configure via Merge Request**.
+1. In the **Secret Detection** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Secret Detection
-that you can review and merge to complete the configuration. 
+that you can review and merge to complete the configuration.
 
 NOTE:
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal

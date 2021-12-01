@@ -46,14 +46,14 @@ You can configure the following security controls:
   - Select **Manage scans** to manage the saved DAST scans, site profiles, and scanner profiles.
     For more details, read [DAST on-demand scans](../dast/index.md#on-demand-scans).
 - [Dependency Scanning](../dependency_scanning/index.md)
-  - Select **Configure via Merge Request** to create a merge request with the changes required to
+  - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).
 - [Container Scanning](../container_scanning/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Container Scanning](../../../user/application_security/container_scanning/index.md#configuration).
 - [Cluster Image Scanning](../cluster_image_scanning/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Cluster Image Scanning](../../../user/application_security/cluster_image_scanning/#configuration).
 - [Secret Detection](../secret_detection/index.md)
-  - Select **Configure via Merge Request** to create a merge request with the changes required to
+  - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Secret Detection. For more details, read [Enable Secret Detection via an automatic merge request](../secret_detection/index.md#enable-secret-detection-via-an-automatic-merge-request).
 - [API Fuzzing](../api_fuzzing/index.md)
   - Select **Enable API Fuzzing** to use API Fuzzing for the current project. For more details, read [API Fuzzing](../../../user/application_security/api_fuzzing/index.md#enable-web-api-fuzzing).

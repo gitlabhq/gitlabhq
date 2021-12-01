@@ -14,12 +14,12 @@ module MergeRequests
     end
 
     def execute
-      end_position = position.line_range["end"]
+      line_position = position.line_range["end"] || position.line_range["start"]
       diff_line_index = diff_lines.find_index do |l|
-        if end_position["new_line"]
-          l.new_line == end_position["new_line"]
-        elsif end_position["old_line"]
-          l.old_line == end_position["old_line"]
+        if line_position["new_line"]
+          l.new_line == line_position["new_line"]
+        elsif line_position["old_line"]
+          l.old_line == line_position["old_line"]
         end
       end
       initial_line_index = [diff_line_index - OVERFLOW_LINES_COUNT, 0].max

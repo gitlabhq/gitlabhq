@@ -73,6 +73,7 @@ module Gitlab
                                        partition_name: partition.partition_name,
                                        table_name: partition.table)
               end
+
               model.partitioning_strategy.after_adding_partitions
             end
           end

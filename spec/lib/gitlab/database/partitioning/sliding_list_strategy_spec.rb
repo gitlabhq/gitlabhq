@@ -37,8 +37,8 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
   describe '#current_partitions' do
     it 'detects both partitions' do
       expect(strategy.current_partitions).to eq([
-                                         Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 1, partition_name: '_test_partitioned_test_1'),
-                                         Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 2, partition_name: '_test_partitioned_test_2')
+        Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 1, partition_name: '_test_partitioned_test_1'),
+        Gitlab::Database::Partitioning::SingleNumericListPartition.new(table_name, 2, partition_name: '_test_partitioned_test_2')
       ])
     end
   end

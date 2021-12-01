@@ -171,10 +171,8 @@ we should track our progress through the exception list.
 
 When auto-generating the `.rubocop_todo.yml` exception list for a particular Cop,
 and more than 15 files are affected, we should add the exception list to
-a different file within `.rubocop_todo/` directory.
-
-For example, the configuration for the cop `Gitlab/NamespacedClass` is located
-in `.rubocop_todo/gitlab/namespaced_class.yml`.
+a different file in the directory `.rubocop_todo/`. For example, the configuration for the cop
+`Gitlab/NamespacedClass` is in `.rubocop_todo/gitlab/namespaced_class.yml`.
 
 This ensures that our list isn't mistakenly removed by another auto generation of
 the `.rubocop_todo.yml`. This also allows us greater visibility into the exceptions

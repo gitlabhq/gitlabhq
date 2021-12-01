@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 INFO:
 Try out Dependency Scanning in GitLab Ultimate.
-[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs). 
+[It's free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-dependency-scanning-docs).
 
 The Dependency Scanning feature can automatically find security vulnerabilities in your
 dependencies while you're developing and testing your applications. For example, dependency scanning
@@ -444,7 +444,7 @@ from the Security Configuration page.
 
 1. In the project where you want to enable Dependency Scanning, navigate to
    **Security & Compliance > Configuration**.
-1. In the **Dependency Scanning** row, select **Configure via Merge Request**.
+1. In the **Dependency Scanning** row, select **Configure with a merge request**.
 
 This automatically creates a merge request with the changes necessary to enable Dependency Scanning
 that you can review and merge to complete the configuration.
