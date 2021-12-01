@@ -7453,6 +7453,12 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :project }
+  end
+
+  private
+
   def finish_job(export_job)
     export_job.start
     export_job.finish

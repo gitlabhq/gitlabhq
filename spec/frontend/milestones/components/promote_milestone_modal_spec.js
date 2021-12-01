@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createFlash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
-import PromoteMilestoneModal from '~/pages/milestones/shared/components/promote_milestone_modal.vue';
+import PromoteMilestoneModal from '~/milestones/components/promote_milestone_modal.vue';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/flash');

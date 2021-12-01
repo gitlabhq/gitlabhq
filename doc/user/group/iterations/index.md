@@ -165,7 +165,7 @@ To group issues by label:
 1. Select the **Filter by label** dropdown.
 1. Select the labels you want to group by in the labels dropdown.
    You can also search for labels by typing in the search input.
-1. Select or tap outside of the label dropdown. The page is now grouped by the selected labels.
+1. Select any area outside the label dropdown list. The page is now grouped by the selected labels.
 
 ### Enable or disable iteration cadences **(PREMIUM SELF)**
 

@@ -37,7 +37,7 @@ information is **not sent** to any other GitLab instances.
 If you have just started using GitLab, it might take a few weeks for data to be collected before this
 feature is available.
 
-## DevOps Adoption **(ULTIMATE)**
+## DevOps Adoption **(ULTIMATE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta).
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.

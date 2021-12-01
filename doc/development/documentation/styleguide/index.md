@@ -1053,7 +1053,9 @@ Guidance for each individual UI element is in [the word list](word_list.md).
 
 ### How to write navigation task steps
 
-To be consistent, use this format when you write navigation steps in a task topic.
+To be consistent, use these templates when you write navigation steps in a task topic.
+
+To open project settings:
 
 ```markdown
 1. On the top bar, select **Menu > Projects** and find your project.
@@ -1061,7 +1063,7 @@ To be consistent, use this format when you write navigation steps in a task topi
 1. Expand **General pipelines**.
 ```
 
-Another example:
+To open group settings:
 
 ```markdown
 1. On the top bar, select **Menu > Groups** and find your group.
@@ -1069,7 +1071,7 @@ Another example:
 1. Expand **General pipelines**.
 ```
 
-An Admin Area example:
+To open the Admin Area:
 
 ```markdown
 1. On the top bar, select **Menu > Admin**.
@@ -1079,6 +1081,15 @@ To select your avatar:
 
 ```markdown
 1. On the top bar, in the top right corner, select your avatar.
+```
+
+To save the selection in some dropdown lists:
+
+```markdown
+1. Go to your issue.
+1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. From the dropdown list, select the iteration to associate this issue with.
+1. Select any area outside the dropdown list.
 ```
 
 ### Optional steps

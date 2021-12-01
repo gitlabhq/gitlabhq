@@ -35,7 +35,7 @@ RSpec.describe 'Dashboard > Milestones' do
 
     describe 'new milestones dropdown', :js do
       it 'takes user to a new milestone page', :js do
-        find('.new-project-item-select-button').click
+        click_button 'Toggle project select'
 
         page.within('.select2-results') do
           first('.select2-result-label').click

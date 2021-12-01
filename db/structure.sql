@@ -11767,6 +11767,21 @@ CREATE SEQUENCE ci_minutes_additional_packs_id_seq
 
 ALTER SEQUENCE ci_minutes_additional_packs_id_seq OWNED BY ci_minutes_additional_packs.id;
 
+CREATE TABLE ci_namespace_mirrors (
+    id bigint NOT NULL,
+    namespace_id integer NOT NULL,
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL
+);
+
+CREATE SEQUENCE ci_namespace_mirrors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_namespace_mirrors_id_seq OWNED BY ci_namespace_mirrors.id;
+
 CREATE TABLE ci_namespace_monthly_usages (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -12014,6 +12029,21 @@ CREATE SEQUENCE ci_platform_metrics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_platform_metrics_id_seq OWNED BY ci_platform_metrics.id;
+
+CREATE TABLE ci_project_mirrors (
+    id bigint NOT NULL,
+    project_id integer NOT NULL,
+    namespace_id integer NOT NULL
+);
+
+CREATE SEQUENCE ci_project_mirrors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_project_mirrors_id_seq OWNED BY ci_project_mirrors.id;
 
 CREATE TABLE ci_project_monthly_usages (
     id bigint NOT NULL,
@@ -21264,6 +21294,8 @@ ALTER TABLE ONLY ci_job_variables ALTER COLUMN id SET DEFAULT nextval('ci_job_va
 
 ALTER TABLE ONLY ci_minutes_additional_packs ALTER COLUMN id SET DEFAULT nextval('ci_minutes_additional_packs_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_namespace_mirrors ALTER COLUMN id SET DEFAULT nextval('ci_namespace_mirrors_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_namespace_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_namespace_monthly_usages_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_pending_builds ALTER COLUMN id SET DEFAULT nextval('ci_pending_builds_id_seq'::regclass);
@@ -21285,6 +21317,8 @@ ALTER TABLE ONLY ci_pipelines ALTER COLUMN id SET DEFAULT nextval('ci_pipelines_
 ALTER TABLE ONLY ci_pipelines_config ALTER COLUMN pipeline_id SET DEFAULT nextval('ci_pipelines_config_pipeline_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_platform_metrics ALTER COLUMN id SET DEFAULT nextval('ci_platform_metrics_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_project_mirrors ALTER COLUMN id SET DEFAULT nextval('ci_project_mirrors_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_project_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_project_monthly_usages_id_seq'::regclass);
 
@@ -22727,6 +22761,9 @@ ALTER TABLE ONLY ci_job_variables
 ALTER TABLE ONLY ci_minutes_additional_packs
     ADD CONSTRAINT ci_minutes_additional_packs_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ci_namespace_mirrors
+    ADD CONSTRAINT ci_namespace_mirrors_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ci_namespace_monthly_usages
     ADD CONSTRAINT ci_namespace_monthly_usages_pkey PRIMARY KEY (id);
 
@@ -22759,6 +22796,9 @@ ALTER TABLE ONLY ci_pipelines
 
 ALTER TABLE ONLY ci_platform_metrics
     ADD CONSTRAINT ci_platform_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_project_mirrors
+    ADD CONSTRAINT ci_project_mirrors_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_project_monthly_usages
     ADD CONSTRAINT ci_project_monthly_usages_pkey PRIMARY KEY (id);
@@ -25337,6 +25377,8 @@ CREATE UNIQUE INDEX index_ci_job_variables_on_key_and_job_id ON ci_job_variables
 
 CREATE INDEX index_ci_minutes_additional_packs_on_namespace_id_purchase_xid ON ci_minutes_additional_packs USING btree (namespace_id, purchase_xid);
 
+CREATE UNIQUE INDEX index_ci_namespace_mirrors_on_namespace_id ON ci_namespace_mirrors USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_ci_namespace_monthly_usages_on_namespace_id_and_date ON ci_namespace_monthly_usages USING btree (namespace_id, date);
 
 CREATE INDEX index_ci_pending_builds_id_on_protected_partial ON ci_pending_builds USING btree (id) WHERE (protected = true);
@@ -25424,6 +25466,10 @@ CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_config_source ON c
 CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_source ON ci_pipelines USING btree (user_id, created_at, source);
 
 CREATE INDEX index_ci_pipelines_on_user_id_and_id_and_cancelable_status ON ci_pipelines USING btree (user_id, id) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
+
+CREATE INDEX index_ci_project_mirrors_on_namespace_id ON ci_project_mirrors USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_project_monthly_usages_on_project_id_and_date ON ci_project_monthly_usages USING btree (project_id, date);
 
@@ -26000,6 +26046,8 @@ CREATE INDEX index_geo_repository_updated_events_on_project_id ON geo_repository
 CREATE INDEX index_geo_repository_updated_events_on_source ON geo_repository_updated_events USING btree (source);
 
 CREATE INDEX index_geo_reset_checksum_events_on_project_id ON geo_reset_checksum_events USING btree (project_id);
+
+CREATE INDEX index_gin_ci_namespace_mirrors_on_traversal_ids ON ci_namespace_mirrors USING gin (traversal_ids);
 
 CREATE INDEX index_gin_ci_pending_builds_on_namespace_traversal_ids ON ci_pending_builds USING gin (namespace_traversal_ids);
 

@@ -42,8 +42,8 @@ To assign or unassign a label:
    You can search repeatedly to add more labels.
    The selected labels are marked with a checkmark.
 1. Click the labels you want to assign or unassign.
-1. To apply your changes to labels, click **X** next to **Assign labels** or anywhere outside the
-   label section.
+1. To apply your changes to labels, select **X** next to **Assign labels** or select any area
+   outside the label section.
 
 Alternatively, to unassign a label, click the **X** on the label you want to unassign.
 

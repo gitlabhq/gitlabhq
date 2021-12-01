@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import initDatePicker from '~/behaviors/date_picker';
-import GLForm from '../../gl_form';
-import ZenMode from '../../zen_mode';
+import GLForm from '~/gl_form';
+import ZenMode from '~/zen_mode';
 
 export default (initGFM = true) => {
   new ZenMode(); // eslint-disable-line no-new

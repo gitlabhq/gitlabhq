@@ -3,8 +3,8 @@ import { TEST_HOST } from 'helpers/test_constants';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility';
-import deleteMilestoneModal from '~/pages/milestones/shared/components/delete_milestone_modal.vue';
-import eventHub from '~/pages/milestones/shared/event_hub';
+import deleteMilestoneModal from '~/milestones/components/delete_milestone_modal.vue';
+import eventHub from '~/milestones/event_hub';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

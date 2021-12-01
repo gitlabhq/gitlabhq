@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Postgresql::ReplicationSlot do
+  it { is_expected.to be_a Gitlab::Database::SharedModel }
+
   describe '.in_use?' do
     it 'returns true when replication slots are present' do
       expect(described_class).to receive(:exists?).and_return(true)
@@ -73,28 +75,22 @@ RSpec.describe Postgresql::ReplicationSlot do
     before(:all) do
       skip('max_replication_slots too small') if skip_examples
 
-      @current_slot_count = ApplicationRecord
+      @current_slot_count = described_class
         .connection
-        .execute("SELECT COUNT(*) FROM pg_replication_slots;")
-        .first
-        .fetch('count')
-        .to_i
+        .select_value("SELECT COUNT(*) FROM pg_replication_slots")
 
-      @current_unused_count = ApplicationRecord
+      @current_unused_count = described_class
         .connection
-        .execute("SELECT COUNT(*) FROM pg_replication_slots WHERE active = 'f';")
-        .first
-        .fetch('count')
-        .to_i
+        .select_value("SELECT COUNT(*) FROM pg_replication_slots WHERE active = 'f';")
 
-      ApplicationRecord
+      described_class
         .connection
         .execute("SELECT * FROM pg_create_physical_replication_slot('test_slot');")
     end
 
     after(:all) do
       unless skip_examples
-        ApplicationRecord
+        described_class
           .connection
           .execute("SELECT pg_drop_replication_slot('test_slot');")
       end

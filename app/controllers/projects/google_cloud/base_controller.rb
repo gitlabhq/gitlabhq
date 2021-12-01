@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::GoogleCloud::BaseController < Projects::ApplicationController
-  feature_category :google_cloud
+  feature_category :five_minute_production_app
 
   before_action :admin_project_google_cloud!
   before_action :google_oauth2_enabled!

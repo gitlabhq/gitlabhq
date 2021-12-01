@@ -10,7 +10,7 @@ module Ci
       sidekiq_options retry: 3
 
       queue_namespace :pipeline_background
-      feature_category :code_testing
+      feature_category :code_quality
 
       idempotent!
 

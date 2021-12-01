@@ -478,9 +478,7 @@ RSpec.describe Gitlab::Redis::MultiStore do
 
     let_it_be(:key) { "redis:counter" }
 
-    subject do
-      multi_store.incr(key)
-    end
+    subject { multi_store.incr(key) }
 
     it 'executes method missing' do
       expect(multi_store).to receive(:method_missing)
@@ -488,17 +486,35 @@ RSpec.describe Gitlab::Redis::MultiStore do
       subject
     end
 
-    it 'logs MethodMissingError' do
-      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(Gitlab::Redis::MultiStore::MethodMissingError),
-        hash_including(command_name: :incr, extra: hash_including(instance_name: instance_name)))
+    context 'when command is not in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
+      it 'logs MethodMissingError' do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(an_instance_of(Gitlab::Redis::MultiStore::MethodMissingError),
+          hash_including(command_name: :incr, extra: hash_including(instance_name: instance_name)))
 
-      subject
+        subject
+      end
+
+      it 'increments method missing counter' do
+        expect(counter).to receive(:increment).with(command: :incr, instance_name: instance_name)
+
+        subject
+      end
     end
 
-    it 'increments method missing counter' do
-      expect(counter).to receive(:increment).with(command: :incr, instance_name: instance_name)
+    context 'when command is in SKIP_LOG_METHOD_MISSING_FOR_COMMANDS' do
+      subject { multi_store.info }
 
-      subject
+      it 'does not log MethodMissingError' do
+        expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+        subject
+      end
+
+      it 'does not increment method missing counter' do
+        expect(counter).not_to receive(:increment)
+
+        subject
+      end
     end
 
     context 'with feature flag :use_primary_store_as_default_for_test_store is enabled' do

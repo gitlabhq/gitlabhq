@@ -11,7 +11,7 @@ GitLab automatically renders Markdown content. For example, when you add a comme
 you type the text in the Markdown language. When you save the issue, the text is rendered
 with a set of styles. These styles are described on this page.
 
-For example, in Markdown, an ordered list looks like this:
+For example, in Markdown, an unordered list looks like this:
 
 ```markdown
 - Cat

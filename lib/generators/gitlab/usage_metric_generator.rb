@@ -5,9 +5,9 @@ require 'rails/generators'
 module Gitlab
   class UsageMetricGenerator < Rails::Generators::Base
     CE_DIR = 'lib/gitlab/usage/metrics/instrumentations'
-    EE_DIR = 'ee/lib/ee/gitlab/usage/metrics/instrumentations'
+    EE_DIR = 'ee/lib/gitlab/usage/metrics/instrumentations'
     SPEC_CE_DIR = 'spec/lib/gitlab/usage/metrics/instrumentations'
-    SPEC_EE_DIR = 'ee/spec/lib/ee/gitlab/usage/metrics/instrumentations'
+    SPEC_EE_DIR = 'ee/spec/lib/gitlab/usage/metrics/instrumentations'
 
     ALLOWED_SUPERCLASSES = {
       generic: 'Generic',

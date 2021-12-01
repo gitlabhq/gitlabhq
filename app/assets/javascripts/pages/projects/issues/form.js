@@ -7,7 +7,7 @@ import GLForm from '~/gl_form';
 import initSuggestions from '~/issuable_suggestions';
 import initIssuableTypeSelector from '~/issuable_type_selector';
 import LabelsSelect from '~/labels_select';
-import MilestoneSelect from '~/milestone_select';
+import MilestoneSelect from '~/milestones/milestone_select';
 import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
 
 export default () => {

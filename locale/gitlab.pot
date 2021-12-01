@@ -21997,6 +21997,18 @@ msgstr ""
 msgid "MergeRequest|Approved by @%{username}"
 msgstr ""
 
+msgid "MergeRequest|Can't show this merge request because of an internal error. Contact your administrator."
+msgstr ""
+
+msgid "MergeRequest|Can't show this merge request because the fork project was deleted."
+msgstr ""
+
+msgid "MergeRequest|Can't show this merge request because the source branch %{badge_start}%{source_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the source branch."
+msgstr ""
+
+msgid "MergeRequest|Can't show this merge request because the target branch %{badge_start}%{target_branch}%{badge_end} is missing from project %{badge_start}%{project_path}%{badge_end}. Close this merge request or update the target branch."
+msgstr ""
+
 msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr ""
 

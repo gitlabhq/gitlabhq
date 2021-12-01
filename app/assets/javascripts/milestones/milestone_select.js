@@ -7,8 +7,8 @@ import Api from '~/api';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { __, sprintf } from '~/locale';
 import { sortMilestonesByDueDate } from '~/milestones/milestone_utils';
-import axios from './lib/utils/axios_utils';
-import { timeFor, parsePikadayDate, dateInWords } from './lib/utils/datetime_utility';
+import axios from '~/lib/utils/axios_utils';
+import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {

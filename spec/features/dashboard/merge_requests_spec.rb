@@ -34,7 +34,7 @@ RSpec.describe 'Dashboard Merge Requests' do
     end
 
     it 'shows projects only with merge requests feature enabled', :js do
-      find('.new-project-item-select-button').click
+      click_button 'Toggle project select'
 
       page.within('.select2-results') do
         expect(page).to have_content(project.full_name)

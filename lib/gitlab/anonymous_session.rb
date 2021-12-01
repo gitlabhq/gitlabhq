@@ -10,9 +10,9 @@ module Gitlab
 
     def count_session_ip
       redis_store_class.with do |redis|
-        redis.pipelined do
-          redis.incr(session_lookup_name)
-          redis.expire(session_lookup_name, 24.hours)
+        redis.pipelined do |pipeline|
+          pipeline.incr(session_lookup_name)
+          pipeline.expire(session_lookup_name, 24.hours)
         end
       end
     end

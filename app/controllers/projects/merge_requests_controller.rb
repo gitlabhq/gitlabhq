@@ -73,11 +73,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
                      :show, :toggle_award_emoji, :toggle_subscription, :update
                    ]
 
-  feature_category :code_testing, [
-                     :test_reports, :coverage_reports, :codequality_reports,
-                     :codequality_mr_diff_reports
-                   ]
-
+  feature_category :code_testing, [:test_reports, :coverage_reports]
+  feature_category :code_quality, [:codequality_reports, :codequality_mr_diff_reports]
   feature_category :accessibility_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]

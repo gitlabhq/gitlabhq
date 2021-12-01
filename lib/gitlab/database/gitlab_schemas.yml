@@ -86,6 +86,7 @@ ci_job_token_project_scope_links: :gitlab_ci
 ci_job_variables: :gitlab_ci
 ci_minutes_additional_packs: :gitlab_ci
 ci_namespace_monthly_usages: :gitlab_ci
+ci_namespace_mirrors: :gitlab_ci
 ci_pending_builds: :gitlab_ci
 ci_pipeline_artifacts: :gitlab_ci
 ci_pipeline_chat_data: :gitlab_ci
@@ -97,6 +98,7 @@ ci_pipelines: :gitlab_ci
 ci_pipeline_variables: :gitlab_ci
 ci_platform_metrics: :gitlab_ci
 ci_project_monthly_usages: :gitlab_ci
+ci_project_mirrors: :gitlab_ci
 ci_refs: :gitlab_ci
 ci_resource_groups: :gitlab_ci
 ci_resources: :gitlab_ci

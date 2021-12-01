@@ -393,7 +393,7 @@ To add an issue to an [iteration](../../group/iterations/index.md):
 1. Go to your issue.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
-1. Click or tap anywhere outside of the dropdown.
+1. Select any area outside the dropdown list.
 
 You can also use the `/iteration`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics)
@@ -457,7 +457,7 @@ To change the assignee on an issue:
 1. Go to your issue.
 1. On the right sidebar, in the **Assignee** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
-1. Click or tap anywhere outside of the dropdown list.
+1. Select any area outside the dropdown list.
 
 ## Similar issues
 

@@ -1,5 +1,7 @@
-import milestones from '~/pages/milestones/shared';
-import initMilestonesShow from '~/pages/milestones/shared/init_milestones_show';
+import initMilestonesShow from '~/milestones/init_milestones_show';
+import initDeleteMilestoneModal from '~/milestones/delete_milestone_modal_init';
+import initPromoteMilestoneModal from '~/milestones/promote_milestone_modal_init';
 
 initMilestonesShow();
-milestones();
+initDeleteMilestoneModal();
+initPromoteMilestoneModal();

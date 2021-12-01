@@ -101,7 +101,7 @@ RSpec.describe 'Group empty states' do
 
           it "the new #{issuable_name} button opens a project dropdown" do
             within '.empty-state' do
-              find('.new-project-item-select-button').click
+              click_button 'Toggle project select'
             end
 
             expect(page).to have_selector('.ajax-project-dropdown')

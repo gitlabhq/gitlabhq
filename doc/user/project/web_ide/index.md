@@ -456,7 +456,7 @@ when:
 
 - <kbd>Control</kbd> + <kbd>S</kbd> (or <kbd>Command</kbd> + <kbd>S</kbd> on Mac)
   is pressed while editing a file.
-- Anything outside the file editor is clicked after editing a file.
+- You select any area outside the file editor after editing a file.
 - A file or folder is created, deleted, or renamed.
 
 ### Limitations

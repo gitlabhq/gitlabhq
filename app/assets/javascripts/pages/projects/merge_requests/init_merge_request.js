@@ -6,7 +6,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import Diff from '~/diff';
 import GLForm from '~/gl_form';
 import LabelsSelect from '~/labels_select';
-import MilestoneSelect from '~/milestone_select';
+import MilestoneSelect from '~/milestones/milestone_select';
 import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
 
 export default () => {

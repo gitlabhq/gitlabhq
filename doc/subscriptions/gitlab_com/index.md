@@ -389,7 +389,9 @@ locked. Projects can only be unlocked by purchasing more storage subscription un
 
 ### Purchase more storage
 
-To purchase more storage for either a personal or group namespace:
+You can purchase storage for your personal or group namespace.
+
+#### For your personal namespace
 
 1. Sign in to GitLab SaaS.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
@@ -405,6 +407,32 @@ To purchase more storage for either a personal or group namespace:
 1. Select **Buy subscription**.
 1. Sign out of the Customers Portal.
 1. Switch back to the GitLab SaaS tab and refresh the page.
+
+The **Purchased storage available** total is incremented by the amount purchased. All locked
+projects are unlocked and their excess usage is deducted from the additional storage.
+
+#### For your group namespace
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
+
+If you're using GitLab SaaS, you can purchase additional storage so your
+pipelines aren't blocked after you have used all your storage from your
+main quota. You can find pricing for additional storage on the
+[GitLab Pricing page](https://about.gitlab.com/pricing/).
+
+To purchase additional storage for your group on GitLab SaaS:
+
+1. On the top bar, select **Menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select **Storage** tab.
+1. Select **Purchase more storage**.
+1. Complete the details.
+
+After your payment is processed, the extra storage is available for your group
+namespace.
+
+To confirm the available storage, go to your group, and then select
+**Settings > Usage Quotas** and select the **Storage** tab.
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.

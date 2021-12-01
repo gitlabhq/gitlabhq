@@ -1476,7 +1476,7 @@
   :tags: []
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
-  :feature_category: :code_testing
+  :feature_category: :code_quality
   :has_external_dependencies:
   :urgency: :low
   :resource_boundary: :unknown

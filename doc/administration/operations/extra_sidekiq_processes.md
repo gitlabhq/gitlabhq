@@ -263,17 +263,15 @@ This sets the concurrency (number of threads) for the Sidekiq process.
 
 ## Modify the check interval
 
-To modify the check interval for the additional Sidekiq processes:
+To modify `sidekiq-cluster`'s health check interval for the additional Sidekiq processes:
 
-1. Edit `/etc/gitlab/gitlab.rb` and add:
+1. Edit `/etc/gitlab/gitlab.rb` and add (the value can be any integer number of seconds):
 
    ```ruby
    sidekiq['interval'] = 5
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-This tells the additional processes how often to check for enqueued jobs.
 
 ## Troubleshoot using the CLI
 
