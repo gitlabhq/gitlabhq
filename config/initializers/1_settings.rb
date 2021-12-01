@@ -690,7 +690,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} 3 * * * UTC"
+  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'

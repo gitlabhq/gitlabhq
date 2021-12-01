@@ -6246,19 +6246,7 @@ RSpec.describe User do
 
     subject { user.send(:groups_with_developer_maintainer_project_access) }
 
-    shared_examples 'groups_with_developer_maintainer_project_access examples' do
-      specify { is_expected.to contain_exactly(developer_group2) }
-    end
-
-    it_behaves_like 'groups_with_developer_maintainer_project_access examples'
-
-    context 'when feature flag :linear_user_groups_with_developer_maintainer_project_access is disabled' do
-      before do
-        stub_feature_flags(linear_user_groups_with_developer_maintainer_project_access: false)
-      end
-
-      it_behaves_like 'groups_with_developer_maintainer_project_access examples'
-    end
+    specify { is_expected.to contain_exactly(developer_group2) }
   end
 
   describe '.get_ids_by_username' do

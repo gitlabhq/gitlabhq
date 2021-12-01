@@ -27,7 +27,7 @@ can't link to files outside it.
 
 ### Cache
 
-- Define cache per job by using the `cache:` keyword. Otherwise it is disabled.
+- Define cache per job by using the `cache` keyword. Otherwise it is disabled.
 - Subsequent pipelines can use the cache.
 - Subsequent jobs in the same pipeline can use the cache, if the dependencies are identical.
 - Different projects cannot share the cache.

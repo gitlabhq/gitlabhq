@@ -291,7 +291,7 @@ Pipeline configuration warnings are shown when you:
 
 ### "Job may allow multiple pipelines to run for a single action" warning
 
-When you use [`rules`](yaml/index.md#rules) with a `when:` clause without an `if:`
+When you use [`rules`](yaml/index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 

@@ -66,9 +66,9 @@ as quickly as possible.
 
 ## Usage
 
-Relationships are defined between jobs using the [`needs:` keyword](../yaml/index.md#needs).
+Relationships are defined between jobs using the [`needs` keyword](../yaml/index.md#needs).
 
-Note that `needs:` also works with the [parallel](../yaml/index.md#parallel) keyword,
+Note that `needs` also works with the [parallel](../yaml/index.md#parallel) keyword,
 giving you powerful options for parallelization within your pipeline.
 
 ## Limitations
@@ -87,7 +87,7 @@ are certain use cases that you may need to work around. For more information, ch
 
 The needs visualization makes it easier to visualize the relationships between dependent jobs in a DAG. This graph displays all the jobs in a pipeline that need or are needed by other jobs. Jobs with no relationships are not displayed in this view.
 
-To see the needs visualization, click on the **Needs** tab when viewing a pipeline that uses the `needs:` keyword.
+To see the needs visualization, click on the **Needs** tab when viewing a pipeline that uses the `needs` keyword.
 
 ![Needs visualization example](img/dag_graph_example_v13_1.png)
 

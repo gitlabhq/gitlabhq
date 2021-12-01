@@ -112,11 +112,11 @@ C:
     - merge_requests
 ```
 
-- `A` and `B` always run, because they get the `only:` rule to execute in all cases.
+- `A` and `B` always run, because they get the `only` rule to execute in all cases.
 - `C` only runs for merge requests. It doesn't run for any pipeline
   except a merge request pipeline.
 
-In this example, you don't have to add the `only:` rule to all of your jobs to make
+In this example, you don't have to add the `only` rule to all of your jobs to make
 them always run. You can use this format to set up a Review App, which helps to
 save resources.
 

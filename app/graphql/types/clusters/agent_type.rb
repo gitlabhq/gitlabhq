@@ -55,6 +55,12 @@ module Types
             complexity: 5,
             resolver: ::Resolvers::Kas::AgentConnectionsResolver
 
+      field :activity_events,
+            Types::Clusters::AgentActivityEventType.connection_type,
+            null: true,
+            description: 'Recent activity for the cluster agent.',
+            resolver: Resolvers::Clusters::AgentActivityEventsResolver
+
       def project
         Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.project_id).find
       end

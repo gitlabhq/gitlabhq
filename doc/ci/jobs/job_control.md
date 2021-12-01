@@ -79,7 +79,7 @@ job:
 - In **all other cases**, the job is added to the pipeline, with `when: on_success`.
 
 WARNING:
-If you use a `when:` clause as the final rule (not including `when: never`), two
+If you use a `when` clause as the final rule (not including `when: never`), two
 simultaneous pipelines may start. Both push pipelines and merge request pipelines can
 be triggered by the same event (a push to the source branch for an open merge request).
 See how to [prevent duplicate pipelines](#avoid-duplicate-pipelines)
@@ -153,7 +153,7 @@ To avoid duplicate pipelines, you can:
 - Use [`workflow`](../yaml/index.md#workflow) to specify which types of pipelines
   can run.
 - Rewrite the rules to run the job only in very specific cases,
-  and avoid a final `when:` rule:
+  and avoid a final `when` rule:
 
   ```yaml
   job:
@@ -480,8 +480,8 @@ All files are considered to have changed when a scheduled pipeline runs.
 If you use multiple keywords with `only` or `except`, the keywords are evaluated
 as a single conjoined expression. That is:
 
-- `only:` includes the job if **all** of the keys have at least one condition that matches.
-- `except:` excludes the job if **any** of the keys have at least one condition that matches.
+- `only` includes the job if **all** of the keys have at least one condition that matches.
+- `except` excludes the job if **any** of the keys have at least one condition that matches.
 
 With `only`, individual keys are logically joined by an `AND`. A job is added to
 the pipeline if the following is true:

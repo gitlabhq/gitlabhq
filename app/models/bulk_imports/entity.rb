@@ -20,8 +20,6 @@
 class BulkImports::Entity < ApplicationRecord
   self.table_name = 'bulk_import_entities'
 
-  EXPORT_RELATIONS_URL = '/%{resource}/%{full_path}/export_relations'
-
   belongs_to :bulk_import, optional: false
   belongs_to :parent, class_name: 'BulkImports::Entity', optional: true
 
@@ -112,12 +110,20 @@ class BulkImports::Entity < ApplicationRecord
     entity_type.pluralize
   end
 
+  def base_resource_url_path
+    "/#{pluralized_name}/#{encoded_source_full_path}"
+  end
+
   def export_relations_url_path
-    @export_relations_url_path ||= EXPORT_RELATIONS_URL % { resource: pluralized_name, full_path: encoded_source_full_path }
+    "#{base_resource_url_path}/export_relations"
   end
 
   def relation_download_url_path(relation)
     "#{export_relations_url_path}/download?relation=#{relation}"
+  end
+
+  def wikis_url_path
+    "#{base_resource_url_path}/wikis"
   end
 
   def project?

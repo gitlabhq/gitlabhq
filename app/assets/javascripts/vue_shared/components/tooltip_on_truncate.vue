@@ -1,11 +1,14 @@
 <script>
-import { GlTooltipDirective as GlTooltip } from '@gitlab/ui';
-import { isFunction } from 'lodash';
+import { GlTooltipDirective, GlResizeObserverDirective } from '@gitlab/ui';
+import { isFunction, debounce } from 'lodash';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
+
+const UPDATE_TOOLTIP_DEBOUNCED_WAIT_MS = 300;
 
 export default {
   directives: {
-    GlTooltip,
+    GlTooltip: GlTooltipDirective,
+    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     title: {
@@ -26,14 +29,32 @@ export default {
   },
   data() {
     return {
-      showTooltip: false,
+      tooltipDisabled: true,
     };
+  },
+  computed: {
+    classes() {
+      if (this.tooltipDisabled) {
+        return '';
+      }
+      return 'js-show-tooltip';
+    },
+    tooltip() {
+      return {
+        title: this.title,
+        placement: this.placement,
+        disabled: this.tooltipDisabled,
+      };
+    },
   },
   watch: {
     title() {
-      // Wait on $nextTick in case of slot width changes
+      // Wait on $nextTick in case the slot width changes
       this.$nextTick(this.updateTooltip);
     },
+  },
+  created() {
+    this.updateTooltipDebounced = debounce(this.updateTooltip, UPDATE_TOOLTIP_DEBOUNCED_WAIT_MS);
   },
   mounted() {
     this.updateTooltip();
@@ -45,25 +66,20 @@ export default {
       } else if (this.truncateTarget === 'child') {
         return this.$el.childNodes[0];
       }
-
       return this.$el;
     },
     updateTooltip() {
-      const target = this.selectTarget();
-      this.showTooltip = hasHorizontalOverflow(target);
+      this.tooltipDisabled = !hasHorizontalOverflow(this.selectTarget());
+    },
+    onResize() {
+      this.updateTooltipDebounced();
     },
   },
 };
 </script>
 
 <template>
-  <span
-    v-if="showTooltip"
-    v-gl-tooltip="{ placement }"
-    :title="title"
-    class="js-show-tooltip gl-min-w-0"
-  >
+  <span v-gl-tooltip="tooltip" v-gl-resize-observer="onResize" :class="classes" class="gl-min-w-0">
     <slot></slot>
   </span>
-  <span v-else class="gl-min-w-0"> <slot></slot> </span>
 </template>

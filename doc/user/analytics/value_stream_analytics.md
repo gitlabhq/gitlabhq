@@ -102,6 +102,20 @@ The **Time** metrics near the top of the page are measured as follows:
 
 - **Lead time**: Median time from issue created to issue closed.
 - **Cycle time**: Median time from first commit to issue closed. (You can associate a commit with an issue by [crosslinking in the commit message](../project/issues/crosslinking_issues.md#from-commit-messages).)
+- **Lead Time for Changes**: median duration between merge request merge and deployment to a production environment for all MRs deployed in the given time period. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) in GitLab 14.5 (Ultimate only).
+
+## Deployment metrics (**PREMIUM**)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) in GitLab 11.3.
+
+Value Stream Analytics exposes two deployment related metrics near the top of the page:
+
+- **Deploys:** The number of successful deployments in the date range.
+- **Deployment Frequency:** The average number of successful deployments.
+
+The deployment metrics calculation uses the same method as the
+[group-level Value Stream Analytics](../group/value_stream_analytics/index.md#how-metrics-are-measured).
+Both of them are based on the [DORA API](../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
 
 ## How the stages are measured
 

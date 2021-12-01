@@ -7,7 +7,7 @@ RSpec.describe 'Project.cluster_agents' do
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
-  let_it_be(:agents) { create_list(:cluster_agent, 5, project: project) }
+  let_it_be(:agents) { create_list(:cluster_agent, 3, project: project) }
 
   let(:first) { var('Int') }
   let(:cluster_agents_fields) { nil }
@@ -103,6 +103,39 @@ RSpec.describe 'Project.cluster_agents' do
           'podName' => agent_meta.pod_name
         }
       })
+    end
+  end
+
+  context 'selecting activity events' do
+    let_it_be(:token) { create(:cluster_agent_token, agent: agents.first) }
+    let_it_be(:event) { create(:agent_activity_event, agent: agents.first, agent_token: token, user: current_user) }
+
+    let(:cluster_agents_fields) { [:id, query_nodes(:activity_events, of: 'ClusterAgentActivityEvent', max_depth: 2)] }
+
+    it 'retrieves activity event details' do
+      post_graphql(query, current_user: current_user)
+
+      response = graphql_data_at(:project, :cluster_agents, :nodes, :activity_events, :nodes).first
+
+      expect(response).to include({
+        'kind' => event.kind,
+        'level' => event.level,
+        'recordedAt' => event.recorded_at.iso8601,
+        'agentToken' => hash_including('name' => token.name),
+        'user' => hash_including('name' => current_user.name)
+      })
+    end
+
+    it 'preloads associations to prevent N+1 queries' do
+      user = create(:user)
+      token = create(:cluster_agent_token, agent: agents.second)
+      create(:agent_activity_event, agent: agents.second, agent_token: token, user: user)
+
+      post_graphql(query, current_user: current_user)
+
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.to issue_same_number_of_queries_as { post_graphql(query, current_user: current_user, variables: [first.with(1)]) }
     end
   end
 end

@@ -146,15 +146,15 @@ as well.
 
 Jenkins Pipelines are based on [Groovy](https://groovy-lang.org/), so the pipeline specification is written as code.
 GitLab works a bit differently, we use the more highly structured [YAML](https://yaml.org/) format, which
-places scripting elements inside of `script:` blocks separate from the pipeline specification itself.
+places scripting elements inside of `script` blocks separate from the pipeline specification itself.
 
 This is a strength of GitLab, in that it helps keep the learning curve much simpler to get up and running
 and avoids some of the problem of unconstrained complexity which can make your Jenkinsfile hard to understand
 and manage.
 
 That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
-behaviors of your jobs can be codified once and applied as needed. You can use the `extends:` syntax to
-[reuse configuration in your jobs](../yaml/index.md#extends), and `include:` can
+behaviors of your jobs can be codified once and applied as needed. You can use the `extends` syntax to
+[reuse configuration in your jobs](../yaml/index.md#extends), and `include` can
 be used to [reuse pipeline configurations](../yaml/index.md#include) in pipelines
 in different projects:
 
@@ -174,7 +174,7 @@ rspec:
 ## Artifact publishing
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
-a set of artifacts to be saved by using the `artifacts:` keyword. This can be configured to point to a file
+a set of artifacts to be saved by using the `artifacts` keyword. This can be configured to point to a file
 or set of files that can then be persisted from job to job. Read more on our detailed
 [artifacts documentation](../pipelines/job_artifacts.md):
 
@@ -271,7 +271,7 @@ default:
 GitLab CI/CD also lets you define stages, but is a little bit more free-form to configure. The GitLab [`stages` keyword](../yaml/index.md#stages)
 is a top level setting that enumerates the list of stages, but you are not required to nest individual jobs underneath
 the `stages` section. Any job defined in the `.gitlab-ci.yml` can be made a part of any stage through use of the
-[`stage:` keyword](../yaml/index.md#stage).
+[`stage` keyword](../yaml/index.md#stage).
 
 Note that, unless otherwise specified, every pipeline is instantiated with a `build`, `test`, and `deploy` stage
 which are run in that order. Jobs that have no `stage` defined are placed by default in the `test` stage.

@@ -213,7 +213,7 @@ In the upstream pipeline:
    ```
 
 1. Set the `test` job in the downstream pipeline to inherit the variables from the `build_vars`
-   job in the upstream project with `needs:`. The `test` job inherits the variables in the
+   job in the upstream project with `needs`. The `test` job inherits the variables in the
    `dotenv` report and it can access `BUILD_VERSION` in the script:
 
    ```yaml

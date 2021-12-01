@@ -294,7 +294,7 @@ As soon as the `review` job finishes, GitLab updates the `review/your-branch-nam
 environment's URL.
 It parses the `deploy.env` report artifact, registers a list of variables as runtime-created,
 uses it for expanding `environment:url: $DYNAMIC_ENVIRONMENT_URL` and sets it to the environment URL.
-You can also specify a static part of the URL at `environment:url:`, such as
+You can also specify a static part of the URL at `environment:url`, such as
 `https://$DYNAMIC_ENVIRONMENT_URL`. If the value of `DYNAMIC_ENVIRONMENT_URL` is
 `example.com`, the final result is `https://example.com`.
 
@@ -303,7 +303,7 @@ The assigned URL for the `review/your-branch-name` environment is visible in the
 Note the following:
 
 - `stop_review` doesn't generate a dotenv report artifact, so it doesn't recognize the
-  `DYNAMIC_ENVIRONMENT_URL` environment variable. Therefore you shouldn't set `environment:url:` in the
+  `DYNAMIC_ENVIRONMENT_URL` environment variable. Therefore you shouldn't set `environment:url` in the
   `stop_review` job.
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
@@ -451,7 +451,7 @@ Read more in the [`.gitlab-ci.yml` reference](../yaml/index.md#environmenton_sto
 
 You can set an environment to stop when another job is finished.
 
-In your `.gitlab-ci.yml` file, specify in the [`on_stop:`](../yaml/index.md#environmenton_stop)
+In your `.gitlab-ci.yml` file, specify in the [`on_stop`](../yaml/index.md#environmenton_stop)
 keyword the name of the job that stops the environment.
 
 The following example shows a `review_app` job that calls a `stop_review_app` job after the first
@@ -478,7 +478,7 @@ The `stop_review_app` job **must** have the following keywords defined:
 
 - `when`, defined at either:
   - [The job level](../yaml/index.md#when).
-  - [In a rules clause](../yaml/index.md#rules). If you use `rules:` and `when: manual`, you should
+  - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
     also set [`allow_failure: true`](../yaml/index.md#allow_failure) so the pipeline can complete
     even if the job doesn't run.
 - `environment:name`

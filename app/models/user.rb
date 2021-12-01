@@ -2168,12 +2168,7 @@ class User < ApplicationRecord
       project_creation_levels << nil
     end
 
-    if Feature.enabled?(:linear_user_groups_with_developer_maintainer_project_access, self, default_enabled: :yaml)
-      developer_groups.self_and_descendants.where(project_creation_level: project_creation_levels)
-    else
-      developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
-      ::Group.where(id: developer_groups_hierarchy.select(:id), project_creation_level: project_creation_levels)
-    end
+    developer_groups.self_and_descendants.where(project_creation_level: project_creation_levels)
   end
 
   def no_recent_activity?

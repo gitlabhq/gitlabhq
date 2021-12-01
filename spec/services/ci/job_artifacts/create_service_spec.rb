@@ -24,6 +24,8 @@ RSpec.describe Ci::JobArtifacts::CreateService do
   def file_to_upload(path, params = {})
     upload = Tempfile.new('upload')
     FileUtils.copy(path, upload.path)
+    # This is a workaround for https://github.com/docker/for-linux/issues/1015
+    FileUtils.touch(upload.path)
 
     UploadedFile.new(upload.path, **params)
   end

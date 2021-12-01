@@ -5457,6 +5457,30 @@ The edge type for [`CiStage`](#cistage).
 | <a id="cistageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cistageedgenode"></a>`node` | [`CiStage`](#cistage) | The item at the end of the edge. |
 
+#### `ClusterAgentActivityEventConnection`
+
+The connection type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="clusteragentactivityeventconnectionedges"></a>`edges` | [`[ClusterAgentActivityEventEdge]`](#clusteragentactivityeventedge) | A list of edges. |
+| <a id="clusteragentactivityeventconnectionnodes"></a>`nodes` | [`[ClusterAgentActivityEvent]`](#clusteragentactivityevent) | A list of nodes. |
+| <a id="clusteragentactivityeventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ClusterAgentActivityEventEdge`
+
+The edge type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="clusteragentactivityeventedgenode"></a>`node` | [`ClusterAgentActivityEvent`](#clusteragentactivityevent) | The item at the end of the edge. |
+
 #### `ClusterAgentConnection`
 
 The connection type for [`ClusterAgent`](#clusteragent).
@@ -8776,6 +8800,7 @@ GitLab CI/CD configuration template.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="clusteragentactivityevents"></a>`activityEvents` | [`ClusterAgentActivityEventConnection`](#clusteragentactivityeventconnection) | Recent activity for the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentconnections"></a>`connections` | [`ConnectedAgentConnection`](#connectedagentconnection) | Active connections for the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp the cluster agent was created. |
 | <a id="clusteragentcreatedbyuser"></a>`createdByUser` | [`UserCore`](#usercore) | User object, containing information about the person who created the agent. |
@@ -8785,6 +8810,18 @@ GitLab CI/CD configuration template.
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
+
+### `ClusterAgentActivityEvent`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentactivityeventagenttoken"></a>`agentToken` | [`ClusterAgentToken`](#clusteragenttoken) | Agent token associated with the event. |
+| <a id="clusteragentactivityeventkind"></a>`kind` | [`String`](#string) | Type of event. |
+| <a id="clusteragentactivityeventlevel"></a>`level` | [`String`](#string) | Severity of the event. |
+| <a id="clusteragentactivityeventrecordedat"></a>`recordedAt` | [`Time`](#time) | Timestamp the event was recorded. |
+| <a id="clusteragentactivityeventuser"></a>`user` | [`UserCore`](#usercore) | User associated with the event. |
 
 ### `ClusterAgentToken`
 

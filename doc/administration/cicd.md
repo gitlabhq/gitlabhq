@@ -58,9 +58,9 @@ For Omnibus GitLab installations:
    sudo gitlab-ctl reconfigure
    ```
 
-## Set the `needs:` job limit **(FREE SELF)**
+## Set the `needs` job limit **(FREE SELF)**
 
-The maximum number of jobs that can be defined in `needs:` defaults to 50.
+The maximum number of jobs that can be defined in `needs` defaults to 50.
 
 A GitLab administrator with [access to the GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session)
 can choose a custom limit. For example, to set the limit to `100`:

@@ -1,24 +1,19 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-const DUMMY_TEXT = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';
+const MOCK_TITLE = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';
+const SHORT_TITLE = 'my-text';
 
-const createChildElement = () => `<a href="#">${DUMMY_TEXT}</a>`;
+const createChildElement = () => `<a href="#">${MOCK_TITLE}</a>`;
 
 jest.mock('~/lib/utils/dom_utils', () => ({
-  hasHorizontalOverflow: jest.fn(() => {
+  ...jest.requireActual('~/lib/utils/dom_utils'),
+  hasHorizontalOverflow: jest.fn().mockImplementation(() => {
     throw new Error('this needs to be mocked');
   }),
-}));
-jest.mock('@gitlab/ui', () => ({
-  GlTooltipDirective: {
-    bind(el, binding) {
-      el.classList.add('gl-tooltip');
-      el.setAttribute('data-original-title', el.title);
-      el.dataset.placement = binding.value.placement;
-    },
-  },
 }));
 
 describe('TooltipOnTruncate component', () => {
@@ -27,15 +22,31 @@ describe('TooltipOnTruncate component', () => {
 
   const createComponent = ({ propsData, ...options } = {}) => {
     wrapper = shallowMount(TooltipOnTruncate, {
-      attachTo: document.body,
       propsData: {
+        title: MOCK_TITLE,
         ...propsData,
+      },
+      slots: {
+        default: [MOCK_TITLE],
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
+        GlResizeObserver: createMockDirective(),
       },
       ...options,
     });
   };
 
   const createWrappedComponent = ({ propsData, ...options }) => {
+    const WrappedTooltipOnTruncate = {
+      ...TooltipOnTruncate,
+      directives: {
+        ...TooltipOnTruncate.directives,
+        GlTooltip: createMockDirective(),
+        GlResizeObserver: createMockDirective(),
+      },
+    };
+
     // set a parent around the tested component
     parent = mount(
       {
@@ -43,74 +54,85 @@ describe('TooltipOnTruncate component', () => {
           title: { default: '' },
         },
         template: `
-        <TooltipOnTruncate :title="title" truncate-target="child">
-          <div>{{title}}</div>
-        </TooltipOnTruncate>
+          <TooltipOnTruncate :title="title" truncate-target="child">
+            <div>{{title}}</div>
+          </TooltipOnTruncate>
         `,
         components: {
-          TooltipOnTruncate,
+          TooltipOnTruncate: WrappedTooltipOnTruncate,
         },
       },
       {
         propsData: { ...propsData },
-        attachTo: document.body,
         ...options,
       },
     );
 
-    wrapper = parent.find(TooltipOnTruncate);
+    wrapper = parent.find(WrappedTooltipOnTruncate);
   };
 
-  const hasTooltip = () => wrapper.classes('gl-tooltip');
+  const getTooltipValue = () => getBinding(wrapper.element, 'gl-tooltip')?.value;
+  const resize = async ({ truncate }) => {
+    hasHorizontalOverflow.mockReturnValueOnce(truncate);
+    getBinding(wrapper.element, 'gl-resize-observer').value();
+    await nextTick();
+  };
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('with default target', () => {
-    it('renders tooltip if truncated', () => {
+  describe('when truncated', () => {
+    beforeEach(async () => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
-      createComponent({
-        propsData: {
-          title: DUMMY_TEXT,
-        },
-        slots: {
-          default: [DUMMY_TEXT],
-        },
-      });
-
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasHorizontalOverflow).toHaveBeenCalledWith(wrapper.element);
-        expect(hasTooltip()).toBe(true);
-        expect(wrapper.attributes('data-original-title')).toEqual(DUMMY_TEXT);
-        expect(wrapper.attributes('data-placement')).toEqual('top');
-      });
+      createComponent();
     });
 
-    it('does not render tooltip if normal', () => {
+    it('renders tooltip', async () => {
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
+      expect(getTooltipValue()).toMatchObject({
+        title: MOCK_TITLE,
+        placement: 'top',
+        disabled: false,
+      });
+      expect(wrapper.classes('js-show-tooltip')).toBe(true);
+    });
+  });
+
+  describe('with default target', () => {
+    beforeEach(async () => {
       hasHorizontalOverflow.mockReturnValueOnce(false);
-      createComponent({
-        propsData: {
-          title: DUMMY_TEXT,
-        },
-        slots: {
-          default: [DUMMY_TEXT],
-        },
+      createComponent();
+    });
+
+    it('does not render tooltip if not truncated', () => {
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
+      expect(getTooltipValue()).toMatchObject({
+        disabled: true,
+      });
+      expect(wrapper.classes('js-show-tooltip')).toBe(false);
+    });
+
+    it('renders tooltip on resize', async () => {
+      await resize({ truncate: true });
+
+      expect(getTooltipValue()).toMatchObject({
+        disabled: false,
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasHorizontalOverflow).toHaveBeenCalledWith(wrapper.element);
-        expect(hasTooltip()).toBe(false);
+      await resize({ truncate: false });
+
+      expect(getTooltipValue()).toMatchObject({
+        disabled: true,
       });
     });
   });
 
   describe('with child target', () => {
-    it('renders tooltip if truncated', () => {
+    it('renders tooltip if truncated', async () => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent({
         propsData: {
-          title: DUMMY_TEXT,
           truncateTarget: 'child',
         },
         slots: {
@@ -118,13 +140,18 @@ describe('TooltipOnTruncate component', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasHorizontalOverflow).toHaveBeenCalledWith(wrapper.element.childNodes[0]);
-        expect(hasTooltip()).toBe(true);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.childNodes[0]);
+
+      await nextTick();
+
+      expect(getTooltipValue()).toMatchObject({
+        title: MOCK_TITLE,
+        placement: 'top',
+        disabled: false,
       });
     });
 
-    it('does not render tooltip if normal', () => {
+    it('does not render tooltip if normal', async () => {
       hasHorizontalOverflow.mockReturnValueOnce(false);
       createComponent({
         propsData: {
@@ -135,19 +162,21 @@ describe('TooltipOnTruncate component', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasHorizontalOverflow).toHaveBeenCalledWith(wrapper.element.childNodes[0]);
-        expect(hasTooltip()).toBe(false);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.childNodes[0]);
+
+      await nextTick();
+
+      expect(getTooltipValue()).toMatchObject({
+        disabled: true,
       });
     });
   });
 
   describe('with fn target', () => {
-    it('renders tooltip if truncated', () => {
+    it('renders tooltip if truncated', async () => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent({
         propsData: {
-          title: DUMMY_TEXT,
           truncateTarget: (el) => el.childNodes[1],
         },
         slots: {
@@ -155,93 +184,97 @@ describe('TooltipOnTruncate component', () => {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasHorizontalOverflow).toHaveBeenCalledWith(wrapper.element.childNodes[1]);
-        expect(hasTooltip()).toBe(true);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element.childNodes[1]);
+
+      await nextTick();
+
+      expect(getTooltipValue()).toMatchObject({
+        disabled: false,
       });
     });
   });
 
   describe('placement', () => {
-    it('sets data-placement when tooltip is rendered', () => {
-      const placement = 'bottom';
+    it('sets placement when tooltip is rendered', () => {
+      const mockPlacement = 'bottom';
 
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent({
         propsData: {
-          placement,
-        },
-        slots: {
-          default: DUMMY_TEXT,
+          placement: mockPlacement,
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        expect(hasTooltip()).toBe(true);
-        expect(wrapper.attributes('data-placement')).toEqual(placement);
+      expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
+      expect(getTooltipValue()).toMatchObject({
+        placement: mockPlacement,
       });
     });
   });
 
   describe('updates when title and slot content changes', () => {
     describe('is initialized with a long text', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         hasHorizontalOverflow.mockReturnValueOnce(true);
         createWrappedComponent({
-          propsData: { title: DUMMY_TEXT },
+          propsData: { title: MOCK_TITLE },
         });
-        return parent.vm.$nextTick();
+        await nextTick();
       });
 
       it('renders tooltip', () => {
-        expect(hasTooltip()).toBe(true);
-        expect(wrapper.attributes('data-original-title')).toEqual(DUMMY_TEXT);
-        expect(wrapper.attributes('data-placement')).toEqual('top');
+        expect(getTooltipValue()).toMatchObject({
+          title: MOCK_TITLE,
+          placement: 'top',
+          disabled: false,
+        });
       });
 
-      it('does not render tooltip after updated to a short text', () => {
+      it('does not render tooltip after updated to a short text', async () => {
         hasHorizontalOverflow.mockReturnValueOnce(false);
         parent.setProps({
-          title: 'new-text',
+          title: SHORT_TITLE,
         });
 
-        return wrapper.vm
-          .$nextTick()
-          .then(() => wrapper.vm.$nextTick()) // wait 2 times to get an updated slot
-          .then(() => {
-            expect(hasTooltip()).toBe(false);
-          });
+        await nextTick();
+        await nextTick(); // wait 2 times to get an updated slot
+
+        expect(getTooltipValue()).toMatchObject({
+          title: SHORT_TITLE,
+          disabled: true,
+        });
       });
     });
 
-    describe('is initialized with a short text', () => {
-      beforeEach(() => {
+    describe('is initialized with a short text that does not overflow', () => {
+      beforeEach(async () => {
         hasHorizontalOverflow.mockReturnValueOnce(false);
         createWrappedComponent({
-          propsData: { title: DUMMY_TEXT },
+          propsData: { title: MOCK_TITLE },
         });
-        return wrapper.vm.$nextTick();
+        await nextTick();
       });
 
       it('does not render tooltip', () => {
-        expect(hasTooltip()).toBe(false);
+        expect(getTooltipValue()).toMatchObject({
+          title: MOCK_TITLE,
+          disabled: true,
+        });
       });
 
-      it('renders tooltip after text is updated', () => {
+      it('renders tooltip after text is updated', async () => {
         hasHorizontalOverflow.mockReturnValueOnce(true);
-        const newText = 'new-text';
         parent.setProps({
-          title: newText,
+          title: SHORT_TITLE,
         });
 
-        return wrapper.vm
-          .$nextTick()
-          .then(() => wrapper.vm.$nextTick()) // wait 2 times to get an updated slot
-          .then(() => {
-            expect(hasTooltip()).toBe(true);
-            expect(wrapper.attributes('data-original-title')).toEqual(newText);
-            expect(wrapper.attributes('data-placement')).toEqual('top');
-          });
+        await nextTick();
+        await nextTick(); // wait 2 times to get an updated slot
+
+        expect(getTooltipValue()).toMatchObject({
+          title: SHORT_TITLE,
+          disabled: false,
+        });
       });
     });
   });

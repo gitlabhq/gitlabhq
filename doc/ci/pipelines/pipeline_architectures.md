@@ -211,7 +211,7 @@ trigger_b:
 ```
 
 Example child `a` pipeline configuration, located in `/a/.gitlab-ci.yml`, making
-use of the DAG `needs:` keyword:
+use of the DAG `needs` keyword:
 
 ```yaml
 stages:
@@ -240,7 +240,7 @@ deploy_a:
 ```
 
 Example child `b` pipeline configuration, located in `/b/.gitlab-ci.yml`, making
-use of the DAG `needs:` keyword:
+use of the DAG `needs` keyword:
 
 ```yaml
 stages:

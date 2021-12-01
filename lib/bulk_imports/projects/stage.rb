@@ -67,6 +67,10 @@ module BulkImports
             pipeline: BulkImports::Common::Pipelines::UploadsPipeline,
             stage: 5
           },
+          auto_devops: {
+            pipeline: BulkImports::Projects::Pipelines::AutoDevopsPipeline,
+            stage: 5
+          },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
             stage: 6
