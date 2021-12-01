@@ -1,0 +1,26 @@
+---
+key_path: redis_hll_counters.analytics.p_analytics_ci_cd_pipelines_monthly
+description: Count of unique visits to the project level CI CD Analytics pipelines tab
+product_section: dev
+product_stage: manage
+product_group: group::optimize
+product_category:
+value_type: number
+status: active
+milestone: '14.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75187
+time_frame: 28d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate
+options:
+  events:
+    - p_analytics_ci_cd_pipelines

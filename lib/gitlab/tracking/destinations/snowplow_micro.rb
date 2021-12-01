@@ -18,6 +18,11 @@ module Gitlab
           ).transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
         end
 
+        override :enabled?
+        def enabled?
+          true
+        end
+
         override :hostname
         def hostname
           "#{uri.host}:#{uri.port}"

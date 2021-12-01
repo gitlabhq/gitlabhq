@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 const MOCK_TITLE = 'lorem-ipsum-dolar-sit-amit-consectur-adipiscing-elit-sed-do';

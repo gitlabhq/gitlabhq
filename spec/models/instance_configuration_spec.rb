@@ -144,6 +144,7 @@ RSpec.describe InstanceConfiguration do
           create(:plan_limits,
             plan: plan1,
             conan_max_file_size: 1001,
+            helm_max_file_size: 1008,
             maven_max_file_size: 1002,
             npm_max_file_size: 1003,
             nuget_max_file_size: 1004,
@@ -154,6 +155,7 @@ RSpec.describe InstanceConfiguration do
           create(:plan_limits,
             plan: plan2,
             conan_max_file_size: 1101,
+            helm_max_file_size: 1108,
             maven_max_file_size: 1102,
             npm_max_file_size: 1103,
             nuget_max_file_size: 1104,
@@ -166,8 +168,8 @@ RSpec.describe InstanceConfiguration do
         it 'returns package file size limits' do
           file_size_limits = subject.settings[:package_file_size_limits]
 
-          expect(file_size_limits[:Plan1]).to eq({ conan: 1001, maven: 1002, npm: 1003, nuget: 1004, pypi: 1005, terraform_module: 1006, generic: 1007 })
-          expect(file_size_limits[:Plan2]).to eq({ conan: 1101, maven: 1102, npm: 1103, nuget: 1104, pypi: 1105, terraform_module: 1106, generic: 1107 })
+          expect(file_size_limits[:Plan1]).to eq({ conan: 1001, helm: 1008, maven: 1002, npm: 1003, nuget: 1004, pypi: 1005, terraform_module: 1006, generic: 1007 })
+          expect(file_size_limits[:Plan2]).to eq({ conan: 1101, helm: 1108, maven: 1102, npm: 1103, nuget: 1104, pypi: 1105, terraform_module: 1106, generic: 1107 })
         end
       end
 

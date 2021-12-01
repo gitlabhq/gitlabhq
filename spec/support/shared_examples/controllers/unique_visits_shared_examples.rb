@@ -6,15 +6,23 @@ RSpec.shared_examples 'tracking unique visits' do |method|
   let(:request_params) { {} }
 
   it 'tracks unique visit if the format is HTML' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(target_id, values: kind_of(String))
+    ids = target_id.instance_of?(String) ? [target_id] : target_id
+
+    ids.each do |id|
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+      .to receive(:track_event).with(id, values: kind_of(String))
+    end
 
     get method, params: request_params, format: :html
   end
 
   it 'tracks unique visit if DNT is not enabled' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(target_id, values: kind_of(String))
+    ids = target_id.instance_of?(String) ? [target_id] : target_id
+
+    ids.each do |id|
+      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+      .to receive(:track_event).with(id, values: kind_of(String))
+    end
 
     stub_do_not_track('0')
 

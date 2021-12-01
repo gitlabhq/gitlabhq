@@ -87,7 +87,6 @@ export default {
     :get-active-token-value="getActiveAuthor"
     :default-suggestions="defaultAuthors"
     :preloaded-suggestions="preloadedAuthors"
-    :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
     @fetch-suggestions="fetchAuthors"
     v-on="$listeners"
   >

@@ -147,7 +147,7 @@ describe('AdminRunnersApp', () => {
       }),
       expect.objectContaining({
         type: PARAM_KEY_TAG,
-        recentTokenValuesStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
+        recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
       }),
     ]);
   });

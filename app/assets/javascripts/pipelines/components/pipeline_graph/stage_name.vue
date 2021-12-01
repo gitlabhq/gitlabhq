@@ -1,6 +1,6 @@
 <script>
 import { capitalize, escape } from 'lodash';
-import tooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import tooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 export default {
   components: {

@@ -66,3 +66,15 @@
   category: analytics
   redis_slot: analytics
   aggregation: weekly
+- name: p_analytics_ci_cd_pipelines
+  category: analytics
+  redis_slot: analytics
+  aggregation: weekly
+- name: p_analytics_ci_cd_deployment_frequency
+  category: analytics
+  redis_slot: analytics
+  aggregation: weekly
+- name: p_analytics_ci_cd_lead_time
+  category: analytics
+  redis_slot: analytics
+  aggregation: weekly

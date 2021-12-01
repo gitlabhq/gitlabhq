@@ -131,8 +131,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
               let(:send_request) { subject }
             end
 
-            it 'updates runner info' do
-              expect { subject }.to change { runner.reload.contacted_at }
+            it "doesn't update runner info" do
+              expect { subject }.not_to change { runner.reload.contacted_at }
             end
 
             shared_examples 'authorizes local file' do
@@ -280,8 +280,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
-        it 'updates runner info' do
-          expect { upload_artifacts(file_upload, headers_with_token) }.to change { runner.reload.contacted_at }
+        it "doesn't update runner info" do
+          expect { upload_artifacts(file_upload, headers_with_token) }.not_to change { runner.reload.contacted_at }
         end
 
         context 'when the artifact is too large' do
@@ -812,8 +812,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           let(:send_request) { download_artifact }
         end
 
-        it 'updates runner info' do
-          expect { download_artifact }.to change { runner.reload.contacted_at }
+        it "doesn't update runner info" do
+          expect { download_artifact }.not_to change { runner.reload.contacted_at }
         end
 
         context 'when job has artifacts' do

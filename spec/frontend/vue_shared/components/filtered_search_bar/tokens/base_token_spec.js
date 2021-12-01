@@ -46,13 +46,13 @@ const defaultSlots = {
 };
 
 const mockProps = {
-  config: mockLabelToken,
+  config: { ...mockLabelToken, recentSuggestionsStorageKey: mockStorageKey },
   value: { data: '' },
   active: false,
   suggestions: [],
   suggestionsLoading: false,
   defaultSuggestions: DEFAULT_NONE_ANY,
-  recentSuggestionsStorageKey: mockStorageKey,
+  getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
 };
 
 function createComponent({
@@ -152,30 +152,22 @@ describe('BaseToken', () => {
 
   describe('methods', () => {
     describe('handleTokenValueSelected', () => {
-      it('calls `setTokenValueToRecentlyUsed` when `recentSuggestionsStorageKey` is defined', () => {
-        const mockTokenValue = {
-          id: 1,
-          title: 'Foo',
-        };
+      const mockTokenValue = mockLabels[0];
 
-        wrapper.vm.handleTokenValueSelected(mockTokenValue);
+      it('calls `setTokenValueToRecentlyUsed` when `recentSuggestionsStorageKey` is defined', () => {
+        wrapper.vm.handleTokenValueSelected(mockTokenValue.title);
 
         expect(setTokenValueToRecentlyUsed).toHaveBeenCalledWith(mockStorageKey, mockTokenValue);
       });
 
       it('does not add token from preloadedSuggestions', async () => {
-        const mockTokenValue = {
-          id: 1,
-          title: 'Foo',
-        };
-
         wrapper.setProps({
           preloadedSuggestions: [mockTokenValue],
         });
 
         await wrapper.vm.$nextTick();
 
-        wrapper.vm.handleTokenValueSelected(mockTokenValue);
+        wrapper.vm.handleTokenValueSelected(mockTokenValue.title);
 
         expect(setTokenValueToRecentlyUsed).not.toHaveBeenCalled();
       });
@@ -190,7 +182,7 @@ describe('BaseToken', () => {
       const glFilteredSearchToken = wrapperWithNoStubs.find(GlFilteredSearchToken);
 
       expect(glFilteredSearchToken.exists()).toBe(true);
-      expect(glFilteredSearchToken.props('config')).toBe(mockLabelToken);
+      expect(glFilteredSearchToken.props('config')).toEqual(mockProps.config);
 
       wrapperWithNoStubs.destroy();
     });

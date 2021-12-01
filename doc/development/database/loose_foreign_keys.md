@@ -62,28 +62,28 @@ following information:
 - The data cleanup method (`async_delete` or `async_nullify`)
 
 The YAML file is located at `lib/gitlab/database/gitlab_loose_foreign_keys.yml`. The file groups
-foreign key definitions by the name of the parent table. The parent table can have multiple loose
+foreign key definitions by the name of the child table. The child table can have multiple loose
 foreign key definitions, therefore we store them as an array.
 
 Example definition:
 
 ```yaml
-projects:
-  - to_table: ci_pipelines
+ci_pipelines:
+  - table: projects
     column: project_id
     on_delete: async_delete
 ```
 
-If the `projects` key is already present in the YAML file, then a new entry can be added
+If the `ci_pipelines` key is already present in the YAML file, then a new entry can be added
 to the array:
 
 ```yaml
-projects:
-  - to_table: ci_pipelines
+ci_pipelines:
+  - table: projects
     column: project_id
     on_delete: async_delete
-  - to_table: another_table
-    column: project_id
+  - table: another_table
+    column: another_id
     on_delete: :async_nullify
 ```
 

@@ -2,7 +2,7 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/vue_shared/components/registry/metadata_item.vue';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 
 describe('Metadata Item', () => {
   let wrapper;

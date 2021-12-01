@@ -848,16 +848,20 @@ More information can be found in the [Push event activities limit and bulk push 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218017) in GitLab 13.4.
 
-On GitLab.com, the maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md) varies by format:
+The default maximum file size for a package that's uploaded to the [GitLab Package Registry](../user/packages/package_registry/index.md) varies by format:
 
-- Conan: 5 GB
+- Conan: 3 GB
 - Generic: 5 GB
-- Maven: 5 GB
-- npm: 5 GB
-- NuGet: 5 GB
-- PyPI: 5 GB
+- Helm: 5 MB
+- Maven: 3 GB
+- npm: 500 MB
+- NuGet: 500 MB
+- PyPI: 3 GB
+- Terraform: 1 GB
 
-To set this limit for a self-managed installation, run the following in the
+The [maximum file sizes on GitLab.com](../user/gitlab_com/index.md) might be different.
+
+To set these limits for a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
@@ -880,6 +884,9 @@ Plan.default.actual_limits.update!(pypi_max_file_size: 100.megabytes)
 
 # For Debian Packages
 Plan.default.actual_limits.update!(debian_max_file_size: 100.megabytes)
+
+# For Helm Charts
+Plan.default.actual_limits.update!(helm_max_file_size: 100.megabytes)
 
 # For Generic Packages
 Plan.default.actual_limits.update!(generic_packages_max_file_size: 100.megabytes)

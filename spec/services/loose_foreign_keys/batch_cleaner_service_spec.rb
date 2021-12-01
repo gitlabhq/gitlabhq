@@ -24,8 +24,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
   let(:loose_foreign_key_definitions) do
     [
       ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-        '_test_loose_fk_parent_table',
         '_test_loose_fk_child_table_1',
+        '_test_loose_fk_parent_table',
         {
           column: 'parent_id',
           on_delete: :async_delete,
@@ -33,8 +33,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService do
         }
       ),
       ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-        '_test_loose_fk_parent_table',
         '_test_loose_fk_child_table_2',
+        '_test_loose_fk_parent_table',
         {
           column: 'parent_id_with_different_column',
           on_delete: :async_nullify,

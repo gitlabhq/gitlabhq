@@ -266,7 +266,7 @@ export default {
       </gl-popover>
     </template>
     <template #collapsed>
-      <div v-gl-tooltip :title="dateLabel" class="sidebar-collapsed-icon">
+      <div v-gl-tooltip.viewport.left :title="dateLabel" class="sidebar-collapsed-icon">
         <gl-icon :size="16" name="calendar" />
         <span class="collapse-truncated-title">{{ formattedDate }}</span>
       </div>

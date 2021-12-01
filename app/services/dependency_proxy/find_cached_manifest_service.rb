@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DependencyProxy
-  class FindOrCreateManifestService < DependencyProxy::BaseService
+  class FindCachedManifestService < DependencyProxy::BaseService
     def initialize(group, image, tag, token)
       @group = group
       @image = image
@@ -20,35 +20,12 @@ module DependencyProxy
 
       return respond if cached_manifest_matches?(head_result)
 
-      if Feature.enabled?(:dependency_proxy_manifest_workhorse, @group, default_enabled: :yaml)
-        success(manifest: nil, from_cache: false)
-      else
-        pull_new_manifest
-        respond(from_cache: false)
-      end
+      success(manifest: nil, from_cache: false)
     rescue Timeout::Error, *Gitlab::HTTP::HTTP_ERRORS
       respond
     end
 
     private
-
-    def pull_new_manifest
-      DependencyProxy::PullManifestService.new(@image, @tag, @token).execute_with_manifest do |new_manifest|
-        params = {
-          file_name: @file_name,
-          content_type: new_manifest[:content_type],
-          digest: new_manifest[:digest],
-          file: new_manifest[:file],
-          size: new_manifest[:file].size
-        }
-
-        if @manifest
-          @manifest.update!(params)
-        else
-          @manifest = @group.dependency_proxy_manifests.create!(params)
-        end
-      end
-    end
 
     def cached_manifest_matches?(head_result)
       return false if head_result[:status] == :error

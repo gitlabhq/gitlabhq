@@ -520,7 +520,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:head_response) { { status: :success } }
 
       before do
-        allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
+        allow_next_instance_of(DependencyProxy::FindCachedManifestService) do |instance|
           allow(instance).to receive(:execute).and_return(pull_response)
         end
         allow_next_instance_of(DependencyProxy::HeadManifestService) do |instance|

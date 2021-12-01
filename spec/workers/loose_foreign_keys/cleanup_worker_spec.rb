@@ -31,8 +31,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
     {
       '_test_loose_fk_parent_table_1' => [
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          '_test_loose_fk_parent_table_1',
           '_test_loose_fk_child_table_1_1',
+          '_test_loose_fk_parent_table_1',
           {
             column: 'parent_id',
             on_delete: :async_delete,
@@ -40,8 +40,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
           }
         ),
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          '_test_loose_fk_parent_table_1',
           '_test_loose_fk_child_table_1_2',
+          '_test_loose_fk_parent_table_1',
           {
             column: 'parent_id_with_different_column',
             on_delete: :async_nullify,
@@ -51,8 +51,8 @@ RSpec.describe LooseForeignKeys::CleanupWorker do
       ],
       '_test_loose_fk_parent_table_2' => [
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          '_test_loose_fk_parent_table_2',
           '_test_loose_fk_child_table_2_1',
+          '_test_loose_fk_parent_table_2',
           {
             column: 'parent_id',
             on_delete: :async_delete,

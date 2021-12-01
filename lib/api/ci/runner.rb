@@ -176,7 +176,7 @@ module API
           optional :exit_code, type: Integer, desc: %q(Job's exit code)
         end
         put '/:id', feature_category: :continuous_integration do
-          job = authenticate_job!
+          job = authenticate_job!(heartbeat_runner: true)
 
           Gitlab::Metrics.add_event(:update_build)
 
@@ -203,7 +203,7 @@ module API
           optional :token, type: String, desc: %q(Job's authentication token)
         end
         patch '/:id/trace', feature_category: :continuous_integration do
-          job = authenticate_job!
+          job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']

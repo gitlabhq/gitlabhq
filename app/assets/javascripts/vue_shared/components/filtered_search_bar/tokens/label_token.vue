@@ -104,7 +104,6 @@ export default {
     :suggestions="labels"
     :get-active-token-value="getActiveLabel"
     :default-suggestions="defaultLabels"
-    :recent-suggestions-storage-key="config.recentSuggestionsStorageKey"
     @fetch-suggestions="fetchLabels"
     v-on="$listeners"
   >

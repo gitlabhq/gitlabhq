@@ -5469,6 +5469,9 @@ msgstr ""
 msgid "Billing|Users occupying seats in"
 msgstr ""
 
+msgid "Billing|View pending approvals"
+msgstr ""
+
 msgid "Billing|You are about to remove user %{username} from your subscription. If you continue, the user will be removed from the %{namespace} group and all its subgroups and projects. This action can't be undone."
 msgstr ""
 
@@ -13483,9 +13486,6 @@ msgstr ""
 msgid "Epics|Enter a title for your epic"
 msgstr ""
 
-msgid "Epics|How can I solve this?"
-msgstr ""
-
 msgid "Epics|Leave empty to inherit from milestone dates"
 msgstr ""
 
@@ -13532,9 +13532,6 @@ msgid "Epics|Something went wrong while ordering item."
 msgstr ""
 
 msgid "Epics|Something went wrong while removing issue from epic."
-msgstr ""
-
-msgid "Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely."
 msgstr ""
 
 msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least Reporter access."
@@ -14995,15 +14992,6 @@ msgid "First seen"
 msgstr ""
 
 msgid "Fixed burndown chart"
-msgstr ""
-
-msgid "Fixed date"
-msgstr ""
-
-msgid "Fixed due date"
-msgstr ""
-
-msgid "Fixed start date"
 msgstr ""
 
 msgid "Fixed:"
@@ -21410,6 +21398,9 @@ msgid "Maximum 20 characters"
 msgstr ""
 
 msgid "Maximum Conan package file size in bytes"
+msgstr ""
+
+msgid "Maximum Helm chart file size in bytes"
 msgstr ""
 
 msgid "Maximum Maven package file size in bytes"
@@ -33059,9 +33050,6 @@ msgstr ""
 msgid "Start a review"
 msgstr ""
 
-msgid "Start and due date"
-msgstr ""
-
 msgid "Start by choosing a group to start exploring the merge requests in that group. You can then proceed to filter by projects, labels, milestones and authors."
 msgstr ""
 
@@ -35453,12 +35441,6 @@ msgstr ""
 msgid "This credential has expired"
 msgstr ""
 
-msgid "This date is after the due date, so this epic won't appear in the roadmap."
-msgstr ""
-
-msgid "This date is before the start date, so this epic won't appear in the roadmap."
-msgstr ""
-
 msgid "This device has already been registered with us."
 msgstr ""
 
@@ -37248,9 +37230,6 @@ msgid "Unsubscribes from this %{quick_action_target}."
 msgstr ""
 
 msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"
-msgstr ""
-
-msgid "Until"
 msgstr ""
 
 msgid "Until revoked, expired personal access tokens pose a security risk."
@@ -39876,6 +39855,11 @@ msgstr ""
 
 msgid "You don’t have access to Value Stream Analytics for this group"
 msgstr ""
+
+msgid "You have %{pendingMembersCount} pending member that needs approval."
+msgid_plural "You have %{pendingMembersCount} pending members that need approval."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
 msgstr ""

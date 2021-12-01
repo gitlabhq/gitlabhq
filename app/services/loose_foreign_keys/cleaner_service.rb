@@ -16,7 +16,7 @@ module LooseForeignKeys
     def execute
       result = connection.execute(build_query)
 
-      { affected_rows: result.cmd_tuples, table: loose_foreign_key_definition.to_table }
+      { affected_rows: result.cmd_tuples, table: loose_foreign_key_definition.from_table }
     end
 
     def async_delete?
@@ -48,15 +48,15 @@ module LooseForeignKeys
     end
 
     def arel_table
-      @arel_table ||= Arel::Table.new(loose_foreign_key_definition.to_table)
+      @arel_table ||= Arel::Table.new(loose_foreign_key_definition.from_table)
     end
 
     def primary_keys
-      @primary_keys ||= connection.primary_keys(loose_foreign_key_definition.to_table).map { |key| arel_table[key] }
+      @primary_keys ||= connection.primary_keys(loose_foreign_key_definition.from_table).map { |key| arel_table[key] }
     end
 
     def quoted_table_name
-      @quoted_table_name ||= Arel.sql(connection.quote_table_name(loose_foreign_key_definition.to_table))
+      @quoted_table_name ||= Arel.sql(connection.quote_table_name(loose_foreign_key_definition.from_table))
     end
 
     def delete_query

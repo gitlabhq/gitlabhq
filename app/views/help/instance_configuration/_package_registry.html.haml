@@ -23,6 +23,10 @@
             - package_file_size_limits.each_value do |limits|
               %td= instance_configuration_human_size_cell(limits[:conan])
           %tr
+            %td= 'Helm'
+            - package_file_size_limits.each_value do |limits|
+              %td= instance_configuration_human_size_cell(limits[:helm])
+          %tr
             %td= 'Maven'
             - package_file_size_limits.each_value do |limits|
               %td= instance_configuration_human_size_cell(limits[:maven])

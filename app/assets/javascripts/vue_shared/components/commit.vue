@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
 import { isString, isEmpty } from 'lodash';
 import { __, sprintf } from '~/locale';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
 
 export default {

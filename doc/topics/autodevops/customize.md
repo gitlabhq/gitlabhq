@@ -103,9 +103,13 @@ You can override this behavior by defining specific variables:
 | Image Path | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` for branch pipelines. `$CI_REGISTRY_IMAGE` for tag pipelines. | `$CI_APPLICATION_REPOSITORY` |
 | Image Tag | `$CI_COMMIT_SHA` for branch pipelines. `$CI_COMMIT_TAG` for tag pipelines. | `$CI_APPLICATION_TAG` |
 
-These variables also affect Auto Build. If you don't want to build and push an image to 
+These variables also affect Auto Build and Auto Container Scanning. If you don't want to build and push an image to
 `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, consider
 including only `Jobs/Deploy.gitlab-ci.yml`, or [disabling the `build` jobs](#disable-jobs).
+
+If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
+also update `$CS_DEFAULT_BRANCH_IMAGE`. See [Setting the default branch image](../../user/application_security/container_scanning/index.md#setting-the-default-branch-image)
+for more details.
 
 Here is an example setup in your `.gitlab-ci.yml`:
 

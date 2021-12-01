@@ -170,7 +170,7 @@ RSpec.describe Groups::DependencyProxyForContainersController do
     let(:pull_response) { { status: :success, manifest: manifest, from_cache: false } }
 
     before do
-      allow_next_instance_of(DependencyProxy::FindOrCreateManifestService) do |instance|
+      allow_next_instance_of(DependencyProxy::FindCachedManifestService) do |instance|
         allow(instance).to receive(:execute).and_return(pull_response)
       end
     end

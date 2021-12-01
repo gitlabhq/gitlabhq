@@ -89,6 +89,7 @@ class Environment < ApplicationRecord
 
   scope :for_project, -> (project) { where(project_id: project) }
   scope :for_tier, -> (tier) { where(tier: tier).where.not(tier: nil) }
+  scope :with_deployments, -> { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id')) }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
   scope :unfoldered, -> { where(environment_type: nil) }
   scope :with_rank, -> do

@@ -19,7 +19,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   feature_category :dependency_proxy
 
   def manifest
-    result = DependencyProxy::FindOrCreateManifestService.new(group, image, tag, token).execute
+    result = DependencyProxy::FindCachedManifestService.new(group, image, tag, token).execute
 
     if result[:status] == :success
       if result[:manifest]

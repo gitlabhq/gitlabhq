@@ -368,6 +368,10 @@ module QA
         parse_body(response)
       end
 
+      def create_wiki_page(title:, content:)
+        api_post_to(api_wikis_path, title: title, content: content)
+      end
+
       # Object comparison
       #
       # @param [QA::Resource::Project] other

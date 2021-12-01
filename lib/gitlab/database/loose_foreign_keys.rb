@@ -4,25 +4,25 @@ module Gitlab
   module Database
     module LooseForeignKeys
       def self.definitions_by_table
-        @definitions_by_table ||= definitions.group_by(&:from_table).with_indifferent_access.freeze
+        @definitions_by_table ||= definitions.group_by(&:to_table).with_indifferent_access.freeze
       end
 
       def self.definitions
-        @definitions ||= loose_foreign_keys_yaml.flat_map do |parent_table_name, configs|
-          configs.map { |config| build_definition(parent_table_name, config) }
+        @definitions ||= loose_foreign_keys_yaml.flat_map do |child_table_name, configs|
+          configs.map { |config| build_definition(child_table_name, config) }
         end.freeze
       end
 
-      def self.build_definition(parent_table_name, config)
-        to_table = config.fetch('to_table')
+      def self.build_definition(child_table_name, config)
+        parent_table_name = config.fetch('table')
 
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+          child_table_name,
           parent_table_name,
-          to_table,
           {
             column: config.fetch('column'),
             on_delete: config.fetch('on_delete').to_sym,
-            gitlab_schema: GitlabSchema.table_schema(to_table)
+            gitlab_schema: GitlabSchema.table_schema(child_table_name)
           }
         )
       end

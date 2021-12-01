@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::FindOrCreateManifestService do
+RSpec.describe DependencyProxy::FindCachedManifestService do
   include DependencyProxyHelpers
 
   let_it_be(:image) { 'alpine' }
@@ -49,14 +49,6 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
         end
 
         it_behaves_like 'returning no manifest'
-
-        context 'with dependency_proxy_manifest_workhorse feature disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
-          end
-
-          it_behaves_like 'downloading the manifest'
-        end
       end
 
       context 'failed head request' do
@@ -66,14 +58,6 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
         end
 
         it_behaves_like 'returning no manifest'
-
-        context 'with dependency_proxy_manifest_workhorse feature disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
-          end
-
-          it_behaves_like 'downloading the manifest'
-        end
       end
     end
 
@@ -105,20 +89,6 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
         end
 
         it_behaves_like 'returning no manifest'
-
-        context 'with dependency_proxy_manifest_workhorse feature disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
-          end
-
-          it 'downloads the new manifest and updates the existing record', :aggregate_failures do
-            expect(subject[:status]).to eq(:success)
-            expect(subject[:manifest]).to eq(dependency_proxy_manifest)
-            expect(subject[:manifest].content_type).to eq(content_type)
-            expect(subject[:manifest].digest).to eq(digest)
-            expect(subject[:from_cache]).to eq false
-          end
-        end
       end
 
       context 'when the cached manifest is expired' do
@@ -129,14 +99,6 @@ RSpec.describe DependencyProxy::FindOrCreateManifestService do
         end
 
         it_behaves_like 'returning no manifest'
-
-        context 'with dependency_proxy_manifest_workhorse feature disabled' do
-          before do
-            stub_feature_flags(dependency_proxy_manifest_workhorse: false)
-          end
-
-          it_behaves_like 'downloading the manifest'
-        end
       end
 
       context 'failed connection' do

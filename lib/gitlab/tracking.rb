@@ -2,11 +2,9 @@
 
 module Gitlab
   module Tracking
-    SNOWPLOW_NAMESPACE = 'gl'
-
     class << self
       def enabled?
-        snowplow_micro_enabled? || Gitlab::CurrentSettings.snowplow_enabled?
+        snowplow.enabled?
       end
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists

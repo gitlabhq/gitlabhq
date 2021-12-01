@@ -4,6 +4,7 @@ import {
   GlFilteredSearchSuggestion,
   GlDropdownDivider,
   GlDropdownSectionHeader,
+  GlDropdownText,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
@@ -17,6 +18,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlDropdownDivider,
     GlDropdownSectionHeader,
+    GlDropdownText,
     GlLoadingIcon,
   },
   props: {
@@ -57,11 +59,6 @@ export default {
       required: false,
       default: () => [],
     },
-    recentSuggestionsStorageKey: {
-      type: String,
-      required: false,
-      default: '',
-    },
     valueIdentifier: {
       type: String,
       required: false,
@@ -76,14 +73,14 @@ export default {
   data() {
     return {
       searchKey: '',
-      recentSuggestions: this.recentSuggestionsStorageKey
-        ? getRecentlyUsedSuggestions(this.recentSuggestionsStorageKey)
+      recentSuggestions: this.config.recentSuggestionsStorageKey
+        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey)
         : [],
     };
   },
   computed: {
     isRecentSuggestionsEnabled() {
-      return Boolean(this.recentSuggestionsStorageKey);
+      return Boolean(this.config.recentSuggestionsStorageKey);
     },
     recentTokenIds() {
       return this.recentSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
@@ -118,6 +115,9 @@ export default {
     },
     showDefaultSuggestions() {
       return this.availableDefaultSuggestions.length > 0;
+    },
+    showNoMatchesText() {
+      return this.searchKey && !this.availableSuggestions.length;
     },
     showRecentSuggestions() {
       return (
@@ -167,7 +167,9 @@ export default {
         this.$emit('fetch-suggestions', search);
       }
     }, DEBOUNCE_DELAY),
-    handleTokenValueSelected(activeTokenValue) {
+    handleTokenValueSelected(selectedValue) {
+      const activeTokenValue = this.getActiveTokenValue(this.suggestions, selectedValue);
+
       // Make sure that;
       // 1. Recently used values feature is enabled
       // 2. User has actually selected a value
@@ -177,7 +179,7 @@ export default {
         activeTokenValue &&
         !this.preloadedTokenIds.includes(activeTokenValue[this.valueIdentifier])
       ) {
-        setTokenValueToRecentlyUsed(this.recentSuggestionsStorageKey, activeTokenValue);
+        setTokenValueToRecentlyUsed(this.config.recentSuggestionsStorageKey, activeTokenValue);
       }
     },
   },
@@ -192,7 +194,7 @@ export default {
     v-bind="$attrs"
     v-on="$listeners"
     @input="handleInput"
-    @select="handleTokenValueSelected(activeTokenValue)"
+    @select="handleTokenValueSelected"
   >
     <template #view-token="viewTokenProps">
       <slot name="view-token" :view-token-props="{ ...viewTokenProps, activeTokenValue }"></slot>
@@ -222,6 +224,9 @@ export default {
         :suggestions="preloadedSuggestions"
       ></slot>
       <gl-loading-icon v-if="suggestionsLoading" size="sm" />
+      <gl-dropdown-text v-else-if="showNoMatchesText">
+        {{ __('No matches found') }}
+      </gl-dropdown-text>
       <template v-else>
         <slot name="suggestions-list" :suggestions="availableSuggestions"></slot>
       </template>

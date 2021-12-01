@@ -13,8 +13,8 @@ RSpec.describe LooseForeignKeys::CleanerService do
 
   let(:loose_fk_definition) do
     ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-      'projects',
       'issues',
+      'projects',
       {
         column: 'project_id',
         on_delete: :async_nullify,
@@ -80,8 +80,8 @@ RSpec.describe LooseForeignKeys::CleanerService do
 
       let(:loose_fk_definition) do
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
-          'users',
           'project_authorizations',
+          'users',
           {
             column: 'user_id',
             on_delete: :async_delete,

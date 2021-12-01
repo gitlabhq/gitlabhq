@@ -116,7 +116,7 @@ export default {
         statusTokenConfig,
         {
           ...tagTokenConfig,
-          recentTokenValuesStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
+          recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
         },
       ];
     },

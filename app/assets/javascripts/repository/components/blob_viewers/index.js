@@ -12,6 +12,8 @@ export const loadViewer = (type) => {
       return () => import(/* webpackChunkName: 'blob_image_viewer' */ './image_viewer.vue');
     case 'video':
       return () => import(/* webpackChunkName: 'blob_video_viewer' */ './video_viewer.vue');
+    case 'pdf':
+      return () => import(/* webpackChunkName: 'blob_pdf_viewer' */ './pdf_viewer.vue');
     default:
       return null;
   }
@@ -34,6 +36,9 @@ export const viewerProps = (type, blob) => {
       alt: blob.name,
     },
     video: {
+      url: blob.rawPath,
+    },
+    pdf: {
       url: blob.rawPath,
     },
   }[type];

@@ -19,7 +19,12 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
+  # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/345074
   track_redis_hll_event :charts, name: 'p_analytics_pipelines'
+
+  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_pipelines', if: -> { should_track_ci_cd_pipelines? }
+  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', if: -> { should_track_ci_cd_deployment_frequency? }
+  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_lead_time', if: -> { should_track_ci_cd_lead_time? }
 
   wrap_parameters Ci::Pipeline
 
@@ -322,6 +327,18 @@ class Projects::PipelinesController < Projects::ApplicationController
       e.candidate {}
       e.record!
     end
+  end
+
+  def should_track_ci_cd_pipelines?
+    params[:chart].blank? || params[:chart] == 'pipelines'
+  end
+
+  def should_track_ci_cd_deployment_frequency?
+    params[:chart] == 'deployment-frequency'
+  end
+
+  def should_track_ci_cd_lead_time?
+    params[:chart] == 'lead-time'
   end
 end
 

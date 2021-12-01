@@ -24,19 +24,19 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
         Gitlab::Database.schemas_to_base_models.fetch(parent_table_schema)
       end
 
-      it 'all `from_table` tables are present' do
-        definitions.each do |definition|
-          base_models_for(definition.from_table).each do |model|
-            expect(model.connection).to be_table_exist(definition.from_table)
-          end
-        end
-      end
-
       it 'all `to_table` tables are present' do
         definitions.each do |definition|
           base_models_for(definition.to_table).each do |model|
             expect(model.connection).to be_table_exist(definition.to_table)
-            expect(model.connection).to be_column_exist(definition.to_table, definition.column)
+          end
+        end
+      end
+
+      it 'all `from_table` tables are present' do
+        definitions.each do |definition|
+          base_models_for(definition.from_table).each do |model|
+            expect(model.connection).to be_table_exist(definition.from_table)
+            expect(model.connection).to be_column_exist(definition.from_table, definition.column)
           end
         end
       end

@@ -25,6 +25,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response).to be_an Hash
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
+          expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
           expect(json_response['maven_max_file_size']).to eq(Plan.default.actual_limits.maven_max_file_size)
           expect(json_response['npm_max_file_size']).to eq(Plan.default.actual_limits.npm_max_file_size)
           expect(json_response['nuget_max_file_size']).to eq(Plan.default.actual_limits.nuget_max_file_size)
@@ -45,6 +46,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response).to be_an Hash
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
+          expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
           expect(json_response['maven_max_file_size']).to eq(Plan.default.actual_limits.maven_max_file_size)
           expect(json_response['npm_max_file_size']).to eq(Plan.default.actual_limits.npm_max_file_size)
           expect(json_response['nuget_max_file_size']).to eq(Plan.default.actual_limits.nuget_max_file_size)
@@ -84,6 +86,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
             'plan_name': 'default',
             'conan_max_file_size': 10,
             'generic_packages_max_file_size': 20,
+            'helm_max_file_size': 25,
             'maven_max_file_size': 30,
             'npm_max_file_size': 40,
             'nuget_max_file_size': 50,
@@ -95,6 +98,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response).to be_an Hash
           expect(json_response['conan_max_file_size']).to eq(10)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
+          expect(json_response['helm_max_file_size']).to eq(25)
           expect(json_response['maven_max_file_size']).to eq(30)
           expect(json_response['npm_max_file_size']).to eq(40)
           expect(json_response['nuget_max_file_size']).to eq(50)
@@ -129,6 +133,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
             'plan_name': 'default',
             'conan_max_file_size': 'a',
             'generic_packages_max_file_size': 'b',
+            'helm_max_file_size': 'h',
             'maven_max_file_size': 'c',
             'npm_max_file_size': 'd',
             'nuget_max_file_size': 'e',
@@ -140,8 +145,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
           expect(json_response['error']).to include(
             'conan_max_file_size is invalid',
             'generic_packages_max_file_size is invalid',
+            'helm_max_file_size is invalid',
             'maven_max_file_size is invalid',
-            'generic_packages_max_file_size is invalid',
             'npm_max_file_size is invalid',
             'nuget_max_file_size is invalid',
             'pypi_max_file_size is invalid',

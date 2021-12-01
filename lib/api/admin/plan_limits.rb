@@ -37,6 +37,7 @@ module API
 
         optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
         optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes'
+        optional :helm_max_file_size, type: Integer, desc: 'Maximum Helm chart file size in bytes'
         optional :maven_max_file_size, type: Integer, desc: 'Maximum Maven package file size in bytes'
         optional :npm_max_file_size, type: Integer, desc: 'Maximum NPM package file size in bytes'
         optional :nuget_max_file_size, type: Integer, desc: 'Maximum NuGet package file size in bytes'

@@ -3180,6 +3180,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
     end
 
+    context 'when an associated environment does not have deployments' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+      let_it_be(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+      let_it_be(:environment) { create(:environment, project: pipeline.project) }
+
+      before_all do
+        build.metadata.update!(expanded_environment_name: environment.name)
+      end
+
+      it 'does not return environments' do
+        expect(subject).to be_empty
+      end
+    end
+
     context 'when pipeline is in extended family' do
       let_it_be(:parent) { create(:ci_pipeline) }
       let_it_be(:parent_build) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: parent) }

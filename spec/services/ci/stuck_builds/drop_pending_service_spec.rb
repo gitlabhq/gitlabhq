@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::StuckBuilds::DropPendingService do
-  let!(:runner) { create :ci_runner }
-  let!(:job) { create :ci_build, runner: runner }
+  let_it_be(:runner) { create(:ci_runner) }
+  let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+  let_it_be_with_reload(:job) do
+    create(:ci_build, pipeline: pipeline, runner: runner)
+  end
+
   let(:created_at) { }
   let(:updated_at) { }
 
@@ -14,6 +18,8 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
     job_attributes = { status: status }
     job_attributes[:created_at] = created_at if created_at
     job_attributes[:updated_at] = updated_at if updated_at
+    job_attributes.compact!
+
     job.update!(job_attributes)
   end
 
@@ -41,12 +47,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
           it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
-
-        context 'when created_at is outside lookback window' do
-          let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
-
-          it_behaves_like 'job is unchanged'
-        end
       end
 
       context 'when job was updated less than 1 day ago' do
@@ -63,12 +63,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
           it_behaves_like 'job is unchanged'
         end
-
-        context 'when created_at is outside lookback window' do
-          let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
-
-          it_behaves_like 'job is unchanged'
-        end
       end
 
       context 'when job was updated more than 1 hour ago' do
@@ -82,12 +76,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
         context 'when created_at is before updated_at' do
           let(:created_at) { 3.days.ago }
-
-          it_behaves_like 'job is unchanged'
-        end
-
-        context 'when created_at is outside lookback window' do
-          let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
 
           it_behaves_like 'job is unchanged'
         end
@@ -115,12 +103,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
           it_behaves_like 'job is dropped with failure reason', 'stuck_or_timeout_failure'
         end
-
-        context 'when created_at is outside lookback window' do
-          let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
-
-          it_behaves_like 'job is unchanged'
-        end
       end
 
       context 'when job was updated in less than 1 hour ago' do
@@ -134,12 +116,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
         context 'when created_at is before updated_at' do
           let(:created_at) { 2.days.ago }
-
-          it_behaves_like 'job is unchanged'
-        end
-
-        context 'when created_at is outside lookback window' do
-          let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
 
           it_behaves_like 'job is unchanged'
         end
@@ -176,12 +152,6 @@ RSpec.describe Ci::StuckBuilds::DropPendingService do
 
       context 'when created_at is before updated_at' do
         let(:created_at) { 3.days.ago }
-
-        it_behaves_like 'job is unchanged'
-      end
-
-      context 'when created_at is outside lookback window' do
-        let(:created_at) { described_class::BUILD_LOOKBACK - 1.day }
 
         it_behaves_like 'job is unchanged'
       end
