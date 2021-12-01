@@ -85,7 +85,7 @@ RSpec.describe 'Import/Export - Group Import', :js do
   context 'when the user uploads an invalid export file' do
     let(:file) { File.join(Rails.root, 'spec', %w[fixtures big-image.png]) }
 
-    it 'displays an error' do
+    it 'displays an error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343995' do
       visit new_group_path
       click_link 'Import group'
 

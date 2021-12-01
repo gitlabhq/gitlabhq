@@ -105,8 +105,8 @@ RSpec.describe 'Query.project.pipeline' do
         expect(jobs_graphql_data).to contain_exactly(a_hash_including('name' => 'my test job'))
       end
 
-      it 'can find all stages' do
-        post_graphql(query, current_user: user, variables: first_n.with(3))
+      it 'reports the build needs and previous stages with no duplicates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346433' do
+        post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(
           a_hash_including('name' => 'my test job'),

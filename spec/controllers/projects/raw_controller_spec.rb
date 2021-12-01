@@ -101,7 +101,7 @@ RSpec.describe Projects::RawController do
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
 
-      it 'logs the event on auth.log' do
+      it 'logs the event on auth.log', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/345889' do
         attributes = {
           message: 'Application_Rate_Limiter_Request',
           env: :raw_blob_request_limit,
