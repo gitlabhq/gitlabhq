@@ -819,63 +819,41 @@ job:
 #### `artifacts:paths`
 
 Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly
-link outside it. You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-patterns and:
+link outside it.
 
-- In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-- In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
 
-To restrict which jobs a specific job fetches artifacts from, see [dependencies](#dependencies).
+**Possible inputs**:
 
-Send all files in `binaries` and `.config`:
+- An array of file paths, relative to the project directory.
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
+  patterns and:
+  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
+    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
-```yaml
-artifacts:
-  paths:
-    - binaries/
-    - .config
-```
-
-To disable artifact passing, define the job with empty [dependencies](#dependencies):
-
-```yaml
-job:
-  stage: build
-  script: make build
-  dependencies: []
-```
-
-You may want to create artifacts only for tagged releases to avoid filling the
-build server storage with temporary build artifacts.
-
-Create artifacts only for tags (`default-job` doesn't create artifacts):
-
-```yaml
-default-job:
-  script:
-    - mvn test -U
-  rules:
-    - if: $CI_COMMIT_BRANCH
-
-release-job:
-  script:
-    - mvn package -U
-  artifacts:
-    paths:
-      - target/*.war
-  rules:
-    - if: $CI_COMMIT_TAG
-```
-
-You can use wildcards for directories too. For example, if you want to get all the files inside the directories that end with `xyz`:
+**Example of `artifacts:paths`**:
 
 ```yaml
 job:
   artifacts:
     paths:
-      - path/*xyz/*
+      - binaries/
+      - .config
 ```
+
+This example creates an artifact with `.config` and all the files in the `binaries` directory.
+
+**Additional details**:
+
+- If not used with [`artifacts:name`](#artifactsname) defined, the artifacts file
+  is named `artifacts`, which becomes `artifacts.zip` when downloaded.
+
+**Related topics**:
+
+- To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
+- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
 
 #### `artifacts:public`
 
@@ -887,20 +865,25 @@ job:
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
 
-The default for `artifacts:public` is `true` which means that the artifacts in
-public pipelines are available for download by anonymous and guest users:
-
-```yaml
-artifacts:
-  public: true
-```
+When `artifacts:public` is `true` (default), the artifacts in
+public pipelines are available for download by anonymous and guest users.
 
 To deny read access for anonymous and guest users to artifacts in public
 pipelines, set `artifacts:public` to `false`:
 
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
+
+**Possible inputs**:
+
+- `true` (default if not defined) or `false`.
+
+**Example of `artifacts:paths`**:
+
 ```yaml
-artifacts:
-  public: false
+job:
+  artifacts:
+    public: false
 ```
 
 #### `artifacts:reports`
@@ -941,45 +924,44 @@ Use `artifacts:untracked` to add all Git untracked files as artifacts (along
 with the paths defined in `artifacts:paths`). `artifacts:untracked` ignores configuration
 in the repository's `.gitignore` file.
 
-Send all Git untracked files:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
+
+**Possible inputs**:
+
+- `true` or `false` (default if not defined).
+
+**Example of `artifacts:untracked`**:
+
+Save all Git untracked files:
 
 ```yaml
-artifacts:
-  untracked: true
+job:
+  artifacts:
+    untracked: true
 ```
 
-Send all Git untracked files and files in `binaries`:
+**Related topics**:
 
-```yaml
-artifacts:
-  untracked: true
-  paths:
-    - binaries/
-```
-
-Send all untracked files but [exclude](#artifactsexclude) `*.txt`:
-
-```yaml
-artifacts:
-  untracked: true
-  exclude:
-    - "*.txt"
-```
+- [Add untracked files to artifacts](../pipelines/job_artifacts.md#add-untracked-files-to-artifacts).
 
 #### `artifacts:when`
 
 Use `artifacts:when` to upload artifacts on job failure or despite the
 failure.
 
-`artifacts:when` can be set to one of the following values:
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default:` section](#default).
 
-1. `on_success` (default): Upload artifacts only when the job succeeds.
-1. `on_failure`: Upload artifacts only when the job fails.
-1. `always`: Always upload artifacts. For example, when
-   [uploading artifacts](../unit_test_reports.md#viewing-junit-screenshots-on-gitlab) required to
-   troubleshoot failing tests.
+**Possible inputs**:
 
-For example, to upload artifacts only when a job fails:
+- `on_success` (default): Upload artifacts only when the job succeeds.
+- `on_failure`: Upload artifacts only when the job fails.
+- `always`: Always upload artifacts. For example, when
+  [uploading artifacts](../unit_test_reports.md#viewing-junit-screenshots-on-gitlab)
+  required to troubleshoot failing tests.
+
+**Example of `artifacts:when`**:
 
 ```yaml
 job:

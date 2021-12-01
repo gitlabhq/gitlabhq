@@ -143,6 +143,23 @@ the related documentation.
 | [Max registered runners](../../administration/instance_limits.md#number-of-registered-runners-per-scope) | Free tier: `50` per-group / `50` per-project <br/> All paid tiers: `1_000` per-group  / `1_000` per-project | `1_000` per-group / `1_000` per-project |
 | [Limit dotenv variables](../../administration/instance_limits.md#limit-dotenv-variables) | Free tier: `50` / Premium tier: `100` / Ultimate tier: `150` | 150 |
 
+## Package registry limits
+
+The [maximum file size](../../administration/instance_limits.md#file-size-limits)
+for a package uploaded to the [GitLab Package Registry](../../user/packages/package_registry/index.md)
+varies by format:
+
+| Package type | GitLab.com | Default |
+|--------------|------------|---------|
+| Conan        | 5 GB       | 3 GB    |
+| Generic      | 5 GB       | 5 GB    |
+| Helm         | 5 MB       | 5 MB    |
+| Maven        | 5 GB       | 3 GB    |
+| npm:         | 5 GB       | 500 MB  |
+| NuGet        | 5 GB       | 500 MB  |
+| PyPI         | 5 GB       | 3 GB    |
+| Terraform    | 1 GB       | 1 GB    |
+
 ## Account and limit settings
 
 GitLab.com has the following [account limits](../admin_area/settings/account_and_limit_settings.md)

@@ -48,7 +48,45 @@ is used.
 If you run two types of pipelines (like branch and scheduled) for the same ref,
 the pipeline that finishes later creates the job artifact.
 
-For more examples, view the [keyword reference for the `.gitlab-ci.yml` file](../yaml/index.md#artifacts).
+To disable artifact passing, define the job with empty [dependencies](../yaml/index.md#dependencies):
+
+```yaml
+job:
+  stage: build
+  script: make build
+  dependencies: []
+```
+
+You may want to create artifacts only for tagged releases to avoid filling the
+build server storage with temporary build artifacts. For example, use [`rules`](../yaml/index.md#rules)
+to create artifacts only for tags:
+
+```yaml
+default-job:
+  script:
+    - mvn test -U
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+release-job:
+  script:
+    - mvn package -U
+  artifacts:
+    paths:
+      - target/*.war
+  rules:
+    - if: $CI_COMMIT_TAG
+```
+
+You can use wildcards for directories too. For example, if you want to get all the
+files inside the directories that end with `xyz`:
+
+```yaml
+job:
+  artifacts:
+    paths:
+      - path/*xyz/*
+```
 
 ### Use CI/CD variables to define the artifacts name
 
@@ -151,6 +189,29 @@ artifacts:
     - binaries/
   exclude:
     - binaries/temp/**/*
+```
+
+### Add untracked files to artifacts
+
+Use [`artifacts:untracked`](../yaml/index.md#artifactsuntracked) to add all Git untracked
+files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)).
+
+Save all Git untracked files and files in `binaries`:
+
+```yaml
+artifacts:
+  untracked: true
+  paths:
+    - binaries/
+```
+
+Save all untracked files but [exclude](../yaml/index.md#artifactsexclude) `*.txt`:
+
+```yaml
+artifacts:
+  untracked: true
+  exclude:
+    - "*.txt"
 ```
 
 ## Download job artifacts

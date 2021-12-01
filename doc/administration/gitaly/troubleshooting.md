@@ -374,17 +374,23 @@ Here are common errors and potential causes:
 
 ### Determine primary Gitaly node
 
-To determine the current primary Gitaly node for a specific Praefect node:
+To determine the primary node of a repository:
 
-- Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
-  [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-  This is recommended.
-- If you do not have Grafana set up, use the following command on each host of each
-  Praefect node:
+- In GitLab 14.6 and later, use the [`praefect metadata`](praefect.md#retrieve-repository-metadata) subcommand.
+- In GitLab 13.12 to GitLab 14.5 with [repository-specific primaries](praefect.md#repository-specific-primary-nodes),
+  use the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums).
+- With legacy election strategies in GitLab 13.12 and earlier, the primary was the same for all repositories in a virtual storage.
+  To determine the current primary Gitaly node for a specific virtual storage:
 
-  ```shell
-  curl localhost:9652/metrics | grep gitaly_praefect_primaries`
-  ```
+  - Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
+    [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
+    This is recommended.
+  - If you do not have Grafana set up, use the following command on each host of each
+    Praefect node:
+
+    ```shell
+    curl localhost:9652/metrics | grep gitaly_praefect_primaries`
+    ```
 
 ### Check that repositories are in sync
 
