@@ -436,7 +436,7 @@ To configure the `s3` storage driver in Omnibus:
    ```
 
    If using with an [AWS S3 VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-s3.html),
-   then set `regionendpoint` to your VPC endpoint address and set `path_style` to false:
+   then set `regionendpoint` to your VPC endpoint address and set `pathstyle` to false:
 
    ```ruby
    registry['storage'] = {
@@ -446,7 +446,7 @@ To configure the `s3` storage driver in Omnibus:
        'bucket' => 'your-s3-bucket',
        'region' => 'your-s3-region',
        'regionendpoint' => 'your-s3-vpc-endpoint',
-       'path_style' => false
+       'pathstyle' => false
      }
    }
    ```
@@ -454,7 +454,7 @@ To configure the `s3` storage driver in Omnibus:
    - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or
      when using an AWS S3 VPC Endpoint.
    - `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
-   - `path_style` should be set to true to use `host/bucket_name/object` style paths instead of
+   - `pathstyle` should be set to true to use `host/bucket_name/object` style paths instead of
      `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
@@ -483,6 +483,12 @@ storage:
 `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
 
 #### Migrate to object storage without downtime
+
+WARNING:
+Using [AWS DataSync](https://aws.amazon.com/datasync/)
+to copy the registry data to or between S3 buckets creates invalid metadata objects in the bucket.
+For additional details, see [Tags with an empty name](#tags-with-an-empty-name).
+To move data to and between S3 buckets, the AWS CLI `sync` operation is recommended.
 
 To migrate storage without stopping the Container Registry, set the Container Registry
 to read-only mode. On large instances, this may require the Container Registry
@@ -1500,6 +1506,28 @@ Follow the [steps that Docker recommends to upgrade v1 images](https://docs.dock
 The most straightforward option is to pull those images and push them once again to the registry,
 using a Docker client version above v1.12. Docker converts images automatically before pushing them
 to the registry. Once done, all your v1 images should now be available as v2 images.
+
+### Tags with an empty name
+
+If using [AWS DataSync](https://aws.amazon.com/datasync/)
+to copy the registry data to or between S3 buckets, an empty metadata object is created in the root
+path of each container repository in the destination bucket. This causes the registry to interpret
+such files as a tag that appears with no name in the GitLab UI and API. For more information, see
+[this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/341).
+
+To fix this you can do one of two things:
+
+- Use the AWS CLI [`rm`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/rm.html)
+  command to remove the empty objects from the root of **each** affected repository. Pay special
+  attention to the trailing `/` and make sure **not** to use the `--recursive` option:
+
+  ```shell
+  aws s3 rm s3://<bucket>/docker/registry/v2/repositories/<path to repository>/
+  ```
+
+- Use the AWS CLI [`sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html)
+  command to copy the registry data to a new bucket and configure the registry to use it. This
+  leaves the empty objects behind.
 
 ### Advanced Troubleshooting
 

@@ -35,10 +35,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-text-truncate">
-    <gl-link class="gl-text-gray-500!" :href="pipelinePath" data-testid="pipeline-id">
-      {{ pipelineId }}
-    </gl-link>
+  <div>
+    <div class="gl-text-truncate">
+      <gl-link class="gl-text-gray-500!" :href="pipelinePath" data-testid="pipeline-id">
+        {{ pipelineId }}
+      </gl-link>
+    </div>
     <div>
       <span>{{ __('created by') }}</span>
       <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">

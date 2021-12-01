@@ -356,10 +356,11 @@ That's all of the required database changes.
 
 - [ ] Make sure a Geo secondary site can replicate Cool Widgets where repository does not exist on the Geo primary site. The only way to know about this is to parse the error text. You may need to make some changes to `Gitlab::CoolWidgetReplicator.no_repo_message` to return the proper error message. For example, see [this change for Group-level Wikis](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74133).
 
-- [ ] Generate the feature flag definition file by running the feature flag command and following the command prompts:
+- [ ] Generate the feature flag definition files by running the feature flag commands and following the command prompts:
 
   ```shell
   bin/feature-flag --ee geo_cool_widget_replication --type development --group 'group::geo'
+  bin/feature-flag --ee geo_cool_widget_verification --type development --group 'group::geo'
   ```
 
 - [ ] Add this replicator class to the method `replicator_classes` in

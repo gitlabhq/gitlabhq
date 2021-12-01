@@ -193,7 +193,7 @@ That's all of the required database changes.
 
   ```ruby
   # frozen_string_literal: true
-  
+
   class CoolWidget < ApplicationRecord
     ...
     include ::Gitlab::Geo::ReplicableModel
@@ -322,10 +322,11 @@ That's all of the required database changes.
   end
   ```
 
-- [ ] Generate the feature flag definition file by running the feature flag command and following the command prompts:
+- [ ] Generate the feature flag definition fileы by running the feature flag commands and following the command prompts:
 
   ```shell
   bin/feature-flag --ee geo_cool_widget_replication --type development --group 'group::geo'
+  bin/feature-flag --ee geo_cool_widget_verification --type development --group 'group::geo'
   ```
 
 - [ ] Add this replicator class to the method `replicator_classes` in
