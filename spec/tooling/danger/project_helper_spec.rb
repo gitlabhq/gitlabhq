@@ -86,7 +86,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'rubocop/foo'                | [:backend]
       '.rubocop.yml'               | [:backend]
       '.rubocop_todo.yml'          | [:backend]
-      '.rubocop_manual_todo.yml'   | [:backend]
+      '.rubocop_todo/cop/name.yml' | [:backend]
       'spec/foo'                   | [:backend]
       'spec/foo/bar'               | [:backend]
 
@@ -192,6 +192,7 @@ RSpec.describe Tooling::Danger::ProjectHelper do
       'spec/frontend/tracking_spec.js' | [:frontend, :product_intelligence]
       'lib/gitlab/usage_database/foo.rb' | [:backend]
       'config/metrics/counts_7d/test_metric.yml' | [:product_intelligence]
+      'config/events/snowplow_event.yml' | [:product_intelligence]
       'config/metrics/schema.json' | [:product_intelligence]
       'doc/api/usage_data.md' | [:product_intelligence]
       'spec/lib/gitlab/usage_data_spec.rb' | [:product_intelligence]

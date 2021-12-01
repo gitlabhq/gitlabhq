@@ -9,6 +9,7 @@ describe('Confirm Danger Modal', () => {
 
   const phrase = 'En Taro Adun';
   const buttonText = 'Click me!';
+  const buttonClass = 'gl-w-full';
   const modalId = CONFIRM_DANGER_MODAL_ID;
 
   const findBtn = () => wrapper.findComponent(GlButton);
@@ -19,6 +20,7 @@ describe('Confirm Danger Modal', () => {
     shallowMountExtended(ConfirmDanger, {
       propsData: {
         buttonText,
+        buttonClass,
         phrase,
         ...props,
       },
@@ -49,6 +51,10 @@ describe('Confirm Danger Modal', () => {
     wrapper = createComponent({ disabled: true });
 
     expect(findBtn().attributes('disabled')).toBe('true');
+  });
+
+  it('passes `buttonClass` prop to button', () => {
+    expect(findBtn().classes()).toContain(buttonClass);
   });
 
   it('will emit `confirm` when the modal confirms', () => {

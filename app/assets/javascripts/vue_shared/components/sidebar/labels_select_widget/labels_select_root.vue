@@ -231,9 +231,10 @@ export default {
             throw new Error();
           }
 
+          this.issuableLabels = data[mutationName]?.[this.issuableType]?.labels?.nodes;
           this.$emit('updateSelectedLabels', {
             id: data[mutationName]?.[this.issuableType]?.id,
-            labels: data[mutationName]?.[this.issuableType]?.labels?.nodes,
+            labels: this.issuableLabels,
           });
         })
         .catch((error) =>

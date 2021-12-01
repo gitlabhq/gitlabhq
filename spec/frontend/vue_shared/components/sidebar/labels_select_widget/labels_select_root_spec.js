@@ -1,5 +1,5 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,14 +8,14 @@ import { IssuableType } from '~/issue_show/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
+import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value_collapsed.vue';
 import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
 import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 import { mockConfig, issuableLabelsQueryResponse } from './mock_data';
 
 jest.mock('~/flash');
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const successfulQueryHandler = jest.fn().mockResolvedValue(issuableLabelsQueryResponse);
 const errorQueryHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
@@ -25,6 +25,7 @@ describe('LabelsSelectRoot', () => {
 
   const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findDropdownValue = () => wrapper.findComponent(DropdownValue);
+  const findDropdownValueCollapsed = () => wrapper.findComponent(DropdownValueCollapsed);
   const findDropdownContents = () => wrapper.findComponent(DropdownContents);
 
   const createComponent = ({
@@ -37,7 +38,6 @@ describe('LabelsSelectRoot', () => {
     wrapper = shallowMount(LabelsSelectRoot, {
       slots,
       apolloProvider: mockApollo,
-      localVue,
       propsData: {
         ...config,
         issuableType: IssuableType.Issue,
@@ -105,6 +105,9 @@ describe('LabelsSelectRoot', () => {
       it('renders dropdown value component when query labels is resolved', () => {
         expect(findDropdownValue().exists()).toBe(true);
         expect(findDropdownValue().props('selectedLabels')).toEqual(
+          issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
+        );
+        expect(findDropdownValueCollapsed().props('labels')).toEqual(
           issuableLabelsQueryResponse.data.workspace.issuable.labels.nodes,
         );
       });

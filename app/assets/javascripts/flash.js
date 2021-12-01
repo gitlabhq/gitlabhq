@@ -130,7 +130,6 @@ const createFlash = function createFlash({
 
 export {
   createFlash as default,
-  createFlashEl,
   createAction,
   hideFlash,
   removeFlashClickListener,

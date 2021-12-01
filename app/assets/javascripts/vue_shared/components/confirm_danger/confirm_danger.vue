@@ -26,6 +26,11 @@ export default {
       type: String,
       required: true,
     },
+    buttonClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
     buttonTestid: {
       type: String,
       required: false,
@@ -39,7 +44,7 @@ export default {
   <div>
     <gl-button
       v-gl-modal="$options.modalId"
-      class="gl-button"
+      :class="buttonClass"
       variant="danger"
       :disabled="disabled"
       :data-testid="buttonTestid"

@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.5.1 (2021-12-01)
+
+### Fixed (4 changes)
+
+- [Check validation for license only if new record](gitlab-org/gitlab@3e34c2dc431a2b1c1828f5154a4d2be350359b16) ([merge request](gitlab-org/gitlab!75498)) **GitLab Enterprise Edition**
+- [Fix for hexadecimal branch deletion](gitlab-org/gitlab@eb74cd44edac0c16c44aa11d710b742586c31741) ([merge request](gitlab-org/gitlab!75498))
+- [Fix the SSL_CERT_DIR logging on git operations](gitlab-org/gitlab@6ef3b63ad5e58baa0e0e0a922fe43a2fb4494508) ([merge request](gitlab-org/gitlab!75498))
+- [Support Action Cable on GCP Memorystore](gitlab-org/gitlab@d62aa5bcbad5851209a9d248ca267d0c46d1e7c9) ([merge request](gitlab-org/gitlab!75498))
+
 ## 14.5.0 (2021-11-19)
 
 ### Added (113 changes)

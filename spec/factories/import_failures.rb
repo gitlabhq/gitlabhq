@@ -10,6 +10,8 @@ FactoryBot.define do
     exception_class { 'RuntimeError' }
     exception_message { 'Something went wrong' }
     source { 'method_call' }
+    relation_key { 'issues' }
+    relation_index { 1 }
     correlation_id_value { SecureRandom.uuid }
 
     trait :hard_failure do

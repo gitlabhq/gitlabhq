@@ -107,7 +107,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      desc 'Get a project export status' do
+      desc 'Get a project import status' do
         detail 'This feature was introduced in GitLab 10.6.'
         success Entities::ProjectImportStatus
       end

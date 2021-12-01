@@ -200,6 +200,8 @@ Dangerfile @gl-quality/eng-prod
 
 [Backend Static Code Analysis]
 .rubocop*.yml @dstull @splattael @gl-quality/eng-prod
+.rubocop_todo.yml @dstull @splattael @gl-quality/eng-prod
+.rubocop_todo/ @dstull @splattael @gl-quality/eng-prod
 /rubocop/ @dstull @splattael @gl-quality/eng-prod
 /spec/rubocop/ @dstull @splattael @gl-quality/eng-prod
 

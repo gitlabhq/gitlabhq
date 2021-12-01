@@ -1,38 +1,12 @@
 import createFlash, {
-  createFlashEl,
   createAction,
   hideFlash,
   removeFlashClickListener,
+  FLASH_TYPES,
   FLASH_CLOSED_EVENT,
 } from '~/flash';
 
 describe('Flash', () => {
-  describe('createFlashEl', () => {
-    let el;
-
-    beforeEach(() => {
-      el = document.createElement('div');
-    });
-
-    afterEach(() => {
-      el.innerHTML = '';
-    });
-
-    it('creates flash element with type', () => {
-      el.innerHTML = createFlashEl('testing', 'alert');
-
-      expect(el.querySelector('.flash-alert')).not.toBeNull();
-    });
-
-    it('escapes text', () => {
-      el.innerHTML = createFlashEl('<script>alert("a");</script>', 'alert');
-
-      expect(el.querySelector('.flash-text').textContent.trim()).toBe(
-        '<script>alert("a");</script>',
-      );
-    });
-  });
-
   describe('hideFlash', () => {
     let el;
 
@@ -137,14 +111,10 @@ describe('Flash', () => {
 
   describe('createFlash', () => {
     const message = 'test';
-    const type = 'alert';
-    const parent = document;
     const fadeTransition = false;
     const addBodyClass = true;
     const defaultParams = {
       message,
-      type,
-      parent,
       actionConfig: null,
       fadeTransition,
       addBodyClass,
@@ -171,12 +141,26 @@ describe('Flash', () => {
         document.querySelector('.js-content-wrapper').remove();
       });
 
-      it('adds flash element into container', () => {
+      it('adds flash alert element into the document by default', () => {
         createFlash({ ...defaultParams });
 
-        expect(document.querySelector('.flash-alert')).not.toBeNull();
-
+        expect(document.querySelector('.flash-container .flash-alert')).not.toBeNull();
         expect(document.body.className).toContain('flash-shown');
+      });
+
+      it('adds flash of a warning type', () => {
+        createFlash({ ...defaultParams, type: FLASH_TYPES.WARNING });
+
+        expect(document.querySelector('.flash-container .flash-warning')).not.toBeNull();
+        expect(document.body.className).toContain('flash-shown');
+      });
+
+      it('escapes text', () => {
+        createFlash({ ...defaultParams, message: '<script>alert("a");</script>' });
+
+        expect(document.querySelector('.flash-text').textContent.trim()).toBe(
+          '<script>alert("a");</script>',
+        );
       });
 
       it('adds flash into specified parent', () => {

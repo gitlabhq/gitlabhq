@@ -10,6 +10,7 @@ export default () => {
     removeFormId = null,
     phrase,
     buttonText,
+    buttonClass = '',
     buttonTestid = null,
     confirmDangerMessage,
     disabled = false,
@@ -25,6 +26,7 @@ export default () => {
         props: {
           phrase,
           buttonText,
+          buttonClass,
           buttonTestid,
           disabled: parseBoolean(disabled),
         },

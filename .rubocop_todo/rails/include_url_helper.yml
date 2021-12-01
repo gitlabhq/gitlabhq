@@ -1,0 +1,42 @@
+---
+Rails/IncludeUrlHelper:
+  Exclude:
+  - app/models/integrations/asana.rb
+  - app/models/integrations/bamboo.rb
+  - app/models/integrations/bugzilla.rb
+  - app/models/integrations/campfire.rb
+  - app/models/integrations/confluence.rb
+  - app/models/integrations/custom_issue_tracker.rb
+  - app/models/integrations/datadog.rb
+  - app/models/integrations/discord.rb
+  - app/models/integrations/ewm.rb
+  - app/models/integrations/external_wiki.rb
+  - app/models/integrations/flowdock.rb
+  - app/models/integrations/hangouts_chat.rb
+  - app/models/integrations/irker.rb
+  - app/models/integrations/jenkins.rb
+  - app/models/integrations/mattermost.rb
+  - app/models/integrations/pivotaltracker.rb
+  - app/models/integrations/redmine.rb
+  - app/models/integrations/webex_teams.rb
+  - app/models/integrations/youtrack.rb
+  - app/presenters/alert_management/alert_presenter.rb
+  - app/presenters/ci/pipeline_presenter.rb
+  - app/presenters/environment_presenter.rb
+  - app/presenters/gitlab/blame_presenter.rb
+  - app/presenters/merge_request_presenter.rb
+  - app/presenters/project_presenter.rb
+  - app/presenters/prometheus_alert_presenter.rb
+  - app/presenters/release_presenter.rb
+  - app/presenters/releases/evidence_presenter.rb
+  - ee/app/helpers/license_helper.rb
+  - ee/app/models/integrations/github.rb
+  - ee/app/presenters/merge_request_approver_presenter.rb
+  - ee/spec/helpers/ee/projects/security/configuration_helper_spec.rb
+  - ee/spec/lib/banzai/filter/cross_project_issuable_information_filter_spec.rb
+  - lib/gitlab/ci/badge/metadata.rb
+  - spec/helpers/merge_requests_helper_spec.rb
+  - spec/helpers/nav/top_nav_helper_spec.rb
+  - spec/helpers/notify_helper_spec.rb
+  - spec/lib/banzai/filter/reference_redactor_filter_spec.rb
+  - spec/lib/banzai/reference_redactor_spec.rb

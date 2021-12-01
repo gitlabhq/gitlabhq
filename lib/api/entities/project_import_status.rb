@@ -4,6 +4,7 @@ module API
   module Entities
     class ProjectImportStatus < ProjectIdentity
       expose :import_status
+      expose :import_type
       expose :correlation_id do |project, _options|
         project.import_state&.correlation_id
       end

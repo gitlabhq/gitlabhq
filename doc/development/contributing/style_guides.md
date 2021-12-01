@@ -171,7 +171,10 @@ we should track our progress through the exception list.
 
 When auto-generating the `.rubocop_todo.yml` exception list for a particular Cop,
 and more than 15 files are affected, we should add the exception list to
-a different file, `.rubocop_manual_todo.yml`.
+a different file within `.rubocop_todo/` directory.
+
+For example, the configuration for the cop `Gitlab/NamespacedClass` is located
+in `.rubocop_todo/gitlab/namespaced_class.yml`.
 
 This ensures that our list isn't mistakenly removed by another auto generation of
 the `.rubocop_todo.yml`. This also allows us greater visibility into the exceptions
@@ -184,19 +187,19 @@ bundle exec rake rubocop:todo:generate
 ```
 
 You can then move the list from the freshly generated `.rubocop_todo.yml` for the Cop being actively
-resolved and place it in the `.rubocop_manual_todo.yml`. In this scenario, do not commit auto generated
-changes to the `.rubocop_todo.yml` as an `exclude limit` that is higher than 15 will make the
-`.rubocop_todo.yml` hard to parse.
+resolved and place it in the directory `.rubocop_todo/`. In this scenario, do not commit
+auto-generated changes to the `.rubocop_todo.yml`, as an `exclude limit` that is higher than 15
+makes the `.rubocop_todo.yml` hard to parse.
 
 ### Reveal existing RuboCop exceptions
 
 To reveal existing RuboCop exceptions in the code that have been excluded via `.rubocop_todo.yml` and
-`.rubocop_manual_todo.yml`, set the environment variable `REVEAL_RUBOCOP_TODO` to `1`.
+`.rubocop_todo/**/*.yml`, set the environment variable `REVEAL_RUBOCOP_TODO` to `1`.
 
 This allows you to reveal existing RuboCop exceptions during your daily work cycle and fix them along the way.
 
 NOTE:
-Permanent `Exclude`s should be defined in `.rubocop.yml` instead of `.rubocop_manual_todo.yml`.
+Define permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
 
 ## Database migrations
 

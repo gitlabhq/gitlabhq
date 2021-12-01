@@ -280,6 +280,7 @@ export default {
                   v-if="showDraft(discussion.reply_id)"
                   :key="`draft_${discussion.id}`"
                   :draft="draftForDiscussion(discussion.reply_id)"
+                  :line="line"
                 />
                 <div
                   v-else-if="canShowReplyActions && showReplies"

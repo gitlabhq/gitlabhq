@@ -36,6 +36,12 @@ On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in
 browser performance testing using a
 [Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
 
+## Sample Data for Review Apps
+
+Upon deployment of a review app, project data is created from the [`sample-gitlab-project`](https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project) template project. This aims to provide projects with prepopulated resources to facilitate manual and exploratory testing.
+
+The sample projects will be created in the `root` user namespace and can be accessed from the personal projects list for that user.
+
 ## How to
 
 ### Redeploy Review App from a clean slate

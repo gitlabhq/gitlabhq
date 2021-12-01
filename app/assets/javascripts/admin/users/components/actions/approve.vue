@@ -46,7 +46,6 @@ export default {
             attributes: [{ variant: 'confirm', 'data-qa-selector': 'approve_user_confirm_button' }],
           },
           messageHtml,
-          'data-qa-selector': 'approve_user_button',
         },
       });
     },
@@ -55,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item @click="onClick">
+  <gl-dropdown-item data-qa-selector="approve_user_button" @click="onClick">
     <slot></slot>
   </gl-dropdown-item>
 </template>

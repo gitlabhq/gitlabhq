@@ -142,7 +142,7 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
           t.datetime_with_timezone :verified_at
           t.integer :verification_retry_count, limit: 2
           t.binary :verification_checksum, using: 'verification_checksum::bytea'
-          t.text :verification_failure
+          t.text :verification_failure, limit: 255
 
           t.index :verification_state, name: VERIFICATION_STATE_INDEX_NAME
           t.index :verified_at, where: "(verification_state = 0)", order: { verified_at: 'ASC NULLS FIRST' }, name: PENDING_VERIFICATION_INDEX_NAME
@@ -150,8 +150,6 @@ The Geo primary site needs to checksum every replicable so secondaries can verif
           t.index :verification_state, where: "(verification_state = 0 OR verification_state = 3)", name: NEEDS_VERIFICATION_INDEX_NAME
         end
       end
-
-      add_text_limit :cool_widget_states, :verification_failure, 255
     end
 
     def down

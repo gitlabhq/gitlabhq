@@ -4,7 +4,6 @@ import { MountingPortal } from 'portal-vue';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
 import { __, sprintf } from '~/locale';
-import BoardSidebarLabelsSelect from '~/boards/components/sidebar/board_sidebar_labels_select.vue';
 import BoardSidebarTimeTracker from '~/boards/components/sidebar/board_sidebar_time_tracker.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
@@ -26,7 +25,6 @@ export default {
     SidebarDateWidget,
     SidebarConfidentialityWidget,
     BoardSidebarTimeTracker,
-    BoardSidebarLabelsSelect,
     SidebarLabelsWidget,
     SidebarSubscriptionsWidget,
     SidebarDropdownWidget,
@@ -210,7 +208,6 @@ export default {
           data-testid="sidebar-due-date"
         />
         <sidebar-labels-widget
-          v-if="glFeatures.labelsWidget"
           class="block labels"
           data-testid="sidebar-labels"
           :iid="activeBoardItem.iid"
@@ -230,7 +227,6 @@ export default {
         >
           {{ __('None') }}
         </sidebar-labels-widget>
-        <board-sidebar-labels-select v-else class="block labels" />
         <sidebar-weight-widget
           v-if="weightFeatureAvailable"
           :iid="activeBoardItem.iid"

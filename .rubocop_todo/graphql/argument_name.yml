@@ -1,0 +1,4 @@
+---
+GraphQL/ArgumentName:
+  Exclude:
+  - ee/app/graphql/mutations/audit_events/external_audit_event_destinations/update.rb

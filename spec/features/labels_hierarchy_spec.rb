@@ -17,7 +17,6 @@ RSpec.describe 'Labels Hierarchy', :js do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
-    stub_feature_flags(labels_widget: false)
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -28,13 +27,12 @@ RSpec.describe 'Labels Hierarchy', :js do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         page.within('.block.labels') do
           click_on 'Edit'
+
+          wait_for_requests
+
+          click_on label.title
+          click_on 'Close'
         end
-
-        wait_for_requests
-
-        find('a.label-item', text: label.title).click
-        wait_for_requests
-        click_on 'Close'
 
         wait_for_requests
 

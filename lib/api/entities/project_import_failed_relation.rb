@@ -10,6 +10,7 @@ module API
       end
 
       expose :relation_key, as: :relation_name
+      expose :relation_index, as: :line_number
     end
   end
 end

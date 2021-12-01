@@ -159,6 +159,8 @@ branch already exists, the patches are applied on top of it.
 
 ## Set the default target project
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58093) in GitLab 13.11.
+
 Merge requests have a source and a target project that are the same, unless
 forking is involved. Creating a fork of the project can cause either of these
 scenarios when you create a new merge request:

@@ -1,0 +1,22 @@
+---
+GraphQL/OrderedArguments:
+  Exclude:
+  - app/graphql/mutations/jira_import/start.rb
+  - app/graphql/mutations/merge_requests/accept.rb
+  - app/graphql/resolvers/base_issues_resolver.rb
+  - app/graphql/resolvers/design_management/designs_resolver.rb
+  - app/graphql/resolvers/design_management/version/design_at_version_resolver.rb
+  - app/graphql/resolvers/design_management/version/designs_at_version_resolver.rb
+  - app/graphql/resolvers/design_management/version_in_collection_resolver.rb
+  - app/graphql/resolvers/group_milestones_resolver.rb
+  - app/graphql/resolvers/merge_requests_resolver.rb
+  - app/graphql/resolvers/paginated_tree_resolver.rb
+  - app/graphql/resolvers/tree_resolver.rb
+  - app/graphql/resolvers/users/groups_resolver.rb
+  - app/graphql/types/commit_action_type.rb
+  - app/graphql/types/diff_paths_input_type.rb
+  - app/graphql/types/issues/negated_issue_filter_input_type.rb
+  - app/graphql/types/jira_users_mapping_input_type.rb
+  - app/graphql/types/notes/diff_image_position_input_type.rb
+  - app/graphql/types/notes/diff_position_base_input_type.rb
+  - app/graphql/types/notes/diff_position_input_type.rb

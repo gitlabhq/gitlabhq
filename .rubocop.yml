@@ -8,7 +8,9 @@ require:
 
 inherit_from:
   <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
-  - '.rubocop_manual_todo.yml'
+    <% Dir.glob('.rubocop_todo/**/*.yml').each do |rubocop_todo_yaml| %>
+  - '<%= rubocop_todo_yaml %>'
+    <% end %>
   - '.rubocop_todo.yml'
   <% end %>
   - ./rubocop/rubocop-migrations.yml
