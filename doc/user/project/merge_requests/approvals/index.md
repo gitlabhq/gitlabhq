@@ -105,7 +105,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 - [Require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability. **(ULTIMATE)**
 
-## Related links
+## Related topics
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)
 - [Instance-level approval rules](../../../admin_area/merge_requests_approvals.md) for self-managed installations

@@ -220,6 +220,20 @@ The `* as-if-jh` jobs are run in addition to the regular EE-context jobs. The `j
 The intent is to ensure that a change doesn't introduce a failure after the `gitlab-org/gitlab` project is synced to
 the `gitlab-jh/gitlab` project.
 
+## `undercover` RSpec test
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
+
+The `rspec:undercoverage` job runs [`undercover`](https://rubygems.org/gems/undercover)
+to detect, and fail if any changes introduced in the merge request has zero coverage.
+
+The `rsepc:undercoverage` job obtains coverage data from the `rspec:coverage`
+job.
+
+In the event of an emergency, or false positive from this job, add the
+`pipeline:skip-undercoverage` label to the merge request to allow this job to
+fail.
+
 ## PostgreSQL versions testing
 
 Our test suite runs against PG12 as GitLab.com runs on PG12 and

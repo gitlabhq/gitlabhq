@@ -134,7 +134,7 @@ After configuring GitLab for the two databases, create the new CI/CD database:
    and run any pending migrations:
 
     ```shell
-    bundle exec rails rails db:create db:schema:load:ci db:migrate
+    bundle exec rails db:create db:schema:load:ci db:migrate
     ```
 
 1. Restart GDK:

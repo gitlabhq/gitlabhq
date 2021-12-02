@@ -25,10 +25,8 @@ module Gitlab
             partitions_to_create = missing_partitions
             create(partitions_to_create) unless partitions_to_create.empty?
 
-            if Feature.enabled?(:partition_pruning, default_enabled: :yaml)
-              partitions_to_detach = extra_partitions
-              detach(partitions_to_detach) unless partitions_to_detach.empty?
-            end
+            partitions_to_detach = extra_partitions
+            detach(partitions_to_detach) unless partitions_to_detach.empty?
           end
         rescue StandardError => e
           Gitlab::AppLogger.error(message: "Failed to create / detach partition(s)",

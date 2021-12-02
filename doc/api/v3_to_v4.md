@@ -11,7 +11,7 @@ The GitLab API v3 was [removed](https://gitlab.com/gitlab-org/gitlab-foss/-/issu
 
 For information about the current version of the GitLab API, read the [API documentation](index.md).
 
-## Related links
+## Related topics
 
 - [GitLab v3 API documentation](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/8-16-stable/doc/api/index.md)
 - [Migration guide](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/11-0-stable/doc/api/v3_to_v4.md) from

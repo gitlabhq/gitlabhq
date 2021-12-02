@@ -248,9 +248,19 @@ When you [rename a user](../../profile/index.md#change-your-username),
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
 
-## Related links
+## Related topics
 
-- [GitLab Workflow VS Code extension](vscode.md)
+- [GitLab Workflow VS Code extension](vscode.md).
+- To lock files and prevent change conflicts, use [file locking](../file_lock.md).
+- [Repository API](../../../api/repositories.md).
+- [Find files](file_finder.md) in a repository.
+- [Branches](branches/index.md).
+- [File templates](web_editor.md#template-dropdowns).
+- [Create a directory](web_editor.md#create-a-directory).
+- [Start a merge request](web_editor.md#tips).
+- [Find file history](git_history.md).
+- [Identify changes by line (Git blame)](git_blame.md).
+- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md).
 
 ## Troubleshooting
 
@@ -287,16 +297,3 @@ The same approach should also allow misidentified file types to be fixed.
    ```
 
   `*.txt` files have an entry in the heuristics file. This example prevents parsing of these files.
-
-## Related topics
-
-- To lock files and prevent change conflicts, use [file locking](../file_lock.md).
-- [Repository API](../../../api/repositories.md).
-- [Find files](file_finder.md) in a repository.
-- [Branches](branches/index.md).
-- [File templates](web_editor.md#template-dropdowns).
-- [Create a directory](web_editor.md#create-a-directory).
-- [Start a merge request](web_editor.md#tips).
-- [Find file history](git_history.md).
-- [Identify changes by line (Git blame)](git_blame.md).
-- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md).

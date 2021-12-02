@@ -101,28 +101,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
       ]
     end
 
-    context 'with the partition_pruning feature flag enabled' do
-      before do
-        stub_feature_flags(partition_pruning: true)
-      end
+    it 'detaches each extra partition' do
+      extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
 
-      it 'detaches each extra partition' do
-        extra_partitions.each { |p| expect(manager).to receive(:detach_one_partition).with(p) }
-
-        sync_partitions
-      end
-    end
-
-    context 'with the partition_pruning feature flag disabled' do
-      before do
-        stub_feature_flags(partition_pruning: false)
-      end
-
-      it 'returns immediately' do
-        expect(manager).not_to receive(:detach)
-
-        sync_partitions
-      end
+      sync_partitions
     end
   end
 

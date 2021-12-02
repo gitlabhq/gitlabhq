@@ -10,5 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: suggestion
 ignorecase: true
 swap:
-  button: 'if possible, rewrite to not use'
-  area: 'use "section" instead of'
+  button: 'if possible, rewrite to remove'

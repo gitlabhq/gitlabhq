@@ -428,6 +428,26 @@ RSpec.describe API::Ci::Jobs do
       end
     end
 
+    context 'when job succeeded' do
+      it 'does not return failure_reason' do
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+
+        expect(json_response).not_to include('failure_reason')
+      end
+    end
+
+    context 'when job failed' do
+      let(:job) do
+        create(:ci_build, :failed, :tags, pipeline: pipeline)
+      end
+
+      it 'returns failure_reason' do
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+
+        expect(json_response).to include('failure_reason')
+      end
+    end
+
     context 'when trace artifact record exists with no stored file', :skip_before_request do
       before do
         create(:ci_job_artifact, :unarchived_trace_artifact, job: job, project: job.project)

@@ -13,6 +13,7 @@ module API
         expose :user, with: ::API::Entities::User
         expose :commit, with: ::API::Entities::Commit
         expose :pipeline, with: ::API::Entities::Ci::PipelineBasic
+        expose :failure_reason, if: -> (job) { job.failed? }
 
         expose :web_url do |job, _options|
           Gitlab::Routing.url_helpers.project_job_url(job.project, job)

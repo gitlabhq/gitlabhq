@@ -17,6 +17,9 @@ import Division from '../extensions/division';
 import Emoji from '../extensions/emoji';
 import Figure from '../extensions/figure';
 import FigureCaption from '../extensions/figure_caption';
+import FootnotesSection from '../extensions/footnotes_section';
+import FootnoteDefinition from '../extensions/footnote_definition';
+import FootnoteReference from '../extensions/footnote_reference';
 import Frontmatter from '../extensions/frontmatter';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
@@ -155,6 +158,15 @@ const defaultSerializerConfig = {
       const { name } = node.attrs;
 
       state.write(`:${name}:`);
+    },
+    [FootnoteDefinition.name]: (state, node) => {
+      state.renderInline(node);
+    },
+    [FootnoteReference.name]: (state, node) => {
+      state.write(`[^${node.attrs.footnoteNumber}]`);
+    },
+    [FootnotesSection.name]: (state, node) => {
+      state.renderList(node, '', (index) => `[^${index + 1}]: `);
     },
     [Frontmatter.name]: (state, node) => {
       const { language } = node.attrs;

@@ -79,7 +79,7 @@ merge request is from a fork:
 1. (Optional) Select **Start a new merge request** if you're ready to create a merge request.
 1. Click **Cherry-pick**.
 
-## Related links
+## Related topics
 
 - The [Commits API](../../../api/commits.md) enables you to add custom messages
   to changes you cherry-pick through the API.

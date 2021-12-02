@@ -144,6 +144,6 @@ to your branch to address your reviewers' requests.
 WARNING:
 Suggestions applied from multiple authors creates a commit authored by the user applying the suggestions.
 
-## Related links
+## Related topics
 
 - [Suggestions API](../../../../api/suggestions.md)

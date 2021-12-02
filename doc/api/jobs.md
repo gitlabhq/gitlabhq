@@ -71,6 +71,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
@@ -126,6 +127,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
@@ -207,6 +209,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "stuck_or_timeout_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/6",
     "user": {
@@ -271,6 +274,7 @@ Example of response
     "runner": null,
     "stage": "test",
     "status": "failed",
+    "failure_reason": "script_failure",
     "tag": false,
     "web_url": "https://example.com/foo/bar/-/jobs/7",
     "user": {
@@ -443,6 +447,7 @@ Example of response
   "runner": null,
   "stage": "test",
   "status": "failed",
+  "failure_reason": "script_failure",
   "tag": false,
   "web_url": "https://example.com/foo/bar/-/jobs/8",
   "user": {

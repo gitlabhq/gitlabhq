@@ -4,8 +4,6 @@ module Gitlab
     module Partitioning
       class DetachedPartitionDropper
         def perform
-          return unless Feature.enabled?(:drop_detached_partitions, default_enabled: :yaml)
-
           Gitlab::AppLogger.info(message: "Checking for previously detached partitions to drop")
 
           Postgresql::DetachedPartition.ready_to_drop.find_each do |detached_partition|

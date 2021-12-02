@@ -88,7 +88,7 @@ sees in the project's search results respectively.
 |:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
 | ![Confidential issues search by maintainer](img/confidential_issues_search_master.png) | ![Confidential issues search by guest](img/confidential_issues_search_guest.png) |
 
-## Related links
+## Related topics
 
 - [Merge requests for confidential issues](../merge_requests/confidential.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)

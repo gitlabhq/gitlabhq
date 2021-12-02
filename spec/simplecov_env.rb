@@ -2,6 +2,7 @@
 
 require 'simplecov'
 require 'simplecov-cobertura'
+require 'simplecov-lcov'
 require_relative '../lib/gitlab/utils'
 
 module SimpleCovEnv
@@ -18,10 +19,13 @@ module SimpleCovEnv
   end
 
   def configure_formatter
+    SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+
     SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
       SimpleCov::Formatter::SimpleFormatter,
       SimpleCov::Formatter::HTMLFormatter,
-      SimpleCov::Formatter::CoberturaFormatter
+      SimpleCov::Formatter::CoberturaFormatter,
+      SimpleCov::Formatter::LcovFormatter
     ])
   end
 

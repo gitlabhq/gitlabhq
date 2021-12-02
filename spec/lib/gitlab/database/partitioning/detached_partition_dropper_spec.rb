@@ -90,18 +90,6 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
         expect(table_oid('test_partition')).to be_nil
       end
 
-      context 'when the drop_detached_partitions feature flag is disabled' do
-        before do
-          stub_feature_flags(drop_detached_partitions: false)
-        end
-
-        it 'does not drop the partition' do
-          dropper.perform
-
-          expect(table_oid('test_partition')).not_to be_nil
-        end
-      end
-
       context 'removing foreign keys' do
         it 'removes foreign keys from the table before dropping it' do
           expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition_name|

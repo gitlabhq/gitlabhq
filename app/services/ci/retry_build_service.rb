@@ -7,7 +7,7 @@ module Ci
          allow_failure stage stage_id stage_idx trigger_request
          yaml_variables when environment coverage_regex
          description tag_list protected needs_attributes
-         resource_group scheduling_type job_variables_attributes].freeze
+         resource_group scheduling_type].freeze
     end
 
     def self.extra_accessors

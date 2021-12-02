@@ -125,14 +125,6 @@ RSpec.describe Ci::RetryBuildService do
         expect(new_build.needs_attributes).to match(build.needs_attributes)
         expect(new_build.needs).not_to match(build.needs)
       end
-
-      it 'clones only the job variables attributes' do
-        expect(new_build.job_variables.exists?).to be_truthy
-        expect(build.job_variables.exists?).to be_truthy
-
-        expect(new_build.job_variables_attributes).to match(build.job_variables_attributes)
-        expect(new_build.job_variables).not_to match(build.job_variables)
-      end
     end
 
     describe 'reject accessors' do
@@ -155,7 +147,7 @@ RSpec.describe Ci::RetryBuildService do
         Ci::Build.attribute_names.map(&:to_sym) +
         Ci::Build.attribute_aliases.keys.map(&:to_sym) +
         Ci::Build.reflect_on_all_associations.map(&:name) +
-        [:tag_list, :needs_attributes, :job_variables_attributes] -
+        [:tag_list, :needs_attributes] -
         # ee-specific accessors should be tested in ee/spec/services/ci/retry_build_service_spec.rb instead
         described_class.extra_accessors -
         [:dast_site_profiles_build, :dast_scanner_profiles_build] # join tables

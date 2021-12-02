@@ -46,6 +46,6 @@ project, group, or instance level:
 When the integration sends data, you can view it in the [CI Visibility](https://app.datadoghq.com/ci)
 section of your Datadog account.
 
-## Related links
+## Related topics
 
 - [Datadog's CI Visibility](https://docs.datadoghq.com/continuous_integration/) documentation.

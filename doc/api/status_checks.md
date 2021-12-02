@@ -145,6 +145,6 @@ PUT /projects/:id/external_status_checks/:check_id
 | `external_url`         | string           | no       | URL of external status check resource          |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
 
-## Related links
+## Related topics
 
 - [External status checks](../user/project/merge_requests/status_checks.md).

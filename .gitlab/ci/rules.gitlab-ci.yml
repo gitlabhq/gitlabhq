@@ -67,6 +67,9 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
+.if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
 
@@ -1358,6 +1361,17 @@
     - <<: *if-default-branch-schedule-2-hourly
     - <<: *if-merge-request-labels-run-all-rspec
       when: always
+
+.rails:rules:rspec-undercoverage:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-skip-undercoverage
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-approved
+    - <<: *if-merge-request
+      changes: *backend-patterns
 
 .rails:rules:default-branch-schedule-nightly--code-backstage:
   rules:

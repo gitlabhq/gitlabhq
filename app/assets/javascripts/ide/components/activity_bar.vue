@@ -63,7 +63,7 @@ export default {
           class="ide-sidebar-link js-ide-review-mode"
           @click.prevent="changedActivityView($event, $options.leftSidebarViews.review.name)"
         >
-          <gl-icon name="file-modified" />
+          <gl-icon name="review-list" />
         </button>
       </li>
       <li>
