@@ -850,6 +850,32 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/4/projects/56"
 ```
 
+## Transfer a group to a new parent group / Turn a subgroup to a top-level group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
+
+Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
+
+- With the Owner role for the group to transfer.
+- With permission to [create a subgroup](../user/group/subgroups/index.md#creating-a-subgroup) in the new parent group if transferring a group.
+- With [permission to create a top-level group](../administration/user_settings.md#prevent-users-from-creating-top-level-groups) if turning a subgroup into a top-level group.
+
+```plaintext
+POST  /groups/:id/transfer
+```
+
+Parameters:
+
+| Attribute    | Type           | Required | Description |
+| ------------ | -------------- | -------- | ----------- |
+| `id`         | integer | yes  | ID of the group to transfer. |
+| `group_id`   | integer | no   | ID of the new parent group. When not specified, the group to transfer is instead turned into a top-level group. |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/groups/4/transfer?group_id=7"
+```
+
 ## Update group
 
 Updates the project group. Only available to group owners and administrators.

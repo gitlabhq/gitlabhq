@@ -7,15 +7,42 @@ type: reference, howto
 
 # Commit message templates **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) squash commit templates in GitLab 14.6.
 
-## Merge commit message template
+GitLab uses commit templates to create default messages for specific types of
+commits. These templates encourage commit messages to follow a particular format,
+or contain specific information. Users can override these templates when merging
+a merge request.
 
-As a project maintainer, you're able to configure merge commit message template. It will be used during merge to
-create commit message. Template uses similar syntax to 
+Commit templates use syntax similar to the syntax for
 [review suggestions](reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 
-Default merge commit message can be recreated using following template:
+## Configure commit templates
+
+Change the commit templates for your project if the default templates don't
+contain the information you need.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for a project.
+
+To do this:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General** and expand **Merge requests**.
+1. Depending on the type of template you want to create, scroll to either
+   [**Merge commit message template**](#default-template-for-merge-commits) or
+   [**Squash commit message template**](#default-template-for-squash-commits).
+1. For your desired commit type, enter your default message. You can use both static
+   text and [variables](#supported-variables-in-commit-templates). Each template
+   is limited to a maximum of 500 characters, though after replacing the templates
+   with data, the final message may be longer.
+1. Select **Save changes**.
+
+## Default template for merge commits
+
+The default template for merge commit messages is:
 
 ```plaintext
 Merge branch '%{source_branch}' into '%{target_branch}'
@@ -27,40 +54,30 @@ Merge branch '%{source_branch}' into '%{target_branch}'
 See merge request %{reference}
 ```
 
-This commit message can be customized to follow any guidelines you might have.
-To do so, expand the **Merge requests** tab within your project's **General**
-settings and change the **Merge commit message template** text:
+## Default template for squash commits
 
-![Custom commit message for merge commit](img/merge_commit_message_template_v14_5.png)
-
-You can use static text and following variables:
-
-| Variable           | Description                                                                                                                                                                                                                               | Output example                                  |
-|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| `%{source_branch}` | The name of the branch that is being merged.                                                                                                                                                                                              | `my-feature-branch`                             |
-| `%{target_branch}` | The name of the branch that the changes are applied to.                                                                                                                                                                                   | `master`                                        |
-| `%{title}`         | Title of the merge request.                                                                                                                                                                                                               | Fix stuff                                       |
-| `%{issues}`        | String with phrase "Closes <issue numbers>" with all issues mentioned in the MR description matching [issue closing patterns](../issues/managing_issues.md#closing-issues-automatically). It will be empty when no issues were mentioned. | `Closes #465, #190 and #400`                    |
-| `%{description}`   | Description of the merge request.                                                                                                                                                                                                         | Merge request description.<br>Can be multiline. |
-| `%{reference}`     | Reference to the merge request.                                                                                                                                                                                                           | group-name/project-name!72359                                          |
-
-NOTE:
-Empty variables that are the only word in a line will be removed along with all newline characters preceding it.
-
-Merge commit template field has a limit of 500 characters. This limit only applies to the template
-itself.
-
-## Squash commit message template
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.
-
-As a project maintainer, you're able to configure squash commit message template. It will be used during merge with
-squash to create squash commit message. It uses the same syntax and variables as merge commit message template.
-
-![Custom commit message for squash commit](img/squash_commit_message_template_v14_6.png)
-
-Default squash commit message can be recreated using following template:
+If you have configured your project to [squash commits on merge](squash_and_merge.md),
+GitLab creates a squash commit message with this template:
 
 ```plaintext
 %{title}
 ```
+
+## Supported variables in commit templates
+
+Commit message templates support these variables:
+
+| Variable | Description | Output example |
+|----------|-------------|----------------|
+| `%{source_branch}` | The name of the branch being merged. | `my-feature-branch` |
+| `%{target_branch}` | The name of the branch that the changes are applied to. | `main` |
+| `%{title}`         | Title of the merge request. | `Fix tests and translations` |
+| `%{issues}`        | String with phrase `Closes <issue numbers>`. Contains all issues mentioned in the merge request description that match [issue closing patterns](../issues/managing_issues.md#closing-issues-automatically). Empty if no issues are mentioned. | `Closes #465, #190 and #400` |
+| `%{description}`   | Description of the merge request. | `Merge request description.<br>Can be multiline.` |
+| `%{reference}`     | Reference to the merge request. | `group-name/project-name!72359` |
+
+Empty variables that are the only word in a line are removed, along with all newline characters preceding it.
+
+## Related topics
+
+- [Squash and merge](squash_and_merge.md).

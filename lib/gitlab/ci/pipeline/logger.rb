@@ -47,6 +47,7 @@ module Gitlab
           return unless log?
 
           attributes = {
+            class: self.class.name.to_s,
             pipeline_creation_caller: caller,
             project_id: project.id,
             pipeline_id: pipeline.id,

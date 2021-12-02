@@ -71,6 +71,7 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
 
       let(:loggable_data) do
         {
+          'class' => described_class.name.to_s,
           'pipeline_id' => pipeline.id,
           'pipeline_persisted' => true,
           'project_id' => project.id,

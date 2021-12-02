@@ -21,9 +21,9 @@ module Banzai
       FOOTNOTE_LI_REFERENCE_PATTERN   = /\A#{FOOTNOTE_ID_PREFIX}.+\z/.freeze
       FOOTNOTE_LINK_REFERENCE_PATTERN = /\A#{FOOTNOTE_LINK_ID_PREFIX}.+\z/.freeze
 
-      CSS_SECTION    = "ol > li a[href^=\"\##{FOOTNOTE_LINK_ID_PREFIX}\"]"
+      CSS_SECTION    = "section[data-footnotes]"
       XPATH_SECTION  = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_SECTION).freeze
-      CSS_FOOTNOTE   = 'sup > a[id]'
+      CSS_FOOTNOTE   = 'sup > a[data-footnote-ref]'
       XPATH_FOOTNOTE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_FOOTNOTE).freeze
 
       # only needed when feature flag use_cmark_renderer is turned off
@@ -37,20 +37,28 @@ module Banzai
       XPATH_SECTION_OLD                   = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_SECTION_OLD).freeze
 
       def call
-        xpath_section = Feature.enabled?(:use_cmark_renderer) ? XPATH_SECTION : XPATH_SECTION_OLD
-        return doc unless first_footnote = doc.at_xpath(xpath_section)
-
-        # Sanitization stripped off the section wrapper - add it back in
         if Feature.enabled?(:use_cmark_renderer)
-          first_footnote.parent.parent.parent.wrap('<section class="footnotes" data-footnotes>')
+          # Sanitization stripped off the section class - add it back in
+          return doc unless section_node = doc.at_xpath(XPATH_SECTION)
+
+          section_node.append_class('footnotes')
         else
+          return doc unless first_footnote = doc.at_xpath(XPATH_SECTION_OLD)
+          return doc unless first_footnote.parent
+
           first_footnote.parent.wrap('<section class="footnotes">')
         end
 
         rand_suffix = "-#{random_number}"
         modified_footnotes = {}
 
-        doc.xpath(XPATH_FOOTNOTE).each do |link_node|
+        xpath_footnote = if Feature.enabled?(:use_cmark_renderer)
+                           XPATH_FOOTNOTE
+                         else
+                           Gitlab::Utils::Nokogiri.css_to_xpath('sup > a[id]')
+                         end
+
+        doc.xpath(xpath_footnote).each do |link_node|
           if Feature.enabled?(:use_cmark_renderer)
             ref_num = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX)
             ref_num.gsub!(/[[:punct:]]/, '\\\\\&')
@@ -58,7 +66,8 @@ module Banzai
             ref_num = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX_OLD)
           end
 
-          node_xpath = Gitlab::Utils::Nokogiri.css_to_xpath("li[id=#{fn_id(ref_num)}]")
+          css = Feature.enabled?(:use_cmark_renderer) ? "section[data-footnotes] li[id=#{fn_id(ref_num)}]" : "li[id=#{fn_id(ref_num)}]"
+          node_xpath = Gitlab::Utils::Nokogiri.css_to_xpath(css)
           footnote_node = doc.at_xpath(node_xpath)
 
           if footnote_node || modified_footnotes[ref_num]
@@ -69,7 +78,6 @@ module Banzai
 
             # Sanitization stripped off class - add it back in
             link_node.parent.append_class('footnote-ref')
-            link_node['data-footnote-ref'] = nil if Feature.enabled?(:use_cmark_renderer)
 
             unless modified_footnotes[ref_num]
               footnote_node[:id] += rand_suffix
@@ -78,7 +86,6 @@ module Banzai
               if backref_node
                 backref_node[:href] += rand_suffix
                 backref_node.append_class('footnote-backref')
-                backref_node['data-footnote-backref'] = nil if Feature.enabled?(:use_cmark_renderer)
               end
 
               modified_footnotes[ref_num] = true

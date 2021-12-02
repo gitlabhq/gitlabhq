@@ -576,18 +576,12 @@ class Project < ApplicationRecord
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
-  # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
-    access_level_attribute = ProjectFeature.arel_table[ProjectFeature.access_level_attribute(feature)]
-    enabled_feature = access_level_attribute.gt(ProjectFeature::DISABLED).or(access_level_attribute.eq(nil))
-
-    with_project_feature.where(enabled_feature)
+    with_project_feature.merge(ProjectFeature.with_feature_enabled(feature))
   }
 
-  # Picks a feature where the level is exactly that given.
   scope :with_feature_access_level, ->(feature, level) {
-    access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => level })
+    with_project_feature.merge(ProjectFeature.with_feature_access_level(feature, level))
   }
 
   # Picks projects which use the given programming language
@@ -688,37 +682,8 @@ class Project < ApplicationRecord
     end
   end
 
-  # project features may be "disabled", "internal", "enabled" or "public". If "internal",
-  # they are only available to team members. This scope returns projects where
-  # the feature is either public, enabled, or internal with permission for the user.
-  # Note: this scope doesn't enforce that the user has access to the projects, it just checks
-  # that the user has access to the feature. It's important to use this scope with others
-  # that checks project authorizations first (e.g. `filter_by_feature_visibility`).
-  #
-  # This method uses an optimised version of `with_feature_access_level` for
-  # logged in users to more efficiently get private projects with the given
-  # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
-
-    if user&.can_read_all_resources?
-      with_feature_enabled(feature)
-    elsif user
-      min_access_level = ProjectFeature.required_minimum_access_level(feature)
-      column = ProjectFeature.quoted_access_level_column(feature)
-
-      with_project_feature
-      .where("#{column} IS NULL OR #{column} IN (:public_visible) OR (#{column} = :private_visible AND EXISTS (:authorizations))",
-            {
-              public_visible: visible,
-              private_visible: ProjectFeature::PRIVATE,
-              authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
-            })
-    else
-      # This has to be added to include features whose value is nil in the db
-      visible << nil
-      with_feature_access_level(feature, visible)
-    end
+    with_project_feature.merge(ProjectFeature.with_feature_available_for_user(feature, user))
   end
 
   def self.projects_user_can(projects, user, action)

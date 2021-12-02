@@ -3,7 +3,7 @@
 .form-group
   %b= s_('ProjectSettings|Merge commit message template')
   %p.text-secondary
-    - configure_the_merge_commit_message_help_link_url = help_page_path('user/project/merge_requests/commit_templates.md', anchor: 'merge-commit-message-template')
+    - configure_the_merge_commit_message_help_link_url = help_page_path('user/project/merge_requests/commit_templates.md')
     - configure_the_merge_commit_message_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: configure_the_merge_commit_message_help_link_url }
     = s_('ProjectSettings|The commit message used when merging, if the merge method creates a merge commit. %{link_start}Learn more about syntax and variables.%{link_end}').html_safe % { link_start: configure_the_merge_commit_message_help_link_start, link_end: '</a>'.html_safe }
   .mb-2

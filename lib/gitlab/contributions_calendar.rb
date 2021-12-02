@@ -23,25 +23,28 @@ module Gitlab
     def activity_dates
       return @activity_dates if @activity_dates.present?
 
+      date_interval = "INTERVAL '#{@contributor_time_instance.now.utc_offset} seconds'"
+
       # Can't use Event.contributions here because we need to check 3 different
       # project_features for the (currently) 3 different contribution types
       date_from = @contributor_time_instance.now.years_ago(1)
-      repo_events = event_counts(date_from, :repository)
-        .having(action: :pushed)
-      issue_events = event_counts(date_from, :issues)
-        .having(action: [:created, :closed], target_type: "Issue")
-      mr_events = event_counts(date_from, :merge_requests)
-        .having(action: [:merged, :created, :closed], target_type: "MergeRequest")
-      note_events = event_counts(date_from, :merge_requests)
-        .having(action: :commented)
+      repo_events = event_created_at(date_from, :repository)
+        .where(action: :pushed, target_type: nil)
+      issue_events = event_created_at(date_from, :issues)
+        .where(action: [:created, :closed], target_type: "Issue")
+      mr_events = event_created_at(date_from, :merge_requests)
+        .where(action: [:merged, :created, :closed], target_type: "MergeRequest")
+      note_events = event_created_at(date_from, :merge_requests)
+        .where(action: :commented, target_type: "Note")
 
       events = Event
-        .select(:project_id, :target_type, :action, :date, :total_amount)
-        .from_union([repo_events, issue_events, mr_events, note_events])
+        .select("date(created_at + #{date_interval}) AS date", 'COUNT(*) AS num_events')
+        .from_union([repo_events, issue_events, mr_events, note_events], remove_duplicates: false)
+        .group(:date)
         .map(&:attributes)
 
       @activity_dates = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
-        activities[event["date"]] += event["total_amount"]
+        activities[event["date"]] += event["num_events"]
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -74,27 +77,25 @@ module Gitlab
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def event_counts(date_from, feature)
+    def event_created_at(date_from, feature)
       t = Event.arel_table
 
       # re-running the contributed projects query in each union is expensive, so
       # use IN(project_ids...) instead. It's the intersection of two users so
       # the list will be (relatively) short
       @contributed_project_ids ||= projects.distinct.pluck(:id)
-      authed_projects = Project.where(id: @contributed_project_ids)
+      authed_projects = ProjectFeature
         .with_feature_available_for_user(feature, current_user)
+        .where(project_id: @contributed_project_ids)
         .reorder(nil)
-        .select(:id)
+        .select(:project_id)
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
         .and(t[:created_at].lteq(@contributor_time_instance.today.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
-      date_interval = "INTERVAL '#{@contributor_time_instance.now.utc_offset} seconds'"
-
       Event.reorder(nil)
-        .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')
-        .group(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval})")
+        .select(:created_at)
         .where(conditions)
         .where("events.project_id in (#{authed_projects.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end

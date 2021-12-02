@@ -28,7 +28,8 @@ NOTE:
 The squashed commit in this example is followed by a merge commit, because the merge method for this repository uses a merge commit. You can disable merge commits in
 **Project Settings > General > Merge requests > Merge method > Fast-forward merge**.
 
-The squashed commit's default commit message is taken from the merge request title. It can be changed using [squash commit message template](commit_templates.md#squash-commit-message-template).
+The squashed commit's default commit message is taken from the merge request title.
+You can [edit the default message for squash commits](commit_templates.md).
 
 It can also be customized before merging a merge request.
 
@@ -122,6 +123,10 @@ The Squash and Merge checkbox is displayed when you create a merge request and w
 NOTE:
 If your project is set to **Do not allow** Squash and Merge, the users still have the option to
 squash commits locally through the command line and force-push to their remote branch before merging.
+
+## Related topics
+
+- [Commit message templates](commit_templates.md).
 
 <!-- ## Troubleshooting
 

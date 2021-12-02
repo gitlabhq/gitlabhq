@@ -28,6 +28,13 @@ module Banzai
         allowlist[:attributes]['li'] = %w[id]
         allowlist[:transformers].push(self.class.remove_non_footnote_ids)
 
+        if Feature.enabled?(:use_cmark_renderer)
+          # Allow section elements with data-footnotes attribute
+          allowlist[:elements].push('section')
+          allowlist[:attributes]['section'] = %w(data-footnotes)
+          allowlist[:attributes]['a'].push('data-footnote-ref', 'data-footnote-backref')
+        end
+
         allowlist
       end
 

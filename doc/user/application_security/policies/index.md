@@ -228,7 +228,13 @@ must create an association between that project and the project you want to appl
    project you would like to link from the dropdown menu.
 1. Select **Save**.
 
-   ![Security Policy Project](img/security_policy_project_v14_3.png)
+   ![Security Policy Project](img/security_policy_project_v14_6.png)
+
+### Unlink Security Policy projects
+
+Project owners can unlink Security Policy projects from development projects. To do this, follow
+the steps described in [Security Policy project selection](#security-policy-project-selection),
+but select the trash can icon in the modal.
 
 ### Scan Execution Policy editor
 

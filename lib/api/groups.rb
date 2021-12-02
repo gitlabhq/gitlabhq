@@ -382,6 +382,28 @@ module API
         end
       end
 
+      desc 'Transfer a group to a new parent group or promote a subgroup to a root group'
+      params do
+        optional :group_id, type: Integer,
+          desc: 'The ID of the target group to which the group needs to be transferred to.'\
+                'If not provided, the source group will be promoted to a root group.'
+      end
+      post ':id/transfer' do
+        group = find_group!(params[:id])
+        authorize! :admin_group, group
+
+        new_parent_group = find_group!(params[:group_id]) if params[:group_id].present?
+
+        service = ::Groups::TransferService.new(group, current_user)
+
+        if service.execute(new_parent_group)
+          group.preload_shared_group_links
+          present group, with: Entities::GroupDetail, current_user: current_user
+        else
+          render_api_error!(service.error, 400)
+        end
+      end
+
       desc 'Share a group with a group' do
         success Entities::GroupDetail
       end

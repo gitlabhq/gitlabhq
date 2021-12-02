@@ -84,6 +84,7 @@ review-qa-reliable:
     - .review-qa-base
     - .review:rules:review-qa-reliable
     - .parallel-qa-base
+  retry: 1
   variables:
     QA_RUN_TYPE: review-qa-reliable
     QA_SCENARIO: Test::Instance::Reliable

@@ -1943,6 +1943,116 @@ RSpec.describe API::Groups do
     end
   end
 
+  describe 'POST /groups/:id/transfer' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:new_parent_group) { create(:group, :private) }
+    let_it_be_with_reload(:group) { create(:group, :nested, :private) }
+
+    before do
+      new_parent_group.add_owner(user)
+      group.add_owner(user)
+    end
+
+    def make_request(user)
+      post api("/groups/#{group.id}/transfer", user), params: params
+    end
+
+    context 'when promoting a subgroup to a root group' do
+      shared_examples_for 'promotes the subgroup to a root group' do
+        it 'returns success' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['parent_id']).to be_nil
+        end
+      end
+
+      context 'when no group_id is specified' do
+        let(:params) {}
+
+        it_behaves_like 'promotes the subgroup to a root group'
+      end
+
+      context 'when group_id is specified as blank' do
+        let(:params) { { group_id: '' } }
+
+        it_behaves_like 'promotes the subgroup to a root group'
+      end
+
+      context 'when the group is already a root group' do
+        let(:group) { create(:group) }
+        let(:params) { { group_id: '' } }
+
+        it 'returns error' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Transfer failed: Group is already a root group.')
+        end
+      end
+    end
+
+    context 'when transferring a subgroup to a different group' do
+      let(:params) { { group_id: new_parent_group.id } }
+
+      context 'when the user does not have admin rights to the group being transferred' do
+        it 'forbids the operation' do
+          developer_user = create(:user)
+          group.add_developer(developer_user)
+
+          make_request(developer_user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when the user does not have access to the new parent group' do
+        it 'fails with 404' do
+          user_without_access_to_new_parent_group = create(:user)
+          group.add_owner(user_without_access_to_new_parent_group)
+
+          make_request(user_without_access_to_new_parent_group)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the ID of a non-existent group is mentioned as the new parent group' do
+        let(:params) { { group_id: non_existing_record_id } }
+
+        it 'fails with 404' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the transfer fails due to an error' do
+        before do
+          expect_next_instance_of(::Groups::TransferService) do |service|
+            expect(service).to receive(:proceed_to_transfer).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
+          end
+        end
+
+        it 'returns error' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Transfer failed: namespace directory cannot be moved')
+        end
+      end
+
+      context 'when the transfer succceds' do
+        it 'returns success' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['parent_id']).to eq(new_parent_group.id)
+        end
+      end
+    end
+  end
+
   it_behaves_like 'custom attributes endpoints', 'groups' do
     let(:attributable) { group1 }
     let(:other_attributable) { group2 }

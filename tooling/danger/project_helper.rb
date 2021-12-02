@@ -5,6 +5,7 @@ module Tooling
     module ProjectHelper
       LOCAL_RULES ||= %w[
         changelog
+        ci_config
         database
         documentation
         duplicate_yarn_dependencies
