@@ -105,10 +105,14 @@ module API
           params do
             requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package name'
             requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package version'
-            requires :package_username, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package username'
-            requires :package_channel, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package channel'
+            requires :package_username, type: String, packages_conan_user_channel: true, desc: 'Package username'
+            requires :package_channel, type: String, packages_conan_user_channel: true, desc: 'Package channel'
           end
           namespace 'conans/:package_name/:package_version/:package_username/:package_channel', requirements: PACKAGE_REQUIREMENTS do
+            after_validation do
+              check_username_channel if Feature.enabled?(:packages_conan_allow_empty_username_channel)
+            end
+
             # Get the snapshot
             #
             # the snapshot is a hash of { filename: md5 hash }
@@ -264,13 +268,17 @@ module API
           params do
             requires :package_name, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package name'
             requires :package_version, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package version'
-            requires :package_username, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package username'
-            requires :package_channel, type: String, regexp: PACKAGE_COMPONENT_REGEX, desc: 'Package channel'
+            requires :package_username, type: String, packages_conan_user_channel: true, desc: 'Package username'
+            requires :package_channel, type: String, packages_conan_user_channel: true, desc: 'Package channel'
             requires :recipe_revision, type: String, regexp: CONAN_REVISION_REGEX, desc: 'Conan Recipe Revision'
           end
           namespace 'files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision', requirements: PACKAGE_REQUIREMENTS do
             before do
               authenticate_non_get!
+            end
+
+            after_validation do
+              check_username_channel if Feature.enabled?(:packages_conan_allow_empty_username_channel)
             end
 
             params do

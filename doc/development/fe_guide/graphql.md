@@ -171,6 +171,40 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 const primaryKeyId = getIdFromGraphQLId(data.id);
 ```
 
+**It is required** to query global `id` for every GraphQL type that has an `id` in the schema:
+
+```javascript
+query allReleases(...) {
+  project(...) {
+    id // Project has an ID in GraphQL schema so should fetch it
+    releases(...) {
+      nodes {
+        // Release has no ID property in GraphQL schema
+        name
+        tagName
+        tagPath
+        assets {
+          count
+          links {
+            nodes {
+              id // Link has an ID in GraphQL schema so should fetch it
+              name
+            }
+          }
+        }
+      }
+      pageInfo {
+        // PageInfo no ID property in GraphQL schema
+        startCursor
+        hasPreviousPage
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+```
+
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
@@ -808,11 +842,11 @@ export default {
 
 #### Polling and Performance
 
-While the Apollo client has support for simple polling, for performance reasons, our [Etag-based caching](../polling.md) is preferred to hitting the database each time.
+While the Apollo client has support for simple polling, for performance reasons, our [ETag-based caching](../polling.md) is preferred to hitting the database each time.
 
-Once the backend is set up, there are a few changes to make on the frontend.
+After the ETag resource is set up to be cached from backend, there are a few changes to make on the frontend.
 
-First, get your resource ETag path from the backend. In the example of the pipelines graph, this is called the `graphql_resource_etag`. This will be used to create new headers to add to the Apollo context:
+First, get your ETag resource from the backend, which should be in the form of a URL path. In the example of the pipelines graph, this is called the `graphql_resource_etag`, which is used to create new headers to add to the Apollo context:
 
 ```javascript
 /* pipelines/components/graph/utils.js */
@@ -847,7 +881,51 @@ apollo: {
 },
 ```
 
-Then, because ETags depend on the request being a `GET` instead of GraphQL's usual `POST`, but our default link library does not support `GET` we need to let our default Apollo client know to use a different library.
+Here, the apollo query is watching for changes in `graphqlResourceEtag`. If your ETag resource dynamically changes, you should make sure the resource you are sending in the query headers is also updated. To do this, you can store and update the ETag resource dynamically in the local cache.
+
+You can see an example of this in the pipeline status of the pipeline editor. The pipeline editor watches for changes in the latest pipeline. When the user creates a new commit, we update the pipeline query to poll for changes in the new pipeline.
+
+```graphql
+# pipeline_etag.graphql
+
+query getPipelineEtag {
+  pipelineEtag @client
+}
+```
+
+```javascript
+/* pipeline_editor/components/header/pipeline_status.vue */
+
+import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.graphql';
+
+apollo: {
+  pipelineEtag: {
+    query: getPipelineEtag,
+  },
+  pipeline: {
+    context() {
+      return getQueryHeaders(this.pipelineEtag);
+    },
+    query: getPipelineQuery,
+    pollInterval: POLL_INTERVAL,
+  },
+}
+
+/* pipeline_editor/components/commit/commit_section.vue */
+
+await this.$apollo.mutate({
+  mutation: commitCIFile,
+  update(store, { data }) {
+    const pipelineEtag = data?.commitCreate?.commit?.commitPipelinePath;
+
+    if (pipelineEtag) {
+      store.writeQuery({ query: getPipelineEtag, data: { pipelineEtag } });
+    }
+  },
+});
+```
+
+ETags depend on the request being a `GET` instead of GraphQL's usual `POST`. Our default link library does not support `GET` requests, so we must let our default Apollo client know to use a different library. Keep in mind, this means your app cannot batch queries.
 
 ```javascript
 /* componentMountIndex.js */
@@ -862,9 +940,34 @@ const apolloProvider = new VueApollo({
 });
 ```
 
-Keep in mind, this means your app will not batch queries.
+Finally, we can add a visibility check so that the component pauses polling when the browser tab is not active. This should lessen the request load on the page.
+
+```javascript
+/* component.vue */
+
+import { toggleQueryPollingByVisibility } from '~/pipelines/components/graph/utils';
+
+export default {
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.pipeline, POLL_INTERVAL);
+  },
+};
+```
+
+You can use [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59672/) as a reference on how to fully implement ETag caching on the frontend.
 
 Once subscriptions are mature, this process can be replaced by using them and we can remove the separate link library and return to batching queries.
+
+##### How to test ETag caching
+
+You can test that your implementation works by checking requests on the network tab. If there are no changes in your ETag resource, all polled requests should:
+
+- Be `GET` requests instead of `POST` requests.
+- Have an HTTP status of `304` instead of `200`.
+
+Make sure that caching is not disabled in your developer tools when testing.
+
+If you are using Chrome and keep seeing `200` HTTP status codes, it might be this bug: [Developer tools show 200 instead of 304](https://bugs.chromium.org/p/chromium/issues/detail?id=1269602). In this case, inspect the response headers' source to confirm that the request was actually cached and did return with a `304` status code.
 
 #### Subscriptions
 

@@ -45,6 +45,16 @@ fragment EpicNode on Epic {
   confidential
   hasChildren
   hasIssues
+  labels {
+    __typename
+    nodes {
+      __typename
+      color
+      description
+      textColor
+      title
+    }
+  }
   group {
     __typename
     id
@@ -72,8 +82,7 @@ query childItems(
         edges {
           __typename
           # We have an id in deeply nested fragment
-          # TODO: Uncomment next line when https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75220 is merged and the rule is enabled
-          # # eslint-disable-next-line @graphql-eslint/require-id-when-available
+          # eslint-disable-next-line @graphql-eslint/require-id-when-available
           node {
             __typename
             ...EpicNode
@@ -127,6 +136,16 @@ query childItems(
               dueDate
             }
             healthStatus
+            labels {
+              __typename
+              nodes {
+                __typename
+                color
+                description
+                textColor
+                title
+              }
+            }
           }
         }
         pageInfo {

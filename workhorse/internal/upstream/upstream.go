@@ -65,7 +65,7 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 		Config:       cfg,
 		accessLogger: accessLogger,
 		// Kind of a feature flag. See https://gitlab.com/groups/gitlab-org/-/epics/5914#note_564974130
-		enableGeoProxyFeature: os.Getenv("GEO_SECONDARY_PROXY") == "1",
+		enableGeoProxyFeature: os.Getenv("GEO_SECONDARY_PROXY") != "0",
 		geoProxyBackend:       &url.URL{},
 	}
 	if up.geoProxyPollSleep == nil {
@@ -207,8 +207,8 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 
 func (u *upstream) pollGeoProxyAPI() {
 	for {
-		u.callGeoProxyAPI()
 		u.geoProxyPollSleep(geoProxyApiPollingInterval)
+		u.callGeoProxyAPI()
 	}
 }
 

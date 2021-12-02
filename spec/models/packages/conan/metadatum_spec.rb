@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::Metadatum, type: :model do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'relationships' do
     it { is_expected.to belong_to(:package) }
   end
@@ -45,6 +47,36 @@ RSpec.describe Packages::Conan::Metadatum, type: :model do
       it { is_expected.not_to allow_value("my@channel").for(:package_channel) }
     end
 
+    describe '#username_channel_none_values' do
+      let_it_be(:package) { create(:conan_package) }
+
+      let(:metadatum) { package.conan_metadatum }
+
+      subject { metadatum.valid? }
+
+      where(:username, :channel, :feature_flag, :valid) do
+        'username' | 'channel' | true  | true
+        'username' | '_'       | true  | false
+        '_'        | 'channel' | true  | false
+        '_'        | '_'       | true  | true
+
+        'username' | 'channel' | false | true
+        'username' | '_'       | false | false
+        '_'        | 'channel' | false | false
+        '_'        | '_'       | false | false
+      end
+
+      with_them do
+        before do
+          metadatum.package_username = username
+          metadatum.package_channel = channel
+          stub_feature_flags(packages_conan_allow_empty_username_channel: feature_flag)
+        end
+
+        it { is_expected.to eq(valid) }
+      end
+    end
+
     describe '#conan_package_type' do
       it 'will not allow a package with a different package_type' do
         package = build('package')
@@ -85,6 +117,29 @@ RSpec.describe Packages::Conan::Metadatum, type: :model do
 
     it 'returns the username formatted package path' do
       expect(described_class.full_path_from(package_username: username)).to eq('foo/bar/baz-buz')
+    end
+  end
+
+  describe '.validate_username_and_channel' do
+    where(:username, :channel, :error_field) do
+      'username' | 'channel' | nil
+      'username' | '_'       | :channel
+      '_'        | 'channel' | :username
+      '_'        | '_'       | nil
+    end
+
+    with_them do
+      if params[:error_field]
+        it 'yields the block when there is an error' do
+          described_class.validate_username_and_channel(username, channel) do |none_field|
+            expect(none_field).to eq(error_field)
+          end
+        end
+      else
+        it 'does not yield the block when there is no error' do
+          expect { |b| described_class.validate_username_and_channel(username, channel, &b) }.not_to yield_control
+        end
+      end
     end
   end
 end

@@ -18,7 +18,6 @@ Style/OpenStructUse:
   - spec/controllers/import/fogbugz_controller_spec.rb
   - spec/controllers/import/gitlab_controller_spec.rb
   - spec/controllers/projects/clusters_controller_spec.rb
-  - spec/dependencies/omniauth_saml_spec.rb
   - spec/factories/go_module_versions.rb
   - spec/factories/wiki_pages.rb
   - spec/features/projects/clusters_spec.rb

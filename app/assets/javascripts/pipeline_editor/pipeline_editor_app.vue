@@ -222,21 +222,18 @@ export default {
     },
   },
   i18n: {
-    tabEdit: s__('Pipelines|Edit'),
-    tabGraph: s__('Pipelines|Visualize'),
-    tabLint: s__('Pipelines|Lint'),
-  },
-  resetModal: {
-    actionPrimary: {
-      text: __('Reset file'),
+    resetModal: {
+      actionPrimary: {
+        text: __('Reset file'),
+      },
+      actionCancel: {
+        text: __('Cancel'),
+      },
+      body: s__(
+        'Pipeline Editor|Are you sure you want to reset the file to its last committed version?',
+      ),
+      title: __('Discard changes'),
     },
-    actionCancel: {
-      text: __('Cancel'),
-    },
-    body: s__(
-      'Pipeline Editor|Are you sure you want to reset the file to its last committed version?',
-    ),
-    title: __('Discard changes'),
   },
   watch: {
     isEmpty(flag) {
@@ -364,12 +361,12 @@ export default {
       <gl-modal
         v-model="showResetComfirmationModal"
         modal-id="reset-content"
-        :title="$options.resetModal.title"
-        :action-cancel="$options.resetModal.actionCancel"
-        :action-primary="$options.resetModal.actionPrimary"
+        :title="$options.i18n.resetModal.title"
+        :action-cancel="$options.i18n.resetModal.actionCancel"
+        :action-primary="$options.i18n.resetModal.actionPrimary"
         @primary="resetContent"
       >
-        {{ $options.resetModal.body }}
+        {{ $options.i18n.resetModal.body }}
       </gl-modal>
       <confirm-unsaved-changes-dialog :has-unsaved-changes="hasUnsavedChanges" />
     </div>

@@ -7,6 +7,21 @@ module API
         module ApiHelpers
           include Gitlab::Utils::StrongMemoize
 
+          def check_username_channel
+            username = declared(params)[:package_username]
+            channel = declared(params)[:package_channel]
+
+            if username == ::Packages::Conan::Metadatum::NONE_VALUE && package_scope == :instance
+              # at the instance level, username must not be empty (naming convention)
+              # don't try to process the empty username and eagerly return not found.
+              not_found!
+            end
+
+            ::Packages::Conan::Metadatum.validate_username_and_channel(username, channel) do |none_field|
+              bad_request!("#{none_field} can't be solely blank")
+            end
+          end
+
           def present_download_urls(entity)
             authorize!(:read_package, project)
 

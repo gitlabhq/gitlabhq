@@ -10,6 +10,7 @@
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
+    GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
 
 update-static-analysis-cache:
   extends:
@@ -47,17 +48,34 @@ static-verification-with-database:
   variables:
     SETUP_DB: "true"
 
+generate-apollo-graphl-schema:
+  extends:
+    - .static-analysis-base
+    - .frontend:rules:default-frontend-jobs
+  image:
+    name: registry.gitlab.com/gitlab-org/gitlab-build-images:apollo
+    entrypoint: [""]
+  needs: ['graphql-schema-dump']
+  variables:
+    USE_BUNDLE_INSTALL: "false"
+  script:
+    - apollo client:download-schema --config=config/apollo.config.js ${GRAPHQL_SCHEMA_APOLLO_FILE}
+  artifacts:
+    name: graphql-schema-apollo
+    paths:
+      - "${GRAPHQL_SCHEMA_APOLLO_FILE}"
+
 eslint:
   extends:
     - .static-analysis-base
     - .yarn-cache
-    - .static-analysis:rules:ee
-  needs: []
+    - .frontend:rules:default-frontend-jobs
+  needs: ['generate-apollo-graphl-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
     - run_timed_command "retry yarn install --frozen-lockfile"
-    - run_timed_command "yarn run lint:eslint:all"
+    - run_timed_command "yarn run lint:eslint:all --parser-options=schema:${GRAPHQL_SCHEMA_APOLLO_FILE}"
 
 eslint as-if-foss:
   extends:

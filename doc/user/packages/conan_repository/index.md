@@ -103,6 +103,30 @@ A package with the recipe `Hello/0.1@mycompany/beta` is created.
 For more details about creating and managing Conan packages, see the
 [Conan documentation](https://docs.conan.io/en/latest/creating_packages.html).
 
+#### Package without a username and a channel
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `packages_conan_allow_empty_username_channel`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/345055) in GitLab 14.6.
+
+Even though they are [recommended](https://docs.conan.io/en/latest/reference/conanfile/attributes.html#user-channel)
+to distinguish your package from a similarly named existing package,
+the username and channel are not mandatory fields for a Conan package.
+
+You can create a package without a username and channel by removing them from
+the `create` command:
+
+```shell
+conan create .
+```
+
+The username _and_ the channel must be blank. If only one of these fields is
+blank, the request is rejected.
+
+NOTE:
+Empty usernames and channels can only be used if you use a [project remote](#add-a-remote-for-your-project).
+If you use an [instance remote](#add-a-remote-for-your-instance), the username
+and the channel must be set.
+
 ## Add the Package Registry as a Conan remote
 
 To run `conan` commands, you must add the Package Registry as a Conan remote for

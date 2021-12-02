@@ -16,8 +16,13 @@ module Gitlab
         @conan_revision_regex ||= %r{\A0\z}.freeze
       end
 
+      def conan_recipe_user_channel_regex
+        %r{\A(_|#{conan_name_regex})\z}.freeze
+      end
+
       def conan_recipe_component_regex
-        @conan_recipe_component_regex ||= %r{\A[a-zA-Z0-9_][a-zA-Z0-9_\+\.-]{1,49}\z}.freeze
+        # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#name
+        @conan_recipe_component_regex ||= %r{\A#{conan_name_regex}\z}.freeze
       end
 
       def composer_package_version_regex
@@ -210,6 +215,12 @@ module Gitlab
 
       def generic_package_file_name_regex
         generic_package_name_regex
+      end
+
+      private
+
+      def conan_name_regex
+        @conan_name_regex ||= %r{[a-zA-Z0-9_][a-zA-Z0-9_\+\.-]{1,49}}.freeze
       end
     end
 

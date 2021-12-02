@@ -30298,21 +30298,6 @@ msgstr ""
 msgid "SVG illustration"
 msgstr ""
 
-msgid "SastEntryPoints|Add Security Testing"
-msgstr ""
-
-msgid "SastEntryPoints|Catch your security vulnerabilities ahead of time!"
-msgstr ""
-
-msgid "SastEntryPoints|GitLab can scan your code for security vulnerabilities. Static Application Security Testing (SAST) helps you worry less and build more."
-msgstr ""
-
-msgid "SastEntryPoints|How do I set up SAST?"
-msgstr ""
-
-msgid "SastEntryPoints|Learn more"
-msgstr ""
-
 msgid "Satisfied"
 msgstr ""
 
@@ -40591,6 +40576,9 @@ msgid "can only have one escalation policy"
 msgstr ""
 
 msgid "can't be nil"
+msgstr ""
+
+msgid "can't be solely blank"
 msgstr ""
 
 msgid "can't be the same as the source project"

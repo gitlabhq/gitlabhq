@@ -1369,7 +1369,6 @@
     - <<: *if-merge-request-labels-skip-undercoverage
       allow_failure: true
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request-approved
     - <<: *if-merge-request
       changes: *backend-patterns
 
