@@ -186,4 +186,6 @@ namespace :admin do
   get '/dashboard/stats', to: 'dashboard#stats'
 
   root to: 'dashboard#index'
+
+  get :version_check, to: 'version_check#version_check'
 end

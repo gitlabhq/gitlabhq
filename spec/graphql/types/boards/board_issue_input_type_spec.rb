@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['BoardIssueInput'] do
 
   it 'has specific fields' do
     allowed_args = %w(labelName milestoneTitle assigneeUsername authorUsername
-                      releaseTag myReactionEmoji not search assigneeWildcardId)
+                      releaseTag myReactionEmoji not search assigneeWildcardId confidential)
 
     expect(described_class.arguments.keys).to include(*allowed_args)
     expect(described_class.arguments['not'].type).to eq(Types::Boards::NegatedBoardIssueInputType)

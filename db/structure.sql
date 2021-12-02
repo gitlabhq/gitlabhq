@@ -15109,6 +15109,35 @@ CREATE SEQUENCE incident_management_pending_issue_escalations_id_seq
 
 ALTER SEQUENCE incident_management_pending_issue_escalations_id_seq OWNED BY incident_management_pending_issue_escalations.id;
 
+CREATE TABLE incident_management_timeline_events (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    occurred_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    author_id bigint,
+    issue_id bigint NOT NULL,
+    updated_by_user_id bigint,
+    promoted_from_note_id bigint,
+    cached_markdown_version integer,
+    editable boolean DEFAULT false NOT NULL,
+    note text NOT NULL,
+    note_html text NOT NULL,
+    action text NOT NULL,
+    CONSTRAINT check_18fd072206 CHECK ((char_length(action) <= 128)),
+    CONSTRAINT check_3875ed0aac CHECK ((char_length(note) <= 10000)),
+    CONSTRAINT check_94a235d6a4 CHECK ((char_length(note_html) <= 10000))
+);
+
+CREATE SEQUENCE incident_management_timeline_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE incident_management_timeline_events_id_seq OWNED BY incident_management_timeline_events.id;
+
 CREATE TABLE index_statuses (
     id integer NOT NULL,
     project_id integer NOT NULL,
@@ -21600,6 +21629,8 @@ ALTER TABLE ONLY incident_management_pending_alert_escalations ALTER COLUMN id S
 
 ALTER TABLE ONLY incident_management_pending_issue_escalations ALTER COLUMN id SET DEFAULT nextval('incident_management_pending_issue_escalations_id_seq'::regclass);
 
+ALTER TABLE ONLY incident_management_timeline_events ALTER COLUMN id SET DEFAULT nextval('incident_management_timeline_events_id_seq'::regclass);
+
 ALTER TABLE ONLY index_statuses ALTER COLUMN id SET DEFAULT nextval('index_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY insights ALTER COLUMN id SET DEFAULT nextval('insights_id_seq'::regclass);
@@ -23267,6 +23298,9 @@ ALTER TABLE ONLY incident_management_pending_alert_escalations
 
 ALTER TABLE ONLY incident_management_pending_issue_escalations
     ADD CONSTRAINT incident_management_pending_issue_escalations_pkey PRIMARY KEY (id, process_at);
+
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT incident_management_timeline_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT index_statuses_pkey PRIMARY KEY (id);
@@ -26139,6 +26173,16 @@ CREATE INDEX index_im_issuable_escalation_statuses_on_policy_id ON incident_mana
 
 CREATE UNIQUE INDEX index_im_oncall_schedules_on_project_id_and_iid ON incident_management_oncall_schedules USING btree (project_id, iid);
 
+CREATE INDEX index_im_timeline_events_author_id ON incident_management_timeline_events USING btree (author_id);
+
+CREATE INDEX index_im_timeline_events_issue_id ON incident_management_timeline_events USING btree (issue_id);
+
+CREATE INDEX index_im_timeline_events_project_id ON incident_management_timeline_events USING btree (project_id);
+
+CREATE INDEX index_im_timeline_events_promoted_from_note_id ON incident_management_timeline_events USING btree (promoted_from_note_id);
+
+CREATE INDEX index_im_timeline_events_updated_by_user_id ON incident_management_timeline_events USING btree (updated_by_user_id);
+
 CREATE UNIQUE INDEX index_import_export_uploads_on_group_id ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_import_export_uploads_on_project_id ON import_export_uploads USING btree (project_id);
@@ -28874,6 +28918,12 @@ ALTER TABLE ONLY internal_ids
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_176d3fbb5d FOREIGN KEY (job_artifact_deleted_event_id) REFERENCES geo_job_artifact_deleted_events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_17a5fafbd4 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_1800597ef9 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY project_features
     ADD CONSTRAINT fk_18513d9b92 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -28994,6 +29044,9 @@ ALTER TABLE ONLY sprints
 ALTER TABLE ONLY push_event_payloads
     ADD CONSTRAINT fk_36c74129da FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -29020,6 +29073,9 @@ ALTER TABLE ONLY geo_event_log
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT fk_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_4432fc4d78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_projects
     ADD CONSTRAINT fk_4478a6f1e4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -29503,6 +29559,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_d5af95fcd9 FOREIGN KEY (lfs_object_deleted_event_id) REFERENCES geo_lfs_object_deleted_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY incident_management_timeline_events
+    ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_d6cf4279f7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

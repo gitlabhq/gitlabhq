@@ -523,9 +523,9 @@ $top-nav-hover-bg: var(--indigo-900-alpha-008, $indigo-900-alpha-008) !important
   background-color: $orange-300;
   height: 12px;
   width: 12px;
-  margin-top: -15px;
   pointer-events: none;
   visibility: hidden;
+  top: 3px;
 }
 
 .with-notifications .notification-dot {

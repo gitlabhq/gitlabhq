@@ -33,7 +33,7 @@ RSpec.describe 'Help Pages' do
       stub_application_setting(version_check_enabled: true)
 
       stub_rails_env('production')
-      allow(VersionCheck).to receive(:url).and_return('/version-check-url')
+      allow(VersionCheck).to receive(:image_url).and_return('/version-check-url')
 
       sign_in(create(:user))
       visit help_path

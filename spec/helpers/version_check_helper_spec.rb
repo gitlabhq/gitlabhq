@@ -15,7 +15,7 @@ RSpec.describe VersionCheckHelper do
       before do
         stub_rails_env('production')
         allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { true }
-        allow(VersionCheck).to receive(:url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
+        allow(VersionCheck).to receive(:image_url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
       end
 
       it 'returns an image tag' do
@@ -27,7 +27,7 @@ RSpec.describe VersionCheckHelper do
           .to match(/class="js-version-status-badge lazy"/)
       end
 
-      it 'has a VersionCheck url as the src' do
+      it 'has a VersionCheck image_url as the src' do
         expect(helper.version_status_badge)
           .to include(%{src="https://version.host.com/check.svg?gitlab_info=xxx"})
       end

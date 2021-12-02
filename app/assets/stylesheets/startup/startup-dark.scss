@@ -912,9 +912,9 @@ input {
   background-color: #9e5400;
   height: 12px;
   width: 12px;
-  margin-top: -15px;
   pointer-events: none;
   visibility: hidden;
+  top: 3px;
 }
 .top-nav-toggle .dropdown-icon {
   margin-right: 0.5rem;
@@ -1952,6 +1952,9 @@ body.gl-dark {
   .gl-sm-display-block {
     display: block;
   }
+}
+.gl-relative {
+  position: relative;
 }
 .gl-absolute {
   position: absolute;

@@ -12,6 +12,7 @@ RSpec.describe 'Querying a Board list' do
   let_it_be(:list) { create(:list, board: board, label: label) }
   let_it_be(:issue1) { create(:issue, project: project, labels: [label]) }
   let_it_be(:issue2) { create(:issue, project: project, labels: [label], assignees: [current_user]) }
+  let_it_be(:issue3) { create(:issue, project: project, labels: [label], confidential: true) }
 
   let(:filters) { {} }
   let(:query) do
@@ -37,19 +38,33 @@ RSpec.describe 'Querying a Board list' do
 
     it { is_expected.to include({ 'issuesCount' => 2, 'title' => list.title }) }
 
-    context 'with matching issue filters' do
-      let(:filters) { { assigneeUsername: current_user.username } }
+    describe 'issue filters' do
+      context 'with matching assignee username issue filters' do
+        let(:filters) { { assigneeUsername: current_user.username } }
 
-      it 'filters issues metadata' do
-        is_expected.to include({ 'issuesCount' => 1, 'title' => list.title })
+        it 'filters issues metadata' do
+          is_expected.to include({ 'issuesCount' => 1, 'title' => list.title })
+        end
       end
-    end
 
-    context 'with unmatching issue filters' do
-      let(:filters) { { assigneeUsername: 'foo' } }
+      context 'with unmatching assignee username issue filters' do
+        let(:filters) { { assigneeUsername: 'foo' } }
 
-      it 'filters issues metadata' do
-        is_expected.to include({ 'issuesCount' => 0, 'title' => list.title })
+        it 'filters issues metadata' do
+          is_expected.to include({ 'issuesCount' => 0, 'title' => list.title })
+        end
+      end
+
+      context 'when filtering by confidential' do
+        let(:filters) { { confidential: true } }
+
+        before_all do
+          project.add_developer(current_user)
+        end
+
+        it 'filters issues metadata' do
+          is_expected.to include({ 'issuesCount' => 1, 'title' => list.title })
+        end
       end
     end
   end
