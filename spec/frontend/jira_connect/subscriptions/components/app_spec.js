@@ -5,6 +5,7 @@ import JiraConnectApp from '~/jira_connect/subscriptions/components/app.vue';
 import AddNamespaceButton from '~/jira_connect/subscriptions/components/add_namespace_button.vue';
 import SignInButton from '~/jira_connect/subscriptions/components/sign_in_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
+import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { __ } from '~/locale';
@@ -12,6 +13,7 @@ import { mockSubscription } from '../mock_data';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
   retrieveAlert: jest.fn().mockReturnValue({ message: 'error message' }),
+  getGitlabSignInURL: jest.fn(),
 }));
 
 describe('JiraConnectApp', () => {
@@ -83,6 +85,22 @@ describe('JiraConnectApp', () => {
         });
       },
     );
+
+    it('renders UserLink component', () => {
+      createComponent({
+        provide: {
+          usersPath: '/user',
+          subscriptions: [],
+        },
+      });
+
+      const userLink = wrapper.findComponent(UserLink);
+      expect(userLink.exists()).toBe(true);
+      expect(userLink.props()).toEqual({
+        hasSubscriptions: false,
+        userSignedIn: false,
+      });
+    });
   });
 
   describe('alert', () => {

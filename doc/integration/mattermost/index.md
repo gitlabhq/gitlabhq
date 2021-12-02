@@ -18,7 +18,7 @@ Each release of GitLab Mattermost is compiled and manually tested on an AMD 64 c
 
 ## Getting started
 
-GitLab Mattermost expects to run on its own virtual host. In your DNS settings, you will need
+GitLab Mattermost expects to run on its own virtual host. In your DNS settings, you need
 two entries pointing to the same machine. For example, `gitlab.example.com` and
 `mattermost.example.com`.
 
@@ -41,7 +41,7 @@ GitLab Mattermost is disabled by default. To enable it:
 The Omnibus GitLab package attempts to automatically authorize GitLab Mattermost with GitLab if the applications are running on the same server.
 
 Automatic authorization requires access to the GitLab database. If the GitLab database is not available
-you will need to manually authorize GitLab Mattermost for access to GitLab using the process described in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost).
+you need to manually authorize GitLab Mattermost for access to GitLab using the process described in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost).
 
 ## Configuring Mattermost
 
@@ -51,7 +51,7 @@ Mattermost settings and where they can be set is available [in the Mattermost do
 While using the System Console is recommended, you can also configure Mattermost using one of the following options:
 
 1. Edit the Mattermost configuration directly through `/var/opt/gitlab/mattermost/config.json`.
-1. Specify environment variables used to run Mattermost by changing the `mattermost['env']` setting in `gitlab.rb`. Any settings configured in this way will be disabled from the System Console and cannot be changed without restarting Mattermost.
+1. Specify environment variables used to run Mattermost by changing the `mattermost['env']` setting in `gitlab.rb`. Any settings configured in this way are disabled from the System Console and cannot be changed without restarting Mattermost.
 
 ## Running GitLab Mattermost with HTTPS
 
@@ -71,7 +71,7 @@ mattermost_nginx['redirect_http_to_https'] = true
 ```
 
 If you haven't named your certificate and key `mattermost.gitlab.example.crt`
-and `mattermost.gitlab.example.key` then you'll need to also add the full paths
+and `mattermost.gitlab.example.key` then you need to also add the full paths
 as shown below.
 
 ```ruby
@@ -85,7 +85,7 @@ Once the configuration is set, run `sudo gitlab-ctl reconfigure` to apply the ch
 
 ## Running GitLab Mattermost on its own server
 
-If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services will still be set up on your GitLab Mattermost server, but they will not accept user requests or
+If you want to run GitLab and GitLab Mattermost on two separate servers the GitLab services are still set up on your GitLab Mattermost server, but they do not accept user requests or
 consume system resources. You can use the following settings and configuration details on the GitLab Mattermost server to effectively disable the GitLab service bundled into the Omnibus package.
 
 ```ruby
@@ -124,7 +124,7 @@ http://mattermost.example.com/login/gitlab/complete
 
 Note that you do not need to select any options under **Scopes**. Choose **Save application**.
 
-Once the application is created you will be provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
+Once the application is created you are provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
 Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you received above:
 
 ```ruby
@@ -190,7 +190,7 @@ sudo -i -u gitlab-psql -- /opt/gitlab/embedded/bin/pg_dump -h /var/opt/gitlab/po
 
 #### Back up the `data` directory and `config.json`
 
-Mattermost has a `data` directory and `config.json` file that will need to be backed up as well:
+Mattermost has a `data` directory and `config.json` file that need to be backed up as well:
 
 ```shell
 sudo tar -zcvf mattermost_data_$(date --rfc-3339=date).gz -C /var/opt/gitlab/mattermost data config.json

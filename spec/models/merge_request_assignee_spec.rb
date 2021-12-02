@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestAssignee do
+  let(:assignee) { create(:user) }
   let(:merge_request) { create(:merge_request) }
 
-  subject { merge_request.merge_request_assignees.build(assignee: create(:user)) }
+  subject { merge_request.merge_request_assignees.build(assignee: assignee) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request).class_name('MergeRequest') }
@@ -41,4 +42,13 @@ RSpec.describe MergeRequestAssignee do
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'having reviewer state'
+
+  describe 'syncs to reviewer state' do
+    before do
+      reviewer = merge_request.merge_request_reviewers.build(reviewer: assignee)
+      reviewer.update!(state: :reviewed)
+    end
+
+    it { is_expected.to have_attributes(state: 'reviewed') }
+  end
 end

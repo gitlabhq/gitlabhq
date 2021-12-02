@@ -375,7 +375,7 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
 
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
 ## Advanced Search migrations

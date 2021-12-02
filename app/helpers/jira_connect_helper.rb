@@ -8,7 +8,8 @@ module JiraConnectHelper
       groups_path: api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: skip_groups }),
       subscriptions: subscriptions.map { |s| serialize_subscription(s) }.to_json,
       subscriptions_path: jira_connect_subscriptions_path,
-      users_path: current_user ? nil : jira_connect_users_path
+      users_path: current_user ? nil : jira_connect_users_path, # users_path is used to determine if user is signed in
+      gitlab_user_path: current_user ? user_path(current_user) : nil
     }
   end
 

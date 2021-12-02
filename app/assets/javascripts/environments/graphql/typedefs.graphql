@@ -33,3 +33,20 @@ type LocalEnvironmentApp {
   environments: [NestedLocalEnvironment!]!
   reviewApp: ReviewApp!
 }
+
+type LocalErrors {
+  errors: [String!]!
+}
+
+extend type Query {
+  environmentApp: LocalEnvironmentApp
+  folder(environment: NestedLocalEnvironment): LocalEnvironmentFolder
+  isLastDeployment: Boolean
+}
+
+extend type Mutation {
+  stopEnvironment(environment: LocalEnvironment): LocalErrors
+  deleteEnvironment(environment: LocalEnvironment): LocalErrors
+  rollbackEnvironment(environment: LocalEnvironment): LocalErrors
+  cancelAutoStop(environment: LocalEnvironment): LocalErrors
+}

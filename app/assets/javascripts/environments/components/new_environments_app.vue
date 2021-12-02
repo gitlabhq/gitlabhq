@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
-import environmentAppQuery from '../graphql/queries/environmentApp.query.graphql';
+import environmentAppQuery from '../graphql/queries/environment_app.query.graphql';
+import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import EnvironmentFolder from './new_environment_folder.vue';
 
 export default {
@@ -13,7 +14,16 @@ export default {
   apollo: {
     environmentApp: {
       query: environmentAppQuery,
+      pollInterval() {
+        return this.interval;
+      },
     },
+    interval: {
+      query: pollIntervalQuery,
+    },
+  },
+  data() {
+    return { interval: undefined };
   },
   computed: {
     folders() {

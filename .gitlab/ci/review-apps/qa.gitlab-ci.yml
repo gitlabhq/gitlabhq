@@ -16,10 +16,10 @@
     GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITLAB_QA_ADMIN_ACCESS_TOKEN: "${REVIEW_APPS_ROOT_TOKEN}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
-    EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
     SIGNUP_DISABLED: "true"
   before_script:
     # Use $CI_MERGE_REQUEST_SOURCE_BRANCH_SHA so that GitLab image built in omnibus-gitlab-mirror and QA image are in sync.
+    - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - if [ -n "$CI_MERGE_REQUEST_SOURCE_BRANCH_SHA" ]; then
         git checkout -f ${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA};
       fi

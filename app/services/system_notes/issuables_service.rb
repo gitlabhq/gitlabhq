@@ -323,6 +323,52 @@ module SystemNotes
       existing_mentions_for(mentioned_in, noteable, notes).exists?
     end
 
+    # Called when a user's attention has been requested for a Notable
+    #
+    # user - User's whos attention has been requested
+    #
+    # Example Note text:
+    #
+    #   "requested attention from @eli.wisoky"
+    #
+    # Returns the created Note object
+    def request_attention(user)
+      body = "requested attention from #{user.to_reference}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_requested'))
+    end
+
+    # Called when a user's attention request has been removed for a Notable
+    #
+    # user - User's whos attention request has been removed
+    #
+    # Example Note text:
+    #
+    #   "removed attention request from @eli.wisoky"
+    #
+    # Returns the created Note object
+    def remove_attention_request(user)
+      body = "removed attention request from #{user.to_reference}"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'attention_request_removed'))
+    end
+
+    # Called when a Noteable has been marked as the canonical Issue of a duplicate
+    #
+    # duplicate_issue - Issue that was a duplicate of this
+    #
+    # Example Note text:
+    #
+    #   "marked #1234 as a duplicate of this issue"
+    #
+    #   "marked other_project#5678 as a duplicate of this issue"
+    #
+    # Returns the created Note object
+    def mark_canonical_issue_of_duplicate(duplicate_issue)
+      body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+    end
+
     # Called when a Noteable has been marked as a duplicate of another Issue
     #
     # canonical_issue - Issue that this is a duplicate of
@@ -339,22 +385,6 @@ module SystemNotes
 
       issue_activity_counter.track_issue_marked_as_duplicate_action(author: author) if noteable.is_a?(Issue)
 
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
-    end
-
-    # Called when a Noteable has been marked as the canonical Issue of a duplicate
-    #
-    # duplicate_issue - Issue that was a duplicate of this
-    #
-    # Example Note text:
-    #
-    #   "marked #1234 as a duplicate of this issue"
-    #
-    #   "marked other_project#5678 as a duplicate of this issue"
-    #
-    # Returns the created Note object
-    def mark_canonical_issue_of_duplicate(duplicate_issue)
-      body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
       create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
     end
 

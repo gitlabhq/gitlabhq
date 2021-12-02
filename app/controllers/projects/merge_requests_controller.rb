@@ -282,7 +282,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         if merge_request.errors.present?
           render json: @merge_request.errors, status: :bad_request
         else
-          render json: serializer.represent(@merge_request, serializer: 'basic')
+          render json: serializer.represent(@merge_request, serializer: params[:serializer] || 'basic')
         end
       end
     end

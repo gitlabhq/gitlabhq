@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import environmentApp from './queries/environmentApp.query.graphql';
+import environmentApp from './queries/environment_app.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 

@@ -19,7 +19,9 @@ RSpec.describe JiraConnectHelper do
         is_expected.to include(
           :groups_path,
           :subscriptions_path,
-          :users_path
+          :users_path,
+          :subscriptions,
+          :gitlab_user_path
         )
       end
 
@@ -32,6 +34,10 @@ RSpec.describe JiraConnectHelper do
 
         expect(subject[:groups_path]).to include("#{skip_groups_param}=#{subscription.namespace.id}")
       end
+
+      it 'assigns gitlab_user_path to nil' do
+        expect(subject[:gitlab_user_path]).to be_nil
+      end
     end
 
     context 'user is logged in' do
@@ -41,6 +47,10 @@ RSpec.describe JiraConnectHelper do
 
       it 'assigns users_path to nil' do
         expect(subject[:users_path]).to be_nil
+      end
+
+      it 'assigns gitlab_user_path correctly' do
+        expect(subject[:gitlab_user_path]).to eq(user_path(user))
       end
     end
   end

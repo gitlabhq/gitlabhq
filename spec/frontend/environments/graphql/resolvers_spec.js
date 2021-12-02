@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { resolvers } from '~/environments/graphql/resolvers';
+import pollIntervalQuery from '~/environments/graphql/queries/poll_interval.query.graphql';
 import { TEST_HOST } from 'helpers/test_constants';
 import { environmentsApp, resolvedEnvironmentsApp, folder, resolvedFolder } from './mock_data';
 
@@ -21,10 +22,27 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
   describe('environmentApp', () => {
     it('should fetch environments and map them to frontend data', async () => {
-      mock.onGet(ENDPOINT, { params: { nested: true } }).reply(200, environmentsApp);
+      const cache = { writeQuery: jest.fn() };
+      mock.onGet(ENDPOINT, { params: { nested: true } }).reply(200, environmentsApp, {});
 
-      const app = await mockResolvers.Query.environmentApp();
+      const app = await mockResolvers.Query.environmentApp(null, null, { cache });
       expect(app).toEqual(resolvedEnvironmentsApp);
+      expect(cache.writeQuery).toHaveBeenCalledWith({
+        query: pollIntervalQuery,
+        data: { interval: undefined },
+      });
+    });
+    it('should set the poll interval when there is one', async () => {
+      const cache = { writeQuery: jest.fn() };
+      mock
+        .onGet(ENDPOINT, { params: { nested: true } })
+        .reply(200, environmentsApp, { 'poll-interval': 3000 });
+
+      await mockResolvers.Query.environmentApp(null, null, { cache });
+      expect(cache.writeQuery).toHaveBeenCalledWith({
+        query: pollIntervalQuery,
+        data: { interval: 3000 },
+      });
     });
   });
   describe('folder', () => {
@@ -42,7 +60,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutations.stopEnvironment(null, { environment: { stopPath: ENDPOINT } });
+      await mockResolvers.Mutation.stopEnvironment(null, { environment: { stopPath: ENDPOINT } });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -53,7 +71,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should post to the retry environment path', async () => {
       mock.onPost(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutations.rollbackEnvironment(null, {
+      await mockResolvers.Mutation.rollbackEnvironment(null, {
         environment: { retryUrl: ENDPOINT },
       });
 
@@ -66,7 +84,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should DELETE to the delete environment path', async () => {
       mock.onDelete(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutations.deleteEnvironment(null, {
+      await mockResolvers.Mutation.deleteEnvironment(null, {
         environment: { deletePath: ENDPOINT },
       });
 
@@ -79,7 +97,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     it('should post to the auto stop path', async () => {
       mock.onPost(ENDPOINT).reply(200);
 
-      await mockResolvers.Mutations.cancelAutoStop(null, {
+      await mockResolvers.Mutation.cancelAutoStop(null, {
         environment: { autoStopPath: ENDPOINT },
       });
 

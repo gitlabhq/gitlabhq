@@ -367,7 +367,8 @@ RSpec.describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
-        merge_request: mr_params
+        merge_request: mr_params,
+        serializer: 'basic'
       }.merge(additional_params)
 
       put :update, params: params

@@ -1,13 +1,6 @@
 %header.jira-connect-header.gl-display-flex.gl-align-items-center.gl-justify-content-center.gl-px-5.gl-border-b-solid.gl-border-b-gray-100.gl-border-b-1.gl-bg-white
   = link_to brand_header_logo, Gitlab.config.gitlab.url, target: '_blank', rel: 'noopener noreferrer'
 
-.jira-connect-user.gl-font-base
-  - if current_user
-    - user_link = link_to(current_user.to_reference, jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in')
-    = _('Signed in to GitLab as %{user_link}').html_safe % { user_link: user_link }
-  - elsif @subscriptions.present?
-    = link_to _('Sign in to GitLab'), jira_connect_users_path, target: '_blank', rel: 'noopener noreferrer', class: 'js-jira-connect-sign-in'
-
 %main.jira-connect-app.gl-px-5.gl-pt-7.gl-mx-auto
   .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions) }
 

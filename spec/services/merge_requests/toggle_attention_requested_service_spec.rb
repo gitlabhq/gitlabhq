@@ -19,6 +19,8 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
     allow(NotificationService).to receive(:new) { notification_service }
     allow(service).to receive(:todo_service).and_return(todo_service)
     allow(service).to receive(:notification_service).and_return(notification_service)
+    allow(SystemNoteService).to receive(:request_attention)
+    allow(SystemNoteService).to receive(:remove_attention_request)
 
     project.add_developer(current_user)
     project.add_developer(user)
@@ -93,6 +95,12 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
         service.execute
       end
+
+      it 'creates a request attention system note' do
+        expect(SystemNoteService).to receive(:request_attention).with(merge_request, merge_request.project, current_user, assignee_user)
+
+        service.execute
+      end
     end
 
     context 'assignee is the same as reviewer' do
@@ -129,6 +137,12 @@ RSpec.describe MergeRequests::ToggleAttentionRequestedService do
 
       it 'does not create a new todo for the reviewer' do
         expect(todo_service).not_to receive(:create_attention_requested_todo).with(merge_request, current_user, assignee_user)
+
+        service.execute
+      end
+
+      it 'creates a remove attention request system note' do
+        expect(SystemNoteService).to receive(:remove_attention_request).with(merge_request, merge_request.project, current_user, user)
 
         service.execute
       end
