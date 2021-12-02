@@ -75,6 +75,7 @@ query getJobs(
         userPermissions {
           readBuild
           readJobArtifacts
+          updateBuild
         }
       }
     }

@@ -703,6 +703,14 @@ Do not use **type** if you can avoid it. Use **enter** instead.
 
 Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
+## user, users
+
+When possible, address the reader directly, instead of calling them **users**.
+Use the [second person](#you-your-yours), **you**, instead.
+
+- Do: You can configure a pipeline.
+- Do not: Users can configure a pipeline.
+
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
@@ -728,6 +736,14 @@ One exception: You can use **we recommend** instead of **it is recommended** or 
 ## whitelist
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
+## you, your, yours
+
+Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
+Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone#point-of-view) of the reader.
+
+- Do: You can configure a pipeline.
+- Do not: Users can configure a pipeline. 
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

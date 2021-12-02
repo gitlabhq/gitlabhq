@@ -25,13 +25,13 @@ RSpec.describe 'Cluster agent registration', :js do
 
   it 'allows the user to select an agent to install, and displays the resulting agent token' do
     click_button('Actions')
-    expect(page).to have_content('Register Agent')
+    expect(page).to have_content('Register')
 
-    click_button('Select an Agent')
+    click_button('Select an agent')
     click_button('example-agent-2')
-    click_button('Register Agent')
+    click_button('Register')
 
-    expect(page).to have_content('The token value will not be shown again after you close this window.')
+    expect(page).to have_content('You cannot see this token again after you close this window.')
     expect(page).to have_content('example-agent-token')
     expect(page).to have_content('docker run --pull=always --rm')
 

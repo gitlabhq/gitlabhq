@@ -9,7 +9,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import Tracking from '~/tracking';
 import { generateAgentRegistrationCommand } from '../clusters_util';
@@ -38,9 +38,19 @@ export default {
   EVENT_ACTIONS_OPEN,
   EVENT_ACTIONS_CLICK,
   EVENT_LABEL_MODAL,
+  basicInstallPath: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'install-the-agent-into-the-cluster',
+  }),
+  advancedInstallPath: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'advanced-installation',
+  }),
+  enableKasPath: helpPagePath('administration/clusters/kas'),
+  installAgentPath: helpPagePath('user/clusters/agent/install/index'),
+  registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'create-an-agent-record-in-gitlab',
+  }),
   components: {
     AvailableAgentsDropdown,
-    ClipboardButton,
     CodeBlock,
     GlAlert,
     GlButton,
@@ -49,6 +59,7 @@ export default {
     GlLink,
     GlModal,
     GlSprintf,
+    ModalCopyButton,
   },
   mixins: [trackingMixin],
   inject: ['projectPath', 'kasAddress', 'emptyStateImage'],
@@ -103,17 +114,6 @@ export default {
     agentRegistrationCommand() {
       return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
     },
-    basicInstallPath() {
-      return helpPagePath('user/clusters/agent/install/index', {
-        anchor: 'install-the-agent-into-the-cluster',
-      });
-    },
-    advancedInstallPath() {
-      return helpPagePath('user/clusters/agent/install/index', { anchor: 'advanced-installation' });
-    },
-    enableKasPath() {
-      return helpPagePath('administration/clusters/kas');
-    },
     getAgentsQueryVariables() {
       return {
         defaultBranchName: this.defaultBranchName,
@@ -121,11 +121,6 @@ export default {
         last: null,
         projectPath: this.projectPath,
       };
-    },
-    installAgentPath() {
-      return helpPagePath('user/clusters/agent/index', {
-        anchor: 'define-a-configuration-repository',
-      });
     },
     i18n() {
       return I18N_AGENT_MODAL[this.modalType];
@@ -272,7 +267,7 @@ export default {
 
         <p class="gl-mb-0">{{ i18n.selectAgentBody }}</p>
         <p>
-          <gl-link :href="basicInstallPath" target="_blank"> {{ i18n.learnMoreLink }}</gl-link>
+          <gl-link :href="$options.registerAgentPath"> {{ i18n.learnMoreLink }}</gl-link>
         </p>
 
         <form>
@@ -301,7 +296,7 @@ export default {
         <p>
           <gl-sprintf :message="i18n.tokenBody">
             <template #link="{ content }">
-              <gl-link :href="basicInstallPath" target="_blank"> {{ content }}</gl-link>
+              <gl-link :href="$options.basicInstallPath" target="_blank"> {{ content }}</gl-link>
             </template>
           </gl-sprintf>
         </p>
@@ -315,7 +310,11 @@ export default {
         <p>
           <gl-form-input-group readonly :value="agentToken" :select-on-click="true">
             <template #append>
-              <clipboard-button :text="agentToken" :title="i18n.copyToken" />
+              <modal-copy-button
+                :text="agentToken"
+                :title="i18n.copyToken"
+                :modal-id="$options.modalId"
+              />
             </template>
           </gl-form-input-group>
         </p>
@@ -339,7 +338,7 @@ export default {
         <p>
           <gl-sprintf :message="i18n.advancedInstallBody">
             <template #link="{ content }">
-              <gl-link :href="advancedInstallPath" target="_blank"> {{ content }}</gl-link>
+              <gl-link :href="$options.advancedInstallPath" target="_blank"> {{ content }}</gl-link>
             </template>
           </gl-sprintf>
         </p>
@@ -350,33 +349,25 @@ export default {
       <div class="gl-text-center gl-mb-5">
         <img :alt="i18n.altText" :src="emptyStateImage" height="100" />
       </div>
-      <p>{{ i18n.modalBody }}</p>
 
-      <p v-if="kasDisabled">
-        <gl-sprintf :message="i18n.enableKasText">
+      <p>
+        <gl-sprintf :message="i18n.modalBody">
           <template #link="{ content }">
-            <gl-link :href="enableKasPath"> {{ content }}</gl-link>
+            <gl-link :href="$options.installAgentPath"> {{ content }}</gl-link>
           </template>
         </gl-sprintf>
       </p>
 
-      <p class="gl-mb-0">
-        <gl-link :href="installAgentPath">
-          {{ i18n.docsLinkText }}
-        </gl-link>
+      <p v-if="kasDisabled">
+        <gl-sprintf :message="i18n.enableKasText">
+          <template #link="{ content }">
+            <gl-link :href="$options.enableKasPath"> {{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </p>
     </template>
 
     <template #modal-footer>
-      <gl-button
-        v-if="canCancel"
-        :data-track-action="$options.EVENT_ACTIONS_CLICK"
-        :data-track-label="$options.EVENT_LABEL_MODAL"
-        data-track-property="cancel"
-        @click="closeModal"
-        >{{ i18n.cancel }}
-      </gl-button>
-
       <gl-button
         v-if="registered"
         variant="confirm"
@@ -398,6 +389,15 @@ export default {
         data-track-property="register"
         @click="registerAgent"
         >{{ i18n.registerAgentButton }}
+      </gl-button>
+
+      <gl-button
+        v-if="canCancel"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="cancel"
+        @click="closeModal"
+        >{{ i18n.cancel }}
       </gl-button>
 
       <gl-button

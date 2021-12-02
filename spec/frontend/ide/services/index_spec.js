@@ -219,15 +219,21 @@ describe('IDE services', () => {
   describe('getProjectData', () => {
     it('combines gql and API requests', () => {
       const gqlProjectData = {
+        id: 'gid://gitlab/Project/1',
         userPermissions: {
           bogus: true,
         },
+      };
+      const expectedResponse = {
+        ...projectData,
+        ...gqlProjectData,
+        id: 1,
       };
       Api.project.mockReturnValue(Promise.resolve({ data: { ...projectData } }));
       query.mockReturnValue(Promise.resolve({ data: { project: gqlProjectData } }));
 
       return services.getProjectData(TEST_NAMESPACE, TEST_PROJECT).then((response) => {
-        expect(response).toEqual({ data: { ...projectData, ...gqlProjectData } });
+        expect(response).toEqual({ data: expectedResponse });
         expect(Api.project).toHaveBeenCalledWith(TEST_PROJECT_ID);
         expect(query).toHaveBeenCalledWith({
           query: getIdeProject,

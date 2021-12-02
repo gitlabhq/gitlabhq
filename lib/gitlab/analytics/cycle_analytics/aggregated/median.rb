@@ -15,7 +15,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def seconds
-            @query = @query.select(median_duration_in_seconds.as('median')).reorder(nil)
+            @query = @query.select(duration_in_seconds(percentile_cont).as('median')).reorder(nil)
             result = @query.take || {}
 
             result['median'] || nil

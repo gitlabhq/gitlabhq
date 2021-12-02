@@ -5,7 +5,8 @@ import {
   GlDropdownSectionHeader,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -52,8 +53,7 @@ describe('NewProjectUrlSelect component', () => {
     },
   };
 
-  const localVue = createLocalVue();
-  localVue.use(VueApollo);
+  Vue.use(VueApollo);
 
   const defaultProvide = {
     namespaceFullPath: 'h5bp',
@@ -64,17 +64,19 @@ describe('NewProjectUrlSelect component', () => {
     userNamespaceId: '1',
   };
 
+  let mockQueryResponse;
+
   const mountComponent = ({
     search = '',
     queryResponse = data,
     provide = defaultProvide,
     mountFn = shallowMount,
   } = {}) => {
-    const requestHandlers = [[searchQuery, jest.fn().mockResolvedValue({ data: queryResponse })]];
+    mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
+    const requestHandlers = [[searchQuery, mockQueryResponse]];
     const apolloProvider = createMockApollo(requestHandlers);
 
     return mountFn(NewProjectUrlSelect, {
-      localVue,
       apolloProvider,
       provide,
       data() {
@@ -88,10 +90,17 @@ describe('NewProjectUrlSelect component', () => {
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findInput = () => wrapper.findComponent(GlSearchBoxByType);
-  const findHiddenInput = () => wrapper.find('input');
+  const findHiddenInput = () => wrapper.find('[name="project[namespace_id]"]');
+
   const clickDropdownItem = async () => {
     wrapper.findComponent(GlDropdownItem).vm.$emit('click');
     await wrapper.vm.$nextTick();
+  };
+
+  const showDropdown = async () => {
+    findDropdown().vm.$emit('shown');
+    await wrapper.vm.$apollo.queries.currentUser.refetch();
+    jest.runOnlyPendingTimers();
   };
 
   afterEach(() => {
@@ -141,20 +150,18 @@ describe('NewProjectUrlSelect component', () => {
 
   it('focuses on the input when the dropdown is opened', async () => {
     wrapper = mountComponent({ mountFn: mount });
-    jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
 
     const spy = jest.spyOn(findInput().vm, 'focusInput');
 
-    findDropdown().vm.$emit('shown');
+    await showDropdown();
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('renders expected dropdown items', async () => {
     wrapper = mountComponent({ mountFn: mount });
-    jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
+
+    await showDropdown();
 
     const listItems = wrapper.findAll('li');
 
@@ -167,15 +174,36 @@ describe('NewProjectUrlSelect component', () => {
     expect(listItems.at(5).text()).toBe(data.currentUser.namespace.fullPath);
   });
 
+  describe('query fetching', () => {
+    describe('on component mount', () => {
+      it('does not fetch query', () => {
+        wrapper = mountComponent({ mountFn: mount });
+
+        expect(mockQueryResponse).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('on dropdown shown', () => {
+      it('fetches query', async () => {
+        wrapper = mountComponent({ mountFn: mount });
+
+        await showDropdown();
+
+        expect(mockQueryResponse).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('when selecting from a group template', () => {
-    const groupId = getIdFromGraphQLId(data.currentUser.groups.nodes[1].id);
+    const { fullPath, id } = data.currentUser.groups.nodes[1];
 
     beforeEach(async () => {
       wrapper = mountComponent({ mountFn: mount });
-      jest.runOnlyPendingTimers();
-      await wrapper.vm.$nextTick();
 
-      eventHub.$emit('select-template', groupId);
+      // Show dropdown to fetch projects
+      await showDropdown();
+
+      eventHub.$emit('select-template', getIdFromGraphQLId(id), fullPath);
     });
 
     it('filters the dropdown items to the selected group and children', async () => {
@@ -188,7 +216,7 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('sets the selection to the group', async () => {
-      expect(findDropdown().props('text')).toBe(data.currentUser.groups.nodes[1].fullPath);
+      expect(findDropdown().props('text')).toBe(fullPath);
     });
   });
 
@@ -214,11 +242,12 @@ describe('NewProjectUrlSelect component', () => {
   });
 
   it('emits `update-visibility` event to update the visibility radio options', async () => {
-    wrapper = mountComponent();
-    jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
+    wrapper = mountComponent({ mountFn: mount });
 
     const spy = jest.spyOn(eventHub, '$emit');
+
+    // Show dropdown to fetch projects
+    await showDropdown();
 
     await clickDropdownItem();
 
@@ -233,16 +262,16 @@ describe('NewProjectUrlSelect component', () => {
   });
 
   it('updates hidden input with selected namespace', async () => {
-    wrapper = mountComponent();
-    jest.runOnlyPendingTimers();
-    await wrapper.vm.$nextTick();
+    wrapper = mountComponent({ mountFn: mount });
+
+    // Show dropdown to fetch projects
+    await showDropdown();
 
     await clickDropdownItem();
 
-    expect(findHiddenInput().attributes()).toMatchObject({
-      name: 'project[namespace_id]',
-      value: getIdFromGraphQLId(data.currentUser.groups.nodes[0].id).toString(),
-    });
+    expect(findHiddenInput().attributes('value')).toBe(
+      getIdFromGraphQLId(data.currentUser.groups.nodes[0].id).toString(),
+    );
   });
 
   it('tracks clicking on the dropdown', () => {

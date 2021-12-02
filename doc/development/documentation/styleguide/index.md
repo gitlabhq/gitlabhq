@@ -113,8 +113,9 @@ The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
 
 If you have questions when considering, authoring, or editing documentation, ask
-the Technical Writing team. They're available on Slack in `#docs` or in GitLab by mentioning the
-writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
+mentioning [the writer for](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 Otherwise, forge ahead with your best effort. It does not need to be perfect;
 the team is happy to review and improve upon your content. Review the
 [Documentation guidelines](index.md) before you begin your first documentation MR.
@@ -787,8 +788,8 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 - When possible, avoid including words that might change in the future. Changing
   a heading changes its anchor URL, which affects other linked pages.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/categories/)
-  for review.
+  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments)
+  for review, based upon the [product category](https://about.gitlab.com/handbook/product/categories/).
   This is to ensure that no document with wrong heading is going live without an
   audit, thus preventing dead links and redirection issues when corrected.
 - Leave exactly one blank line before and after a heading.

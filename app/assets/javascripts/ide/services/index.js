@@ -4,6 +4,7 @@ import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { query, mutate } from './gql';
 
 const fetchApiProjectData = (projectPath) => Api.project(projectPath).then(({ data }) => data);
@@ -12,7 +13,10 @@ const fetchGqlProjectData = (projectPath) =>
   query({
     query: getIdeProject,
     variables: { projectPath },
-  }).then(({ data }) => data.project);
+  }).then(({ data }) => ({
+    ...data.project,
+    id: getIdFromGraphQLId(data.project.id),
+  }));
 
 export default {
   getFileData(endpoint) {

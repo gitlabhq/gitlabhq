@@ -1,4 +1,4 @@
-import { GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import { INSTALL_AGENT_MODAL_ID } from '~/clusters_list/constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,8 +6,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 const emptyStateImage = '/path/to/image';
-const multipleClustersDocsUrl = helpPagePath('user/project/clusters/multiple_kubernetes_clusters');
-const installDocsUrl = helpPagePath('administration/clusters/kas');
+const installDocsUrl = helpPagePath('user/clusters/agent/index');
 
 describe('AgentEmptyStateComponent', () => {
   let wrapper;
@@ -15,9 +14,8 @@ describe('AgentEmptyStateComponent', () => {
     emptyStateImage,
   };
 
-  const findMultipleClustersDocsLink = () => wrapper.findByTestId('multiple-clusters-docs-link');
-  const findInstallDocsLink = () => wrapper.findByTestId('install-docs-link');
-  const findIntegrationButton = () => wrapper.findByTestId('integration-primary-button');
+  const findInstallDocsLink = () => wrapper.findComponent(GlLink);
+  const findIntegrationButton = () => wrapper.findComponent(GlButton);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   beforeEach(() => {
@@ -44,8 +42,7 @@ describe('AgentEmptyStateComponent', () => {
     expect(findIntegrationButton().exists()).toBe(true);
   });
 
-  it('renders correct href attributes for the links', () => {
-    expect(findMultipleClustersDocsLink().attributes('href')).toBe(multipleClustersDocsUrl);
+  it('renders correct href attributes for the docs link', () => {
     expect(findInstallDocsLink().attributes('href')).toBe(installDocsUrl);
   });
 

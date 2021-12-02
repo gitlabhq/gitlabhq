@@ -33,7 +33,7 @@ RSpec.describe 'Gcp Cluster', :js do
       before do
         visit project_clusters_path(project)
 
-        click_link 'Certificate based'
+        click_link 'Certificate'
         click_link 'Connect with a certificate'
         click_link 'Create new cluster'
         click_link 'Google GKE'
@@ -145,9 +145,9 @@ RSpec.describe 'Gcp Cluster', :js do
         before do
           visit project_clusters_path(project)
 
-          click_link 'Certificate based'
+          click_link 'Certificate'
           click_button(class: 'dropdown-toggle-split')
-          click_link 'Connect with certificate'
+          click_link 'Connect with a certificate'
         end
 
         it 'user sees the "Environment scope" field' do
@@ -161,7 +161,7 @@ RSpec.describe 'Gcp Cluster', :js do
           click_button 'Remove integration and resources'
           fill_in 'confirm_cluster_name_input', with: cluster.name
           click_button 'Remove integration'
-          click_link 'Certificate based'
+          click_link 'Certificate'
         end
 
         it 'user sees creation form with the successful message' do
@@ -175,7 +175,7 @@ RSpec.describe 'Gcp Cluster', :js do
   context 'when user has not dismissed GCP signup offer' do
     before do
       visit project_clusters_path(project)
-      click_link 'Certificate based'
+      click_link 'Certificate'
     end
 
     it 'user sees offer on cluster index page' do
@@ -192,7 +192,7 @@ RSpec.describe 'Gcp Cluster', :js do
   context 'when user has dismissed GCP signup offer' do
     before do
       visit project_clusters_path(project)
-      click_link 'Certificate based'
+      click_link 'Certificate'
     end
 
     it 'user does not see offer after dismissing' do

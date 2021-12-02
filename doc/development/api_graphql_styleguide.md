@@ -698,7 +698,10 @@ aware of the support.
 
 The documentation will mention that the old Global ID style is now deprecated.
 
-See also [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
+See also:
+
+- [Aliasing and deprecating mutations](#aliasing-and-deprecating-mutations).
+- [How to filter Kibana for queries that used deprecated fields](graphql_guide/monitoring.md#queries-that-used-a-deprecated-field).
 
 ## Enums
 
@@ -2027,3 +2030,7 @@ elimination of laziness, where needed.
 
 For dealing with lazy values without forcing them, use
 `Gitlab::Graphql::Lazy.with_value`.
+
+## Monitoring GraphQL
+
+See the [Monitoring GraphQL](graphql_guide/monitoring.md) guide for tips on how to inspect logs of GraphQL requests and monitor the performance of your GraphQL queries.

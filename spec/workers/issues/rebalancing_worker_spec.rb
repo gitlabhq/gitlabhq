@@ -35,6 +35,20 @@ RSpec.describe Issues::RebalancingWorker do
 
         described_class.new.perform # all arguments are nil
       end
+
+      it 'does not schedule a new rebalance if it finished under 1h ago' do
+        container_type = arguments.second.present? ? ::Gitlab::Issues::Rebalancing::State::PROJECT : ::Gitlab::Issues::Rebalancing::State::NAMESPACE
+        container_id = arguments.second || arguments.third
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(::Gitlab::Issues::Rebalancing::State.send(:recently_finished_key, container_type, container_id), true)
+        end
+
+        expect(Issues::RelativePositionRebalancingService).not_to receive(:new)
+        expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+        described_class.new.perform(*arguments)
+      end
     end
 
     shared_examples 'safely handles non-existent ids' do

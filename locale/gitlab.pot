@@ -7368,16 +7368,19 @@ msgstr ""
 msgid "Cluster type must be specificed for Stages::ClusterEndpointInserter"
 msgstr ""
 
-msgid "ClusterAgents|%{number} of %{total} Agent based integrations"
+msgid "ClusterAgents|%{number} of %{total} agents"
 msgstr ""
 
-msgid "ClusterAgents|%{number} of %{total} Certificate based integrations"
+msgid "ClusterAgents|%{number} of %{total} clusters connected through cluster certificates"
 msgstr ""
 
 msgid "ClusterAgents|Access tokens"
 msgstr ""
 
 msgid "ClusterAgents|Actions"
+msgstr ""
+
+msgid "ClusterAgents|Advanced installation methods"
 msgstr ""
 
 msgid "ClusterAgents|Agent"
@@ -7392,9 +7395,6 @@ msgstr ""
 msgid "ClusterAgents|All"
 msgstr ""
 
-msgid "ClusterAgents|Alternative installation methods"
-msgstr ""
-
 msgid "ClusterAgents|An error occurred while loading your GitLab Agents"
 msgstr ""
 
@@ -7404,22 +7404,28 @@ msgstr ""
 msgid "ClusterAgents|An unknown error occurred. Please try again."
 msgstr ""
 
-msgid "ClusterAgents|Certificate based"
+msgid "ClusterAgents|Certificate"
 msgstr ""
 
 msgid "ClusterAgents|Configuration"
 msgstr ""
 
+msgid "ClusterAgents|Connect a cluster through the Agent"
+msgstr ""
+
 msgid "ClusterAgents|Connect existing cluster"
 msgstr ""
 
-msgid "ClusterAgents|Connect with Agent"
+msgid "ClusterAgents|Connect with a certificate"
 msgstr ""
 
-msgid "ClusterAgents|Connect with a GitLab Agent"
+msgid "ClusterAgents|Connect with the Agent"
 msgstr ""
 
-msgid "ClusterAgents|Connect with certificate"
+msgid "ClusterAgents|Connect with the GitLab Agent"
+msgstr ""
+
+msgid "ClusterAgents|Connect your cluster through the Agent"
 msgstr ""
 
 msgid "ClusterAgents|Connected"
@@ -7431,7 +7437,7 @@ msgstr ""
 msgid "ClusterAgents|Copy token"
 msgstr ""
 
-msgid "ClusterAgents|Create new cluster"
+msgid "ClusterAgents|Create a new cluster"
 msgstr ""
 
 msgid "ClusterAgents|Created by"
@@ -7443,28 +7449,31 @@ msgstr ""
 msgid "ClusterAgents|Date created"
 msgstr ""
 
+msgid "ClusterAgents|Deprecated"
+msgstr ""
+
 msgid "ClusterAgents|Description"
 msgstr ""
 
-msgid "ClusterAgents|For alternative installation methods %{linkStart}go to the documentation%{linkEnd}."
+msgid "ClusterAgents|Failed to register an agent"
 msgstr ""
 
-msgid "ClusterAgents|GitLab Agents"
+msgid "ClusterAgents|For the advanced installation method %{linkStart}see the documentation%{linkEnd}."
 msgstr ""
 
-msgid "ClusterAgents|GitLab Agents provide an increased level of security when integrating with clusters. %{linkStart}Learn more about the GitLab Kubernetes Agent.%{linkEnd}"
+msgid "ClusterAgents|GitLab Agent"
 msgstr ""
 
-msgid "ClusterAgents|GitLab Kubernetes Agent"
+msgid "ClusterAgents|GitLab Agent for Kubernetes"
 msgstr ""
 
-msgid "ClusterAgents|Go to the repository"
+msgid "ClusterAgents|Go to the repository files"
 msgstr ""
 
-msgid "ClusterAgents|If you are setting up multiple clusters and are using Auto DevOps, %{linkStart}read about using multiple Kubernetes clusters first.%{linkEnd}"
+msgid "ClusterAgents|How to register an agent?"
 msgstr ""
 
-msgid "ClusterAgents|Install new Agent"
+msgid "ClusterAgents|Install a new agent"
 msgstr ""
 
 msgid "ClusterAgents|Last connected %{timeAgo}."
@@ -7479,15 +7488,6 @@ msgstr ""
 msgid "ClusterAgents|Learn how to troubleshoot"
 msgstr ""
 
-msgid "ClusterAgents|Learn more about installing a GitLab Kubernetes Agent"
-msgstr ""
-
-msgid "ClusterAgents|Learn more about the GitLab Kubernetes Agent registration."
-msgstr ""
-
-msgid "ClusterAgents|Learn more about the GitLab Kubernetes Agent."
-msgstr ""
-
 msgid "ClusterAgents|Make sure you are using a valid token."
 msgstr ""
 
@@ -7500,10 +7500,10 @@ msgstr ""
 msgid "ClusterAgents|Never connected"
 msgstr ""
 
-msgid "ClusterAgents|No Agent based integrations"
+msgid "ClusterAgents|No agents"
 msgstr ""
 
-msgid "ClusterAgents|No Certificate based integrations"
+msgid "ClusterAgents|No clusters connected through cluster certificates"
 msgstr ""
 
 msgid "ClusterAgents|Not connected"
@@ -7515,7 +7515,10 @@ msgstr ""
 msgid "ClusterAgents|Recommended installation method"
 msgstr ""
 
-msgid "ClusterAgents|Register Agent"
+msgid "ClusterAgents|Register"
+msgstr ""
+
+msgid "ClusterAgents|Register an agent to generate a token that will be used to install the agent on your cluster in the next step."
 msgstr ""
 
 msgid "ClusterAgents|Registering Agent"
@@ -7527,49 +7530,46 @@ msgstr ""
 msgid "ClusterAgents|Security"
 msgstr ""
 
-msgid "ClusterAgents|Select an Agent"
+msgid "ClusterAgents|Select an agent"
 msgstr ""
 
-msgid "ClusterAgents|Select an Agent to register with GitLab and install on your cluster."
+msgid "ClusterAgents|Select an agent to register with GitLab"
 msgstr ""
 
-msgid "ClusterAgents|Select which Agent you want to install"
+msgid "ClusterAgents|The GitLab Agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab Agent.%{linkEnd}"
 msgstr ""
 
-msgid "ClusterAgents|The Agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}."
+msgid "ClusterAgents|The agent has not been connected in a long time. There might be a connectivity issue. Last contact was %{timeAgo}."
 msgstr ""
 
-msgid "ClusterAgents|The GitLab Agent also requires %{linkStart}enabling the Agent Server%{linkEnd}"
+msgid "ClusterAgents|The recommended installation method includes the token. If you want to follow the advanced installation method provided in the docs, make sure you save the token value before you close this window."
 msgstr ""
 
-msgid "ClusterAgents|The recommended installation method provided below includes the token. If you want to follow the alternative installation method provided in the docs make sure you save the token value before you close the window."
-msgstr ""
-
-msgid "ClusterAgents|The registration token will be used to connect the Agent on your cluster to GitLab. To learn more about the registration tokens and how they are used %{linkStart}go to the documentation%{linkEnd}."
-msgstr ""
-
-msgid "ClusterAgents|The token value will not be shown again after you close this window."
+msgid "ClusterAgents|The registration token will be used to connect the agent on your cluster to GitLab. %{linkStart}What are registration tokens?%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|This agent has no tokens"
 msgstr ""
 
-msgid "ClusterAgents|To install an Agent you should create an agent directory in the Repository first. We recommend that you add the Agent configuration to the directory before you start the installation process."
+msgid "ClusterAgents|To install a new agent, first add the agent's configuration file to this repository. %{linkStart}What's the agent's configuration file?%{linkEnd}"
 msgstr ""
 
 msgid "ClusterAgents|Unknown user"
 msgstr ""
 
-msgid "ClusterAgents|Use GitLab Agents to more securely integrate with your clusters to deploy your applications, run your pipelines, use review apps and much more."
+msgid "ClusterAgents|View all %{number} agents"
 msgstr ""
 
-msgid "ClusterAgents|View all %{number} Agent based integrations"
+msgid "ClusterAgents|View all %{number} clusters"
 msgstr ""
 
-msgid "ClusterAgents|View all %{number} Certificate based integrations"
+msgid "ClusterAgents|You cannot see this token again after you close this window."
 msgstr ""
 
 msgid "ClusterAgents|You will need to create a token to connect to your agent"
+msgstr ""
+
+msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it."
 msgstr ""
 
 msgid "ClusterAgent|User has insufficient permissions to create a token for this project"
@@ -7720,6 +7720,9 @@ msgid "ClusterIntegration|Connect existing cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Connect with a certificate"
+msgstr ""
+
+msgid "ClusterIntegration|Connect your cluster to GitLab through %{linkStart}cluster certificates%{linkEnd}."
 msgstr ""
 
 msgid "ClusterIntegration|Connection Error"
@@ -7881,9 +7884,6 @@ msgstr ""
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{linkStart}read about using multiple Kubernetes clusters first.%{linkEnd}"
-msgstr ""
-
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
@@ -7936,9 +7936,6 @@ msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about instance Kubernetes clusters"
-msgstr ""
-
-msgid "ClusterIntegration|Learn more about the GitLab managed clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Loading IAM Roles"
@@ -8220,6 +8217,9 @@ msgstr ""
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr ""
 
+msgid "ClusterIntegration|The certificate-based method to connect clusters to GitLab was %{linkStart}deprecated%{linkEnd} in GitLab 14.5."
+msgstr ""
+
 msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, logs, and Web terminals."
 msgstr ""
 
@@ -8274,7 +8274,7 @@ msgstr ""
 msgid "ClusterIntegration|Unknown Error"
 msgstr ""
 
-msgid "ClusterIntegration|Use certificates to integrate with your clusters to deploy your applications, run your pipelines, use review apps and much more in an easy way."
+msgid "ClusterIntegration|Use the %{linkStart}GitLab Agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more."
 msgstr ""
 
 msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
@@ -14454,9 +14454,6 @@ msgid "Failed to protect the environment"
 msgstr ""
 
 msgid "Failed to publish issue on status page."
-msgstr ""
-
-msgid "Failed to register Agent"
 msgstr ""
 
 msgid "Failed to remove a Zoom meeting"
@@ -23050,9 +23047,6 @@ msgstr ""
 msgid "NetworkPolicies|None selected"
 msgstr ""
 
-msgid "NetworkPolicies|Please %{installLinkStart}install%{installLinkEnd} and %{configureLinkStart}configure a Kubernetes Agent for this project%{configureLinkEnd} to enable alerts."
-msgstr ""
-
 msgid "NetworkPolicies|Policy %{policyName} was successfully changed"
 msgstr ""
 
@@ -23075,6 +23069,9 @@ msgid "NetworkPolicies|Something went wrong, failed to update policy"
 msgstr ""
 
 msgid "NetworkPolicies|Something went wrong, unable to fetch policies"
+msgstr ""
+
+msgid "NetworkPolicies|To enable alerts, %{installLinkStart}install an agent%{installLinkEnd} first."
 msgstr ""
 
 msgid "NetworkPolicies|Traffic that does not match any rule will be blocked."
@@ -24414,7 +24411,7 @@ msgstr ""
 msgid "Open Selection"
 msgstr ""
 
-msgid "Open a CLI and connect to the cluster you want to install the Agent in. Use this installation method to minimize any manual steps. The token is already included in the command."
+msgid "Open a CLI and connect to the cluster you want to install the agent in. Use this installation method to minimize any manual steps. The token is already included in the command."
 msgstr ""
 
 msgid "Open epics"

@@ -35,7 +35,7 @@ RSpec.describe Issues::PlacementWorker do
       it 'schedules rebalancing if needed' do
         issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
 
-        expect(IssueRebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
+        expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
 
         run_worker
       end

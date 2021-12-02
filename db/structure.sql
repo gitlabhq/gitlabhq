@@ -20843,6 +20843,30 @@ CREATE SEQUENCE vulnerability_occurrences_id_seq
 
 ALTER SEQUENCE vulnerability_occurrences_id_seq OWNED BY vulnerability_occurrences.id;
 
+CREATE TABLE vulnerability_reads (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    scanner_id bigint NOT NULL,
+    report_type smallint NOT NULL,
+    severity smallint NOT NULL,
+    state smallint NOT NULL,
+    has_issues boolean DEFAULT false NOT NULL,
+    resolved_on_default_branch boolean DEFAULT false NOT NULL,
+    uuid uuid NOT NULL,
+    location_image text,
+    CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048))
+);
+
+CREATE SEQUENCE vulnerability_reads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_reads_id_seq OWNED BY vulnerability_reads.id;
+
 CREATE TABLE vulnerability_remediations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -22092,6 +22116,8 @@ ALTER TABLE ONLY vulnerability_occurrence_identifiers ALTER COLUMN id SET DEFAUL
 ALTER TABLE ONLY vulnerability_occurrence_pipelines ALTER COLUMN id SET DEFAULT nextval('vulnerability_occurrence_pipelines_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_occurrences ALTER COLUMN id SET DEFAULT nextval('vulnerability_occurrences_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_reads ALTER COLUMN id SET DEFAULT nextval('vulnerability_reads_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_remediations ALTER COLUMN id SET DEFAULT nextval('vulnerability_remediations_id_seq'::regclass);
 
@@ -24117,6 +24143,9 @@ ALTER TABLE ONLY vulnerability_occurrence_pipelines
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT vulnerability_occurrences_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_reads
+    ADD CONSTRAINT vulnerability_reads_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_remediations
     ADD CONSTRAINT vulnerability_remediations_pkey PRIMARY KEY (id);
@@ -27667,6 +27696,8 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
 
+CREATE INDEX index_vuln_reads_on_project_id_state_severity_and_vuln_id ON vulnerability_reads USING btree (project_id, state, severity, vulnerability_id DESC);
+
 CREATE INDEX index_vulnerabilities_on_author_id ON vulnerabilities USING btree (author_id);
 
 CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON vulnerabilities USING btree (confirmed_by_id);
@@ -27760,6 +27791,14 @@ CREATE UNIQUE INDEX index_vulnerability_occurrences_on_unique_keys ON vulnerabil
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occurrences USING btree (uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
+
+CREATE INDEX index_vulnerability_reads_on_location_image ON vulnerability_reads USING btree (location_image) WHERE (report_type = ANY (ARRAY[2, 7]));
+
+CREATE INDEX index_vulnerability_reads_on_scanner_id ON vulnerability_reads USING btree (scanner_id);
+
+CREATE UNIQUE INDEX index_vulnerability_reads_on_uuid ON vulnerability_reads USING btree (uuid);
+
+CREATE UNIQUE INDEX index_vulnerability_reads_on_vulnerability_id ON vulnerability_reads USING btree (vulnerability_id);
 
 CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum ON vulnerability_remediations USING btree (project_id, checksum);
 
@@ -29089,6 +29128,9 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY vulnerability_reads
+    ADD CONSTRAINT fk_5001652292 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
 
@@ -29136,6 +29178,9 @@ ALTER TABLE ONLY dast_profile_schedules
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_61fbf6ca48 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_reads
+    ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_641731faff FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -29427,6 +29472,9 @@ ALTER TABLE ONLY vulnerabilities
 
 ALTER TABLE ONLY project_access_tokens
     ADD CONSTRAINT fk_b27801bfbf FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_reads
+    ADD CONSTRAINT fk_b28c28abf1 FOREIGN KEY (scanner_id) REFERENCES vulnerability_scanners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);

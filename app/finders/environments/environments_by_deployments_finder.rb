@@ -12,30 +12,18 @@ module Environments
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
-      deployments = project.deployments
       deployments =
         if ref
           deployments_query = params[:with_tags] ? 'ref = :ref OR tag IS TRUE' : 'ref = :ref'
-          deployments.where(deployments_query, ref: ref.to_s)
+          Deployment.where(deployments_query, ref: ref.to_s)
         elsif commit
-          deployments.where(sha: commit.sha)
+          Deployment.where(sha: commit.sha)
         else
-          deployments.none
+          Deployment.none
         end
 
-      environments =
-        if Feature.enabled?(:environments_by_deployments_finder_exists_optimization, project, default_enabled: :yaml)
-          # TODO: replace unscope with deployments = Deployment on top of the method https://gitlab.com/gitlab-org/gitlab/-/issues/343544
-          project.environments.available
-            .where('EXISTS (?)', deployments.unscope(where: :project_id).where('environment_id = environments.id'))
-        else
-          environment_ids = deployments
-            .group(:environment_id)
-            .select(:environment_id)
-
-          project.environments.available
-            .where(id: environment_ids)
-        end
+      environments = project.environments.available
+                       .where('EXISTS (?)', deployments.where('environment_id = environments.id'))
 
       if params[:find_latest]
         find_one(environments.order_by_last_deployed_at_desc)

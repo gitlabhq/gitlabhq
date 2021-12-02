@@ -1,5 +1,9 @@
 - redirect_params = { redirect: @redirect } if @redirect
 - accept_term_link = accept_term_path(@term, redirect_params)
+- content_for :page_specific_javascripts do
+  = render "layouts/google_tag_manager_head"
+  = render "layouts/one_trust"
+= render "layouts/google_tag_manager_body"
 
 - if Feature.enabled?(:terms_of_service_vue, current_user, default_enabled: :yaml)
   #js-terms-of-service{ data: { terms_data: terms_data(@term, @redirect) } }

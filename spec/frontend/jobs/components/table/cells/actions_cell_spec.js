@@ -5,7 +5,14 @@ import ActionsCell from '~/jobs/components/table/cells/actions_cell.vue';
 import JobPlayMutation from '~/jobs/components/table/graphql/mutations/job_play.mutation.graphql';
 import JobRetryMutation from '~/jobs/components/table/graphql/mutations/job_retry.mutation.graphql';
 import JobUnscheduleMutation from '~/jobs/components/table/graphql/mutations/job_unschedule.mutation.graphql';
-import { playableJob, retryableJob, scheduledJob } from '../../../mock_data';
+import {
+  playableJob,
+  retryableJob,
+  scheduledJob,
+  cannotRetryJob,
+  cannotPlayJob,
+  cannotPlayScheduledJob,
+} from '../../../mock_data';
 
 describe('Job actions cell', () => {
   let wrapper;
@@ -55,6 +62,17 @@ describe('Job actions cell', () => {
     createComponent(retryableJob);
 
     expect(findDownloadArtifactsButton().exists()).toBe(false);
+  });
+
+  it.each`
+    button                        | action              | jobType
+    ${findPlayButton}             | ${'play'}           | ${cannotPlayJob}
+    ${findRetryButton}            | ${'retry'}          | ${cannotRetryJob}
+    ${findPlayScheduledJobButton} | ${'play scheduled'} | ${cannotPlayScheduledJob}
+  `('does not display the $action button if user cannot update build', ({ button, jobType }) => {
+    createComponent(jobType);
+
+    expect(button().exists()).toBe(false);
   });
 
   it.each`

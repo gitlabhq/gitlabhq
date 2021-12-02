@@ -41,6 +41,19 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher do
         it_behaves_like 'match returned records'
       end
 
+      context 'when intervalstyle setting is configured to "postgres"' do
+        it 'avoids nil durations' do
+          # ActiveRecord cannot parse the 'postgres' intervalstyle, it returns nil
+          # The setting is rolled back after the test case.
+          Analytics::CycleAnalytics::IssueStageEvent.connection.execute("SET LOCAL intervalstyle='postgres'")
+
+          records_fetcher.serialized_records do |relation|
+            durations = relation.map(&:total_time)
+            expect(durations).to all(be > 0)
+          end
+        end
+      end
+
       context 'when sorting by end event ASC' do
         let(:expected_issue_ids) { [issue_2.iid, issue_1.iid, issue_3.iid] }
 

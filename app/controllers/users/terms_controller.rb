@@ -3,6 +3,7 @@
 module Users
   class TermsController < ApplicationController
     include InternalRedirect
+    include OneTrustCSP
 
     skip_before_action :authenticate_user!, only: [:index]
     skip_before_action :enforce_terms!

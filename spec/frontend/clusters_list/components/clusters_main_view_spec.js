@@ -59,10 +59,10 @@ describe('ClustersMainViewComponent', () => {
 
   describe('tabs', () => {
     it.each`
-      tabTitle               | queryParamValue      | lineNumber
-      ${'All'}               | ${'all'}             | ${0}
-      ${'Agent'}             | ${AGENT}             | ${1}
-      ${'Certificate based'} | ${CERTIFICATE_BASED} | ${2}
+      tabTitle         | queryParamValue      | lineNumber
+      ${'All'}         | ${'all'}             | ${0}
+      ${'Agent'}       | ${AGENT}             | ${1}
+      ${'Certificate'} | ${CERTIFICATE_BASED} | ${2}
     `(
       'renders correct tab title and query param value',
       ({ tabTitle, queryParamValue, lineNumber }) => {

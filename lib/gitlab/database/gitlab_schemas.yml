@@ -531,6 +531,7 @@ vulnerability_issue_links: :gitlab_main
 vulnerability_occurrence_identifiers: :gitlab_main
 vulnerability_occurrence_pipelines: :gitlab_main
 vulnerability_occurrences: :gitlab_main
+vulnerability_reads: :gitlab_main
 vulnerability_remediations: :gitlab_main
 vulnerability_scanners: :gitlab_main
 vulnerability_statistics: :gitlab_main

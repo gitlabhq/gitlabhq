@@ -25,7 +25,7 @@ class Member < ApplicationRecord
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   has_one :member_task
 
-  delegate :name, :username, :email, to: :user, prefix: true
+  delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
   delegate :tasks_to_be_done, to: :member_task, allow_nil: true
 
   validates :expires_at, allow_blank: true, future_date: true

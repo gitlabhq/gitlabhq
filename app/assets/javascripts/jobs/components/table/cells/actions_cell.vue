@@ -64,6 +64,9 @@ export default {
     canReadJob() {
       return this.job.userPermissions?.readBuild;
     },
+    canUpdateJob() {
+      return this.job.userPermissions?.updateBuild;
+    },
     isActive() {
       return this.job.active;
     },
@@ -139,7 +142,7 @@ export default {
 
 <template>
   <gl-button-group>
-    <template v-if="canReadJob">
+    <template v-if="canReadJob && canUpdateJob">
       <gl-button
         v-if="isActive"
         data-testid="cancel-button"

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Profile preferences
+# Profile preferences **(FREE)**
 
 A user's profile preferences page allows the user to customize various aspects
 of GitLab to their liking.
@@ -120,7 +120,7 @@ You can include the following options for your default dashboard view:
 - Your [To-Do List](../todos.md)
 - Assigned Issues
 - Assigned Merge Requests
-- Operations Dashboard **(PREMIUM)**
+- [Operations Dashboard](../operations_dashboard/index.md)
 
 ### Group overview content
 
@@ -130,7 +130,7 @@ displayed on a group's home page.
 You can choose between 2 options:
 
 - Details (default)
-- [Security dashboard](../application_security/security_dashboard/index.md) **(ULTIMATE)**
+- [Security dashboard](../application_security/security_dashboard/index.md)
 
 ### Project overview content
 

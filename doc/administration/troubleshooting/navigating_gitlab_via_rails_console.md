@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 At the heart of GitLab is a web application [built using the Ruby on Rails
 framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 Thanks to this, we also get access to the amazing tools built right into Rails.
-In this guide, we'll introduce the [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
+In this guide, we are introducing the [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
 and the basics of interacting with your GitLab instance from the command line.
 
 WARNING:
@@ -19,7 +19,7 @@ or destroying production data. If you would like to explore the Rails console
 with no consequences, you are strongly advised to do so in a test environment.
 
 This guide is targeted at GitLab system administrators who are troubleshooting
-a problem or need to retrieve some data that can only be done through direct
+a problem or must retrieve some data that can only be done through direct
 access of the GitLab application. Basic knowledge of Ruby is needed (try [this
 30-minute tutorial](https://try.ruby-lang.org/) for a quick introduction).
 Rails experience is helpful to have but not a must.
@@ -29,7 +29,7 @@ Rails experience is helpful to have but not a must.
 Your type of GitLab installation determines how
 [to start a rails console](../operations/rails_console.md).
 
-The following code examples will all take place inside the Rails console and also
+The following code examples take place inside the Rails console and also
 assume an Omnibus GitLab installation.
 
 ## Active Record objects
@@ -37,7 +37,7 @@ assume an Omnibus GitLab installation.
 ### Looking up database-persisted objects
 
 Under the hood, Rails uses [Active Record](https://guides.rubyonrails.org/active_record_basics.html),
-an object-relational mapping system, to read, write and map application objects
+an object-relational mapping system, to read, write, and map application objects
 to the PostgreSQL database. These mappings are handled by Active Record models,
 which are Ruby classes defined in a Rails app. For GitLab, the model classes
 can be found at `/opt/gitlab/embedded/service/gitlab-rails/app/models`.
@@ -144,7 +144,7 @@ NoMethodError (undefined method `username' for #<ActiveRecord::Relation [#<User 
 Did you mean?  by_username
 ```
 
-We need to retrieve the single object from the collection by using the `.first`
+Let's retrieve the single object from the collection by using the `.first`
 method to get the first item in the collection:
 
 ```ruby
@@ -164,7 +164,7 @@ Record, please see the [Active Record Query Interface documentation](https://gui
 ### Modifying Active Record objects
 
 In the previous section, we learned about retrieving database records using
-Active Record. Now, we'll learn how to write changes to the database.
+Active Record. Now, let's learn how to write changes to the database.
 
 First, let's retrieve the `root` user:
 
@@ -195,7 +195,7 @@ a background job to deliver an email notification. This is an example of an
 -- code which is designated to run in response to events in the Active Record
 object life cycle. This is also why using the Rails console is preferred when
 direct changes to data is necessary as changes made via direct database queries
-will not trigger these callbacks.
+does not trigger these callbacks.
 
 It's also possible to update attributes in a single line:
 
@@ -265,8 +265,8 @@ user.save!(validate: false)
 This is not recommended, as validations are usually put in place to ensure the
 integrity and consistency of user-provided data.
 
-A validation error will prevent the entire object from being saved to
-the database. We'll see a little of this in the next section. If you're getting
+A validation error prevents the entire object from being saved to
+the database. You can see a little of this in the section below. If you're getting
 a mysterious red banner in the GitLab UI when submitting a form, this can often
 be the fastest way to get to the root of the problem.
 
@@ -336,7 +336,7 @@ user.activate
 user.state
 ```
 
-Earlier, we mentioned that a validation error will prevent the entire object
+Earlier, we mentioned that a validation error prevents the entire object
 from being saved to the database. Let's see how this can have unexpected
 interactions:
 
@@ -455,7 +455,7 @@ Ci::Build.find(66124)
 ```
 
 The pipeline and job ID numbers increment globally across your GitLab
-instance, so there's no need to use an internal ID attribute to look them up,
+instance, so there's no requirement to use an internal ID attribute to look them up,
 unlike with issues or merge requests.
 
 **Get the current application settings object:**
