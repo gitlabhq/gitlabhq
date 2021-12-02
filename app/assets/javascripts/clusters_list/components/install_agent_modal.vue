@@ -11,8 +11,19 @@ import {
 import { helpPagePath } from '~/helpers/help_page_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
+import Tracking from '~/tracking';
 import { generateAgentRegistrationCommand } from '../clusters_util';
-import { INSTALL_AGENT_MODAL_ID, I18N_AGENT_MODAL, KAS_DISABLED_ERROR } from '../constants';
+import {
+  INSTALL_AGENT_MODAL_ID,
+  I18N_AGENT_MODAL,
+  KAS_DISABLED_ERROR,
+  EVENT_LABEL_MODAL,
+  EVENT_ACTIONS_OPEN,
+  EVENT_ACTIONS_SELECT,
+  EVENT_ACTIONS_CLICK,
+  MODAL_TYPE_EMPTY,
+  MODAL_TYPE_REGISTER,
+} from '../constants';
 import { addAgentToStore, addAgentConfigToStore } from '../graphql/cache_update';
 import createAgent from '../graphql/mutations/create_agent.mutation.graphql';
 import createAgentToken from '../graphql/mutations/create_agent_token.mutation.graphql';
@@ -20,8 +31,13 @@ import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import agentConfigurations from '../graphql/queries/agent_configurations.query.graphql';
 import AvailableAgentsDropdown from './available_agents_dropdown.vue';
 
+const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_MODAL });
+
 export default {
   modalId: INSTALL_AGENT_MODAL_ID,
+  EVENT_ACTIONS_OPEN,
+  EVENT_ACTIONS_CLICK,
+  EVENT_LABEL_MODAL,
   components: {
     AvailableAgentsDropdown,
     ClipboardButton,
@@ -34,6 +50,7 @@ export default {
     GlModal,
     GlSprintf,
   },
+  mixins: [trackingMixin],
   inject: ['projectPath', 'kasAddress', 'emptyStateImage'],
   props: {
     defaultBranchName: {
@@ -81,7 +98,7 @@ export default {
       return !this.registering && this.agentName !== null;
     },
     canCancel() {
-      return !this.registered && !this.registering && this.isRegisterModal;
+      return !this.registered && !this.registering && this.isAgentRegistrationModal;
     },
     agentRegistrationCommand() {
       return generateAgentRegistrationCommand(this.agentToken, this.kasAddress);
@@ -117,21 +134,24 @@ export default {
       return `/${this.projectPath}`;
     },
     modalType() {
-      return !this.availableAgents?.length && !this.registered ? 'install' : 'register';
+      return !this.availableAgents?.length && !this.registered
+        ? MODAL_TYPE_EMPTY
+        : MODAL_TYPE_REGISTER;
     },
     modalSize() {
-      return this.isInstallModal ? 'sm' : 'md';
+      return this.isEmptyStateModal ? 'sm' : 'md';
     },
-    isInstallModal() {
-      return this.modalType === 'install';
+    isEmptyStateModal() {
+      return this.modalType === MODAL_TYPE_EMPTY;
     },
-    isRegisterModal() {
-      return this.modalType === 'register';
+    isAgentRegistrationModal() {
+      return this.modalType === MODAL_TYPE_REGISTER;
     },
   },
   methods: {
     setAgentName(name) {
       this.agentName = name;
+      this.track(EVENT_ACTIONS_SELECT);
     },
     closeModal() {
       this.$refs.modal.hide();
@@ -242,8 +262,9 @@ export default {
     static
     lazy
     @hidden="resetModal"
+    @show="track($options.EVENT_ACTIONS_OPEN, { property: modalType })"
   >
-    <template v-if="isRegisterModal">
+    <template v-if="isAgentRegistrationModal">
       <template v-if="!registered">
         <p>
           <strong>{{ i18n.selectAgentTitle }}</strong>
@@ -347,23 +368,40 @@ export default {
     </template>
 
     <template #modal-footer>
-      <gl-button v-if="canCancel" @click="closeModal">{{ i18n.cancel }} </gl-button>
+      <gl-button
+        v-if="canCancel"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="cancel"
+        @click="closeModal"
+        >{{ i18n.cancel }}
+      </gl-button>
 
-      <gl-button v-if="registered" variant="confirm" category="primary" @click="closeModal"
+      <gl-button
+        v-if="registered"
+        variant="confirm"
+        category="primary"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="close"
+        @click="closeModal"
         >{{ i18n.close }}
       </gl-button>
 
       <gl-button
-        v-else-if="isRegisterModal"
+        v-else-if="isAgentRegistrationModal"
         :disabled="!nextButtonDisabled"
         variant="confirm"
         category="primary"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="register"
         @click="registerAgent"
         >{{ i18n.registerAgentButton }}
       </gl-button>
 
       <gl-button
-        v-if="isInstallModal"
+        v-if="isEmptyStateModal"
         :href="repositoryPath"
         variant="confirm"
         category="secondary"
@@ -371,7 +409,14 @@ export default {
         >{{ i18n.secondaryButton }}
       </gl-button>
 
-      <gl-button v-if="isInstallModal" variant="confirm" category="primary" @click="closeModal"
+      <gl-button
+        v-if="isEmptyStateModal"
+        variant="confirm"
+        category="primary"
+        :data-track-action="$options.EVENT_ACTIONS_CLICK"
+        :data-track-label="$options.EVENT_LABEL_MODAL"
+        data-track-property="done"
+        @click="closeModal"
         >{{ i18n.done }}
       </gl-button>
     </template>

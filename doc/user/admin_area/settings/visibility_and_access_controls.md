@@ -97,8 +97,8 @@ delete a project. To allow only users with the Administrator role to delete proj
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
 
-Projects in a group (but not a personal namespace) can be deleted after a delayed period.
-You can [configure it in group settings](../../group/index.md#enable-delayed-project-deletion).
+[Delayed project deletion](../../project/settings/index.md#delayed-project-deletion) allows projects in a group (not a personal namespace)
+to be deleted after a period of delay.
 
 To enable delayed project deletion by default in new groups:
 
@@ -110,14 +110,13 @@ To enable delayed project deletion by default in new groups:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
 By default, a project marked for deletion is permanently removed with immediate effect.
+See [delayed project deletion](../../project/settings/index.md#delayed-project-deletion) to learn more.
 By default, a group marked for deletion is permanently removed after seven days.
 
 WARNING:
 The default behavior of [Delayed Project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6 was changed to
 [Immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
 
-Projects in a group (but not a personal namespace) can be deleted after a delayed period, by
-[configuring in Group Settings](../../group/index.md#enable-delayed-project-deletion).
 The default period is seven days, and can be changed. Setting this period to `0` enables immediate removal
 of projects or groups.
 

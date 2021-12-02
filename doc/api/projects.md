@@ -2099,6 +2099,10 @@ This endpoint:
 
 - Deletes a project including all associated resources (including issues and
   merge requests).
+- In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) and later, on
+  [Premium or higher](https://about.gitlab.com/pricing/) tiers,
+  [delayed project deletion](../user/project/settings/index.md#delayed-project-deletion)
+  is applied if enabled.
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
   [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
   administrators can [configure](../user/group/index.md#enable-delayed-project-deletion)

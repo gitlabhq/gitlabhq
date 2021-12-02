@@ -1,5 +1,6 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import ClustersMainView from '~/clusters_list/components/clusters_main_view.vue';
 import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
 import {
@@ -8,12 +9,15 @@ import {
   CLUSTERS_TABS,
   MAX_CLUSTERS_LIST,
   MAX_LIST_COUNT,
+  EVENT_LABEL_TABS,
+  EVENT_ACTIONS_CHANGE,
 } from '~/clusters_list/constants';
 
 const defaultBranchName = 'default-branch';
 
 describe('ClustersMainViewComponent', () => {
   let wrapper;
+  let trackingSpy;
 
   const propsData = {
     defaultBranchName,
@@ -23,6 +27,7 @@ describe('ClustersMainViewComponent', () => {
     wrapper = shallowMountExtended(ClustersMainView, {
       propsData,
     });
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
   afterEach(() => {
@@ -71,12 +76,21 @@ describe('ClustersMainViewComponent', () => {
     beforeEach(() => {
       findComponent().vm.$emit('changeTab', AGENT);
     });
+
     it('changes the tab', () => {
       expect(findTabs().attributes('value')).toBe('1');
     });
 
     it('passes correct max-agents param to the modal', () => {
       expect(findModal().props('maxAgents')).toBe(MAX_LIST_COUNT);
+    });
+
+    it('sends the correct tracking event', () => {
+      findTabs().vm.$emit('input', 1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_CHANGE, {
+        label: EVENT_LABEL_TABS,
+        property: AGENT,
+      });
     });
   });
 });

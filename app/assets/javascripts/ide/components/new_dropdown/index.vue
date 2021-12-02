@@ -67,7 +67,7 @@ export default {
         data-qa-selector="dropdown_button"
         @click.stop="openDropdown()"
       >
-        <gl-icon name="ellipsis_v" /> <gl-icon name="chevron-down" />
+        <gl-icon name="ellipsis_v" />
       </button>
       <ul ref="dropdownMenu" class="dropdown-menu dropdown-menu-right">
         <template v-if="type === 'tree'">

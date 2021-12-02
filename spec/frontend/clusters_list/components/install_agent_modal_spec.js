@@ -2,9 +2,18 @@ import { GlAlert, GlButton, GlFormInputGroup } from '@gitlab/ui';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import InstallAgentModal from '~/clusters_list/components/install_agent_modal.vue';
-import { I18N_AGENT_MODAL, MAX_LIST_COUNT } from '~/clusters_list/constants';
+import {
+  I18N_AGENT_MODAL,
+  MAX_LIST_COUNT,
+  EVENT_LABEL_MODAL,
+  EVENT_ACTIONS_OPEN,
+  EVENT_ACTIONS_SELECT,
+  MODAL_TYPE_EMPTY,
+  MODAL_TYPE_REGISTER,
+} from '~/clusters_list/constants';
 import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
 import getAgentConfigurations from '~/clusters_list/graphql/queries/agent_configurations.query.graphql';
 import createAgentMutation from '~/clusters_list/graphql/mutations/create_agent.mutation.graphql';
@@ -34,6 +43,7 @@ const maxAgents = MAX_LIST_COUNT;
 describe('InstallAgentModal', () => {
   let wrapper;
   let apolloProvider;
+  let trackingSpy;
 
   const configurations = [{ agentName: 'agent-name' }];
   const apolloQueryResponse = {
@@ -56,7 +66,7 @@ describe('InstallAgentModal', () => {
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
   const findSecondaryButton = () => wrapper.findByTestId('agent-secondary-button');
-  const findImage = () => wrapper.findByRole('img', { alt: I18N_AGENT_MODAL.install.altText });
+  const findImage = () => wrapper.findByRole('img', { alt: I18N_AGENT_MODAL.empty_state.altText });
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
@@ -121,6 +131,7 @@ describe('InstallAgentModal', () => {
       [getAgentConfigurations, jest.fn().mockResolvedValue(apolloQueryResponse)],
     ]);
     createWrapper();
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   });
 
   afterEach(() => {
@@ -129,7 +140,7 @@ describe('InstallAgentModal', () => {
   });
 
   describe('when agent configurations are present', () => {
-    const i18n = I18N_AGENT_MODAL.register;
+    const i18n = I18N_AGENT_MODAL.agent_registration;
 
     describe('initial state', () => {
       it('renders the dropdown for available agents', () => {
@@ -150,6 +161,14 @@ describe('InstallAgentModal', () => {
         expect(findActionButton().text()).toBe(i18n.registerAgentButton);
         expectDisabledAttribute(findActionButton(), true);
       });
+
+      it('sends the event with the modalType', () => {
+        findModal().vm.$emit('show');
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_OPEN, {
+          label: EVENT_LABEL_MODAL,
+          property: MODAL_TYPE_REGISTER,
+        });
+      });
     });
 
     describe('an agent is selected', () => {
@@ -160,6 +179,12 @@ describe('InstallAgentModal', () => {
       it('enables the next button', () => {
         expect(findActionButton().isVisible()).toBe(true);
         expectDisabledAttribute(findActionButton(), false);
+      });
+
+      it('sends the correct tracking event', () => {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_SELECT, {
+          label: EVENT_LABEL_MODAL,
+        });
       });
     });
 
@@ -247,7 +272,7 @@ describe('InstallAgentModal', () => {
   });
 
   describe('when there are no agent configurations present', () => {
-    const i18n = I18N_AGENT_MODAL.install;
+    const i18n = I18N_AGENT_MODAL.empty_state;
     const apolloQueryEmptyResponse = {
       data: {
         project: {
@@ -271,6 +296,14 @@ describe('InstallAgentModal', () => {
     it('renders a secondary button', () => {
       expect(findSecondaryButton().isVisible()).toBe(true);
       expect(findSecondaryButton().text()).toBe(i18n.secondaryButton);
+    });
+
+    it('sends the event with the modalType', () => {
+      findModal().vm.$emit('show');
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, EVENT_ACTIONS_OPEN, {
+        label: EVENT_LABEL_MODAL,
+        property: MODAL_TYPE_EMPTY,
+      });
     });
   });
 });
