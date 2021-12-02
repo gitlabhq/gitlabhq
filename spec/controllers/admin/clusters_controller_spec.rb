@@ -278,7 +278,8 @@ RSpec.describe Admin::ClustersController do
         end
         allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |instance|
           allow(instance).to receive(:projects_zones_clusters_create) do
-            OpenStruct.new(
+            double(
+              'instance',
               self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
               status: 'RUNNING'
             )

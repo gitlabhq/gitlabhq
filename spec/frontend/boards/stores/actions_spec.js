@@ -20,7 +20,7 @@ import {
   formatIssue,
   getMoveData,
   updateListPosition,
-} from '~/boards/boards_util';
+} from 'ee_else_ce/boards/boards_util';
 import { gqlClient } from '~/boards/graphql';
 import destroyBoardListMutation from '~/boards/graphql/board_list_destroy.mutation.graphql';
 import issueCreateMutation from '~/boards/graphql/issue_create.mutation.graphql';

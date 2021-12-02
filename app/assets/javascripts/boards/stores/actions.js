@@ -16,24 +16,24 @@ import {
   ListTypeTitles,
   DraggableItemTypes,
 } from 'ee_else_ce/boards/constants';
+import {
+  formatIssueInput,
+  formatBoardLists,
+  formatListIssues,
+  formatListsPageInfo,
+  formatIssue,
+  updateListPosition,
+  moveItemListHelper,
+  getMoveData,
+  FiltersInfo,
+  filterVariables,
+} from 'ee_else_ce/boards/boards_util';
 import createBoardListMutation from 'ee_else_ce/boards/graphql/board_list_create.mutation.graphql';
 import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mutation.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
-import {
-  formatBoardLists,
-  formatListIssues,
-  formatListsPageInfo,
-  formatIssue,
-  formatIssueInput,
-  updateListPosition,
-  moveItemListHelper,
-  getMoveData,
-  FiltersInfo,
-  filterVariables,
-} from '../boards_util';
 import { gqlClient } from '../graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
 import groupBoardMilestonesQuery from '../graphql/group_board_milestones.query.graphql';

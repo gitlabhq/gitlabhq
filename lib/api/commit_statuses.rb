@@ -78,12 +78,15 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline ||= user_project.ci_pipelines.create!(
+        pipeline ||= user_project.ci_pipelines.build(
           source: :external,
           sha: commit.sha,
           ref: ref,
           user: current_user,
           protected: user_project.protected_for?(ref))
+
+        pipeline.ensure_project_iid!
+        pipeline.save!
 
         authorize! :update_pipeline, pipeline
 

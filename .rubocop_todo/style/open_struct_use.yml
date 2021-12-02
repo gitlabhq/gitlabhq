@@ -14,7 +14,6 @@ Style/OpenStructUse:
   - lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb
   - lib/gitlab/testing/request_inspector_middleware.rb
   - lib/mattermost/session.rb
-  - spec/controllers/admin/clusters_controller_spec.rb
   - spec/controllers/groups/clusters_controller_spec.rb
   - spec/controllers/import/fogbugz_controller_spec.rb
   - spec/controllers/import/gitlab_controller_spec.rb
@@ -22,7 +21,6 @@ Style/OpenStructUse:
   - spec/dependencies/omniauth_saml_spec.rb
   - spec/factories/go_module_versions.rb
   - spec/factories/wiki_pages.rb
-  - spec/features/projects/clusters/gcp_spec.rb
   - spec/features/projects/clusters_spec.rb
   - spec/finders/template_finder_spec.rb
   - spec/graphql/mutations/branches/create_spec.rb
@@ -34,7 +32,6 @@ Style/OpenStructUse:
   - spec/helpers/profiles_helper_spec.rb
   - spec/initializers/doorkeeper_spec.rb
   - spec/lib/gitlab/auth/o_auth/provider_spec.rb
-  - spec/lib/gitlab/cleanup/orphan_lfs_file_references_spec.rb
   - spec/lib/gitlab/database/migrations/runner_spec.rb
   - spec/lib/gitlab/gitaly_client/blobs_stitcher_spec.rb
   - spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb

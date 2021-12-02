@@ -131,7 +131,7 @@ RSpec.describe API::CommitStatuses do
         %w[pending running success failed canceled].each do |status|
           context "for #{status}" do
             context 'when pipeline for sha does not exists' do
-              it 'creates commit status' do
+              it 'creates commit status and sets pipeline iid' do
                 post api(post_url, developer), params: { state: status }
 
                 expect(response).to have_gitlab_http_status(:created)
@@ -145,6 +145,8 @@ RSpec.describe API::CommitStatuses do
                 if status == 'failed'
                   expect(CommitStatus.find(json_response['id'])).to be_api_failure
                 end
+
+                expect(::Ci::Pipeline.last.iid).not_to be_nil
               end
             end
           end

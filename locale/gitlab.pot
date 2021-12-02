@@ -37424,9 +37424,6 @@ msgstr ""
 msgid "Upvotes"
 msgstr ""
 
-msgid "Usage"
-msgstr ""
-
 msgid "Usage Trends"
 msgstr ""
 
@@ -37482,9 +37479,6 @@ msgid "UsageQuota|Increase storage temporarily"
 msgstr ""
 
 msgid "UsageQuota|LFS Objects"
-msgstr ""
-
-msgid "UsageQuota|LFS Storage"
 msgstr ""
 
 msgid "UsageQuota|LFS storage"
