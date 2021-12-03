@@ -1,0 +1,14 @@
+fragment ContactFragment on CustomerRelationsContact {
+  __typename
+  id
+  firstName
+  lastName
+  email
+  phone
+  description
+  organization {
+    __typename
+    id
+    name
+  }
+}

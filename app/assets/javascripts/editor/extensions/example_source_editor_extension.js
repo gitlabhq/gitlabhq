@@ -16,11 +16,11 @@ export class MyFancyExtension {
    * actions, keystrokes, update options, etc.
    * Is called only once before the extension gets registered
    *
-   * @param { Object } [setupOptions]  The setupOptions object
    * @param { Object } [instance] The Source Editor instance
+   * @param { Object } [setupOptions]  The setupOptions object
    */
   // eslint-disable-next-line class-methods-use-this,no-unused-vars
-  onSetup(setupOptions, instance) {}
+  onSetup(instance, setupOptions) {}
 
   /**
    * The first thing called after the extension is

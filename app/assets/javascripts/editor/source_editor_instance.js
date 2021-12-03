@@ -153,7 +153,7 @@ export default class EditorInstance {
     const extensionInstance = new EditorExtension(extension);
     const { setupOptions, obj: extensionObj } = extensionInstance;
     if (extensionObj.onSetup) {
-      extensionObj.onSetup(setupOptions, this);
+      extensionObj.onSetup(this, setupOptions);
     }
     if (extensionsStore) {
       this.registerExtension(extensionInstance, extensionsStore);

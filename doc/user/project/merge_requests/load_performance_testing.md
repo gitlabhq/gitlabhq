@@ -161,7 +161,7 @@ such as: ``http.get(`${__ENV.ENVIRONMENT_URL}`)``.
 For example:
 
 1. In the `review` job:
-   1. Capture the dynamic URL and save it into a `.env` file, e.g. `echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env`.
+   1. Capture the dynamic URL and save it into a `.env` file, for example, `echo "ENVIRONMENT_URL=$CI_ENVIRONMENT_URL" >> review.env`.
    1. Set the `.env` file to be a [job artifact](../../../ci/pipelines/job_artifacts.md#job-artifacts).
 1. In the `load_performance` job:
    1. Set it to depend on the review job, so it inherits the environment file.

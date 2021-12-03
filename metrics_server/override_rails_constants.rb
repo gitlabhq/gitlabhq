@@ -3,12 +3,12 @@
 
 require 'active_support/environment_inquirer'
 
-module Rails # rubocop:disable Gitlab/NamespacedClass
+module Rails
   extend self
 
   def env
     @env ||= ActiveSupport::EnvironmentInquirer.new(
-      ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence || "test"
+      ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence || "development"
     )
   end
 

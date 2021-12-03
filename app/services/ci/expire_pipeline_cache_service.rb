@@ -74,20 +74,25 @@ module Ci
     def update_etag_cache(pipeline, store)
       project = pipeline.project
 
-      store.touch(project_pipelines_path(project))
-      store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
-      store.touch(new_merge_request_pipelines_path(project))
+      etag_paths = [
+        project_pipelines_path(project),
+        new_merge_request_pipelines_path(project),
+        graphql_project_on_demand_scan_counts_path(project)
+      ]
+
+      etag_paths << commit_pipelines_path(project, pipeline.commit) unless pipeline.commit.nil?
+
       each_pipelines_merge_request_path(pipeline) do |path|
-        store.touch(path)
+        etag_paths << path
       end
 
-      pipeline.self_with_upstreams_and_downstreams.each do |relative_pipeline|
-        store.touch(project_pipeline_path(relative_pipeline.project, relative_pipeline))
-        store.touch(graphql_pipeline_path(relative_pipeline))
-        store.touch(graphql_pipeline_sha_path(relative_pipeline.sha))
+      pipeline.self_with_upstreams_and_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
+        etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
+        etag_paths << graphql_pipeline_path(relative_pipeline)
+        etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha)
       end
 
-      store.touch(graphql_project_on_demand_scan_counts_path(project))
+      store.touch(*etag_paths)
     end
 
     def url_helpers

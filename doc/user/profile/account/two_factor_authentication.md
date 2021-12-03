@@ -350,7 +350,7 @@ request, and you're automatically signed in.
 ### Sign in by using a WebAuthn device
 
 In supported browsers you should be automatically prompted to activate your WebAuthn device
-(e.g. by touching/pressing its button) after entering your credentials.
+(for example, by touching/pressing its button) after entering your credentials.
 
 A message displays, indicating that your device responded to the authentication
 request and you're automatically signed in.

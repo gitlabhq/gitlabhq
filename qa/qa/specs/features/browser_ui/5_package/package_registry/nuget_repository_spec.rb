@@ -21,9 +21,14 @@ module QA
       end
 
       let(:group_deploy_token) do
-        Resource::GroupDeployToken.fabricate_via_browser_ui! do |deploy_token|
+        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
           deploy_token.name = 'nuget-group-deploy-token'
           deploy_token.group = project.group
+          deploy_token.scopes = %w[
+            read_repository
+            read_package_registry
+            write_package_registry
+          ]
         end
       end
 
@@ -70,7 +75,7 @@ module QA
           when :ci_job_token
             '${CI_JOB_TOKEN}'
           when :group_deploy_token
-            "\"#{group_deploy_token.password}\""
+            "\"#{group_deploy_token.token}\""
           end
         end
 

@@ -8,13 +8,13 @@ RSpec.describe BulkImports::Groups::Stage do
   let(:pipelines) do
     [
       [0, BulkImports::Groups::Pipelines::GroupPipeline],
-      [1, BulkImports::Groups::Pipelines::GroupAvatarPipeline],
       [1, BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline],
       [1, BulkImports::Groups::Pipelines::MembersPipeline],
       [1, BulkImports::Common::Pipelines::LabelsPipeline],
       [1, BulkImports::Common::Pipelines::MilestonesPipeline],
       [1, BulkImports::Common::Pipelines::BadgesPipeline],
-      [2, BulkImports::Common::Pipelines::BoardsPipeline]
+      [2, BulkImports::Common::Pipelines::BoardsPipeline],
+      [2, BulkImports::Common::Pipelines::UploadsPipeline]
     ]
   end
 
@@ -24,7 +24,7 @@ RSpec.describe BulkImports::Groups::Stage do
 
   describe '.pipelines' do
     it 'list all the pipelines with their stage number, ordered by stage' do
-      expect(described_class.new(bulk_import).pipelines & pipelines).to eq(pipelines)
+      expect(described_class.new(bulk_import).pipelines & pipelines).to contain_exactly(*pipelines)
       expect(described_class.new(bulk_import).pipelines.last.last).to eq(BulkImports::Common::Pipelines::EntityFinisher)
     end
 

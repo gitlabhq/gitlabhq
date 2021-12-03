@@ -5,6 +5,8 @@ class Projects::VariablesController < Projects::ApplicationController
 
   feature_category :pipeline_authoring
 
+  urgency :low, [:show, :update]
+
   def show
     respond_to do |format|
       format.json do

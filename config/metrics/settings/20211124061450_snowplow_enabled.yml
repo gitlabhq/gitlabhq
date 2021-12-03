@@ -1,0 +1,24 @@
+---
+key_path: settings.snowplow_enabled
+name: snowplow_enabled_gitlab_instance
+description: Whether snowplow is enabled for the GitLab instance
+product_section: growth
+product_stage: growth
+product_group: group::product intelligence
+product_category: product intelligence
+value_type: boolean
+status: active
+milestone: "14.6"
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75184'
+time_frame: none
+data_source: system
+instrumentation_class: SnowplowEnabledMetric
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

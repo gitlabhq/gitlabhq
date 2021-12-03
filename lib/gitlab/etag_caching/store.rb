@@ -12,14 +12,18 @@ module Gitlab
         Gitlab::Redis::SharedState.with { |redis| redis.get(redis_shared_state_key(key)) }
       end
 
-      def touch(key, only_if_missing: false)
-        etag = generate_etag
+      def touch(*keys, only_if_missing: false)
+        etags = keys.map { generate_etag }
 
         Gitlab::Redis::SharedState.with do |redis|
-          redis.set(redis_shared_state_key(key), etag, ex: EXPIRY_TIME, nx: only_if_missing)
+          redis.pipelined do
+            keys.each_with_index do |key, i|
+              redis.set(redis_shared_state_key(key), etags[i], ex: EXPIRY_TIME, nx: only_if_missing)
+            end
+          end
         end
 
-        etag
+        keys.size > 1 ? etags : etags.first
       end
 
       private

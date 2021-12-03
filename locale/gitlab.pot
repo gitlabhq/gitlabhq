@@ -10154,10 +10154,34 @@ msgstr ""
 msgid "Critical vulnerabilities present"
 msgstr ""
 
+msgid "Crm|Create new contact"
+msgstr ""
+
+msgid "Crm|Customer Relations Contacts"
+msgstr ""
+
+msgid "Crm|Description (optional)"
+msgstr ""
+
+msgid "Crm|Email"
+msgstr ""
+
+msgid "Crm|First name"
+msgstr ""
+
+msgid "Crm|Last name"
+msgstr ""
+
+msgid "Crm|New contact"
+msgstr ""
+
 msgid "Crm|No contacts found"
 msgstr ""
 
 msgid "Crm|No organizations found"
+msgstr ""
+
+msgid "Crm|Phone number (optional)"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -29194,6 +29218,9 @@ msgid "Repeats"
 msgstr ""
 
 msgid "Replace"
+msgstr ""
+
+msgid "Replace %{blob_name}"
 msgstr ""
 
 msgid "Replace %{name}"

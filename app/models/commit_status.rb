@@ -188,7 +188,12 @@ class CommitStatus < Ci::ApplicationRecord
 
       commit_status.run_after_commit do
         PipelineProcessWorker.perform_async(pipeline_id) unless transition_options[:skip_pipeline_processing]
-        ExpireJobCacheWorker.perform_async(id)
+
+        if Feature.enabled?(:expire_job_and_pipeline_cache_synchronously, project, default_enabled: :yaml)
+          expire_etag_cache!
+        else
+          ExpireJobCacheWorker.perform_async(id)
+        end
       end
     end
 
@@ -299,6 +304,12 @@ class CommitStatus < Ci::ApplicationRecord
       .where(name: name)
       .where.not(id: id)
       .update_all(retried: true, processed: true)
+  end
+
+  def expire_etag_cache!
+    job_path = Gitlab::Routing.url_helpers.project_build_path(project, id, format: :json)
+
+    Gitlab::EtagCaching::Store.new.touch(job_path)
   end
 
   private

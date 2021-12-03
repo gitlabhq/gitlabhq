@@ -1045,6 +1045,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     describe ".system_usage_data_settings" do
       let(:prometheus_client) { double(Gitlab::PrometheusClient) }
+      let(:snowplow_gitlab_host?) { Gitlab::CurrentSettings.snowplow_collector_hostname == 'snowplow.trx.gitlab.net' }
 
       before do
         allow(described_class).to receive(:operating_system).and_return('ubuntu-20.04')
@@ -1088,6 +1089,17 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
       it 'gathers user_cap_feature_enabled' do
         expect(subject[:settings][:user_cap_feature_enabled]).to eq(Gitlab::CurrentSettings.new_user_signups_cap)
+      end
+
+      context 'snowplow stats' do
+        before do
+          stub_feature_flags(usage_data_instrumentation: false)
+        end
+
+        it 'gathers snowplow stats' do
+          expect(subject[:settings][:snowplow_enabled]).to eq(Gitlab::CurrentSettings.snowplow_enabled?)
+          expect(subject[:settings][:snowplow_configured_to_gitlab_collector]).to eq(snowplow_gitlab_host?)
+        end
       end
     end
   end

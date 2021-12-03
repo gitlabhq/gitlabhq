@@ -2,6 +2,8 @@
 
 module MergeRequests
   class AfterCreateService < MergeRequests::BaseService
+    include Gitlab::Utils::StrongMemoize
+
     def execute(merge_request)
       prepare_for_mergeability(merge_request) if early_prepare_for_mergeability?(merge_request)
       prepare_merge_request(merge_request)
@@ -48,7 +50,9 @@ module MergeRequests
     end
 
     def early_prepare_for_mergeability?(merge_request)
-      Feature.enabled?(:early_prepare_for_mergeability, merge_request.target_project)
+      strong_memoize("early_prepare_for_mergeability_#{merge_request.target_project_id}".to_sym) do
+        Feature.enabled?(:early_prepare_for_mergeability, merge_request.target_project)
+      end
     end
 
     def mark_as_unchecked(merge_request)

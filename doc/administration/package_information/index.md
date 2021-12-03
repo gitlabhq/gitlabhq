@@ -18,7 +18,7 @@ The released package versions are in the format `MAJOR.MINOR.PATCH-EDITION.OMNIB
 |-------------------|---------|---------|
 | MAJOR.MINOR.PATCH | The GitLab version this corresponds to. | 13.3.0 |
 | EDITION           | The edition of GitLab this corresponds to. | ee |
-| OMNIBUS_RELEASE   | The Omnibus GitLab release. Usually, this will be 0. This is incremented if we need to build a new package without changing the GitLab version. | 0 |
+| OMNIBUS_RELEASE   | The Omnibus GitLab release. Usually, this is 0. This is incremented if we need to build a new package without changing the GitLab version. | 0 |
 
 ## Licenses
 
@@ -27,7 +27,7 @@ See [licensing](licensing.md)
 ## Defaults
 
 The Omnibus GitLab package requires various configuration to get the components
-in working order. If the configuration is not provided, the package will use
+in working order. If the configuration is not provided, the package uses
 the default values assumed in the package.
 
 These defaults are noted in the package [defaults document](defaults.md).
@@ -59,8 +59,8 @@ accidental overwrite of user configuration provided in `/etc/gitlab/gitlab.rb`.
 New configuration options are noted in the
 [`gitlab.rb.template` file](https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/files/gitlab-config-template/gitlab.rb.template).
 
-The Omnibus GitLab package also provides convenience command which will
-compare the existing user configuration with the latest version of the
+The Omnibus GitLab package also provides convenience command which
+compares the existing user configuration with the latest version of the
 template contained in the package.
 
 To view a diff between your configuration file and the latest version, run:
@@ -76,7 +76,7 @@ characters on each line.
 
 ## Init system detection
 
-Omnibus GitLab will attempt to query the underlaying system in order to
+Omnibus GitLab attempts to query the underlaying system in order to
 check which init system it uses.
 This manifests itself as a `WARNING` during the `sudo gitlab-ctl reconfigure`
 run.

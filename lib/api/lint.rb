@@ -33,7 +33,7 @@ module API
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
-      get ':id/ci/lint' do
+      get ':id/ci/lint', urgency: :low do
         authorize! :download_code, user_project
 
         content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)
@@ -54,7 +54,7 @@ module API
         optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
-      post ':id/ci/lint' do
+      post ':id/ci/lint', urgency: :low do
         authorize! :create_pipeline, user_project
 
         result = Gitlab::Ci::Lint

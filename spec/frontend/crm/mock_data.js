@@ -40,7 +40,6 @@ export const getGroupContactsQueryResponse = {
             organization: null,
           },
         ],
-        __typename: 'CustomerRelationsContactConnection',
       },
     },
   },
@@ -76,6 +75,34 @@ export const getGroupOrganizationsQueryResponse = {
           },
         ],
       },
+    },
+  },
+};
+
+export const createContactMutationResponse = {
+  data: {
+    customerRelationsContactCreate: {
+      __typeName: 'CustomerRelationsContactCreatePayload',
+      contact: {
+        __typename: 'CustomerRelationsContact',
+        id: 'gid://gitlab/CustomerRelations::Contact/1',
+        firstName: 'A',
+        lastName: 'B',
+        email: 'C',
+        phone: null,
+        description: null,
+        organization: null,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const createContactMutationErrorResponse = {
+  data: {
+    customerRelationsContactCreate: {
+      contact: null,
+      errors: ['Phone is invalid.'],
     },
   },
 };

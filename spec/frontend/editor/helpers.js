@@ -31,7 +31,7 @@ export const SEConstExt = () => {
 
 export function SEWithSetupExt() {
   return {
-    onSetup: (setupOptions = {}, instance) => {
+    onSetup: (instance, setupOptions = {}) => {
       if (setupOptions && !Array.isArray(setupOptions)) {
         Object.entries(setupOptions).forEach(([key, value]) => {
           Object.assign(instance, {

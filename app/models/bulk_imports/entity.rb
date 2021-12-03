@@ -134,6 +134,10 @@ class BulkImports::Entity < ApplicationRecord
     source_type == 'group_entity'
   end
 
+  def update_service
+    "::#{pluralized_name.capitalize}::UpdateService".constantize
+  end
+
   private
 
   def validate_parent_is_a_group

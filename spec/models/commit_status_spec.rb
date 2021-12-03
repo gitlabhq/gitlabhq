@@ -46,10 +46,28 @@ RSpec.describe CommitStatus do
   describe 'status state machine' do
     let!(:commit_status) { create(:commit_status, :running, project: project) }
 
-    it 'invalidates the cache after a transition' do
-      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+    context 'when expire_job_and_pipeline_cache_synchronously is enabled' do
+      before do
+        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: true)
+      end
 
-      commit_status.success!
+      it 'invalidates the cache after a transition' do
+        expect(commit_status).to receive(:expire_etag_cache!)
+
+        commit_status.success!
+      end
+    end
+
+    context 'when expire_job_and_pipeline_cache_synchronously is disabled' do
+      before do
+        stub_feature_flags(expire_job_and_pipeline_cache_synchronously: false)
+      end
+
+      it 'invalidates the cache after a transition' do
+        expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+        commit_status.success!
+      end
     end
 
     describe 'transitioning to running' do
@@ -947,6 +965,17 @@ RSpec.describe CommitStatus do
       expect(inserter).to receive(:insert!)
 
       described_class.bulk_insert_tags!(statuses, tag_list_by_build)
+    end
+  end
+
+  describe '#expire_etag_cache!' do
+    it 'expires the etag cache' do
+      expect_next_instance_of(Gitlab::EtagCaching::Store) do |etag_store|
+        job_path = Gitlab::Routing.url_helpers.project_build_path(project, commit_status.id, format: :json)
+        expect(etag_store).to receive(:touch).with(job_path)
+      end
+
+      commit_status.expire_etag_cache!
     end
   end
 end

@@ -5,6 +5,8 @@ module BulkImports
     class BaseConfig
       include Gitlab::Utils::StrongMemoize
 
+      UPLOADS_RELATION = 'uploads'
+
       def initialize(portable)
         @portable = portable
       end
@@ -78,7 +80,7 @@ module BulkImports
       end
 
       def file_relations
-        []
+        [UPLOADS_RELATION]
       end
 
       def skipped_relations

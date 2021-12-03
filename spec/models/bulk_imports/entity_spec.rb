@@ -298,4 +298,14 @@ RSpec.describe BulkImports::Entity, type: :model do
       expect(entity.wikis_url_path).to eq("/groups/#{entity.encoded_source_full_path}/wikis")
     end
   end
+
+  describe '#update_service' do
+    it 'returns correct update service class' do
+      group_entity = build(:bulk_import_entity)
+      project_entity = build(:bulk_import_entity, :project_entity)
+
+      expect(group_entity.update_service).to eq(::Groups::UpdateService)
+      expect(project_entity.update_service).to eq(::Projects::UpdateService)
+    end
+  end
 end

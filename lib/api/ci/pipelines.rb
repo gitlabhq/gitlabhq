@@ -166,7 +166,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         end
-        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_authoring do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_authoring, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable

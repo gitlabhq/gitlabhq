@@ -60,7 +60,7 @@ What is not covered:
 
 NOTE:
 Before following any of those steps, make sure you have `root` access to the
-**secondary** to promote it, since there isn't provided an automated way to
+**secondary** to promote it, because there isn't provided an automated way to
 promote a Geo replica and perform a failover.
 
 NOTE:
@@ -122,7 +122,7 @@ follow these steps to avoid unnecessary data loss:
 
       From this point, users are unable to view their data or make changes on the
       **primary** site. They are also unable to log in to the **secondary** site.
-      However, existing sessions need to work for the remainder of the maintenance period, and
+      However, existing sessions must work for the remainder of the maintenance period, and
       so public data is accessible throughout.
 
    1. Verify the **primary** site is blocked to HTTP traffic by visiting it in browser via
@@ -135,7 +135,7 @@ follow these steps to avoid unnecessary data loss:
    1. On the **primary** site:
       1. On the top bar, select **Menu > Admin**.
       1. On the left sidebar, select **Monitoring > Background Jobs**.
-      1. On the Sidekiq dhasboard, select **Cron**.
+      1. On the Sidekiq dashboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
       1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
          This job re-enables several other cron jobs that are essential for planned
@@ -176,7 +176,7 @@ follow these steps to avoid unnecessary data loss:
    At this point, your **secondary** site contains an up-to-date copy of everything the
    **primary** site has, meaning nothing is lost when you fail over.
 
-1. In this final step, you need to permanently disable the **primary** site.
+1. In this final step, you must permanently disable the **primary** site.
 
    WARNING:
    When the **primary** site goes offline, there may be data saved on the **primary** site
@@ -204,7 +204,7 @@ follow these steps to avoid unnecessary data loss:
      ```
 
      NOTE:
-     (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
+     (**CentOS only**) In CentOS 6 or older, it is challenging to prevent GitLab from being
      started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3058)).
      It may be safest to uninstall the GitLab package completely with `sudo yum remove gitlab-ee`.
 
@@ -216,7 +216,7 @@ follow these steps to avoid unnecessary data loss:
 
    - If you do not have SSH access to the **primary** site, take the machine offline and
      prevent it from rebooting. Since there are many ways you may prefer to accomplish
-     this, we avoid a single recommendation. You may need to:
+     this, we avoid a single recommendation. You may have to:
 
      - Reconfigure the load balancers.
      - Change DNS records (for example, point the **primary** DNS record to the

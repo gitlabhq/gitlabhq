@@ -126,11 +126,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    resources :crm, only: [] do
-      collection do
-        get 'contacts'
-        get 'organizations'
-      end
+    namespace :crm do
+      resources :contacts, only: [:index, :new]
+      resources :organizations, only: [:index]
     end
   end
 

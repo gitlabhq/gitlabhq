@@ -122,7 +122,6 @@ export default function simulateDrag(options) {
   const firstRect = getRect(firstEl);
   const lastRect = getRect(lastEl);
 
-  const startTime = new Date().getTime();
   const duration = options.duration || 1000;
 
   simulateEvent(fromEl, 'pointerdown', {
@@ -140,8 +139,28 @@ export default function simulateDrag(options) {
     toRect.cy = lastRect.y + lastRect.h + 50;
   }
 
-  const dragInterval = setInterval(() => {
-    const progress = (new Date().getTime() - startTime) / duration;
+  let startTime;
+
+  // Called within dragFn when the drag should finish
+  const finishFn = () => {
+    if (options.ondragend) options.ondragend();
+
+    if (options.performDrop) {
+      simulateEvent(toEl, 'mouseup');
+    }
+
+    window.SIMULATE_DRAG_ACTIVE = 0;
+  };
+
+  const dragFn = (timestamp) => {
+    if (!startTime) {
+      startTime = timestamp;
+    }
+
+    const elapsed = timestamp - startTime;
+
+    // Make sure that progress maxes at 1
+    const progress = Math.min(elapsed / duration, 1);
     const x = fromRect.cx + (toRect.cx - fromRect.cx) * progress;
     const y = fromRect.cy + (toRect.cy - fromRect.cy + options.extraHeight) * progress;
     const overEl = fromEl.ownerDocument.elementFromPoint(x, y);
@@ -152,16 +171,15 @@ export default function simulateDrag(options) {
     });
 
     if (progress >= 1) {
-      if (options.ondragend) options.ondragend();
-
-      if (options.performDrop) {
-        simulateEvent(toEl, 'mouseup');
-      }
-
-      clearInterval(dragInterval);
-      window.SIMULATE_DRAG_ACTIVE = 0;
+      // finish on next frame, so we can pause in the correct position for a frame
+      requestAnimationFrame(finishFn);
+    } else {
+      requestAnimationFrame(dragFn);
     }
-  }, 100);
+  };
+
+  // Start the drag animation
+  requestAnimationFrame(dragFn);
 
   return {
     target: fromEl,

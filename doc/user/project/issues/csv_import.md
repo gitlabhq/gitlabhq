@@ -48,7 +48,7 @@ When importing issues from a CSV file, it must be formatted in a certain way:
 - **double-quote character:** The double-quote (`"`) character is used to quote fields,
   enabling the use of the column separator within a field (see the third line in the
   sample CSV data below). To insert a double-quote (`"`) within a quoted
-  field, use two double-quote characters in succession, i.e. `""`.
+  field, use two double-quote characters in succession (`""`).
 - **data rows:** After the header row, succeeding rows must follow the same column
   order. The issue title is required while the description is optional.
 

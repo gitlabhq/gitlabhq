@@ -424,7 +424,7 @@ describe('Source Editor Instance', () => {
           definition: MyFullExtWithCallbacks,
           setupOptions: defSetupOptions,
         });
-        expect(onSetup).toHaveBeenCalledWith(defSetupOptions, seInstance);
+        expect(onSetup).toHaveBeenCalledWith(seInstance, defSetupOptions);
         expect(onUse).toHaveBeenCalledWith(seInstance);
       });
 

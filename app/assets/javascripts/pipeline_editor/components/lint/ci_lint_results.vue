@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLink, GlSprintf, GlTable } from '@gitlab/ui';
+import { GlAlert, GlLink, GlSprintf, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
 import CiLintResultsParam from './ci_lint_results_param.vue';
 import CiLintResultsValue from './ci_lint_results_value.vue';
@@ -36,7 +36,7 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
-    GlTable,
+    GlTableLite,
     CiLintWarnings,
     CiLintResultsValue,
     CiLintResultsParam,
@@ -129,7 +129,7 @@ export default {
       @dismiss="isWarningDismissed = true"
     />
 
-    <gl-table
+    <gl-table-lite
       v-if="shouldShowTable"
       :items="jobs"
       :fields="$options.fields"
@@ -142,6 +142,6 @@ export default {
       <template #cell(value)="{ item }">
         <ci-lint-results-value :item="item" :dry-run="dryRun" />
       </template>
-    </gl-table>
+    </gl-table-lite>
   </div>
 </template>
