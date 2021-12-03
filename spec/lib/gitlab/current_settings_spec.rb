@@ -51,9 +51,17 @@ RSpec.describe Gitlab::CurrentSettings do
       it { is_expected.to be_truthy }
     end
 
+    context 'when new users are set to external' do
+      before do
+        create(:application_setting, user_default_external: true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when there are no restrictions' do
       before do
-        create(:application_setting, domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false)
+        create(:application_setting, domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false, user_default_external: false)
       end
 
       it { is_expected.to be_falsey }
