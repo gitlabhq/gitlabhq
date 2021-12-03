@@ -57,6 +57,7 @@ module Gitlab
           next false unless @position.unfoldable?
           next false if @diff_file.new_file? || @diff_file.deleted_file?
           next false unless @position.old_line
+          next false unless @position.old_line.is_a?(Integer)
           # Invalid position (MR import scenario)
           next false if @position.old_line > @blob.lines.size
           next false if @diff_file.diff_lines.empty?

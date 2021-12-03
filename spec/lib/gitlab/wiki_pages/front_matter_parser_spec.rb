@@ -118,7 +118,7 @@ RSpec.describe Gitlab::WikiPages::FrontMatterParser do
         MD
       end
 
-      it { is_expected.to have_attributes(reason: :not_mapping) }
+      it { is_expected.to have_attributes(reason: :no_match) }
     end
 
     context 'there is a string in the YAML block' do
