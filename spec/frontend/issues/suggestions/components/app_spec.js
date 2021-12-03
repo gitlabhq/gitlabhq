@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import App from '~/issuable_suggestions/components/app.vue';
-import Suggestion from '~/issuable_suggestions/components/item.vue';
+import App from '~/issues/suggestions/components/app.vue';
+import Suggestion from '~/issues/suggestions/components/item.vue';
 
 describe('Issuable suggestions app component', () => {
   let wrapper;

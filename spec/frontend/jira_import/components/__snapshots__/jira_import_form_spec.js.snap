@@ -152,7 +152,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     aria-label="Search"
                     class="gl-form-input gl-search-box-by-type-input form-control"
                     placeholder="Search"
-                    type="text"
+                    type="search"
                   />
                    
                   <div
@@ -283,7 +283,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     aria-label="Search"
                     class="gl-form-input gl-search-box-by-type-input form-control"
                     placeholder="Search"
-                    type="text"
+                    type="search"
                   />
                    
                   <div

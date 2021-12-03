@@ -5,6 +5,7 @@ import {
   GlSafeHtmlDirective,
   GlAvatarLink,
   GlAvatarLabeled,
+  GlTooltip,
 } from '@gitlab/ui';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '../../emoji';
@@ -26,6 +27,7 @@ export default {
     GlButton,
     GlAvatarLink,
     GlAvatarLabeled,
+    GlTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,

@@ -1736,9 +1736,6 @@ msgstr ""
 msgid "Access denied for your LDAP account."
 msgstr ""
 
-msgid "Access denied! Please verify you can add deploy keys to this repository."
-msgstr ""
-
 msgid "Access denied: %{error}"
 msgstr ""
 
@@ -12941,6 +12938,9 @@ msgstr ""
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
+msgid "Enable access tokens to expire after 2 hours. If disabled, tokens do not expire."
+msgstr ""
+
 msgid "Enable admin mode"
 msgstr ""
 
@@ -13011,6 +13011,9 @@ msgid "Enable maintenance mode"
 msgstr ""
 
 msgid "Enable multipart emails"
+msgstr ""
+
+msgid "Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential."
 msgstr ""
 
 msgid "Enable or disable the Pseudonymizer data collection."
@@ -21259,7 +21262,7 @@ msgstr ""
 msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
 msgstr ""
 
-msgid "Manage applications that can use GitLab as an OAuth provider."
+msgid "Manage applications that use GitLab as an OAuth provider."
 msgstr ""
 
 msgid "Manage applications that you've authorized to use your account."
@@ -37553,9 +37556,6 @@ msgstr ""
 msgid "UsageQuota|Increase storage temporarily"
 msgstr ""
 
-msgid "UsageQuota|LFS Objects"
-msgstr ""
-
 msgid "UsageQuota|LFS storage"
 msgstr ""
 
@@ -37584,9 +37584,6 @@ msgid "UsageQuota|Purchase more storage"
 msgstr ""
 
 msgid "UsageQuota|Purchased storage available"
-msgstr ""
-
-msgid "UsageQuota|Repositories"
 msgstr ""
 
 msgid "UsageQuota|Repository"
@@ -37665,9 +37662,6 @@ msgid "UsageQuota|Wiki"
 msgstr ""
 
 msgid "UsageQuota|Wiki content."
-msgstr ""
-
-msgid "UsageQuota|Wikis"
 msgstr ""
 
 msgid "UsageQuota|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
@@ -38388,6 +38382,18 @@ msgid "Verification concurrency limit"
 msgstr ""
 
 msgid "Verification status"
+msgstr ""
+
+msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity with a valid payment method."
+msgstr ""
+
+msgid "VerificationReminder|Until then, free pipeline minutes on shared runners are unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
+msgstr ""
+
+msgid "VerificationReminder|Your account has been validated."
+msgstr ""
+
+msgid "VerificationReminder|You’ll now be able to take advantage of free pipeline minutes on shared runners."
 msgstr ""
 
 msgid "Verified"

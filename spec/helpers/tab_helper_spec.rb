@@ -122,11 +122,24 @@ RSpec.describe TabHelper do
       specify do
         result = helper.nav_link(controller: controller_param, action: action_param, path: path_param)
 
-        if active
-          expect(result).to match(/active/)
-        else
-          expect(result).not_to match(/active/)
-        end
+        expect(result.include?('active')).to eq(active)
+      end
+    end
+
+    where(:page, :excluded_page, :active) do
+      nil           | nil               | false
+      '_some_page_' | nil               | true
+      '_some_page_' | '_excluded_page_' | true
+      '_some_page_' | '_some_page_'     | false
+    end
+
+    with_them do
+      specify do
+        allow(helper).to receive(:route_matches_pages?).and_return(page.present?, page == excluded_page)
+
+        result = helper.nav_link(page: page, exclude_page: excluded_page)
+
+        expect(result.include?('active')).to eq(active)
       end
     end
 
@@ -149,11 +162,7 @@ RSpec.describe TabHelper do
         specify do
           result = helper.nav_link(controller: controller_param, action: action_param, path: path_param)
 
-          if active
-            expect(result).to match(/active/)
-          else
-            expect(result).not_to match(/active/)
-          end
+          expect(result.include?('active')).to eq(active)
         end
       end
     end

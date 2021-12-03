@@ -1,7 +1,7 @@
 import { GlTooltip, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
-import Suggestion from '~/issuable_suggestions/components/item.vue';
+import Suggestion from '~/issues/suggestions/components/item.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import mockData from '../mock_data';
 

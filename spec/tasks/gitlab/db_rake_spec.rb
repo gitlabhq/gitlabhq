@@ -191,7 +191,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout do
 
     it 'drops extra schemas' do
       Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\"")
+        expect(connection).to receive(:execute).with("DROP SCHEMA IF EXISTS \"#{schema}\" CASCADE")
       end
 
       subject

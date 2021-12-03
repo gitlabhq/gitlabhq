@@ -163,7 +163,7 @@ module TabHelper
     action = options.delete(:action)
 
     route_matches_paths?(options.delete(:path)) ||
-      route_matches_pages?(options.delete(:page)) ||
+      route_matches_page_without_exclusion?(options.delete(:page), options.delete(:exclude_page)) ||
       route_matches_controllers_and_or_actions?(controller, action)
   end
 
@@ -186,6 +186,13 @@ module TabHelper
     Array(paths).compact.any? do |single_path|
       current_path?(single_path)
     end
+  end
+
+  def route_matches_page_without_exclusion?(pages, exclude_page)
+    return false unless route_matches_pages?(pages)
+    return true unless exclude_page.present?
+
+    !route_matches_pages?(exclude_page)
   end
 
   def route_matches_pages?(pages)

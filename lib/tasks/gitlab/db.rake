@@ -49,7 +49,7 @@ namespace :gitlab do
 
       # Drop all extra schema objects GitLab owns
       Gitlab::Database::EXTRA_SCHEMAS.each do |schema|
-        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)}")
+        connection.execute("DROP SCHEMA IF EXISTS #{connection.quote_table_name(schema)} CASCADE")
       end
     end
 

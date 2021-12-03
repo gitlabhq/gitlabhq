@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import InfoPopover from '~/issuable_type_selector/components/info_popover.vue';
+import InfoPopover from '~/issues/type_selector/components/info_popover.vue';
 
 describe('Issuable type info popover', () => {
   let wrapper;
