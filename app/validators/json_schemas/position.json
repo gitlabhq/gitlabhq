@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Gitlab::Diff::Position",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "base_sha": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 40 }
+      ]
+    },
+    "start_sha": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 40 }
+      ]
+    },
+    "head_sha": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 40 }
+      ]
+    },
+    "file_identifier_hash": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 40 }
+      ]
+    },
+    "old_path": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 1000 }
+      ]
+    },
+    "new_path": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 1000 }
+      ]
+    },
+    "position_type": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 10 }
+      ]
+    },
+    "old_line": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" }
+      ]
+    },
+    "new_line": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" }
+      ]
+    },
+    "line_range": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "line_code": { "type": "string", "maxLength": 100 },
+                "type": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "string", "maxLength": 100 }
+                  ]
+                },
+                "old_line": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "integer" }
+                  ]
+                },
+                "new_line": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "integer" }
+                  ]
+                }
+              }
+            },
+            "end": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "line_code": { "type": "string", "maxLength": 100 },
+                "type": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "string", "maxLength": 100 }
+                  ]
+                },
+                "old_line": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "integer" }
+                  ]
+                },
+                "new_line": {
+                  "oneOf": [
+                    { "type": "null" },
+                    { "type": "integer" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "width": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" },
+        { "type": "string", "maxLength": 10 }
+      ]
+    },
+    "height": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" },
+        { "type": "string", "maxLength": 10 }
+      ]
+    },
+    "x": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" },
+        { "type": "string", "maxLength": 10 }
+      ]
+    },
+    "y": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "integer" },
+        { "type": "string", "maxLength": 10 }
+      ]
+    }
+  }
+}
