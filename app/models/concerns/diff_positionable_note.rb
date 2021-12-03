@@ -12,6 +12,7 @@ module DiffPositionableNote
     serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
 
     validate :diff_refs_match_commit, if: :for_commit?
+    validates :position, json_schema: { filename: "position", hash_conversion: true }
   end
 
   %i(original_position position change_position).each do |meth|

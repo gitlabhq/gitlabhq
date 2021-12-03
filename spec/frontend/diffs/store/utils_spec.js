@@ -138,7 +138,7 @@ describe('DiffsStoreUtils', () => {
           old_line: 1,
         },
         linePosition: LINE_POSITION_LEFT,
-        lineRange: { start_line_code: 'abc_1_1', end_line_code: 'abc_2_2' },
+        lineRange: { start: { line_code: 'abc_1_1' }, end: { line_code: 'abc_2_2' } },
       };
 
       const position = JSON.stringify({
@@ -608,7 +608,7 @@ describe('DiffsStoreUtils', () => {
     // When multi line comments are fully implemented `line_code` will be
     // included in all requests. Until then we need to ensure the logic does
     // not change when it is included only in the "comparison" argument.
-    const lineRange = { start_line_code: 'abc_1_1', end_line_code: 'abc_1_2' };
+    const lineRange = { start: { line_code: 'abc_1_1' }, end: { line_code: 'abc_1_2' } };
 
     it('returns true when the discussion is up to date', () => {
       expect(

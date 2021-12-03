@@ -215,6 +215,16 @@ RSpec.describe Gitlab::Diff::LinesUnfolder do
       build(:text_diff_position, old_line: 43, new_line: 40)
     end
 
+    context 'old_line is an invalid number' do
+      let(:position) do
+        build(:text_diff_position, old_line: "foo", new_line: 40)
+      end
+
+      it 'fails gracefully' do
+        expect(subject.unfolded_diff_lines).to be_nil
+      end
+    end
+
     context 'blob lines' do
       let(:expected_blob_lines) do
         [[40, 40, "             \"config-opts\": [ \"--disable-introspection\" ],"],
