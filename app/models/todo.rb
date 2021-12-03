@@ -67,7 +67,7 @@ class Todo < ApplicationRecord
   scope :for_type, -> (type) { where(target_type: type) }
   scope :for_target, -> (id) { where(target_id: id) }
   scope :for_commit, -> (id) { where(commit_id: id) }
-  scope :with_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: :route }]) }
+  scope :with_entity_associations, -> { preload(:target, :author, :note, group: :route, project: [:route, { namespace: [:route, :owner] }]) }
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
 
   enum resolved_by_action: { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, _prefix: :resolved_by

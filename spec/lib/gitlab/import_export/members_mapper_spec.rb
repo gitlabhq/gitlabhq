@@ -267,6 +267,66 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
       end
     end
 
+    context 'when importer is not an admin' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:members_mapper) do
+        described_class.new(
+          exported_members: [], user: user, importable: importable)
+      end
+
+      shared_examples_for 'it fetches the access level from parent group' do
+        before do
+          group.add_users([user], group_access_level)
+        end
+
+        it "and resolves it correctly" do
+          members_mapper.map
+          expect(member_class.find_by_user_id(user.id).access_level).to eq(resolved_access_level)
+        end
+      end
+
+      context 'and the imported project is part of a group' do
+        let(:importable) { create(:project, namespace: group) }
+        let(:member_class) { ProjectMember }
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::DEVELOPER }
+          let(:resolved_access_level) { ProjectMember::DEVELOPER }
+        end
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::MAINTAINER }
+          let(:resolved_access_level) { ProjectMember::MAINTAINER }
+        end
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::OWNER }
+          let(:resolved_access_level) { ProjectMember::MAINTAINER }
+        end
+      end
+
+      context 'and the imported group is part of another group' do
+        let(:importable) { create(:group, parent: group) }
+        let(:member_class) { GroupMember }
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::DEVELOPER }
+          let(:resolved_access_level) { GroupMember::DEVELOPER }
+        end
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::MAINTAINER }
+          let(:resolved_access_level) { GroupMember::MAINTAINER }
+        end
+
+        it_behaves_like 'it fetches the access level from parent group' do
+          let(:group_access_level) { GroupMember::OWNER }
+          let(:resolved_access_level) { GroupMember::OWNER }
+        end
+      end
+    end
+
     context 'when importable is Group' do
       include_examples 'imports exported members' do
         let(:source_type) { 'Namespace' }
