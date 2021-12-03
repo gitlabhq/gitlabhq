@@ -7,7 +7,7 @@ import { IssuableType } from '~/issuable_show/constants';
 import { IssuableStatus, IssueStateEvent } from '~/issue_show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import eventHub from '~/notes/event_hub';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
@@ -78,10 +78,18 @@ export default {
     isClosed() {
       return this.openState === IssuableStatus.Closed;
     },
+    issueTypeText() {
+      const issueTypeTexts = {
+        [IssuableType.Issue]: s__('HeaderAction|issue'),
+        [IssuableType.Incident]: s__('HeaderAction|incident'),
+      };
+
+      return issueTypeTexts[this.issueType] ?? this.issueType;
+    },
     buttonText() {
       return this.isClosed
-        ? sprintf(__('Reopen %{issueType}'), { issueType: this.issueType })
-        : sprintf(__('Close %{issueType}'), { issueType: this.issueType });
+        ? sprintf(__('Reopen %{issueType}'), { issueType: this.issueTypeText })
+        : sprintf(__('Close %{issueType}'), { issueType: this.issueTypeText });
     },
     qaSelector() {
       return this.isClosed ? 'reopen_issue_button' : 'close_issue_button';

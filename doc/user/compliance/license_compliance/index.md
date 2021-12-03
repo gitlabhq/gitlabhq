@@ -176,7 +176,7 @@ For that, a `SETUP_CMD` CI/CD variable can be passed to the container,
 with the required commands to run before the license detection.
 
 If present, this variable overrides the setup step necessary to install all the packages
-of your application (e.g.: for a project with a `Gemfile`, the setup step could be
+of your application (for example: for a project with a `Gemfile`, the setup step could be
 `bundle install`).
 
 For example:

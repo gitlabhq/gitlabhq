@@ -118,12 +118,12 @@ The following table lists the data available for each official analyzer.
 | File                                  | ✓                  | ⚠                  | ✓                  |
 | Start line                            | 𐄂                  | 𐄂                  | 𐄂                  |
 | End line                              | 𐄂                  | 𐄂                  | 𐄂                  |
-| External ID (e.g., CVE)               | ✓                  | ✓                  | ⚠                  |
+| External ID (for example, CVE)        | ✓                  | ✓                  | ⚠                  |
 | URLs                                  | ✓                  | ✓                  | ✓                  |
 | Internal doc/explanation              | ✓                  | 𐄂                  | 𐄂                  |
 | Solution                              | ✓                  | ✓                  | 𐄂                  |
 | Confidence                            | 𐄂                  | 𐄂                  | 𐄂                  |
-| Affected item (e.g. class or package) | ✓                  | ✓                  | ✓                  |
+| Affected item (for example, class or package) | ✓                  | ✓                  | ✓                  |
 | Source code extract                   | 𐄂                  | 𐄂                  | 𐄂                  |
 | Internal ID                           | ✓                  | 𐄂                  | 𐄂                  |
 | Date                                  | ✓                  | 𐄂                  | 𐄂                  |
@@ -134,4 +134,4 @@ The following table lists the data available for each official analyzer.
 - 𐄂 => we don't have that data, or it would need to develop specific or inefficient/unreliable logic to obtain it.
 
 The values provided by these tools are heterogeneous, so they are sometimes
-normalized into common values (e.g., `severity`, `confidence`, etc).
+normalized into common values (for example, `severity`, `confidence`, etc).

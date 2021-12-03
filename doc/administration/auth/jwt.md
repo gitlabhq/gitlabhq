@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # JWT OmniAuth provider **(FREE SELF)**
 
 To enable the JWT OmniAuth provider, you must register your application with JWT.
-JWT will provide you with a secret key for you to use.
+JWT provides you with a secret key for you to use.
 
 1. On your GitLab server, open the configuration file.
 
@@ -74,9 +74,9 @@ JWT will provide you with a secret key for you to use.
    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a JWT icon below the regular sign in form.
-Click the icon to begin the authentication process. JWT will ask the user to
+Click the icon to begin the authentication process. JWT asks the user to
 sign in and authorize the GitLab application. If everything goes well, the user
-will be redirected to GitLab and will be signed in.
+is redirected to GitLab and signed in.
 
 <!-- ## Troubleshooting
 

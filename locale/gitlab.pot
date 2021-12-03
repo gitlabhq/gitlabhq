@@ -419,6 +419,12 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{actionText} & close %{noteable}"
+msgstr ""
+
+msgid "%{actionText} & reopen %{noteable}"
+msgstr ""
+
 msgid "%{address} is an invalid IP address range"
 msgstr ""
 
@@ -809,9 +815,6 @@ msgid "%{oneWeekAgo} - %{today}"
 msgstr ""
 
 msgid "%{oneYearAgo} - %{today}"
-msgstr ""
-
-msgid "%{openOrClose} %{noteable}"
 msgstr ""
 
 msgid "%{openedEpics} open, %{closedEpics} closed"
@@ -4724,6 +4727,9 @@ msgstr ""
 msgid "Assign to commenting user"
 msgstr ""
 
+msgid "Assign to me"
+msgstr ""
+
 msgid "Assign yourself to these issues"
 msgstr ""
 
@@ -7306,6 +7312,9 @@ msgid "Close"
 msgstr ""
 
 msgid "Close %{issueType}"
+msgstr ""
+
+msgid "Close %{noteable}"
 msgstr ""
 
 msgid "Close %{tabname}"
@@ -14898,6 +14907,9 @@ msgstr ""
 msgid "Filter by merge requests that are currently merged."
 msgstr ""
 
+msgid "Filter by milestone"
+msgstr ""
+
 msgid "Filter by milestone name"
 msgstr ""
 
@@ -17107,6 +17119,12 @@ msgid "Header logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Header message"
+msgstr ""
+
+msgid "HeaderAction|incident"
+msgstr ""
+
+msgid "HeaderAction|issue"
 msgstr ""
 
 msgid "Headers"
@@ -19429,6 +19447,9 @@ msgid "IssueBoards|Some of your boards are hidden, activate a license to see the
 msgstr ""
 
 msgid "IssueBoards|Switch board"
+msgstr ""
+
+msgid "IssueList|created %{timeAgoString} by %{user}"
 msgstr ""
 
 msgid "IssueTracker|Custom issue tracker"
@@ -27968,6 +27989,9 @@ msgstr ""
 msgid "Promotion is not supported."
 msgstr ""
 
+msgid "Promotions|Add %{link_start} description templates %{link_end} to help your contributors to communicate effectively!"
+msgstr ""
+
 msgid "Promotions|Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
@@ -29143,6 +29167,9 @@ msgid "Reopen"
 msgstr ""
 
 msgid "Reopen %{issueType}"
+msgstr ""
+
+msgid "Reopen %{noteable}"
 msgstr ""
 
 msgid "Reopen epic"
@@ -31398,6 +31425,9 @@ msgid "Select an iteration"
 msgstr ""
 
 msgid "Select assignee"
+msgstr ""
+
+msgid "Select assignee(s)"
 msgstr ""
 
 msgid "Select branch"
@@ -35591,6 +35621,9 @@ msgstr ""
 msgid "This is your current session"
 msgstr ""
 
+msgid "This issue is confidential and should only be visible to team members with at least Reporter access."
+msgstr ""
+
 msgid "This issue is currently blocked by the following issues:"
 msgstr ""
 
@@ -38449,6 +38482,9 @@ msgid "View logs"
 msgstr ""
 
 msgid "View merge request"
+msgstr ""
+
+msgid "View milestones"
 msgstr ""
 
 msgid "View on %{url}"

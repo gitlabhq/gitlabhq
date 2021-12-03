@@ -1,6 +1,6 @@
 ---
-stage: Plan
-group: Product Planning
+stage: Ecosystem
+group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
@@ -37,6 +37,8 @@ Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63293) in
 | `vulnerabilities_count_by_day_and_severity` | `GroupType`, `QueryType` | 13.3          | None. Plaintext tokens no longer supported for security reasons. |
 
 ## GitLab 13.6
+
+Prior to GitLab 14.0, deprecated items could be removed in `XX.6` releases.
 
 Fields [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44866) in GitLab 13.6:
 

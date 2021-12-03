@@ -13,6 +13,10 @@ RSpec.describe Gitlab::Tracking do
     described_class.instance_variable_set("@snowplow", nil)
   end
 
+  after do
+    described_class.instance_variable_set("@snowplow", nil)
+  end
+
   describe '.options' do
     shared_examples 'delegates to destination' do |klass|
       before do

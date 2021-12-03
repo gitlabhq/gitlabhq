@@ -64,7 +64,7 @@
       for this project.
 
   - if issuable.new_record?
-    = form.submit "Create #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button' }
+    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", class: 'gl-button btn btn-confirm gl-mr-2', data: { qa_selector: 'issuable_create_button' }
   - else
     = form.submit _('Save changes'), class: 'gl-button btn btn-confirm gl-mr-2'
 

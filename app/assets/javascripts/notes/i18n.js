@@ -9,6 +9,7 @@ export const COMMENT_FORM = {
   issue: __('issue'),
   startThread: __('Start thread'),
   mergeRequest: __('merge request'),
+  epic: __('epic'),
   bodyPlaceholder: __('Write a comment or drag your files here…'),
   confidential: s__('Notes|Make this comment confidential'),
   confidentialVisibility: s__('Notes|Confidential comments are only visible to project members'),
@@ -17,7 +18,16 @@ export const COMMENT_FORM = {
   ),
   discussion: __('Discuss a specific suggestion or question.'),
   actionButtonWithNote: __('%{actionText} & %{openOrClose} %{noteable}'),
-  actionButton: __('%{openOrClose} %{noteable}'),
+  actionButton: {
+    withNote: {
+      reopen: __('%{actionText} & reopen %{noteable}'),
+      close: __('%{actionText} & close %{noteable}'),
+    },
+    withoutNote: {
+      reopen: __('Reopen %{noteable}'),
+      close: __('Close %{noteable}'),
+    },
+  },
   submitButton: {
     startThread: __('Start thread'),
     comment: __('Comment'),

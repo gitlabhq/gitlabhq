@@ -1,7 +1,7 @@
 - if can?(current_user, :push_code, @project)
   - can_create_merge_request = can?(current_user, :create_merge_request_in, @project)
   - data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
-  - value = can_create_merge_request ? 'Create merge request' : 'Create branch'
+  - value = can_create_merge_request ? _('Create merge request') : _('Create branch')
   - value = can_create_confidential_merge_request? ? _('Create confidential merge request') : value
   - create_mr_text = can_create_confidential_merge_request? ? _('Create confidential merge request') : _('Create merge request')
 

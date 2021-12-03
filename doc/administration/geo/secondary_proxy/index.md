@@ -71,7 +71,7 @@ a single URL used by all Geo sites, including the primary.
    
 ## Disable Geo proxying
 
-You can disable the secondary proxying on each Geo site, separately, by following these steps:
+You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
@@ -92,6 +92,16 @@ You can disable the secondary proxying on each Geo site, separately, by followin
    gitlab-ctl reconfigure
    ```
 
+In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
+or specify the following in your values file:
+
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      GEO_SECONDARY_PROXY: "0"
+```
+
 ## Enable Geo proxying with Separate URLs
 
 The ability to use proxying with separate URLs is still in development. You can follow the
@@ -104,6 +114,10 @@ SSH into one node running Rails on your primary Geo site and run:
 ```shell
 sudo gitlab-rails runner "Feature.enable(:geo_secondary_proxy_separate_urls)"
 ```
+
+In Kubernetes, you can run the same command in the toolbox pod. Refer to the
+[Kubernetes cheat sheet](../../troubleshooting/kubernetes_cheat_sheet.md#gitlab-specific-kubernetes-information)
+for details.
 
 ## Limitations
 

@@ -64,7 +64,7 @@ Before following any of those steps, make sure you have `root` access to the
 promote a Geo replica and perform a failover.
 
 NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses will appear to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
+GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appear to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
 
 On the **secondary** site:
 
@@ -88,7 +88,7 @@ A common cause of replication failures is the data being missing on the
 **primary** site - you can resolve these failures by restoring the data from backup,
 or removing references to the missing data.
 
-The maintenance window won't end until Geo replication and verification is
+The maintenance window doesn't end until Geo replication and verification is
 completely finished. To keep the window as short as possible, you should
 ensure these processes are close to 100% as possible during active use.
 
@@ -138,7 +138,7 @@ follow these steps to avoid unnecessary data loss:
       1. On the Sidekiq dhasboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
       1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-         This job will re-enable several other cron jobs that are essential for planned
+         This job re-enables several other cron jobs that are essential for planned
          failover to complete successfully.
 
 1. Finish replicating and verifying all data:

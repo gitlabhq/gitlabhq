@@ -20,8 +20,7 @@
           #{issuable_reference(merge_request)}
         %span.issuable-authored.d-none.d-sm-inline-block
           &middot;
-          created #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
-          by #{link_to_member(@project, merge_request.author, avatar: false)}
+          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false) }}
           = render_if_exists 'shared/issuable/gitlab_team_member_badge', author: merge_request.author
         - if merge_request.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block
