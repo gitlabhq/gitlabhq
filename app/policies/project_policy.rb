@@ -93,6 +93,11 @@ class ProjectPolicy < BasePolicy
     user.is_a?(DeployToken) && user.has_access_to?(project) && user.write_package_registry
   end
 
+  desc "Deploy token with read access"
+  condition(:download_code_deploy_token) do
+    user.is_a?(DeployToken) && user.has_access_to?(project)
+  end
+
   desc "If user is authenticated via CI job token then the target project should be in scope"
   condition(:project_allowed_for_job_token) do
     !@user&.from_ci_job_token? || @user.ci_job_token_scope.includes?(project)
@@ -506,6 +511,10 @@ class ProjectPolicy < BasePolicy
     prevent(:download_wiki_code)
   end
 
+  rule { download_code_deploy_token }.policy do
+    enable :download_wiki_code
+  end
+
   rule { builds_disabled | repository_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
@@ -687,12 +696,14 @@ class ProjectPolicy < BasePolicy
 
   rule { project_bot }.enable :project_bot_access
 
+  rule { can?(:read_all_resources) }.enable :read_resource_access_tokens
+
   rule { can?(:admin_project) & resource_access_token_feature_available }.policy do
     enable :read_resource_access_tokens
     enable :destroy_resource_access_tokens
   end
 
-  rule { can?(:read_resource_access_tokens) & resource_access_token_creation_allowed }.policy do
+  rule { can?(:admin_project) & resource_access_token_feature_available & resource_access_token_creation_allowed }.policy do
     enable :create_resource_access_tokens
   end
 
