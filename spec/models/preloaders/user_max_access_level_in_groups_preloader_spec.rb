@@ -13,13 +13,8 @@ RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader do
 
   shared_examples 'executes N max member permission queries to the DB' do
     it 'executes the specified max membership queries' do
-      queries = ActiveRecord::QueryRecorder.new do
-        groups.each { |group| user.can?(:read_group, group) }
-      end
-
-      max_queries = queries.log.grep(max_query_regex)
-
-      expect(max_queries.count).to eq(expected_query_count)
+      expect { groups.each { |group| user.can?(:read_group, group) } }
+        .to make_queries_matching(max_query_regex, expected_query_count)
     end
   end
 
