@@ -91,7 +91,7 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController do
       # (the record that represents the design at a specific version), to
       # verify that the correct file is being returned.
       def etag(action)
-        ActionDispatch::TestResponse.new.send(:generate_weak_etag, [action.cache_key, ''])
+        ActionDispatch::TestResponse.new.send(:generate_weak_etag, [action.cache_key])
       end
 
       specify { expect(newest_version.sha).not_to eq(oldest_version.sha) }
