@@ -13,6 +13,28 @@ RSpec.describe ::API::Entities::Project do
 
   subject(:json) { entity.as_json }
 
+  describe '.service_desk_address' do
+    before do
+      allow(project).to receive(:service_desk_enabled?).and_return(true)
+    end
+
+    context 'when a user can admin issues' do
+      before do
+        project.add_reporter(current_user)
+      end
+
+      it 'is present' do
+        expect(json[:service_desk_address]).to be_present
+      end
+    end
+
+    context 'when a user can not admin project' do
+      it 'is empty' do
+        expect(json[:service_desk_address]).to be_nil
+      end
+    end
+  end
+
   describe '.shared_with_groups' do
     let(:group) { create(:group, :private) }
 

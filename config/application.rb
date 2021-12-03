@@ -381,6 +381,7 @@ module Gitlab
     config.cache_store = :redis_cache_store, caching_config_hash
 
     config.active_job.queue_adapter = :sidekiq
+    config.active_job.logger = nil
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
