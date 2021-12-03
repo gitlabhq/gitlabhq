@@ -3,8 +3,18 @@
 module Gitlab
   module SlashCommands
     class Deploy < BaseCommand
+      DEPLOY_REGEX = /\Adeploy\s/.freeze
+
       def self.match(text)
-        /\Adeploy\s+(?<from>\S+.*)\s+to+\s+(?<to>\S+.*)\z/.match(text)
+        return unless text&.match?(DEPLOY_REGEX)
+
+        from, _, to = text.sub(DEPLOY_REGEX, '').rpartition(/\sto+\s/)
+        return if from.blank? || to.blank?
+
+        {
+          from: from.strip,
+          to: to.strip
+        }
       end
 
       def self.help_message
