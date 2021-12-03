@@ -75,7 +75,7 @@ export function initMermaid(mermaid) {
 
 function importMermaidModule() {
   return import(/* webpackChunkName: 'mermaid' */ 'mermaid')
-    .then((mermaid) => {
+    .then(({ default: mermaid }) => {
       mermaidModule = initMermaid(mermaid);
     })
     .catch((err) => {
