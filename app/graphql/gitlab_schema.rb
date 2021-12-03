@@ -32,6 +32,9 @@ class GitlabSchema < GraphQL::Schema
 
   default_max_page_size 100
 
+  validate_max_errors 5
+  validate_timeout 0.2.seconds
+
   lazy_resolve ::Gitlab::Graphql::Lazy, :force
 
   class << self

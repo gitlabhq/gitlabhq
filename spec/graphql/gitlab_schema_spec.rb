@@ -35,6 +35,10 @@ RSpec.describe GitlabSchema do
     expect(connection).to eq(Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection)
   end
 
+  it 'sets an appropriate validation timeout' do
+    expect(described_class.validate_timeout).to be <= 0.2.seconds
+  end
+
   describe '.execute' do
     describe 'setting query `max_complexity` and `max_depth`' do
       subject(:result) { described_class.execute('query', **kwargs).query }
@@ -192,6 +196,36 @@ RSpec.describe GitlabSchema do
 
     it 'raises the correct error on invalid input' do
       expect { described_class.object_from_id("bogus id") }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+    end
+  end
+
+  describe 'validate_max_errors' do
+    it 'reports at most 5 errors' do
+      query = <<~GQL
+        query {
+          currentUser {
+            x: id
+            x: bot
+            x: username
+            x: state
+            x: name
+
+            x: id
+            x: bot
+            x: username
+            x: state
+            x: name
+
+            badField
+            veryBadField
+            alsoNotAGoodField
+          }
+        }
+      GQL
+
+      result = described_class.execute(query)
+
+      expect(result.to_h['errors'].count).to eq 5
     end
   end
 
