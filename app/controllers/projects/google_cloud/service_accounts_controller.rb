@@ -9,10 +9,11 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
     gcp_projects = google_api_client.list_projects
 
     if gcp_projects.empty?
-      @js_data = {}.to_json
+      @js_data = { screen: 'no_gcp_projects' }.to_json
       render status: :unauthorized, template: 'projects/google_cloud/errors/no_gcp_projects'
     else
       @js_data = {
+        screen: 'service_accounts_form',
         gcpProjects: gcp_projects,
         environments: project.environments,
         cancelPath: project_google_cloud_index_path(project)
@@ -78,7 +79,7 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
 
   def handle_gcp_error(error, project)
     Gitlab::ErrorTracking.track_exception(error, project_id: project.id)
-    @js_data = { error: error.to_s }.to_json
+    @js_data = { screen: 'gcp_error', error: error.to_s }.to_json
     render status: :unauthorized, template: 'projects/google_cloud/errors/gcp_error'
   end
 end

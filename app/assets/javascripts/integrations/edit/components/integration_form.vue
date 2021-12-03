@@ -69,6 +69,10 @@ export default {
       return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
     },
   },
+  mounted() {
+    // this form element is defined in Haml
+    this.form = document.querySelector('.js-integration-settings-form');
+  },
   methods: {
     ...mapActions([
       'setOverride',
@@ -76,6 +80,7 @@ export default {
       'setIsTesting',
       'setIsResetting',
       'fetchResetIntegration',
+      'requestJiraIssueTypes',
     ]),
     onSaveClick() {
       this.setIsSaving(true);
@@ -87,6 +92,10 @@ export default {
     },
     onResetClick() {
       this.fetchResetIntegration();
+    },
+    onRequestJiraIssueTypes() {
+      const formData = new FormData(this.form);
+      this.requestJiraIssueTypes(formData);
     },
   },
   helpHtmlConfig: {
@@ -135,6 +144,7 @@ export default {
           v-if="isJira && !isInstanceOrGroupLevel"
           :key="`${currentKey}-jira-issues-fields`"
           v-bind="propsSource.jiraIssuesProps"
+          @request-jira-issue-types="onRequestJiraIssueTypes"
         />
         <div v-if="isEditable" class="footer-block row-content-block">
           <template v-if="isInstanceOrGroupLevel">

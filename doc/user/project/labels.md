@@ -72,9 +72,9 @@ To create a new project label:
 1. Select the **New label** button.
 1. In the **Title** field, enter a short, descriptive name for the label. You
    can also use this field to create [scoped, mutually exclusive labels](#scoped-labels).
-1. (Optional) In the **Description** field, you can enter additional
+1. Optional. In the **Description** field, you can enter additional
    information about how and when to use this label.
-1. (Optional) Select a background color for the label by selecting one of the
+1. Optional. Select a background color for the label by selecting one of the
    available colors, or by entering a hex color value in the **Background color**
    field.
 1. Select **Create label**.
@@ -86,7 +86,7 @@ label section of the right sidebar of an issue or a merge request:
 1. Click **Create project label**.
    - Fill in the name field. Note that you can't specify a description if creating a label
      this way. You can add a description later by editing the label (see below).
-   - (Optional) Select a color by clicking on the available colors, or input a hex
+   - Optional. Select a color by clicking on the available colors, or input a hex
      color value for a specific color.
 1. Click **Create**.
 

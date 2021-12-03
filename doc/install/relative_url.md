@@ -60,7 +60,7 @@ assumptions are made:
 
 Make sure to follow all steps below:
 
-1. (Optional) If you run short on resources, you can temporarily free up some
+1. Optional. If you run short on resources, you can temporarily free up some
    memory by shutting down the GitLab service with the following command:
 
    ```shell

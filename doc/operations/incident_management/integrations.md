@@ -65,11 +65,11 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.
       You must also input the URL and Authorization Key in your external service.
-   1. _(Optional)_ To map fields from your monitoring tool's alert to GitLab fields, enter a sample
+   1. Optional. To map fields from your monitoring tool's alert to GitLab fields, enter a sample
       payload and click **Parse payload for custom mapping**. Valid JSON is required. If you update
       a sample payload, you must also remap the fields.
 
-   1. _(Optional)_ If you provided a valid sample payload, select each value in
+   1. Optional. If you provided a valid sample payload, select each value in
       **Payload alert key** to [map to a **GitLab alert key**](#map-fields-in-custom-alerts).
    1. To save your integration, click **Save Integration**. If desired, you can send a test alert
       from your integration's **Send test alert** tab after the integration is created.

@@ -37172,7 +37172,7 @@ msgstr ""
 msgid "Unknown response text"
 msgstr ""
 
-msgid "Unknown root"
+msgid "Unknown screen"
 msgstr ""
 
 msgid "Unknown user"

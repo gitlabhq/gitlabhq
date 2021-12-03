@@ -155,7 +155,8 @@ module Trigger
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master',
         'CACHE_UPDATE' => ENV['OMNIBUS_GITLAB_CACHE_UPDATE'],
-        'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS']
+        'GITLAB_QA_OPTIONS' => ENV['GITLAB_QA_OPTIONS'],
+        'QA_TESTS' => ENV['QA_TESTS']
       }
     end
   end

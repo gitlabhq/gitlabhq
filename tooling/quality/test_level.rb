@@ -33,6 +33,7 @@ module Quality
         initializers
         javascripts
         lib
+        metrics_server
         models
         policies
         presenters

@@ -1,12 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
-import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
-import ServiceAccountsForm from '~/google_cloud/components/screens/service_accounts_form.vue';
+import ServiceAccountsForm from '~/google_cloud/components/service_accounts_form.vue';
 
 describe('ServiceAccountsForm component', () => {
   let wrapper;
 
-  const findIncubationBanner = () => wrapper.findComponent(IncubationBanner);
   const findHeader = () => wrapper.find('header');
   const findAllFormGroups = () => wrapper.findAllComponents(GlFormGroup);
   const findAllFormSelects = () => wrapper.findAllComponents(GlFormSelect);
@@ -20,10 +18,6 @@ describe('ServiceAccountsForm component', () => {
 
   afterEach(() => {
     wrapper.destroy();
-  });
-
-  it('contains incubation banner', () => {
-    expect(findIncubationBanner().exists()).toBe(true);
   });
 
   it('contains header', () => {

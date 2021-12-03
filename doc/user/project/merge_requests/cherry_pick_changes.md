@@ -76,7 +76,7 @@ merge request is from a fork:
 1. Click on the **Options** dropdown and select **Cherry-pick** to show the cherry-pick modal.
 1. In **Pick into project** and **Pick into branch**, select the destination project and branch:
    ![Cherry-pick commit](img/cherry_pick_into_project_v13_11.png)
-1. (Optional) Select **Start a new merge request** if you're ready to create a merge request.
+1. Optional. Select **Start a new merge request** if you're ready to create a merge request.
 1. Click **Cherry-pick**.
 
 ## Related topics

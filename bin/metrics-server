@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../metrics_server/metrics_server'
+
+begin
+  target = ENV['METRICS_SERVER_TARGET']
+  raise "Required: METRICS_SERVER_TARGET=[sidekiq]" unless target == 'sidekiq'
+
+  metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/#{target}")
+
+  # Re-raise exceptions in threads on the main thread.
+  Thread.abort_on_exception = true
+  MetricsServer.new(target, metrics_dir).start
+end

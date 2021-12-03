@@ -194,7 +194,7 @@ To push a new project:
    remote: The private project namespace/myproject was created.
    ```
 
-1. (Optional) To configure the remote, alter the command
+1. Optional. To configure the remote, alter the command
    `git remote add origin https://gitlab.example.com/namespace/myproject.git`
    to match your namespace and project names.
 

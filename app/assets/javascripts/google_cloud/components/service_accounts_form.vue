@@ -1,19 +1,13 @@
 <script>
 import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
 import { __ } from '~/locale';
-import IncubationBanner from '../incubation_banner.vue';
 
 export default {
-  components: { GlButton, GlFormGroup, GlFormSelect, IncubationBanner },
+  components: { GlButton, GlFormGroup, GlFormSelect },
   props: {
     gcpProjects: { required: true, type: Array },
     environments: { required: true, type: Array },
     cancelPath: { required: true, type: String },
-  },
-  methods: {
-    feedbackUrl(template) {
-      return `https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/meta/-/issues/new?issuable_template=${template}`;
-    },
   },
   i18n: {
     title: __('Create service account'),
@@ -31,11 +25,6 @@ export default {
 
 <template>
   <div>
-    <incubation-banner
-      :share-feedback-url="feedbackUrl('general_feedback')"
-      :report-bug-url="feedbackUrl('report_bug')"
-      :feature-request-url="feedbackUrl('feature_request')"
-    />
     <header class="gl-my-5 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
       <h2 class="gl-font-size-h1">{{ $options.i18n.title }}</h2>
     </header>

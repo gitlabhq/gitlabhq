@@ -16,6 +16,7 @@ import { createStore } from '~/integrations/edit/store';
 
 describe('IntegrationForm', () => {
   let wrapper;
+  let dispatch;
 
   const createComponent = ({
     customStateProps = {},
@@ -23,12 +24,15 @@ describe('IntegrationForm', () => {
     initialState = {},
     props = {},
   } = {}) => {
+    const store = createStore({
+      customState: { ...mockIntegrationProps, ...customStateProps },
+      ...initialState,
+    });
+    dispatch = jest.spyOn(store, 'dispatch').mockImplementation();
+
     wrapper = shallowMountExtended(IntegrationForm, {
       propsData: { ...props },
-      store: createStore({
-        customState: { ...mockIntegrationProps, ...customStateProps },
-        ...initialState,
-      }),
+      store,
       stubs: {
         OverrideDropdown,
         ActiveCheckbox,
@@ -195,12 +199,28 @@ describe('IntegrationForm', () => {
     });
 
     describe('type is "jira"', () => {
-      it('renders JiraTriggerFields', () => {
-        createComponent({
-          customStateProps: { type: 'jira' },
-        });
+      beforeEach(() => {
+        jest.spyOn(document, 'querySelector').mockReturnValue(document.createElement('form'));
 
+        createComponent({
+          customStateProps: { type: 'jira', testPath: '/test' },
+        });
+      });
+
+      it('renders JiraTriggerFields', () => {
         expect(findJiraTriggerFields().exists()).toBe(true);
+      });
+
+      it('renders JiraIssuesFields', () => {
+        expect(findJiraIssuesFields().exists()).toBe(true);
+      });
+
+      describe('when JiraIssueFields emits `request-jira-issue-types` event', () => {
+        it('dispatches `requestJiraIssueTypes` action', () => {
+          findJiraIssuesFields().vm.$emit('request-jira-issue-types');
+
+          expect(dispatch).toHaveBeenCalledWith('requestJiraIssueTypes', expect.any(FormData));
+        });
       });
     });
 

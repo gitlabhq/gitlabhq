@@ -21,6 +21,6 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
   end
 
   def feature_flag_enabled!
-    access_denied! unless Feature.enabled?(:incubation_5mp_google_cloud)
+    access_denied! unless Feature.enabled?(:incubation_5mp_google_cloud, project)
   end
 end

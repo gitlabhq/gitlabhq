@@ -1,18 +1,16 @@
 import { delay } from 'lodash';
 import toast from '~/vue_shared/plugins/global_toast';
-import axios from '../lib/utils/axios_utils';
 import initForm from './edit';
 import eventHub from './edit/event_hub';
 import {
   TEST_INTEGRATION_EVENT,
   SAVE_INTEGRATION_EVENT,
-  GET_JIRA_ISSUE_TYPES_EVENT,
   TOGGLE_INTEGRATION_EVENT,
   VALIDATE_INTEGRATION_FORM_EVENT,
-  I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
 } from './constants';
+import { testIntegrationSettings } from './edit/api';
 
 export default class IntegrationSettingsForm {
   constructor(formSelector) {
@@ -40,9 +38,6 @@ export default class IntegrationSettingsForm {
     });
     eventHub.$on(SAVE_INTEGRATION_EVENT, () => {
       this.saveIntegration();
-    });
-    eventHub.$on(GET_JIRA_ISSUE_TYPES_EVENT, () => {
-      this.getJiraIssueTypes(new FormData(this.$form));
     });
   }
 
@@ -96,43 +91,12 @@ export default class IntegrationSettingsForm {
    *
    * @return {Promise}
    */
-  getJiraIssueTypes(formData) {
-    const {
-      $store: { dispatch },
-    } = this.vue;
-
-    dispatch('requestJiraIssueTypes');
-
-    return this.fetchTestSettings(formData)
-      .then(
-        ({
-          data: { issuetypes, error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE },
-        }) => {
-          if (error || !issuetypes?.length) {
-            eventHub.$emit(VALIDATE_INTEGRATION_FORM_EVENT);
-            throw new Error(message);
-          }
-
-          dispatch('receiveJiraIssueTypesSuccess', issuetypes);
-        },
-      )
-      .catch(({ message = I18N_DEFAULT_ERROR_MESSAGE }) => {
-        dispatch('receiveJiraIssueTypesError', message);
-      });
-  }
-
-  /**
-   *  Send request to the test endpoint which checks if the current config is valid
-   */
-  fetchTestSettings(formData) {
-    return axios.put(this.testEndPoint, formData);
-  }
 
   /**
    * Test Integration config
    */
   testSettings(formData) {
-    return this.fetchTestSettings(formData)
+    return testIntegrationSettings(this.testEndPoint, formData)
       .then(({ data }) => {
         if (data.error) {
           toast(`${data.message} ${data.service_response}`);

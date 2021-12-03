@@ -4,10 +4,8 @@ import eventHub from '~/integrations/edit/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import {
-  I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
-  GET_JIRA_ISSUE_TYPES_EVENT,
   TOGGLE_INTEGRATION_EVENT,
   TEST_INTEGRATION_EVENT,
   SAVE_INTEGRATION_EVENT,
@@ -152,62 +150,6 @@ describe('IntegrationSettingsForm', () => {
           expect(integrationSettingsForm.testSettings).not.toHaveBeenCalled();
         });
       });
-    });
-
-    describe('when event hub receives `GET_JIRA_ISSUE_TYPES_EVENT`', () => {
-      it('should always dispatch `requestJiraIssueTypes`', () => {
-        const dispatchSpy = mockStoreDispatch();
-        mockAxios.onPut(integrationSettingsForm.testEndPoint).networkError();
-
-        eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
-
-        expect(dispatchSpy).toHaveBeenCalledWith('requestJiraIssueTypes');
-      });
-
-      it('should make an ajax request with provided `formData`', () => {
-        eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
-
-        expect(axios.put).toHaveBeenCalledWith(
-          integrationSettingsForm.testEndPoint,
-          new FormData(integrationSettingsForm.$form),
-        );
-      });
-
-      it('should dispatch `receiveJiraIssueTypesSuccess` with the correct payload if ajax request is successful', async () => {
-        const dispatchSpy = mockStoreDispatch();
-        const mockData = ['ISSUE', 'EPIC'];
-        mockAxios.onPut(integrationSettingsForm.testEndPoint).reply(200, {
-          error: false,
-          issuetypes: mockData,
-        });
-
-        eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
-        await waitForPromises();
-
-        expect(dispatchSpy).toHaveBeenCalledWith('receiveJiraIssueTypesSuccess', mockData);
-      });
-
-      it.each(['Custom error message here', undefined])(
-        'should dispatch "receiveJiraIssueTypesError" with a message if the backend responds with error',
-        async (responseErrorMessage) => {
-          const dispatchSpy = mockStoreDispatch();
-
-          const expectedErrorMessage =
-            responseErrorMessage || I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE;
-          mockAxios.onPut(integrationSettingsForm.testEndPoint).reply(200, {
-            error: true,
-            message: responseErrorMessage,
-          });
-
-          eventHub.$emit(GET_JIRA_ISSUE_TYPES_EVENT);
-          await waitForPromises();
-
-          expect(dispatchSpy).toHaveBeenCalledWith(
-            'receiveJiraIssueTypesError',
-            expectedErrorMessage,
-          );
-        },
-      );
     });
 
     describe('when event hub receives `SAVE_INTEGRATION_EVENT`', () => {

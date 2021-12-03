@@ -101,7 +101,7 @@ To use it, follow the instructions at [Creating a fork](#creating-a-fork) and pr
 - The project name.
 - The project URL.
 - The project slug.
-- *(Optional)* The project description.
+- Optional. The project description.
 - The visibility level for your fork.
 
 ### Enable or disable the fork project form **(FREE SELF)**

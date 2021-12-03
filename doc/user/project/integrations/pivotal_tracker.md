@@ -42,6 +42,6 @@ Complete these steps in GitLab:
 1. Select **Pivotal Tracker**.
 1. Ensure that the **Active** toggle is enabled.
 1. Paste the token you generated in Pivotal Tracker.
-1. (Optional) To restrict this setting to specific branches, list them in the **Restrict to branch**
+1. Optional. To restrict this setting to specific branches, list them in the **Restrict to branch**
    field, separated with commas.
 1. Select **Save changes** or optionally select **Test settings**.

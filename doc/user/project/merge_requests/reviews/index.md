@@ -43,7 +43,7 @@ To start your review:
    - **Add to review**: Keep this comment private and add to the current review.
      These review comments are marked **Pending** and are visible only to you.
    - **Add comment now**: Submits the specific comment as a regular comment instead of as part of the review.
-1. (Optional) You can use [quick actions](../../quick_actions.md) inside review comments.
+1. Optional. You can use [quick actions](../../quick_actions.md) inside review comments.
    The comment shows the actions to perform after publication, but does not perform them
    until you submit your review.
 1. When your review is complete, you can [submit the review](#submit-a-review). Your comments

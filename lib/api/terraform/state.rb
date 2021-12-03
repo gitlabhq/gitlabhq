@@ -11,6 +11,13 @@ module API
 
       default_format :json
 
+      rescue_from(
+        ::ActiveRecord::RecordNotUnique,
+        ::PG::UniqueViolation
+      ) do |e|
+        render_api_error!(e.message, 422)
+      end
+
       before do
         authenticate!
         authorize! :read_terraform_state, user_project

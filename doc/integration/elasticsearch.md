@@ -279,8 +279,8 @@ To disable the Elasticsearch integration:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Settings > Advanced Search**.
 1. Uncheck **Elasticsearch indexing** and **Search with Elasticsearch enabled**.
-1. Click **Save changes** for the changes to take effect.
-1. (Optional) Delete the existing indexes:
+1. Select **Save changes**.
+1. Optional. Delete the existing indexes:
 
    ```shell
    # Omnibus installations

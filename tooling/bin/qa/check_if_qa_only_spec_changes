@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# This script assumes the first argument is a path to a file containing a list of changed files and the second argument
+# is the path of a file where a list of end-to-end spec files with the leading 'qa/' trimmed will be written to if
+# all the files are end-to-end test spec files.
+
+abort("ERROR: Please specify the file containing the list of changed files and a file where the qa only spec files will be written") if ARGV.size != 2
+file_contents = File.read(ARGV.shift).split(' ')
+
+all_files_are_qa_specs = file_contents.all? { |file_path| file_path =~ %r{^qa\/qa\/specs\/features\/} }
+
+output_file = ARGV.shift
+
+if all_files_are_qa_specs
+  qa_spec_paths_trimmed = file_contents.map { |path| path.sub('qa/', '') }
+  File.write(output_file, qa_spec_paths_trimmed.join(' '))
+end
