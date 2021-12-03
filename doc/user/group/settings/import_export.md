@@ -98,6 +98,10 @@ The Enterprise Edition retains some group data that isn't part of the Community 
 
 ## Importing the group
 
+WARNING:
+This feature will be [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619)
+in GitLab 14.8 and replaced by [GitLab Migration](../import/).
+
 1. Create a new group:
    - On the top bar, select **New** (**{plus}**) and then **New group**.
    - On an existing group's page, select the **New subgroup** button.

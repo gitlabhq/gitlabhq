@@ -140,6 +140,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::Configuration do
   end
 
   describe '#service_discovery_enabled?' do
+    it 'returns false when running inside a Rake task' do
+      allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
+
+      config = described_class.new(ActiveRecord::Base)
+      config.service_discovery[:record] = 'foo'
+
+      expect(config.service_discovery_enabled?).to eq(false)
+    end
+
     it 'returns true when a record is configured' do
       config = described_class.new(ActiveRecord::Base)
       config.service_discovery[:record] = 'foo'

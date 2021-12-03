@@ -613,6 +613,28 @@ RSpec.describe Notify do
         it 'has References header including the notes and issue of the discussion' do
           expect(subject.header['References'].message_ids).to include("issue_#{note.noteable.id}@#{host}")
         end
+
+        context 'with private references accessible to the recipient' do
+          let_it_be(:private_project) { create(:project, :private) }
+          let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
+
+          before_all do
+            private_project.add_guest(recipient)
+
+            note.update!(note: "#{private_issue.to_reference(full: true)}")
+          end
+
+          let(:html_part) { subject.body.parts.last.to_s }
+
+          it 'does not redact the reference' do
+            expect(html_part).to include("data-reference-type=\"issue\"")
+            expect(html_part).to include("title=\"#{private_issue.title}\"")
+          end
+
+          it 'renders expanded issue references' do
+            expect(html_part).to include("#{private_issue.to_reference(full: true)} (closed)")
+          end
+        end
       end
     end
 

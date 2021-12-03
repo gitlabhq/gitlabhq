@@ -203,7 +203,7 @@ export default {
 <template>
   <div
     :id="computedJobId"
-    class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between gl-w-full"
+    class="ci-job-component gl-display-flex gl-justify-content-space-between gl-pipeline-job-width"
     data-qa-selector="job_item_container"
   >
     <component
@@ -223,12 +223,12 @@ export default {
     >
       <div class="ci-job-name-component gl-display-flex gl-align-items-center">
         <ci-icon :size="24" :status="job.status" class="gl-line-height-0" />
-        <div class="gl-pl-3 gl-display-flex gl-flex-direction-column gl-w-full">
-          <div class="gl-text-truncate gl-w-70p gl-line-height-normal">{{ job.name }}</div>
+        <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
+          <div class="gl-text-truncate gl-pr-9 gl-line-height-normal">{{ job.name }}</div>
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-text-truncate gl-w-70p gl-font-sm gl-text-gray-500 gl-line-height-normal"
+            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal"
           >
             {{ stageName }}
           </div>

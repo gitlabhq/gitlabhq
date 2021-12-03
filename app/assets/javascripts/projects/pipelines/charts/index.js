@@ -11,7 +11,7 @@ const apolloProvider = new VueApollo({
 });
 
 const mountPipelineChartsApp = (el) => {
-  const { projectPath } = el.dataset;
+  const { projectPath, failedPipelinesLink } = el.dataset;
 
   const shouldRenderDoraCharts = parseBoolean(el.dataset.shouldRenderDoraCharts);
   const shouldRenderQualitySummary = parseBoolean(el.dataset.shouldRenderQualitySummary);
@@ -25,6 +25,7 @@ const mountPipelineChartsApp = (el) => {
     apolloProvider,
     provide: {
       projectPath,
+      failedPipelinesLink,
       shouldRenderDoraCharts,
       shouldRenderQualitySummary,
     },

@@ -27543,7 +27543,9 @@ CREATE INDEX index_todos_on_group_id ON todos USING btree (group_id);
 
 CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
 
-CREATE INDEX index_todos_on_project_id ON todos USING btree (project_id);
+CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
+
+CREATE INDEX index_todos_on_project_id_and_user_id_and_id ON todos USING btree (project_id, user_id, id);
 
 CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (target_type, target_id);
 

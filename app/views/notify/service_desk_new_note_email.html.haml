@@ -2,4 +2,4 @@
   %div
     = _("%{author_link} wrote:").html_safe % { author_link: link_to(@note.author_name, user_url(@note.author)) }
 %div
-  = markdown(@note.note, pipeline: :email, author: @note.author)
+  = markdown(@note.note, pipeline: :email, author: @note.author, issuable_reference_expansion_enabled: true)

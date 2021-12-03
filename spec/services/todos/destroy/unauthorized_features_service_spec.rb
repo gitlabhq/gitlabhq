@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Todos::Destroy::PrivateFeaturesService do
-  let(:project)        { create(:project, :public) }
-  let(:user)           { create(:user) }
-  let(:another_user)   { create(:user) }
-  let(:project_member) { create(:user) }
-  let(:issue)          { create(:issue, project: project) }
-  let(:mr)             { create(:merge_request, source_project: project) }
+RSpec.describe Todos::Destroy::UnauthorizedFeaturesService do
+  let_it_be(:project, reload: true) { create(:project, :public, :repository) }
+  let_it_be(:issue)          { create(:issue, project: project) }
+  let_it_be(:mr)             { create(:merge_request, source_project: project) }
+  let_it_be(:user)           { create(:user) }
+  let_it_be(:another_user)   { create(:user) }
+  let_it_be(:project_member) do
+    create(:user).tap do |user|
+      project.add_developer(user)
+    end
+  end
 
   let!(:todo_mr_non_member)      { create(:todo, user: user, target: mr, project: project) }
   let!(:todo_mr_non_member2)     { create(:todo, user: another_user, target: mr, project: project) }
@@ -19,10 +23,6 @@ RSpec.describe Todos::Destroy::PrivateFeaturesService do
   let!(:commit_todo_non_member)  { create(:on_commit_todo, user: user, project: project) }
   let!(:commit_todo_non_member2) { create(:on_commit_todo, user: another_user, project: project) }
   let!(:commit_todo_member)      { create(:on_commit_todo, user: project_member, project: project) }
-
-  before do
-    project.add_developer(project_member)
-  end
 
   context 'when user_id is provided' do
     subject { described_class.new(project.id, user.id).execute }

@@ -5,13 +5,13 @@ module Emails
     def new_merge_request_email(recipient_id, merge_request_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id, present: true)
 
-      mail_new_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, recipient_id, reason))
+      mail_new_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, reason))
     end
 
     def new_mention_in_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id, present: true)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def push_to_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil, new_commits: [], existing_commits: [])
@@ -20,7 +20,7 @@ module Emails
       @existing_commits = existing_commits
       @updated_by_user = User.find(updated_by_user_id)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def change_in_merge_request_draft_status_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
@@ -28,7 +28,7 @@ module Emails
 
       @updated_by_user = User.find(updated_by_user_id)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -38,7 +38,7 @@ module Emails
       @previous_assignees = []
       @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -49,7 +49,7 @@ module Emails
       @previous_reviewers = []
       @previous_reviewers = User.where(id: previous_reviewer_ids) if previous_reviewer_ids.any?
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -58,13 +58,13 @@ module Emails
 
       @label_names = label_names
       @labels_url = project_labels_url(@project)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def removed_milestone_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def changed_milestone_merge_request_email(recipient_id, merge_request_id, milestone, updated_by_user_id, reason = nil)
@@ -72,7 +72,7 @@ module Emails
 
       @milestone = milestone
       @milestone_url = milestone_url(@milestone)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason).merge({
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason).merge({
         template_name: 'changed_milestone_email'
       }))
     end
@@ -81,27 +81,27 @@ module Emails
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @updated_by = User.find(updated_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason: nil, closed_via: nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def request_review_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @updated_by = User.find(updated_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def attention_requested_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @updated_by = User.find(updated_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def merge_request_status_email(recipient_id, merge_request_id, status, updated_by_user_id, reason = nil)
@@ -109,27 +109,27 @@ module Emails
 
       @mr_status = status
       @updated_by = User.find(updated_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
 
     def merge_request_unmergeable_email(recipient_id, merge_request_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      mail_answer_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, reason))
     end
 
     def resolved_all_discussions_email(recipient_id, merge_request_id, resolved_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @resolved_by = User.find(resolved_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(resolved_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(resolved_by_user_id, reason))
     end
 
     def merge_when_pipeline_succeeds_email(recipient_id, merge_request_id, mwps_set_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @mwps_set_by = ::User.find(mwps_set_by_user_id)
-      mail_answer_thread(@merge_request, merge_request_thread_options(mwps_set_by_user_id, recipient_id, reason))
+      mail_answer_thread(@merge_request, merge_request_thread_options(mwps_set_by_user_id, reason))
     end
 
     def merge_requests_csv_email(user, project, csv_data, export_status)
@@ -154,19 +154,19 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+      @recipient = User.find(recipient_id)
 
       if present
-        recipient = User.find(recipient_id)
-        @mr_presenter = @merge_request.present(current_user: recipient)
+        @mr_presenter = @merge_request.present(current_user: @recipient)
       end
 
       @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
-    def merge_request_thread_options(sender_id, recipient_id, reason = nil)
+    def merge_request_thread_options(sender_id, reason = nil)
       {
         from: sender(sender_id),
-        to: User.find(recipient_id).notification_email_for(@project.group),
+        to: @recipient.notification_email_for(@project.group),
         subject: subject("#{@merge_request.title} (#{@merge_request.to_reference})"),
         'X-GitLab-NotificationReason' => reason
       }

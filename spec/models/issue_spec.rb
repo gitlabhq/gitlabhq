@@ -987,6 +987,7 @@ RSpec.describe Issue do
           issue = build(:issue, project: project)
           user = build(:user)
 
+          allow(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label', project.full_path).and_call_original
           expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
           expect(issue.visible_to_user?(user)).to be_falsy
         end
@@ -1020,6 +1021,7 @@ RSpec.describe Issue do
               issue = build(:issue, project: project)
               user = build(:admin)
 
+              allow(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label', project.full_path).and_call_original
               expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
               expect(issue.visible_to_user?(user)).to be_falsy
             end

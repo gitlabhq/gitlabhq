@@ -257,7 +257,7 @@ Set the limit to `0` to disable it.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/237891) in GitLab 13.7.
 
 The [minimum wait time between pull refreshes](../user/project/repository/mirror/index.md)
-defaults to 300 seconds (5 minutes). For example, by default a pull refresh will only run once in a given 300 second period regardless of how many times you try to trigger it.
+defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
 This setting applies in the context of pull refreshes invoked via the [projects API](../api/projects.md#start-the-pull-mirroring-process-for-a-project), or when forcing an update by selecting the **Update now** (**{retry}**) button within **Settings > Repository > Mirroring repositories**. This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
@@ -739,7 +739,7 @@ See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-
 
 [Deploy boards](../user/project/deploy_boards.md) load information from Kubernetes about
 Pods and Deployments. However, data over 10 MB for a certain environment read from
-Kubernetes won't be shown.
+Kubernetes aren't shown.
 
 ## Merge requests
 
@@ -762,7 +762,7 @@ prevent any more changes from rendering. For more information about these limits
 
 ### Merge request reports size limit
 
-Reports that go over the 20 MB limit won't be loaded. Affected reports:
+Reports that go over the 20 MB limit aren't loaded. Affected reports:
 
 - [Merge request security reports](../user/project/merge_requests/testing_and_reports_in_merge_requests.md#security-reports)
 - [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
@@ -826,7 +826,7 @@ See the [Design Management Limitations](../user/project/issues/design_management
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31009) in GitLab 12.4.
 
 Total number of changes (branches or tags) in a single push. If changes are more
-than the specified limit, hooks won't be executed.
+than the specified limit, hooks are not executed.
 
 More information can be found in these docs:
 

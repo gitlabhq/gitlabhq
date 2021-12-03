@@ -34,4 +34,4 @@
         email: true }
 
 %div{ style: note_style }
-  = markdown(note.note, pipeline: :email, author: note.author)
+  = markdown(note.note, pipeline: :email, author: note.author, current_user: @recipient, issuable_reference_expansion_enabled: true)

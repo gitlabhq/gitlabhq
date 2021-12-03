@@ -25,7 +25,7 @@ export default {
   // The max width and the width make sure the ellipsis to work and the min width
   // is for when there is less text than the stage column width (which the width 100% does not fix)
   jobWrapperClasses:
-    'gl-display-flex gl-flex-direction-column gl-align-items-center gl-w-full gl-px-8 gl-min-w-full gl-max-w-15',
+    'gl-display-flex gl-flex-direction-column gl-align-items-stretch gl-w-full gl-px-8 gl-min-w-full gl-max-w-15',
   props: {
     pipelineData: {
       required: true,

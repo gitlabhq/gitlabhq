@@ -113,8 +113,8 @@
  - mini graph in Commit widget pipeline
 */
 @mixin pipeline-graph-dropdown-menu() {
-  width: 240px;
-  max-width: 240px;
+  width: auto;
+  max-width: 400px;
 
   // override dropdown.scss
   &.dropdown-menu li button,
@@ -185,8 +185,6 @@
       }
 
       .ci-status-icon {
-        @include gl-mr-3;
-
         position: relative;
 
         > svg {

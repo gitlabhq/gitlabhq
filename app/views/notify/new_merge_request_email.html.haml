@@ -16,4 +16,4 @@
 
 - if @merge_request.description
   %div
-    = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author)
+    = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author, current_user: @recipient, issuable_reference_expansion_enabled: true)
