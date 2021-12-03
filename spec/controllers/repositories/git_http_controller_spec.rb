@@ -90,6 +90,14 @@ RSpec.describe Repositories::GitHttpController do
         end
       end
     end
+
+    context 'when the user is a deploy token' do
+      it_behaves_like Repositories::GitHttpController do
+        let(:container) { project }
+        let(:user) { create(:deploy_token, :project, projects: [project]) }
+        let(:access_checker_class) { Gitlab::GitAccess }
+      end
+    end
   end
 
   context 'when repository container is a project wiki' do

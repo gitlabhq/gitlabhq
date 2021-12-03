@@ -387,33 +387,6 @@ RSpec.describe API::Members do
         end
       end
 
-      context 'with areas_of_focus considerations', :snowplow do
-        let(:user_id) { stranger.id }
-
-        context 'when areas_of_focus is present in params' do
-          it 'tracks the areas_of_focus' do
-            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: user_id, access_level: Member::DEVELOPER, areas_of_focus: 'Other' }
-
-            expect_snowplow_event(
-              category: 'Members::CreateService',
-              action: 'area_of_focus',
-              label: 'Other',
-              property: source.members.last.id.to_s
-            )
-          end
-        end
-
-        context 'when areas_of_focus is not present in params' do
-          it 'does not track the areas_of_focus' do
-            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: user_id, access_level: Member::DEVELOPER }
-
-            expect_no_snowplow_event(category: 'Members::CreateService', action: 'area_of_focus')
-          end
-        end
-      end
-
       context 'with tasks_to_be_done and tasks_project_id in the params' do
         let(:project_id) { source_type == 'project' ? source.id : create(:project, namespace: source).id }
 

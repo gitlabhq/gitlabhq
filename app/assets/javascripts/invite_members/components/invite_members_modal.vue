@@ -23,7 +23,6 @@ import {
   INVITE_MEMBERS_IN_COMMENT,
   GROUP_FILTERS,
   USERS_FILTER_ALL,
-  MEMBER_AREAS_OF_FOCUS,
   INVITE_MEMBERS_FOR_TASK,
   MODAL_LABELS,
   LEARN_GITLAB,
@@ -101,14 +100,6 @@ export default {
       type: String,
       required: true,
     },
-    areasOfFocusOptions: {
-      type: Array,
-      required: true,
-    },
-    noSelectionAreasOfFocus: {
-      type: Array,
-      required: true,
-    },
     tasksToBeDoneOptions: {
       type: Array,
       required: true,
@@ -126,7 +117,6 @@ export default {
       inviteeType: 'members',
       newUsersToInvite: [],
       selectedDate: undefined,
-      selectedAreasOfFocus: [],
       selectedTasksToBeDone: [],
       selectedTaskProject: this.projects[0],
       groupToBeSharedWith: {},
@@ -182,16 +172,6 @@ export default {
         this.newUsersToInvite.length === 0 && Object.keys(this.groupToBeSharedWith).length === 0
       );
     },
-    areasOfFocusEnabled() {
-      return !this.tasksToBeDoneEnabled && this.areasOfFocusOptions.length !== 0;
-    },
-    areasOfFocusForPost() {
-      if (this.selectedAreasOfFocus.length === 0 && this.areasOfFocusEnabled) {
-        return this.noSelectionAreasOfFocus;
-      }
-
-      return this.selectedAreasOfFocus;
-    },
     errorFieldDescription() {
       if (this.inviteeType === 'group') {
         return '';
@@ -232,8 +212,6 @@ export default {
       this.openModal(options);
       if (this.isOnLearnGitlab) {
         this.trackEvent(INVITE_MEMBERS_FOR_TASK.name, this.source);
-      } else {
-        this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.view);
       }
     });
 
@@ -280,8 +258,6 @@ export default {
       if (this.source === INVITE_MEMBERS_IN_COMMENT) {
         this.trackEvent(INVITE_MEMBERS_IN_COMMENT, 'comment_invite_success');
       }
-
-      this.trackEvent(MEMBER_AREAS_OF_FOCUS.name, MEMBER_AREAS_OF_FOCUS.submit);
     },
     trackinviteMembersForTask() {
       const label = 'selected_tasks_to_be_done';
@@ -296,7 +272,6 @@ export default {
       this.newUsersToInvite = [];
       this.groupToBeSharedWith = {};
       this.invalidFeedbackMessage = '';
-      this.selectedAreasOfFocus = [];
       this.selectedTasksToBeDone = [];
       [this.selectedTaskProject] = this.projects;
     },
@@ -350,7 +325,6 @@ export default {
         email: usersToInviteByEmail,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
-        areas_of_focus: this.areasOfFocusForPost,
         tasks_to_be_done: this.tasksToBeDoneForPost,
         tasks_project_id: this.tasksProjectForPost,
       };
@@ -361,7 +335,6 @@ export default {
         user_id: usersToAddById,
         access_level: this.selectedAccessLevel,
         invite_source: this.source,
-        areas_of_focus: this.areasOfFocusForPost,
         tasks_to_be_done: this.tasksToBeDoneForPost,
         tasks_project_id: this.tasksProjectForPost,
       };
@@ -516,16 +489,6 @@ export default {
             />
           </template>
         </gl-datepicker>
-      </div>
-      <div v-if="areasOfFocusEnabled">
-        <label class="gl-mt-5">
-          {{ $options.labels.areasOfFocusLabel }}
-        </label>
-        <gl-form-checkbox-group
-          v-model="selectedAreasOfFocus"
-          :options="areasOfFocusOptions"
-          data-testid="area-of-focus-checks"
-        />
       </div>
       <div v-if="showTasksToBeDone" data-testid="invite-members-modal-tasks-to-be-done">
         <label class="gl-mt-5">

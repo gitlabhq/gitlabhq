@@ -92,7 +92,6 @@ module Members
       super
 
       track_invite_source(member)
-      track_areas_of_focus(member)
     end
 
     def track_invite_source(member)
@@ -110,12 +109,6 @@ module Members
       member.invite? ? 'net_new_user' : 'existing_user'
     end
 
-    def track_areas_of_focus(member)
-      areas_of_focus.each do |area_of_focus|
-        Gitlab::Tracking.event(self.class.name, 'area_of_focus', label: area_of_focus, property: member.id.to_s)
-      end
-    end
-
     def create_tasks_to_be_done
       return if params[:tasks_to_be_done].blank? || params[:tasks_project_id].blank?
 
@@ -126,10 +119,6 @@ module Members
       # for the `TasksToBeDone::CreateWorker`, ie. `project` and `tasks_to_be_done`.
       member_task = valid_members[0].member_task
       TasksToBeDone::CreateWorker.perform_async(member_task.id, current_user.id, valid_members.map(&:user_id))
-    end
-
-    def areas_of_focus
-      params[:areas_of_focus] || []
     end
 
     def user_limit

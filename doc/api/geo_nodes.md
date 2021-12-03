@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Geo Nodes API **(PREMIUM SELF)**
 
-To interact with Geo node endpoints, you need to authenticate yourself as an
+To interact with Geo node endpoints, you must authenticate yourself as an
 administrator.
 
 ## Create a new Geo node
@@ -26,7 +26,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/
 
 | Attribute                   | Type    | Required | Description                                                      |
 | ----------------------------| ------- | -------- | -----------------------------------------------------------------|
-| `primary`                   | boolean | no       | Specifying whether this node will be primary. Defaults to false. |
+| `primary`                   | boolean | no       | Specifying whether this node should be primary. Defaults to false. |
 | `enabled`                   | boolean | no       | Flag indicating if the Geo node is enabled. Defaults to true.    |
 | `name`                      | string  | yes      | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in `gitlab.rb`, otherwise it must match `external_url` |
 | `url`                       | string  | yes      | The user-facing URL for the Geo node. |
@@ -35,11 +35,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/
 | `repos_max_capacity`        | integer | no       | Control the maximum concurrency of repository backfill for this secondary node. Defaults to 25. |
 | `verification_max_capacity` | integer | no       | Control the maximum concurrency of repository verification for this node. Defaults to 100. |
 | `container_repositories_max_capacity` | integer  | no | Control the maximum concurrency of container repository sync for this node. Defaults to 10. |
-| `sync_object_storage`       | boolean | no       | Flag indicating if the secondary Geo node will replicate blobs in Object Storage. Defaults to false. |
+| `sync_object_storage`       | boolean | no       | Flag indicating if the secondary Geo node should replicate blobs in Object Storage. Defaults to false. |
 | `selective_sync_type`       | string  | no       | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`. |
 | `selective_sync_shards`     | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`. |
 | `selective_sync_namespace_ids` | array | no      | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`. |
-| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. This has no effect when set on a secondary node. |
+| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary node. |
 
 Example response:
 
@@ -199,11 +199,11 @@ PUT /geo_nodes/:id
 | `repos_max_capacity`        | integer | no        | Control the maximum concurrency of repository backfill for this secondary node.     |
 | `verification_max_capacity` | integer | no        | Control the maximum concurrency of verification for this node. |
 | `container_repositories_max_capacity` | integer | no | Control the maximum concurrency of container repository sync for this node. |
-| `sync_object_storage`       | boolean | no        | Flag indicating if the secondary Geo node will replicate blobs in Object Storage. |
+| `sync_object_storage`       | boolean | no        | Flag indicating if the secondary Geo node should replicate blobs in Object Storage. |
 | `selective_sync_type`       | string  | no        | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`. |
 | `selective_sync_shards`     | array   | no        | The repository storage for the projects synced if `selective_sync_type` == `shards`. |
 | `selective_sync_namespace_ids` | array | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`. |
-| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it will be reverified. This has no effect when set on a secondary node. |
+| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary node. |
 
 Example response:
 
@@ -241,7 +241,7 @@ Example response:
 Removes the Geo node.
 
 NOTE:
-Only a Geo primary node will accept this request.
+Only a Geo primary node accepts this request.
 
 ```plaintext
 DELETE /geo_nodes/:id

@@ -69,13 +69,16 @@ export default {
         <gl-dropdown-section-header>{{ option.category }}</gl-dropdown-section-header>
         <gl-dropdown-item
           v-for="data in option.data"
+          :id="data.html_id"
           :ref="data.html_id"
           :key="data.html_id"
           :class="{ 'gl-bg-gray-50': isOptionFocused(data) }"
+          :aria-selected="isOptionFocused(data)"
+          :aria-label="data.label"
           tabindex="-1"
           :href="data.url"
         >
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-display-flex gl-align-items-center" aria-hidden="true">
             <gl-avatar
               v-if="data.avatar_url !== undefined"
               :src="data.avatar_url"

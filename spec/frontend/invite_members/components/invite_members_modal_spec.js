@@ -6,7 +6,6 @@ import {
   GlSprintf,
   GlLink,
   GlModal,
-  GlFormCheckboxGroup,
 } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { stubComponent } from 'helpers/stub_component';
@@ -19,7 +18,6 @@ import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import {
   INVITE_MEMBERS_IN_COMMENT,
-  MEMBER_AREAS_OF_FOCUS,
   INVITE_MEMBERS_FOR_TASK,
   CANCEL_BUTTON_TEXT,
   INVITE_BUTTON_TEXT,
@@ -52,12 +50,7 @@ const inviteeType = 'members';
 const accessLevels = { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 };
 const defaultAccessLevel = 10;
 const inviteSource = 'unknown';
-const noSelectionAreasOfFocus = ['no_selection'];
 const helpLink = 'https://example.com';
-const areasOfFocusOptions = [
-  { text: 'area1', value: 'area1' },
-  { text: 'area2', value: 'area2' },
-];
 const tasksToBeDoneOptions = [
   { text: 'First task', value: 'first' },
   { text: 'Second task', value: 'second' },
@@ -96,9 +89,7 @@ const createComponent = (data = {}, props = {}) => {
       isProject,
       inviteeType,
       accessLevels,
-      areasOfFocusOptions,
       defaultAccessLevel,
-      noSelectionAreasOfFocus,
       tasksToBeDoneOptions,
       projects,
       helpLink,
@@ -164,7 +155,6 @@ describe('InviteMembersModal', () => {
   const membersFormGroupInvalidFeedback = () => findMembersFormGroup().props('invalidFeedback');
   const membersFormGroupDescription = () => findMembersFormGroup().props('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
-  const findAreaofFocusCheckBoxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
   const findTasksToBeDone = () => wrapper.findByTestId('invite-members-modal-tasks-to-be-done');
   const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
   const findProjectSelect = () => wrapper.findByTestId('invite-members-modal-project-select');
@@ -212,21 +202,6 @@ describe('InviteMembersModal', () => {
       it('renders the datepicker', () => {
         expect(findDatepicker().exists()).toBe(true);
       });
-    });
-  });
-
-  describe('rendering the areas_of_focus', () => {
-    it('renders the areas_of_focus checkboxes', () => {
-      createComponent();
-
-      expect(findAreaofFocusCheckBoxGroup().props('options')).toBe(areasOfFocusOptions);
-      expect(findAreaofFocusCheckBoxGroup().exists()).toBe(true);
-    });
-
-    it('does not render the areas_of_focus checkboxes', () => {
-      createComponent({}, { areasOfFocusOptions: [] });
-
-      expect(findAreaofFocusCheckBoxGroup().exists()).toBe(false);
     });
   });
 
@@ -442,20 +417,6 @@ describe('InviteMembersModal', () => {
       "The member's email address is not allowed for this project. Go to the Admin area > Sign-up restrictions, and check Allowed domains for sign-ups.";
     const expectedSyntaxError = 'email contains an invalid email address';
 
-    it('calls the API with the expected focus data when an areas_of_focus checkbox is clicked', () => {
-      const spy = jest.spyOn(Api, 'addGroupMembersByUserId');
-      const expectedFocus = [areasOfFocusOptions[0].value];
-      createComponent({ newUsersToInvite: [user1] });
-
-      findAreaofFocusCheckBoxGroup().vm.$emit('input', expectedFocus);
-      clickInviteButton();
-
-      expect(spy).toHaveBeenCalledWith(
-        user1.id.toString(),
-        expect.objectContaining({ areas_of_focus: expectedFocus }),
-      );
-    });
-
     describe('when inviting an existing user to group by user ID', () => {
       const postData = {
         user_id: '1,2',
@@ -463,7 +424,6 @@ describe('InviteMembersModal', () => {
         expires_at: undefined,
         invite_source: inviteSource,
         format: 'json',
-        areas_of_focus: noSelectionAreasOfFocus,
         tasks_to_be_done: [],
         tasks_project_id: '',
       };
@@ -474,16 +434,6 @@ describe('InviteMembersModal', () => {
 
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'addGroupMembersByUserId').mockResolvedValue({ data: postData });
-        });
-
-        it('includes the non-default selected areas of focus', () => {
-          const focus = ['abc'];
-          const updatedPostData = { ...postData, areas_of_focus: focus };
-          wrapper.setData({ selectedAreasOfFocus: focus });
-
-          clickInviteButton();
-
-          expect(Api.addGroupMembersByUserId).toHaveBeenCalledWith(id, updatedPostData);
         });
 
         describe('when triggered from regular mounting', () => {
@@ -661,7 +611,6 @@ describe('InviteMembersModal', () => {
         expires_at: undefined,
         email: 'email@example.com',
         invite_source: inviteSource,
-        areas_of_focus: noSelectionAreasOfFocus,
         tasks_to_be_done: [],
         tasks_project_id: '',
         format: 'json',
@@ -673,16 +622,6 @@ describe('InviteMembersModal', () => {
 
           wrapper.vm.$toast = { show: jest.fn() };
           jest.spyOn(Api, 'inviteGroupMembersByEmail').mockResolvedValue({ data: postData });
-        });
-
-        it('includes the non-default selected areas of focus', () => {
-          const focus = ['abc'];
-          const updatedPostData = { ...postData, areas_of_focus: focus };
-          wrapper.setData({ selectedAreasOfFocus: focus });
-
-          clickInviteButton();
-
-          expect(Api.inviteGroupMembersByEmail).toHaveBeenCalledWith(id, updatedPostData);
         });
 
         describe('when triggered from regular mounting', () => {
@@ -792,7 +731,6 @@ describe('InviteMembersModal', () => {
         access_level: defaultAccessLevel,
         expires_at: undefined,
         invite_source: inviteSource,
-        areas_of_focus: noSelectionAreasOfFocus,
         format: 'json',
         tasks_to_be_done: [],
         tasks_project_id: '',
@@ -951,29 +889,11 @@ describe('InviteMembersModal', () => {
         expect(ExperimentTracking).not.toHaveBeenCalledWith(INVITE_MEMBERS_IN_COMMENT);
       });
 
-      it('tracks the view for areas_of_focus', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members' });
-
-        expect(ExperimentTracking).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.name);
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.view);
-      });
-
       it('tracks the view for learn_gitlab source', () => {
         eventHub.$emit('openModal', { inviteeType: 'members', source: LEARN_GITLAB });
 
         expect(ExperimentTracking).toHaveBeenCalledWith(INVITE_MEMBERS_FOR_TASK.name);
         expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(LEARN_GITLAB);
-      });
-
-      it('tracks the invite for areas_of_focus', () => {
-        eventHub.$emit('openModal', { inviteeType: 'members' });
-
-        clickInviteButton();
-
-        expect(ExperimentTracking).toHaveBeenCalledWith(MEMBER_AREAS_OF_FOCUS.name);
-        expect(ExperimentTracking.prototype.event).toHaveBeenCalledWith(
-          MEMBER_AREAS_OF_FOCUS.submit,
-        );
       });
     });
   });

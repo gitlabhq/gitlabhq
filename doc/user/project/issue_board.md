@@ -313,12 +313,8 @@ As in other list types, click the trash icon to remove a list.
 
 ### Iteration lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an
-administrator to [disable the `iteration_board_lists` flag](../../administration/feature_flags.md).
-On GitLab.com, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75404) in GitLab 14.6. Feature flag `iteration_board_lists` removed.
 
 You're also able to create lists of an iteration.
 These lists filter issues by the assigned iteration.

@@ -37,6 +37,8 @@ describe('HeaderSearchScopedItems', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
   const findFirstDropdownItem = () => findDropdownItems().at(0);
   const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => trimText(w.text()));
+  const findDropdownItemAriaLabels = () =>
+    findDropdownItems().wrappers.map((w) => trimText(w.attributes('aria-label')));
   const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
 
   describe('template', () => {
@@ -56,6 +58,13 @@ describe('HeaderSearchScopedItems', () => {
         expect(findDropdownItemTitles()).toStrictEqual(expectedTitles);
       });
 
+      it('renders aria-labels correctly', () => {
+        const expectedLabels = MOCK_SCOPED_SEARCH_OPTIONS.map((o) =>
+          trimText(`${MOCK_SEARCH} ${o.description} ${o.scope || ''}`),
+        );
+        expect(findDropdownItemAriaLabels()).toStrictEqual(expectedLabels);
+      });
+
       it('renders links correctly', () => {
         const expectedLinks = MOCK_SCOPED_SEARCH_OPTIONS.map((o) => o.url);
         expect(findDropdownItemLinks()).toStrictEqual(expectedLinks);
@@ -63,11 +72,11 @@ describe('HeaderSearchScopedItems', () => {
     });
 
     describe.each`
-      currentFocusedOption             | isFocused
-      ${null}                          | ${false}
-      ${{ html_id: 'not-a-match' }}    | ${false}
-      ${MOCK_SCOPED_SEARCH_OPTIONS[0]} | ${true}
-    `('isOptionFocused', ({ currentFocusedOption, isFocused }) => {
+      currentFocusedOption             | isFocused | ariaSelected
+      ${null}                          | ${false}  | ${undefined}
+      ${{ html_id: 'not-a-match' }}    | ${false}  | ${undefined}
+      ${MOCK_SCOPED_SEARCH_OPTIONS[0]} | ${true}   | ${'true'}
+    `('isOptionFocused', ({ currentFocusedOption, isFocused, ariaSelected }) => {
       describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
         beforeEach(() => {
           createComponent({}, { currentFocusedOption });
@@ -75,6 +84,10 @@ describe('HeaderSearchScopedItems', () => {
 
         it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
           expect(findFirstDropdownItem().classes('gl-bg-gray-50')).toBe(isFocused);
+        });
+
+        it(`sets "aria-selected to ${ariaSelected}`, () => {
+          expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
         });
       });
     });

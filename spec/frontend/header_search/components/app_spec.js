@@ -6,6 +6,7 @@ import HeaderSearchApp from '~/header_search/components/app.vue';
 import HeaderSearchAutocompleteItems from '~/header_search/components/header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from '~/header_search/components/header_search_default_items.vue';
 import HeaderSearchScopedItems from '~/header_search/components/header_search_scoped_items.vue';
+import { SEARCH_INPUT_DESCRIPTION, SEARCH_RESULTS_DESCRIPTION } from '~/header_search/constants';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -14,6 +15,7 @@ import {
   MOCK_SEARCH_QUERY,
   MOCK_USERNAME,
   MOCK_DEFAULT_SEARCH_OPTIONS,
+  MOCK_SCOPED_SEARCH_OPTIONS,
 } from '../mock_data';
 
 Vue.use(Vuex);
@@ -59,11 +61,26 @@ describe('HeaderSearchApp', () => {
   const findHeaderSearchAutocompleteItems = () =>
     wrapper.findComponent(HeaderSearchAutocompleteItems);
   const findDropdownKeyboardNavigation = () => wrapper.findComponent(DropdownKeyboardNavigation);
+  const findSearchInputDescription = () => wrapper.find(`#${SEARCH_INPUT_DESCRIPTION}`);
+  const findSearchResultsDescription = () => wrapper.findByTestId(SEARCH_RESULTS_DESCRIPTION);
 
   describe('template', () => {
-    it('always renders Header Search Input', () => {
-      createComponent();
-      expect(findHeaderSearchInput().exists()).toBe(true);
+    describe('always renders', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('Header Search Input', () => {
+        expect(findHeaderSearchInput().exists()).toBe(true);
+      });
+
+      it('Search Input Description', () => {
+        expect(findSearchInputDescription().exists()).toBe(true);
+      });
+
+      it('Search Results Description', () => {
+        expect(findSearchResultsDescription().exists()).toBe(true);
+      });
     });
 
     describe.each`
@@ -77,7 +94,7 @@ describe('HeaderSearchApp', () => {
         beforeEach(() => {
           window.gon.current_username = username;
           createComponent();
-          wrapper.setData({ showDropdown });
+          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
         });
 
         it(`should${showSearchDropdown ? '' : ' not'} render`, () => {
@@ -119,6 +136,53 @@ describe('HeaderSearchApp', () => {
             showDropdownNavigation ? '' : ' not'
           } render the Dropdown Navigation Component`, () => {
             expect(findDropdownKeyboardNavigation().exists()).toBe(showDropdownNavigation);
+          });
+        });
+      },
+    );
+
+    describe.each`
+      username         | showDropdown | expectedDesc
+      ${null}          | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
+      ${null}          | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByNoDropdown}
+      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
+      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.searchInputDescribeByWithDropdown}
+    `('Search Input Description', ({ username, showDropdown, expectedDesc }) => {
+      describe(`current_username is ${username} and showDropdown is ${showDropdown}`, () => {
+        beforeEach(() => {
+          window.gon.current_username = username;
+          createComponent();
+          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
+        });
+
+        it(`sets description to ${expectedDesc}`, () => {
+          expect(findSearchInputDescription().text()).toBe(expectedDesc);
+        });
+      });
+    });
+
+    describe.each`
+      username         | showDropdown | search         | loading  | searchOptions                  | expectedDesc
+      ${null}          | ${true}      | ${''}          | ${false} | ${[]}                          | ${''}
+      ${MOCK_USERNAME} | ${false}     | ${''}          | ${false} | ${[]}                          | ${''}
+      ${MOCK_USERNAME} | ${true}      | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
+      ${MOCK_USERNAME} | ${true}      | ${''}          | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
+      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}
+      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.searchResultsLoading}
+    `(
+      'Search Results Description',
+      ({ username, showDropdown, search, loading, searchOptions, expectedDesc }) => {
+        describe(`search is ${search}, loading is ${loading}, and showSearchDropdown is ${
+          Boolean(username) && showDropdown
+        }`, () => {
+          beforeEach(() => {
+            window.gon.current_username = username;
+            createComponent({ search, loading }, { searchOptions: () => searchOptions });
+            findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
+          });
+
+          it(`sets description to ${expectedDesc}`, () => {
+            expect(findSearchResultsDescription().text()).toBe(expectedDesc);
           });
         });
       },

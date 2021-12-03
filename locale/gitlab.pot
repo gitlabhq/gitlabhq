@@ -873,6 +873,9 @@ msgstr ""
 msgid "%{scope} results for term '%{term}'"
 msgstr ""
 
+msgid "%{search} %{description} %{scope}"
+msgstr ""
+
 msgid "%{seconds}s"
 msgstr ""
 
@@ -16077,6 +16080,51 @@ msgstr ""
 msgid "Global notification settings"
 msgstr ""
 
+msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
+msgstr ""
+
+msgid "GlobalSearch|Issues I've created"
+msgstr ""
+
+msgid "GlobalSearch|Issues assigned to me"
+msgstr ""
+
+msgid "GlobalSearch|Merge requests I've created"
+msgstr ""
+
+msgid "GlobalSearch|Merge requests assigned to me"
+msgstr ""
+
+msgid "GlobalSearch|Merge requests that I'm a reviewer"
+msgstr ""
+
+msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
+msgstr ""
+
+msgid "GlobalSearch|Search GitLab"
+msgstr ""
+
+msgid "GlobalSearch|Search or jump to..."
+msgstr ""
+
+msgid "GlobalSearch|Search results are loading"
+msgstr ""
+
+msgid "GlobalSearch|Type and press the enter key to submit search."
+msgstr ""
+
+msgid "GlobalSearch|Type for new suggestions to appear below."
+msgstr ""
+
+msgid "GlobalSearch|in all GitLab"
+msgstr ""
+
+msgid "GlobalSearch|in group"
+msgstr ""
+
+msgid "GlobalSearch|in project"
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
@@ -18843,6 +18891,9 @@ msgstr ""
 msgid "Integrations|can't exceed %{recipients_limit}"
 msgstr ""
 
+msgid "Interactive developer security education."
+msgstr ""
+
 msgid "Interactive mode"
 msgstr ""
 
@@ -19071,19 +19122,7 @@ msgstr ""
 msgid "InviteMembersModal|Close invite team members"
 msgstr ""
 
-msgid "InviteMembersModal|Collaborate on open issues and merge requests"
-msgstr ""
-
-msgid "InviteMembersModal|Configure CI/CD"
-msgstr ""
-
-msgid "InviteMembersModal|Configure security features"
-msgstr ""
-
 msgid "InviteMembersModal|Congratulations on creating your project, you're almost there!"
-msgstr ""
-
-msgid "InviteMembersModal|Contribute to the codebase"
 msgstr ""
 
 msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
@@ -19110,9 +19149,6 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
-msgid "InviteMembersModal|Other"
-msgstr ""
-
 msgid "InviteMembersModal|Search for a group to invite"
 msgstr ""
 
@@ -19129,9 +19165,6 @@ msgid "InviteMembersModal|Something went wrong"
 msgstr ""
 
 msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
-msgstr ""
-
-msgid "InviteMembersModal|What would you like new member(s) to focus on? (optional)"
 msgstr ""
 
 msgid "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} group."
@@ -19455,9 +19488,6 @@ msgstr ""
 msgid "Issues"
 msgstr ""
 
-msgid "Issues I've created"
-msgstr ""
-
 msgid "Issues Rate Limits"
 msgstr ""
 
@@ -19465,9 +19495,6 @@ msgid "Issues and merge requests"
 msgstr ""
 
 msgid "Issues are being rebalanced at the moment, so manual reordering is disabled."
-msgstr ""
-
-msgid "Issues assigned to me"
 msgstr ""
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
@@ -20194,6 +20221,9 @@ msgid "Keys"
 msgstr ""
 
 msgid "Ki"
+msgstr ""
+
+msgid "Kontra"
 msgstr ""
 
 msgid "Kroki"
@@ -21859,16 +21889,7 @@ msgstr ""
 msgid "Merge requests"
 msgstr ""
 
-msgid "Merge requests I've created"
-msgstr ""
-
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
-msgstr ""
-
-msgid "Merge requests assigned to me"
-msgstr ""
-
-msgid "Merge requests that I'm a reviewer"
 msgstr ""
 
 msgid "Merge the branch and fix any conflicts that come up"
@@ -30671,6 +30692,9 @@ msgstr ""
 msgid "Secure token that identifies an external storage request."
 msgstr ""
 
+msgid "SecureCodeWarrior"
+msgstr ""
+
 msgid "Security"
 msgstr ""
 
@@ -30693,6 +30717,9 @@ msgid "Security report is out of date. Please update your branch with the latest
 msgstr ""
 
 msgid "Security report is out of date. Run %{newPipelineLinkStart}a new pipeline%{newPipelineLinkEnd} for the target branch (%{targetBranchName})"
+msgstr ""
+
+msgid "Security training with guide and learning pathways."
 msgstr ""
 
 msgid "SecurityApprovals|A merge request approval is required when a security report contains a new vulnerability."
@@ -36606,6 +36633,9 @@ msgstr ""
 msgid "Track your GitLab projects with GitLab for Slack."
 msgstr ""
 
+msgid "Training mode"
+msgstr ""
+
 msgid "Transfer"
 msgstr ""
 
@@ -41231,16 +41261,7 @@ msgstr ""
 msgid "in"
 msgstr ""
 
-msgid "in all GitLab"
-msgstr ""
-
-msgid "in group"
-msgstr ""
-
 msgid "in group %{link_to_group}"
-msgstr ""
-
-msgid "in project"
 msgstr ""
 
 msgid "in project %{link_to_project}"

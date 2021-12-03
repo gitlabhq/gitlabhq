@@ -20828,6 +20828,7 @@ CREATE TABLE vulnerability_occurrences (
     cve text,
     location jsonb,
     detection_method smallint DEFAULT 0 NOT NULL,
+    migrated_to_new_structure boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_df6dd20219 CHECK ((char_length(message) <= 3000)),
@@ -27780,6 +27781,8 @@ CREATE INDEX index_vulnerability_occurrences_on_location_cluster_id ON vulnerabi
 
 CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_occurrences USING gin (((location -> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 7]));
 
+CREATE INDEX index_vulnerability_occurrences_on_migrated_to_new_structure ON vulnerability_occurrences USING btree (migrated_to_new_structure, id);
+
 CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON vulnerability_occurrences USING btree (primary_identifier_id);
 
 CREATE INDEX index_vulnerability_occurrences_on_project_fingerprint ON vulnerability_occurrences USING btree (project_fingerprint);
@@ -28890,9 +28893,6 @@ ALTER TABLE ONLY deployments
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY clusters_applications_runners
-    ADD CONSTRAINT fk_02de2ded36 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

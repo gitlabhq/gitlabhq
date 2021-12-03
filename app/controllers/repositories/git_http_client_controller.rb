@@ -8,11 +8,8 @@ module Repositories
 
     attr_reader :authentication_result, :redirected_path
 
-    delegate :actor, :authentication_abilities, to: :authentication_result, allow_nil: true
+    delegate :authentication_abilities, to: :authentication_result, allow_nil: true
     delegate :type, to: :authentication_result, allow_nil: true, prefix: :auth_result
-
-    alias_method :user, :actor
-    alias_method :authenticated_user, :actor
 
     # Git clients will not know what authenticity token to send along
     skip_around_action :set_session_storage
@@ -22,7 +19,15 @@ module Repositories
 
     feature_category :source_code_management
 
+    def authenticated_user
+      authentication_result&.user || authentication_result&.deploy_token
+    end
+
     private
+
+    def user
+      authenticated_user
+    end
 
     def download_request?
       raise NotImplementedError

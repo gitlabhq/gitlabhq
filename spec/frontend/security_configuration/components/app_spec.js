@@ -5,7 +5,10 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import stubChildren from 'helpers/stub_children';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import SecurityConfigurationApp, { i18n } from '~/security_configuration/components/app.vue';
+import SecurityConfigurationApp, {
+  i18n,
+  TRAINING_PROVIDERS,
+} from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import {
@@ -20,6 +23,7 @@ import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
 } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
+import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
 
 import UpgradeBanner from '~/security_configuration/components/upgrade_banner.vue';
 import {
@@ -78,6 +82,7 @@ describe('App component', () => {
   const findTabs = () => wrapper.findAllComponents(GlTab);
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
+  const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
     const selector = `a[href="${href}"]`;
@@ -179,6 +184,10 @@ describe('App component', () => {
     it('should not show configuration History Link when gitlabCiPresent & gitlabCiHistoryPath are not defined', () => {
       expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
+    });
+
+    it('renders training provider list with correct props', () => {
+      expect(findTrainingProviderList().props('providers')).toEqual(TRAINING_PROVIDERS);
     });
   });
 

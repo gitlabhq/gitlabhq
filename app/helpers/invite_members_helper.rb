@@ -35,13 +35,6 @@ module InviteMembersHelper
       default_access_level: Gitlab::Access::GUEST
     }
 
-    experiment(:member_areas_of_focus, user: current_user) do |e|
-      e.publish_to_database
-
-      e.control { dataset.merge!(areas_of_focus_options: [], no_selection_areas_of_focus: []) }
-      e.candidate { dataset.merge!(areas_of_focus_options: member_areas_of_focus_options.to_json, no_selection_areas_of_focus: ['no_selection']) }
-    end
-
     if show_invite_members_for_task?(source)
       dataset.merge!(
         tasks_to_be_done_options: tasks_to_be_done_options.to_json,
@@ -54,26 +47,6 @@ module InviteMembersHelper
   end
 
   private
-
-  def member_areas_of_focus_options
-    [
-      {
-        value: 'Contribute to the codebase', text: s_('InviteMembersModal|Contribute to the codebase')
-      },
-      {
-        value: 'Collaborate on open issues and merge requests', text: s_('InviteMembersModal|Collaborate on open issues and merge requests')
-      },
-      {
-        value: 'Configure CI/CD', text: s_('InviteMembersModal|Configure CI/CD')
-      },
-      {
-        value: 'Configure security features', text: s_('InviteMembersModal|Configure security features')
-      },
-      {
-        value: 'Other', text: s_('InviteMembersModal|Other')
-      }
-    ]
-  end
 
   # Overridden in EE
   def users_filter_data(group)

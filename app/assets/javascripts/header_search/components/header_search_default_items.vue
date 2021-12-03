@@ -43,13 +43,16 @@ export default {
     <gl-dropdown-section-header>{{ sectionHeader }}</gl-dropdown-section-header>
     <gl-dropdown-item
       v-for="option in defaultSearchOptions"
+      :id="option.html_id"
       :ref="option.html_id"
       :key="option.html_id"
       :class="{ 'gl-bg-gray-50': isOptionFocused(option) }"
+      :aria-selected="isOptionFocused(option)"
+      :aria-label="option.title"
       tabindex="-1"
       :href="option.url"
     >
-      {{ option.title }}
+      <span aria-hidden="true">{{ option.title }}</span>
     </gl-dropdown-item>
   </div>
 </template>

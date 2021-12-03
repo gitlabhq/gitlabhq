@@ -9,7 +9,7 @@ module Ci
       #
       if build.enqueue
         build.tap do |build|
-          build.update(user: current_user, job_variables_attributes: job_variables_attributes || [])
+          build.update!(user: current_user, job_variables_attributes: job_variables_attributes || [])
 
           AfterRequeueJobService.new(project, current_user).execute(build)
         end

@@ -2,9 +2,14 @@
 import { GlSearchBoxByType, GlOutsideDirective as Outside } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
-import { FIRST_DROPDOWN_INDEX, SEARCH_BOX_INDEX } from '../constants';
+import {
+  FIRST_DROPDOWN_INDEX,
+  SEARCH_BOX_INDEX,
+  SEARCH_INPUT_DESCRIPTION,
+  SEARCH_RESULTS_DESCRIPTION,
+} from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
 import HeaderSearchScopedItems from './header_search_scoped_items.vue';
@@ -12,7 +17,21 @@ import HeaderSearchScopedItems from './header_search_scoped_items.vue';
 export default {
   name: 'HeaderSearchApp',
   i18n: {
-    searchPlaceholder: __('Search or jump to...'),
+    searchPlaceholder: s__('GlobalSearch|Search or jump to...'),
+    searchAria: s__('GlobalSearch|Search GitLab'),
+    searchInputDescribeByNoDropdown: s__(
+      'GlobalSearch|Type and press the enter key to submit search.',
+    ),
+    searchInputDescribeByWithDropdown: s__(
+      'GlobalSearch|Type for new suggestions to appear below.',
+    ),
+    searchDescribedByDefault: s__(
+      'GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list.',
+    ),
+    searchDescribedByUpdated: s__(
+      'GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.',
+    ),
+    searchResultsLoading: s__('GlobalSearch|Search results are loading'),
   },
   directives: { Outside },
   components: {
@@ -29,7 +48,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['search']),
+    ...mapState(['search', 'loading']),
     ...mapGetters(['searchQuery', 'searchOptions']),
     searchText: {
       get() {
@@ -41,6 +60,9 @@ export default {
     },
     currentFocusedOption() {
       return this.searchOptions[this.currentFocusIndex];
+    },
+    currentFocusedId() {
+      return this.currentFocusedOption?.html_id;
     },
     isLoggedIn() {
       return gon?.current_username;
@@ -57,6 +79,30 @@ export default {
       }
 
       return FIRST_DROPDOWN_INDEX;
+    },
+    searchInputDescribeBy() {
+      if (this.isLoggedIn) {
+        return this.$options.i18n.searchInputDescribeByWithDropdown;
+      }
+
+      return this.$options.i18n.searchInputDescribeByNoDropdown;
+    },
+    dropdownResultsDescription() {
+      if (!this.showSearchDropdown) {
+        return ''; // This allows aria-live to see register an update when the dropdown is shown
+      }
+
+      if (this.showDefaultItems) {
+        return sprintf(this.$options.i18n.searchDescribedByDefault, {
+          count: this.searchOptions.length,
+        });
+      }
+
+      return this.loading
+        ? this.$options.i18n.searchResultsLoading
+        : sprintf(this.$options.i18n.searchDescribedByUpdated, {
+            count: this.searchOptions.length,
+          });
     },
   },
   methods: {
@@ -79,22 +125,44 @@ export default {
     },
   },
   SEARCH_BOX_INDEX,
+  SEARCH_INPUT_DESCRIPTION,
+  SEARCH_RESULTS_DESCRIPTION,
 };
 </script>
 
 <template>
-  <section v-outside="closeDropdown" class="header-search gl-relative">
+  <form
+    v-outside="closeDropdown"
+    role="search"
+    :aria-label="$options.i18n.searchAria"
+    class="header-search gl-relative"
+  >
     <gl-search-box-by-type
       v-model="searchText"
+      role="searchbox"
       class="gl-z-index-1"
       :debounce="500"
       autocomplete="off"
       :placeholder="$options.i18n.searchPlaceholder"
+      :aria-activedescendant="currentFocusedId"
+      :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
       @focus="openDropdown"
       @click="openDropdown"
       @input="getAutocompleteOptions"
       @keydown.enter.stop.prevent="submitSearch"
     />
+    <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
+      searchInputDescribeBy
+    }}</span>
+    <span
+      role="region"
+      :data-testid="$options.SEARCH_RESULTS_DESCRIPTION"
+      class="gl-sr-only"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {{ dropdownResultsDescription }}
+    </span>
     <div
       v-if="showSearchDropdown"
       data-testid="header-search-dropdown-menu"
@@ -118,5 +186,5 @@ export default {
         </template>
       </div>
     </div>
-  </section>
+  </form>
 </template>

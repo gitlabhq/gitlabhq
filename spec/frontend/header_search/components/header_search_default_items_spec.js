@@ -83,11 +83,11 @@ describe('HeaderSearchDefaultItems', () => {
     });
 
     describe.each`
-      currentFocusedOption              | isFocused
-      ${null}                           | ${false}
-      ${{ html_id: 'not-a-match' }}     | ${false}
-      ${MOCK_DEFAULT_SEARCH_OPTIONS[0]} | ${true}
-    `('isOptionFocused', ({ currentFocusedOption, isFocused }) => {
+      currentFocusedOption              | isFocused | ariaSelected
+      ${null}                           | ${false}  | ${undefined}
+      ${{ html_id: 'not-a-match' }}     | ${false}  | ${undefined}
+      ${MOCK_DEFAULT_SEARCH_OPTIONS[0]} | ${true}   | ${'true'}
+    `('isOptionFocused', ({ currentFocusedOption, isFocused, ariaSelected }) => {
       describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
         beforeEach(() => {
           createComponent({}, { currentFocusedOption });
@@ -95,6 +95,10 @@ describe('HeaderSearchDefaultItems', () => {
 
         it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
           expect(findFirstDropdownItem().classes('gl-bg-gray-50')).toBe(isFocused);
+        });
+
+        it(`sets "aria-selected to ${ariaSelected}`, () => {
+          expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
         });
       });
     });
