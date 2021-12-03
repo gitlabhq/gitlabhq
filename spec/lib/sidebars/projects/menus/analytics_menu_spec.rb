@@ -102,6 +102,12 @@ RSpec.describe Sidebars::Projects::Menus::AnalyticsMenu do
         specify { is_expected.to be_nil }
       end
 
+      describe 'when a user does not have access to repository graphs' do
+        let(:current_user) { guest }
+
+        specify { is_expected.to be_nil }
+      end
+
       describe 'when the user does not have access' do
         let(:current_user) { nil }
 

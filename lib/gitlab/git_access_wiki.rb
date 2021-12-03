@@ -27,6 +27,13 @@ module Gitlab
       :create_wiki
     end
 
+    override :check_download_access!
+    def check_download_access!
+      super
+
+      raise ForbiddenError, download_forbidden_message if deploy_token && !deploy_token.can?(:download_wiki_code, container)
+    end
+
     override :check_change_access!
     def check_change_access!
       raise ForbiddenError, write_to_wiki_message unless user_can_push?

@@ -488,5 +488,19 @@ RSpec.describe 'getting user information' do
         end
       end
     end
+
+    context 'the user is project bot' do
+      let(:user) { create(:user, :project_bot) }
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      context 'we only request basic fields' do
+        let(:user_fields) { %i[id name username state web_url avatar_url] }
+
+        it_behaves_like 'a working graphql query'
+      end
+    end
   end
 end
