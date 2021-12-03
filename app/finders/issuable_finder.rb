@@ -35,6 +35,7 @@
 #     updated_before: datetime
 #     attempt_group_search_optimizations: boolean
 #     attempt_project_search_optimizations: boolean
+#     crm_contact_id: integer
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -59,6 +60,7 @@ class IssuableFinder
       assignee_username
       author_id
       author_username
+      crm_contact_id
       label_name
       milestone_title
       release_tag
@@ -138,7 +140,8 @@ class IssuableFinder
     items = by_milestone(items)
     items = by_release(items)
     items = by_label(items)
-    by_my_reaction_emoji(items)
+    items = by_my_reaction_emoji(items)
+    by_crm_contact(items)
   end
 
   def should_filter_negated_args?
@@ -461,6 +464,10 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
+  end
+
+  def by_crm_contact(items)
+    Issuables::CrmContactFilter.new(params: original_params).filter(items)
   end
 
   def or_filters_enabled?

@@ -910,6 +910,25 @@ RSpec.describe IssuesFinder do
         end
       end
 
+      context 'filtering by crm contact' do
+        let_it_be(:contact1) { create(:contact, group: group) }
+        let_it_be(:contact2) { create(:contact, group: group) }
+
+        let_it_be(:contact1_issue1) { create(:issue, project: project1) }
+        let_it_be(:contact1_issue2) { create(:issue, project: project1) }
+        let_it_be(:contact2_issue1) { create(:issue, project: project1) }
+
+        let(:params) { { crm_contact_id: contact1.id } }
+
+        it 'returns issues with that label' do
+          create(:issue_customer_relations_contact, issue: contact1_issue1, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact1_issue2, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact2_issue1, contact: contact2)
+
+          expect(issues).to contain_exactly(contact1_issue1, contact1_issue2)
+        end
+      end
+
       context 'when the user is unauthorized' do
         let(:search_user) { nil }
 

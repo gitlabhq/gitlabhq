@@ -13,7 +13,7 @@ uses to organize the Git data.
 
 ## List projects and attachments
 
-The following Rake tasks will list the projects and attachments that are
+The following Rake tasks lists the projects and attachments that are
 available on legacy and hashed storage.
 
 ### On legacy storage
@@ -82,8 +82,8 @@ GitLab 14.0 eliminates support for legacy storage. If you're on GitLab
 The option to choose between hashed and legacy storage in the admin area has
 been disabled.
 
-This task must be run on any machine that has Rails/Sidekiq configured and will
-schedule all your existing projects and attachments associated with it to be
+This task must be run on any machine that has Rails/Sidekiq configured, and the task
+schedules all your existing projects and attachments associated with it to be
 migrated to the **Hashed** storage type:
 
 - **Omnibus installation**
@@ -112,7 +112,7 @@ To monitor the progress in GitLab:
 1. On the top bar, select **Menu > Admin**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 1. Watch how long the `hashed_storage:hashed_storage_project_migrate` queue
-   will take to finish. After it reaches zero, you can confirm every project
+   takes to finish. After it reaches zero, you can confirm every project
    has been migrated by running the commands above.
 
 If you find it necessary, you can run the previous migration script again to schedule missing projects.
@@ -160,12 +160,12 @@ sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
 ```
 
 You can monitor the progress in the **Admin Area > Monitoring > Background Jobs** page.
-On the **Queues** tab, you can watch the `hashed_storage:hashed_storage_project_rollback` queue to see how long the process will take to finish.
+On the **Queues** tab, you can watch the `hashed_storage:hashed_storage_project_rollback` queue to see how long the process takes to finish.
 
 After it reaches zero, you can confirm every project has been rolled back by running the commands above.
 If some projects weren't rolled back, you can run this rollback script again to schedule further rollbacks.
 Any error or warning is logged in Sidekiq's log file.
 
-If you have a Geo setup, the rollback will not be reflected automatically
+If you have a Geo setup, the rollback is not reflected automatically
 on the **secondary** node. You may need to wait for a backfill operation to kick-in and remove
 the remaining repositories from the special `@hashed/` folder manually.

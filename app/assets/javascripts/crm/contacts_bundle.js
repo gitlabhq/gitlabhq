@@ -16,10 +16,12 @@ export default () => {
     return false;
   }
 
+  const { groupFullPath, groupIssuesPath } = el.dataset;
+
   return new Vue({
     el,
     apolloProvider,
-    provide: { groupFullPath: el.dataset.groupFullPath },
+    provide: { groupFullPath, groupIssuesPath },
     render(createElement) {
       return createElement(CrmContactsRoot);
     },

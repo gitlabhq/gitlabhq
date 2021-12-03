@@ -18,6 +18,7 @@ describe('Customer relations contacts root app', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
+  const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupContactsQueryResponse);
 
   const mountComponent = ({
@@ -26,7 +27,7 @@ describe('Customer relations contacts root app', () => {
   } = {}) => {
     fakeApollo = createMockApollo([[getGroupContactsQuery, queryHandler]]);
     wrapper = mountFunction(ContactsRoot, {
-      provide: { groupFullPath: 'flightjs' },
+      provide: { groupFullPath: 'flightjs', groupIssuesPath: '/issues' },
       apolloProvider: fakeApollo,
     });
   };
@@ -56,5 +57,9 @@ describe('Customer relations contacts root app', () => {
     expect(findRowByName(/Marty/i)).toHaveLength(1);
     expect(findRowByName(/George/i)).toHaveLength(1);
     expect(findRowByName(/jd@gitlab.com/i)).toHaveLength(1);
+
+    const issueLink = findIssuesLinks().at(0);
+    expect(issueLink.exists()).toBe(true);
+    expect(issueLink.attributes('href')).toBe('/issues?scope=all&state=opened&crm_contact_id=16');
   });
 });

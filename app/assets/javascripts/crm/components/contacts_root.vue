@@ -1,15 +1,20 @@
 <script>
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import createFlash from '~/flash';
 import { s__, __ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getGroupContactsQuery from './queries/get_group_contacts.query.graphql';
 
 export default {
   components: {
+    GlButton,
     GlLoadingIcon,
     GlTable,
   },
-  inject: ['groupFullPath'],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  inject: ['groupFullPath', 'groupIssuesPath'],
   data() {
     return { contacts: [] };
   },
@@ -59,9 +64,17 @@ export default {
       },
       sortable: true,
     },
+    {
+      key: 'id',
+      label: __('Issues'),
+      formatter: (id) => {
+        return getIdFromGraphQLId(id);
+      },
+    },
   ],
   i18n: {
     emptyText: s__('Crm|No contacts found'),
+    issuesButtonLabel: __('View issues'),
   },
 };
 </script>
@@ -75,6 +88,16 @@ export default {
       :fields="$options.fields"
       :empty-text="$options.i18n.emptyText"
       show-empty
-    />
+    >
+      <template #cell(id)="data">
+        <gl-button
+          v-gl-tooltip.hover.bottom="$options.i18n.issuesButtonLabel"
+          data-testid="issues-link"
+          icon="issues"
+          :aria-label="$options.i18n.issuesButtonLabel"
+          :href="`${groupIssuesPath}?scope=all&state=opened&crm_contact_id=${data.value}`"
+        />
+      </template>
+    </gl-table>
   </div>
 </template>
