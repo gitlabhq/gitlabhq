@@ -596,9 +596,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
 ```
 
-## Approve a member for a group 
+## Approve a member for a group
 
-Approves a pending user for a group and its subgroups and projects. 
+Approves a pending user for a group and its subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:user_id/approve
@@ -615,7 +615,7 @@ Example request:
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id/approve"
 ```
 
-## Approve all pending members for a group 
+## Approve all pending members for a group
 
 Approves all pending users for a group and its subgroups and projects.
 

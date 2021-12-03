@@ -23,7 +23,7 @@ Users added through LDAP:
 
 - Take a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
-  even if password authentication for Git 
+  even if password authentication for Git
   [is disabled](../../../user/admin_area/settings/sign_in_restrictions.md#password-authentication-enabled).
 
 The LDAP DN is associated with existing GitLab users when:
@@ -41,7 +41,7 @@ If an existing GitLab user wants to enable LDAP sign-in for themselves, they sho
 
 GitLab has multiple mechanisms to verify a user is still active in LDAP. If the user is no longer active in
 LDAP, they are placed in an `ldap_blocked` status and are signed out. They are unable to sign in using any authentication provider until they are
-reactivated in LDAP. 
+reactivated in LDAP.
 
 Users are considered inactive in LDAP when they:
 

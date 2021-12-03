@@ -18,7 +18,7 @@ actionable information _before_ changes are merged enables you to be proactive.
 
 INFO:
 Want to try out security scanning?
-[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-application-security-docs). 
+[Try GitLab Ultimate free for 30 days](https://about.gitlab.com/free-trial?glm_source=docs.gitlab.com&glm_content=u-application-security-docs).
 
 GitLab also provides high-level statistics of vulnerabilities across projects and groups:
 

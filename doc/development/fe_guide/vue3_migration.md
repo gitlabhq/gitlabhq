@@ -31,7 +31,7 @@ Component's computed properties / methods or external helpers.
 
 **When to use**
 
-If you are in a Vue app that doesn't use any event hub, try to avoid adding a new one unless absolutely necessary. For example, if you need a child component to react to its parent's event, it's preferred to pass a prop down. Then, use the watch property on that prop in the child component to create the desired side effect. 
+If you are in a Vue app that doesn't use any event hub, try to avoid adding a new one unless absolutely necessary. For example, if you need a child component to react to its parent's event, it's preferred to pass a prop down. Then, use the watch property on that prop in the child component to create the desired side effect.
 
 If you need cross-component communication (between different Vue apps), then perhaps introducing a hub is the right decision.
 

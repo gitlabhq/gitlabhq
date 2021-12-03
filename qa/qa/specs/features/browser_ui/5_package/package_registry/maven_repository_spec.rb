@@ -142,7 +142,7 @@ module QA
           when :ci_job_token
             '${env.CI_JOB_TOKEN}'
           when :project_deploy_token
-            project_deploy_token.password
+            project_deploy_token.token
           end
         end
 

@@ -13,12 +13,12 @@ This page describes how to:
 
 ## Snowplow JavaScript frontend tracking
 
-GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/) 
-to track custom events. 
+GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)
+to track custom events.
 
 For the recommended frontend tracking implementation, see [Usage recommendations](#usage-recommendations).
 
-Tracking implementations must have an `action` and a `category`. You can provide additional 
+Tracking implementations must have an `action` and a `category`. You can provide additional
 categories from the [structured event taxonomy](index.md#structured-event-taxonomy) with an `extra` object
 that accepts key-value pairs.
 
@@ -67,8 +67,8 @@ The following example shows `data-track-*` attributes assigned to a button:
 #### Event listeners
 
 Event listeners bind at the document level to handle click events in elements with data attributes.
-This allows them to be handled when the DOM re-renders or changes. Document-level binding reduces 
-the likelihood that click events stop propagating up the DOM tree. 
+This allows them to be handled when the DOM re-renders or changes. Document-level binding reduces
+the likelihood that click events stop propagating up the DOM tree.
 
 If click events stop propagating, you must implement listeners and [Vue component tracking](#implement-vue-component-tracking) or [raw JavaScript tracking](#implement-raw-javascript-tracking).
 
@@ -102,12 +102,12 @@ track_action: "click_button" })
 ### Implement Vue component tracking
 
 For custom event tracking, use a Vue `mixin` in components. Vue `mixin` exposes the `Tracking.event`
-static method and the `track` method. You can specify tracking options in `data` or `computed`. 
-These options override any defaults and allow the values to be dynamic from props or based on state. 
+static method and the `track` method. You can specify tracking options in `data` or `computed`.
+These options override any defaults and allow the values to be dynamic from props or based on state.
 
-Several default options are passed when an event is tracked from the component: 
+Several default options are passed when an event is tracked from the component:
 
-- `category`: If you don't specify, by default `document.body.dataset.page` is used. 
+- `category`: If you don't specify, by default `document.body.dataset.page` is used.
 - `label`
 - `property`
 - `value`
@@ -121,7 +121,7 @@ To implement Vue component tracking:
     const trackingMixin = Tracking.mixin;
     ```
 
-1. Provide categories to track the event from the component. For example, to track all events in a 
+1. Provide categories to track the event from the component. For example, to track all events in a
 component with a label, use the `label` category:
 
     ```javascript
@@ -293,14 +293,14 @@ describe('MyTracking', () => {
 
 ### Form tracking
 
-To enable Snowplow automatic [form tracking](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking): 
+To enable Snowplow automatic [form tracking](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking):
 
-1. Call `Tracking.enableFormTracking` when the DOM is ready. 
+1. Call `Tracking.enableFormTracking` when the DOM is ready.
 1. Provide a `config` object that includes at least one of the following elements:
     - `forms` determines the forms to track. Identified by the CSS class name.
     - `fields` determines the fields inside the tracked forms to track. Identified by the field `name`.
 1. Optional. Provide a list of contexts as the second argument. The [`gitlab_standard`](schemas.md#gitlab_standard) schema is excluded from these events.
-    
+
 ```javascript
 Tracking.enableFormTracking({
   forms: { allow: ['sign-in-form', 'password-recovery-form'] },
@@ -339,7 +339,7 @@ Backend tracking provides:
 - User behavior tracking
 - Instrumentation to monitor and visualize performance over time in a section or aspect of code.
 
-To add custom event tracking and instrumentation, call the `GitLab::Tracking.event` class method. 
+To add custom event tracking and instrumentation, call the `GitLab::Tracking.event` class method.
 For example:
 
 ```ruby
@@ -370,7 +370,7 @@ Use the following arguments:
 
 ### Unit testing
 
-To test backend Snowplow events, use the `expect_snowplow_event` helper. For more information, see 
+To test backend Snowplow events, use the `expect_snowplow_event` helper. For more information, see
 [testing best practices](../testing_guide/best_practices.md#test-snowplow-events).
 
 ### Performance
@@ -419,17 +419,17 @@ Snowplow Inspector Chrome Extension is a browser extension for testing frontend 
 
 [Snowplow Micro](https://snowplowanalytics.com/blog/2019/07/17/introducing-snowplow-micro/) is a
 Docker-based solution for testing backend and frontend in a local development environment. Snowplow Micro
-records the same events as the full Snowplow pipeline. To query events, use the Snowplow Micro API. 
+records the same events as the full Snowplow pipeline. To query events, use the Snowplow Micro API.
 
-To install and run Snowplow Micro, complete these steps to modify the 
+To install and run Snowplow Micro, complete these steps to modify the
 [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit):
 
 1. Ensure [Docker is installed](https://docs.docker.com/get-docker/) and running.
 
-1. To install Snowplow Micro, clone the settings in 
+1. To install Snowplow Micro, clone the settings in
 [this project](https://gitlab.com/gitlab-org/snowplow-micro-configuration).
 
-1. Navigate to the directory with the cloned project, 
+1. Navigate to the directory with the cloned project,
    and start the appropriate Docker container:
 
    ```shell

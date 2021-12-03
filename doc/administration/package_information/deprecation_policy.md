@@ -16,18 +16,18 @@ setup, various configuration requires removal.
 
 ### Policy
 
-The Omnibus GitLab package will retain configuration for at least **one major**
-version. We cannot guarantee that deprecated configuration
-will be available in the next major release. See [example](#example) for more details.
+The Omnibus GitLab package retains configuration for at least **one major**
+version. We can't guarantee that deprecated configuration
+is available in the next major release. See [example](#example) for more details.
 
 ### Notice
 
-If the configuration becomes obsolete, we will announce the deprecation:
+If the configuration becomes obsolete, we announce the deprecation:
 
 - via release blog post on `https://about.gitlab.com/blog/`. The blog post item
-  will contain the deprecation notice together with the target removal date.
+   contains the deprecation notice together with the target removal date.
 - via installation/reconfigure output (if applicable).
-- via official documentation on `https://docs.gitlab.com/`. The documentation update will contain the corrected syntax (if applicable) or a date of configuration removal.
+- via official documentation on `https://docs.gitlab.com/`. The documentation update contains the corrected syntax (if applicable) or a date of configuration removal.
 
 ### Procedure
 
@@ -82,16 +82,16 @@ The final comment in the issue **has to have**:
 
 ## Example
 
-User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. Development team will translate the old configuration into new one
-and trigger a deprecation procedure.
+User configuration available in `/etc/gitlab/gitlab.rb` was introduced in GitLab version 10.0, `gitlab_rails['configuration'] = true`. In GitLab version 10.4.0, a new change was introduced that requires rename of this configuration option. New configuration option is `gitlab_rails['better_configuration'] = true`. Development team translates the old configuration into a new one 
+and triggers a deprecation procedure.
 
 This means that these two configuration
-options will both be valid through GitLab version 10. In other words,
+options are valid through GitLab version 10. In other words,
 if you still have `gitlab_rails['configuration'] = true` set in GitLab 10.8.0
-the feature will continue working the same way as if you had `gitlab_rails['better_configuration'] = true` set.
-However, setting the old version of configuration will print out a deprecation
+the feature continues working the same way as if you had `gitlab_rails['better_configuration'] = true` set.
+However, setting the old version of the configuration prints out a deprecation
 notice at the end of installation/upgrade/reconfigure run.
 
-With GitLab 11, `gitlab_rails['configuration'] = true` will no longer work and you will have to manually change the configuration in `/etc/gitlab/gitlab.rb` to the new valid configuration.
+In GitLab 11, `gitlab_rails['configuration'] = true`  no longer works and you must manually change the configuration in `/etc/gitlab/gitlab.rb` to the new valid configuration.
 **Note** If this configuration option is sensitive and can put integrity of the installation or
-data in danger, installation/upgrade will be aborted.
+data in danger,the installation or upgrade is aborted.

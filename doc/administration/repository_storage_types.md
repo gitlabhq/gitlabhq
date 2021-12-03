@@ -101,10 +101,10 @@ To look up a project's hash path using a Rails console:
 
 #### From hashed path to project name
 
-Administrators can look up a project's name from its hashed storage path using: 
+Administrators can look up a project's name from its hashed storage path using:
 
 - A Rails console.
-- The `config` file in the `*.git` directory. 
+- The `config` file in the `*.git` directory.
 
 To look up a project's name using the Rails console:
 

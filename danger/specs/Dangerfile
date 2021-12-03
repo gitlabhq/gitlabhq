@@ -50,7 +50,7 @@ if has_ee_app_changes && has_spec_changes && !(has_app_changes || has_ee_spec_ch
 end
 
 # Forbidding a new file addition under `/spec/controllers` or `/ee/spec/controllers`
-if project_helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
+if helper.changes.added.files.grep(%r{^(ee/)?spec/controllers/}).any?
   warn CONTROLLER_SPEC_DEPRECATION_MESSAGE
 end
 

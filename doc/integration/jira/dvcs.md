@@ -273,7 +273,7 @@ If you get a `Sync Failed` error in Jira when [refreshing repository data](#refr
 ```plaintext
 Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 GET https://gitlab.com/api/v4/projects/:id/merge_requests?page=1&per_page=100 returned a response status of 403 Forbidden] errors:
 {"message":"403 Forbidden"}
-``` 
+```
 
 If you find a `{"message":"403 Forbidden"}` error, it is possible that this specific project has some [GitLab features disabled](../../user/project/settings/index.md#sharing-and-permissions).
 In the example above, the merge requests feature is disabled.

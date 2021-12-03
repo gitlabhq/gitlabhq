@@ -68,7 +68,7 @@ a single URL used by all Geo sites, including the primary.
    In the Geo administration page of the **primary** site, edit each Geo secondary that
    is using the secondary proxying and set the `URL` field to the single URL.
    Make sure the primary site is also using this URL.
-   
+
 ## Disable Geo proxying
 
 You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:

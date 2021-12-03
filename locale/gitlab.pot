@@ -30953,6 +30953,9 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred unassigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose a project"
+msgstr ""
+
 msgid "SecurityOrchestration|Description"
 msgstr ""
 

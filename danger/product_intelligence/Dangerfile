@@ -12,7 +12,7 @@ For MR review guidelines, see the [Service Ping review guidelines](https://docs.
 MSG
 
 # exit if not matching files or if no product intelligence labels
-product_intelligence_paths_to_review = project_helper.changes_by_category[:product_intelligence]
+product_intelligence_paths_to_review = helper.changes_by_category[:product_intelligence]
 labels_to_add = product_intelligence.missing_labels
 
 return if product_intelligence_paths_to_review.empty? || labels_to_add.empty?

@@ -208,7 +208,7 @@ Events visible in Audit Events views until more events are logged.
 
 ### "Deleted User" events
 
-Audit events can be created for a user after the user is deleted. The user name associated with the event is set to 
+Audit events can be created for a user after the user is deleted. The user name associated with the event is set to
 "Deleted User" because the actual user name is unknowable. For example, if a deleted user's access to a project is
 removed automatically due to expiration, the audit event is created for "Deleted User". We are [investigating](https://gitlab.com/gitlab-org/gitlab/-/issues/343933)
 whether this is avoidable.

@@ -9,20 +9,17 @@ import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerTags from './runner_tags.vue';
 
-const tableField = ({ key, label = '', width = 10 }) => {
+const tableField = ({ key, label = '', thClasses = [] }) => {
   return {
     key,
     label,
     thClass: [
-      `gl-w-${width}p`,
       'gl-bg-transparent!',
       'gl-border-b-solid!',
       'gl-border-b-gray-100!',
-      'gl-py-5!',
-      'gl-px-0!',
       'gl-border-b-1!',
+      ...thClasses,
     ],
-    tdClass: ['gl-py-5!', 'gl-px-1!'],
     tdAttr: {
       'data-testid': `td-${key}`,
     },
@@ -66,10 +63,10 @@ export default {
   },
   fields: [
     tableField({ key: 'status', label: s__('Runners|Status') }),
-    tableField({ key: 'summary', label: s__('Runners|Runner ID'), width: 30 }),
+    tableField({ key: 'summary', label: s__('Runners|Runner ID'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'version', label: __('Version') }),
     tableField({ key: 'ipAddress', label: __('IP Address') }),
-    tableField({ key: 'tagList', label: __('Tags'), width: 20 }),
+    tableField({ key: 'tagList', label: __('Tags'), thClasses: ['gl-lg-w-25p'] }),
     tableField({ key: 'contactedAt', label: __('Last contact') }),
     tableField({ key: 'actions', label: '' }),
   ],

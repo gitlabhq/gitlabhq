@@ -260,7 +260,7 @@ To change your commit email:
 1. In the **Commit email** dropdown list, select an email address.
 1. Select **Update profile settings**.
 
-## Change your primary email 
+## Change your primary email
 
 Your primary email:
 

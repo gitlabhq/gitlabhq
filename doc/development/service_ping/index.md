@@ -21,7 +21,7 @@ and sales teams understand how GitLab is used. The data helps to:
 Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Sending a Service Ping payload is optional and you can [disable](#disable-service-ping) it on any 
+Sending a Service Ping payload is optional and you can [disable](#disable-service-ping) it on any
 self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances
 and can show your instance's usage statistics to your users.
 
@@ -41,10 +41,10 @@ We use the following terminology to describe the Service Ping components:
 
 The main purpose of Service Ping is to build a better GitLab. We collect data about how GitLab is used
 to understand feature or stage adoption and usage. This data gives an insight into how GitLab adds
-value and helps our team understand the reasons why people use GitLab, and with this knowledge we're able to 
+value and helps our team understand the reasons why people use GitLab, and with this knowledge we're able to
 make better product decisions.
 
-There are several other benefits to enabling Service Ping: 
+There are several other benefits to enabling Service Ping:
 
 - As a benefit of having Service Ping active, GitLab lets you analyze the users' activities over time of your GitLab installation.
 - As a benefit of having Service Ping active, GitLab provides you with [DevOps Score](../../user/admin_area/analytics/dev_ops_report.md#devops-score), which gives you an overview of your entire instance's adoption of Concurrent DevOps from planning to monitoring.

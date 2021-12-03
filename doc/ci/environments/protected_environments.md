@@ -79,7 +79,7 @@ Alternatively, you can use the API to protect an environment:
    $ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
           --data "user_id=3222377&access_level=20" "https://gitlab.com/api/v4/groups/9899826/members"
 
-   {"id":3222377,"name":"Sean Carroll","username":"sfcarroll","state":"active","avatar_url":"https://assets.gitlab-static.net/uploads/-/system/user/avatar/3222377/avatar.png","web_url":"https://gitlab.com/sfcarroll","access_level":20,"created_at":"2020-10-26T17:37:50.309Z","expires_at":null}
+   {"id":3222377,"name":"Sean Carroll","username":"sfcarroll","state":"active","avatar_url":"https://gitlab.com/uploads/-/system/user/avatar/3222377/avatar.png","web_url":"https://gitlab.com/sfcarroll","access_level":20,"created_at":"2020-10-26T17:37:50.309Z","expires_at":null}
    ```
 
 1. Use the API to add the group to the project as a reporter:

@@ -353,7 +353,7 @@ Additional management interfaces are planned for the GitLab Kubernetes Agent.
 
 ## Upgrades and version compatibility
 
-The GitLab Kubernetes Agent is comprised of two major components: `agentk` and `kas`. 
+The GitLab Kubernetes Agent is comprised of two major components: `agentk` and `kas`.
 As we provide `kas` installers built into the various GitLab installation methods, the required `kas` version corresponds to the GitLab `major.minor` (X.Y) versions.
 
 At the same time, `agentk` and `kas` can differ by 1 minor version in either direction. For example,

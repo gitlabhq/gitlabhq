@@ -1367,7 +1367,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
-      allow_failure: true
+      when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns

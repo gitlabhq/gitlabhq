@@ -22,7 +22,7 @@ You can use Group DevOps Adoption to:
 
 - Identify specific subgroups that are lagging in their adoption of GitLab features, so you can guide them on
 their DevOps journey.
-- Find subgroups that have adopted certain features, and provide guidance to other subgroups on 
+- Find subgroups that have adopted certain features, and provide guidance to other subgroups on
 how to use those features.
 - Verify if you are getting the return on investment that you expected from GitLab.
 
@@ -51,7 +51,7 @@ DevOps Adoption shows feature adoption for development, security, and operations
 
 ## Feature adoption
 
-DevOps Adoption shows feature adoption data for groups and subgroups for the previous calendar month. 
+DevOps Adoption shows feature adoption data for groups and subgroups for the previous calendar month.
 
 A feature shows as **adopted** when a group has used the feature in a project during the time period.
 This includes projects in any subgroups of the group. For example, if an issue was created in a project in a group, the group has adopted issues in that time.
@@ -63,12 +63,12 @@ When GitLab measures DevOps Adoption, some common DevOps information is not incl
 - Dormant projects. It doesn't matter how many projects in the group use a feature. Even if you have many dormant projects, it doesn't lower the adoption.
 - New GitLab features. Adoption is the total number of features adopted, not the percent of features.
 
-## When DevOps Adoption data is gathered 
+## When DevOps Adoption data is gathered
 
-A weekly task processes data for DevOps Adoption. This task is disabled until you access 
-DevOps Adoption for a group for the first time. 
+A weekly task processes data for DevOps Adoption. This task is disabled until you access
+DevOps Adoption for a group for the first time.
 
-The data processing task updates the data on the first day of each month. If the monthly update 
+The data processing task updates the data on the first day of each month. If the monthly update
 fails, the task tries daily until it succeeds.
 
 DevOps Adoption data may take up to a minute to appear while GitLab processes the group's data.
@@ -76,13 +76,13 @@ DevOps Adoption data may take up to a minute to appear while GitLab processes th
 ## View feature adoption over time
 
 The **Adoption over time** chart shows the total number of adopted features from the previous
-twelve months. The chart only shows data from when you enabled DevOps Adoption for the group. 
+twelve months. The chart only shows data from when you enabled DevOps Adoption for the group.
 
 To view feature adoption over time:
 
 1. On the top bar, select **Menu > Groups** and find your group.
 1. On the left sidebar, select **Analytics > DevOps adoption**.
-1. Select the **Overview** tab. 
+1. Select the **Overview** tab.
 
 Tooltips display information about the features tracked for individual months.
 

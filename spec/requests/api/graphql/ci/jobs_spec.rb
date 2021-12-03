@@ -15,7 +15,7 @@ RSpec.describe 'Query.project.pipeline' do
     let(:pipeline) do
       pipeline = create(:ci_pipeline, project: project, user: user)
       stage = create(:ci_stage_entity, project: project, pipeline: pipeline, name: 'first', position: 1)
-      create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job')
+      create(:ci_build, stage_id: stage.id, pipeline: pipeline, name: 'my test job', scheduling_type: :stage)
 
       pipeline
     end
@@ -48,7 +48,7 @@ RSpec.describe 'Query.project.pipeline' do
                 needs {
                   nodes { #{all_graphql_fields_for('CiBuildNeed')} }
                 }
-                previousStageJobsAndNeeds {
+                previousStageJobsOrNeeds {
                   nodes {
                     name
                   }
@@ -77,68 +77,48 @@ RSpec.describe 'Query.project.pipeline' do
       before do
         build_stage = create(:ci_stage_entity, position: 2, name: 'build', project: project, pipeline: pipeline)
         test_stage = create(:ci_stage_entity, position: 3, name: 'test', project: project, pipeline: pipeline)
-        deploy_stage = create(:ci_stage_entity, position: 4, name: 'deploy', project: project, pipeline: pipeline)
 
-        create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 1 2', stage: build_stage)
-        create(:ci_build, pipeline: pipeline, stage_idx: build_stage.position, name: 'docker 2 2', stage: build_stage)
-        create(:ci_build, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 1 2', stage: test_stage)
-        test_job = create(:ci_bridge, pipeline: pipeline, stage_idx: test_stage.position, name: 'rspec 2 2', stage: test_stage)
-        create(:ci_build, pipeline: pipeline, stage_idx: deploy_stage.position, name: 'deploy 1 2', stage: deploy_stage)
-        deploy_job = create(:ci_build, pipeline: pipeline, stage_idx: deploy_stage.position, name: 'deploy 2 2', stage: deploy_stage)
+        create(:ci_build, pipeline: pipeline, name: 'docker 1 2', scheduling_type: :stage, stage: build_stage, stage_idx: build_stage.position)
+        create(:ci_build, pipeline: pipeline, name: 'docker 2 2', stage: build_stage, stage_idx: build_stage.position, scheduling_type: :dag)
+        create(:ci_build, pipeline: pipeline, name: 'rspec 1 2', scheduling_type: :stage, stage: test_stage, stage_idx: test_stage.position)
+        test_job = create(:ci_build, pipeline: pipeline, name: 'rspec 2 2', scheduling_type: :dag, stage: test_stage, stage_idx: test_stage.position)
 
         create(:ci_build_need, build: test_job, name: 'my test job')
-        create(:ci_build_need, build: deploy_job, name: 'rspec 1 2')
       end
 
-      it 'reports the build needs and previous stages with no duplicates', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346433' do
+      it 'reports the build needs and execution requirements' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(
           a_hash_including(
             'name' => 'my test job',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [] }
+            'previousStageJobsOrNeeds' => { 'nodes' => [] }
           ),
           a_hash_including(
             'name' => 'docker 1 2',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "my test job" }
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              { 'name' => 'my test job' }
             ] }
           ),
           a_hash_including(
             'name' => 'docker 2 2',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "my test job" }
-            ] }
+            'previousStageJobsOrNeeds' => { 'nodes' => [] }
           ),
           a_hash_including(
             'name' => 'rspec 1 2',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "docker 1 2" }, { "name" => "docker 2 2" }
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              { 'name' => 'docker 1 2' }, { 'name' => 'docker 2 2' }
             ] }
           ),
           a_hash_including(
             'name' => 'rspec 2 2',
             'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "docker 1 2" }, { "name" => "docker 2 2" }, { "name" => "my test job" }
-            ] }
-          ),
-          a_hash_including(
-            'name' => 'deploy 1 2',
-            'needs' => { 'nodes' => [] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "rspec 1 2" }, { "name" => "rspec 2 2" }
-            ] }
-          ),
-          a_hash_including(
-            'name' => 'deploy 2 2',
-            'needs' => { 'nodes' => [a_hash_including('name' => 'rspec 1 2')] },
-            'previousStageJobsAndNeeds' => { 'nodes' => [
-              { "name" => "rspec 1 2" }, { "name" => "rspec 2 2" }
+            'previousStageJobsOrNeeds' => { 'nodes' => [
+              { 'name' => 'my test job' }
             ] }
           )
         )

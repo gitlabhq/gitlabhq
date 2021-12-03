@@ -39,7 +39,7 @@ If the pipeline for the merge request at the front of the train completes succes
 the changes are merged into the target branch, and the other pipelines continue to
 run.
 
-To add a merge request to a merge train, you need [permissions](../../user/permissions.md) to merge or push to the 
+To add a merge request to a merge train, you need [permissions](../../user/permissions.md) to merge or push to the
 target branch.
 
 Each merge train can run a maximum of **twenty** pipelines in parallel.

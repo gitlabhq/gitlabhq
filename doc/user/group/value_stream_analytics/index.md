@@ -86,8 +86,8 @@ the date filter behavior to filter the end event time of the currently selected 
 The change makes it possible to get a much better picture about the completed items within the
 stage and helps uncover long-running items.
 
-For example, an issue was created a year ago and the current stage was finished in the current month. 
-If you were to look at the metrics for the last three months, this issue would not be included in the calculation of 
+For example, an issue was created a year ago and the current stage was finished in the current month.
+If you were to look at the metrics for the last three months, this issue would not be included in the calculation of
 the stage metrics. With the new date filter, this item would be included.
 
 DISCLAIMER:
@@ -100,7 +100,7 @@ sole discretion of GitLab Inc.
 
 ## How metrics are measured
 
-> DORA API-based deployment metrics for group-level Value Stream Analytics were 
+> DORA API-based deployment metrics for group-level Value Stream Analytics were
 > [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in 14.3.
 
 The "Time" metrics near the top of the page are measured as follows:

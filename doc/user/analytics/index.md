@@ -100,29 +100,29 @@ We use the following terms to describe GitLab analytics:
       - All incidents are related to a [production environment](../../ci/environments/index.md#deployment-tier-of-environments).
       - Incidents and deployments have a strictly one-to-one relationship (meaning any incident is related to only one production deployment, and any production deployment is related to no more than one incident).
 
-- **Lead time:** The duration of your value stream, from start to finish. Different to 
-[Lead time for changes](#lead-time-for-changes). Often displayed in combination with "cycle time," 
-which is shorter. GitLab measures lead time from issue creation to issue close. GitLab displays lead 
+- **Lead time:** The duration of your value stream, from start to finish. Different to
+[Lead time for changes](#lead-time-for-changes). Often displayed in combination with "cycle time,"
+which is shorter. GitLab measures lead time from issue creation to issue close. GitLab displays lead
 time in [group-level Value Stream Analytics](../group/value_stream_analytics/index.md).
-- **Mean Time to Change (MTTC):** The average duration between idea and delivery. GitLab measures 
+- **Mean Time to Change (MTTC):** The average duration between idea and delivery. GitLab measures
 MTTC from issue creation to the issue's latest related merge request's deployment to production.
-- **Mean Time to Detect (MTTD):** The average duration that a bug goes undetected in production. 
+- **Mean Time to Detect (MTTD):** The average duration that a bug goes undetected in production.
 GitLab measures MTTD from deployment of bug to issue creation.
-- **Mean Time To Merge (MTTM):** The average lifespan of a merge request. GitLab measures MTTM from 
-merge request creation to merge request merge (and closed/un-merged merge requests are excluded). 
+- **Mean Time To Merge (MTTM):** The average lifespan of a merge request. GitLab measures MTTM from
+merge request creation to merge request merge (and closed/un-merged merge requests are excluded).
 For more information, see [Merge Request Analytics](merge_request_analytics.md).
-- **Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR):** The average duration that a bug 
+- **Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR):** The average duration that a bug
 is not fixed in production. GitLab measures MTTR from deployment of bug to deployment of fix.
-- **Throughput:** The number of issues closed or merge requests merged (not closed) in a period of 
+- **Throughput:** The number of issues closed or merge requests merged (not closed) in a period of
 time. Often measured per sprint. GitLab displays merge request throughput in [Merge Request Analytics](merge_request_analytics.md).
-- **Value Stream:** The entire work process that is followed to deliver value to customers. For example, 
-the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts 
+- **Value Stream:** The entire work process that is followed to deliver value to customers. For example,
+the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
 with "plan" and ends with "monitor". GitLab helps you track your value stream using [Value Stream Analytics](value_stream_analytics.md).
-- **Velocity:** The total issue burden completed in some period of time. The burden is usually measured 
-in points or weight, often per sprint. For example, your velocity may be "30 points per sprint". GitLab 
+- **Velocity:** The total issue burden completed in some period of time. The burden is usually measured
+in points or weight, often per sprint. For example, your velocity may be "30 points per sprint". GitLab
 measures velocity as the total points or weight of issues closed in a given period of time.
 
 ## Lead time for changes
 
-"Lead Time for Changes" differs from "Lead Time" because it "focuses on measuring only the time to 
+"Lead Time for Changes" differs from "Lead Time" because it "focuses on measuring only the time to
 deliver a feature once it has been developed", as described in ([Measuring DevOps Performance](https://devops.com/measuring-devops-performance/)).

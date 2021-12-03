@@ -354,7 +354,7 @@ This way we are always comparing the latest binary replication pointer,
 making sure that we read from the replica that is fully caught up.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to 
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to
 [disable the feature flag](../administration/feature_flags.md) named preserve_latest_wal_locations_for_idempotent_jobs flag.
 
 This feature flag is related to GitLab development and is not intended to be used by GitLab administrators, though.

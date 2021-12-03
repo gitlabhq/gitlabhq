@@ -126,7 +126,7 @@ SSO has the following effects when enabled:
 - For groups, users can't share a project in the group outside the top-level group,
   even if the project is forked.
 - For Git activity over SSH and HTTPS, users must have at least one active session signed-in through SSO before they can push to or
-  pull from a GitLab repository. 
+  pull from a GitLab repository.
 - Credentials that are not tied to regular users (for example, access tokens and deploy keys) do not have the SSO check enforced.
 - Users must be signed-in through SSO before they can pull images using the [Dependency Proxy](../../packages/dependency_proxy/index.md).
 <!-- Add bullet for API activity when https://gitlab.com/gitlab-org/gitlab/-/issues/9152 is complete -->
@@ -369,7 +369,7 @@ To link the SAML groups from the `saml:AttributeStatement` example above:
 If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest access level from the groups. For example, if one group
 is linked as `Guest` and another `Maintainer`, a user in both groups gets `Maintainer`
-access. 
+access.
 
 Users granted:
 
@@ -487,7 +487,7 @@ Specific attention should be paid to:
 
 #### Generate a SAML Response
 
-SAML Responses can be used to preview the attribute names and values sent in the assertions list while attempting to sign in using an IdP. 
+SAML Responses can be used to preview the attribute names and values sent in the assertions list while attempting to sign in using an IdP.
 
 To generate a SAML Response:
 

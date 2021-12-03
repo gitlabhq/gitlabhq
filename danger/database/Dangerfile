@@ -51,7 +51,7 @@ end
 return unless helper.ci?
 return if gitlab.mr_labels.include?(DATABASE_APPROVED_LABEL)
 
-db_paths_to_review = project_helper.changes_by_category[:database]
+db_paths_to_review = helper.changes_by_category[:database]
 
 if gitlab.mr_labels.include?('database') || db_paths_to_review.any?
   message 'This merge request adds or changes files that require a ' \

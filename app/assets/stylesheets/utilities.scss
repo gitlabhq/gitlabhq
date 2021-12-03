@@ -302,3 +302,10 @@ $gl-line-height-42: px-to-rem(42px);
 .gl-z-index-200 {
   z-index: 200;
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1637
+.gl-lg-w-25p {
+  @include gl-media-breakpoint-up(lg) {
+    width: 25%;
+  }
+}

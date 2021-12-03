@@ -42,13 +42,13 @@ module QA
     end
 
     let(:project_deploy_token) do
-      Resource::DeployToken.fabricate_via_browser_ui! do |deploy_token|
+      Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
         deploy_token.name = 'package-deploy-token'
         deploy_token.project = package_project
-        deploy_token.scopes = [
-          :read_repository,
-          :read_package_registry,
-          :write_package_registry
+        deploy_token.scopes = %w[
+          read_repository
+          read_package_registry
+          write_package_registry
         ]
       end
     end

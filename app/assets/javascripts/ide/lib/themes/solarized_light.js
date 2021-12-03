@@ -1096,6 +1096,6 @@ export default {
     'editor.selectionBackground': '#EEE8D5',
     'editor.lineHighlightBackground': '#EEE8D5',
     'editorCursor.foreground': '#000000',
-    'editorWhitespace.foreground': '#EAE3C9',
+    'editorWhitespace.foreground': '#93a1a1',
   },
 };

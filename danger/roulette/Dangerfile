@@ -89,7 +89,7 @@ def markdown_row_for_spins(category, spins_array)
   "| #{helper.label_for_category(category)} | #{reviewer_note} | #{maintainer_note} |"
 end
 
-changes = project_helper.changes_by_category
+changes = helper.changes_by_category
 
 # Ignore any files that are known but uncategorized. Prompt for any unknown files
 changes.delete(:none)
@@ -114,9 +114,7 @@ categories << :product_intelligence if helper.mr_labels.include?("product intell
 categories.delete(:product_intelligence) unless helper.mr_labels.include?("growth experiment")
 
 if changes.any?
-  project = project_helper.project_name
-
-  random_roulette_spins = roulette.spin(project, categories, timezone_experiment: false)
+  random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
 
   rows = random_roulette_spins.map do |spin|
     markdown_row_for_spins(spin.category, [spin])

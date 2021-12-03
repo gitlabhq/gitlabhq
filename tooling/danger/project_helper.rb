@@ -176,18 +176,6 @@ module Tooling
         %r{\.js\z} => :frontend
       }.freeze
 
-      def changes_by_category
-        helper.changes_by_category(CATEGORIES)
-      end
-
-      def changes
-        helper.changes(CATEGORIES)
-      end
-
-      def categories_for_file(file)
-        helper.categories_for_file(file, CATEGORIES)
-      end
-
       def local_warning_message
         "#{MESSAGE_PREFIX} Only the following Danger rules can be run locally: #{LOCAL_RULES.join(', ')}"
       end
@@ -203,11 +191,7 @@ module Tooling
       end
 
       def all_ee_changes
-        changes.files.grep(%r{\Aee/})
-      end
-
-      def project_name
-        ee? ? 'gitlab' : 'gitlab-foss'
+        helper.changes.files.grep(%r{\Aee/})
       end
 
       def file_lines(filename)
@@ -222,11 +206,6 @@ module Tooling
 
       def read_file(filename)
         File.read(filename)
-      end
-
-      def ee?
-        # Support former project name for `dev` and support local Danger run
-        %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME']) || Dir.exist?(File.expand_path('../../ee', __dir__))
       end
     end
   end

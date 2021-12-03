@@ -93,7 +93,7 @@ the indexer itself.
 
 This project relies on [International Components for Unicode](https://icu.unicode.org/) (ICU) for text encoding,
 therefore we must ensure the development packages for your platform are
-installed before running `make`. 
+installed before running `make`.
 
 #### Debian / Ubuntu
 
