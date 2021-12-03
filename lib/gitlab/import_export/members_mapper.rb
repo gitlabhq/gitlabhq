@@ -52,9 +52,18 @@ module Gitlab
 
         @importable.members.destroy_all # rubocop: disable Cop/DestroyAll
 
-        relation_class.create!(user: @user, access_level: highest_access_level, source_id: @importable.id, importing: true)
+        relation_class.create!(user: @user, access_level: importer_access_level, source_id: @importable.id, importing: true)
       rescue StandardError => e
         raise e, "Error adding importer user to #{@importable.class} members. #{e.message}"
+      end
+
+      def importer_access_level
+        if @importable.parent.is_a?(::Group) && !@user.admin?
+          lvl = @importable.parent.max_member_access_for_user(@user, only_concrete_membership: true)
+          [lvl, highest_access_level].min
+        else
+          highest_access_level
+        end
       end
 
       def user_already_member?

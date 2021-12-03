@@ -10,8 +10,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:importable) { create(:group, parent: group) }
+  let(:group) { create(:group).tap { |g| g.add_owner(user) } }
+  let(:importable) { create(:group, parent: group) }
 
   include_context 'relation tree restorer shared context' do
     let(:importable_name) { nil }
