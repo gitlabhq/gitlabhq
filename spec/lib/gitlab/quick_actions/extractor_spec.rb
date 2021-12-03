@@ -352,6 +352,14 @@ RSpec.describe Gitlab::QuickActions::Extractor do
       expect(commands).to eq(expected_commands)
       expect(msg).to eq expected_msg
     end
+
+    it 'fails fast for strings with many newlines' do
+      msg = '`' + "\n" * 100_000
+
+      expect do
+        Timeout.timeout(3.seconds) { extractor.extract_commands(msg) }
+      end.not_to raise_error
+    end
   end
 
   describe '#redact_commands' do
