@@ -172,7 +172,7 @@
   - "scripts/lint-doc.sh"
 
 .docs-deprecations-patterns: &docs-deprecations-patterns
-  - "doc/deprecations/index.md"
+  - "doc/update/deprecations.md"
   - "data/deprecations/*.yml"
   - "data/deprecations/templates/_deprecation_template.md.erb"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"

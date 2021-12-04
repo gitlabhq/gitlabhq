@@ -987,7 +987,7 @@ addition by referencing line 157 in the *new* file:
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]"\
   --form "note=This is brilliant!" --form "path=hello.rb"\
-  --form "line=157" --form "line_type=old"\
+  --form "line=157" --form "line_type=new"\
   "https://gitlab.com/api/v4/projects/47/repository/commits/<COMMIT_ID>/comments"
 ```
 
