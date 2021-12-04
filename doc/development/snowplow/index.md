@@ -90,7 +90,7 @@ Each click event provides attributes that describe the event.
 | action    | text    | true     | The action the user takes, or aspect that's being instrumented. The first word must describe the action or aspect. For example, clicks must be `click`, activations must be `activate`, creations must be `create`. Use underscores to describe what was acted on. For example, activating a form field is `activate_form_input`, an interface action like clicking on a dropdown is `click_dropdown`, a behavior like creating a project record from the backend is `create_project`. |
 | label     | text    | false    | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
 | property  | text    | false    | Any additional property of the element, or object being acted on. |
-| value     | decimal | false    | Describes a numeric value or something directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. |
+| value     | decimal | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. |
 
 ### Examples
 

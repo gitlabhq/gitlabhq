@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 
-import IssuableCreateRoot from '~/issuable_create/components/issuable_create_root.vue';
-import IssuableForm from '~/issuable_create/components/issuable_form.vue';
+import IssuableCreateRoot from '~/vue_shared/issuable/create/components/issuable_create_root.vue';
+import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
 
 const createComponent = ({
   descriptionPreviewPath = '/gitlab-org/gitlab-shell/preview_markdown',

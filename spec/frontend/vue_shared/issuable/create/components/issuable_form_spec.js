@@ -1,7 +1,7 @@
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import IssuableForm from '~/issuable_create/components/issuable_form.vue';
+import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
 

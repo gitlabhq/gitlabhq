@@ -2,8 +2,8 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import Cookies from 'js-cookie';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import IssuableSidebarRoot from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
-import { USER_COLLAPSED_GUTTER_COOKIE } from '~/issuable_sidebar/constants';
+import IssuableSidebarRoot from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
+import { USER_COLLAPSED_GUTTER_COOKIE } from '~/vue_shared/issuable/sidebar/constants';
 
 const MOCK_LAYOUT_PAGE_CLASS = 'layout-page';
 

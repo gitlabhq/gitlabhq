@@ -342,8 +342,11 @@ export default {
     trackWikiFormat() {
       this.track(WIKI_FORMAT_UPDATED_ACTION, {
         label: WIKI_FORMAT_LABEL,
-        value: this.format,
-        extra: { project_path: this.pageInfo.path, old_format: this.pageInfo.format },
+        extra: {
+          project_path: this.pageInfo.path,
+          old_format: this.pageInfo.format,
+          value: this.format,
+        },
       });
     },
 

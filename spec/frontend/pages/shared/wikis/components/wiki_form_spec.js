@@ -562,8 +562,8 @@ describe('WikiForm', () => {
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, WIKI_FORMAT_UPDATED_ACTION, {
           label: WIKI_FORMAT_LABEL,
-          value: findFormat().element.value,
           extra: {
+            value: findFormat().element.value,
             old_format: pageInfoPersisted.format,
             project_path: pageInfoPersisted.path,
           },

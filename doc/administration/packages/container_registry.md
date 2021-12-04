@@ -1086,28 +1086,28 @@ is necessary for Registry and GitLab.
 
 ### Configuring Registry
 
-Below you will find configuration options you should set in `/etc/gitlab/gitlab.rb`,
+Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
 for Registry to run separately from GitLab:
 
 - `registry['registry_http_addr']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L50). Needs to be reachable by web server (or LB).
 - `registry['token_realm']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L53). Specifies the endpoint to use to perform authentication, usually the GitLab URL.
   This endpoint needs to be reachable by user.
 - `registry['http_secret']`, [random string](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L32). A random piece of data used to sign state that may be stored with the client to protect against tampering.
-- `registry['internal_key']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). Contents of the key that GitLab uses to sign the tokens. They key gets created on the Registry server, but it won't be used there.
-- `gitlab_rails['registry_key_path']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). This is the path where `internal_key` contents will be written to disk.
+- `registry['internal_key']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L113-119). Contents of the key that GitLab uses to sign the tokens. They key gets created on the Registry server, but it is not used there.
+- `gitlab_rails['registry_key_path']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/recipes/gitlab-rails.rb#L35). This is the path where `internal_key` contents are written to disk.
 - `registry['internal_certificate']`, default [automatically generated](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60-66). Contents of the certificate that GitLab uses to sign the tokens.
 - `registry['rootcertbundle']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/registry/recipes/enable.rb#L60). Path to certificate. This is the path where `internal_certificate`
-  contents will be written to disk.
+  contents are written to disk.
 - `registry['health_storagedriver_enabled']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-7-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L88). Configure whether health checks on the configured storage driver are enabled.
 - `gitlab_rails['registry_issuer']`, [default value](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). This setting needs to be set the same between Registry and GitLab.
 
 ### Configuring GitLab
 
-Below you will find configuration options you should set in `/etc/gitlab/gitlab.rb`,
+Below you can find configuration options you should set in `/etc/gitlab/gitlab.rb`,
 for GitLab to run separately from Registry:
 
-- `gitlab_rails['registry_enabled']`, must be set to `true`. This setting will
-  signal to GitLab that it should allow Registry API requests.
+- `gitlab_rails['registry_enabled']`, must be set to `true`. This setting
+  signals to GitLab that it should allow Registry API requests.
 - `gitlab_rails['registry_api_url']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L52). This is the Registry URL used internally that users do not need to interact with, `registry['registry_http_addr']` with scheme.
 - `gitlab_rails['registry_host']`, eg. `registry.gitlab.example`. Registry endpoint without the scheme, the address that gets shown to the end user.
 - `gitlab_rails['registry_port']`. Registry endpoint port, visible to the end user.
@@ -1263,7 +1263,7 @@ Check which files are in use:
        enabled: true
        host: gitlab.company.com
        port: 4567
-       api_url: http://127.0.0.1:5000 # internal address to the registry, will be used by GitLab to directly communicate with API
+       api_url: http://127.0.0.1:5000 # internal address to the registry, is used by GitLab to directly communicate with API
        path: /var/opt/gitlab/gitlab-rails/shared/registry
   -->  key: /var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key
        issuer: omnibus-gitlab-issuer

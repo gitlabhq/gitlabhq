@@ -1,5 +1,5 @@
 <script>
-import IssuableSidebar from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
+import IssuableSidebar from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
 
 import IssuableBody from './issuable_body.vue';
 import IssuableDiscussion from './issuable_discussion.vue';

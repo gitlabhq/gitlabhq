@@ -1,6 +1,6 @@
 <!-- Set the correct label and milestone using autocomplete for guidance. Please @mention only the DRI(s) for each stage or group rather than an entire department. -->
 
-/label ~"release post" ~"release post item" ~"Technical Writing" ~"devops::" ~"group::"
+/label ~"release post" ~"release post item" ~"Technical Writing" ~"devops::" ~"group::" ~"release post item::deprecation"
 /milestone %
 /assign `@PM`
 

@@ -4,7 +4,7 @@ import IssuableBody from '~/issuable_show/components/issuable_body.vue';
 import IssuableHeader from '~/issuable_show/components/issuable_header.vue';
 import IssuableShowRoot from '~/issuable_show/components/issuable_show_root.vue';
 
-import IssuableSidebar from '~/issuable_sidebar/components/issuable_sidebar_root.vue';
+import IssuableSidebar from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
