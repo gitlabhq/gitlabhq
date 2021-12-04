@@ -366,8 +366,12 @@ or [init scripts](upgrading_from_source.md#configure-sysv-init-script) by [follo
 
 - Git 2.33.x and later is required. We recommend you use the
   [Git version provided by Gitaly](../install/installation.md#git).
-
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- After enabling database load balancing by default in 14.4.0, we found an issue where
+  [cron jobs would not work if the connection to PostgreSQL was severed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73716),
+  as Sidekiq would continue using a bad connection. Geo and other features that rely on
+  cron jobs running regularly do not work until Sidekiq is restarted. We recommend
+  upgrading to GitLab 14.4.3 and later if this issue affects you.
 
 ### 14.3.0
 
