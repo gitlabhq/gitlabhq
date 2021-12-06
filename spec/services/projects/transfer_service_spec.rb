@@ -189,20 +189,6 @@ RSpec.describe Projects::TransferService do
         expect(unrelated_pending_build.namespace_id).to eq(other_project.namespace_id)
         expect(unrelated_pending_build.namespace_traversal_ids).to eq(other_project.namespace.traversal_ids)
       end
-
-      context 'when ci_pending_builds_async_update is disabled' do
-        let(:update_pending_build_service) { instance_double(::Ci::PendingBuilds::UpdateProjectWorker) }
-
-        before do
-          stub_feature_flags(ci_pending_builds_async_update: false)
-        end
-
-        it 'does not call the new worker' do
-          expect(::Ci::PendingBuilds::UpdateProjectWorker).not_to receive(:perform_async)
-
-          execute_transfer
-        end
-      end
     end
   end
 

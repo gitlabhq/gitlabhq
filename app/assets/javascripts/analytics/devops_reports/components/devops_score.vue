@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlTable, GlLink, GlEmptyState } from '@gitlab/ui';
+import { GlBadge, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { sprintf, s__ } from '~/locale';
@@ -13,7 +13,7 @@ const defaultHeaderAttrs = {
 export default {
   components: {
     GlBadge,
-    GlTable,
+    GlTableLite,
     GlSingleStat,
     GlLink,
     GlEmptyState,
@@ -94,7 +94,7 @@ export default {
         :meta-text="devopsScoreMetrics.averageScore.scoreLevel.label"
         :variant="devopsScoreMetrics.averageScore.scoreLevel.variant"
       />
-      <gl-table
+      <gl-table-lite
         :fields="$options.tableHeaderFields"
         :items="devopsScoreMetrics.cards"
         thead-class="gl-border-t-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-100"
@@ -108,7 +108,7 @@ export default {
             }}</gl-badge>
           </div>
         </template>
-      </gl-table>
+      </gl-table-lite>
     </div>
   </div>
 </template>

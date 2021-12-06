@@ -10,7 +10,9 @@ module Gitlab
           link :buy_ci_minutes, text: 'Buy additional minutes'
           link :buy_storage, text: /Purchase more storage/
           strong :additional_minutes, text: 'Additional minutes'
+          strong :plan_minutes, text: 'Current period usage'
           div :purchased_usage, 'data-testid': 'purchased-usage'
+          div(:plan_minutes_usage) { plan_minutes_element.following_sibling.span }
           div(:additional_minutes_usage) { additional_minutes_element.following_sibling.span }
           div :ci_purchase_successful_alert, text: /You have successfully purchased CI minutes/
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/

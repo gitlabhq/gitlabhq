@@ -229,11 +229,7 @@ module Groups
     end
 
     def update_pending_builds
-      if Feature.enabled?(:ci_pending_builds_async_update, default_enabled: :yaml)
-        ::Ci::PendingBuilds::UpdateGroupWorker.perform_async(group.id, pending_builds_params)
-      else
-        ::Ci::UpdatePendingBuildService.new(group, pending_builds_params).execute
-      end
+      ::Ci::PendingBuilds::UpdateGroupWorker.perform_async(group.id, pending_builds_params)
     end
 
     def pending_builds_params
