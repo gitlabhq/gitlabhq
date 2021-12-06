@@ -26,6 +26,35 @@ RSpec.describe API::Lint do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
+
+      context 'when authenticated as external user' do
+        let(:project) { create(:project) }
+        let(:api_user) { create(:user, :external) }
+
+        context 'when reporter in a project' do
+          before do
+            project.add_reporter(api_user)
+          end
+
+          it 'returns authorization failure' do
+            post api('/ci/lint', api_user), params: { content: 'content' }
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'when developer in a project' do
+          before do
+            project.add_developer(api_user)
+          end
+
+          it 'returns authorization success' do
+            post api('/ci/lint', api_user), params: { content: 'content' }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
     end
 
     context 'when signup is enabled and not limited' do

@@ -44,6 +44,86 @@ RSpec.describe GitlabSchema.types['User'] do
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 
+  describe 'name field' do
+    let_it_be(:admin) { create(:user, :admin)}
+    let_it_be(:user) { create(:user) }
+    let_it_be(:requested_user) { create(:user, name: 'John Smith') }
+    let_it_be(:requested_project_bot) { create(:user, :project_bot, name: 'Project bot') }
+    let_it_be(:project) { create(:project, :public) }
+
+    before do
+      project.add_maintainer(requested_project_bot)
+    end
+
+    let(:username) { requested_user.username }
+
+    let(:query) do
+      %(
+        query {
+          user(username: "#{username}") {
+            name
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json.dig('data', 'user', 'name') }
+
+    context 'user requests' do
+      let(:current_user) { user }
+
+      context 'a user' do
+        it 'returns name' do
+          expect(subject).to eq('John Smith')
+        end
+      end
+
+      context 'a project bot' do
+        let(:username) { requested_project_bot.username }
+
+        context 'when requester is nil' do
+          let(:current_user) { nil }
+
+          it 'returns `****`' do
+            expect(subject).to eq('****')
+          end
+        end
+
+        it 'returns `****` for a regular user' do
+          expect(subject).to eq('****')
+        end
+
+        context 'when requester is a project maintainer' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'returns name' do
+            expect(subject).to eq('Project bot')
+          end
+        end
+      end
+    end
+
+    context 'admin requests', :enable_admin_mode do
+      let(:current_user) { admin }
+
+      context 'a user' do
+        it 'returns name' do
+          expect(subject).to eq('John Smith')
+        end
+      end
+
+      context 'a project bot' do
+        let(:username) { requested_project_bot.username }
+
+        it 'returns name' do
+          expect(subject).to eq('Project bot')
+        end
+      end
+    end
+  end
+
   describe 'snippets field' do
     subject { described_class.fields['snippets'] }
 

@@ -224,7 +224,7 @@ RSpec.describe API::Projects do
           create(:project, :public, group: create(:group))
         end
 
-        it_behaves_like 'projects response without N + 1 queries', 0 do
+        it_behaves_like 'projects response without N + 1 queries', 1 do
           let(:current_user) { user }
           let(:additional_project) { create(:project, :public, group: create(:group)) }
         end

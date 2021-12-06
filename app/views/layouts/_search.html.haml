@@ -29,8 +29,9 @@
       = hidden_field_tag :scope, search_context.scope
       = hidden_field_tag :search_code, search_context.code_search?
 
+    - ref = search_context.ref if can?(current_user, :download_code, search_context.project)
     = hidden_field_tag :snippets, search_context.for_snippets?
-    = hidden_field_tag :repository_ref, search_context.ref
+    = hidden_field_tag :repository_ref, ref
     = hidden_field_tag :nav_source, 'navbar'
 
     -# workaround for non-JS feature specs, see spec/support/helpers/search_helpers.rb
@@ -38,4 +39,4 @@
       %noscript= button_tag 'Search'
     .search-autocomplete-opts.hide{ :'data-autocomplete-path' => search_autocomplete_path,
                                     :'data-autocomplete-project-id' => search_context.project.try(:id),
-                                    :'data-autocomplete-project-ref' => search_context.ref }
+                                    :'data-autocomplete-project-ref' => ref }

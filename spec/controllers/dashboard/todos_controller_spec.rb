@@ -65,7 +65,7 @@ RSpec.describe Dashboard::TodosController do
         project_2 = create(:project)
         project_2.add_developer(user)
         merge_request_2 = create(:merge_request, source_project: project_2)
-        create(:todo, project: project, author: author, user: user, target: merge_request_2)
+        create(:todo, project: project_2, author: author, user: user, target: merge_request_2)
 
         expect { get :index }.not_to exceed_query_limit(control)
         expect(response).to have_gitlab_http_status(:ok)

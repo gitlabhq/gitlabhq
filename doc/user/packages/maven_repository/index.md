@@ -806,7 +806,7 @@ When the pipeline is successful, the package is created.
 The version string is validated by using the following regex.
 
 ```ruby
-\A(\.?[\w\+-]+\.?)+\z
+\A(?!.*\.\.)[\w+.-]+\z
 ```
 
 You can play around with the regex and try your version strings on [this regular expression editor](https://rubular.com/r/rrLQqUXjfKEoL6).

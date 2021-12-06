@@ -9,6 +9,9 @@ class GraphqlController < ApplicationController
   # Header can be passed by tests to disable SQL query limits.
   DISABLE_SQL_QUERY_LIMIT_HEADER = 'HTTP_X_GITLAB_DISABLE_SQL_QUERY_LIMIT'
 
+  # Max size of the query text in characters
+  MAX_QUERY_SIZE = 10_000
+
   # If a user is using their session to access GraphQL, we need to have session
   # storage, since the admin-mode check is session wide.
   # We can't enable this for anonymous users because that would cause users using
@@ -29,6 +32,7 @@ class GraphqlController < ApplicationController
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :disable_query_limiting
+  before_action :limit_query_size
 
   before_action :disallow_mutations_for_get
 
@@ -81,6 +85,16 @@ class GraphqlController < ApplicationController
     raise ::Gitlab::Graphql::Errors::ArgumentError, "Mutations are forbidden in #{request.request_method} requests"
   end
 
+  def limit_query_size
+    total_size = if multiplex?
+                   params[:_json].sum { _1[:query].size }
+                 else
+                   query.size
+                 end
+
+    raise ::Gitlab::Graphql::Errors::ArgumentError, "Query too large" if total_size > MAX_QUERY_SIZE
+  end
+
   def any_mutating_query?
     if multiplex?
       multiplex_queries.any? { |q| mutation?(q[:query], q[:operation_name]) }
@@ -126,7 +140,7 @@ class GraphqlController < ApplicationController
   end
 
   def query
-    params[:query]
+    params.fetch(:query, '')
   end
 
   def multiplex_queries
