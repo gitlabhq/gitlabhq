@@ -172,6 +172,12 @@ RSpec.describe SearchController do
 
               expect(response).to redirect_to new_user_session_path
             end
+
+            it 'redirects to login page when trying to circumvent the restriction' do
+              get :show, params: { scope: 'projects', project_id: non_existing_record_id, search: '*' }
+
+              expect(response).to redirect_to new_user_session_path
+            end
           end
 
           context 'for authenticated user' do

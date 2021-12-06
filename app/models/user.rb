@@ -917,6 +917,8 @@ class User < ApplicationRecord
   end
 
   def two_factor_u2f_enabled?
+    return false if Feature.enabled?(:webauthn)
+
     if u2f_registrations.loaded?
       u2f_registrations.any?
     else

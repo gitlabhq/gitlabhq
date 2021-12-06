@@ -45,6 +45,10 @@ class SearchService
     # overridden in EE
   end
 
+  def global_search?
+    project.blank? && group.blank?
+  end
+
   def show_snippets?
     return @show_snippets if defined?(@show_snippets)
 

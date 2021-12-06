@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import FilePreview from '~/repository/components/preview/index.vue';
 import FileTable from '~/repository/components/table/index.vue';
-import TreeContent from '~/repository/components/tree_content.vue';
+import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/commits_service';
 
 jest.mock('~/repository/commits_service', () => ({

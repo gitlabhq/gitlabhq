@@ -1726,6 +1726,52 @@ RSpec.describe User do
     end
   end
 
+  context 'two_factor_u2f_enabled?' do
+    let_it_be(:user) { create(:user, :two_factor) }
+
+    context 'when webauthn feature flag is enabled' do
+      context 'user has no U2F registration' do
+        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
+      end
+
+      context 'user has existing U2F registration' do
+        it 'returns false' do
+          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
+          create(:u2f_registration, name: 'my u2f device',
+                 user: user,
+                 certificate: Base64.strict_encode64(device.cert_raw),
+                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+
+          expect(user.two_factor_u2f_enabled?).to eq(false)
+        end
+      end
+    end
+
+    context 'when webauthn feature flag is disabled' do
+      before do
+        stub_feature_flags(webauthn: false)
+      end
+
+      context 'user has no U2F registration' do
+        it { expect(user.two_factor_u2f_enabled?).to eq(false) }
+      end
+
+      context 'user has existing U2F registration' do
+        it 'returns true' do
+          device = U2F::FakeU2F.new(FFaker::BaconIpsum.characters(5))
+          create(:u2f_registration, name: 'my u2f device',
+                 user: user,
+                 certificate: Base64.strict_encode64(device.cert_raw),
+                 key_handle: U2F.urlsafe_encode64(device.key_handle_raw),
+                 public_key: Base64.strict_encode64(device.origin_public_key_raw))
+
+          expect(user.two_factor_u2f_enabled?).to eq(true)
+        end
+      end
+    end
+  end
+
   describe 'projects' do
     before do
       @user = create(:user)

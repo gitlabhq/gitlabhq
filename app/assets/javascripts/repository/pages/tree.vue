@@ -1,5 +1,5 @@
 <script>
-import TreeContent from '../components/tree_content.vue';
+import TreeContent from 'jh_else_ce/repository/components/tree_content.vue';
 import preloadMixin from '../mixins/preload';
 import { updateElementsVisibility } from '../utils/dom';
 

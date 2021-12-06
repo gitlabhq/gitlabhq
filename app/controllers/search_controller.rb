@@ -150,7 +150,7 @@ class SearchController < ApplicationController
   end
 
   def block_anonymous_global_searches
-    return if params[:project_id].present? || params[:group_id].present?
+    return unless search_service.global_search?
     return if current_user
     return unless ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
 
@@ -160,7 +160,7 @@ class SearchController < ApplicationController
   end
 
   def check_scope_global_search_enabled
-    return if params[:project_id].present? || params[:group_id].present?
+    return unless search_service.global_search?
 
     search_allowed = case params[:scope]
                      when 'blobs'
