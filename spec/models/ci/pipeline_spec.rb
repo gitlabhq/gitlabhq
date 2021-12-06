@@ -757,23 +757,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     context 'with multiple pipelines' do
       before_all do
         create(:ci_build, name: "rspec", coverage: 30, pipeline: pipeline)
-        create(:ci_build, name: "rubocop", coverage: 40, pipeline: pipeline)
+        create(:ci_build, name: "rubocop", coverage: 35, pipeline: pipeline)
       end
 
       it "calculates average when there are two builds with coverage" do
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
 
       it "calculates average when there are two builds with coverage and one with nil" do
         create(:ci_build, pipeline: pipeline)
 
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
 
       it "calculates average when there are two builds with coverage and one is retried" do
         create(:ci_build, name: "rubocop", coverage: 30, pipeline: pipeline, retried: true)
 
-        expect(pipeline.coverage).to eq("35.00")
+        expect(pipeline.coverage).to be_within(0.001).of(32.5)
       end
     end
 

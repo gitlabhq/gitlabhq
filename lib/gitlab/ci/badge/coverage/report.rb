@@ -30,7 +30,7 @@ module Gitlab::Ci
           @coverage ||= raw_coverage
           return unless @coverage
 
-          @coverage.to_f.round(2)
+          @coverage.round(2)
         end
 
         def metadata

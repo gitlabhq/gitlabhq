@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is a GitLab-specific style guide for Ruby code.
 
-Generally, if a style is not covered by [existing rubocop rules or styleguides](../contributing/style_guides.md#ruby-rails-rspec), it shouldn't be a blocker.
+Generally, if a style is not covered by [existing Rubocop rules or style guides](../contributing/style_guides.md#ruby-rails-rspec), it shouldn't be a blocker.
 Before adding a new cop to enforce a given style, make sure to discuss it with your team.
 When the style is approved by a backend EM or by a BE staff eng, add a new section to this page to
 document the new rule. For every new guideline, add it in a new section and link the discussion from the section's

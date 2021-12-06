@@ -80,11 +80,25 @@ module QA
           Support::FabricationTracker.start_fabrication
           result = yield.tap do
             fabrication_time = Time.now - start
+            resource_identifier = begin
+              if resource.respond_to?(:username) && resource.username
+                "with username '#{resource.username}'"
+              elsif resource.respond_to?(:full_path) && resource.full_path
+                "with full_path '#{resource.full_path}'"
+              elsif resource.respond_to?(:name) && resource.name
+                "with name '#{resource.name}'"
+              elsif resource.respond_to?(:id) && resource.id
+                "with id '#{resource.id}'"
+              end
+            rescue QA::Resource::Base::NoValueError
+              nil
+            end
 
             Support::FabricationTracker.save_fabrication(:"#{method}_fabrication", fabrication_time)
             Runtime::Logger.debug do
               msg = ["==#{'=' * parents.size}>"]
               msg << "Built a #{name}"
+              msg << resource_identifier if resource_identifier
               msg << "as a dependency of #{parents.last}" if parents.any?
               msg << "via #{method}"
               msg << "in #{fabrication_time} seconds"

@@ -223,16 +223,19 @@ export default {
         })
         .catch((err) => {
           this.removePlaceholderNotes();
-          const msg = __(
-            'Your comment could not be submitted! Please check your network connection and try again.',
-          );
-          createFlash({
-            message: msg,
-            parent: this.$el,
-          });
+          this.handleSaveError(err); // The 'err' parameter is being used in JH, don't remove it
           this.$refs.noteForm.note = noteText;
           callback(err);
         });
+    },
+    handleSaveError() {
+      const msg = __(
+        'Your comment could not be submitted! Please check your network connection and try again.',
+      );
+      createFlash({
+        message: msg,
+        parent: this.$el,
+      });
     },
     deleteNoteHandler(note) {
       this.$emit('noteDeleted', this.discussion, note);

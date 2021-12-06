@@ -14,6 +14,7 @@ RSpec.describe MergeRequests::PipelineEntity do
 
     allow(request).to receive(:current_user).and_return(user)
     allow(request).to receive(:project).and_return(project)
+    allow(pipeline).to receive(:coverage).and_return(35.0)
   end
 
   let(:entity) do
@@ -33,6 +34,10 @@ RSpec.describe MergeRequests::PipelineEntity do
       expect(subject[:details]).to include(:artifacts, :name, :status, :stages, :finished_at)
       expect(subject[:details][:status]).to include(:icon, :favicon, :text, :label, :tooltip)
       expect(subject[:flags]).to include(:merge_request_pipeline)
+    end
+
+    it 'returns presented coverage' do
+      expect(subject[:coverage]).to eq('35.00')
     end
 
     it 'excludes coverage data when disabled' do

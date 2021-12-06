@@ -22,6 +22,8 @@ class Projects::ForksController < Projects::ApplicationController
   end
 
   def index
+    @sort = params[:sort]
+
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size
     @private_forks_count  = @total_forks_count - project.forks.public_and_internal_only.size

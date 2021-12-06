@@ -191,4 +191,77 @@ RSpec.describe SortingHelper do
       end
     end
   end
+
+  describe 'with `forks` controller' do
+    before do
+      stub_controller_path 'forks'
+    end
+
+    describe '#forks_sort_options_hash' do
+      it 'returns a hash of available sorting options' do
+        expect(forks_sort_options_hash).to include({
+          sort_value_recently_created => sort_title_created_date,
+          sort_value_oldest_created   => sort_title_created_date,
+          sort_value_latest_activity  => sort_title_latest_activity,
+          sort_value_oldest_activity  => sort_title_latest_activity
+        })
+      end
+    end
+
+    describe '#forks_reverse_sort_options_hash' do
+      context 'for each sort option' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:sort_key, :reverse_sort_title) do
+          sort_value_recently_created | sort_value_oldest_created
+          sort_value_oldest_created   | sort_value_recently_created
+          sort_value_latest_activity  | sort_value_oldest_activity
+          sort_value_oldest_activity  | sort_value_latest_activity
+        end
+
+        with_them do
+          it 'returns the correct reversed hash' do
+            reverse_hash = forks_reverse_sort_options_hash
+
+            expect(reverse_hash).to include(sort_key)
+            expect(reverse_hash[sort_key]).to eq(reverse_sort_title)
+          end
+        end
+      end
+    end
+
+    describe '#forks_sort_direction_button' do
+      context 'for each sort option' do
+        using RSpec::Parameterized::TableSyntax
+
+        sort_lowest_icon = 'sort-lowest'
+        sort_highest_icon = 'sort-highest'
+
+        where(:selected_sort, :icon) do
+          sort_value_recently_created | sort_highest_icon
+          sort_value_latest_activity  | sort_highest_icon
+          sort_value_oldest_created   | sort_lowest_icon
+          sort_value_oldest_activity  | sort_lowest_icon
+        end
+
+        with_them do
+          it 'returns the correct icon' do
+            set_sorting_url selected_sort
+
+            expect(forks_sort_direction_button(selected_sort)).to include(icon)
+          end
+        end
+      end
+
+      it 'returns the correct link to reverse the current sort option' do
+        sort_options_links = forks_reverse_sort_options_hash
+
+        sort_options_links.each do |selected_sort, reverse_sort|
+          set_sorting_url selected_sort
+
+          expect(forks_sort_direction_button(selected_sort)).to include(reverse_sort)
+        end
+      end
+    end
+  end
 end

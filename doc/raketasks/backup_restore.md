@@ -70,7 +70,7 @@ Backups do not include:
 - [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
 
 WARNING:
-GitLab does not back up any configuration files (`/etc/gitlab`), SSL certificates, or system
+GitLab does not back up any configuration files (`/etc/gitlab`), TLS keys and certificates, or system
 files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
 
 WARNING:
@@ -190,8 +190,9 @@ on a Kubernetes cluster, you must follow the
 [Back up the secrets](https://docs.gitlab.com/charts/backup-restore/backup.html#backup-the-secrets)
 instructions.
 
-You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`), and your
-[SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), and your
+[SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079)
+to avoid man-in-the-middle attack warnings if you have to perform a full machine restore.
 
 If you use Omnibus GitLab, review additional information to
 [backup your configuration](https://docs.gitlab.com/omnibus/settings/backups.html).
@@ -903,7 +904,9 @@ If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runner
 loses access to your GitLab server.
 
-You may also want to restore any TLS keys, certificates (`/etc/gitlab/ssl`), or
+You may also want to restore your previous `/etc/gitlab/gitlab.rb` (for Omnibus packages)
+or `/home/git/gitlab/config/gitlab.yml` (for installations from source) and
+any TLS keys, certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), or
 [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 Starting with GitLab 12.9, if an untarred backup (like the ones made with

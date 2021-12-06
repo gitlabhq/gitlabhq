@@ -3762,6 +3762,12 @@ RSpec.describe Ci::Build do
 
       build.enqueue
     end
+
+    it 'queues BuildHooksWorker' do
+      expect(BuildHooksWorker).to receive(:perform_async).with(build.id)
+
+      build.enqueue
+    end
   end
 
   describe 'state transition: pending: :running' do

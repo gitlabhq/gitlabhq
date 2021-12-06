@@ -1802,7 +1802,7 @@ class MergeRequest < ApplicationRecord
 
   def pipeline_coverage_delta
     if base_pipeline&.coverage && head_pipeline&.coverage
-      '%.2f' % (head_pipeline.coverage.to_f - base_pipeline.coverage.to_f)
+      head_pipeline.coverage - base_pipeline.coverage
     end
   end
 

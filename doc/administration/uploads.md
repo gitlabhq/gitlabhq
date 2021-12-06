@@ -51,12 +51,6 @@ _The uploads are stored by default in
 
 ## Using object storage **(FREE SELF)**
 
-> **Notes:**
->
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3867) in GitLab 10.5.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17358) from GitLab Premium to GitLab Free in 10.7.
-> - Since version 11.1, we support direct_upload to S3.
-
 If you don't want to use the local disk where GitLab is installed to store the
 uploads, you can use an object storage provider like AWS S3 instead.
 This configuration relies on valid AWS credentials to be configured already.

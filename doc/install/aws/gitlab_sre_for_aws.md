@@ -10,7 +10,7 @@ description: Doing SRE for GitLab instances and runners on AWS.
 
 ## Gitaly SRE considerations
 
-Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is indepth technical reading on the topic:
+Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is in-depth technical reading on the topic:
 
 ### Why Gitaly was built
 
@@ -66,14 +66,14 @@ All recommendations are for production configurations, including performance tes
 
 #### Network I/O recommendations
 
-- Use only instance types [from the list of ones that support ENA advanced networking]( https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-summary-table) to ensure that cluster replication latency is not due to instance level network I/O bottlenecking.
+- Use only instance types [from the list of ones that support ENA advanced networking]( https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-summary-table) to ensure that cluster replication latency is not due to instance level network I/O bottlenecks.
 - Choose instances with sizes with more than 10 Gbps - but only if needed and only when having proven a node level network bottleneck with monitoring and/or stress testing.
 
 **To accommodate:**
 
 - Gitaly nodes do the main work of streaming repositories for push and pull operations (to add development endpoints, and to CI/CD).
 - Gitaly servers need reasonable low latency between cluster nodes and with Praefect services in order for the cluster to maintain operational and data integrity.
-- Gitaly nodes should be selected with network bottlenecking avoidance as a primary consideration.
+- Gitaly nodes should be selected with network bottleneck avoidance as a primary consideration.
 - Gitaly nodes should be monitored for network saturation.
 - Not all networking issues can be solved through optimizing the node level networking:
   - Gitaly cluster node replication depends on all networking between nodes.

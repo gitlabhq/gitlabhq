@@ -28,7 +28,7 @@ The Infrastructure as Code tooling [GitLab Environment Tool (GET)](https://gitla
 
 ### Getting started for production-grade Cloud Native Hybrid GitLab
 
-For the Cloud Native Hybrid architectures there are two Infrastructure as Code options which are compared in GitLab Cloud Native Hybrid on AWS EKS implementation pattern in the section [Available Infrastructure as Code for GitLab Cloud Native Hybrid](gitlab_hybrid_on_aws.md#available-infrastructure-as-code-for-gitlab-cloud-native-hybrid). It compares the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) to the AWS Quick Start for GitLab Cloud Native Hybrid on EKS which was codeveloped by GitLab and AWS. GET and the AWS Quick Start are both open source so anyone can build on top of them and contribute improvements to them.
+For the Cloud Native Hybrid architectures there are two Infrastructure as Code options which are compared in GitLab Cloud Native Hybrid on AWS EKS implementation pattern in the section [Available Infrastructure as Code for GitLab Cloud Native Hybrid](gitlab_hybrid_on_aws.md#available-infrastructure-as-code-for-gitlab-cloud-native-hybrid). It compares the [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit/-/tree/master) to the AWS Quick Start for GitLab Cloud Native Hybrid on EKS which was co-developed by GitLab and AWS. GET and the AWS Quick Start are both open source so anyone can build on top of them and contribute improvements to them.
 
 ## Introduction
 
@@ -533,7 +533,7 @@ gitlab=# \q
    ```ruby
    # Disable the built-in Postgres
     postgresql['enable'] = false
-   
+
    # Fill in the connection details
    gitlab_rails['db_adapter'] = "postgresql"
    gitlab_rails['db_encoding'] = "unicode"
@@ -549,7 +549,7 @@ gitlab=# \q
    ```ruby
    # Disable the built-in Redis
    redis['enable'] = false
-   
+
    # Fill in the connection details
    gitlab_rails['redis_host'] = "<redis-endpoint>"
    gitlab_rails['redis_port'] = 6379

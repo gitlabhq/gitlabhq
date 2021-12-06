@@ -71,7 +71,7 @@ comprised of a way to back up the instance and a way to restore it.
 
 ### Back up GitLab
 
-Create a backup of GitLab and all its data (database, repos, uploads, builds,
+Create a backup of GitLab and all its data (database, repositories, uploads, builds,
 artifacts, LFS objects, registry, pages). This is vital for making it possible
 to roll back GitLab to a working state if there's a problem with the upgrade:
 

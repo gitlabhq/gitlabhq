@@ -150,7 +150,7 @@ module Projects
         ::Ci::DestroyPipelineService.new(project, current_user).execute(pipeline)
       end
 
-      deleted_count = project.commit_statuses.delete_all
+      deleted_count = ::CommitStatus.for_project(project).delete_all
 
       Gitlab::AppLogger.info(
         class: 'Projects::DestroyService',

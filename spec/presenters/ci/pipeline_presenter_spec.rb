@@ -122,6 +122,30 @@ RSpec.describe Ci::PipelinePresenter do
     end
   end
 
+  describe '#coverage' do
+    subject { presenter.coverage }
+
+    context 'when pipeline has coverage' do
+      before do
+        allow(pipeline).to receive(:coverage).and_return(35.0)
+      end
+
+      it 'formats coverage into 2 decimal points' do
+        expect(subject).to eq('35.00')
+      end
+    end
+
+    context 'when pipeline does not have coverage' do
+      before do
+        allow(pipeline).to receive(:coverage).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
   describe '#ref_text' do
     subject { presenter.ref_text }
 

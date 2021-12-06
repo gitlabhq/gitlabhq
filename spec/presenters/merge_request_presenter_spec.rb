@@ -632,4 +632,28 @@ RSpec.describe MergeRequestPresenter do
 
     it { is_expected.to eq(expose_path("/api/v4/projects/#{project.id}/merge_requests/#{resource.iid}/unapprove")) }
   end
+
+  describe '#pipeline_coverage_delta' do
+    subject { described_class.new(resource, current_user: user).pipeline_coverage_delta }
+
+    context 'when merge request has pipeline coverage delta' do
+      before do
+        allow(resource).to receive(:pipeline_coverage_delta).and_return(35.0)
+      end
+
+      it 'formats coverage into 2 decimal points' do
+        expect(subject).to eq('35.00')
+      end
+    end
+
+    context 'when merge request does not have pipeline coverage delta' do
+      before do
+        allow(resource).to receive(:pipeline_coverage_delta).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
 end

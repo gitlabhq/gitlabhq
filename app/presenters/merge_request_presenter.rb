@@ -254,6 +254,13 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  delegator_override :pipeline_coverage_delta
+  def pipeline_coverage_delta
+    return unless merge_request.pipeline_coverage_delta.present?
+
+    '%.2f' % merge_request.pipeline_coverage_delta
+  end
+
   private
 
   def cached_can_be_reverted?

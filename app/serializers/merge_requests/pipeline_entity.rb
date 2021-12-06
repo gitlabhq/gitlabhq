@@ -43,7 +43,9 @@ class MergeRequests::PipelineEntity < Grape::Entity
   # Coverage isn't always necessary (e.g. when displaying project pipelines in
   # the UI). Instead of creating an entirely different entity we just allow the
   # disabling of this specific field whenever necessary.
-  expose :coverage, unless: proc { options[:disable_coverage] }
+  expose :coverage, unless: proc { options[:disable_coverage] } do |pipeline|
+    pipeline.present.coverage
+  end
 
   expose :ref do
     expose :branch?, as: :branch

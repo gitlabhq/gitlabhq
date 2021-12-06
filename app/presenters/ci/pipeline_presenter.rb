@@ -62,6 +62,13 @@ module Ci
       localized_names.fetch(pipeline.merge_request_event_type, s_('Pipeline|Pipeline'))
     end
 
+    delegator_override :coverage
+    def coverage
+      return unless pipeline.coverage.present?
+
+      '%.2f' % pipeline.coverage
+    end
+
     def ref_text
       if pipeline.detached_merge_request_pipeline?
         _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch}")

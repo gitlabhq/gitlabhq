@@ -365,7 +365,7 @@ This patch is available by default for
 [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/149)
 and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#apply-custom-patches-for-ruby).
 
-This patch provides the following metrics that make it easier to understand efficiency of memory use for a given codepath:
+This patch provides the following metrics that make it easier to understand efficiency of memory use for a given code path:
 
 - `mem_total_bytes`: the number of bytes consumed both due to new objects being allocated into existing object slots
                      plus additional memory allocated for large objects (that is, `mem_bytes + slot_size * mem_objects`).
@@ -384,7 +384,7 @@ and `100M mem_bytes`. You can view the current usage on [GitLab.com](https://log
 There are two ways of measuring your own code:
 
 1. Review `api_json.log`, `development_json.log`, `sidekiq.log` that includes memory allocation counters.
-1. Use `Gitlab::Memory::Instrumentation.with_memory_allocations` for a given codeblock and log it.
+1. Use `Gitlab::Memory::Instrumentation.with_memory_allocations` for a given code block and log it.
 1. Use [Measuring module](service_measurement.md)
 
 ```json

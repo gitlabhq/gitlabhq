@@ -67,6 +67,10 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#code_owners' do
+    it { expect(presenter.code_owners).to match_array([]) }
+  end
+
   describe '#ide_edit_path' do
     it { expect(presenter.ide_edit_path).to eq("/-/ide/project/#{project.full_path}/edit/HEAD/-/files/ruby/regex.rb") }
   end

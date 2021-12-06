@@ -3,8 +3,9 @@
 RSpec.describe QA::Resource::Base do
   include QA::Support::Helpers::StubEnv
 
-  let(:resource) { spy('resource') }
+  let(:resource) { spy('resource', username: 'qa') }
   let(:location) { 'http://location' }
+  let(:log_regex) { %r{==> Built a MyResource with username 'qa' via #{method} in [\d.\-e]+ seconds+} }
 
   shared_context 'with fabrication context' do
     subject do
@@ -68,6 +69,8 @@ RSpec.describe QA::Resource::Base do
     end
 
     context "with debug log level" do
+      let(:method) { 'api' }
+
       before do
         allow(QA::Runtime::Logger).to receive(:debug)
       end
@@ -78,7 +81,7 @@ RSpec.describe QA::Resource::Base do
         subject.fabricate_via_api!('something', resource: resource, parents: [])
 
         expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
-          expect(msg.call).to match_regex(/==> Built a MyResource via api in [\d.\-e]+ seconds+/)
+          expect(msg.call).to match_regex(log_regex)
         end
       end
     end
@@ -102,6 +105,8 @@ RSpec.describe QA::Resource::Base do
     end
 
     context "with debug log level" do
+      let(:method) { 'browser_ui' }
+
       before do
         allow(QA::Runtime::Logger).to receive(:debug)
       end
@@ -112,7 +117,7 @@ RSpec.describe QA::Resource::Base do
         subject.fabricate_via_browser_ui!('something', resource: resource, parents: [])
 
         expect(QA::Runtime::Logger).to have_received(:debug) do |&msg|
-          expect(msg.call).to match_regex(/==> Built a MyResource via browser_ui in [\d.\-e]+ seconds+/)
+          expect(msg.call).to match_regex(log_regex)
         end
       end
     end

@@ -964,7 +964,7 @@ creates and deletes indices between examples to ensure a clean index, so that th
 for polluting the tests with nonessential data.
 Most tests for Elasticsearch logic relate to:
 
-- Creating data in Postgres and waiting for it to be indexed in Elasticsearch.
+- Creating data in PostgreSQL and waiting for it to be indexed in Elasticsearch.
 - Searching for that data.
 - Ensuring that the test gives the expected result.
 
@@ -980,7 +980,7 @@ You do NOT need to add `:clean_gitlab_redis_shared_state` manually.
 
 Specs using Elasticsearch require that you:
 
-- Create data in Postgres and then index it into Elasticsearch.
+- Create data in PostgreSQL and then index it into Elasticsearch.
 - Enable Application Settings for Elasticsearch (which is disabled by default).
 
 To do so, use:
@@ -994,7 +994,7 @@ end
 Additionally, you can use the `ensure_elasticsearch_index!` method to overcome the asynchronous nature of Elasticsearch.
 It uses the [Elasticsearch Refresh API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html#refresh-api-desc)
 to make sure all operations performed on an index since the last refresh are available for search. This method is typically
-called after loading data into Postgres to ensure the data is indexed and searchable.
+called after loading data into PostgreSQL to ensure the data is indexed and searchable.
 
 #### Test Snowplow events
 
