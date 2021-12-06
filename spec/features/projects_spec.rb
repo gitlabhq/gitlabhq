@@ -383,6 +383,24 @@ RSpec.describe 'Project' do
                                           { form: '.rspec-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
   end
 
+  describe 'view for a user without an access to a repo' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+
+    it 'does not contain default branch information in its content' do
+      default_branch = 'merge-commit-analyze-side-branch'
+
+      project.add_guest(user)
+      project.change_head(default_branch)
+
+      sign_in(user)
+      visit project_path(project)
+
+      lines_with_default_branch = page.html.lines.select { |line| line.include?(default_branch) }
+      expect(lines_with_default_branch).to eq([])
+    end
+  end
+
   def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

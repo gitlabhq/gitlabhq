@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectTeam
-  include BulkMemberAccessLoad
-
   attr_accessor :project
 
   def initialize(project)
@@ -171,7 +169,7 @@ class ProjectTeam
   #
   # Returns a Hash mapping user ID -> maximum access level.
   def max_member_access_for_user_ids(user_ids)
-    max_member_access_for_resource_ids(User, user_ids, project.id) do |user_ids|
+    project.max_member_access_for_resource_ids(User, user_ids) do |user_ids|
       project.project_authorizations
              .where(user: user_ids)
              .group(:user_id)
@@ -180,7 +178,7 @@ class ProjectTeam
   end
 
   def write_member_access_for_user_id(user_id, project_access_level)
-    merge_value_to_request_store(User, user_id, project.id, project_access_level)
+    project.merge_value_to_request_store(User, user_id, project_access_level)
   end
 
   def max_member_access(user_id)

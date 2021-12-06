@@ -79,5 +79,30 @@ RSpec.describe Gitlab::GitAccessWiki do
         let(:message) { include('wiki') }
       end
     end
+
+    context 'when the actor is a deploy token' do
+      let_it_be(:actor) { create(:deploy_token, projects: [project]) }
+      let_it_be(:user) { actor }
+
+      before do
+        project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)
+      end
+
+      subject { access.check('git-upload-pack', changes) }
+
+      context 'when the wiki is enabled' do
+        let(:wiki_access_level) { ProjectFeature::ENABLED }
+
+        it { expect { subject }.not_to raise_error }
+      end
+
+      context 'when the wiki is disabled' do
+        let(:wiki_access_level) { ProjectFeature::DISABLED }
+
+        it_behaves_like 'forbidden git access' do
+          let(:message) { 'You are not allowed to download files from this wiki.' }
+        end
+      end
+    end
   end
 end

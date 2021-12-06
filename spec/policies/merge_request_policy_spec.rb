@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe MergeRequestPolicy do
   include ExternalAuthorizationServiceHelpers
 
-  let(:guest) { create(:user) }
-  let(:author) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:non_team_member) { create(:user) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:author) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:non_team_member) { create(:user) }
+
   let(:project) { create(:project, :public) }
 
   def permissions(user, merge_request)
@@ -50,13 +51,29 @@ RSpec.describe MergeRequestPolicy do
   end
 
   context 'when merge request is public' do
-    context 'and user is anonymous' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: author) }
 
+    context 'and user is anonymous' do
       subject { permissions(nil, merge_request) }
 
       it do
         is_expected.to be_disallowed(:create_todo, :update_subscription)
+      end
+    end
+
+    describe 'the author, who became a guest' do
+      subject { permissions(author, merge_request) }
+
+      it do
+        is_expected.to be_allowed(:update_merge_request)
+      end
+
+      it do
+        is_expected.to be_allowed(:reopen_merge_request)
+      end
+
+      it do
+        is_expected.to be_allowed(:approve_merge_request)
       end
     end
   end
@@ -103,6 +120,12 @@ RSpec.describe MergeRequestPolicy do
 
     describe 'a non-team-member' do
       subject { non_team_member }
+
+      it_behaves_like 'a denied user'
+    end
+
+    describe 'the author' do
+      subject { author }
 
       it_behaves_like 'a denied user'
     end

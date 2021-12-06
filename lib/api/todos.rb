@@ -29,10 +29,6 @@ module API
         post ":id/#{type}/:#{type_id_str}/todo" do
           issuable = instance_exec(params[type_id_str], &finder)
 
-          unless can?(current_user, :read_merge_request, issuable.project)
-            not_found!(type.split("_").map(&:capitalize).join(" "))
-          end
-
           todo = TodoService.new.mark_todo(issuable, current_user).first
 
           if todo

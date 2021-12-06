@@ -54,7 +54,7 @@ module Gitlab
 
         def initialize(delim = nil, lang = '', text = nil)
           @lang = lang.downcase.presence || Gitlab::FrontMatter::DELIM_LANG[delim]
-          @text = text
+          @text = text&.strip!
         end
 
         def data

@@ -264,8 +264,6 @@ module API
         success Entities::MergeRequest
       end
       get ':id/merge_requests/:merge_request_iid', feature_category: :code_review do
-        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
-
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request,
@@ -282,8 +280,6 @@ module API
         success Entities::UserBasic
       end
       get ':id/merge_requests/:merge_request_iid/participants', feature_category: :code_review do
-        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
-
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         participants = ::Kaminari.paginate_array(merge_request.participants)
@@ -295,8 +291,6 @@ module API
         success Entities::Commit
       end
       get ':id/merge_requests/:merge_request_iid/commits', feature_category: :code_review do
-        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
-
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         commits =
@@ -378,8 +372,6 @@ module API
         success Entities::MergeRequestChanges
       end
       get ':id/merge_requests/:merge_request_iid/changes', feature_category: :code_review do
-        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
-
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request,
@@ -394,8 +386,6 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/pipelines', feature_category: :continuous_integration do
         pipelines = merge_request_pipelines_with_access
-
-        not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
 
         present paginate(pipelines), with: Entities::Ci::PipelineBasic
       end

@@ -295,8 +295,12 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
                     new_path: file_name,
                     new_line: 2,
                     line_range: {
-                      "start_line_code" => 1,
-                      "end_line_code"   => 2
+                      "start" => {
+                        "line_code" => 1
+                      },
+                      "end" => {
+                        "line_code" => 2
+                      }
                     }
                   )
                 end
@@ -575,8 +579,12 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
                     new_path: file_name,
                     new_line: 2,
                     line_range: {
-                      "start_line_code" => 1,
-                      "end_line_code"   => 2
+                      "start" => {
+                        "line_code" => 1
+                      },
+                      "end" => {
+                        "line_code" => 2
+                      }
                     }
                   )
                 end
@@ -588,8 +596,12 @@ RSpec.describe Gitlab::Diff::PositionTracer::LineStrategy, :clean_gitlab_redis_c
                     old_line: nil,
                     new_line: 2,
                     line_range: {
-                      "start_line_code" => 1,
-                      "end_line_code"   => 2
+                      "start" => {
+                        "line_code" => 1
+                      },
+                      "end" => {
+                        "line_code" => 2
+                      }
                     }
                   )
                 end

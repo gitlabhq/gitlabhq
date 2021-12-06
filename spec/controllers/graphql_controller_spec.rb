@@ -52,6 +52,44 @@ RSpec.describe GraphqlController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'executes a simple query with no errors' do
+        post :execute, params: { query: '{ __typename }' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'data' => { '__typename' => 'Query' } })
+      end
+
+      it 'executes a simple multiplexed query with no errors' do
+        multiplex = [{ query: '{ __typename }' }] * 2
+
+        post :execute, params: { _json: multiplex }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq([
+          { 'data' => { '__typename' => 'Query' } },
+          { 'data' => { '__typename' => 'Query' } }
+        ])
+      end
+
+      it 'sets a limit on the total query size' do
+        graphql_query = "{#{(['__typename'] * 1000).join(' ')}}"
+
+        post :execute, params: { query: graphql_query }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response).to eq({ 'errors' => [{ 'message' => 'Query too large' }] })
+      end
+
+      it 'sets a limit on the total query size for multiplex queries' do
+        graphql_query = "{#{(['__typename'] * 200).join(' ')}}"
+        multiplex = [{ query: graphql_query }] * 5
+
+        post :execute, params: { _json: multiplex }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response).to eq({ 'errors' => [{ 'message' => 'Query too large' }] })
+      end
+
       it 'returns forbidden when user cannot access API' do
         # User cannot access API in a couple of cases
         # * When user is internal(like ghost users)
