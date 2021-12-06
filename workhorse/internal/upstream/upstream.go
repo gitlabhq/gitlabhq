@@ -207,8 +207,8 @@ func (u *upstream) findGeoProxyRoute(cleanedPath string, r *http.Request) *route
 
 func (u *upstream) pollGeoProxyAPI() {
 	for {
-		u.geoProxyPollSleep(geoProxyApiPollingInterval)
 		u.callGeoProxyAPI()
+		u.geoProxyPollSleep(geoProxyApiPollingInterval)
 	}
 }
 

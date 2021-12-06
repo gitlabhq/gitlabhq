@@ -92,6 +92,7 @@ module Gitlab
               script: job[:script],
               after_script: job[:after_script],
               environment: job[:environment],
+              resource_group_key: job[:resource_group],
               retry: job[:retry],
               parallel: job[:parallel],
               instance: job[:instance],

@@ -15,7 +15,5 @@ distribution:
 tier:
 - premium
 - ultimate
-performance_indicator_type:
-- gmau
-- paid_gmau
+performance_indicator_type: []
 milestone: "<13.9"

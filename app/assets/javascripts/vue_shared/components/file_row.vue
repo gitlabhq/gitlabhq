@@ -146,6 +146,7 @@ export default {
         ref="textOutput"
         :style="levelIndentation"
         class="file-row-name"
+        :title="file.name"
         data-qa-selector="file_name_content"
         :data-qa-file-name="file.name"
         data-testid="file-row-name-container"

@@ -292,3 +292,5 @@ module API
     end
   end
 end
+
+API::Repositories.prepend_mod

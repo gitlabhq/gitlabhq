@@ -78,7 +78,7 @@ module Gitlab
           def to_resource
             strong_memoize(:resource) do
               processable = initialize_processable
-              assign_resource_group(processable)
+              assign_resource_group(processable) unless @pipeline.create_deployment_in_separate_transaction?
               processable
             end
           end
@@ -88,7 +88,9 @@ module Gitlab
               ::Ci::Bridge.new(attributes)
             else
               ::Ci::Build.new(attributes).tap do |build|
-                build.assign_attributes(self.class.deployment_attributes_for(build))
+                unless @pipeline.create_deployment_in_separate_transaction?
+                  build.assign_attributes(self.class.deployment_attributes_for(build))
+                end
               end
             end
           end

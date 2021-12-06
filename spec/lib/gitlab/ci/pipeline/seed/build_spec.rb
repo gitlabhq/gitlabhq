@@ -393,6 +393,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
   describe '#to_resource' do
     subject { seed_build.to_resource }
 
+    before do
+      stub_feature_flags(create_deployment_in_separate_transaction: false)
+    end
+
     context 'when job is Ci::Build' do
       it { is_expected.to be_a(::Ci::Build) }
       it { is_expected.to be_valid }
@@ -442,6 +446,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it_behaves_like 'deployment job'
         it_behaves_like 'ensures environment existence'
+
+        context 'when create_deployment_in_separate_transaction feature flag is enabled' do
+          before do
+            stub_feature_flags(create_deployment_in_separate_transaction: true)
+          end
+
+          it 'does not create any deployments nor environments' do
+            expect(subject.deployment).to be_nil
+            expect(Environment.count).to eq(0)
+            expect(Deployment.count).to eq(0)
+          end
+        end
 
         context 'when the environment name is invalid' do
           let(:attributes) { { name: 'deploy', ref: 'master', environment: '!!!' } }
@@ -496,6 +512,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it 'returns a job with resource group' do
           expect(subject.resource_group).not_to be_nil
           expect(subject.resource_group.key).to eq('iOS')
+          expect(Ci::ResourceGroup.count).to eq(1)
+        end
+
+        context 'when create_deployment_in_separate_transaction feature flag is enabled' do
+          before do
+            stub_feature_flags(create_deployment_in_separate_transaction: true)
+          end
+
+          it 'does not create any resource groups' do
+            expect(subject.resource_group).to be_nil
+            expect(Ci::ResourceGroup.count).to eq(0)
+          end
         end
 
         context 'when resource group has $CI_ENVIRONMENT_NAME in it' do

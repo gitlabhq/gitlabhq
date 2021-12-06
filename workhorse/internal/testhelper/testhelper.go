@@ -22,6 +22,10 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
 
+const (
+	geoProxyEndpointPath = "/api/v4/geo/proxy"
+)
+
 func ConfigureSecret() {
 	secret.SetPath(path.Join(RootDir(), "testdata/test-secret"))
 }
@@ -50,7 +54,20 @@ func RequireResponseHeader(t *testing.T, w interface{}, header string, expected 
 	require.Equal(t, expected, actual, "values for HTTP header %s", header)
 }
 
+// TestServerWithHandler skips Geo API polling for a proxy URL by default,
+// use TestServerWithHandlerWithGeoPolling if you need to explicitly
+// handle Geo API polling request as well.
 func TestServerWithHandler(url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
+	return TestServerWithHandlerWithGeoPolling(url, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == geoProxyEndpointPath {
+			return
+		}
+
+		handler(w, r)
+	}))
+}
+
+func TestServerWithHandlerWithGeoPolling(url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logEntry := log.WithFields(log.Fields{
 			"method": r.Method,

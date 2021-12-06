@@ -158,4 +158,7 @@ export const EXTENSION_ICON_CLASS = {
   severityUnknown: 'gl-text-gray-400',
 };
 
+export const EXTENSION_SUMMARY_FAILED_CLASS = 'gl-text-red-500';
+export const EXTENSION_SUMMARY_NEUTRAL_CLASS = 'gl-text-gray-700';
+
 export { STATE_MACHINE };

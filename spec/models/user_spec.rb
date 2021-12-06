@@ -3525,19 +3525,7 @@ RSpec.describe User do
 
     subject { user.membership_groups }
 
-    shared_examples 'returns groups where the user is a member' do
-      specify { is_expected.to contain_exactly(parent_group, child_group) }
-    end
-
-    it_behaves_like 'returns groups where the user is a member'
-
-    context 'when feature flag :linear_user_membership_groups is disabled' do
-      before do
-        stub_feature_flags(linear_user_membership_groups: false)
-      end
-
-      it_behaves_like 'returns groups where the user is a member'
-    end
+    specify { is_expected.to contain_exactly(parent_group, child_group) }
   end
 
   describe '#authorizations_for_projects' do

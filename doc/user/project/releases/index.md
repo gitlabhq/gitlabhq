@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
@@ -9,26 +8,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41766) in GitLab 11.7.
 
-To introduce a checkpoint in your source code history, you can assign a
-[Git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) at the moment of release.
-However, in most cases, your users need more than just the raw source code.
-They need compiled objects or other assets output by your CI/CD system.
+In GitLab, a release enables you to create a snapshot of your project for your users, including
+installation packages and release notes. You can create a GitLab release on any branch. Creating a
+release also creates a [Git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging) to mark the
+release point in the source code.
 
-A GitLab Release can be:
+WARNING:
+Deleting a Git tag associated with a release also deletes the release.
+
+A release can include:
 
 - A snapshot of the source code of your repository.
 - [Generic packages](../../packages/generic_packages/index.md) created from job artifacts.
 - Other metadata associated with a released version of your code.
+- Release notes.
 
-You can create a GitLab release on any branch. When you create a release:
+When you [create a release](#create-a-release):
 
 - GitLab automatically archives source code and associates it with the release.
 - GitLab automatically creates a JSON file that lists everything in the release,
   so you can compare and audit releases. This file is called [release evidence](#release-evidence).
-- You can add release notes and a message for the tag associated with the release.
 
-After you create a release, you can [associate milestones with it](#associate-milestones-with-a-release),
-and attach [release assets](#release-assets), like runbooks or packages.
+When you create a release, or after, you can:
+
+- Add release notes.
+- Add a message for the Git tag associated with the release.
+- [Associate milestones with it](#associate-milestones-with-a-release).
+- Attach [release assets](#release-assets), like runbooks or packages.
 
 ## View releases
 
@@ -57,38 +63,73 @@ switch between ascending or descending order, select **Sort order**.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32812) in GitLab 12.9. Releases can be created directly in the GitLab UI.
 
-You can create a release in the user interface, or by using the
-[Releases API](../../../api/releases/index.md#create-a-release).
-We recommend using the API to create releases as one of the last steps in your
-CI/CD pipeline.
+You can create a release:
 
-Only users with at least the Developer role can create releases.
-Read more about [Release permissions](#release-permissions).
+- [Using a job in your CI/CD pipeline](#create-a-release-by-using-a-cicd-job).
+- [In the Releases page](#create-a-release-in-the-releases-page).
+- [In the Tags page](#create-a-release-in-the-tags-page).
+- Using the [Releases API](../../../api/releases/index.md#create-a-release).
 
-To create a new release through the GitLab UI:
+We recommend creating a release as one of the last steps in your CI/CD pipeline.
 
+Prerequisites:
+
+- You must have at least the Developer role for a project. For more information, read
+[Release permissions](#release-permissions).
+
+### Create a release in the Releases page
+
+To create a release in the Releases page:
+
+1. On the top bar, select **Menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases** and select **New release**.
-1. Open the [**Tag name**](#tag-name) dropdown. Select an existing tag or type
-   in a new tag name. Selecting an existing tag that is already associated with
-   a release will result in a validation error.
-1. If creating a new tag, open the **Create from** dropdown. Select a
-   branch, tag, or commit SHA to use when creating the new tag.
-1. Optionally, fill out any additional information about the release, such as its
-   [title](#title), [milestones](#associate-milestones-with-a-release),
-   [release notes](#release-notes-description), or [assets links](#links).
-1. Click **Create release**.
+1. From the [**Tag name**](#tag-name) dropdown, either:
+   - Select an existing Git tag. Selecting an existing tag that is already associated with a release
+     results in a validation error.
+   - Enter a new Git tag name.
+      1. From the **Create from** dropdown, select a branch or commit SHA to use when creating the
+         new tag.
+1. Optional. Enter additional information about the release, including:
+   - [Title](#title).
+   - [Milestones](#associate-milestones-with-a-release).
+   - [Release notes](#release-notes-description).
+   - [Asset links](#links).
+1. Select **Create release**.
 
-## Create a release by using a CI/CD job
+### Create a release in the Tags page
+
+To create a release in the Tags page, add release notes to either an existing or a new Git tag.
+
+To add release notes to a new Git tag:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+1. Select **New tag**.
+1. Optional. Enter a tag message in the **Message** text box.
+1. In the **Release notes** text box, enter the release's description.
+   You can use Markdown and drag and drop files to this text box.
+1. Select **Create tag**.
+
+To edit release notes of an existing Git tag:
+
+1. On the top bar, select **Menu > Projects** and find your project.
+1. On the left sidebar, select **Repository > Tags**.
+1. Select **Edit release notes** (**{pencil}**).
+1. In the **Release notes** text box, enter the release's description.
+   You can use Markdown and drag and drop files to this text box.
+1. Select **Save changes**.
+
+### Create a release by using a CI/CD job
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 12.7.
 
 You can create a release directly as part of the GitLab CI/CD pipeline
-by using [the `release` keyword](../../../ci/yaml/index.md#release) in the job definition.
+by using the [`release` keyword](../../../ci/yaml/index.md#release) in the job definition.
 
-The release is created only if the job processes without error. If the Rails API returns an error
-during release creation, the release job fails.
+The release is created only if the job processes without error. If the API returns an error during
+release creation, the release job fails.
 
-### CI/CD example of the `release` keyword
+#### CI/CD example of the `release` keyword
 
 To create a release when you push a Git tag, or when you add a Git tag
 in the UI by going to **Repository > Tags**:
@@ -207,7 +248,7 @@ which requires the text representation of the certificate.
 
 ### `release-cli` command line
 
-The entries under the `release` node are transformed into a `bash` command line and sent
+The entries under the `release` node are transformed into Bash commands and sent
 to the Docker container, which contains the [release-cli](https://gitlab.com/gitlab-org/release-cli).
 You can also call the `release-cli` directly from a `script` entry.
 
@@ -255,7 +296,8 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 ## Edit a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6. Asset link editing was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26016) in GitLab 12.6.
+> - Asset link editing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9427) in GitLab 12.10.
 
 Only users with at least the Developer role can edit releases.
 Read more about [Release permissions](#release-permissions).
@@ -270,29 +312,6 @@ To edit the details of a release:
 You can edit the release title, notes, associated milestones, and asset links.
 To change the release date use the
 [Releases API](../../../api/releases/index.md#update-a-release).
-
-## Add release notes to Git tags
-
-If you have an existing Git tag, you can add release notes to it.
-
-You can do this in the user interface, or by using the [Releases API](../../../api/releases/index.md).
-We recommend using the API to add release notes as one of the last steps in your CI/CD release pipeline.
-
-In the interface, to add release notes to a new Git tag:
-
-1. Navigate to your project's **Repository > Tags**.
-1. Click **New tag**.
-1. In the **Release notes** field, enter the release's description.
-   You can use Markdown and drag and drop files to this field.
-1. Click **Create tag**.
-
-In the interface, to add release notes to an existing Git tag:
-
-1. Navigate to your project's **Repository > Tags**.
-1. Click **Edit release notes** (the pencil icon).
-1. In the **Release notes** field, enter the release's description.
-   You can use Markdown in this field, and drag and drop files to it.
-1. Click **Save changes**.
 
 ## Associate milestones with a release
 

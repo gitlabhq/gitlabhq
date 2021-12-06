@@ -165,7 +165,7 @@ export default {
   <div class="mr-widget-body media">
     <status-icon :show-disabled-button="canUpdate" status="warning" />
     <div class="media-body">
-      <div class="gl-ml-3 float-left">
+      <div class="float-left">
         <span class="gl-font-weight-bold">
           {{
             __("Merge blocked: merge request must be marked as ready. It's still marked as draft.")

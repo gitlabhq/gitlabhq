@@ -729,7 +729,7 @@ module Gitlab
           # rubocop: disable CodeReuse/ActiveRecord
           # rubocop: disable UsageData/LargeTable
           start = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
-          finish = ::Event.where(time_period).select(:id).order(created_at: :asc).first&.id
+          finish = ::Event.where(time_period).select(:id).order(created_at: :desc).first&.id
           estimate_batch_distinct_count(::Event.where(time_period), :author_id, start: start, finish: finish)
           # rubocop: enable UsageData/LargeTable
           # rubocop: enable CodeReuse/ActiveRecord
