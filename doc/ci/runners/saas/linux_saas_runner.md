@@ -22,9 +22,11 @@ The final disk space your jobs can use will be less than 25GB. Some disk space a
 
 The `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners are dedicated for GitLab projects as well as community forks of them. They use a slightly larger machine type (n1-standard-2) and have a bigger SSD disk size. They don't run untagged jobs and unlike the general fleet of shared runners, the instances are re-used up to 40 times.
 
-Jobs handled by the shared runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
+Jobs handled by shared runners on GitLab.com (`shared-runners-manager-X.gitlab.com`)
 **time out after 3 hours**, regardless of the timeout configured in a
-project. Check the issues [#4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
+project. Check issue [#4010](https://gitlab.com/gitlab-com/infrastructure/-/issues/4010) and [#4070](https://gitlab.com/gitlab-com/infrastructure/-/issues/4070) for the reference.
+
+Jobs handled by shared runners on Windows and macOS on GitLab.com **time out after 1 hour** while this service is in the Beta stage.
 
 Below are the runners' settings.
 

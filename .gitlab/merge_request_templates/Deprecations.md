@@ -41,7 +41,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 
 ## Reviewers
 
-When the content is ready for review, it must be reviewed by Technical Writer and Engineering Manager, but can also be reviewed by
+When the content is ready for review, it must be reviewed by a Technical Writer and Engineering Manager, but can also be reviewed by
 Product Marketing, Product Design, and the Product Leaders for this area. Please use the
 [Reviewers for Merge Requests](https://docs.gitlab.com/ee/user/project/merge_requests/getting_started#reviewer)
 feature for all reviews. Reviewers will then `approve` the MR and remove themselves from Reviewers when their review is complete.
@@ -61,7 +61,7 @@ as needed, @ message the PM to inform them the first review is complete, and rem
 yourself as a reviewer if it's not ready for merge yet.
 
 <details>
-<summary>Expand for Details </summary>
+<summary>Expand for Details</summary>
 
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).

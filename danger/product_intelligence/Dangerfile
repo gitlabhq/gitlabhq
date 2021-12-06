@@ -15,8 +15,8 @@ MSG
 product_intelligence_paths_to_review = helper.changes_by_category[:product_intelligence]
 labels_to_add = product_intelligence.missing_labels
 
-return if product_intelligence_paths_to_review.empty? || labels_to_add.empty?
+return if product_intelligence_paths_to_review.empty?
 
-warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review))
+warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review)) unless product_intelligence.has_approved_label?
 
-project_helper.labels_to_add.concat(labels_to_add)
+project_helper.labels_to_add.concat(labels_to_add) unless labels_to_add.empty?

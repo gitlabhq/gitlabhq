@@ -64,45 +64,47 @@ module Gitlab
       # be throttled.
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`
-      # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
-      # @option threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
-      # @option users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
+      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      # @param threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
+      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
+      # @param peek [Boolean] Optional. When true the key will not be incremented but the current throttled state will be returned.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(key, **options)
+      def throttled?(key, scope:, threshold: nil, users_allowlist: nil, peek: false)
         raise InvalidKeyError unless rate_limits[key]
 
-        return if scoped_user_in_allowlist?(options)
+        return false if scoped_user_in_allowlist?(scope, users_allowlist)
 
-        threshold_value = options[:threshold] || threshold(key)
-        threshold_value > 0 &&
-          increment(key, options[:scope]) > threshold_value
+        threshold_value = threshold || threshold(key)
+
+        return false if threshold_value == 0
+
+        interval_value = interval(key)
+        # `period_key` is based on the current time and interval so when time passes to the next interval
+        # the key changes and the rate limit count starts again from 0.
+        # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
+        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
+        cache_key = cache_key(key, scope, period_key)
+
+        value = if peek
+                  read(cache_key)
+                else
+                  increment(cache_key, interval_value, time_elapsed_in_period)
+                end
+
+        value > threshold_value
       end
 
-      # Increments a cache key that is based on the current time and interval.
-      # So that when time passes to the next interval, the key changes and the count starts again from 0.
-      #
-      # Based on https://github.com/rack/rack-attack/blob/886ba3a18d13c6484cd511a4dc9b76c0d14e5e96/lib/rack/attack/cache.rb#L63-L68
+      # Returns the current rate limited state without incrementing the count.
       #
       # @param key [Symbol] Key attribute registered in `.rate_limits`
-      # @option scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      # @param scope [Array<ActiveRecord>] Array of ActiveRecord models to scope throttling to a specific request (e.g. per user per project)
+      # @param threshold [Integer] Optional threshold value to override default one registered in `.rate_limits`
+      # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       #
-      # @return [Integer] incremented value
-      def increment(key, scope)
-        interval_value = interval(key)
-
-        period_key, time_elapsed_in_period = Time.now.to_i.divmod(interval_value)
-
-        cache_key = "#{action_key(key, scope)}:#{period_key}"
-        # We add a 1 second buffer to avoid timing issues when we're at the end of a period
-        expiry = interval_value - time_elapsed_in_period + 1
-
-        ::Gitlab::Redis::RateLimiting.with do |redis|
-          redis.pipelined do
-            redis.incr(cache_key)
-            redis.expire(cache_key, expiry)
-          end.first
-        end
+      # @return [Boolean] Whether or not a request is currently throttled
+      def peek(key, scope:, threshold: nil, users_allowlist: nil)
+        throttled?(key, peek: true, scope: scope, threshold: threshold, users_allowlist: users_allowlist)
       end
 
       # Logs request using provided logger
@@ -150,7 +152,28 @@ module Gitlab
         action[setting] if action
       end
 
-      def action_key(key, scope)
+      # Increments the rate limit count and returns the new count value.
+      def increment(cache_key, interval_value, time_elapsed_in_period)
+        # We add a 1 second buffer to avoid timing issues when we're at the end of a period
+        expiry = interval_value - time_elapsed_in_period + 1
+
+        ::Gitlab::Redis::RateLimiting.with do |redis|
+          redis.pipelined do
+            redis.incr(cache_key)
+            redis.expire(cache_key, expiry)
+          end.first
+        end
+      end
+
+      # Returns the rate limit count.
+      # Will be 0 if there is no data in the cache.
+      def read(cache_key)
+        ::Gitlab::Redis::RateLimiting.with do |redis|
+          redis.get(cache_key).to_i
+        end
+      end
+
+      def cache_key(key, scope, period_key)
         composed_key = [key, scope].flatten.compact
 
         serialized = composed_key.map do |obj|
@@ -161,20 +184,20 @@ module Gitlab
           end
         end.join(":")
 
-        "application_rate_limiter:#{serialized}"
+        "application_rate_limiter:#{serialized}:#{period_key}"
       end
 
       def application_settings
         Gitlab::CurrentSettings.current_application_settings
       end
 
-      def scoped_user_in_allowlist?(options)
-        return unless options[:users_allowlist].present?
+      def scoped_user_in_allowlist?(scope, users_allowlist)
+        return unless users_allowlist.present?
 
-        scoped_user = [options[:scope]].flatten.find { |s| s.is_a?(User) }
+        scoped_user = [scope].flatten.find { |s| s.is_a?(User) }
         return unless scoped_user
 
-        scoped_user.username.downcase.in?(options[:users_allowlist])
+        scoped_user.username.downcase.in?(users_allowlist)
       end
     end
 

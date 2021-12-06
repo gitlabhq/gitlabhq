@@ -4,9 +4,12 @@
 module Tooling
   module Danger
     module ProductIntelligence
+      APPROVED_LABEL = 'product intelligence::approved'
+      REVIEW_LABEL = 'product intelligence::review pending'
+
       WORKFLOW_LABELS = [
-        'product intelligence::approved',
-        'product intelligence::review pending'
+        APPROVED_LABEL,
+        REVIEW_LABEL
       ].freeze
 
       def missing_labels
@@ -14,9 +17,13 @@ module Tooling
 
         labels = []
         labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
-        labels << 'product intelligence::review pending' unless has_workflow_labels?
+        labels << REVIEW_LABEL unless has_workflow_labels?
 
         labels
+      end
+
+      def has_approved_label?
+        helper.mr_labels.include?(APPROVED_LABEL)
       end
 
       private

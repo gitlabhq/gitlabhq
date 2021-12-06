@@ -2431,7 +2431,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     let(:issues)         { table(:issues) }
 
     def setup
-      namespace = namespaces.create!(name: 'foo', path: 'foo')
+      namespace = namespaces.create!(name: 'foo', path: 'foo', type: Namespaces::UserNamespace.sti_name)
       projects.create!(namespace_id: namespace.id)
     end
 

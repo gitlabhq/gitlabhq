@@ -73,6 +73,8 @@ RSpec.describe Ci::RetryBuildService do
              scheduled_at: 10.seconds.since)
     end
 
+    let_it_be(:internal_job_variable) { create(:ci_job_variable, job: build) }
+
     before_all do
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
@@ -86,7 +88,7 @@ RSpec.describe Ci::RetryBuildService do
                file_type: file_type, job: build, expire_at: build.artifacts_expire_at)
       end
 
-      create(:ci_job_variable, job: build)
+      create(:ci_job_variable, :dotenv_source, job: build)
       create(:ci_build_need, build: build)
       create(:terraform_state_version, build: build)
     end
@@ -124,6 +126,27 @@ RSpec.describe Ci::RetryBuildService do
 
         expect(new_build.needs_attributes).to match(build.needs_attributes)
         expect(new_build.needs).not_to match(build.needs)
+      end
+
+      context 'when clone_job_variables_at_job_retry is enabled' do
+        before do
+          stub_feature_flags(clone_job_variables_at_job_retry: true)
+        end
+
+        it 'clones only internal job variables' do
+          expect(new_build.job_variables.count).to eq(1)
+          expect(new_build.job_variables).to contain_exactly(having_attributes(key: internal_job_variable.key, value: internal_job_variable.value))
+        end
+      end
+
+      context 'when clone_job_variables_at_job_retry is not enabled' do
+        before do
+          stub_feature_flags(clone_job_variables_at_job_retry: false)
+        end
+
+        it 'does not clone internal job variables' do
+          expect(new_build.job_variables.count).to eq(0)
+        end
       end
     end
 

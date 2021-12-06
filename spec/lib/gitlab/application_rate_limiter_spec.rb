@@ -2,37 +2,37 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ApplicationRateLimiter do
+RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
+  let(:rate_limits) do
+    {
+      test_action: {
+        threshold: 1,
+        interval: 2.minutes
+      },
+      another_action: {
+        threshold: 2,
+        interval: 3.minutes
+      }
+    }
+  end
+
   subject { described_class }
 
-  describe '.throttled?', :clean_gitlab_redis_rate_limiting do
-    let(:rate_limits) do
-      {
-        test_action: {
-          threshold: 1,
-          interval: 2.minutes
-        },
-        another_action: {
-          threshold: 2,
-          interval: 3.minutes
-        }
-      }
-    end
+  before do
+    allow(described_class).to receive(:rate_limits).and_return(rate_limits)
+  end
 
-    before do
-      allow(described_class).to receive(:rate_limits).and_return(rate_limits)
-    end
-
+  describe '.throttled?' do
     context 'when the key is invalid' do
       context 'is provided as a Symbol' do
         context 'but is not defined in the rate_limits Hash' do
           it 'raises an InvalidKeyError exception' do
             key = :key_not_in_rate_limits_hash
 
-            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
       end
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
           it 'raises an InvalidKeyError exception' do
             key = rate_limits.keys[0].to_s
 
-            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
 
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
           it 'raises an InvalidKeyError exception' do
             key = 'key_not_in_rate_limits_hash'
 
-            expect { subject.throttled?(key) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
+            expect { subject.throttled?(key, scope: [user]) }.to raise_error(Gitlab::ApplicationRateLimiter::InvalidKeyError)
           end
         end
       end
@@ -89,6 +89,17 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
           expect(subject.throttled?(:another_action, scope: scope)).to eq(true)
         end
       end
+
+      it 'allows peeking at the current state without changing its value' do
+        travel_to(start_time) do
+          expect(subject.throttled?(:test_action, scope: scope)).to eq(false)
+          2.times do
+            expect(subject.throttled?(:test_action, scope: scope, peek: true)).to eq(false)
+          end
+          expect(subject.throttled?(:test_action, scope: scope)).to eq(true)
+          expect(subject.throttled?(:test_action, scope: scope, peek: true)).to eq(true)
+        end
+      end
     end
 
     context 'when using ActiveRecord models as scope' do
@@ -101,6 +112,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter do
       let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
 
       it_behaves_like 'throttles based on key and scope'
+    end
+  end
+
+  describe '.peek' do
+    it 'peeks at the current state without changing its value' do
+      freeze_time do
+        expect(subject.peek(:test_action, scope: [user])).to eq(false)
+        expect(subject.throttled?(:test_action, scope: [user])).to eq(false)
+        2.times do
+          expect(subject.peek(:test_action, scope: [user])).to eq(false)
+        end
+        expect(subject.throttled?(:test_action, scope: [user])).to eq(true)
+        expect(subject.peek(:test_action, scope: [user])).to eq(true)
+      end
     end
   end
 

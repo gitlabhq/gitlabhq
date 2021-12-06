@@ -17,31 +17,31 @@ module IntegrationsHelper
     "#{event}_events"
   end
 
-  def scoped_integrations_path
-    if @project.present?
-      project_settings_integrations_path(@project)
-    elsif @group.present?
-      group_settings_integrations_path(@group)
+  def scoped_integrations_path(project: nil, group: nil)
+    if project.present?
+      project_settings_integrations_path(project)
+    elsif group.present?
+      group_settings_integrations_path(group)
     else
       integrations_admin_application_settings_path
     end
   end
 
-  def scoped_integration_path(integration)
-    if @project.present?
-      project_service_path(@project, integration)
-    elsif @group.present?
-      group_settings_integration_path(@group, integration)
+  def scoped_integration_path(integration, project: nil, group: nil)
+    if project.present?
+      project_service_path(project, integration)
+    elsif group.present?
+      group_settings_integration_path(group, integration)
     else
       admin_application_settings_integration_path(integration)
     end
   end
 
-  def scoped_edit_integration_path(integration)
-    if @project.present?
-      edit_project_service_path(@project, integration)
-    elsif @group.present?
-      edit_group_settings_integration_path(@group, integration)
+  def scoped_edit_integration_path(integration, project: nil, group: nil)
+    if project.present?
+      edit_project_service_path(project, integration)
+    elsif group.present?
+      edit_group_settings_integration_path(group, integration)
     else
       edit_admin_application_settings_integration_path(integration)
     end
@@ -51,11 +51,11 @@ module IntegrationsHelper
     overrides_admin_application_settings_integration_path(integration, options)
   end
 
-  def scoped_test_integration_path(integration)
-    if @project.present?
-      test_project_service_path(@project, integration)
-    elsif @group.present?
-      test_group_settings_integration_path(@group, integration)
+  def scoped_test_integration_path(integration, project: nil, group: nil)
+    if project.present?
+      test_project_service_path(project, integration)
+    elsif group.present?
+      test_group_settings_integration_path(group, integration)
     else
       test_admin_application_settings_integration_path(integration)
     end
@@ -71,7 +71,7 @@ module IntegrationsHelper
     end
   end
 
-  def integration_form_data(integration, group: nil)
+  def integration_form_data(integration, project: nil, group: nil)
     form_data = {
       id: integration.id,
       show_active: integration.show_active_box?.to_s,
@@ -87,9 +87,9 @@ module IntegrationsHelper
       inherit_from_id: integration.inherit_from_id,
       integration_level: integration_level(integration),
       editable: integration.editable?.to_s,
-      cancel_path: scoped_integrations_path,
+      cancel_path: scoped_integrations_path(project: project, group: group),
       can_test: integration.testable?.to_s,
-      test_path: scoped_test_integration_path(integration),
+      test_path: scoped_test_integration_path(integration, project: project, group: group),
       reset_path: scoped_reset_integration_path(integration, group: group)
     }
 
@@ -107,9 +107,9 @@ module IntegrationsHelper
     }
   end
 
-  def integration_list_data(integrations)
+  def integration_list_data(integrations, group: nil, project: nil)
     {
-      integrations: integrations.map { |i| serialize_integration(i) }.to_json
+      integrations: integrations.map { |i| serialize_integration(i, group: group, project: project) }.to_json
     }
   end
 
@@ -215,13 +215,13 @@ module IntegrationsHelper
     end
   end
 
-  def serialize_integration(integration)
+  def serialize_integration(integration, group: nil, project: nil)
     {
       active: integration.operating?,
       title: integration.title,
       description: integration.description,
       updated_at: integration.updated_at,
-      edit_path: scoped_edit_integration_path(integration),
+      edit_path: scoped_edit_integration_path(integration, group: group, project: project),
       name: integration.to_param
     }
   end

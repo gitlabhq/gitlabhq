@@ -8,7 +8,7 @@
 
 ## Author's checklist
 
-- [ ] Consider taking [the GitLab Technical Writing Fundamentals course](https://gitlab.edcast.com/pathways/ECL-02528ee2-c334-4e16-abf3-e9d8b8260de4)
+- [ ] Consider taking [the GitLab Technical Writing Fundamentals course](https://gitlab.edcast.com/pathways/ECL-02528ee2-c334-4e16-abf3-e9d8b8260de4).
 - [ ] Follow the:
   - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
@@ -40,7 +40,7 @@ Documentation-related MRs should be reviewed by a Technical Writer for a non-blo
     - [ ] The headings (other than the page title) should be active. Instead of `Configuring GDK`, say something like `Configure GDK`.
     - [ ] Any task steps should be written as a numbered list.
     - If the content still needs to be edited for topic types, you can create a follow-up issue with the ~"docs-technical-debt" label.
-- [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
+- [ ] Review by assigned maintainer, who can always request/require the reviews above. Maintainer's review can occur before or after a technical writer review.
 - [ ] Ensure a release milestone is set.
 
 /label ~documentation ~"type::maintenance"

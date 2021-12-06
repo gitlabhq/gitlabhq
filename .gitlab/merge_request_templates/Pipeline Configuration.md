@@ -9,7 +9,7 @@
 
 <!-- Link related issues below. -->
 
-## Check-list
+## Checklist
 
 ### Pre-merge
 

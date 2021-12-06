@@ -20,13 +20,13 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
   - [ ] Assign to a reviewer and maintainer, per our [Code Review process].
   - [ ] Ensure it's approved according to our [Approval Guidelines].
   - [ ] Ensure it's approved by an AppSec engineer.
-    - Please see the security release [Code reviews and Approvals](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#code-reviews-and-approvals) documentation for details on which AppSec team member to ping for approval.
+    - Please see the security release [Code reviews and Approvals] documentation for details on which AppSec team member to ping for approval.
     - Trigger the [`package-and-qa` build]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
-- [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`)
+- [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Milestone is set to the version this backport applies to. A closed milestone can be assigned via [quick actions].
   - [ ] Ensure it's approved by a maintainer.
 
-**Note:** Reviewer/maintainer should not be a Release Manager
+**Note:** Reviewer/maintainer should not be a Release Manager.
 
 ## Maintainer checklist
 
@@ -39,6 +39,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 [quick actions]: https://docs.gitlab.com/ee/user/project/quick_actions.html#quick-actions-for-issues-merge-requests-and-epics
 [CHANGELOG entry]: https://docs.gitlab.com/ee/development/changelog.html#overview
 [Code Review process]: https://docs.gitlab.com/ee/development/code_review.html
+[Code reviews and Approvals]: (https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#code-reviews-and-approvals)
 [Approval Guidelines]: https://docs.gitlab.com/ee/development/code_review.html#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
 [`package-and-qa` build]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-package-and-qa-job

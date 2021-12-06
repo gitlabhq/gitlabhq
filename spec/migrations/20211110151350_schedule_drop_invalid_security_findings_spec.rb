@@ -6,7 +6,7 @@ require_migration!
 RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, schema: 20211108211434 do
   let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
 
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
+  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user', type: Namespaces::UserNamespace.sti_name) }
   let_it_be(:project) { table(:projects).create!(namespace_id: namespace.id) }
 
   let_it_be(:pipelines) { table(:ci_pipelines) }

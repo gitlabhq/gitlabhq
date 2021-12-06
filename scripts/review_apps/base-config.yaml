@@ -158,7 +158,7 @@ postgresql:
       memory: 1500M
   master:
     nodeSelector:
-      preemptible: "true"
+      preemptible: "false"
 prometheus:
   install: false
 redis:

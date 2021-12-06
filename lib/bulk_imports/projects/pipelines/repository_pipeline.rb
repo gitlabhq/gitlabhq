@@ -16,6 +16,8 @@ module BulkImports
 
         def load(context, data)
           url = data['httpUrlToRepo']
+          return unless url.present?
+
           url = url.sub("://", "://oauth2:#{context.configuration.access_token}@")
           project = context.portable
 
