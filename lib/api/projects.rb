@@ -64,6 +64,7 @@ module API
           ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
         end
 
+        #this has been accepted
         accepted!
       end
 

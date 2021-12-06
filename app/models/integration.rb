@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
     jenkins shimo
-  ].freeze
+  ].freeze 
 
   # Fake integrations to help with local development.
   DEV_INTEGRATION_NAMES = %w[
