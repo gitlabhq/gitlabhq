@@ -43,11 +43,6 @@ There were some patenting and licensing concerns with GraphQL. However, these
 have been resolved to our satisfaction. The reference implementations
 were re-licensed under MIT, and the OWF license used for the GraphQL specification.
 
-When GraphQL is fully implemented, GitLab:
-
-- Can delete controller-specific endpoints.
-- Will no longer maintain two different APIs.
-
 ## Compatibility guidelines
 
 The HTTP API is versioned with a single number, which is currently `4`. This number
