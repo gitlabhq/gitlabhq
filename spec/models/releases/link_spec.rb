@@ -73,18 +73,23 @@ RSpec.describe Releases::Link do
 
     it { is_expected.to be_truthy }
 
+
+    artifacts = 'https://google.com/-/jobs/140463678/artifacts/download'
+
     context 'when link does not include project web url' do
-      let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
+      let(:url) { artifacts }
 
       it { is_expected.to be_falsy }
     end
   end
 
+ 
+
   describe '#external?' do
     subject { link.external? }
 
     let(:link) { build(:release_link, release: release, url: url) }
-    let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
+    let(:url) { artifacts }
 
     it { is_expected.to be_truthy }
   end
