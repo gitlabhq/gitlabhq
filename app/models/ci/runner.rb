@@ -44,7 +44,7 @@ module Ci
 
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
-    AVAILABLE_STATUSES = %w[active paused online offline not_connected].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline not_connected stale].freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
@@ -287,10 +287,15 @@ module Ci
     end
 
     def stale?
+      return false unless created_at
+
       [created_at, contacted_at].compact.max < self.class.stale_deadline
     end
 
-    def status
+    def status(legacy_mode = nil)
+      return deprecated_rest_status if legacy_mode == '14.5'
+
+      return :stale if stale?
       return :not_connected unless contacted_at
 
       online? ? :online : :offline

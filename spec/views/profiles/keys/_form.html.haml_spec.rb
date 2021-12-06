@@ -33,8 +33,8 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
     end
 
     it 'has the expires at field', :aggregate_failures do
-      expect(rendered).to have_field('Expires at', type: 'date')
-      expect(page.find_field('Expires at')['min']).to eq(l(1.day.from_now, format: "%Y-%m-%d"))
+      expect(rendered).to have_field('Expiration date', type: 'date')
+      expect(page.find_field('Expiration date')['min']).to eq(l(1.day.from_now, format: "%Y-%m-%d"))
       expect(rendered).to have_text('Key can still be used after expiration.')
     end
 

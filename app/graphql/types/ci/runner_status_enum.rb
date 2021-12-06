@@ -5,24 +5,33 @@ module Types
     class RunnerStatusEnum < BaseEnum
       graphql_name 'CiRunnerStatus'
 
-      ::Ci::Runner::AVAILABLE_STATUSES.each do |status|
-        description = case status
-                      when 'active'
-                        "A runner that is not paused."
-                      when 'online'
-                        "A runner that contacted this instance within the last #{::Ci::Runner::ONLINE_CONTACT_TIMEOUT.inspect}."
-                      when 'offline'
-                        "A runner that has not contacted this instance within the last #{::Ci::Runner::ONLINE_CONTACT_TIMEOUT.inspect}."
-                      when 'not_connected'
-                        "A runner that has never contacted this instance."
-                      else
-                        "A runner that is #{status.to_s.tr('_', ' ')}."
-                      end
+      value 'ACTIVE',
+            description: 'Runner that is not paused.',
+            deprecated: { reason: 'Use CiRunnerType.active instead', milestone: '14.6' },
+            value: :active
 
-        value status.to_s.upcase,
-              description: description,
-              value: status.to_sym
-      end
+      value 'PAUSED',
+            description: 'Runner that is paused.',
+            deprecated: { reason: 'Use CiRunnerType.active instead', milestone: '14.6' },
+            value: :paused
+
+      value 'ONLINE',
+            description: "Runner that contacted this instance within the last #{::Ci::Runner::ONLINE_CONTACT_TIMEOUT.inspect}.",
+            value: :online
+
+      value 'OFFLINE',
+            description: "Runner that has not contacted this instance within the last #{::Ci::Runner::ONLINE_CONTACT_TIMEOUT.inspect}.",
+            deprecated: { reason: 'This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period offline', milestone: '14.6' },
+            value: :offline
+
+      value 'STALE',
+            description: "Runner that has not contacted this instance within the last #{::Ci::Runner::STALE_TIMEOUT.inspect}. Only available if legacyMode is null. Will be a possible return value starting in 15.0",
+            value: :stale
+
+      value 'NOT_CONNECTED',
+            description: 'Runner that has never contacted this instance.',
+            deprecated: { reason: 'This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period of no contact', milestone: '14.6' },
+            value: :not_connected
     end
   end
 end

@@ -21496,6 +21496,9 @@ msgstr ""
 msgid "Maximum allowable lifetime for personal access token (days)"
 msgstr ""
 
+msgid "Maximum allowed lifetime for SSH keys (in days)"
+msgstr ""
+
 msgid "Maximum artifacts size"
 msgstr ""
 
@@ -26705,13 +26708,13 @@ msgstr ""
 msgid "Profiles|Enter your pronouns to let people know how to refer to you"
 msgstr ""
 
+msgid "Profiles|Expiration date"
+msgstr ""
+
 msgid "Profiles|Expired key is not valid."
 msgstr ""
 
 msgid "Profiles|Expired:"
-msgstr ""
-
-msgid "Profiles|Expires at"
 msgstr ""
 
 msgid "Profiles|Expires:"
@@ -26753,13 +26756,16 @@ msgstr ""
 msgid "Profiles|Key"
 msgstr ""
 
+msgid "Profiles|Key becomes invalid on this date."
+msgstr ""
+
+msgid "Profiles|Key becomes invalid on this date. Maximum lifetime for SSH keys is %{max_ssh_key_lifetime} days"
+msgstr ""
+
 msgid "Profiles|Key can still be used after expiration."
 msgstr ""
 
 msgid "Profiles|Key usable beyond expiration date."
-msgstr ""
-
-msgid "Profiles|Key will be deleted on this date."
 msgstr ""
 
 msgid "Profiles|Last used:"
@@ -39219,6 +39225,9 @@ msgid "When a deployment job is successful, skip older deployment jobs that are 
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"
+msgstr ""
+
+msgid "When enabled, SSH keys with no expiry date or an invalid expiration date are no longer accepted. Leave blank for no limit."
 msgstr ""
 
 msgid "When enabled, existing personal access tokens may be revoked. Leave blank for no limit."

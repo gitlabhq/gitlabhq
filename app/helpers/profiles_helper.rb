@@ -61,6 +61,11 @@ module ProfilesHelper
   def ssh_key_expires_field_description
     s_('Profiles|Key can still be used after expiration.')
   end
+
+  # Overridden in EE::ProfilesHelper#ssh_key_expiration_policy_enabled?
+  def ssh_key_expiration_policy_enabled?
+    false
+  end
 end
 
 ProfilesHelper.prepend_mod

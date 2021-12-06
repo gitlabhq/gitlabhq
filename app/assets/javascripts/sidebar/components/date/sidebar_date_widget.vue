@@ -124,6 +124,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.issuable.loading || this.loading;
     },
+    initialLoading() {
+      return this.$apollo.queries.issuable.loading;
+    },
     hasDate() {
       return this.dateValue !== null;
     },
@@ -271,10 +274,10 @@ export default {
         <span class="collapse-truncated-title">{{ formattedDate }}</span>
       </div>
       <sidebar-inherit-date
-        v-if="canInherit"
+        v-if="canInherit && !initialLoading"
         :issuable="issuable"
-        :is-loading="isLoading"
         :date-type="dateType"
+        :is-loading="isLoading"
         @reset-date="setDate(null)"
         @set-date="setFixedDate"
       />

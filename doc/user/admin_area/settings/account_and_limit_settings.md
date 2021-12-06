@@ -192,6 +192,62 @@ To set a limit on how long these sessions are valid:
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Click **Save changes**.
 
+## Limit the lifetime of SSH keys **(ULTIMATE SELF)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6 [with a flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`. Disabled by default. 
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`.
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Users can optionally specify a lifetime for
+[SSH keys](../../../ssh/index.md).
+This lifetime is not a requirement, and can be set to any arbitrary number of days.
+
+SSH keys are user credentials to access GitLab.
+However, organizations with security requirements may want to enforce more protection by
+requiring the regular rotation of these keys.
+
+### Set a lifetime
+
+Only a GitLab administrator can set a lifetime. Leaving it empty means
+there are no restrictions.
+
+To set a lifetime on how long SSH keys are valid:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **Maximum allowable lifetime for SSH keys (days)** field.
+1. Click **Save changes**.
+
+Once a lifetime for SSH keys is set, GitLab:
+
+- Requires users to set an expiration date that is no later than the allowed lifetime on new
+  SSH keys.
+- Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
+  greater than the maximum immediately become invalid.
+
+NOTE:
+When a user's SSH key becomes invalid they can delete and re-add the same key again.
+
+## Allow expired SSH keys to be used **(ULTIMATE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
+
+By default, expired SSH keys **are not usable**.
+
+To allow the use of expired SSH keys:
+
+1. On the top bar, select **Menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Uncheck the **Enforce SSH key expiration** checkbox.
+
+Disabling SSH key expiration immediately enables all expired SSH keys.
+
 ## Limit the lifetime of personal access tokens **(ULTIMATE SELF)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
@@ -224,22 +280,6 @@ Once a lifetime for personal access tokens is set, GitLab:
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
-
-## Allow expired SSH keys to be used **(ULTIMATE SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250480) in GitLab 13.9.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/320970) in GitLab 14.0.
-
-By default, expired SSH keys **are not usable**.
-
-To allow the use of expired SSH keys:
-
-1. On the top bar, select **Menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. Uncheck the **Enforce SSH key expiration** checkbox.
-
-Disabling SSH key expiration immediately enables all expired SSH keys.
 
 ## Allow expired Personal Access Tokens to be used **(ULTIMATE SELF)**
 

@@ -63,7 +63,7 @@ RSpec.describe 'Query.runner(id)' do
         'revision' => runner.revision,
         'locked' => false,
         'active' => runner.active,
-        'status' => runner.status.to_s.upcase,
+        'status' => runner.status('14.5').to_s.upcase,
         'maximumTimeout' => runner.maximum_timeout,
         'accessLevel' => runner.access_level.to_s.upcase,
         'runUntagged' => runner.run_untagged,
@@ -218,6 +218,45 @@ RSpec.describe 'Query.runner(id)' do
           }
         )
       ]
+    end
+  end
+
+  describe 'for runner with status' do
+    let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
+
+    let(:query) do
+      %(
+        query {
+          staleRunner: runner(id: "#{stale_runner.to_global_id}") {
+            status
+            legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
+            newStatus: status(legacyMode: null)
+          }
+          pausedRunner: runner(id: "#{inactive_instance_runner.to_global_id}") {
+            status
+            legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
+            newStatus: status(legacyMode: null)
+          }
+        }
+      )
+    end
+
+    it 'retrieves status fields with expected values' do
+      post_graphql(query, current_user: user)
+
+      stale_runner_data = graphql_data_at(:stale_runner)
+      expect(stale_runner_data).to match a_hash_including(
+        'status' => 'NOT_CONNECTED',
+        'legacyStatusWithExplicitVersion' => 'NOT_CONNECTED',
+        'newStatus' => 'STALE'
+      )
+
+      paused_runner_data = graphql_data_at(:paused_runner)
+      expect(paused_runner_data).to match a_hash_including(
+        'status' => 'PAUSED',
+        'legacyStatusWithExplicitVersion' => 'PAUSED',
+        'newStatus' => 'OFFLINE'
+      )
     end
   end
 

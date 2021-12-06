@@ -8750,7 +8750,7 @@ Represents the total number of issues and their weights for a particular day.
 | ---- | ---- | ----------- |
 | <a id="cirunneraccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel!`](#cirunneraccesslevel) | Access level of the runner. |
 | <a id="cirunneractive"></a>`active` | [`Boolean!`](#boolean) | Indicates the runner is allowed to receive jobs. |
-| <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for adminstrators. |
+| <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for administrators. |
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Last contact from the runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
@@ -8765,10 +8765,23 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="cirunnerrunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner. |
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
-| <a id="cirunnerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
 | <a id="cirunnerversion"></a>`version` | [`String`](#string) | Version of the runner. |
+
+#### Fields with arguments
+
+##### `CiRunner.status`
+
+Status of the runner.
+
+Returns [`CiRunnerStatus!`](#cirunnerstatus).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.6. Will be removed in 15.0. From that release onward, the field will behave as if legacyMode is null. |
 
 ### `CiStage`
 
@@ -15956,11 +15969,12 @@ Values for sorting runners.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerstatusactive"></a>`ACTIVE` | A runner that is not paused. |
-| <a id="cirunnerstatusnot_connected"></a>`NOT_CONNECTED` | A runner that has never contacted this instance. |
-| <a id="cirunnerstatusoffline"></a>`OFFLINE` | A runner that has not contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatusonline"></a>`ONLINE` | A runner that contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatuspaused"></a>`PAUSED` | A runner that is paused. |
+| <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in 14.6. Use CiRunnerType.active instead. |
+| <a id="cirunnerstatusnot_connected"></a>`NOT_CONNECTED` **{warning-solid}** | **Deprecated** in 14.6. This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period of no contact. |
+| <a id="cirunnerstatusoffline"></a>`OFFLINE` **{warning-solid}** | **Deprecated** in 14.6. This field will have a slightly different scope starting in 15.0, with STALE being returned after a certain period offline. |
+| <a id="cirunnerstatusonline"></a>`ONLINE` | Runner that contacted this instance within the last 2 hours. |
+| <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in 14.6. Use CiRunnerType.active instead. |
+| <a id="cirunnerstatusstale"></a>`STALE` | Runner that has not contacted this instance within the last 3 months. Only available if legacyMode is null. Will be a possible return value starting in 15.0. |
 
 ### `CiRunnerType`
 

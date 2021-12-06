@@ -27,8 +27,11 @@ module Types
             description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
             description: 'Indicates the runner is allowed to receive jobs.'
-      field :status, ::Types::Ci::RunnerStatusEnum, null: false,
-            description: 'Status of the runner.'
+      field :status,
+            Types::Ci::RunnerStatusEnum,
+            null: false,
+            description: 'Status of the runner.',
+            resolver: ::Resolvers::Ci::RunnerStatusResolver
       field :version, GraphQL::Types::String, null: true,
             description: 'Version of the runner.'
       field :short_sha, GraphQL::Types::String, null: true,
@@ -50,7 +53,7 @@ module Types
       field :job_count, GraphQL::Types::Int, null: true,
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
       field :admin_url, GraphQL::Types::String, null: true,
-            description: 'Admin URL of the runner. Only available for adminstrators.'
+            description: 'Admin URL of the runner. Only available for administrators.'
 
       def job_count
         # We limit to 1 above the JOB_COUNT_LIMIT to indicate that more items exist after JOB_COUNT_LIMIT

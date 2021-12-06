@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { mapValues } from 'lodash';
 import App from '~/google_cloud/components/app.vue';
 import Home from '~/google_cloud/components/home.vue';
 import IncubationBanner from '~/google_cloud/components/incubation_banner.vue';
@@ -8,103 +9,59 @@ import NoGcpProjects from '~/google_cloud/components/errors/no_gcp_projects.vue'
 
 const BASE_FEEDBACK_URL =
   'https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/meta/-/issues/new';
+const SCREEN_COMPONENTS = {
+  Home,
+  ServiceAccountsForm,
+  GcpError,
+  NoGcpProjects,
+};
+const SERVICE_ACCOUNTS_FORM_PROPS = {
+  gcpProjects: [1, 2, 3],
+  environments: [4, 5, 6],
+  cancelPath: '',
+};
+const HOME_PROPS = {
+  serviceAccounts: [{}, {}],
+  createServiceAccountUrl: '#url-create-service-account',
+  emptyIllustrationUrl: '#url-empty-illustration',
+};
 
 describe('google_cloud App component', () => {
   let wrapper;
 
   const findIncubationBanner = () => wrapper.findComponent(IncubationBanner);
-  const findGcpError = () => wrapper.findComponent(GcpError);
-  const findNoGcpProjects = () => wrapper.findComponent(NoGcpProjects);
-  const findServiceAccountsForm = () => wrapper.findComponent(ServiceAccountsForm);
-  const findHome = () => wrapper.findComponent(Home);
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('for gcp_error screen', () => {
+  describe.each`
+    screen                     | extraProps                            | componentName
+    ${'gcp_error'}             | ${{ error: 'mock_gcp_client_error' }} | ${'GcpError'}
+    ${'no_gcp_projects'}       | ${{}}                                 | ${'NoGcpProjects'}
+    ${'service_accounts_form'} | ${SERVICE_ACCOUNTS_FORM_PROPS}        | ${'ServiceAccountsForm'}
+    ${'home'}                  | ${HOME_PROPS}                         | ${'Home'}
+  `('for screen=$screen', ({ screen, extraProps, componentName }) => {
+    const component = SCREEN_COMPONENTS[componentName];
+
     beforeEach(() => {
-      const propsData = {
-        screen: 'gcp_error',
-        error: 'mock_gcp_client_error',
-      };
-      wrapper = shallowMount(App, { propsData });
+      wrapper = shallowMount(App, { propsData: { screen, ...extraProps } });
     });
 
-    it('renders the gcp_error screen', () => {
-      expect(findGcpError().exists()).toBe(true);
-    });
+    it(`renders only ${componentName}`, () => {
+      const existences = mapValues(SCREEN_COMPONENTS, (x) => wrapper.findComponent(x).exists());
 
-    it('should contain incubation banner', () => {
-      expect(findIncubationBanner().props()).toEqual({
-        shareFeedbackUrl: `${BASE_FEEDBACK_URL}?issuable_template=general_feedback`,
-        reportBugUrl: `${BASE_FEEDBACK_URL}?issuable_template=report_bug`,
-        featureRequestUrl: `${BASE_FEEDBACK_URL}?issuable_template=feature_request`,
+      expect(existences).toEqual({
+        ...mapValues(SCREEN_COMPONENTS, () => false),
+        [componentName]: true,
       });
     });
-  });
 
-  describe('for no_gcp_projects screen', () => {
-    beforeEach(() => {
-      const propsData = {
-        screen: 'no_gcp_projects',
-      };
-      wrapper = shallowMount(App, { propsData });
+    it(`renders the ${componentName} with props`, () => {
+      expect(wrapper.findComponent(component).props()).toEqual(extraProps);
     });
 
-    it('renders the no_gcp_projects screen', () => {
-      expect(findNoGcpProjects().exists()).toBe(true);
-    });
-
-    it('should contain incubation banner', () => {
-      expect(findIncubationBanner().props()).toEqual({
-        shareFeedbackUrl: `${BASE_FEEDBACK_URL}?issuable_template=general_feedback`,
-        reportBugUrl: `${BASE_FEEDBACK_URL}?issuable_template=report_bug`,
-        featureRequestUrl: `${BASE_FEEDBACK_URL}?issuable_template=feature_request`,
-      });
-    });
-  });
-
-  describe('for service_accounts_form screen', () => {
-    beforeEach(() => {
-      const propsData = {
-        screen: 'service_accounts_form',
-        gcpProjects: [1, 2, 3],
-        environments: [4, 5, 6],
-        cancelPath: '',
-      };
-      wrapper = shallowMount(App, { propsData });
-    });
-
-    it('renders the service_accounts_form screen', () => {
-      expect(findServiceAccountsForm().exists()).toBe(true);
-    });
-
-    it('should contain incubation banner', () => {
-      expect(findIncubationBanner().props()).toEqual({
-        shareFeedbackUrl: `${BASE_FEEDBACK_URL}?issuable_template=general_feedback`,
-        reportBugUrl: `${BASE_FEEDBACK_URL}?issuable_template=report_bug`,
-        featureRequestUrl: `${BASE_FEEDBACK_URL}?issuable_template=feature_request`,
-      });
-    });
-  });
-
-  describe('for home screen', () => {
-    beforeEach(() => {
-      const propsData = {
-        screen: 'home',
-        serviceAccounts: [{}, {}],
-        createServiceAccountUrl: '#url-create-service-account',
-        emptyIllustrationUrl: '#url-empty-illustration',
-      };
-      wrapper = shallowMount(App, { propsData });
-    });
-
-    it('renders the home screen', () => {
-      expect(findHome().exists()).toBe(true);
-    });
-
-    it('should contain incubation banner', () => {
+    it('renders incubation banner', () => {
       expect(findIncubationBanner().props()).toEqual({
         shareFeedbackUrl: `${BASE_FEEDBACK_URL}?issuable_template=general_feedback`,
         reportBugUrl: `${BASE_FEEDBACK_URL}?issuable_template=report_bug`,
