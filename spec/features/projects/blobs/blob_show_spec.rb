@@ -7,8 +7,8 @@ RSpec.describe 'File blob', :js do
 
   let(:project) { create(:project, :public, :repository) }
 
-  def visit_blob(path, anchor: nil, ref: 'master')
-    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
+  def visit_blob(path, anchor: nil, ref: 'master', **additional_args)
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor, **additional_args)
 
     wait_for_requests
   end
@@ -1499,6 +1499,53 @@ RSpec.describe 'File blob', :js do
           aggregate_failures do
             expect(page).to have_content("This project manages its dependencies using Yarn.")
           end
+        end
+      end
+
+      context 'openapi.yml' do
+        before do
+          file_name = 'openapi.yml'
+
+          create_file(file_name, '
+              swagger: \'2.0\'
+              info:
+                title: Classic API Resource Documentation
+                description: |
+                        <div class="foo-bar" style="background-color: red;" data-foo-bar="baz">
+                          <h1>Swagger API documentation</h1>
+                        </div>
+                version: production
+              basePath: /JSSResource/
+              produces:
+                - application/xml
+                - application/json
+              consumes:
+                - application/xml
+                - application/json
+              security:
+                - basicAuth: []
+              paths:
+                /accounts:
+                  get:
+                    responses:
+                      \'200\':
+                        description: No response was specified
+                    tags:
+                      - accounts
+                    operationId: findAccounts
+                    summary: Finds all accounts
+            ')
+          visit_blob(file_name, useUnsafeMarkdown: '1')
+          click_button('Display rendered file')
+
+          wait_for_requests
+        end
+
+        it 'removes `style`, `class`, and `data-*`` attributes from HTML' do
+          expect(page).to have_css('h1', text: 'Swagger API documentation')
+          expect(page).not_to have_css('.foo-bar')
+          expect(page).not_to have_css('[style="background-color: red;"]')
+          expect(page).not_to have_css('[data-foo-bar="baz"]')
         end
       end
     end

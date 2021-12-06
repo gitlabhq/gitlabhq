@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.3.2'
+gem 'rails', '~> 6.1.4.1'
 
 gem 'bootsnap', '~> 1.4.6'
 
@@ -96,7 +96,7 @@ gem 'grape-entity', '~> 0.9.0'
 gem 'rack-cors', '~> 1.0.6', require: 'rack/cors'
 
 # GraphQL API
-gem 'graphql', '~> 1.11.8'
+gem 'graphql', '~> 1.11.10'
 # NOTE: graphiql-rails v1.5+ doesn't work: https://gitlab.com/gitlab-org/gitlab/issues/31771
 # TODO: remove app/views/graphiql/rails/editors/show.html.erb when https://github.com/rmosolgo/graphiql-rails/pull/71 is released:
 # https://gitlab.com/gitlab-org/gitlab/issues/31747

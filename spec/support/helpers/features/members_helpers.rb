@@ -37,6 +37,10 @@ module Spec
             find_row(user.name)
           end
 
+          def find_username_row(user)
+            find_row(user.username)
+          end
+
           def find_invited_member_row(email)
             find_row(email)
           end

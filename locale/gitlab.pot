@@ -40515,6 +40515,9 @@ msgstr ""
 msgid "must be a valid IPv4 or IPv6 address"
 msgstr ""
 
+msgid "must be a valid json schema"
+msgstr ""
+
 msgid "must be after start"
 msgstr ""
 

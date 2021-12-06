@@ -374,6 +374,7 @@ module GraphqlHelpers
     allow_unlimited_graphql_depth if max_depth > 1
     allow_high_graphql_recursion
     allow_high_graphql_transaction_threshold
+    allow_high_graphql_query_size
 
     type = class_name.respond_to?(:kind) ? class_name : GitlabSchema.types[class_name.to_s]
     raise "#{class_name} is not a known type in the GitlabSchema" unless type
@@ -623,6 +624,10 @@ module GraphqlHelpers
 
   def allow_high_graphql_transaction_threshold
     stub_const("Gitlab::QueryLimiting::Transaction::THRESHOLD", 1000)
+  end
+
+  def allow_high_graphql_query_size
+    stub_const('GraphqlController::MAX_QUERY_SIZE', 10_000_000)
   end
 
   def node_array(data, extract_attribute = nil)

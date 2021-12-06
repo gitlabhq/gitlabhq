@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching do
-  let(:group) { create(:group) }
+  let(:group) { create(:group).tap { |g| g.add_maintainer(importer_user) } }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:admin) { create(:admin) }

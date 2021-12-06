@@ -46,5 +46,17 @@ RSpec.describe JsonSchemaValidator do
         expect { subject }.to raise_error(described_class::FilenameError)
       end
     end
+
+    describe 'hash_conversion option' do
+      context 'when hash_conversion is enabled' do
+        let(:validator) { described_class.new(attributes: [:data], filename: "build_report_result_data", hash_conversion: true) }
+
+        it 'returns no errors' do
+          subject
+
+          expect(build_report_result.errors).to be_empty
+        end
+      end
+    end
   end
 end

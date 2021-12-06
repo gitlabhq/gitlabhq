@@ -461,3 +461,14 @@ Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init
+
+module TouchRackUploadedFile
+  def initialize_from_file_path(path)
+    super
+
+    # This is a no-op workaround for https://github.com/docker/for-linux/issues/1015
+    File.utime @tempfile.atime, @tempfile.mtime, @tempfile.path # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+end
+
+Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)

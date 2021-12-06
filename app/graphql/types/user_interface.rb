@@ -29,7 +29,10 @@ module Types
     field :name,
           type: GraphQL::Types::String,
           null: false,
-          description: 'Human-readable name of the user.'
+          resolver_method: :redacted_name,
+          description: 'Human-readable name of the user. ' \
+          'Will return `****` if the user is a project bot and the requester does not have permission to read resource access tokens.'
+
     field :state,
           type: Types::UserStateEnum,
           null: false,
@@ -120,6 +123,17 @@ module Types
         # the core user type.
         ::Types::UserType
       end
+    end
+
+    def redacted_name
+      return object.name unless object.project_bot?
+
+      return object.name if context[:current_user]&.can?(:read_resource_access_tokens, object.projects.first)
+
+      # If the requester does not have permission to read the project bot name,
+      # the API returns an arbitrary string. UI changes will be addressed in a follow up issue:
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/346058
+      '****'
     end
   end
 end

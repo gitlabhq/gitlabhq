@@ -139,4 +139,20 @@ RSpec.describe Banzai::Filter::FrontMatterFilter do
       end
     end
   end
+
+  it 'fails fast for strings with many spaces' do
+    content = "coding:" + " " * 50_000 + ";"
+
+    expect do
+      Timeout.timeout(3.seconds) { filter(content) }
+    end.not_to raise_error
+  end
+
+  it 'fails fast for strings with many newlines' do
+    content = "coding:\n" + ";;;" + "\n" * 10_000 + "x"
+
+    expect do
+      Timeout.timeout(3.seconds) { filter(content) }
+    end.not_to raise_error
+  end
 end

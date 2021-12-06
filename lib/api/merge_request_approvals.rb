@@ -25,9 +25,7 @@ module API
         # Examples:
         #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
         desc 'List approvals for merge request'
-        get 'approvals' do
-          not_found!("Merge Request") unless can?(current_user, :read_merge_request, user_project)
-
+        get 'approvals', urgency: :low do
           merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
           present_approval(merge_request)

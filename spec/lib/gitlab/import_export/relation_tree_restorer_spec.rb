@@ -108,7 +108,7 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
       it_behaves_like 'import project successfully'
 
       context 'logging of relations creation' do
-        let(:group) { create(:group) }
+        let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
         let(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group) }
 
         include_examples 'logging of relations creation'
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::ImportExport::RelationTreeRestorer do
   context 'when restoring a group' do
     let(:path) { 'spec/fixtures/lib/gitlab/import_export/group_exports/no_children/group.json' }
     let(:group) { create(:group) }
-    let(:importable) { create(:group, parent: group) }
+    let(:importable) { create(:group, parent: group).tap { |g| g.add_owner(user) } }
     let(:importable_name) { nil }
     let(:importable_path) { nil }
     let(:object_builder) { Gitlab::ImportExport::Group::ObjectBuilder }

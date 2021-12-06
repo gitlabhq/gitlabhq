@@ -24,8 +24,10 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
+    value = value.to_h.stringify_keys if options[:hash_conversion] == true
+
     unless valid_schema?(value)
-      record.errors.add(attribute, "must be a valid json schema")
+      record.errors.add(attribute, _("must be a valid json schema"))
     end
   end
 

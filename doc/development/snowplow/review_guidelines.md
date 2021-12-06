@@ -14,7 +14,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 ## Resources for reviewers
 
 - [Snowplow Guide](index.md)
-- [Event Dictionary](dictionary.md)
+- [Event Dictionary](https://metrics.gitlab.com/snowplow.html)
 
 ## Review process
 

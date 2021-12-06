@@ -52,9 +52,9 @@ FactoryBot.define do
         .where(design_id: evaluator.deleted_designs.map(&:id))
         .update_all(event: events[:deletion])
 
-      version.designs.reload
       # Ensure version.issue == design.issue for all version.designs
       version.designs.update_all(issue_id: version.issue_id)
+      version.designs.reload
 
       needed = evaluator.designs_count
       have = version.designs.size

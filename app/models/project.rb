@@ -37,6 +37,7 @@ class Project < ApplicationRecord
   include Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
+  include BulkMemberAccessLoad
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

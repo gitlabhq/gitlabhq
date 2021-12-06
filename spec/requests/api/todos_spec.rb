@@ -372,30 +372,36 @@ RSpec.describe API::Todos do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
-
-    it 'returns an error if the issuable author does not have access' do
-      project_1.add_guest(issuable.author)
-
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", issuable.author)
-
-      expect(response).to have_gitlab_http_status(:not_found)
-    end
   end
 
   describe 'POST :id/issuable_type/:issueable_id/todo' do
     context 'for an issue' do
-      it_behaves_like 'an issuable', 'issues' do
-        let_it_be(:issuable) do
-          create(:issue, :confidential, author: author_1, project: project_1)
-        end
+      let_it_be(:issuable) do
+        create(:issue, :confidential, project: project_1)
+      end
+
+      it_behaves_like 'an issuable', 'issues'
+
+      it 'returns an error if the issue author does not have access' do
+        post api("/projects/#{project_1.id}/issues/#{issuable.iid}/todo", issuable.author)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'for a merge request' do
-      it_behaves_like 'an issuable', 'merge_requests' do
-        let_it_be(:issuable) do
-          create(:merge_request, :simple, source_project: project_1)
-        end
+      let_it_be(:issuable) do
+        create(:merge_request, :simple, source_project: project_1)
+      end
+
+      it_behaves_like 'an issuable', 'merge_requests'
+
+      it 'returns an error if the merge request author does not have access' do
+        project_1.add_guest(issuable.author)
+
+        post api("/projects/#{project_1.id}/merge_requests/#{issuable.iid}/todo", issuable.author)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

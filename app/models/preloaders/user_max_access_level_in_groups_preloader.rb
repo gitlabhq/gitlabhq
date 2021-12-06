@@ -5,8 +5,6 @@ module Preloaders
   # stores the values in requests store.
   # Will only be able to preload max access level for groups where the user is a direct member
   class UserMaxAccessLevelInGroupsPreloader
-    include BulkMemberAccessLoad
-
     def initialize(groups, user)
       @groups = groups
       @user = user
@@ -19,8 +17,9 @@ module Preloaders
                                      .group(:source_id)
                                      .maximum(:access_level)
 
-      group_memberships.each do |group_id, max_access_level|
-        merge_value_to_request_store(User, @user.id, group_id, max_access_level)
+      @groups.each do |group|
+        access_level = group_memberships[group.id]
+        group.merge_value_to_request_store(User, @user.id, access_level) if access_level.present?
       end
     end
   end

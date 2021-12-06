@@ -9,11 +9,15 @@ module BulkMemberAccessLoad
     # Determine the maximum access level for a group of resources in bulk.
     #
     # Returns a Hash mapping resource ID -> maximum access level.
-    def max_member_access_for_resource_ids(resource_klass, resource_ids, memoization_index = self.id, &block)
+    def max_member_access_for_resource_ids(resource_klass, resource_ids, &block)
       raise 'Block is mandatory' unless block_given?
 
+      memoization_index = self.id
+      memoization_class = self.class
+
       resource_ids = resource_ids.uniq
-      access = load_access_hash(resource_klass, memoization_index)
+      memo_id = "#{memoization_class}:#{memoization_index}"
+      access = load_access_hash(resource_klass, memo_id)
 
       # Look up only the IDs we need
       resource_ids -= access.keys
@@ -33,8 +37,8 @@ module BulkMemberAccessLoad
       access
     end
 
-    def merge_value_to_request_store(resource_klass, resource_id, memoization_index, value)
-      max_member_access_for_resource_ids(resource_klass, [resource_id], memoization_index) do
+    def merge_value_to_request_store(resource_klass, resource_id, value)
+      max_member_access_for_resource_ids(resource_klass, [resource_id]) do
         { resource_id => value }
       end
     end
@@ -45,16 +49,13 @@ module BulkMemberAccessLoad
       "max_member_access_for_#{klass.name.underscore.pluralize}:#{memoization_index}"
     end
 
-    def load_access_hash(resource_klass, memoization_index)
-      key = max_member_access_for_resource_key(resource_klass, memoization_index)
+    def load_access_hash(resource_klass, memo_id)
+      return {} unless Gitlab::SafeRequestStore.active?
 
-      access = {}
-      if Gitlab::SafeRequestStore.active?
-        Gitlab::SafeRequestStore[key] ||= {}
-        access = Gitlab::SafeRequestStore[key]
-      end
+      key = max_member_access_for_resource_key(resource_klass, memo_id)
+      Gitlab::SafeRequestStore[key] ||= {}
 
-      access
+      Gitlab::SafeRequestStore[key]
     end
   end
 end

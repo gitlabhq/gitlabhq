@@ -43,8 +43,12 @@ FactoryBot.define do
       trait :multi_line do
         line_range do
           {
-            start_line_code: Gitlab::Git.diff_line_code(file, 10, 10),
-            end_line_code: Gitlab::Git.diff_line_code(file, 12, 13)
+            start: {
+              line_code: Gitlab::Git.diff_line_code(file, 10, 10)
+            },
+            end: {
+              line_code: Gitlab::Git.diff_line_code(file, 12, 13)
+            }
           }
         end
       end
