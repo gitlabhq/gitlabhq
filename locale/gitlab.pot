@@ -3758,6 +3758,9 @@ msgstr ""
 msgid "An error occurred while loading chart data"
 msgstr ""
 
+msgid "An error occurred while loading code owners."
+msgstr ""
+
 msgid "An error occurred while loading commit signatures"
 msgstr ""
 
@@ -31034,6 +31037,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
+msgid "SecurityOrchestration|Scan to be performed %{cadence}"
+msgstr ""
+
 msgid "SecurityOrchestration|Scan to be performed %{cadence} on the %{branches}"
 msgstr ""
 
@@ -42222,9 +42228,6 @@ msgid "sign in"
 msgstr ""
 
 msgid "smartcn custom analyzer"
-msgstr ""
-
-msgid "sort:"
 msgstr ""
 
 msgid "source"

@@ -71,7 +71,9 @@ The included template:
 GitLab saves the results as a
 [Container Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
 that you can download and analyze later. When downloading, you always receive the most-recent
-artifact.
+artifact. If [dependency scan is enabled](#enable-dependency-scan),
+a [Dependency Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning)
+is also created.
 
 The following is a sample `.gitlab-ci.yml` that builds your Docker image, pushes it to the container
 registry, and scans the image:
@@ -144,6 +146,25 @@ include:
     DOCKER_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
     DOCKER_USER: AWS
     DOCKER_PASSWORD: "$AWS_ECR_PASSWORD"
+```
+
+#### Enable dependency scan
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
+
+The `CS_DISABLE_DEPENDENCY_SCAN` CI/CD variable controls whether the scan creates a [Dependency List](../dependency_list/)
+report. For the scan to create this report, you must set this variable to `false` (the default value
+is `true`).
+
+For example:
+
+```yaml
+include:
+  - template: Security/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    CS_DISABLE_DEPENDENCY_SCAN: "false"
 ```
 
 #### Available CI/CD variables

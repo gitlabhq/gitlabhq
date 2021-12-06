@@ -70,6 +70,15 @@ module SortingHelper
     options
   end
 
+  def forks_sort_options_hash
+    {
+      sort_value_recently_created => sort_title_created_date,
+      sort_value_oldest_created   => sort_title_created_date,
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_oldest_activity  => sort_title_latest_activity
+    }
+  end
+
   def projects_sort_option_titles
     # Only used for the project filter search bar
     projects_sort_options_hash.merge({
@@ -90,6 +99,15 @@ module SortingHelper
       sort_value_oldest_created   => sort_value_recently_created,
       sort_value_name_desc        => sort_value_name,
       sort_value_stars_asc        => sort_value_stars_desc
+    }
+  end
+
+  def forks_reverse_sort_options_hash
+    {
+      sort_value_recently_created => sort_value_oldest_created,
+      sort_value_oldest_created   => sort_value_recently_created,
+      sort_value_latest_activity  => sort_value_oldest_activity,
+      sort_value_oldest_activity  => sort_value_latest_activity
     }
   end
 
@@ -300,6 +318,13 @@ module SortingHelper
   def packages_sort_direction_button(sort_value)
     reverse_sort = packages_reverse_sort_order_hash[sort_value]
     url = package_sort_path(sort: reverse_sort)
+
+    sort_direction_button(url, reverse_sort, sort_value)
+  end
+
+  def forks_sort_direction_button(sort_value, without = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id])
+    reverse_sort = forks_reverse_sort_options_hash[sort_value]
+    url = page_filter_path(sort: reverse_sort, without: without)
 
     sort_direction_button(url, reverse_sort, sort_value)
   end

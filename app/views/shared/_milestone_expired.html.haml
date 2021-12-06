@@ -1,6 +1,6 @@
 - if milestone.expired? && !milestone.closed?
-  .gl-badge.badge-warning.badge-pill.gl-mb-2= _('Expired')
+  = gl_badge_tag _('Expired'), { variant: :warning }, { class: "gl-mb-2" }
 - if milestone.upcoming?
-  .gl-badge.badge-primary.badge-pill.gl-mb-2= _('Upcoming')
+  = gl_badge_tag _('Upcoming'), { variant: :info }, { class: "gl-mb-2" }
 - if milestone.closed?
-  .gl-badge.badge-danger.badge-pill.gl-mb-2= _('Closed')
+  = gl_badge_tag _('Closed'), { variant: :danger }, { class: "gl-mb-2" }

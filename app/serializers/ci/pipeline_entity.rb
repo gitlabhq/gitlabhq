@@ -4,7 +4,7 @@ class Ci::PipelineEntity < Grape::Entity
   include RequestAwareEntity
   include Gitlab::Utils::StrongMemoize
 
-  delegate :name, :failure_reason, to: :presented_pipeline
+  delegate :name, :failure_reason, :coverage, to: :presented_pipeline
 
   expose :id
   expose :iid

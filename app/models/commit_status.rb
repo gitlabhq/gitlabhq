@@ -53,6 +53,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :before_stage, -> (index) { where('stage_idx < ?', index) }
   scope :for_stage, -> (index) { where(stage_idx: index) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
+  scope :for_project, -> (project_id) { where(project_id: project_id) }
   scope :for_ref, -> (ref) { where(ref: ref) }
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
@@ -68,7 +69,8 @@ class CommitStatus < Ci::ApplicationRecord
     # Pluck is used to split this query. Splitting the query is required for database decomposition for `ci_*` tables.
     # https://docs.gitlab.com/ee/development/database/transaction_guidelines.html#database-decomposition-and-sharding
     project_ids = Project.where_full_path_in(Array(paths)).pluck(:id)
-    where(project: project_ids)
+
+    for_project(project_ids)
   end
 
   scope :with_preloads, -> do

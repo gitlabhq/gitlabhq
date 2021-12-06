@@ -205,7 +205,7 @@ Keeping the old behavior requires marking CTEs with the keyword `MATERIALIZED`.
 When building CTE statements, use the `Gitlab::SQL::CTE` class [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56976) in GitLab 13.11.
 By default, this `Gitlab::SQL::CTE` class forces materialization through adding the `MATERIALIZED` keyword for PostgreSQL 12 and higher.
 `Gitlab::SQL::CTE` automatically omits materialization when PostgreSQL 11 is running
-(this behavior is implemented using a custom arel node `Gitlab::Database::AsWithMaterialized` under the surface).
+(this behavior is implemented using a custom Arel node `Gitlab::Database::AsWithMaterialized` under the surface).
 
 WARNING:
 We plan to drop the support for PostgreSQL 11. Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.

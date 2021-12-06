@@ -1,10 +1,10 @@
 ---
 stage: Enablement
 group: Distribution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#designated-technical-writers
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Supported Operating Systems
+# Supported operating systems **(FREE SELF)**
 
 GitLab officially supports LTS versions of operating systems. While OSs like
 Ubuntu have a clear distinction between LTS and non-LTS versions, there are
@@ -57,7 +57,7 @@ WARNING:
 There are currently still some [known issues and limitation](https://gitlab.com/groups/gitlab-org/-/epics/4397)
 running GitLab on ARM.
 
-## OS Versions that are no longer supported **(FREE SELF)**
+## OS Versions that are no longer supported
 
 GitLab provides omnibus packages for operating systems only until their
 EOL (End-Of-Life). After the EOL date of the OS, GitLab will stop releasing

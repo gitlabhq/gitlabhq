@@ -199,11 +199,11 @@ configure and deploy your
 Docker-based GitLab installation in a swarm cluster.
 
 In swarm mode you can leverage [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
-and [Docker configs](https://docs.docker.com/engine/swarm/configs/) to efficiently and securely deploy your GitLab instance.
+and [Docker configurations](https://docs.docker.com/engine/swarm/configs/) to efficiently and securely deploy your GitLab instance.
 Secrets can be used to securely pass your initial root password without exposing it as an environment variable.
-Configs can help you to keep your GitLab image as generic as possible.
+Configurations can help you to keep your GitLab image as generic as possible.
 
-Here's an example that deploys GitLab with four runners as a [stack](https://docs.docker.com/get-started/part5/), using secrets and configs:
+Here's an example that deploys GitLab with four runners as a [stack](https://docs.docker.com/get-started/part5/), using secrets and configurations:
 
 1. [Set up a Docker swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/).
 1. Create a `docker-compose.yml` file:
@@ -643,4 +643,4 @@ purpose.
 
 ### Docker containers exhausts space due to the `json-file`
 
-Docker's [default logging driver is `json-file`](https://docs.docker.com/config/containers/logging/configure/#configure-the-default-logging-driver), which performs no log rotation by default. As a result of this lack of rotation, log files stored by the `json-file` driver can consume a significant amount of disk space for containers that generate a lot of output. This can lead to disk space exhaustion. To address this, use [journald](https://docs.docker.com/config/containers/logging/journald/) as the logging driver when available, or [another supported driver](https://docs.docker.com/config/containers/logging/configure/#supported-logging-drivers) with native rotation support.
+Docker's [default logging driver is `json-file`](https://docs.docker.com/config/containers/logging/configure/#configure-the-default-logging-driver), which performs no log rotation by default. As a result of this lack of rotation, log files stored by the `json-file` driver can consume a significant amount of disk space for containers that generate a lot of output. This can lead to disk space exhaustion. To address this, use [`journald`](https://docs.docker.com/config/containers/logging/journald/) as the logging driver when available, or [another supported driver](https://docs.docker.com/config/containers/logging/configure/#supported-logging-drivers) with native rotation support.

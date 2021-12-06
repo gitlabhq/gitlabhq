@@ -3960,7 +3960,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
         create_build(source_pipeline, 60.2, 'test:1')
         create_build(target_pipeline, 50, 'test:2')
 
-        expect(merge_request.pipeline_coverage_delta).to eq('10.20')
+        expect(merge_request.pipeline_coverage_delta).to be_within(0.001).of(10.2)
       end
     end
 

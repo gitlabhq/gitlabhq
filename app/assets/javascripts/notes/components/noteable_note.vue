@@ -331,16 +331,19 @@ export default {
             this.isEditing = true;
             this.setSelectedCommentPositionHover();
             this.$nextTick(() => {
-              const msg = __('Something went wrong while editing your comment. Please try again.');
-              createFlash({
-                message: msg,
-                parent: this.$el,
-              });
+              this.handleUpdateError(response); // The 'response' parameter is being used in JH, don't remove it
               this.recoverNoteContent(noteText);
               callback();
             });
           }
         });
+    },
+    handleUpdateError() {
+      const msg = __('Something went wrong while editing your comment. Please try again.');
+      createFlash({
+        message: msg,
+        parent: this.$el,
+      });
     },
     formCancelHandler({ shouldConfirm, isDirty }) {
       if (shouldConfirm && isDirty) {

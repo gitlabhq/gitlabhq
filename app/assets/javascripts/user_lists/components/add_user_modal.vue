@@ -19,7 +19,7 @@ export default {
   modalOptions: {
     actionPrimary: {
       text: s__('UserLists|Add'),
-      attributes: [{ 'data-testid': 'confirm-add-user-ids' }],
+      attributes: [{ 'data-testid': 'confirm-add-user-ids', variant: 'confirm' }],
     },
     actionCancel: {
       text: s__('UserLists|Cancel'),

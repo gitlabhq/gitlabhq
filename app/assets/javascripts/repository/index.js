@@ -188,5 +188,5 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  return { router, data: dataset };
+  return { router, data: dataset, apolloProvider, projectPath };
 }

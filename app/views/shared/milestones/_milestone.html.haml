@@ -33,11 +33,9 @@
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?
-          .gl-badge.badge-info.badge-pill
-            = milestone.group.full_name
+          = gl_badge_tag milestone.group.full_name, variant: :info
         - if milestone.project_milestone?
-          .gl-badge.badge-muted.badge-pill
-            = milestone.project.full_name
+          = gl_badge_tag milestone.project.full_name, variant: :muted
 
     .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)

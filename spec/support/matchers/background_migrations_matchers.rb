@@ -9,7 +9,7 @@ RSpec::Matchers.define :be_background_migration_with_arguments do |arguments|
 end
 
 RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
-  define_method :matches? do |migration|
+  match(notify_expectation_failures: true) do |migration|
     expect(migration).to be_background_migration_with_arguments(expected)
 
     BackgroundMigrationWorker.jobs.any? do |job|
@@ -26,7 +26,7 @@ RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
 end
 
 RSpec::Matchers.define :be_scheduled_migration do |*expected|
-  define_method :matches? do |migration|
+  match(notify_expectation_failures: true) do |migration|
     expect(migration).to be_background_migration_with_arguments(expected)
 
     BackgroundMigrationWorker.jobs.any? do |job|
@@ -41,7 +41,7 @@ RSpec::Matchers.define :be_scheduled_migration do |*expected|
 end
 
 RSpec::Matchers.define :be_scheduled_migration_with_multiple_args do |*expected|
-  define_method :matches? do |migration|
+  match(notify_expectation_failures: true) do |migration|
     expect(migration).to be_background_migration_with_arguments(expected)
 
     BackgroundMigrationWorker.jobs.any? do |job|

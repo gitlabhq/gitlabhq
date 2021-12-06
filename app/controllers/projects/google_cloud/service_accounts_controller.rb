@@ -54,7 +54,7 @@ class Projects::GoogleCloud::ServiceAccountsController < Projects::GoogleCloud::
 
     return if is_token_valid
 
-    return_url = project_google_cloud_service_accounts_path(project)
+    return_url = project_google_cloud_index_path(project)
     state = generate_session_key_redirect(request.url, return_url)
     @authorize_url = GoogleApi::CloudPlatform::Client.new(nil,
                                                           callback_google_api_auth_url,

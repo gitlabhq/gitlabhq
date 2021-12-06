@@ -40,14 +40,14 @@ Example response:
 ```json
 [
   {
-    "name": "master",
+    "name": "main",
     "merged": false,
     "protected": true,
     "default": true,
     "developers_can_push": false,
     "developers_can_merge": false,
     "can_push": true,
-    "web_url": "https://gitlab.example.com/my-group/my-project/-/tree/master",
+    "web_url": "https://gitlab.example.com/my-group/my-project/-/tree/main",
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -89,7 +89,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches/master"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches/main"
 ```
 
 Example response:
@@ -103,7 +103,7 @@ Example response:
   "developers_can_push": false,
   "developers_can_merge": false,
   "can_push": true,
-  "web_url": "https://gitlab.example.com/my-group/my-project/-/tree/master",
+  "web_url": "https://gitlab.example.com/my-group/my-project/-/tree/main",
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -151,7 +151,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=master"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=main"
 ```
 
 Example response:
