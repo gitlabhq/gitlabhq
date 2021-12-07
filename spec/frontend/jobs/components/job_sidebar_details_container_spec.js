@@ -56,7 +56,7 @@ describe('Job Sidebar Details Container', () => {
     beforeEach(createWrapper);
 
     it.each([
-      ['duration', 'Duration: 6 seconds'],
+      ['duration', 'Elapsed time: 6 seconds'],
       ['erased_at', 'Erased: 3 weeks ago'],
       ['finished_at', 'Finished: 3 weeks ago'],
       ['queued', 'Queued: 9 seconds'],
@@ -85,6 +85,15 @@ describe('Job Sidebar Details Container', () => {
       await store.dispatch('receiveJobSuccess', job);
 
       expect(findAllDetailsRow()).toHaveLength(7);
+    });
+
+    describe('duration row', () => {
+      it('renders all the details components', async () => {
+        createWrapper();
+        await store.dispatch('receiveJobSuccess', job);
+
+        expect(findAllDetailsRow().at(0).text()).toBe('Duration: 6 seconds');
+      });
     });
   });
 

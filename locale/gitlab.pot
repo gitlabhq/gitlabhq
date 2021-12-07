@@ -11531,6 +11531,9 @@ msgstr ""
 msgid "DependencyProxy|Cached %{time}"
 msgstr ""
 
+msgid "DependencyProxy|Clear the Dependency Proxy cache automatically"
+msgstr ""
+
 msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
 msgstr ""
 
@@ -11555,6 +11558,9 @@ msgstr ""
 msgid "DependencyProxy|Image list"
 msgstr ""
 
+msgid "DependencyProxy|Storage settings"
+msgstr ""
+
 msgid "DependencyProxy|The Dependency Proxy is disabled. %{docLinkStart}Learn how to enable it%{docLinkEnd}."
 msgstr ""
 
@@ -11562,6 +11568,9 @@ msgid "DependencyProxy|There are no images in the cache"
 msgstr ""
 
 msgid "DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}"
+msgstr ""
+
+msgid "DependencyProxy|When enabled, images older than 90 days will be removed from the cache."
 msgstr ""
 
 msgid "Depends on %d merge request being merged"

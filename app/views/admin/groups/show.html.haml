@@ -70,15 +70,13 @@
     .card
       .card-header
         = _('Projects')
-        %span.badge.badge-pill
-          #{@group.projects.count}
+        = gl_badge_tag @group.projects.count
       %ul.content-list
         - @projects.each do |project|
           %li
             %strong
               = link_to project.full_name, [:admin, project]
-              %span.badge.badge-pill
-                = storage_counter(project.statistics.storage_size)
+              = gl_badge_tag storage_counter(project.statistics.storage_size)
             %span.float-right.light
               %span.monospace= project.full_path + '.git'
       - unless @projects.size < Kaminari.config.default_per_page
@@ -90,15 +88,13 @@
       .card
         .card-header
           = _('Projects shared with %{group_name}') % { group_name: @group.name }
-          %span.badge.badge-pill
-            #{shared_projects.size}
+          = gl_badge_tag shared_projects.size
         %ul.content-list
           - shared_projects.each do |project|
             %li
               %strong
                 = link_to project.full_name, [:admin, project]
-                %span.badge.badge-pill
-                  = storage_counter(project.statistics.storage_size)
+                = gl_badge_tag storage_counter(project.statistics.storage_size)
               %span.float-right.light
                 %span.monospace= project.full_path + '.git'
 
@@ -126,7 +122,7 @@
     .card
       .card-header
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
-        %span.badge.badge-pill= @group.users_count
+        = gl_badge_tag @group.users_count
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member',

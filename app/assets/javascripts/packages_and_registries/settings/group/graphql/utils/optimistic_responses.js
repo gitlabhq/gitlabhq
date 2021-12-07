@@ -21,3 +21,15 @@ export const updateGroupDependencyProxySettingsOptimisticResponse = (changes) =>
     },
   },
 });
+
+export const updateDependencyProxyImageTtlGroupPolicyOptimisticResponse = (changes) => ({
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  __typename: 'Mutation',
+  updateDependencyProxyImageTtlGroupPolicy: {
+    __typename: 'UpdateDependencyProxyImageTtlGroupPolicyPayload',
+    errors: [],
+    dependencyProxyImageTtlPolicy: {
+      ...changes,
+    },
+  },
+});

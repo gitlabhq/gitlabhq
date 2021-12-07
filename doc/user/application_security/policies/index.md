@@ -313,9 +313,10 @@ rule in the defined policy are met.
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `scan` | `string` | `dast`, `secret_detection`, `sast` | The action's type. |
+| `scan` | `string` | `dast`, `secret_detection`, `sast`, `container_scanning`, `cluster_image_scanning` | The action's type. |
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/index.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/index.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `variables` | `object` | | Set of variables applied and enforced for the selected scan. The object's key is the variable name with a value provided as a string. |
 
 Note the following:
 
@@ -379,6 +380,9 @@ scan_execution_policy:
     - main
   actions:
   - scan: secret_detection
+  - scan: sast
+    variables:
+      SAST_EXCLUDED_ANALYZERS: brakeman
   - scan: container_scanning
 - name: Enforce Cluster Image Scanning on production-cluster every 24h
   description: This policy enforces Cluster Image Scanning scan to run every 24 hours
@@ -406,7 +410,8 @@ In this example:
   `release/v1.2.1`), DAST scans run with `Scanner Profile A` and `Site Profile B`.
 - DAST and secret detection scans run every 10 minutes. The DAST scan runs with `Scanner Profile C`
   and `Site Profile D`.
-- Secret detection and container scanning scans run for every pipeline executed on the `main` branch.
+- Secret detection, container scanning, and SAST scans run for every pipeline executed on the `main`
+  branch. The SAST scan runs with the `SAST_EXCLUDED_ANALYZER` variable set to `"brakeman"`.
 - Cluster Image Scanning scan runs every 24h. The scan runs on the `production-cluster` cluster and fetches vulnerabilities
   from the container with the name `database` configured for deployment with the name `production-application` in the `production-namespace` namespace.
 

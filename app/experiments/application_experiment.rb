@@ -57,6 +57,10 @@ class ApplicationExperiment < Gitlab::Experiment # rubocop:disable Gitlab/Namesp
     Digest::MD5.hexdigest(ingredients.join('|'))
   end
 
+  def nest_experiment(other)
+    instance_exec(:nested, { label: other.name }, &Configuration.tracking_behavior)
+  end
+
   private
 
   def feature_flag_name

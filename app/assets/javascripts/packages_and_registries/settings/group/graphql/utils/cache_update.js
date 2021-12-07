@@ -19,6 +19,11 @@ export const updateGroupPackageSettings = (fullPath) => (client, { data: updated
         ...updatedData.updateDependencyProxySettings.dependencyProxySetting,
       };
     }
+    if (updatedData.updateDependencyProxyImageTtlGroupPolicy) {
+      draftState.group.dependencyProxyImageTtlPolicy = {
+        ...updatedData.updateDependencyProxyImageTtlGroupPolicy.dependencyProxyImageTtlPolicy,
+      };
+    }
   });
 
   client.writeQuery({

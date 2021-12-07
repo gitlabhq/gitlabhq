@@ -452,7 +452,7 @@ If the scanner report is small, less than 35 lines, then feel free to [inline th
 
 #### Test Diffs
 
-The [go-cmp]<https://github.com/google/go-cmp> package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
+The [go-cmp](https://github.com/google/go-cmp) package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
 
 ```golang
 package main

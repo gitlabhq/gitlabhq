@@ -306,6 +306,26 @@ RSpec.describe ApplicationExperiment, :experiment do
     end
   end
 
+  context "when nesting experiments" do
+    before do
+      stub_experiments(top: :control, nested: :control)
+    end
+
+    it "doesn't raise an exception" do
+      expect { experiment(:top) { |e| e.control { experiment(:nested) { } } } }.not_to raise_error
+    end
+
+    it "tracks an event", :snowplow do
+      experiment(:top) { |e| e.control { experiment(:nested) { } } }
+
+      expect(Gitlab::Tracking).to have_received(:event).with( # rubocop:disable RSpec/ExpectGitlabTracking
+        'top',
+        'nested',
+        hash_including(label: 'nested')
+      )
+    end
+  end
+
   context "when caching" do
     let(:cache) { Gitlab::Experiment::Configuration.cache }
 

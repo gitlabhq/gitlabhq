@@ -4,6 +4,10 @@ query getGroupPackagesSettings($fullPath: ID!) {
     dependencyProxySetting {
       enabled
     }
+    dependencyProxyImageTtlPolicy {
+      ttl
+      enabled
+    }
     packageSettings {
       mavenDuplicatesAllowed
       mavenDuplicateExceptionRegex

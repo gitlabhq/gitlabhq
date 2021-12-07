@@ -1,6 +1,7 @@
 import {
   updateGroupPackagesSettingsOptimisticResponse,
   updateGroupDependencyProxySettingsOptimisticResponse,
+  updateDependencyProxyImageTtlGroupPolicyOptimisticResponse,
 } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
 
 describe('Optimistic responses', () => {
@@ -30,6 +31,24 @@ describe('Optimistic responses', () => {
           "updateDependencyProxySettings": Object {
             "__typename": "UpdateDependencyProxySettingsPayload",
             "dependencyProxySetting": Object {
+              "foo": "bar",
+            },
+            "errors": Array [],
+          },
+        }
+      `);
+    });
+  });
+
+  describe('updateDependencyProxyImageTtlGroupPolicyOptimisticResponse', () => {
+    it('returns the correct structure', () => {
+      expect(updateDependencyProxyImageTtlGroupPolicyOptimisticResponse({ foo: 'bar' }))
+        .toMatchInlineSnapshot(`
+        Object {
+          "__typename": "Mutation",
+          "updateDependencyProxyImageTtlGroupPolicy": Object {
+            "__typename": "UpdateDependencyProxyImageTtlGroupPolicyPayload",
+            "dependencyProxyImageTtlPolicy": Object {
               "foo": "bar",
             },
             "errors": Array [],

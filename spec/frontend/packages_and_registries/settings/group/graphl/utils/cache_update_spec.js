@@ -17,6 +17,13 @@ describe('Package and Registries settings group cache updates', () => {
     },
   };
 
+  const updateDependencyProxyImageTtlGroupPolicyPayload = {
+    dependencyProxyImageTtlPolicy: {
+      enabled: false,
+      ttl: 45,
+    },
+  };
+
   const cacheMock = {
     group: {
       packageSettings: {
@@ -25,6 +32,10 @@ describe('Package and Registries settings group cache updates', () => {
       },
       dependencyProxySetting: {
         enabled: true,
+      },
+      dependencyProxyImageTtlPolicy: {
+        enabled: true,
+        ttl: 45,
       },
     },
   };
@@ -42,15 +53,26 @@ describe('Package and Registries settings group cache updates', () => {
   });
 
   describe.each`
-    updateNamespacePackageSettings           | updateDependencyProxySettings
-    ${updateNamespacePackageSettingsPayload} | ${updateDependencyProxySettingsPayload}
-    ${undefined}                             | ${updateDependencyProxySettingsPayload}
-    ${updateNamespacePackageSettingsPayload} | ${undefined}
-    ${undefined}                             | ${undefined}
+    updateNamespacePackageSettings           | updateDependencyProxySettings           | updateDependencyProxyImageTtlGroupPolicy
+    ${updateNamespacePackageSettingsPayload} | ${updateDependencyProxySettingsPayload} | ${undefined}
+    ${undefined}                             | ${updateDependencyProxySettingsPayload} | ${undefined}
+    ${updateNamespacePackageSettingsPayload} | ${undefined}                            | ${undefined}
+    ${undefined}                             | ${undefined}                            | ${updateDependencyProxyImageTtlGroupPolicyPayload}
+    ${undefined}                             | ${undefined}                            | ${undefined}
   `(
     'updateGroupPackageSettings',
-    ({ updateNamespacePackageSettings, updateDependencyProxySettings }) => {
-      const payload = { data: { updateNamespacePackageSettings, updateDependencyProxySettings } };
+    ({
+      updateNamespacePackageSettings,
+      updateDependencyProxySettings,
+      updateDependencyProxyImageTtlGroupPolicy,
+    }) => {
+      const payload = {
+        data: {
+          updateNamespacePackageSettings,
+          updateDependencyProxySettings,
+          updateDependencyProxyImageTtlGroupPolicy,
+        },
+      };
       it('calls readQuery', () => {
         updateGroupPackageSettings('foo')(client, payload);
         expect(client.readQuery).toHaveBeenCalledWith(queryAndVariables);
@@ -65,6 +87,7 @@ describe('Package and Registries settings group cache updates', () => {
               ...cacheMock.group,
               ...payload.data.updateNamespacePackageSettings,
               ...payload.data.updateDependencyProxySettings,
+              ...payload.data.updateDependencyProxyImageTtlGroupPolicy,
             },
           },
         });
