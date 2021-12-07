@@ -1,8 +1,0 @@
----
-name: linear_runner_ancestor_scopes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70385
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/341114
-milestone: '14.6'
-type: development
-group: group::access
-default_enabled: false

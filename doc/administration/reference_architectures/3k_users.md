@@ -187,8 +187,7 @@ To set up GitLab and its components to accommodate up to 3,000 users:
    more advanced code search across your entire GitLab instance.
 1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
    to have shared disk storage service as an alternative to Gitaly or object
-   storage. You can skip this step if you're not using GitLab Pages (which
-   requires NFS).
+   storage.
 
 The servers start on the same 10.6.0.0/24 private network range, and can
 connect to each other freely on these addresses.
@@ -2103,8 +2102,7 @@ cluster alongside your instance, read how to
 ## Configure NFS (optional)
 
 [Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance. If you intend
-to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+are recommended over NFS wherever possible for improved performance.
 
 See how to [configure NFS](../nfs.md).
 

@@ -4,7 +4,7 @@ group: Access
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Namespaces API
+# Namespaces API **(FREE)**
 
 Usernames and group names fall under a special category called
 [namespaces](../user/group/index.md#namespaces).

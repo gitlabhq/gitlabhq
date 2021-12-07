@@ -4,8 +4,11 @@
 
 .sub-section
   %h4= s_('GroupSettings|Export group')
-  %p= _('Export this group with all related data to a new GitLab instance. Once complete, you can import the data file from the "New Group" page.')
-
+  %p= _('Export this group with all related data.')
+  %p
+    - export_information = _('After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance.') % { strong_text_start: '<strong>'.html_safe, strong_text_end: '</strong>'.html_safe}
+    = export_information.html_safe
+    = link_to _('Learn more.'), help_page_path('user/group/settings/import_export.md'), target: '_blank', rel: 'noopener noreferrer'
   .bs-callout.bs-callout-info
     %p.gl-mb-0
       %p= _('The following items will be exported:')
@@ -17,7 +20,6 @@
         %li= _('Projects')
         %li= _('Runner tokens')
         %li= _('SAML discovery tokens')
-  %p= _('Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.')
   - if group.export_file_exists?
     = link_to _('Regenerate export'), export_group_path(group),
         method: :post, class: 'btn gl-button btn-default', data: { qa_selector: 'regenerate_export_group_link' }

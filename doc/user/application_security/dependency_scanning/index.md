@@ -283,10 +283,10 @@ table.supported-languages ul {
 
 GitLab analyzers obtain dependency information using one of the following two methods:
 
-1. [Parsing lockfiles directly.](#obtaining-dependendency-information-by-parsing-lockfiles)
-1. [Running a package manager or build tool to generate a dependency information file which is then parsed.](#obtaining-dependendency-information-by-running-a-package-manager-to-generate-a-parsable-file)
+1. [Parsing lockfiles directly.](#obtaining-dependency-information-by-parsing-lockfiles)
+1. [Running a package manager or build tool to generate a dependency information file which is then parsed.](#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file)
 
-#### Obtaining dependendency information by parsing lockfiles
+#### Obtaining dependency information by parsing lockfiles
 
 The following package managers use lockfiles that GitLab analyzers are capable of parsing directly:
 
@@ -300,7 +300,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | npm             | v1, v2                         | [6.x](https://gitlab.com/gitlab-org/security-products/tests/js-npm/-/blob/master/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/tests/js-npm/-/blob/lockfile-v2-FREEZE/package-lock.json#L4)         |
 | yarn            | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/tests/js-yarn/-/blob/master/yarn.lock)                                                                                                                                       |
 
-#### Obtaining dependendency information by running a package manager to generate a parsable file
+#### Obtaining dependency information by running a package manager to generate a parsable file
 
 To support the following package managers, the GitLab analyzers proceed in two steps:
 
@@ -374,7 +374,7 @@ We only execute one build in the directory where a build file has been detected,
 Please note, we support the following types of Java project structures:
 
 - [multi-project sbt builds](https://www.scala-sbt.org/1.x/docs/Multi-Project.html)
-- [multi-project gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
+- [multi-project Gradle builds](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html)
 - [multi-module maven projects](https://maven.apache.org/pom.html#Aggregation)
 
 #### JavaScript
@@ -600,7 +600,7 @@ The dependency scanning tool emits a JSON report file. For more information, see
 
 Here's an example dependency scanning report:
 
-```json-doc
+```json
 {
   "version": "2.0",
   "vulnerabilities": [
@@ -713,7 +713,7 @@ Please check the [Release Process documentation](https://gitlab.com/gitlab-org/s
 
 ## Contributing to the vulnerability database
 
-You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
+You can search the [`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
 to find a vulnerability in the Gemnasium database.
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
 
@@ -785,7 +785,7 @@ Support for custom certificate authorities was introduced in the following versi
 Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
 `SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
 value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of the
-[gemnasium-db advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
+[`gemnasium-db` advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
 
 ```yaml
 include:

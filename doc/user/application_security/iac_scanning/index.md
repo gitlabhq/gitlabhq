@@ -32,14 +32,14 @@ GitLab IaC scanning supports a variety of IaC configuration files. Our IaC secur
 
 | Configuration File Type                  | Scan tool                        | Introduced in GitLab Version  |
 |------------------------------------------|----------------------------------|-------------------------------|
-| Ansible                                  | [kics](https://kics.io/)         | 14.5                          |
-| AWS CloudFormation                       | [kics](https://kics.io/)         | 14.5                          |
-| Kubernetes                               | [kics](https://kics.io/)         | 14.5                          |
-| Terraform                                | [kics](https://kics.io/)         | 14.5                          |
+| Ansible                                  | [KICS](https://kics.io/)         | 14.5                          |
+| AWS CloudFormation                       | [KICS](https://kics.io/)         | 14.5                          |
+| Kubernetes                               | [KICS](https://kics.io/)         | 14.5                          |
+| Terraform                                | [KICS](https://kics.io/)         | 14.5                          |
 
 ### Making IaC analyzers available to all GitLab tiers
 
-All open source (OSS) analyzers are availibile with the GitLab Free tier. Future propietary analyzers may be restricted to higher tiers.
+All open source (OSS) analyzers are available with the GitLab Free tier. Future proprietary analyzers may be restricted to higher tiers.
 
 #### Summary of features per tier
 

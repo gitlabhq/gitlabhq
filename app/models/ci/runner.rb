@@ -81,14 +81,7 @@ module Ci
 
     scope :belonging_to_group, -> (group_id, include_ancestors: false) {
       groups = ::Group.where(id: group_id)
-
-      if include_ancestors
-        groups = if Feature.enabled?(:linear_runner_ancestor_scopes, default_enabled: :yaml)
-                   groups.self_and_ancestors
-                 else
-                   Gitlab::ObjectHierarchy.new(groups).base_and_ancestors
-                 end
-      end
+      groups = groups.self_and_ancestors if include_ancestors
 
       joins(:runner_namespaces)
         .where(ci_runner_namespaces: { namespace_id: groups })
@@ -109,14 +102,9 @@ module Ci
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = if Feature.enabled?(:linear_runner_ancestor_scopes, default_enabled: :yaml)
-                           project_groups.self_and_ancestors.as_ids
-                         else
-                           Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
-                         end
 
       joins(:groups)
-        .where(namespaces: { id: hierarchy_groups })
+        .where(namespaces: { id: project_groups.self_and_ancestors.as_ids })
         .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336433')
     }
 

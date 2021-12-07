@@ -177,6 +177,8 @@ class ActiveSession
   # Returns an ActiveSession object
   def self.load_raw_session(raw_session)
     # rubocop:disable Security/MarshalLoad
+    # Explanation of why this Marshal.load call is OK:
+    # https://gitlab.com/gitlab-com/gl-security/appsec/appsec-reviews/-/issues/124#note_744576714
     Marshal.load(raw_session)
     # rubocop:enable Security/MarshalLoad
   end

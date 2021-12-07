@@ -1185,7 +1185,7 @@ A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can 
 
 The version information can be found in the job details for the `apifuzzer_fuzz` job.
 
-If the issue is occuring with versions v1.6.196 or greater, please contact Support and provide the following information:
+If the issue is occurring with versions v1.6.196 or greater, please contact Support and provide the following information:
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.

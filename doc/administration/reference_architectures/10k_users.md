@@ -2155,8 +2155,7 @@ cluster alongside your instance, read how to
 ## Configure NFS
 
 [Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance. If you intend
-to use GitLab Pages, this currently [requires NFS](troubleshooting.md#gitlab-pages-requires-nfs).
+are recommended over NFS wherever possible for improved performance.
 
 See how to [configure NFS](../nfs.md).
 

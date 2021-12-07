@@ -173,7 +173,7 @@ curl --request POST \
 The authorization key can be used as the `password`. The `username` is left blank:
 
 - username: `<blank>`
-- pasword: authorization_key
+- password: authorization_key
 
 ```shell
 curl --request POST \

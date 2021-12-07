@@ -20,15 +20,14 @@ with the Fog library that GitLab uses. Symptoms include:
 411 Length Required
 ```
 
-### GitLab Pages requires NFS
+### GitLab Pages can use object storage
 
-If you intend to use [GitLab Pages](../../user/project/pages/index.md), this currently requires
-[NFS](../nfs.md). There is [work in progress](https://gitlab.com/groups/gitlab-org/-/epics/3901)
-to remove this dependency. In the future, GitLab Pages will use
-object storage.
+If you intend to use [GitLab Pages](../../user/project/pages/index.md), you can
+[configure object storage](../pages/index.md#using-object-storage).
+NFS is still available if you prefer.
 
-The dependency on disk storage also prevents Pages being deployed using the
-[GitLab Helm chart](https://gitlab.com/groups/gitlab-org/-/epics/4283).
+The [GitLab Pages Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/) is also available
+for Kubernetes deployments.
 
 ### Incremental logging is required for CI to use object storage
 

@@ -31,7 +31,7 @@ collections "**Consul** x3" as consul #e76a9b
 
 card "Database" as database {
   collections "**PGBouncer x3**\n//Consul//" as pgbouncer #4EA7FF
- 
+
   card "**PostgreSQL** //Primary//\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_primary #4EA7FF
   collections "**PostgreSQL** //Secondary// **x2**\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_secondary #4EA7FF
 
@@ -61,8 +61,8 @@ consul .[#e76a9b,norank]r-> postgres_secondary
 
 To enable Database Load Balancing, make sure that:
 
-- The HA Postgres setup has one or more secondary nodes replicating the primary.
-- Each Postgres node is connected with the same credentials and on the same port.
+- The HA PostgreSQL setup has one or more secondary nodes replicating the primary.
+- Each PostgreSQL node is connected with the same credentials and on the same port.
 
 For Omnibus GitLab, you also need PgBouncer configured on each PostgreSQL node to pool
 all load-balanced connections when [configuring a multi-node setup](replication_and_failover.md).

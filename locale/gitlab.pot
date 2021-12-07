@@ -2993,6 +2993,9 @@ msgstr ""
 msgid "After it expires, you can't use merge approvals, epics, or many security features."
 msgstr ""
 
+msgid "After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance."
+msgstr ""
+
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
 msgstr ""
 
@@ -5633,7 +5636,7 @@ msgstr ""
 msgid "Boards"
 msgstr ""
 
-msgid "Boards and Board Lists"
+msgid "Boards and board lists"
 msgstr ""
 
 msgid "Boards|+ %{displayedIssuablesCount} more %{issuableType}"
@@ -14259,7 +14262,7 @@ msgstr ""
 msgid "Export requirements"
 msgstr ""
 
-msgid "Export this group with all related data to a new GitLab instance. Once complete, you can import the data file from the \"New Group\" page."
+msgid "Export this group with all related data."
 msgstr ""
 
 msgid "Export this project with all its related data in order to move it to a new GitLab instance. When the exported file is ready, you can download it from this page or from the download link in the email notification you will receive. You can then import it when creating a new project. %{link_start}Learn more.%{link_end}"
@@ -16440,9 +16443,6 @@ msgstr ""
 msgid "Group URL"
 msgstr ""
 
-msgid "Group Wikis"
-msgstr ""
-
 msgid "Group application: %{name}"
 msgstr ""
 
@@ -16567,6 +16567,9 @@ msgid "Group was exported"
 msgstr ""
 
 msgid "Group was successfully updated."
+msgstr ""
+
+msgid "Group wikis"
 msgstr ""
 
 msgid "Group: %{group_name}"
@@ -16842,7 +16845,7 @@ msgstr ""
 msgid "GroupSettings|Badges"
 msgstr ""
 
-msgid "GroupSettings|Be careful. Changing a group's parent can have unintended %{side_effects_link_start}side effects%{side_effects_link_end}."
+msgid "GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}"
 msgstr ""
 
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again."
@@ -16851,7 +16854,7 @@ msgstr ""
 msgid "GroupSettings|Change group URL"
 msgstr ""
 
-msgid "GroupSettings|Changing group URL can have unintended side effects."
+msgid "GroupSettings|Changing a group's URL can have unintended side effects."
 msgstr ""
 
 msgid "GroupSettings|Compliance frameworks"
@@ -16893,6 +16896,9 @@ msgstr ""
 msgid "GroupSettings|Overrides user notification preferences for all members of the group, subgroups, and projects."
 msgstr ""
 
+msgid "GroupSettings|Parent Group"
+msgstr ""
+
 msgid "GroupSettings|Pipeline settings was updated for the group"
 msgstr ""
 
@@ -16920,10 +16926,16 @@ msgstr ""
 msgid "GroupSettings|Projects will be permanently deleted after a %{waiting_period}-day delay. This delay can be %{link_start}customized by an admin%{link_end} in instance settings. Inherited by subgroups."
 msgstr ""
 
+msgid "GroupSettings|Search groups"
+msgstr ""
+
 msgid "GroupSettings|Select a project with the %{code_start}.gitlab/insights.yml%{code_end} file"
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
+msgstr ""
+
+msgid "GroupSettings|Select parent group"
 msgstr ""
 
 msgid "GroupSettings|Select the project that contains your custom Insights file."
@@ -24407,9 +24419,6 @@ msgid "Once imported, repositories can be mirrored over SSH. Read more %{link_st
 msgstr ""
 
 msgid "Once removed, the fork relationship cannot be restored. This project will no longer be able to receive or send merge requests to the source project or other forks."
-msgstr ""
-
-msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
 msgstr ""
 
 msgid "Once you confirm and press \"Reduce project visibility\":"
@@ -34811,9 +34820,6 @@ msgstr ""
 msgid "The group and its projects can only be viewed by members."
 msgstr ""
 
-msgid "The group can be fully restored"
-msgstr ""
-
 msgid "The group export can be downloaded from:"
 msgstr ""
 
@@ -34821,9 +34827,6 @@ msgid "The group has already been shared with this group"
 msgstr ""
 
 msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr ""
-
-msgid "The group will be placed in 'pending deletion' state"
 msgstr ""
 
 msgid "The group_project_ids parameter is only allowed for a group"
@@ -35652,6 +35655,9 @@ msgid "This form is disabled in preview"
 msgstr ""
 
 msgid "This group"
+msgstr ""
+
+msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_adjourned_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
 msgstr ""
 
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
@@ -36771,6 +36777,9 @@ msgstr ""
 msgid "Transfer"
 msgstr ""
 
+msgid "Transfer group to another parent group."
+msgstr ""
+
 msgid "Transfer ownership"
 msgstr ""
 
@@ -37554,9 +37563,6 @@ msgid "UploadLink|click to upload"
 msgstr ""
 
 msgid "Uploading changes to terminal"
-msgstr ""
-
-msgid "Upon performing this action, the contents of this group, its subgroup and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. Until that time:"
 msgstr ""
 
 msgid "Upstream"

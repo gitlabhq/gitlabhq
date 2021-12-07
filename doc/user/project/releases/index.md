@@ -795,7 +795,7 @@ You can copy the example project to your own group or instance for testing. More
 
 ### Getting `403 Forbidden` or `Something went wrong while creating a new release` errors when creating, updating or deleting releases and their assets
 
-If the release is associted with a [protected tag](../protected_tags.md),
+If the release is associated with a [protected tag](../protected_tags.md),
 the UI/API request might result in an authorization failure.
 Make sure that the user or a service/bot account is allowed to
 [create the protected tag](../protected_tags.md#configuring-protected-tags) too.

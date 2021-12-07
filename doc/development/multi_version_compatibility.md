@@ -64,7 +64,7 @@ To illustrate how these problems arise, take a look at this example:
 
 In this example, you can imagine that we are updating by one monthly release. But refer to [How long must code be backwards-compatible?](#how-long-must-code-be-backwards-compatible).
 
-| Update step | Postgres DB | Web nodes | API nodes | Sidekiq nodes | Compatibility concerns |
+| Update step | PostgreSQL DB | Web nodes | API nodes | Sidekiq nodes | Compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
 | Initial state | 🙂 | 🙂 | 🙂 | 🙂 | |
 | Ran pre-deployment migrations | 🚢 except post-deploy migrations | 🙂 | 🙂 | 🙂 | Rails code in 🙂 is making DB calls to 🚢 |
@@ -102,7 +102,7 @@ But the problem isn't just that there are many nodes. The bigger problem is that
 - "Web app nodes": Handle web requests
 - "API app nodes": Handle API requests
 - "Sidekiq app nodes": Handle Sidekiq jobs
-- "Postgres database": Handle internal Postgres calls
+- "PostgreSQL database": Handle internal PostgreSQL calls
 - "Redis database": Handle internal Redis calls
 - "Gitaly nodes": Handle internal Gitaly calls
 
@@ -110,7 +110,7 @@ During an update, there will be [two different versions of GitLab running in dif
 
 ## Doesn't the order of update steps matter?
 
-Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old Postgres database schema.
+Yes! We have specific instructions for [zero-downtime updates](../update/index.md#upgrading-without-downtime) because it allows us to ignore some permutations of compatibility. This is why we don't worry about Rails code making DB calls to an old PostgreSQL database schema.
 
 ## I've identified a potential backwards compatibility problem, what can I do about it?
 

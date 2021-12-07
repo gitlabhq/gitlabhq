@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Resource group API **(FREE)**
 
-You can read more about [controling the job concurrency with resource groups](../ci/resource_groups/index.md).
+You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/index.md).
 
 ## Get a specific resource group
 

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 At the heart of GitLab is a web application [built using the Ruby on Rails
 framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 Thanks to this, we also get access to the amazing tools built right into Rails.
-In this guide, we are introducing the [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
+This guide introduces the [Rails console](../operations/rails_console.md#starting-a-rails-console-session)
 and the basics of interacting with your GitLab instance from the command line.
 
 WARNING:
@@ -195,7 +195,7 @@ a background job to deliver an email notification. This is an example of an
 -- code which is designated to run in response to events in the Active Record
 object life cycle. This is also why using the Rails console is preferred when
 direct changes to data is necessary as changes made via direct database queries
-does not trigger these callbacks.
+do not trigger these callbacks.
 
 It's also possible to update attributes in a single line:
 

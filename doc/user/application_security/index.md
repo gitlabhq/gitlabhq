@@ -46,7 +46,7 @@ GitLab uses the following tools to scan and report known vulnerabilities found i
 | [Secret Detection](secret_detection/index.md)                  | Analyze Git history for leaked secrets.                             |
 | [Security Dashboard](security_dashboard/index.md)              | View vulnerabilities in all your projects and groups.               |
 | [Static Application Security Testing (SAST)](sast/index.md)    | Analyze source code for known vulnerabilities.                      |
-| [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md) | Analyze your IaC coniguration files for known vulnerabilities.      |
+| [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md) | Analyze your IaC configuration files for known vulnerabilities.      |
 | [Coverage fuzzing](coverage_fuzzing/index.md)                  | Find unknown bugs and vulnerabilities with coverage-guided fuzzing. |
 | [Cluster Image Scanning](cluster_image_scanning/index.md)      | Scan Kubernetes clusters for known vulnerabilities.                 |
 

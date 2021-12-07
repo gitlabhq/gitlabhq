@@ -20,7 +20,7 @@ store all the builds in PostgreSQL in `ci_builds` table, and because we are
 creating more than [2 million builds each day on GitLab.com](https://docs.google.com/spreadsheets/d/17ZdTWQMnTHWbyERlvj1GA7qhw_uIfCoI5Zfrrsh95zU),
 we are reaching database limits that are slowing our development velocity down.
 
-On February 1st, 2021, GitLab.com surpased 1 billion CI/CD builds created and the number of
+On February 1st, 2021, GitLab.com surpassed 1 billion CI/CD builds created and the number of
 builds continues to grow exponentially.
 
 ![CI builds cumulative with forecast](ci_builds_cumulative_forecast.png)
@@ -99,7 +99,7 @@ sustain in upcoming years.
 
 **Status**: As of October 2021 we reduced the growth rate of `ci_builds` table
 by writing build options and variables to `ci_builds_metadata` table. We plan
-to ship futher improvements that will be described in a separate blueprint.
+to ship further improvements that will be described in a separate blueprint.
 
 ### Queuing mechanisms are using the large table
 
