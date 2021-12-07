@@ -1,15 +1,12 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createFlash from '~/flash';
 import OrganizationsRoot from '~/crm/components/organizations_root.vue';
 import getGroupOrganizationsQuery from '~/crm/components/queries/get_group_organizations.query.graphql';
 import { getGroupOrganizationsQueryResponse } from './mock_data';
-
-jest.mock('~/flash');
 
 describe('Customer relations organizations root app', () => {
   Vue.use(VueApollo);
@@ -18,6 +15,8 @@ describe('Customer relations organizations root app', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
+  const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
+  const findError = () => wrapper.findComponent(GlAlert);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupOrganizationsQueryResponse);
 
   const mountComponent = ({
@@ -26,7 +25,7 @@ describe('Customer relations organizations root app', () => {
   } = {}) => {
     fakeApollo = createMockApollo([[getGroupOrganizationsQuery, queryHandler]]);
     wrapper = mountFunction(OrganizationsRoot, {
-      provide: { groupFullPath: 'flightjs' },
+      provide: { groupFullPath: 'flightjs', groupIssuesPath: '/issues' },
       apolloProvider: fakeApollo,
     });
   };
@@ -46,7 +45,7 @@ describe('Customer relations organizations root app', () => {
     mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
     await waitForPromises();
 
-    expect(createFlash).toHaveBeenCalled();
+    expect(findError().exists()).toBe(true);
   });
 
   it('renders correct results', async () => {
@@ -56,5 +55,11 @@ describe('Customer relations organizations root app', () => {
     expect(findRowByName(/Test Inc/i)).toHaveLength(1);
     expect(findRowByName(/VIP/i)).toHaveLength(1);
     expect(findRowByName(/120/i)).toHaveLength(1);
+
+    const issueLink = findIssuesLinks().at(0);
+    expect(issueLink.exists()).toBe(true);
+    expect(issueLink.attributes('href')).toBe(
+      '/issues?scope=all&state=opened&crm_organization_id=2',
+    );
   });
 });

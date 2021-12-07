@@ -1,7 +1,7 @@
 <script>
 import produce from 'immer';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/show/constants';
 import { assigneesQueries } from '~/sidebar/constants';
 
 export default {

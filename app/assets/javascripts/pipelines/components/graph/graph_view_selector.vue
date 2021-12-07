@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlSegmentedControl, GlToggle } from '@gitlab/ui';
+import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { STAGE_VIEW, LAYER_VIEW } from './constants';
 
@@ -7,8 +7,9 @@ export default {
   name: 'GraphViewSelector',
   components: {
     GlAlert,
+    GlButton,
+    GlButtonGroup,
     GlLoadingIcon,
-    GlSegmentedControl,
     GlToggle,
   },
   props: {
@@ -96,6 +97,9 @@ export default {
       this.hoverTipDismissed = true;
       this.$emit('dismissHoverTip');
     },
+    isCurrentType(type) {
+      return this.segmentSelectedType === type;
+    },
     /*
       In both toggle methods, we use setTimeout so that the loading indicator displays,
       then the work is done to update the DOM. The process is:
@@ -110,11 +114,14 @@ export default {
 
      See https://www.hesselinkwebdesign.nl/2019/nexttick-vs-settimeout-in-vue/ for more details.
     */
-    toggleView(type) {
-      this.isSwitcherLoading = true;
-      setTimeout(() => {
-        this.$emit('updateViewType', type);
-      });
+    setViewType(type) {
+      if (!this.isCurrentType(type)) {
+        this.isSwitcherLoading = true;
+        this.segmentSelectedType = type;
+        setTimeout(() => {
+          this.$emit('updateViewType', type);
+        });
+      }
     },
     toggleShowLinksActive(val) {
       this.isToggleLoading = true;
@@ -136,14 +143,16 @@ export default {
         size="lg"
       />
       <span class="gl-font-weight-bold">{{ $options.i18n.viewLabelText }}</span>
-      <gl-segmented-control
-        v-model="segmentSelectedType"
-        :options="viewTypesList"
-        :disabled="isSwitcherLoading"
-        data-testid="pipeline-view-selector"
-        class="gl-mx-4"
-        @input="toggleView"
-      />
+      <gl-button-group class="gl-mx-4">
+        <gl-button
+          v-for="viewType in viewTypesList"
+          :key="viewType.value"
+          :selected="isCurrentType(viewType.value)"
+          @click="setViewType(viewType.value)"
+        >
+          {{ viewType.text }}
+        </gl-button>
+      </gl-button-group>
 
       <div v-if="showLinksToggle" class="gl-display-flex gl-align-items-center">
         <gl-toggle

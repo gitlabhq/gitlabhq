@@ -5791,6 +5791,7 @@ The connection type for [`DastProfile`](#dastprofile).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dastprofileconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="dastprofileconnectionedges"></a>`edges` | [`[DastProfileEdge]`](#dastprofileedge) | A list of edges. |
 | <a id="dastprofileconnectionnodes"></a>`nodes` | [`[DastProfile]`](#dastprofile) | A list of nodes. |
 | <a id="dastprofileconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

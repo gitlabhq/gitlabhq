@@ -10,5 +10,5 @@ fragment RunnerNode on CiRunner {
   locked
   tagList
   contactedAt
-  status
+  status(legacyMode: null)
 }

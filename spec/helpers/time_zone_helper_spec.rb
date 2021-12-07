@@ -30,6 +30,30 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
       end
     end
 
+    context 'with abbr format' do
+      subject(:timezone_data) { helper.timezone_data(format: :abbr) }
+
+      it 'matches schema' do
+        expect(timezone_data).not_to be_empty
+
+        timezone_data.each_with_index do |timezone_hash, i|
+          expect(timezone_hash.keys).to contain_exactly(
+            :identifier,
+            :abbr
+          ), "Failed at index #{i}"
+        end
+      end
+
+      it 'formats for display' do
+        tz = ActiveSupport::TimeZone.all[0]
+
+        expect(timezone_data[0]).to eq(
+          identifier: tz.tzinfo.identifier,
+          abbr: tz.tzinfo.strftime('%Z')
+        )
+      end
+    end
+
     context 'with full format' do
       subject(:timezone_data) { helper.timezone_data(format: :full) }
 
@@ -64,7 +88,7 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
       subject(:timezone_data) { helper.timezone_data(format: :unknown) }
 
       it 'raises an exception' do
-        expect { timezone_data }.to raise_error ArgumentError, 'Invalid format :unknown. Valid formats are :short, :full.'
+        expect { timezone_data }.to raise_error ArgumentError, 'Invalid format :unknown. Valid formats are :short, :abbr, :full.'
       end
     end
   end

@@ -19946,6 +19946,27 @@ CREATE SEQUENCE upcoming_reconciliations_id_seq
 
 ALTER SEQUENCE upcoming_reconciliations_id_seq OWNED BY upcoming_reconciliations.id;
 
+CREATE TABLE upload_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    upload_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_7396dc8591 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE upload_states_upload_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE upload_states_upload_id_seq OWNED BY upload_states.upload_id;
+
 CREATE TABLE uploads (
     id integer NOT NULL,
     size bigint NOT NULL,
@@ -22049,6 +22070,8 @@ ALTER TABLE ONLY u2f_registrations ALTER COLUMN id SET DEFAULT nextval('u2f_regi
 
 ALTER TABLE ONLY upcoming_reconciliations ALTER COLUMN id SET DEFAULT nextval('upcoming_reconciliations_id_seq'::regclass);
 
+ALTER TABLE ONLY upload_states ALTER COLUMN upload_id SET DEFAULT nextval('upload_states_upload_id_seq'::regclass);
+
 ALTER TABLE ONLY uploads ALTER COLUMN id SET DEFAULT nextval('uploads_id_seq'::regclass);
 
 ALTER TABLE ONLY user_agent_details ALTER COLUMN id SET DEFAULT nextval('user_agent_details_id_seq'::regclass);
@@ -24021,6 +24044,9 @@ ALTER TABLE ONLY u2f_registrations
 
 ALTER TABLE ONLY upcoming_reconciliations
     ADD CONSTRAINT upcoming_reconciliations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY upload_states
+    ADD CONSTRAINT upload_states_pkey PRIMARY KEY (upload_id);
 
 ALTER TABLE ONLY uploads
     ADD CONSTRAINT uploads_pkey PRIMARY KEY (id);
@@ -27582,6 +27608,16 @@ CREATE UNIQUE INDEX index_unit_test_failures_unique_columns ON ci_unit_test_fail
 
 CREATE UNIQUE INDEX index_upcoming_reconciliations_on_namespace_id ON upcoming_reconciliations USING btree (namespace_id);
 
+CREATE INDEX index_upload_states_failed_verification ON upload_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_upload_states_needs_verification ON upload_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_upload_states_on_upload_id ON upload_states USING btree (upload_id);
+
+CREATE INDEX index_upload_states_on_verification_state ON upload_states USING btree (verification_state);
+
+CREATE INDEX index_upload_states_pending_verification ON upload_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX index_uploads_on_checksum ON uploads USING btree (checksum);
 
 CREATE INDEX index_uploads_on_model_id_and_model_type ON uploads USING btree (model_id, model_type);
@@ -31094,6 +31130,9 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY vulnerability_finding_evidence_requests
     ADD CONSTRAINT fk_rails_cf0f278cb0 FOREIGN KEY (vulnerability_finding_evidence_supporting_message_id) REFERENCES vulnerability_finding_evidence_supporting_messages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY upload_states
+    ADD CONSTRAINT fk_rails_d00f153613 FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epic_metrics
     ADD CONSTRAINT fk_rails_d071904753 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;

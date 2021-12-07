@@ -562,7 +562,7 @@ To include the title in the rendered link of an issue, merge request, or epic, a
 at the end of the reference. For example, a reference like `#123+` is rendered as
 `The issue title (#123)`.
 
-Expanding titles does not apply to URL references, like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234`.
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
 ### Embedding metrics in GitLab Flavored Markdown
 

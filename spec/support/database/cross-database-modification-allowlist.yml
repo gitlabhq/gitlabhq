@@ -20,7 +20,6 @@
 - "./spec/controllers/admin/users_controller_spec.rb"
 - "./spec/controllers/omniauth_callbacks_controller_spec.rb"
 - "./spec/controllers/projects/issues_controller_spec.rb"
-- "./spec/controllers/projects/pipelines_controller_spec.rb"
 - "./spec/controllers/projects/settings/access_tokens_controller_spec.rb"
 - "./spec/features/issues/issue_detail_spec.rb"
 - "./spec/features/projects/pipelines/pipeline_spec.rb"

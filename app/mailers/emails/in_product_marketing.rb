@@ -29,7 +29,7 @@ module Emails
         format.html do
           @message.format = :html
 
-          render layout: nil
+          render layout: 'in_product_marketing_mailer'
         end
 
         format.text do

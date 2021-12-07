@@ -117,6 +117,14 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter do
       expect(link.attr('data-reference-format')).to eq('+')
     end
 
+    it 'includes a data-reference-format attribute for URL references' do
+      doc = reference_filter("Merge #{urls.project_merge_request_url(project, merge)}+")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-reference-format')
+      expect(link.attr('data-reference-format')).to eq('+')
+    end
+
     it 'supports an :only_path context' do
       doc = reference_filter("Merge #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')

@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
 import createFlash from '~/flash';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/show/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '~/sidebar/constants';
 

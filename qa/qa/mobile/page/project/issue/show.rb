@@ -12,7 +12,7 @@ module QA
               super
 
               base.class_eval do
-                view 'app/assets/javascripts/issue_show/components/header_actions.vue' do
+                view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
                   element :issue_actions_dropdown
                   element :mobile_close_issue_button
                   element :mobile_reopen_issue_button

@@ -56,7 +56,7 @@ default:
       {
         echo "@${CI_PROJECT_ROOT_NAMESPACE}:registry=${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
         echo "${CI_API_V4_URL#https?}/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=\${CI_JOB_TOKEN}"
-      } | tee --append .npmrc
+      } | tee -a .npmrc
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:

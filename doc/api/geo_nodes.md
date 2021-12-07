@@ -453,6 +453,13 @@ Example response:
     "uploads_failed_count": 0,
     "uploads_registry_count": null,
     "uploads_synced_in_percentage": "0.00%",
+    "uploads_checksum_total_count": 5,
+    "uploads_checksummed_count": 5,
+    "uploads_checksum_failed_count": null,
+    "uploads_verification_total_count":  null,
+    "uploads_verified_count": null,
+    "uploads_verification_failed_count": null,
+    "uploads_verified_in_percentage": "0.00%",
   },
   {
     "geo_node_id": 2,
@@ -595,6 +602,13 @@ Example response:
     "uploads_failed_count": 0,
     "uploads_registry_count": null,
     "uploads_synced_in_percentage": "0.00%",
+    "uploads_checksum_total_count": 5,
+    "uploads_checksummed_count": 5,
+    "uploads_checksum_failed_count": null,
+    "uploads_verification_total_count":  null,
+    "uploads_verified_count": null,
+    "uploads_verification_failed_count": null,
+    "uploads_verified_in_percentage": "0.00%",
   }
 ]
 ```
@@ -734,6 +748,13 @@ Example response:
   "uploads_failed_count": 0,
   "uploads_registry_count": null,
   "uploads_synced_in_percentage": "0.00%",
+  "uploads_checksum_total_count": 5,
+  "uploads_checksummed_count": 5,
+  "uploads_checksum_failed_count": null,
+  "uploads_verification_total_count":  null,
+  "uploads_verified_count": null,
+  "uploads_verification_failed_count": null,
+  "uploads_verified_in_percentage": "0.00%",
 }
 ```
 

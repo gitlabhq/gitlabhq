@@ -490,6 +490,7 @@ trending_projects: :gitlab_main
 u2f_registrations: :gitlab_main
 upcoming_reconciliations: :gitlab_main
 uploads: :gitlab_main
+upload_states: :gitlab_main
 user_agent_details: :gitlab_main
 user_callouts: :gitlab_main
 user_canonical_emails: :gitlab_main

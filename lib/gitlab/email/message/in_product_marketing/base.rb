@@ -88,29 +88,6 @@ module Gitlab
             end
           end
 
-          def address
-            s_('InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA').html_safe % strong_options
-          end
-
-          def footer_links
-            links = [
-              [s_('InProductMarketing|Blog'), 'https://about.gitlab.com/blog'],
-              [s_('InProductMarketing|Twitter'), 'https://twitter.com/gitlab'],
-              [s_('InProductMarketing|Facebook'), 'https://www.facebook.com/gitlab'],
-              [s_('InProductMarketing|YouTube'), 'https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg']
-            ]
-            case format
-            when :html
-              links.map do |text, link|
-                ActionController::Base.helpers.link_to(text, link)
-              end
-            else
-              '| ' + links.map do |text, link|
-                [text, link].join(' ')
-              end.join("\n| ")
-            end
-          end
-
           def logo_path
             ["mailers/in_product_marketing", "#{track}-#{series}.png"].join('/')
           end

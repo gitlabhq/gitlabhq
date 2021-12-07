@@ -3,14 +3,14 @@ import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import initIssuableSidebar from '~/init_issuable_sidebar';
 import { IssuableType } from '~/issuable_show/constants';
 import Issue from '~/issue';
-import { initIncidentApp, initIncidentHeaderActions } from '~/issue_show/incident';
-import { initIssuableApp, initIssueHeaderActions } from '~/issue_show/issue';
-import { parseIssuableData } from '~/issue_show/utils/parse_data';
+import { initIncidentApp, initIncidentHeaderActions } from '~/issues/show/incident';
+import { initIssuableApp, initIssueHeaderActions } from '~/issues/show/issue';
+import { parseIssuableData } from '~/issues/show/utils/parse_data';
 import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
 import initRelatedMergeRequestsApp from '~/related_merge_requests';
 import initSentryErrorStackTraceApp from '~/sentry_error_stack_trace';
-import initIssuableHeaderWarning from '~/vue_shared/components/issuable/init_issuable_header_warning';
+import initIssuableHeaderWarning from '~/issuable/init_issuable_header_warning';
 import ZenMode from '~/zen_mode';
 
 export default function initShowIssue() {

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/show/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import timeTracker from './components/time_tracking/time_tracker.vue';
 

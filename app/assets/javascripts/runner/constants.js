@@ -14,14 +14,17 @@ export const I18N_GROUP_RUNNER_DESCRIPTION = s__(
 export const I18N_PROJECT_RUNNER_DESCRIPTION = s__('Runners|Associated with one or more projects');
 
 // Status
-export const I18N_ONLINE_RUNNER_DESCRIPTION = s__(
+export const I18N_ONLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
   'Runners|Runner is online; last contact was %{timeAgo}',
-);
-export const I18N_OFFLINE_RUNNER_DESCRIPTION = s__(
-  'Runners|No recent contact from this runner; last contact was %{timeAgo}',
 );
 export const I18N_NOT_CONNECTED_RUNNER_DESCRIPTION = s__(
   'Runners|This runner has never connected to this instance',
+);
+export const I18N_OFFLINE_RUNNER_TIMEAGO_DESCRIPTION = s__(
+  'Runners|No recent contact from this runner; last contact was %{timeAgo}',
+);
+export const I18N_STALE_RUNNER_DESCRIPTION = s__(
+  'Runners|No contact from this runner in over 3 months',
 );
 
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__('Runners|You cannot assign to other projects');
@@ -54,9 +57,11 @@ export const PROJECT_TYPE = 'PROJECT_TYPE';
 
 export const STATUS_ACTIVE = 'ACTIVE';
 export const STATUS_PAUSED = 'PAUSED';
+
 export const STATUS_ONLINE = 'ONLINE';
-export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_NOT_CONNECTED = 'NOT_CONNECTED';
+export const STATUS_OFFLINE = 'OFFLINE';
+export const STATUS_STALE = 'STALE';
 
 // CiRunnerAccessLevel
 

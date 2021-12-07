@@ -2,10 +2,9 @@
 stage: Release
 group: Release
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-type: concepts, howto
 ---
 
-# Resource Groups API
+# Resource group API **(FREE)**
 
 You can read more about [controling the job concurrency with resource groups](../ci/resource_groups/index.md).
 

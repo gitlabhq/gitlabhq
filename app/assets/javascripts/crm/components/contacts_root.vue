@@ -71,6 +71,9 @@ export default {
       this.error = false;
       this.errorMessages = [];
     },
+    getIssuesPath(path, value) {
+      return `${path}?scope=all&state=opened&crm_contact_id=${value}`;
+    },
   },
   fields: [
     { key: 'firstName', sortable: true },
@@ -142,7 +145,7 @@ export default {
           data-testid="issues-link"
           icon="issues"
           :aria-label="$options.i18n.issuesButtonLabel"
-          :href="`${groupIssuesPath}?scope=all&state=opened&crm_contact_id=${data.value}`"
+          :href="getIssuesPath(groupIssuesPath, data.value)"
         />
       </template>
     </gl-table>

@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { IssuableType } from '~/issue_show/constants';
+import { IssuableType } from '~/issues/show/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/constants';
 import { defaultClient as gqlClient } from '~/sidebar/graphql';

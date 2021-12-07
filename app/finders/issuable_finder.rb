@@ -36,6 +36,7 @@
 #     attempt_group_search_optimizations: boolean
 #     attempt_project_search_optimizations: boolean
 #     crm_contact_id: integer
+#     crm_organization_id: integer
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
@@ -61,6 +62,7 @@ class IssuableFinder
       author_id
       author_username
       crm_contact_id
+      crm_organization_id
       label_name
       milestone_title
       release_tag
@@ -141,7 +143,8 @@ class IssuableFinder
     items = by_release(items)
     items = by_label(items)
     items = by_my_reaction_emoji(items)
-    by_crm_contact(items)
+    items = by_crm_contact(items)
+    by_crm_organization(items)
   end
 
   def should_filter_negated_args?
@@ -468,6 +471,10 @@ class IssuableFinder
 
   def by_crm_contact(items)
     Issuables::CrmContactFilter.new(params: original_params).filter(items)
+  end
+
+  def by_crm_organization(items)
+    Issuables::CrmOrganizationFilter.new(params: original_params).filter(items)
   end
 
   def or_filters_enabled?

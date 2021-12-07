@@ -1,6 +1,6 @@
 import { s__, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
-import { IssuableType, WorkspaceType } from '~/issue_show/constants';
+import { IssuableType, WorkspaceType } from '~/issues/show/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import epicConfidentialQuery from '~/sidebar/queries/epic_confidential.query.graphql';
 import epicDueDateQuery from '~/sidebar/queries/epic_due_date.query.graphql';

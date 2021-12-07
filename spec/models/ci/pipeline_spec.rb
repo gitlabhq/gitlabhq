@@ -35,8 +35,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
-  it { is_expected.to have_many(:package_build_infos).dependent(:nullify).inverse_of(:pipeline) }
-  it { is_expected.to have_many(:package_file_build_infos).dependent(:nullify).inverse_of(:pipeline) }
 
   it { is_expected.to have_one(:chat_data) }
   it { is_expected.to have_one(:source_pipeline) }

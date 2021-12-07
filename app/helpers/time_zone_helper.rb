@@ -3,6 +3,7 @@
 module TimeZoneHelper
   TIME_ZONE_FORMAT_ATTRS = {
     short: %i[identifier name offset],
+    abbr: %i[identifier abbr],
     full: %i[identifier name abbr offset formatted_offset]
   }.freeze
   private_constant :TIME_ZONE_FORMAT_ATTRS

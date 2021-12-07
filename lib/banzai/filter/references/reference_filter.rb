@@ -184,7 +184,9 @@ module Banzai
         end
 
         def unescape_link(href)
-          CGI.unescape(href)
+          # We cannot use CGI.unescape here because it also converts `+` to spaces.
+          # We need to keep the `+` for expanded reference formats.
+          Addressable::URI.unescape(href)
         end
 
         def unescape_html_entities(text)

@@ -491,6 +491,9 @@ That's all of the required database changes.
       self.primary_key = :cool_widget_id
 
       belongs_to :cool_widget, inverse_of: :cool_widget_state
+
+      validates :verification_failure, length: { maximum: 255 }
+      validates :verification_state, :cool_widget, presence: true
     end
   end
   ```

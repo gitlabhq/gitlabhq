@@ -920,12 +920,32 @@ RSpec.describe IssuesFinder do
 
         let(:params) { { crm_contact_id: contact1.id } }
 
-        it 'returns issues with that label' do
+        it 'returns for that contact' do
           create(:issue_customer_relations_contact, issue: contact1_issue1, contact: contact1)
           create(:issue_customer_relations_contact, issue: contact1_issue2, contact: contact1)
           create(:issue_customer_relations_contact, issue: contact2_issue1, contact: contact2)
 
           expect(issues).to contain_exactly(contact1_issue1, contact1_issue2)
+        end
+      end
+
+      context 'filtering by crm organization' do
+        let_it_be(:organization) { create(:organization, group: group) }
+        let_it_be(:contact1) { create(:contact, group: group, organization: organization) }
+        let_it_be(:contact2) { create(:contact, group: group, organization: organization) }
+
+        let_it_be(:contact1_issue1) { create(:issue, project: project1) }
+        let_it_be(:contact1_issue2) { create(:issue, project: project1) }
+        let_it_be(:contact2_issue1) { create(:issue, project: project1) }
+
+        let(:params) { { crm_organization_id: organization.id } }
+
+        it 'returns for that contact' do
+          create(:issue_customer_relations_contact, issue: contact1_issue1, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact1_issue2, contact: contact1)
+          create(:issue_customer_relations_contact, issue: contact2_issue1, contact: contact2)
+
+          expect(issues).to contain_exactly(contact1_issue1, contact1_issue2, contact2_issue1)
         end
       end
 

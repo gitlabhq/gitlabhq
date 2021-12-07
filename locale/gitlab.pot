@@ -838,6 +838,9 @@ msgstr ""
 msgid "%{placeholder} is not a valid theme"
 msgstr ""
 
+msgid "%{policy_link} (notifying after %{elapsed_time} minutes unless %{status})"
+msgstr ""
+
 msgid "%{primary} (%{secondary})"
 msgstr ""
 
@@ -1035,6 +1038,12 @@ msgstr ""
 msgid "%{user_name} (%{user_username}) was removed from %{rotation} in %{schedule} in %{project}. "
 msgstr ""
 
+msgid "%{user_name} (%{user_username}) was removed from the following escalation policies in %{project_link}: "
+msgstr ""
+
+msgid "%{user_name} (%{user_username}) was removed from the following escalation policies in %{project}:"
+msgstr ""
+
 msgid "%{user_name} profile page"
 msgstr ""
 
@@ -1216,6 +1225,9 @@ msgid ", and "
 msgstr ""
 
 msgid ", or "
+msgstr ""
+
+msgid "- %{policy_name} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
 msgid "- Available to run jobs."
@@ -23436,6 +23448,9 @@ msgstr ""
 msgid "Next file in diff"
 msgstr ""
 
+msgid "Next scan"
+msgstr ""
+
 msgid "Next unresolved discussion"
 msgstr ""
 
@@ -24337,6 +24352,9 @@ msgstr ""
 msgid "OnDemandScans|On-demand scans run outside the DevOps cycle and find vulnerabilities in your projects. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}"
 msgstr ""
 
+msgid "OnDemandScans|Repeats"
+msgstr ""
+
 msgid "OnDemandScans|Save and run scan"
 msgstr ""
 
@@ -24371,6 +24389,9 @@ msgid "OnDemandScans|There are no finished scans."
 msgstr ""
 
 msgid "OnDemandScans|There are no running scans."
+msgstr ""
+
+msgid "OnDemandScans|There are no scheduled scans."
 msgstr ""
 
 msgid "OnDemandScans|Use existing scanner profile"
@@ -26196,6 +26217,12 @@ msgid "Please reach out if you have any questions and we'll be happy to assist."
 msgstr ""
 
 msgid "Please refer to %{docs_url}"
+msgstr ""
+
+msgid "Please review the updated escalation policies for %{project_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
+msgstr ""
+
+msgid "Please review the updated escalation policies for %{project}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
 msgid "Please select"
@@ -30112,6 +30139,9 @@ msgstr ""
 msgid "Runners|New runner, has not connected yet"
 msgstr ""
 
+msgid "Runners|No contact from this runner in over 3 months"
+msgstr ""
+
 msgid "Runners|No recent contact from this runner; last contact was %{timeAgo}"
 msgstr ""
 
@@ -30217,6 +30247,9 @@ msgstr ""
 msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
+msgid "Runners|Stale"
+msgstr ""
+
 msgid "Runners|Status"
 msgstr ""
 
@@ -30311,6 +30344,9 @@ msgid "Runners|shared"
 msgstr ""
 
 msgid "Runners|specific"
+msgstr ""
+
+msgid "Runners|stale"
 msgstr ""
 
 msgid "Running"

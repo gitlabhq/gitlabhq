@@ -21,6 +21,7 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def activity_dates
+      return {} if @projects.empty?
       return @activity_dates if @activity_dates.present?
 
       date_interval = "INTERVAL '#{@contributor_time_instance.now.utc_offset} seconds'"
@@ -29,13 +30,13 @@ module Gitlab
       # project_features for the (currently) 3 different contribution types
       date_from = @contributor_time_instance.now.years_ago(1)
       repo_events = event_created_at(date_from, :repository)
-        .where(action: :pushed, target_type: nil)
+        .where(action: :pushed)
       issue_events = event_created_at(date_from, :issues)
         .where(action: [:created, :closed], target_type: "Issue")
       mr_events = event_created_at(date_from, :merge_requests)
         .where(action: [:merged, :created, :closed], target_type: "MergeRequest")
       note_events = event_created_at(date_from, :merge_requests)
-        .where(action: :commented, target_type: "Note")
+        .where(action: :commented)
 
       events = Event
         .select("date(created_at + #{date_interval}) AS date", 'COUNT(*) AS num_events')
@@ -84,11 +85,19 @@ module Gitlab
       # use IN(project_ids...) instead. It's the intersection of two users so
       # the list will be (relatively) short
       @contributed_project_ids ||= projects.distinct.pluck(:id)
-      authed_projects = ProjectFeature
-        .with_feature_available_for_user(feature, current_user)
-        .where(project_id: @contributed_project_ids)
-        .reorder(nil)
-        .select(:project_id)
+
+      # no need to check feature access of current user, if the contributor opted-in
+      # to show all private events anyway - otherwise they would get filtered out again
+      authed_projects = if @contributor.include_private_contributions?
+                          @contributed_project_ids.join(",")
+                        else
+                          ProjectFeature
+                            .with_feature_available_for_user(feature, current_user)
+                            .where(project_id: @contributed_project_ids)
+                            .reorder(nil)
+                            .select(:project_id)
+                            .to_sql
+                        end
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
         .and(t[:created_at].lteq(@contributor_time_instance.today.end_of_day))
@@ -97,7 +106,7 @@ module Gitlab
       Event.reorder(nil)
         .select(:created_at)
         .where(conditions)
-        .where("events.project_id in (#{authed_projects.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+        .where("events.project_id in (#{authed_projects})") # rubocop:disable GitlabSecurity/SqlInjection
     end
     # rubocop: enable CodeReuse/ActiveRecord
   end

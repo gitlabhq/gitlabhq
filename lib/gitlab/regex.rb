@@ -427,6 +427,10 @@ module Gitlab
       @issue ||= /(?<issue>\d+)(?<format>\+)?(?=\W|\z)/
     end
 
+    def merge_request
+      @merge_request ||= /(?<merge_request>\d+)(?<format>\+)?/
+    end
+
     def base64_regex
       @base64_regex ||= %r{(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?}.freeze
     end
@@ -441,3 +445,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Regex.prepend_mod
