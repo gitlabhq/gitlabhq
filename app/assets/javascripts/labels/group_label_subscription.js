@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import { fixTitle, hide } from '~/tooltips';
-import createFlash from './flash';
-import axios from './lib/utils/axios_utils';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 
 const tooltipTitles = {
   group: __('Unsubscribe at group level'),

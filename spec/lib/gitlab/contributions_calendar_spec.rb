@@ -146,6 +146,7 @@ RSpec.describe Gitlab::ContributionsCalendar do
         create_event(public_project, today, 10)
         create_event(public_project, today, 16)
         create_event(public_project, today, 23)
+        create_event(public_project, tomorrow, 1)
       end
 
       it "renders correct event counts within the UTC timezone" do
@@ -158,14 +159,14 @@ RSpec.describe Gitlab::ContributionsCalendar do
       it "renders correct event counts within the Sydney timezone" do
         Time.use_zone('UTC') do
           contributor.timezone = 'Sydney'
-          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 2)
+          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 3)
         end
       end
 
       it "renders correct event counts within the US Central timezone" do
         Time.use_zone('UTC') do
           contributor.timezone = 'Central Time (US & Canada)'
-          expect(calendar.activity_dates).to eq(yesterday => 2, today => 3)
+          expect(calendar.activity_dates).to eq(yesterday => 2, today => 4)
         end
       end
     end

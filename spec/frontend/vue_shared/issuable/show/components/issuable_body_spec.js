@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 
-import IssuableBody from '~/issuable_show/components/issuable_body.vue';
+import IssuableBody from '~/vue_shared/issuable/show/components/issuable_body.vue';
 
-import IssuableDescription from '~/issuable_show/components/issuable_description.vue';
-import IssuableEditForm from '~/issuable_show/components/issuable_edit_form.vue';
-import IssuableTitle from '~/issuable_show/components/issuable_title.vue';
+import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
+import IssuableEditForm from '~/vue_shared/issuable/show/components/issuable_edit_form.vue';
+import IssuableTitle from '~/vue_shared/issuable/show/components/issuable_title.vue';
 import TaskList from '~/task_list';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlAlert, GlButton, GlDrawer, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { produce } from 'immer';
 import { __, s__ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -9,11 +9,19 @@ import getGroupContactsQuery from './queries/get_group_contacts.query.graphql';
 
 export default {
   components: {
+    GlAlert,
     GlButton,
+    GlDrawer,
     GlFormGroup,
     GlFormInput,
   },
   inject: ['groupFullPath', 'groupId'],
+  props: {
+    drawerOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       firstName: '',
@@ -22,6 +30,7 @@ export default {
       email: '',
       description: '',
       submitting: false,
+      errorMessages: [],
     };
   },
   computed: {
@@ -48,24 +57,21 @@ export default {
           update: this.updateCache,
         })
         .then(({ data }) => {
-          if (data.customerRelationsContactCreate.errors.length === 0) this.close();
+          if (data.customerRelationsContactCreate.errors.length === 0) this.close(true);
 
           this.submitting = false;
         })
         .catch(() => {
-          this.error();
+          this.errorMessages = [__('Something went wrong. Please try again.')];
           this.submitting = false;
         });
     },
-    close() {
-      this.$emit('close');
-    },
-    error(errors = null) {
-      this.$emit('error', errors);
+    close(success) {
+      this.$emit('close', success);
     },
     updateCache(store, { data: { customerRelationsContactCreate } }) {
       if (customerRelationsContactCreate.errors.length > 0) {
-        this.error(customerRelationsContactCreate.errors);
+        this.errorMessages = customerRelationsContactCreate.errors;
         return;
       }
 
@@ -90,6 +96,15 @@ export default {
         data,
       });
     },
+    getDrawerHeaderHeight() {
+      const wrapperEl = document.querySelector('.content-wrapper');
+
+      if (wrapperEl) {
+        return `${wrapperEl.offsetTop}px`;
+      }
+
+      return '';
+    },
   },
   i18n: {
     buttonLabel: s__('Crm|Create new contact'),
@@ -99,12 +114,28 @@ export default {
     email: s__('Crm|Email'),
     phone: s__('Crm|Phone number (optional)'),
     description: s__('Crm|Description (optional)'),
+    title: s__('Crm|New Contact'),
   },
 };
 </script>
 
 <template>
-  <div class="col-md-4">
+  <gl-drawer
+    class="gl-drawer-responsive"
+    :open="drawerOpen"
+    :header-height="getDrawerHeaderHeight()"
+    @close="close(false)"
+  >
+    <template #title>
+      <h4>{{ $options.i18n.title }}</h4>
+    </template>
+    <gl-alert v-if="errorMessages.length" variant="danger" @dismiss="errorMessages = []">
+      <ul class="gl-mb-0! gl-ml-5">
+        <li v-for="error in errorMessages" :key="error">
+          {{ error }}
+        </li>
+      </ul>
+    </gl-alert>
     <form @submit.prevent="save">
       <gl-form-group :label="$options.i18n.firstName" label-for="contact-first-name">
         <gl-form-input id="contact-first-name" v-model="firstName" />
@@ -121,7 +152,10 @@ export default {
       <gl-form-group :label="$options.i18n.description" label-for="contact-description">
         <gl-form-input id="contact-description" v-model="description" />
       </gl-form-group>
-      <div class="form-actions">
+      <span class="gl-float-right">
+        <gl-button data-testid="cancel-button" @click="close(false)">
+          {{ $options.i18n.cancel }}
+        </gl-button>
         <gl-button
           variant="confirm"
           :disabled="invalid"
@@ -130,11 +164,7 @@ export default {
           type="submit"
           >{{ $options.i18n.buttonLabel }}</gl-button
         >
-        <gl-button data-testid="cancel-button" @click="close">
-          {{ $options.i18n.cancel }}
-        </gl-button>
-      </div>
+      </span>
     </form>
-    <div class="gl-pb-5"></div>
-  </div>
+  </gl-drawer>
 </template>

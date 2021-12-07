@@ -122,16 +122,6 @@ describe('Customer relations contacts root app', () => {
 
       expect(findError().exists()).toBe(true);
     });
-
-    it('should exist when new contact form emits error', async () => {
-      router.replace({ path: '/new' });
-      mountComponent();
-
-      findNewContactForm().vm.$emit('error');
-      await waitForPromises();
-
-      expect(findError().exists()).toBe(true);
-    });
   });
 
   describe('on successful load', () => {

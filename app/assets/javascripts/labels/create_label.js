@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
-import Api from './api';
-import { humanize } from './lib/utils/text_utility';
+import Api from '~/api';
+import { humanize } from '~/lib/utils/text_utility';
 
 export default class CreateLabelDropdown {
   constructor($el, namespacePath, projectPath) {

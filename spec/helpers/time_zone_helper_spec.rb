@@ -125,7 +125,7 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
     end
   end
 
-  describe '#local_time_instance' do
+  describe '#local_timezone_instance' do
     let_it_be(:timezone) { 'UTC' }
 
     before do
@@ -134,25 +134,25 @@ RSpec.describe TimeZoneHelper, :aggregate_failures do
 
     context 'when timezone is `nil`' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance(nil).name).to eq(timezone)
+        expect(helper.local_timezone_instance(nil).name).to eq(timezone)
       end
     end
 
     context 'when timezone is blank' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance('').name).to eq(timezone)
+        expect(helper.local_timezone_instance('').name).to eq(timezone)
       end
     end
 
     context 'when a valid timezone is passed' do
       it 'returns the local time instance' do
-        expect(helper.local_time_instance('America/Los_Angeles').name).to eq('America/Los_Angeles')
+        expect(helper.local_timezone_instance('America/Los_Angeles').name).to eq('America/Los_Angeles')
       end
     end
 
     context 'when an invalid timezone is passed' do
       it 'returns the system timezone instance' do
-        expect(helper.local_time_instance('Foo/Bar').name).to eq(timezone)
+        expect(helper.local_timezone_instance('Foo/Bar').name).to eq(timezone)
       end
     end
   end

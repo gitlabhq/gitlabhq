@@ -86,8 +86,8 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-space-between gl-mb-3">
-      <gl-form-checkbox v-if="!hiddenDelete" v-model="selectAll" class="gl-ml-2">
+    <div class="gl-display-flex gl-justify-content-space-between gl-mb-3 gl-align-items-center">
+      <gl-form-checkbox v-if="!hiddenDelete" v-model="selectAll" class="gl-ml-2 gl-pt-2">
         <span class="gl-font-weight-bold">{{ title }}</span>
       </gl-form-checkbox>
 

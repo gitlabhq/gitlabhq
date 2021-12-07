@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import { fixTitle } from '~/tooltips';
-import createFlash from './flash';
-import axios from './lib/utils/axios_utils';
-import { __ } from './locale';
+import createFlash from '~/flash';
+import axios from '~/lib/utils/axios_utils';
+import { __ } from '~/locale';
 
 const tooltipTitles = {
   group: {

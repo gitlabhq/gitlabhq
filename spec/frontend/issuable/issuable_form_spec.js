@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import IssuableForm from '~/issuable_form';
+import IssuableForm from '~/issuable/issuable_form';
 
 function createIssuable() {
   const instance = new IssuableForm($(document.createElement('form')));

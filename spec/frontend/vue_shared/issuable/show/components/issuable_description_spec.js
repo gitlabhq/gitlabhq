@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import $ from 'jquery';
 
-import IssuableDescription from '~/issuable_show/components/issuable_description.vue';
+import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
 
 import { mockIssuable } from '../mock_data';
 

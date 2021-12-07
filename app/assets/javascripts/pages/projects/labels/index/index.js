@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import initDeleteLabelModal from '~/delete_label_modal';
-import initLabels from '~/init_labels';
+import initDeleteLabelModal from '~/labels/delete_label_modal';
+import initLabels from '~/labels/init_labels';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
 import PromoteLabelModal from '../components/promote_label_modal.vue';

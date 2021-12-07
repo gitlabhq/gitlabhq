@@ -69,6 +69,8 @@ a single URL used by all Geo sites, including the primary.
    is using the secondary proxying and set the `URL` field to the single URL.
    Make sure the primary site is also using this URL.
 
+In Kubernetes, you can use the same domain under `global.hosts.domain` as for the primary site.
+
 ## Disable Geo proxying
 
 You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
@@ -121,18 +123,22 @@ for details.
 
 ## Limitations
 
-The asynchronous Geo replication can cause unexpected issues when secondary proxying is used, for accelerated
-data types that may be replicated to the Geo secondaries with a delay.
+- When secondary proxying is used, the asynchronous Geo replication can cause unexpected issues for accelerated
+  data types that may be replicated to the Geo secondaries with a delay.
 
-For example, we found a potential issue where
-[Replication lag introduces read-your-own-write inconsistencies](https://gitlab.com/gitlab-org/gitlab/-/issues/345267).
-If the replication lag is high enough, this can result in Git reads receiving stale data when hitting a secondary.
+  For example, we found a potential issue where
+  [replication lag introduces read-after-write inconsistencies](https://gitlab.com/gitlab-org/gitlab/-/issues/345267).
+  If the replication lag is high enough, this can result in Git reads receiving stale data when hitting a secondary.
 
-Non-Rails requests are not proxied, so other services may need to use a separate, non-unified URL to ensure requests
-are always sent to the primary. These services include:
+- Non-Rails requests are not proxied, so other services may need to use a separate, non-unified URL to ensure requests
+  are always sent to the primary. These services include:
 
-- GitLab Container Registry - [can be configured to use a separate domain](../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
-- GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../../pages/index.md#prerequisites).
+  - GitLab Container Registry - [can be configured to use a separate domain](../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+  - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../../pages/index.md#prerequisites).
+
+- With a unified URL, Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain.
+  To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate
+  the certificate, then copy it to all other sites.
 
 ## Features accelerated by secondary Geo sites
 

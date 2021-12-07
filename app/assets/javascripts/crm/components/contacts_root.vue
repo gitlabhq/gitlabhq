@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlLoadingIcon, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import getGroupContactsQuery from './queries/get_group_contacts.query.graphql';
@@ -21,7 +22,6 @@ export default {
     return {
       contacts: [],
       error: false,
-      errorMessages: [],
     };
   },
   apollo: {
@@ -49,6 +49,9 @@ export default {
     showNewForm() {
       return this.$route.path.startsWith('/new');
     },
+    canCreateNew() {
+      return parseBoolean(this.canAdminCrmContact);
+    },
   },
   methods: {
     extractContacts(data) {
@@ -60,16 +63,10 @@ export default {
 
       this.$router.push({ path: '/new' });
     },
-    hideNewForm() {
+    hideNewForm(success) {
+      if (success) this.$toast.show(s__('Crm|Contact has been added'));
+
       this.$router.replace({ path: '/' });
-    },
-    handleError(errors) {
-      this.error = true;
-      if (errors) this.errorMessages = errors;
-    },
-    dismissError() {
-      this.error = false;
-      this.errorMessages = [];
     },
     getIssuesPath(path, value) {
       return `${path}?scope=all&state=opened&crm_contact_id=${value}`;
@@ -108,9 +105,8 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="error" variant="danger" class="gl-mt-6" @dismiss="dismissError">
-      <div v-if="errorMessages.length == 0">{{ $options.i18n.errorText }}</div>
-      <div v-for="(message, index) in errorMessages" :key="index">{{ message }}</div>
+    <gl-alert v-if="error" variant="danger" class="gl-mt-6" @dismiss="error = false">
+      {{ $options.i18n.errorText }}
     </gl-alert>
     <div
       class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
@@ -120,7 +116,7 @@ export default {
       </h2>
       <div class="gl-display-none gl-md-display-flex gl-align-items-center gl-justify-content-end">
         <gl-button
-          v-if="canAdminCrmContact"
+          v-if="canCreateNew"
           variant="confirm"
           data-testid="new-contact-button"
           @click="displayNewForm"
@@ -129,7 +125,7 @@ export default {
         </gl-button>
       </div>
     </div>
-    <new-contact-form v-if="showNewForm" @close="hideNewForm" @error="handleError" />
+    <new-contact-form v-if="showNewForm" :drawer-open="showNewForm" @close="hideNewForm" />
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
     <gl-table
       v-else

@@ -1,7 +1,7 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import StatusSelect from '~/issuable_bulk_update_sidebar/components/status_select.vue';
-import { ISSUE_STATUS_SELECT_OPTIONS } from '~/issuable_bulk_update_sidebar/constants';
+import StatusSelect from '~/issuable/bulk_update_sidebar/components/status_select.vue';
+import { ISSUE_STATUS_SELECT_OPTIONS } from '~/issuable/bulk_update_sidebar/constants';
 
 describe('StatusSelect', () => {
   let wrapper;

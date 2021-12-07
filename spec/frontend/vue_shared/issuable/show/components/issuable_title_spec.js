@@ -2,7 +2,7 @@ import { GlIcon, GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-import IssuableTitle from '~/issuable_show/components/issuable_title.vue';
+import IssuableTitle from '~/vue_shared/issuable/show/components/issuable_title.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 

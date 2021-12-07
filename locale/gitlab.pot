@@ -10202,6 +10202,9 @@ msgstr ""
 msgid "Critical vulnerabilities present"
 msgstr ""
 
+msgid "Crm|Contact has been added"
+msgstr ""
+
 msgid "Crm|Create new contact"
 msgstr ""
 
@@ -10218,6 +10221,9 @@ msgid "Crm|First name"
 msgstr ""
 
 msgid "Crm|Last name"
+msgstr ""
+
+msgid "Crm|New Contact"
 msgstr ""
 
 msgid "Crm|New contact"

@@ -57,7 +57,7 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-py-3">
       <div
         v-if="$slots['left-action']"
-        class="gl-w-7 gl-display-none gl-sm-display-flex gl-justify-content-start gl-pl-2"
+        class="gl-w-7 gl-display-flex gl-justify-content-start gl-pl-2"
       >
         <slot name="left-action"></slot>
       </div>
@@ -105,7 +105,7 @@ export default {
       </div>
       <div
         v-if="$slots['right-action']"
-        class="gl-w-9 gl-display-none gl-sm-display-flex gl-justify-content-end gl-pr-1"
+        class="gl-w-9 gl-display-flex gl-justify-content-end gl-pr-1"
       >
         <slot name="right-action"></slot>
       </div>

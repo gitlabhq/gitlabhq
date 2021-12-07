@@ -3,7 +3,7 @@ import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/u
 import { mapActions, mapGetters, mapState } from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { IssuableType } from '~/issuable_show/constants';
+import { IssuableType } from '~/vue_shared/issuable/show/constants';
 import { IssuableStatus, IssueStateEvent } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';

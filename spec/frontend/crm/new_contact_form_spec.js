@@ -1,3 +1,4 @@
+import { GlAlert } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -21,6 +22,7 @@ describe('Customer relations contacts root app', () => {
   const findCreateNewContactButton = () => wrapper.findByTestId('create-new-contact-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findForm = () => wrapper.find('form');
+  const findError = () => wrapper.findComponent(GlAlert);
 
   const mountComponent = ({ mountFunction = shallowMountExtended } = {}) => {
     fakeApollo = createMockApollo([[createContactMutation, queryHandler]]);
@@ -32,6 +34,7 @@ describe('Customer relations contacts root app', () => {
     wrapper = mountFunction(NewContactForm, {
       provide: { groupId: 26, groupFullPath: 'flightjs' },
       apolloProvider: fakeApollo,
+      propsData: { drawerOpen: true },
     });
   };
 
@@ -83,26 +86,25 @@ describe('Customer relations contacts root app', () => {
   });
 
   describe('when query fails', () => {
-    it('should emit error on reject', async () => {
+    it('should show error on reject', async () => {
       queryHandler = jest.fn().mockRejectedValue('ERROR');
       mountComponent();
 
       findForm().trigger('submit');
       await waitForPromises();
 
-      expect(wrapper.emitted().error).toBeTruthy();
+      expect(findError().exists()).toBe(true);
     });
 
-    it('should emit error on error response', async () => {
+    it('should show error on error response', async () => {
       queryHandler = jest.fn().mockResolvedValue(createContactMutationErrorResponse);
       mountComponent();
 
       findForm().trigger('submit');
       await waitForPromises();
 
-      expect(wrapper.emitted().error[0][0]).toEqual(
-        createContactMutationErrorResponse.data.customerRelationsContactCreate.errors,
-      );
+      expect(findError().exists()).toBe(true);
+      expect(findError().text()).toBe('Phone is invalid.');
     });
   });
 });

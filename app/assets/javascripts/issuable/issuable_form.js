@@ -1,14 +1,14 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
-import Autosave from './autosave';
-import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
-import { loadCSSFile } from './lib/utils/css_utils';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
-import { select2AxiosTransport } from './lib/utils/select2_utils';
-import { queryToObject, objectToQuery } from './lib/utils/url_utility';
-import UsersSelect from './users_select';
-import ZenMode from './zen_mode';
+import Autosave from '~/autosave';
+import AutoWidthDropdownSelect from '~/issuable/auto_width_dropdown_select';
+import { loadCSSFile } from '~/lib/utils/css_utils';
+import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { select2AxiosTransport } from '~/lib/utils/select2_utils';
+import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
+import UsersSelect from '~/users_select';
+import ZenMode from '~/zen_mode';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Namespaces
-  class UserNamespacePolicy < BasePolicy
+  class UserNamespacePolicy < ::NamespacePolicy
     rule { anonymous }.prevent_all
 
     condition(:personal_project, scope: :subject) { @subject.kind == 'user' }

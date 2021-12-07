@@ -1,3 +1,4 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -6,6 +7,7 @@ import CrmContactsRoot from './components/contacts_root.vue';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
+Vue.use(GlToast);
 
 export default () => {
   const el = document.getElementById('js-crm-contacts-app');

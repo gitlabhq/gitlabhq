@@ -2,7 +2,7 @@ import { GlIcon, GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
-import IssuableHeader from '~/issuable_show/components/issuable_header.vue';
+import IssuableHeader from '~/vue_shared/issuable/show/components/issuable_header.vue';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 

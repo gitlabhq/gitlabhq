@@ -2,7 +2,7 @@ import { GlButton, GlDropdown, GlDropdownItem, GlLink, GlModal } from '@gitlab/u
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import createFlash, { FLASH_TYPES } from '~/flash';
-import { IssuableType } from '~/issuable_show/constants';
+import { IssuableType } from '~/vue_shared/issuable/show/constants';
 import HeaderActions from '~/issues/show/components/header_actions.vue';
 import { IssuableStatus, IssueStateEvent } from '~/issues/show/constants';
 import promoteToEpicMutation from '~/issues/show/queries/promote_to_epic.mutation.graphql';

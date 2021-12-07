@@ -209,6 +209,8 @@ RSpec.describe API::Ci::JobArtifacts do
       end
 
       it 'returns specific job artifacts' do
+        subject
+
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers.to_h).to include(download_headers)
         expect(response.body).to match_file(job.artifacts_file.file.file)
@@ -220,18 +222,48 @@ RSpec.describe API::Ci::JobArtifacts do
         context 'when artifacts are stored locally' do
           let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-          before do
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-          end
+          subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user) }
 
           context 'authorized user' do
             it_behaves_like 'downloads artifact'
+          end
+
+          context 'when job token is used' do
+            let(:other_job) { create(:ci_build, :running, user: user) }
+
+            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token) }
+
+            before do
+              stub_licensed_features(cross_project_pipelines: true)
+            end
+
+            it_behaves_like 'downloads artifact'
+
+            context 'when job token scope is enabled' do
+              before do
+                other_job.project.ci_cd_settings.update!(job_token_scope_enabled: true)
+              end
+
+              it 'does not allow downloading artifacts' do
+                subject
+
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+
+              context 'when project is added to the job token scope' do
+                let!(:link) { create(:ci_job_token_project_scope_link, source_project: other_job.project, target_project: job.project) }
+
+                it_behaves_like 'downloads artifact'
+              end
+            end
           end
 
           context 'unauthorized user' do
             let(:api_user) { nil }
 
             it 'does not return specific job artifacts' do
+              subject
+
               expect(response).to have_gitlab_http_status(:not_found)
             end
           end
