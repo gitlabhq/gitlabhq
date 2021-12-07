@@ -1,4 +1,4 @@
-import { mockIssuable as issuable } from '../issuable_list/mock_data';
+import { mockIssuable as issuable } from 'jest/vue_shared/issuable/list/mock_data';
 
 export const mockIssuable = {
   ...issuable,

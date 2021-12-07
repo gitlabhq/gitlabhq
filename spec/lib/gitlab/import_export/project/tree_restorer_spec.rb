@@ -674,6 +674,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           # Project needs to be in a group for visibility level comparison
           # to happen
           group = create(:group)
+          group.add_maintainer(user)
           project.group = group
 
           project.create_import_data(data: { override_params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } })
@@ -715,13 +716,19 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       context 'with a project that has a group' do
+        let(:group) do
+          create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE).tap do |g|
+            g.add_maintainer(user)
+          end
+        end
+
         let!(:project) do
           create(:project,
                  :builds_disabled,
                  :issues_disabled,
                  name: 'project',
                  path: 'project',
-                 group: create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE))
+                 group: group)
         end
 
         before do
@@ -750,13 +757,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       context 'with existing group models' do
+        let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
         let!(:project) do
           create(:project,
                  :builds_disabled,
                  :issues_disabled,
                  name: 'project',
                  path: 'project',
-                 group: create(:group))
+                 group: group)
         end
 
         before do
@@ -785,13 +793,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       end
 
       context 'with clashing milestones on IID' do
+        let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
         let!(:project) do
           create(:project,
                  :builds_disabled,
                  :issues_disabled,
                  name: 'project',
                  path: 'project',
-                 group: create(:group))
+                 group: group)
         end
 
         before do
@@ -870,7 +879,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
       context 'with group visibility' do
         before do
           group = create(:group, visibility_level: group_visibility)
-
+          group.add_users([user], GroupMember::MAINTAINER)
           project.update(group: group)
         end
 

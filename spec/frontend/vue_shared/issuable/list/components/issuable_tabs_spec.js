@@ -1,7 +1,7 @@
 import { GlTab, GlBadge } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 
-import IssuableTabs from '~/issuable_list/components/issuable_tabs.vue';
+import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 
 import { mockIssuableListProps } from '../mock_data';
 

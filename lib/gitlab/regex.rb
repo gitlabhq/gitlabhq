@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def maven_version_regex
-        @maven_version_regex ||= /\A(\.?[\w\+-]+\.?)+\z/.freeze
+        @maven_version_regex ||= /\A(?!.*\.\.)[\w+.-]+\z/.freeze
       end
 
       def maven_app_group_regex

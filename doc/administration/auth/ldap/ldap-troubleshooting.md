@@ -106,7 +106,7 @@ here are some questions to ask yourself:
 - Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter)?
   If one is not configured, this question can be ignored. If it is, then the
   user must also pass through this filter to be allowed to sign in.
-  - Refer to our docs on [debugging the `user_filter`](#debug-ldap-user-filter).
+  - Refer to our documentation on [debugging the `user_filter`](#debug-ldap-user-filter).
 
 If the above are both okay, the next place to look for the problem is
 the logs themselves while reproducing the issue.
@@ -316,7 +316,7 @@ LDAP search error: No Such Object
   User Update (0.4ms)  UPDATE "users" SET "state" = $1, "updated_at" = $2 WHERE "users"."id" = $3  [["state", "ldap_blocked"], ["updated_at", "2019-10-18 15:46:22.902177"], ["id", 20]]
 ```
 
-Once the user is found in LDAP, the rest of the output updates the GitLab
+After the user is found in LDAP, the rest of the output updates the GitLab
 database with any changes.
 
 #### Query a user in LDAP
@@ -337,8 +337,8 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 #### Membership(s) not granted
 
 Sometimes you may think a particular user should be added to a GitLab group via
-LDAP group sync, but for some reason it's not happening. There are several
-things to check to debug the situation.
+LDAP group sync, but for some reason it's not happening. You can check several
+things to debug the situation.
 
 - Ensure LDAP configuration has a `group_base` specified.
   [This configuration](ldap_synchronization.md#group-sync) is required for group sync to work properly.
@@ -421,7 +421,7 @@ Started syncing 'ldapmain' provider for 'my_group' group
 ```
 
 The following entry shows an array of all user DNs GitLab sees in the LDAP server.
-These are the users for a single LDAP group, not a GitLab group. If
+These DNs are the users for a single LDAP group, not a GitLab group. If
 you have multiple LDAP groups linked to this GitLab group, you see multiple
 log entries like this - one for each LDAP group. If you don't see an LDAP user
 DN in this log entry, LDAP is not returning the user when we do the lookup.
@@ -545,7 +545,7 @@ updates the stored DN to the new value so both values now match what's in
 LDAP.
 
 If the email has changed and the DN has not, GitLab finds the user with
-the DN and update its own record of the user's email to match the one in LDAP.
+the DN and updates its own record of the user's email to match the one in LDAP.
 
 However, if the primary email _and_ the DN change in LDAP, then GitLab
 has no way of identifying the correct LDAP record of the user and, as a
@@ -563,7 +563,7 @@ email address are removed first. This is because emails have to be unique in Git
 Go to the [rails console](#rails-console) and then run:
 
 ```ruby
-# Each entry will have to include the old username and the new email
+# Each entry must include the old username and the new email
 emails = {
   'ORIGINAL_USERNAME' => 'NEW_EMAIL_ADDRESS',
   ...
@@ -686,7 +686,7 @@ For more information, see the [official `ldapsearch` documentation](https://linu
 
 ### Using **AdFind** (Windows)
 
-You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. This is a freeware utility built by [Joe Richards](http://www.joeware.net/freetools/tools/adfind/index.htm).
+You can use the [`AdFind`](https://social.technet.microsoft.com/wiki/contents/articles/7535.adfind-command-examples.aspx) utility (on Windows based systems) to test that your LDAP server is accessible and authentication is working correctly. AdFind is a freeware utility built by [Joe Richards](http://www.joeware.net/freetools/tools/adfind/index.htm).
 
 **Return all objects**
 
@@ -719,9 +719,8 @@ For instructions about how to use the rails console, refer to this
 
 #### Enable debug output
 
-This provides debug output that is useful to see
-what GitLab is doing and with what. This value is not persisted, and is only
-enabled for this session in the rails console.
+This provides debug output that shows what GitLab is doing and with what.
+This value is not persisted, and is only enabled for this session in the Rails console.
 
 To enable debug output in the rails console, [enter the rails
 console](#rails-console) and run:

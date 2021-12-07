@@ -29,9 +29,7 @@ module Gitlab
           # Anything, including `/cmd arg` which are ignored by this filter
           # `
 
-          `\n*
-          .+?
-          \n*`
+          `.+?`
         )
       }mix.freeze
 

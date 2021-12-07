@@ -4,9 +4,9 @@ import VueDraggable from 'vuedraggable';
 
 import { TEST_HOST } from 'helpers/test_constants';
 
-import IssuableItem from '~/issuable_list/components/issuable_item.vue';
-import IssuableListRoot from '~/issuable_list/components/issuable_list_root.vue';
-import IssuableTabs from '~/issuable_list/components/issuable_tabs.vue';
+import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
+import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 import { mockIssuableListProps, mockIssuables } from '../mock_data';

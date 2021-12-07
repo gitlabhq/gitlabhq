@@ -18,8 +18,8 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
-import IssuableList from '~/issuable_list/components/issuable_list_root.vue';
-import { IssuableListTabs, IssuableStates } from '~/issuable_list/constants';
+import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import {
   CREATED_DESC,
   i18n,

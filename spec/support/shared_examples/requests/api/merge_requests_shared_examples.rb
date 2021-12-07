@@ -14,10 +14,10 @@ RSpec.shared_examples 'rejects user from accessing merge request info' do
     project.add_guest(user)
   end
 
-  it 'returns a 404 error' do
+  it 'returns a 403 error' do
     get api(url, user)
 
-    expect(response).to have_gitlab_http_status(:not_found)
-    expect(json_response['message']).to eq('404 Merge Request Not Found')
+    expect(response).to have_gitlab_http_status(:forbidden)
+    expect(json_response['message']).to eq('403 Forbidden')
   end
 end

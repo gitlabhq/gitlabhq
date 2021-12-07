@@ -411,6 +411,7 @@ module Gitlab
     config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 
     config.active_job.queue_adapter = :sidekiq
+    config.active_job.logger = nil
     config.action_mailer.deliver_later_queue_name = :mailers
 
     # This is needed for gitlab-shell

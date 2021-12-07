@@ -47,14 +47,14 @@ RSpec.describe Gitlab::Diff::Formatters::TextFormatter do
 
   describe "#==" do
     it "is false when the line_range changes" do
-      formatter_1 = described_class.new(base.merge(line_range: { start_line_code: "foo", end_line_code: "bar" }))
-      formatter_2 = described_class.new(base.merge(line_range: { start_line_code: "foo", end_line_code: "baz" }))
+      formatter_1 = described_class.new(base.merge(line_range: { "start": { "line_code" => "foo" }, "end": { "line_code" => "bar" } }))
+      formatter_2 = described_class.new(base.merge(line_range: { "start": { "line_code" => "foo" }, "end": { "line_code" => "baz" } }))
 
       expect(formatter_1).not_to eq(formatter_2)
     end
 
     it "is true when the line_range doesn't change" do
-      attrs = base.merge({ line_range: { start_line_code: "foo", end_line_code: "baz" } })
+      attrs = base.merge({ line_range: { start: { line_code: "foo" }, end: { line_code: "baz" } } })
       formatter_1 = described_class.new(attrs)
       formatter_2 = described_class.new(attrs)
 

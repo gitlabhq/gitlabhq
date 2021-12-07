@@ -174,12 +174,26 @@ RSpec.describe SearchHelper do
       context "with a current project" do
         before do
           @project = create(:project, :repository)
+
+          allow(self).to receive(:can?).and_return(true)
           allow(self).to receive(:can?).with(user, :read_feature_flag, @project).and_return(false)
         end
 
-        it "includes project-specific sections", :aggregate_failures do
+        it 'returns repository related labels based on users abilities', :aggregate_failures do
           expect(search_autocomplete_opts("Files").size).to eq(1)
           expect(search_autocomplete_opts("Commits").size).to eq(1)
+          expect(search_autocomplete_opts("Network").size).to eq(1)
+          expect(search_autocomplete_opts("Graph").size).to eq(1)
+
+          allow(self).to receive(:can?).with(user, :download_code, @project).and_return(false)
+
+          expect(search_autocomplete_opts("Files").size).to eq(0)
+          expect(search_autocomplete_opts("Commits").size).to eq(0)
+
+          allow(self).to receive(:can?).with(user, :read_repository_graphs, @project).and_return(false)
+
+          expect(search_autocomplete_opts("Network").size).to eq(0)
+          expect(search_autocomplete_opts("Graph").size).to eq(0)
         end
 
         context 'when user does not have access to project' do

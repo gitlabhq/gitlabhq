@@ -13,7 +13,8 @@ RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader do
 
   shared_examples 'executes N max member permission queries to the DB' do
     it 'executes the specified max membership queries' do
-      expect { groups.each { |group| user.can?(:read_group, group) } }.to make_queries_matching(max_query_regex, expected_query_count)
+      expect { groups.each { |group| user.can?(:read_group, group) } }
+        .to make_queries_matching(max_query_regex, expected_query_count)
     end
 
     it 'caches the correct access_level for each group' do

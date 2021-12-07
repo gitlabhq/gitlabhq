@@ -4,8 +4,6 @@ module Preloaders
   # This class preloads the max access level (role) for the user within the given groups and
   # stores the values in requests store.
   class UserMaxAccessLevelInGroupsPreloader
-    include BulkMemberAccessLoad
-
     def initialize(groups, user)
       @groups = groups
       @user = user
@@ -27,8 +25,9 @@ module Preloaders
                                      .group(:source_id)
                                      .maximum(:access_level)
 
-      group_memberships.each do |group_id, max_access_level|
-        merge_value_to_request_store(User, @user.id, group_id, max_access_level)
+      @groups.each do |group|
+        access_level = group_memberships[group.id]
+        group.merge_value_to_request_store(User, @user.id, access_level) if access_level.present?
       end
     end
 
@@ -41,7 +40,7 @@ module Preloaders
 
       @groups.each do |group|
         max_access_level = max_access_levels[group.id] || Gitlab::Access::NO_ACCESS
-        merge_value_to_request_store(User, @user.id, group.id, max_access_level)
+        group.merge_value_to_request_store(User, @user.id, max_access_level)
       end
     end
 

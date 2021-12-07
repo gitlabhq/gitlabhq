@@ -26,7 +26,7 @@ import { emptyStateHelper } from '../service_desk_helper';
 import Issuable from './issuable.vue';
 
 /**
- * @deprecated Use app/assets/javascripts/issuable_list/components/issuable_list_root.vue instead
+ * @deprecated Use app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue instead
  */
 export default {
   LOADING_LIST_ITEMS_LENGTH,

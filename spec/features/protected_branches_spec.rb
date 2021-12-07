@@ -118,12 +118,12 @@ RSpec.describe 'Protected Branches', :js do
       it "allows creating explicit protected branches" do
         visit project_protected_branches_path(project)
         set_defaults
-        set_protected_branch_name('some-branch')
+        set_protected_branch_name('some->branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content('some-branch') }
+        within(".protected-branches-list") { expect(page).to have_content('some->branch') }
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.name).to eq('some-branch')
+        expect(ProtectedBranch.last.name).to eq('some->branch')
       end
 
       it "displays the last commit on the matching branch if it exists" do

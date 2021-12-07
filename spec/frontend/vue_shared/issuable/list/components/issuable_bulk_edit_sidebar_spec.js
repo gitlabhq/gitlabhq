@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import IssuableBulkEditSidebar from '~/issuable_list/components/issuable_bulk_edit_sidebar.vue';
+import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
 
 const createComponent = ({ expanded = true } = {}) =>
   shallowMount(IssuableBulkEditSidebar, {

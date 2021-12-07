@@ -4,6 +4,16 @@ module API
   class Lint < ::API::Base
     feature_category :pipeline_authoring
 
+    helpers do
+      def can_lint_ci?
+        signup_unrestricted = Gitlab::CurrentSettings.signup_enabled? && !Gitlab::CurrentSettings.signup_limited?
+        internal_user = current_user.present? && !current_user.external?
+        is_developer = current_user.present? && current_user.projects.any? { |p| p.team.member?(current_user, Gitlab::Access::DEVELOPER) }
+
+        signup_unrestricted || internal_user || is_developer
+      end
+    end
+
     namespace :ci do
       desc 'Validation of .gitlab-ci.yml content'
       params do
@@ -12,7 +22,7 @@ module API
         optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
       end
       post '/lint' do
-        unauthorized! if (Gitlab::CurrentSettings.signup_disabled? || Gitlab::CurrentSettings.signup_limited?) && current_user.nil?
+        unauthorized! unless can_lint_ci?
 
         result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)
           .validate(params[:content], dry_run: false)

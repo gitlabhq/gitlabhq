@@ -60,7 +60,7 @@ module Sidebars
         end
 
         def repository_analytics_menu_item
-          if context.project.empty_repo?
+          if context.project.empty_repo? || !can?(context.current_user, :read_repository_graphs, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :repository_analytics)
           end
 

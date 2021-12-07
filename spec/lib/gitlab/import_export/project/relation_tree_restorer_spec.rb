@@ -101,7 +101,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer do
     it_behaves_like 'import project successfully'
 
     context 'with logging of relations creation' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
       let_it_be(:importable) do
         create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project', group: group)
       end
@@ -118,7 +118,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer do
 
     context 'when inside a group' do
       let_it_be(:group) do
-        create(:group, :disabled_and_unoverridable)
+        create(:group, :disabled_and_unoverridable).tap { |g| g.add_maintainer(user) }
       end
 
       before do

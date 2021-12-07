@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 14.5.2 (2021-12-03)
+
+No changes.
+
 ## 14.5.1 (2021-12-01)
 
 ### Fixed (4 changes)
@@ -540,6 +544,10 @@ entry.
 - [Add pipeline artifacts and uploads sizes to project REST API](gitlab-org/gitlab@58d66f28faf42ae98ca11ff1ba0bdd9180e988ad) by @guillaume.chauvel ([merge request](gitlab-org/gitlab!72075))
 - [Remove not used parameter from epics finder](gitlab-org/gitlab@49fce172b57b2f376a114726b1dd1900fe36a238) ([merge request](gitlab-org/gitlab!72285)) **GitLab Enterprise Edition**
 
+## 14.4.4 (2021-12-03)
+
+No changes.
+
 ## 14.4.3 (2021-12-01)
 
 ### Fixed (6 changes)
@@ -973,6 +981,10 @@ entry.
 - [Remove pipeline foreign keys from package tables](gitlab-org/gitlab@3b8d317b98a2054f2a6251b02940974bb3a74d5d) ([merge request](gitlab-org/gitlab!70614))
 - [Cleanup bigint conversion for ci_builds](gitlab-org/gitlab@176992aa2b2e76b22637a07d5bafbd6541324a7d) ([merge request](gitlab-org/gitlab!70351))
 - [Drop support for data-track-event](gitlab-org/gitlab@ac6027fbef6adf41643412a84945fda6f15c9666) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70234))
+
+## 14.3.6 (2021-12-03)
+
+No changes.
 
 ## 14.3.5 (2021-11-26)
 
