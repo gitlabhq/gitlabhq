@@ -684,22 +684,49 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
       end
     end
 
-    it 'works when queries time out' do
-      allow_any_instance_of(ActiveRecord::Relation)
-        .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'when queries time out' do
+      let(:metric_method) { :count }
 
-      expect { subject }.not_to raise_error
+      before do
+        allow_any_instance_of(ActiveRecord::Relation).to receive(metric_method).and_raise(ActiveRecord::StatementInvalid)
+        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
+      end
+
+      context 'with should_raise_for_dev? true' do
+        let(:should_raise_for_dev) { true }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+
+        context 'when metric calls find_in_batches' do
+          let(:metric_method) { :find_in_batches }
+
+          it 'raises an error for jira_usage' do
+            expect { described_class.jira_usage }.to raise_error(ActiveRecord::StatementInvalid)
+          end
+        end
+      end
+
+      context 'with should_raise_for_dev? false' do
+        let(:should_raise_for_dev) { false }
+
+        it 'does not raise an error' do
+          expect { subject }.not_to raise_error
+        end
+
+        context 'when metric calls find_in_batches' do
+          let(:metric_method) { :find_in_batches }
+
+          it 'does not raise an error for jira_usage' do
+            expect { described_class.jira_usage }.not_to raise_error
+          end
+        end
+      end
     end
 
     it 'includes a recording_ce_finished_at timestamp' do
       expect(subject[:recording_ce_finished_at]).to be_a(Time)
-    end
-
-    it 'jira usage works when queries time out' do
-      allow_any_instance_of(ActiveRecord::Relation)
-        .to receive(:find_in_batches).and_raise(ActiveRecord::StatementInvalid.new(''))
-
-      expect { described_class.jira_usage }.not_to raise_error
     end
   end
 
@@ -1355,46 +1382,58 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
 
     context 'when queries time out' do
       before do
-        allow_any_instance_of(ActiveRecord::Relation)
-          .to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+        allow_any_instance_of(ActiveRecord::Relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid)
+        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
       end
 
-      it 'returns -1 for email campaign data' do
-        expected_data = {
-          "in_product_marketing_email_create_0_sent" => -1,
-          "in_product_marketing_email_create_0_cta_clicked" => -1,
-          "in_product_marketing_email_create_1_sent" => -1,
-          "in_product_marketing_email_create_1_cta_clicked" => -1,
-          "in_product_marketing_email_create_2_sent" => -1,
-          "in_product_marketing_email_create_2_cta_clicked" => -1,
-          "in_product_marketing_email_team_short_0_sent" => -1,
-          "in_product_marketing_email_team_short_0_cta_clicked" => -1,
-          "in_product_marketing_email_trial_short_0_sent" => -1,
-          "in_product_marketing_email_trial_short_0_cta_clicked" => -1,
-          "in_product_marketing_email_admin_verify_0_sent" => -1,
-          "in_product_marketing_email_admin_verify_0_cta_clicked" => -1,
-          "in_product_marketing_email_verify_0_sent" => -1,
-          "in_product_marketing_email_verify_0_cta_clicked" => -1,
-          "in_product_marketing_email_verify_1_sent" => -1,
-          "in_product_marketing_email_verify_1_cta_clicked" => -1,
-          "in_product_marketing_email_verify_2_sent" => -1,
-          "in_product_marketing_email_verify_2_cta_clicked" => -1,
-          "in_product_marketing_email_trial_0_sent" => -1,
-          "in_product_marketing_email_trial_0_cta_clicked" => -1,
-          "in_product_marketing_email_trial_1_sent" => -1,
-          "in_product_marketing_email_trial_1_cta_clicked" => -1,
-          "in_product_marketing_email_trial_2_sent" => -1,
-          "in_product_marketing_email_trial_2_cta_clicked" => -1,
-          "in_product_marketing_email_team_0_sent" => -1,
-          "in_product_marketing_email_team_0_cta_clicked" => -1,
-          "in_product_marketing_email_team_1_sent" => -1,
-          "in_product_marketing_email_team_1_cta_clicked" => -1,
-          "in_product_marketing_email_team_2_sent" => -1,
-          "in_product_marketing_email_team_2_cta_clicked" => -1,
-          "in_product_marketing_email_experience_0_sent" => -1
-        }
+      context 'with should_raise_for_dev? true' do
+        let(:should_raise_for_dev) { true }
 
-        expect(subject).to eq(expected_data)
+        it 'raises an error' do
+          expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+        end
+      end
+
+      context 'with should_raise_for_dev? false' do
+        let(:should_raise_for_dev) { false }
+
+        it 'returns -1 for email campaign data' do
+          expected_data = {
+            "in_product_marketing_email_create_0_sent" => -1,
+            "in_product_marketing_email_create_0_cta_clicked" => -1,
+            "in_product_marketing_email_create_1_sent" => -1,
+            "in_product_marketing_email_create_1_cta_clicked" => -1,
+            "in_product_marketing_email_create_2_sent" => -1,
+            "in_product_marketing_email_create_2_cta_clicked" => -1,
+            "in_product_marketing_email_team_short_0_sent" => -1,
+            "in_product_marketing_email_team_short_0_cta_clicked" => -1,
+            "in_product_marketing_email_trial_short_0_sent" => -1,
+            "in_product_marketing_email_trial_short_0_cta_clicked" => -1,
+            "in_product_marketing_email_admin_verify_0_sent" => -1,
+            "in_product_marketing_email_admin_verify_0_cta_clicked" => -1,
+            "in_product_marketing_email_verify_0_sent" => -1,
+            "in_product_marketing_email_verify_0_cta_clicked" => -1,
+            "in_product_marketing_email_verify_1_sent" => -1,
+            "in_product_marketing_email_verify_1_cta_clicked" => -1,
+            "in_product_marketing_email_verify_2_sent" => -1,
+            "in_product_marketing_email_verify_2_cta_clicked" => -1,
+            "in_product_marketing_email_trial_0_sent" => -1,
+            "in_product_marketing_email_trial_0_cta_clicked" => -1,
+            "in_product_marketing_email_trial_1_sent" => -1,
+            "in_product_marketing_email_trial_1_cta_clicked" => -1,
+            "in_product_marketing_email_trial_2_sent" => -1,
+            "in_product_marketing_email_trial_2_cta_clicked" => -1,
+            "in_product_marketing_email_team_0_sent" => -1,
+            "in_product_marketing_email_team_0_cta_clicked" => -1,
+            "in_product_marketing_email_team_1_sent" => -1,
+            "in_product_marketing_email_team_1_cta_clicked" => -1,
+            "in_product_marketing_email_team_2_sent" => -1,
+            "in_product_marketing_email_team_2_cta_clicked" => -1,
+            "in_product_marketing_email_experience_0_sent" => -1
+          }
+
+          expect(subject).to eq(expected_data)
+        end
       end
     end
 

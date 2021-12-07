@@ -5,6 +5,30 @@ require 'spec_helper'
 RSpec.describe Gitlab::Utils::UsageData do
   include Database::DatabaseHelpers
 
+  shared_examples 'failing hardening method' do
+    before do
+      allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
+      stub_const("Gitlab::Utils::UsageData::FALLBACK", fallback)
+      allow(failing_class).to receive(failing_method).and_raise(ActiveRecord::StatementInvalid)
+    end
+
+    context 'with should_raise_for_dev? false' do
+      let(:should_raise_for_dev) { false }
+
+      it 'returns the fallback' do
+        expect(subject).to eq(fallback)
+      end
+    end
+
+    context 'with should_raise_for_dev? true' do
+      let(:should_raise_for_dev) { true }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+    end
+  end
+
   describe '#add_metric' do
     let(:metric) { 'UuidMetric'}
 
@@ -22,11 +46,14 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.count(relation, batch: false)).to eq(1)
     end
 
-    it 'returns the fallback value when counting fails' do
-      stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
-      allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'when counting fails' do
+      subject { described_class.count(relation, batch: false) }
 
-      expect(described_class.count(relation, batch: false)).to eq(15)
+      let(:fallback) { 15 }
+      let(:failing_class) { relation }
+      let(:failing_method) { :count }
+
+      it_behaves_like 'failing hardening method'
     end
   end
 
@@ -39,11 +66,14 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.distinct_count(relation, batch: false)).to eq(1)
     end
 
-    it 'returns the fallback value when counting fails' do
-      stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
-      allow(relation).to receive(:distinct_count_by).and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'when counting fails' do
+      subject { described_class.distinct_count(relation, batch: false) }
 
-      expect(described_class.distinct_count(relation, batch: false)).to eq(15)
+      let(:fallback) { 15 }
+      let(:failing_class) { relation }
+      let(:failing_method) { :distinct_count_by }
+
+      it_behaves_like 'failing hardening method'
     end
   end
 
@@ -155,14 +185,24 @@ RSpec.describe Gitlab::Utils::UsageData do
         stub_const("Gitlab::Utils::UsageData::DISTRIBUTED_HLL_FALLBACK", 4)
       end
 
-      it 'returns fallback if counter raises WRONG_CONFIGURATION_ERROR' do
-        expect(described_class.estimate_batch_distinct_count(relation, 'id', start: 1, finish: 0)).to eq 3
+      context 'when counter raises WRONG_CONFIGURATION_ERROR' do
+        subject { described_class.estimate_batch_distinct_count(relation, 'id', start: 1, finish: 0) }
+
+        let(:fallback) { 3 }
+        let(:failing_class) { Gitlab::Database::PostgresHll::BatchDistinctCounter }
+        let(:failing_method) { :new }
+
+        it_behaves_like 'failing hardening method'
       end
 
-      it 'returns default fallback value when counting fails due to database error' do
-        allow(Gitlab::Database::PostgresHll::BatchDistinctCounter).to receive(:new).and_raise(ActiveRecord::StatementInvalid.new(''))
+      context 'when counting fails due to database error' do
+        subject { described_class.estimate_batch_distinct_count(relation) }
 
-        expect(described_class.estimate_batch_distinct_count(relation)).to eq(3)
+        let(:fallback) { 3 }
+        let(:failing_class) { Gitlab::Database::PostgresHll::BatchDistinctCounter }
+        let(:failing_method) { :new }
+
+        it_behaves_like 'failing hardening method'
       end
 
       it 'logs error and returns DISTRIBUTED_HLL_FALLBACK value when counting raises any error', :aggregate_failures do
@@ -187,13 +227,14 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(described_class.sum(relation, :column, batch_size: 100, start: 2, finish: 3)).to eq(1)
     end
 
-    it 'returns the fallback value when counting fails' do
-      stub_const("Gitlab::Utils::UsageData::FALLBACK", 15)
-      allow(Gitlab::Database::BatchCount)
-        .to receive(:batch_sum)
-        .and_raise(ActiveRecord::StatementInvalid.new(''))
+    context 'when counting fails' do
+      subject { described_class.sum(relation, :column) }
 
-      expect(described_class.sum(relation, :column)).to eq(15)
+      let(:fallback) { 15 }
+      let(:failing_class) { Gitlab::Database::BatchCount }
+      let(:failing_method) { :batch_sum }
+
+      it_behaves_like 'failing hardening method'
     end
   end
 
@@ -273,23 +314,45 @@ RSpec.describe Gitlab::Utils::UsageData do
       expect(histogram).to eq('2' => 1)
     end
 
-    it 'returns fallback and logs canceled queries' do
-      create(:alert_management_http_integration, :active, project: project1)
+    context 'when query timeout' do
+      subject do
+        with_statement_timeout(0.001) do
+          relation = AlertManagement::HttpIntegration.select('pg_sleep(0.002)')
+          described_class.histogram(relation, column, buckets: 1..100)
+        end
+      end
 
-      expect(Gitlab::AppJsonLogger).to receive(:error).with(
-        event: 'histogram',
-        relation: relation.table_name,
-        operation: 'histogram',
-        operation_args: [column, 1, 100, 99],
-        query: kind_of(String),
-        message: /PG::QueryCanceled/
-      )
+      before do
+        allow(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(should_raise_for_dev)
+        create(:alert_management_http_integration, :active, project: project1)
+      end
 
-      with_statement_timeout(0.001) do
-        relation = AlertManagement::HttpIntegration.select('pg_sleep(0.002)')
-        histogram = described_class.histogram(relation, column, buckets: 1..100)
+      context 'with should_raise_for_dev? false' do
+        let(:should_raise_for_dev) { false }
 
-        expect(histogram).to eq(fallback)
+        it 'logs canceled queries' do
+          expect(Gitlab::AppJsonLogger).to receive(:error).with(
+            event: 'histogram',
+            relation: relation.table_name,
+            operation: 'histogram',
+            operation_args: [column, 1, 100, 99],
+            query: kind_of(String),
+            message: /PG::QueryCanceled/
+          )
+          subject
+        end
+
+        it 'returns fallback' do
+          expect(subject).to eq(fallback)
+        end
+      end
+
+      context 'with should_raise_for_dev? true' do
+        let(:should_raise_for_dev) { true }
+
+        it 'raises error' do
+          expect { subject }.to raise_error(ActiveRecord::QueryCanceled)
+        end
       end
     end
   end

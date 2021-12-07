@@ -406,7 +406,8 @@ module Gitlab
         results[:projects_jira_cloud_active] = jira_integration_data_hash[:projects_jira_cloud_active]
 
         results
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         { projects_jira_server_active: FALLBACK, projects_jira_cloud_active: FALLBACK }
       end
       # rubocop: enable CodeReuse/ActiveRecord

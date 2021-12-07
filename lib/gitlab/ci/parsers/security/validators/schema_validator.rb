@@ -34,7 +34,7 @@ module Gitlab
               end
 
               def file_name
-                "#{report_type.to_s.dasherize}-report-format.json"
+                report_type == :api_fuzzing ? "dast-report-format.json" : "#{report_type.to_s.dasherize}-report-format.json"
               end
             end
 

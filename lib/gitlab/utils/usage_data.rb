@@ -56,7 +56,8 @@ module Gitlab
         else
           relation.count
         end
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -66,7 +67,8 @@ module Gitlab
         else
           relation.distinct_count_by(column)
         end
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -78,7 +80,8 @@ module Gitlab
         yield buckets if block_given?
 
         buckets.estimated_distinct_count
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       # catch all rescue should be removed as a part of feature flag rollout issue
       # https://gitlab.com/gitlab-org/gitlab/-/issues/285485
@@ -89,7 +92,8 @@ module Gitlab
 
       def sum(relation, column, batch_size: nil, start: nil, finish: nil)
         Gitlab::Database::BatchCount.batch_sum(relation, column, batch_size: batch_size, start: start, finish: finish)
-      rescue ActiveRecord::StatementInvalid
+      rescue ActiveRecord::StatementInvalid => error
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error)
         FALLBACK
       end
 
@@ -155,7 +159,8 @@ module Gitlab
           query: query.to_sql,
           message: e.message
         )
-
+        # Raises error for dev env
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         HISTOGRAM_FALLBACK
       end
       # rubocop: enable CodeReuse/ActiveRecord
